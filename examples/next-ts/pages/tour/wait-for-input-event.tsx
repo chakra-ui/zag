@@ -19,13 +19,17 @@ export default function Tour(props: TourProps) {
         Start Tour
       </button>
 
-      <div data-id="source" style={{ padding: "20px" }}>
-        <h3>Source</h3>
-        <p>This is the source code for the tour</p>
+      <div data-id="result" style={{ padding: "20px" }}>
+        <h3>Result</h3>
+        <p>Your input will appear here after the tour.</p>
       </div>
 
-      <div data-id="logic" style={{ padding: "20px" }}>
-        <input type="text" style={{ border: "1px solid black", padding: "10px" }} />
+      <div data-id="input" style={{ padding: "20px" }}>
+        <input
+          type="text"
+          placeholder='Type "test" to continue...'
+          style={{ border: "1px solid black", padding: "10px" }}
+        />
       </div>
 
       {api.step && api.open && (
@@ -68,38 +72,39 @@ const steps: tour.StepDetails[] = [
   {
     type: "dialog",
     id: "start",
-    title: "Ready to go for a ride",
-    description: "Let's take the tour component for a ride and have some fun!",
+    title: "Welcome",
+    description: "This tour waits for you to type a value before moving forward.",
     actions: [{ label: "Let's go!", action: "next" }],
   },
   {
-    id: "logic",
-    title: "Statechart",
-    description:
-      "As an engineer, you'll learn about the internal statechart that powers the tour. Don't worry, it's just a flow diagram.",
-    target: () => document.querySelector("[data-id=logic]"),
+    id: "input",
+    title: "Type something",
+    description: 'Type "test" in the input field to continue to the next step.',
+    target: () => document.querySelector("[data-id=input]"),
     placement: "bottom",
     effect({ next, show }) {
       show()
       const [promise, cleanup] = tour.waitForElementValue(
-        () => document.querySelector("[data-id=logic] input"),
+        () => document.querySelector("[data-id=input] input"),
         "test",
         {
           timeout: 10000,
         },
       )
-      promise.then(() => {
-        cleanup()
-        next()
-      })
+      promise
+        .then(() => {
+          cleanup()
+          next()
+        })
+        .catch(() => {})
       return cleanup
     },
   },
   {
-    id: "source",
-    title: "Github Source",
-    description: "Here's the link to the github source of the Tour",
-    target: () => document.querySelector("[data-id=source]"),
+    id: "result",
+    title: "Result",
+    description: "Great! You typed the correct value. Here's where your result would appear.",
+    target: () => document.querySelector("[data-id=result]"),
     placement: "bottom",
     actions: [
       { label: "Prev", action: "prev" },
@@ -109,8 +114,8 @@ const steps: tour.StepDetails[] = [
   {
     type: "dialog",
     id: "end",
-    title: "Amazing! You got to the end",
-    description: "Like what you see? Now go ahead and use it in your project.",
+    title: "All done!",
+    description: "You've completed the input event tour.",
     actions: [{ label: "Finish", action: "dismiss" }],
   },
 ]

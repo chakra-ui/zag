@@ -18,6 +18,10 @@ export interface AnchorRect {
 
 export interface PositioningOptions {
   /**
+   * Whether styles applied by the positioning utility should be restored on cleanup.
+   */
+  restoreStyles?: boolean | undefined
+  /**
    * Whether the popover should be hidden when the reference element is detached
    */
   hideWhenDetached?: boolean | undefined

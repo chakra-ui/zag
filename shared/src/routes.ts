@@ -136,7 +136,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tour",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "with-input-event", title: "Input Event" },
+      { slug: "wait-step", title: "Wait Step" },
+      { slug: "wait-for-input-event", title: "Wait for Input" },
+      { slug: "step-types", title: "Step Types" },
+      { slug: "conditional", title: "Conditional" },
     ],
   },
   {

@@ -323,7 +323,7 @@ describe("state resolution", () => {
     })
 
     expect(() => resolveStateValue(machine, "#missingStateId", "dialog.open.idle")).toThrowError(
-      "Unknown state id: missingStateId",
+      '[zag-js] Unknown state id: "missingStateId"',
     )
   })
 })
@@ -445,7 +445,44 @@ describe("state utilities", () => {
           },
         },
       }),
-    ).toThrowError("Duplicate state id: duplicate-id")
+    ).toThrowError('[zag-js] Duplicate state id: "duplicate-id"')
+  })
+
+  test("throws when compound state has children but no initial", () => {
+    expect(() =>
+      createMachine<any>({
+        initialState() {
+          return "open.idle"
+        },
+        states: {
+          open: {
+            states: {
+              idle: {},
+              active: {},
+            },
+          },
+        },
+      }),
+    ).toThrowError('[zag-js] Compound state "open" has child states but no "initial" property')
+  })
+
+  test("throws when initial references a nonexistent child state", () => {
+    expect(() =>
+      createMachine<any>({
+        initialState() {
+          return "open.idle"
+        },
+        states: {
+          open: {
+            initial: "nonexistent",
+            states: {
+              idle: {},
+              active: {},
+            },
+          },
+        },
+      }),
+    ).toThrowError('[zag-js] Compound state "open" has initial "nonexistent" which is not a child state')
   })
 
   test("resolveStateValue can transition by #id to a state with initial child", () => {

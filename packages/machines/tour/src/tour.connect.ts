@@ -2,11 +2,12 @@ import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
 import type { StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
-import { getEffectiveStepIndex, getEffectiveSteps, isTooltipPlacement, isTooltipStep } from "./utils/step"
+import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
 export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
   const { state, context, computed, send, prop, scope } = service
@@ -121,9 +122,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
-          position: "absolute",
+          position: isDialogStep(step) ? "fixed" : "absolute",
           inset: "0",
-          willChange: "clip-path",
+          willChange: isTooltipStep(step) ? "clip-path" : undefined,
         },
       })
     },
@@ -135,11 +136,11 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         style: {
           "--tour-layer": 1,
           position: "absolute",
-          width: `${targetRect.width}px`,
-          height: `${targetRect.height}px`,
-          left: `${targetRect.x}px`,
-          top: `${targetRect.y}px`,
-          borderRadius: `${prop("spotlightRadius")}px`,
+          width: toPx(targetRect.width),
+          height: toPx(targetRect.height),
+          left: toPx(targetRect.x),
+          top: toPx(targetRect.y),
+          borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
         },
       })

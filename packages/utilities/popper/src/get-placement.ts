@@ -11,6 +11,7 @@ const defaultOptions: PositioningOptions = {
   strategy: "absolute",
   placement: "bottom",
   listeners: true,
+  restoreStyles: false,
   gutter: 8,
   flip: true,
   slide: true,
@@ -153,6 +154,39 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
   return opts
 }
 
+const floatingStyleProps = [
+  "transform",
+  "visibility",
+  "pointer-events",
+  "--x",
+  "--y",
+  "--z-index",
+  "--reference-width",
+  "--reference-height",
+  "--available-width",
+  "--available-height",
+  "--transform-origin",
+]
+
+const arrowStyleProps = ["top", "right", "bottom", "left"]
+
+function createStyleCleanup(el: HTMLElement | null, props: string[]) {
+  if (!el) return noop
+
+  const prev = new Map(props.map((prop) => [prop, el.style.getPropertyValue(prop)]))
+
+  return () => {
+    prev.forEach((value, prop) => {
+      if (value) el.style.setProperty(prop, value)
+      else el.style.removeProperty(prop)
+    })
+
+    if (el.style.length === 0) {
+      el.removeAttribute("style")
+    }
+  }
+}
+
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
   const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
   const reference = getAnchorElement(anchor, opts.getAnchorRect)
@@ -164,6 +198,8 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
    * -----------------------------------------------------------------------------*/
 
   const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
+  const restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
+  const restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
   const middleware: (Middleware | undefined)[] = [
     getOffsetMiddleware(arrowEl, options),
@@ -255,6 +291,8 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 
   return () => {
     cancelAutoUpdate?.()
+    restoreArrowStyles?.()
+    restoreFloatingStyles?.()
     onPositioned?.({ placed: false })
   }
 }
