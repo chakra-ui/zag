@@ -1,5 +1,24 @@
 # @zag-js/drawer
 
+## 1.38.2
+
+### Patch Changes
+
+- [`f286f35`](https://github.com/chakra-ui/zag/commit/f286f3538e814ce8c39ae9b8c3d87098529ca067) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Avoid setting inline `pointer-events` when modal, letting the
+  dismissable layer manage it instead.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/aria-hidden@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-trap@1.38.2
+  - @zag-js/remove-scroll@1.38.2
+
 ## 1.38.1
 
 ### Patch Changes

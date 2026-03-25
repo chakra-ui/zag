@@ -1,5 +1,21 @@
 # @zag-js/popover
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/aria-hidden@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-trap@1.38.2
+  - @zag-js/popper@1.38.2
+  - @zag-js/remove-scroll@1.38.2
+
 ## 1.38.1
 
 ### Patch Changes
