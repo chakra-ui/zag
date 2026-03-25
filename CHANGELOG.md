@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.38.1](./#1.38.1) - 2026-03-25
+
+### Fixed
+
+- **File Upload**: Automatically reject duplicate files with `FILE_EXISTS` error. Previously, uploading the same file
+  twice was silently accepted and deleting one duplicate removed all of them.
+
+- **Toast**: Restore `role="region"` on the toast group element. The role was previously removed to reduce screen reader
+  landmark noise, but this caused an axe `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div`
+  without a valid role.
+
+- **Tour**
+  - Fix step navigation events (`next`, `prev`, `setStep`) firing when the tour is inactive, bypassing the `start` flow
+  - Fix popper styles not being cleaned up when transitioning from a tooltip step to a dialog/non-tooltip step
+
+### Changed
+
+- **Core**: Validate compound states at machine creation — throw if a state has child states but no `initial`, or if
+  `initial` references a nonexistent child.
+
 ## [1.38.0](./#1.38.0) - 2026-03-24
 
 ### Added
