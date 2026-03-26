@@ -1,4 +1,5 @@
 ---
+"@zag-js/shared": patch
 "next-ts": patch
 "nuxt-ts": patch
 "preact-ts": patch
@@ -7,6 +8,6 @@
 "vanilla-ts": patch
 ---
 
-Migrate example apps to import shared styles through CSS modules.
+Migrate shared example styles to CSS modules.
 
-All example entry points now reference `examples/shared/styles/style.module.css`, and vanilla's index now loads styles via a module entry file.
+Converted `shared/src/style.css` and all `shared/src/css/*.css` files to `.module.css`, and updated example/starter imports to reference `style.module.css`.
