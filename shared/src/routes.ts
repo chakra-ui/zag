@@ -312,6 +312,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "datepicker", title: "With Date Picker" },
       { slug: "delayed-close", title: "Delayed Close" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
     ],
@@ -322,6 +324,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
@@ -338,12 +341,16 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
     slug: "context-menu",
     label: "Context Menu",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+    ],
   },
   {
     slug: "number-input",
@@ -380,6 +387,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "nested", title: "Nested" },
       { slug: "selection", title: "Selection" },
       { slug: "single-tab-stop", title: "Single Tab Stop" },
@@ -467,6 +475,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
