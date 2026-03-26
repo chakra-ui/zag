@@ -343,7 +343,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         tabIndex: 0,
         dir: prop("dir"),
         "aria-activedescendant": computed("highlightedId") || undefined,
-        "aria-labelledby": dom.getTriggerId(scope, triggerValue ?? undefined),
+        "aria-labelledby": anchorPoint
+          ? dom.getContextTriggerId(scope, triggerValue ?? undefined)
+          : dom.getTriggerId(scope, triggerValue ?? undefined),
         "data-placement": currentPlacement,
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return

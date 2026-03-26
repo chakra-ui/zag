@@ -46,10 +46,6 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
   return ctx.getById(getTriggerId(ctx, value))
 }
 
-export const getActiveContextTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
-  return value == null ? getContextTriggerEls(ctx)[0] : ctx.getById(getContextTriggerId(ctx, value))
-}
-
 export const getElements = (ctx: Scope) => {
   const ownerId = CSS.escape(getContentId(ctx))
   const selector = `[role^="menuitem"][data-ownedby=${ownerId}]:not([data-disabled])`

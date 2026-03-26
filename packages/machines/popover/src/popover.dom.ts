@@ -17,7 +17,6 @@ export const getDescriptionId = (scope: Scope) => scope.ids?.description ?? `pop
 export const getCloseTriggerId = (scope: Scope) => scope.ids?.closeTrigger ?? `popover:${scope.id}:close`
 
 export const getAnchorEl = (scope: Scope) => scope.getById(getAnchorId(scope))
-export const getTriggerEl = (scope: Scope) => scope.getById(getTriggerId(scope))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] =>
   queryAll<HTMLElement>(scope.getDoc(), `[data-scope="popover"][data-part="trigger"][data-ownedby="${scope.id}"]`)
