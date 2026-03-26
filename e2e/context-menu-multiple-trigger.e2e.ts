@@ -42,7 +42,10 @@ test.describe("context menu / multiple triggers", () => {
     await page.click(contextTrigger(1), { button: "right" })
     await expect(page.locator(menuItem("open"))).toContainText("Open Folder")
 
-    // Right-click on "report.pdf" file (id: 3)
+    // Close menu, then right-click on "report.pdf" file (id: 3)
+    await page.keyboard.press("Escape")
+    await expect(page.locator(menu)).toBeHidden()
+
     await page.click(contextTrigger(3), { button: "right" })
     await expect(page.locator(menuItem("open"))).toContainText("Open File")
   })
