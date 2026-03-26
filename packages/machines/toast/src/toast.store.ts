@@ -16,16 +16,16 @@ const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaul
 
 const priorities: Record<string, [ToastQueuePriority, ToastQueuePriority]> = {
   error: [1, 2],
-  warning: [2, 6],
-  loading: [3, 4],
-  success: [4, 7],
-  info: [5, 8],
+  warning: [3, 6],
+  loading: [4, 5],
+  success: [5, 7],
+  info: [6, 8],
 }
 
 const DEFAULT_TYPE: Type = "info"
 
 const getPriorityForType = (type?: Type, hasAction?: boolean): ToastQueuePriority => {
-  const [actionable, nonActionable] = priorities[type ?? DEFAULT_TYPE] ?? [5, 8]
+  const [actionable, nonActionable] = priorities[type ?? DEFAULT_TYPE]
   return hasAction ? actionable : nonActionable
 }
 
@@ -77,8 +77,8 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
   }
 
   const processQueue = () => {
+    toastQueue = sortToastsByPriority(toastQueue)
     while (toastQueue.length > 0 && toasts.length < attrs.max) {
-      toastQueue = sortToastsByPriority(toastQueue)
       const nextToast = toastQueue.shift()
       if (nextToast) {
         publish(nextToast)
@@ -136,28 +136,23 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
   }
 
   const error = (data?: Omit<Options<V>, "type">) => {
-    const priority = data?.priority ?? getPriorityForType("error", !!data?.action)
-    return create({ ...data, type: "error", priority })
+    return create({ ...data, type: "error" })
   }
 
   const success = (data?: Omit<Options<V>, "type">) => {
-    const priority = data?.priority ?? getPriorityForType("success", !!data?.action)
-    return create({ ...data, type: "success", priority })
+    return create({ ...data, type: "success" })
   }
 
   const info = (data?: Omit<Options<V>, "type">) => {
-    const priority = data?.priority ?? getPriorityForType("info", !!data?.action)
-    return create({ ...data, type: "info", priority })
+    return create({ ...data, type: "info" })
   }
 
   const warning = (data?: Omit<Options<V>, "type">) => {
-    const priority = data?.priority ?? getPriorityForType("warning", !!data?.action)
-    return create({ ...data, type: "warning", priority })
+    return create({ ...data, type: "warning" })
   }
 
   const loading = (data?: Omit<Options<V>, "type">) => {
-    const priority = data?.priority ?? getPriorityForType("loading", !!data?.action)
-    return create({ ...data, type: "loading", priority })
+    return create({ ...data, type: "loading" })
   }
 
   const getVisibleToasts = () => {
