@@ -6,8 +6,36 @@
 "@zag-js/tooltip": minor
 ---
 
-Add support for multiple triggers in overlay components
+Add support for multiple triggers in Dialog, Hover Card, Menu, Popover, and Tooltip.
 
-- Add `triggerValue`, `defaultTriggerValue`, and `onTriggerValueChange` props to track which trigger opened the component
-- Smart trigger switching: interacting with a different trigger while component is open switches content without closing
-- Affected components: Dialog, Hover Card, Menu (including Context Menu), Popover, Tooltip
+A single component instance can now be shared across multiple trigger elements. Each trigger is identified by a `value`
+passed to `getTriggerProps`:
+
+```jsx
+const users = [{ id: 1, name: "Alice Johnson" }]
+
+const Demo = () => {
+  // One dialog, many triggers
+  const service = useMachine(dialog.machine, {
+    id: useId(),
+    // Track the active trigger change
+    onTriggerValueChange({ value }) {
+      const user = users.find((u) => u.id === value) ?? null
+      setActiveUser(user)
+    },
+  })
+
+  const api = dialog.connect(service, normalizeProps)
+
+  return (
+    <>
+      {users.map((user) => (
+        <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+      ))}
+    </>
+  )
+}
+```
+
+When the component is open and a different trigger is activated, it switches and repositions without closing.
+`aria-expanded` is scoped to the active trigger, and focus returns to the correct trigger on close.
