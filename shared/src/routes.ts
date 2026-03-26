@@ -20,7 +20,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "cascade-select",
     label: "Cascade Select",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+    ],
   },
   {
     slug: "marquee",

@@ -40,7 +40,7 @@ export const machine = createMachine<CascadeSelectSchema>({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, scope }) {
     return {
       value: bindable<string[][]>(() => ({
         defaultValue: prop("defaultValue"),
