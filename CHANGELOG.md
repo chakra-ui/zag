@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.38.2](./#1.38.2) - 2026-03-25
+
+### Fixed
+
+- **Dialog / Drawer**: Avoid setting inline `pointer-events` when modal, letting the dismissable layer manage it
+  instead.
+
 ## [1.38.1](./#1.38.1) - 2026-03-25
 
 ### Fixed
