@@ -6,7 +6,6 @@ import { ensureProps } from "@zag-js/utils"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Placement, TooltipSchema } from "./tooltip.types"
-import { ensureProps } from "@zag-js/utils"
 
 const { and, not } = createGuards<TooltipSchema>()
 
@@ -65,7 +64,7 @@ export const machine = createMachine<TooltipSchema>({
     })
 
     track([() => prop("triggerValue")], () => {
-      action(["reposition"])
+      action(["setTriggerValue", "repositionImmediate"])
     })
   },
 

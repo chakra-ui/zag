@@ -142,9 +142,9 @@ export interface DialogSchema {
     | "invokeOnClose"
     | "invokeOnOpen"
     | "toggleVisibility"
-    | "setActiveTrigger"
+    | "setTriggerValue"
   event: {
-    type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "ACTIVE_TRIGGER.SET"
+    type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined
   }
 }

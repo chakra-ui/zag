@@ -65,7 +65,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_ENTER",
             src: "trigger",
@@ -79,7 +79,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         },
         onFocus() {
           if (prop("disabled")) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_FOCUS",
             value,

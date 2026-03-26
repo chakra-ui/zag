@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(
 
     triggerValue,
     setTriggerValue(value) {
-      send({ type: "ACTIVE_TRIGGER.SET", value })
+      send({ type: "TRIGGER_VALUE.SET", value })
     },
 
     getTriggerProps(props: TriggerProps = {}) {
@@ -45,8 +45,8 @@ export function connect<T extends PropTypes>(
         "data-current": dataAttr(current),
         onClick(event) {
           if (event.defaultPrevented) return
-          const shouldSwitch = open && !current
-          send({ type: shouldSwitch ? "ACTIVE_TRIGGER.SET" : "TOGGLE", value })
+          const shouldSwitch = open && value != null && !current
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
         },
       })
     },

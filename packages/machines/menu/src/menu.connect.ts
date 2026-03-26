@@ -185,7 +185,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         },
         onContextMenu(event) {
           const point = getEventPoint(event)
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CONTEXT_MENU",
             point,

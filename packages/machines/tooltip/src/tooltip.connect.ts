@@ -63,14 +63,14 @@ export function connect<P extends PropTypes>(
           if (event.defaultPrevented) return
           if (disabled) return
           if (!prop("closeOnClick")) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (!isFocusVisible()) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
         },
         onBlur(event) {
@@ -98,7 +98,7 @@ export function connect<P extends PropTypes>(
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({ type: shouldSwitch ? "triggerValue.set" : "pointer.move", value, triggerId })
         },
         onPointerOver(event) {

@@ -82,8 +82,8 @@ export const machine = createMachine<DialogSchema>({
             actions: ["invokeOnClose"],
           },
         ],
-        "ACTIVE_TRIGGER.SET": {
-          actions: ["setActiveTrigger"],
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
         },
       },
     },
@@ -96,25 +96,25 @@ export const machine = createMachine<DialogSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
-        "ACTIVE_TRIGGER.SET": {
-          actions: ["setActiveTrigger"],
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
         },
       },
     },
@@ -240,7 +240,7 @@ export const machine = createMachine<DialogSchema>({
         prop("onOpenChange")?.({ open: true })
       },
 
-      setActiveTrigger({ context, event }) {
+      setTriggerValue({ context, event }) {
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
       },
