@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
+  const closing = state.matches("closing")
   const swipingOpen = state.matches("swiping-open")
 
   const dragOffset = context.get("dragOffset")
@@ -118,7 +119,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-state": open ? "open" : "closed",
         "data-swipe-direction": physicalDirection,
         style: compact<JSX.CSSProperties>({
-          pointerEvents: prop("modal") ? undefined : "none",
+          pointerEvents: closing || !prop("modal") ? "none" : undefined,
         }),
       })
     },
@@ -222,6 +223,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         style: {
           willChange: "opacity",
+          pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,
           "--drawer-swipe-strength": `${swipeStrength}`,
         },

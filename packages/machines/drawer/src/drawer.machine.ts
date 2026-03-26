@@ -289,6 +289,20 @@ export const machine = createMachine<DrawerSchema>({
     closing: {
       effects: ["trackExitAnimation", "trackDrawerStack"],
       on: {
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["setTriggerValue", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setTriggerValue", "invokeOnOpen"],
+          },
+        ],
+        "TRIGGER_VALUE.SET": {
+          target: "open",
+          actions: ["setTriggerValue", "invokeOnOpen"],
+        },
         ANIMATION_END: {
           target: "closed",
           actions: [
