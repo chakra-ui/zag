@@ -13,6 +13,7 @@ export type {
   CheckedValueMap,
   ElementIds,
   ExpandedChangeDetails,
+  IntlTranslations,
   FocusChangeDetails,
   LoadChildrenCompleteDetails,
   LoadChildrenDetails,

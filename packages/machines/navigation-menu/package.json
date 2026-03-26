@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/navigation-menu",
-  "version": "1.33.1",
+  "version": "1.38.2",
   "description": "Core logic for the navigation-menu widget implemented as a state machine",
   "keywords": [
     "js",
@@ -45,5 +45,5 @@
   "devDependencies": {
     "clean-package": "2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json"
+  "clean-package": "./clean-package.config.json"
 }

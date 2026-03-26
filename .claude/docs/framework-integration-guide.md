@@ -26,16 +26,16 @@ Zag.js provides framework-specific adapters that handle reactivity and prop norm
 **Example:**
 
 ```tsx
-import * as bottomSheet from "@zag-js/bottom-sheet"
+import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 export default function Page() {
-  const service = useMachine(bottomSheet.machine, {
+  const service = useMachine(drawer.machine, {
     id: useId(),
   })
 
-  const api = bottomSheet.connect(service, normalizeProps)
+  const api = drawer.connect(service, normalizeProps)
 
   return (
     <>
@@ -72,14 +72,14 @@ export default function Page() {
 
 ```vue
 <script setup lang="ts">
-import * as bottomSheet from "@zag-js/bottom-sheet"
+import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const service = useMachine(bottomSheet.machine, {
+const service = useMachine(drawer.machine, {
   id: useId(),
 })
 
-const api = computed(() => bottomSheet.connect(service, normalizeProps))
+const api = computed(() => drawer.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -116,16 +116,16 @@ const api = computed(() => bottomSheet.connect(service, normalizeProps))
 **Example:**
 
 ```tsx
-import * as bottomSheet from "@zag-js/bottom-sheet"
+import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 
 export default function Page() {
-  const service = useMachine(bottomSheet.machine, {
+  const service = useMachine(drawer.machine, {
     id: createUniqueId(),
   })
 
-  const api = createMemo(() => bottomSheet.connect(service, normalizeProps))
+  const api = createMemo(() => drawer.connect(service, normalizeProps))
 
   return (
     <>
@@ -162,13 +162,13 @@ export default function Page() {
 
 ```svelte
 <script lang="ts">
-  import * as bottomSheet from "@zag-js/bottom-sheet"
+  import * as drawer from "@zag-js/drawer"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(bottomSheet.machine, { id })
+  const service = useMachine(drawer.machine, { id })
 
-  const api = $derived(bottomSheet.connect(service, normalizeProps))
+  const api = $derived(drawer.connect(service, normalizeProps))
 </script>
 
 <main>
@@ -199,21 +199,21 @@ When adding a new component or feature, you need to create examples in all frame
 ```
 examples/
 ├── next-ts/pages/           # React (Next.js)
-│   ├── bottom-sheet.tsx
-│   ├── bottom-sheet-snap-points.tsx
-│   └── bottom-sheet-draggable-false.tsx
+│   ├── drawer.tsx
+│   ├── drawer-snap-points.tsx
+│   └── drawer-draggable-false.tsx
 ├── nuxt-ts/app/pages/       # Vue (Nuxt)
-│   ├── bottom-sheet.vue
-│   ├── bottom-sheet-snap-points.vue
-│   └── bottom-sheet-draggable-false.vue
+│   ├── drawer.vue
+│   ├── drawer-snap-points.vue
+│   └── drawer-draggable-false.vue
 ├── solid-ts/src/routes/     # Solid
-│   ├── bottom-sheet.tsx
-│   ├── bottom-sheet-snap-points.tsx
-│   └── bottom-sheet-draggable-false.tsx
+│   ├── drawer.tsx
+│   ├── drawer-snap-points.tsx
+│   └── drawer-draggable-false.tsx
 └── svelte-ts/src/routes/    # Svelte
-    ├── bottom-sheet/+page.svelte
-    ├── bottom-sheet-snap-points/+page.svelte
-    └── bottom-sheet-draggable-false/+page.svelte
+    ├── drawer/+page.svelte
+    ├── drawer-snap-points/+page.svelte
+    └── drawer-draggable-false/+page.svelte
 ```
 
 ### Example Template Pattern
@@ -374,7 +374,7 @@ export default function Page() {
 **Variations:**
 
 - Base example: `component.tsx`
-- Feature variations: `component-feature.tsx` (e.g., `bottom-sheet-snap-points.tsx`)
+- Feature variations: `component-feature.tsx` (e.g., `drawer-snap-points.tsx`)
 
 ### Adding Controls
 
@@ -543,10 +543,10 @@ pnpm start-svelte
 
 Once started, navigate to:
 
-- React: `http://localhost:3000/bottom-sheet`
-- Vue: `http://localhost:3000/bottom-sheet`
-- Solid: `http://localhost:3000/bottom-sheet`
-- Svelte: `http://localhost:5173/bottom-sheet`
+- React: `http://localhost:3000/drawer`
+- Vue: `http://localhost:3000/drawer`
+- Solid: `http://localhost:3000/drawer`
+- Svelte: `http://localhost:5173/drawer`
 
 ## Testing Examples
 

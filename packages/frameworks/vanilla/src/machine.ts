@@ -15,7 +15,16 @@ import type {
   Service,
   Transition,
 } from "@zag-js/core"
-import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
+import {
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+} from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
 import { compact, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
@@ -47,14 +56,11 @@ export class VanillaMachine<T extends MachineSchema> {
     previous: () => this.previousEvent,
   })
 
-  private getStateConfig = (state: T["state"]) => {
-    return (this.machine.states as Record<string, any>)[state as string]
-  }
-
   private getState = () => ({
     ...this.state,
-    matches: (...values: T["state"][]) => values.includes(this.state.get()),
-    hasTag: (tag: T["tag"]) => !!this.getStateConfig(this.state.get())?.tags?.includes(tag),
+    matches: (...values: T["state"][]) =>
+      values.some((value) => matchesState(this.state.get() as string, value as string)),
+    hasTag: (tag: T["tag"]) => hasTag(this.machine, this.state.get(), tag),
   })
 
   private debug = (...args: any[]) => {
@@ -148,38 +154,36 @@ export class VanillaMachine<T extends MachineSchema> {
 
     // state
     const state = bindable(() => ({
-      defaultValue: machine.initialState({ prop }),
+      defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
       onChange: (nextState, prevState) => {
-        // compute effects: exit -> transition -> enter
+        const { exiting, entering } = getExitEnterStates(this.machine, prevState, nextState, this.transition?.reenter)
 
-        // exit effects
-        if (prevState) {
-          const exitEffects = this.effects.get(prevState)
+        exiting.forEach((item) => {
+          const exitEffects = this.effects.get(item.path)
           exitEffects?.()
-          this.effects.delete(prevState)
-        }
+          this.effects.delete(item.path)
+        })
 
-        // exit actions
-        if (prevState) {
-          this.action(this.getStateConfig(prevState)?.exit)
-        }
+        exiting.forEach((item) => {
+          this.action(item.state?.exit)
+        })
 
-        // transition actions
         this.action(this.transition?.actions)
 
-        // enter effect
-        const cleanup = this.effect(this.getStateConfig(nextState)?.effects)
-        if (cleanup) this.effects.set(nextState as string, cleanup)
+        entering.forEach((item) => {
+          const cleanup = this.effect(item.state?.effects)
+          if (cleanup) this.effects.set(item.path, cleanup)
+        })
 
-        // root entry actions
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
           const cleanup = this.effect(machine.effects)
           if (cleanup) this.effects.set(INIT_STATE, cleanup)
         }
 
-        // enter actions
-        this.action(this.getStateConfig(nextState)?.entry)
+        entering.forEach((item) => {
+          this.action(item.state?.entry)
+        })
       },
     }))
     this.state = state
@@ -212,15 +216,13 @@ export class VanillaMachine<T extends MachineSchema> {
       let currentState = this.state.get()
 
       const eventType = event.type as string
-      const transitions =
-        this.getStateConfig(currentState)?.on?.[eventType] ?? (this.machine.on as Record<string, any>)?.[eventType]
-
+      const { transitions, source } = findTransition(this.machine, currentState, eventType)
       const transition = this.choose(transitions)
       if (!transition) return
 
       // save current transition
       this.transition = transition
-      const target = transition.target ?? currentState
+      const target = resolveStateValue(this.machine, transition.target ?? currentState, source)
 
       this.debug("transition", transition)
 
@@ -228,7 +230,7 @@ export class VanillaMachine<T extends MachineSchema> {
       if (changed) {
         // state change is high priority
         this.state.set(target)
-      } else if (transition.reenter && !changed) {
+      } else if (transition.reenter) {
         // reenter will re-invoke the current state
         this.state.invoke(currentState, currentState)
       } else {

@@ -2,7 +2,16 @@ import { keyToCode } from "./key-to-code"
 import { isModifierSet, normalizeModifier, resolveControlOrMeta } from "./modifier"
 import { normalizeKey } from "./normalize"
 import type { HotkeyOptions, ParsedHotkey, Platform, SequenceStep } from "./types"
-import { getEventTarget, getPlatform, isFormTag, toArray, MODIFIER_SEPARATOR, SEQUENCE_SEPARATOR } from "./utils"
+import {
+  getEventTarget,
+  getPlatform,
+  isContentEditableElement,
+  isFormTag,
+  isSymbolKey,
+  toArray,
+  MODIFIER_SEPARATOR,
+  SEQUENCE_SEPARATOR,
+} from "./utils"
 
 // Context-aware parsing to handle plus key (Playwright-style)
 function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: string[]; key: string } {
@@ -168,23 +177,71 @@ export function parseHotkey(hotkey: string, platform: Platform): ParsedHotkey {
   return result
 }
 
+type MatchableHotkeyStep = {
+  key: string
+  code?: string | undefined
+  alt?: boolean | undefined
+  ctrl?: boolean | undefined
+  meta?: boolean | undefined
+  shift?: boolean | undefined
+}
+
+function toMatchableHotkeySteps(parsed: ParsedHotkey): MatchableHotkeyStep[] {
+  return parsed.keys.map((key, index) => ({
+    key,
+    code: parsed.codes?.[index],
+    alt: parsed.alt,
+    ctrl: parsed.ctrl,
+    meta: parsed.meta,
+    shift: parsed.shift,
+  }))
+}
+
+// Shared matcher for a single hotkey step. Used by both plain chords and sequence steps.
+export function matchesHotkeyStep(
+  step: {
+    key: string
+    code?: string | undefined
+    alt?: boolean | undefined
+    ctrl?: boolean | undefined
+    meta?: boolean | undefined
+    shift?: boolean | undefined
+  },
+  event: KeyboardEvent,
+): boolean {
+  const eventKey = normalizeKey(event.key)
+  const keyMatches = step.key === eventKey
+  const isSymbol = isSymbolKey(step.key)
+
+  if (isSymbol) {
+    if (!keyMatches) return false
+
+    const isAltGraph = event.getModifierState?.("AltGraph") ?? false
+    const effectiveCtrl = isAltGraph ? false : event.ctrlKey
+    const effectiveAlt = isAltGraph ? false : event.altKey
+
+    if ((step.ctrl || false) !== effectiveCtrl) return false
+    if ((step.meta || false) !== event.metaKey) return false
+    if (step.shift && !event.shiftKey) return false
+    if (step.alt && !effectiveAlt) return false
+
+    return true
+  }
+
+  const isAltGraph = event.getModifierState?.("AltGraph") ?? false
+  if (isAltGraph && (step.ctrl || step.alt)) return false
+
+  if ((step.alt || false) !== event.altKey) return false
+  if ((step.ctrl || false) !== event.ctrlKey) return false
+  if ((step.meta || false) !== event.metaKey) return false
+  if ((step.shift || false) !== event.shiftKey) return false
+
+  return keyMatches || (!!step.code && step.code === event.code)
+}
+
 // Check if hotkey matches current keyboard state
 export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boolean {
-  // Check modifiers
-  if (parsed.alt !== event.altKey) return false
-  if (parsed.ctrl !== event.ctrlKey) return false
-  if (parsed.meta !== event.metaKey) return false
-  if (parsed.shift !== event.shiftKey) return false
-
-  // Check main key - match EITHER logical key OR physical code for layout independence
-  const eventKey = normalizeKey(event.key)
-  const eventCode = event.code
-
-  // Match if either the logical key matches OR the physical code matches
-  const keyMatches = parsed.keys.some((key) => key === eventKey)
-  const codeMatches = parsed.codes ? parsed.codes.some((code) => code === eventCode) : false
-
-  return keyMatches || codeMatches
+  return toMatchableHotkeySteps(parsed).some((step) => matchesHotkeyStep(step, event))
 }
 
 // Check if hotkey should be enabled in current context
@@ -193,7 +250,7 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
   if (!target) return true // If we can't determine target, allow the hotkey
 
   const tagName = target.localName
-  const isContentEditable = target.getAttribute("contenteditable") === "true"
+  const isContentEditable = isContentEditableElement(target)
 
   if (isFormTag(tagName)) {
     if (options.enableOnFormTags === false || options.enableOnFormTags === undefined) {
@@ -214,6 +271,8 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
 
 // Check if a keyboard event matches a hotkey string or array of hotkey strings
 export function isHotKey(hotkey: string | string[], event: KeyboardEvent, options: HotkeyOptions = {}): boolean {
+  // Dead keys (accent/compose keys on international layouts) cannot match any shortcut
+  if (event.key === "Dead") return false
   // Check if the hotkey should trigger in current context
   if (!shouldTrigger(event, options)) return false
   const platform = getPlatform()

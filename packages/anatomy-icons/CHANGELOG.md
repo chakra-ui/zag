@@ -1,5 +1,33 @@
 # @zag-js/anatomy-icons
 
+## 1.38.2
+
+## 1.38.1
+
+## 1.38.0
+
+## 1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [#3013](https://github.com/chakra-ui/zag/pull/3013)
+  [`71694d4`](https://github.com/chakra-ui/zag/commit/71694d4a66fa60cc85a86f8900b85bf874d36c43) Thanks
+  [@isBatak](https://github.com/isBatak)! - Improve Focus Management
+
+## 1.35.3
+
+## 1.35.2
+
+## 1.35.1
+
+## 1.35.0
+
+## 1.34.1
+
+## 1.34.0
+
 ## 1.33.1
 
 ## 1.33.0

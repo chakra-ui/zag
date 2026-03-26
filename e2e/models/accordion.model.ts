@@ -8,7 +8,7 @@ export class AccordionModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/accordion")
+    return this.page.goto("/accordion/basic")
   }
 
   checkAccessibility(selector?: string): Promise<void> {

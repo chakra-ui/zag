@@ -32,6 +32,10 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectOption(value)
     },
+    date: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.fill(value)
+    },
   }
 }
 
@@ -41,7 +45,8 @@ const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
 
 export const clickViz = (page: Page) => page.locator("text=Visualizer").first().click()
 
-export const clickControls = (page: Page) => page.locator("text=Controls").first().click()
+export const clickControls = (page: Page) =>
+  page.locator(".toolbar nav > button", { hasText: "Controls" }).first().click()
 
 export const paste = (node: HTMLElement, value: string) => {
   const clipboardData = new DataTransfer()
@@ -125,7 +130,7 @@ export type SwipeDirection = "left" | "right" | "up" | "down"
 
 const swipeDirections = new Set<SwipeDirection>(["left", "right", "up", "down"])
 
-export async function swipe(
+export async function mouseSwipe(
   page: Page,
   locator: Locator,
   direction: SwipeDirection,
@@ -137,6 +142,7 @@ export async function swipe(
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
+  await locator.waitFor({ state: "visible" })
   const box = await rect(locator)
   if (!box) {
     throw new Error("Could not determine the element bounding box.")
@@ -171,6 +177,170 @@ export async function swipe(
   if (release) {
     await page.mouse.up()
   }
+}
+
+export async function touchSwipe(
+  page: Page,
+  locator: Locator,
+  direction: SwipeDirection,
+  distance: number = 100,
+  duration: number = 500,
+): Promise<void> {
+  if (!swipeDirections.has(direction)) {
+    throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
+  }
+
+  await locator.waitFor({ state: "visible" })
+  const box = await rect(locator)
+
+  const startX = box.midX
+  const startY = box.midY
+
+  let endX = startX
+  let endY = startY
+
+  switch (direction) {
+    case "left":
+      endX = startX - distance
+      break
+    case "right":
+      endX = startX + distance
+      break
+    case "up":
+      endY = startY - distance
+      break
+    case "down":
+      endY = startY + distance
+      break
+  }
+
+  const steps = Math.max(Math.floor(duration / 16), 1)
+
+  await page.evaluate(
+    async ({ selector, startX, startY, endX, endY, steps }) => {
+      const target = document.querySelector(selector)
+      if (!(target instanceof HTMLElement)) throw new Error("Swipe target not found")
+
+      const createTouch = (x: number, y: number) =>
+        new Touch({ identifier: 0, target, clientX: x, clientY: y, pageX: x, pageY: y })
+
+      const dispatch = (type: string, x: number, y: number, active: boolean) => {
+        const touch = createTouch(x, y)
+        const touches = active ? [touch] : []
+        target.dispatchEvent(
+          new TouchEvent(type, {
+            bubbles: true,
+            cancelable: true,
+            touches,
+            targetTouches: touches,
+            changedTouches: [touch],
+          }),
+        )
+      }
+
+      dispatch("touchstart", startX, startY, true)
+      for (let index = 1; index <= steps; index++) {
+        const progress = index / steps
+        const x = startX + (endX - startX) * progress
+        const y = startY + (endY - startY) * progress
+        dispatch("touchmove", x, y, true)
+        await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+      }
+      dispatch("touchend", endX, endY, false)
+    },
+    {
+      selector: await locator.evaluate((el) => {
+        const attr = "data-zag-touch-swipe"
+        if (!el.hasAttribute(attr)) el.setAttribute(attr, Math.random().toString(36).slice(2))
+        return `[${attr}="${el.getAttribute(attr)}"]`
+      }),
+      startX,
+      startY,
+      endX,
+      endY,
+      steps,
+    },
+  )
+}
+
+export async function touchPointerSwipe(
+  page: Page,
+  locator: Locator,
+  direction: SwipeDirection,
+  distance: number = 100,
+  duration: number = 500,
+): Promise<void> {
+  if (!swipeDirections.has(direction)) {
+    throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
+  }
+
+  await locator.waitFor({ state: "visible" })
+  const box = await rect(locator)
+
+  const startX = box.midX
+  const startY = box.midY
+
+  let endX = startX
+  let endY = startY
+
+  switch (direction) {
+    case "left":
+      endX = startX - distance
+      break
+    case "right":
+      endX = startX + distance
+      break
+    case "up":
+      endY = startY - distance
+      break
+    case "down":
+      endY = startY + distance
+      break
+  }
+
+  const selector = await locator.evaluate((el) => {
+    const attr = "data-zag-touch-pointer-swipe"
+    if (!el.hasAttribute(attr)) el.setAttribute(attr, Math.random().toString(36).slice(2))
+    return `[${attr}="${el.getAttribute(attr)}"]`
+  })
+
+  const steps = Math.max(Math.floor(duration / 16), 1)
+
+  await page.evaluate(
+    async ({ selector, startX, startY, endX, endY, steps }) => {
+      const target = document.querySelector(selector)
+      if (!(target instanceof HTMLElement)) throw new Error("Swipe target not found")
+
+      const dispatch = (type: string, x: number, y: number, buttons: number) => {
+        target.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            pointerId: 1,
+            pointerType: "touch",
+            isPrimary: true,
+            button: 0,
+            buttons,
+            clientX: x,
+            clientY: y,
+            pressure: buttons ? 0.5 : 0,
+          }),
+        )
+      }
+
+      dispatch("pointerdown", startX, startY, 1)
+      for (let index = 1; index <= steps; index++) {
+        const progress = index / steps
+        const x = startX + (endX - startX) * progress
+        const y = startY + (endY - startY) * progress
+        dispatch("pointermove", x, y, 1)
+        await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+      }
+      dispatch("pointerup", endX, endY, 0)
+    },
+    { selector, startX, startY, endX, endY, steps },
+  )
 }
 
 export function moveCaret(input: Locator, start: number, end = start) {

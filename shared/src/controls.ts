@@ -1,9 +1,25 @@
 import { defineControls } from "./define-controls"
+import * as dateInput from "@zag-js/date-input"
 
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
+})
+
+export const cascadeSelectControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  closeOnSelect: { type: "boolean", defaultValue: true },
+  allowParentSelection: { type: "boolean", defaultValue: false },
+  highlightTrigger: {
+    type: "select",
+    options: ["click", "hover"] as const,
+    defaultValue: "click",
+  },
 })
 
 export const checkboxControls = defineControls({
@@ -93,6 +109,7 @@ export const numberInputControls = defineControls({
 })
 
 export const pinInputControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
@@ -142,6 +159,7 @@ export const tagsInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   addOnPaste: { type: "boolean", defaultValue: false },
+  allowDuplicates: { type: "boolean", defaultValue: false },
   blurBehavior: { type: "select", options: ["add", "clear"] as const, defaultValue: "---" },
   max: { type: "number", defaultValue: 6 },
   allowOverflow: { type: "boolean", defaultValue: false },
@@ -201,6 +219,28 @@ export const datePickerControls = defineControls({
   },
 })
 
+export const dateInputControls = defineControls({
+  readOnly: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  shouldForceLeadingZeros: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
+  granularity: {
+    type: "select",
+    options: ["day", "hour", "minute", "second"] as const,
+    defaultValue: "day",
+  },
+  placeholderValue: {
+    type: "date",
+    defaultValue: "",
+    transformValue: (value) => value !== "" && dateInput.parse(value),
+  },
+})
+
 export const transitionControls = defineControls({
   duration: { type: "number", defaultValue: 200 },
   easing: {
@@ -214,6 +254,14 @@ export const carouselControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   slidesPerPage: { type: "number", defaultValue: 2 },
+  slidesPerMove: {
+    type: "select",
+    options: ["auto", "1", "2"] as const,
+    defaultValue: "auto",
+    transformValue(value) {
+      return value === "auto" ? "auto" : Number(value)
+    },
+  },
   loop: { type: "boolean", defaultValue: false },
 })
 
@@ -286,10 +334,16 @@ export const stepsControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })
 
+export const tocControls = defineControls({
+  autoScroll: { type: "boolean", defaultValue: true },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
 export const angleSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   step: { type: "number", defaultValue: 1 },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const navigationMenuControls = defineControls({
@@ -304,10 +358,12 @@ export const passwordInputControls = defineControls({
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })
 
-export const bottomSheetControls = defineControls({
-  swipeVelocityThreshold: { type: "number", defaultValue: 700 },
-  closeThreshold: { type: "number", defaultValue: 0.25 },
+export const drawerControls = defineControls({
+  swipeVelocityThreshold: { type: "number", defaultValue: 500 },
+  closeThreshold: { type: "number", defaultValue: 0.5 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
+  swipeDirection: { type: "select", options: ["down", "up", "start", "end"] as const, defaultValue: "down" },
+  snapToSequentialPoints: { type: "boolean", defaultValue: false },
 })
 
 export const scrollAreaControls = defineControls({

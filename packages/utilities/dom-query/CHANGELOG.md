@@ -1,5 +1,91 @@
 # @zag-js/dom-query
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- [`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus trapping when the content has a single effective tab
+  stop, such as a native radio group.
+  - Handle disconnected `initialFocus` nodes more safely.
+- Updated dependencies []:
+  - @zag-js/types@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled carousel inside dialog jumping or skipping pages.
+  - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
+  - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
+
+- Updated dependencies []:
+  - @zag-js/types@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

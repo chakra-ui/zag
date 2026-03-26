@@ -52,7 +52,7 @@ export class DatePickerModel extends Model {
     return interpret(this.today().set(opts))
   }
 
-  goto(url = "/date-picker") {
+  goto(url = "/date-picker/basic") {
     return this.page.goto(url)
   }
 

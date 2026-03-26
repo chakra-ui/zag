@@ -6,8 +6,7 @@ description:
 package: "@zag-js/listbox"
 ---
 
-A listbox component that displays a list of selectable options, supporting both
-single and multiple selection modes.
+A listbox displays selectable options in single or multiple selection modes.
 
 <Resources pkg="@zag-js/listbox" />
 
@@ -25,15 +24,13 @@ single and multiple selection modes.
 
 ## Installation
 
-To use the listbox machine in your project, run the following command in your
-command line:
+Install the listbox package:
 
 <CodeSnippet id="listbox/installation.mdx" />
 
 ## Anatomy
 
-To set up the listbox correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the listbox anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -41,23 +38,20 @@ we name its parts.
 
 ## Usage
 
-First, import the listbox package into your project
+Import the listbox package:
 
-```jsx
+```tsx
 import * as listbox from "@zag-js/listbox"
 ```
 
 The listbox package exports two key functions:
 
-- `machine` — The state machine logic for the listbox widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-listbox machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="listbox/usage.mdx" />
 
@@ -74,14 +68,28 @@ const service = useMachine(listbox.machine, {
 
 ### Controlling the selection
 
-To control the selection programmatically, you can use the `value` and
-`onValueChange` properties.
+Use `value` and `onValueChange` to control selection externally.
 
 ```tsx
 const service = useMachine(listbox.machine, {
   value: ["item-1", "item-2"],
-  onValueChange: (value) => {
-    console.log(value)
+  onValueChange(details) {
+    // details => { value: string[]; items: CollectionItem[] }
+    console.log(details.value)
+  },
+})
+```
+
+### Controlling the highlighted item
+
+Use `highlightedValue` and `onHighlightChange` to control highlighted state.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  highlightedValue,
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null, highlightedItem, highlightedIndex }
+    setHighlightedValue(details.highlightedValue)
   },
 })
 ```
@@ -107,9 +115,7 @@ const service = useMachine(listbox.machine, {
 
 ### Selection Modes
 
-By default, a user can select a single item in a listbox. You can set the
-`selectionMode` property to a SelectionMode enumeration value to enable
-multi-selection. Here are the selection mode values.
+Use `selectionMode` to control selection behavior:
 
 - **single**: A user can select a single item using the space bar, mouse click,
   or touch tap.
@@ -123,6 +129,40 @@ multi-selection. Here are the selection mode values.
 const service = useMachine(listbox.machine, {
   // ...
   selectionMode: "extended",
+})
+```
+
+### Selecting on highlight
+
+Set `selectOnHighlight` to `true` to select items as they become highlighted.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  selectOnHighlight: true,
+})
+```
+
+### Disallowing select-all shortcuts
+
+Set `disallowSelectAll` to disable `Cmd/Ctrl + A` selection.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  selectionMode: "multiple",
+  disallowSelectAll: true,
+})
+```
+
+### Listening for item selection
+
+Use `onSelect` to react whenever an item is selected.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  onSelect(details) {
+    // details => { value: string }
+    console.log(details.value)
+  },
 })
 ```
 
@@ -160,10 +200,20 @@ const service = useMachine(listbox.machine, {
 
 <CodeSnippet id="listbox/grid-usage.mdx" />
 
+### Horizontal orientation
+
+Set `orientation` to `horizontal` for horizontal keyboard navigation.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  orientation: "horizontal",
+  collection,
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each listbox part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="listbox"][data-part="root"] {

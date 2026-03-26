@@ -4,12 +4,10 @@ description: Supporting exit animations using the presence machine.
 package: "@zag-js/presence"
 ---
 
-The presence machine is a state machine that helps you manage exit animations in
-your project.
+Presence helps manage mount/unmount transitions with exit animations.
 
-In the DOM, when a component is removed from the tree or hidden, it's removed
-instantly. The presence machine suspends the component to allow its exit
-animation before removing or hiding it.
+When a component is hidden or removed, the DOM usually removes it immediately.
+Presence keeps it mounted long enough for exit animations to finish.
 
 > The presence machine requires using **CSS animations** to animate the
 > component's exit.
@@ -20,29 +18,51 @@ animation before removing or hiding it.
 
 ## Installation
 
-To use the presence machine in your project, run the following command in your
-command line:
+Install the presence package:
 
 <CodeSnippet id="presence/installation.mdx" />
 
 ## Usage
 
-First, import the presence package into your project
+Import the presence package:
 
-```jsx
+```tsx
 import * as presence from "@zag-js/presence"
 ```
 
 The presence package exports two key functions:
 
-- `machine` — The state machine logic for the presence.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-presence machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="presence/usage.mdx" />
+
+### Running code after exit animation
+
+Use `onExitComplete` to run logic after the exit animation finishes.
+
+```tsx
+const service = useMachine(presence.machine, {
+  present: open,
+  onExitComplete() {
+    console.log("Exit animation finished")
+  },
+})
+```
+
+### Applying presence changes immediately
+
+Set `immediate` to `true` to skip deferring present-state changes to the next
+frame.
+
+```tsx
+const service = useMachine(presence.machine, {
+  present: open,
+  immediate: true,
+})
+```
 
 ## Styling guide
 
@@ -80,7 +100,7 @@ animations.
 
 You can then use the `Presence` component in your project.
 
-```jsx
+```tsx
 function Example() {
   const [open, setOpen] = React.useState(true)
   return (

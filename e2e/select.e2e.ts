@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { SelectModel } from "./models/select.model"
 
 let I: SelectModel
@@ -251,6 +251,18 @@ test.describe("closed state + keyboard selection", () => {
   })
 })
 
+test.describe("hidden select / autofill", () => {
+  test("should sync value when hidden select changes externally (e.g. autofill)", async () => {
+    await I.seeTriggerHasText("Select option")
+
+    // Simulate browser autofill: native select value changes + change event fires
+    await I.autofill("AL")
+
+    // Component should sync and display the new value
+    await I.seeTriggerHasText("Albania (AL)")
+  })
+})
+
 test.describe("multiple", () => {
   test("should select multiple items", async () => {
     await I.controls.bool("multiple", true)
@@ -261,5 +273,27 @@ test.describe("multiple", () => {
     await I.clickItem("Algeria")
 
     await I.seeTriggerHasText("Andorra (AD), Algeria (DZ)")
+  })
+})
+
+test.describe("compositions", () => {
+  test("controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
+    await I.goto("/select/controlled-ignore")
+    await I.clickTrigger()
+    await I.clickItem("Vue")
+
+    const selectedItems = page.getByTestId("selected-items")
+    await expect(selectedItems).toContainText("React")
+    await expect(selectedItems).not.toContainText("Vue")
+  })
+
+  test("external value change should keep item selection in sync", async ({ page }) => {
+    await I.goto("/select/external-value-change")
+    await page.getByTestId("filter-vue-button").click()
+    await page.getByTestId("set-solid-button").click()
+
+    await I.seeTriggerHasText("Solid")
+    await I.clickTrigger()
+    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })

@@ -551,8 +551,8 @@ watch({ track, context }) {
 Enable debug logging by setting the `debug` property on the machine:
 
 ```typescript
-const service = useMachine(bottomSheet.machine, {
-  id: "bottom-sheet-1",
+const service = useMachine(drawer.machine, {
+  id: "drawer-1",
   debug: true, // Enable debug logging
 })
 ```

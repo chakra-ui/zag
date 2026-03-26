@@ -16,10 +16,12 @@ export const machine = createMachine<TagsInputSchema>({
       addOnPaste: false,
       editable: true,
       validate: () => true,
+      allowDuplicates: false,
       delimiter: ",",
       defaultValue: [],
       defaultInputValue: "",
       max: Infinity,
+      sanitizeValue: (value: string) => value.trim(),
       ...props,
       translations: {
         clearTriggerLabel: "Clear all tags",
@@ -87,7 +89,7 @@ export const machine = createMachine<TagsInputSchema>({
   computed: {
     count: ({ context }) => context.get("value").length,
     valueAsString: ({ context }) => context.hash("value"),
-    trimmedInputValue: ({ context }) => context.get("inputValue").trim(),
+    sanitizedInputValue: ({ context, prop }) => prop("sanitizeValue")(context.get("inputValue")),
     isDisabled: ({ prop }) => !!prop("disabled"),
     isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),
     isAtMax: ({ context, prop }) => context.get("value").length === prop("max"),
@@ -355,14 +357,14 @@ export const machine = createMachine<TagsInputSchema>({
         const firstItemId = dom.getItemId(scope, { value: value[0], index: 0 })
         return firstItemId === context.get("highlightedTagId")
       },
-      isEditedTagEmpty: ({ context }) => context.get("editedTagValue").trim() === "",
+      isEditedTagEmpty: ({ context, prop }) => prop("sanitizeValue")(context.get("editedTagValue")) === "",
       isLastTagHighlighted: ({ context, scope }) => {
         const value = context.get("value")
         const lastIndex = value.length - 1
         const lastItemId = dom.getItemId(scope, { value: value[lastIndex], index: lastIndex })
         return lastItemId === context.get("highlightedTagId")
       },
-      isInputValueEmpty: ({ context }) => context.get("inputValue").trim().length === 0,
+      isInputValueEmpty: ({ context, prop }) => prop("sanitizeValue")(context.get("inputValue")).length === 0,
       hasTags: ({ context }) => context.get("value").length > 0,
       allowOverflow: ({ prop }) => !!prop("allowOverflow"),
       autoFocus: ({ prop }) => !!prop("autoFocus"),
@@ -527,31 +529,40 @@ export const machine = createMachine<TagsInputSchema>({
       setEditedTagValue({ context, event }) {
         context.set("editedTagValue", event.value)
       },
-      submitEditedTagValue({ context, scope, refs }) {
+      submitEditedTagValue({ context, scope, refs, prop }) {
         const editedTagId = context.get("editedTagId")
         if (!editedTagId) return
 
         const index = dom.getIndexOfId(scope, editedTagId)
+        const editedTagValue = context.get("editedTagValue")
+        const value = context.get("value")
+        const hasDuplicate = value.some((item, idx) => idx !== index && item === editedTagValue)
+        if (!prop("allowDuplicates") && hasDuplicate) return
+        if (value[index] === editedTagValue) return
         context.set("value", (prev) => {
-          const value = prev.slice()
-          value[index] = context.get("editedTagValue")
-          return value
+          const nextValue = prev.slice()
+          nextValue[index] = editedTagValue
+          return nextValue
         })
 
         // log
         const prevLog = refs.get("log")
         refs.set("log", {
           prev: prevLog.current,
-          current: { type: "update", value: context.get("editedTagValue") },
+          current: { type: "update", value: editedTagValue },
         })
       },
 
-      setValueAtIndex({ context, event, refs }) {
+      setValueAtIndex({ context, event, refs, prop }) {
         if (event.value) {
+          const value = context.get("value")
+          const hasDuplicate = value.some((item, idx) => idx !== event.index && item === event.value)
+          if (!prop("allowDuplicates") && hasDuplicate) return
+          if (value[event.index] === event.value) return
           context.set("value", (prev) => {
-            const value = prev.slice()
-            value[event.index] = event.value
-            return value
+            const nextValue = prev.slice()
+            nextValue[event.index] = event.value
+            return nextValue
           })
           // log
           const prevLog = refs.get("log")
@@ -608,11 +619,11 @@ export const machine = createMachine<TagsInputSchema>({
       },
 
       addTag({ context, event, computed, prop, refs }) {
-        const inputValue = event.value ?? computed("trimmedInputValue")
+        const inputValue = event.value ?? computed("sanitizedInputValue")
         const value = context.get("value")
         const guard = prop("validate")?.({ inputValue: inputValue, value: Array.from(value) })
         if (guard) {
-          const nextValue = uniq(value.concat(inputValue))
+          const nextValue = prop("allowDuplicates") ? value.concat(inputValue) : uniq(value.concat(inputValue))
           context.set("value", nextValue)
           // log
           const prevLog = refs.get("log")
@@ -627,8 +638,9 @@ export const machine = createMachine<TagsInputSchema>({
 
       addTagFromPaste({ context, computed, prop, refs }) {
         raf(() => {
-          const inputValue = computed("trimmedInputValue")
+          const inputValue = computed("sanitizedInputValue")
           const value = context.get("value")
+          const sanitize = prop("sanitizeValue")
 
           const guard = prop("validate")?.({
             inputValue: inputValue,
@@ -637,15 +649,17 @@ export const machine = createMachine<TagsInputSchema>({
 
           if (guard) {
             const delimiter = prop("delimiter")
-            const trimmedValue = delimiter ? inputValue.split(delimiter).map((v) => v.trim()) : [inputValue]
+            const sanitizedValues = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
 
-            const nextValue = uniq(value.concat(...trimmedValue))
+            const nextValue = prop("allowDuplicates")
+              ? value.concat(...sanitizedValues)
+              : uniq(value.concat(...sanitizedValues))
             context.set("value", nextValue)
             // log
             const prevLog = refs.get("log")
             refs.set("log", {
               prev: prevLog.current,
-              current: { type: "paste", values: trimmedValue },
+              current: { type: "paste", values: sanitizedValues },
             })
             //
           } else {

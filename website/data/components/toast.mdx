@@ -4,8 +4,7 @@ description: Using the toast machine in your project.
 package: "@zag-js/toast"
 ---
 
-The toast component is used to give feedback to users after an action has taken
-place.
+Toast provides brief feedback after an action.
 
 <Resources pkg="@zag-js/toast" />
 
@@ -13,23 +12,21 @@ place.
 
 **Features**
 
-- Support for screen readers
-- Limit the number of visible toasts
-- Manage promises within toast
-- Pause on hover, focus or page idle
-- Can remove or update toast programmatically
+- Supports screen readers
+- Limits the number of visible toasts
+- Handles promise lifecycles
+- Pauses on hover, focus, or page idle
+- Supports programmatic update/remove
 
 ## Installation
 
-To use the toast machine in your project, run the following command in your
-command line:
+Install the toast package:
 
 <CodeSnippet id="toast/installation.mdx" />
 
 ## Anatomy
 
-To set up the toast correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the toast anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -37,43 +34,42 @@ name its parts.
 
 ## Usage
 
-First, import the toast package into your project
+Import the toast package:
 
-```jsx
+```tsx
 import * as toast from "@zag-js/toast"
 ```
 
-Next, import the required hooks and functions for your framework and use the
-toast machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="toast/usage.mdx" />
 
-The use the toast effectively, you need to understand these key aspects:
+To use toast effectively, understand these key parts:
 
 ### Toast Group
 
-- `toast.group.machine` — The state machine representation of a group of toasts.
-  It is responsible for spawning, updating and removing toasts.
-- `toast.group.connect` — function gives you access to methods you can use to
-  add, update, and remove a toast.
+- `toast.group.machine` - State machine logic for the toast region.
+- `toast.group.connect` - Maps group state to JSX props and subscriptions.
 
   > We recommend setting up the toast group machine once at the root of your
   > project.
 
 ### Toast Item
 
-- `toast.machine` — The state machine representation of a single toast.
-- `toast.connect` — The function that takes the toast machine and returns
-  methods and JSX properties.
+- `toast.machine` - State machine logic for a single toast.
+- `toast.connect` - Maps toast state to JSX props and controls.
 
 ## Creating a toast
 
-There are five toast types that can be created with the toast machine. `info`,
-`success`, `loading`, `custom` and `error`.
+Common toast types are `info`, `success`, `warning`, `loading`, and `error`. You
+can also pass a custom type string.
+
+Helper methods are also available: `toaster.info(...)`, `toaster.success(...)`,
+`toaster.warning(...)`, `toaster.error(...)`, and `toaster.loading(...)`.
 
 To create a toast, use the `toaster.create(...)` method.
 
-```jsx
+```tsx
 toaster.create({
   title: "Hello World",
   description: "This is a toast",
@@ -86,23 +82,22 @@ The options you can pass in are:
 - `title` — The title of the toast.
 - `description` — The description of the toast.
 - `type` — The type of the toast. Can be either `error`, `success` , `info`,
-  `loading`, or `custom`.
+  `warning`, `loading`, or any custom string.
 - `duration` — The duration of the toast. The default duration is computed based
   on the specified `type`.
 - `onStatusChange` — A callback that listens for the status changes across the
   toast lifecycle.
 - `removeDelay` — The delay before unmounting the toast from the DOM. Useful for
   transition.
+- `action` — Optional action button with `label` and `onClick`.
+- `closable` — Whether to render a close trigger.
 
 ## Changing the placement
 
-Use the `placement` property when you call the `toaster.create(...)` to change
-the position of the toast.
+Placement is configured on the toast store and applies to the whole toast group.
 
-```jsx {4}
-toaster.info({
-  title: "Hello World",
-  description: "This is a toast",
+```tsx
+const toaster = toast.createStore({
   placement: "top-start",
 })
 ```
@@ -112,17 +107,14 @@ toaster.info({
 When multiple toasts are created, they are rendered in a stack. To make the
 toasts overlap, set the `overlap` property to `true`.
 
-```jsx
+```tsx
 const toaster = toast.createStore({
   overlap: true,
 })
 ```
 
-When using overlap, the toast's placement must match the `placement` of the
-toast group (which is `bottom` by default).
-
-> Be sure to set up the [required styles](#requirement) to make the toasts
-> overlap correctly.
+> Be sure to set up the [required styles](#requirement) to make overlap work
+> correctly.
 
 ## Changing the duration
 
@@ -144,7 +136,7 @@ the following toast types and matching default durations:
 You can override the duration of the toast by passing the `duration` property to
 the `toaster.create(...)` function.
 
-```jsx {5}
+```tsx {5}
 toaster.create({
   title: "Hello World",
   description: "This is a toast",
@@ -153,8 +145,8 @@ toaster.create({
 })
 ```
 
-> You can also use the `toaster.upsert(...)` function which creates or updates a
-> toast.
+Use `toaster.create(...)` for new toasts and `toaster.update(id, ...)` to modify
+an existing one.
 
 ## Using portals
 
@@ -176,21 +168,21 @@ This identifier can be either:
 
 You can use any of the following methods to control a toast:
 
-- `toaster.upsert(...)` — Creates or updates a toast.
 - `toaster.update(...)` — Updates a toast.
 - `toaster.remove(...)` — Removes a toast instantly without delay.
 - `toaster.dismiss(...)` — Removes a toast with delay.
 - `toaster.pause(...)` — Pauses a toast.
 - `toaster.resume(...)` — Resumes a toast.
+- `toaster.isVisible(...)` — Checks if a toast is currently visible.
+- `toaster.isDismissed(...)` — Checks if a toast has been dismissed.
 
-```jsx {2,11-15}
+```tsx {2,11-15}
 // grab the id from the created toast
 const id = toaster.create({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
   duration: 6000,
-  placement: "top-start",
 })
 
 // update the toast
@@ -207,6 +199,15 @@ toaster.remove(id)
 toaster.dismiss(id)
 ```
 
+### Pause and resume all toasts
+
+Call `pause()`/`resume()` without an `id` to affect all active toasts.
+
+```tsx
+toaster.pause()
+toaster.resume()
+```
+
 ## Handling promises
 
 The toast group API exposes a `toaster.promise()` function to allow you update
@@ -215,7 +216,7 @@ the toast when it resolves or rejects.
 > With the promise API, you can pass the toast options for each promise
 > lifecycle. **The `loading` option is required**
 
-```jsx
+```tsx
 toaster.promise(promise, {
   loading: {
     title: "Loading",
@@ -232,32 +233,42 @@ toaster.promise(promise, {
 })
 ```
 
+`toaster.promise(...)` returns `{ id, unwrap }`, so you can await the original
+result:
+
+```tsx
+const result = toaster.promise(fetchData(), {
+  loading: { title: "Loading..." },
+})
+await result?.unwrap()
+```
+
 ## Pausing the toasts
 
-There are three scenarios we provide to pause a toast from timing out:
+There are three scenarios that pause toast timeout:
 
+- When a user hovers or focuses the toast region.
 - When the document loses focus or the page is idle (e.g. switching to a new
-  browser tab), controlled via the `pauseOnPageIdle` context property.
+  browser tab), controlled via the `pauseOnPageIdle` store option.
 - When the `toaster.pause(id)` is called.
 
-```jsx
+```tsx
 // Global pause options
-const service = useMachine(toast.group.machine, {
+const toaster = toast.createStore({
   pauseOnPageIdle: true,
 })
 
 // Programmatically pause a toast (by `id`)
-// `id` is the return value of `api.create(...)`
+// `id` is the return value of `toaster.create(...)`
 toaster.pause(id)
 ```
 
 ## Limiting the number of toasts
 
 Toasts are great but displaying too many of them can sometimes hamper the user
-experience. To limit the number of visible toasts, pass the `max` property to
-the group machine's context.
+experience. To limit visible toasts, set `max` on the store.
 
-```jsx {3}
+```tsx {3}
 const toaster = toast.createStore({
   max: 10,
 })
@@ -268,11 +279,11 @@ const toaster = toast.createStore({
 When a toast is created, you can focus the toast region by pressing the
 `alt + T`. This is useful for screen readers and keyboard navigation.
 
-Set the `hotkey` context property to change the underlying hotkey.
+Set the `hotkey` store option to change the underlying hotkey.
 
-```jsx
+```tsx
 const service = useMachine(toast.group.machine, {
-  hotkey: ["F6"],
+  store: toast.createStore({ hotkey: ["F6"] }),
 })
 ```
 
@@ -285,16 +296,16 @@ lifecycle using the `onStatusChange` callback when you call
 The status values are:
 
 - `visible` - The toast is mounted and rendered
-- `dismissed` - The toast is visually invisible but still mounted
+- `dismissing` - The toast is closing but still mounted
 - `unmounted` - The toast has been completely unmounted and no longer exists
 
-```jsx {3-7}
+```tsx {3-7}
 toaster.info({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
   onStatusChange: (details) => {
-    // details => { status: "visible" | "dismissed" | "unmounted" }
+    // details => { status: "visible" | "dismissing" | "unmounted" }
     console.log("Toast status:", details)
   },
 })
@@ -303,21 +314,21 @@ toaster.info({
 ## Changing the gap between toasts
 
 When multiple toasts are rendered, a gap of `16px` is applied between each
-toast. To change this value, set the `gap` context property.
+toast. To change this value, set `gap` on the store.
 
-```jsx {3}
-const service = useMachine(toast.group.machine, {
+```tsx
+const toaster = toast.createStore({
   gap: 24,
 })
 ```
 
 ## Changing the offset
 
-The toast region has a default `16px` offset from the viewport. Use the `offset`
-context property to change the offset.
+The toast region has a default `1rem` offset from the viewport. Use the
+`offsets` store option to change this offset.
 
-```jsx {4-8}
-const service = useMachine(toast.group.machine, {
+```tsx
+const toaster = toast.createStore({
   offsets: "24px",
 })
 ```
@@ -340,7 +351,7 @@ work. You need to connect these variables in your styles.
 }
 ```
 
-To make it transition smoothly, you should includes `transition` properties.
+To make transitions smooth, include `transition` properties.
 
 ```css
 [data-part="root"] {

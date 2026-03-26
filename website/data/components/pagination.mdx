@@ -4,8 +4,7 @@ description: Using the pagination machine in your project.
 package: "@zag-js/pagination"
 ---
 
-Pagination is an interface that allows navigating between pages that contain
-split information, instead of being shown on a single page.
+Pagination lets users navigate data split across multiple pages.
 
 <Resources pkg="@zag-js/pagination" />
 
@@ -13,8 +12,7 @@ split information, instead of being shown on a single page.
 
 ## Installation
 
-To use the pagination machine in your project, run the following command in your
-command line:
+Install the pagination package:
 
 <CodeSnippet id="pagination/installation.mdx" />
 
@@ -29,25 +27,23 @@ how we name its parts.
 
 ## Usage
 
-First, import the pagination package into your project
+Import the pagination package:
 
-```jsx
+```tsx
 import * as pagination from "@zag-js/pagination"
 ```
 
 The pagination package exports two key functions:
 
-- `machine` — The state machine logic for the pagination widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
 <CodeSnippet id="pagination/usage.mdx" />
 
-```jsx
-const api = connect(service)
+```tsx
+const api = pagination.connect(service)
 
 // You can slice the data, to get data for current page
 const currentPageData = data.slice(api.pageRange.start, api.pageRange.end)
@@ -93,10 +89,92 @@ api.pageRange
 // => { start: 4, end: 13 }
 ```
 
+### Controlled page
+
+Use `page` and `onPageChange` to control the current page externally.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  pageSize: 20,
+  page,
+  onPageChange(details) {
+    setPage(details.page)
+  },
+})
+```
+
+### Controlled page size
+
+Use `pageSize` and `onPageSizeChange` to control page size.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  pageSize,
+  onPageSizeChange(details) {
+    setPageSize(details.pageSize)
+  },
+})
+```
+
+### Initial page and page size
+
+Use `defaultPage` and `defaultPageSize` for uncontrolled initial values.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  defaultPage: 3,
+  defaultPageSize: 20,
+})
+```
+
+### Link-based pagination
+
+Set `type: "link"` and provide `getPageUrl` to render real navigation links.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  type: "link",
+  getPageUrl(details) {
+    return `/products?page=${details.page}&pageSize=${details.pageSize}`
+  },
+})
+```
+
+### Customizing visible page ranges
+
+Use `siblingCount` and `boundaryCount` to control how many page items are shown.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  siblingCount: 2,
+  boundaryCount: 2,
+})
+```
+
+### Customizing accessibility labels
+
+Use `translations` to customize trigger and page labels.
+
+```tsx
+const service = useMachine(pagination.machine, {
+  count: 500,
+  translations: {
+    rootLabel: "Results pages",
+    prevTriggerLabel: "Previous page",
+    nextTriggerLabel: "Next page",
+    itemLabel: ({ page, totalPages }) => `Page ${page} of ${totalPages}`,
+  },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each pagination part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-part="root"] {

@@ -72,9 +72,11 @@ export function getLocaleSeparator(locale: string) {
 
 export const defaultTranslations: IntlTranslations = {
   dayCell(state) {
-    if (state.unavailable) return `Not available. ${state.formattedDate}`
-    if (state.selected) return `Selected date. ${state.formattedDate}`
-    return `Choose ${state.formattedDate}`
+    if (state.unavailable) return `Not available. ${state.valueText}`
+    if (state.firstInRange) return `Starting range from ${state.valueText}`
+    if (state.lastInRange) return `Range ending at ${state.valueText}`
+    if (state.selected) return `Selected date. ${state.valueText}`
+    return `Choose ${state.valueText}`
   },
   trigger(open) {
     return open ? "Close calendar" : "Open calendar"
@@ -112,6 +114,10 @@ export const defaultTranslations: IntlTranslations = {
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",
+  weekColumnHeader: "Wk",
+  weekNumberCell(weekNumber) {
+    return `Week ${weekNumber}`
+  },
 }
 
 // 0 – day, 1 – month, 2 – year;
@@ -181,14 +187,23 @@ export const getVisibleRangeText = memo(
     }
 
     if (view === "month") {
-      const formatter = new DateFormatter(locale, { year: "numeric", timeZone })
+      const formatter = new DateFormatter(locale, {
+        year: "numeric",
+        timeZone,
+        calendar: startValue.calendar.identifier,
+      })
       const start = formatter.format(startValue.toDate(timeZone))
       const end = formatter.format(endValue.toDate(timeZone))
       const formatted = selectionMode === "range" ? `${start} - ${end}` : start
       return { start, end, formatted }
     }
 
-    const formatter = new DateFormatter(locale, { month: "long", year: "numeric", timeZone })
+    const formatter = new DateFormatter(locale, {
+      month: "long",
+      year: "numeric",
+      timeZone,
+      calendar: startValue.calendar.identifier,
+    })
     const start = formatter.format(startValue.toDate(timeZone))
     const end = formatter.format(endValue.toDate(timeZone))
     const formatted = selectionMode === "range" ? `${start} - ${end}` : start

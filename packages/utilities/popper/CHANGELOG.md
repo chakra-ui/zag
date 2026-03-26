@@ -1,5 +1,102 @@
 # @zag-js/popper
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix step navigation events (`next`, `prev`, `setStep`) firing
+  when the tour is inactive, bypassing the `start` flow
+  - Fix popper styles not being cleaned up when transitioning from a tooltip step to a dialog/non-tooltip step
+  - Rename `cleanupStyles` option to `restoreStyles` in the popper package
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve performance by reducing the number of style recalculations
+  when scrolling with heavy content. Add `sizeMiddleware` positioning option to optionally disable the size middleware
+  for better scroll performance when not using `sameWidth` or `fitViewport`.
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

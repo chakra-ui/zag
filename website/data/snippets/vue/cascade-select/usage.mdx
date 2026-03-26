@@ -1,0 +1,87 @@
+```html
+<!-- CascadeSelectNode.vue -->
+<script setup lang="ts">
+  import { computed } from "vue"
+
+  const props = defineProps(["node", "indexPath", "value", "api", "collection"])
+
+  const nodeProps = computed(() => ({
+    indexPath: props.indexPath,
+    value: props.value,
+    item: props.node,
+  }))
+  const nodeState = computed(() => props.api.getItemState(nodeProps.value))
+  const children = computed(() => props.collection.getNodeChildren(props.node))
+</script>
+
+<template>
+  <ul v-bind="api.getListProps(nodeProps)">
+    <li
+      v-for="(item, index) in children"
+      :key="collection.getNodeValue(item)"
+      v-bind="api.getItemProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })"
+    >
+      <span v-bind="api.getItemTextProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })">
+        {{ item.label }}
+      </span>
+      <span>›</span>
+      <span v-bind="api.getItemIndicatorProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })">✓</span>
+    </li>
+  </ul>
+  <CascadeSelectNode
+    v-if="nodeState.highlightedChild && collection.isBranchNode(nodeState.highlightedChild)"
+    :node="nodeState.highlightedChild"
+    :api="api"
+    :collection="collection"
+    :index-path="[...indexPath, nodeState.highlightedIndex]"
+    :value="[...value, collection.getNodeValue(nodeState.highlightedChild)]"
+  />
+</template>
+```
+
+```html
+<!-- CascadeSelect.vue -->
+<script setup lang="ts">
+  import * as cascadeSelect from "@zag-js/cascade-select"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, Teleport } from "vue"
+
+  // 1. Create the collection (see above)
+  const collection = cascadeSelect.collection<Node>({
+    // ...
+  })
+
+  const service = useMachine(cascadeSelect.machine, {
+    id: "1",
+    collection,
+  })
+
+  const api = computed(() => cascadeSelect.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Location</label>
+    <div v-bind="api.getControlProps()">
+      <button v-bind="api.getTriggerProps()">
+        <span>{{ api.valueAsString || "Select location" }}</span>
+        <span v-bind="api.getIndicatorProps()">▼</span>
+      </button>
+      <button v-bind="api.getClearTriggerProps()">✕</button>
+    </div>
+    <Teleport to="body">
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <CascadeSelectNode
+            :node="collection.rootNode"
+            :api="api"
+            :collection="collection"
+            :index-path="[]"
+            :value="[]"
+          />
+        </div>
+      </div>
+    </Teleport>
+  </div>
+</template>
+```

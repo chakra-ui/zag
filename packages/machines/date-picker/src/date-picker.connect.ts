@@ -20,6 +20,8 @@ import {
   getTodayDate,
   getUnitDuration,
   getWeekDays,
+  getWeekOfYear,
+  getDefaultYearRange,
   getYearsRange,
   isDateEqual,
   isDateOutsideRange,
@@ -39,6 +41,7 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  WeekNumberCellProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
@@ -103,7 +106,7 @@ export function connect<T extends PropTypes>(
 
   function getMonths(props: { format?: "short" | "long" | undefined } = {}) {
     const { format } = props
-    return getMonthNames(locale, format).map((label, index) => {
+    return getMonthNames(locale, format, focusedValue).map((label, index) => {
       const value = index + 1
       const dateValue = focusedValue.set({ month: value })
       const disabled = isDateOutsideRange(dateValue, min, max)
@@ -112,7 +115,8 @@ export function connect<T extends PropTypes>(
   }
 
   function getYears() {
-    const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
+    const defaultRange = getDefaultYearRange(focusedValue, min, max)
+    const range = getYearsRange(defaultRange)
     return range.map((year) => ({
       label: year.toString(),
       value: year,
@@ -125,12 +129,12 @@ export function connect<T extends PropTypes>(
   }
 
   function focusMonth(month: number) {
-    const date = startValue ?? getTodayDate(timeZone)
+    const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ month }) })
   }
 
   function focusYear(year: number) {
-    const date = startValue ?? getTodayDate(timeZone)
+    const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
 
@@ -140,17 +144,30 @@ export function connect<T extends PropTypes>(
 
     const decadeYears = getDecadeRange(startValue.year, { strict: true })
     const isOutsideVisibleRange = !decadeYears.includes(value)
-    const isOutsideRange = isValueWithinRange(value, min?.year, max?.year)
+    const isWithinMinMax = isValueWithinRange(value, min?.year, max?.year)
+
+    const isInSelectedRange = isRangePicker && isDateWithinRange(dateValue, selectedValue)
+    const isFirstInSelectedRange = isRangePicker && selectedValue[0] && isEqualYear(dateValue, selectedValue[0])
+    const isLastInSelectedRange = isRangePicker && selectedValue[1] && isEqualYear(dateValue, selectedValue[1])
+
+    const hasHoveredRange = isRangePicker && hoveredRangeValue.length > 0
+    const isInHoveredRange = hasHoveredRange && isDateWithinRange(dateValue, hoveredRangeValue)
+    const isFirstInHoveredRange =
+      hasHoveredRange && hoveredRangeValue[0] && isEqualYear(dateValue, hoveredRangeValue[0])
+    const isLastInHoveredRange = hasHoveredRange && hoveredRangeValue[1] && isEqualYear(dateValue, hoveredRangeValue[1])
 
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: isOutsideVisibleRange || isOutsideRange,
+      selectable: !isOutsideVisibleRange && isWithinMinMax,
       outsideRange: isOutsideVisibleRange,
       selected: !!selectedValue.find((date) => date && date.year === value),
       valueText: value.toString(),
-      inRange:
-        isRangePicker &&
-        (isDateWithinRange(dateValue, selectedValue) || isDateWithinRange(dateValue, hoveredRangeValue)),
+      inRange: isInSelectedRange || isInHoveredRange,
+      firstInRange: !!isFirstInSelectedRange,
+      lastInRange: !!isLastInSelectedRange,
+      inHoveredRange: !!isInHoveredRange,
+      firstInHoveredRange: !!isFirstInHoveredRange,
+      lastInHoveredRange: !!isLastInHoveredRange,
       value: dateValue,
       get disabled() {
         return disabled || !cellState.selectable
@@ -162,15 +179,31 @@ export function connect<T extends PropTypes>(
   function getMonthTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
     const dateValue = focusedValue.set({ month: value })
-    const formatter = getMonthFormatter(locale, timeZone)
+    const formatter = getMonthFormatter(locale, timeZone, focusedValue)
+
+    const isInSelectedRange = isRangePicker && isDateWithinRange(dateValue, selectedValue)
+    const isFirstInSelectedRange = isRangePicker && selectedValue[0] && isEqualMonth(dateValue, selectedValue[0])
+    const isLastInSelectedRange = isRangePicker && selectedValue[1] && isEqualMonth(dateValue, selectedValue[1])
+
+    const hasHoveredRange = isRangePicker && hoveredRangeValue.length > 0
+    const isInHoveredRange = hasHoveredRange && isDateWithinRange(dateValue, hoveredRangeValue)
+    const isFirstInHoveredRange =
+      hasHoveredRange && hoveredRangeValue[0] && isEqualMonth(dateValue, hoveredRangeValue[0])
+    const isLastInHoveredRange =
+      hasHoveredRange && hoveredRangeValue[1] && isEqualMonth(dateValue, hoveredRangeValue[1])
+
     const cellState = {
       focused: focusedValue.month === props.value,
       selectable: !isDateOutsideRange(dateValue, min, max),
       selected: !!selectedValue.find((date) => date && date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(dateValue.toDate(timeZone)),
-      inRange:
-        isRangePicker &&
-        (isDateWithinRange(dateValue, selectedValue) || isDateWithinRange(dateValue, hoveredRangeValue)),
+      inRange: isInSelectedRange || isInHoveredRange,
+      firstInRange: !!isFirstInSelectedRange,
+      lastInRange: !!isLastInSelectedRange,
+      inHoveredRange: !!isInHoveredRange,
+      firstInHoveredRange: !!isFirstInHoveredRange,
+      lastInHoveredRange: !!isLastInHoveredRange,
+      outsideRange: false,
       value: dateValue,
       get disabled() {
         return disabled || !cellState.selectable
@@ -182,7 +215,7 @@ export function connect<T extends PropTypes>(
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = computed("visibleRange") } = props
 
-    const formatter = getDayFormatter(locale, timeZone)
+    const formatter = getDayFormatter(locale, timeZone, focusedValue)
     const unitDuration = getUnitDuration(computed("visibleDuration"))
     const outsideDaySelectable = prop("outsideDaySelectable")
 
@@ -216,12 +249,10 @@ export function connect<T extends PropTypes>(
       outsideRange: isOutsideRange,
       today: isToday(value, timeZone),
       weekend: isWeekend(value, locale),
-      formattedDate: formatter.format(value.toDate(timeZone)),
+      value,
+      valueText: formatter.format(value.toDate(timeZone)),
       get focused() {
         return isDateEqual(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
-      },
-      get ariaLabel(): string {
-        return translations.dayCell(cellState)
       },
       get selectable() {
         return !cellState.disabled && !cellState.unavailable
@@ -254,6 +285,7 @@ export function connect<T extends PropTypes>(
     readOnly,
     inline: !!prop("inline"),
     numOfMonths: prop("numOfMonths"),
+    showWeekNumbers: !!prop("showWeekNumbers"),
     selectionMode: prop("selectionMode"),
     maxSelectedDates,
     isMaxSelected,
@@ -261,13 +293,17 @@ export function connect<T extends PropTypes>(
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
     },
+    getWeekNumber(week: DateValue[]) {
+      const firstDay = week[0]
+      return firstDay ? getWeekOfYear(firstDay, locale) : 0
+    },
     getDaysInWeek(week, from = startValue) {
       return getDaysInWeek(week, from, locale, startOfWeek)
     },
     getOffset(duration) {
       const from = startValue.add(duration)
       const end = endValue.add(duration)
-      const formatter = getMonthFormatter(locale, timeZone)
+      const formatter = getMonthFormatter(locale, timeZone, focusedValue)
       return {
         visibleRange: { start: from, end },
         weeks: getMonthWeeks(from),
@@ -280,7 +316,7 @@ export function connect<T extends PropTypes>(
     getMonthWeeks,
     isUnavailable,
     weeks: getMonthWeeks(),
-    weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
+    weekDays: getWeekDays(startValue, startOfWeek, timeZone, locale),
     visibleRangeText: computed("visibleRangeText"),
     value: selectedValue,
     valueAsDate: selectedValue.filter((date) => date != null).map((date) => date.toDate(timeZone)),
@@ -290,7 +326,7 @@ export function connect<T extends PropTypes>(
     focusedValueAsString: prop("format")(focusedValue, { locale, timeZone }),
     visibleRange: computed("visibleRange"),
     selectToday() {
-      const value = constrainValue(getTodayDate(timeZone), min, max)
+      const value = constrainValue(getTodayDate(timeZone, focusedValue.calendar), min, max)
       send({ type: "VALUE.SET", value: [value] })
     },
     setValue(values) {
@@ -355,7 +391,10 @@ export function connect<T extends PropTypes>(
       return chunk(getMonths({ format }), columns)
     },
     format(value, opts = { month: "long", year: "numeric" }) {
-      return new DateFormatter(locale, opts).format(value.toDate(timeZone))
+      return new DateFormatter(locale, {
+        ...opts,
+        calendar: value.calendar.identifier,
+      }).format(value.toDate(timeZone))
     },
     setView(view) {
       send({ type: "VIEW.SET", view })
@@ -548,6 +587,32 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getWeekNumberHeaderCellProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        scope: "col",
+        "aria-label": translations.weekColumnHeader,
+        "data-view": view,
+        "data-type": "week-number",
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getWeekNumberCellProps(props: WeekNumberCellProps) {
+      const { weekIndex, week } = props
+      const weekNumber = week[0] ? getWeekOfYear(week[0], locale) : 0
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        role: "rowheader",
+        "aria-label": translations.weekNumberCell?.(weekNumber),
+        "data-view": "day",
+        "data-week-index": weekIndex,
+        "data-type": "week-number",
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
     getDayTableCellState,
 
     getDayTableCellProps(props) {
@@ -573,7 +638,7 @@ export function connect<T extends PropTypes>(
         role: "button",
         dir: prop("dir"),
         tabIndex: cellState.focused ? 0 : -1,
-        "aria-label": cellState.ariaLabel,
+        "aria-label": translations.dayCell(cellState),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "aria-invalid": ariaAttr(cellState.invalid),
         "data-disabled": dataAttr(!cellState.selectable),
@@ -630,19 +695,24 @@ export function connect<T extends PropTypes>(
       const cellState = getMonthTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
-        dir: prop("dir"),
-        role: "button",
         id: dom.getCellTriggerId(scope, value.toString()),
-        "data-selected": dataAttr(cellState.selected),
+        role: "button",
+        dir: prop("dir"),
+        tabIndex: cellState.focused ? 0 : -1,
+        "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
-        "data-focus": dataAttr(cellState.focused),
-        "data-in-range": dataAttr(cellState.inRange),
-        "data-outside-range": dataAttr(cellState.outsideRange),
-        "aria-label": cellState.valueText,
-        "data-view": "month",
+        "data-selected": dataAttr(cellState.selected),
         "data-value": value,
-        tabIndex: cellState.focused ? 0 : -1,
+        "data-view": "month",
+        "data-focus": dataAttr(cellState.focused),
+        "data-outside-range": dataAttr(cellState.outsideRange),
+        "data-range-start": dataAttr(cellState.firstInRange),
+        "data-range-end": dataAttr(cellState.lastInRange),
+        "data-in-range": dataAttr(cellState.inRange),
+        "data-in-hover-range": dataAttr(cellState.inHoveredRange),
+        "data-hover-range-start": dataAttr(cellState.firstInHoveredRange),
+        "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!cellState.selectable) return
@@ -670,7 +740,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         colSpan: columns,
         role: "gridcell",
-        "aria-selected": ariaAttr(cellState.selected),
+        "aria-selected": ariaAttr(cellState.selected || cellState.inRange),
         "data-selected": dataAttr(cellState.selected),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-value": value,
@@ -682,19 +752,24 @@ export function connect<T extends PropTypes>(
       const cellState = getYearTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
-        dir: prop("dir"),
-        role: "button",
         id: dom.getCellTriggerId(scope, value.toString()),
-        "data-selected": dataAttr(cellState.selected),
-        "data-focus": dataAttr(cellState.focused),
-        "data-in-range": dataAttr(cellState.inRange),
+        role: "button",
+        dir: prop("dir"),
+        tabIndex: cellState.focused ? 0 : -1,
+        "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
-        "aria-label": cellState.valueText,
-        "data-outside-range": dataAttr(cellState.outsideRange),
+        "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "year",
-        tabIndex: cellState.focused ? 0 : -1,
+        "data-focus": dataAttr(cellState.focused),
+        "data-outside-range": dataAttr(cellState.outsideRange),
+        "data-range-start": dataAttr(cellState.firstInRange),
+        "data-range-end": dataAttr(cellState.lastInRange),
+        "data-in-range": dataAttr(cellState.inRange),
+        "data-in-hover-range": dataAttr(cellState.inHoveredRange),
+        "data-hover-range-start": dataAttr(cellState.firstInHoveredRange),
+        "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!cellState.selectable) return

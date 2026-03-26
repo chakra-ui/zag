@@ -21,15 +21,13 @@ clickable trigger element.
 
 ## Installation
 
-To use the popover machine in your project, run the following command in your
-command line:
+Install the popover package:
 
 <CodeSnippet id="popover/installation.mdx" />
 
 ## Anatomy
 
-To set up the popover correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the popover anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -37,23 +35,20 @@ we name its parts.
 
 ## Usage
 
-First, import the popover package into your project
+Import the popover package:
 
-```jsx
+```tsx
 import * as popover from "@zag-js/popover"
 ```
 
 The popover package exports two key functions:
 
-- `machine` — The state machine logic for the popover widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-popover machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="popover/usage.mdx" />
 
@@ -70,11 +65,18 @@ machine's context.
 
 ### Managing focus within popover
 
-When the popover open, focus is automatically set to the first focusable element
-within the popover. To customize the element that should get focus, set the
-`initialFocusEl` property in the machine's context.
+When the popover opens, focus moves to the first focusable element. To customize
+this, set `initialFocusEl`.
 
 <CodeSnippet id="popover/initial-focus.mdx" />
+
+To disable automatic focus on open, set `autoFocus` to `false`.
+
+```tsx
+const service = useMachine(popover.machine, {
+  autoFocus: false,
+})
+```
 
 ### Changing the modality
 
@@ -91,7 +93,7 @@ context. When `modal: true`, we set the `portalled` attribute to `true` as well.
 
 > **Note**: This requires that you render the component within a `Portal`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
   modal: true,
 })
@@ -104,18 +106,31 @@ The popover is designed to close on blur and when the `esc` key is pressed.
 To prevent it from closing on blur (clicking or focusing outside), pass the
 `closeOnInteractOutside` property and set it to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
-  closeOnInteractOutside: true,
+  closeOnInteractOutside: false,
 })
 ```
 
 To prevent it from closing when the `esc` key is pressed, pass the
 `closeOnEscape` property and set it to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
-  closeOnEscape: true,
+  closeOnEscape: false,
+})
+```
+
+### Controlled open state
+
+Use `open` and `onOpenChange` to control visibility externally.
+
+```tsx
+const service = useMachine(popover.machine, {
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+  },
 })
 ```
 
@@ -124,7 +139,7 @@ const service = useMachine(popover.machine, {
 To render an arrow within the popover, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
 
-```jsx {6-8}
+```tsx {6-8}
 //...
 const api = popover.connect(service, normalizeProps)
 //...
@@ -146,7 +161,7 @@ return (
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(popover.machine, {
   positioning: {
     placement: "top-start",
@@ -158,7 +173,7 @@ const service = useMachine(popover.machine, {
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(popover.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -175,8 +190,7 @@ and the popover will be rendered outside the dialog.
 
 ## Styling guide
 
-Earlier, we mentioned that each popover part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -199,8 +213,7 @@ attribute to the trigger.
 
 ### Position aware
 
-When the popover is expanded, we add a `data-state` and `data-placement`
-attribute to the trigger.
+When the popover is expanded, `data-placement` is added to trigger and content.
 
 ```css
 [data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
@@ -224,9 +237,9 @@ correctly.
 }
 ```
 
-A common technique for adding a shadow to the arrow is to use set
-`filter: drop-down(...)` css property on the content element. Alternatively, you
-can use the `--arrow-shadow-color` variable.
+A common technique for adding a shadow to the arrow is to use
+`filter: drop-shadow(...)` on the content element. Alternatively, you can use
+the `--arrow-shadow-color` variable.
 
 ```css
 [data-part="arrow"] {

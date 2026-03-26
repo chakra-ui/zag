@@ -11,6 +11,7 @@ export const props = createProps<ClipboardProps>()([
   "timeout",
   "onStatusChange",
   "onValueChange",
+  "translations",
 ])
 export const contextProps = createSplitProps<ClipboardProps>(props)
 

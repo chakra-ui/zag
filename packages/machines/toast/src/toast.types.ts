@@ -46,6 +46,14 @@ export interface ActionOptions {
 }
 
 /* -----------------------------------------------------------------------------
+ * Toast Translations
+ * -----------------------------------------------------------------------------*/
+
+export interface IntlTranslations {
+  closeTriggerLabel?: string | undefined
+}
+
+/* -----------------------------------------------------------------------------
  * Toast Options
  * -----------------------------------------------------------------------------*/
 
@@ -104,12 +112,15 @@ export interface Options<T = any> {
 
 export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Options<T> {
   /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
+  /**
    * The direction of the toast
    */
   dir?: Direction | undefined
   /**
-   * @internal
-   * The index of the toast
+   * The index of the toast in the group
    */
   index?: number | undefined
   /**
@@ -127,8 +138,7 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
    */
   gap?: number | undefined
   /**
-   * @internal
-   * The parent of the toast
+   * The parent toast group service. Required when using toast as a child of a group.
    */
   parent: Service<ToastGroupSchema>
   /**
@@ -141,7 +151,7 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
 type ToastPropsWithDefault = "type" | "parent" | "duration" | "id" | "removeDelay"
 
 export type ToastSchema<O = any> = {
-  props: RequiredBy<ToastProps<O>, ToastPropsWithDefault>
+  props: RequiredBy<ToastProps<O>, Extract<ToastPropsWithDefault, keyof ToastProps<O>>>
   context: {
     mounted: boolean
     initialHeight: number
@@ -235,7 +245,7 @@ export type ToastGroupSchema = {
   state: "stack" | "overlap"
   props: ToastGroupProps
   context: {
-    toasts: RequiredBy<ToastProps, ToastPropsWithDefault>[]
+    toasts: RequiredBy<ToastProps, Extract<ToastPropsWithDefault, keyof ToastProps>>[]
     heights: ToastHeight[]
   }
   computed: {
@@ -342,13 +352,11 @@ export interface ToastStore<V = any> {
    */
   isDismissed: (id: string) => boolean
   /**
-   * @internal
-   * Expand all toasts to show their full content
+   * Expand all toasts to show their full content (overlap mode)
    */
   expand: VoidFunction
   /**
-   * @internal
-   * Collapse all toasts to their compact state
+   * Collapse all toasts to their compact state (overlap mode)
    */
   collapse: VoidFunction
 }

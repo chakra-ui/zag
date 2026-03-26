@@ -2,7 +2,14 @@ import { raf, setElementValue, trackPointerMove } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderSchema } from "./angle-slider.types"
-import { clampAngle, constrainAngle, getAngle, MIN_VALUE, MAX_VALUE, snapAngleToStep } from "./angle-slider.utils"
+import {
+  clampAngle,
+  constrainAngle,
+  getPointerValue,
+  MIN_VALUE,
+  MAX_VALUE,
+  snapAngleToStep,
+} from "./angle-slider.utils"
 
 export const machine = createMachine<AngleSliderSchema>({
   props({ props }) {
@@ -133,7 +140,8 @@ export const machine = createMachine<AngleSliderSchema>({
         const controlEl = dom.getControlEl(scope)
         if (!controlEl) return
         const angularOffset = refs.get("thumbDragOffset")
-        const deg = getAngle(controlEl, event.point, angularOffset)
+        const value = context.get("value")
+        const deg = getPointerValue(controlEl, event.point, angularOffset, value, prop("dir"))
         context.set("value", constrainAngle(deg, prop("step")))
       },
       setValueToMin({ context }) {

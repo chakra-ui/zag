@@ -537,6 +537,10 @@ export class FocusTrap {
       node = this.getNodeForOption("fallbackFocus")
     }
 
+    if (!node || !node.isConnected) {
+      throw new Error("Your focus-trap needs to have at least one focusable element")
+    }
+
     return node
   }
 
@@ -805,7 +809,6 @@ export class FocusTrap {
 
           destinationNode =
             getTabIndex(target) >= 0 ? destinationGroup.lastTabbableNode : destinationGroup.lastDomTabbableNode
-          //@ts-expect-error
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -844,7 +847,6 @@ export class FocusTrap {
 
           destinationNode =
             getTabIndex(target) >= 0 ? destinationGroup.firstTabbableNode : destinationGroup.firstDomTabbableNode
-          //@ts-expect-error
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -861,8 +863,8 @@ export class FocusTrap {
   }
 }
 
-const isKeyboardEvent = (event: Event): event is KeyboardEvent => event.type === "keydown"
-const isTabEvent = (event: Event) => isKeyboardEvent(event) && event?.key === "Tab"
+const isKeyboardEvent = (event: Event | undefined): event is KeyboardEvent => event?.type === "keydown"
+const isTabEvent = (event: Event | undefined) => isKeyboardEvent(event) && event?.key === "Tab"
 
 const isKeyForward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && !e?.shiftKey
 const isKeyBackward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && e?.shiftKey

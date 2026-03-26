@@ -1,10 +1,11 @@
-```jsx
+```tsx
 import * as rating from "@zag-js/rating-group"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 import { HalfStar, Star } from "./icons"
 
 function Rating() {
-  const service = useMachine(rating.machine, { id: "1" })
+  const service = useMachine(rating.machine, { id: useId() })
 
   const api = rating.connect(service, normalizeProps)
 

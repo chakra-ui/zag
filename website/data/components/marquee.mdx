@@ -4,8 +4,7 @@ description: Using the marquee machine in your project.
 package: "@zag-js/marquee"
 ---
 
-An accessible auto-scrolling marquee component for displaying scrolling content
-like logos, announcements, or featured items.
+A marquee auto-scrolls content like logos, announcements, or featured items.
 
 <Resources pkg="@zag-js/marquee" />
 
@@ -13,23 +12,21 @@ like logos, announcements, or featured items.
 
 **Features**
 
-- Smooth GPU-accelerated animations with seamless looping
 - Horizontal and vertical scrolling with RTL support
 - Pause on hover and keyboard focus
-- Customizable speed and spacing
-- Accessible and respects `prefers-reduced-motion`
+- Customizable speed, spacing, delay, and loop count
+- Auto-fill mode to prevent visible gaps
+- Respects `prefers-reduced-motion`
 
 ## Installation
 
-To use the marquee machine in your project, run the following command in your
-command line:
+Install the marquee package:
 
 <CodeSnippet id="marquee/installation.mdx" />
 
 ## Anatomy
 
-To set up the marquee correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the marquee anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -37,23 +34,21 @@ we name its parts.
 
 ## Usage
 
-First, import the marquee package into your project
+Import the marquee package:
 
-```jsx
+```tsx
 import * as marquee from "@zag-js/marquee"
 ```
 
 The marquee package exports two key functions:
 
-- `machine` — The state machine logic for the marquee widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
 > You'll also need to provide a unique `id` to the `useMachine` hook. This is
 > used to ensure that every part has a unique identifier.
 
-Next, import the required hooks and functions for your framework and use the
-marquee machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="marquee/usage.mdx" />
 
@@ -62,7 +57,7 @@ marquee machine in your project 🔥
 To automatically duplicate content to fill the container and prevent gaps during
 animation, set the `autoFill` property in the machine's context to `true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   autoFill: true,
 })
@@ -71,7 +66,7 @@ const service = useMachine(marquee.machine, {
 The `api.contentCount` property tells you the total number of content elements
 to render (original + clones). Use this value in your loop:
 
-```jsx
+```tsx
 {
   Array.from({ length: api.contentCount }).map((_, index) => (
     <div key={index} {...api.getContentProps({ index })}>
@@ -89,7 +84,7 @@ to render (original + clones). Use this value in your loop:
 To change the scroll direction, set the `side` property in the machine's context
 to one of: `"start"`, `"end"`, `"top"`, or `"bottom"`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   side: "end", // scrolls from right to left in LTR
 })
@@ -107,7 +102,7 @@ const service = useMachine(marquee.machine, {
 To control how fast the marquee scrolls, set the `speed` property in the
 machine's context. The value is in pixels per second.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   speed: 100, // 100 pixels per second
 })
@@ -124,7 +119,7 @@ const service = useMachine(marquee.machine, {
 To customize the gap between marquee items, set the `spacing` property in the
 machine's context to a valid CSS unit.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   spacing: "2rem",
 })
@@ -135,7 +130,7 @@ const service = useMachine(marquee.machine, {
 To reverse the animation direction without changing the scroll side, set the
 `reverse` property in the machine's context to `true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   reverse: true,
 })
@@ -146,7 +141,7 @@ const service = useMachine(marquee.machine, {
 To pause the marquee when the user hovers or focuses any element inside it, set
 the `pauseOnInteraction` property in the machine's context to `true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   pauseOnInteraction: true,
 })
@@ -160,9 +155,22 @@ interactive elements like links or buttons.
 To start the marquee in a paused state, set the `defaultPaused` property in the
 machine's context to `true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   defaultPaused: true,
+})
+```
+
+### Controlled paused state
+
+Use `paused` and `onPauseChange` to control playback externally.
+
+```tsx
+const service = useMachine(marquee.machine, {
+  paused,
+  onPauseChange(details) {
+    setPaused(details.paused)
+  },
 })
 ```
 
@@ -171,7 +179,7 @@ const service = useMachine(marquee.machine, {
 To add a delay before the animation starts, set the `delay` property in the
 machine's context to a value in seconds.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   delay: 2, // 2 second delay
 })
@@ -182,7 +190,7 @@ const service = useMachine(marquee.machine, {
 By default, the marquee loops infinitely. To limit the number of loops, set the
 `loopCount` property in the machine's context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(marquee.machine, {
   loopCount: 3, // stops after 3 complete loops
 })
@@ -195,7 +203,7 @@ const service = useMachine(marquee.machine, {
 When the marquee completes a single loop iteration, the `onLoopComplete`
 callback is invoked.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(marquee.machine, {
   onLoopComplete() {
     console.log("Completed one loop")
@@ -208,7 +216,7 @@ const service = useMachine(marquee.machine, {
 When the marquee completes all loops and stops (only for finite loops), the
 `onComplete` callback is invoked.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(marquee.machine, {
   loopCount: 3,
   onComplete() {
@@ -221,7 +229,7 @@ const service = useMachine(marquee.machine, {
 
 The marquee API provides methods to control playback:
 
-```jsx
+```tsx
 // Pause the marquee
 api.pause()
 
@@ -239,7 +247,7 @@ api.restart()
 
 When the marquee pause state changes, the `onPauseChange` callback is invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(marquee.machine, {
   onPauseChange(details) {
     // details => { paused: boolean }
@@ -253,7 +261,7 @@ const service = useMachine(marquee.machine, {
 To add fade gradients at the edges of the marquee, use the `getEdgeProps`
 method:
 
-```jsx
+```tsx
 <div {...api.getRootProps()}>
   {/* Fade gradient at start */}
   <div {...api.getEdgeProps({ side: "start" })} />
@@ -360,8 +368,7 @@ The machine automatically sets these CSS variables:
 
 ### Styling parts
 
-Earlier, we mentioned that each marquee part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="marquee"][data-part="root"] {
@@ -471,7 +478,7 @@ The marquee automatically respects the user's motion preferences via the
 1. **Use descriptive labels** — Set a meaningful `aria-label` via the
    `translations.root` property:
 
-   ```jsx
+   ```tsx
    const service = useMachine(marquee.machine, {
      translations: {
        root: "Featured partner logos", // instead of generic "Marquee content"
@@ -482,7 +489,7 @@ The marquee automatically respects the user's motion preferences via the
 2. **Enable pause on interaction** — Essential for accessibility when content
    contains links or important information:
 
-   ```jsx
+   ```tsx
    const service = useMachine(marquee.machine, {
      pauseOnInteraction: true,
    })

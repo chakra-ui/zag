@@ -2,6 +2,7 @@ import type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
   ZonedDateTime,
@@ -73,6 +74,8 @@ export interface IntlTranslations {
   trigger: (open: boolean) => string
   content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
+  weekColumnHeader?: string | undefined
+  weekNumberCell?: ((weekNumber: number) => string) | undefined
 }
 
 export type ElementIds = Partial<{
@@ -102,6 +105,16 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * @default "en-US"
    */
   locale?: string | undefined
+  /**
+   * A function that creates a Calendar object for a given calendar identifier.
+   * Enables non-Gregorian calendar support (Persian, Buddhist, Islamic, etc.)
+   * without bundling all calendars by default.
+   *
+   * @example
+   * import { createCalendar } from "@internationalized/date"
+   * { locale: "fa-IR", createCalendar }
+   */
+  createCalendar?: ((identifier: CalendarIdentifier) => Calendar) | undefined
   /**
    * The localized messages to use.
    */
@@ -197,6 +210,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * This renders the calendar with 6 weeks instead of 5 or 6.
    */
   fixedWeeks?: boolean | undefined
+  /**
+   * Whether to show the week number column in the day view.
+   */
+  showWeekNumbers?: boolean | undefined
   /**
    * Function called when the value changes.
    */
@@ -431,8 +448,13 @@ export interface TableCellState {
   selected: boolean
   valueText: string
   inRange: boolean
+  firstInRange: boolean
+  lastInRange: boolean
+  inHoveredRange: boolean
+  firstInHoveredRange: boolean
+  lastInHoveredRange: boolean
   value: DateValue
-  outsideRange?: boolean | undefined
+  outsideRange: boolean
   readonly disabled: boolean
 }
 
@@ -442,24 +464,16 @@ export interface DayTableCellProps {
   visibleRange?: VisibleRange | undefined
 }
 
-export interface DayTableCellState {
+export interface WeekNumberCellProps {
+  weekIndex: number
+  week: DateValue[]
+}
+
+export interface DayTableCellState extends TableCellState {
   invalid: boolean
-  disabled: boolean
-  selected: boolean
   unavailable: boolean
-  outsideRange: boolean
-  inRange: boolean
-  firstInRange: boolean
-  lastInRange: boolean
   today: boolean
   weekend: boolean
-  formattedDate: string
-  readonly focused: boolean
-  readonly ariaLabel: string
-  readonly selectable: boolean
-  inHoveredRange: boolean
-  firstInHoveredRange: boolean
-  lastInHoveredRange: boolean
 }
 
 export interface TableProps {
@@ -558,6 +572,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   numOfMonths: number
   /**
+   * Whether the week number column is shown in the day view
+   */
+  showWeekNumbers: boolean
+  /**
    * The selection mode (single, multiple, or range)
    */
   selectionMode: SelectionMode
@@ -573,6 +591,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * The current view of the date picker
    */
   view: DateView
+  /**
+   * Returns the ISO 8601 week number (1-53) for the given week (array of dates).
+   */
+  getWeekNumber: (week: DateValue[]) => number
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
@@ -730,6 +752,9 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getTableBodyProps: (props?: TableProps) => T["element"]
   getTableRowProps: (props?: TableProps) => T["element"]
 
+  getWeekNumberHeaderCellProps: (props?: TableProps) => T["element"]
+  getWeekNumberCellProps: (props: WeekNumberCellProps) => T["element"]
+
   getDayTableCellProps: (props: DayTableCellProps) => T["element"]
   getDayTableCellTriggerProps: (props: DayTableCellProps) => T["element"]
 
@@ -762,6 +787,7 @@ export type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
   DateRangePreset,

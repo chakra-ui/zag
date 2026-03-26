@@ -11,7 +11,7 @@ export class TreeViewModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/tree-view")
+    return this.page.goto("/tree-view/basic")
   }
 
   private item(name: string) {

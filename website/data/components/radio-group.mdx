@@ -4,8 +4,7 @@ description: Using the radio group machine in your project.
 package: "@zag-js/radio-group"
 ---
 
-A radio group allows users to make a single choice from a select number of
-option
+A radio group lets users select one option from a set.
 
 <Resources pkg="@zag-js/radio-group" />
 
@@ -20,8 +19,7 @@ option
 
 ## Installation
 
-To use the radio machine in your project, run the following command in your
-command line:
+Install the radio package:
 
 <CodeSnippet id="radio-group/installation.mdx" />
 
@@ -36,31 +34,28 @@ how we name its parts.
 
 ## Usage
 
-First, import the radio group package into your project
+Import the radio group package:
 
-```jsx
+```tsx
 import * as radio from "@zag-js/radio-group"
 ```
 
 The radio package exports two key functions:
 
-- `machine` — The state machine logic for the radio widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-radio machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="radio-group/usage.mdx" />
 
 ### Disabling the radio group
 
-To make a radio group disabled, set the context's `disabled` property to true
+Set `disabled` to `true` to disable all radio items.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   disabled: true,
 })
@@ -70,9 +65,22 @@ const service = useMachine(radio.machine, {
 
 Use the `defaultValue` property to set the radio group's initial value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   defaultValue: "apple",
+})
+```
+
+### Controlled value
+
+Use `value` and `onValueChange` to control selection externally.
+
+```tsx
+const service = useMachine(radio.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
 })
 ```
 
@@ -80,10 +88,10 @@ const service = useMachine(radio.machine, {
 
 When the radio group value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(radio.machine, {
   onValueChange(details) {
-    // details => { value: string }
+    // details => { value: string | null }
     console.log("radio value is:", details.value)
   },
 })
@@ -91,25 +99,63 @@ const service = useMachine(radio.machine, {
 
 ### Usage within forms
 
-To use radio group within forms, use the exposed `inputProps` from the `connect`
-function and ensure you pass `name` value to the machine's context. It will
-render a hidden input and ensure the value changes get propagated to the form
-correctly.
+To use radio group in forms, set `name`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   name: "fruits",
 })
 ```
 
+Set `form` if the radio inputs should submit with a form outside the current DOM
+subtree.
+
+```tsx
+const service = useMachine(radio.machine, {
+  name: "fruits",
+  form: "checkout-form",
+})
+```
+
+### Vertical orientation
+
+Set `orientation` when you need a vertical layout.
+
+```tsx
+const service = useMachine(radio.machine, {
+  orientation: "vertical",
+})
+```
+
+### Read-only and required state
+
+Use `readOnly` and `required` to control form behavior.
+
+```tsx
+const service = useMachine(radio.machine, {
+  readOnly: true,
+  required: true,
+})
+```
+
+### Invalid state
+
+Set `invalid` to style and expose invalid form state.
+
+```tsx
+const service = useMachine(radio.machine, {
+  invalid: true,
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each radio part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each radio part includes a `data-part` attribute you can target in CSS.
 
 ### Checked State
 
 When the radio input is checked, the `data-state` attribute is added to the
+item, control, and label parts.
 
 ```css
 [data-part="radio"][data-state="checked|unchecked"] {

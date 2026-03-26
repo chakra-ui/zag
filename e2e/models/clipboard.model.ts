@@ -8,7 +8,7 @@ export class ClipboardModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/clipboard")
+    return this.page.goto("/clipboard/basic")
   }
 
   checkAccessibility(selector?: string): Promise<void> {

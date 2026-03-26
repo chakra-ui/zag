@@ -226,7 +226,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
-        "aria-expanded": open || undefined,
+        "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
           if (event.pointerType !== "mouse") return

@@ -3,6 +3,7 @@ import type { HandlePosition } from "@zag-js/image-cropper"
 
 import { countryList } from "./country-list"
 export { paginationData } from "./pagination-data"
+export { cascadeSelectData } from "./cascade-select-data"
 
 export const selectData = countryList.map((country) => ({
   label: `${country.name} (${country.code})`,
@@ -81,7 +82,8 @@ export const tabsData = [
     id: "joke",
     label: "Joke",
     content: `
-    Fear of complicated buildings: A complex complex complex.
+    Fear of complicated buildings: A complex complex complex. When will this end? This is the end of the story.
+    Some extra text to make the content longer. Come and see the world. The world is a great place.
     `,
   },
 ]
@@ -320,6 +322,18 @@ export const stepsData = [
   { value: "first", title: "First", description: "Contact Info" },
   { value: "second", title: "Second", description: "Date & Time" },
   { value: "third", title: "Third", description: "Select Rooms" },
+]
+
+export const tocData = [
+  { value: "introduction", depth: 2, label: "Introduction" },
+  { value: "getting-started", depth: 2, label: "Getting Started" },
+  { value: "installation", depth: 3, label: "Installation" },
+  { value: "configuration", depth: 3, label: "Configuration" },
+  { value: "usage", depth: 2, label: "Usage" },
+  { value: "basic-example", depth: 3, label: "Basic Example" },
+  { value: "advanced-patterns", depth: 3, label: "Advanced Patterns" },
+  { value: "api-reference", depth: 2, label: "API Reference" },
+  { value: "troubleshooting", depth: 2, label: "Troubleshooting" },
 ]
 
 export * as commandData from "./command"

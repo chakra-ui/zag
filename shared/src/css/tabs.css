@@ -20,6 +20,8 @@
   position: relative;
   margin: 0;
   padding: 0.3rem 0.5rem;
+  flex: 1;
+  justify-content: center;
 
   &[data-selected] {
     border-radius: 0;
@@ -38,14 +40,14 @@
 [data-scope="tabs"][data-part="indicator"] {
   background-color: red;
   z-index: 10;
-}
 
-[data-scope="tabs"][data-part="indicator"][data-orientation="horizontal"] {
-  width: var(--width);
-  height: 4px;
-}
+  &[data-orientation="horizontal"] {
+    width: var(--width);
+    height: 4px;
+  }
 
-[data-scope="tabs"][data-part="indicator"][data-orientation="vertical"] {
-  height: var(--height);
-  width: 4px;
+  &[data-orientation="vertical"] {
+    height: var(--height);
+    width: 4px;
+  }
 }

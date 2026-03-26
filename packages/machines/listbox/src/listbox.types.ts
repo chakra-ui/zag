@@ -137,7 +137,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     value: string[]
     highlightedValue: string | null
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
     focused: boolean
   }
   computed: {
@@ -146,6 +146,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isInteractive: boolean
     selection: Selection
     multiple: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   refs: {
@@ -220,6 +221,13 @@ export interface InputProps {
    * @default false
    */
   autoHighlight?: boolean | undefined
+  /**
+   * Determines how keyboard conflicts in the input are resolved.
+   * - "caret": keep native text-editing behavior
+   * - "navigate": forward supported keys to listbox navigation
+   * @default "caret"
+   */
+  keyboardPriority?: "caret" | "navigate" | undefined
 }
 
 export interface ListboxApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
@@ -239,6 +247,22 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to highlight a value
    */
   highlightValue: (value: string) => void
+  /**
+   * Function to highlight the first value
+   */
+  highlightFirst: VoidFunction
+  /**
+   * Function to highlight the last value
+   */
+  highlightLast: VoidFunction
+  /**
+   * Function to highlight the next value
+   */
+  highlightNext: VoidFunction
+  /**
+   * Function to highlight the previous value
+   */
+  highlightPrevious: VoidFunction
   /**
    * Function to clear the highlighted value
    */

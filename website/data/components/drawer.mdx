@@ -1,0 +1,419 @@
+---
+title: Drawer
+description: Using the drawer machine in your project.
+package: "@zag-js/drawer"
+---
+
+A drawer is a panel that slides up from the bottom of the screen, often used in
+mobile applications to present additional content or actions.
+
+<Resources pkg="@zag-js/drawer" />
+
+<Showcase id="Drawer" />
+
+**Features**
+
+- Supports modal and non-modal modes
+- Focus is trapped and scrolling is blocked in modal mode
+- Supports customizable snap points for partial or full expansion
+- Allows dragging to adjust the sheet's height or swipe to dismiss
+- Provides screen reader announcements via rendered title
+- Pressing `Esc` closes the drawer
+- Supports touch gestures for smooth interaction on mobile devices
+
+## Installation
+
+Install the drawer package:
+
+<CodeSnippet id="drawer/installation.mdx" />
+
+## Anatomy
+
+To use the drawer component correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="drawer" />
+
+## Usage
+
+Import the drawer package:
+
+```tsx
+import * as drawer from "@zag-js/drawer"
+```
+
+The drawer package exports two key functions:
+
+- `machine` — State machine logic.
+- `connect` — Maps machine state to JSX props and event handlers.
+
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="drawer/usage.mdx" />
+
+### Controlled drawer
+
+To control the drawer's open state, pass the `open` and `onOpenChange`
+properties.
+
+<CodeSnippet id="drawer/controlled.mdx" />
+
+### Listening for open state changes
+
+When the drawer state changes, the `onOpenChange` callback is invoked.
+
+```tsx {3-7}
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("drawer open:", details.open)
+  },
+})
+```
+
+### Configuring snap points
+
+The drawer supports customizable snap points, which determine the heights at
+which the sheet can "snap" when dragged. Snap points can be defined as numbers
+(representing percentages of the content height, e.g., `0.5` for 50%) or pixel
+values (e.g., `"200px"`). By default, it snaps to full sheet height (`1`).
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  snapPoints: [0.3, 0.5, 1], // 30%, 50%, and 100% of sheet height
+  defaultSnapPoint: 0.5, // Start at 50% height
+  onSnapPointChange: ({ snapPoint }) => {
+    console.log("Active snap point:", snapPoint)
+  },
+})
+```
+
+### Controlled snap point
+
+Use `snapPoint` and `onSnapPointChange` to control the active snap point.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  snapPoints: [0.3, 0.5, 1],
+  snapPoint,
+  onSnapPointChange(details) {
+    setSnapPoint(details.snapPoint)
+  },
+})
+```
+
+### Swipe-to-dismiss behavior
+
+The drawer can be dismissed by swiping it down quickly or dragging it below a
+threshold. Customize this behavior with the following properties:
+
+- `swipeVelocityThreshold`: The minimum velocity (in pixels per second) required
+  to dismiss on swipe (default: `700`).
+- `closeThreshold`: The percentage of content height below which the sheet
+  closes when dragged (default: `0.25`).
+
+```tsx {3-4}
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  swipeVelocityThreshold: 800,
+  closeThreshold: 0.3,
+})
+```
+
+### Choosing swipe direction
+
+Set `swipeDirection` to control where the drawer can be dismissed.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  swipeDirection: "down",
+})
+```
+
+### Sequential snap points
+
+Set `snapToSequentialPoints` to force dragging through snap points in order.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  snapPoints: [0.25, 0.5, 1],
+  snapToSequentialPoints: true,
+})
+```
+
+### Preventing dragging during scroll
+
+By default, dragging is prevented if the content inside the drawer is scrollable
+and not at the top or bottom. To allow dragging even during scrolling, set
+`preventDragOnScroll` to `false`:
+
+```tsx {3}
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  preventDragOnScroll: false,
+})
+```
+
+### Non-modal drawer
+
+Set `modal` to `false` to allow interaction behind the drawer.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  modal: false,
+})
+```
+
+### Swipe area
+
+Use `getSwipeAreaProps` to render a region outside the drawer that users can
+swipe to open it (for example, an edge swipe gesture on mobile). The swipe area
+is automatically disabled while the drawer is already open.
+
+```tsx
+<div {...api.getSwipeAreaProps()}>
+  {/* invisible hit area along the screen edge */}
+</div>
+```
+
+You can customize the swipe area's direction and disabled state:
+
+```tsx
+// Disable the swipe area
+api.getSwipeAreaProps({ disabled: true })
+
+// Override the open direction (defaults to opposite of drawer's swipeDirection)
+api.getSwipeAreaProps({ swipeDirection: "up" })
+```
+
+### Content draggable
+
+By default the drawer content itself can be dragged to dismiss or snap. To
+restrict dragging to only the grabber, pass `draggable: false` to
+`getContentProps`.
+
+```tsx
+<div {...api.getContentProps({ draggable: false })}>
+  <div {...api.getGrabberProps()}>
+    <div {...api.getGrabberIndicatorProps()} />
+  </div>
+  {/* Content here is not draggable */}
+</div>
+```
+
+### Using drawer stack
+
+When your app shows multiple drawers that stack on top of each other (with
+indent and background effects), use `createStack` and `connectStack` to
+coordinate them.
+
+```tsx
+import * as drawer from "@zag-js/drawer"
+
+// Create a shared stack (once, at the app level)
+const stack = drawer.createStack()
+```
+
+Pass the `stack` to each drawer machine:
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  stack,
+})
+```
+
+Subscribe to the stack snapshot and connect it to render indent layers:
+
+```tsx
+const snapshot = useSyncExternalStore(stack.subscribe, stack.getSnapshot)
+const stackApi = drawer.connectStack(snapshot, normalizeProps)
+
+return (
+  <div {...stackApi.getIndentProps()}>
+    <div {...stackApi.getIndentBackgroundProps()} />
+    {/* drawer instances */}
+  </div>
+)
+```
+
+The indent element exposes `data-active` / `data-inactive` attributes and the
+CSS variables `--drawer-swipe-progress` and `--drawer-frontmost-height` for
+styling.
+
+### Closing with Escape
+
+Set `closeOnEscape` to `false` if the drawer should not close on `Esc`.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  closeOnEscape: false,
+})
+```
+
+### Reading drawer state
+
+The `api` provides methods to read the drawer's current position:
+
+- `api.getOpenPercentage()` — returns a value between `0` (fully closed) and `1`
+  (fully open at the current snap point).
+- `api.getSnapPointIndex()` — returns the index of the active snap point in the
+  `snapPoints` array, or `-1` if none matches.
+- `api.getContentSize()` — returns the drawer content size in pixels (along the
+  swipe axis), or `null` if not yet measured.
+
+```tsx
+const percentage = api.getOpenPercentage()
+const index = api.getSnapPointIndex()
+const size = api.getContentSize()
+```
+
+## Styling guide
+
+Each part includes a `data-part` attribute you can target in CSS.
+
+### Open and closed state
+
+The drawer exposes `data-state` attributes you can use for open/closed styles:
+
+```css
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the content in different states */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the trigger in different states */
+}
+```
+
+### Swipe and drag state
+
+Target active swipe or drag interactions:
+
+```css
+[data-part="content"][data-swiping] {
+  /* during any swipe or drag interaction */
+}
+
+[data-part="content"][data-dragging] {
+  /* during drag only (not swipe-to-open) */
+}
+
+[data-part="content"][data-expanded] {
+  /* when at the fully expanded snap point */
+}
+
+[data-part="content"][data-swipe-direction] {
+  /* physical swipe direction: "up" | "down" | "left" | "right" */
+}
+
+[data-part="backdrop"][data-swiping] {
+  /* backdrop during swipe or drag */
+}
+
+[data-part="swipeArea"][data-disabled] {
+  /* when swipe area is disabled */
+}
+
+[data-part="swipeArea"][data-swipe-direction] {
+  /* physical open direction */
+}
+```
+
+### Animating the drawer
+
+The content element uses
+`transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)`
+by default. Reference these variables in your keyframes:
+
+```css
+@keyframes slideIn {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(
+      var(--drawer-translate-x, 0px),
+      var(--drawer-translate-y, 0px),
+      0
+    );
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translate3d(
+      var(--drawer-translate-x, 0px),
+      var(--drawer-translate-y, 0px),
+      0
+    );
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+[data-scope="drawer"][data-part="content"][data-state="open"] {
+  animation: slideIn 500ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+[data-scope="drawer"][data-part="content"][data-state="closed"] {
+  animation: slideOut 500ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+```
+
+### CSS variables reference
+
+The following CSS variables are set on the content element:
+
+| Variable                       | Description                      |
+| ------------------------------ | -------------------------------- |
+| `--drawer-translate-x`         | Horizontal translate value       |
+| `--drawer-translate-y`         | Vertical translate value         |
+| `--drawer-snap-point-offset-x` | Snap point offset on the x-axis  |
+| `--drawer-snap-point-offset-y` | Snap point offset on the y-axis  |
+| `--drawer-swipe-movement-x`    | Current swipe movement on x-axis |
+| `--drawer-swipe-movement-y`    | Current swipe movement on y-axis |
+| `--drawer-swipe-strength`      | Numeric swipe strength           |
+
+The following CSS variables are set on the backdrop element:
+
+| Variable                  | Description                                     |
+| ------------------------- | ----------------------------------------------- |
+| `--drawer-swipe-progress` | 0-1 progress value, useful for backdrop opacity |
+| `--drawer-swipe-strength` | Numeric swipe strength                          |
+
+## Methods and Properties
+
+The drawer's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The drawer machine exposes the following context properties:
+
+<ContextTable name="drawer" />
+
+### Machine API
+
+The drawer `api` exposes the following methods:
+
+<ApiTable name="drawer" />
+
+### Data Attributes
+
+<DataAttrTable name="drawer" />
+
+### CSS Variables
+
+<CssVarTable name="drawer" />

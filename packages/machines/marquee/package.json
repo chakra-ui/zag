@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/marquee",
-  "version": "1.33.1",
+  "version": "1.38.2",
   "description": "Core logic for the marquee widget implemented as a state machine",
   "keywords": [
     "js",
@@ -44,5 +44,5 @@
   "devDependencies": {
     "clean-package": "2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json"
+  "clean-package": "./clean-package.config.json"
 }

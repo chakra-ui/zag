@@ -6,7 +6,7 @@ const content = part("content")
 const testText = part("test-text")
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/hover-card")
+  await page.goto("/hover-card/basic")
 })
 
 test("should have no accessibility violation", async ({ page }) => {

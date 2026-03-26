@@ -65,12 +65,53 @@ export function getWeekDays(date: DateValue, startOfWeekProp: number | undefined
   return weeks.map((index) => format(firstDayOfWeek.add({ days: index })))
 }
 
-export function getMonthNames(locale: string, format: Intl.DateTimeFormatOptions["month"] = "long") {
-  const date = new Date(2021, 0, 1)
+export function getMonthNames(
+  locale: string,
+  format: Intl.DateTimeFormatOptions["month"] = "long",
+  referenceDate?: DateValue,
+) {
+  if (
+    !referenceDate ||
+    referenceDate.calendar.identifier === "gregory" ||
+    referenceDate.calendar.identifier === "iso8601"
+  ) {
+    const date = new Date(2021, 0, 1)
+    const monthNames: string[] = []
+    for (let i = 0; i < 12; i++) {
+      monthNames.push(date.toLocaleString(locale, { month: format }))
+      date.setMonth(date.getMonth() + 1)
+    }
+    return monthNames
+  }
+
+  const monthCount = referenceDate.calendar.getMonthsInYear(referenceDate)
+  const formatter = new DateFormatter(locale, {
+    month: format,
+    calendar: referenceDate.calendar.identifier,
+  })
   const monthNames: string[] = []
-  for (let i = 0; i < 12; i++) {
-    monthNames.push(date.toLocaleString(locale, { month: format }))
-    date.setMonth(date.getMonth() + 1)
+  for (let month = 1; month <= monthCount; month++) {
+    const d = referenceDate.set({ month })
+    monthNames.push(formatter.format(d.toDate("UTC")))
   }
   return monthNames
+}
+
+export function getWeekOfYear(date: DateValue, locale: string): number {
+  const mondayOfWeek = startOfWeek(date, locale, "mon")
+  const year = mondayOfWeek.year
+  const jan4 = mondayOfWeek.set({ month: 1, day: 4 })
+  const week1Monday = startOfWeek(jan4, locale, "mon")
+
+  const julianMonday = mondayOfWeek.calendar.toJulianDay(mondayOfWeek)
+  const julianWeek1 = week1Monday.calendar.toJulianDay(week1Monday)
+
+  if (julianMonday >= julianWeek1) {
+    return 1 + Math.floor((julianMonday - julianWeek1) / 7)
+  }
+
+  const prevJan4 = mondayOfWeek.set({ year: year - 1, month: 1, day: 4 })
+  const prevWeek1Monday = startOfWeek(prevJan4, locale, "mon")
+  const julianPrevWeek1 = prevWeek1Monday.calendar.toJulianDay(prevWeek1Monday)
+  return 1 + Math.floor((julianMonday - julianPrevWeek1) / 7)
 }

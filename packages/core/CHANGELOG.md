@@ -1,5 +1,107 @@
 # @zag-js/core
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Validate compound states at machine creation: throw if a state has
+  child states but no `initial`, or if `initial` references a nonexistent child.
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- [`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for XState-style `#id` transition targets.
+
+  `#...` targets now resolve by state node `id`, making cross-level transitions explicit.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- [#2985](https://github.com/chakra-ui/zag/pull/2985)
+  [`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add comprehensive nested state support and
+  coverage. Document hierarchical states in core README, ensure effects/entry/exit ordering for nested transitions, and
+  add deep nesting smoke tests across adapters.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

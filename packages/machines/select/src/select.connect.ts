@@ -1,12 +1,14 @@
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
+  contains,
   dataAttr,
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  getNativeEvent,
   isEditableElement,
-  contains,
+  isInternalChangeEvent,
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
@@ -22,6 +24,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send } = service
+  const translations = prop("translations")
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const invalid = !!prop("invalid")
@@ -35,7 +38,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
 
   const isTypingAhead = computed("isTypingAhead")
@@ -343,7 +346,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.clearTrigger.attrs,
         id: dom.getClearTriggerId(scope),
         type: "button",
-        "aria-label": "Clear value",
+        "aria-label": translations.clearTriggerLabel,
         "data-invalid": dataAttr(invalid),
         disabled: disabled,
         hidden: !computed("hasSelectedItems"),
@@ -358,6 +361,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getHiddenSelectProps() {
       const value = context.get("value")
       const defaultValue = prop("multiple") ? value : value?.[0]
+
+      const handleChange = (e: { currentTarget: HTMLSelectElement; nativeEvent?: Event }) => {
+        const evt = getNativeEvent(e)
+        if (isInternalChangeEvent(evt)) return
+        send({ type: "VALUE.SET", value: getSelectedValues(e.currentTarget) })
+      }
+
       return normalize.select({
         name: prop("name"),
         form: prop("form"),
@@ -369,6 +379,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         defaultValue,
         style: visuallyHiddenStyle,
         tabIndex: -1,
+        autoComplete: prop("autoComplete"),
+        onChange: handleChange,
+        onInput: handleChange,
         // Some browser extensions will focus the hidden select.
         // Let's forward the focus to the trigger.
         onFocus() {
@@ -474,4 +487,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
   }
+}
+
+const getSelectedValues = (el: HTMLSelectElement) => {
+  return el.multiple ? Array.from(el.selectedOptions, (o) => o.value) : el.value ? [el.value] : []
 }

@@ -4,6 +4,7 @@ import type { ItemProps, TagsInputProps } from "./tags-input.types"
 
 export const props = createProps<TagsInputProps>()([
   "addOnPaste",
+  "allowDuplicates",
   "allowOverflow",
   "autoFocus",
   "blurBehavior",
@@ -30,6 +31,7 @@ export const props = createProps<TagsInputProps>()([
   "placeholder",
   "required",
   "readOnly",
+  "sanitizeValue",
   "translations",
   "validate",
   "value",

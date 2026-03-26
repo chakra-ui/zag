@@ -1,0 +1,238 @@
+[data-scope="drawer"][data-part="backdrop"] {
+  --backdrop-opacity: 0.5;
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  transition-property: opacity;
+  transition-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+
+  &[data-state="open"] {
+    animation: fadeInBackdrop calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  }
+
+  &[data-state="closed"] {
+    animation: fadeOutBackdrop calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: 0;
+  }
+
+  &[data-swiping] {
+    animation: none;
+    transition-duration: 0ms;
+  }
+}
+
+[data-scope="drawer"][data-part="positioner"] {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+[data-scope="drawer"][data-part="positioner"][data-swipe-direction="up"] {
+  align-items: flex-start;
+}
+
+[data-scope="drawer"][data-part="positioner"][data-swipe-direction="left"] {
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+[data-scope="drawer"][data-part="positioner"][data-swipe-direction="right"] {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+[data-scope="drawer"][data-part="content"] {
+  background: white;
+  transition: transform calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
+  animation-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 100%;
+  max-height: 96svh;
+  position: relative;
+  width: 100%;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+
+  &[data-state="open"] {
+    animation-name: slideInDown;
+  }
+
+  &[data-state="closed"] {
+    animation-name: slideOutDown;
+  }
+
+  &[data-swipe-direction="up"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
+  &[data-swipe-direction="up"][data-state="open"] {
+    animation-name: slideInUp;
+  }
+
+  &[data-swipe-direction="up"][data-state="closed"] {
+    animation-name: slideOutUp;
+  }
+
+  &[data-swipe-direction="left"],
+  &[data-swipe-direction="right"] {
+    height: 100%;
+    max-height: none;
+    width: min(420px, 90vw);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &[data-swipe-direction="left"] {
+    border-bottom-right-radius: 16px;
+  }
+
+  &[data-swipe-direction="right"] {
+    border-bottom-left-radius: 16px;
+  }
+
+  &[data-swipe-direction="left"][data-state="open"] {
+    animation-name: slideInLeft;
+  }
+
+  &[data-swipe-direction="left"][data-state="closed"] {
+    animation-name: slideOutLeft;
+  }
+
+  &[data-swipe-direction="right"][data-state="open"] {
+    animation-name: slideInRight;
+  }
+
+  &[data-swipe-direction="right"][data-state="closed"] {
+    animation-name: slideOutRight;
+  }
+}
+
+[data-scope="drawer"][data-part="grabber"] {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-scope="drawer"][data-part="grabber-indicator"] {
+  height: 4px;
+  width: 40px;
+  background-color: gray;
+  border-radius: 1000px;
+}
+
+[data-scope="drawer"] [data-no-drag="true"] {
+  width: 100%;
+  padding: 40px 0;
+  border: 1px solid black;
+  border-radius: 16px;
+}
+
+[data-scope="drawer"] .scrollable {
+  overflow-y: auto;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, var(--drawer-translate-y, var(--drawer-translate, 0px)), 0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translate3d(0, var(--drawer-translate-y, var(--drawer-translate, 0px)), 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, var(--drawer-translate-y, var(--drawer-translate, 0px)), 0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, var(--drawer-translate-y, var(--drawer-translate, 0px)), 0);
+  }
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--drawer-translate-x, 0px), 0, 0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translate3d(var(--drawer-translate-x, 0px), 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--drawer-translate-x, 0px), 0, 0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translate3d(var(--drawer-translate-x, 0px), 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  }
+}
+
+@keyframes fadeOutBackdrop {
+  from {
+    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  }
+  to {
+    opacity: 0;
+  }
+}

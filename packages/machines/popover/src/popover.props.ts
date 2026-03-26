@@ -25,6 +25,7 @@ export const props = createProps<PopoverProps>()([
   "persistentElements",
   "portalled",
   "positioning",
+  "translations",
   "triggerValue",
 ])
 

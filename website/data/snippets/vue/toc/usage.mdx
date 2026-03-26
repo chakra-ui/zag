@@ -1,0 +1,34 @@
+```html
+<script setup>
+  import * as toc from "@zag-js/toc"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const items = [
+    { value: "introduction", depth: 2 },
+    { value: "getting-started", depth: 2 },
+    { value: "installation", depth: 3 },
+    { value: "usage", depth: 2 },
+  ]
+
+  const service = useMachine(toc.machine, { id: "1", items })
+  const api = computed(() => toc.connect(service, normalizeProps))
+</script>
+
+<template>
+  <nav v-bind="api.getRootProps()">
+    <h5 v-bind="api.getTitleProps()">On this page</h5>
+    <ul v-bind="api.getListProps()">
+      <li
+        v-for="item in api.items"
+        :key="item.value"
+        v-bind="api.getItemProps({ item })"
+      >
+        <a :href="`#${item.value}`" v-bind="api.getLinkProps({ item })">
+          {{ item.value }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+```

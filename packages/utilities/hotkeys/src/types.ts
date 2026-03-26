@@ -145,6 +145,8 @@ export interface HotkeyOptions {
 // Store state interface
 export interface HotkeyStoreState<TContext = any> {
   pressedKeys: Set<string>
+  /** Physical `KeyboardEvent.code` values currently held (mirrors `matchesHotkey` code path). */
+  pressedCodes: Set<string>
   commands: Map<string, HotkeyCommand<TContext>>
   listening: boolean
   activeScopes: Set<string>

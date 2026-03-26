@@ -1,0 +1,73 @@
+```svelte
+<script lang="ts">
+  import * as cascadeSelect from "@zag-js/cascade-select"
+  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+
+  // 1. Create the collection (see above)
+
+  interface Node {
+    label: string
+    value: string
+    children?: Node[]
+  }
+
+  const collection = cascadeSelect.collection<Node>({
+    // ...
+  })
+
+  // 2. Create the recursive tree node
+
+  const id = $props.id()
+  const service = useMachine(cascadeSelect.machine, { id, collection })
+  const api = $derived(cascadeSelect.connect(service, normalizeProps))
+</script>
+
+{#snippet treeNode(nodeProps)}
+  {@const { node, indexPath, value, api } = nodeProps}
+  {@const listNodeProps = { indexPath, value, item: node }}
+  {@const nodeState = api.getItemState(listNodeProps)}
+  {@const children = collection.getNodeChildren(node)}
+
+  <ul {...api.getListProps(listNodeProps)}>
+    {#each children as item, index}
+      {@const itemProps = {
+        indexPath: [...indexPath, index],
+        value: [...value, collection.getNodeValue(item)],
+        item,
+      }}
+      {@const itemState = api.getItemState(itemProps)}
+      <li {...api.getItemProps(itemProps)}>
+        <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+        {#if itemState.hasChildren}<span>›</span>{/if}
+        <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
+      </li>
+    {/each}
+  </ul>
+  {#if nodeState.highlightedChild && collection.isBranchNode(nodeState.highlightedChild)}
+    {@render treeNode({
+      node: nodeState.highlightedChild,
+      api,
+      indexPath: [...indexPath, nodeState.highlightedIndex],
+      value: [...value, collection.getNodeValue(nodeState.highlightedChild)],
+    })}
+  {/if}
+{/snippet}
+
+<!-- 3. Create the cascade select -->
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Location</label>
+  <div {...api.getControlProps()}>
+    <button {...api.getTriggerProps()}>
+      <span>{api.valueAsString || "Select location"}</span>
+      <span {...api.getIndicatorProps()}>▼</span>
+    </button>
+    <button {...api.getClearTriggerProps()}>✕</button>
+  </div>
+  <div use:portal {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      {@render treeNode({ node: collection.rootNode, api, indexPath: [], value: [] })}
+    </div>
+  </div>
+</div>
+```

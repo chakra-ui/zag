@@ -1,0 +1,33 @@
+```tsx
+import * as toc from "@zag-js/toc"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+const items = [
+  { value: "introduction", depth: 2 },
+  { value: "getting-started", depth: 2 },
+  { value: "installation", depth: 3 },
+  { value: "usage", depth: 2 },
+]
+
+export function TableOfContents() {
+  const service = useMachine(toc.machine, { id: useId(), items })
+
+  const api = toc.connect(service, normalizeProps)
+
+  return (
+    <nav {...api.getRootProps()}>
+      <h5 {...api.getTitleProps()}>On this page</h5>
+      <ul {...api.getListProps()}>
+        {api.items.map((item) => (
+          <li key={item.value} {...api.getItemProps({ item })}>
+            <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
+              {item.value}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+```

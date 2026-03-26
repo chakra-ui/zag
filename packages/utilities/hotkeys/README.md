@@ -59,15 +59,15 @@ Use `parseHotkey` to parse hotkey strings into structured objects for analysis:
 import { parseHotkey } from "@zag-js/hotkeys"
 
 // Parse simple hotkey
-const parsed = parseHotkey("mod+s")
+const parsed = parseHotkey("mod+s", "mac")
 // Result: { keys: ["s"], alt: false, ctrl/meta: true, shift: false, isSequence: false }
 
 // Parse with multiple modifiers
-const parsed2 = parseHotkey("ctrl+shift+k")
+const parsed2 = parseHotkey("ctrl+shift+k", "windows")
 // Result: { keys: ["k"], alt: false, ctrl: true, shift: true, meta: false, isSequence: false }
 
 // Parse sequences
-const parsed3 = parseHotkey("g > g")
+const parsed3 = parseHotkey("g > g", "windows")
 // Result: {
 //   keys: ["g", "g"],
 //   isSequence: true,
@@ -78,7 +78,7 @@ const parsed3 = parseHotkey("g > g")
 // }
 
 // Parse special keys
-const parsed4 = parseHotkey("ctrl++") // Plus key
+const parsed4 = parseHotkey("ctrl++", "windows") // Plus key
 // Result: { keys: ["+"], ctrl: true, alt: false, meta: false, shift: false }
 ```
 
@@ -105,9 +105,9 @@ interface AppContext {
 const store = createHotkeyStore<AppContext>()
 
 // Initialize with DOM and context
-store.initialize({
+store.init({
   rootNode: document,
-  defaultContext: { user: "john", theme: "dark" },
+  context: { user: "john", theme: "dark" },
 })
 
 // Register commands
@@ -146,7 +146,7 @@ const store = createHotkeyStore()
 
 // With options
 const store = createHotkeyStore({
-  defaultActiveScopes: ["global", "editor"],
+  activeScopes: ["global", "editor"],
   sequenceTimeoutMs: 1500,
 })
 
@@ -157,7 +157,7 @@ interface MyContext {
 }
 
 const store = createHotkeyStore<MyContext>({
-  defaultActiveScopes: ["app"],
+  activeScopes: ["app"],
 })
 ```
 
@@ -165,9 +165,9 @@ const store = createHotkeyStore<MyContext>({
 
 ```typescript
 // Initialize with DOM and context
-store.initialize({
+store.init({
   rootNode: document, // or shadowRoot
-  defaultContext: { userId: "123", permissions: ["read", "write"] },
+  context: { userId: "123", permissions: ["read", "write"] },
 })
 ```
 
@@ -483,9 +483,9 @@ function useHotkeyStore<T>(context: T) {
   const [store] = useState(() => createHotkeyStore<T>())
 
   useEffect(() => {
-    store.initialize({
+    store.init({
       rootNode: document,
-      defaultContext: context
+      context,
     })
 
     return () => store.destroy()
@@ -526,9 +526,9 @@ export function useHotkeyStore<T>(context: Ref<T>) {
   const store = createHotkeyStore<T>()
 
   onMounted(() => {
-    store.initialize({
+    store.init({
       rootNode: document,
-      defaultContext: context.value,
+      context: context.value,
     })
   })
 

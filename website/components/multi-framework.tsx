@@ -88,9 +88,11 @@ export function MultiframeworkTabs() {
           css={{
             "& #playground": {
               marginY: "0",
+              height: "full",
             },
             "& [data-part=root]": {
               transform: "scale(1.5) translateY(40px)",
+              marginTop: "-120px",
             },
           }}
         >

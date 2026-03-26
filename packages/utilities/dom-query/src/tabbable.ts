@@ -1,4 +1,4 @@
-import { getActiveElement, isEditableElement, isElementVisible, isHTMLElement } from "./node"
+import { getActiveElement, isEditableElement, isElementVisible, isHTMLElement, isInputElement } from "./node"
 
 type IncludeContainerType = boolean | "if-empty"
 export type GetShadowRootOption = boolean | ((node: HTMLElement) => ShadowRoot | boolean | undefined) | undefined
@@ -25,6 +25,26 @@ function parseTabIndex(el: Element): number {
 
 const hasTabIndex = (el: Element) => !Number.isNaN(parseTabIndex(el))
 const hasNegativeTabIndex = (el: Element) => parseTabIndex(el) < 0
+
+function isRadioInput(element: HTMLElement): element is HTMLInputElement {
+  return isInputElement(element) && element.type === "radio"
+}
+
+function isTabbableRadio(element: HTMLElement): boolean {
+  if (!isRadioInput(element) || !element.name) return true
+  if (element.checked) return true
+
+  const selector = `input[type="radio"][name="${CSS.escape(element.name)}"]`
+  const scope = element.form ?? element.ownerDocument
+  const group = Array.from(scope.querySelectorAll<HTMLInputElement>(selector)).filter(
+    (radio) => radio.form === element.form && isFocusable(radio),
+  )
+
+  const checked = group.find((radio) => radio.checked)
+  if (checked) return checked === element
+
+  return group[0] === element
+}
 
 /**
  * Helper function to get the shadow root from an element based on the getShadowRoot option
@@ -191,7 +211,8 @@ export function getTabbables(container: HTMLElement | null, options: TabbableOpt
 
 export function isTabbable(el: HTMLElement | EventTarget | null): el is HTMLElement {
   if (isHTMLElement(el) && el.tabIndex > 0) return true
-  return isFocusable(el) && !hasNegativeTabIndex(el)
+  if (!isFocusable(el) || hasNegativeTabIndex(el)) return false
+  return isTabbableRadio(el)
 }
 
 export function getFirstTabbable(container: HTMLElement | null, options: TabbableOptions = {}): HTMLElement | null {

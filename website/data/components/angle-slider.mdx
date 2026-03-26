@@ -15,13 +15,12 @@ control rotations or orientations, offering accessibility features.
 **Features**
 
 - Fully managed keyboard navigation
-- Supports touch or click on track to update value
-- Supports Right-to-Left directionality
+- Supports touch or click on the track to update value
+- Supports right-to-left direction
 
 ## Installation
 
-To use the angle slider machine in your project, run the following command in
-your command line:
+Install the angle slider package:
 
 <CodeSnippet id="angle-slider/installation.mdx" />
 
@@ -36,32 +35,28 @@ how we name its parts.
 
 ## Usage
 
-First, import the angle-slider package into your project
+Import the angle-slider package:
 
-```jsx
+```tsx
 import * as angleSlider from "@zag-js/angle-slider"
 ```
 
 The angle slider package exports two key functions:
 
-- `machine` — The state machine logic for the angle slider widget as described
-  in the WAI-ARIA spec.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-angle slider machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="angle-slider/usage.mdx" />
 
 ### Setting the initial value
 
-Use the `defaultValue` property to set the initial value of the angle slider.
+Set `defaultValue` to define the initial slider value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   defaultValue: 45,
 })
@@ -69,20 +64,18 @@ const service = useMachine(angleSlider.machine, {
 
 ### Controlled angle slider
 
-To control the angle slider's value, pass the `value` and `onValueChange`
-properties to the machine function.
+Use `value` and `onValueChange` to control the value externally.
 
 <CodeSnippet id="angle-slider/controlled.mdx" />
 
 ### Setting the value's granularity
 
-By default, the granularity, is `1`, meaning that the value is always an
-integer. You can change the step attribute to control the granularity.
+By default, `step` is `1`, so values move in whole-number increments. Set `step`
+to control granularity.
 
-For example, If you need a value between `5` and `10`, accurate to two decimal
-places, you should set the value of step to `0.01`:
+For example, set `step` to `0.01` for two-decimal precision:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   step: 0.01,
 })
@@ -91,29 +84,50 @@ const service = useMachine(angleSlider.machine, {
 ### Listening for changes
 
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
-callbacks are invoked. You can use this to setup custom behaviors in your app.
+callbacks are invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(angleSlider.machine, {
   onValueChange(details) {
-    console.log("value is changing to:", details)
+    console.log("value:", details.value)
+    console.log("as degree:", details.valueAsDegree)
   },
   onValueChangeEnd(details) {
-    console.log("value has changed to:", details)
+    console.log("final value:", details.value)
   },
 })
 ```
 
-### Usage within forms
+### Read-only mode
 
-To use angle slider within forms, use the exposed `hiddenInputProps` from the
-`connect` function and ensure you pass `name` value to the machine's context. It
-will render a hidden input and ensure the value changes get propagated to the
-form correctly.
+Set `readOnly` to prevent updates while preserving focus and form semantics.
 
-```jsx {2}
+```tsx {2}
+const service = useMachine(angleSlider.machine, {
+  readOnly: true,
+})
+```
+
+### Usage in forms
+
+To submit the value with a form:
+
+- Set `name` on the machine.
+- Render the hidden input from `api.getHiddenInputProps()`.
+
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   name: "wind-direction",
+})
+```
+
+### Labeling the thumb for assistive tech
+
+Use `aria-label` or `aria-labelledby` when you need custom labeling.
+
+```tsx {2}
+const service = useMachine(angleSlider.machine, {
+  "aria-label": "Wind direction",
 })
 ```
 
@@ -127,8 +141,7 @@ angles.
 
 ## Styling guide
 
-Earlier, we mentioned that each angle slider part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Disabled State
 
@@ -200,13 +213,13 @@ track, range, label, and thumb parts.
 
 ### Machine Context
 
-The slider machine exposes the following context properties:
+The angle slider machine exposes the following context properties:
 
 <ContextTable name="angle-slider" />
 
 ### Machine API
 
-The slider `api` exposes the following methods:
+The angle slider `api` exposes the following methods:
 
 <ApiTable name="angle-slider" />
 

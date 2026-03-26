@@ -1,5 +1,130 @@
 # @zag-js/vanilla
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.38.2
+  - @zag-js/store@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/store@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.38.0
+  - @zag-js/store@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.37.0
+  - @zag-js/store@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [#3019](https://github.com/chakra-ui/zag/pull/3019)
+  [`4c851ea`](https://github.com/chakra-ui/zag/commit/4c851ead1ee6d35349a9e257be15e31fd79a1292) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - **Machine**: Fix handling of controlled mode
+
+- Updated dependencies []:
+  - @zag-js/core@1.36.0
+  - @zag-js/store@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.35.3
+  - @zag-js/store@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/utils@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/store@1.35.2
+  - @zag-js/types@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/store@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/utils@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- [#2985](https://github.com/chakra-ui/zag/pull/2985)
+  [`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add comprehensive nested state support and
+  coverage. Document hierarchical states in core README, ensure effects/entry/exit ordering for nested transitions, and
+  add deep nesting smoke tests across adapters.
+
+- [#2984](https://github.com/chakra-ui/zag/pull/2984)
+  [`66ee343`](https://github.com/chakra-ui/zag/commit/66ee343b0e50fc823dc11b26138731f6023f6f6a) Thanks
+  [@jramke](https://github.com/jramke)! - Updated vanilla mergeProps function to make sure the style prop is always a
+  string
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/store@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.34.1
+  - @zag-js/store@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/utils@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.34.0
+  - @zag-js/store@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

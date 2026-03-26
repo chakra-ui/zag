@@ -67,6 +67,8 @@ const cssVarDescriptions: Record<string, string> = {
   // Slider specific
   "--value": "The current value",
   "--angle": "The angle in degrees",
+  "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
+  "--marker-display-value": "The rotation angle for display (mirrored in RTL)",
   "--thumb-offset": "The offset position of the thumb",
   "--thumb-width": "The width of the slider thumb",
   "--thumb-height": "The height of the slider thumb",

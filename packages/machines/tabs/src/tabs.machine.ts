@@ -47,12 +47,22 @@ export const machine = createMachine({
       indicatorRect: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
+      animateIndicator: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+    }
+  },
+
+  refs() {
+    return {
+      indicatorCleanup: null,
+      prevValue: null,
     }
   },
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["syncIndicatorRect"])
@@ -72,9 +82,12 @@ export const machine = createMachine({
     SYNC_TAB_INDEX: {
       actions: ["syncTabIndex"],
     },
+    INDICATOR_TRANSITION_END: {
+      actions: ["clearIndicatorAnimation"],
+    },
   },
 
-  entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
+  entry: ["syncPrevValue", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
 
   exit: ["cleanupObserver"],
 
@@ -258,6 +271,19 @@ export const machine = createMachine({
       },
       syncSsr({ context }) {
         context.set("ssr", false)
+      },
+      syncPrevValue({ context, refs }) {
+        refs.set("prevValue", context.get("value"))
+      },
+      syncIndicatorAnimation({ context, refs }) {
+        const prevValue = refs.get("prevValue")
+        const nextValue = context.get("value")
+        const animate = prevValue != null && nextValue != null && prevValue !== nextValue
+        context.set("animateIndicator", animate)
+        refs.set("prevValue", nextValue)
+      },
+      clearIndicatorAnimation({ context }) {
+        context.set("animateIndicator", false)
       },
       syncIndicatorRect({ context, refs, scope }) {
         const cleanup = refs.get("indicatorCleanup")

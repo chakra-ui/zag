@@ -1,8 +1,14 @@
-import type { CollectionItem } from "@zag-js/collection"
-import { Selection } from "@zag-js/collection"
+import {
+  Selection,
+  createSelectedItemMap,
+  deriveSelectionState,
+  isGridCollection,
+  resolveSelectedItems,
+  type CollectionItem,
+} from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
@@ -27,15 +33,39 @@ export const machine = createMachine({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
+    const initialValue = prop("value") ?? prop("defaultValue") ?? []
+    const initialSelectedItems = prop("collection").findMany(initialValue)
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual,
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          return prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const collection = prop("collection")
+          const selectedItemMap = context.get("selectedItemMap")
+
+          const proposed = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
+
+          // When controlled, use prop value so cache stays in sync when controller ignores selection
+          const effectiveValue = prop("value") ?? value
+          const effective =
+            effectiveValue === value
+              ? proposed
+              : deriveSelectionState({
+                  values: effectiveValue,
+                  collection,
+                  selectedItemMap: proposed.nextSelectedItemMap,
+                })
+
+          context.set("selectedItemMap", effective.nextSelectedItemMap)
+          return prop("onValueChange")?.({ value, items: proposed.selectedItems })
         },
       })),
 
@@ -56,10 +86,13 @@ export const machine = createMachine({
         defaultValue: null,
       })),
 
-      selectedItems: bindable<CollectionItem[]>(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const items = prop("collection").findMany(value)
-        return { defaultValue: items }
+      selectedItemMap: bindable<Map<string, CollectionItem>>(() => {
+        return {
+          defaultValue: createSelectedItemMap({
+            selectedItems: initialSelectedItems,
+            collection: prop("collection"),
+          }),
+        }
       }),
 
       focused: bindable(() => ({
@@ -88,7 +121,13 @@ export const machine = createMachine({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
-    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
+    selectedItems: ({ context, prop }) =>
+      resolveSelectedItems({
+        values: context.get("value"),
+        collection: prop("collection"),
+        selectedItemMap: context.get("selectedItemMap"),
+      }),
+    valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
   },
 
   initialState() {
@@ -124,6 +163,18 @@ export const machine = createMachine({
     },
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"],
+    },
+    "HIGHLIGHT.FIRST": {
+      actions: ["highlightFirstValue"],
+    },
+    "HIGHLIGHT.LAST": {
+      actions: ["highlightLastValue"],
+    },
+    "HIGHLIGHT.NEXT": {
+      actions: ["highlightNextValue"],
+    },
+    "HIGHLIGHT.PREV": {
+      actions: ["highlightPreviousValue"],
     },
   },
 
@@ -173,7 +224,7 @@ export const machine = createMachine({
 
     effects: {
       trackFocusVisible: ({ scope, refs }) => {
-        return trackFocusVisibleFn({
+        return trackFocusVisible({
           root: scope.getRootNode?.(),
           onChange(details) {
             refs.set("focusVisible", details.isFocusVisible)
@@ -189,7 +240,7 @@ export const machine = createMachine({
           const modality = getInteractionModality()
 
           // don't scroll into view if we're using the pointer
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const contentEl = dom.getContentEl(scope)
 
@@ -210,7 +261,10 @@ export const machine = createMachine({
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -279,6 +333,52 @@ export const machine = createMachine({
         context.set("highlightedValue", event.value)
       },
 
+      highlightFirstValue({ context, prop }) {
+        context.set("highlightedValue", prop("collection").firstValue ?? null)
+      },
+
+      highlightLastValue({ context, prop }) {
+        context.set("highlightedValue", prop("collection").lastValue ?? null)
+      },
+
+      highlightNextValue({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        let nextValue: string | null = null
+
+        if (isGridCollection(collection) && highlightedValue) {
+          nextValue = collection.getNextRowValue(highlightedValue)
+        } else if (highlightedValue) {
+          nextValue = collection.getNextValue(highlightedValue)
+        }
+
+        if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
+          nextValue = collection.firstValue
+        }
+
+        if (!nextValue) return
+        context.set("highlightedValue", nextValue)
+      },
+
+      highlightPreviousValue({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        let nextValue: string | null = null
+
+        if (isGridCollection(collection) && highlightedValue) {
+          nextValue = collection.getPreviousRowValue(highlightedValue)
+        } else if (highlightedValue) {
+          nextValue = collection.getPreviousValue(highlightedValue)
+        }
+
+        if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
+          nextValue = collection.lastValue
+        }
+
+        if (!nextValue) return
+        context.set("highlightedValue", nextValue)
+      },
+
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
@@ -308,16 +408,12 @@ export const machine = createMachine({
       },
 
       syncSelectedItems({ context, prop }) {
-        const collection = prop("collection")
-        const prevSelectedItems = context.get("selectedItems")
-
-        const value = context.get("value")
-        const selectedItems = value.map((value) => {
-          const item = prevSelectedItems.find((item) => collection.getItemValue(item) === value)
-          return item || collection.find(value)
+        const next = deriveSelectionState({
+          values: context.get("value"),
+          collection: prop("collection"),
+          selectedItemMap: context.get("selectedItemMap"),
         })
-
-        context.set("selectedItems", selectedItems)
+        context.set("selectedItemMap", next.nextSelectedItemMap)
       },
 
       syncHighlightedItem({ context, prop }) {

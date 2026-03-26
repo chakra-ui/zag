@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "3.11.0",
+    "@internationalized/date": "3.12.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -18,7 +18,8 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
-    "@zag-js/bottom-sheet": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
+    "@zag-js/cascade-select": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -79,6 +80,7 @@
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/timer": "workspace:*",
+    "@zag-js/toc": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
@@ -90,15 +92,14 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "lucide-vue-next": "0.563.0",
-    "match-sorter": "8.2.0",
-    "vue": "3.5.27",
-    "vue-router": "4.6.4"
+    "lucide-vue-next": "1.0.0",
+    "vue": "3.5.30",
+    "vue-router": "5.0.4"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^3.1.1",
+    "@nuxt/devtools": "^3.2.4",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "25.0.10",
-    "nuxt": "4.3.0"
+    "@types/node": "25.5.0",
+    "nuxt": "4.4.2"
   }
 }

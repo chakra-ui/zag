@@ -13,6 +13,7 @@ export const props = createProps<TimerProps>()([
   "onTick",
   "startMs",
   "targetMs",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<TimerProps>>(props)

@@ -25,6 +25,10 @@ export const machine = createMachine({
       orientation: "horizontal",
       defaultValue: "",
       ...props,
+      translations: {
+        rootLabel: "Main Navigation",
+        ...props.translations,
+      },
     }
   },
 

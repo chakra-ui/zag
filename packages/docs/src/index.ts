@@ -1,7 +1,7 @@
-import apiJson from "../data/api.json"
-import accessibilityJson from "../data/accessibility.json"
-import dataAttrJson from "../data/data-attr.json"
-import cssVarsJson from "../data/css-vars.json"
+import apiJson from "../data/api.json" with { type: "json" }
+import accessibilityJson from "../data/accessibility.json" with { type: "json" }
+import dataAttrJson from "../data/data-attr.json" with { type: "json" }
+import cssVarsJson from "../data/css-vars.json" with { type: "json" }
 
 /* -----------------------------------------------------------------------------
  * The data attribute documentation

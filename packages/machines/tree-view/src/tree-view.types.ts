@@ -129,6 +129,11 @@ export interface VisibleNode<T extends TreeNode = TreeNode> {
   indexPath: IndexPath
 }
 
+export interface IntlTranslations {
+  treeLabel?: string | undefined
+  renameInputLabel?: string | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
@@ -141,6 +146,10 @@ export type ElementIds = Partial<{
  * -----------------------------------------------------------------------------*/
 
 export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionProperty, CommonProperties {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The tree collection data
    */
@@ -262,6 +271,7 @@ type PropsWithDefault =
   | "typeahead"
   | "defaultExpandedValue"
   | "defaultSelectedValue"
+  | "translations"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 

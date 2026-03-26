@@ -258,9 +258,9 @@ interface Refs {
    */
   _effectCleanup?: StepEffectCleanup | undefined
   /**
-   * Flag to indicate that an effect is currently running
+   * Flag to skip the watch when stepId is changed internally
    */
-  _runningEffect?: boolean | undefined
+  _internalChange?: boolean | undefined
   /**
    * The previous target element to detect changes
    */
@@ -300,7 +300,7 @@ type ComputedContext = Readonly<{
 
 export interface TourSchema {
   tag: "open" | "closed"
-  state: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
+  state: "tourInactive" | "running.resolving" | "running.scrolling" | "running.waiting" | "running.active"
   props: RequiredBy<TourProps, PropsWithDefault>
   context: PrivateContext
   refs: Refs

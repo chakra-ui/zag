@@ -9,8 +9,11 @@ import {
   getEventTarget,
   getNativeEvent,
   isComposingEvent,
+  isContextMenuEvent,
   isCtrlOrMetaKey,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -33,7 +36,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const inputState = refs.get("inputState")
 
   const value = context.get("value")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
 
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
@@ -87,6 +90,18 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
+    highlightFirst() {
+      send({ type: "HIGHLIGHT.FIRST" })
+    },
+    highlightLast() {
+      send({ type: "HIGHLIGHT.LAST" })
+    },
+    highlightNext() {
+      send({ type: "HIGHLIGHT.NEXT" })
+    },
+    highlightPrevious() {
+      send({ type: "HIGHLIGHT.PREV" })
+    },
     clearValue(value) {
       if (value) {
         send({ type: "ITEM.CLEAR", value })
@@ -108,6 +123,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getInputProps(props = {}) {
+      const keyboardPriority = props.keyboardPriority ?? "caret"
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -153,13 +169,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             case "ArrowRight": {
               if (!isGridCollection(collection)) return
               if (event.ctrlKey) return
+              if (keyboardPriority !== "navigate") return
               forwardEvent()
+              break
             }
 
             case "Home":
             case "End": {
+              if (keyboardPriority !== "navigate") return
               if (highlightedValue == null && event.shiftKey) return
               forwardEvent()
+              break
             }
 
             case "ArrowDown":
@@ -227,6 +247,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onClick(event) {
           if (event.defaultPrevented) return
+          if (isDownloadingEvent(event)) return
+          if (isOpeningInNewTab(event)) return
+          if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
           send({
             type: "ITEM.CLICK",
@@ -308,6 +331,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onKeyDown(event) {
           if (!interactive) return
+          const target = getEventTarget<Element>(event)
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const shiftKey = event.shiftKey
@@ -371,11 +395,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
 
             Home(event) {
+              if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.firstValue
               send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
             },
             End(event) {
+              if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.lastValue
               send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
@@ -412,11 +438,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             return
           }
 
-          const target = getEventTarget<Element>(event)
-
-          if (isEditableElement(target)) {
-            return
-          }
+          if (isEditableElement(target)) return
 
           if (getByTypeahead.isValidEvent(event) && prop("typeahead")) {
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })

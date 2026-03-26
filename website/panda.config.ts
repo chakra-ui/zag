@@ -144,7 +144,7 @@ export default defineConfig({
               block: {
                 value: {
                   _light: "{colors.gray.50}",
-                  _dark: "{colors.gray.800/20}",
+                  _dark: "{colors.gray.800}",
                 },
               },
               inline: {

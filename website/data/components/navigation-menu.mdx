@@ -4,9 +4,7 @@ description: Using the navigation menu machine in your project.
 package: "@zag-js/navigation-menu"
 ---
 
-An accessible navigation menu component that provides a list of links with
-optional dropdown content. Supports keyboard navigation, hover/click
-interactions, animated indicators, and follows WAI-ARIA practices.
+A navigation menu displays links with optional dropdown content.
 
 <Resources pkg="@zag-js/navigation-menu" />
 
@@ -14,28 +12,24 @@ interactions, animated indicators, and follows WAI-ARIA practices.
 
 **Features**
 
-- Support for basic (inline content) and viewport (shared viewport) patterns
+- Supports basic (inline content) and viewport (shared viewport) patterns
 - Hover and click trigger support with configurable delays
 - Keyboard navigation with arrow keys, Tab, Home/End
 - Animated indicator that follows the active trigger
 - Smooth content animations with viewport positioning
-- Support for nested links within dropdown content
 - Horizontal and vertical orientation
 - RTL (right-to-left) support
-- Fully managed focus and tab order
 - Dismissible with click outside or Escape key
 
 ## Installation
 
-To use the navigation menu machine in your project, run the following command in
-your command line:
+Install the navigation menu package:
 
 <CodeSnippet id="navigation-menu/installation.mdx" />
 
 ## Anatomy
 
-To set up the navigation menu correctly, you'll need to understand its anatomy
-and how we name its parts.
+Check the navigation menu anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -43,23 +37,20 @@ and how we name its parts.
 
 ## Usage
 
-First, import the navigation menu package into your project
+Import the navigation menu package:
 
-```jsx
+```tsx
 import * as navigationMenu from "@zag-js/navigation-menu"
 ```
 
 The navigation menu package exports two key functions:
 
-- `machine` — The state machine logic for the navigation menu widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-navigation menu machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="navigation-menu/usage.mdx" />
 
@@ -95,12 +86,22 @@ properties to the machine.
 
 <CodeSnippet id="navigation-menu/controlled.mdx" />
 
+### Setting initial open item
+
+Use `defaultValue` to start with a specific item open.
+
+```tsx
+const service = useMachine(navigationMenu.machine, {
+  defaultValue: "products",
+})
+```
+
 ### Listening for value changes
 
 When the open item changes, the `onValueChange` callback is invoked with the new
 value.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(navigationMenu.machine, {
   id: "nav",
   onValueChange(details) {
@@ -124,7 +125,7 @@ and size using CSS variables.
 
 You can customize the delay before opening and closing on hover:
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(navigationMenu.machine, {
   openDelay: 300, // Delay before opening on hover (default: 200ms)
   closeDelay: 400, // Delay before closing on pointer leave (default: 300ms)
@@ -138,7 +139,7 @@ less responsive.
 
 You can disable hover or click triggers independently:
 
-```jsx {2-6}
+```tsx {2-6}
 const service = useMachine(navigationMenu.machine, {
   disableHoverTrigger: true, // Only open on click
   // OR
@@ -156,7 +157,7 @@ const service = useMachine(navigationMenu.machine, {
 
 The default orientation is horizontal. To create a vertical navigation menu:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   orientation: "vertical",
 })
@@ -168,7 +169,7 @@ This affects keyboard navigation (arrow keys) and indicator positioning.
 
 To disable a navigation item, pass `disabled: true` to the item props:
 
-```jsx
+```tsx
 <div {...api.getItemProps({ value: "products", disabled: true })}>
   <button {...api.getTriggerProps({ value: "products", disabled: true })}>
     Products
@@ -182,18 +183,46 @@ Disabled items cannot be opened and are skipped during keyboard navigation.
 
 To highlight the current page link, use the `current` prop:
 
-```jsx
+```tsx
 <a {...api.getLinkProps({ value: "products", current: true })}>Products</a>
 ```
 
 This adds `data-current` attribute and `aria-current="page"` for accessibility.
+
+### Controlling link close behavior
+
+Use `closeOnClick` in `getLinkProps` to keep content open after link click.
+
+```tsx
+<a
+  {...api.getLinkProps({
+    value: "products",
+    closeOnClick: false,
+  })}
+>
+  Products
+</a>
+```
+
+### Aligning the shared viewport
+
+When using the viewport pattern, set `align` on `getViewportProps` or
+`getViewportPositionerProps`.
+
+```tsx
+<div
+  {...api.getViewportProps({
+    align: "start",
+  })}
+/>
+```
 
 ### RTL support
 
 The navigation menu supports right-to-left languages. Set the `dir` property to
 `rtl`:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   dir: "rtl",
 })
@@ -201,8 +230,7 @@ const service = useMachine(navigationMenu.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each navigation menu part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed states
 

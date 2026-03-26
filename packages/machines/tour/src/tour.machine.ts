@@ -42,7 +42,7 @@ export const machine = createMachine<TourSchema>({
   },
 
   initialState() {
-    return "tour.inactive"
+    return "tourInactive"
   },
 
   context({ prop, bindable, getContext }) {
@@ -94,10 +94,20 @@ export const machine = createMachine<TourSchema>({
     },
   },
 
-  watch({ track, context, action }) {
+  // Watch for external stepId changes (via sync: true bindable).
+  // Internal changes set _internalChange flag to skip this.
+  watch({ track, context, refs, send }) {
     track([() => context.get("stepId")], () => {
+      if (refs.get("_internalChange")) {
+        refs.set("_internalChange", false)
+        return
+      }
+      // External change: resolve target and route
+      const step = findStep(context.get("steps"), context.get("stepId"))
+      context.set("resolvedTarget", step?.target?.() ?? null)
+      syncTargetAttrsFromContext({ context, refs })
       queueMicrotask(() => {
-        action(["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"])
+        send({ type: "STEP.CHANGED" })
       })
     })
   },
@@ -110,56 +120,61 @@ export const machine = createMachine<TourSchema>({
     "STEPS.SET": {
       actions: ["setSteps", "validateSteps"],
     },
-    "STEP.SET": {
-      actions: ["setStep"],
-    },
-    "STEP.NEXT": {
-      actions: ["setNextStep"],
-    },
-    "STEP.PREV": {
-      actions: ["setPrevStep"],
-    },
+    // External step change (from watch): cleans up previous effect
     "STEP.CHANGED": [
       {
         guard: and("isValidStep", "hasResolvedTarget"),
-        target: "target.scrolling",
+        target: "running.scrolling",
+        reenter: true,
         actions: ["cleanupStepEffect"],
       },
       {
         guard: and("isValidStep", "hasTarget"),
-        target: "target.resolving",
+        target: "running.resolving",
+        reenter: true,
         actions: ["cleanupStepEffect"],
       },
       {
         guard: and("isValidStep", "isWaitingStep"),
-        target: "step.waiting",
+        target: "running.waiting",
+        reenter: true,
         actions: ["cleanupStepEffect"],
       },
       {
         guard: "isValidStep",
-        target: "tour.active",
+        target: "running.active",
+        reenter: true,
         actions: ["cleanupStepEffect"],
       },
     ],
-    DISMISS: [
+    // Internal step change (from performStepTransition/show): no effect cleanup
+    // because performStepTransition already cleaned up the previous effect
+    "STEP.ROUTE": [
       {
-        guard: "isLastStep",
-        target: "tour.inactive",
-        actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete", "clearStep"],
+        guard: and("isValidStep", "hasResolvedTarget"),
+        target: "running.scrolling",
+        reenter: true,
       },
       {
-        target: "tour.inactive",
-        actions: ["cleanupAll", "invokeOnDismiss", "clearStep"],
+        guard: and("isValidStep", "hasTarget"),
+        target: "running.resolving",
+        reenter: true,
+      },
+      {
+        guard: and("isValidStep", "isWaitingStep"),
+        target: "running.waiting",
+        reenter: true,
+      },
+      {
+        guard: "isValidStep",
+        target: "running.active",
+        reenter: true,
       },
     ],
-    SKIP: {
-      target: "tour.inactive",
-      actions: ["cleanupAll", "invokeOnSkip", "clearStep"],
-    },
   },
 
   states: {
-    "tour.inactive": {
+    tourInactive: {
       tags: ["closed"],
       entry: ["validateSteps"],
       on: {
@@ -169,47 +184,86 @@ export const machine = createMachine<TourSchema>({
       },
     },
 
-    "target.resolving": {
-      tags: ["closed"],
-      effects: ["waitForTarget", "waitForTargetTimeout"],
+    running: {
+      initial: "resolving",
 
       on: {
-        "TARGET.NOT_FOUND": {
-          target: "tour.inactive",
-          actions: ["invokeOnNotFound", "clearStep"],
+        "STEP.SET": {
+          actions: ["setStep"],
         },
-        "TARGET.RESOLVED": {
-          target: "target.scrolling",
-          actions: ["setResolvedTarget"],
+        "STEP.NEXT": {
+          actions: ["setNextStep"],
         },
-      },
-    },
-
-    "target.scrolling": {
-      tags: ["open"],
-      entry: ["scrollToTarget"],
-      effects: [
-        "waitForScrollEnd",
-        "trapFocus",
-        "trackPlacement",
-        "trackDismissableBranch",
-        "trackInteractOutside",
-        "trackEscapeKeydown",
-      ],
-      on: {
-        "SCROLL.END": {
-          target: "tour.active",
+        "STEP.PREV": {
+          actions: ["setPrevStep"],
+        },
+        DISMISS: [
+          {
+            guard: "isLastStep",
+            target: "tourInactive",
+            actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete", "clearStep"],
+          },
+          {
+            target: "tourInactive",
+            actions: ["cleanupAll", "invokeOnDismiss", "clearStep"],
+          },
+        ],
+        SKIP: {
+          target: "tourInactive",
+          actions: ["cleanupAll", "invokeOnSkip", "clearStep"],
         },
       },
-    },
 
-    "step.waiting": {
-      tags: ["closed"],
-    },
+      states: {
+        resolving: {
+          tags: ["closed"],
+          effects: ["waitForTarget", "waitForTargetTimeout"],
 
-    "tour.active": {
-      tags: ["open"],
-      effects: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"],
+          on: {
+            "TARGET.NOT_FOUND": {
+              target: "tourInactive",
+              actions: ["invokeOnNotFound", "clearStep"],
+            },
+            "TARGET.RESOLVED": {
+              target: "scrolling",
+              actions: ["setResolvedTarget"],
+            },
+          },
+        },
+
+        scrolling: {
+          tags: ["open"],
+          entry: ["scrollToTarget"],
+          effects: [
+            "waitForScrollEnd",
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
+          on: {
+            "SCROLL.END": {
+              target: "active",
+            },
+          },
+        },
+
+        waiting: {
+          tags: ["closed"],
+        },
+
+        active: {
+          tags: ["open"],
+          effects: [
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
+        },
+      },
     },
   },
 
@@ -233,33 +287,37 @@ export const machine = createMachine<TourSchema>({
       },
       setStep(params) {
         const { event } = params
-        const step = event.value
-        if (step == null) return
-
-        const manager = new StepManager(params)
-        manager.transitionToStep(step)
+        if (event.value == null) return
+        const steps = params.context.get("steps")
+        const idx = isString(event.value) ? findStepIndex(steps, event.value) : event.value
+        performStepTransition(params, idx)
       },
-      clearStep(params) {
-        const manager = new StepManager(params)
-        manager.clear()
+      clearStep({ context, refs }) {
+        refs.get("_targetCleanup")?.()
+        refs.set("_targetCleanup", undefined)
+
+        context.set("targetRect", { width: 0, height: 0, x: 0, y: 0 })
+        context.set("resolvedTarget", null)
+
+        refs.set("_internalChange", true)
+        context.set("stepId", null)
       },
       setInitialStep(params) {
         const { context, event } = params
         const steps = context.get("steps")
         if (steps.length === 0) return
-
-        const manager = new StepManager(params)
-        manager.transitionToStep(event.value ?? 0)
+        const idx = isString(event.value) ? findStepIndex(steps, event.value) : (event.value ?? 0)
+        performStepTransition(params, idx)
       },
       setNextStep(params) {
-        const { computed } = params
-        const manager = new StepManager(params)
-        manager.next(computed("stepIndex"))
+        const steps = params.context.get("steps")
+        const idx = nextIndex(steps, params.computed("stepIndex"))
+        performStepTransition(params, idx)
       },
       setPrevStep(params) {
-        const { computed } = params
-        const manager = new StepManager(params)
-        manager.prev(computed("stepIndex"))
+        const steps = params.context.get("steps")
+        const idx = prevIndex(steps, params.computed("stepIndex"))
+        performStepTransition(params, idx)
       },
       invokeOnStart({ prop, context, computed }) {
         prop("onStatusChange")?.({
@@ -296,29 +354,23 @@ export const machine = createMachine<TourSchema>({
           stepIndex: computed("stepIndex"),
         })
       },
-      raiseStepChange({ send }) {
-        send({ type: "STEP.CHANGED" })
-      },
       setResolvedTarget({ context, event, computed }) {
         const node = event.node ?? computed("step")?.target?.()
         context.set("resolvedTarget", node ?? null)
       },
-      syncTargetAttrs(params) {
-        const { context } = params
-        const targetEl = context.get("resolvedTarget")
-        const manager = new StepManager(params)
-        manager.syncTarget(targetEl)
+      cleanupAll({ refs }) {
+        refs.get("_targetCleanup")?.()
+        refs.set("_targetCleanup", undefined)
+        refs.set("_prevTarget", undefined)
+
+        refs.get("_effectCleanup")?.()
+        refs.set("_effectCleanup", undefined)
       },
-      cleanupAll(params) {
-        const manager = new StepManager(params)
-        manager.cleanupAll()
-      },
-      cleanupStepEffect(params) {
-        const manager = new StepManager(params)
-        manager.cleanupStepEffect()
+      cleanupStepEffect({ refs }) {
+        refs.get("_effectCleanup")?.()
+        refs.set("_effectCleanup", undefined)
       },
       validateSteps({ context }) {
-        // ensure all steps have unique ids
         const ids = new Set()
 
         context.get("steps").forEach((step) => {
@@ -463,7 +515,6 @@ export const machine = createMachine<TourSchema>({
         if (step == null) return
         const contentEl = () => dom.getContentEl(scope)
         const targetEl = () => context.get("resolvedTarget")
-        // Include both content and target in focus trap so users can interact with the spotlight target
         return trapFocus([contentEl, targetEl], {
           escapeDeactivates: false,
           allowOutsideClick: true,
@@ -494,6 +545,7 @@ export const machine = createMachine<TourSchema>({
           strategy: "absolute",
           gutter: 10,
           offset: step.offset,
+          restoreStyles: true,
           getAnchorRect(el) {
             if (!isHTMLElement(el)) return null
             const rect = el.getBoundingClientRect()
@@ -511,228 +563,135 @@ export const machine = createMachine<TourSchema>({
 })
 
 // ============================================================================
-// Step Manager
+// Step transition helpers
 // ============================================================================
 
 /**
- * Manages step transitions, cleanup, and effect execution for the tour machine.
- * Encapsulates all step-related logic in a single cohesive unit.
+ * Shared logic for syncing target element attributes.
+ * Used by both actions and the watch callback.
  */
-class StepManager {
-  constructor(private params: Params<TourSchema>) {}
+function syncTargetAttrsFromContext(params: {
+  context: Params<TourSchema>["context"]
+  refs: Params<TourSchema>["refs"]
+  prop?: Params<TourSchema>["prop"]
+}) {
+  const { context, refs, prop } = params
+  const targetEl = context.get("resolvedTarget")
+  const prevTarget = refs.get("_prevTarget")
 
-  /**
-   * Transition to a step by id or index
-   */
-  transitionToStep(step: string | number) {
-    const steps = this.params.context.get("steps")
-    const idx = isString(step) ? findStepIndex(steps, step) : step
-    this.transitionTo(idx)
-  }
-
-  /**
-   * Transition to the next step from the given index
-   */
-  next(currentIndex: number) {
-    const steps = this.params.context.get("steps")
-    const idx = nextIndex(steps, currentIndex)
-    this.transitionTo(idx)
-  }
-
-  /**
-   * Transition to the previous step from the given index
-   */
-  prev(currentIndex: number) {
-    const steps = this.params.context.get("steps")
-    const idx = prevIndex(steps, currentIndex)
-    this.transitionTo(idx)
-  }
-
-  /**
-   * Clear the current step and reset tour state
-   */
-  clear() {
-    const { context } = this.params
-    context.set("targetRect", { width: 0, height: 0, x: 0, y: 0 })
-    context.set("resolvedTarget", null)
-    this.transitionTo(-1)
-  }
-
-  /**
-   * Cleanup all resources including effects, target attributes, and resolved target.
-   * Use when completely tearing down the tour or transitioning between steps.
-   */
-  cleanupAll() {
-    const { refs } = this.params
-
+  if (targetEl !== prevTarget) {
     refs.get("_targetCleanup")?.()
     refs.set("_targetCleanup", undefined)
-    refs.set("_prevTarget", undefined)
-
-    refs.get("_effectCleanup")?.()
-    refs.set("_effectCleanup", undefined)
   }
 
-  /**
-   * Cleanup only the step effect cleanup function.
-   * Skips cleanup if an effect is currently running.
-   */
-  cleanupStepEffect() {
-    const { refs } = this.params
-
-    // Don't cleanup if we're currently running an effect
-    if (refs.get("_runningEffect")) {
-      return
-    }
-
-    refs.get("_effectCleanup")?.()
-    refs.set("_effectCleanup", undefined)
+  if (!targetEl) {
+    refs.set("_prevTarget", null)
+    return
   }
 
-  /**
-   * Sync target element attributes (inert, data-tour-highlighted).
-   * Handles cleanup of previous target and applies attributes to new target.
-   */
-  syncTarget(targetEl: HTMLElement | null) {
-    const { refs, prop } = this.params
-    const prevTarget = refs.get("_prevTarget")
+  if (targetEl === prevTarget) return
 
-    // Only cleanup if target has changed
-    if (targetEl !== prevTarget) {
-      refs.get("_targetCleanup")?.()
-      refs.set("_targetCleanup", undefined)
-    }
+  if (prop?.("preventInteraction")) targetEl.inert = true
+  targetEl.setAttribute("data-tour-highlighted", "")
 
-    if (!targetEl) {
-      refs.set("_prevTarget", null)
-      return
-    }
+  refs.set("_targetCleanup", () => {
+    if (prop?.("preventInteraction")) targetEl.inert = false
+    targetEl.removeAttribute("data-tour-highlighted")
+  })
+  refs.set("_prevTarget", targetEl)
+}
 
-    // Skip if same target (attributes already applied)
-    if (targetEl === prevTarget) {
-      return
-    }
+function performStepTransition(params: Params<TourSchema>, idx: number) {
+  const { context, refs, send } = params
+  const steps = context.get("steps")
+  const step = steps[idx]
 
-    // Apply attributes to new target
-    if (prop("preventInteraction")) targetEl.inert = true
-    targetEl.setAttribute("data-tour-highlighted", "")
-
-    // Store cleanup and current target
-    refs.set("_targetCleanup", () => {
-      if (prop("preventInteraction")) targetEl.inert = false
-      targetEl.removeAttribute("data-tour-highlighted")
-    })
-    refs.set("_prevTarget", targetEl)
+  if (!step) {
+    refs.set("_internalChange", true)
+    context.set("stepId", null)
+    return
   }
 
-  /**
-   * Transition to a step by index
-   */
-  transitionTo(idx: number) {
-    const { context, refs } = this.params
-    const steps = context.get("steps")
-    const step = steps[idx]
+  if (isEqual(context.get("stepId"), step.id)) {
+    return
+  }
 
-    if (!step) {
+  // Cleanup previous step effects and target attributes
+  refs.get("_effectCleanup")?.()
+  refs.set("_effectCleanup", undefined)
+
+  refs.get("_targetCleanup")?.()
+  refs.set("_targetCleanup", undefined)
+
+  if (step.effect) {
+    executeStepEffect(params, step, idx)
+    return
+  }
+
+  // Resolve target, set context, sync attrs, then route via STEP.ROUTE
+  const resolvedTarget = step.target?.() ?? null
+  context.set("resolvedTarget", resolvedTarget)
+  refs.set("_internalChange", true)
+  context.set("stepId", step.id)
+  syncTargetAttrsFromContext(params)
+  send({ type: "STEP.ROUTE" })
+}
+
+function createEffectUtilities(params: Params<TourSchema>, step: StepDetails, idx: number): StepEffectArgs {
+  const { context, computed, refs, send, prop } = params
+  const steps = context.get("steps")
+
+  return {
+    show: () => {
+      // Resolve target and route via STEP.ROUTE (no effect cleanup)
+      const resolvedTarget = step.target?.() ?? null
+      context.set("resolvedTarget", resolvedTarget)
+      refs.set("_internalChange", true)
+      context.set("stepId", step.id)
+      syncTargetAttrsFromContext(params)
+      send({ type: "STEP.ROUTE" })
+    },
+    update: (data) => {
+      context.set("steps", (prev) => prev.map((s, i) => (i === idx ? { ...s, ...data } : s)))
+    },
+    next: () => {
+      const nextIdx = nextIndex(steps, computed("stepIndex"))
+      performStepTransition(params, nextIdx)
+    },
+    goto: (id: string) => {
+      const targetIdx = findStepIndex(steps, id)
+      if (targetIdx === -1) {
+        warn(`[zag-js/tour] Step with id "${id}" not found`)
+        return
+      }
+      performStepTransition(params, targetIdx)
+    },
+    dismiss: () => {
+      refs.set("_internalChange", true)
       context.set("stepId", null)
-      return
-    }
+      prop("onStatusChange")?.({ status: "dismissed", stepId: null, stepIndex: -1 })
+    },
+    target: step.target,
+  }
+}
 
-    if (isEqual(context.get("stepId"), step.id)) {
-      // Clear flag if somehow left set (defensive programming)
-      refs.set("_runningEffect", false)
-      return
-    }
+function executeStepEffect(params: Params<TourSchema>, step: StepDetails, idx: number) {
+  const { refs } = params
 
-    this.cleanup()
+  const utilities = createEffectUtilities(params, step, idx)
 
-    const utilities = this.createUtilities(step, idx)
+  let cleanup: StepEffectCleanup | undefined
 
-    if (step.effect) {
-      this.executeEffect(step, utilities)
-    } else {
-      utilities.show()
-    }
+  try {
+    cleanup = step.effect!(utilities)
+  } catch (error) {
+    console.error(error)
+    return
   }
 
-  /**
-   * Clean up previous step effects and target attributes
-   */
-  private cleanup() {
-    const { refs } = this.params
+  refs.set("_effectCleanup", cleanup)
 
-    refs.get("_effectCleanup")?.()
-    refs.set("_effectCleanup", undefined)
-    refs.get("_targetCleanup")?.()
-    refs.set("_targetCleanup", undefined)
-  }
-
-  /**
-   * Create utility functions for step effects
-   */
-  private createUtilities(step: StepDetails, idx: number): StepEffectArgs {
-    const { context, computed, prop } = this.params
-    const steps = context.get("steps")
-
-    return {
-      show: () => {
-        context.set("stepId", step.id)
-      },
-      update: (data) => {
-        context.set("steps", (prev) => prev.map((s, i) => (i === idx ? { ...s, ...data } : s)))
-      },
-      next: () => {
-        const nextIdx = nextIndex(steps, computed("stepIndex"))
-        this.transitionTo(nextIdx)
-      },
-      goto: (id: string) => {
-        const targetIdx = findStepIndex(steps, id)
-        if (targetIdx === -1) {
-          warn(`[zag-js/tour] Step with id "${id}" not found`)
-          return
-        }
-        this.transitionTo(targetIdx)
-      },
-      dismiss: () => {
-        context.set("stepId", null)
-        prop("onStatusChange")?.({ status: "dismissed", stepId: null, stepIndex: -1 })
-      },
-      target: step.target,
-    }
-  }
-
-  /**
-   * Execute a step's effect function
-   */
-  private executeEffect(step: StepDetails, utilities: StepEffectArgs) {
-    const { refs } = this.params
-
-    refs.set("_runningEffect", true)
-
-    let cleanup: StepEffectCleanup | undefined
-
-    try {
-      cleanup = step.effect!(utilities)
-    } catch (error) {
-      refs.set("_runningEffect", false)
-      console.error(error)
-      return
-    }
-
-    refs.set("_effectCleanup", cleanup)
-
-    // For wait-type steps, automatically set the stepId so the state machine
-    // can transition to step.waiting state, but don't call show() from the effect
-    if (isWaitStep(step)) {
-      utilities.show()
-    }
-
-    // Clear the flag after all microtasks (including watcher) have completed
-    // Use double queueMicrotask for deterministic timing
-    queueMicrotask(() => {
-      queueMicrotask(() => {
-        refs.set("_runningEffect", false)
-      })
-    })
+  if (isWaitStep(step)) {
+    utilities.show()
   }
 }

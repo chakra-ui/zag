@@ -1,5 +1,186 @@
 # @zag-js/dialog
 
+## 1.38.2
+
+### Patch Changes
+
+- [`f286f35`](https://github.com/chakra-ui/zag/commit/f286f3538e814ce8c39ae9b8c3d87098529ca067) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Avoid setting inline `pointer-events` when modal, letting the
+  dismissable layer manage it instead.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/aria-hidden@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-trap@1.38.2
+  - @zag-js/remove-scroll@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/aria-hidden@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/focus-trap@1.38.1
+  - @zag-js/remove-scroll@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- [`0756817`](https://github.com/chakra-ui/zag/commit/0756817a6f0ca52a0619f640c8d984b614763b21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Set `pointer-events: none` on positioner in non-modal mode so
+  the page stays interactive
+  - Add initial focus management for non-modal mode (mirrors popover behavior)
+  - Fix `aria-modal` to reflect actual `modal` prop value instead of hardcoded `true`
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/focus-trap@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/aria-hidden@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/remove-scroll@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- [`67aa14b`](https://github.com/chakra-ui/zag/commit/67aa14b89dc88997fee520cfeaf6934ca45f9fb8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve dialog and drawer focus restoration by preferring the
+  trigger element as a stable fallback return target after remount cycles.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/aria-hidden@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/focus-trap@1.37.0
+  - @zag-js/remove-scroll@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/aria-hidden@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/focus-trap@1.36.0
+  - @zag-js/remove-scroll@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/aria-hidden@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/focus-trap@1.35.3
+  - @zag-js/remove-scroll@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/dismissable@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/aria-hidden@1.35.2
+  - @zag-js/dom-query@1.35.2
+  - @zag-js/focus-trap@1.35.2
+  - @zag-js/remove-scroll@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/aria-hidden@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dismissable@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/focus-trap@1.35.1
+  - @zag-js/remove-scroll@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/aria-hidden@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/focus-trap@1.35.0
+  - @zag-js/remove-scroll@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/aria-hidden@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dismissable@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/focus-trap@1.34.1
+  - @zag-js/remove-scroll@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [`9fa3b6a`](https://github.com/chakra-ui/zag/commit/9fa3b6a9747803895f40677d913955c0f5a41dcd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where non-modal dialog closes on outside click even when
+  `modal` is set to `false`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-trap@1.34.0
+  - @zag-js/remove-scroll@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

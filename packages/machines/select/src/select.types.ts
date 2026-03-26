@@ -39,6 +39,10 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  clearTriggerLabel?: string | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   content: string
@@ -56,6 +60,10 @@ export type ElementIds = Partial<{
 export interface SelectProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
+  /**
    * The item collection
    */
   collection: ListCollection<T>
@@ -71,6 +79,10 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * The associate form of the underlying select.
    */
   form?: string | undefined
+  /**
+   * The autocomplete attribute for the hidden select. Enables browser autofill (e.g. "address-level1" for state).
+   */
+  autoComplete?: string | undefined
   /**
    * Whether the select is disabled
    */
@@ -164,7 +176,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   deselectable?: boolean | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
@@ -175,13 +187,14 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     fieldsetDisabled: boolean
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
   }
   computed: {
     hasSelectedItems: boolean
     isTypingAhead: boolean
     isInteractive: boolean
     isDisabled: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   refs: {

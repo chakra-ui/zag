@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "3.11.0",
+    "@internationalized/date": "3.12.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -17,7 +17,8 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
-    "@zag-js/bottom-sheet": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
+    "@zag-js/cascade-select": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -79,6 +80,7 @@
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/timer": "workspace:*",
+    "@zag-js/toc": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
@@ -87,17 +89,16 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.563.0",
-    "match-sorter": "8.2.0",
-    "preact": "10.28.2",
+    "lucide-preact": "1.6.0",
+    "preact": "10.29.0",
     "preact-iso": "2.11.1",
-    "preact-render-to-string": "6.6.5"
+    "preact-render-to-string": "6.6.6"
   },
   "devDependencies": {
-    "@preact/preset-vite": "2.10.3",
-    "eslint": "9.39.2",
+    "@preact/preset-vite": "2.10.5",
+    "eslint": "10.1.0",
     "eslint-config-preact": "2.0.0",
-    "typescript": "5.9.3",
-    "vite": "7.3.1"
+    "typescript": "6.0.2",
+    "vite": "8.0.2"
   }
 }

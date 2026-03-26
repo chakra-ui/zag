@@ -4,7 +4,7 @@ description: Using the tags input machine in your project.
 package: "@zag-js/tags-input"
 ---
 
-Tag inputs render tags inside an input, followed by an actual text input. By
+Tags input renders tags inside a control, followed by an actual text input. By
 default, tags are added when text is typed in the input field and the `Enter` or
 `Comma` key is pressed. Throughout the interaction, DOM focus remains on the
 input element.
@@ -15,8 +15,8 @@ input element.
 
 **Features**
 
-- Typing in the input and pressing enter will add new items
-- Clear button to reset all tags values
+- Typing in the input and pressing Enter adds new tags
+- Clear trigger to remove all tags
 - Add tags by pasting into the input
 - Delete tags on backspace
 - Edit tags after creation
@@ -26,8 +26,7 @@ input element.
 
 ## Installation
 
-To use the tags input machine in your project, run the following command in your
-command line:
+Install the tags input package:
 
 <CodeSnippet id="tags-input/installation.mdx" />
 
@@ -42,34 +41,29 @@ how we name its parts.
 
 ## Usage
 
-First, import the tags input package into your project
+Import the tags input package:
 
-```jsx
+```tsx
 import * as tagsInput from "@zag-js/tags-input"
 ```
 
 The tags input package exports two key functions:
 
-- `machine` — The state machine logic for the tags input widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-tags input machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="tags-input/usage.mdx" />
 
-### Navigating and Editing tags
+### Navigating and editing tags
 
 When the input has an empty value or the caret is at the start position, the
-tags can be selected by using the arrow left and arrow right keys. When "visual"
-focus in on any tag:
+tags can be selected with the left and right arrow keys. When a tag has visual
+focus:
 
-- Pressing `Enter` or double clicking on the tag will put the it in edit mode,
-  allowing the user change its value and press `Enter` to commit the changes.
+- Press `Enter` or double-click the tag to edit it, then press `Enter` to commit
+  the change.
 - Pressing `Delete` or `Backspace` will delete the tag that has "visual" focus.
 
 ### Setting the initial tags
@@ -77,7 +71,7 @@ focus in on any tag:
 To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tagsInput.machine, {
   defaultValue: ["React", "Redux", "TypeScript"],
 })
@@ -90,22 +84,35 @@ properties to the machine function.
 
 <CodeSnippet id="tags-input/controlled.mdx" />
 
+### Controlled input value
+
+Use `inputValue` and `onInputValueChange` when you need to control the typing
+state separately.
+
+```tsx
+const service = useMachine(tagsInput.machine, {
+  inputValue,
+  onInputValueChange(details) {
+    setInputValue(details.inputValue)
+  },
+})
+```
+
 ### Removing all tags
 
 The tags input will remove all tags when the clear button is clicked. To remove
-all tags, use the provided `clearButtonProps` function from the `api`.
+all tags, use the provided `clearTriggerProps` function from the `api`.
 
-```jsx {4}
+```tsx {4}
 //...
 <div {...api.getControlProps()}>
   <input {...api.getInputProps()} />
-  <button {...api.getClearButtonProps()} />
+  <button {...api.getClearTriggerProps()} />
 </div>
 //...
 ```
 
-To programmatically remove all tags, use the `api.clearAll()` method that's
-available in the `connect`.
+To programmatically remove all tags, use `api.clearValue()`.
 
 ### Usage within forms
 
@@ -117,9 +124,9 @@ achieve this by:
   accessed in the `FormData`.
 
 To get this feature working you need to pass a `name` option to the context and
-render the `hiddenInput` element.
+render the hidden input with `api.getHiddenInputProps()`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tagsInput.machine, {
   name: "tags",
   defaultValue: ["React", "Redux", "TypeScript"],
@@ -134,7 +141,7 @@ to the limit you want. The default value is `Infinity`.
 When the tag reaches the limit, new tags cannot be added except the
 `allowOverflow` option is passed to the context.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(tagsInput.machine, {
   max: 10,
   allowOverflow: true,
@@ -146,18 +153,30 @@ const service = useMachine(tagsInput.machine, {
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
 
-> **Note:** Duplicate tags are automatically prevented by design. You don't need
-> to handle this in your `validate` function.
+> **Note:** Duplicate tags are prevented by default. Set `allowDuplicates: true`
+> to allow repeatable tags (e.g. sentence builders). Use `validate` for custom
+> rules like format or length.
 
 Common use-cases for validating tags include enforcing format, length, or
 content rules.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(tagsInput.machine, {
   validate(details) {
     // Example: only allow lowercase alphabetic tags
     return /^[a-z]+$/.test(details.inputValue)
   },
+})
+```
+
+### Allow Duplicates
+
+By default, duplicate tags are prevented. For use cases like sentence builders
+or repeatable tokens, set `allowDuplicates: true`:
+
+```tsx {2}
+const service = useMachine(tagsInput.machine, {
+  allowDuplicates: true,
 })
 ```
 
@@ -169,7 +188,7 @@ take by passing the `blurBehavior` option to the context.
 - `"add"` — Adds the tag to the list of tags.
 - `"clear"` — Clears the tags input value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tagsInput.machine, {
   blurBehavior: "add",
 })
@@ -185,7 +204,7 @@ When a value is pasted, the machine will:
 - check if the value is a valid tag based on the `validate` option
 - split the value by the `delimiter` option passed
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tagsInput.machine, {
   addOnPaste: true,
 })
@@ -193,13 +212,22 @@ const service = useMachine(tagsInput.machine, {
 
 ### Disable tag editing
 
-by default the tags can be edited by double clicking on the tag or focusing on
-them and pressing `Enter`. To disable this behavior, pass the
-`allowEditTag: false`
+By default, tags can be edited by double-clicking a tag or focusing it and
+pressing `Enter`. To disable this behavior, set `editable: false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tagsInput.machine, {
-  allowEditTag: false,
+  editable: false,
+})
+```
+
+### Custom tag delimiter
+
+Use `delimiter` to control how tags are created from key presses and paste.
+
+```tsx
+const service = useMachine(tagsInput.machine, {
+  delimiter: ";",
 })
 ```
 
@@ -213,15 +241,15 @@ emit:
 - `onValueInvalid` — invoked when the max tag count is reached or the `validate`
   function returns `false`.
 
-```jsx
+```tsx
 const service = useMachine(tagsInput.machine, {
   onValueChange(details) {
     // details => { value: string[] }
     console.log("tags changed to:", details.value)
   },
   onHighlightChange(details) {
-    // details => { value: string }
-    console.log("highlighted tag:", details.value)
+    // details => { highlightedValue: string | null }
+    console.log("highlighted tag:", details.highlightedValue)
   },
   onValueInvalid(details) {
     console.log("Invalid!", details.reason)
@@ -229,15 +257,27 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
+### Programmatic tag operations
+
+Use the API for imperative updates.
+
+```tsx
+api.addValue("React")
+api.setValue(["React", "TypeScript"])
+api.clearValue() // clear all
+api.clearValue("React") // clear one
+api.setValueAtIndex(0, "Vue")
+api.focus()
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each accordion part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Focused state
 
-The combobox input is focused when the user clicks on the input element. In this
-focused state, the root, label, input.
+The input is focused when the user clicks on it. In this focused state, the root
+and label receive `data-focus`.
 
 ```css
 [data-part="root"][data-focus] {

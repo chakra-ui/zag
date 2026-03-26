@@ -168,6 +168,7 @@ export const machine = createMachine<ColorPickerSchema>({
     },
 
     focused: {
+      id: "color-picker-focused",
       tags: ["closed", "focused"],
       on: {
         "CONTROLLED.OPEN": {
@@ -210,6 +211,7 @@ export const machine = createMachine<ColorPickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackPositioning", "trackDismissableElement"],
+      initial: "idle",
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -221,75 +223,6 @@ export const machine = createMachine<ColorPickerSchema>({
             target: "idle",
           },
         ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        "AREA.POINTER_DOWN": {
-          target: "open:dragging",
-          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
-        },
-        "AREA.FOCUS": {
-          actions: ["setActiveChannel"],
-        },
-        "CHANNEL_SLIDER.POINTER_DOWN": {
-          target: "open:dragging",
-          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
-        },
-        "CHANNEL_SLIDER.FOCUS": {
-          actions: ["setActiveChannel"],
-        },
-        "AREA.ARROW_LEFT": {
-          actions: ["decrementAreaXChannel"],
-        },
-        "AREA.ARROW_RIGHT": {
-          actions: ["incrementAreaXChannel"],
-        },
-        "AREA.ARROW_UP": {
-          actions: ["incrementAreaYChannel"],
-        },
-        "AREA.ARROW_DOWN": {
-          actions: ["decrementAreaYChannel"],
-        },
-        "AREA.PAGE_UP": {
-          actions: ["incrementAreaXChannel"],
-        },
-        "AREA.PAGE_DOWN": {
-          actions: ["decrementAreaXChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_LEFT": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_RIGHT": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_UP": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_DOWN": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.PAGE_UP": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.PAGE_DOWN": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.HOME": {
-          actions: ["setChannelToMin"],
-        },
-        "CHANNEL_SLIDER.END": {
-          actions: ["setChannelToMax"],
-        },
-        "CHANNEL_INPUT.BLUR": {
-          actions: ["setChannelColorFromInput"],
-        },
         INTERACT_OUTSIDE: [
           {
             guard: "isOpenControlled",
@@ -313,79 +246,118 @@ export const machine = createMachine<ColorPickerSchema>({
           {
             target: "idle",
             actions: ["invokeOnClose"],
-          },
-        ],
-        "SWATCH_TRIGGER.CLICK": [
-          {
-            guard: and("isOpenControlled", "closeOnSelect"),
-            actions: ["setValue", "invokeOnClose"],
-          },
-          {
-            guard: "closeOnSelect",
-            target: "focused",
-            actions: ["setValue", "invokeOnClose", "setReturnFocus"],
-          },
-          {
-            actions: ["setValue"],
           },
         ],
       },
-    },
-
-    "open:dragging": {
-      tags: ["open"],
-      exit: ["clearActiveChannel"],
-      effects: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
-      on: {
-        "CONTROLLED.CLOSE": [
-          {
-            guard: "shouldRestoreFocus",
-            target: "focused",
-            actions: ["setReturnFocus"],
+      states: {
+        idle: {
+          on: {
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "#color-picker-focused",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "AREA.POINTER_DOWN": {
+              target: "dragging",
+              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
+            },
+            "AREA.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "CHANNEL_SLIDER.POINTER_DOWN": {
+              target: "dragging",
+              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "AREA.ARROW_LEFT": {
+              actions: ["decrementAreaXChannel"],
+            },
+            "AREA.ARROW_RIGHT": {
+              actions: ["incrementAreaXChannel"],
+            },
+            "AREA.ARROW_UP": {
+              actions: ["incrementAreaYChannel"],
+            },
+            "AREA.ARROW_DOWN": {
+              actions: ["decrementAreaYChannel"],
+            },
+            "AREA.PAGE_UP": {
+              actions: ["incrementAreaXChannel"],
+            },
+            "AREA.PAGE_DOWN": {
+              actions: ["decrementAreaXChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_LEFT": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_RIGHT": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.HOME": {
+              actions: ["setChannelToMin"],
+            },
+            "CHANNEL_SLIDER.END": {
+              actions: ["setChannelToMax"],
+            },
+            "CHANNEL_INPUT.BLUR": {
+              actions: ["setChannelColorFromInput"],
+            },
+            "SWATCH_TRIGGER.CLICK": [
+              {
+                guard: and("isOpenControlled", "closeOnSelect"),
+                actions: ["setValue", "invokeOnClose"],
+              },
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["setValue", "invokeOnClose", "setReturnFocus"],
+              },
+              {
+                actions: ["setValue"],
+              },
+            ],
           },
-          {
-            target: "idle",
-          },
-        ],
-        "AREA.POINTER_MOVE": {
-          actions: ["setAreaColorFromPoint", "focusAreaThumb"],
         },
-        "AREA.POINTER_UP": {
-          target: "open",
-          actions: ["invokeOnChangeEnd"],
+        dragging: {
+          tags: ["dragging"],
+          exit: ["clearActiveChannel"],
+          effects: ["trackPointerMove", "disableTextSelection"],
+          on: {
+            "AREA.POINTER_MOVE": {
+              actions: ["setAreaColorFromPoint", "focusAreaThumb"],
+            },
+            "AREA.POINTER_UP": {
+              target: "idle",
+              actions: ["invokeOnChangeEnd"],
+            },
+            "CHANNEL_SLIDER.POINTER_MOVE": {
+              actions: ["setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.POINTER_UP": {
+              target: "idle",
+              actions: ["invokeOnChangeEnd"],
+            },
+          },
         },
-        "CHANNEL_SLIDER.POINTER_MOVE": {
-          actions: ["setChannelColorFromPoint", "focusChannelThumb"],
-        },
-        "CHANNEL_SLIDER.POINTER_UP": {
-          target: "open",
-          actions: ["invokeOnChangeEnd"],
-        },
-        INTERACT_OUTSIDE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            guard: "shouldRestoreFocus",
-            target: "focused",
-            actions: ["invokeOnClose", "setReturnFocus"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
       },
     },
   },
@@ -449,7 +421,7 @@ export const machine = createMachine<ColorPickerSchema>({
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point }) {
             const type = context.get("activeId") === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
-            send({ type, point, format: event.format })
+            send({ type, point, format: event.format, orientation: context.get("activeOrientation") ?? undefined })
           },
           onPointerUp() {
             const type = context.get("activeId") === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
@@ -509,7 +481,7 @@ export const machine = createMachine<ColorPickerSchema>({
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
 
-        const orientation = context.get("activeOrientation") || "horizontal"
+        const orientation = event.orientation || context.get("activeOrientation") || "horizontal"
         const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)

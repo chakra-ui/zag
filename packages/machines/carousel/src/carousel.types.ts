@@ -185,7 +185,7 @@ export interface CarouselSchema {
   refs: {
     timeoutRef: any
   }
-  state: "idle" | "dragging" | "autoplay" | "userScroll" | "focus"
+  state: "idle" | "dragging" | "settling" | "autoplay" | "userScroll" | "focus"
   effect: string
   action: string
   guard: string

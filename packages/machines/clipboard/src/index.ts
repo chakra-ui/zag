@@ -11,4 +11,5 @@ export type {
   ValueChangeDetails,
   ElementIds,
   IndicatorProps,
+  IntlTranslations,
 } from "./clipboard.types"

@@ -151,6 +151,11 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    */
   validate?: ((details: ValidateArgs) => boolean) | undefined
   /**
+   * Whether to allow duplicate tags.
+   * @default false
+   */
+  allowDuplicates?: boolean | undefined
+  /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
    * - `"clear"`: clear the input value
@@ -172,6 +177,13 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    */
   allowOverflow?: boolean | undefined
   /**
+   * Function to sanitize the tag value before adding.
+   * Useful for trimming whitespace, normalizing case, or stripping special characters.
+   * @default (value) => value.trim()
+   * @example (value) => value.toLowerCase().trim()
+   */
+  sanitizeValue?: ((value: string) => string) | undefined
+  /**
    * The name attribute for the input. Useful for form submissions
    */
   name?: string | undefined
@@ -188,16 +200,18 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
 type PropsWithDefault =
   | "dir"
   | "addOnPaste"
+  | "allowDuplicates"
   | "editable"
   | "validate"
   | "delimiter"
   | "defaultValue"
   | "translations"
   | "max"
+  | "sanitizeValue"
 
 type ComputedContext = Readonly<{
   valueAsString: string
-  trimmedInputValue: string
+  sanitizedInputValue: string
   isInteractive: boolean
   isAtMax: boolean
   count: number

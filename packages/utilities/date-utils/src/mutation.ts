@@ -9,8 +9,10 @@ import {
 import { constrainValue } from "./constrain"
 import type { DateAvailableFn } from "./types"
 
-export function getTodayDate(timeZone?: string) {
-  return today(timeZone ?? getLocalTimeZone())
+export function getTodayDate(timeZone?: string, calendar?: Calendar) {
+  const tod = today(timeZone ?? getLocalTimeZone())
+  if (calendar) return toCalendar(tod, calendar)
+  return tod
 }
 
 export function setCalendar(date: DateValue, calendar: Calendar) {

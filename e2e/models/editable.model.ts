@@ -12,7 +12,7 @@ export class EditableModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/editable")
+    return this.page.goto("/editable/basic")
   }
 
   get preview() {

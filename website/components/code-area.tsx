@@ -22,6 +22,7 @@ export function CodeArea(props: CodeAreaProps) {
           margin: "0",
           padding: "40px 24px !important",
           height: "full",
+          borderWidth: "0",
         },
       }}
     >

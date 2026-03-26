@@ -1,5 +1,33 @@
 # @zag-js/utils
 
+## 1.38.2
+
+## 1.38.1
+
+## 1.38.0
+
+## 1.37.0
+
+## 1.36.0
+
+## 1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- [`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix CJS build by configuring `esbuild-plugin-file-path-extensions`
+  to use `.js` extension for CJS output instead of `.cjs`, matching the actual output filenames from tsup.
+
+## 1.35.1
+
+## 1.35.0
+
+## 1.34.1
+
+## 1.34.0
+
 ## 1.33.1
 
 ## 1.33.0

@@ -4,6 +4,308 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.38.2](./#1.38.2) - 2026-03-25
+
+### Fixed
+
+- **Dialog / Drawer**: Avoid setting inline `pointer-events` when modal, letting the dismissable layer manage it
+  instead.
+
+## [1.38.1](./#1.38.1) - 2026-03-25
+
+### Fixed
+
+- **File Upload**: Automatically reject duplicate files with `FILE_EXISTS` error. Previously, uploading the same file
+  twice was silently accepted and deleting one duplicate removed all of them.
+
+- **Toast**: Restore `role="region"` on the toast group element. The role was previously removed to reduce screen reader
+  landmark noise, but this caused an axe `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div`
+  without a valid role.
+
+- **Tour**
+  - Fix step navigation events (`next`, `prev`, `setStep`) firing when the tour is inactive, bypassing the `start` flow
+  - Fix popper styles not being cleaned up when transitioning from a tooltip step to a dialog/non-tooltip step
+
+### Changed
+
+- **Core**: Validate compound states at machine creation — throw if a state has child states but no `initial`, or if
+  `initial` references a nonexistent child.
+
+## [1.38.0](./#1.38.0) - 2026-03-24
+
+### Added
+
+- **Date Picker**
+  - Add missing range data attributes (`data-range-start`, `data-range-end`, `data-in-hover-range`,
+    `data-hover-range-start`, `data-hover-range-end`) to month and year cell triggers for range picker mode
+  - `TableCellState` now includes `firstInRange`, `lastInRange`, `inHoveredRange`, `firstInHoveredRange`,
+    `lastInHoveredRange`, and `outsideRange`
+  - Range boundary dates now announce "Starting range from {date}" and "Range ending at {date}" for better screen reader
+    context
+
+- **Drawer**
+  - Add `description` anatomy part with `aria-describedby` support on the content element
+  - Add `SwipeArea` part for swipe-to-open gestures from screen edges
+
+    ```tsx
+    <div {...api.getSwipeAreaProps()} />
+    ```
+
+  - Add `getDescriptionProps()` and `getSwipeAreaProps()` to the connect API
+  - Require intentional swipe movement before showing the drawer (no flash on pointer down)
+  - Smooth settle animation from release point to fully open position
+  - Add cross-axis scroll preservation to prevent drawer drag when scrolling horizontally
+  - Add initial focus management for non-modal mode
+
+- **Pin Input**
+  - **No more holes**: Delete and Backspace now splice values left instead of leaving empty gaps. Deleting "2" from
+    `[1, 2, 3]` yields `[1, 3, ""]` — not `[1, "", 3]`. Cut (`Ctrl+X`) behaves the same way.
+  - **Smarter focus management**: Backspace always moves back, click and ArrowRight are clamped to the insertion point,
+    same-key skip advances focus, and roving tabIndex treats the entire pin input as a single tab stop
+  - **New keyboard shortcuts**: Home/End to jump to first slot or last filled slot, `enterKeyHint` shows "next" on
+    intermediate slots and "done" on the last
+  - Add `autoSubmit` prop to automatically submit the owning form when all inputs are filled
+  - Add `sanitizeValue` prop to sanitize pasted values before validation (e.g. strip dashes from "1-2-3")
+
+### Fixed
+
+- **Date Picker**: Fix inverted year cell `selectable` state that caused years outside the visible decade or min/max
+  range to appear selectable
+
+- **Dialog**
+  - Set `pointer-events: none` on positioner in non-modal mode so the page stays interactive
+  - Add initial focus management for non-modal mode (mirrors popover behavior)
+  - Fix `aria-modal` to reflect actual `modal` prop value instead of hardcoded `true`
+
+- **Drawer**: Fix swipe-to-dismiss in controlled mode (`open: true` without `onOpenChange` now blocks dismiss)
+
+- **Floating Panel**: Fix `closeOnEscape` not working when focus is on a child element (e.g., input) inside the panel
+
+- **Focus Trap**: Fix focus trapping when the content has a single effective tab stop, such as a native radio group.
+  Handle disconnected `initialFocus` nodes more safely.
+
+- **Interact Outside**: Fix issue where nested popovers and select within popovers didn't toggle correctly in Safari due
+  to `focusin` events racing with pointer interactions
+
+- **Splitter**: Fix global cursor styles when splitter is used in a shadow root
+
+### Changed
+
+- **Date Picker**: `DayTableCellState.formattedDate` removed — use `valueText` instead (inherited from `TableCellState`)
+
+- **Drawer**: Set `pointer-events: none` on positioner in non-modal mode so the page stays interactive
+
+## [1.37.0](./#1.37.0) - 2026-03-16
+
+### Added
+
+- **Date Input**
+  - Add paste support for ISO 8601 date strings
+  - Add `api.focus()` method for programmatic focus
+  - Add `createCalendar` prop for non-Gregorian calendar systems (e.g., Buddhist, Persian)
+  - Add `isDateUnavailable` prop to mark specific dates as invalid
+
+- **Table of Contents**: Initial release of table of contents machine that highlights active headings as you scroll
+
+### Fixed
+
+- **Dialog, Drawer**: Improve focus restoration by preferring the trigger element as a stable fallback return target
+  after remount cycles
+
+- **Floating Panel**: Fix `Escape` during drag or resize so floating panels restore their previous position or size
+  correctly in non-React frameworks
+
+- **Preact**: Fix Fast Refresh lifecycle edge cases where machine cleanup could hydrate from stale state and skip
+  expected effect re-application
+
+- **React**
+  - Re-run entry actions after StrictMode remount
+  - Fix Fast Refresh lifecycle edge cases where machine cleanup could hydrate from stale state and skip expected effect
+    re-application
+
+- **Radio Group**: Fix missing `aria-labelledby` on radio hidden input, ensuring `getByRole('radio', { name: '...' })`
+  works in testing tools like Playwright
+
+- **Toast**: Improve toast group accessibility by removing `role="region"` landmark to reduce screen reader noise and
+  restructuring `aria-label` for more natural output (e.g., "Notifications, bottom (Alt+T)")
+
+## [1.36.0](./#1.36.0) - 2026-03-11
+
+### Added
+
+- **Clipboard, Navigation Menu, Popover, Select, Timer, Toast, Tree View**: Add `translations` prop for localization of
+  hardcoded accessibility labels
+
+- **Listbox**
+  - Add `keyboardPriority` to `getInputProps` to control whether input key handling prioritizes text editing or list
+    navigation for `Home`/`End` and horizontal arrows in grid collections
+  - Add `highlightFirst`, `highlightLast`, `highlightNext`, and `highlightPrevious` to the API for programmatic
+    highlight navigation
+
+- **Tags Input**: Add `allowDuplicates` prop to allow duplicate tags
+
+  ```js
+  useMachine(tagsInput.machine, {
+    allowDuplicates: true,
+  })
+  ```
+
+### Fixed
+
+- **Carousel**
+  - Fix controlled carousel inside dialog jumping or skipping pages
+  - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
+  - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
+
+- **Color Picker**: Preserve vertical slider orientation on pointer updates
+
+- **Date Input**: Improve focus management
+
+- **Floating Panel**
+  - Fix `open` taking precedence over `defaultOpen` during initialization
+  - Fix `api.setPosition` and `api.setSize` to work independently of drag/resize state
+  - Fix React `Maximum update depth exceeded` when content uses `ResizeObserver`
+  - Fix maximize/minimize restore reverting to `(0, 0)` in controlled mode
+  - Fix Escape during drag/resize to cancel and revert to original position/size
+
+- **Menu**: Fix trigger to keep `aria-expanded="false"` when closed
+
+- **Pin Input**: Fix crash when typing the same character in a completed pin input on frameworks that use native `input`
+  event (Svelte, Vue, etc.)
+
+- **Radio Group, Tabs**: Fix indicator only animating when value changes, not on initial render or resize
+
+- **Vanilla**: Fix handling of controlled mode
+
+## [1.35.3](./#1.35.3) - 2026-03-02
+
+### Added
+
+- **Date Input**: Initial release of date input machine
+
+### Fixed
+
+- **Carousel**
+  - Fix issue where carousel inside a Portal (e.g., Dialog) computes incorrect page count due to incomplete DOM layout
+    at mount time. The item-group container is now observed with a `ResizeObserver`, so snap points are recalculated
+    when the container resizes
+  - Keep page and indicators in sync after drag release and scroll settling
+  - Handle rapid mixed interactions (drag, wheel, buttons, indicators) more consistently
+  - Keep page state valid when `slidesPerPage`, `slidesPerMove`, direction, or orientation change
+  - Make `slidesPerMove` (`auto`, `1`, `2`) progression more predictable
+
+- **Combobox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Listbox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Select**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+### Changed
+
+- **I18n Utils**: `formatTime` now accepts `amLabel` and `pmLabel` as separate options instead of the previous
+  `amPmLabels` object
+
+## [1.35.2](./#1.35.2) - 2026-02-26
+
+### Fixed
+
+- Fix CJS build issues across all packages
+
+## [1.35.1](./#1.35.1) - 2026-02-26
+
+### Added
+
+- **Core**: Add support for XState-style `#id` transition targets. `#...` targets now resolve by state node `id`, making
+  cross-level transitions explicit.
+
+### Fixed
+
+- **Color Picker**: Fix a regression where clicking the color picker trigger while open did not close the popover
+
+- **Docs**: Fix ESM JSON imports for Node loader compatibility. Add `with { type: "json" }` import attributes and set
+  build target to `node20.10` so the ESM output works when loaded in `next.config.mjs`, velite, or other Node ESM
+  contexts without `ERR_IMPORT_ATTRIBUTE_MISSING`
+
+## [1.35.0](./#1.35.0) - 2026-02-26
+
+### Added
+
+- **Date Picker**
+  - Add non-Gregorian calendar support via `createCalendar` prop
+    - Support Persian, Buddhist, Islamic, Hebrew, and other calendar systems
+    - Month names, year ranges, formatters, and navigation now respect the active calendar
+  - Add `data-type` attribute to weekend table header and cell
+
+### Fixed
+
+- **Combobox**: Fix `onValueChange` returning empty `items` array when using controlled value
+
+- **Popover**: Fix nested popover z-index layering by running `trackDismissableElement` before `trackPositioning`
+
+- **Toast**: Fix types to ensure `parent`/`index` are exposed as props and `expand`/`collapse` are exposed on the store
+
+- **Vanilla**: Fix `mergeProps` to ensure the `style` prop is always a string
+
+## [1.34.0](./#1.34.0) - 2026-02-19
+
+### Added
+
+- **Cascade Select [New]**: Initial release of cascade select state machine
+
+- **Date Picker**
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+  - Add `showWeekNumbers` support to display an ISO 8601 week number column in the day view
+
+- **Date Utils**: Add `getWeekOfYear` utility for week number calculation
+
+- **Drawer [New]**: Initial release of the drawer state machine. Replaces the previous `bottom-sheet` implementation and
+  API naming
+
+- **I18n Utils**: Add `formatTime` utility for locale-aware 12h/24h time formatting with optional seconds
+
+- **Popover**: Add `sizeMiddleware` positioning option to optionally disable the size middleware for better scroll
+  performance
+
+- **Select**: Add `autoComplete` prop for browser autofill hints (e.g., `"address-level1"` for state fields)
+
+### Fixed
+
+- **Combobox**
+  - Fix `aria-selected` being set on highlighted items instead of selected items, improving screen reader announcements
+  - Fix `selectedItems` getting out of sync with `value` when controller ignores selection in controlled mode
+  - Fix item disabled state not accounting for root-level `disabled` prop
+
+- **Date Picker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Export `DateValue` type locally instead of re-exporting from `@internationalized/date` (v3.10.0+ compatibility)
+  - Improve focus management in trigger-only mode: focus now correctly returns to the trigger element after selecting a
+    date or clearing the value
+
+- **Date Utils**: Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+- **Dialog**: Fix issue where non-modal dialog closes on outside click even when `modal` is set to `false`
+
+- **Listbox**: Fix DOM IDs
+
+- **Number Input**: Fix issue where explicit `invalid` prop was ignored when value is out of range. The `invalid` prop
+  now takes precedence over the internal `isOutOfRange` computation
+
+- **Popover**: Improve performance by reducing style recalculations when scrolling with heavy content
+
+- **Select**: Fix issue where autofill does not update value when the hidden select value changes
+
+- **Svelte**: Fix `state_unsafe_mutation` warning that occurs due to state transition during component teardown
+
+- **Toast**: Fix TypeScript compilation errors when building projects that use `@zag-js/toast`
+
 ## [1.33.1](./#1.33.1) - 2026-01-28
 
 ### Fixed

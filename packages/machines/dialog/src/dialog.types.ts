@@ -138,11 +138,11 @@ export interface DialogSchema {
   action:
     | "checkRenderedElements"
     | "syncZIndex"
+    | "setInitialFocus"
     | "invokeOnClose"
     | "invokeOnOpen"
     | "toggleVisibility"
     | "setActiveTrigger"
-
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "ACTIVE_TRIGGER.SET"
     value?: string | null | undefined

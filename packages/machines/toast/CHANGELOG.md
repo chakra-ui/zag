@@ -1,5 +1,161 @@
 # @zag-js/toast
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2981232`](https://github.com/chakra-ui/zag/commit/29812320badb8066208b2ef5337eec80f71e96b7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Restore `role="region"` on the toast group element.
+  - The role was previously removed to reduce screen reader landmark noise, but this caused an axe
+    `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div` without a valid role.
+  - The region landmark also enables keyboard navigation to the toast area (e.g. via F6).
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- [`daff476`](https://github.com/chakra-ui/zag/commit/daff4767985c02d8b4e808201935eeacdfa426b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve toast group accessibility:
+  - Remove `role="region"` landmark to reduce screen reader noise; keep `aria-live="polite"` with `aria-relevant` and
+    `aria-atomic` for reliable, scoped announcements
+  - Restructure `aria-label` for more natural output (e.g. "Notifications, bottom (Alt+T)")
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [`e167d02`](https://github.com/chakra-ui/zag/commit/e167d026029d4b5ab9524bf889c9fd94d7f47d27) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `translations` prop for localization of hardcoded
+  accessibility labels in clipboard, navigation-menu, popover, select, timer, toast, and tree-view machines (fixes
+  #3004)
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/dismissable@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dismissable@1.35.1
+  - @zag-js/dom-query@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- [`d0ce632`](https://github.com/chakra-ui/zag/commit/d0ce632a98eeca4784d240c0391cc13a840e5d2a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix toast types to ensure `parent`/`index` are exposed as props
+  and `expand`/`collapse` are exposed on the store
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dismissable@1.34.1
+  - @zag-js/dom-query@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [`b8da95e`](https://github.com/chakra-ui/zag/commit/b8da95ed7fb99a3563277445619b8ee9e1358a5a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix TypeScript compilation errors when building projects that use
+  `@zag-js/toast`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

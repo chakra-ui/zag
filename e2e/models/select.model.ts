@@ -11,7 +11,7 @@ export class SelectModel extends Model {
     return a11y(this.page, ".select")
   }
 
-  goto(url = "/select") {
+  goto(url = "/select/basic") {
     return this.page.goto(url)
   }
 
@@ -116,5 +116,14 @@ export class SelectModel extends Model {
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
     expect(await isInViewport(this.content, item)).toBe(true)
+  }
+
+  autofill = async (value: string) => {
+    await this.page.evaluate((value) => {
+      const select = document.querySelector<HTMLSelectElement>("[data-scope='select'] select[aria-hidden]")
+      if (!select) throw new Error("Hidden select not found")
+      select.value = value
+      select.dispatchEvent(new Event("change", { bubbles: true }))
+    }, value)
   }
 }

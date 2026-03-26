@@ -1,12 +1,12 @@
 ```tsx
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
-import { useEffect } from "react"
+import { useEffect, useId } from "react"
 
 export function NestedMenu() {
   // Level 1 - File Menu
   const fileMenuService = useMachine(menu.machine, {
-    id: "1",
+    id: useId(),
     "aria-label": "File",
   })
 
@@ -14,7 +14,7 @@ export function NestedMenu() {
 
   // Level 2 - Share Menu
   const shareMenuService = useMachine(menu.machine, {
-    id: "2",
+    id: useId(),
     "aria-label": "Share",
   })
 

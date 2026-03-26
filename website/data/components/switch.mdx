@@ -18,15 +18,13 @@ A switch allows users to turn an individual option on or off.
 
 ## Installation
 
-To use the switch machine in your project, run the following command in your
-command line:
+Install the switch package:
 
 <CodeSnippet id="switch/installation.mdx" />
 
 ## Anatomy
 
-To set up the switch correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the switch anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -34,40 +32,41 @@ name its parts.
 
 ## Usage
 
-First, import the switch package into your project
+Import the switch package:
 
-```jsx
+```tsx
 import * as zagSwitch from "@zag-js/switch"
 ```
 
 The switch package exports two key functions:
 
-- `machine` — The state machine logic for the switch widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-switch machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="switch/usage.mdx" />
-
-### Disabling the switch
-
-To make a switch disabled, set the `disabled` property to `true`.
-
-```jsx {3}
-const service = useMachine(zagSwitch.machine, {
-  disabled: true,
-})
-```
 
 ### Making it checked by default
 
 Use the `defaultChecked` property to make a switch checked by default.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(zagSwitch.machine, {
   defaultChecked: true,
+})
+```
+
+### Controlled checked state
+
+Use `checked` and `onCheckedChange` for controlled usage.
+
+```tsx
+const service = useMachine(zagSwitch.machine, {
+  checked,
+  onCheckedChange(details) {
+    setChecked(details.checked)
+  },
 })
 ```
 
@@ -75,7 +74,7 @@ const service = useMachine(zagSwitch.machine, {
 
 When the switch value changes, the `onCheckedChange` callback is invoked.
 
-```jsx {3-5}
+```tsx {3-5}
 const service = useMachine(zagSwitch.machine, {
   onCheckedChange(details) {
     // details => { checked: boolean }
@@ -84,23 +83,39 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
+### Programmatic toggle
+
+Use the connected API when you need imperative control.
+
+```tsx
+api.setChecked(true)
+api.toggleChecked()
+```
+
 ### Usage within forms
 
-To use switch within forms, use the exposed `inputProps` from the `connect`
-function and ensure you pass `name` value to the machine's context. It will
-render a hidden input and ensure the value changes get propagated to the form
-correctly.
+To use switch in forms, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(zagSwitch.machine, {
   name: "feature",
 })
 ```
 
+### Custom form value
+
+Set `value` to customize the submitted form value when checked.
+
+```tsx
+const service = useMachine(zagSwitch.machine, {
+  name: "notifications",
+  value: "enabled",
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each switch part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each switch part includes a `data-part` attribute you can target in CSS.
 
 ### Focused State
 

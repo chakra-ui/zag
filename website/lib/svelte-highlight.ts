@@ -1,6 +1,10 @@
 // @ts-nocheck
-import markdown from "refractor/lang/markdown.js"
-import { refractor } from "refractor/lib/core.js"
+import clike from "refractor/clike"
+import css from "refractor/css"
+import javascript from "refractor/javascript"
+import markdown from "refractor/markdown"
+import markup from "refractor/markup"
+import { refractor } from "refractor/all"
 import rehypePrismGenerator from "rehype-prism-plus/generator"
 
 svelte.displayName = "svelte"
@@ -150,6 +154,11 @@ function svelte(Prism) {
   })(Prism)
 }
 
+refractor.register(markup)
+refractor.register(clike)
+refractor.register(javascript)
+refractor.register(css)
+refractor.register(markdown)
 refractor.register(svelte)
 
 export const rehypeSvelte = rehypePrismGenerator(refractor) as any

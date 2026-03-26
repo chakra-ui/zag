@@ -1,5 +1,175 @@
 # @zag-js/floating-panel
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/store@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/popper@1.38.2
+  - @zag-js/rect-utils@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6),
+  [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/popper@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/store@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/rect-utils@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- [`696541d`](https://github.com/chakra-ui/zag/commit/696541d1369d896574ffe77fd6e07b1f6194f74e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `closeOnEscape` not working when focus is on a child element
+  (e.g., input) inside the panel.
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/popper@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/store@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+  - @zag-js/rect-utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- [`fc64b64`](https://github.com/chakra-ui/zag/commit/fc64b64b9f1c01cfc0cef9d529c1b099e15b549e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `Escape` during drag or resize so floating panels restore
+  their previous position or size correctly in non-React frameworks.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/store@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/popper@1.37.0
+  - @zag-js/rect-utils@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [`3990e97`](https://github.com/chakra-ui/zag/commit/3990e97dcb5d1708d492b7f3944e71bd4595e039) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled floating panel behavior.
+  - Fix `open` taking precedence over `defaultOpen` during initialization
+  - Fix `api.setPosition` and `api.setSize` to work independently of drag/resize state
+  - Fix React `Maximum update depth exceeded` when content uses `ResizeObserver`
+  - Fix maximize/minimize restore reverting to `(0, 0)` in controlled mode
+  - Fix Escape during drag/resize to cancel and revert to original position/size
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/popper@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/store@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+  - @zag-js/rect-utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/store@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/popper@1.35.3
+  - @zag-js/rect-utils@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/popper@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/store@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/dom-query@1.35.2
+  - @zag-js/rect-utils@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/store@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/popper@1.35.1
+  - @zag-js/rect-utils@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/store@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/popper@1.35.0
+  - @zag-js/rect-utils@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/store@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/popper@1.34.1
+  - @zag-js/rect-utils@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/store@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/rect-utils@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

@@ -1,8 +1,18 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
+import { a11y, clickControls, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
 
 export class Model {
-  constructor(public page: Page) {}
+  private readonly consoleMessages: string[] = []
+
+  constructor(public page: Page) {
+    page.on("console", (msg) => {
+      this.consoleMessages.push(msg.text())
+    })
+
+    page.on("pageerror", (error) => {
+      this.consoleMessages.push(error.message)
+    })
+  }
 
   get controls() {
     return controls(this.page)
@@ -10,6 +20,10 @@ export class Model {
 
   clickViz() {
     return clickViz(this.page)
+  }
+
+  clickControls() {
+    return clickControls(this.page)
   }
 
   clickOutside() {
@@ -124,5 +138,17 @@ export class Model {
   dontSee(text: string, context?: string) {
     const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
     return expect(locator).not.toBeVisible()
+  }
+
+  seeInConsole(text: string, timeout = 5000) {
+    return expect.poll(() => this.consoleMessages.some((message) => message.includes(text)), { timeout }).toBeTruthy()
+  }
+
+  dontSeeInConsole(text: string, timeout = 500) {
+    return expect.poll(() => this.consoleMessages.some((message) => message.includes(text)), { timeout }).toBeFalsy()
+  }
+
+  clearConsoleMessages() {
+    this.consoleMessages.length = 0
   }
 }

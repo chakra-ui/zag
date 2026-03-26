@@ -1,4 +1,4 @@
-import { ControlRecord, deepSet, getControlDefaults } from "@zag-js/shared"
+import { ControlRecord, deepSet, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
 import { Accessor, createMemo, createSignal, mergeProps } from "solid-js"
 
 export function useControls<T extends ControlRecord>(config: T) {
@@ -12,12 +12,14 @@ export function useControls<T extends ControlRecord>(config: T) {
     })
   }
 
+  const context = createMemo(() => getTransformedControlValues(config, state()))
+
   return {
     state,
     setState,
     config,
     mergeProps: <T extends object>(props: T | Accessor<T>): Accessor<T> => {
-      return createMemo(() => mergeProps(state(), typeof props === "function" ? props() : props))
+      return createMemo(() => mergeProps(context(), typeof props === "function" ? props() : props))
     },
   }
 }
