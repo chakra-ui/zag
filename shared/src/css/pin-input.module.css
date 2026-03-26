@@ -1,16 +1,16 @@
-[data-scope="pin-input"][data-part="control"] {
+:global(.PinInputControl) {
   width: 300px;
   display: flex;
   margin-bottom: 12px;
   gap: 12px;
 }
 
-[data-scope="pin-input"][data-part="label"] {
+:global(.PinInputLabel) {
   display: block;
   margin-bottom: 8px;
 }
 
-[data-scope="pin-input"][data-part="input"] {
+:global(.PinInputInput) {
   width: 48px;
   height: 48px;
   text-align: center;

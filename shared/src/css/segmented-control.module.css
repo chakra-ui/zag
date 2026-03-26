@@ -1,4 +1,4 @@
-.segmented-control [data-part="root"] {
+.segmented-control :global(.RadioGroupRoot) {
   width: 100%;
   padding: 4px;
   background-color: #f1f3f5;
@@ -6,7 +6,7 @@
   gap: 8px;
 }
 
-.segmented-control [data-part="item"] {
+.segmented-control :global(.RadioGroupItem) {
   padding-left: 0;
   padding: 8px;
   width: 100%;
@@ -19,7 +19,7 @@
   }
 }
 
-.segmented-control [data-part="indicator"] {
+.segmented-control :global(.RadioGroupIndicator) {
   width: var(--width);
   height: var(--height);
 }

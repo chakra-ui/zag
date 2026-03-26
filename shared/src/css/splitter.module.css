@@ -1,13 +1,13 @@
-[data-scope="splitter"][data-part="root"][data-orientation="horizontal"] {
+:global(.SplitterRoot)[data-orientation="horizontal"] {
   height: 300px;
 }
 
-[data-scope="splitter"][data-part="root"][data-orientation="vertical"] {
+:global(.SplitterRoot)[data-orientation="vertical"] {
   width: 800px;
   height: 600px;
 }
 
-[data-scope="splitter"][data-part="panel"] {
+:global(.SplitterPanel) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,15 +15,15 @@
   overflow: auto;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-orientation="horizontal"] {
+:global(.SplitterResizeTrigger)[data-orientation="horizontal"] {
   width: 8px;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-orientation="vertical"] {
+:global(.SplitterResizeTrigger)[data-orientation="vertical"] {
   height: 8px;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"] {
+:global(.SplitterResizeTrigger) {
   background: #ebebeb;
   display: flex;
   align-items: center;
@@ -32,29 +32,29 @@
   outline: 0;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-focus] {
+:global(.SplitterResizeTrigger)[data-focus] {
   background: #b0baf1;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"]:active {
+:global(.SplitterResizeTrigger):active {
   background: #3f51b5;
   color: white;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-disabled] {
+:global(.SplitterResizeTrigger)[data-disabled] {
   opacity: 0.5;
 }
 
-[data-scope="splitter"][data-part="resize-trigger"] .bar {
+:global(.SplitterResizeTrigger) .bar {
   background-color: currentColor;
 }
 
-[data-scope="splitter"][data-orientation="horizontal"] .bar {
+:global(.Splitter)[data-orientation="horizontal"] .bar {
   width: 2px;
   height: 40px;
 }
 
-[data-scope="splitter"][data-orientation="vertical"] .bar {
+:global(.Splitter)[data-orientation="vertical"] .bar {
   height: 2px;
   width: 40px;
 }

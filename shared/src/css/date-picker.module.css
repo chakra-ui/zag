@@ -1,4 +1,4 @@
-[data-scope="date-picker"][data-part="trigger"] {
+:global(.DatePickerTrigger) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +10,7 @@
   }
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"] {
+:global(.DatePickerTableCellTrigger) {
   padding: 4px;
   min-width: 30px;
   min-height: 30px;
@@ -20,49 +20,49 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"]:hover {
+:global(.DatePickerTableCellTrigger):hover {
   background: rgba(126, 126, 126, 0.171);
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-focus] {
+:global(.DatePickerTableCellTrigger)[data-focus] {
   background: rgba(165, 151, 165, 0.085);
   color: rgba(128, 0, 128, 0.959);
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-outside-range] {
+:global(.DatePickerTableCellTrigger)[data-outside-range] {
   visibility: hidden;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-selected] {
+:global(.DatePickerTableCellTrigger)[data-selected] {
   background: purple !important;
   color: white !important ;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-in-range]:not([data-selected]) {
+:global(.DatePickerTableCellTrigger)[data-in-range]:not([data-selected]) {
   background: rgb(240, 219, 240);
 }
 
-[data-scope="date-picker"][data-part="control"] {
+:global(.DatePickerControl) {
   display: flex;
   gap: 10px;
   margin-top: 20px;
   margin-bottom: 16px;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-today] {
+:global(.DatePickerTableCellTrigger)[data-today] {
   color: purple;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-unavailable] {
+:global(.DatePickerTableCellTrigger)[data-unavailable] {
   text-decoration: line-through;
   opacity: 0.4;
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-disabled] {
+:global(.DatePickerTableCellTrigger)[data-disabled] {
   opacity: 0.4;
 }
 
-[data-scope="date-picker"][data-part="content"] {
+:global(.DatePickerContent) {
   border: 1px solid gray;
   padding: 1.5rem;
   min-width: 320px;
@@ -70,31 +70,31 @@
   border-radius: 8px;
 }
 
-[data-scope="date-picker"][data-part="content"][data-inline] {
+:global(.DatePickerContent)[data-inline] {
   border: 0;
   padding: 0;
   border-radius: 0;
 }
 
-[data-scope="date-picker"][data-part="table"] {
+:global(.DatePickerTable) {
   min-width: 240px;
   width: 100%;
   border-collapse: collapse;
 }
 
-[data-scope="date-picker"][data-part="view-trigger"] {
+:global(.DatePickerViewTrigger) {
   border: 0;
   padding: 4px 20px;
   border-radius: 4px;
 }
 
-[data-scope="date-picker"][data-part="view-control"] {
+:global(.DatePickerViewControl) {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-block: 10px;
 }
 
-[data-scope="date-picker"][data-part="view"] {
+:global(.DatePickerView) {
   width: 100%;
 }

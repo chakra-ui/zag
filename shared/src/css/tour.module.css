@@ -1,24 +1,24 @@
-[data-scope="tour"][data-part="positioner"][data-type="floating"] {
+:global(.TourPositioner)[data-type="floating"] {
   position: absolute;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="bottom"] {
+:global(.TourPositioner)[data-type="floating"][data-placement*="bottom"] {
   bottom: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="top"] {
+:global(.TourPositioner)[data-type="floating"][data-placement*="top"] {
   top: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="end"] {
+:global(.TourPositioner)[data-type="floating"][data-placement*="end"] {
   inset-inline-end: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="start"] {
+:global(.TourPositioner)[data-type="floating"][data-placement*="start"] {
   inset-inline-start: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="dialog"] {
+:global(.TourPositioner)[data-type="dialog"] {
   width: 100%;
   position: fixed;
   inset: 0;
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-[data-scope="tour"][data-part="content"] {
+:global(.TourContent) {
   --arrow-background: white;
   --arrow-size: 10px;
   background: white;
@@ -39,45 +39,45 @@
   width: 300px;
 }
 
-[data-scope="tour"][data-part="content"][data-type="dialog"] {
+:global(.TourContent)[data-type="dialog"] {
   width: 500px;
   background: lightblue;
 }
 
-[data-scope="tour"][data-part="content"][data-type="floating"] {
+:global(.TourContent)[data-type="floating"] {
   width: 500px;
   background: rgb(15, 39, 136);
   color: white;
 }
 
-[data-scope="tour"][data-part="arrow"] {
+:global(.TourArrow) {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
 }
 
-[data-scope="tour"][data-part="title"] {
+:global(.TourTitle) {
   font-weight: 600;
 }
 
-[data-scope="tour"][data-part="description"] {
+:global(.TourDescription) {
   margin-bottom: 20px;
 }
 
-[data-scope="tour"][data-part="progress-text"] {
+:global(.TourProgressText) {
   margin-bottom: 20px;
   opacity: 0.72;
 }
 
-[data-scope="tour"][data-part="backdrop"] {
+:global(.TourBackdrop) {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-[data-scope="tour"][data-part="spotlight"] {
+:global(.TourSpotlight) {
   border: 3px solid pink;
 }
 
-[data-scope="tour"][data-part="close-trigger"] {
+:global(.TourCloseTrigger) {
   font-family: inherit;
   height: 25px;
   width: 25px;

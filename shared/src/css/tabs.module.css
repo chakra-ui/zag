@@ -1,4 +1,4 @@
-[data-scope="tabs"][data-part="root"] {
+:global(.TabsRoot) {
   max-width: 32rem;
   border: 1px solid hsl(219, 1%, 72%);
   padding: 0.5rem;
@@ -8,14 +8,14 @@
   }
 }
 
-[data-scope="tabs"][data-part="list"] {
+:global(.TabsList) {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding-inline: 0.3rem;
 }
 
-[data-scope="tabs"][data-part="trigger"] {
+:global(.TabsTrigger) {
   display: inline-flex;
   position: relative;
   margin: 0;
@@ -30,14 +30,14 @@
   }
 }
 
-[data-scope="tabs"][data-part="content"] {
+:global(.TabsContent) {
   position: relative;
   padding: 0.25rem 0.5rem;
   margin-top: 4px;
   background: white;
 }
 
-[data-scope="tabs"][data-part="indicator"] {
+:global(.TabsIndicator) {
   background-color: red;
   z-index: 10;
 

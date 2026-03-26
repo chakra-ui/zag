@@ -1,4 +1,4 @@
-[data-scope="collapsible"][data-part="content"] {
+:global(.CollapsibleContent) {
   overflow: hidden;
   max-width: 400px;
 
@@ -23,13 +23,13 @@
   }
 }
 
-[data-scope="collapsible"][data-part="trigger"] {
+:global(.CollapsibleTrigger) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-[data-scope="collapsible"][data-part="indicator"] {
+:global(.CollapsibleIndicator) {
   &[data-state="open"] {
     transform: rotate(180deg);
   }

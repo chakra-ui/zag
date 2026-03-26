@@ -1,29 +1,29 @@
-[data-scope="rating-group"][data-part="control"] {
+:global(.RatingGroupControl) {
   display: inline-flex;
 }
 
-[data-scope="rating-group"][data-part="item"] {
+:global(.RatingGroupItem) {
   width: 20px;
   height: 20px;
   padding: 1px;
 }
 
-[data-scope="rating-group"][data-part="item"]:focus {
+:global(.RatingGroupItem):focus {
   outline: 2px solid royalblue;
 }
 
-[data-scope="rating-group"] [data-part="star"] {
+:global(.RatingGroup) :global(.RatingGroupStar) {
   color: #bdbdbd;
 }
 
-[data-scope="rating-group"][data-part="item"][data-highlighted] [data-part="star"] {
+:global(.RatingGroupItem)[data-highlighted] :global(.RatingGroupStar) {
   color: #ffb400;
 }
 
-[data-scope="rating-group"][data-part="item"][data-highlighted][data-disabled] [data-part="star"] {
+:global(.RatingGroupItem)[data-highlighted][data-disabled] :global(.RatingGroupStar) {
   color: #a1a1a1;
 }
 
-[data-scope="rating-group"][dir="rtl"] [data-half] [data-part="star"] {
+:global(.RatingGroup)[dir="rtl"] [data-half] :global(.RatingGroupStar) {
   transform: scale(-1, 1);
 }

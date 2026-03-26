@@ -1,4 +1,4 @@
-[data-scope="carousel"][data-part="root"] {
+:global(.CarouselRoot) {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -13,13 +13,13 @@
   }
 }
 
-[data-scope="carousel"][data-part="control"] {
+:global(.CarouselControl) {
   display: flex;
   gap: 8px;
   align-self: stretch;
 }
 
-[data-scope="carousel"][data-part="item-group"] {
+:global(.CarouselItemGroup) {
   align-self: stretch;
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -30,7 +30,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="item"] {
+:global(.CarouselItem) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,7 +53,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="indicator-group"] {
+:global(.CarouselIndicatorGroup) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,7 @@
   flex-wrap: wrap;
 }
 
-[data-scope="carousel"][data-part="indicator"] {
+:global(.CarouselIndicator) {
   display: flex;
   border: none;
   justify-content: center;
@@ -79,7 +79,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="autoplay-trigger"] {
+:global(.CarouselAutoplayTrigger) {
   display: flex;
   justify-content: center;
   align-items: center;

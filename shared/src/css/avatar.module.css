@@ -1,17 +1,17 @@
-[data-scope="avatar"][data-part="root"] {
+:global(.AvatarRoot) {
   width: 80px;
   height: 80px;
   border-radius: 9999px;
 }
 
-[data-scope="avatar"][data-part="image"] {
+:global(.AvatarImage) {
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: inherit;
 }
 
-[data-scope="avatar"][data-part="fallback"] {
+:global(.AvatarFallback) {
   width: 80px;
   height: 80px;
   font-size: 14px;
@@ -22,7 +22,7 @@
   border-radius: inherit;
 }
 
-[data-scope="avatar"][data-part="fallback"][data-state="visible"] {
+:global(.AvatarFallback)[data-state="visible"] {
   display: flex;
   align-items: center;
   justify-content: center;

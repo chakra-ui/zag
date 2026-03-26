@@ -1,4 +1,4 @@
-[data-scope="drawer"][data-part="backdrop"] {
+:global(.DrawerBackdrop) {
   --backdrop-opacity: 0.5;
   position: fixed;
   inset: 0;
@@ -24,7 +24,7 @@
   }
 }
 
-[data-scope="drawer"][data-part="positioner"] {
+:global(.DrawerPositioner) {
   position: fixed;
   inset: 0;
   display: flex;
@@ -32,21 +32,21 @@
   justify-content: center;
 }
 
-[data-scope="drawer"][data-part="positioner"][data-swipe-direction="up"] {
+:global(.DrawerPositioner)[data-swipe-direction="up"] {
   align-items: flex-start;
 }
 
-[data-scope="drawer"][data-part="positioner"][data-swipe-direction="left"] {
+:global(.DrawerPositioner)[data-swipe-direction="left"] {
   justify-content: flex-start;
   align-items: stretch;
 }
 
-[data-scope="drawer"][data-part="positioner"][data-swipe-direction="right"] {
+:global(.DrawerPositioner)[data-swipe-direction="right"] {
   justify-content: flex-end;
   align-items: stretch;
 }
 
-[data-scope="drawer"][data-part="content"] {
+:global(.DrawerContent) {
   background: white;
   transition: transform calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
   animation-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
@@ -121,7 +121,7 @@
   }
 }
 
-[data-scope="drawer"][data-part="grabber"] {
+:global(.DrawerGrabber) {
   width: 100%;
   padding: 20px 0;
   display: flex;
@@ -129,21 +129,21 @@
   align-items: center;
 }
 
-[data-scope="drawer"][data-part="grabber-indicator"] {
+:global(.DrawerGrabberIndicator) {
   height: 4px;
   width: 40px;
   background-color: gray;
   border-radius: 1000px;
 }
 
-[data-scope="drawer"] [data-no-drag="true"] {
+:global(.Drawer) [data-no-drag="true"] {
   width: 100%;
   padding: 40px 0;
   border: 1px solid black;
   border-radius: 16px;
 }
 
-[data-scope="drawer"] .scrollable {
+:global(.Drawer) .scrollable {
   overflow-y: auto;
 }
 

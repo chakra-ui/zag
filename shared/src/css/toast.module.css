@@ -1,4 +1,4 @@
-[data-scope="toast"][data-part="root"] {
+:global(.ToastRoot) {
   background: white;
   padding: 16px;
   min-height: 48px;
@@ -52,7 +52,7 @@
   }
 }
 
-[data-scope="toast"][data-part="close-trigger"] {
+:global(.ToastCloseTrigger) {
   position: absolute;
   right: 8px;
   top: 8px;
@@ -70,17 +70,17 @@
   }
 }
 
-[data-scope="toast"][data-part="title"] {
+:global(.ToastTitle) {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-[data-scope="toast"] .spinner {
+:global(.Toast) .spinner {
   animation: spin 1s linear infinite;
 }
 
-[data-scope="toast"][data-part="progressbar"] {
+:global(.ToastProgressbar) {
   height: 4px;
   background: rgb(116, 116, 116);
   width: 100%;
@@ -106,16 +106,16 @@
   }
 }
 
-[data-scope="toast"][data-part="progressbar"][data-type="loading"] {
+:global(.ToastProgressbar)[data-type="loading"] {
   animation-name: none;
 }
 
 @media (max-width: 640px) {
-  [data-scope="toast"][data-part="group"] {
+  :global(.ToastGroup) {
     width: 100%;
   }
 
-  [data-scope="toast"][data-part="root"] {
+  :global(.ToastRoot) {
     inset-inline: 0;
     width: calc(100% - var(--gap) * 2);
   }

@@ -1,11 +1,11 @@
-[data-scope="radio-group"][data-part="root"] {
+:global(.RadioGroupRoot) {
   position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-[data-scope="radio-group"][data-part="item"] {
+:global(.RadioGroupItem) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -25,19 +25,19 @@
   }
 }
 
-[data-scope="radio-group"][data-part="item-control"] {
+:global(.RadioGroupItemControl) {
   &[data-focus-visible] {
     outline: 2px solid royalblue;
   }
 }
 
-[data-scope="radio-group"][data-part="radio-label"] {
+:global(.RadioGroupRadioLabel) {
   &[data-disabled] {
     opacity: 0.4;
   }
 }
 
-[data-scope="radio-group"][data-part="item-control"] {
+:global(.RadioGroupItemControl) {
   height: 20px;
   width: 20px;
   background-color: #eee;
@@ -72,7 +72,7 @@
   }
 }
 
-[data-scope="radio-group"][data-part="indicator"] {
+:global(.RadioGroupIndicator) {
   height: 4px;
   background-color: red;
   z-index: 1;

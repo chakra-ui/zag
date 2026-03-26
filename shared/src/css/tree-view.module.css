@@ -1,10 +1,10 @@
-[data-scope="tree-view"][data-part="tree"] {
+:global(.TreeViewTree) {
   margin-top: 20px;
   width: 240px;
 }
 
-[data-scope="tree-view"][data-part="item"],
-[data-scope="tree-view"][data-part="branch-control"] {
+:global(.TreeViewItem),
+:global(.TreeViewBranchControl) {
   user-select: none;
   --padding-inline: 16px;
   padding-inline-start: calc(var(--depth) * var(--padding-inline));
@@ -35,17 +35,17 @@
   }
 }
 
-[data-scope="tree-view"][data-part="item-text"],
-[data-scope="tree-view"][data-part="branch-text"] {
+:global(.TreeViewItemText),
+:global(.TreeViewBranchText) {
   flex: 1;
 }
 
-[data-scope="tree-view"][data-part="branch-content"] {
+:global(.TreeViewBranchContent) {
   position: relative;
   isolation: isolate;
 }
 
-[data-scope="tree-view"][data-part="branch-indent-guide"] {
+:global(.TreeViewBranchIndentGuide) {
   position: absolute;
   content: "";
   border-left: 1px solid rgb(226, 226, 226);
@@ -54,7 +54,7 @@
   z-index: 0;
 }
 
-[data-scope="tree-view"][data-part="branch-indicator"] {
+:global(.TreeViewBranchIndicator) {
   display: flex;
   align-items: center;
   &[data-state="open"] svg {
@@ -66,12 +66,12 @@
   }
 }
 
-[data-scope="tree-view"][data-part="branch-control"][data-loading],
-[data-scope="tree-view"][data-part="branch-trigger"][data-loading] {
+:global(.TreeViewBranchControl)[data-loading],
+:global(.TreeViewBranchTrigger)[data-loading] {
   opacity: 0.6;
   cursor: wait;
 }
 
-[data-scope="tree-view"][data-part="branch-control"][data-loading]:hover {
+:global(.TreeViewBranchControl)[data-loading]:hover {
   background: rgb(243, 243, 243);
 }

@@ -28,8 +28,23 @@ function toSolidProp(prop: string) {
 
 type Dict = Record<string, any>
 
+function toPartClassName(part: string) {
+  return part
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join("")
+}
+
+function appendClassName(existing: unknown, ...classNames: string[]) {
+  const next = [isString(existing) ? existing : "", ...classNames].filter(Boolean).join(" ")
+  return next || undefined
+}
+
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
+  const scope = isString(props["data-scope"]) ? props["data-scope"] : undefined
+  const part = isString(props["data-part"]) ? props["data-part"] : undefined
 
   for (const key in props) {
     const value = props[key]
@@ -51,6 +66,18 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
     }
 
     normalized[toSolidProp(key)] = value
+  }
+
+  if (part) {
+    const partClassName = toPartClassName(part)
+    const scopeClassName = scope ? toPartClassName(scope) : undefined
+    const scopePartClassName = scope && part ? `${scopeClassName}${partClassName}` : undefined
+    normalized.class = appendClassName(
+      normalized.class ?? props.className ?? props.class,
+      scopeClassName,
+      partClassName,
+      scopePartClassName,
+    )
   }
   return normalized
 })

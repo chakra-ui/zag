@@ -1,4 +1,4 @@
-[data-scope="switch"][data-part="root"] {
+:global(.SwitchRoot) {
   display: flex;
   align-items: center;
   position: relative;
@@ -10,7 +10,7 @@
   --switch-track-height: 1rem;
 }
 
-[data-scope="switch"][data-part="control"] {
+:global(.SwitchControl) {
   display: inline-flex;
   flex-shrink: 0;
   -webkit-box-pack: start;
@@ -27,21 +27,21 @@
   background: var(--switch-bg);
 }
 
-[data-scope="switch"][data-part="control"][data-state="checked"] {
+:global(.SwitchControl)[data-state="checked"] {
   --switch-bg: #3182ce;
 }
 
-[data-scope="switch"][data-part="control"][data-disabled] {
+:global(.SwitchControl)[data-disabled] {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-[data-scope="switch"][data-part="control"][data-focus] {
+:global(.SwitchControl)[data-focus] {
   outline: 2px solid blue;
   outline-offset: 2px;
 }
 
-[data-scope="switch"][data-part="thumb"] {
+:global(.SwitchThumb) {
   background: white;
   transition-property: transform;
   transition-duration: 200ms;
@@ -51,11 +51,11 @@
   position: relative;
 }
 
-[data-scope="switch"][data-part="thumb"][data-state="checked"] {
+:global(.SwitchThumb)[data-state="checked"] {
   transform: translateX(var(--switch-thumb-x));
 }
 
-[data-scope="switch"][data-part="label"] {
+:global(.SwitchLabel) {
   user-select: none;
   margin-inline-start: 0.5rem;
 }

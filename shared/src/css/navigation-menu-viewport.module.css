@@ -1,12 +1,12 @@
-@import url(./navigation-menu-keyframes.css);
+@import url(./navigation-menu-keyframes.module.css);
 
 .navigation-menu.viewport {
-  [data-scope="navigation-menu"][data-part="root"] {
+  :global(.NavigationMenuRoot) {
     --arrow-size: 20px;
     --indicator-size: 10px;
   }
 
-  [data-scope="navigation-menu"][data-part="list"] {
+  :global(.NavigationMenuList) {
     all: unset;
     list-style: none;
     display: flex;
@@ -16,7 +16,7 @@
     }
   }
 
-  [data-scope="navigation-menu"][data-part="trigger"] {
+  :global(.NavigationMenuTrigger) {
     padding: 10px 16px;
     font-weight: bold;
     display: flex;
@@ -37,7 +37,7 @@
     }
   }
 
-  [data-scope="navigation-menu"][data-part="link"] {
+  :global(.NavigationMenuLink) {
     padding: 10px;
     font-weight: bold;
     color: inherit;
@@ -45,7 +45,7 @@
     text-decoration: none;
   }
 
-  [data-scope="navigation-menu"][data-part="content"] {
+  :global(.NavigationMenuContent) {
     position: absolute;
     top: 0;
     left: 0;
@@ -71,7 +71,7 @@
     }
   }
 
-  [data-scope="navigation-menu"][data-part="viewport-positioner"] {
+  :global(.NavigationMenuViewportPositioner) {
     position: absolute;
     display: flex;
     justify-content: center;
@@ -89,7 +89,7 @@
     }
   }
 
-  [data-scope="navigation-menu"][data-part="viewport"] {
+  :global(.NavigationMenuViewport) {
     position: relative;
     top: 0;
     left: 0;
@@ -123,7 +123,7 @@
     }
   }
 
-  [data-scope="navigation-menu"][data-part="indicator"] {
+  :global(.NavigationMenuIndicator) {
     display: flex;
     justify-content: center;
     height: var(--indicator-size);
@@ -156,7 +156,7 @@
   }
 }
 
-[data-scope="navigation-menu"][data-part="arrow"] {
+:global(.NavigationMenuArrow) {
   position: relative;
   top: 4px;
   width: var(--arrow-size);

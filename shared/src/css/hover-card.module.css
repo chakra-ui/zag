@@ -1,11 +1,11 @@
-[data-scope="hover-card"][data-part="trigger"] {
+:global(.HoverCardTrigger) {
   background: rgb(110, 86, 207);
   color: white;
   width: fit-content;
   padding: 6px;
 }
 
-[data-scope="hover-card"][data-part="content"] {
+:global(.HoverCardContent) {
   background: rgb(225, 223, 228);
   padding: 6px;
   height: 150px;

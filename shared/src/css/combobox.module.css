@@ -1,9 +1,9 @@
-[data-scope="combobox"][data-part="root"] {
+:global(.ComboboxRoot) {
   display: inline-flex;
   flex-direction: column;
 }
 
-[data-scope="combobox"][data-part="content"] {
+:global(.ComboboxContent) {
   background-color: white;
   list-style-type: none;
   margin: 0;
@@ -15,7 +15,7 @@
   z-index: var(--layer-index);
 }
 
-[data-scope="combobox"][data-part="item"] {
+:global(.ComboboxItem) {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,22 +35,22 @@
   }
 }
 
-[data-scope="combobox"][data-part="label"] {
+:global(.ComboboxLabel) {
   display: block;
   margin-top: 12px;
   margin-bottom: 4px;
 }
 
-[data-scope="combobox"][data-part="control"] {
+:global(.ComboboxControl) {
   display: inline-flex;
   width: 300px;
 }
 
-[data-scope="combobox"][data-part="input"] {
+:global(.ComboboxInput) {
   flex: 1;
 }
 
-[data-scope="combobox"][data-part="clear-trigger"] {
+:global(.ComboboxClearTrigger) {
   display: inline-flex;
   font-size: 1.2em;
   & svg {
@@ -59,7 +59,7 @@
   }
 }
 
-[data-scope="combobox"][data-part="item-group-label"] {
+:global(.ComboboxItemGroupLabel) {
   user-select: none;
   margin-top: 8px;
   display: flex;

@@ -1,14 +1,14 @@
-[data-scope="qr-code"][data-part="frame"] {
+:global(.QrCodeFrame) {
   width: 120px;
   height: 120px;
   background-color: white;
 }
 
-[data-scope="qr-code"][data-part="pattern"] {
+:global(.QrCodePattern) {
   fill: green;
 }
 
-[data-scope="qr-code"][data-part="overlay"] {
+:global(.QrCodeOverlay) {
   width: 25%;
   height: 25%;
   outline: 4px solid white;

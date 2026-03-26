@@ -1,4 +1,4 @@
-[data-scope="file-upload"][data-part="dropzone"] {
+:global(.FileUploadDropzone) {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -8,7 +8,7 @@
   position: relative;
 }
 
-[data-scope="file-upload"][data-part="dropzone"][data-cover] {
+:global(.FileUploadDropzone)[data-cover] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -16,12 +16,12 @@
   align-items: center;
 }
 
-[data-scope="file-upload"][data-part="dropzone"][data-dragging] {
+:global(.FileUploadDropzone)[data-dragging] {
   border-color: blue;
   background-color: lightblue;
 }
 
-[data-scope="file-upload"][data-part="dropzone"][data-invalid] {
+:global(.FileUploadDropzone)[data-invalid] {
   border-color: red;
   background-color: lightpink;
 }

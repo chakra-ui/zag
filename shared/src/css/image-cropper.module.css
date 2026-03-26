@@ -1,4 +1,4 @@
-[data-scope="image-cropper"][data-part="selection"] {
+:global(.ImageCropperSelection) {
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.5);
   cursor: move;
@@ -7,11 +7,11 @@
   }
 }
 
-[data-scope="image-cropper"][data-part="image"] {
+:global(.ImageCropperImage) {
   display: block;
 }
 
-[data-scope="image-cropper"][data-part="handle"] {
+:global(.ImageCropperHandle) {
   --handle-size: 12px;
   width: var(--handle-size);
   height: var(--handle-size);
@@ -37,7 +37,7 @@
   }
 }
 
-[data-scope="image-cropper"][data-part="grid"] {
+:global(.ImageCropperGrid) {
   --grid-color: rgba(255, 255, 255, 0.7);
   --grid-line-width: 1px;
 

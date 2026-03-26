@@ -1,9 +1,9 @@
-[data-scope="tags-input"][data-part="label"] {
+:global(.TagsInputLabel) {
   display: block;
   margin-bottom: 8px;
 }
 
-[data-scope="tags-input"][data-part="control"] {
+:global(.TagsInputControl) {
   padding: 0 2px;
   background: #fff;
   border: 1px solid #ccc;
@@ -23,7 +23,7 @@
   }
 }
 
-[data-scope="tags-input"][data-part="item-preview"] {
+:global(.TagsInputItemPreview) {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -50,7 +50,7 @@
   }
 }
 
-[data-scope="tags-input"][data-part*="input"] {
+:global(.TagsInputInput) {
   appearance: none;
   padding: 3px;
   margin: 0;
@@ -71,11 +71,11 @@
   }
 }
 
-[data-scope="tags-input"][data-part="item-delete-trigger"] {
+:global(.TagsInputItemDeleteTrigger) {
   all: unset;
 }
 
-[data-scope="tags-input"][data-part="clear-trigger"] {
+:global(.TagsInputClearTrigger) {
   position: absolute;
   top: 0;
   right: 0.5px;

@@ -1,16 +1,16 @@
-[data-scope="color-picker"][data-part="root"] {
+:global(.ColorPickerRoot) {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-[data-scope="color-picker"][data-part="control"] {
+:global(.ColorPickerControl) {
   display: flex;
   gap: 4px;
 }
 
-[data-scope="color-picker"][data-part="content"] {
+:global(.ColorPickerContent) {
   width: 260px;
   box-sizing: border-box;
   padding: 24px;
@@ -19,26 +19,26 @@
   z-index: var(--layer-index);
 }
 
-[data-scope="color-picker"][data-part="content"] > .content__inner {
+:global(.ColorPickerContent) > .content__inner {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-[data-scope="color-picker"][data-part="area"] {
+:global(.ColorPickerArea) {
   height: 200px;
   border-radius: 4px;
   border: 1px solid #ebebeb;
 }
 
-[data-scope="color-picker"][data-part="area-background"] {
+:global(.ColorPickerAreaBackground) {
   background: rgb(142, 142, 142);
   border-radius: 4px;
   height: 200px;
 }
 
-[data-scope="color-picker"][data-part="area-thumb"],
-[data-scope="color-picker"][data-part="channel-slider-thumb"] {
+:global(.ColorPickerAreaThumb),
+:global(.ColorPickerChannelSliderThumb) {
   border: 2px solid white;
   border-radius: 9999px;
   box-sizing: border-box;
@@ -50,23 +50,23 @@
   height: 16px;
 }
 
-[data-scope="color-picker"][data-part="channel-slider-track"] {
+:global(.ColorPickerChannelSliderTrack) {
   height: 20px;
   border-radius: 4px;
 }
 
-[data-scope="color-picker"][data-part="channel-input"] {
+:global(.ColorPickerChannelInput) {
   border-radius: 4px;
   width: 100%;
   border: 1px solid #c2c2c2;
 }
 
-[data-scope="color-picker"][data-part="swatch"] {
+:global(.ColorPickerSwatch) {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-[data-scope="color-picker"][data-part="transparency-grid"] {
+:global(.ColorPickerTransparencyGrid) {
   border-radius: 4px;
 }
