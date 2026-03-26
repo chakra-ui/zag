@@ -64,7 +64,7 @@ export const machine = createMachine<TooltipSchema>({
     })
 
     track([() => prop("triggerValue")], () => {
-      action(["setTriggerValue", "repositionImmediate"])
+      action(["repositionImmediate"])
     })
   },
 

@@ -169,7 +169,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
           const point = getEventPoint(event)
-          send({ type: "CONTEXT_MENU_START", point })
+          send({ type: "CONTEXT_MENU_START", point, value })
         },
         onPointerCancel(event) {
           if (event.pointerType === "mouse") return
@@ -226,7 +226,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
-        "aria-expanded": open,
+        "aria-expanded": value == null ? open : open && current,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
           if (event.pointerType !== "mouse") return

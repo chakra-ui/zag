@@ -178,16 +178,16 @@ export const machine = createMachine<MenuSchema>({
         },
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint"],
+          actions: ["setAnchorPoint", "setTriggerValue"],
         },
         CONTEXT_MENU: [
           {
             guard: "isOpenControlled",
-            actions: ["setAnchorPoint", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setAnchorPoint", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
           },
         ],
         TRIGGER_CLICK: [
@@ -230,11 +230,11 @@ export const machine = createMachine<MenuSchema>({
         "LONG_PRESS.OPEN": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
       },
@@ -344,16 +344,16 @@ export const machine = createMachine<MenuSchema>({
         ],
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint"],
+          actions: ["setAnchorPoint", "setTriggerValue"],
         },
         CONTEXT_MENU: [
           {
             guard: "isOpenControlled",
-            actions: ["setAnchorPoint", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setAnchorPoint", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
           },
         ],
         TRIGGER_CLICK: [
@@ -374,21 +374,21 @@ export const machine = createMachine<MenuSchema>({
         ARROW_DOWN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["highlightFirstItem", "invokeOnOpen"],
+            actions: ["setTriggerValue", "highlightFirstItem", "invokeOnOpen"],
           },
         ],
         ARROW_UP: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["highlightLastItem", "invokeOnOpen"],
+            actions: ["setTriggerValue", "highlightLastItem", "invokeOnOpen"],
           },
         ],
       },
@@ -422,7 +422,7 @@ export const machine = createMachine<MenuSchema>({
           },
         ],
         CONTEXT_MENU: {
-          actions: ["setAnchorPoint", "focusMenu"],
+          actions: ["setAnchorPoint", "setTriggerValue", "focusMenu"],
         },
         ARROW_UP: {
           actions: ["highlightPrevItem", "focusMenu"],

@@ -12,8 +12,6 @@ export const props = createProps<DialogProps>()([
   "dir",
   "finalFocusEl",
   "getRootNode",
-  "getRootNode",
-  "id",
   "id",
   "ids",
   "initialFocusEl",

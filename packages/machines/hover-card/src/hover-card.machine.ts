@@ -216,6 +216,10 @@ export const machine = createMachine<HoverCardSchema>({
           // no need to invokeOnOpen here because it's still open (but about to close)
           actions: ["setIsPointer"],
         },
+        TRIGGER_FOCUS: {
+          target: "open",
+          actions: ["setTriggerValue"],
+        },
         "TRIGGER_VALUE.SET": {
           target: "open",
           actions: ["setTriggerValue", "reposition"],

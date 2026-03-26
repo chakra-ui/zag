@@ -75,7 +75,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "data-value": value,
         "data-current": dataAttr(current),
         "aria-haspopup": "dialog",
-        "aria-expanded": open,
+        "aria-expanded": value == null ? open : open && current,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         onPointerDown(event) {

@@ -39,7 +39,7 @@ export function connect<T extends PropTypes>(
         "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
-        "aria-expanded": open,
+        "aria-expanded": value == null ? open : open && current,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         "data-current": dataAttr(current),
