@@ -1,11 +1,16 @@
 import { createScope, dispatchInputValueEvent, queryAll } from "@zag-js/dom-query"
 import type { Scope } from "@zag-js/core"
+import { isFunction } from "@zag-js/utils"
 
 export const dom = createScope({
   getRootId: (ctx: Scope) => ctx.ids?.root ?? `cascade-select:${ctx.id}`,
   getLabelId: (ctx: Scope) => ctx.ids?.label ?? `cascade-select:${ctx.id}:label`,
   getControlId: (ctx: Scope) => ctx.ids?.control ?? `cascade-select:${ctx.id}:control`,
-  getTriggerId: (ctx: Scope) => ctx.ids?.trigger ?? `cascade-select:${ctx.id}:trigger`,
+  getTriggerId: (ctx: Scope, value?: string) => {
+    const customId = ctx.ids?.trigger
+    if (customId != null) return isFunction(customId) ? customId(value) : customId
+    return value ? `cascade-select:${ctx.id}:trigger:${value}` : `cascade-select:${ctx.id}:trigger`
+  },
   getIndicatorId: (ctx: Scope) => ctx.ids?.indicator ?? `cascade-select:${ctx.id}:indicator`,
   getClearTriggerId: (ctx: Scope) => ctx.ids?.clearTrigger ?? `cascade-select:${ctx.id}:clear-trigger`,
   getPositionerId: (ctx: Scope) => ctx.ids?.positioner ?? `cascade-select:${ctx.id}:positioner`,
@@ -17,7 +22,14 @@ export const dom = createScope({
   getRootEl: (ctx: Scope) => dom.getById(ctx, dom.getRootId(ctx)),
   getLabelEl: (ctx: Scope) => dom.getById(ctx, dom.getLabelId(ctx)),
   getControlEl: (ctx: Scope) => dom.getById(ctx, dom.getControlId(ctx)),
-  getTriggerEl: (ctx: Scope) => dom.getById(ctx, dom.getTriggerId(ctx)),
+  getTriggerEls: (ctx: Scope): HTMLElement[] =>
+    queryAll<HTMLElement>(
+      ctx.getDoc(),
+      `[data-scope="cascade-select"][data-part="trigger"][data-ownedby="${ctx.id}"]`,
+    ),
+  getActiveTriggerEl: (ctx: Scope, value: string | null): HTMLElement | null => {
+    return value == null ? dom.getTriggerEls(ctx)[0] : dom.getById(ctx, dom.getTriggerId(ctx, value))
+  },
   getIndicatorEl: (ctx: Scope) => dom.getById(ctx, dom.getIndicatorId(ctx)),
   getClearTriggerEl: (ctx: Scope) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
   getPositionerEl: (ctx: Scope) => dom.getById(ctx, dom.getPositionerId(ctx)),

@@ -5,7 +5,7 @@ import type { Service } from "@zag-js/core"
 import { isEqual } from "@zag-js/utils"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
-import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, TreeNode } from "./cascade-select.types"
+import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, TreeNode, TriggerProps } from "./cascade-select.types"
 
 export function connect<T extends PropTypes, V = TreeNode>(
   service: Service<CascadeSelectSchema>,
@@ -23,6 +23,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const interactive = computed("isInteractive")
   const valueAsString = computed("valueAsString")
+  const triggerValue = context.get("triggerValue")
 
   const highlightedItems = context.get("highlightedItems")
   const selectedItems = context.get("selectedItems")
@@ -70,13 +71,14 @@ export function connect<T extends PropTypes, V = TreeNode>(
     hasSelectedItems,
     empty,
     valueAsString,
+    triggerValue,
 
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
 
     focus() {
-      dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+      dom.getActiveTriggerEl(scope, triggerValue)?.focus({ preventScroll: true })
     },
 
     setOpen(nextOpen) {
@@ -108,6 +110,10 @@ export function connect<T extends PropTypes, V = TreeNode>(
       }
     },
 
+    setTriggerValue(value) {
+      send({ type: "TRIGGER_VALUE.SET", value })
+    },
+
     getItemState,
 
     getRootProps() {
@@ -134,7 +140,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          const triggerEl = dom.getTriggerEl(scope)
+          const triggerEl = dom.getActiveTriggerEl(scope, triggerValue)
           triggerEl?.focus({ preventScroll: true })
         },
       })
@@ -153,15 +159,21 @@ export function connect<T extends PropTypes, V = TreeNode>(
       })
     },
 
-    getTriggerProps() {
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value: triggerPropValue } = props
+      const current = triggerPropValue == null ? false : triggerValue === triggerPropValue
+
       return normalize.button({
         ...parts.trigger.attrs,
         dir: prop("dir"),
-        id: dom.getTriggerId(scope),
+        id: dom.getTriggerId(scope, triggerPropValue),
+        "data-ownedby": scope.id,
+        "data-value": triggerPropValue,
+        "data-current": dataAttr(current),
         type: "button",
         role: "combobox",
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": open,
+        "aria-expanded": triggerPropValue == null ? open : open && current,
         "aria-haspopup": "listbox",
         "aria-labelledby": dom.getLabelId(scope),
         "data-state": open ? "open" : "closed",
@@ -175,7 +187,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "TRIGGER.CLICK" })
+          const shouldSwitch = open && triggerPropValue != null && !current
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER.CLICK", value: triggerPropValue })
         },
         onFocus() {
           send({ type: "TRIGGER.FOCUS" })
@@ -189,22 +202,22 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send({ type: "TRIGGER.ARROW_UP" })
+              send({ type: "TRIGGER.ARROW_UP", value: triggerPropValue })
             },
             ArrowDown(event) {
-              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
+              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN", value: triggerPropValue })
             },
             ArrowLeft() {
-              send({ type: "TRIGGER.ARROW_LEFT" })
+              send({ type: "TRIGGER.ARROW_LEFT", value: triggerPropValue })
             },
             ArrowRight() {
-              send({ type: "TRIGGER.ARROW_RIGHT" })
+              send({ type: "TRIGGER.ARROW_RIGHT", value: triggerPropValue })
             },
             Enter() {
-              send({ type: "TRIGGER.ENTER" })
+              send({ type: "TRIGGER.ENTER", value: triggerPropValue })
             },
             Space() {
-              send({ type: "TRIGGER.ENTER" })
+              send({ type: "TRIGGER.ENTER", value: triggerPropValue })
             },
           }
 

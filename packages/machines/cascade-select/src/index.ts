@@ -18,5 +18,7 @@ export type {
   OpenChangeDetails,
   TreeNode,
   Placement,
+  TriggerProps,
+  TriggerValueChangeDetails,
   ValueChangeDetails,
 } from "./cascade-select.types"

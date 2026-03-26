@@ -27,6 +27,17 @@ export interface OpenChangeDetails {
   value: string[][]
 }
 
+export interface TriggerValueChangeDetails {
+  /**
+   * The value of the trigger
+   */
+  value: string | null
+  /**
+   * The trigger element
+   */
+  triggerElement: HTMLElement | null
+}
+
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
@@ -37,7 +48,7 @@ export type ElementIds = Partial<{
   root: string
   label: string
   control: string
-  trigger: string
+  trigger: string | ((value?: string) => string)
   indicator: string
   clearTrigger: string
   positioner: string
@@ -160,6 +171,19 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * Whether parent (branch) items can be selectable
    */
   allowParentSelection?: boolean
+  /**
+   * The controlled trigger value
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Function called when the trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "collection" | "closeOnSelect" | "loopFocus" | "highlightTrigger"
@@ -177,6 +201,7 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     highlightedIndexPath: IndexPath
     highlightedItems: T[]
     selectedItems: T[][]
+    triggerValue: string | null
   }
   computed: {
     isInteractive: boolean
@@ -296,6 +321,10 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   valueAsString: string
   /**
+   * The trigger value
+   */
+  triggerValue: string | null
+  /**
    * Function to focus on the select input
    */
   focus(): void
@@ -328,6 +357,10 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   clearValue(value?: string[]): void
   /**
+   * Function to set the trigger value
+   */
+  setTriggerValue(value: string | null): void
+  /**
    * Returns the state of a cascade-select item
    */
   getItemState(props: ItemProps<V>): ItemState<V>
@@ -335,7 +368,7 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getRootProps(): T["element"]
   getLabelProps(): T["element"]
   getControlProps(): T["element"]
-  getTriggerProps(): T["element"]
+  getTriggerProps(props?: TriggerProps): T["element"]
   getIndicatorProps(): T["element"]
   getClearTriggerProps(): T["element"]
   getPositionerProps(): T["element"]
@@ -349,3 +382,14 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
 }
 
 export type { IndexPath, PositioningOptions, Placement, TreeNode }
+
+/* -----------------------------------------------------------------------------
+ * Trigger props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}

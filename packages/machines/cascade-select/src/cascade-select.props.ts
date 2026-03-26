@@ -7,6 +7,7 @@ export const props = createProps<CascadeSelectProps>()([
   "closeOnSelect",
   "collection",
   "defaultOpen",
+  "defaultTriggerValue",
   "defaultValue",
   "defaultHighlightedValue",
   "dir",
@@ -27,12 +28,14 @@ export const props = createProps<CascadeSelectProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onTriggerValueChange",
   "onValueChange",
   "open",
   "positioning",
   "readOnly",
   "required",
   "scrollToIndexFn",
+  "triggerValue",
   "value",
 ])
 

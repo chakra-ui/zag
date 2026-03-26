@@ -86,6 +86,16 @@ export const machine = createMachine<CascadeSelectSchema>({
       isPointerInTransit: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
+        onChange(value) {
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
+        },
+      })),
     }
   },
 
@@ -151,6 +161,9 @@ export const machine = createMachine<CascadeSelectSchema>({
     "ITEM.CLEAR": {
       actions: ["clearItem"],
     },
+    "TRIGGER_VALUE.SET": {
+      actions: ["setTriggerValue", "reposition"],
+    },
   },
 
   effects: ["trackFormControlState"],
@@ -173,24 +186,21 @@ export const machine = createMachine<CascadeSelectSchema>({
         "TRIGGER.CLICK": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
+            actions: ["setTriggerValue", "invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
           },
         ],
-        "TRIGGER.FOCUS": {
-          target: "focused",
-        },
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen"],
           },
         ],
       },
@@ -223,11 +233,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen"],
           },
         ],
         "TRIGGER.BLUR": {
@@ -236,61 +246,61 @@ export const machine = createMachine<CascadeSelectSchema>({
         "TRIGGER.CLICK": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen", "highlightFirstSelectedItem"],
           },
         ],
         "TRIGGER.ENTER": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstItem"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen", "highlightFirstItem"],
           },
         ],
         "TRIGGER.ARROW_UP": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightLastItem"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen", "highlightLastItem"],
           },
         ],
         "TRIGGER.ARROW_DOWN": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstItem"],
+            actions: ["setInitialFocus", "setTriggerValue", "invokeOnOpen", "highlightFirstItem"],
           },
         ],
         "TRIGGER.ARROW_LEFT": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
         "TRIGGER.ARROW_RIGHT": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "highlightFirstItem"],
+            actions: ["setTriggerValue", "invokeOnOpen", "highlightFirstItem"],
           },
         ],
       },
@@ -329,11 +339,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         "TRIGGER.CLICK": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["setTriggerValue", "invokeOnClose"],
           },
           {
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["setTriggerValue", "invokeOnClose", "focusTriggerEl"],
           },
         ],
         "ITEM.CLICK": [
@@ -588,7 +598,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     effects: {
       trackFormControlState({ context, scope, prop }) {
-        return trackFormControl(dom.getTriggerEl(scope), {
+        return trackFormControl(dom.getActiveTriggerEl(scope, context.get("triggerValue")), {
           onFieldsetDisabledChange(disabled: boolean) {
             context.set("fieldsetDisabled", disabled)
           },
@@ -605,7 +615,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
           defer: true,
-          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
+          exclude: [...dom.getTriggerEls(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
           onInteractOutside(event) {
@@ -618,7 +628,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         })
       },
       computePlacement({ context, prop, scope }) {
-        const triggerEl = () => dom.getTriggerEl(scope)
+        const triggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         const positionerEl = () => dom.getPositionerEl(scope)
 
         return getPlacement(triggerEl, positionerEl, {
@@ -698,7 +708,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       reposition({ context, prop, scope, event }) {
         const positionerEl = () => dom.getPositionerEl(scope)
-        getPlacement(dom.getTriggerEl(scope), positionerEl, {
+        getPlacement(dom.getActiveTriggerEl(scope, context.get("triggerValue")), positionerEl, {
           ...prop("positioning"),
           ...event.options,
           defer: true,
@@ -923,10 +933,10 @@ export const machine = createMachine<CascadeSelectSchema>({
           contentEl?.focus({ preventScroll: true })
         })
       },
-      focusTriggerEl({ event, scope }) {
+      focusTriggerEl({ event, scope, context }) {
         if (!restoreFocusFn(event)) return
         raf(() => {
-          const triggerEl = dom.getTriggerEl(scope)
+          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           triggerEl?.focus({ preventScroll: true })
         })
       },
@@ -935,6 +945,10 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       invokeOnClose({ prop, context }) {
         prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      },
+      setTriggerValue({ context, event }) {
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
       toggleVisibility({ send, prop }) {
         if (prop("open") != null) {
