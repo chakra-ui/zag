@@ -1,9 +1,13 @@
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import styles from "../../../../shared/styles/style.module.css?inline"
+import keyframesStyles from "../../../../../shared/src/css/keyframes.module.css?inline"
+import layoutStyles from "../../../../../shared/src/css/layout.module.css?inline"
+import componentStyles from "../../../../../shared/src/css/select.module.css?inline"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Index, createMemo, createSignal, createUniqueId, splitProps } from "solid-js"
 import { Portal } from "solid-js/web"
+
+const styles = [keyframesStyles, layoutStyles, componentStyles].join("\n")
 
 function Select(props: Partial<select.Props> & { portalRef?: HTMLElement }) {
   const [portalProps, machineProps] = splitProps(props, ["portalRef"])

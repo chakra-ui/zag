@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/accordion.module.css"
 
 import { Accordion } from "../src/accordion"
 import { nanoid } from "nanoid"

@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/splitter.module.css"
 
 import { nanoid } from "nanoid"
 import { Splitter } from "../src/splitter"

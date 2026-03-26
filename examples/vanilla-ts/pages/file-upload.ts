@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/file-upload.module.css"
 
 import { nanoid } from "nanoid"
 import { FileUpload } from "../src/file-upload"

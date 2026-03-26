@@ -1,4 +1,7 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/navigation-menu.module.css"
+import "../../../shared/src/css/navigation-menu-viewport.module.css"
 
 import { nanoid } from "nanoid"
 import { NavigationMenu } from "../src/navigation-menu"

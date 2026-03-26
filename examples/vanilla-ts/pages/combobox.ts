@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/combobox.module.css"
 
 import { Combobox } from "../src/combobox"
 import { nanoid } from "nanoid"

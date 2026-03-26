@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/scroll-area.module.css"
 
 import { nanoid } from "nanoid"
 import { ScrollArea } from "../src/scroll-area"

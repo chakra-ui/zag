@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/carousel.module.css"
 
 import { carouselData } from "@zag-js/shared"
 import { nanoid } from "nanoid"

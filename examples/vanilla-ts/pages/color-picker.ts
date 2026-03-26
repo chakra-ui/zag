@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/color-picker.module.css"
 import * as colorPicker from "@zag-js/color-picker"
 
 import { nanoid } from "nanoid"

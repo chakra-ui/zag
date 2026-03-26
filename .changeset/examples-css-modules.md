@@ -10,4 +10,4 @@
 
 Migrate shared example styles to CSS modules.
 
-Converted `shared/src/style.css` and all `shared/src/css/*.css` files to `.module.css`, and updated example/starter imports to reference `style.module.css`.
+Converted `shared/src/style.css` and all `shared/src/css/*.css` files to `.module.css`, and updated example/starter imports to reference shared CSS modules directly.

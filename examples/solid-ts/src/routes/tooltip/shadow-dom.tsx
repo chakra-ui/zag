@@ -1,8 +1,12 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
-import styles from "../../../../shared/styles/style.module.css?inline"
+import keyframesStyles from "../../../../../shared/src/css/keyframes.module.css?inline"
+import layoutStyles from "../../../../../shared/src/css/layout.module.css?inline"
+import componentStyles from "../../../../../shared/src/css/tooltip.module.css?inline"
 import { createMemo, createSignal, Show } from "solid-js"
 import { Portal } from "solid-js/web"
+
+const styles = [keyframesStyles, layoutStyles, componentStyles].join("\n")
 
 export default function Page() {
   let mountRef!: HTMLElement

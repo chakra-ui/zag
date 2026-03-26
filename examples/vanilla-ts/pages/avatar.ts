@@ -1,4 +1,6 @@
-import "../../shared/styles/style.module.css"
+import "../../../shared/src/css/keyframes.module.css"
+import "../../../shared/src/css/layout.module.css"
+import "../../../shared/src/css/avatar.module.css"
 
 import { Avatar } from "../src/avatar"
 import { nanoid } from "nanoid"
