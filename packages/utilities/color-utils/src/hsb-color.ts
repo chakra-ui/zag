@@ -25,7 +25,7 @@ export class HSBColor extends Color {
     }
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "css") {
     switch (format) {
       case "css":
         return this.toHSL().toString("css")

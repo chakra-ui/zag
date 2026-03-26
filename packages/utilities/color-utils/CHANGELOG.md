@@ -1,5 +1,312 @@
 # @zag-js/color-utils
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`9038836`](https://github.com/chakra-ui/zag/commit/9038836103dbdb695036ddbfbcaafd7251b0a909) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color not updating in controlled mode when selecting black
+  shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/utils@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

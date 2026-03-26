@@ -4,7 +4,7 @@ type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export function memo<TDeps extends any[], TDepArgs, TResult>(
   getDeps: (depArgs: TDepArgs) => [...TDeps],
-  fn: (...args: NoInfer<[...TDeps]>) => TResult,
+  fn: (args: NoInfer<[...TDeps]>, deps: TDepArgs) => TResult,
   opts?: {
     onChange?: ((result: TResult) => void) | undefined
   },
@@ -18,7 +18,7 @@ export function memo<TDeps extends any[], TDepArgs, TResult>(
       newDeps.length !== deps.length || newDeps.some((dep: any, index: number) => !isEqual(deps[index], dep))
     if (!depsChanged) return result!
     deps = newDeps
-    result = fn(...newDeps)
+    result = fn(newDeps, depArgs)
     opts?.onChange?.(result)
     return result!
   }

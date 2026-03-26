@@ -1,7 +1,20 @@
 ```tsx
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
+
+const data = {
+  order: [
+    { label: "Ascending", value: "asc" },
+    { label: "Descending", value: "desc" },
+    { label: "None", value: "none" },
+  ],
+  type: [
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Address", value: "address" },
+  ],
+}
 
 export function Menu() {
   const service = useMachine(menu.machine, { id: createUniqueId() })
@@ -12,7 +25,7 @@ export function Menu() {
   const [type, setType] = createSignal([])
 
   const radios = createMemo(() =>
-    menuOptionData.order.map((item) => ({
+    data.order.map((item) => ({
       type: "radio",
       value: item.value,
       label: item.label,
@@ -23,7 +36,7 @@ export function Menu() {
   )
 
   const checkboxes = createMemo(() =>
-    menuOptionData.type.map((item) => ({
+    data.type.map((item) => ({
       type: "checkbox",
       value: item.value,
       label: item.label,

@@ -52,7 +52,7 @@ export class DatePickerModel extends Model {
     return interpret(this.today().set(opts))
   }
 
-  goto(url = "/date-picker") {
+  goto(url = "/date-picker/basic") {
     return this.page.goto(url)
   }
 
@@ -103,6 +103,13 @@ export class DatePickerModel extends Model {
     return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`)
   }
 
+  private getViewCell(view: "day" | "month" | "year", value: string | number) {
+    return this.page
+      .locator(`[data-scope=date-picker][data-part=table-cell-trigger][data-view=${view}]`)
+      .filter({ hasText: value.toString() })
+      .first()
+  }
+
   getNextDayCell(opts: DayCellOptions = {}) {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : this.today()
@@ -118,17 +125,15 @@ export class DatePickerModel extends Model {
   }
 
   getDayCell(value: string | number) {
-    const date = this.today().set({ day: +value }).toDate(getLocalTimeZone())
-    const v = date.toISOString().split("T")[0]
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${v}"]`)
+    return this.getViewCell("day", value)
   }
 
   getMonthCell(value: string | number) {
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=month][data-value="${value}"]`)
+    return this.getViewCell("month", value)
   }
 
   getYearCell(value: string | number) {
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=year][data-value="${value}"]`)
+    return this.getViewCell("year", value)
   }
 
   clickTrigger() {
@@ -141,6 +146,10 @@ export class DatePickerModel extends Model {
 
   focusInput(index = 0) {
     return this.getInput(index).focus()
+  }
+
+  selectInput(index = 0) {
+    return this.getInput(index).selectText()
   }
 
   async clearInput(index = 0) {
@@ -163,6 +172,28 @@ export class DatePickerModel extends Model {
 
   clickDayCell(value: string | number) {
     return this.getDayCell(value).click()
+  }
+
+  selectMonth(value: string) {
+    return this.page.selectOption("[data-scope=date-picker][data-part=month-select]", value)
+  }
+
+  async waitForCalendarRender() {
+    // Wait for calendar table to be visible and stable
+    await this.table.waitFor({ state: "visible" })
+    await this.page.waitForTimeout(100) // Small delay for rendering
+  }
+
+  getCurrentMonthDayCells() {
+    // Only get cells that belong to the current month (not previous/next month spillover)
+    return this.page.locator(
+      "[data-scope=date-picker][data-part=table-cell-trigger][data-view=day]:not([data-outside-range])",
+    )
+  }
+
+  async clickOutsideToBlur() {
+    // Click on a safe area to blur the input
+    await this.page.locator("main").click({ position: { x: 10, y: 10 } })
   }
 
   seeTodayCellIsFocused() {
@@ -191,6 +222,10 @@ export class DatePickerModel extends Model {
 
   seeInputIsFocused(index?: number) {
     return expect(this.getInput(index)).toBeFocused()
+  }
+
+  seeInputIsNotFocused(index?: number) {
+    return expect(this.getInput(index)).not.toBeFocused()
   }
 
   seeSelectedValue(value: string) {

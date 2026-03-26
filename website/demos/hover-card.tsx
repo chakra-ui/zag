@@ -1,6 +1,7 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/hover-card.module.css"
 
 interface HoverCardProps extends Omit<hoverCard.Props, "id"> {}
 
@@ -20,31 +21,34 @@ export function HoverCard(props: HoverCardProps) {
         rel="noreferrer noopener"
         {...api.getTriggerProps()}
       >
-        <img alt="Twitter" src="/favicon/apple-touch-icon.png" />
+        <img
+          className={styles.TriggerImage}
+          alt="Twitter"
+          src="/favicon/apple-touch-icon.png"
+        />
       </a>
 
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              <div {...api.getArrowProps()}>
-                <div {...api.getArrowTipProps()} />
+            <div className={styles.Content} {...api.getContentProps()}>
+              <div className={styles.Arrow} {...api.getArrowProps()}>
+                <div className={styles.ArrowTip} {...api.getArrowTipProps()} />
               </div>
-              <div className="card-wrapper">
+              <div className={styles.CardWrapper}>
                 <img
                   alt="Twitter"
                   src="/favicon/apple-touch-icon.png"
-                  className="avatar"
+                  className={styles.Avatar}
                 />
 
-                <div className="card-content">
-                  <p className="header">
-                    <p>Zag JS</p>
-                    <p> @zag_js</p>
-                  </p>
+                <div className={styles.CardContent}>
+                  <div className={styles.Header}>
+                    <span>Zag JS</span>
+                    <span> @zag_js</span>
+                  </div>
                   <p>
-                    <p>UI components powered by Finite State Machines.</p>
-                    Created by{" "}
+                    UI components powered by Finite State Machines. Created by{" "}
                     <a
                       href="https://twitter.com/thesegunadebayo"
                       target="_blank"
@@ -53,12 +57,12 @@ export function HoverCard(props: HoverCardProps) {
                       @thesegunadebayo
                     </a>
                   </p>
-                  <div className="stats">
+                  <div className={styles.Stats}>
                     <div>
-                      <p>2</p> <p>Following</p>
+                      <span>2</span> <span>Following</span>
                     </div>
                     <div>
-                      <p>4,000</p> <p>Followers</p>
+                      <span>4,000</span> <span>Followers</span>
                     </div>
                   </div>
                 </div>

@@ -1,21 +1,3 @@
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes shrink {
-  from {
-    transform: scaleX(1);
-  }
-  to {
-    transform: scaleX(0);
-  }
-}
-
 [data-scope="toast"][data-part="root"] {
   background: white;
   padding: 16px;
@@ -49,6 +31,25 @@
       opacity 200ms;
     transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
   }
+
+  &[data-type="error"] {
+    background: red;
+    color: white;
+  }
+
+  &[data-type="info"] {
+    background: blue;
+    color: white;
+  }
+
+  &[data-type="warning"] {
+    background: orange;
+  }
+
+  &[data-type="success"] {
+    background: green;
+    color: white;
+  }
 }
 
 [data-scope="toast"][data-part="close-trigger"] {
@@ -75,25 +76,6 @@
   gap: 12px;
 }
 
-[data-scope="toast"][data-part="root"][data-type="error"] {
-  background: red;
-  color: white;
-}
-
-[data-scope="toast"][data-part="root"][data-type="info"] {
-  background: blue;
-  color: white;
-}
-
-[data-scope="toast"][data-part="root"][data-type="warning"] {
-  background: orange;
-}
-
-[data-scope="toast"][data-part="root"][data-type="success"] {
-  background: green;
-  color: white;
-}
-
 [data-scope="toast"] .spinner {
   animation: spin 1s linear infinite;
 }
@@ -105,7 +87,7 @@
   position: absolute;
   bottom: 0;
   inset-inline: 0;
-  animation-name: shrink;
+  animation-name: shrinkX;
   animation-duration: var(--duration);
   animation-fill-mode: forwards;
   animation-play-state: running;

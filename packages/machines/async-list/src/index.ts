@@ -1,11 +1,10 @@
 export { connect } from "./async-list.connect"
 export { machine } from "./async-list.machine"
 export type {
-  AsyncListService as Service,
-  AsyncListSchema as Schema,
+  AsyncListApi as Api,
   AsyncListMachine as Machine,
   AsyncListProps as Props,
-  AsyncListApi as Api,
+  AsyncListService as Service,
   LoadDependency,
   LoadDetails,
   LoadResult,

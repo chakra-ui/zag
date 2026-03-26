@@ -1,8 +1,18 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
+import { a11y, clickControls, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
 
 export class Model {
-  constructor(public page: Page) {}
+  private readonly consoleMessages: string[] = []
+
+  constructor(public page: Page) {
+    page.on("console", (msg) => {
+      this.consoleMessages.push(msg.text())
+    })
+
+    page.on("pageerror", (error) => {
+      this.consoleMessages.push(error.message)
+    })
+  }
 
   get controls() {
     return controls(this.page)
@@ -10,6 +20,10 @@ export class Model {
 
   clickViz() {
     return clickViz(this.page)
+  }
+
+  clickControls() {
+    return clickControls(this.page)
   }
 
   clickOutside() {
@@ -52,6 +66,46 @@ export class Model {
     expect(value).toBe(position)
   }
 
+  moveCaretTo(start: number) {
+    return this.page.evaluate(
+      ({ start }) => {
+        const el = document.activeElement
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+          el.setSelectionRange(start, start)
+        }
+      },
+      { start },
+    )
+  }
+
+  async selectPartialText(text: string) {
+    await this.page.evaluate(async (text) => {
+      const el = document.activeElement
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        const value = el.value
+        const start = value.indexOf(text)
+        if (start !== -1) {
+          const end = start + text.length
+          el.setSelectionRange(start, end)
+          return { start, end }
+        }
+      }
+    }, text)
+  }
+
+  async seeSelectedText(text: string) {
+    await retry(async () => {
+      const selectedText = await this.page.evaluate(() => {
+        const el = document.activeElement
+        if (el instanceof HTMLInputElement) {
+          return el.value.substring(el.selectionStart || 0, el.selectionEnd || 0)
+        }
+        return ""
+      })
+      expect(selectedText).toBe(text)
+    })
+  }
+
   moveCursorTo(pos: { x: number; y: number }) {
     return this.page.mouse.move(pos.x, pos.y)
   }
@@ -84,5 +138,17 @@ export class Model {
   dontSee(text: string, context?: string) {
     const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
     return expect(locator).not.toBeVisible()
+  }
+
+  seeInConsole(text: string, timeout = 5000) {
+    return expect.poll(() => this.consoleMessages.some((message) => message.includes(text)), { timeout }).toBeTruthy()
+  }
+
+  dontSeeInConsole(text: string, timeout = 500) {
+    return expect.poll(() => this.consoleMessages.some((message) => message.includes(text)), { timeout }).toBeFalsy()
+  }
+
+  clearConsoleMessages() {
+    this.consoleMessages.length = 0
   }
 }

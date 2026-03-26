@@ -1,5 +1,98 @@
 # @zag-js/docs
 
+## 1.38.2
+
+## 1.38.1
+
+## 1.38.0
+
+## 1.37.0
+
+## 1.36.0
+
+## 1.35.3
+
+## 1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- [`683c6f4`](https://github.com/chakra-ui/zag/commit/683c6f4037408ba006ab141adbd04bf925c78104) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix ESM JSON imports for Node loader compatibility. Add
+  `with { type: "json" }` import attributes and set build target to `node20.10` so the ESM output works when loaded in
+  next.config.mjs, velite, or other Node ESM contexts without `ERR_IMPORT_ATTRIBUTE_MISSING`.
+
+## 1.35.0
+
+## 1.34.1
+
+## 1.34.0
+
+## 1.33.1
+
+## 1.33.0
+
+## 1.32.0
+
+## 1.31.1
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.1
+
+## 1.29.0
+
+## 1.28.0
+
+## 1.27.1
+
+## 1.27.0
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
+## 1.26.2
+
+## 1.26.1
+
+## 1.26.0
+
+## 1.25.0
+
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
 ## 1.21.1
 
 ## 1.21.0

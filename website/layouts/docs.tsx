@@ -1,16 +1,12 @@
-import { Icon } from "@chakra-ui/icon"
-import { Box, HStack, Spacer } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
+import { EditPageLink } from "components/mdx/edit-page-link"
 import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
-import { SkipNavLink } from "components/skip-nav"
-import { SupportAd } from "components/support-ad"
+import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
-import { TopNavigation } from "components/top-navigation"
-import React from "react"
-import { HiPencilAlt } from "react-icons/hi"
+import { TopNav } from "components/nav/top-nav"
+import { Box, Spacer, styled } from "styled-system/jsx"
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -30,8 +26,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
   return (
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
-      <TopNavigation />
-      <chakra.div pt="10">
+      <TopNav />
+      <styled.div pt="10">
+        <SkipNavContent />
         <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
           <Box
             display={{ base: "none", lg: "block" }}
@@ -48,7 +45,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             overscrollBehavior="contain"
           >
             <Box position="relative">
-              <Box position="sticky" top="0" bg="bg-subtle" pb="8">
+              <Box position="sticky" top="0" bg="bg.subtle" pb="8">
                 <Spacer height="10" bg="transparent" />
                 <Search />
                 <Spacer mt="px" height="5" bg="transparent" />
@@ -67,17 +64,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
           >
             <Box mr={{ xl: "15.5rem" }}>
               {children}
-              <HStack
-                as="a"
-                display="inline-flex"
-                href={doc.editUrl}
-                textStyle="a"
-                fontSize="sm"
-                mt="14"
-              >
-                <Icon as={HiPencilAlt} />
-                <p>Edit this page on GitHub</p>
-              </HStack>
+              <EditPageLink href={doc.editUrl}>
+                Edit this page on GitHub
+              </EditPageLink>
               <MdxFooter />
             </Box>
           </Box>
@@ -99,10 +88,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
               data={tableOfContent}
               getSlug={toc?.getSlug}
             />
-            <SupportAd />
           </Box>
         </Box>
-      </chakra.div>
+      </styled.div>
     </Box>
   )
 }

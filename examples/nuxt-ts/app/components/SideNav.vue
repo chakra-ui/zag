@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { dataAttr } from "@zag-js/dom-query"
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
 
-const router = useRouter()
+const route = useRoute()
+
+const currentComponent = computed(() => {
+  const pathname = route.path.split("?")[0] || "/"
+  const pathnameComponent = pathname.split("/").filter(Boolean)[0] ?? ""
+  return getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
+})
 
 const items = computed(() =>
-  routesData
-    .sort((a, b) => a.label.localeCompare(b.label))
-    .map((route) => ({
-      label: route.label,
-      path: route.path,
-      active: route.path === router.currentRoute.value.path,
-    })),
+  componentRoutesData.map((component) => ({
+    label: component.label,
+    path: `/${component.slug}`,
+    active: currentComponent.value === component.slug,
+  })),
 )
 </script>
 

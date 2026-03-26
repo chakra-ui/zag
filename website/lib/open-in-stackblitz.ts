@@ -16,7 +16,7 @@ export async function openInStackblitz(component: string, defaultProps: any) {
   }
 
   const json = await response.json()
-  const { jsxName, usage, code, style } = json.demo
+  const { jsxName, usage, code, baseStyle, moduleStyle } = json.demo
 
   const tsconfig = {
     compilerOptions: {
@@ -107,7 +107,7 @@ export default function App() {
   const main = `import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import './base.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -122,7 +122,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     "index.html": indexHtml,
     [`src/${jsxName}.tsx`]: code,
     "src/App.tsx": app,
-    "src/index.css": style,
+    "src/base.css": baseStyle,
+    "src/styles.module.css": moduleStyle,
     "src/main.tsx": main,
   }
 

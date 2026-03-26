@@ -45,6 +45,7 @@ export type ElementIds = Partial<{
   itemName: (id: string) => string
   itemSizeText: (id: string) => string
   itemPreview: (id: string) => string
+  itemDeleteTrigger: (id: string) => string
 }>
 
 export interface IntlTranslations {
@@ -143,12 +144,22 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    */
   invalid?: boolean | undefined
   /**
+   * Whether the file input is read-only
+   */
+  readOnly?: boolean | undefined
+  /**
    * Function to transform the accepted files to apply transformations
    */
   transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
-type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop" | "translations"
+type PropsWithDefault =
+  | "minFileSize"
+  | "maxFileSize"
+  | "maxFiles"
+  | "preventDocumentDrop"
+  | "allowDrop"
+  | "translations"
 
 interface Context {
   /**
@@ -178,7 +189,7 @@ type Computed = {
 
 export interface FileUploadSchema {
   state: "idle" | "focused" | "dragging"
-  props: RequiredBy<FileUploadProps, PropWithDefault>
+  props: RequiredBy<FileUploadProps, PropsWithDefault>
   context: Context
   computed: Computed
   event: EventObject
@@ -195,13 +206,21 @@ export type FileUploadMachine = Machine<FileUploadSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface ItemProps {
+export type ItemType = "accepted" | "rejected"
+
+export interface ItemTypeProps {
+  type?: ItemType | undefined
+}
+
+export interface ItemProps extends ItemTypeProps {
   file: File
 }
 
 export interface ItemPreviewImageProps extends ItemProps {
   url: string
 }
+
+export interface ItemGroupProps extends ItemTypeProps {}
 
 export interface DropzoneProps {
   /**
@@ -224,9 +243,21 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   disabled: boolean
   /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
    * Whether files are currently being transformed via `transformFiles`
    */
   transforming: boolean
+  /**
+   * Whether the maximum number of files has been reached
+   */
+  maxFilesReached: boolean
+  /**
+   * The number of files that can still be added
+   */
+  remainingFiles: number
   /**
    * Function to open the file dialog
    */
@@ -234,7 +265,7 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
   /**
    * Function to delete the file from the list
    */
-  deleteFile: (file: File) => void
+  deleteFile: (file: File, type?: ItemType | undefined) => void
   /**
    * The accepted files that have been dropped or selected
    */
@@ -275,7 +306,7 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
   getDropzoneProps: (props?: DropzoneProps) => T["element"]
   getTriggerProps: () => T["button"]
   getHiddenInputProps: () => T["input"]
-  getItemGroupProps: () => T["element"]
+  getItemGroupProps: (props?: ItemGroupProps) => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemNameProps: (props: ItemProps) => T["element"]
   getItemPreviewProps: (props: ItemProps) => T["element"]

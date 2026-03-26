@@ -37,6 +37,13 @@ export const isElementVisible = (el: Node) => {
   return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }
 
+export function isActiveElement(element: Element | null | undefined): boolean {
+  if (!element) return false
+  const rootNode = element.getRootNode() as Document | ShadowRoot
+
+  return getActiveElement(rootNode) === element
+}
+
 const TEXTAREA_SELECT_REGEX = /(textarea|select)/
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
@@ -56,17 +63,18 @@ export function isEditableElement(el: HTMLElement | EventTarget | null) {
 
 type Target = HTMLElement | EventTarget | null | undefined
 
+/** Whether `parent` contains `child` in the light tree, or `child` is inside a shadow tree hosted under `parent`. */
 export function contains(parent: Target, child: Target) {
   if (!parent || !child) return false
-  if (!isHTMLElement(parent) || !isHTMLElement(child)) return false
-  const rootNode = child.getRootNode?.()
-  if (parent === child) return true
+  if (!isHTMLElement(parent) || !isNode(child)) return false
+  if (isHTMLElement(child) && parent === child) return true
   if (parent.contains(child)) return true
+  const rootNode = child.getRootNode?.()
   if (rootNode && isShadowRoot(rootNode)) {
-    let next = child
+    let next: Node | null = child
     while (next) {
       if (parent === next) return true
-      // @ts-ignore
+      // @ts-ignore ShadowRoot has host
       next = next.parentNode || next.host
     }
   }
@@ -94,7 +102,7 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
   let activeElement = rootNode.activeElement as HTMLElement | null
   while (activeElement?.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
-    if (el === activeElement) break
+    if (!el || el === activeElement) break
     else activeElement = el
   }
   return activeElement
@@ -105,4 +113,14 @@ export function getParentNode(node: Node): Node {
   const result =
     (node as any).assignedSlot || node.parentNode || (isShadowRoot(node) && node.host) || getDocumentElement(node)
   return isShadowRoot(result) ? result.host : result
+}
+
+export function getRootNode(node: Node): Document | ShadowRoot {
+  let result: Node
+  try {
+    result = node.getRootNode({ composed: true })
+    if (isDocument(result) || isShadowRoot(result)) return result
+  } catch {}
+
+  return node.ownerDocument ?? document
 }

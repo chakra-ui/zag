@@ -28,15 +28,16 @@ export function pick<T extends Record<string, any>, K extends keyof T>(obj: T, k
   return filtered as any
 }
 
-type Dict = Record<string, any>
+type Dict = Record<string | symbol, any>
 
 export function splitProps<T extends Dict>(props: T, keys: (keyof T)[]) {
   const rest: Dict = {}
   const result: Dict = {}
 
   const keySet = new Set(keys)
+  const ownKeys = Reflect.ownKeys(props)
 
-  for (const key in props) {
+  for (const key of ownKeys) {
     if (keySet.has(key)) {
       result[key] = props[key]
     } else {

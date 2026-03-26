@@ -65,7 +65,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
-- 🎷 `@zag-js/svelte` - Solid.js utilities for consuming machines in Svelte applications
+- 🎷 `@zag-js/svelte` - Svelte utilities for consuming machines in Svelte applications
 
 ## Usage
 
@@ -195,4 +195,4 @@ what to work on.
 
 ## License
 
-MIT © [Segun Adebayo](https://github.com/segunadebayo)
+MIT © [Chakra Systems Inc.](https://github.com/chakra-ui)

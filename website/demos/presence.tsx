@@ -1,17 +1,19 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useState } from "react"
+import styles from "../styles/machines/presence.module.css"
 
 export const Presence = () => {
   const [open, setOpen] = useState(true)
   const [unmounted, setUnmounted] = useState(false)
 
   return (
-    <div className="presence">
-      <output>
+    <div className={styles.Root}>
+      <output className={styles.Output}>
         Open {String(open)}, Unmounted: {String(unmounted)}
       </output>
       <button
+        className={styles.Trigger}
         onClick={() =>
           setOpen((prevOpen) => {
             setUnmounted(false)
@@ -53,7 +55,7 @@ function AnimatePresence(props: AnimatePresenceProps) {
   return (
     <div
       hidden={!api.present}
-      data-presence
+      className={styles.Content}
       data-state={api.skip ? undefined : present ? "open" : "closed"}
       ref={api.setNode}
       {...rest}

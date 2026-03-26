@@ -1,6 +1,7 @@
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/rating-group.module.css"
 
 interface RatingProps extends Omit<rating.Props, "id"> {}
 
@@ -8,35 +9,37 @@ export function Rating(props: RatingProps) {
   const service = useMachine(rating.machine, {
     id: useId(),
     name: "service",
-    defaultValue: 2.5,
+    defaultValue: 3,
     ...props,
   })
 
   const api = rating.connect(service, normalizeProps)
 
   return (
-    <div>
-      <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Rate Us:</label>
-        <div {...api.getControlProps()}>
-          {api.items.map((index) => {
-            const state = api.getItemState({ index })
-            return (
-              <span key={index} {...api.getItemProps({ index })}>
-                {state.half ? <HalfStar /> : <Star />}
-              </span>
-            )
-          })}
-        </div>
-        <input {...api.getHiddenInputProps()} />
+    <div className={styles.Root} {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Rate our service</label>
+      <div className={styles.Control} {...api.getControlProps()}>
+        {api.items.map((index) => {
+          const state = api.getItemState({ index })
+          return (
+            <span
+              className={styles.Item}
+              key={index}
+              {...api.getItemProps({ index })}
+            >
+              {state.half ? <HalfStar /> : <Star />}
+            </span>
+          )
+        })}
       </div>
+      <input {...api.getHiddenInputProps()} />
     </div>
   )
 }
 
 function HalfStar() {
   return (
-    <svg viewBox="0 0 273 260" data-part="star">
+    <svg viewBox="0 0 273 260" className={styles.Star}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -55,7 +58,7 @@ function HalfStar() {
 
 function Star() {
   return (
-    <svg viewBox="0 0 273 260" data-part="star">
+    <svg viewBox="0 0 273 260" className={styles.Star}>
       <path
         d="M136.5 0L177.83 86.614L272.977 99.1561L203.374 165.229L220.847 259.594L136.5 213.815L52.1528 259.594L69.6265 165.229L0.0233917 99.1561L95.1699 86.614L136.5 0Z"
         fill="currentColor"

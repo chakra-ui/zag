@@ -50,11 +50,13 @@ export type OpenChangeReason =
 export interface OpenChangeDetails {
   open: boolean
   reason?: OpenChangeReason | undefined
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface NavigateDetails {
@@ -92,9 +94,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The controlled open state of the combobox
    */
@@ -204,6 +204,12 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   allowCustomValue?: boolean | undefined
   /**
+   * Whether to always submit on Enter key press, even if popup is open.
+   * Useful for single-field autocomplete forms where Enter should submit the form.
+   * @default false
+   */
+  alwaysSubmitOnEnter?: boolean | undefined
+  /**
    * Whether to loop the keyboard navigation through the items
    * @default true
    */
@@ -291,10 +297,12 @@ type PropsWithDefault =
   | "closeOnSelect"
   | "translations"
   | "positioning"
+  | "defaultValue"
+  | "defaultInputValue"
 
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
-  state: "idle" | "focused" | "suggesting" | "interacting"
+  state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {
     value: string[]
@@ -302,7 +310,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
   }
   computed: {
     isCustomValue: boolean
@@ -311,6 +319,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     autoComplete: boolean
     autoHighlight: boolean
     hasSelectedItems: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   event: EventObject

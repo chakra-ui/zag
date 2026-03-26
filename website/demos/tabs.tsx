@@ -1,6 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { useId } from "react"
+import styles from "../styles/machines/tabs.module.css"
 
 interface TabsProps extends Omit<tabs.Props, "id"> {}
 
@@ -14,10 +15,11 @@ export function Tabs(props: TabsProps) {
   const api = tabs.connect(service, normalizeProps)
 
   return (
-    <div className="tabs">
-      <div {...api.getListProps()}>
+    <div className={styles.Root}>
+      <div className={styles.List} {...api.getListProps()}>
         {data.map((item) => (
           <button
+            className={styles.Trigger}
             {...api.getTriggerProps({ value: item.value })}
             key={item.value}
           >
@@ -26,7 +28,11 @@ export function Tabs(props: TabsProps) {
         ))}
       </div>
       {data.map((item) => (
-        <div {...api.getContentProps({ value: item.value })} key={item.value}>
+        <div
+          className={styles.Content}
+          {...api.getContentProps({ value: item.value })}
+          key={item.value}
+        >
           <p>{item.content}</p>
         </div>
       ))}

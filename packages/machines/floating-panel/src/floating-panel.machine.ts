@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, isHTMLElement, raf, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,
@@ -28,19 +28,19 @@ const defaultTranslations: IntlTranslations = {
   restore: "Restore window",
 }
 
+const FALLBACK_SIZE = Object.freeze({ width: 320, height: 240 })
+const FALLBACK_POSITION = Object.freeze({ x: 300, y: 100 })
+
 export const machine = createMachine<FloatingPanelSchema>({
   props({ props }) {
     ensureProps(props, ["id"], "floating-panel")
     return {
       strategy: "fixed",
       gridSize: 1,
-      defaultSize: { width: 320, height: 240 },
-      defaultPosition: { x: 300, y: 100 },
       allowOverflow: true,
       resizable: true,
       draggable: true,
       ...props,
-      hasSpecifiedPosition: !!props.defaultPosition || !!props.position,
       translations: {
         ...defaultTranslations,
         ...props.translations,
@@ -49,17 +49,16 @@ export const machine = createMachine<FloatingPanelSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("open") ?? prop("defaultOpen")
     return open ? "open" : "closed"
   },
 
   context({ prop, bindable }) {
     return {
       size: bindable<Size>(() => ({
-        defaultValue: prop("defaultSize"),
+        defaultValue: prop("defaultSize") ?? FALLBACK_SIZE,
         value: prop("size"),
         isEqual: isSizeEqual,
-        sync: true,
         hash(v) {
           return `W:${v.width} H:${v.height}`
         },
@@ -68,10 +67,9 @@ export const machine = createMachine<FloatingPanelSchema>({
         },
       })),
       position: bindable<Point>(() => ({
-        defaultValue: prop("defaultPosition"),
+        defaultValue: prop("defaultPosition") ?? FALLBACK_POSITION,
         value: prop("position"),
         isEqual: isPointEqual,
-        sync: true,
         hash(v) {
           return `X:${v.x} Y:${v.y}`
         },
@@ -104,8 +102,9 @@ export const machine = createMachine<FloatingPanelSchema>({
     isMaximized: ({ context }) => context.get("stage") === "maximized",
     isMinimized: ({ context }) => context.get("stage") === "minimized",
     isStaged: ({ context }) => context.get("stage") !== "default",
-    canResize: ({ context, prop }) => (prop("resizable") || !prop("disabled")) && context.get("stage") === "default",
-    canDrag: ({ prop, computed }) => (prop("draggable") || !prop("disabled")) && !computed("isMaximized"),
+    hasSpecifiedPosition: ({ prop }) => prop("defaultPosition") != null || prop("position") != null,
+    canResize: ({ context, prop }) => prop("resizable") && !prop("disabled") && context.get("stage") === "default",
+    canDrag: ({ prop, computed }) => prop("draggable") && !prop("disabled") && !computed("isMaximized"),
   },
 
   watch({ track, context, action, prop }) {
@@ -142,7 +141,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
+          actions: ["setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
         },
         OPEN: [
           {
@@ -151,7 +150,7 @@ export const machine = createMachine<FloatingPanelSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
+            actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
           },
         ],
       },
@@ -160,121 +159,94 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
-      effects: ["trackBoundaryRect"],
+      initial: "idle",
       on: {
-        DRAG_START: {
-          guard: not("isMaximized"),
-          target: "open.dragging",
-          actions: ["setPrevPosition"],
-        },
-        RESIZE_START: {
-          guard: not("isMinimized"),
-          target: "open.resizing",
-          actions: ["setPrevSize"],
-        },
         "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["resetRect", "focusTriggerEl"],
+          actions: ["resetRect", "setFinalFocus"],
         },
         CLOSE: [
           {
             guard: "isOpenControlled",
             target: "closed",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "setFinalFocus"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+            actions: ["invokeOnClose", "resetRect", "setFinalFocus"],
           },
         ],
-        ESCAPE: [
-          {
-            guard: and("isOpenControlled", "closeOnEsc"),
-            actions: ["invokeOnClose"],
-          },
-          {
-            guard: "closeOnEsc",
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
-          },
-        ],
-        MINIMIZE: {
-          actions: ["setMinimized"],
-        },
-        MAXIMIZE: {
-          actions: ["setMaximized"],
-        },
-        RESTORE: {
-          actions: ["setRestored"],
-        },
-        MOVE: {
-          actions: ["setPositionFromKeyboard"],
-        },
       },
-    },
-
-    "open.dragging": {
-      tags: ["open"],
-      effects: ["trackPointerMove"],
-      exit: ["clearPrevPosition"],
-      on: {
-        DRAG: {
-          actions: ["setPosition"],
-        },
-        DRAG_END: {
-          target: "open",
-          actions: ["invokeOnDragEnd"],
-        },
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["resetRect"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            target: "closed",
-            actions: ["invokeOnClose"],
+      states: {
+        idle: {
+          effects: ["trackBoundaryRect"],
+          on: {
+            DRAG_START: {
+              guard: not("isMaximized"),
+              target: "dragging",
+              actions: ["setPrevPosition"],
+            },
+            RESIZE_START: {
+              guard: not("isMinimized"),
+              target: "resizing",
+              actions: ["setPrevSize"],
+            },
+            ESCAPE: [
+              {
+                guard: and("isOpenControlled", "closeOnEsc"),
+                actions: ["invokeOnClose"],
+              },
+              {
+                guard: "closeOnEsc",
+                target: "closed",
+                actions: ["invokeOnClose", "resetRect", "setFinalFocus"],
+              },
+            ],
+            MINIMIZE: {
+              actions: ["setMinimized"],
+            },
+            MAXIMIZE: {
+              actions: ["setMaximized"],
+            },
+            RESTORE: {
+              actions: ["setRestored"],
+            },
+            MOVE: {
+              actions: ["setPositionFromKeyboard"],
+            },
           },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect"],
+        },
+        dragging: {
+          effects: ["trackPointerMove"],
+          on: {
+            DRAG: {
+              actions: ["setPositionFromDrag"],
+            },
+            DRAG_END: {
+              target: "idle",
+              actions: ["invokeOnDragEnd", "clearPrevPosition"],
+            },
+            ESCAPE: {
+              target: "idle",
+              actions: ["restorePosition", "clearPrevPosition"],
+            },
           },
-        ],
-        ESCAPE: {
-          target: "open",
         },
-      },
-    },
-
-    "open.resizing": {
-      tags: ["open"],
-      effects: ["trackPointerMove"],
-      exit: ["clearPrevSize"],
-      on: {
-        DRAG: {
-          actions: ["setSize"],
-        },
-        DRAG_END: {
-          target: "open",
-          actions: ["invokeOnResizeEnd"],
-        },
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["resetRect"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            target: "closed",
-            actions: ["invokeOnClose"],
+        resizing: {
+          effects: ["trackPointerMove"],
+          on: {
+            DRAG: {
+              actions: ["setSizeFromDrag"],
+            },
+            DRAG_END: {
+              target: "idle",
+              actions: ["invokeOnResizeEnd", "clearPrevSize"],
+            },
+            ESCAPE: {
+              target: "idle",
+              actions: ["restoreSize", "clearPrevSize"],
+            },
           },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect"],
-          },
-        ],
-        ESCAPE: {
-          target: "open",
         },
       },
     },
@@ -333,9 +305,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const boundaryEl = prop("getBoundaryEl")?.()
 
         if (isHTMLElement(boundaryEl)) {
-          const obs = new win.ResizeObserver(exec)
-          obs.observe(boundaryEl)
-          return () => obs.disconnect()
+          return resizeObserverBorderBox.observe(boundaryEl, exec)
         }
 
         return addDomEvent(win, "resize", exec)
@@ -361,35 +331,54 @@ export const machine = createMachine<FloatingPanelSchema>({
     },
 
     actions: {
-      setAnchorPosition({ context, prop, scope }) {
+      setPosition({ context, event, prop, scope }) {
+        const boundaryEl = prop("getBoundaryEl")?.()
+        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, prop("allowOverflow"))
+        const position = clampPoint(event.position, context.get("size"), boundaryRect)
+        context.set("position", position)
+      },
+
+      setSize({ context, event, scope, prop }) {
+        const boundaryEl = prop("getBoundaryEl")?.()
+        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
+
+        let nextSize = event.size
+        nextSize = clampSize(nextSize, prop("minSize"), prop("maxSize"))
+        nextSize = clampSize(nextSize, prop("minSize"), boundaryRect)
+
+        const nextPosition = clampPoint(context.get("position"), nextSize, boundaryRect)
+
+        context.set("size", nextSize)
+        context.set("position", nextPosition)
+      },
+
+      setAnchorPosition({ context, computed, prop, scope }) {
         // If no anchor position specified, center in boundary
-        if (prop("hasSpecifiedPosition")) return
+        if (computed("hasSpecifiedPosition")) return
 
         // if we persisted the rect, we don't need to set the anchor position
         const hasPrevRect = context.get("prevPosition") || context.get("prevSize")
         if (prop("persistRect") && hasPrevRect) return
 
-        raf(() => {
-          const triggerRect = dom.getTriggerEl(scope)
-          const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
+        const triggerRect = dom.getTriggerEl(scope)
+        const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
-          let anchorPosition = prop("getAnchorPosition")?.({
-            triggerRect: triggerRect ? DOMRect.fromRect(getElementRect(triggerRect)) : null,
-            boundaryRect: DOMRect.fromRect(boundaryRect),
-          })
-
-          // If no anchor position specified, center in boundary
-          if (!anchorPosition) {
-            const size = context.get("size")
-            anchorPosition = {
-              x: boundaryRect.x + (boundaryRect.width - size.width) / 2,
-              y: boundaryRect.y + (boundaryRect.height - size.height) / 2,
-            }
-          }
-
-          if (!anchorPosition) return
-          context.set("position", anchorPosition)
+        let anchorPosition = prop("getAnchorPosition")?.({
+          triggerRect: triggerRect ? DOMRect.fromRect(getElementRect(triggerRect)) : null,
+          boundaryRect: DOMRect.fromRect(boundaryRect),
         })
+
+        // If no anchor position specified, center in boundary
+        if (!anchorPosition) {
+          const size = context.get("size")
+          anchorPosition = {
+            x: boundaryRect.x + (boundaryRect.width - size.width) / 2,
+            y: boundaryRect.y + (boundaryRect.height - size.height) / 2,
+          }
+        }
+
+        if (!anchorPosition) return
+        context.set("position", anchorPosition)
       },
 
       setPrevPosition({ context, event }) {
@@ -402,7 +391,12 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("lastEventPosition", null)
       },
 
-      setPosition({ context, event, prop, scope }) {
+      restorePosition({ context }) {
+        const prevPosition = context.get("prevPosition")
+        if (prevPosition) context.set("position", prevPosition)
+      },
+
+      setPositionFromDrag({ context, event, prop, scope }) {
         let diff = subtractPoints(event.position, context.get("lastEventPosition"))
 
         diff.x = Math.round(diff.x / prop("gridSize")) * prop("gridSize")
@@ -446,7 +440,14 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("lastEventPosition", null)
       },
 
-      setSize({ context, event, scope, prop }) {
+      restoreSize({ context }) {
+        const prevSize = context.get("prevSize")
+        if (prevSize) context.set("size", prevSize)
+        const prevPosition = context.get("prevPosition")
+        if (prevPosition) context.set("position", prevPosition)
+      },
+
+      setSizeFromDrag({ context, event, scope, prop }) {
         const prevSize = context.get("prevSize")
         const prevPosition = context.get("prevPosition")
         const lastEventPosition = context.get("lastEventPosition")
@@ -487,34 +488,52 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setMaximized({ context, prop, scope }) {
+        if (context.get("stage") === "maximized") return
+
+        const wasDefault = context.get("stage") === "default"
+        const currentSize = context.get("size")
+        const currentPosition = context.get("position")
+
+        const boundaryEl = prop("getBoundaryEl")?.()
+        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
+        const nextPosition = pick(boundaryRect, ["x", "y"])
+        const nextSize = pick(boundaryRect, ["height", "width"])
+
         // set max stage
         context.set("stage", "maximized")
 
-        // save previous
-        context.set("prevSize", context.get("size"))
-        context.set("prevPosition", context.get("position"))
+        // save previous only when entering staged mode from default
+        if (wasDefault) {
+          context.set("prevSize", currentSize)
+          context.set("prevPosition", currentPosition)
+        }
 
         // update size and position
-        const boundaryEl = prop("getBoundaryEl")?.()
-        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
-
-        context.set("position", pick(boundaryRect, ["x", "y"]))
-        context.set("size", pick(boundaryRect, ["height", "width"]))
+        context.set("position", nextPosition)
+        context.set("size", nextSize)
       },
 
       setMinimized({ context, scope }) {
+        if (context.get("stage") === "minimized") return
+
+        const wasDefault = context.get("stage") === "default"
+        const currentSize = context.get("size")
+        const currentPosition = context.get("position")
+
         // set min stage
         context.set("stage", "minimized")
 
-        // save previous
-        context.set("prevSize", context.get("size"))
-        context.set("prevPosition", context.get("position"))
+        // save previous only when entering staged mode from default
+        if (wasDefault) {
+          context.set("prevSize", currentSize)
+          context.set("prevPosition", currentPosition)
+        }
 
         // update size
         const headerEl = dom.getHeaderEl(scope)
         if (!headerEl) return
         const size = {
-          ...context.get("size"),
+          ...currentSize,
           height: headerEl?.offsetHeight,
         }
         context.set("size", size)
@@ -526,25 +545,23 @@ export const machine = createMachine<FloatingPanelSchema>({
         // remove stage
         context.set("stage", "default")
 
-        // restore size
+        let restoredSize = context.get("size")
         const prevSize = context.get("prevSize")
         if (prevSize) {
-          let nextSize = prevSize
-          nextSize = clampSize(nextSize, prop("minSize"), prop("maxSize"))
-          nextSize = clampSize(nextSize, prop("minSize"), boundaryRect)
-
-          context.set("size", nextSize)
-          context.set("prevSize", null)
+          restoredSize = clampSize(prevSize, prop("minSize"), prop("maxSize"))
+          restoredSize = clampSize(restoredSize, prop("minSize"), boundaryRect)
         }
 
-        // restore position
-        if (context.get("prevPosition")) {
-          let nextPosition = context.get("prevPosition")
-          nextPosition = clampPoint(nextPosition!, context.get("size"), boundaryRect)
-
-          context.set("position", nextPosition)
-          context.set("prevPosition", null)
+        let restoredPosition = context.get("position")
+        const prevPosition = context.get("prevPosition")
+        if (prevPosition) {
+          restoredPosition = clampPoint(prevPosition, restoredSize, boundaryRect)
         }
+
+        context.set("size", restoredSize)
+        context.set("position", restoredPosition)
+        context.set("prevSize", null)
+        context.set("prevPosition", null)
       },
 
       setPositionFromKeyboard({ context, event, prop, scope }) {
@@ -582,13 +599,13 @@ export const machine = createMachine<FloatingPanelSchema>({
         prop("onSizeChangeEnd")?.({ size: context.get("size") })
       },
 
-      focusTriggerEl({ scope }) {
+      setFinalFocus({ scope }) {
         raf(() => {
           dom.getTriggerEl(scope)?.focus()
         })
       },
 
-      focusContentEl({ scope }) {
+      setInitialFocus({ scope }) {
         raf(() => {
           dom.getContentEl(scope)?.focus()
         })

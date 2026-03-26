@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test"
 import { Model } from "./model"
-import { part } from "../_utils"
+import { part, rect } from "../_utils"
 
 type Channel = "red" | "green" | "blue" | "alpha" | "hue" | "saturation" | "lightness" | "brightness"
 
@@ -10,7 +10,7 @@ export class ColorPickerModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/color-picker")
+    return this.page.goto("/color-picker/basic")
   }
 
   private get trigger() {
@@ -31,6 +31,10 @@ export class ColorPickerModel extends Model {
 
   private get areaThumb() {
     return this.page.locator(part("area-thumb"))
+  }
+
+  private get area() {
+    return this.page.locator(part("area"))
   }
 
   channelInput(channel: string) {
@@ -111,5 +115,22 @@ export class ColorPickerModel extends Model {
 
   clickChannelSlider(channel: Channel) {
     return this.channelSlider(channel).click()
+  }
+
+  async getAreaBounds() {
+    return rect(this.area)
+  }
+
+  async dragAreaToPoint(point: { x: number; y: number }) {
+    const thumbBox = await this.areaThumb.boundingBox()
+    if (!thumbBox) throw new Error("Color area thumb not found")
+
+    const startX = thumbBox.x + thumbBox.width / 2
+    const startY = thumbBox.y + thumbBox.height / 2
+
+    await this.page.mouse.move(startX, startY)
+    await this.page.mouse.down()
+    await this.page.mouse.move(point.x, point.y, { steps: 10 })
+    await this.page.mouse.up()
   }
 }

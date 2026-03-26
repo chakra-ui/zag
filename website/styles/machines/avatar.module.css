@@ -1,0 +1,39 @@
+@layer recipes {
+  .Root {
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 9999px;
+  }
+
+  .Fallback {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    line-height: 1;
+    font-weight: 600;
+    color: #ffffff;
+    background: #718096;
+    border-radius: 9999px;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 9999px !important;
+    }
+  }
+
+  .Image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 9999px;
+  }
+}

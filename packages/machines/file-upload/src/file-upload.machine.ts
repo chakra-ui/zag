@@ -226,10 +226,13 @@ export const machine = createMachine<FileUploadSchema>({
         }
       },
       removeFile({ context, event }) {
-        const files = context.get("acceptedFiles").filter((file) => !isFileEqual(file, event.file))
-        const rejectedFiles = context.get("rejectedFiles").filter((item) => !isFileEqual(item.file, event.file))
-        context.set("acceptedFiles", files)
-        context.set("rejectedFiles", rejectedFiles)
+        if (event.itemType === "rejected") {
+          const rejectedFiles = context.get("rejectedFiles").filter((item) => !isFileEqual(item.file, event.file))
+          context.set("rejectedFiles", rejectedFiles)
+        } else {
+          const files = context.get("acceptedFiles").filter((file) => !isFileEqual(file, event.file))
+          context.set("acceptedFiles", files)
+        }
       },
       clearRejectedFiles({ context }) {
         context.set("rejectedFiles", [])

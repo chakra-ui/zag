@@ -12,8 +12,9 @@ export function connect<T extends PropTypes>(
   const { state, send, computed, prop, scope, context } = service
 
   const interactive = computed("isInteractive")
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const invalid = prop("invalid") || computed("isOverflowing")
 
   const translations = prop("translations")
@@ -36,7 +37,7 @@ export function connect<T extends PropTypes>(
 
   return {
     empty: empty,
-    inputValue: computed("trimmedInputValue"),
+    inputValue: context.get("inputValue"),
     value: context.get("value"),
     valueAsString: computed("valueAsString"),
     count: computed("count"),
@@ -91,6 +92,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-required": dataAttr(required),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
@@ -117,13 +119,16 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
         maxLength: prop("maxLength"),
         id: dom.getInputId(scope),
         defaultValue: context.get("inputValue"),
         autoComplete: "off",
         autoCorrect: "off",
         autoCapitalize: "none",
+        enterKeyHint: "done",
         disabled: disabled || readOnly,
+        placeholder: empty ? prop("placeholder") : undefined,
         onInput(event) {
           const evt = getNativeEvent(event)
           const value = event.currentTarget.value
@@ -180,7 +185,8 @@ export function connect<T extends PropTypes>(
               send({ type: "DELETE" })
             },
             Enter(event) {
-              if (isCombobox && isExpanded) return
+              const hasHighlightedItem = target.getAttribute("aria-activedescendant")
+              if (isCombobox && isExpanded && hasHighlightedItem) return
               send({ type: "ENTER" })
               event.preventDefault()
             },
@@ -263,6 +269,7 @@ export function connect<T extends PropTypes>(
         id: dom.getItemInputId(scope, props),
         tabIndex: -1,
         hidden: !itemState.editing,
+        maxLength: prop("maxLength"),
         defaultValue: itemState.editing ? context.get("editedTagValue") : "",
         onInput(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })
@@ -296,13 +303,16 @@ export function connect<T extends PropTypes>(
     },
 
     getItemDeleteTriggerProps(props) {
-      const id = dom.getItemId(scope, props)
+      const itemState = getItemState(props)
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs,
         dir: prop("dir"),
+        "data-disabled": dataAttr(itemState.disabled),
+        "aria-disabled": itemState.disabled,
+        "data-highlighted": dataAttr(itemState.highlighted),
         id: dom.getItemDeleteTriggerId(scope, props),
         type: "button",
-        disabled: disabled,
+        disabled: itemState.disabled,
         "aria-label": translations?.deleteTagTriggerLabel?.(props.value),
         tabIndex: -1,
         onPointerDown(event) {
@@ -322,7 +332,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "CLICK_DELETE_TAG", id })
+          send({ type: "CLICK_DELETE_TAG", id: itemState.id })
         },
       })
     },

@@ -5,6 +5,10 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+export type ThumbCollisionBehavior = "none" | "push" | "swap"
+
+export type ThumbAlignment = "contain" | "center"
+
 export interface ValueChangeDetails {
   value: number[]
 }
@@ -146,6 +150,15 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * The slider thumbs dimensions
    */
   thumbSize?: { width: number; height: number } | undefined
+  /**
+   * Controls how thumbs behave when they collide during pointer interactions.
+   * - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+   * - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+   * - `swap`: Thumbs swap places when dragged past each other.
+   *
+   * @default "none"
+   */
+  thumbCollisionBehavior?: "none" | "push" | "swap" | undefined
 }
 
 type PropsWithDefault =
@@ -158,6 +171,7 @@ type PropsWithDefault =
   | "origin"
   | "thumbAlignment"
   | "minStepsBetweenThumbs"
+  | "thumbCollisionBehavior"
 
 type Computed = Readonly<{
   /**
@@ -222,6 +236,18 @@ export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
   props: RequiredBy<SliderProps, PropsWithDefault>
   context: Context
+  refs: {
+    /**
+     * The offset from the thumb center when pointer down occurs.
+     * Used to maintain constant offset during drag.
+     */
+    thumbDragOffset: { x: number; y: number } | null
+    /**
+     * The values when a thumb drag starts.
+     * Used for swap collision behavior to determine swap direction.
+     */
+    thumbDragStartValue: number[] | null
+  }
   computed: Computed
   event: EventObject
   action: string
@@ -328,23 +354,4 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   getMarkerGroupProps: () => T["element"]
   getMarkerProps: (props: MarkerProps) => T["element"]
   getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
-}
-
-/* -----------------------------------------------------------------------------
- * Re-exported types
- * -----------------------------------------------------------------------------*/
-
-export interface SharedContext {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl" | undefined
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: Size | null
-  thumbAlignment?: "contain" | "center" | undefined
-  orientation?: "horizontal" | "vertical" | undefined
-  readonly hasMeasuredThumbSize: boolean
 }

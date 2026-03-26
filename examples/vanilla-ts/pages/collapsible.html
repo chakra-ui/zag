@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collapsible</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Collapsible</h1>
+
+    <main class="collapsible">
+      <div class="collapsible-root">
+        <button class="collapsible-trigger">
+          Collapsible Trigger
+          <div class="collapsible-indicator">▼</div>
+        </button>
+        <div class="collapsible-content">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum. <a href="#">Some Link</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div>Toggle Controls</div>
+        <button class="collapsible-open">Open</button>
+        <button class="collapsible-close">Close</button>
+      </div>
+    </main>
+
+    <script type="module" src="./collapsible.ts"></script>
+  </body>
+</html>

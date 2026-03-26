@@ -1,11 +1,10 @@
-import { Box } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { styled, Box } from "styled-system/jsx"
 import siteConfig from "site.config"
 import { Pagination } from "./pagination"
 
 export function MdxFooter() {
   return (
-    <chakra.footer mt="12">
+    <styled.footer mt="12">
       <Pagination />
       <Box
         pt="10"
@@ -32,6 +31,6 @@ export function MdxFooter() {
         opacity={0.5}
         dangerouslySetInnerHTML={{ __html: siteConfig.copyright }}
       />
-    </chakra.footer>
+    </styled.footer>
   )
 }

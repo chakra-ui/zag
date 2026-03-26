@@ -4,9 +4,9 @@ export { machine } from "./pin-input.machine"
 export * from "./pin-input.props"
 export type {
   PinInputApi as Api,
+  PinInputMachine as Machine,
   PinInputProps as Props,
   PinInputService as Service,
-  PinInputMachine as Machine,
   ElementIds,
   InputProps,
   IntlTranslations,

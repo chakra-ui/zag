@@ -1,5 +1,579 @@
 # @zag-js/toast
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2981232`](https://github.com/chakra-ui/zag/commit/29812320badb8066208b2ef5337eec80f71e96b7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Restore `role="region"` on the toast group element.
+  - The role was previously removed to reduce screen reader landmark noise, but this caused an axe
+    `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div` without a valid role.
+  - The region landmark also enables keyboard navigation to the toast area (e.g. via F6).
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- [`daff476`](https://github.com/chakra-ui/zag/commit/daff4767985c02d8b4e808201935eeacdfa426b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve toast group accessibility:
+  - Remove `role="region"` landmark to reduce screen reader noise; keep `aria-live="polite"` with `aria-relevant` and
+    `aria-atomic` for reliable, scoped announcements
+  - Restructure `aria-label` for more natural output (e.g. "Notifications, bottom (Alt+T)")
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [`e167d02`](https://github.com/chakra-ui/zag/commit/e167d026029d4b5ab9524bf889c9fd94d7f47d27) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `translations` prop for localization of hardcoded
+  accessibility labels in clipboard, navigation-menu, popover, select, timer, toast, and tree-view machines (fixes
+  #3004)
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/dismissable@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dismissable@1.35.1
+  - @zag-js/dom-query@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- [`d0ce632`](https://github.com/chakra-ui/zag/commit/d0ce632a98eeca4784d240c0391cc13a840e5d2a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix toast types to ensure `parent`/`index` are exposed as props
+  and `expand`/`collapse` are exposed on the store
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dismissable@1.34.1
+  - @zag-js/dom-query@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [`b8da95e`](https://github.com/chakra-ui/zag/commit/b8da95ed7fb99a3563277445619b8ee9e1358a5a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix TypeScript compilation errors when building projects that use
+  `@zag-js/toast`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`02ad5f7`](https://github.com/chakra-ui/zag/commit/02ad5f7d15fd5240b60de7f9acb69bf27c1ba330) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toasts created before the state machine connects
+  are not shown
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dismissable@1.32.0
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dismissable@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- [`ec8bb98`](https://github.com/chakra-ui/zag/commit/ec8bb980c500e580c1502f6f3671326cf6a68dca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose viewport offset as CSS variables (`--viewport-offset-left`,
+  `--viewport-offset-right`, `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/dismissable@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dismissable@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/dismissable@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- [#2771](https://github.com/chakra-ui/zag/pull/2771)
+  [`2230b5c`](https://github.com/chakra-ui/zag/commit/2230b5c381dc67cfee3b9d747e5a2a8d280b62ff) Thanks
+  [@alii13](https://github.com/alii13)! - Fix issue where toasts collapse immediately when dismissing while hovering, by
+  tracking pointer state and temporarily ignoring spurious mouse events during DOM mutations using
+  requestAnimationFrame.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dismissable@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dismissable@1.26.3
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dismissable@1.26.2
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dismissable@1.26.1
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dismissable@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dismissable@1.25.0
+  - @zag-js/dom-query@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dismissable@1.24.2
+  - @zag-js/dom-query@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- [#2693](https://github.com/chakra-ui/zag/pull/2693)
+  [`70143c1`](https://github.com/chakra-ui/zag/commit/70143c14f561f43a245a4f92687e7aa70922a9b2) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Allow creating a toast store without any arguments.
+
+  ```tsx
+  // before
+  const store = toast.createStore({})
+
+  // after
+  const store = toast.createStore()
+  ```
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/dismissable@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dismissable@1.22.1
+  - @zag-js/dom-query@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies [[`c1f9b45`](https://github.com/chakra-ui/zag/commit/c1f9b45cf71308b1376fc70d0c5b785fd0a8e275)]:
+  - @zag-js/dismissable@1.22.0
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dismissable@1.21.9
+  - @zag-js/dom-query@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/dismissable@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dismissable@1.21.7
+  - @zag-js/dom-query@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dismissable@1.21.6
+  - @zag-js/dom-query@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dismissable@1.21.5
+  - @zag-js/dom-query@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dismissable@1.21.4
+  - @zag-js/dom-query@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dismissable@1.21.3
+  - @zag-js/dom-query@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dismissable@1.21.2
+  - @zag-js/dom-query@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

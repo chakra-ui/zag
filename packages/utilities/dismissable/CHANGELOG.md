@@ -1,5 +1,414 @@
 # @zag-js/dismissable
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/interact-outside@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/interact-outside@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c),
+  [`3007b2a`](https://github.com/chakra-ui/zag/commit/3007b2a7b37f56359a664f37724507dc240d80e0)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/interact-outside@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/interact-outside@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/interact-outside@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/interact-outside@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/interact-outside@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/interact-outside@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/interact-outside@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/interact-outside@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/interact-outside@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- [`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where closing a nested dialog/popover would incorrectly
+  close its parent layers
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/interact-outside@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/interact-outside@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/interact-outside@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/interact-outside@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/interact-outside@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/interact-outside@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/interact-outside@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/interact-outside@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/interact-outside@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/interact-outside@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/interact-outside@1.27.0
+  - @zag-js/utils@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/interact-outside@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/interact-outside@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/interact-outside@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/interact-outside@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/interact-outside@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+  - @zag-js/interact-outside@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/interact-outside@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/interact-outside@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/interact-outside@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/interact-outside@1.24.0
+
+## 1.23.0
+
+### Minor Changes
+
+- [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for layer types in dismissable layer stack. Layers can
+  now be categorized as `dialog`, `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Patch Changes
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/interact-outside@1.23.0
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/interact-outside@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- [`c1f9b45`](https://github.com/chakra-ui/zag/commit/c1f9b45cf71308b1376fc70d0c5b785fd0a8e275) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `onRequestDismiss` custom event handler for event a parent
+  layer requests the child layer to dismiss. If prevented via `event.preventDefault()`, the child layer will not dismiss
+  when the parent layer is dismissed.
+- Updated dependencies []:
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/interact-outside@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/interact-outside@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/interact-outside@1.21.8
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/interact-outside@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.6
+  - @zag-js/dom-query@1.21.6
+  - @zag-js/interact-outside@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.5
+  - @zag-js/dom-query@1.21.5
+  - @zag-js/interact-outside@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.4
+  - @zag-js/dom-query@1.21.4
+  - @zag-js/interact-outside@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.3
+  - @zag-js/dom-query@1.21.3
+  - @zag-js/interact-outside@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/interact-outside@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

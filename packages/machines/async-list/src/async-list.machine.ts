@@ -19,7 +19,7 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
       filterText: bindable<string>(() => ({
         defaultValue: prop("initialFilterText") ?? "",
       })),
-      sortDescriptor: bindable<SortDescriptor | undefined>(() => ({
+      sortDescriptor: bindable<SortDescriptor<any> | undefined>(() => ({
         defaultValue: prop("initialSortDescriptor"),
       })),
       error: bindable<any>(() => ({
@@ -46,19 +46,10 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
   },
 
   on: {
-    ABORT: {
-      target: "idle",
-      actions: ["cancelFetch"],
-    },
     RELOAD: {
       target: "loading",
       reenter: true,
       actions: ["clearItems"],
-    },
-    FILTER: {
-      reenter: true,
-      target: "loading",
-      actions: ["setFilterText"],
     },
   },
 
@@ -66,7 +57,6 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
 
   states: {
     idle: {
-      tags: ["idle", "error"],
       on: {
         LOAD_MORE: {
           guard: "hasCursor",
@@ -75,15 +65,21 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         SORT: [
           {
             guard: "hasSortFn",
-            target: "loading",
-            actions: ["performSort"],
+            target: "sorting",
+            actions: ["setSortDescriptor", "clearCursor", "performSort"],
           },
-          { target: "loading" },
+          {
+            target: "loading",
+            actions: ["setSortDescriptor", "clearCursor"],
+          },
         ],
+        FILTER: {
+          target: "loading",
+          actions: ["setFilterText", "clearCursor"],
+        },
       },
     },
     loading: {
-      tags: ["loading", "loadingMore", "sorting", "filtering"],
       entry: ["performFetch"],
       exit: ["cancelFetch"],
       on: {
@@ -95,6 +91,51 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
           target: "idle",
           actions: ["setError", "invokeOnError"],
         },
+        ABORT: {
+          target: "idle",
+          actions: ["cancelFetch"],
+        },
+        FILTER: {
+          reenter: true,
+          target: "loading",
+          actions: ["setFilterText", "clearCursor"],
+        },
+      },
+    },
+    sorting: {
+      on: {
+        SUCCESS: {
+          target: "idle",
+          actions: ["setItems", "setCursor", "clearError", "invokeOnSuccess"],
+        },
+        ERROR: {
+          target: "idle",
+          actions: ["setError", "invokeOnError"],
+        },
+        ABORT: {
+          target: "idle",
+          actions: ["cancelSort"],
+        },
+        FILTER: {
+          target: "loading",
+          actions: ["setFilterText", "clearCursor", "cancelSort"],
+        },
+        RELOAD: {
+          target: "loading",
+          actions: ["clearItems", "cancelSort"],
+        },
+        SORT: [
+          {
+            guard: "hasSortFn",
+            target: "sorting",
+            reenter: true,
+            actions: ["setSortDescriptor", "clearCursor", "cancelSort", "performSort"],
+          },
+          {
+            target: "loading",
+            actions: ["setSortDescriptor", "clearCursor", "cancelSort"],
+          },
+        ],
       },
     },
   },
@@ -144,22 +185,36 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
           })
       },
 
-      performSort({ context, prop, send, event }) {
-        context.set("sortDescriptor", event.sortDescriptor)
+      performSort({ context, prop, send, event, refs }) {
         const sortFn = prop("sort")
         ensure(sortFn, () => "[zag-js/async-list] sort is required")
+        const currentItems = context.get("items")
+        const filterText = context.get("filterText")
+
+        const seq = refs.get("seq") + 1
+        refs.set("seq", seq)
+
         Promise.resolve(
           sortFn({
-            items: context.get("items"),
+            items: currentItems,
             descriptor: event.sortDescriptor,
+            filterText,
           }),
         )
           .then((r) => {
-            send({ type: "SUCCESS", items: r?.items ?? [], append: false })
+            if (seq !== refs.get("seq")) return // stale
+            // If sort function returns undefined or no items, keep existing data
+            const sortedItems = r?.items ?? currentItems
+            send({ type: "SUCCESS", items: sortedItems, cursor: undefined, append: false })
           })
           .catch((e) => {
+            if (seq !== refs.get("seq")) return // stale
             send({ type: "ERROR", error: e as Error })
           })
+      },
+
+      setSortDescriptor({ context, event }) {
+        context.set("sortDescriptor", event.sortDescriptor)
       },
 
       setFilterText({ context, event }) {
@@ -186,10 +241,18 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
       clearError({ context }) {
         context.set("error", undefined)
       },
+      clearCursor({ context }) {
+        context.set("cursor", null)
+      },
       cancelFetch({ refs }) {
         const _abort = refs.get("abort")
         _abort?.abort()
         refs.set("abort", null)
+      },
+      cancelSort({ refs }) {
+        // Increment sequence to invalidate any pending sort results
+        const seq = refs.get("seq") + 1
+        refs.set("seq", seq)
       },
     },
   },

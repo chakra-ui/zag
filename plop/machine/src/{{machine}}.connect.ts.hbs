@@ -1,12 +1,17 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send } from "./{{dashCase machine}}.types"
+import type { {{pascalCase machine}}Api, {{pascalCase machine}}Service } from "./{{dashCase machine}}.types"
 import { parts } from "./{{dashCase machine}}.anatomy"
-import { dom } from "./{{dashCase machine}}.dom"
+import * as dom from "./{{dashCase machine}}.dom"
 
-export function connect<T extends PropTypes>(service: {{machine}}Service, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(service: {{pascalCase machine}}Service, normalize: NormalizeProps<T>): {{pascalCase machine}}Api<T> {
+  const { scope } = service
+
   return {
     getRootProps() {
-      return normalize.element({})
+      return normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(scope),
+      })
     },
   }
 }

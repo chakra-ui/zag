@@ -14,6 +14,14 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
   const hasNextStep = computed("hasNextStep")
   const hasPrevStep = computed("hasPrevStep")
 
+  const isStepValid = (index: number): boolean => {
+    return prop("isStepValid")?.(index) ?? true
+  }
+
+  const isStepSkippable = (index: number): boolean => {
+    return prop("isStepSkippable")?.(index) ?? false
+  }
+
   const getItemState = (props: ItemProps): ItemState => ({
     triggerId: dom.getTriggerId(scope, props.index),
     contentId: dom.getContentId(scope, props.index),
@@ -23,6 +31,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     index: props.index,
     first: props.index === 0,
     last: props.index === count - 1,
+    skippable: isStepSkippable(props.index),
+    isValid: () => isStepValid(props.index),
   })
 
   const goToNextStep = () => {
@@ -48,6 +58,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     hasNextStep,
     hasPrevStep,
     isCompleted: computed("completed"),
+    isStepValid,
+    isStepSkippable,
     goToNextStep,
     goToPrevStep,
     resetStep,
@@ -87,6 +99,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
         dir: prop("dir"),
         "aria-current": itemState.current ? "step" : undefined,
         "data-orientation": prop("orientation"),
+        "data-skippable": dataAttr(itemState.skippable),
       })
     },
 

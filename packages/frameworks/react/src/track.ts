@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useRef } from "react"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {

@@ -1,7 +1,7 @@
-```jsx
+```tsx
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as signaturePad from "@zag-js/signature-pad"
-import { useId, useState } from "react"
+import { useId } from "react"
 
 export function SignaturePad() {
   const service = useMachine(signaturePad.machine, {

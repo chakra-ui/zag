@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -29,9 +29,9 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  trigger: string
+  trigger: (value: string) => string
   list: string
-  content: string
+  content: (value: string) => string
   indicator: string
 }>
 
@@ -106,11 +106,12 @@ export type TabsSchema = {
     ssr: boolean
     value: string | null
     focusedValue: string | null
-    indicatorTransition: boolean
-    indicatorRect: { left: string; top: string; width: string; height: string }
+    indicatorRect: Rect | null
+    animateIndicator: boolean
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
+    prevValue: string | null
   }
   computed: {
     focused: boolean

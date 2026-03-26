@@ -16,6 +16,7 @@
   padding: 24px;
   border: 1px solid #d5d5d5;
   background: white;
+  z-index: var(--layer-index);
 }
 
 [data-scope="color-picker"][data-part="content"] > .content__inner {

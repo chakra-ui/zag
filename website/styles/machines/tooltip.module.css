@@ -1,0 +1,42 @@
+@layer recipes {
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+
+    &:hover {
+      background: var(--colors-bg-primary-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Content {
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    font-size: 0.875rem;
+    --background: #2d3748;
+    background: var(--background);
+    color: #ffffff;
+    z-index: calc(var(--layer-index) + 50);
+  }
+
+  .Arrow {
+    --arrow-background: var(--background);
+    --arrow-size: 8px;
+  }
+
+  .ArrowTip {
+    border-radius: 0.125rem;
+  }
+}

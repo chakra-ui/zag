@@ -4,11 +4,7 @@ description: Used for creating product tours and onboarding.
 package: "@zag-js/tour"
 ---
 
-# Tour
-
-A tour is an onboarding component used to guide users through a new product
-feature or series of steps. It is often used to boost feature discoverability or
-onboard new users by highlighting specific elements on the page.
+A tour guides users through product features with step-by-step overlays.
 
 <Resources pkg="@zag-js/tour" />
 
@@ -16,9 +12,9 @@ onboard new users by highlighting specific elements on the page.
 
 **Features**
 
-- Support for different step types such as "dialog", "floating", "tooltip" or
+- Supports different step types such as "dialog", "floating", "tooltip" or
   "wait".
-- Support for customizable content per step.
+- Supports customizable content per step.
 - Wait steps for waiting for a specific selector to appear on the page before
   showing the next step.
 - Flexible positioning of the tour dialog per step.
@@ -26,15 +22,13 @@ onboard new users by highlighting specific elements on the page.
 
 ## Installation
 
-To use the tooltip machine in your project, run the following command in your
-command line:
+Install the tour package:
 
 <CodeSnippet id="tour/installation.mdx" />
 
 ## Anatomy
 
-To set up the tooltip correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the tour anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -42,20 +36,18 @@ we name its parts.
 
 ## Usage
 
-First, import the tooltip package into your project
+Import the tour package:
 
-```jsx
+```tsx
 import * as tour from "@zag-js/tour"
 ```
 
-The tour package exports two key functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the tour widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-tour machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="tour/usage.mdx" />
 
@@ -69,11 +61,12 @@ the `StepType` type:
   the target element.
 
 - `"dialog"`: Shows the step content in a modal dialog centered on screen,
-  useful for starting or ending the tour. This usually don't have a `target`
+  useful for starting or ending the tour. This usually doesn't have a `target`
   defined.
 
 - `"floating"`: Presents the step content as a floating element, which can be
-  positioned flexibly on the screen. This usually don't have a `target` defined.
+  positioned flexibly on the screen. This usually doesn't have a `target`
+  defined.
 
 - `"wait"`: A special type that waits for a specific condition before proceeding
   to the next step.
@@ -123,7 +116,7 @@ const steps: tour.StepDetails[] = [
 
 ### Configuring actions
 
-Every step supports a list of actions that are rendered in the step footer.Use
+Every step supports a list of actions that are rendered in the step footer. Use
 the `actions` property to define each action.
 
 ```tsx
@@ -191,9 +184,11 @@ useful for adding custom logic to a step.
 This function provides the following methods:
 
 - `next()`: Call this method to move to the next step.
+- `goto(id)`: Jump to a specific step by id.
+- `dismiss()`: Dismiss the tour immediately.
 - `show()`: Call this method to show the current step.
-- `update(details: StepDetails)`: Call this method to update the details of the
-  current step (say, after data has been fetched).
+- `update(details: Partial<StepBaseDetails>)`: Call this method to update the
+  current step details (for example, after data is fetched).
 
 ```tsx
 const steps: tour.StepDetails[] = [
@@ -259,6 +254,7 @@ As the tour is progressed, events are fired and you can track the lifecycle of
 the tour. Here's are the events you can listen to:
 
 - `onStepChange`: Fires when the current step changes.
+- `onStepsChange`: Fires when the steps array is updated.
 - `onStatusChange`: Fires when the status of the tour changes.
 
 ```tsx
@@ -269,15 +265,69 @@ const Lifecycle = () => {
       // => { stepId: "step-1", stepIndex: 0, totalSteps: 3, complete: false, progress: 0 }
       console.log(details)
     },
-    onStatusChange(status) {
+    onStepsChange(details) {
+      // => { steps: StepDetails[] }
+      console.log(details.steps)
+    },
+    onStatusChange(details) {
       // => { status: "started" | "skipped" | "completed" | "dismissed" | "not-found" }
-      console.log(status)
+      console.log(details.status)
     },
   })
 
   const api = tour.connect(service, normalizeProps)
   // ...
 }
+```
+
+### Controlled current step
+
+Use `stepId` and `onStepChange` for controlled navigation.
+
+```tsx
+const service = useMachine(tour.machine, {
+  steps,
+  stepId,
+  onStepChange(details) {
+    setStepId(details.stepId)
+  },
+})
+```
+
+### Programmatic tour control
+
+Use the connected API to drive tour flow from code.
+
+```tsx
+api.start()
+api.setStep("step-2")
+api.next()
+api.prev()
+api.updateStep("step-2", { title: "Updated title" })
+```
+
+### Dismiss and interaction behavior
+
+Configure dismissal and page interaction behavior with machine props.
+
+```tsx
+const service = useMachine(tour.machine, {
+  closeOnEscape: false,
+  closeOnInteractOutside: false,
+  preventInteraction: true,
+})
+```
+
+### Customizing progress text
+
+Use `translations.progressText` to customize the progress message.
+
+```tsx
+const service = useMachine(tour.machine, {
+  translations: {
+    progressText: ({ current, total }) => `Step ${current} of ${total}`,
+  },
+})
 ```
 
 ## Styling guide
@@ -342,8 +392,8 @@ DOM.
 
 ### Step types
 
-The tour component supports two types: `dialog` and `floating`. You can apply
-specific styles based on the tour type:
+The tour component can render `tooltip`, `dialog`, or `floating` content. You
+can apply specific styles based on the rendered type:
 
 ```css
 [data-scope="tour"][data-part="content"][data-type="dialog"] {
@@ -352,6 +402,10 @@ specific styles based on the tour type:
 
 [data-scope="tour"][data-part="content"][data-type="floating"] {
   /* styles for content when step is floating type */
+}
+
+[data-scope="tour"][data-part="content"][data-type="tooltip"] {
+  /* styles for content when step is tooltip type */
 }
 
 [data-scope="tour"][data-part="positioner"][data-type="dialog"] {
@@ -396,6 +450,6 @@ The tour machine exposes the following context properties:
 
 ### Machine API
 
-The time picker `api` exposes the following methods:
+The tour `api` exposes the following methods:
 
 <ApiTable name="tour" />

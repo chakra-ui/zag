@@ -6,9 +6,11 @@ export { machine } from "./combobox.machine"
 export * from "./combobox.props"
 export type {
   ComboboxApi as Api,
+  ComboboxMachine as Machine,
+  ComboboxProps as Props,
+  ComboboxService as Service,
   CollectionItem,
   CollectionOptions,
-  ComboboxProps as Props,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
@@ -24,8 +26,6 @@ export type {
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
-  ComboboxService as Service,
-  ComboboxMachine as Machine,
   TriggerProps,
   ValueChangeDetails,
   SelectionDetails,

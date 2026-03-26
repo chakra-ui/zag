@@ -1,5 +1,5 @@
-import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
+import { getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import type { PresenceSchema } from "./presence.types"
 
 export const machine = createMachine<PresenceSchema>({
@@ -30,17 +30,20 @@ export const machine = createMachine<PresenceSchema>({
     }
   },
 
-  exit: ["clearInitial", "cleanupNode"],
+  exit: ["cleanupNode"],
 
-  watch({ track, action, prop }) {
+  watch({ track, prop, send }) {
     track([() => prop("present")], () => {
-      action(["setInitial", "syncPresence"])
+      send({ type: "PRESENCE.CHANGED" })
     })
   },
 
   on: {
     "NODE.SET": {
-      actions: ["setNode", "setStyles"],
+      actions: ["setupNode"],
+    },
+    "PRESENCE.CHANGED": {
+      actions: ["setInitial", "syncPresence"],
     },
   },
 
@@ -87,23 +90,29 @@ export const machine = createMachine<PresenceSchema>({
           context.set("initial", true)
         })
       },
-      clearInitial: ({ context }) => {
-        context.set("initial", false)
+
+      invokeOnExitComplete: ({ prop, refs }) => {
+        prop("onExitComplete")?.()
+
+        // Emit exitcomplete event on the node
+        const node = refs.get("node")
+        if (!node) return
+
+        const win = getWindow(node)
+        const event = new win.CustomEvent("exitcomplete", { bubbles: false })
+        node.dispatchEvent(event)
       },
+
+      setupNode: ({ refs, event }) => {
+        // skip if same node
+        if (refs.get("node") === event.node) return
+        refs.set("node", event.node)
+        refs.set("styles", getComputedStyle(event.node))
+      },
+
       cleanupNode: ({ refs }) => {
         refs.set("node", null)
         refs.set("styles", null)
-      },
-      invokeOnExitComplete: ({ prop }) => {
-        prop("onExitComplete")?.()
-      },
-
-      setNode: ({ refs, event }) => {
-        refs.set("node", event.node)
-      },
-
-      setStyles: ({ refs, event }) => {
-        refs.set("styles", getComputedStyle(event.node))
       },
 
       syncPresence: ({ context, refs, send, prop }) => {
@@ -118,6 +127,9 @@ export const machine = createMachine<PresenceSchema>({
         }
 
         raf(() => {
+          // Re-check present prop - it may have changed back to true during the raf delay
+          if (prop("present")) return
+
           const animationName = getAnimationName(refs.get("styles"))
           context.set("unmountAnimationName", animationName)
           if (
@@ -145,7 +157,7 @@ export const machine = createMachine<PresenceSchema>({
     },
 
     effects: {
-      trackAnimationEvents: ({ context, refs, send }) => {
+      trackAnimationEvents: ({ context, refs, send, prop }) => {
         const node = refs.get("node")
         if (!node) return
 
@@ -159,19 +171,26 @@ export const machine = createMachine<PresenceSchema>({
         const onEnd = (event: AnimationEvent) => {
           const animationName = getAnimationName(refs.get("styles"))
           const target = getEventTarget(event)
-          if (target === node && animationName === context.get("unmountAnimationName")) {
+          if (target === node && animationName === context.get("unmountAnimationName") && !prop("present")) {
             send({ type: "UNMOUNT", src: "animationend" })
           }
         }
 
+        const onCancel = (event: AnimationEvent) => {
+          const target = getEventTarget(event)
+          if (target === node && !prop("present")) {
+            send({ type: "UNMOUNT", src: "animationcancel" })
+          }
+        }
+
         node.addEventListener("animationstart", onStart)
-        node.addEventListener("animationcancel", onEnd)
+        node.addEventListener("animationcancel", onCancel)
         node.addEventListener("animationend", onEnd)
         const cleanupStyles = setStyle(node, { animationFillMode: "forwards" })
 
         return () => {
           node.removeEventListener("animationstart", onStart)
-          node.removeEventListener("animationcancel", onEnd)
+          node.removeEventListener("animationcancel", onCancel)
           node.removeEventListener("animationend", onEnd)
           nextTick(() => cleanupStyles())
         }

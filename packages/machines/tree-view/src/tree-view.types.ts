@@ -29,6 +29,36 @@ export interface CheckedChangeDetails {
   checkedValue: string[]
 }
 
+export interface RenameStartDetails<T extends TreeNode = TreeNode> {
+  /**
+   * The value (id) of the node being renamed
+   */
+  value: string
+  /**
+   * The node being renamed
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
+export interface RenameCompleteDetails {
+  /**
+   * The value (id) of the node being renamed
+   */
+  value: string
+  /**
+   * The new label for the node
+   */
+  label: string
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
 export interface LoadChildrenDetails<T extends TreeNode = TreeNode> {
   /**
    * The value path of the node whose children are being loaded
@@ -69,6 +99,41 @@ export interface LoadChildrenErrorDetails<T extends TreeNode = TreeNode> {
   nodes: NodeWithError<T>[]
 }
 
+export interface ScrollToIndexDetails<T extends TreeNode = TreeNode> {
+  /**
+   * The index of the node in the visible nodes array
+   */
+  index: number
+  /**
+   * The node being scrolled to
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+  /**
+   * Function to get the DOM element for the node
+   */
+  getElement: () => HTMLElement | null
+}
+
+export interface VisibleNode<T extends TreeNode = TreeNode> {
+  /**
+   * The tree node
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
+export interface IntlTranslations {
+  treeLabel?: string | undefined
+  renameInputLabel?: string | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
@@ -81,6 +146,10 @@ export type ElementIds = Partial<{
  * -----------------------------------------------------------------------------*/
 
 export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionProperty, CommonProperties {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The tree collection data
    */
@@ -150,6 +219,22 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    */
   onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
+   * Function to determine if a node can be renamed
+   */
+  canRename?: ((node: T, indexPath: IndexPath) => boolean) | undefined
+  /**
+   * Called when a node starts being renamed
+   */
+  onRenameStart?: ((details: RenameStartDetails<T>) => void) | undefined
+  /**
+   * Called before a rename is completed. Return false to prevent the rename.
+   */
+  onBeforeRename?: ((details: RenameCompleteDetails) => boolean) | undefined
+  /**
+   * Called when a node label rename is completed
+   */
+  onRenameComplete?: ((details: RenameCompleteDetails) => void) | undefined
+  /**
    * Called when a node finishes loading children
    */
   onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails<T>) => void) | undefined
@@ -172,6 +257,11 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    * When provided, branches will wait for this promise to resolve before expanding.
    */
   loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
+  /**
+   * Function to scroll to a specific index.
+   * Useful for virtualized tree views.
+   */
+  scrollToIndexFn?: ((details: ScrollToIndexDetails<T>) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -181,13 +271,14 @@ type PropsWithDefault =
   | "typeahead"
   | "defaultExpandedValue"
   | "defaultSelectedValue"
+  | "translations"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 
 export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
 
 export interface TreeViewSchema<T extends TreeNode = TreeNode> {
-  state: "idle"
+  state: "idle" | "renaming"
   props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
   context: {
     expandedValue: string[]
@@ -195,6 +286,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     checkedValue: string[]
     focusedValue: string | null
     loadingStatus: TreeLoadingStatusMap
+    renamingValue: string | null
   }
   refs: {
     typeaheadState: TypeaheadState
@@ -280,6 +372,10 @@ export interface NodeState {
    * Whether the tree item is checked
    */
   checked: CheckedState
+  /**
+   * Whether the tree item is currently being renamed
+   */
+  renaming: boolean
 }
 
 export type CheckedValueMap = Map<string, { type: "leaf" | "branch"; checked: CheckedState }>
@@ -326,9 +422,10 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    */
   getCheckedMap: () => CheckedValueMap
   /**
-   * Returns the visible nodes as a flat array of nodes and their index path
+   * Returns the visible nodes as a flat array of nodes and their index path.
+   * Useful for rendering virtualized tree views.
    */
-  getVisibleNodes: () => V[]
+  getVisibleNodes: () => VisibleNode<V>[]
   /**
    * Function to expand nodes.
    * If no value is provided, all nodes will be expanded
@@ -361,6 +458,18 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    * Function to expand the parent node of the focused node
    */
   expandParent: (value: string) => void
+  /**
+   * Function to start renaming a node by value
+   */
+  startRenaming: (value: string) => void
+  /**
+   * Function to submit the rename and update the node label
+   */
+  submitRenaming: (value: string, label: string) => void
+  /**
+   * Function to cancel renaming without changes
+   */
+  cancelRenaming: () => void
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
@@ -377,6 +486,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
   getBranchContentProps: (props: NodeProps) => T["element"]
   getBranchTextProps: (props: NodeProps) => T["element"]
   getBranchIndentGuideProps: (props: NodeProps) => T["element"]
+  getNodeRenameInputProps: (props: NodeProps) => T["input"]
 }
 
 export type { TreeNode } from "@zag-js/collection"

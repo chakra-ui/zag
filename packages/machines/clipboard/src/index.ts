@@ -4,12 +4,12 @@ export { machine } from "./clipboard.machine"
 export * from "./clipboard.props"
 export type {
   ClipboardApi as Api,
+  ClipboardMachine as Machine,
+  ClipboardProps as Props,
+  ClipboardService as Service,
   CopyStatusDetails,
   ValueChangeDetails,
   ElementIds,
   IndicatorProps,
-  ClipboardMachine as Machine,
-  ClipboardProps as Props,
-  ClipboardSchema as Schema,
-  ClipboardService as Service,
+  IntlTranslations,
 } from "./clipboard.types"

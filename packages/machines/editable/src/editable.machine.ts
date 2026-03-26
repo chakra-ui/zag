@@ -76,7 +76,7 @@ export const machine = createMachine<EditableSchema>({
 
   states: {
     preview: {
-      entry: ["blurInputIfNeeded"],
+      entry: ["blurInput"],
       on: {
         "CONTROLLED.EDIT": {
           target: "edit",
@@ -97,6 +97,7 @@ export const machine = createMachine<EditableSchema>({
 
     edit: {
       effects: ["trackInteractOutside"],
+      entry: ["syncInputValue"],
       on: {
         "CONTROLLED.PREVIEW": [
           {
@@ -227,7 +228,7 @@ export const machine = createMachine<EditableSchema>({
         if (!value) return
         context.set("value", value)
       },
-      blurInputIfNeeded({ scope }) {
+      blurInput({ scope }) {
         dom.getInputEl(scope)?.blur()
       },
     },

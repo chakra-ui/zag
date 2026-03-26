@@ -10,3 +10,9 @@ export const focusNode = (ctx: Scope, value: string | null | undefined) => {
   if (value == null) return
   ctx.getById(getNodeId(ctx, value))?.focus()
 }
+
+export const getRenameInputId = (ctx: Scope, value: string) => `tree:${ctx.id}:rename-input:${value}`
+
+export const getRenameInputEl = (ctx: Scope, value: string) => {
+  return ctx.getById<HTMLInputElement>(getRenameInputId(ctx, value))
+}

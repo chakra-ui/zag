@@ -4,8 +4,6 @@ description: Using the collapsible machine in your project.
 package: "@zag-js/collapsible"
 ---
 
-# Collapsible
-
 A collapsible is a component which expands and collapses a panel.
 
 <Resources pkg="@zag-js/collapsible" />
@@ -19,39 +17,34 @@ A collapsible is a component which expands and collapses a panel.
 
 ## Installation
 
-To use the collapsible machine in your project, run the following command in
-your command line:
+Install the collapsible package:
 
 <CodeSnippet id="collapsible/installation.mdx" />
 
 ## Usage
 
-First, import the collapsible package into your project
+Import the collapsible package:
 
-```jsx
+```tsx
 import * as collapsible from "@zag-js/collapsible"
 ```
 
 The collapsible package exports two key functions:
 
-- `machine` — The state machine logic for the collapsible widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State logic for the collapsible.
+- `connect` - Maps state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-collapsible machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="collapsible/usage.mdx" />
 
 ### Setting the initial state
 
-Pass the `defaultOpen` machine context property to the machine function to set
-the initial state.
+Set `defaultOpen` to control the initial open state.
 
-```jsx
+```tsx
 const service = useMachine(collapsible.machine, {
   defaultOpen: true,
 })
@@ -59,8 +52,7 @@ const service = useMachine(collapsible.machine, {
 
 ### Controlled collapsible
 
-To control the open state programmatically, pass the `open` and `onOpenChange`
-properties to the machine function.
+Use `open` and `onOpenChange` to control the open state externally.
 
 <CodeSnippet id="collapsible/controlled.mdx" />
 
@@ -68,7 +60,7 @@ properties to the machine function.
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(collapsible.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -79,12 +71,39 @@ const service = useMachine(collapsible.machine, {
 
 ### Disabling the collapsible
 
-Set the `disabled` machine context property to `true` to disable the
-collapsible.
+Set `disabled` to `true` to disable interaction.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(collapsible.machine, {
   disabled: true,
+})
+```
+
+### Partial collapse (setting minimum dimensions)
+
+Use `collapsedHeight` or `collapsedWidth` to create a "partially collapsed"
+state. When collapsed, the content keeps the specified minimum size instead of
+collapsing to `0px`.
+
+```tsx {3}
+const service = useMachine(collapsible.machine, {
+  // Content shows 100px height when collapsed
+  collapsedHeight: "100px",
+})
+```
+
+This is useful for creating "show more/less" content sections or preview states
+where a portion of the content shows even when collapsed.
+
+### Running code after close animation
+
+Use `onExitComplete` to run code when the close animation finishes.
+
+```tsx
+const service = useMachine(collapsible.machine, {
+  onExitComplete() {
+    console.log("Collapsible is fully closed")
+  },
 })
 ```
 
@@ -96,7 +115,7 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
 ```css
 @keyframes expand {
   from {
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
   to {
     height: var(--height);
@@ -108,7 +127,7 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
     height: var(--height);
   }
   to {
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
 }
 
@@ -128,14 +147,12 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
 
 ## Styling guide
 
-Earlier, we mentioned that each collapsible part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
-When a collapsible is expanded or collapsed, a `data-state` attribute is set on
-the root, trigger and content elements. This attribute is removed when it is
-closed.
+When a collapsible opens or closes, `data-state` is set to `open` or `closed` on
+the root, trigger, and content.
 
 ```css
 [data-part="root"][data-state="open|closed"] {
@@ -170,6 +187,45 @@ root, trigger and content.
 }
 ```
 
+### Collapse animation
+
+The collapsible content provides `--width`, `--height`, `--collapsed-width`, and
+`--collapsed-height` CSS variables that can be used to create smooth animations.
+These variables are automatically calculated and updated based on the content's
+dimensions.
+
+```css
+[data-scope="collapsible"][data-part="content"][data-state="open"] {
+  animation: slideDown 200ms ease;
+}
+
+[data-scope="collapsible"][data-part="content"][data-state="closed"] {
+  animation: slideUp 200ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0.01;
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    height: var(--height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    height: var(--height);
+  }
+  to {
+    opacity: 0.01;
+    height: 0;
+  }
+}
+```
+
 ## Methods and Properties
 
 The collapsible's `api` exposes the following methods and properties:
@@ -189,6 +245,10 @@ The collapsible `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="collapsible" />
+
+### CSS Variables
+
+<CssVarTable name="collapsible" />
 
 ## Accessibility
 

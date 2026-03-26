@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/menu.module.css"
 
 interface ContextMenuProps extends Omit<menu.Props, "id"> {}
 
@@ -14,13 +15,17 @@ export function ContextMenu(props: ContextMenuProps) {
 
   return (
     <div>
-      <div {...api.getContextTriggerProps()}>
+      <div className={styles.ContextTrigger} {...api.getContextTriggerProps()}>
         <div>Open context menu</div>
       </div>
       <div {...api.getPositionerProps()}>
-        <ul {...api.getContentProps()}>
+        <ul className={styles.Content} {...api.getContentProps()}>
           {data.map((item) => (
-            <li key={item.value} {...api.getItemProps({ value: item.value })}>
+            <li
+              className={styles.Item}
+              key={item.value}
+              {...api.getItemProps({ value: item.value })}
+            >
               {item.label}
             </li>
           ))}

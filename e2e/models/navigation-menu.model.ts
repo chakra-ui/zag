@@ -7,8 +7,8 @@ export class NavigationMenuModel extends Model {
     super(page)
   }
 
-  goto(id?: "viewport" | "nested") {
-    return this.page.goto(`/navigation-menu${id ? `-${id}` : ""}`)
+  goto(id?: "viewport") {
+    return this.page.goto(`/navigation-menu/${id ?? "basic"}`)
   }
 
   checkAccessibility(selector?: string): Promise<void> {
@@ -65,5 +65,9 @@ export class NavigationMenuModel extends Model {
 
   async seeLinkIsFocused(value: string) {
     await expect(this.getLink(value)).toBeFocused()
+  }
+
+  async wait(ms: number) {
+    await this.page.waitForTimeout(ms)
   }
 }

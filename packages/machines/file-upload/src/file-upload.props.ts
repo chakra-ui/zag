@@ -24,6 +24,7 @@ export const props = createProps<FileUploadProps>()([
   "onFileChange",
   "onFileReject",
   "preventDocumentDrop",
+  "readOnly",
   "required",
   "transformFiles",
   "translations",
@@ -31,5 +32,5 @@ export const props = createProps<FileUploadProps>()([
 ])
 export const splitProps = createSplitProps<Partial<FileUploadProps>>(props)
 
-export const itemProps = createProps<ItemProps>()(["file"])
+export const itemProps = createProps<ItemProps>()(["file", "type"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

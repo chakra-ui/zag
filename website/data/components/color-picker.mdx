@@ -4,8 +4,6 @@ description: Using the color-picker machine in your project.
 package: "@zag-js/color-picker"
 ---
 
-# Color Picker
-
 The color picker is an input widget used to select a color value from a
 predefined list or a color area.
 
@@ -18,17 +16,16 @@ provides a more customizable and consistent user experience.
 
 **Features**
 
-- Support for custom color area
-- Support for RGBA, HSLA, HEX, and HSBA formats
-- Support for channel inputs and sliders
-- Support for mouse, touch, and keyboard interactions
-- Support for form submission and reset events
-- Support for named css colors
+- Supports custom color area
+- Supports RGBA, HSLA, HEX, and HSBA formats
+- Supports channel inputs and sliders
+- Supports mouse, touch, and keyboard interactions
+- Supports form submission and reset events
+- Supports named CSS colors
 
 ## Installation
 
-To use the color picker machine in your project, run the following command in
-your command line:
+Install the color picker package:
 
 <CodeSnippet id="color-picker/installation.mdx" />
 
@@ -43,30 +40,27 @@ how we name its parts.
 
 ## Usage
 
-First, import the color picker package into your project
+Import the color picker package:
 
-```jsx
+```tsx
 import * as colorPicker from "@zag-js/color-picker"
 ```
 
-The color picker package exports these functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the color picker widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
-- `parse` - The function that parses a color string to an Color object.
+- `machine` - Behavior logic for the color picker.
+- `connect` - Maps state to JSX props and event handlers.
+- `parse` - Parses a color string into a `Color` object.
 
-Next, import the required hooks and functions for your framework and use the
-color picker machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="color-picker/usage.mdx" />
 
 ### Setting the initial color
 
-To set the initial color of the color picker, use the `defaultValue` context
-property.
+Set `defaultValue` to define the initial color.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   defaultValue: colorPicker.parse("#ff0000"),
 })
@@ -74,8 +68,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 ### Controlled color picker
 
-To control the color value programmatically, pass the `value` and
-`onValueChange` properties to the machine function.
+Use `value` and `onValueChange` to control color externally.
 
 > **Note:** We recommend preserving the value as a `Color` object rather than a
 > string to prevent calculation errors by converting back and forth.
@@ -91,7 +84,7 @@ When the user selects a color using the color picker, the `onValueChange` and
 - `onValueChangeEnd` — Fires when the user stops selecting a color (useful for
   debounced updates)
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   onValueChange: (details) => {
     // details => { value: Color, valueAsString: string }
@@ -105,12 +98,12 @@ const [current, send] = useMachine(colorPicker.machine, {
 ### Using a custom color format
 
 By default, the color picker's output format is `rgba`. You can change this
-format to either `hsla` or `hsba` by using the `format` context property.
+format to either `hsla` or `hsba` with `format`.
 
-When this property is set, the `value` and `valueAsString` properties of the
+When this is set, the `value` and `valueAsString` properties of the
 `onValueChange` event will be updated to reflect the new format.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   format: "hsla",
   onValueChange: (details) => {
@@ -119,20 +112,52 @@ const [current, send] = useMachine(colorPicker.machine, {
 })
 ```
 
+### Setting the initial format
+
+Use `defaultFormat` to set the initial output format.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  defaultFormat: "hsla",
+})
+```
+
+### Controlled format
+
+Use `format` and `onFormatChange` to control the active format.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  format,
+  onFormatChange(details) {
+    setFormat(details.format)
+  },
+})
+```
+
 ### Showing color presets
 
-Adding color presets in form of swatches can help users pick colors faster. To
-support this, use the `getSwatchTriggerProps(...)` and `getSwatchProps(...)` to
-get the props needed to show the swatches buttons.
+Adding color presets as swatches can help users pick colors faster. To support
+this, use the `getSwatchTriggerProps(...)` and `getSwatchProps(...)` to get the
+props needed to render swatch buttons.
 
 <CodeSnippet id="color-picker/with-swatches.mdx" />
 
+### Closing after swatch selection
+
+Set `closeOnSelect` to close the popup when a swatch is selected.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  closeOnSelect: true,
+})
+```
+
 ### Disabling the color picker
 
-To disable user interactions with the color picker, set the `disabled` context
-property to `true`.
+Set `disabled` to `true` to disable user interaction.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   disabled: true,
 })
@@ -140,20 +165,50 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 ### Controlling the open and closed state
 
-To control the open and closed state of the color picker, use the `open` and
-`onOpenChange` context properties.
+Use `open` and `onOpenChange` to control whether the picker is visible.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   open: true,
   onOpenChange: (details) => {
-    // details => { open: boolean }
+    // details => { open: boolean, value: Color }
   },
 })
 ```
 
 You can also leverage the `api.setOpen(...)` method to control the open and
 closed state of the color picker.
+
+### Positioning the popup
+
+Use `positioning` to control popup placement and collision behavior.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  positioning: { placement: "bottom-start", gutter: 8 },
+})
+```
+
+### Setting initial focus when opened
+
+Use `initialFocusEl` to choose which element receives focus when the popup
+opens.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  initialFocusEl: () => document.getElementById("alpha-input"),
+})
+```
+
+### Inline rendering
+
+Set `inline` to render the picker without a trigger and popup.
+
+```tsx
+const [current, send] = useMachine(colorPicker.machine, {
+  inline: true,
+})
+```
 
 ### Controlling individual color channel
 
@@ -171,7 +226,7 @@ To support this, use the `getChannelInputProps(...)` to show the channel inputs.
 ### Showing a color preview
 
 To display the value of a color, use the `getSwatchProps(...)` and pass the
-color value. To show the current color value, use the `api.value`
+color value. To show the current color value, use `api.value`.
 
 <CodeSnippet id="color-picker/with-preview.mdx" />
 
@@ -180,7 +235,7 @@ color value. To show the current color value, use the `api.value`
 
 ### Adding an eyedropper
 
-The eye dropper tool is a native browser feature that allows a user pick a color
+The eye dropper tool is a native browser feature that lets users pick a color
 from a current page's canvas. To support this, use the
 `getEyeDropperTriggerProps(...)`.
 
@@ -190,10 +245,9 @@ from a current page's canvas. To support this, use the
 
 ### Usage within forms
 
-To use the color picker within a form, add the `name` context property to the
-machine and render the visually hidden input using the `hiddenInputProps`.
+To use the color picker in a form, set `name` and render the hidden input.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(colorPicker.machine, {
   name: "color-preference",
 })
@@ -289,6 +343,10 @@ The color picker `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="color-picker" />
+
+### CSS Variables
+
+<CssVarTable name="color-picker" />
 
 ## Accessibility
 

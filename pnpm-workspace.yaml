@@ -1,6 +1,13 @@
 packages:
-  - "packages/**"
-  - "shared"
-  - "examples/**"
-  - "starters/**"
-  - "website"
+  - packages/**
+  - shared
+  - examples/**
+  - starters/**
+  - website
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - esbuild
+  - sharp
+  - unrs-resolver

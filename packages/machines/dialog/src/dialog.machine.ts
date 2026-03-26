@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getComputedStyle, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getInitialFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -17,7 +17,7 @@ export const machine = createMachine<DialogSchema>({
       modal,
       trapFocus: modal,
       preventScroll: modal,
-      closeOnInteractOutside: !alertDialog,
+      closeOnInteractOutside: modal && !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
       initialFocusEl,
@@ -30,10 +30,20 @@ export const machine = createMachine<DialogSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ bindable }) {
+  context({ bindable, prop, scope }) {
     return {
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
+      })),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
+        onChange(value) {
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
+        },
       })),
     }
   },
@@ -46,7 +56,7 @@ export const machine = createMachine<DialogSchema>({
 
   states: {
     open: {
-      entry: ["checkRenderedElements", "syncZIndex"],
+      entry: ["checkRenderedElements", "syncZIndex", "setInitialFocus"],
       effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
@@ -72,6 +82,9 @@ export const machine = createMachine<DialogSchema>({
             actions: ["invokeOnClose"],
           },
         ],
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
+        },
       },
     },
 
@@ -83,23 +96,26 @@ export const machine = createMachine<DialogSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
+        },
       },
     },
   },
@@ -113,9 +129,10 @@ export const machine = createMachine<DialogSchema>({
       trackDismissableElement({ scope, send, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
-          exclude: [dom.getTriggerEl(scope)],
+          exclude: dom.getTriggerEls(scope),
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (!prop("closeOnInteractOutside")) {
@@ -125,6 +142,7 @@ export const machine = createMachine<DialogSchema>({
           persistentElements: prop("persistentElements"),
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (!prop("closeOnEscape")) {
@@ -142,14 +160,33 @@ export const machine = createMachine<DialogSchema>({
         return preventBodyScroll(scope.getDoc())
       },
 
-      trapFocus({ scope, prop }) {
+      trapFocus({ scope, prop, context }) {
         if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
-          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          setReturnFocus: (el) => {
+            // If finalFocusEl is provided, use it
+            const finalFocusEl = prop("finalFocusEl")?.()
+            if (finalFocusEl) return finalFocusEl
+
+            // If there's an active trigger, focus it
+            const triggerValue = context.get("triggerValue")
+            if (triggerValue) {
+              const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
+              if (activeTriggerEl) return activeTriggerEl
+            }
+
+            // Fallback: try first available trigger
+            const fallbackTrigger = dom.getTriggerEls(scope)[0]
+            if (fallbackTrigger) return fallbackTrigger
+
+            // Otherwise, use default behavior
+            return el
+          },
+          getShadowRoot: true,
         })
       },
 
@@ -161,6 +198,17 @@ export const machine = createMachine<DialogSchema>({
     },
 
     actions: {
+      setInitialFocus({ prop, scope }) {
+        if (prop("trapFocus")) return
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+            getInitialEl: prop("initialFocusEl"),
+          })
+          element?.focus({ preventScroll: true })
+        })
+      },
+
       checkRenderedElements({ context, scope }) {
         raf(() => {
           context.set("rendered", {
@@ -190,6 +238,11 @@ export const machine = createMachine<DialogSchema>({
 
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
+      },
+
+      setTriggerValue({ context, event }) {
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
 
       toggleVisibility({ prop, send, event }) {

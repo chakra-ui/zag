@@ -1,5 +1,612 @@
 # @zag-js/listbox
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/collection@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-visible@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/collection@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/focus-visible@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/focus-visible@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/collection@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/collection@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/focus-visible@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- [`cedbb7a`](https://github.com/chakra-ui/zag/commit/cedbb7a7331b659e0fed33dbfa2f4fd2758e8018) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `keyboardPriority` to `getInputProps` to control whether input
+  key handling prioritizes text editing or list navigation for `Home`/`End` and horizontal arrows in grid collections.
+
+  Add `highlightFirst`, `highlightLast`, `highlightNext`, and `highlightPrevious` to the listbox API for programmatic
+  highlight navigation.
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/focus-visible@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/collection@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- [`a3932f8`](https://github.com/chakra-ui/zag/commit/a3932f8232dd2634a1707d3cbc47199880690d1c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve controlled-mode synchronization and keep callback/item
+  resolution behavior consistent across filtered collections.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/collection@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/focus-visible@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/collection@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/dom-query@1.35.2
+  - @zag-js/focus-visible@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/collection@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/focus-visible@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/collection@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/focus-visible@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/collection@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/focus-visible@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [#2965](https://github.com/chakra-ui/zag/pull/2965)
+  [`deb145a`](https://github.com/chakra-ui/zag/commit/deb145aacb8ee0a7d1488e829f35d28df94af203) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix listbox dom ids.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/focus-visible@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/focus-visible@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/collection@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/focus-visible@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/collection@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/focus-visible@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`aac4769`](https://github.com/chakra-ui/zag/commit/aac4769b96a88a52440ac2cc99c4bdfa6501daa7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue in React where filtering items with an input would
+  throw a `flushSync was called from inside a lifecycle method` warning.
+  - Fix issue where `data-highlighted` wasn't applied to the first item when using `autoHighlight` with input filtering.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/collection@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/focus-visible@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/collection@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/focus-visible@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/collection@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/focus-visible@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/collection@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/focus-visible@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/focus-visible@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/collection@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/collection@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/focus-visible@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/focus-visible@1.27.0
+  - @zag-js/collection@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/collection@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-visible@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/collection@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/focus-visible@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/collection@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/focus-visible@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`2764067`](https://github.com/chakra-ui/zag/commit/2764067f522c6b87ed0453dff0cd3704c53aa466) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing Enter key when no highlighted item still
+  calls `event.preventDefault()`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/collection@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/focus-visible@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/collection@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/focus-visible@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- [#2746](https://github.com/chakra-ui/zag/pull/2746)
+  [`614fe17`](https://github.com/chakra-ui/zag/commit/614fe17282c0060c825b4a655ca3f4364b5fe24f) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - fix: update `splitProps` to avoid partial
+
+- Updated dependencies [[`9da67a5`](https://github.com/chakra-ui/zag/commit/9da67a5fd8ac5d045fdf12cc0e1be596f6950e2c)]:
+  - @zag-js/focus-visible@1.26.0
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/collection@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/collection@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/focus-visible@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/collection@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/focus-visible@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/collection@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/focus-visible@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/collection@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/focus-visible@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/focus-visible@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/collection@1.23.0
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies [[`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7)]:
+  - @zag-js/collection@1.22.1
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/focus-visible@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/collection@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/focus-visible@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/collection@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/focus-visible@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- [`d4d276e`](https://github.com/chakra-ui/zag/commit/d4d276eb2a4f8fd662abd8d1791a05c4307810e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
+  `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
+  scroll-to-top.
+  - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- [`2fa0d95`](https://github.com/chakra-ui/zag/commit/2fa0d95fd6b9f93d1556470cbc21d5228a77c81c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where first enabled item should be highlighted by
+  default when listbox receives focus and no item is currently highlighted
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/focus-visible@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/collection@1.21.8
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/collection@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/focus-visible@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/collection@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dom-query@1.21.6
+  - @zag-js/focus-visible@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/collection@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dom-query@1.21.5
+  - @zag-js/focus-visible@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies [[`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7)]:
+  - @zag-js/collection@1.21.4
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dom-query@1.21.4
+  - @zag-js/focus-visible@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- [`362381a`](https://github.com/chakra-ui/zag/commit/362381a4344dd524076a6a1cd7d2df7bb38dd289) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for navigating grid collections
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/collection@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dom-query@1.21.3
+  - @zag-js/focus-visible@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/collection@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/focus-visible@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

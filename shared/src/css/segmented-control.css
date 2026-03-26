@@ -1,5 +1,5 @@
 .segmented-control [data-part="root"] {
-  width: fit-content;
+  width: 100%;
   padding: 4px;
   background-color: #f1f3f5;
   border-radius: 4px;
@@ -11,6 +11,12 @@
   padding: 8px;
   width: 100%;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  &[data-focus-visible] {
+    outline: 2px solid royalblue;
+  }
 }
 
 .segmented-control [data-part="indicator"] {

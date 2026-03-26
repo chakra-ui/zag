@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/signature-pad",
-  "version": "1.21.1",
+  "version": "1.38.2",
   "description": "Core logic for the signature-pad widget implemented as a state machine",
   "keywords": [
     "js",
@@ -39,10 +39,10 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "perfect-freehand": "^1.2.2"
+    "perfect-freehand": "^1.2.3"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json"
+  "clean-package": "./clean-package.config.json"
 }

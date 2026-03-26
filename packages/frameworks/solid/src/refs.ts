@@ -1,13 +1,11 @@
-import { createSignal } from "solid-js"
-
 export function createRefs<T>(refs: T) {
-  const [ref, setRef] = createSignal<T>(refs)
+  const ref = { current: refs }
   return {
     get<K extends keyof T>(key: K): T[K] {
-      return ref()[key]
+      return ref.current[key]
     },
     set<K extends keyof T>(key: K, value: T[K]) {
-      setRef((prev) => ({ ...prev, [key]: value }))
+      ref.current[key] = value
     },
   }
 }

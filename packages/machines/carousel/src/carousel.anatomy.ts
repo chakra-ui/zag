@@ -10,6 +10,7 @@ export const anatomy = createAnatomy("carousel").parts(
   "indicatorGroup",
   "indicator",
   "autoplayTrigger",
+  "progressText",
 )
 
 export const parts = anatomy.build()

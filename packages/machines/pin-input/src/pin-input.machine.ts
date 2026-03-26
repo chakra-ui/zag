@@ -71,7 +71,7 @@ export const machine = createMachine({
       action(["syncInputElements", "dispatchInputEvent"])
     })
     track([() => computed("isValueComplete")], () => {
-      action(["invokeOnComplete", "blurFocusedInputIfNeeded"])
+      action(["invokeOnComplete", "blurFocusedInputIfNeeded", "autoSubmitIfNeeded"])
     })
   },
 
@@ -100,14 +100,17 @@ export const machine = createMachine({
     focused: {
       on: {
         "INPUT.CHANGE": {
-          actions: ["setFocusedValue", "syncInputValue", "setNextFocusedIndex"],
+          actions: ["setFocusedValue", "syncInputValue", "advanceFocusedIndex"],
+        },
+        "INPUT.ADVANCE": {
+          actions: ["advanceFocusedIndex"],
         },
 
         "INPUT.PASTE": {
           actions: ["setPastedValue", "setLastValueFocusIndex"],
         },
         "INPUT.FOCUS": {
-          actions: ["setFocusedIndex"],
+          actions: ["setFocusedIndex", "focusInput"],
         },
         "INPUT.BLUR": {
           target: "idle",
@@ -123,10 +126,16 @@ export const machine = createMachine({
         "INPUT.ARROW_RIGHT": {
           actions: ["setNextFocusedIndex"],
         },
+        "INPUT.HOME": {
+          actions: ["setFocusIndexToFirst"],
+        },
+        "INPUT.END": {
+          actions: ["setFocusIndexToLast"],
+        },
         "INPUT.BACKSPACE": [
           {
             guard: "hasValue",
-            actions: ["clearFocusedValue"],
+            actions: ["clearFocusedValue", "setPrevFocusedIndex"],
           },
           {
             actions: ["setPrevFocusedIndex", "clearFocusedValue"],
@@ -164,7 +173,9 @@ export const machine = createMachine({
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
         if (focusedIndex === -1) return
-        dom.getInputElAtIndex(scope, focusedIndex)?.focus({ preventScroll: true })
+        queueMicrotask(() => {
+          dom.getInputElAtIndex(scope, focusedIndex)?.focus({ preventScroll: true })
+        })
       },
       selectInputIfNeeded({ context, prop, scope }) {
         const focusedIndex = context.get("focusedIndex")
@@ -189,8 +200,9 @@ export const machine = createMachine({
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)
       },
-      setFocusedIndex({ context, event }) {
-        context.set("focusedIndex", event.index)
+      setFocusedIndex({ context, event, computed }) {
+        const maxIndex = Math.min(computed("filledValueLength"), computed("valueLength") - 1)
+        context.set("focusedIndex", Math.min(event.index, maxIndex))
       },
       setValue({ context, event }) {
         const value = fill(event.value, context.get("count"))
@@ -247,18 +259,32 @@ export const machine = createMachine({
       },
       clearValue({ context }) {
         const nextValue = Array.from<string>({ length: context.get("count") }).fill("")
-        context.set("value", nextValue)
+        queueMicrotask(() => {
+          context.set("value", nextValue)
+        })
       },
       clearFocusedValue({ context, computed }) {
         const focusedIndex = context.get("focusedIndex")
         if (focusedIndex === -1) return
-        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, ""))
+        // Splice and shift remaining values left to avoid holes
+        const value = [...computed("_value")]
+        value.splice(focusedIndex, 1)
+        value.push("")
+        context.set("value", value)
       },
       setFocusIndexToFirst({ context }) {
         context.set("focusedIndex", 0)
       },
-      setNextFocusedIndex({ context, computed }) {
+      setFocusIndexToLast({ context, computed }) {
+        context.set("focusedIndex", Math.max(computed("filledValueLength") - 1, 0))
+      },
+      advanceFocusedIndex({ context, computed }) {
         context.set("focusedIndex", Math.min(context.get("focusedIndex") + 1, computed("valueLength") - 1))
+      },
+      setNextFocusedIndex({ context, computed }) {
+        const nextIndex = context.get("focusedIndex") + 1
+        const maxIndex = Math.min(computed("filledValueLength"), computed("valueLength") - 1)
+        context.set("focusedIndex", Math.min(nextIndex, maxIndex))
       },
       setPrevFocusedIndex({ context }) {
         context.set("focusedIndex", Math.max(context.get("focusedIndex") - 1, 0))
@@ -268,8 +294,8 @@ export const machine = createMachine({
           context.set("focusedIndex", Math.min(computed("filledValueLength"), computed("valueLength") - 1))
         })
       },
-      blurFocusedInputIfNeeded({ context, prop, scope }) {
-        if (!prop("blurOnComplete")) return
+      blurFocusedInputIfNeeded({ context, computed, prop, scope }) {
+        if (!prop("blurOnComplete") || !computed("isValueComplete")) return
         raf(() => {
           dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
         })
@@ -279,15 +305,25 @@ export const machine = createMachine({
         const inputEl = dom.getHiddenInputEl(scope)
         inputEl?.form?.requestSubmit()
       },
+      autoSubmitIfNeeded({ computed, prop, scope }) {
+        if (!prop("autoSubmit") || !computed("isValueComplete")) return
+        const inputEl = dom.getHiddenInputEl(scope)
+        inputEl?.form?.requestSubmit()
+      },
     },
   },
 })
 
 function getNextValue(current: string, next: string) {
   let nextValue = next
-  if (current[0] === next[0]) nextValue = next[1]
-  else if (current[0] === next[1]) nextValue = next[0]
-  return nextValue.split("")[nextValue.length - 1]
+  if (current[0] === next[0]) {
+    nextValue = next[1]
+  } else if (current[0] === next[1]) {
+    nextValue = next[0]
+  }
+  const chars = nextValue.split("")
+  nextValue = chars[chars.length - 1]
+  return nextValue ?? ""
 }
 
 function fill(value: string[], count: number) {

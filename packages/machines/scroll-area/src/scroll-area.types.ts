@@ -25,12 +25,17 @@ export interface ScrollbarProps {
   orientation?: Orientation
 }
 
+export interface ThumbProps {
+  orientation?: Orientation
+}
+
 export interface ScrollbarHiddenState {
   scrollbarYHidden: boolean
   scrollbarXHidden: boolean
   cornerHidden: boolean
 }
 
+// zag-ignore-export
 export interface ScrollAreaContext {
   cornerSize: Size
   thumbSize: Size
@@ -42,6 +47,7 @@ export interface ScrollAreaContext {
   atSides: ScrollRecord<boolean>
 }
 
+// zag-ignore-export
 export interface ScrollAreaRefs {
   orientation: Orientation | null
   scrollPosition: { x: number; y: number }
@@ -80,13 +86,20 @@ export interface ScrollbarState {
   hidden: boolean
 }
 
-export interface ScrollToDetails {
+export type ScrollEasingFunction = (t: number) => number
+
+export interface ScrollbarEasing {
+  easing?: ScrollEasingFunction | undefined
+  duration?: number | undefined
+}
+
+export interface ScrollToDetails extends ScrollbarEasing {
   top?: number | undefined
   left?: number | undefined
   behavior?: ScrollBehavior | undefined
 }
 
-export interface ScrollToEdgeDetails {
+export interface ScrollToEdgeDetails extends ScrollbarEasing {
   edge: ScrollToEdge
   behavior?: ScrollBehavior | undefined
 }
@@ -137,6 +150,6 @@ export interface ScrollAreaApi<T extends PropTypes> {
   getViewportProps: () => T["element"]
   getContentProps: () => T["element"]
   getScrollbarProps: (props?: ScrollbarProps) => T["element"]
-  getThumbProps: (props?: ScrollbarProps) => T["element"]
+  getThumbProps: (props?: ThumbProps) => T["element"]
   getCornerProps: () => T["element"]
 }

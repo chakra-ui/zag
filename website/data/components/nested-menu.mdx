@@ -5,8 +5,6 @@ package: "@zag-js/menu"
 slugAlias: "menu"
 ---
 
-# Nested Menu
-
 An accessible dropdown and context menu that is used to display a list of
 actions or options that a user can choose.
 
@@ -16,22 +14,20 @@ actions or options that a user can choose.
 
 **Features**
 
-- Support for items, labels, groups of items
+- Supports items, labels, groups of items
 - Focus is fully managed using `aria-activedescendant` pattern
 - Typeahead to allow focusing items by typing text
 - Keyboard navigation support including arrow keys, home/end, page up/down
 
 ## Installation
 
-To use the menu machine in your project, run the following command in your
-command line:
+Install the menu package:
 
 <CodeSnippet id="menu/installation.mdx" />
 
 ## Anatomy
 
-To set up the menu correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the menu anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -39,42 +35,106 @@ name its parts.
 
 ## Usage
 
-First, import the menu package into your project
+Import the menu package:
 
-```jsx
+```tsx
 import * as menu from "@zag-js/menu"
 ```
 
 The menu package exports two key functions:
 
-- `machine` — The state machine logic for the menu widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - Behavior logic for the menu.
+- `connect` - Maps behavior to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-menu machine in your project 🔥
+Then use the framework integration helpers:
 
-- Destructure the machine's **service** returned from the `useMachine` hook.
+- Destructure the service returned from `useMachine`.
 - Use the exposed `setParent` and `setChild` functions provided by the menu's
   connect function to assign the parent and child menus respectively.
-- Create trigger item's using the `api.getTriggerItemProps(...)` function.
+- Create trigger items using `api.getTriggerItemProps(...)`.
 
 When building nested menus, you'll need to use:
 
-- `setParent(...)` — Function to register a parent menu's machine in the child
-  menu's context.
-- `setChild(...)` — Function to register a child menu's machine in the parent
-  menu's context.
+- `setParent(...)` - Registers the parent menu on the child menu.
+- `setChild(...)` - Registers the child menu on the parent menu.
 
 <CodeSnippet id="menu/nested-menu.mdx" />
 
+### Controlling open state
+
+Use `open` and `onOpenChange` to control the open state.
+
+```tsx
+const service = useMachine(menu.machine, {
+  open,
+  onOpenChange(details) {
+    // details => { open: boolean }
+    setOpen(details.open)
+  },
+})
+```
+
+### Default open state
+
+Use `defaultOpen` for an uncontrolled initial state.
+
+```tsx
+const service = useMachine(menu.machine, {
+  defaultOpen: true,
+})
+```
+
+### Listening for highlighted changes
+
+Use `onHighlightChange` to react when keyboard or pointer highlight changes.
+
+```tsx
+const service = useMachine(menu.machine, {
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null }
+    console.log(details.highlightedValue)
+  },
+})
+```
+
+### Setting the initial highlighted item
+
+Use `defaultHighlightedValue` to set the initially highlighted menu item.
+
+```tsx
+const service = useMachine(menu.machine, {
+  defaultHighlightedValue: "copy",
+})
+```
+
+### Listening for item selection
+
+Use `onSelect` to react when an item is selected.
+
+```tsx
+const service = useMachine(menu.machine, {
+  onSelect(details) {
+    // details => { value: string }
+    console.log(details.value)
+  },
+})
+```
+
+### Positioning submenus
+
+Use `positioning` to configure submenu placement.
+
+```tsx
+const service = useMachine(menu.machine, {
+  positioning: { placement: "right-start" },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each menu part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each menu part includes a `data-part` attribute you can target in CSS.
 
 ### Highlighted item state
 
@@ -108,7 +168,7 @@ attribute.
 
 ### Using arrows
 
-When using arrows within the menu, you can style it using css variables.
+When using arrows within the menu, you can style it using CSS variables.
 
 ```css
 [data-part="arrow"] {
@@ -144,6 +204,10 @@ The menu `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="menu" />
+
+### CSS Variables
+
+<CssVarTable name="menu" />
 
 ## Accessibility
 

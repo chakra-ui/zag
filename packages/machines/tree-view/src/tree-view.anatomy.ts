@@ -13,6 +13,7 @@ export const anatomy = createAnatomy("tree-view").parts(
   "itemText",
   "label",
   "nodeCheckbox",
+  "nodeRenameInput",
   "root",
   "tree",
 )

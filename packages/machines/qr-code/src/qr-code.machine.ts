@@ -32,7 +32,7 @@ export const machine = createMachine<QrCodeSchema>({
   computed: {
     encoded: memo(
       ({ context, prop }) => [context.get("value"), prop("encoding")],
-      (value, encoding) => encode(value, encoding),
+      ([value, encoding]) => encode(value, encoding),
     ),
   },
 

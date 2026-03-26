@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import { LuFile, LuFolder, LuChevronRight } from "react-icons/lu"
 import { JSX, useId } from "react"
+import styles from "../styles/machines/tree-view.module.css"
 
 interface TreeViewProps extends Omit<tree.Props, "id" | "collection"> {}
 
@@ -16,16 +17,18 @@ export function TreeView(props: TreeViewProps) {
 
   return (
     <div {...api.getRootProps()}>
-      <h3 {...api.getLabelProps()}>My Documents</h3>
+      <h3 className={styles.Label} {...api.getLabelProps()}>
+        My Documents
+      </h3>
       <div style={{ display: "flex", gap: "10px" }}>
-        <button className="treeview-trigger" onClick={() => api.collapse()}>
+        <button className={styles.Trigger} onClick={() => api.collapse()}>
           Collapse All
         </button>
-        <button className="treeview-trigger" onClick={() => api.expand()}>
+        <button className={styles.Trigger} onClick={() => api.expand()}>
           Expand All
         </button>
       </div>
-      <div {...api.getTreeProps()}>
+      <div className={styles.Tree} {...api.getTreeProps()}>
         {collection.rootNode.children?.map((node, index) => (
           <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
         ))}
@@ -94,15 +97,32 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   if (nodeState.isBranch) {
     return (
       <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+        <div
+          className={styles.BranchControl}
+          {...api.getBranchControlProps(nodeProps)}
+        >
           <LuFolder />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
+          <span
+            className={styles.BranchText}
+            {...api.getBranchTextProps(nodeProps)}
+          >
+            {node.name}
+          </span>
+          <span
+            className={styles.BranchIndicator}
+            {...api.getBranchIndicatorProps(nodeProps)}
+          >
             <LuChevronRight />
           </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div
+          className={styles.BranchContent}
+          {...api.getBranchContentProps(nodeProps)}
+        >
+          <div
+            className={styles.BranchIndentGuide}
+            {...api.getBranchIndentGuideProps(nodeProps)}
+          />
           {node.children?.map((childNode, index) => (
             <TreeNode
               key={childNode.id}
@@ -117,7 +137,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   }
 
   return (
-    <div {...api.getItemProps(nodeProps)}>
+    <div className={styles.Item} {...api.getItemProps(nodeProps)}>
       <LuFile /> {node.name}
     </div>
   )

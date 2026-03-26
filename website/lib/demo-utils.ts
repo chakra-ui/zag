@@ -1,9 +1,8 @@
 import { readFileSync } from "fs"
-import { normalizeComponentName } from "./normalize"
 import { join } from "path"
+import { normalizeComponentName } from "./normalize"
 
-const baseStyle = `
-* {
+const baseStyle = `* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,39 +10,77 @@ const baseStyle = `
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   border: 0;
   border-style: solid;
-  border-color: var(--colors-border-subtle);
+  border-color: var(--colors-border);
 }
 
-html {
-  --colors-bg-subtle: #FFFFFF;
-  --colors-bg-bold: #EDF2F7;
-  --colors-bg-primary-subtle: #38A169;
-  --colors-bg-primary-bold: #2F855A;
-  --colors-bg-secondary-subtle: #000000;
-  --colors-bg-secondary-bold: #2D3748;
-  --colors-bg-tertiary-bold: #C6F6D5;
-  --colors-bg-tertiary-subtle: #F0FFF4;
-  --colors-bg-code-block: hsl(230, 1%, 98%);
-  --colors-bg-code-inline: rgba(0, 0, 0, 0.04);
-  --colors-bg-header: rgba(255, 255, 255, 0.92);
-  --colors-bg-badge: #FEEBC8;
-  --colors-text-bold: #171923;
-  --colors-text-subtle: #4A5568;
-  --colors-text-primary-bold: #38A169;
-  --colors-text-inverse: #FFFFFF;
-  --colors-text-primary-subtle: #2F855A;
-  --colors-text-badge: #C05621;
-  --colors-border-subtle: #EDF2F7;
-  --colors-border-bold: #E2E8F0;
-  --colors-border-primary-subtle: #38A169;
-  --colors-border-primary-bold: #2F855A;
+:root {
+  /* Gray palette */
+  --colors-gray-50: #fafafa;
+  --colors-gray-100: #f4f4f5;
+  --colors-gray-200: #e4e4e7;
+  --colors-gray-300: #d4d4d8;
+  --colors-gray-400: #a1a1aa;
+  --colors-gray-500: #71717a;
+  --colors-gray-600: #52525b;
+  --colors-gray-700: #3f3f46;
+  --colors-gray-800: #27272a;
+  --colors-gray-900: #18181b;
+  --colors-gray-950: #09090b;
+
+  /* Green palette */
+  --colors-green-50: #F0FFF4;
+  --colors-green-100: #C6F6D5;
+  --colors-green-200: #9AE6B4;
+  --colors-green-300: #68D391;
+  --colors-green-400: #48BB78;
+  --colors-green-500: #38A169;
+  --colors-green-600: #2F855A;
+  --colors-green-700: #276749;
+  --colors-green-800: #22543D;
+  --colors-green-900: #1C4532;
+
+  /* Background semantic tokens */
+  --colors-bg: white;
+  --colors-bg-subtle: white;
+  --colors-bg-bold: var(--colors-gray-100);
+  --colors-bg-muted: var(--colors-gray-100);
+  --colors-bg-popover: white;
+  --colors-bg-primary-subtle: var(--colors-green-500);
+  --colors-bg-primary-bold: var(--colors-green-600);
+  --colors-bg-secondary-subtle: black;
+  --colors-bg-secondary-bold: var(--colors-gray-700);
+  --colors-bg-tertiary-bold: var(--colors-green-100);
+  --colors-bg-tertiary-subtle: var(--colors-green-50);
+  --colors-bg-code-block: var(--colors-gray-50);
+  --colors-bg-code-inline: rgba(0, 0, 0, 0.06);
+
+  /* Text semantic tokens */
+  --colors-text: var(--colors-gray-900);
+  --colors-text-bold: var(--colors-gray-950);
+  --colors-text-subtle: var(--colors-gray-600);
+  --colors-text-muted: var(--colors-gray-500);
+  --colors-text-inverse: white;
+  --colors-text-primary-bold: var(--colors-green-600);
+  --colors-text-primary-subtle: var(--colors-green-700);
+
+  /* Border semantic tokens */
+  --colors-border: var(--colors-gray-200);
+  --colors-border-subtle: var(--colors-gray-100);
+  --colors-border-bold: var(--colors-gray-300);
+  --colors-border-primary-subtle: var(--colors-green-500);
+  --colors-border-primary-bold: var(--colors-green-600);
+
+  /* Shadow semantic tokens */
+  --colors-shadow: rgba(0, 0, 0, 0.24);
 }
 
 body {
-padding: 24px;
+  padding: 24px;
   background-color: var(--colors-bg-code-block);
   min-height: 100dvh;
 }
@@ -57,17 +94,24 @@ padding: 24px;
 
 export async function getComponentStyle(component: string) {
   const cssName = normalizeComponentName(component)
-  const filePath = join(process.cwd(), "styles", "machines", `${cssName}.css`)
-  const code = readFileSync(filePath, "utf-8")
-  return [baseStyle, code].join("\n")
+  const filePath = join(
+    process.cwd(),
+    "styles",
+    "machines",
+    `${cssName}.module.css`,
+  )
+  const moduleStyle = readFileSync(filePath, "utf-8")
+  return { baseStyle, moduleStyle }
 }
 
 export async function getComponentCode(component: string) {
   const filePath = join(process.cwd(), "demos", `${component}.tsx`)
-  return readFileSync(filePath, "utf-8").replace(
-    "export function",
-    "export default function",
-  )
+  return readFileSync(filePath, "utf-8")
+    .replace(
+      /import styles from ["']\.\.\/styles\/machines\/[\w-]+\.module\.css["']/,
+      'import styles from "./styles.module.css"',
+    )
+    .replace("export function", "export default function")
 }
 
 const toCamelCase = (str: string) =>
@@ -82,13 +126,13 @@ export async function getComponentDemo(component: string, defaultProps: any) {
     .map(([key, value]) => `${key}={${JSON.stringify(value)}}`)
     .join(" ")
   const jsxName = toComponentName(component)
-  const usage = `
-      <${jsxName} ${propString} />
-    `
+  const usage = `<${jsxName} ${propString} />`
+  const { baseStyle: base, moduleStyle } = await getComponentStyle(component)
 
   return {
     jsxName,
-    style: await getComponentStyle(component),
+    baseStyle: base,
+    moduleStyle,
     code: await getComponentCode(component),
     usage,
   }

@@ -1,6 +1,7 @@
-import type { DateFormatter, DateValue } from "@internationalized/date"
+import type { DateFormatter } from "@internationalized/date"
 import { endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { getDayFormatter, getMonthFormatter } from "./formatter"
+import type { DateValue } from "./types"
 
 export function formatRange(
   startDate: DateValue,
@@ -31,7 +32,13 @@ export function formatRange(
   return toString(start, end)
 }
 
-export function formatSelectedDate(startDate: DateValue, endDate: DateValue | null, locale: string, timeZone: string) {
+export function formatSelectedDate(
+  startDate: DateValue | null | undefined,
+  endDate: DateValue | null,
+  locale: string,
+  timeZone: string,
+) {
+  if (!startDate) return ""
   let start = startDate
   let end = endDate ?? startDate
   let formatter = getDayFormatter(locale, timeZone)

@@ -2,16 +2,18 @@ import { isGridCollection, type CollectionItem } from "@zag-js/collection"
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
+  contains,
   dataAttr,
   getByTypeahead,
   getEventKey,
   getEventTarget,
   getNativeEvent,
-  getWindow,
   isComposingEvent,
+  isContextMenuEvent,
   isCtrlOrMetaKey,
+  isDownloadingEvent,
   isEditableElement,
-  isSelfTarget,
+  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -23,16 +25,21 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   service: Service<ListboxSchema<V>>,
   normalize: NormalizeProps<T>,
 ): ListboxApi<T, V> {
-  const { context, prop, scope, computed, send } = service
+  const { context, prop, scope, computed, send, refs } = service
 
   const disabled = prop("disabled")
   const collection = prop("collection")
   const layout = isGridCollection(collection) ? "grid" : "list"
 
+  const focused = context.get("focused")
+  const focusVisible = refs.get("focusVisible") && focused
+  const inputState = refs.get("inputState")
+
   const value = context.get("value")
+  const selectedItems = computed("selectedItems")
+
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
-  const selectedItems = context.get("selectedItems")
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
@@ -43,10 +50,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
+    const highlighted = highlightedValue === value
     return {
       value,
       disabled: Boolean(disabled || itemDisabled),
-      highlighted: highlightedValue === value && context.get("focused"),
+      focused: highlighted && focused,
+      focusVisible: highlighted && focusVisible,
+      // deprecated
+      highlighted: highlighted && (inputState.focused ? focused : focusVisible),
       selected: context.get("value").includes(value),
     }
   }
@@ -79,6 +90,18 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
+    highlightFirst() {
+      send({ type: "HIGHLIGHT.FIRST" })
+    },
+    highlightLast() {
+      send({ type: "HIGHLIGHT.LAST" })
+    },
+    highlightNext() {
+      send({ type: "HIGHLIGHT.NEXT" })
+    },
+    highlightPrevious() {
+      send({ type: "HIGHLIGHT.PREV" })
+    },
     clearValue(value) {
       if (value) {
         send({ type: "ITEM.CLEAR", value })
@@ -100,6 +123,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getInputProps(props = {}) {
+      const keyboardPriority = props.keyboardPriority ?? "caret"
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -115,52 +139,60 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         enterKeyHint: "go",
         onFocus() {
           queueMicrotask(() => {
-            const contentEl = dom.getContentEl(scope)
-            const win = getWindow(contentEl)
-            const focusInEvt = new win.FocusEvent("focusin", { bubbles: true, cancelable: true })
-            contentEl?.dispatchEvent(focusInEvt)
+            send({ type: "INPUT.FOCUS", autoHighlight: !!props?.autoHighlight })
           })
         },
-        onBlur(event) {
-          if (event.defaultPrevented) return
-          const contentEl = dom.getContentEl(scope)
-          const win = getWindow(contentEl)
-          const focusOutEvt = new win.FocusEvent("focusout", { bubbles: true, cancelable: true })
-          contentEl?.dispatchEvent(focusOutEvt)
+        onBlur() {
+          send({ type: "CONTENT.BLUR", src: "input" })
         },
         onInput(event) {
-          if (!props.autoHighlight) return
-          const node = event.currentTarget
+          if (!props?.autoHighlight) return
+          if (event.currentTarget.value.trim()) return
           queueMicrotask(() => {
-            if (!node.isConnected) return
-            send({
-              type: "HIGHLIGHTED_VALUE.SET",
-              value: node.value ? prop("collection").firstValue : null,
-            })
+            send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
           })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (isComposingEvent(event)) return
           const nativeEvent = getNativeEvent(event)
-          switch (nativeEvent.key) {
-            case "ArrowDown":
-            case "ArrowUp":
-            case "Home":
-            case "End": {
-              if ((event.key === "Home" || event.key === "End") && !highlightedValue && event.shiftKey) {
-                return
-              }
 
-              event.preventDefault()
-              const win = scope.getWin()
-              const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
-              dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+          const forwardEvent = () => {
+            event.preventDefault()
+            const win = scope.getWin()
+            const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
+            dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+          }
+
+          switch (nativeEvent.key) {
+            case "ArrowLeft":
+            case "ArrowRight": {
+              if (!isGridCollection(collection)) return
+              if (event.ctrlKey) return
+              if (keyboardPriority !== "navigate") return
+              forwardEvent()
               break
             }
+
+            case "Home":
+            case "End": {
+              if (keyboardPriority !== "navigate") return
+              if (highlightedValue == null && event.shiftKey) return
+              forwardEvent()
+              break
+            }
+
+            case "ArrowDown":
+            case "ArrowUp": {
+              forwardEvent()
+              break
+            }
+
             case "Enter":
-              event.preventDefault()
-              send({ type: "ITEM.CLICK", value: highlightedValue })
+              if (highlightedValue != null) {
+                event.preventDefault()
+                send({ type: "ITEM.CLICK", value: highlightedValue })
+              }
               break
             default:
               break
@@ -215,6 +247,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onClick(event) {
           if (event.defaultPrevented) return
+          if (isDownloadingEvent(event)) return
+          if (isOpeningInNewTab(event)) return
+          if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
           send({
             type: "ITEM.CLICK",
@@ -296,7 +331,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onKeyDown(event) {
           if (!interactive) return
-          if (!isSelfTarget(event)) return
+          const target = getEventTarget<Element>(event)
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const shiftKey = event.shiftKey
 
@@ -332,7 +368,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               }
 
               if (!nextValue) return
-
               event.preventDefault()
               send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
             },
@@ -360,11 +395,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
 
             Home(event) {
+              if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.firstValue
               send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
             },
             End(event) {
+              if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.lastValue
               send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
@@ -401,11 +438,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             return
           }
 
-          const target = getEventTarget<Element>(event)
-
-          if (isEditableElement(target)) {
-            return
-          }
+          if (isEditableElement(target)) return
 
           if (getByTypeahead.isValidEvent(event) && prop("typeahead")) {
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })

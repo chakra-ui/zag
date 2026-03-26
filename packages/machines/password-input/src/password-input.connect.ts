@@ -14,6 +14,7 @@ export function connect<T extends PropTypes>(
   const disabled = !!prop("disabled")
   const invalid = !!prop("invalid")
   const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const interactive = !(readOnly || disabled)
   const translations = prop("translations")
 
@@ -48,6 +49,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-required": dataAttr(required),
       })
     },
 

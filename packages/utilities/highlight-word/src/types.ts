@@ -7,6 +7,10 @@ export interface HighlightRegexOptions {
    * Whether to match multiple instances of the query
    */
   matchAll?: boolean | undefined
+  /**
+   * Whether to match whole words only
+   */
+  exactMatch?: boolean | undefined
 }
 
 export interface HighlightWordProps extends HighlightRegexOptions {

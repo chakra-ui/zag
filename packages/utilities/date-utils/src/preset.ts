@@ -22,7 +22,7 @@ export function getDateRangePreset(preset: DateRangePreset, locale: string, time
     case "thisMonth":
       return [startOfMonth(today), today]
     case "thisQuarter":
-      return [startOfMonth(today).add({ months: -today.month % 3 }), today]
+      return [startOfMonth(today).add({ months: -((today.month - 1) % 3) }), today]
     case "thisYear":
       return [startOfYear(today), today]
     case "last3Days":
@@ -39,8 +39,8 @@ export function getDateRangePreset(preset: DateRangePreset, locale: string, time
       return [startOfMonth(today.add({ months: -1 })), endOfMonth(today.add({ months: -1 }))]
     case "lastQuarter":
       return [
-        startOfMonth(today.add({ months: (-today.month % 3) - 3 })),
-        endOfMonth(today.add({ months: (-today.month % 3) - 1 })),
+        startOfMonth(today.add({ months: -((today.month - 1) % 3) - 3 })),
+        endOfMonth(today.add({ months: -((today.month - 1) % 3) - 1 })),
       ]
     case "lastWeek":
       return [startOfWeek(today, locale).add({ weeks: -1 }), endOfWeek(today, locale).add({ weeks: -1 })]

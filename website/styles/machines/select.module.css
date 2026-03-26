@@ -1,0 +1,83 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: -24px;
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+    min-width: 200px;
+    background: var(--colors-bg-subtle);
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:is(:focus, [data-focus]) {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    & > span {
+      padding: 0.25rem;
+      flex: 1;
+    }
+  }
+
+  .Content {
+    background: var(--colors-bg-popover);
+    width: 240px;
+    padding: 0.5rem;
+    isolation: isolate;
+    list-style-type: none;
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    z-index: calc(var(--layer-index) + 50);
+
+    &:is(:focus, [data-focus]) {
+      outline: none;
+    }
+  }
+
+  .Item {
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &[data-highlighted] {
+      background: var(--colors-bg-primary-bold);
+      color: #ffffff;
+    }
+  }
+
+  .ItemText {
+    flex: 1;
+  }
+}

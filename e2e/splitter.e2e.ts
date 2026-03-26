@@ -3,7 +3,7 @@ import { a11y, controls, testid, part } from "./_utils"
 
 test.describe("splitter", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/splitter")
+    await page.goto("/splitter/basic")
   })
 
   test("should have no accessibility violations", async ({ page }) => {

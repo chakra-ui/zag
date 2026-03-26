@@ -1,0 +1,26 @@
+```svelte {3,5-10}
+<script lang="ts">
+  let value = $state("")
+
+  const service = useMachine(navigationMenu.machine, {
+    id: "nav",
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+
+  const api = $derived(navigationMenu.connect(service, normalizeProps))
+</script>
+
+<div>
+  <button onclick={() => value = "products"}>Open Products</button>
+  <button onclick={() => value = ""}>Close All</button>
+
+  <nav {...api.getRootProps()}>
+    <!-- ... navigation items ... -->
+  </nav>
+</div>
+```

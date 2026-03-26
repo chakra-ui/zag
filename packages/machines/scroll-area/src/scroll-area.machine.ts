@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, setStyleProperty, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
-import { callAll, clampValue, isEqual } from "@zag-js/utils"
+import { callAll, clampValue, ensureProps, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
 import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scroll-area.types"
 import { getScrollOffset } from "./utils/scroll-offset"
@@ -13,10 +13,8 @@ const SCROLL_TIMEOUT = 1000
 
 export const machine = createMachine<ScrollAreaSchema>({
   props({ props }) {
-    return {
-      id: "sv",
-      ...props,
-    }
+    ensureProps(props, ["id"])
+    return props
   },
 
   context({ bindable }) {
@@ -24,6 +22,7 @@ export const machine = createMachine<ScrollAreaSchema>({
       scrollingX: bindable<boolean>(() => ({ defaultValue: false })),
       scrollingY: bindable<boolean>(() => ({ defaultValue: false })),
       hovering: bindable<boolean>(() => ({ defaultValue: false })),
+      dragging: bindable<boolean>(() => ({ defaultValue: false })),
       touchModality: bindable<boolean>(() => ({ defaultValue: false })),
       atSides: bindable<ScrollRecord<boolean>>(() => ({
         defaultValue: { top: true, right: false, bottom: false, left: true },
@@ -259,6 +258,29 @@ export const machine = createMachine<ScrollAreaSchema>({
           if (isEqual(prev, next)) return prev
           return next
         })
+
+        // Set overflow CSS variables on the viewport element
+        const maxScrollTop = Math.max(0, scrollableContentHeight - viewportHeight)
+        const maxScrollLeft = Math.max(0, scrollableContentWidth - viewportWidth)
+
+        let scrollLeftFromStart = 0
+        let scrollLeftFromEnd = 0
+        if (!scrollbarXHidden) {
+          if (prop("dir") === "rtl") {
+            scrollLeftFromStart = clampValue(-scrollLeft, 0, maxScrollLeft)
+          } else {
+            scrollLeftFromStart = clampValue(scrollLeft, 0, maxScrollLeft)
+          }
+          scrollLeftFromEnd = maxScrollLeft - scrollLeftFromStart
+        }
+
+        const scrollTopFromStart = !scrollbarYHidden ? clampValue(scrollTop, 0, maxScrollTop) : 0
+        const scrollTopFromEnd = !scrollbarYHidden ? maxScrollTop - scrollTopFromStart : 0
+
+        setStyleProperty(viewportEl, "--scroll-area-overflow-x-start", `${scrollLeftFromStart}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-x-end", `${scrollLeftFromEnd}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-y-start", `${scrollTopFromStart}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-y-end", `${scrollTopFromEnd}px`)
       },
 
       checkHovering({ scope, context }) {
@@ -438,7 +460,10 @@ export const machine = createMachine<ScrollAreaSchema>({
     effects: {
       trackContentResize({ scope, send }) {
         const contentEl = dom.getContentEl(scope)
-        if (!contentEl) return
+        const rootEl = dom.getRootEl(scope)
+
+        if (!contentEl || !rootEl) return
+
         const win = scope.getWin()
         const obs = new win.ResizeObserver(() => {
           // Use a small timeout to ensure scroll events are processed before resize adjustments
@@ -447,7 +472,10 @@ export const machine = createMachine<ScrollAreaSchema>({
             send({ type: "thumb.measure" })
           }, 1)
         })
+
         obs.observe(contentEl)
+        obs.observe(rootEl)
+
         return () => {
           obs.disconnect()
         }

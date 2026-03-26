@@ -12,7 +12,7 @@ export class PopoverModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/popover")
+    return this.page.goto("/popover/basic")
   }
 
   get trigger() {

@@ -1,6 +1,8 @@
 // Based on https://github.com/theKashey/aria-hidden/blob/master/src/index.ts
 // Licensed under MIT
 
+import { findControlledElements, isHTMLElement } from "@zag-js/dom-query"
+
 let counterMap = new WeakMap<Element, number>()
 let uncontrolledNodes = new WeakMap<Element, boolean>()
 let markerMap: Record<string, WeakMap<Element, number>> = {}
@@ -27,6 +29,7 @@ interface WalkTreeOutsideOptions {
   markerName: string
   controlAttribute: string
   explicitBooleanValue: boolean
+  followControlledElements?: boolean
 }
 
 const ignoreableNodes = new Set<string>(["script", "output", "status", "next-route-announcer"])
@@ -38,7 +41,7 @@ const isIgnoredNode = (node: Element) => {
 }
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
-  const { parentNode, markerName, controlAttribute, explicitBooleanValue } = props
+  const { parentNode, markerName, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
   const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
 
   markerMap[markerName] ||= new WeakMap()
@@ -54,7 +57,15 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     keep(el.parentNode!)
   }
 
-  targets.forEach(keep)
+  targets.forEach((target) => {
+    keep(target)
+    // Also keep any elements that are controlled by elements within the target
+    if (followControlledElements && isHTMLElement(target)) {
+      findControlledElements(target, (controlledElement) => {
+        keep(controlledElement)
+      })
+    }
+  })
 
   const deep = (parent: Element | null) => {
     if (!parent || elementsToStop.has(parent)) {

@@ -118,17 +118,45 @@ export interface Params<T extends Dict> {
 
 export type GuardFn<T extends Dict> = (params: Params<T>) => boolean
 
-export interface Transition<T extends Dict> {
-  target?: T["state"] | undefined
+type TopLevelState<S extends string> = S extends `${infer Top}.${string}` ? Top : S
+type ChildStateKey<S extends string, Parent extends string> = S extends `${Parent}.${infer Rest}`
+  ? Rest extends `${infer Child}.${string}`
+    ? Child
+    : Rest
+  : never
+
+type ParentPath<S extends string> = S extends `${infer Parent}.${string}` ? Parent : never
+type AncestorPaths<S extends string> = S | (ParentPath<S> extends never ? never : AncestorPaths<ParentPath<S>>)
+type StateIdTarget = `#${string}`
+
+// Bare name targets resolve to siblings (children of the source's parent, or root-level states)
+type SiblingStateTarget<S extends string, Source extends string> =
+  | TopLevelState<S>
+  | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
+
+// Dot-prefixed targets resolve to children of the source (e.g. ".idle" from "open" → "open.idle")
+type ChildStateTarget<S extends string, Source extends string> = `.${ChildStateKey<S, Source>}`
+
+export interface Transition<T extends Dict, Source extends string | undefined = string | undefined> {
+  target?:
+    | T["state"]
+    | StateIdTarget
+    | (Source extends string ? SiblingStateTarget<T["state"], Source> : never)
+    | (Source extends string ? ChildStateTarget<T["state"], Source> : never)
+    | undefined
   actions?: T["action"][] | undefined
   guard?: T["guard"] | GuardFn<T> | undefined
   reenter?: boolean | undefined
 }
 
+export type TransitionSet<T extends Dict> = Transition<T> | Transition<T>[] | undefined
+export type TransitionMap<T extends Dict> = Record<string, TransitionSet<T>>
+export type TransitionMatch<T extends Dict> = { transitions: TransitionSet<T>; source: string | undefined }
+
 type MaybeArray<T> = T | T[]
 
 export type ChooseFn<T extends Dict> = (
-  transitions: MaybeArray<Omit<Transition<T>, "target">>,
+  transitions: MaybeArray<Omit<Transition<T, string>, "target">> | null | undefined,
 ) => Transition<T> | undefined
 
 interface PropsParams<T extends Dict> {
@@ -144,6 +172,25 @@ interface RefsParams<T extends Dict> {
 export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) => T["action"][] | undefined)
 
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
+
+export interface MachineState<T extends Dict, Parent extends string = string> {
+  id?: string | undefined
+  tags?: T["tag"][] | undefined
+  entry?: ActionsOrFn<T> | undefined
+  exit?: ActionsOrFn<T> | undefined
+  effects?: EffectsOrFn<T> | undefined
+  initial?: ChildStateKey<T["state"], Parent> | undefined
+  states?:
+    | {
+        [K in ChildStateKey<T["state"], Parent>]?: MachineState<T, `${Parent}.${K}`>
+      }
+    | undefined
+  on?:
+    | {
+        [E in T["event"]["type"]]?: Transition<T, Parent> | Array<Transition<T, Parent>>
+      }
+    | undefined
+}
 
 export interface Machine<T extends Dict> {
   debug?: boolean | undefined
@@ -166,21 +213,11 @@ export interface Machine<T extends Dict> {
   watch?: ((params: Params<T>) => void) | undefined
   on?:
     | {
-        [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
+        [E in T["event"]["type"]]?: Transition<T, undefined> | Array<Transition<T, undefined>>
       }
     | undefined
   states: {
-    [K in T["state"]]: {
-      tags?: T["tag"][] | undefined
-      entry?: ActionsOrFn<T> | undefined
-      exit?: ActionsOrFn<T> | undefined
-      effects?: EffectsOrFn<T> | undefined
-      on?:
-        | {
-            [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
-          }
-        | undefined
-    }
+    [K in TopLevelState<T["state"]>]: MachineState<T, K>
   }
   implementations?:
     | {

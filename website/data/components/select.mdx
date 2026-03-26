@@ -4,9 +4,7 @@ description: Using the select machine in your project.
 package: "@zag-js/select"
 ---
 
-# Select
-
-A Select component allows users pick a value from predefined options.
+A select component lets you pick a value from predefined options.
 
 <Resources pkg="@zag-js/select" />
 
@@ -14,26 +12,20 @@ A Select component allows users pick a value from predefined options.
 
 **Features**
 
-- Support for selecting a single or multiple option
-- Keyboard support for opening the listbox using the arrow keys, including
-  automatically focusing the first or last item.
-- Support for looping keyboard navigation.
-- Support for selecting an item on blur.
-- Typeahead to allow selecting options by typing text, even without opening the
-  listbox
-- Support for Right to Left direction.
+- Supports single and multiple selection
+- Supports typeahead, keyboard navigation, and RTL
+- Supports controlled open, value, and highlight state
+- Supports form submission and browser autofill
 
 ## Installation
 
-To use the select machine in your project, run the following command in your
-command line:
+Install the select package:
 
 <CodeSnippet id="select/installation.mdx" />
 
 ## Anatomy
 
-To set up the select correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the select anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -41,25 +33,20 @@ name its parts.
 
 ## Usage
 
-First, import the select package into your project
+Import the select package:
 
-```jsx
+```tsx
 import * as select from "@zag-js/select"
 ```
 
-The select package exports these functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the select.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
-- `collection` - The function that creates a
-  [collection interface](/overview/collection) from an array of items.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `collection` - Creates a [collection interface](/overview/collection) from an
+  array of items.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-select machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="select/usage.mdx" />
 
@@ -70,7 +57,7 @@ Use the `defaultValue` property to set the initial value of the select.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {13}
+```tsx {13}
 const collection = select.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -89,13 +76,28 @@ const service = useMachine(select.machine, {
 
 ### Selecting multiple values
 
-To allow selecting multiple values, set the `multiple` property to `true`.
+Set `multiple` to `true` to allow selecting multiple values.
 
-```jsx {5}
+```tsx {5}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
   multiple: true,
+})
+```
+
+### Controlled select value
+
+Use `value` and `onValueChange` for controlled selection.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
 })
 ```
 
@@ -112,7 +114,7 @@ By default, the select collection expects an array of items with `label` and
 - `groupBy` — A function that returns the group of an item.
 - `groupSort` — An array or function to sort the groups.
 
-```jsx
+```tsx
 const collection = select.collection({
   // custom object format
   items: [
@@ -148,35 +150,32 @@ const service = useMachine(select.machine, {
 
 ### Usage within a form
 
-To use select within a form, you'll need to:
-
-- Pass the `name` property to the select machine's context
-- Render a hidden `select` element using `api.getSelectProps()`
+To use select in a form, set `name` and render `api.getHiddenSelectProps()`.
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
-### Disabling the select
+### Browser autofill support
 
-To disable the select, set the `disabled` property in the machine's context to
-`true`.
+To support browser autofill for form fields like state or province, set
+`autoComplete` on the machine.
 
-```jsx {4}
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
-  disabled: true,
+  name: "state",
+  autoComplete: "address-level1",
 })
 ```
 
 ### Disabling an item
 
-To make a combobox option disabled, pass the `isItemDisabled` property to the
-collection function.
+To disable a select item, use `itemToDisabled` in the collection.
 
-```jsx {3-4}
+```tsx {3-4}
 const collection = select.collection({
   items: countries,
-  isItemDisabled(item) {
+  itemToDisabled(item) {
     return item.disabled
   },
 })
@@ -189,14 +188,10 @@ const service = useMachine(select.machine, {
 
 ### Close on select
 
-This behaviour ensures that the menu is closed when an item is selected and is
-`true` by default. It's only concerned with when an item is selected with
-pointer, space key or enter key.
+By default, the menu closes when you select an item with pointer, space, or
+enter. Set `closeOnSelect` to `false` to keep it open.
 
-To disable the behaviour, set the `closeOnSelect` property in the machine's
-context to `false`.
-
-```jsx {4}
+```tsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -204,30 +199,104 @@ const service = useMachine(select.machine, {
 })
 ```
 
-### Looping the keyboard navigation
+### Programmatic selection control
 
-When navigating with the select using the arrow down and up keys, the select
-stops at the first and last options. If you need want the navigation to loop
-back to the first or last option, set the `loop: true` in the machine's context.
+Use the API for imperative updates.
 
-```jsx {4}
+```tsx
+api.selectValue("ng")
+api.setValue(["ng", "ke"])
+api.clearValue() // or api.clearValue("ng")
+```
+
+### Controlling open state
+
+Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for
+uncontrolled initial state.
+
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
-  loop: true,
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+    // details => { open: boolean, value: string[] }
+  },
+})
+```
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  defaultOpen: true,
+})
+```
+
+### Controlling highlighted item
+
+Use `highlightedValue` and `onHighlightChange` to manage item highlight.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  highlightedValue,
+  onHighlightChange(details) {
+    setHighlightedValue(details.highlightedValue)
+    // details => { highlightedValue, highlightedItem, highlightedIndex }
+  },
+})
+```
+
+### Positioning the popup
+
+Use `positioning` to control popup placement and behavior.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  positioning: { placement: "bottom-start" },
+})
+```
+
+### Looping the keyboard navigation
+
+By default, arrow key navigation stops at the first and last options. Set
+`loopFocus: true` to loop back around.
+
+```tsx {4}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  loopFocus: true,
+})
+```
+
+### Allowing deselection in single-select mode
+
+Set `deselectable` to allow clicking the selected item again to clear the value.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  deselectable: true,
 })
 ```
 
 ### Listening for highlight changes
 
-When an item is highlighted with the pointer or keyboard, use the
-`onHighlightChange` to listen for the change and do something with it.
+Use `onHighlightChange` to listen for highlighted item changes.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(select.machine, {
   id: useId(),
+  collection,
   onHighlightChange(details) {
-    // details => { highlightedValue: string | null, highlightedItem: CollectionItem | null }
+    // details => { highlightedValue, highlightedItem, highlightedIndex }
     console.log(details)
   },
 })
@@ -235,10 +304,9 @@ const service = useMachine(select.machine, {
 
 ### Listening for selection changes
 
-When an item is selected, use the `onValueChange` property to listen for the
-change and do something with it.
+Use `onValueChange` to listen for selected item changes.
 
-```jsx {4-6}
+```tsx {4-6}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -249,29 +317,42 @@ const service = useMachine(select.machine, {
 })
 ```
 
+### Listening for item selection
+
+Use `onSelect` when you need the selected item value immediately.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  onSelect(details) {
+    // details => { value: string }
+    console.log(details.value)
+  },
+})
+```
+
 ### Listening for open and close events
 
-When the select is opened or closed, the `onOpenChange` callback is called. You
-can listen for these events and do something with it.
+Use `onOpenChange` to listen for open and close events.
 
-```jsx {4-7}
+```tsx {4-7}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
   onOpenChange(details) {
-    // details => { open: boolean }
-    console.log("Select opened")
+    // details => { open: boolean, value: string[] }
+    console.log(details.open)
   },
 })
 ```
 
 ### Grouping items
 
-The select component relies explicitly on the collection. This means the
-rendered items much match the items in the collection.
+The select relies on the collection, so rendered items must match collection
+items.
 
-To ensure this, you need to pass the `groupBy` option to the collection
-function.
+Set `groupBy` on the collection to define item groups.
 
 ```tsx
 const collection = select.collection({
@@ -302,12 +383,12 @@ Then, use the `collection.group()` method to render the grouped items.
 
 ### Usage with large data
 
-Combine the select machine with the virtualization library like `react-window`
-or `@tanstack/react-virtual` to handle large data.
+For large lists, combine select with a virtualization library like
+`react-window` or `@tanstack/react-virtual`.
 
-Here's an example using `@tanstack/react-virtual`:
+Example with `@tanstack/react-virtual`:
 
-```jsx
+```tsx
 function Demo() {
   const selectData = []
 
@@ -379,14 +460,12 @@ function Demo() {
 
 ### Usage within dialog
 
-When using the select within a dialog, avoid rendering the select in a `Portal`
-or `Teleport`. This is because the dialog will trap focus within it, and the
-select will be rendered outside the dialog.
+When using select in a dialog, avoid rendering it in a `Portal` or `Teleport`
+outside the dialog focus scope.
 
 ## Styling guide
 
-Earlier, we mentioned that each select part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each select part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -488,6 +567,10 @@ The select `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="select" />
+
+### CSS Variables
+
+<CssVarTable name="select" />
 
 ## Accessibility
 

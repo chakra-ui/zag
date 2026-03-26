@@ -1,6 +1,10 @@
+"use client"
+
+import { useSyncExternalStore } from "react"
 import { Accordion } from "./accordion"
 import { AngleSlider } from "./angle-slider"
 import { Avatar } from "./avatar"
+import { CascadeSelect } from "./cascade-select"
 import { Carousel } from "./carousel"
 import { Checkbox } from "./checkbox"
 import { Clipboard } from "./clipboard"
@@ -8,12 +12,15 @@ import { Collapsible } from "./collapsible"
 import { ColorPicker } from "./color-picker"
 import { Combobox } from "./combobox"
 import { ContextMenu } from "./context-menu"
+import { DateInput } from "./date-input"
 import { DatePicker } from "./date-picker"
 import { Dialog } from "./dialog"
 import { Editable } from "./editable"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
+import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
 import { Pagination } from "./pagination"
@@ -26,6 +33,7 @@ import { QrCode } from "./qr-code"
 import { Radio } from "./radio"
 import { RangeSlider } from "./range-slider"
 import { Rating } from "./rating"
+import { ScrollArea } from "./scroll-area"
 import { SegmentedControl } from "./segmented-control"
 import { Select } from "./select"
 import { SignaturePad } from "./signature-pad"
@@ -35,17 +43,32 @@ import { Steps } from "./steps"
 import { Switch } from "./switch"
 import { Tabs } from "./tabs"
 import { TagsInput } from "./tags-input"
-import { TimePicker } from "./time-picker"
+
+// Prevents SSR to avoid hydration mismatch with useId()
+const emptySubscribe = () => () => {}
+function useIsClient() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  )
+}
+
+import { ImSpinner3 } from "react-icons/im"
+import { css } from "styled-system/css"
+import { center } from "styled-system/patterns"
+import { Playground } from "../components/playground"
+import { Drawer } from "./drawer"
+import { FloatingPanel } from "./floating-panel"
+import { Listbox } from "./listbox"
+import { Marquee } from "./marquee"
+import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
 import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
-import { Listbox } from "./listbox"
-import { Playground } from "../components/playground"
-import { FloatingPanel } from "./floating-panel"
-import { PasswordInput } from "./password-input"
 
 const components = {
   Accordion: () => (
@@ -76,6 +99,27 @@ const components = {
       defaultProps={{
         name: "Segun Adebayo",
         src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
+      }}
+    />
+  ),
+  Drawer: () => (
+    <Playground name="drawer" component={Drawer} defaultProps={{}} />
+  ),
+  CascadeSelect: () => (
+    <Playground
+      name="cascade-select"
+      component={CascadeSelect}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        multiple: false,
+        closeOnSelect: true,
+        loopFocus: false,
+        allowParentSelection: false,
+        highlightTrigger: {
+          default: "click",
+          options: ["click", "hover"],
+        },
       }}
     />
   ),
@@ -203,6 +247,13 @@ const components = {
       }}
     />
   ),
+  ImageCropper: () => (
+    <Playground
+      name="image-cropper"
+      component={ImageCropper}
+      defaultProps={{}}
+    />
+  ),
   Menu: () => <Playground name="menu" component={Menu} />,
   ContextMenu: () => <Playground name="context-menu" component={ContextMenu} />,
   NestedMenu: () => <Playground name="nested-menu" component={NestedMenu} />,
@@ -316,10 +367,9 @@ const components = {
       name="rating"
       component={Rating}
       defaultProps={{
-        allowHalf: true,
+        allowHalf: false,
         disabled: false,
         readOnly: false,
-        count: 5,
         dir: {
           options: ["ltr", "rtl"],
           default: "ltr",
@@ -327,6 +377,7 @@ const components = {
       }}
     />
   ),
+  ScrollArea: () => <Playground name="scroll-area" component={ScrollArea} />,
   Select: () => (
     <Playground
       name="select"
@@ -397,30 +448,7 @@ const components = {
       }}
     />
   ),
-  TimePicker: () => (
-    <Playground
-      name="time-picker"
-      component={TimePicker}
-      defaultProps={{
-        locale: {
-          default: "en-US",
-          options: [
-            "en-US",
-            "en-GB",
-            "fr-FR",
-            "de-DE",
-            "ja-JP",
-            "mk-MK",
-            "zh-CN",
-          ],
-          required: true,
-        },
-        disabled: false,
-        readOnly: false,
-        allowSeconds: false,
-      }}
-    />
-  ),
+
   Toast: () => <Playground name="toast" component={ToastGroup} />,
   ToggleGroup: () => (
     <Playground
@@ -459,6 +487,24 @@ const components = {
   Presence: () => <Playground name="presence" component={Presence} />,
   TimerCountdown: () => (
     <Playground name="timer-countdown" component={TimerCountdown} />
+  ),
+  DateInput: () => (
+    <Playground
+      name="date-input"
+      component={DateInput}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        required: false,
+        invalid: false,
+        granularity: {
+          default: "day",
+          options: ["day", "month", "year", "hour", "minute", "second"],
+        },
+        selectionMode: { default: "single", options: ["single", "range"] },
+        shouldForceLeadingZeros: false,
+      }}
+    />
   ),
   DatePicker: () => <Playground name="date-picker" component={DatePicker} />,
   QRCode: () => (
@@ -529,9 +575,60 @@ const components = {
       }}
     />
   ),
+  Marquee: () => (
+    <Playground
+      name="marquee"
+      component={Marquee}
+      defaultProps={{
+        side: {
+          default: "start",
+          options: ["start", "end", "top", "bottom"],
+        },
+        // speed: 100,
+        pauseOnInteraction: false,
+      }}
+    />
+  ),
+  NavigationMenu: () => (
+    <Playground
+      name="navigation-menu"
+      component={NavigationMenu}
+      defaultProps={{
+        openDelay: 200,
+        closeDelay: 300,
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
+      }}
+    />
+  ),
 }
 
-export function Showcase(props: { id: keyof typeof components }) {
+export const Showcase = (props: { id: keyof typeof components }) => {
+  const isClient = useIsClient()
+
+  if (!isClient) {
+    return (
+      <div
+        className={center({
+          minHeight: "24em",
+          borderWidth: "1px",
+          my: "16",
+          gap: "2.5",
+        })}
+      >
+        <ImSpinner3
+          className={css({
+            boxSize: "4",
+            animation: "spin 0.75s linear infinite",
+          })}
+        />
+        Loading...
+      </div>
+    )
+  }
+
   const Component = components[props.id] ?? "span"
   return <Component />
 }

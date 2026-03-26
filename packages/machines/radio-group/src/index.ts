@@ -4,11 +4,11 @@ export { machine } from "./radio-group.machine"
 export * from "./radio-group.props"
 export type {
   RadioGroupApi as Api,
+  RadioGroupMachine as Machine,
+  RadioGroupProps as Props,
+  RadioGroupService as Service,
   ElementIds,
   ItemProps,
   ItemState,
-  RadioGroupProps as Props,
-  RadioGroupService as Service,
-  RadioGroupMachine as Machine,
   ValueChangeDetails,
 } from "./radio-group.types"

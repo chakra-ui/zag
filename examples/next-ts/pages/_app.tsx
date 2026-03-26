@@ -1,11 +1,18 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
 import "@zag-js/shared/src/style.css"
 import { AppProps } from "next/app"
 import Head from "next/head"
 import Link from "next/link"
 
 export default function App({ Component, pageProps, router }: AppProps) {
+  const pathname = router.asPath.split("?")[0] || "/"
+  const pathnameComponent = pathname.split("/").filter(Boolean)[0] ?? ""
+  const routeComponent =
+    router.pathname === "/[component]" && router.query.component ? String(router.query.component) : null
+  const currentComponent =
+    routeComponent ?? getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
+
   return (
     <div className="page">
       <Head>
@@ -14,19 +21,14 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
       <aside className="nav">
         <header>Zagjs</header>
-        <Link href="/compositions" style={{ background: "blue", color: "white" }}>
-          Compositions
-        </Link>
-        {routesData
-          .sort((a, b) => a.label.localeCompare(b.label))
-          .map((route) => {
-            const active = router.pathname === route.path
-            return (
-              <Link data-active={dataAttr(active)} href={route.path} key={route.label} passHref>
-                {route.label}
-              </Link>
-            )
-          })}
+        {componentRoutesData.map((component) => {
+          const active = currentComponent === component.slug
+          return (
+            <Link data-active={dataAttr(active)} href={`/${component.slug}`} key={component.slug} passHref>
+              {component.label}
+            </Link>
+          )
+        })}
       </aside>
       <Component {...pageProps} />
     </div>

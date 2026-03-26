@@ -66,6 +66,7 @@
   overflow-y: auto;
   position: relative;
   overscroll-behavior: contain;
+  z-index: var(--layer-index);
 }
 
 .select input {

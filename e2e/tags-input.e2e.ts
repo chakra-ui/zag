@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { TagsInputModel } from "./models/tags-input.model"
 
 let I: TagsInputModel
@@ -109,7 +109,7 @@ test.describe("tags-input", () => {
     await I.pressKey("ArrowLeft")
     await I.clickOutside()
 
-    await I.expectNoTagToBeHighlighted()
+    await I.seeNoHighlightedTag()
   })
 
   test("removes tag on close button click", async () => {
@@ -146,11 +146,37 @@ test.describe("tags-input", () => {
     await I.dontSeeTagInput("Jenkins")
   })
 
+  test("[allowDuplicates: false] editing should not create duplicates", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(1)
+    await expect(I.getTag("Vue")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true] editing can create duplicates", async () => {
+    await I.controls.bool("allowDuplicates", true)
+
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(2)
+    await expect(I.getTag("Vue")).toHaveCount(0)
+  })
+
   test("clears highlighted tag on escape press", async () => {
     await I.addTag("Svelte")
     await I.pressKey("ArrowLeft")
     await I.pressKey("Escape")
-    await I.expectNoTagToBeHighlighted()
+    await I.seeNoHighlightedTag()
   })
 
   test("delete + backspace interaction", async () => {
@@ -169,7 +195,7 @@ test.describe("tags-input", () => {
 
     await I.pressKey("Delete")
     await I.dontSeeTag("Angular")
-    await I.expectNoTagToBeHighlighted()
+    await I.seeNoHighlightedTag()
 
     await I.pressKey("Backspace")
     await I.seeTagIsHighlighted("React")
@@ -177,7 +203,7 @@ test.describe("tags-input", () => {
     await I.pressKey("Backspace")
     await I.dontSeeTag("React")
 
-    await I.expectNoTagToBeHighlighted()
+    await I.seeNoHighlightedTag()
   })
 
   test("[addOnPaste: false] pasting should work every time", async () => {
@@ -202,6 +228,21 @@ test.describe("tags-input", () => {
     await I.seeTag("Svelte")
   })
 
+  test("[allowDuplicates: false] adding duplicate tags should keep one value", async () => {
+    await I.addTag("React")
+    await I.addTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true] adding duplicate tags should keep all values", async () => {
+    await I.controls.bool("allowDuplicates", true)
+    await I.addTag("React")
+    await I.addTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(3)
+  })
+
   test("[addOnPaste: true] pasting should add tags", async () => {
     await I.controls.bool("addOnPaste", true)
 
@@ -222,6 +263,21 @@ test.describe("tags-input", () => {
     await I.seeTag("Github")
   })
 
+  test("[allowDuplicates: false][addOnPaste: true] paste should dedupe values", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("React, React")
+    await expect(I.getTag("React")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true][addOnPaste: true] paste should keep duplicates", async () => {
+    await I.controls.bool("allowDuplicates", true)
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("React, React")
+    await expect(I.getTag("React")).toHaveCount(3)
+  })
+
   test("should unselect highlighted tag when clicking in the input", async () => {
     await I.focusInput()
     await I.type("Type any text")
@@ -232,6 +288,28 @@ test.describe("tags-input", () => {
     await I.clickControl()
     await I.pressKey("Backspace", 1)
 
-    await I.expectNoTagToBeHighlighted()
+    await I.seeNoHighlightedTag()
+  })
+
+  test("tabbing out of input should clear highlighted tag", async () => {
+    await I.focusInput()
+
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+
+    await I.pressKey("Tab")
+    await I.seeNoHighlightedTag()
+  })
+
+  test("clear trigger should clear tags", async () => {
+    await I.addTag("Svelte")
+    await I.seeTag("Svelte")
+    await I.addTag("Solid")
+    await I.seeTag("Solid")
+
+    await I.clickClearTrigger()
+    await I.seeNoTags()
+
+    await I.seeInputIsFocused()
   })
 })

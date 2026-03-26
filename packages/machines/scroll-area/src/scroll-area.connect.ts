@@ -1,4 +1,4 @@
-import { dataAttr, getEventPoint } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-area.anatomy"
@@ -12,7 +12,10 @@ export function connect<T extends PropTypes>(
   service: ScrollAreaService,
   normalize: NormalizeProps<T>,
 ): ScrollAreaApi<T> {
-  const { send, context, prop, scope } = service
+  const { state, send, context, prop, scope } = service
+
+  const dragging = state.matches("dragging")
+  const hovering = context.get("hovering")
 
   const cornerSize = context.get("cornerSize")
   const thumbSize = context.get("thumbSize")
@@ -39,7 +42,8 @@ export function connect<T extends PropTypes>(
     getScrollbarState(props) {
       const horizontal = props.orientation === "horizontal"
       return {
-        hovering: context.get("hovering"),
+        hovering,
+        dragging,
         scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
         hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
       }
@@ -54,21 +58,26 @@ export function connect<T extends PropTypes>(
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerEnter(event) {
+          const target = getEventTarget(event)
+          if (!contains(event.currentTarget, target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerMove(event) {
+          const target = getEventTarget(event)
+          if (!contains(event.currentTarget, target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerDown({ pointerType }) {
           send({ type: "root.pointerdown", pointerType })
         },
-        onPointerLeave() {
+        onPointerLeave(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "root.pointerleave" })
         },
         style: {
           position: "relative",
-          "--corder-width": toPx(cornerSize?.width),
-          "--corder-height": toPx(cornerSize?.height),
+          "--corner-width": toPx(cornerSize?.width),
+          "--corner-height": toPx(cornerSize?.height),
           "--thumb-width": toPx(thumbSize?.width),
           "--thumb-height": toPx(thumbSize?.height),
         },
@@ -110,6 +119,8 @@ export function connect<T extends PropTypes>(
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         role: "presentation",
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         style: {
           minWidth: "fit-content",
         },
@@ -123,7 +134,8 @@ export function connect<T extends PropTypes>(
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
-        "data-hovering": dataAttr(context.get("hovering")),
+        "data-hover": dataAttr(hovering),
+        "data-dragging": dataAttr(dragging),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
@@ -147,12 +159,12 @@ export function connect<T extends PropTypes>(
           userSelect: "none",
           ...(orientation === "vertical" && {
             top: 0,
-            bottom: `var(--corder-height)`,
+            bottom: `var(--corner-height)`,
             insetInlineEnd: 0,
           }),
           ...(orientation === "horizontal" && {
             insetInlineStart: 0,
-            insetInlineEnd: `var(--corder-width)`,
+            insetInlineEnd: `var(--corner-width)`,
             bottom: 0,
           }),
         },
@@ -165,14 +177,20 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
+        "data-hover": dataAttr(hovering),
+        "data-dragging": dataAttr(dragging),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
           send({ type: "thumb.pointerdown", orientation, point })
         },
         style: {
-          width: "var(--thumb-width)",
-          height: "var(--thumb-height)",
+          ...(orientation === "vertical" && {
+            height: "var(--thumb-height)",
+          }),
+          ...(orientation === "horizontal" && {
+            width: "var(--thumb-width)",
+          }),
         },
       })
     },
@@ -181,13 +199,16 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.corner.attrs,
         "data-ownedby": dom.getRootId(scope),
+        "data-hover": dataAttr(hovering),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         style: {
           position: "absolute",
           bottom: 0,
           insetInlineEnd: 0,
-          width: "var(--corder-width)",
-          height: "var(--corder-height)",
+          width: "var(--corner-width)",
+          height: "var(--corner-height)",
         },
       })
     },

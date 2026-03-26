@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useEffect } from "react"
+import styles from "../styles/machines/menu.module.css"
 
 const data = [
   { label: "New tab", value: "new-tab" },
@@ -44,23 +45,24 @@ export function NestedMenu() {
 
   return (
     <div>
-      <button {...fileMenu.getTriggerProps()}>
+      <button className={styles.Trigger} {...fileMenu.getTriggerProps()}>
         Click me
         <span {...fileMenu.getIndicatorProps()}>▾</span>
       </button>
 
       <Portal>
         <div {...fileMenu.getPositionerProps()}>
-          <ul {...fileMenu.getContentProps()}>
+          <ul className={styles.Content} {...fileMenu.getContentProps()}>
             {data.map((item) => (
               <li
+                className={styles.Item}
                 key={item.value}
                 {...fileMenu.getItemProps({ value: item.value })}
               >
                 {item.label}
               </li>
             ))}
-            <li {...shareMenuTriggerProps}>
+            <li className={styles.TriggerItem} {...shareMenuTriggerProps}>
               Share
               <span {...shareMenu.getIndicatorProps()}>»</span>
             </li>
@@ -70,9 +72,10 @@ export function NestedMenu() {
 
       <Portal>
         <div {...shareMenu.getPositionerProps()}>
-          <ul {...shareMenu.getContentProps()}>
+          <ul className={styles.Content} {...shareMenu.getContentProps()}>
             {shareMenuData.map((item) => (
               <li
+                className={styles.Item}
                 key={item.value}
                 {...shareMenu.getItemProps({ value: item.value })}
               >

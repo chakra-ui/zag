@@ -25,10 +25,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const translations = prop("translations")
   const collection = prop("collection")
 
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
   const interactive = computed("isInteractive")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
+  const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
@@ -41,12 +42,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   })
 
   function getItemState(props: ItemProps): ItemState {
-    const disabled = collection.getItemDisabled(props.item)
+    const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     return {
       value,
-      disabled: Boolean(disabled || disabled),
+      disabled: Boolean(disabled || itemDisabled),
       highlighted: highlightedValue === value,
       selected: context.get("value").includes(value),
     }
@@ -61,7 +62,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     value: context.get("value"),
     valueAsString: computed("valueAsString"),
     hasSelectedItems: computed("hasSelectedItems"),
-    selectedItems: context.get("selectedItems"),
+    selectedItems: computed("selectedItems"),
     collection: prop("collection"),
     multiple: !!prop("multiple"),
     disabled: !!disabled,
@@ -121,6 +122,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
           if (composite) return
@@ -234,7 +236,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
               const submittable = computed("isCustomValue") && prop("allowCustomValue")
-              if (open && !submittable) {
+              // Also allow submission when there's no highlighted item (bug fix)
+              const hasHighlight = highlightedValue != null
+              // Allow submission when alwaysSubmitOnEnter is true
+              const alwaysSubmit = prop("alwaysSubmitOnEnter")
+
+              if (open && !submittable && !alwaysSubmit && hasHighlight) {
                 event.preventDefault()
               }
 
@@ -291,7 +298,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (!isLeftClick(event)) return
           event.preventDefault()
           queueMicrotask(() => {
-            dom.getInputEl(scope)?.focus({ preventScroll: true })
+            dom.focusInputEl(scope)
           })
         },
         onKeyDown(event) {
@@ -387,7 +394,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
-        "aria-selected": ariaAttr(itemState.highlighted),
+        "aria-selected": ariaAttr(itemState.selected),
         "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "data-value": itemState.value,

@@ -2,15 +2,16 @@
   "root": true,
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
+    "target": "ESNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "baseUrl": ".",
     "jsx": "preserve",
     "exactOptionalPropertyTypes": false,
     "paths": {
-      "@/panda/*": ["./panda/*"],
-      "@/contentlayer": [".contentlayer/generated"],
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      ".velite": ["./.velite"]
     },
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
@@ -26,12 +27,6 @@
       "name": "next"
     }
   ],
-  "include": [
-    "next-env.d.ts",
-    ".contentlayer",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
   "exclude": ["node_modules"]
 }

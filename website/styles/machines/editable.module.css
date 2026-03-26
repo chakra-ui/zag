@@ -1,0 +1,75 @@
+@layer recipes {
+  .Root {
+    width: 300px;
+  }
+
+  .Area {
+    margin-bottom: 0.75rem;
+  }
+
+  .Input {
+    background: transparent;
+
+    &[data-autoresize] {
+      all: unset;
+    }
+
+    &:focus {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .EditTrigger,
+  .CancelTrigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+    background: var(--colors-bg-subtle);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+  }
+
+  .SubmitActions {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .SubmitTrigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &:hover {
+      background: var(--colors-bg-primary-bold);
+    }
+  }
+}

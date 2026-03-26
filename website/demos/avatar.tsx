@@ -1,6 +1,7 @@
 import * as avatar from "@zag-js/avatar"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/avatar.module.css"
 
 interface AvatarProps extends Omit<avatar.Props, "id"> {
   src: string
@@ -24,20 +25,17 @@ export function Avatar(props: AvatarProps) {
     .join("")
 
   return (
-    <>
-      <main className="avatar">
-        <div {...api.getRootProps()}>
-          <div {...api.getFallbackProps()}>
-            <div>{initial}</div>
-          </div>
-          <img
-            alt={name}
-            referrerPolicy="no-referrer"
-            src={src}
-            {...api.getImageProps()}
-          />
-        </div>
-      </main>
-    </>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.Fallback} {...api.getFallbackProps()}>
+        <div>{initial}</div>
+      </div>
+      <img
+        alt={name}
+        className={styles.Image}
+        referrerPolicy="no-referrer"
+        src={src}
+        {...api.getImageProps()}
+      />
+    </div>
   )
 }

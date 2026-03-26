@@ -12,6 +12,7 @@ export const hideOthers = (
   originalTarget: Element | Element[],
   parentNode = getParentNode(originalTarget),
   markerName = "data-aria-hidden",
+  followControlledElements = true,
 ) => {
   if (!parentNode) return
   return walkTreeOutside(originalTarget, {
@@ -19,6 +20,7 @@ export const hideOthers = (
     markerName,
     controlAttribute: "aria-hidden",
     explicitBooleanValue: true,
+    followControlledElements,
   })
 }
 
@@ -26,6 +28,7 @@ export const inertOthers = (
   originalTarget: Element | Element[],
   parentNode = getParentNode(originalTarget),
   markerName = "data-inerted",
+  followControlledElements = true,
 ) => {
   if (!parentNode) return
   return walkTreeOutside(originalTarget, {
@@ -33,6 +36,7 @@ export const inertOthers = (
     markerName,
     controlAttribute: "inert",
     explicitBooleanValue: false,
+    followControlledElements,
   })
 }
 
@@ -42,7 +46,8 @@ export const suppressOthers = (
   originalTarget: Element | Element[],
   parentNode?: HTMLElement,
   markerName: string = "data-suppressed",
+  followControlledElements: boolean = true,
 ) => {
   const fn = supportsInert() ? inertOthers : hideOthers
-  return fn(originalTarget, parentNode, markerName)
+  return fn(originalTarget, parentNode, markerName, followControlledElements)
 }

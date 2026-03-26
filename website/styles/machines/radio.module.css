@@ -1,0 +1,65 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: -24px;
+
+    &[data-orientation="vertical"] {
+      flex-direction: column;
+    }
+  }
+
+  .ItemsGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .Item {
+    display: flex;
+    gap: 0.5rem;
+    user-select: none;
+    cursor: pointer;
+    font-size: 16px;
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .ItemText {
+    order: 2;
+  }
+
+  .ItemControl {
+    order: 1;
+    width: 25px;
+    height: 25px;
+    border-radius: 9999px;
+    border: solid 1px;
+    border-color: var(--colors-border-bold);
+    color: #ffffff;
+    padding: 1px;
+
+    &:hover {
+      background: var(--colors-bg-subtle);
+    }
+
+    &[data-state="checked"] {
+      background: var(--colors-bg-primary-bold);
+      border-color: var(--colors-bg-primary-bold);
+    }
+
+    &[data-disabled] {
+      background: var(--colors-bg-bold);
+      border-color: var(--colors-border-bold);
+      filter: grayscale(100%);
+    }
+  }
+
+  [data-peer]:focus-visible ~ .ItemControl {
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
+  }
+}

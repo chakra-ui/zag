@@ -2,13 +2,13 @@ import type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
-  DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
-import type { DateRangePreset } from "@zag-js/date-utils"
+import type { DateRangePreset, DateValue } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -34,8 +34,21 @@ export interface ViewChangeDetails {
   view: DateView
 }
 
+export interface VisibleRangeChangeDetails {
+  view: DateView
+  visibleRange: { start: DateValue; end: DateValue }
+}
+
 export interface OpenChangeDetails {
   open: boolean
+  value: DateValue[]
+}
+
+export interface Time {
+  hour?: number
+  minute?: number
+  second?: number
+  millisecond?: number
 }
 
 export interface LocaleDetails {
@@ -61,6 +74,8 @@ export interface IntlTranslations {
   trigger: (open: boolean) => string
   content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
+  weekColumnHeader?: string | undefined
+  weekNumberCell?: ((weekNumber: number) => string) | undefined
 }
 
 export type ElementIds = Partial<{
@@ -91,6 +106,16 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   locale?: string | undefined
   /**
+   * A function that creates a Calendar object for a given calendar identifier.
+   * Enables non-Gregorian calendar support (Persian, Buddhist, Islamic, etc.)
+   * without bundling all calendars by default.
+   *
+   * @example
+   * import { createCalendar } from "@internationalized/date"
+   * { locale: "fa-IR", createCalendar }
+   */
+  createCalendar?: ((identifier: CalendarIdentifier) => Calendar) | undefined
+  /**
    * The localized messages to use.
    */
   translations?: IntlTranslations | undefined
@@ -116,6 +141,14 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   readOnly?: boolean | undefined
   /**
+   * Whether the date picker is required
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid?: boolean | undefined
+  /**
    * Whether day outside the visible range can be selected.
    * @default false
    */
@@ -134,6 +167,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * @default true
    */
   closeOnSelect?: boolean | undefined
+  /**
+   * Whether to open the calendar when the input is clicked.
+   * @default false
+   */
+  openOnClick?: boolean | undefined
   /**
    * The controlled selected date(s).
    */
@@ -173,6 +211,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   fixedWeeks?: boolean | undefined
   /**
+   * Whether to show the week number column in the day view.
+   */
+  showWeekNumbers?: boolean | undefined
+  /**
    * Function called when the value changes.
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
@@ -184,6 +226,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the view changes.
    */
   onViewChange?: ((details: ViewChangeDetails) => void) | undefined
+  /**
+   * Function called when the visible range changes.
+   */
+  onVisibleRangeChange?: ((details: VisibleRangeChangeDetails) => void) | undefined
   /**
    * Function called when the calendar opens or closes.
    */
@@ -201,6 +247,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * @default "single"
    */
   selectionMode?: SelectionMode | undefined
+  /**
+   * The maximum number of dates that can be selected.
+   * This is only applicable when `selectionMode` is `multiple`.
+   */
+  maxSelectedDates?: number | undefined
   /**
    * The format of the date to display in the input.
    */
@@ -397,7 +448,13 @@ export interface TableCellState {
   selected: boolean
   valueText: string
   inRange: boolean
+  firstInRange: boolean
+  lastInRange: boolean
+  inHoveredRange: boolean
+  firstInHoveredRange: boolean
+  lastInHoveredRange: boolean
   value: DateValue
+  outsideRange: boolean
   readonly disabled: boolean
 }
 
@@ -407,24 +464,16 @@ export interface DayTableCellProps {
   visibleRange?: VisibleRange | undefined
 }
 
-export interface DayTableCellState {
+export interface WeekNumberCellProps {
+  weekIndex: number
+  week: DateValue[]
+}
+
+export interface DayTableCellState extends TableCellState {
   invalid: boolean
-  disabled: boolean
-  selected: boolean
   unavailable: boolean
-  outsideRange: boolean
-  inRange: boolean
-  firstInRange: boolean
-  lastInRange: boolean
   today: boolean
   weekend: boolean
-  formattedDate: string
-  readonly focused: boolean
-  readonly ariaLabel: string
-  readonly selectable: boolean
-  inHoveredRange: boolean
-  firstInHoveredRange: boolean
-  lastInHoveredRange: boolean
 }
 
 export interface TableProps {
@@ -467,6 +516,7 @@ export interface MonthGridProps {
 export interface Cell {
   label: string
   value: number
+  disabled?: boolean | undefined
 }
 
 export type MonthGridValue = Cell[][]
@@ -502,13 +552,49 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * Whether the date picker is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the date picker is read-only
+   */
+  readOnly: boolean
+  /**
    * Whether the date picker is rendered inline
    */
   inline: boolean
   /**
+   * The number of months to display
+   */
+  numOfMonths: number
+  /**
+   * Whether the week number column is shown in the day view
+   */
+  showWeekNumbers: boolean
+  /**
+   * The selection mode (single, multiple, or range)
+   */
+  selectionMode: SelectionMode
+  /**
+   * The maximum number of dates that can be selected (only for multiple selection mode).
+   */
+  maxSelectedDates: number | undefined
+  /**
+   * Whether the maximum number of selected dates has been reached.
+   */
+  isMaxSelected: boolean
+  /**
    * The current view of the date picker
    */
   view: DateView
+  /**
+   * Returns the ISO 8601 week number (1-53) for the given week (array of dates).
+   */
+  getWeekNumber: (week: DateValue[]) => number
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
@@ -578,13 +664,18 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   setValue: (values: DateValue[]) => void
   /**
+   * Sets the time for a specific date value.
+   * Converts CalendarDate to CalendarDateTime if needed.
+   */
+  setTime: (time: Time, index?: number) => void
+  /**
    * Sets the focused date to the given date.
    */
   setFocusedValue: (value: DateValue) => void
   /**
    * Clears the selected date(s).
    */
-  clearValue: VoidFunction
+  clearValue: (options?: { focus?: boolean }) => void
   /**
    * Function to open or close the calendar.
    */
@@ -661,6 +752,9 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getTableBodyProps: (props?: TableProps) => T["element"]
   getTableRowProps: (props?: TableProps) => T["element"]
 
+  getWeekNumberHeaderCellProps: (props?: TableProps) => T["element"]
+  getWeekNumberCellProps: (props: WeekNumberCellProps) => T["element"]
+
   getDayTableCellProps: (props: DayTableCellProps) => T["element"]
   getDayTableCellTriggerProps: (props: DayTableCellProps) => T["element"]
 
@@ -693,6 +787,7 @@ export type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
   DateRangePreset,

@@ -1,4 +1,4 @@
-import { allComponents, allOverviews } from "@/contentlayer"
+import { components as allComponents, overviews as allOverviews } from ".velite"
 
 export type SearchMetaItem = {
   content: string
@@ -29,7 +29,7 @@ function getSearchMeta() {
 
   for (const doc of documents) {
     const { title, toc, slug } = doc.frontmatter
-    const params = doc.params
+    const params = [...doc.params]
     params.shift()
 
     result.push({
@@ -37,28 +37,32 @@ function getSearchMeta() {
       id: doc._id,
       type: "lvl1",
       url: slug,
-      pathname: doc.pathname,
+      pathname: doc.pathname || "",
       slug: params,
       hierarchy: {
         lvl1: title,
       },
     })
 
-    toc.forEach((item: TOC, index: number) => {
-      result.push({
-        content: item.content,
-        id: doc._id + item.slug,
-        type: `lvl${item.lvl}` as any,
-        url: slug + `#${item.slug}`,
-        pathname: doc.pathname,
-        slug: params,
-        hierarchy: {
-          lvl1: title,
-          lvl2: item.lvl === 2 ? item.content : toc[index - 1]?.content ?? null,
-          lvl3: item.lvl === 3 ? item.content : null,
-        },
+    // The TOC is now already flattened by our transformation in velite.config.ts
+    if (toc && Array.isArray(toc)) {
+      toc.forEach((item: TOC, index: number) => {
+        result.push({
+          content: item.content,
+          id: doc._id + item.slug,
+          type: `lvl${item.lvl}` as any,
+          url: slug + `#${item.slug}`,
+          pathname: doc.pathname || "",
+          slug: params,
+          hierarchy: {
+            lvl1: title,
+            lvl2:
+              item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
+            lvl3: item.lvl === 3 ? item.content : null,
+          },
+        })
       })
-    })
+    }
   }
   return result
 }

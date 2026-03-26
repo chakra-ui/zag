@@ -6,7 +6,7 @@ let I: ToggleGroupModel
 test.describe("toggle-group", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToggleGroupModel(page)
-    await page.goto("/toggle-group")
+    await page.goto("/toggle-group/basic")
   })
 
   test("should have no accessibility violation", async () => {
@@ -85,6 +85,7 @@ test.describe("toggle-group", () => {
     // focus on outside button
     await I.clickOutsideButton()
     await I.pressKey("Tab")
+    await I.seeItemIsFocused("bold")
 
     await I.pressKey("ArrowRight")
     await I.seeItemIsFocused("italic")

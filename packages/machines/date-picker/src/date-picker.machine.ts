@@ -1,5 +1,12 @@
-import { DateFormatter } from "@internationalized/date"
-import { createGuards, createMachine, type Params } from "@zag-js/core"
+import {
+  DateFormatter,
+  toCalendar,
+  toCalendarDateTime,
+  toZoned,
+  type Calendar,
+  type CalendarIdentifier,
+} from "@internationalized/date"
+import { createGuards, createMachine, type Params, type PropFn } from "@zag-js/core"
 import {
   alignDate,
   constrainValue,
@@ -31,6 +38,7 @@ import {
   eachView,
   getNextView,
   getPreviousView,
+  getVisibleRangeText,
   isAboveMinView,
   isBelowMinView,
   isValidDate,
@@ -48,6 +56,13 @@ function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
   return true
 }
 
+function getValueAsString(value: DateValue[], prop: PropFn<DatePickerSchema>) {
+  return value.map((date) => {
+    if (date == null) return ""
+    return prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") })
+  })
+}
+
 export const machine = createMachine<DatePickerSchema>({
   props({ props }) {
     const locale = props.locale || "en-US"
@@ -55,18 +70,39 @@ export const machine = createMachine<DatePickerSchema>({
     const selectionMode = props.selectionMode || "single"
     const numOfMonths = props.numOfMonths || 1
 
+    // Resolve calendar from locale when createCalendar is provided
+    let calendar: Calendar | undefined
+    if (props.createCalendar) {
+      const resolved = new Intl.DateTimeFormat(locale).resolvedOptions()
+      const calendarId = resolved.calendar as CalendarIdentifier
+      if (calendarId !== "gregory" && calendarId !== "iso8601") {
+        calendar = props.createCalendar(calendarId)
+      }
+    }
+
+    // Helper to convert dates to resolved calendar
+    const toTargetCalendar = (date: DateValue) => {
+      if (!calendar) return date
+      if (date.calendar.identifier === calendar.identifier) return date
+      return toCalendar(date, calendar)
+    }
+
     // sort and constrain dates
     const defaultValue = props.defaultValue
-      ? sortDates(props.defaultValue).map((date) => constrainValue(date, props.min, props.max))
+      ? sortDates(props.defaultValue).map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
       : undefined
     const value = props.value
-      ? sortDates(props.value).map((date) => constrainValue(date, props.min, props.max))
+      ? sortDates(props.value).map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
       : undefined
 
     // get initial focused value
     let focusedValue =
-      props.focusedValue || props.defaultFocusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
-    focusedValue = constrainValue(focusedValue, props.min, props.max)
+      props.focusedValue ||
+      props.defaultFocusedValue ||
+      value?.[0] ||
+      defaultValue?.[0] ||
+      getTodayDate(timeZone, calendar)
+    focusedValue = constrainValue(toTargetCalendar(focusedValue), props.min, props.max)
 
     // get the initial view
     const minView: DateView = "day"
@@ -84,7 +120,13 @@ export const machine = createMachine<DatePickerSchema>({
       outsideDaySelectable: false,
       closeOnSelect: true,
       format(date, { locale, timeZone }) {
-        const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
+        const formatter = new DateFormatter(locale, {
+          timeZone,
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          calendar: calendar?.identifier,
+        })
         return formatter.format(date.toDate(timeZone))
       },
       parse(value, { locale, timeZone }) {
@@ -125,9 +167,7 @@ export const machine = createMachine<DatePickerSchema>({
           const context = getContext()
           const view = context.get("view")
           const value = context.get("value")
-          const valueAsString = value.map((date) =>
-            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
-          )
+          const valueAsString = getValueAsString(value, prop)
           prop("onFocusChange")?.({ value, valueAsString, view, focusedValue })
         },
       })),
@@ -135,12 +175,10 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual: isDateArrayEqual,
-        hash: (v) => v.map((date) => date.toString()).join(","),
+        hash: (v) => v.map((date) => date?.toString() ?? "").join(","),
         onChange(value) {
           const context = getContext()
-          const valueAsString = value.map((date) =>
-            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
-          )
+          const valueAsString = getValueAsString(value, prop)
           prop("onValueChange")?.({ value, valueAsString, view: context.get("view") })
         },
       })),
@@ -153,7 +191,7 @@ export const machine = createMachine<DatePickerSchema>({
       })),
       hoveredValue: bindable<DateValue | null>(() => ({
         defaultValue: null,
-        isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
+        isEqual: isDateEqual,
       })),
       view: bindable(() => ({
         defaultValue: prop("defaultView"),
@@ -167,6 +205,7 @@ export const machine = createMachine<DatePickerSchema>({
         return {
           defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
+          hash: (v) => v.toString(),
         }
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
@@ -183,39 +222,36 @@ export const machine = createMachine<DatePickerSchema>({
     visibleDuration: ({ prop }) => ({ months: prop("numOfMonths") }),
     endValue: ({ context, computed }) => getEndDate(context.get("startValue"), computed("visibleDuration")),
     visibleRange: ({ context, computed }) => ({ start: context.get("startValue"), end: computed("endValue") }),
-    visibleRangeText({ context, prop, computed }) {
-      const timeZone = prop("timeZone")
-      const formatter = new DateFormatter(prop("locale"), { month: "long", year: "numeric", timeZone })
-      const start = formatter.format(context.get("startValue").toDate(timeZone))
-      const end = formatter.format(computed("endValue").toDate(timeZone))
-      const formatted = prop("selectionMode") === "range" ? `${start} - ${end}` : start
-      return { start, end, formatted }
-    },
+    visibleRangeText: ({ context, prop, computed }) =>
+      getVisibleRangeText({
+        view: context.get("view"),
+        startValue: context.get("startValue"),
+        endValue: computed("endValue"),
+        locale: prop("locale"),
+        timeZone: prop("timeZone"),
+        selectionMode: prop("selectionMode"),
+      }),
     isPrevVisibleRangeValid: ({ context, prop }) =>
       !isPreviousRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
-    valueAsString({ context, prop }) {
-      const value = context.get("value")
-      return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
-    },
+    valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
   },
 
   effects: ["setupLiveRegion"],
 
   watch({ track, prop, context, action, computed }) {
     track([() => prop("locale")], () => {
-      action(["setStartValue"])
+      action(["setStartValue", "syncInputElement"])
     })
 
     track([() => context.hash("focusedValue")], () => {
-      action([
-        "setStartValue",
-        "syncMonthSelectElement",
-        "syncYearSelectElement",
-        "focusActiveCellIfNeeded",
-        "setHoveredValueIfKeyboard",
-      ])
+      action(["setStartValue", "focusActiveCellIfNeeded", "setHoveredValueIfKeyboard"])
+    })
+
+    // Ensure the month/year select reflect the actual visible start value
+    track([() => context.hash("startValue")], () => {
+      action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -407,7 +443,14 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "setRestoreFocus"],
+            actions: [
+              "setFocusedDate",
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "setRestoreFocus",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -416,6 +459,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setFocusedDate",
               "setSelectedDate",
               "setActiveIndexToStart",
+              "clearHoveredDate",
               "invokeOnClose",
               "focusInputElement",
             ],
@@ -430,8 +474,12 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToEnd"],
           },
           {
-            guard: "isMultiPicker",
+            guard: and("isMultiPicker", "canSelectDate"),
             actions: ["setFocusedDate", "toggleSelectedDate"],
+          },
+          {
+            guard: "isMultiPicker",
+            actions: ["setFocusedDate"],
           },
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
@@ -484,16 +532,22 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate", "invokeOnClose"],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
             target: "focused",
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "focusInputElement"],
+            actions: [
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "focusInputElement",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate"),
-            actions: ["setSelectedDate", "setActiveIndexToStart"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate"],
           },
           // ===
           {
@@ -501,8 +555,11 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["setSelectedDate", "setActiveIndexToEnd", "focusNextDay"],
           },
           {
-            guard: "isMultiPicker",
+            guard: and("isMultiPicker", "canSelectDate"),
             actions: ["toggleSelectedDate"],
+          },
+          {
+            guard: "isMultiPicker",
           },
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
@@ -654,6 +711,17 @@ export const machine = createMachine<DatePickerSchema>({
       isRangePicker: ({ prop }) => prop("selectionMode") === "range",
       hasSelectedRange: ({ context }) => context.get("value").length === 2,
       isMultiPicker: ({ prop }) => prop("selectionMode") === "multiple",
+      canSelectDate: ({ context, prop, event }) => {
+        const maxSelectedDates = prop("maxSelectedDates")
+        if (maxSelectedDates == null) return true
+        const existingValues = context.get("value")
+        const currentValue = event.value ?? context.get("focusedValue")
+        // Allow if deselecting (date already selected)
+        const isDeselecting = existingValues.some((date) => isDateEqual(date, currentValue))
+        if (isDeselecting) return true
+        // Block if we've reached the maximum
+        return existingValues.length < maxSelectedDates
+      },
       shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
       isSelectingEndDate: ({ context }) => context.get("activeIndex") === 1,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
@@ -692,6 +760,7 @@ export const machine = createMachine<DatePickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           defer: true,
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
@@ -724,10 +793,30 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("restoreFocus", true)
       },
       announceValueText({ context, prop, refs }) {
-        const announceText = context
-          .get("value")
-          .map((date) => formatSelectedDate(date, null, prop("locale"), prop("timeZone")))
-        refs.get("announcer")?.announce(announceText.join(","), 3000)
+        const value = context.get("value")
+        const locale = prop("locale")
+        const timeZone = prop("timeZone")
+
+        let announceText: string
+        if (prop("selectionMode") === "range") {
+          const [startDate, endDate] = value
+          if (startDate && endDate) {
+            announceText = formatSelectedDate(startDate, endDate, locale, timeZone)
+          } else if (startDate) {
+            announceText = formatSelectedDate(startDate, null, locale, timeZone)
+          } else if (endDate) {
+            announceText = formatSelectedDate(endDate, null, locale, timeZone)
+          } else {
+            announceText = ""
+          }
+        } else {
+          announceText = value
+            .map((date) => formatSelectedDate(date, null, locale, timeZone))
+            .filter(Boolean)
+            .join(",")
+        }
+
+        refs.get("announcer")?.announce(announceText, 3000)
       },
       announceVisibleRange({ computed, refs }) {
         const { formatted } = computed("visibleRangeText")
@@ -780,24 +869,30 @@ export const machine = createMachine<DatePickerSchema>({
       setSelectedDate(params) {
         const { context, event } = params
         const values = Array.from(context.get("value"))
-        values[context.get("activeIndex")] = normalizeValue(params, event.value ?? context.get("focusedValue"))
+        const activeIndex = context.get("activeIndex")
+        const existingValue = values[activeIndex]
+        const newValue = normalizeValue(params, event.value ?? context.get("focusedValue"))
+        values[activeIndex] = preserveTime(existingValue, newValue)
         context.set("value", adjustStartAndEndDate(values))
       },
       resetSelection(params) {
         const { context, event } = params
-        const value = normalizeValue(params, event.value ?? context.get("focusedValue"))
-        context.set("value", [value])
+        const existingValue = context.get("value")[0]
+        const newValue = normalizeValue(params, event.value ?? context.get("focusedValue"))
+        context.set("value", [preserveTime(existingValue, newValue)])
       },
       toggleSelectedDate(params) {
         const { context, event } = params
         const currentValue = normalizeValue(params, event.value ?? context.get("focusedValue"))
-        const index = context.get("value").findIndex((date) => isDateEqual(date, currentValue))
+        const existingValues = context.get("value")
+        const index = existingValues.findIndex((date) => isDateEqual(date, currentValue))
 
         if (index === -1) {
-          const values = [...context.get("value"), currentValue]
+          // Adding a new date - each date in multi-select is independent (no time inheritance)
+          const values = [...existingValues, currentValue]
           context.set("value", sortDates(values))
         } else {
-          const values = Array.from(context.get("value"))
+          const values = Array.from(existingValues)
           values.splice(index, 1)
           context.set("value", sortDates(values))
         }
@@ -811,7 +906,9 @@ export const machine = createMachine<DatePickerSchema>({
       selectFocusedDate({ context, computed }) {
         const values = Array.from(context.get("value"))
         const activeIndex = context.get("activeIndex")
-        values[activeIndex] = context.get("focusedValue").copy()
+        const existingValue = values[activeIndex]
+        const newValue = context.get("focusedValue").copy()
+        values[activeIndex] = preserveTime(existingValue, newValue)
         context.set("value", adjustStartAndEndDate(values))
 
         // always sync the input value, even if the selecteddate is not changed
@@ -924,8 +1021,9 @@ export const machine = createMachine<DatePickerSchema>({
         setFocusedValue(params, nextValue)
       },
       clearFocusedDate(params) {
-        const { prop } = params
-        setFocusedValue(params, getTodayDate(prop("timeZone")))
+        const { context, prop } = params
+        const calendar = context.get("focusedValue").calendar
+        setFocusedValue(params, getTodayDate(prop("timeZone"), calendar))
       },
       focusPreviousMonthColumn(params) {
         const { context, event } = params
@@ -949,13 +1047,15 @@ export const machine = createMachine<DatePickerSchema>({
       },
       focusFirstMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 0 })
-        setFocusedValue(params, nextValue)
+        const focused = context.get("focusedValue")
+        const minMonth = focused.calendar.getMinimumMonthInYear?.(focused) ?? 1
+        setFocusedValue(params, focused.set({ month: minMonth }))
       },
       focusLastMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 12 })
-        setFocusedValue(params, nextValue)
+        const focused = context.get("focusedValue")
+        const maxMonth = focused.calendar.getMonthsInYear(focused)
+        setFocusedValue(params, focused.set({ month: maxMonth }))
       },
       focusFirstYear(params) {
         const { context } = params
@@ -978,7 +1078,8 @@ export const machine = createMachine<DatePickerSchema>({
       setActiveIndexToStart({ context }) {
         context.set("activeIndex", 0)
       },
-      focusActiveCell({ scope, context }) {
+      focusActiveCell({ scope, context, event }) {
+        if (event.src === "input.click") return
         raf(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })
@@ -1005,15 +1106,24 @@ export const machine = createMachine<DatePickerSchema>({
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         })
       },
-      focusFirstInputElement({ scope }) {
+      focusFirstInputElement({ scope, event }) {
+        if (event.focus === false) return
         raf(() => {
           const [inputEl] = dom.getInputEls(scope)
-          inputEl?.focus({ preventScroll: true })
+          // if no input elements exist (trigger-only mode), focus the trigger instead
+          const elementToFocus = inputEl ?? dom.getTriggerEl(scope)
+          elementToFocus?.focus({ preventScroll: true })
         })
       },
       focusInputElement({ scope }) {
         raf(() => {
           const inputEls = dom.getInputEls(scope)
+
+          // If no input elements exist (trigger-only mode), focus the trigger instead
+          if (inputEls.length === 0) {
+            dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+            return
+          }
 
           const lastIndexWithValue = inputEls.findLastIndex((inputEl) => inputEl.value !== "")
           const indexToFocus = Math.max(lastIndexWithValue, 0)
@@ -1060,7 +1170,7 @@ export const machine = createMachine<DatePickerSchema>({
         setFocusedValue(params, date)
       },
 
-      selectParsedDate({ context, event, computed, prop }) {
+      selectParsedDate({ context, event, prop }) {
         if (event.index == null) return
 
         const parse = prop("parse")
@@ -1075,13 +1185,18 @@ export const machine = createMachine<DatePickerSchema>({
 
         if (!date) return
 
+        // constrain date to min/max range
+        date = constrainValue(date, prop("min"), prop("max"))
+
         const values = Array.from(context.get("value"))
         values[event.index] = date
 
         context.set("value", values)
+
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
-        context.set("inputValue", computed("valueAsString")[event.index])
+        const valueAsString = getValueAsString(values, prop)
+        context.set("inputValue", valueAsString[event.index])
       },
 
       resetView({ context }) {
@@ -1098,14 +1213,20 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("startValue", startValue)
       },
 
-      invokeOnOpen({ prop }) {
+      invokeOnOpen({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true })
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
 
-      invokeOnClose({ prop }) {
+      invokeOnClose({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false })
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      },
+      invokeOnVisibleRangeChange({ prop, context, computed }) {
+        prop("onVisibleRangeChange")?.({
+          view: context.get("view"),
+          visibleRange: computed("visibleRange"),
+        })
       },
 
       toggleVisibility({ event, send, prop }) {
@@ -1126,6 +1247,41 @@ const normalizeValue = (ctx: Params<DatePickerSchema>, value: number | DateValue
     }
   })
   return dateValue
+}
+
+/**
+ * Preserves time components from an existing date when setting a new date.
+ * - If existing date is a ZonedDateTime, preserves both time and timezone
+ * - If existing date is a CalendarDateTime, preserves time only
+ * - If existing date has no time, returns the new date as-is
+ */
+const preserveTime = (existingDate: DateValue | undefined, newDate: DateValue): DateValue => {
+  if (!existingDate || !("hour" in existingDate)) {
+    return newDate
+  }
+
+  // Check if existing date is a ZonedDateTime (has timezone)
+  const isZoned = "timeZone" in existingDate
+
+  // Convert CalendarDate to appropriate type if needed
+  let dateWithTime: DateValue = newDate
+  if (!("hour" in newDate)) {
+    if (isZoned) {
+      // Convert to ZonedDateTime with same timezone as existing
+      dateWithTime = toZoned(toCalendarDateTime(newDate), existingDate.timeZone)
+    } else {
+      // Convert to CalendarDateTime
+      dateWithTime = toCalendarDateTime(newDate)
+    }
+  }
+
+  // Copy time components from existing date to new date
+  return dateWithTime.set({
+    hour: existingDate.hour,
+    minute: existingDate.minute,
+    second: existingDate.second,
+    millisecond: existingDate.millisecond,
+  })
 }
 
 function setFocusedValue(ctx: Params<DatePickerSchema>, mixedValue: DateValue | number | undefined) {

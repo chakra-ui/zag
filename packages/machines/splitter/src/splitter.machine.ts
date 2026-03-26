@@ -103,6 +103,7 @@ export const machine = createMachine<SplitterSchema>({
   },
 
   entry: ["syncSize"],
+  exit: ["clearGlobalCursor"],
 
   states: {
     idle: {

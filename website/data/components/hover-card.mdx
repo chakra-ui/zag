@@ -4,9 +4,7 @@ description: Using the hover-card machine in your project.
 package: "@zag-js/hover-card"
 ---
 
-# Hover Card
-
-An hover card allows sighted users to preview content available behind a link
+A hover card lets sighted users preview content behind a link.
 
 <Resources pkg="@zag-js/hover-card" />
 
@@ -22,8 +20,7 @@ An hover card allows sighted users to preview content available behind a link
 
 ## Installation
 
-To use the hover card machine in your project, run the following command in your
-command line:
+Install the hover card package:
 
 <CodeSnippet id="hover-card/installation.mdx" />
 
@@ -38,30 +35,75 @@ how we name its parts.
 
 ## Usage
 
-First, import the hover card package into your project
+Import the hover card package:
 
-```jsx
+```tsx
 import * as hoverCard from "@zag-js/hover-card"
 ```
 
 The hover card package exports two key functions:
 
-- `machine` — The state machine logic for the hover card widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-hover-card machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="hover-card/usage.mdx" />
 
 ### Setting the initial state
 
-To make an hover card open by default, set the `defaultOpen` property to `true`
+Set `defaultOpen` to `true` to start with the hover card open.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(hoverCard.machine, {
   defaultOpen: true,
+})
+```
+
+### Controlled open state
+
+Use `open` and `onOpenChange` to control visibility externally.
+
+```tsx
+const service = useMachine(hoverCard.machine, {
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+  },
+})
+```
+
+### Customizing open and close delays
+
+Use `openDelay` and `closeDelay` to control hover timing.
+
+```tsx
+const service = useMachine(hoverCard.machine, {
+  openDelay: 300,
+  closeDelay: 150,
+})
+```
+
+### Positioning the hover card
+
+Use `positioning` to control placement and offsets.
+
+```tsx
+const service = useMachine(hoverCard.machine, {
+  positioning: {
+    placement: "bottom-start",
+    offset: { mainAxis: 8, crossAxis: 4 },
+  },
+})
+```
+
+### Disabling the hover card
+
+Set `disabled` to `true` to prevent it from opening.
+
+```tsx
+const service = useMachine(hoverCard.machine, {
+  disabled: true,
 })
 ```
 
@@ -70,7 +112,7 @@ const service = useMachine(hoverCard.machine, {
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(hoverCard.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -81,8 +123,7 @@ const service = useMachine(hoverCard.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each hover card part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-part="trigger"] {
@@ -111,19 +152,13 @@ hover card based on its open-close state.
 
 ### Arrow
 
-Zag exposes some variable that can be used to style the arrow.
+You can use CSS variables to style the arrow.
 
 ```css
 [data-part="arrow"] {
   /* styles for arrow */
   --arrow-background: white;
   --arrow-size: 8px;
-}
-```
-
-```css
-[data-part="content"] {
-  /* styles for content */
 }
 ```
 
@@ -144,6 +179,10 @@ The hover card `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="hover-card" />
+
+### CSS Variables
+
+<CssVarTable name="hover-card" />
 
 ## Accessibility
 

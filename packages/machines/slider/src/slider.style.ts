@@ -106,14 +106,16 @@ export function getVisibility(params: Pick<Ctx, "computed" | "prop">) {
   return visibility
 }
 
-export function getThumbStyle(params: Pick<Ctx, "computed" | "prop">, index: number): Style {
-  const { computed } = params
+export function getThumbStyle(params: Pick<Ctx, "computed" | "context" | "prop">, index: number): Style {
+  const { computed, context } = params
   const placementProp = computed("isVertical") ? "bottom" : "insetInlineStart"
+  const focusedIndex = context.get("focusedIndex")
   return {
     visibility: getVisibility(params),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     [placementProp]: `var(--slider-thumb-offset-${index})`,
+    zIndex: focusedIndex === index ? 1 : undefined,
   }
 }
 
@@ -169,9 +171,9 @@ export function getMarkerStyle(params: Pick<Ctx, "computed" | "context" | "prop"
     position: "absolute",
     pointerEvents: "none",
     [isHorizontal ? "insetInlineStart" : "bottom"]: getThumbOffset(params, value),
-    translate: "var(--tx) var(--ty)",
-    "--tx": isHorizontal ? (isRtl ? "50%" : "-50%") : "0%",
-    "--ty": !isHorizontal ? "50%" : "0%",
+    translate: "var(--translate-x) var(--translate-y)",
+    "--translate-x": isHorizontal ? (isRtl ? "50%" : "-50%") : "0%",
+    "--translate-y": !isHorizontal ? "50%" : "0%",
   }
 }
 

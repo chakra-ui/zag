@@ -2,11 +2,12 @@ import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
 import type { StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
-import { findStepIndex, isTooltipPlacement, isTooltipStep } from "./utils/step"
+import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
 export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
   const { state, context, computed, send, prop, scope } = service
@@ -47,6 +48,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     },
     dismiss() {
       send({ type: "DISMISS", src: "actionTrigger" })
+    },
+    skip() {
+      send({ type: "SKIP", src: "actionTrigger" })
     },
     goto(id) {
       send({ type: "STEP.SET", value: id, src: "actionTrigger" })
@@ -96,12 +100,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
-      return (stepIndex / steps.length) * 100
+      const index = getEffectiveStepIndex(steps, step?.id)
+      const total = getEffectiveSteps(steps).length
+      return ((index + 1) / total) * 100
     },
     getProgressText() {
-      const effectiveSteps = steps.filter((step) => step.type !== "wait")
-      const index = findStepIndex(effectiveSteps, step?.id)
-      const details = { current: index, total: effectiveSteps.length }
+      const index = getEffectiveStepIndex(steps, step?.id)
+      const total = getEffectiveSteps(steps).length
+      const details = { current: index, total }
       return prop("translations").progressText?.(details) ?? ""
     },
 
@@ -116,9 +122,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
-          position: "absolute",
+          position: isDialogStep(step) ? "fixed" : "absolute",
           inset: "0",
-          willChange: "clip-path",
+          willChange: isTooltipStep(step) ? "clip-path" : undefined,
         },
       })
     },
@@ -130,11 +136,11 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         style: {
           "--tour-layer": 1,
           position: "absolute",
-          width: `${targetRect.width}px`,
-          height: `${targetRect.height}px`,
-          left: `${targetRect.x}px`,
-          top: `${targetRect.y}px`,
-          borderRadius: `${prop("spotlightRadius")}px`,
+          width: toPx(targetRect.width),
+          height: toPx(targetRect.height),
+          left: toPx(targetRect.x),
+          top: toPx(targetRect.y),
+          borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
         },
       })

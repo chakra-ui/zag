@@ -13,6 +13,10 @@ export type TimePart = keyof Time
 
 export type TimerAction = "start" | "pause" | "resume" | "reset" | "restart"
 
+export interface IntlTranslations {
+  areaLabel?: ((time: Time, formattedTime: Time<string>) => string) | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   area: string
@@ -33,6 +37,10 @@ export interface TickDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface TimerProps extends CommonProperties {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the timer parts
    */
@@ -68,7 +76,7 @@ export interface TimerProps extends CommonProperties {
   onComplete?: (() => void) | undefined
 }
 
-type PropsWithDefault = "interval"
+type PropsWithDefault = "interval" | "startMs" | "translations"
 
 interface Context {
   /**

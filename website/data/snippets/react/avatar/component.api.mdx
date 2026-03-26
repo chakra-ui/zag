@@ -1,6 +1,7 @@
 ```tsx
 import * as avatar from "@zag-js/avatar"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export interface AvatarProps extends Omit<avatar.Context, "id"> {
   /**

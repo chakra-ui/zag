@@ -1,0 +1,30 @@
+{
+  "replace": {
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      },
+      "./anatomy": {
+        "import": {
+          "types": "./dist/tags-input.anatomy.d.mts",
+          "default": "./dist/tags-input.anatomy.mjs"
+        },
+        "require": {
+          "types": "./dist/tags-input.anatomy.d.ts",
+          "default": "./dist/tags-input.anatomy.js"
+        }
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

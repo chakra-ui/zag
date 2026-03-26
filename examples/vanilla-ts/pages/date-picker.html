@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Date Picker - Zag.js</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Date Picker</h1>
+
+    <div class="date-picker">
+      <p class="date-picker-visible-range"></p>
+
+      <div class="date-output">
+        <div class="date-picker-selected"></div>
+        <div class="date-picker-focused"></div>
+      </div>
+
+      <div class="date-picker-control">
+        <input class="date-picker-input" />
+        <button class="date-picker-clear">X</button>
+        <button class="date-picker-trigger">Open</button>
+      </div>
+
+      <div class="date-picker-positioner">
+        <div class="date-picker-content">
+          <div style="margin-bottom: 20px;">
+            <select class="date-picker-month-select"></select>
+            <select class="date-picker-year-select"></select>
+          </div>
+
+          <!-- Day View -->
+          <div class="date-picker-day-view">
+            <div class="date-picker-day-view-control">
+              <button class="date-picker-day-prev">Prev</button>
+              <button class="date-picker-day-view-trigger"></button>
+              <button class="date-picker-day-next">Next</button>
+            </div>
+
+            <table class="date-picker-day-table">
+              <thead class="date-picker-day-thead">
+                <tr class="date-picker-header-row"></tr>
+              </thead>
+              <tbody class="date-picker-day-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- Month View -->
+          <div class="date-picker-month-view">
+            <div class="date-picker-month-view-control">
+              <button class="date-picker-month-prev">Prev</button>
+              <button class="date-picker-month-view-trigger"></button>
+              <button class="date-picker-month-next">Next</button>
+            </div>
+
+            <table class="date-picker-month-table">
+              <tbody class="date-picker-month-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- Year View -->
+          <div class="date-picker-year-view">
+            <div class="date-picker-year-view-control">
+              <button class="date-picker-year-prev">Prev</button>
+              <span class="date-picker-year-view-text"></span>
+              <button class="date-picker-year-next">Next</button>
+            </div>
+
+            <table class="date-picker-year-table">
+              <tbody class="date-picker-year-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./date-picker.ts"></script>
+  </body>
+</html>

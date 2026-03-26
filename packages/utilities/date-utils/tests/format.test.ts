@@ -14,6 +14,9 @@ test("formatSelectedDate / selected date", () => {
   expect(formatSelectedDate(startDate, endDate, locale, timeZone)).toMatchInlineSnapshot(
     `"Tuesday, January 10 – Thursday, January 12, 2023"`,
   )
+
+  expect(formatSelectedDate(null, null, locale, timeZone)).toBe("")
+  expect(formatSelectedDate(undefined, null, locale, timeZone)).toBe("")
 })
 
 test("formatVisibleRange / visible range", () => {

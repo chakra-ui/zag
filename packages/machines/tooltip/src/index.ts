@@ -5,10 +5,12 @@ export * from "./tooltip.props"
 export type {
   TooltipApi as Api,
   ElementIds,
+  TooltipMachine as Machine,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
-  TooltipMachine as Machine,
   TooltipProps as Props,
   TooltipService as Service,
+  TriggerProps,
+  TriggerValueChangeDetails,
 } from "./tooltip.types"

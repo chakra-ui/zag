@@ -45,6 +45,14 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
    * Whether the collapsible is disabled.
    */
   disabled?: boolean | undefined
+  /**
+   * The height of the content when collapsed.
+   */
+  collapsedHeight?: number | string | undefined
+  /**
+   * The width of the content when collapsed.
+   */
+  collapsedWidth?: number | string | undefined
 }
 
 export interface CollapsibleSchema {
@@ -80,7 +88,7 @@ export interface CollapsibleSchema {
     | "invokeOnExitComplete"
     | "toggleVisibility"
 
-  effect: "trackEnterAnimation" | "trackExitAnimation"
+  effect: "trackEnterAnimation" | "trackExitAnimation" | "trackTabbableElements"
 }
 
 export type CollapsibleService = Service<CollapsibleSchema>

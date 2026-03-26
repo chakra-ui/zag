@@ -5,12 +5,13 @@ export { machine } from "./menu.machine"
 export * from "./menu.props"
 export type {
   MenuApi as Api,
+  ElementIds,
   HighlightChangeDetails,
+  ItemBaseProps,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemListenerProps,
   ItemProps,
-  ItemBaseProps,
   ItemState,
   MenuMachine as Machine,
   NavigateDetails,
@@ -22,4 +23,6 @@ export type {
   MenuProps as Props,
   SelectionDetails,
   MenuService as Service,
+  TriggerProps,
+  TriggerValueChangeDetails,
 } from "./menu.types"

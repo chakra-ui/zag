@@ -1,4 +1,5 @@
-import { CalendarDate, parseDate, type DateValue } from "@internationalized/date"
+import { CalendarDate, parseDate } from "@internationalized/date"
+import type { DateValue } from "@zag-js/date-utils"
 
 export function parse(value: string | Date): DateValue
 export function parse(value: string[] | Date[]): DateValue[]
@@ -11,5 +12,5 @@ export function parse(value: any) {
     return new CalendarDate(value.getFullYear(), value.getMonth() + 1, value.getDate()) as DateValue
   }
 
-  return parseDate(value)
+  return parseDate(value) as DateValue
 }

@@ -31,8 +31,8 @@ export interface ColorType {
   toFormat(format: ColorFormat): ColorType
   /** Converts the color to a JSON object. */
   toJSON(): Record<string, number>
-  /** Converts the color to a string in the given format. */
-  toString(format: ColorStringFormat): string
+  /** Converts the color to a string in the given format. Defaults to CSS format. */
+  toString(format?: ColorStringFormat): string
   /** Converts the color to hex, and returns an integer representation. */
   toHexInt(): number
 

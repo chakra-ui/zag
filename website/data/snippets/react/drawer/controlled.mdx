@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledDrawer() {
+  const [open, setOpen] = useState(false)
+
+  const service = useMachine(drawer.machine, {
+    open,
+    onOpenChange(details) {
+      setOpen(details.open)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

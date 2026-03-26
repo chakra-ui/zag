@@ -1,4 +1,4 @@
-import type { NumberFormatter, NumberParser } from "@internationalized/number"
+import type { NumberParser } from "@internationalized/number"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -157,6 +157,10 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
+   * Function invoked when the value is committed (when the input is blurred or the Enter key is pressed)
+   */
+  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
+  /**
    * Whether to spin the value when the increment/decrement button is pressed
    * @default true
    */
@@ -227,7 +231,7 @@ type ComputedContext = Readonly<{
   /**
    * The number i18n formatter
    */
-  formatter: NumberFormatter
+  formatter: Intl.NumberFormat
   /**
    * The number i18n parser
    */

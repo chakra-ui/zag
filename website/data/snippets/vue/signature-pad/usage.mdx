@@ -1,7 +1,7 @@
 ```html
 <script setup>
   import * as signaturePad from "@zag-js/signature-pad"
-  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
   const service = useMachine(signaturePad.machine, { id: "1" })

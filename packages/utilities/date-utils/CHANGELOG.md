@@ -1,5 +1,132 @@
 # @zag-js/date-utils
 
+## 1.38.2
+
+## 1.38.1
+
+## 1.38.0
+
+## 1.37.0
+
+## 1.36.0
+
+## 1.35.3
+
+## 1.35.2
+
+## 1.35.1
+
+## 1.35.0
+
+### Minor Changes
+
+- [`4ac700a`](https://github.com/chakra-ui/zag/commit/4ac700a89ae1150aef9d0cd2a878e724052d4828) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add non-Gregorian calendar support via `createCalendar` prop
+  - Support Persian, Buddhist, Islamic, Hebrew, and other calendar systems
+  - Month names, year ranges, formatters, and navigation now respect the active calendar
+
+## 1.34.1
+
+## 1.34.0
+
+### Minor Changes
+
+- [`75788b9`](https://github.com/chakra-ui/zag/commit/75788b974d75812f13862990da3ddc1715a9849d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `showWeekNumbers` support to the date picker. When enabled,
+  the day view displays an ISO 8601 week number column. Added `getWeekOfYear` to date-utils for week number calculation.
+
+### Patch Changes
+
+- [`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **DatePicker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+
+  **Date utils**
+  - Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+- [`8a02d5c`](https://github.com/chakra-ui/zag/commit/8a02d5c2785a4c1359204c092de3d63445257203) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Date Picker**: Export `DateValue` type locally instead of
+  re-exporting from `@internationalized/date`, since that package doesn't export this type in v3.10.0+
+
+## 1.33.1
+
+## 1.33.0
+
+## 1.32.0
+
+## 1.31.1
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.1
+
+## 1.29.0
+
+## 1.28.0
+
+## 1.27.1
+
+## 1.27.0
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
+## 1.26.2
+
+## 1.26.1
+
+## 1.26.0
+
+## 1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- [#2717](https://github.com/chakra-ui/zag/pull/2717)
+  [`05bf37a`](https://github.com/chakra-ui/zag/commit/05bf37aeb332f3666aa8cb4d586481b7a60a9374) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - Fix issue where quarter presets returns incorrect date
+
+- [`9181889`](https://github.com/chakra-ui/zag/commit/91818897e1e1e95b5ebc8b5ea9f73a66c2f96ed0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where year range picker doesn't show the hovered range
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
 ## 1.21.1
 
 ## 1.21.0
@@ -182,10 +309,6 @@
 ## 0.74.1
 
 ### Patch Changes
-
-- [`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed) Thanks
-  [@cschroeter](https://github.com/cschroeter)! - fix(time-picker): move @internationalized/date to the list of peer
-  deps"
 
 ## 0.74.0
 

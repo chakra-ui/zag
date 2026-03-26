@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,6 +21,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface SelectionDetails {
@@ -40,10 +41,12 @@ export type ElementIds = Partial<{
   itemGroupLabel: (id: string | number) => string
 }>
 
-export interface ListboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    OrientationProperty {
+export interface ListboxProps<T extends CollectionItem = CollectionItem> extends DirectionProperty, CommonProperties {
+  /**
+   * The orientation of the listbox.
+   * @default "vertical"
+   */
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The item collection
    */
@@ -134,7 +137,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     value: string[]
     highlightedValue: string | null
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
     focused: boolean
   }
   computed: {
@@ -143,11 +146,13 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isInteractive: boolean
     selection: Selection
     multiple: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState
-    prevCollection: ListCollection<T> | null
+    focusVisible: boolean
+    inputState: { autoHighlight: boolean; focused: boolean }
   }
   action: string
   guard: string
@@ -189,8 +194,17 @@ export interface ItemState {
   selected: boolean
   /**
    * Whether the item is highlighted
+   * @deprecated Use `focused` and `focusVisible` instead
    */
   highlighted: boolean
+  /**
+   * Whether the item is focused
+   */
+  focused: boolean
+  /**
+   * Whether the item is focus visible
+   */
+  focusVisible: boolean
 }
 
 export interface ItemGroupProps {
@@ -207,6 +221,13 @@ export interface InputProps {
    * @default false
    */
   autoHighlight?: boolean | undefined
+  /**
+   * Determines how keyboard conflicts in the input are resolved.
+   * - "caret": keep native text-editing behavior
+   * - "navigate": forward supported keys to listbox navigation
+   * @default "caret"
+   */
+  keyboardPriority?: "caret" | "navigate" | undefined
 }
 
 export interface ListboxApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
@@ -226,6 +247,22 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to highlight a value
    */
   highlightValue: (value: string) => void
+  /**
+   * Function to highlight the first value
+   */
+  highlightFirst: VoidFunction
+  /**
+   * Function to highlight the last value
+   */
+  highlightLast: VoidFunction
+  /**
+   * Function to highlight the next value
+   */
+  highlightNext: VoidFunction
+  /**
+   * Function to highlight the previous value
+   */
+  highlightPrevious: VoidFunction
   /**
    * Function to clear the highlighted value
    */

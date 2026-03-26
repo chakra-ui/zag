@@ -70,6 +70,27 @@ ul {
   text-decoration: none;
 }
 
+.component-index-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.component-search {
+  margin-bottom: 20px;
+}
+
+.component-search input {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #d7e0da;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.empty-state {
+  color: #667085;
+}
+
 .backlink {
   margin: 16px 12px;
 }
@@ -116,6 +137,7 @@ body {
   border-left: solid 4px transparent;
   text-decoration: none;
   color: black;
+  text-transform: none;
 }
 
 .nav a:hover {

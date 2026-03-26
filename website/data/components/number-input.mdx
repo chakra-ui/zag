@@ -4,8 +4,6 @@ description: Using the numeric input machine in your project.
 package: "@zag-js/number-input"
 ---
 
-# Number Input
-
 The number input provides controls for editing, incrementing or decrementing
 numeric values using the keyboard or pointer.
 
@@ -22,12 +20,11 @@ numeric values using the keyboard or pointer.
 - Supports pressing and holding the spin buttons to continuously increment or
   decrement
 - Supports rounding value to specific number of fraction digits
-- Support for scrubbing interaction
+- Supports scrubbing interaction
 
 ## Installation
 
-To use the number input machine in your project, run the following command in
-your command line:
+Install the number input package:
 
 <CodeSnippet id="number-input/installation.mdx" />
 
@@ -42,33 +39,28 @@ how we name its parts.
 
 ## Usage
 
-First, import the number input package into your project
+Import the number input package:
 
-```jsx
+```tsx
 import * as numberInput from "@zag-js/number-input"
 ```
 
 The number input package exports two key functions:
 
-- `machine` — The state machine logic for the number input widget as described
-  in the WAI-ARIA spinner pattern.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that the every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-number input machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="number-input/usage.mdx" />
 
 ### Setting the initial value
 
-Use the `defaultValue` context property to set the initial value of the number
-input. The value must be a `string` not a `number`.
+Set `defaultValue` to define the initial value. The value must be a `string`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   defaultValue: "13",
 })
@@ -76,11 +68,10 @@ const service = useMachine(numberInput.machine, {
 
 ### Controlled value
 
-Use the `value` and `onValueChange` context properties to control the value of
-the number input.
+Use `value` and `onValueChange` to control the value externally.
 
-> **Note:** Due the fact that value can be formatted, it's important to preserve
-> the value as a string.
+> **Note:** Since the value can be formatted, it's important to preserve the
+> value as a string.
 
 <CodeSnippet id="number-input/controlled.mdx" />
 
@@ -90,7 +81,7 @@ Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
 range.
 
-```jsx {2,3}
+```tsx {2,3}
 const service = useMachine(numberInput.machine, {
   min: 10,
   max: 200,
@@ -100,10 +91,26 @@ const service = useMachine(numberInput.machine, {
 > To allow the value overflow the specified min or max, set the
 > `allowOverflow: true` in the context.
 
+### Validating overflow and underflow
+
+Use `onValueInvalid` to react when the value goes below `min` or above `max`.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  min: 0,
+  max: 10,
+  allowOverflow: true,
+  onValueInvalid(details) {
+    // details => { value: string, valueAsNumber: number, reason: "rangeUnderflow" | "rangeOverflow" }
+    console.log(details.reason)
+  },
+})
+```
+
 ### Scrubbing the input value
 
-The number input machine supports the scrubber interaction pattern. The use this
-pattern, spread the `scrubberProps` from the `api` on to the scrubbing element.
+Number input supports the scrubber interaction pattern. To use this pattern,
+spread `api.getScrubberProps()` on the scrubbing element.
 
 It uses the Pointer lock API and tracks the pointer movement. It also renders a
 virtual cursor which mimics the real cursor's pointer.
@@ -116,7 +123,7 @@ The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
 the machine's context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   allowMouseWheel: true,
 })
@@ -125,12 +132,12 @@ const service = useMachine(numberInput.machine, {
 ### Clamp value when user blurs the input
 
 In most cases, users can type custom values in the input field. If the typed
-value is greater than the max, the value is reset to max when the user blur out
-of the input.
+value is greater than the max, the value is reset to max when the user blurs the
+input.
 
 To disable this behavior, pass `clampValueOnBlur` and set to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   clampValueOnBlur: false,
 })
@@ -140,11 +147,37 @@ const service = useMachine(numberInput.machine, {
 
 When the value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(numberInput.machine, {
   onValueChange(details) {
     // details => { value: string, valueAsNumber: number }
     console.log("value is:", details.value)
+  },
+})
+```
+
+### Listening for value commit
+
+Use `onValueCommit` to react when the value is committed (blur or Enter).
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  onValueCommit(details) {
+    // details => { value: string, valueAsNumber: number }
+    console.log("committed:", details.value)
+  },
+})
+```
+
+### Listening for focus changes
+
+Use `onFocusChange` to react to focus and blur transitions.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  onFocusChange(details) {
+    // details => { focused: boolean, value: string, valueAsNumber: number }
+    console.log("focused:", details.focused)
   },
 })
 ```
@@ -154,7 +187,7 @@ const service = useMachine(numberInput.machine, {
 To use the number input within forms, set the `name` property in the machine's
 context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   name: "quantity",
 })
@@ -166,7 +199,7 @@ To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
 `maximumFractionDigits` or `minimumFractionDigits`
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     maximumFractionDigits: 4,
@@ -179,9 +212,19 @@ const service = useMachine(numberInput.machine, {
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   spinOnPress: false,
+})
+```
+
+### Choosing mobile keyboard type
+
+Set `inputMode` to hint the keyboard type on mobile.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  inputMode: "numeric", // "text" | "tel" | "numeric" | "decimal"
 })
 ```
 
@@ -190,7 +233,7 @@ const service = useMachine(numberInput.machine, {
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     style: "currency",
@@ -199,10 +242,35 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+### Customizing accessibility labels
+
+Use `translations` to customize increment/decrement labels and value text.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  translations: {
+    incrementLabel: "Increase quantity",
+    decrementLabel: "Decrease quantity",
+    valueText: (value) => `${value} units`,
+  },
+})
+```
+
+### Submitting with an external form
+
+Set `form` if the hidden input should submit with a form outside the current DOM
+subtree.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  name: "value",
+  form: "checkout-form",
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each number-input's part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Disabled state
 

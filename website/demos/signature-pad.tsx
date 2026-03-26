@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as signaturePad from "@zag-js/signature-pad"
 import { useId } from "react"
 import { BiRotateRight } from "react-icons/bi"
+import styles from "../styles/machines/signature-pad.module.css"
 
 interface SignaturePadProps extends Omit<signaturePad.Props, "id"> {}
 
@@ -14,11 +15,13 @@ export function SignaturePad(props: SignaturePadProps) {
   const api = signaturePad.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
-      <label {...api.getLabelProps()}>Sign here</label>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <label className={styles.Label} {...api.getLabelProps()}>
+        Sign here
+      </label>
 
-      <div {...api.getControlProps()}>
-        <svg {...api.getSegmentProps()}>
+      <div className={styles.Control} {...api.getControlProps()}>
+        <svg className={styles.Segment} {...api.getSegmentProps()}>
           {api.paths.map((path, i) => (
             <path key={i} {...api.getSegmentPathProps({ path })} />
           ))}
@@ -27,11 +30,11 @@ export function SignaturePad(props: SignaturePadProps) {
           )}
         </svg>
 
-        <button {...api.getClearTriggerProps()}>
+        <button className={styles.ClearTrigger} {...api.getClearTriggerProps()}>
           <BiRotateRight />
         </button>
 
-        <div {...api.getGuideProps()} />
+        <div className={styles.Guide} {...api.getGuideProps()} />
       </div>
     </div>
   )

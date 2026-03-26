@@ -4,10 +4,7 @@ description: Using a countdown and stopwatch timer in your project.
 package: "@zag-js/timer"
 ---
 
-# Timer
-
-The timer machine is used to record the time elapsed from zero or since a
-specified target time.
+The timer machine tracks elapsed or remaining time.
 
 <Resources pkg="@zag-js/timer" />
 
@@ -17,20 +14,18 @@ specified target time.
 
 - Countdown from a specified time
 - Use as stopwatch to record the time elapsed
-- Control the timer with start, stop, and resume buttons
+- Control the timer with start, pause, resume, reset, and restart actions
 - Set the tick interval for the timer
 
 ## Installation
 
-To use the Timer machine in your project, run the following command in your
-command line:
+Install the timer package:
 
 <CodeSnippet id="timer/installation.mdx" />
 
 ## Anatomy
 
-To set up the Timer correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the timer anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -38,25 +33,19 @@ name its parts.
 
 ## Usage
 
-First, import the timer package into your project
+Import the timer package:
 
-```jsx
+```tsx
 import * as timer from "@zag-js/timer"
 ```
 
-The Timer package exports these functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the Time Picker widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
-- `parse` — The function to parse a date time string or object into a `Time`
-  object.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `parse` - Parses a date-time string or object into milliseconds.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-Time Picker machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="timer/usage.mdx" />
 
@@ -65,7 +54,7 @@ Time Picker machine in your project 🔥
 Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   startMs: 1000 * 60 * 60, // 1 hour
 })
@@ -74,7 +63,7 @@ const service = useMachine(timer.machine, {
 Alternatively, you can also use the `timer.parse` function to convert a date
 time string or object into milliseconds
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   startMs: timer.parse("2021-01-01T12:00:00Z"),
   // startMs: timer.parse({ hours: 12, minutes: 0, seconds: 0 }),
@@ -86,7 +75,7 @@ const service = useMachine(timer.machine, {
 Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   autoStart: true,
 })
@@ -97,7 +86,7 @@ const service = useMachine(timer.machine, {
 To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
 })
@@ -112,7 +101,7 @@ is reached.
 When `targetMs` is set and `countdown=true`, the timer ticks down to zero from
 the specified target time.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
   targetMs: 1000 * 60 * 60, // 1 hour
@@ -122,7 +111,7 @@ const service = useMachine(timer.machine, {
 When `targetMs` is set and `countdown=false|undefined`, the timer ticks up to
 the specified target time.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   targetMs: 1000 * 60 * 60, // 1 hour
 })
@@ -133,7 +122,7 @@ const service = useMachine(timer.machine, {
 Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   interval: 1000, // 1 second
 })
@@ -141,14 +130,14 @@ const service = useMachine(timer.machine, {
 
 ### Listening to tick events
 
-When the timer ticks, the `onTick` callback is invoke. You can listen to this
+When the timer ticks, the `onTick` callback is invoked. You can listen to this
 event and update your UI accordingly.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   onTick(details) {
-    // details => { value, segments }
-    console.log(details)
+    // details => { value: number, time, formattedTime }
+    console.log(details.formattedTime)
   },
 })
 ```
@@ -157,7 +146,7 @@ const service = useMachine(timer.machine, {
 
 When the timer reaches the target time, the `onComplete` callback is invoked.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
   targetMs: 1000 * 60 * 60, // 1 hour
@@ -167,44 +156,28 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-### Starting and Stopping the timer
+### Programmatic timer controls
 
-To start the timer, send the `api.start()` callback
+Use the connected API for timer actions.
 
-```jsx
+```tsx
 api.start()
-```
-
-To stop the timer, send the `api.stop()` callback
-
-```jsx
-api.stop()
-```
-
-### Pausing and Resuming the timer
-
-To pause the timer, send the `api.pause()` callback
-
-```jsx
 api.pause()
-```
-
-To resume the timer, send the `api.resume()` callback
-
-```jsx
 api.resume()
+api.reset()
+api.restart()
 ```
 
 ## Methods and Properties
 
 ### Machine Context
 
-The time picker machine exposes the following context properties:
+The timer machine exposes the following context properties:
 
 <ContextTable name="timer" />
 
 ### Machine API
 
-The time picker `api` exposes the following methods:
+The timer `api` exposes the following methods:
 
 <ApiTable name="timer" />

@@ -1,0 +1,73 @@
+@layer recipes {
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+
+    &:hover {
+      background: var(--colors-bg-primary-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Content {
+    --background: var(--colors-bg-popover);
+    background: var(--background);
+    padding: 1rem;
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    z-index: calc(var(--layer-index) + 50);
+    position: relative;
+    max-width: min(calc(100vw - 16px), 320px);
+    width: 100%;
+
+    &:is(:focus, [data-focus]) {
+      outline: none;
+    }
+  }
+
+  .Arrow {
+    --arrow-background: var(--background);
+    --arrow-size: 8px;
+  }
+
+  .ArrowTip {
+    border-radius: 0.125rem;
+  }
+
+  .Body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ActionButton {
+    background: var(--colors-bg-subtle);
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+
+    &:focus {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .CloseTrigger {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem;
+  }
+}

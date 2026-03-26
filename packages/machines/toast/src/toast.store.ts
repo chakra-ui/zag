@@ -37,7 +37,7 @@ const sortToastsByPriority = <V>(toastArray: Partial<ToastProps<V>>[]): Partial<
   })
 }
 
-export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
+export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastStore<V> {
   const attrs = withDefaults(props, {
     placement: "bottom",
     overlap: false,

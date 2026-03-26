@@ -9,6 +9,7 @@ export const props = createProps<MenuProps>()([
   "composite",
   "defaultHighlightedValue",
   "defaultOpen",
+  "defaultTriggerValue",
   "dir",
   "getRootNode",
   "highlightedValue",
@@ -22,9 +23,12 @@ export const props = createProps<MenuProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onRequestDismiss",
   "onSelect",
+  "onTriggerValueChange",
   "open",
   "positioning",
+  "triggerValue",
   "typeahead",
 ])
 

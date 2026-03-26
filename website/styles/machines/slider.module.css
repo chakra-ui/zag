@@ -1,0 +1,71 @@
+@layer recipes {
+  .Root {
+    width: 16rem;
+    margin-top: -24px;
+
+    & > div:first-child {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+  }
+
+  .ValueText {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .Control {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    position: relative;
+    padding-block: 0.625rem;
+  }
+
+  .Track {
+    height: 4px;
+    border-radius: 9999px;
+    flex: 1;
+    background: var(--colors-bg-bold);
+  }
+
+  .Range {
+    height: 100%;
+    border-radius: inherit;
+    background: #38a169;
+
+    &[data-disabled] {
+      background: #9ae6b4;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+    &:is(:focus, [data-focus]) {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &[data-disabled] {
+      background: #e2e8f0;
+      filter: grayscale(100%);
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null
@@ -47,7 +47,15 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean | undefined
   /**
-   * Whether the checkbox is read-only
+   * If `true`, the radio group is marked as invalid.
+   */
+  invalid?: boolean | undefined
+  /**
+   * If `true`, the radio group is marked as required.
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the radio group is read-only
    */
   readOnly?: boolean | undefined
   /**
@@ -58,13 +66,6 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    * Orientation of the radio group
    */
   orientation?: "horizontal" | "vertical" | undefined
-}
-
-export interface IndicatorRect {
-  left: string
-  top: string
-  width: string
-  height: string
 }
 
 interface PrivateContext {
@@ -81,17 +82,21 @@ interface PrivateContext {
    */
   focusedValue: string | null
   /**
+   * The id of the radio that has focus-visible
+   */
+  focusVisibleValue: string | null
+  /**
    * The id of the hovered radio
    */
   hoveredValue: string | null
   /**
    * The active tab indicator's dom rect
    */
-  indicatorRect: Partial<IndicatorRect>
+  indicatorRect: Rect | null
   /**
-   * Whether the active tab indicator's rect can transition
+   * Whether indicator transitions should be animated
    */
-  canIndicatorTransition: boolean
+  animateIndicator: boolean
   /**
    * Whether the radio group's fieldset is disabled
    */
@@ -116,6 +121,10 @@ interface Refs {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup: VoidFunction | null
+  /**
+   * Previous selected value, used to detect real value transitions
+   */
+  prevValue: string | null
 }
 
 export interface RadioGroupSchema {

@@ -1,6 +1,6 @@
 import type { Params } from "@zag-js/core"
 import { getEventTarget, getWindow } from "@zag-js/dom-query"
-import { isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
+import { isFileEqual, isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
@@ -38,14 +38,18 @@ export function getEventFiles(
     const [accepted, acceptError] = isValidFileType(file, computed("acceptAttr"))
     const [sizeMatch, sizeError] = isValidFileSize(file, prop("minFileSize"), prop("maxFileSize"))
 
+    const isDuplicate =
+      currentAcceptedFiles.some((f) => isFileEqual(f, file)) || acceptedFiles.some((f) => isFileEqual(f, file))
+
     const validateErrors = prop("validate")?.(file, validateParams)
 
     const valid = validateErrors ? validateErrors.length === 0 : true
 
-    if (accepted && sizeMatch && valid) {
+    if (accepted && sizeMatch && valid && !isDuplicate) {
       acceptedFiles.push(file)
     } else {
       const errors = [acceptError, sizeError]
+      if (isDuplicate) errors.push("FILE_EXISTS")
       if (!valid) errors.push(...(validateErrors ?? []))
       rejectedFiles.push({ file, errors: errors.filter(Boolean) as FileError[] })
     }

@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { EllipsisProps, ItemProps, PaginationProps } from "./pagination.types"
 
 export const props = createProps<PaginationProps>()([
+  "boundaryCount",
   "count",
   "dir",
   "getRootNode",
@@ -17,6 +18,7 @@ export const props = createProps<PaginationProps>()([
   "siblingCount",
   "translations",
   "type",
+  "getPageUrl",
 ])
 export const splitProps = createSplitProps<Partial<PaginationProps>>(props)
 

@@ -1,6 +1,7 @@
 import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/accordion.module.css"
 
 const items = [
   {
@@ -32,16 +33,26 @@ export function Accordion(props: AccordionProps) {
   const api = accordion.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
+    <div className={styles.Root} {...api.getRootProps()}>
       {items.map((item) => (
-        <div key={item.title} {...api.getItemProps({ value: item.title })}>
+        <div
+          key={item.title}
+          className={styles.Item}
+          {...api.getItemProps({ value: item.title })}
+        >
           <h3>
-            <button {...api.getItemTriggerProps({ value: item.title })}>
+            <button
+              className={styles.ItemTrigger}
+              {...api.getItemTriggerProps({ value: item.title })}
+            >
               <div>{item.title}</div>
               <div>{item.desc}</div>
             </button>
           </h3>
-          <div {...api.getItemContentProps({ value: item.title })}>
+          <div
+            className={styles.ItemContent}
+            {...api.getItemContentProps({ value: item.title })}
+          >
             {item.content}
           </div>
         </div>

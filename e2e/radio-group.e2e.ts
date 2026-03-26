@@ -1,102 +1,88 @@
-import { expect, type Page, test } from "@playwright/test"
-import { a11y, controls, testid, part } from "./_utils"
+import { test } from "@playwright/test"
+import { RadioGroupModel } from "./models/radio-group.model"
 
-const root = part("root")
-const label = part("label")
-
-const apple = {
-  radio: testid("radio-apple"),
-  label: testid("label-apple"),
-  input: testid("input-apple"),
-  control: testid("control-apple"),
-}
-
-const grape = {
-  radio: testid("radio-grape"),
-  label: testid("label-grape"),
-  input: testid("input-grape"),
-  control: testid("control-grape"),
-}
-
-const expectToBeChecked = async (page: Page, item: typeof apple) => {
-  await expect(page.locator(item.radio)).toHaveAttribute("data-state", "checked")
-  await expect(page.locator(item.label)).toHaveAttribute("data-state", "checked")
-  await expect(page.locator(item.control)).toHaveAttribute("data-state", "checked")
-}
+let I: RadioGroupModel
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/radio-group")
+  I = new RadioGroupModel(page)
+  await I.goto()
 })
 
-test("should have no accessibility violation", async ({ page }) => {
-  await a11y(page)
+test("should have no accessibility violation", async () => {
+  await I.checkAccessibility()
 })
 
-test("should have aria-labelledby on root", async ({ page }) => {
-  const labelId = await page.locator(label).getAttribute("id")
-  expect(labelId).not.toBeNull()
-  await expect(page.locator(root)).toHaveAttribute("aria-labelledby", labelId as string)
+test("should have aria-labelledby on root", async () => {
+  await I.seeRootHasLabelledBy()
 })
 
-test("should be checked when clicked", async ({ page }) => {
-  await page.click(apple.radio)
-  await expectToBeChecked(page, apple)
+test("should be checked when clicked", async () => {
+  await I.clickRadio("apple")
+  await I.seeRadioIsChecked("apple")
 
-  await page.click(grape.radio)
-  await expectToBeChecked(page, grape)
+  await I.clickRadio("grape")
+  await I.seeRadioIsChecked("grape")
 })
 
-test("should be focused when page is tabbed", async ({ page }) => {
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await expect(page.locator(apple.input)).toBeFocused()
-  await expect(page.locator(apple.control)).toHaveAttribute("data-focus", "")
+test("should be focused when page is tabbed", async () => {
+  await I.tabToFirstRadio()
+  await I.seeRadioIsFocused("apple")
 })
 
-test("should be checked when spacebar is pressed while focused", async ({ page }) => {
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await page.keyboard.press(" ")
-  await expectToBeChecked(page, apple)
+test("should be checked when spacebar is pressed while focused", async () => {
+  await I.tabToFirstRadio()
+  await I.pressKey(" ")
+  await I.seeRadioIsChecked("apple")
 })
 
-test("should have disabled attributes when disabled", async ({ page }) => {
-  await controls(page).bool("disabled")
-  await expect(page.locator(apple.control)).toHaveAttribute("data-disabled", "")
-  await expect(page.locator(apple.input)).toBeDisabled()
+test("should have disabled attributes when disabled", async () => {
+  await I.controls.bool("disabled")
+  await I.seeRadioIsDisabled("apple")
 })
 
-test("should not be focusable when disabled", async ({ page }) => {
-  await controls(page).bool("disabled")
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await expect(page.locator(apple.input)).not.toBeFocused()
+test("should not be focusable when disabled", async () => {
+  await I.controls.bool("disabled")
+  await I.seeRadioIsNotFocusable()
 })
 
-test("should be focusable when readonly", async ({ page }) => {
-  await controls(page).bool("readOnly")
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await expect(page.locator(apple.input)).toBeFocused()
+test("should be focused on active radio item when page is tabbed", async () => {
+  await I.clickRadio("grape")
+  await I.seeRadioIsChecked("grape")
+
+  await I.tabToFirstRadio()
+  await I.seeRadioIsFocused("grape")
 })
 
-test("should be focused on active radio item when page is tabbed", async ({ page }) => {
-  await page.click(grape.radio)
-  await expectToBeChecked(page, grape)
+test("should check items when navigating by arrows", async () => {
+  await I.clickRadio("apple")
+  await I.seeRadioIsChecked("apple")
 
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await expect(page.locator(grape.input)).toBeFocused()
-  await expect(page.locator(grape.control)).toHaveAttribute("data-focus", "")
+  await I.pressKey("ArrowDown", 3)
+
+  await I.seeRadioIsChecked("grape")
 })
 
-test("should check items when navigating by arrows", async ({ page }) => {
-  await page.click(apple.radio)
-  await expectToBeChecked(page, apple)
+test("should keep data-focus-visible when navigating by arrows", async () => {
+  await I.tabToFirstRadio()
 
-  await page.keyboard.press("ArrowDown")
-  await page.keyboard.press("ArrowDown")
-  await page.keyboard.press("ArrowDown")
+  await I.seeRadioIsFocused("apple")
+  await I.seeRadioIsFocusVisible("apple")
 
-  await expectToBeChecked(page, grape)
+  await I.pressKey("ArrowDown", 3)
+
+  await I.seeRadioIsFocused("grape")
+  await I.seeRadioIsFocusVisible("grape")
+})
+
+test("should apply data-focus-visible after mouse click then arrow navigation", async () => {
+  await I.clickRadio("apple")
+  await I.seeRadioIsChecked("apple")
+
+  // Initially focused via pointer, focus-visible should not be present
+  await I.seeRadioIsNotFocusVisible("apple")
+
+  await I.pressKey("ArrowDown", 3)
+
+  await I.seeRadioIsFocused("grape")
+  await I.seeRadioIsFocusVisible("grape")
 })

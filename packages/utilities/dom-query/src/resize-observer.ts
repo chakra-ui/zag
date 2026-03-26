@@ -1,39 +1,77 @@
-import type { MaybeElement } from "@zag-js/types"
-import { getWindow, isHTMLElement } from "./node"
+import { getWindow } from "./node"
 
-export interface ElementRect {
-  left: number
-  top: number
-  width: number
-  height: number
+type Subscriber<T> = (entry: T) => void
+
+interface SharedResizeObserver {
+  observe: (element: Element, listener: Subscriber<ResizeObserverEntry>) => () => void
+  unobserve: (element: Element) => void
 }
 
-export interface RectEntryDetails {
-  rects: ElementRect[]
-  entries: ResizeObserverEntry[]
-}
+function createSharedResizeObserver(options?: ResizeObserverOptions): SharedResizeObserver {
+  const listeners = new WeakMap<Element, Set<Subscriber<ResizeObserverEntry>>>()
+  let observer: ResizeObserver | undefined
 
-export interface ElementRectOptions extends ResizeObserverOptions {
-  /**
-   * The callback to call when the element's rect changes.
-   */
-  onEntry: (details: RectEntryDetails) => void
-  /**
-   * The function to call to get the element's rect.
-   */
-  measure: (el: HTMLElement) => ElementRect
-}
+  const entries = new WeakMap<Element, ResizeObserverEntry>()
 
-export function trackElementRect(elements: MaybeElement[], options: ElementRectOptions) {
-  const { onEntry, measure, box = "border-box" } = options
-  const elems = (Array.isArray(elements) ? elements : [elements]).filter(isHTMLElement)
-  const win = getWindow(elems[0])
-  const trigger = (entries: ResizeObserverEntry[]) => {
-    const rects = elems.map((el) => measure(el))
-    onEntry({ rects, entries })
+  const getObserver = (win: typeof globalThis): ResizeObserver => {
+    if (observer) return observer
+
+    observer = new win.ResizeObserver((observedEntries) => {
+      for (const entry of observedEntries) {
+        entries.set(entry.target, entry)
+        const elementListeners = listeners.get(entry.target)
+        if (elementListeners) {
+          for (const listener of elementListeners) {
+            listener(entry)
+          }
+        }
+      }
+    })
+
+    return observer
   }
-  trigger([])
-  const obs = new win.ResizeObserver(trigger)
-  elems.forEach((el) => obs.observe(el, { box }))
-  return () => obs.disconnect()
+
+  const observe = (element: Element, listener: Subscriber<ResizeObserverEntry>) => {
+    let elementListeners = listeners.get(element) || new Set()
+    elementListeners.add(listener)
+
+    listeners.set(element, elementListeners)
+
+    const win = getWindow(element)
+    getObserver(win).observe(element, options)
+
+    return () => {
+      const elementListeners = listeners.get(element)
+      if (!elementListeners) return
+
+      elementListeners.delete(listener)
+
+      if (elementListeners.size === 0) {
+        listeners.delete(element)
+        getObserver(win).unobserve(element)
+      }
+    }
+  }
+
+  const unobserve = (element: Element) => {
+    listeners.delete(element)
+    observer?.unobserve(element)
+  }
+
+  return {
+    observe,
+    unobserve,
+  }
 }
+
+export const resizeObserverContentBox = /* @__PURE__ */ createSharedResizeObserver({
+  box: "content-box",
+})
+
+export const resizeObserverBorderBox = /* @__PURE__ */ createSharedResizeObserver({
+  box: "border-box",
+})
+
+export const resizeObserverDevicePixelContentBox = /* @__PURE__ */ createSharedResizeObserver({
+  box: "device-pixel-content-box",
+})

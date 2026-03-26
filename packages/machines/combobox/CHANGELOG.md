@@ -1,5 +1,730 @@
 # @zag-js/combobox
 
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/aria-hidden@1.38.2
+  - @zag-js/collection@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-visible@1.38.2
+  - @zag-js/popper@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6),
+  [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/popper@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/aria-hidden@1.38.1
+  - @zag-js/collection@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/focus-visible@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/aria-hidden@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/focus-visible@1.38.0
+  - @zag-js/popper@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/collection@1.38.0
+  - @zag-js/utils@1.38.0
+
+## 1.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/aria-hidden@1.37.0
+  - @zag-js/collection@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/focus-visible@1.37.0
+  - @zag-js/popper@1.37.0
+
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/aria-hidden@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/focus-visible@1.36.0
+  - @zag-js/popper@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/collection@1.36.0
+  - @zag-js/utils@1.36.0
+
+## 1.35.3
+
+### Patch Changes
+
+- [`a3932f8`](https://github.com/chakra-ui/zag/commit/a3932f8232dd2634a1707d3cbc47199880690d1c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve controlled-mode synchronization and keep callback/item
+  resolution behavior consistent across filtered collections.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/aria-hidden@1.35.3
+  - @zag-js/collection@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/focus-visible@1.35.3
+  - @zag-js/popper@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/collection@1.35.2
+  - @zag-js/dismissable@1.35.2
+  - @zag-js/popper@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/aria-hidden@1.35.2
+  - @zag-js/dom-query@1.35.2
+  - @zag-js/focus-visible@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/aria-hidden@1.35.1
+  - @zag-js/collection@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dismissable@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/focus-visible@1.35.1
+  - @zag-js/popper@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- [#2980](https://github.com/chakra-ui/zag/pull/2980)
+  [`342b12c`](https://github.com/chakra-ui/zag/commit/342b12cfd4674bbe9826e32a370f5a9e8f27af58) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix `onValueChange` returning empty `items` array
+  when using controlled value
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/aria-hidden@1.35.0
+  - @zag-js/collection@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/focus-visible@1.35.0
+  - @zag-js/popper@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/aria-hidden@1.34.1
+  - @zag-js/collection@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dismissable@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/focus-visible@1.34.1
+  - @zag-js/popper@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- [`0427c74`](https://github.com/chakra-ui/zag/commit/0427c7420b861858fa1ed8cd4ebc60aa3eea8d58) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `aria-selected` being set on highlighted items instead of
+  selected items. This improves accessibility by allowing screen readers to correctly announce selected options.
+
+- [`6a15f96`](https://github.com/chakra-ui/zag/commit/6a15f96e70323a66fa3ac5f32ebc01bdc4be9cd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `selectedItems` getting out of sync with `value` when
+  controller ignores selection in controlled mode.
+  - Fix item disabled state not accounting for root-level `disabled` prop.
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/aria-hidden@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/aria-hidden@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/popper@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/aria-hidden@1.32.0
+  - @zag-js/collection@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dismissable@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/popper@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/aria-hidden@1.31.1
+  - @zag-js/collection@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/aria-hidden@1.31.0
+  - @zag-js/collection@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/popper@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/aria-hidden@1.30.0
+  - @zag-js/collection@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/popper@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/aria-hidden@1.29.1
+  - @zag-js/collection@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dismissable@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/popper@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- [`2190620`](https://github.com/chakra-ui/zag/commit/2190620fa1ae9da11256ed5145a4f15979a947e6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `value` to `OpenChangeDetails` for combobox, select,
+  color-picker, and date-picker components.
+
+- [`0f17746`](https://github.com/chakra-ui/zag/commit/0f17746be88080253b0609d8dbbc48766d07c0ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `onHighlightChange` not being invoked when collection is
+  filtered to empty results. The callback now correctly receives `{ highlightedValue: null, highlightedItem: null }`
+  when the collection becomes empty.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/aria-hidden@1.29.0
+  - @zag-js/collection@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/popper@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/aria-hidden@1.28.0
+  - @zag-js/dismissable@1.28.0
+  - @zag-js/popper@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/collection@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [`6f8aaf6`](https://github.com/chakra-ui/zag/commit/6f8aaf60ea4a119bc65f85b7efb54aa9924ca02f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus stealing in controlled open mode
+  - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/aria-hidden@1.27.1
+  - @zag-js/collection@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dismissable@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/popper@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/aria-hidden@1.27.0
+  - @zag-js/dismissable@1.27.0
+  - @zag-js/popper@1.27.0
+  - @zag-js/collection@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/aria-hidden@1.26.5
+  - @zag-js/collection@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/popper@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/aria-hidden@1.26.4
+  - @zag-js/collection@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dismissable@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/popper@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/aria-hidden@1.26.3
+  - @zag-js/collection@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dismissable@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/popper@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`cffffbc`](https://github.com/chakra-ui/zag/commit/cffffbccea1e38ca2014463ca43a9f9a67c3088b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where Controlled single-select Combobox does not
+  propagate its initial value to inputValue
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/aria-hidden@1.26.2
+  - @zag-js/collection@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dismissable@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/popper@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/aria-hidden@1.26.1
+  - @zag-js/collection@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dismissable@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/popper@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/aria-hidden@1.26.0
+  - @zag-js/collection@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dismissable@1.26.0
+  - @zag-js/dom-query@1.26.0
+  - @zag-js/popper@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies [[`b5460d3`](https://github.com/chakra-ui/zag/commit/b5460d3659635c692e9a0e5ae77b0db32af65d46)]:
+  - @zag-js/aria-hidden@1.25.0
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/collection@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dismissable@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/popper@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/aria-hidden@1.24.2
+  - @zag-js/collection@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dismissable@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/popper@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/aria-hidden@1.24.1
+  - @zag-js/collection@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/popper@1.24.1
+
+## 1.24.0
+
+### Minor Changes
+
+- [`cd88929`](https://github.com/chakra-ui/zag/commit/cd88929c596bedf21f99dbb39d8a8163f68499a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `alwaysSubmitOnEnter` prop to allow bypassing the default
+  two-step behavior (Enter to close combobox, then Enter to submit form) and instead submit the form immediately on
+  Enter press. This is useful for single-field autocomplete forms where Enter should submit the form directly.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/aria-hidden@1.24.0
+  - @zag-js/collection@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/popper@1.24.0
+
+## 1.23.0
+
+### Minor Changes
+
+- [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for layer types in dismissable layer stack. Layers can
+  now be categorized as `dialog`, `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Patch Changes
+
+- [#2673](https://github.com/chakra-ui/zag/pull/2673)
+  [`a493193`](https://github.com/chakra-ui/zag/commit/a493193dd55524e14800bfc449ca137be7f633aa) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Add `data-required` to label parts
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/dismissable@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/popper@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/aria-hidden@1.23.0
+  - @zag-js/collection@1.23.0
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies [[`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7)]:
+  - @zag-js/collection@1.22.1
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/aria-hidden@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dismissable@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/popper@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies [[`c1f9b45`](https://github.com/chakra-ui/zag/commit/c1f9b45cf71308b1376fc70d0c5b785fd0a8e275)]:
+  - @zag-js/dismissable@1.22.0
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/aria-hidden@1.22.0
+  - @zag-js/collection@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/popper@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/aria-hidden@1.21.9
+  - @zag-js/collection@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dismissable@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/popper@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- [`d4d276e`](https://github.com/chakra-ui/zag/commit/d4d276eb2a4f8fd662abd8d1791a05c4307810e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
+  `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
+  scroll-to-top.
+  - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/dismissable@1.21.8
+  - @zag-js/popper@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/aria-hidden@1.21.8
+  - @zag-js/collection@1.21.8
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/aria-hidden@1.21.7
+  - @zag-js/collection@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dismissable@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/popper@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/aria-hidden@1.21.6
+  - @zag-js/collection@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dismissable@1.21.6
+  - @zag-js/dom-query@1.21.6
+  - @zag-js/popper@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/aria-hidden@1.21.5
+  - @zag-js/collection@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dismissable@1.21.5
+  - @zag-js/dom-query@1.21.5
+  - @zag-js/popper@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies [[`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7)]:
+  - @zag-js/collection@1.21.4
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/aria-hidden@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dismissable@1.21.4
+  - @zag-js/dom-query@1.21.4
+  - @zag-js/popper@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/aria-hidden@1.21.3
+  - @zag-js/collection@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dismissable@1.21.3
+  - @zag-js/dom-query@1.21.3
+  - @zag-js/popper@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/aria-hidden@1.21.2
+  - @zag-js/collection@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dismissable@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/popper@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

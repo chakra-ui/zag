@@ -1,4 +1,4 @@
-import { chunk, nextIndex, prevIndex } from "@zag-js/utils"
+import { chunk, hasProp, nextIndex, prevIndex } from "@zag-js/utils"
 import { ListCollection } from "./list-collection"
 import type { CollectionItem, CollectionOptions } from "./types"
 
@@ -8,6 +8,7 @@ export interface GridCollectionOptions<T> extends CollectionOptions<T> {
 
 export class GridCollection<T extends CollectionItem = CollectionItem> extends ListCollection<T> {
   columnCount: number
+  private rows: T[][] | null = null
 
   constructor(options: GridCollectionOptions<T>) {
     const { columnCount } = options
@@ -19,14 +20,17 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
    * Returns the row data in the grid
    */
   getRows = (): T[][] => {
-    return chunk([...this.items], this.columnCount)
+    if (!this.rows) {
+      this.rows = chunk([...this.items], this.columnCount)
+    }
+    return this.rows
   }
 
   /**
    * Returns the number of rows in the grid
    */
   getRowCount = (): number => {
-    return this.getRows().length
+    return Math.ceil(this.items.length / this.columnCount)
   }
 
   /**
@@ -88,7 +92,7 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
     if (currentCell === null) return null
 
     const rows = this.getRows()
-    const rowCount = this.getRowCount()
+    const rowCount = rows.length
 
     let prevRowIndex = currentCell.row
     let prevColumnIndex = currentCell.column
@@ -126,7 +130,7 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
     if (currentCell === null) return null
 
     const rows = this.getRows()
-    const rowCount = this.getRowCount()
+    const rowCount = rows.length
 
     let nextRowIndex = currentCell.row
     let nextColumnIndex = currentCell.column
@@ -157,6 +161,6 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
   }
 }
 
-export function isGridCollection(v: unknown): v is GridCollection<any> {
-  return v instanceof GridCollection
+export function isGridCollection(v: any): v is GridCollection<any> {
+  return hasProp(v, "columnCount") && hasProp(v, "getRows")
 }

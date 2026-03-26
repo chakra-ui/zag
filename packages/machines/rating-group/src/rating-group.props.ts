@@ -21,7 +21,7 @@ export const props = createProps<RatingGroupProps>()([
   "value",
   "defaultValue",
 ])
-export const splitProps = createSplitProps<RatingGroupProps>(props)
+export const splitProps = createSplitProps<Partial<RatingGroupProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["index"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

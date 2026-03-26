@@ -5,6 +5,7 @@ const nameMap: Record<string, string> = {
   "progress-circular": "progress",
   "range-slider": "slider",
   "timer-countdown": "timer",
+  "segmented-control": "radio-group",
 }
 
 export function normalizeComponentName(component: string) {

@@ -1,6 +1,15 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, getEventKey, isComposingEvent, isOpeningInNewTab, isSafari, isSelfTarget } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import {
+  contains,
+  dataAttr,
+  getEventKey,
+  getEventTarget,
+  isComposingEvent,
+  isOpeningInNewTab,
+  isSafari,
+} from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
 import type { TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
@@ -75,9 +84,8 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "aria-label": translations?.listLabel,
         onKeyDown(event) {
           if (event.defaultPrevented) return
-
-          if (!isSelfTarget(event)) return
           if (isComposingEvent(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
@@ -183,23 +191,29 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     },
 
     getIndicatorProps() {
-      const indicatorRect = context.get("indicatorRect")
-      const indicatorTransition = context.get("indicatorTransition")
+      const rect = context.get("indicatorRect")
+      const animateIndicator = context.get("animateIndicator")
+
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        hidden: isRectEmpty(rect),
+        onTransitionEnd(event) {
+          if (getEventTarget(event) !== event.currentTarget) return
+          send({ type: "INDICATOR_TRANSITION_END" })
+        },
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
-          "--left": indicatorRect.left,
-          "--top": indicatorRect.top,
-          "--width": indicatorRect.width,
-          "--height": indicatorRect.height,
+          "--left": toPx(rect?.x),
+          "--top": toPx(rect?.y),
+          "--width": toPx(rect?.width),
+          "--height": toPx(rect?.height),
           position: "absolute",
-          willChange: "var(--transition-property)",
-          transitionProperty: "var(--transition-property)",
-          transitionDuration: indicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+          willChange: animateIndicator ? "var(--transition-property)" : "auto",
+          transitionProperty: animateIndicator ? "var(--transition-property)" : "none",
+          transitionDuration: animateIndicator ? "var(--transition-duration, 150ms)" : "0ms",
           transitionTimingFunction: "var(--transition-timing-function)",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },
@@ -207,3 +221,6 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     },
   }
 }
+
+const isRectEmpty = (rect: Rect | null) =>
+  rect == null || (rect.width === 0 && rect.height === 0 && rect.x === 0 && rect.y === 0)

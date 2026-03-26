@@ -4,9 +4,7 @@ description: Using the file-upload machine in your project.
 package: "@zag-js/file-upload"
 ---
 
-# File Upload
-
-File upload component is used to upload multiple files.
+A file upload component lets users select and manage files.
 
 The native input file element is quite difficult to style and doesn't provide a
 drag-n-drop version.
@@ -28,8 +26,7 @@ drag-n-drop version.
 
 ## Installation
 
-To use the file upload machine in your project, run the following command in
-your command line:
+Install the file upload package:
 
 <CodeSnippet id="file-upload/installation.mdx" />
 
@@ -44,20 +41,18 @@ how we name its parts.
 
 ## Usage
 
-First, import the file upload package into your project
+Import the file upload package:
 
-```jsx
+```tsx
 import * as fileUpload from "@zag-js/file-upload"
 ```
 
 The file upload package exports two key functions:
 
-- `machine` — The state machine logic for the file upload widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - Behavior logic.
+- `connect` - Maps behavior to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-file upload machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="file-upload/usage.mdx" />
 
@@ -65,7 +60,7 @@ file upload machine in your project 🔥
 
 Use the `accept` attribute to set the accepted file types.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   accept: "image/*",
 })
@@ -74,7 +69,7 @@ const service = useMachine(fileUpload.machine, {
 Alternatively, you can provide an object with a MIME type and an array of file
 extensions.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   accept: {
     "image/png": [".png"],
@@ -85,13 +80,21 @@ const service = useMachine(fileUpload.machine, {
 
 ### Setting the maximum number of files
 
-Use the `maxFiles` attribute to set the maximum number of files that can be
-uploaded. This will set the `multiple` attribute on the underlying input
-element.
+Use `maxFiles` to set how many files can be selected.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   maxFiles: 5,
+})
+```
+
+### Setting the minimum size per file
+
+Use `minFileSize` to reject files smaller than a minimum size.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  minFileSize: 1024, // 1KB
 })
 ```
 
@@ -100,9 +103,34 @@ const service = useMachine(fileUpload.machine, {
 Use the `maxFileSize` attribute to set the maximum size per file that can be
 uploaded.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   maxFileSize: 1024 * 1024 * 10, // 10MB
+})
+```
+
+### Setting initial files
+
+Use `defaultAcceptedFiles` to prefill the accepted files list.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  defaultAcceptedFiles: [
+    new File(["hello"], "hello.txt", { type: "text/plain" }),
+  ],
+})
+```
+
+### Controlled files
+
+Use `acceptedFiles` and `onFileChange` to control accepted files externally.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  acceptedFiles,
+  onFileChange(details) {
+    setAcceptedFiles(details.acceptedFiles)
+  },
 })
 ```
 
@@ -111,25 +139,43 @@ const service = useMachine(fileUpload.machine, {
 When files are uploaded, the `onFileChange` callback is invoked with the details
 of the accepted and rejected files.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   onFileChange(details) {
-    // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: [] }[] }
+    // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: FileError[] }[] }
     console.log(details.acceptedFiles)
     console.log(details.rejectedFiles)
   },
 })
 ```
 
+### Listening to accept and reject events
+
+Use `onFileAccept` and `onFileReject` for separated success/failure flows.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  onFileAccept(details) {
+    console.log("Accepted:", details.files)
+  },
+  onFileReject(details) {
+    console.log("Rejected:", details.files)
+  },
+})
+```
+
 ### Usage within a form
 
-To use the file upload within a form, set the `name` attribute in the machine's
-context, and ensure you render the input element `api.getHiddenInputProps()`
+To use file upload in a form, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   name: "avatar",
 })
+```
+
+```tsx
+<input {...api.getHiddenInputProps()} />
 ```
 
 ### Displaying image preview
@@ -137,7 +183,7 @@ const service = useMachine(fileUpload.machine, {
 To display a preview of the uploaded image, use the built-in FileReader API to
 read the file and set the `src` attribute of an image element.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   onFileChange(details) {
     const reader = new FileReader()
@@ -152,8 +198,8 @@ const service = useMachine(fileUpload.machine, {
 
 ### Applying custom validation
 
-To apply custom validation, set the `validate` attribute to a function that
-returns an **array of error strings**.
+To apply custom validation, set `validate` to a function that returns an **array
+of error strings**.
 
 The returned array can contain any string as an error message. While zagjs
 supports default errors such as `TOO_MANY_FILES`, `FILE_INVALID_TYPE`,
@@ -162,13 +208,15 @@ your custom validation errors.
 
 > Return `null` if no validation errors are detected.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
-  validate(file) {
+  validate(file, details) {
     // Check if file size exceeds 10MB
     if (file.size > 1024 * 1024 * 10) {
       return ["FILE_TOO_LARGE"]
     }
+    // details => { acceptedFiles, rejectedFiles }
+    console.log(details.acceptedFiles.length)
     return null
   },
 })
@@ -178,7 +226,7 @@ Apply multiple validation errors:
 
 ```js
 const service = useMachine(fileUpload.machine, {
-  validate(file) {
+  validate(file, details) {
     const errors = []
 
     // Check file size
@@ -206,12 +254,32 @@ const service = useMachine(fileUpload.machine, {
 
 ### Disabling drag and drop
 
-To disable the drag and drop functionality, set the `allowDrop` context property
-to `false`.
+Set `allowDrop` to `false` to disable drag and drop.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   allowDrop: false,
+})
+```
+
+### Preventing document-level drop
+
+Set `preventDocumentDrop` to `false` if you do not want this component to block
+file drops outside the dropzone.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  preventDocumentDrop: false,
+})
+```
+
+### Read-only mode
+
+Set `readOnly` to prevent adding or removing files.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  readOnly: true,
 })
 ```
 
@@ -225,7 +293,7 @@ to select directories and their contents.
 
 > Please note that support for this feature varies from browser to browser.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   directory: true,
 })
@@ -242,7 +310,7 @@ media on the spot. The value can be:
 > This behavior only works on mobile devices. On desktop devices, it will open
 > the file system like normal.
 
-```jsx
+```tsx
 const service = useMachine(fileUpload.machine, {
   capture: "user",
 })
@@ -256,7 +324,7 @@ files.
 
 Here's an example of how to do this in React.
 
-```jsx
+```tsx
 function Demo() {
   const service = useMachine(fileUpload.machine, {
     accept: "image/*",
@@ -276,10 +344,49 @@ function Demo() {
 }
 ```
 
+### Transforming files before acceptance
+
+Use the `transformFiles` callback to process files before they're added to
+`acceptedFiles`. This is useful for scenarios like image cropping, compression,
+or format conversion.
+
+The `transformFiles` function receives the selected files and should return a
+promise that resolves with the transformed files.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  accept: "image/*",
+  transformFiles: async (files) => {
+    return Promise.all(
+      files.map(async (file) => {
+        // Compress or transform the file
+        const transformedBlob = await processImage(file)
+        return new File([transformedBlob], file.name, { type: file.type })
+      }),
+    )
+  },
+})
+```
+
+While files are being transformed, the `api.transforming` boolean is `true`,
+allowing you to show loading states in your UI.
+
+### Customizing accessibility labels
+
+Use `translations` to customize dropzone and item action labels.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  translations: {
+    dropzone: "Drop files here",
+    deleteFile: (file) => `Remove ${file.name}`,
+  },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each file upload part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-part="root"] {

@@ -25,7 +25,7 @@ export const props = createProps<ListboxProps>()([
   "typeahead",
   "value",
 ])
-export const splitProps = createSplitProps<Partial<ListboxProps>>(props)
+export const splitProps = createSplitProps<ListboxProps>(props)
 
 export const itemProps = createProps<ItemProps>()(["item", "highlightOnHover"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

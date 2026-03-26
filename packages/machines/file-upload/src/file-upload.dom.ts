@@ -1,3 +1,4 @@
+import { hash } from "@zag-js/utils"
 import type { Scope } from "@zag-js/core"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `file:${ctx.id}`
@@ -11,6 +12,10 @@ export const getItemSizeTextId = (ctx: Scope, id: string) =>
   ctx.ids?.itemSizeText?.(id) ?? `file:${ctx.id}:item-size:${id}`
 export const getItemPreviewId = (ctx: Scope, id: string) =>
   ctx.ids?.itemPreview?.(id) ?? `file:${ctx.id}:item-preview:${id}`
+export const getItemDeleteTriggerId = (ctx: Scope, id: string) =>
+  ctx.ids?.itemDeleteTrigger?.(id) ?? `file:${ctx.id}:item-delete:${id}`
+
+export const getFileId = (file: File) => hash(`${file.name}-${file.size}`)
 
 export const getRootEl = (ctx: Scope) => ctx.getById<HTMLElement>(getRootId(ctx))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))

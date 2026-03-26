@@ -2,6 +2,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
 import { HiX } from "react-icons/hi"
+import styles from "../styles/machines/toast.module.css"
 
 interface ToastGroupProps extends Omit<toast.GroupProps, "id" | "store"> {}
 
@@ -17,9 +18,9 @@ export function ToastGroup(props: ToastGroupProps) {
 
   return (
     <>
-      <div className="toast__trigger-group">
+      <div className={styles.TriggerGroup}>
         <button
-          className="toast__trigger"
+          className={styles.Trigger}
           onClick={() => {
             id.current = toaster.create({
               title: "The Evil Rabbit jumped over the fence.",
@@ -31,7 +32,7 @@ export function ToastGroup(props: ToastGroupProps) {
         </button>
 
         <button
-          className="toast__trigger"
+          className={styles.Trigger}
           onClick={() => {
             if (!id.current) return
             toaster.update(id.current, {
@@ -74,14 +75,14 @@ function Toast(props: ToastProps) {
   const api = toast.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
+    <div className={styles.Root} {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
       <div {...api.getTitleProps()}>
         {api.type === "loading" && "<...>"}[{api.type}] {api.title}
       </div>
       <div {...api.getDescriptionProps()}>{api.description}</div>
-      <button {...api.getCloseTriggerProps()}>
+      <button className={styles.CloseTrigger} {...api.getCloseTriggerProps()}>
         <HiX />
       </button>
       <span {...api.getGhostAfterProps()} />

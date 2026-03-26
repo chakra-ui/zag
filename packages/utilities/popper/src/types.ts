@@ -18,6 +18,10 @@ export interface AnchorRect {
 
 export interface PositioningOptions {
   /**
+   * Whether styles applied by the positioning utility should be restored on cleanup.
+   */
+  restoreStyles?: boolean | undefined
+  /**
    * Whether the popover should be hidden when the reference element is detached
    */
   hideWhenDetached?: boolean | undefined
@@ -72,9 +76,20 @@ export interface PositioningOptions {
    */
   fitViewport?: boolean | undefined
   /**
-   * The overflow boundary of the reference element
+   * Whether to use the size middleware from Floating UI.
+   * It computes and sets CSS variables (`--reference-width`, `--reference-height`, `--available-width`, `--available-height`) used by `sameWidth` and `fitViewport`.
+   *
+   * Disabling it improves scroll performance with heavy content by avoiding layout thrashing on each update.
+   * Only applies when both `sameWidth` and `fitViewport` are false — the middleware is always used when either is enabled.
+   * @default true
    */
-  boundary?: (() => Boundary) | undefined
+  sizeMiddleware?: boolean | undefined
+  /**
+   * The overflow boundary of the reference element
+   * Accepts a function returning a Boundary, a Boundary directly,
+   * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
+   */
+  boundary?: (() => Boundary) | Boundary | "clipping-ancestors" | undefined
   /**
    * Options to activate auto-update listeners
    */
@@ -88,7 +103,13 @@ export interface PositioningOptions {
    */
   onPositioned?: ((data: { placed: boolean }) => void) | undefined
   /**
+   * Function that returns the anchor element.
+   * Useful when you want to use a different element as the anchor.
+   */
+  getAnchorElement?: (() => HTMLElement | VirtualElement | null) | undefined
+  /**
    *  Function that returns the anchor rect
+   * @deprecated Use `getAnchorElement` instead
    */
   getAnchorRect?: ((element: HTMLElement | VirtualElement | null) => AnchorRect | null) | undefined
   /**
