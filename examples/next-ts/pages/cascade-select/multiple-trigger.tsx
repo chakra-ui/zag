@@ -102,12 +102,10 @@ export default function Page() {
 
         <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
           {triggers.map((trigger) => (
-            <div key={trigger.value} {...api.getControlProps()}>
-              <button {...api.getTriggerProps({ value: trigger.value })}>
-                <span {...api.getValueTextProps()}>{api.valueAsString || trigger.label}</span>
-                <span {...api.getIndicatorProps()}>▼</span>
-              </button>
-            </div>
+            <button key={trigger.value} {...api.getTriggerProps({ value: trigger.value })}>
+              <span>{trigger.label}</span>
+              <span>▼</span>
+            </button>
           ))}
         </div>
 

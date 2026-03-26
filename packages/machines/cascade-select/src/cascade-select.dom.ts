@@ -23,12 +23,9 @@ export const dom = createScope({
   getLabelEl: (ctx: Scope) => dom.getById(ctx, dom.getLabelId(ctx)),
   getControlEl: (ctx: Scope) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEls: (ctx: Scope): HTMLElement[] =>
-    queryAll<HTMLElement>(
-      ctx.getDoc(),
-      `[data-scope="cascade-select"][data-part="trigger"][data-ownedby="${ctx.id}"]`,
-    ),
+    queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="cascade-select"][data-part="trigger"][data-ownedby="${ctx.id}"]`),
   getActiveTriggerEl: (ctx: Scope, value: string | null): HTMLElement | null => {
-    return value == null ? dom.getTriggerEls(ctx)[0] : dom.getById(ctx, dom.getTriggerId(ctx, value))
+    return value == null ? (dom.getTriggerEls(ctx)[0] ?? null) : dom.getById(ctx, dom.getTriggerId(ctx, value))
   },
   getIndicatorEl: (ctx: Scope) => dom.getById(ctx, dom.getIndicatorId(ctx)),
   getClearTriggerEl: (ctx: Scope) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
