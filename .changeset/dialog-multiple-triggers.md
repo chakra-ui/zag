@@ -1,5 +1,6 @@
 ---
 "@zag-js/dialog": minor
+"@zag-js/drawer": minor
 "@zag-js/hover-card": minor
 "@zag-js/menu": minor
 "@zag-js/popover": minor
