@@ -126,6 +126,7 @@ export function connect<T extends PropTypes>(
         autoComplete: "off",
         autoCorrect: "off",
         autoCapitalize: "none",
+        enterKeyHint: "done",
         disabled: disabled || readOnly,
         placeholder: empty ? prop("placeholder") : undefined,
         onInput(event) {
