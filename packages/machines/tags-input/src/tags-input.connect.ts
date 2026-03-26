@@ -37,7 +37,7 @@ export function connect<T extends PropTypes>(
 
   return {
     empty: empty,
-    inputValue: computed("trimmedInputValue"),
+    inputValue: context.get("inputValue"),
     value: context.get("value"),
     valueAsString: computed("valueAsString"),
     count: computed("count"),
