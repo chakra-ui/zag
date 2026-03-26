@@ -1,9 +1,9 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
-import { Presence } from "../components/presence"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { Presence } from "../../components/presence"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 interface User {
   id: number

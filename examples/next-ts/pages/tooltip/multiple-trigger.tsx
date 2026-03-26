@@ -2,9 +2,9 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { InfoIcon } from "lucide-react"
 import { useId, useState } from "react"
-import { Presence } from "../components/presence"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { Presence } from "../../components/presence"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 interface Product {
   id: number

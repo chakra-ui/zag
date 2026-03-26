@@ -2,7 +2,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { MoreVerticalIcon } from "lucide-react"
 import { useId, useState } from "react"
-import { Presence } from "../components/presence"
+import { Presence } from "../../components/presence"
 
 interface Document {
   id: number
