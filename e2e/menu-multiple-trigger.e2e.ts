@@ -7,7 +7,7 @@ const positioner = '[data-scope="menu"][data-part="positioner"]'
 
 test.describe("menu / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-multiple-trigger")
+    await page.goto("/menu/multiple-trigger")
   })
 
   test("should open menu from trigger", async ({ page }) => {
@@ -71,6 +71,23 @@ test.describe("menu / multiple triggers", () => {
     await page.keyboard.press(" ")
     await expect(page.locator(menu)).toBeVisible()
     await expect(page.locator(menu)).toContainText("value: 3")
+  })
+
+  test("should scope aria-expanded to active trigger", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(menu)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("aria-expanded", "true")
+    await expect(page.locator(trigger(1))).toHaveAttribute("aria-expanded", "false")
+    await expect(page.locator(trigger(3))).toHaveAttribute("aria-expanded", "false")
+  })
+
+  test("should set data-current on active trigger only", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(menu)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
+    await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
   })
 
   test("should return focus to correct trigger after keyboard navigation", async ({ page }) => {

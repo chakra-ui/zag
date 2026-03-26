@@ -7,7 +7,7 @@ const positioner = '[data-scope="tooltip"][data-part="positioner"]'
 
 test.describe("tooltip / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/tooltip-multiple-trigger")
+    await page.goto("/tooltip/multiple-trigger")
   })
 
   test("should open tooltip on hover", async ({ page }) => {
@@ -68,6 +68,14 @@ test.describe("tooltip / multiple triggers", () => {
 
     await page.keyboard.press("Escape")
     await expect(page.locator(content)).toBeHidden()
+  })
+
+  test("should set data-current on active trigger", async ({ page }) => {
+    await page.hover(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
+    await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
   })
 
   test("should switch triggers on keyboard navigation", async ({ page }) => {

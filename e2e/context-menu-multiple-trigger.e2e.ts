@@ -3,11 +3,12 @@ import { rect } from "./_utils"
 
 const contextTrigger = (id: number) => `[data-scope="menu"][data-part="context-trigger"][data-value="${id}"]`
 const menu = '[data-scope="menu"][data-part="content"]'
+const menuItem = (value: string) => `[data-scope="menu"][data-part="item"][data-value="${value}"]`
 const positioner = '[data-scope="menu"][data-part="positioner"]'
 
 test.describe("context menu / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/context-menu-multiple-trigger")
+    await page.goto("/context-menu/multiple-trigger")
   })
 
   test("should open menu on right-click", async ({ page }) => {
@@ -34,6 +35,27 @@ test.describe("context menu / multiple triggers", () => {
 
     // Menu should have repositioned (different position)
     expect(menuRect2.x !== menuRect1.x || menuRect2.y !== menuRect1.y).toBe(true)
+  })
+
+  test("should reflect trigger data in menu content", async ({ page }) => {
+    // Right-click on "Documents" folder (id: 1)
+    await page.click(contextTrigger(1), { button: "right" })
+    await expect(page.locator(menuItem("open"))).toContainText("Open Folder")
+
+    // Right-click on "report.pdf" file (id: 3)
+    await page.click(contextTrigger(3), { button: "right" })
+    await expect(page.locator(menuItem("open"))).toContainText("Open File")
+  })
+
+  test("should set data-current on the active trigger", async ({ page }) => {
+    // Right-click on trigger 2
+    await page.click(contextTrigger(2), { button: "right" })
+
+    // Trigger 2 should have data-current attribute
+    await expect(page.locator(contextTrigger(2))).toHaveAttribute("data-current", "")
+
+    // Trigger 1 should NOT have data-current attribute
+    await expect(page.locator(contextTrigger(1))).not.toHaveAttribute("data-current")
   })
 
   test("should close menu on left-click", async ({ page }) => {

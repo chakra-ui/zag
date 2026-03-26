@@ -6,7 +6,7 @@ const closeTrigger = '[data-scope="dialog"][data-part="close-trigger"]'
 
 test.describe("dialog / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/dialog-multiple-trigger")
+    await page.goto("/dialog/multiple-trigger")
   })
 
   test("should open dialog from different triggers", async ({ page }) => {
@@ -79,5 +79,22 @@ test.describe("dialog / multiple triggers", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(content)).toBeHidden()
     await expect(page.locator(trigger(2))).toBeFocused()
+  })
+
+  test("should scope aria-expanded to the active trigger", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("aria-expanded", "true")
+    await expect(page.locator(trigger(1))).toHaveAttribute("aria-expanded", "false")
+    await expect(page.locator(trigger(3))).toHaveAttribute("aria-expanded", "false")
+  })
+
+  test("should set data-current only on the active trigger", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
+    await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
   })
 })

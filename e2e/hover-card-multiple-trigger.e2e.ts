@@ -7,7 +7,7 @@ const positioner = '[data-scope="hover-card"][data-part="positioner"]'
 
 test.describe("hover-card / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/hover-card-multiple-trigger")
+    await page.goto("/hover-card/multiple-trigger")
   })
 
   test("should open hover card on hover", async ({ page }) => {
@@ -67,6 +67,13 @@ test.describe("hover-card / multiple triggers", () => {
 
     await page.keyboard.press("Escape")
     await expect(page.locator(content)).toBeHidden()
+  })
+
+  test("should set data-current on the active trigger", async ({ page }) => {
+    await page.hover(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
+    await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
   })
 
   test("should switch triggers on keyboard navigation", async ({ page }) => {

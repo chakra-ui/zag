@@ -8,7 +8,7 @@ const closeTrigger = '[data-scope="popover"][data-part="close-trigger"]'
 
 test.describe("popover / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/popover-multiple-trigger")
+    await page.goto("/popover/multiple-trigger")
   })
 
   test("should open popover from trigger", async ({ page }) => {
@@ -87,5 +87,22 @@ test.describe("popover / multiple triggers", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(content)).toBeHidden()
     await expect(page.locator(trigger(2))).toBeFocused()
+  })
+
+  test("should scope aria-expanded to the active trigger", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("aria-expanded", "true")
+    await expect(page.locator(trigger(1))).toHaveAttribute("aria-expanded", "false")
+    await expect(page.locator(trigger(3))).toHaveAttribute("aria-expanded", "false")
+  })
+
+  test("should set data-current only on the active trigger", async ({ page }) => {
+    await page.click(trigger(2))
+    await expect(page.locator(content)).toBeVisible()
+
+    await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
+    await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
   })
 })
