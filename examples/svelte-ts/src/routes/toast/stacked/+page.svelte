@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/toast.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import ToastItem from "$lib/components/toast-item.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
@@ -65,7 +66,7 @@
 
   <pre>{JSON.stringify(api.getToasts(), null, 2)}</pre>
 
-  <div {...api.getGroupProps()}>
+  <div {...api.getGroupProps()} class={styles.Group}>
     {#each api.getToasts() as toast, index (toast.id)}
       <ToastItem actor={toast} parent={service} {index} />
     {/each}

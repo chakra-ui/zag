@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/toast.module.css"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
@@ -104,7 +105,7 @@ export default function ToastGroup() {
         </div>
 
         <Portal>
-          <div {...api.getGroupProps()}>
+          <div {...api.getGroupProps()} className={styles.Group}>
             {api.getToasts().map((toast, index) => (
               <ToastItem key={toast.id} actor={toast} index={index} parent={service} />
             ))}

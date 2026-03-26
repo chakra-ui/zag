@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/scroll-area.module.css"
 import * as scrollArea from "@zag-js/scroll-area"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
@@ -14,14 +15,14 @@ export default function Page() {
   return (
     <>
       <main class="scroll-area">
-        <div {...api().getRootProps()}>
-          <div {...api().getViewportProps()}>
-            <div {...api().getContentProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getViewportProps()} class={styles.Viewport}>
+            <div {...api().getContentProps()} class={styles.Content}>
               <For each={Array.from({ length: 100 })}>{(_, index) => <div>{index()}</div>}</For>
             </div>
           </div>
-          <div {...api().getScrollbarProps()}>
-            <div {...api().getThumbProps()} />
+          <div {...api().getScrollbarProps()} class={styles.Scrollbar}>
+            <div {...api().getThumbProps()} class={styles.Thumb} />
           </div>
         </div>
       </main>

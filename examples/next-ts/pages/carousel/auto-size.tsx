@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/carousel.module.css"
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -36,23 +37,23 @@ export default function Page() {
   return (
     <>
       <main className="carousel-auto-size">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           <h2>Auto Size Carousel</h2>
           <p>Each slide has a different size based on its content.</p>
 
-          <div {...api.getControlProps()}>
-            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <button {...api.getAutoplayTriggerProps()} className={styles.AutoplayTrigger}>{api.isPlaying ? "Stop" : "Play"}</button>
             <div className="carousel-spacer" />
             <button {...api.getPrevTriggerProps()}>← Prev</button>
             <button {...api.getNextTriggerProps()}>Next →</button>
           </div>
 
-          <div {...api.getItemGroupProps()}>
+          <div {...api.getItemGroupProps()} className={styles.ItemGroup}>
             {variableWidthData.map((slide, index) => {
               const itemProps = api.getItemProps({ index, snapAlign: "center" })
               return (
                 <div
-                  {...api.getItemProps({ index })}
+                  {...api.getItemProps({ index })} className={styles.Item}
                   key={index}
                   style={{
                     ...itemProps.style, // Carousel's flex styles first
@@ -73,10 +74,10 @@ export default function Page() {
             })}
           </div>
 
-          <div {...api.getIndicatorGroupProps()}>
+          <div {...api.getIndicatorGroupProps()} className={styles.IndicatorGroup}>
             {variableWidthData.map((_, index) => (
               <button
-                {...api.getIndicatorProps({ index })}
+                {...api.getIndicatorProps({ index })} className={styles.Indicator}
                 key={index}
                 style={{
                   width: "12px",
@@ -141,14 +142,14 @@ function FixedWidthExample() {
   const api = carousel.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
-      <div {...api.getControlProps()}>
+    <div {...api.getRootProps()} className={styles.Root}>
+      <div {...api.getControlProps()} className={styles.Control}>
         <button {...api.getPrevTriggerProps()}>← Prev</button>
         <div className="carousel-spacer" />
         <button {...api.getNextTriggerProps()}>Next →</button>
       </div>
 
-      <div {...api.getItemGroupProps()}>
+      <div {...api.getItemGroupProps()} className={styles.ItemGroup}>
         {variableWidthData.map((slide, index) => {
           const itemProps = api.getItemProps({ index })
           return (
@@ -177,10 +178,10 @@ function FixedWidthExample() {
         })}
       </div>
 
-      <div {...api.getIndicatorGroupProps()}>
+      <div {...api.getIndicatorGroupProps()} className={styles.IndicatorGroup}>
         {api.pageSnapPoints.map((_, index) => (
           <button
-            {...api.getIndicatorProps({ index })}
+            {...api.getIndicatorProps({ index })} className={styles.Indicator}
             key={index}
             style={{
               width: "12px",

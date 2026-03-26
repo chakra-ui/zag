@@ -1,17 +1,17 @@
-:global(.AvatarRoot) {
+.Root {
   width: 80px;
   height: 80px;
   border-radius: 9999px;
 }
 
-:global(.AvatarImage) {
+.Image {
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: inherit;
 }
 
-:global(.AvatarFallback) {
+.Fallback {
   width: 80px;
   height: 80px;
   font-size: 14px;
@@ -22,7 +22,7 @@
   border-radius: inherit;
 }
 
-:global(.AvatarFallback)[data-state="visible"] {
+.Fallback[data-state="visible"] {
   display: flex;
   align-items: center;
   justify-content: center;

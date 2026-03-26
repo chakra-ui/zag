@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/file-upload.module.css"
 import * as fileUpload from "@zag-js/file-upload"
 import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -18,7 +19,7 @@ export default function Page() {
       <main class="file-upload">
         <div {...api().getRootProps()}>
           <input {...api().getHiddenInputProps()} />
-          <div {...api().getDropzoneProps()}>Drag your files here</div>
+          <div {...api().getDropzoneProps()} class={styles.Dropzone}>Drag your files here</div>
 
           <button {...api().getTriggerProps()}>Choose Files...</button>
 

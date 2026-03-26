@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
@@ -45,21 +46,21 @@ const api = computed(() => combobox.connect(service, normalizeProps))
 
       <br />
 
-      <div v-bind="api.getRootProps()">
-        <label v-bind="api.getLabelProps()">Select country</label>
+      <div v-bind="api.getRootProps()" :class="styles.Root">
+        <label v-bind="api.getLabelProps()" :class="styles.Label">Select country</label>
 
-        <div v-bind="api.getControlProps()">
-          <input data-testid="input" v-bind="api.getInputProps()" />
+        <div v-bind="api.getControlProps()" :class="styles.Control">
+          <input data-testid="input" v-bind="api.getInputProps()" :class="styles.Input" />
           <button data-testid="trigger" v-bind="api.getTriggerProps()">▼</button>
-          <button v-bind="api.getClearTriggerProps()">
+          <button v-bind="api.getClearTriggerProps()" :class="styles.ClearTrigger">
             <XIcon />
           </button>
         </div>
       </div>
 
       <div v-bind="api.getPositionerProps()">
-        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.getContentProps()">
-          <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
+        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.getContentProps()" :class="styles.Content">
+          <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })" :class="styles.Item">
             {{ item.label }}
           </li>
         </ul>

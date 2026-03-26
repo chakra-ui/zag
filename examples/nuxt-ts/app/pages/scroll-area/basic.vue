@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/scroll-area.module.css"
 import * as scrollArea from "@zag-js/scroll-area"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, useId } from "vue"
@@ -9,14 +10,14 @@ const api = computed(() => scrollArea.connect(service, normalizeProps))
 
 <template>
   <main class="scroll-area">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getViewportProps()">
-        <div v-bind="api.getContentProps()">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getViewportProps()" :class="styles.Viewport">
+        <div v-bind="api.getContentProps()" :class="styles.Content">
           <div v-for="i in 100" :key="i">{{ i }}</div>
         </div>
       </div>
-      <div v-bind="api.getScrollbarProps()">
-        <div v-bind="api.getThumbProps()" />
+      <div v-bind="api.getScrollbarProps()" :class="styles.Scrollbar">
+        <div v-bind="api.getThumbProps()" :class="styles.Thumb" />
       </div>
     </div>
   </main>

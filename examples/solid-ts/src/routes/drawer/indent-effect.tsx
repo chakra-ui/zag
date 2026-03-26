@@ -30,7 +30,7 @@ export default function Page() {
 
         <div {...stackApi().getIndentProps()} class={styles.indent} data-testid="drawer-indent">
           <div class={styles.center}>
-            <button class={styles.trigger} {...api().getTriggerProps()}>
+            <button {...api().getTriggerProps()} class={styles.trigger}>
               Open drawer
             </button>
           </div>
@@ -43,14 +43,14 @@ export default function Page() {
               <div {...api().getGrabberIndicatorProps()} class={styles.grabberIndicator} />
             </div>
             <div class={styles.contentInner}>
-              <h2 class={styles.title} {...api().getTitleProps()}>
+              <h2 {...api().getTitleProps()} class={styles.title}>
                 Notifications
               </h2>
-              <p class={styles.description} {...api().getDescriptionProps()}>
+              <p {...api().getDescriptionProps()} class={styles.description}>
                 You are all caught up. Good job!
               </p>
               <div class={styles.actions}>
-                <button class={styles.close} {...api().getCloseTriggerProps()}>
+                <button {...api().getCloseTriggerProps()} class={styles.close}>
                   Close
                 </button>
               </div>

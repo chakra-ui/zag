@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/image-cropper.module.css"
 import * as imageCropper from "@zag-js/image-cropper"
 import { imageCropperControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -32,8 +33,8 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
   <main class="image-cropper">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getViewportProps()">
-        <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" />
-        <div v-bind="api.getSelectionProps()" />
+        <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" :class="styles.Image" />
+        <div v-bind="api.getSelectionProps()" :class="styles.Selection" />
       </div>
     </div>
     <label>

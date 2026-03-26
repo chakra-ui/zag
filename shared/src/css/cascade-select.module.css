@@ -1,24 +1,24 @@
-:global(.CascadeSelectControl) {
+.Control {
   display: flex;
   flex-direction: column;
   row-gap: 6px;
   align-items: flex-start;
 }
 
-:global(.CascadeSelectLabel) {
+.Label {
   font-size: 14px;
 }
 
-:global(.CascadeSelectLabel)[data-disabled] {
+.Label[data-disabled] {
   cursor: default;
   color: gray;
 }
 
-:global(.CascadeSelectLabel)[data-invalid] {
+.Label[data-invalid] {
   color: red;
 }
 
-:global(.CascadeSelectTrigger) {
+.Trigger {
   padding: 4px 12px;
   border-radius: 4px;
   border: none;
@@ -42,15 +42,15 @@
   top: 1px;
 }
 
-:global(.CascadeSelectTrigger):disabled {
+.Trigger:disabled {
   cursor: default;
 }
 
-:global(.CascadeSelectTrigger)[data-invalid] {
+.Trigger[data-invalid] {
   border: 2px solid red;
 }
 
-:global(.CascadeSelectClearTrigger) {
+.ClearTrigger {
   padding: 4px;
   border: none;
   background: none;
@@ -59,22 +59,22 @@
   transition: background 0.15s ease;
 }
 
-:global(.CascadeSelectClearTrigger):hover {
+.ClearTrigger:hover {
   background: #f0f0f0;
 }
 
-:global(.CascadeSelectPositioner) {
+.Positioner {
   width: max-content;
 }
 
-:global(.CascadeSelectContent) {
+.Content {
   display: flex;
   margin-top: 4px;
   background: #efefef;
   max-height: min(var(--available-height), 200px);
 }
 
-:global(.CascadeSelectList) {
+.List {
   width: 200px;
   list-style: none;
   padding: 4px;
@@ -86,7 +86,7 @@
 }
 
 /* Add a subtle separator line between levels */
-:global(.CascadeSelectList):not(:last-child)::after {
+.List:not(:last-child)::after {
   content: "";
   position: absolute;
   right: 0px;
@@ -97,7 +97,7 @@
   opacity: 0.6;
 }
 
-:global(.CascadeSelectItem) {
+.Item {
   padding: 4px 8px;
   cursor: default;
   display: flex;
@@ -105,25 +105,25 @@
   border-radius: 4px;
 }
 
-:global(.CascadeSelectItemText) {
+.ItemText {
   margin-right: auto;
 }
 
-:global(.CascadeSelectItem)[data-disabled] {
+.Item[data-disabled] {
   color: #777;
 }
 
-:global(.CascadeSelectItem)[data-state="checked"] {
+.Item[data-state="checked"] {
   background: blue;
   color: white;
 }
 
-:global(.CascadeSelectItem):hover {
+.Item:hover {
   background: #e2e8f0;
   border-color: #cbd5e1;
 }
 
-:global(.CascadeSelectItem)[data-highlighted] {
+.Item[data-highlighted] {
   background: rgb(0, 0, 195);
   color: white;
 }

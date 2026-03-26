@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/collapsible.module.css"
 import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,13 +20,13 @@ const api = computed(() => collapsible.connect(service, normalizeProps))
 <template>
   <main class="collapsible">
     <div v-bind="api.getRootProps()">
-      <button v-bind="api.getTriggerProps()">
+      <button v-bind="api.getTriggerProps()" :class="styles.Trigger">
         Collapsible Trigger
-        <div v-bind="api.getIndicatorProps()">
+        <div v-bind="api.getIndicatorProps()" :class="styles.Indicator">
           <ChevronDownIcon />
         </div>
       </button>
-      <div v-bind="api.getContentProps()">
+      <div v-bind="api.getContentProps()" :class="styles.Content">
         <p>
           Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea

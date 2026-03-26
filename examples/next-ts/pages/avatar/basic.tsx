@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/avatar.module.css"
 import * as avatar from "@zag-js/avatar"
 import { avatarData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -18,9 +19,9 @@ export default function Page() {
   return (
     <>
       <main className="avatar">
-        <div {...api.getRootProps()}>
-          <span {...api.getFallbackProps()}>PA</span>
-          {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.getImageProps()} />}
+        <div {...api.getRootProps()} className={styles.Root}>
+          <span {...api.getFallbackProps()} className={styles.Fallback}>PA</span>
+          {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.getImageProps()} className={styles.Image} />}
         </div>
 
         <div className="controls">

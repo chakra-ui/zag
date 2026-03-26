@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/marquee.module.css"
 import * as marquee from "@zag-js/marquee"
 import { marqueeControls, marqueeData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -18,19 +19,19 @@ const api = computed(() => marquee.connect(service, normalizeProps))
 
 <template>
   <main class="marquee">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getEdgeProps({ side: 'start' })" />
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getEdgeProps({ side: 'start' })" :class="styles.Edge" />
 
       <div v-bind="api.getViewportProps()">
-        <div v-for="index in api.contentCount" :key="index - 1" v-bind="api.getContentProps({ index: index - 1 })">
-          <div v-for="(item, i) in marqueeData" :key="i" v-bind="api.getItemProps()">
+        <div v-for="index in api.contentCount" :key="index - 1" v-bind="api.getContentProps({ index: index - 1 })" :class="styles.Content">
+          <div v-for="(item, i) in marqueeData" :key="i" v-bind="api.getItemProps()" :class="styles.Item">
             <span class="marquee-logo">{{ item.logo }}</span>
             <span class="marquee-name">{{ item.name }}</span>
           </div>
         </div>
       </div>
 
-      <div v-bind="api.getEdgeProps({ side: 'end' })" />
+      <div v-bind="api.getEdgeProps({ side: 'end' })" :class="styles.Edge" />
     </div>
 
     <div class="controls">

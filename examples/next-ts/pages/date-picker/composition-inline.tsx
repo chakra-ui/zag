@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -20,7 +21,7 @@ export default function Page() {
       </output>
 
       <div {...api.getRootProps()}>
-        <div {...api.getContentProps()}>
+        <div {...api.getContentProps()} className={styles.Content}>
           <div style={{ marginBottom: "20px" }}>
             <select {...api.getMonthSelectProps()}>
               {api.getMonths().map((month, i) => (
@@ -40,13 +41,13 @@ export default function Page() {
           </div>
 
           <div hidden={api.view !== "day"}>
-            <div {...api.getViewControlProps({ view: "day" })}>
+            <div {...api.getViewControlProps({ view: "day" })} className={styles.ViewControl}>
               <button {...api.getPrevTriggerProps()}>Prev</button>
-              <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
+              <button {...api.getViewTriggerProps()} className={styles.ViewTrigger}>{api.visibleRangeText.start}</button>
               <button {...api.getNextTriggerProps()}>Next</button>
             </div>
 
-            <table {...api.getTableProps({ view: "day" })}>
+            <table {...api.getTableProps({ view: "day" })} className={styles.Table}>
               <thead {...api.getTableHeaderProps({ view: "day" })}>
                 <tr {...api.getTableRowProps({ view: "day" })}>
                   {api.weekDays.map((day, i) => (
@@ -72,13 +73,13 @@ export default function Page() {
 
           <div style={{ display: "flex", gap: "40px" }}>
             <div hidden={api.view !== "month"} style={{ width: "100%" }}>
-              <div {...api.getViewControlProps({ view: "month" })}>
+              <div {...api.getViewControlProps({ view: "month" })} className={styles.ViewControl}>
                 <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-                <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
+                <button {...api.getViewTriggerProps({ view: "month" })} className={styles.ViewTrigger}>{api.visibleRange.start.year}</button>
                 <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 
-              <table {...api.getTableProps({ view: "month", columns: 4 })}>
+              <table {...api.getTableProps({ view: "month", columns: 4 })} className={styles.Table}>
                 <tbody {...api.getTableBodyProps({ view: "month" })}>
                   {api.getMonthsGrid({ columns: 4, format: "short" }).map((months, row) => (
                     <tr key={row} {...api.getTableRowProps()}>
@@ -94,7 +95,7 @@ export default function Page() {
             </div>
 
             <div hidden={api.view !== "year"} style={{ width: "100%" }}>
-              <div {...api.getViewControlProps({ view: "year" })}>
+              <div {...api.getViewControlProps({ view: "year" })} className={styles.ViewControl}>
                 <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
                   {api.getDecade().start} - {api.getDecade().end}
@@ -102,7 +103,7 @@ export default function Page() {
                 <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
               </div>
 
-              <table {...api.getTableProps({ view: "year", columns: 4 })}>
+              <table {...api.getTableProps({ view: "year", columns: 4 })} className={styles.Table}>
                 <tbody {...api.getTableBodyProps()}>
                   {api.getYearsGrid({ columns: 4 }).map((years, row) => (
                     <tr key={row} {...api.getTableRowProps({ view: "year" })}>

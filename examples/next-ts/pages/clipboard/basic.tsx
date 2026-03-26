@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/clipboard.module.css"
 import * as clipboard from "@zag-js/clipboard"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { clipboardControls } from "@zag-js/shared"
@@ -21,14 +22,14 @@ export default function Page() {
   return (
     <>
       <main className="clipboard">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           <label {...api.getLabelProps()}>Copy this link</label>
-          <div {...api.getControlProps()}>
-            <input {...api.getInputProps()} />
-            <button {...api.getTriggerProps()}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <input {...api.getInputProps()} className={styles.Input} />
+            <button {...api.getTriggerProps()} className={styles.Trigger}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
           </div>
-          <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
-          <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
+          <div {...api.getIndicatorProps({ copied: true })} className={styles.Indicator}>Copied!</div>
+          <div {...api.getIndicatorProps({ copied: false })} className={styles.Indicator}>Copy</div>
         </div>
       </main>
 

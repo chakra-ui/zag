@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/listbox.module.css"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo } from "react"
@@ -45,11 +46,11 @@ export default function Page() {
           <strong>Selected items (from api):</strong> {api.selectedItems.map((item) => item.label).join(", ")}
         </div>
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Select framework</label>
-          <ul data-testid="listbox-content" {...api.getContentProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>Select framework</label>
+          <ul data-testid="listbox-content" {...api.getContentProps()} className={styles.Content}>
             {items.map((item) => (
-              <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })} className={styles.Item}>
+                <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
                 <span {...api.getItemIndicatorProps({ item })}>✓</span>
               </li>
             ))}

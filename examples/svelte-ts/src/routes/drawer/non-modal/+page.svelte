@@ -17,7 +17,7 @@
 </script>
 
 <main style="padding: 24px">
-  <button class={styles.trigger} {...api.getTriggerProps()}>Open Drawer</button>
+  <button {...api.getTriggerProps()} class={styles.trigger}>Open Drawer</button>
 
   <div style="margin-top: 24px; padding: 16px; border: 1px dashed #d1d5db; border-radius: 8px">
     <p style="color: #6b7280; font-size: 14px">
@@ -30,8 +30,8 @@
     />
   </div>
 
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.content} {...api.getContentProps()}>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps()} class={styles.content}>
       <div {...api.getTitleProps()}>Non-modal Drawer</div>
       <p {...api.getDescriptionProps()} style="color: #6b7280; margin: 8px 0 0; padding: 0 16px">
         No backdrop, no focus trap, no scroll lock. The page behind stays fully interactive. Close with the button, drag

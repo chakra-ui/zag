@@ -1,4 +1,5 @@
 <script setup>
+import styles from "../../../../../shared/src/css/tooltip.module.css"
 import * as tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed } from "vue"
@@ -16,7 +17,7 @@ const api = computed(() => tooltip.connect(service, normalizeProps))
     <button v-bind="api.getTriggerProps()">Hover me</button>
     <Teleport to="#teleports">
       <div v-if="api.open" v-bind="api.getPositionerProps()">
-        <div v-bind="api.getContentProps()">Tooltip</div>
+        <div v-bind="api.getContentProps()" :class="styles.Content">Tooltip</div>
       </div>
     </Teleport>
   </div>

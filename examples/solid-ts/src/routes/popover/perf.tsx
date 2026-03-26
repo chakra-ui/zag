@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
@@ -42,9 +43,9 @@ export default function Page() {
         </button>
 
         <Portal>
-          <div {...api().getPositionerProps()}>
-            <Presence {...api().getContentProps()} style={{ "max-height": "500px", "overflow-block": "auto" }}>
-              <div {...api().getArrowProps()}>
+          <div {...api().getPositionerProps()} class={styles.Positioner}>
+            <Presence {...api().getContentProps()} class={styles.Content} style={{ "max-height": "500px", "overflow-block": "auto" }}>
+              <div {...api().getArrowProps()} class={styles.Arrow}>
                 <div {...api().getArrowTipProps()} />
               </div>
 
@@ -93,7 +94,7 @@ export default function Page() {
               </div>
 
               <button
-                {...api().getCloseTriggerProps()}
+                {...api().getCloseTriggerProps()} class={styles.CloseTrigger}
                 style={{
                   "margin-top": "12px",
                   padding: "6px 12px",

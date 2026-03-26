@@ -1,4 +1,4 @@
-:global(.CollapsibleContent) {
+.Content {
   overflow: hidden;
   max-width: 400px;
 
@@ -23,13 +23,13 @@
   }
 }
 
-:global(.CollapsibleTrigger) {
+.Trigger {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-:global(.CollapsibleIndicator) {
+.Indicator {
   &[data-state="open"] {
     transform: rotate(180deg);
   }

@@ -1,4 +1,4 @@
-:global(.DateInputLabel) {
+.Label {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
@@ -10,7 +10,7 @@
   }
 }
 
-:global(.DateInputControl) {
+.Control {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -20,7 +20,7 @@
   }
 }
 
-:global(.DateInputSegmentGroup) {
+.SegmentGroup {
   display: inline-flex;
   align-items: center;
   padding-block: 4px;
@@ -46,7 +46,7 @@
   }
 }
 
-:global(.DateInputSegment) {
+.Segment {
   font-variant-numeric: tabular-nums;
   text-align: end;
   font-size: 13.3333px;

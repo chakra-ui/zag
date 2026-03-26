@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/slider.module.css"
 import * as slider from "@zag-js/slider"
 import { sliderControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -28,17 +29,17 @@ const api = computed(() => slider.connect(service, normalizeProps))
         }
       "
     >
-      <div v-bind="api.getRootProps()">
+      <div v-bind="api.getRootProps()" :class="styles.Root">
         <div>
           <label v-bind="api.getLabelProps()">Quantity:</label>
-          <output v-bind="api.getValueTextProps()">{{ api.value.join(" - ") }}</output>
+          <output v-bind="api.getValueTextProps()" :class="styles.ValueText">{{ api.value.join(" - ") }}</output>
         </div>
         <div class="control-area">
-          <div v-bind="api.getControlProps()">
-            <div v-bind="api.getTrackProps()">
-              <div v-bind="api.getRangeProps()" />
+          <div v-bind="api.getControlProps()" :class="styles.Control">
+            <div v-bind="api.getTrackProps()" :class="styles.Track">
+              <div v-bind="api.getRangeProps()" :class="styles.Range" />
             </div>
-            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
+            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })" :class="styles.Thumb">
               <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
           </div>

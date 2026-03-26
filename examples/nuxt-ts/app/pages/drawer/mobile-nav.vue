@@ -24,19 +24,19 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 <template>
   <main :class="styles.page">
     <header :class="styles.header">
-      <button :class="styles.menuButton" v-bind="api.getTriggerProps()">Open mobile menu</button>
+      <button v-bind="api.getTriggerProps()" :class="styles.menuButton">Open mobile menu</button>
     </header>
 
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
-    <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.popup" v-bind="api.getContentProps({ draggable: false })">
+    <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" />
+    <div v-bind="api.getPositionerProps()" :class="styles.positioner">
+      <Presence v-bind="api.getContentProps({ draggable: false })" :class="styles.popup">
         <nav :class="styles.panel">
           <div :class="styles.panelHeader">
             <div aria-hidden :class="styles.headerSpacer" />
-            <div :class="styles.handle" v-bind="api.getGrabberProps()">
-              <div :class="styles.handleIndicator" v-bind="api.getGrabberIndicatorProps()" />
+            <div v-bind="api.getGrabberProps()" :class="styles.handle">
+              <div v-bind="api.getGrabberIndicatorProps()" :class="styles.handleIndicator" />
             </div>
-            <button type="button" :class="styles.closeButton" v-bind="api.getCloseTriggerProps()" aria-label="Close menu">
+            <button type="button" v-bind="api.getCloseTriggerProps()" :class="styles.closeButton" aria-label="Close menu">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
                   d="M0.75 0.75L6 6M11.25 11.25L6 6M6 6L0.75 11.25M6 6L11.25 0.75"

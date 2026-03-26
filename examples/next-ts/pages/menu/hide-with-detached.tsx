@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -17,11 +18,11 @@ const Menu = () => {
       </button>
       {api.open && (
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            <li {...api.getItemProps({ value: "edit" })}>Edit</li>
-            <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
-            <li {...api.getItemProps({ value: "delete" })}>Delete</li>
-            <li {...api.getItemProps({ value: "export" })}>Export...</li>
+          <ul {...api.getContentProps()} className={styles.Content}>
+            <li {...api.getItemProps({ value: "edit" })} className={styles.Item}>Edit</li>
+            <li {...api.getItemProps({ value: "duplicate" })} className={styles.Item}>Duplicate</li>
+            <li {...api.getItemProps({ value: "delete" })} className={styles.Item}>Delete</li>
+            <li {...api.getItemProps({ value: "export" })} className={styles.Item}>Export...</li>
           </ul>
         </div>
       )}

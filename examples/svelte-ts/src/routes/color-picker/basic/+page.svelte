@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/color-picker.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -32,85 +33,85 @@
     }}
   >
     <input {...api.getHiddenInputProps()} />
-    <div {...api.getRootProps()}>
+    <div {...api.getRootProps()} class={styles.Root}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>
         Select Color: <span data-testid="value-text">{api.valueAsString}</span>
       </label>
 
-      <div {...api.getControlProps()}>
+      <div {...api.getControlProps()} class={styles.Control}>
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button {...api.getTriggerProps()}>
-          <div {...api.getTransparencyGridProps({ size: "10px" })}></div>
-          <div {...api.getSwatchProps({ value: api.value })}></div>
+          <div {...api.getTransparencyGridProps({ size: "10px" })} class={styles.TransparencyGrid}></div>
+          <div {...api.getSwatchProps({ value: api.value })} class={styles.Swatch}></div>
         </button>
-        <input {...api.getChannelInputProps({ channel: "hex" })} />
-        <input {...api.getChannelInputProps({ channel: "alpha" })} />
+        <input {...api.getChannelInputProps({ channel: "hex" })} class={styles.ChannelInput} />
+        <input {...api.getChannelInputProps({ channel: "alpha" })} class={styles.ChannelInput} />
       </div>
 
       <div {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>
+        <div {...api.getContentProps()} class={styles.Content}>
           <div class="content__inner">
-            <div {...api.getAreaProps()}>
-              <div {...api.getAreaBackgroundProps()}></div>
-              <div {...api.getAreaThumbProps()}></div>
+            <div {...api.getAreaProps()} class={styles.Area}>
+              <div {...api.getAreaBackgroundProps()} class={styles.AreaBackground}></div>
+              <div {...api.getAreaThumbProps()} class={styles.AreaThumb}></div>
             </div>
 
             <div {...api.getChannelSliderProps({ channel: "hue" })}>
-              <div {...api.getChannelSliderTrackProps({ channel: "hue" })}></div>
-              <div {...api.getChannelSliderThumbProps({ channel: "hue" })}></div>
+              <div {...api.getChannelSliderTrackProps({ channel: "hue" })} class={styles.ChannelSliderTrack}></div>
+              <div {...api.getChannelSliderThumbProps({ channel: "hue" })} class={styles.ChannelSliderThumb}></div>
             </div>
 
             <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-              <div {...api.getTransparencyGridProps({ size: "12px" })}></div>
-              <div {...api.getChannelSliderTrackProps({ channel: "alpha" })}></div>
-              <div {...api.getChannelSliderThumbProps({ channel: "alpha" })}></div>
+              <div {...api.getTransparencyGridProps({ size: "12px" })} class={styles.TransparencyGrid}></div>
+              <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} class={styles.ChannelSliderTrack}></div>
+              <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} class={styles.ChannelSliderThumb}></div>
             </div>
 
             {#if api.format.startsWith("hsl")}
               <div style="display:flex;width:100%;">
-                <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-                <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-                <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} />
-                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} class={styles.ChannelInput} />
+                <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} class={styles.ChannelInput} />
+                <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} class={styles.ChannelInput} />
+                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} class={styles.ChannelInput} />
               </div>
             {/if}
 
             {#if api.format.startsWith("rgb")}
               <div style="display:flex;width:100%;">
-                <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} />
-                <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} />
-                <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} />
-                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} class={styles.ChannelInput} />
+                <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} class={styles.ChannelInput} />
+                <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} class={styles.ChannelInput} />
+                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} class={styles.ChannelInput} />
               </div>
             {/if}
 
             {#if api.format.startsWith("hsb")}
               <div style="display:flex;width:100%;">
-                <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-                <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-                <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} />
-                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} class={styles.ChannelInput} />
+                <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} class={styles.ChannelInput} />
+                <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} class={styles.ChannelInput} />
+                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} class={styles.ChannelInput} />
               </div>
             {/if}
 
             <div style="display:flex;gap:10px;align-items:center;">
               <div style="position:relative;">
-                <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
-                <div {...api.getSwatchProps({ value: api.value })}></div>
+                <div {...api.getTransparencyGridProps({ size: "4px" })} class={styles.TransparencyGrid}></div>
+                <div {...api.getSwatchProps({ value: api.value })} class={styles.Swatch}></div>
               </div>
               <p data-testid="value-text">{api.valueAsString}</p>
             </div>
 
-            <input {...api.getChannelInputProps({ channel: "hex" })} />
+            <input {...api.getChannelInputProps({ channel: "hex" })} class={styles.ChannelInput} />
 
             <div {...api.getSwatchGroupProps()} style="display:flex;gap:10px;">
               {#each presets as preset}
                 <!-- svelte-ignore a11y_consider_explicit_label -->
                 <button {...api.getSwatchTriggerProps({ value: preset })}>
                   <div style="position:relative;">
-                    <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
-                    <div {...api.getSwatchProps({ value: preset })}></div>
+                    <div {...api.getTransparencyGridProps({ size: "4px" })} class={styles.TransparencyGrid}></div>
+                    <div {...api.getSwatchProps({ value: preset })} class={styles.Swatch}></div>
                   </div>
                 </button>
               {/each}

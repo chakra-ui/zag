@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/collapsible.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -22,13 +23,13 @@
 
 <main class="collapsible">
   <div {...api.getRootProps()}>
-    <button {...api.getTriggerProps()}
+    <button {...api.getTriggerProps()} class={styles.Trigger}
       >Collapsible Trigger
-      <div {...api.getIndicatorProps()}>
+      <div {...api.getIndicatorProps()} class={styles.Indicator}>
         <ChevronDownIcon />
       </div>
     </button>
-    <div {...api.getContentProps()}>
+    <div {...api.getContentProps()} class={styles.Content}>
       <p>
         Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
         magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

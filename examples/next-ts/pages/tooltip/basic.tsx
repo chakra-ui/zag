@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tooltip.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -22,7 +23,7 @@ export default function Page() {
             </button>
             <Portal>
               <div {...api.getPositionerProps()}>
-                <Presence className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
+                <Presence className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()} className={styles.Content}>
                   Tooltip
                 </Presence>
               </div>

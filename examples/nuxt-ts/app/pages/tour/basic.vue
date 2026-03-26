@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/tour.module.css"
 import { tourControls, tourData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -43,17 +44,17 @@ const open = computed(() => api.value.open && api.value.step)
     </div>
 
     <Teleport to="#teleports" v-if="open">
-      <div v-if="api.step?.backdrop" v-bind="api.getBackdropProps()" />
-      <div v-bind="api.getSpotlightProps()" />
-      <div v-bind="api.getPositionerProps()">
-        <div v-bind="api.getContentProps()">
-          <div v-if="api.step?.arrow" v-bind="api.getArrowProps()">
+      <div v-if="api.step?.backdrop" v-bind="api.getBackdropProps()" :class="styles.Backdrop" />
+      <div v-bind="api.getSpotlightProps()" :class="styles.Spotlight" />
+      <div v-bind="api.getPositionerProps()" :class="styles.Positioner">
+        <div v-bind="api.getContentProps()" :class="styles.Content">
+          <div v-if="api.step?.arrow" v-bind="api.getArrowProps()" :class="styles.Arrow">
             <div v-bind="api.getArrowTipProps()" />
           </div>
 
-          <p v-bind="api.getTitleProps()">{{ api.step?.title }}</p>
-          <div v-bind="api.getDescriptionProps()">{{ api.step?.description }}</div>
-          <div v-bind="api.getProgressTextProps()">{{ api.getProgressText() }}</div>
+          <p v-bind="api.getTitleProps()" :class="styles.Title">{{ api.step?.title }}</p>
+          <div v-bind="api.getDescriptionProps()" :class="styles.Description">{{ api.step?.description }}</div>
+          <div v-bind="api.getProgressTextProps()" :class="styles.ProgressText">{{ api.getProgressText() }}</div>
 
           <div v-if="api.step?.actions" class="tour button__group">
             <button
@@ -65,7 +66,7 @@ const open = computed(() => api.value.open && api.value.step)
             </button>
           </div>
 
-          <button v-bind="api.getCloseTriggerProps()">
+          <button v-bind="api.getCloseTriggerProps()" :class="styles.CloseTrigger">
             <X />
           </button>
         </div>

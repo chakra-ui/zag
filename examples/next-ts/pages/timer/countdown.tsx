@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/timer.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as timer from "@zag-js/timer"
 import { useId } from "react"
@@ -20,19 +21,19 @@ export default function Page() {
   return (
     <>
       <main className="timer">
-        <div {...api.getRootProps()}>
-          <div {...api.getAreaProps()}>
-            <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
-            <div {...api.getSeparatorProps()}>:</div>
-            <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
-            <div {...api.getSeparatorProps()}>:</div>
-            <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
-            <div {...api.getSeparatorProps()}>:</div>
-            <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getAreaProps()} className={styles.Area}>
+            <div {...api.getItemProps({ type: "days" })} className={styles.Item}>{api.formattedTime.days}</div>
+            <div {...api.getSeparatorProps()} className={styles.Separator}>:</div>
+            <div {...api.getItemProps({ type: "hours" })} className={styles.Item}>{api.formattedTime.hours}</div>
+            <div {...api.getSeparatorProps()} className={styles.Separator}>:</div>
+            <div {...api.getItemProps({ type: "minutes" })} className={styles.Item}>{api.formattedTime.minutes}</div>
+            <div {...api.getSeparatorProps()} className={styles.Separator}>:</div>
+            <div {...api.getItemProps({ type: "seconds" })} className={styles.Item}>{api.formattedTime.seconds}</div>
           </div>
         </div>
 
-        <div {...api.getControlProps()}>
+        <div {...api.getControlProps()} className={styles.Control}>
           <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
           <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
           <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>

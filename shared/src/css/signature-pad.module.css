@@ -1,4 +1,4 @@
-:global(.SignaturePadRoot) {
+.Root {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -10,13 +10,13 @@
   }
 }
 
-:global(.SignaturePadLabel) {
+.Label {
   display: inline-block;
   margin-bottom: 8px;
   font-weight: 500;
 }
 
-:global(.SignaturePadControl) {
+.Control {
   position: relative;
   width: 100%;
   height: 160px;
@@ -24,7 +24,7 @@
   border-radius: 8px;
 }
 
-:global(.SignaturePadGuide) {
+.Guide {
   position: absolute;
   bottom: 12%;
   left: 8px;
@@ -32,7 +32,7 @@
   border-bottom: 2px dashed rgb(129, 133, 150);
 }
 
-:global(.SignaturePadClearTrigger) {
+.ClearTrigger {
   position: absolute;
   top: 32px;
   right: 8px;
@@ -47,7 +47,7 @@
   }
 }
 
-.signature-pad :global(.SignaturePadPreview) {
+.signature-pad .Preview {
   height: 160px;
   object-fit: cover;
   max-width: 100%;

@@ -1,4 +1,4 @@
-:global(.MenuContent) {
+.Content {
   margin: 0;
   width: 160px;
   background-color: white;
@@ -8,8 +8,8 @@
   list-style-type: none;
 }
 
-:global(.MenuItem),
-:global(.MenuTriggerItem) {
+.Item,
+.TriggerItem {
   all: unset;
   font-size: 14px;
   line-height: 1;
@@ -24,19 +24,19 @@
   padding: 0px 5px;
 }
 
-:global(.MenuItem)[data-highlighted],
-:global(.MenuTriggerItem)[data-highlighted] {
+.Item[data-highlighted],
+.TriggerItem[data-highlighted] {
   outline: none;
   background-color: rgb(110, 86, 207);
   color: rgb(253, 252, 254);
 }
 
-:global(.MenuItem)[data-disabled],
-:global(.MenuTriggerItem)[data-disabled] {
+.Item[data-disabled],
+.TriggerItem[data-disabled] {
   opacity: 0.4;
 }
 
-:global(.MenuContextTrigger) {
+.ContextTrigger {
   border: 2px dashed blue;
   border-radius: 4px;
   font-size: 15px;

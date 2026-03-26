@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/qr-code.module.css"
   import * as qrCode from "@zag-js/qr-code"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
   import { qrCodeControls } from "@zag-js/shared"
@@ -22,10 +23,10 @@
 
 <main class="qr-code">
   <div {...api.getRootProps()}>
-    <svg {...api.getFrameProps()}>
-      <path {...api.getPatternProps()} />
+    <svg {...api.getFrameProps()} class={styles.Frame}>
+      <path {...api.getPatternProps()} class={styles.Pattern} />
     </svg>
-    <div {...api.getOverlayProps()}>
+    <div {...api.getOverlayProps()} class={styles.Overlay}>
       <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
     </div>
   </div>

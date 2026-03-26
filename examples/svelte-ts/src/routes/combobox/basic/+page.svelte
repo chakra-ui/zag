@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/combobox.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -48,22 +49,22 @@
     <button onclick={() => api.setValue(["TG"])}>Set to Togo</button>
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
-    <div {...api.getRootProps()}>
+    <div {...api.getRootProps()} class={styles.Root}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.getLabelProps()}>Select country</label>
-      <div {...api.getControlProps()}>
-        <input data-testid="input" {...api.getInputProps()} />
+      <label {...api.getLabelProps()} class={styles.Label}>Select country</label>
+      <div {...api.getControlProps()} class={styles.Control}>
+        <input data-testid="input" {...api.getInputProps()} class={styles.Input} />
         <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
-        <button {...api.getClearTriggerProps()}>
+        <button {...api.getClearTriggerProps()} class={styles.ClearTrigger}>
           <XIcon />
         </button>
       </div>
     </div>
     <div {...api.getPositionerProps()}>
       {#if options.length > 0}
-        <ul data-testid="combobox-content" {...api.getContentProps()}>
+        <ul data-testid="combobox-content" {...api.getContentProps()} class={styles.Content}>
           {#each options as item}
-            <li data-testid={item.code} {...api.getItemProps({ item })}>
+            <li data-testid={item.code} {...api.getItemProps({ item })} class={styles.Item}>
               {item.label}
             </li>
           {/each}

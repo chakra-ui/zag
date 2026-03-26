@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/toggle.module.css"
 import * as toggle from "@zag-js/toggle"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
@@ -9,7 +10,7 @@ const api = computed(() => toggle.connect(service, normalizeProps))
 
 <template>
   <main class="toggle">
-    <button v-bind="api.getRootProps()">
+    <button v-bind="api.getRootProps()" :class="styles.Root">
       <span v-bind="api.getIndicatorProps()">
         <BoldIcon />
       </span>

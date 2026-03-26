@@ -19,11 +19,11 @@ function AlwaysOpenDrawer() {
         This drawer has <code>open: true</code> without <code>onOpenChange</code>. Swiping, escape, and outside click
         should have no effect.
       </p>
-      <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-      <div className={styles.positioner} {...api.getPositionerProps()}>
-        <Presence className={styles.content} {...api.getContentProps()}>
-          <div className={styles.grabber} {...api.getGrabberProps()}>
-            <div className={styles.grabberIndicator} {...api.getGrabberIndicatorProps()} />
+      <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+      <div {...api.getPositionerProps()} className={styles.positioner}>
+        <Presence {...api.getContentProps()} className={styles.content}>
+          <div {...api.getGrabberProps()} className={styles.grabber}>
+            <div {...api.getGrabberIndicatorProps()} className={styles.grabberIndicator} />
           </div>
           <div {...api.getTitleProps()}>Always Open</div>
           <p {...api.getDescriptionProps()}>
@@ -52,14 +52,14 @@ function ControlledDrawer() {
     <div>
       <h3>Controlled (open + onOpenChange)</h3>
       <p style={{ fontSize: 14, color: "#6b7280" }}>Standard controlled mode. Open state is managed by React.</p>
-      <button className={styles.trigger} {...api.getTriggerProps()}>
+      <button {...api.getTriggerProps()} className={styles.trigger}>
         Open Controlled
       </button>
-      <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-      <div className={styles.positioner} {...api.getPositionerProps()}>
-        <Presence className={styles.content} {...api.getContentProps()}>
-          <div className={styles.grabber} {...api.getGrabberProps()}>
-            <div className={styles.grabberIndicator} {...api.getGrabberIndicatorProps()} />
+      <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+      <div {...api.getPositionerProps()} className={styles.positioner}>
+        <Presence {...api.getContentProps()} className={styles.content}>
+          <div {...api.getGrabberProps()} className={styles.grabber}>
+            <div {...api.getGrabberIndicatorProps()} className={styles.grabberIndicator} />
           </div>
           <div {...api.getTitleProps()}>Controlled Drawer</div>
           <p {...api.getDescriptionProps()}>

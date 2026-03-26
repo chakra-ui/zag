@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/cascade-select.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -50,7 +51,7 @@
   {@const nodeState = api.getItemState(listNodeProps)}
   {@const children = collection.getNodeChildren(node)}
 
-  <ul {...api.getListProps(listNodeProps)}>
+  <ul {...api.getListProps(listNodeProps)} class={styles.List}>
     {#each children as item, index}
       {@const itemProps = {
         indexPath: [...indexPath, index],
@@ -58,8 +59,8 @@
         item,
       }}
       {@const itemState = api.getItemState(itemProps)}
-      <li {...api.getItemProps(itemProps)}>
-        <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+      <li {...api.getItemProps(itemProps)} class={styles.Item}>
+        <span {...api.getItemTextProps(itemProps)} class={styles.ItemText}>{item.label}</span>
         <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
         {#if itemState.hasChildren}
           <span>{">"}</span>
@@ -80,20 +81,20 @@
 <main class="cascade-select">
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.getLabelProps()}>Select a location</label>
+    <label {...api.getLabelProps()} class={styles.Label}>Select a location</label>
 
-    <div {...api.getControlProps()}>
-      <button {...api.getTriggerProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
+      <button {...api.getTriggerProps()} class={styles.Trigger}>
         <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
         <span {...api.getIndicatorProps()}>▼</span>
       </button>
-      <button {...api.getClearTriggerProps()}>X</button>
+      <button {...api.getClearTriggerProps()} class={styles.ClearTrigger}>X</button>
     </div>
 
     <input {...api.getHiddenInputProps()} />
 
-    <div use:portal {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>
+    <div use:portal {...api.getPositionerProps()} class={styles.Positioner}>
+      <div {...api.getContentProps()} class={styles.Content}>
         {@render treeNode({ node: collection.rootNode, api, indexPath: [], value: [] })}
       </div>
     </div>

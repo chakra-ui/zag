@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/checkbox.module.css"
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -18,8 +19,8 @@ export default function Page() {
 
   return (
     <main className="checkbox">
-      <label {...api.getRootProps()}>
-        <div {...api.getControlProps()} />
+      <label {...api.getRootProps()} className={styles.Root}>
+        <div {...api.getControlProps()} className={styles.Control} />
         <span {...api.getLabelProps()}>Input {api.checked ? "Checked" : "Unchecked"}</span>
         <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
         <div {...api.getIndicatorProps()}>Indicator</div>

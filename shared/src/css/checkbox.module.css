@@ -1,8 +1,8 @@
-:global(.CheckboxControl)[data-focus] {
+.Control[data-focus] {
   outline: 2px solid royalblue;
 }
 
-:global(.CheckboxRoot) {
+.Root {
   display: flex;
   align-items: center;
   position: relative;
@@ -12,7 +12,7 @@
   gap: 8px;
 }
 
-:global(.CheckboxControl) {
+.Control {
   height: 16px;
   width: 16px;
   background-color: #eee;
@@ -24,20 +24,20 @@
   position: relative;
 }
 
-:global(.CheckboxControl)[data-hover] {
+.Control[data-hover] {
   background-color: #ccc;
 }
 
-:global(.CheckboxControl)[data-state="checked"] {
+.Control[data-state="checked"] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-:global(.CheckboxControl)[data-state="checked"]::after {
+.Control[data-state="checked"]::after {
   display: block;
 }
 
-:global(.CheckboxControl)::after {
+.Control::after {
   content: "";
   display: none;
   position: relative;
@@ -50,12 +50,12 @@
   top: -1px;
 }
 
-:global(.CheckboxControl)[data-state="indeterminate"] {
+.Control[data-state="indeterminate"] {
   background-color: white;
   border-color: gray;
 }
 
-:global(.CheckboxControl)[data-state="indeterminate"]::after {
+.Control[data-state="indeterminate"]::after {
   display: block;
   left: 50%;
   top: 50%;

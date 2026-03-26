@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/scroll-area.module.css"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as scrollArea from "@zag-js/scroll-area"
 import { useId } from "react"
@@ -9,12 +10,12 @@ const ScrollArea = (props: React.ComponentProps<"div">) => {
 
   return (
     <div {...mergeProps(api.getRootProps(), rest)}>
-      <div {...api.getViewportProps()}>
-        <div {...api.getContentProps()}>{children}</div>
+      <div {...api.getViewportProps()} className={styles.Viewport}>
+        <div {...api.getContentProps()} className={styles.Content}>{children}</div>
       </div>
       {api.hasOverflowY && (
-        <div {...api.getScrollbarProps()}>
-          <div {...api.getThumbProps()} />
+        <div {...api.getScrollbarProps()} className={styles.Scrollbar}>
+          <div {...api.getThumbProps()} className={styles.Thumb} />
         </div>
       )}
     </div>

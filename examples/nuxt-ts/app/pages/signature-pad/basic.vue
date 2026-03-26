@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/signature-pad.module.css"
 import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -29,18 +30,18 @@ const api = computed(() => signaturePad.connect(service, normalizeProps))
 
 <template>
   <main class="signature-pad">
-    <div v-bind="api.getRootProps()">
-      <label v-bind="api.getLabelProps()">Signature Pad</label>
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <label v-bind="api.getLabelProps()" :class="styles.Label">Signature Pad</label>
 
-      <div v-bind="api.getControlProps()">
+      <div v-bind="api.getControlProps()" :class="styles.Control">
         <svg v-bind="api.getSegmentProps()">
           <path v-for="(path, i) of api.paths" :key="i" v-bind="api.getSegmentPathProps({ path })" />
           <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
-        <div v-bind="api.getGuideProps()" />
+        <div v-bind="api.getGuideProps()" :class="styles.Guide" />
       </div>
 
-      <button v-bind="api.getClearTriggerProps()">
+      <button v-bind="api.getClearTriggerProps()" :class="styles.ClearTrigger">
         <RotateCcw />
       </button>
     </div>

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -64,11 +65,11 @@ export default function Page() {
         </div>
 
         <div>
-          <label {...api.getLabelProps()}>Select framework</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
+          <label {...api.getLabelProps()} className={styles.Label}>Select framework</label>
+          <div {...api.getControlProps()} className={styles.Control} style={{ display: "flex", marginTop: "4px" }}>
             <input
               data-testid="input"
-              {...api.getInputProps()}
+              {...api.getInputProps()} className={styles.Input}
               style={{
                 flex: 1,
                 padding: "8px 12px",
@@ -85,7 +86,7 @@ export default function Page() {
         <div {...api.getPositionerProps()}>
           <ul
             data-testid="combobox-content"
-            {...api.getContentProps()}
+            {...api.getContentProps()} className={styles.Content}
             style={{
               listStyle: "none",
               margin: 0,
@@ -101,7 +102,7 @@ export default function Page() {
               <li
                 data-testid={item.value}
                 key={item.value}
-                {...api.getItemProps({ item })}
+                {...api.getItemProps({ item })} className={styles.Item}
                 style={{
                   padding: "8px 12px",
                   cursor: "pointer",

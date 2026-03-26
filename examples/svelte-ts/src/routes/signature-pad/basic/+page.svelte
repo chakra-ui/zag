@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/signature-pad.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -32,11 +33,11 @@
 </script>
 
 <main class="signature-pad">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.getLabelProps()}>Signature Pad</label>
+    <label {...api.getLabelProps()} class={styles.Label}>Signature Pad</label>
 
-    <div {...api.getControlProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
       <svg {...api.getSegmentProps()}>
         {#each api.paths as path}
           <path {...api.getSegmentPathProps({ path })} />
@@ -46,10 +47,10 @@
         {/if}
       </svg>
 
-      <div {...api.getGuideProps()}></div>
+      <div {...api.getGuideProps()} class={styles.Guide}></div>
     </div>
 
-    <button {...api.getClearTriggerProps()}>
+    <button {...api.getClearTriggerProps()} class={styles.ClearTrigger}>
       <RotateCcw />
     </button>
   </div>

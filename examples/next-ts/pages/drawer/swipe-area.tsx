@@ -16,12 +16,12 @@ export default function Page() {
   return (
     <>
       <main>
-        <div className={styles.swipeArea} {...api.getSwipeAreaProps()} />
-        <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-        <div className={styles.positioner} {...api.getPositionerProps()}>
-          <Presence className={styles.content} {...api.getContentProps()}>
-            <div className={styles.grabber} {...api.getGrabberProps()}>
-              <div className={styles.grabberIndicator} {...api.getGrabberIndicatorProps()} />
+        <div {...api.getSwipeAreaProps()} className={styles.swipeArea} />
+        <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+        <div {...api.getPositionerProps()} className={styles.positioner}>
+          <Presence {...api.getContentProps()} className={styles.content}>
+            <div {...api.getGrabberProps()} className={styles.grabber}>
+              <div {...api.getGrabberIndicatorProps()} className={styles.grabberIndicator} />
             </div>
             <div {...api.getTitleProps()}>Drawer</div>
             <p {...api.getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>

@@ -1,4 +1,4 @@
-:global(.TocRoot) {
+.Root {
   position: relative;
   max-width: 16rem;
   max-height: 20rem;
@@ -8,7 +8,7 @@
   padding: 0.5rem;
 }
 
-:global(.TocTitle) {
+.Title {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -18,7 +18,7 @@
   padding: 0 0.5rem;
 }
 
-:global(.TocList) {
+.List {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,12 +28,12 @@
   margin: 0;
 }
 
-:global(.TocItem) {
+.Item {
   display: block;
   padding-inline-start: calc(var(--depth, 2) * 0.75rem - 1rem);
 }
 
-:global(.TocLink) {
+.Link {
   display: block;
   padding: 0.25rem 0.5rem;
   color: hsl(219, 1%, 52%);
@@ -53,7 +53,7 @@
   }
 }
 
-:global(.TocIndicator) {
+.Indicator {
   width: 2px;
   background-color: hsl(216, 98%, 52%);
   position: absolute;

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tree-view.module.css"
 import { useVirtualizer, type Virtualizer } from "@tanstack/react-virtual"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
@@ -66,7 +67,7 @@ const TreeNode = (props: TreeNodeProps) => {
   if (nodeState.isBranch) {
     return (
       <div
-        {...api.getBranchControlProps(nodeProps)}
+        {...api.getBranchControlProps(nodeProps)} className={styles.BranchControl}
         style={{
           paddingLeft: indent,
           height: ROW_HEIGHT,
@@ -75,7 +76,7 @@ const TreeNode = (props: TreeNodeProps) => {
           gap: "4px",
         }}
       >
-        <span {...api.getBranchIndicatorProps(nodeProps)}>
+        <span {...api.getBranchIndicatorProps(nodeProps)} className={styles.BranchIndicator}>
           <ChevronRightIcon
             size={16}
             style={{
@@ -85,14 +86,14 @@ const TreeNode = (props: TreeNodeProps) => {
           />
         </span>
         <FolderIcon size={16} />
-        <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
+        <span {...api.getBranchTextProps(nodeProps)} className={styles.BranchText}>{node.name}</span>
       </div>
     )
   }
 
   return (
     <div
-      {...api.getItemProps(nodeProps)}
+      {...api.getItemProps(nodeProps)} className={styles.Item}
       style={{
         paddingLeft: indent,
         height: ROW_HEIGHT,
@@ -102,7 +103,7 @@ const TreeNode = (props: TreeNodeProps) => {
       }}
     >
       <FileIcon size={16} />
-      <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
+      <span {...api.getItemTextProps(nodeProps)} className={styles.ItemText}>{node.name}</span>
     </div>
   )
 }
@@ -155,7 +156,7 @@ export default function Page() {
           {/* Scrollable container */}
           <div
             ref={parentRef}
-            {...api.getTreeProps()}
+            {...api.getTreeProps()} className={styles.Tree}
             style={{
               height: 400,
               overflow: "auto",

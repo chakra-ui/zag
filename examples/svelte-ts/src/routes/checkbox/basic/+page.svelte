@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/checkbox.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -28,8 +29,8 @@
     }}
   >
     <fieldset>
-      <label {...api.getRootProps()}>
-        <div {...api.getControlProps()}></div>
+      <label {...api.getRootProps()} class={styles.Root}>
+        <div {...api.getControlProps()} class={styles.Control}></div>
         <span {...api.getLabelProps()}>Input {api.checked ? "Checked" : "Unchecked"}</span>
         <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
         <div {...api.getIndicatorProps()}>Indicator</div>

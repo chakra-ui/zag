@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/select.module.css"
 import * as select from "@zag-js/select"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useMemo } from "react"
@@ -45,25 +46,25 @@ export default function Page() {
         </div>
 
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Select framework</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px 12px", flex: 1 }}>
+          <label {...api.getLabelProps()} className={styles.Label}>Select framework</label>
+          <div {...api.getControlProps()} className={styles.Control} style={{ display: "flex", marginTop: "4px" }}>
+            <button data-testid="trigger" {...api.getTriggerProps()} className={styles.Trigger} style={{ padding: "8px 12px", flex: 1 }}>
               <span>{api.valueAsString || "Select option"}</span>
               <span style={{ marginLeft: "8px" }}>▼</span>
             </button>
           </div>
 
           <Portal>
-            <div {...api.getPositionerProps()}>
-              <ul data-testid="select-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
+            <div {...api.getPositionerProps()} className={styles.Positioner}>
+              <ul data-testid="select-content" {...api.getContentProps()} className={styles.Content} style={{ listStyle: "none", padding: "4px" }}>
                 {items.map((item) => (
                   <li
                     key={item.value}
                     data-testid={item.value}
-                    {...api.getItemProps({ item })}
+                    {...api.getItemProps({ item })} className={styles.Item}
                     style={{ padding: "8px 12px" }}
                   >
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
                     <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 ))}

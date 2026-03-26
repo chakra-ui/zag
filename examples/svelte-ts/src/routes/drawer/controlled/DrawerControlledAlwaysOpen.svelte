@@ -26,11 +26,11 @@
     This drawer has <code>open: true</code> without <code>onOpenChange</code>. Swiping, escape, and outside click should
     have no effect.
   </p>
-  <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.content} {...api.getContentProps()}>
-      <div class={styles.grabber} {...api.getGrabberProps()}>
-        <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
+  <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps()} class={styles.content}>
+      <div {...api.getGrabberProps()} class={styles.grabber}>
+        <div {...api.getGrabberIndicatorProps()} class={styles.grabberIndicator}></div>
       </div>
       <div {...api.getTitleProps()}>Always Open</div>
       <p {...api.getDescriptionProps()}>

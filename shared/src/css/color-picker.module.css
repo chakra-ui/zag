@@ -1,16 +1,16 @@
-:global(.ColorPickerRoot) {
+.Root {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-:global(.ColorPickerControl) {
+.Control {
   display: flex;
   gap: 4px;
 }
 
-:global(.ColorPickerContent) {
+.Content {
   width: 260px;
   box-sizing: border-box;
   padding: 24px;
@@ -19,26 +19,26 @@
   z-index: var(--layer-index);
 }
 
-:global(.ColorPickerContent) > .content__inner {
+.Content > .content__inner {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-:global(.ColorPickerArea) {
+.Area {
   height: 200px;
   border-radius: 4px;
   border: 1px solid #ebebeb;
 }
 
-:global(.ColorPickerAreaBackground) {
+.AreaBackground {
   background: rgb(142, 142, 142);
   border-radius: 4px;
   height: 200px;
 }
 
-:global(.ColorPickerAreaThumb),
-:global(.ColorPickerChannelSliderThumb) {
+.AreaThumb,
+.ChannelSliderThumb {
   border: 2px solid white;
   border-radius: 9999px;
   box-sizing: border-box;
@@ -50,23 +50,23 @@
   height: 16px;
 }
 
-:global(.ColorPickerChannelSliderTrack) {
+.ChannelSliderTrack {
   height: 20px;
   border-radius: 4px;
 }
 
-:global(.ColorPickerChannelInput) {
+.ChannelInput {
   border-radius: 4px;
   width: 100%;
   border: 1px solid #c2c2c2;
 }
 
-:global(.ColorPickerSwatch) {
+.Swatch {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-:global(.ColorPickerTransparencyGrid) {
+.TransparencyGrid {
   border-radius: 4px;
 }

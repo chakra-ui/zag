@@ -1,13 +1,13 @@
-:global(.SplitterRoot)[data-orientation="horizontal"] {
+.Root[data-orientation="horizontal"] {
   height: 300px;
 }
 
-:global(.SplitterRoot)[data-orientation="vertical"] {
+.Root[data-orientation="vertical"] {
   width: 800px;
   height: 600px;
 }
 
-:global(.SplitterPanel) {
+.Panel {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,15 +15,15 @@
   overflow: auto;
 }
 
-:global(.SplitterResizeTrigger)[data-orientation="horizontal"] {
+.ResizeTrigger[data-orientation="horizontal"] {
   width: 8px;
 }
 
-:global(.SplitterResizeTrigger)[data-orientation="vertical"] {
+.ResizeTrigger[data-orientation="vertical"] {
   height: 8px;
 }
 
-:global(.SplitterResizeTrigger) {
+.ResizeTrigger {
   background: #ebebeb;
   display: flex;
   align-items: center;
@@ -32,29 +32,29 @@
   outline: 0;
 }
 
-:global(.SplitterResizeTrigger)[data-focus] {
+.ResizeTrigger[data-focus] {
   background: #b0baf1;
 }
 
-:global(.SplitterResizeTrigger):active {
+.ResizeTrigger:active {
   background: #3f51b5;
   color: white;
 }
 
-:global(.SplitterResizeTrigger)[data-disabled] {
+.ResizeTrigger[data-disabled] {
   opacity: 0.5;
 }
 
-:global(.SplitterResizeTrigger) .bar {
+.ResizeTrigger .bar {
   background-color: currentColor;
 }
 
-:global(.Splitter)[data-orientation="horizontal"] .bar {
+.Splitter[data-orientation="horizontal"] .bar {
   width: 2px;
   height: 40px;
 }
 
-:global(.Splitter)[data-orientation="vertical"] .bar {
+.Splitter[data-orientation="vertical"] .bar {
   height: 2px;
   width: 40px;
 }

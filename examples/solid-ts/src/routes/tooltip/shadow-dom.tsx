@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tooltip.module.css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import keyframesStyles from "../../../../../shared/src/css/keyframes.module.css?inline"
@@ -26,7 +27,7 @@ export default function Page() {
         <Show when={api().open}>
           <Portal mount={getRootNode()?.getElementById("portal-root")!}>
             <div {...api().getPositionerProps()}>
-              <div {...api().getContentProps()}>Tooltip</div>
+              <div {...api().getContentProps()} class={styles.Content}>Tooltip</div>
             </div>
           </Portal>
         </Show>

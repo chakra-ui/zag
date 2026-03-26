@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/listbox.module.css"
 import { createFilter } from "@zag-js/i18n-utils"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -42,10 +43,10 @@ export default function Page() {
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
-          <ul {...api.getContentProps()}>
+          <ul {...api.getContentProps()} className={styles.Content}>
             {collection.items.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <li key={item.value} {...api.getItemProps({ item })} className={styles.Item}>
+                <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
                 <span {...api.getItemIndicatorProps({ item })}>✓</span>
               </li>
             ))}

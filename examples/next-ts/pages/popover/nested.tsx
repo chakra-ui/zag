@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as React from "react"
@@ -23,12 +24,12 @@ function Popover({ children, nested, id }: any) {
         {!nested && <div {...api.getAnchorProps()}>anchor</div>}
 
         <Wrapper>
-          <div {...api.getPositionerProps()}>
-            <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
-              <div {...api.getArrowProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div data-testid="popover-content" className="popover-content" {...api.getContentProps()} className={styles.Content}>
+              <div {...api.getArrowProps()} className={styles.Arrow}>
                 <div {...api.getArrowTipProps()} />
               </div>
-              <div data-testid="popover-title" {...api.getTitleProps()}>
+              <div data-testid="popover-title" {...api.getTitleProps()} className={styles.Title}>
                 Popover Title
               </div>
               <div data-part="body" data-testid="popover-body">
@@ -37,7 +38,7 @@ function Popover({ children, nested, id }: any) {
                   Focusable Link
                 </a>
                 <input data-testid="input" placeholder="input" />
-                <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
+                <button data-testid="popover-close-button" {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>
                   X
                 </button>
                 {children}

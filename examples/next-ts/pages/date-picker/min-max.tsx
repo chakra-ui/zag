@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -25,14 +26,14 @@ export default function Page() {
           <div>Focused: {api.focusedValueAsString}</div>
         </output>
 
-        <div {...api.getControlProps()}>
+        <div {...api.getControlProps()} className={styles.Control}>
           <input {...api.getInputProps()} />
           <button {...api.getClearTriggerProps()}>❌</button>
-          <button {...api.getTriggerProps()}>🗓</button>
+          <button {...api.getTriggerProps()} className={styles.Trigger}>🗓</button>
         </div>
 
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
+          <div {...api.getContentProps()} className={styles.Content}>
             <div style={{ marginBottom: "20px" }}>
               <select {...api.getMonthSelectProps()}>
                 {api.getMonths().map((month, i) => (
@@ -52,13 +53,13 @@ export default function Page() {
             </div>
 
             <div hidden={api.view !== "day"}>
-              <div {...api.getViewControlProps({ view: "year" })}>
+              <div {...api.getViewControlProps({ view: "year" })} className={styles.ViewControl}>
                 <button {...api.getPrevTriggerProps()}>Prev</button>
-                <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
+                <button {...api.getViewTriggerProps()} className={styles.ViewTrigger}>{api.visibleRangeText.start}</button>
                 <button {...api.getNextTriggerProps()}>Next</button>
               </div>
 
-              <table {...api.getTableProps({ view: "day" })}>
+              <table {...api.getTableProps({ view: "day" })} className={styles.Table}>
                 <thead {...api.getTableHeaderProps({ view: "day" })}>
                   <tr {...api.getTableRowProps({ view: "day" })}>
                     {api.weekDays.map((day, i) => (

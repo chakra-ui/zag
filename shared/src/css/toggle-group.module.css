@@ -1,15 +1,15 @@
-:global(.ToggleGroupRoot) {
+.Root {
   display: flex;
 }
 
-:global(.ToggleGroupItem) {
+.Item {
   border-radius: 0px;
   border: 0;
   width: 40px;
   height: 40px;
 }
 
-:global(.ToggleGroupItem)[data-state="on"] {
+.Item[data-state="on"] {
   background-color: blue;
   color: white;
 }

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -25,14 +26,14 @@ export default function Page() {
         <div>Focused: {api.focusedValueAsString}</div>
       </output>
 
-      <div {...api.getControlProps()}>
+      <div {...api.getControlProps()} className={styles.Control}>
         <input {...api.getInputProps()} />
         <button {...api.getClearTriggerProps()}>❌</button>
-        <button {...api.getTriggerProps()}>🗓</button>
+        <button {...api.getTriggerProps()} className={styles.Trigger}>🗓</button>
       </div>
 
       <div {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>
+        <div {...api.getContentProps()} className={styles.Content}>
           <div style={{ display: "flex", gap: "10px" }}>
             <button {...api.getPrevTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
@@ -42,7 +43,7 @@ export default function Page() {
 
           <div>{api.visibleRangeText.start}</div>
 
-          <table {...api.getTableProps({ view: "day" })}>
+          <table {...api.getTableProps({ view: "day" })} className={styles.Table}>
             <thead {...api.getTableHeaderProps({ view: "day" })}>
               <tr {...api.getTableRowProps({ view: "day" })}>
                 {api.weekDays.map((day, i) => (
@@ -69,7 +70,7 @@ export default function Page() {
 
           <div>{offset.visibleRangeText.start}</div>
 
-          <table {...api.getTableProps({ view: "day" })}>
+          <table {...api.getTableProps({ view: "day" })} className={styles.Table}>
             <thead {...api.getTableHeaderProps()}>
               <tr {...api.getTableRowProps()}>
                 {api.weekDays.map((day, i) => (
@@ -96,8 +97,8 @@ export default function Page() {
         </div>
 
         <div style={{ display: "flex", gap: "40px" }}>
-          <div {...api.getViewProps({ view: "month" })}>
-            <table {...api.getTableProps({ view: "month", columns: 4 })}>
+          <div {...api.getViewProps({ view: "month" })} className={styles.View}>
+            <table {...api.getTableProps({ view: "month", columns: 4 })} className={styles.Table}>
               <tbody {...api.getTableBodyProps({ view: "month" })}>
                 {api.getMonthsGrid({ columns: 4, format: "short" }).map((months, row) => (
                   <tr key={row} {...api.getTableRowProps()}>
@@ -112,8 +113,8 @@ export default function Page() {
             </table>
           </div>
 
-          <div {...api.getViewProps({ view: "year" })}>
-            <table {...api.getTableProps({ view: "year", columns: 4 })}>
+          <div {...api.getViewProps({ view: "year" })} className={styles.View}>
+            <table {...api.getTableProps({ view: "year", columns: 4 })} className={styles.Table}>
               <tbody {...api.getTableBodyProps()}>
                 {api.getYearsGrid({ columns: 4 }).map((years, row) => (
                   <tr key={row} {...api.getTableRowProps({ view: "year" })}>

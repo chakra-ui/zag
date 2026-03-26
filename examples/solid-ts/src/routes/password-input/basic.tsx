@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/password-input.module.css"
 import * as passwordInput from "@zag-js/password-input"
 import { passwordInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -22,12 +23,12 @@ export default function Page() {
   return (
     <>
       <main class="password-input">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
           <label {...api().getLabelProps()}>Password</label>
-          <div {...api().getControlProps()}>
-            <input {...api().getInputProps()} />
-            <button {...api().getVisibilityTriggerProps()}>
-              <span {...api().getIndicatorProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
+            <input {...api().getInputProps()} class={styles.Input} />
+            <button {...api().getVisibilityTriggerProps()} class={styles.VisibilityTrigger}>
+              <span {...api().getIndicatorProps()} class={styles.Indicator}>
                 <Show when={api().visible} fallback={<EyeOffIcon />}>
                   <EyeIcon />
                 </Show>

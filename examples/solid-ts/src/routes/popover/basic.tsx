@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -26,15 +27,15 @@ export default function Page() {
           <button data-testid="button-before">Button :before</button>
           <button data-testid="popover-trigger" {...api().getTriggerProps()}>
             Click me
-            <div {...api().getIndicatorProps()}>{">"}</div>
+            <div {...api().getIndicatorProps()} class={styles.Indicator}>{">"}</div>
           </button>
           <Wrapper guard={api().portalled}>
-            <div {...api().getPositionerProps()}>
-              <Presence data-testid="popover-content" class="popover-content" {...api().getContentProps()}>
-                <div {...api().getArrowProps()}>
+            <div {...api().getPositionerProps()} class={styles.Positioner}>
+              <Presence data-testid="popover-content" class="popover-content" {...api().getContentProps()} class={styles.Content}>
+                <div {...api().getArrowProps()} class={styles.Arrow}>
                   <div {...api().getArrowTipProps()} />
                 </div>
-                <div data-testid="popover-title" {...api().getTitleProps()}>
+                <div data-testid="popover-title" {...api().getTitleProps()} class={styles.Title}>
                   Popover Title
                 </div>
                 <div data-testid="popover-body" data-part="body">
@@ -43,7 +44,7 @@ export default function Page() {
                     Focusable Link
                   </a>
                   <input data-testid="input" placeholder="input" />
-                  <button data-testid="popover-close-button" {...api().getCloseTriggerProps()}>
+                  <button data-testid="popover-close-button" {...api().getCloseTriggerProps()} class={styles.CloseTrigger}>
                     X
                   </button>
                 </div>

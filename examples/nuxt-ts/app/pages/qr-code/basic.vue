@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/qr-code.module.css"
 import * as qrCode from "@zag-js/qr-code"
 import { qrCodeControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,10 +20,10 @@ const api = computed(() => qrCode.connect(service, normalizeProps))
 <template>
   <main class="qr-code">
     <div v-bind="api.getRootProps()">
-      <svg v-bind="api.getFrameProps()">
-        <path v-bind="api.getPatternProps()" />
+      <svg v-bind="api.getFrameProps()" :class="styles.Frame">
+        <path v-bind="api.getPatternProps()" :class="styles.Pattern" />
       </svg>
-      <div v-bind="api.getOverlayProps()">
+      <div v-bind="api.getOverlayProps()" :class="styles.Overlay">
         <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
       </div>
     </div>

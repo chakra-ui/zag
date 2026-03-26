@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/floating-panel.module.css"
 import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { floatingPanelControls } from "@zag-js/shared"
@@ -23,11 +24,11 @@ export default function Page() {
         <div>
           <button {...api.getTriggerProps()}>Toggle Panel</button>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
+            <div {...api.getContentProps()} className={styles.Content}>
               <div {...api.getDragTriggerProps()}>
-                <div {...api.getHeaderProps()}>
+                <div {...api.getHeaderProps()} className={styles.Header}>
                   <p {...api.getTitleProps()}>Floating Panel</p>
-                  <div {...api.getControlProps()}>
+                  <div {...api.getControlProps()} className={styles.Control}>
                     <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                       <Minus />
                     </button>
@@ -43,12 +44,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div {...api.getBodyProps()}>
+              <div {...api.getBodyProps()} className={styles.Body}>
                 <p>Some content</p>
               </div>
 
               {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+                <div key={axis} {...api.getResizeTriggerProps({ axis })} className={styles.ResizeTrigger} />
               ))}
             </div>
           </div>

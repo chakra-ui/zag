@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/splitter.module.css"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { splitterControls } from "@zag-js/shared"
   import * as splitter from "@zag-js/splitter"
@@ -21,12 +22,12 @@
 </script>
 
 <main class="splitter">
-  <div {...api.getRootProps()}>
-    <div {...api.getPanelProps({ id: "a" })}>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <div {...api.getPanelProps({ id: "a" })} class={styles.Panel}>
       <p>A</p>
     </div>
-    <div {...api.getResizeTriggerProps({ id: "a:b" })}></div>
-    <div {...api.getPanelProps({ id: "b" })}>
+    <div {...api.getResizeTriggerProps({ id: "a:b" })} class={styles.ResizeTrigger}></div>
+    <div {...api.getPanelProps({ id: "b" })} class={styles.Panel}>
       <p>B</p>
     </div>
   </div>

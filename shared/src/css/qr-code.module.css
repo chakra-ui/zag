@@ -1,14 +1,14 @@
-:global(.QrCodeFrame) {
+.Frame {
   width: 120px;
   height: 120px;
   background-color: white;
 }
 
-:global(.QrCodePattern) {
+.Pattern {
   fill: green;
 }
 
-:global(.QrCodeOverlay) {
+.Overlay {
   width: 25%;
   height: 25%;
   outline: 4px solid white;

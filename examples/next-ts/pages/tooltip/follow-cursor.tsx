@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tooltip.module.css"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { useRef } from "react"
@@ -42,7 +43,7 @@ export default function Page() {
           Hover me
         </button>
         <div {...api.getPositionerProps()}>
-          <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
+          <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()} className={styles.Content}>
             Tooltip
           </div>
         </div>

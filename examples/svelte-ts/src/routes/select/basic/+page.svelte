@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/select.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -25,10 +26,10 @@
 <main class="select">
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.getLabelProps()}>Label</label>
+    <label {...api.getLabelProps()} class={styles.Label}>Label</label>
 
-    <div {...api.getControlProps()}>
-      <button {...api.getTriggerProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
+      <button {...api.getTriggerProps()} class={styles.Trigger}>
         <span>{api.valueAsString || "Select option"}</span>
         <span {...api.getIndicatorProps()}>▼</span>
       </button>
@@ -56,11 +57,11 @@
       </select>
     </form>
 
-    <div use:portal {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()}>
+    <div use:portal {...api.getPositionerProps()} class={styles.Positioner}>
+      <ul {...api.getContentProps()} class={styles.Content}>
         {#each selectData as item}
-          <li {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          <li {...api.getItemProps({ item })} class={styles.Item}>
+            <span {...api.getItemTextProps({ item })} class={styles.ItemText}>{item.label}</span>
             <span {...api.getItemIndicatorProps({ item })}>✓</span>
           </li>
         {/each}

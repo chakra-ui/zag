@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
@@ -15,14 +16,14 @@ export default function Page() {
   return (
     <>
       <main className="context-menu">
-        <div {...api.getContextTriggerProps()}>Right Click here</div>
+        <div {...api.getContextTriggerProps()} className={styles.ContextTrigger}>Right Click here</div>
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul {...api.getContentProps()}>
-              <li {...api.getItemProps({ value: "edit" })}>Edit</li>
-              <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
-              <li {...api.getItemProps({ value: "delete" })}>Delete</li>
-              <li {...api.getItemProps({ value: "export" })}>Export...</li>
+            <ul {...api.getContentProps()} className={styles.Content}>
+              <li {...api.getItemProps({ value: "edit" })} className={styles.Item}>Edit</li>
+              <li {...api.getItemProps({ value: "duplicate" })} className={styles.Item}>Duplicate</li>
+              <li {...api.getItemProps({ value: "delete" })} className={styles.Item}>Delete</li>
+              <li {...api.getItemProps({ value: "export" })} className={styles.Item}>Export...</li>
             </ul>
           </div>
         </Portal>

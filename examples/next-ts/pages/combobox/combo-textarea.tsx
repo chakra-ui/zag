@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
@@ -68,9 +69,9 @@ export default function Page() {
   return (
     <>
       <main className="combobox">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           <span>Search value: {searchValue || "-"}</span>
-          <label {...api.getLabelProps()}>Select country</label>
+          <label {...api.getLabelProps()} className={styles.Label}>Select country</label>
           <textarea
             ref={ref}
             {...mergeProps(textareaProps, {
@@ -106,9 +107,9 @@ export default function Page() {
         </div>
 
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
+          <ul {...api.getContentProps()} className={styles.Content}>
             {options.map((item) => (
-              <li key={item.code} {...api.getItemProps({ item })}>
+              <li key={item.code} {...api.getItemProps({ item })} className={styles.Item}>
                 {item.label}
               </li>
             ))}

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/pagination.module.css"
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { paginationControls, paginationData } from "@zag-js/shared"
@@ -61,7 +62,7 @@ export default function Page() {
                 if (page.type === "page")
                   return (
                     <li key={page.value}>
-                      <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+                      <button data-testid={`item-${page.value}`} {...api.getItemProps(page)} className={styles.Item}>
                         {page.value}
                       </button>
                     </li>
@@ -69,7 +70,7 @@ export default function Page() {
                 else
                   return (
                     <li key={`ellipsis-${i}`}>
-                      <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+                      <span {...api.getEllipsisProps({ index: i })} className={styles.Ellipsis}>&#8230;</span>
                     </li>
                   )
               })}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/editable.module.css"
   import * as editable from "@zag-js/editable"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { editableControls } from "@zag-js/shared"
@@ -20,11 +21,11 @@
 
 <main class="editable">
   <div {...api.getRootProps()}>
-    <div {...api.getAreaProps()}>
-      <input data-testid="input" {...api.getInputProps()} />
-      <span data-testid="preview" {...api.getPreviewProps()}>{api.valueText}</span>
+    <div {...api.getAreaProps()} class={styles.Area}>
+      <input data-testid="input" {...api.getInputProps()} class={styles.Input} />
+      <span data-testid="preview" {...api.getPreviewProps()} class={styles.Preview}>{api.valueText}</span>
     </div>
-    <div {...api.getControlProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
       {#if !api.editing}
         <button data-testid="edit-button" {...api.getEditTriggerProps()}> Edit </button>
       {/if}

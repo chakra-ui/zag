@@ -1,4 +1,4 @@
-:global(.SwitchRoot) {
+.Root {
   display: flex;
   align-items: center;
   position: relative;
@@ -10,7 +10,7 @@
   --switch-track-height: 1rem;
 }
 
-:global(.SwitchControl) {
+.Control {
   display: inline-flex;
   flex-shrink: 0;
   -webkit-box-pack: start;
@@ -27,21 +27,21 @@
   background: var(--switch-bg);
 }
 
-:global(.SwitchControl)[data-state="checked"] {
+.Control[data-state="checked"] {
   --switch-bg: #3182ce;
 }
 
-:global(.SwitchControl)[data-disabled] {
+.Control[data-disabled] {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-:global(.SwitchControl)[data-focus] {
+.Control[data-focus] {
   outline: 2px solid blue;
   outline-offset: 2px;
 }
 
-:global(.SwitchThumb) {
+.Thumb {
   background: white;
   transition-property: transform;
   transition-duration: 200ms;
@@ -51,11 +51,11 @@
   position: relative;
 }
 
-:global(.SwitchThumb)[data-state="checked"] {
+.Thumb[data-state="checked"] {
   transform: translateX(var(--switch-thumb-x));
 }
 
-:global(.SwitchLabel) {
+.Label {
   user-select: none;
   margin-inline-start: 0.5rem;
 }

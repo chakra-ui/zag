@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/number-input.module.css"
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -17,16 +18,16 @@ export default function Page() {
     <>
       <main>
         <div {...api().getRootProps()}>
-          <div data-testid="scrubber" {...api().getScrubberProps()} />
+          <div data-testid="scrubber" {...api().getScrubberProps()} class={styles.Scrubber} />
           <label data-testid="label" {...api().getLabelProps()}>
             Enter number:
           </label>
-          <div {...api().getControlProps()}>
-            <button data-testid="dec-button" {...api().getDecrementTriggerProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
+            <button data-testid="dec-button" {...api().getDecrementTriggerProps()} class={styles.DecrementTrigger}>
               DEC
             </button>
-            <input data-testid="input" {...api().getInputProps()} />
-            <button data-testid="inc-button" {...api().getIncrementTriggerProps()}>
+            <input data-testid="input" {...api().getInputProps()} class={styles.Input} />
+            <button data-testid="inc-button" {...api().getIncrementTriggerProps()} class={styles.IncrementTrigger}>
               INC
             </button>
           </div>

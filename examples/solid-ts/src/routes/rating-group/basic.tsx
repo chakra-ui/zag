@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/rating-group.module.css"
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, Index } from "solid-js"
@@ -55,7 +56,7 @@ export default function Page() {
         <div>
           <div {...api().getRootProps()}>
             <label {...api().getLabelProps()}>Rate:</label>
-            <div {...api().getControlProps()}>
+            <div {...api().getControlProps()} class={styles.Control}>
               <Index each={api().items}>
                 {(index) => {
                   const state = createMemo(() => api().getItemState({ index: index() }))

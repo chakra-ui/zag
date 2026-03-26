@@ -1,6 +1,6 @@
 @import "./keyframes.module.css";
 
-:global(.MarqueeRoot) {
+.Root {
   width: 100%;
   max-width: 600px;
   border: 1px solid #e5e7eb;
@@ -23,7 +23,7 @@
   }
 }
 
-:global(.MarqueeContent) {
+.Content {
   animation-timing-function: linear;
   animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
@@ -48,7 +48,7 @@
   }
 }
 
-:global(.MarqueeEdge) {
+.Edge {
   /* Default size and gradient styles - users can override these */
   z-index: 10;
 
@@ -82,7 +82,7 @@
 }
 
 /* Demo-specific styles */
-:global(.MarqueeItem) {
+.Item {
   display: flex;
   align-items: center;
   gap: 12px;

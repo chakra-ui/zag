@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/collapsible.module.css"
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { memo, useId, useRef, useState } from "react"
@@ -17,7 +18,7 @@ const Collapse = memo(function Collapse(props: { value: number; open: boolean })
 
   return (
     <div {...api.getRootProps()}>
-      <div {...api.getContentProps()}>
+      <div {...api.getContentProps()} className={styles.Content}>
         <div
           style={{
             display: "flex",

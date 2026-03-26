@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/signature-pad.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
@@ -30,11 +31,11 @@ export default function Page() {
   return (
     <>
       <main className="signature-pad">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           <input {...api.getHiddenInputProps({ value: url })} />
-          <label {...api.getLabelProps()}>Signature Pad</label>
+          <label {...api.getLabelProps()} className={styles.Label}>Signature Pad</label>
 
-          <div {...api.getControlProps()}>
+          <div {...api.getControlProps()} className={styles.Control}>
             <svg {...api.getSegmentProps()}>
               {api.paths.map((path, i) => (
                 <path key={i} {...api.getSegmentPathProps({ path })} />
@@ -42,10 +43,10 @@ export default function Page() {
               {api.currentPath && <path {...api.getSegmentPathProps({ path: api.currentPath })} />}
             </svg>
 
-            <div {...api.getGuideProps()} />
+            <div {...api.getGuideProps()} className={styles.Guide} />
           </div>
 
-          <button {...api.getClearTriggerProps()}>
+          <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>
             <RotateCcw />
           </button>
         </div>

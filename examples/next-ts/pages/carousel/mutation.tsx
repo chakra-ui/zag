@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/carousel.module.css"
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useCallback, useId, useState } from "react"
@@ -31,25 +32,25 @@ export default function Page() {
   return (
     <>
       <main className="carousel">
-        <div {...api.getRootProps()}>
-          <div {...api.getControlProps()}>
-            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <button {...api.getAutoplayTriggerProps()} className={styles.AutoplayTrigger}>{api.isPlaying ? "Stop" : "Play"}</button>
             <div className="carousel-spacer" />
             <button {...api.getPrevTriggerProps()}>&laquo;</button>
             <button {...api.getNextTriggerProps()}>&raquo;</button>
           </div>
 
-          <div {...api.getIndicatorGroupProps()}>
+          <div {...api.getIndicatorGroupProps()} className={styles.IndicatorGroup}>
             {api.pageSnapPoints.map((_, i) => (
-              <button {...api.getIndicatorProps({ index: i })} key={i}>
+              <button {...api.getIndicatorProps({ index: i })} className={styles.Indicator} key={i}>
                 {i}
               </button>
             ))}
           </div>
 
-          <div {...api.getItemGroupProps()}>
+          <div {...api.getItemGroupProps()} className={styles.ItemGroup}>
             {images.map((image, index) => (
-              <div {...api.getItemProps({ index })} key={image}>
+              <div {...api.getItemProps({ index })} className={styles.Item} key={image}>
                 <div
                   style={{
                     width: "188px",

@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/toggle.module.css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toggle from "@zag-js/toggle"
 import { createMemo } from "solid-js"
@@ -12,7 +13,7 @@ export default function Page() {
   return (
     <>
       <main class="toggle">
-        <div {...api().getRootProps()}></div>
+        <div {...api().getRootProps()} class={styles.Root}></div>
       </main>
 
       <Toolbar viz>

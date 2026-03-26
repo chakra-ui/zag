@@ -1,4 +1,4 @@
-.accordion :global(.AccordionRoot) {
+.accordion .Root {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -10,11 +10,11 @@
   margin: 0;
 }
 
-:global(.AccordionItemIndicator)[data-state="open"] {
+.ItemIndicator[data-state="open"] {
   rotate: 90deg;
 }
 
-:global(.AccordionItemTrigger) {
+.ItemTrigger {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -26,10 +26,10 @@
   }
 }
 
-:global(.AccordionItemContent) {
+.ItemContent {
   padding-block: 12px;
 }
 
-:global(.AccordionItemIndicator) {
+.ItemIndicator {
   display: inline-flex;
 }

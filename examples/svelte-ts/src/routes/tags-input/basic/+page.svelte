@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/tags-input.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -27,17 +28,17 @@
 <main class="tags-input">
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.getLabelProps()}>Enter frameworks:</label>
-    <div {...api.getControlProps()}>
+    <label {...api.getLabelProps()} class={styles.Label}>Enter frameworks:</label>
+    <div {...api.getControlProps()} class={styles.Control}>
       {#each api.value as value, index}
         <span {...api.getItemProps({ index, value })}>
-          <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
+          <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })} class={styles.ItemPreview}>
             <span data-testid={`${toDashCase(value)}-valuetext`} {...api.getItemTextProps({ index, value })}>
               {value}{" "}
             </span>
             <button
               data-testid={`${toDashCase(value)}-close-button`}
-              {...api.getItemDeleteTriggerProps({ index, value })}
+              {...api.getItemDeleteTriggerProps({ index, value })} class={styles.ItemDeleteTrigger}
             >
               &#x2715;
             </button>
@@ -46,8 +47,8 @@
         </span>
       {/each}
 
-      <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
-      <button {...api.getClearTriggerProps()}>X</button>
+      <input data-testid="input" placeholder="add tag" {...api.getInputProps()} class={styles.Input} />
+      <button {...api.getClearTriggerProps()} class={styles.ClearTrigger}>X</button>
     </div>
     <input {...api.getHiddenInputProps()} />
   </div>

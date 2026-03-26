@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { datePickerControls } from "@zag-js/shared"
@@ -32,15 +33,15 @@ export default function Page() {
           <div>Focused: {api().focusedValueAsString}</div>
         </output>
 
-        <div {...api().getControlProps()}>
+        <div {...api().getControlProps()} class={styles.Control}>
           <input {...api().getInputProps({ index: 0 })} />
           <input {...api().getInputProps({ index: 1 })} />
           <button {...api().getClearTriggerProps()}>❌</button>
-          <button {...api().getTriggerProps()}>🗓</button>
+          <button {...api().getTriggerProps()} class={styles.Trigger}>🗓</button>
         </div>
 
         <div {...api().getPositionerProps()}>
-          <div {...api().getContentProps()}>
+          <div {...api().getContentProps()} class={styles.Content}>
             <div style={{ "margin-bottom": "20px" }}>
               <select {...api().getMonthSelectProps()}>
                 <Index each={api().getMonths()}>
@@ -64,7 +65,7 @@ export default function Page() {
             </div>
 
             <div>
-              <div {...api().getViewControlProps({ view: "year" })}>
+              <div {...api().getViewControlProps({ view: "year" })} class={styles.ViewControl}>
                 <button {...api().getPrevTriggerProps()}>Prev</button>
 
                 <span>

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { menuOptionData, menuControls } from "@zag-js/shared"
@@ -44,7 +45,7 @@ export default function Page() {
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <div {...api.getContentProps()}>
+              <div {...api.getContentProps()} className={styles.Content}>
                 {radios.map((item) => {
                   return (
                     <div key={item.value} {...api.getOptionItemProps(item)}>

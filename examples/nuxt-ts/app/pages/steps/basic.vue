@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/steps.module.css"
 import * as steps from "@zag-js/steps"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -18,14 +19,14 @@ const api = computed(() => steps.connect(service, normalizeProps))
 
 <template>
   <main class="steps">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getListProps()">
-        <div v-for="(step, index) in stepsData" :key="index" v-bind="api.getItemProps({ index })">
-          <button v-bind="api.getTriggerProps({ index })">
-            <div v-bind="api.getIndicatorProps({ index })">{{ index + 1 }}</div>
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getListProps()" :class="styles.List">
+        <div v-for="(step, index) in stepsData" :key="index" v-bind="api.getItemProps({ index })" :class="styles.Item">
+          <button v-bind="api.getTriggerProps({ index })" :class="styles.Trigger">
+            <div v-bind="api.getIndicatorProps({ index })" :class="styles.Indicator">{{ index + 1 }}</div>
             <span>{{ step.title }}</span>
           </button>
-          <div v-bind="api.getSeparatorProps({ index })" />
+          <div v-bind="api.getSeparatorProps({ index })" :class="styles.Separator" />
         </div>
       </div>
 

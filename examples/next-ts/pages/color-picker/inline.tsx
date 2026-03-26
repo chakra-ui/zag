@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/color-picker.module.css"
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { colorPickerControls } from "@zag-js/shared"
@@ -43,68 +44,68 @@ export default function Page() {
           <div>Selected: {api.valueAsString}</div>
         </output>
 
-        <div {...api.getRootProps()}>
-          <div {...api.getContentProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getContentProps()} className={styles.Content}>
             <div className="content__inner">
-              <div {...api.getAreaProps()}>
-                <div {...api.getAreaBackgroundProps()} />
-                <div {...api.getAreaThumbProps()} />
+              <div {...api.getAreaProps()} className={styles.Area}>
+                <div {...api.getAreaBackgroundProps()} className={styles.AreaBackground} />
+                <div {...api.getAreaThumbProps()} className={styles.AreaThumb} />
               </div>
 
               <div {...api.getChannelSliderProps({ channel: "hue" })}>
-                <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
-                <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
+                <div {...api.getChannelSliderTrackProps({ channel: "hue" })} className={styles.ChannelSliderTrack} />
+                <div {...api.getChannelSliderThumbProps({ channel: "hue" })} className={styles.ChannelSliderThumb} />
               </div>
 
               <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-                <div {...api.getTransparencyGridProps({ size: "12px" })} />
-                <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
-                <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+                <div {...api.getTransparencyGridProps({ size: "12px" })} className={styles.TransparencyGrid} />
+                <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} className={styles.ChannelSliderTrack} />
+                <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} className={styles.ChannelSliderThumb} />
               </div>
 
               <Show when={api.format.startsWith("hsl")}>
                 <div style={{ display: "flex", width: "100%" }}>
-                  <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-                  <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-                  <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} />
-                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                  <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} className={styles.ChannelInput} />
+                  <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} className={styles.ChannelInput} />
+                  <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} className={styles.ChannelInput} />
+                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} className={styles.ChannelInput} />
                 </div>
               </Show>
 
               <Show when={api.format.startsWith("rgb")}>
                 <div style={{ display: "flex", width: "100%" }}>
-                  <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} />
-                  <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} />
-                  <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} />
-                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                  <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} className={styles.ChannelInput} />
+                  <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} className={styles.ChannelInput} />
+                  <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} className={styles.ChannelInput} />
+                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} className={styles.ChannelInput} />
                 </div>
               </Show>
 
               <Show when={api.format.startsWith("hsb")}>
                 <div style={{ display: "flex", width: "100%" }}>
-                  <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-                  <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-                  <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} />
-                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                  <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} className={styles.ChannelInput} />
+                  <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} className={styles.ChannelInput} />
+                  <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} className={styles.ChannelInput} />
+                  <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} className={styles.ChannelInput} />
                 </div>
               </Show>
 
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <div style={{ position: "relative" }}>
-                  <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                  <div {...api.getSwatchProps({ value: api.value })} />
+                  <div {...api.getTransparencyGridProps({ size: "4px" })} className={styles.TransparencyGrid} />
+                  <div {...api.getSwatchProps({ value: api.value })} className={styles.Swatch} />
                 </div>
                 <p data-testid="value-text">{api.valueAsString}</p>
               </div>
 
-              <input {...api.getChannelInputProps({ channel: "hex" })} />
+              <input {...api.getChannelInputProps({ channel: "hex" })} className={styles.ChannelInput} />
 
               <div {...api.getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
                 {presets.map((preset) => (
                   <button key={preset} {...api.getSwatchTriggerProps({ value: preset })}>
                     <div style={{ position: "relative" }}>
-                      <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                      <div {...api.getSwatchProps({ value: preset })} />
+                      <div {...api.getTransparencyGridProps({ size: "4px" })} className={styles.TransparencyGrid} />
+                      <div {...api.getSwatchProps({ value: preset })} className={styles.Swatch} />
                     </div>
                   </button>
                 ))}

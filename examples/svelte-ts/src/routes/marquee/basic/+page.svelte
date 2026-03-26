@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/marquee.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -21,14 +22,14 @@
 </script>
 
 <main class="marquee">
-  <div {...api.getRootProps()}>
-    <div {...api.getEdgeProps({ side: "start" })}></div>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <div {...api.getEdgeProps({ side: "start" })} class={styles.Edge}></div>
 
     <div {...api.getViewportProps()}>
       {#each Array.from({ length: api.contentCount }) as _, index}
-        <div {...api.getContentProps({ index })}>
+        <div {...api.getContentProps({ index })} class={styles.Content}>
           {#each marqueeData as item}
-            <div {...api.getItemProps()}>
+            <div {...api.getItemProps()} class={styles.Item}>
               <span class="marquee-logo">{item.logo}</span>
               <span class="marquee-name">{item.name}</span>
             </div>
@@ -37,7 +38,7 @@
       {/each}
     </div>
 
-    <div {...api.getEdgeProps({ side: "end" })}></div>
+    <div {...api.getEdgeProps({ side: "end" })} class={styles.Edge}></div>
   </div>
 
   <div class="controls">

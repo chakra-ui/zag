@@ -1,10 +1,10 @@
-:global(.TreeViewTree) {
+.Tree {
   margin-top: 20px;
   width: 240px;
 }
 
-:global(.TreeViewItem),
-:global(.TreeViewBranchControl) {
+.Item,
+.BranchControl {
   user-select: none;
   --padding-inline: 16px;
   padding-inline-start: calc(var(--depth) * var(--padding-inline));
@@ -35,17 +35,17 @@
   }
 }
 
-:global(.TreeViewItemText),
-:global(.TreeViewBranchText) {
+.ItemText,
+.BranchText {
   flex: 1;
 }
 
-:global(.TreeViewBranchContent) {
+.BranchContent {
   position: relative;
   isolation: isolate;
 }
 
-:global(.TreeViewBranchIndentGuide) {
+.BranchIndentGuide {
   position: absolute;
   content: "";
   border-left: 1px solid rgb(226, 226, 226);
@@ -54,7 +54,7 @@
   z-index: 0;
 }
 
-:global(.TreeViewBranchIndicator) {
+.BranchIndicator {
   display: flex;
   align-items: center;
   &[data-state="open"] svg {
@@ -66,12 +66,12 @@
   }
 }
 
-:global(.TreeViewBranchControl)[data-loading],
-:global(.TreeViewBranchTrigger)[data-loading] {
+.BranchControl[data-loading],
+.BranchTrigger[data-loading] {
   opacity: 0.6;
   cursor: wait;
 }
 
-:global(.TreeViewBranchControl)[data-loading]:hover {
+.BranchControl[data-loading]:hover {
   background: rgb(243, 243, 243);
 }

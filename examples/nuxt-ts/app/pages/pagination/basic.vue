@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import styles from "../../../../../shared/src/css/pagination.module.css"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as pagination from "@zag-js/pagination"
@@ -51,12 +52,12 @@ const data = computed(() => api.value.slice(paginationData))
           </li>
           <template v-for="(page, i) in api.pages" :key="i">
             <li v-if="page.type === 'page'">
-              <button :data-testid="`item-${page.value}`" v-bind="api.getItemProps(page)">
+              <button :data-testid="`item-${page.value}`" v-bind="api.getItemProps(page)" :class="styles.Item">
                 {{ page.value }}
               </button>
             </li>
             <li v-else>
-              <span v-bind="api.getEllipsisProps({ index: i })">&#8230;</span>
+              <span v-bind="api.getEllipsisProps({ index: i })" :class="styles.Ellipsis">&#8230;</span>
             </li>
           </template>
           <li>

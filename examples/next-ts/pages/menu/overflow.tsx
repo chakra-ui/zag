@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -28,7 +29,7 @@ export default function Page() {
                 })}
               >
                 {items.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ value: item.value })}>
+                  <li key={item.value} {...api.getItemProps({ value: item.value })} className={styles.Item}>
                     {item.label}
                   </li>
                 ))}

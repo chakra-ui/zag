@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/avatar.module.css"
 import * as avatar from "@zag-js/avatar"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId } from "solid-js"
@@ -18,9 +19,9 @@ export default function Page() {
   return (
     <>
       <main class="avatar">
-        <div {...api().getRootProps()}>
-          <span {...api().getFallbackProps()}>PA</span>
-          {showImage() && <img alt="" referrerPolicy="no-referrer" src={src()} {...api().getImageProps()} />}
+        <div {...api().getRootProps()} class={styles.Root}>
+          <span {...api().getFallbackProps()} class={styles.Fallback}>PA</span>
+          {showImage() && <img alt="" referrerPolicy="no-referrer" src={src()} {...api().getImageProps()} class={styles.Image} />}
         </div>
 
         <div class="controls">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/date-picker.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -35,15 +36,15 @@
     <div>Focused: {api.focusedValueAsString}</div>
   </output>
 
-  <div {...api.getControlProps()}>
+  <div {...api.getControlProps()} class={styles.Control}>
     <input {...api.getInputProps({ index: 0 })} />
     <input {...api.getInputProps({ index: 1 })} />
     <button {...api.getClearTriggerProps()}>❌</button>
-    <button {...api.getTriggerProps()}>🗓</button>
+    <button {...api.getTriggerProps()} class={styles.Trigger}>🗓</button>
   </div>
 
   <div {...api.getPositionerProps()}>
-    <div {...api.getContentProps()}>
+    <div {...api.getContentProps()} class={styles.Content}>
       <div style="margin-bottom: 20px">
         <select {...api.getMonthSelectProps()}>
           {#each api.getMonths() as month, i (i)}
@@ -59,7 +60,7 @@
       </div>
 
       <div>
-        <div {...api.getViewControlProps({ view: "year" })}>
+        <div {...api.getViewControlProps({ view: "year" })} class={styles.ViewControl}>
           <button {...api.getPrevTriggerProps()}>Prev</button>
 
           <span>
@@ -70,7 +71,7 @@
         </div>
 
         <div style="display: flex; gap: 24px;">
-          <table {...api.getTableProps({ id: "0" })}>
+          <table {...api.getTableProps({ id: "0" })} class={styles.Table}>
             <thead {...api.getTableHeaderProps()}>
               <tr {...api.getTableRowProps()}>
                 {#each api.weekDays as day, i (i)}
@@ -93,7 +94,7 @@
             </tbody>
           </table>
 
-          <table {...api.getTableProps({ id: "1" })}>
+          <table {...api.getTableProps({ id: "1" })} class={styles.Table}>
             <thead {...api.getTableHeaderProps()}>
               <tr {...api.getTableRowProps()}>
                 {#each api.weekDays as day, i (i)}

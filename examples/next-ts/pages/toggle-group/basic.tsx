@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/toggle-group.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
 import * as toggle from "@zag-js/toggle-group"
@@ -19,9 +20,9 @@ export default function Page() {
     <>
       <main className="toggle-group">
         <button>Outside</button>
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           {toggleGroupData.map((item) => (
-            <button key={item.value} {...api.getItemProps({ value: item.value })}>
+            <button key={item.value} {...api.getItemProps({ value: item.value })} className={styles.Item}>
               {item.label}
             </button>
           ))}

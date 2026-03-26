@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tour.module.css"
 import { tourControls, tourData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
@@ -49,18 +50,18 @@ export default function Page() {
         <Show when={api().open && api().step}>
           <Portal>
             <Show when={api().step?.backdrop}>
-              <div {...api().getBackdropProps()} />
+              <div {...api().getBackdropProps()} class={styles.Backdrop} />
             </Show>
-            <div {...api().getSpotlightProps()} />
-            <div {...api().getPositionerProps()}>
-              <div {...api().getContentProps()}>
+            <div {...api().getSpotlightProps()} class={styles.Spotlight} />
+            <div {...api().getPositionerProps()} class={styles.Positioner}>
+              <div {...api().getContentProps()} class={styles.Content}>
                 <Show when={api().step?.arrow}>
-                  <div {...api().getArrowProps()}>
+                  <div {...api().getArrowProps()} class={styles.Arrow}>
                     <div {...api().getArrowTipProps()} />
                   </div>
                 </Show>
-                <p {...api().getTitleProps()}>{api().step!.title}</p>
-                <div {...api().getDescriptionProps()}>{api().step!.description}</div>
+                <p {...api().getTitleProps()} class={styles.Title}>{api().step!.title}</p>
+                <div {...api().getDescriptionProps()} class={styles.Description}>{api().step!.description}</div>
 
                 <div class="tour button__group">
                   <For each={api().step?.actions}>

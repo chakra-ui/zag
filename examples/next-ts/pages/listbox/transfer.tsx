@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/listbox.module.css"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -19,11 +20,11 @@ function ListBox({ label, collection, ...props }: { label?: React.ReactNode } & 
 
   return (
     <div {...api.getRootProps()} style={{ flex: "1" }}>
-      {label && <label {...api.getLabelProps()}>{label}</label>}
-      <ul {...api.getContentProps()} style={{ width: "100%", height: "100%" }}>
+      {label && <label {...api.getLabelProps()} className={styles.Label}>{label}</label>}
+      <ul {...api.getContentProps()} className={styles.Content} style={{ width: "100%", height: "100%" }}>
         {collection.items.map((item) => (
-          <li key={item.value} {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          <li key={item.value} {...api.getItemProps({ item })} className={styles.Item}>
+            <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
             <span {...api.getItemIndicatorProps({ item })}>✓</span>
           </li>
         ))}

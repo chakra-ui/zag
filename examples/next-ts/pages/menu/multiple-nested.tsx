@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -112,9 +113,9 @@ export default function Page() {
         api.open ? (
           <Portal key={value}>
             <div {...api.getPositionerProps()}>
-              <ul data-testid={`submenu-${value}`} {...api.getContentProps()}>
+              <ul data-testid={`submenu-${value}`} {...api.getContentProps()} className={styles.Content}>
                 {(submenuItems[value] ?? []).map((item) => (
-                  <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
+                  <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })} className={styles.Item}>
                     {item.label}
                   </li>
                 ))}

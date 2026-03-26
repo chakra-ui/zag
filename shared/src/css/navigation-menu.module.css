@@ -1,12 +1,12 @@
 @import url(./navigation-menu-keyframes.module.css);
 
 .navigation-menu.basic {
-  :global(.NavigationMenuRoot) {
+  .Root {
     --arrow-size: 20px;
     --indicator-size: 10px;
   }
 
-  :global(.NavigationMenuList) {
+  .List {
     all: unset;
     list-style: none;
     display: flex;
@@ -16,11 +16,11 @@
     }
   }
 
-  :global(.NavigationMenuItem) {
+  .Item {
     position: relative;
   }
 
-  :global(.NavigationMenuTrigger) {
+  .Trigger {
     padding: 10px 16px;
     font-weight: bold;
     display: flex;
@@ -41,7 +41,7 @@
     }
   }
 
-  :global(.NavigationMenuLink) {
+  .Link {
     padding: 10px 16px;
     font-weight: bold;
     display: block;
@@ -53,7 +53,7 @@
     }
   }
 
-  :global(.NavigationMenuContent) {
+  .Content {
     position: absolute;
     top: 100%;
     width: max-content;
@@ -86,7 +86,7 @@
 
   /* Indicator + Arrow */
 
-  :global(.NavigationMenuArrow) {
+  .Arrow {
     position: relative;
     top: 4px;
     width: var(--arrow-size);
@@ -96,7 +96,7 @@
     border-radius: 3px;
   }
 
-  :global(.NavigationMenuIndicator) {
+  .Indicator {
     display: flex;
     justify-content: center;
     height: var(--indicator-size);

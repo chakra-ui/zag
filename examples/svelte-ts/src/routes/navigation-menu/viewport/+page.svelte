@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/navigation-menu.module.css"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
@@ -29,10 +30,10 @@
   <div class="navbar">
     <button>Logo</button>
 
-    <div {...api.getRootProps()}>
-      <div {...api.getListProps()}>
-          <div {...api.getItemProps({ value: "products" })}>
-            <button {...api.getTriggerProps({ value: "products" })}>
+    <div {...api.getRootProps()} class={styles.Root}>
+      <div {...api.getListProps()} class={styles.List}>
+          <div {...api.getItemProps({ value: "products" })} class={styles.Item}>
+            <button {...api.getTriggerProps({ value: "products" })} class={styles.Trigger}>
               Products
               <svg
                 width="16"
@@ -51,8 +52,8 @@
             <span {...api.getViewportProxyProps({ value: "products" })}></span>
           </div>
 
-          <div {...api.getItemProps({ value: "company" })}>
-            <button {...api.getTriggerProps({ value: "company" })}>
+          <div {...api.getItemProps({ value: "company" })} class={styles.Item}>
+            <button {...api.getTriggerProps({ value: "company" })} class={styles.Trigger}>
               Company
               <svg
                 width="16"
@@ -71,8 +72,8 @@
             <span {...api.getViewportProxyProps({ value: "company" })}></span>
           </div>
 
-          <div {...api.getItemProps({ value: "developers" })}>
-            <button {...api.getTriggerProps({ value: "developers" })}>
+          <div {...api.getItemProps({ value: "developers" })} class={styles.Item}>
+            <button {...api.getTriggerProps({ value: "developers" })} class={styles.Trigger}>
               Developers
               <svg
                 width="16"
@@ -91,60 +92,60 @@
             <span {...api.getViewportProxyProps({ value: "developers" })}></span>
           </div>
 
-          <div {...api.getItemProps({ value: "pricing" })}>
-            <a href="#" {...api.getLinkProps({ value: "pricing" })}> Pricing </a>
+          <div {...api.getItemProps({ value: "pricing" })} class={styles.Item}>
+            <a href="#" {...api.getLinkProps({ value: "pricing" })} class={styles.Link}> Pricing </a>
           </div>
 
-          <Presence {...api.getIndicatorProps()}>
-            <div {...api.getArrowProps()}></div>
+          <Presence {...api.getIndicatorProps()} class={styles.Indicator}>
+            <div {...api.getArrowProps()} class={styles.Arrow}></div>
           </Presence>
         </div>
 
       <div {...api.getViewportPositionerProps()}>
         <Presence {...api.getViewportProps()}>
           <Presence
-            {...api.getContentProps({ value: "products" })}
+            {...api.getContentProps({ value: "products" })} class={styles.Content}
             style="grid-template-columns: 1fr 2fr; width: 600px"
           >
             {#each renderLinks( { value: "products", items: ["Analytics Platform", "Customer Engagement", "Marketing Automation", "Data Integration", "Enterprise Solutions", "API Documentation"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}
 
             {#each renderLinks( { value: "products", items: ["Case Studies", "Success Stories", "Integration Partners", "Security & Compliance"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}
           </Presence>
 
-          <Presence {...api.getContentProps({ value: "company" })} style="grid-template-columns: 1fr 1fr; width: 450px">
+          <Presence {...api.getContentProps({ value: "company" })} class={styles.Content} style="grid-template-columns: 1fr 1fr; width: 450px">
             {#each renderLinks( { value: "company", items: ["About Us", "Leadership Team", "Careers", "Press Releases"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}
 
             {#each renderLinks( { value: "company", items: ["Investors", "Partners", "Corporate Responsibility"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}
           </Presence>
 
           <Presence
-            {...api.getContentProps({ value: "developers" })}
+            {...api.getContentProps({ value: "developers" })} class={styles.Content}
             style="grid-template-columns: 1.6fr 1fr; width: 650px"
           >
             {#each renderLinks( { value: "developers", items: ["API Documentation", "SDKs & Libraries", "Developer Guides", "Code Samples", "Webhooks", "GraphQL Explorer"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}
 
             {#each renderLinks( { value: "developers", items: ["Developer Community", "Changelog", "Status Page", "Rate Limits"] }, ) as { item, index, value } (`${value}-${item}-${index}`)}
-              <a href="#" {...api.getLinkProps({ value })}>
+              <a href="#" {...api.getLinkProps({ value })} class={styles.Link}>
                 {item}
               </a>
             {/each}

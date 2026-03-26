@@ -1,4 +1,4 @@
-:global(.ToastRoot) {
+.Root {
   background: white;
   padding: 16px;
   min-height: 48px;
@@ -52,7 +52,7 @@
   }
 }
 
-:global(.ToastCloseTrigger) {
+.CloseTrigger {
   position: absolute;
   right: 8px;
   top: 8px;
@@ -70,17 +70,17 @@
   }
 }
 
-:global(.ToastTitle) {
+.Title {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-:global(.Toast) .spinner {
+.Toast .spinner {
   animation: spin 1s linear infinite;
 }
 
-:global(.ToastProgressbar) {
+.Progressbar {
   height: 4px;
   background: rgb(116, 116, 116);
   width: 100%;
@@ -106,16 +106,16 @@
   }
 }
 
-:global(.ToastProgressbar)[data-type="loading"] {
+.Progressbar[data-type="loading"] {
   animation-name: none;
 }
 
 @media (max-width: 640px) {
-  :global(.ToastGroup) {
+  .Group {
     width: 100%;
   }
 
-  :global(.ToastRoot) {
+  .Root {
     inset-inline: 0;
     width: calc(100% - var(--gap) * 2);
   }

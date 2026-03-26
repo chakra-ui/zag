@@ -1,4 +1,4 @@
-:global(.ClipboardRoot) {
+.Root {
   width: 70%;
   display: flex;
   flex-direction: column;
@@ -6,21 +6,21 @@
   gap: 8px;
 }
 
-:global(.ClipboardControl) {
+.Control {
   display: flex;
   width: 100%;
 }
 
-:global(.ClipboardInput) {
+.Input {
   width: 100%;
 }
 
-:global(.ClipboardTrigger) svg {
+.Trigger svg {
   height: 1em;
   font-size: 16px;
 }
 
-:global(.ClipboardIndicator) {
+.Indicator {
   background: lightgray;
   padding: 8px;
 }

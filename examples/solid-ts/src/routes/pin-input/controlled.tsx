@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/pin-input.module.css"
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
@@ -29,10 +30,10 @@ export default function Page() {
           }}
         >
           <div {...api().getRootProps()}>
-            <label {...api().getLabelProps()}>Enter code:</label>
-            <div {...api().getControlProps()}>
+            <label {...api().getLabelProps()} class={styles.Label}>Enter code:</label>
+            <div {...api().getControlProps()} class={styles.Control}>
               <For each={api().items}>
-                {(index) => <input data-testid={`input-${index + 1}`} {...api().getInputProps({ index })} />}
+                {(index) => <input data-testid={`input-${index + 1}`} {...api().getInputProps({ index })} class={styles.Input} />}
               </For>
             </div>
             <input {...api().getHiddenInputProps()} />

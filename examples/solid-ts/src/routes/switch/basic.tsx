@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/switch.module.css"
 import * as zagSwitch from "@zag-js/switch"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
@@ -22,12 +23,12 @@ export default function Page() {
   return (
     <>
       <main class="switch">
-        <label {...api().getRootProps()}>
+        <label {...api().getRootProps()} class={styles.Root}>
           <input {...api().getHiddenInputProps()} />
-          <span {...api().getControlProps()}>
-            <span {...api().getThumbProps()} />
+          <span {...api().getControlProps()} class={styles.Control}>
+            <span {...api().getThumbProps()} class={styles.Thumb} />
           </span>
-          <span {...api().getLabelProps()}>Feature is {api().checked ? "enabled" : "disabled"}</span>
+          <span {...api().getLabelProps()} class={styles.Label}>Feature is {api().checked ? "enabled" : "disabled"}</span>
         </label>
       </main>
 

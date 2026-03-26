@@ -1,4 +1,4 @@
-:global(.StepsRoot) {
+.Root {
   width: 100%;
   max-width: 400px;
   display: flex;
@@ -12,7 +12,7 @@
   }
 }
 
-:global(.StepsList) {
+.List {
   display: flex;
   justify-content: space-between;
   --steps-gutter: 12px;
@@ -30,7 +30,7 @@
   }
 }
 
-:global(.StepsSeparator) {
+.Separator {
   flex: 1;
   background-color: gray;
 
@@ -54,7 +54,7 @@
   }
 }
 
-:global(.StepsIndicator) {
+.Indicator {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,7 +87,7 @@
   }
 }
 
-:global(.StepsItem) {
+.Item {
   position: relative;
   display: flex;
   flex: 1 0 0;
@@ -95,7 +95,7 @@
   &:last-of-type {
     flex: initial;
 
-    & :global(.StepsSeparator) {
+    & .Separator {
       display: none;
     }
   }
@@ -109,7 +109,7 @@
   }
 }
 
-:global(.StepsTrigger) {
+.Trigger {
   display: flex;
   align-items: center;
   gap: 12px;

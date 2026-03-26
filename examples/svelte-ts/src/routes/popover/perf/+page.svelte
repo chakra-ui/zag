@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/popover.module.css"
   import Presence from "$lib/components/presence.svelte"
   import * as popover from "@zag-js/popover"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
@@ -31,12 +32,12 @@
   >
     <button {...api.getTriggerProps()} style="padding: 8px 16px; font-size: 16px;"> Open heavy popover </button>
 
-    <div use:portal {...api.getPositionerProps()}>
+    <div use:portal {...api.getPositionerProps()} class={styles.Positioner}>
       <Presence
-        {...api.getContentProps()}
+        {...api.getContentProps()} class={styles.Content}
         style="background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.12); width: 380px; max-height: 500px; overflow: auto; padding: 16px;"
       >
-        <div {...api.getArrowProps()}>
+        <div {...api.getArrowProps()} class={styles.Arrow}>
           <div {...api.getArrowTipProps()}></div>
         </div>
 
@@ -58,7 +59,7 @@
         </div>
 
         <button
-          {...api.getCloseTriggerProps()}
+          {...api.getCloseTriggerProps()} class={styles.CloseTrigger}
           style="margin-top: 12px; padding: 6px 12px; position: sticky; bottom: 0; background: white;"
         >
           Close

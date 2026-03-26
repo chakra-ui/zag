@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
@@ -29,9 +30,9 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
       <button v-bind="api.getTriggerProps()" style="padding: 8px 16px; font-size: 16px">Open heavy popover</button>
 
       <Teleport to="body" :defer="true">
-        <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getPositionerProps()" :class="styles.Positioner">
           <Presence
-            v-bind="api.getContentProps()"
+            v-bind="api.getContentProps()" :class="styles.Content"
             style="
               background: white;
               border: 1px solid #ccc;
@@ -44,7 +45,7 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
               z-index: 1000;
             "
           >
-            <div v-bind="api.getArrowProps()">
+            <div v-bind="api.getArrowProps()" :class="styles.Arrow">
               <div v-bind="api.getArrowTipProps()" />
             </div>
 
@@ -77,7 +78,7 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
             </div>
 
             <button
-              v-bind="api.getCloseTriggerProps()"
+              v-bind="api.getCloseTriggerProps()" :class="styles.CloseTrigger"
               style="margin-top: 12px; padding: 6px 12px; position: sticky; bottom: 0; background: white"
             >
               Close

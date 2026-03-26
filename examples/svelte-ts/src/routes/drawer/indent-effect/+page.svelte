@@ -30,7 +30,7 @@
 
     <div {...stackApi.getIndentProps()} class={styles.indent} data-testid="drawer-indent">
       <div class={styles.center}>
-        <button class={styles.trigger} {...api.getTriggerProps()}>Open drawer</button>
+        <button {...api.getTriggerProps()} class={styles.trigger}>Open drawer</button>
       </div>
     </div>
 
@@ -41,10 +41,10 @@
           <div {...api.getGrabberIndicatorProps()} class={styles.grabberIndicator}></div>
         </div>
         <div class={styles.contentInner}>
-          <h2 class={styles.title} {...api.getTitleProps()}>Notifications</h2>
-          <p class={styles.description} {...api.getDescriptionProps()}>You are all caught up. Good job!</p>
+          <h2 {...api.getTitleProps()} class={styles.title}>Notifications</h2>
+          <p {...api.getDescriptionProps()} class={styles.description}>You are all caught up. Good job!</p>
           <div class={styles.actions}>
-            <button class={styles.close} {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()} class={styles.close}>Close</button>
           </div>
         </div>
       </Presence>

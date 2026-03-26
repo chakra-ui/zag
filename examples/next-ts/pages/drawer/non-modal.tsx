@@ -16,7 +16,7 @@ export default function Page() {
 
   return (
     <main style={{ padding: 24 }}>
-      <button className={styles.trigger} {...api.getTriggerProps()}>
+      <button {...api.getTriggerProps()} className={styles.trigger}>
         Open Drawer
       </button>
 
@@ -40,8 +40,8 @@ export default function Page() {
         />
       </div>
 
-      <div className={styles.positioner} {...api.getPositionerProps()}>
-        <Presence className={styles.content} {...api.getContentProps()}>
+      <div {...api.getPositionerProps()} className={styles.positioner}>
+        <Presence {...api.getContentProps()} className={styles.content}>
           <div {...api.getTitleProps()}>Non-modal Drawer</div>
           <p {...api.getDescriptionProps()} style={{ color: "#6b7280", margin: "8px 0 0", padding: "0 16px" }}>
             No backdrop, no focus trap, no scroll lock. The page behind stays fully interactive. Close with the button,

@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/listbox.module.css"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { listboxControls, selectData } from "@zag-js/shared"
@@ -33,11 +34,11 @@ export default function Page() {
     <>
       <main class="listbox">
         <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>Label</label>
-          <ul {...api().getContentProps()}>
+          <label {...api().getLabelProps()} class={styles.Label}>Label</label>
+          <ul {...api().getContentProps()} class={styles.Content}>
             <For each={collection.items}>
               {(item) => (
-                <li {...api().getItemProps({ item })}>
+                <li {...api().getItemProps({ item })} class={styles.Item}>
                   {item.label}
                   <span {...api().getItemIndicatorProps({ item })}>✓</span>
                 </li>

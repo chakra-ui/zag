@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/splitter.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { splitterControls } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
@@ -21,16 +22,16 @@ export default function Page() {
     <>
       <main className="splitter">
         <pre>{JSON.stringify(api.getSizes(), null, 2)}</pre>
-        <div {...api.getRootProps()}>
-          <div {...api.getPanelProps({ id: "a" })}>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getPanelProps({ id: "a" })} className={styles.Panel}>
             <p>Left</p>
           </div>
-          <div data-testid="trigger-a:b" {...api.getResizeTriggerProps({ id: "a:b" })} />
-          <div {...api.getPanelProps({ id: "b" })}>
+          <div data-testid="trigger-a:b" {...api.getResizeTriggerProps({ id: "a:b" })} className={styles.ResizeTrigger} />
+          <div {...api.getPanelProps({ id: "b" })} className={styles.Panel}>
             <p>Middle</p>
           </div>
-          <div data-testid="trigger-b:c" {...api.getResizeTriggerProps({ id: "b:c" })} />
-          <div {...api.getPanelProps({ id: "c" })}>
+          <div data-testid="trigger-b:c" {...api.getResizeTriggerProps({ id: "b:c" })} className={styles.ResizeTrigger} />
+          <div {...api.getPanelProps({ id: "c" })} className={styles.Panel}>
             <p>Right</p>
           </div>
         </div>

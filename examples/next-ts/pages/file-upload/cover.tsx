@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/file-upload.module.css"
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -9,7 +10,7 @@ export default function Page() {
   return (
     <main className="file-upload">
       <div {...api.getRootProps()}>
-        <div {...api.getDropzoneProps({ disableClick: true })} data-cover="">
+        <div {...api.getDropzoneProps({ disableClick: true })} className={styles.Dropzone} data-cover="">
           {api.dragging && <p>Drop any files here to upload</p>}
         </div>
         <div style={{ position: "relative" }}>

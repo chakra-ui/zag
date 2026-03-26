@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/hover-card.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -16,11 +17,11 @@
 
 <main class="hover-card">
   <div style="display:flex; gap:50px">
-    <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}> Twitter </a>
+    <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()} class={styles.Trigger}> Twitter </a>
 
     {#if api.open}
       <div use:portal {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>
+        <div {...api.getContentProps()} class={styles.Content}>
           <div {...api.getArrowProps()}>
             <div {...api.getArrowTipProps()}></div>
           </div>

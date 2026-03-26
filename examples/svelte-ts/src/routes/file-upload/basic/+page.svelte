@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/file-upload.module.css"
   import * as fileUpload from "@zag-js/file-upload"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { fileUploadControls } from "@zag-js/shared"
@@ -16,7 +17,7 @@
 
 <main class="file-upload">
   <div {...api.getRootProps()}>
-    <div {...api.getDropzoneProps()}>
+    <div {...api.getDropzoneProps()} class={styles.Dropzone}>
       <input {...api.getHiddenInputProps()} data-testid="input" />
       Drag your files here
     </div>

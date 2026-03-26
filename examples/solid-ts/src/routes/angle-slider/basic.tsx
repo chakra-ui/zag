@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/angle-slider.module.css"
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, Index } from "solid-js"
@@ -15,13 +16,13 @@ export default function Page() {
   return (
     <>
       <main class="angle-slider">
-        <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
+          <label {...api().getLabelProps()} class={styles.Label}>
             Angle Slider: <div {...api().getValueTextProps()}>{api().valueAsDegree}</div>
           </label>
-          <div {...api().getControlProps()}>
-            <div {...api().getThumbProps()}></div>
-            <div {...api().getMarkerGroupProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
+            <div {...api().getThumbProps()} class={styles.Thumb}></div>
+            <div {...api().getMarkerGroupProps()} class={styles.MarkerGroup}>
               <Index each={[0, 45, 90, 135, 180, 225, 270, 315]}>
                 {(value) => <div {...api().getMarkerProps({ value: value() })}></div>}
               </Index>

@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/scroll-area.module.css"
 import * as scrollArea from "@zag-js/scroll-area"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, type JSX } from "solid-js"
@@ -11,12 +12,12 @@ function ScrollArea(props: { children: JSX.Element; style?: JSX.CSSProperties })
 
   return (
     <div {...mergeProps(api().getRootProps(), { style: props.style })}>
-      <div {...api().getViewportProps()}>
-        <div {...api().getContentProps()}>{props.children}</div>
+      <div {...api().getViewportProps()} class={styles.Viewport}>
+        <div {...api().getContentProps()} class={styles.Content}>{props.children}</div>
       </div>
       {api().hasOverflowY && (
-        <div {...api().getScrollbarProps()}>
-          <div {...api().getThumbProps()} />
+        <div {...api().getScrollbarProps()} class={styles.Scrollbar}>
+          <div {...api().getThumbProps()} class={styles.Thumb} />
         </div>
       )}
     </div>

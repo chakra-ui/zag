@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/accordion.module.css"
 import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -16,19 +17,19 @@ export default function Page() {
   return (
     <>
       <main class="accordion">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
           <For each={accordionData}>
             {(item) => (
               <div {...api().getItemProps({ value: item.id })}>
                 <h3>
-                  <button data-testid={`${item.id}:trigger`} {...api().getItemTriggerProps({ value: item.id })}>
+                  <button data-testid={`${item.id}:trigger`} {...api().getItemTriggerProps({ value: item.id })} class={styles.ItemTrigger}>
                     {item.label}
-                    <div {...api().getItemIndicatorProps({ value: item.id })}>
+                    <div {...api().getItemIndicatorProps({ value: item.id })} class={styles.ItemIndicator}>
                       <ChevronRight />
                     </div>
                   </button>
                 </h3>
-                <div data-testid={`${item.id}:content`} {...api().getItemContentProps({ value: item.id })}>
+                <div data-testid={`${item.id}:content`} {...api().getItemContentProps({ value: item.id })} class={styles.ItemContent}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna aliqua.
                 </div>

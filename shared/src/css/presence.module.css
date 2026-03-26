@@ -1,4 +1,4 @@
-:global(.Presence) {
+.Presence {
   background-color: red;
   padding: 24px;
   width: 240px;

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/select.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { useId } from "react"
@@ -33,20 +34,20 @@ export default function Page() {
   return (
     <main className="select">
       <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Label</label>
-        <div {...api.getControlProps()}>
-          <button {...api.getTriggerProps()}>
+        <label {...api.getLabelProps()} className={styles.Label}>Label</label>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <button {...api.getTriggerProps()} className={styles.Trigger}>
             <span>{api.valueAsString || "Select option"}</span>
             <span {...api.getIndicatorProps()}>▼</span>
           </button>
           <button {...api.getClearTriggerProps()}>X</button>
         </div>
         <Portal>
-          <div {...api.getPositionerProps()}>
-            <ul {...api.getContentProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <ul {...api.getContentProps()} className={styles.Content}>
               {api.collection.items.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
-                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                <li key={item.value} {...api.getItemProps({ item })} className={styles.Item}>
+                  <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
                   <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </li>
               ))}

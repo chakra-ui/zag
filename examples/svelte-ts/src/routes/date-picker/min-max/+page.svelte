@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/date-picker.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as datePicker from "@zag-js/date-picker"
@@ -24,14 +25,14 @@
     <div>Focused: {api.focusedValueAsString}</div>
   </output>
 
-  <div {...api.getControlProps()}>
+  <div {...api.getControlProps()} class={styles.Control}>
     <input {...api.getInputProps()} />
     <button {...api.getClearTriggerProps()}>❌</button>
-    <button {...api.getTriggerProps()}>🗓</button>
+    <button {...api.getTriggerProps()} class={styles.Trigger}>🗓</button>
   </div>
 
   <div {...api.getPositionerProps()}>
-    <div {...api.getContentProps()}>
+    <div {...api.getContentProps()} class={styles.Content}>
       <div style="margin-bottom: 20px">
         <select {...api.getMonthSelectProps()}>
           {#each api.getMonths() as month, i (i)}
@@ -47,13 +48,13 @@
       </div>
 
       <div hidden={api.view !== "day"}>
-        <div {...api.getViewControlProps({ view: "year" })}>
+        <div {...api.getViewControlProps({ view: "year" })} class={styles.ViewControl}>
           <button {...api.getPrevTriggerProps()}>Prev</button>
-          <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
+          <button {...api.getViewTriggerProps()} class={styles.ViewTrigger}>{api.visibleRangeText.start}</button>
           <button {...api.getNextTriggerProps()}>Next</button>
         </div>
 
-        <table {...api.getTableProps({ view: "day" })}>
+        <table {...api.getTableProps({ view: "day" })} class={styles.Table}>
           <thead {...api.getTableHeaderProps({ view: "day" })}>
             <tr {...api.getTableRowProps({ view: "day" })}>
               {#each api.weekDays as day, i (i)}

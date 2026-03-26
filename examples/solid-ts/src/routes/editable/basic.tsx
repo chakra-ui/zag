@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/editable.module.css"
 import * as editable from "@zag-js/editable"
 import { editableControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -23,11 +24,11 @@ export default function Page() {
     <>
       <main class="editable">
         <div {...api().getRootProps()}>
-          <div {...api().getAreaProps()}>
-            <input data-testid="input" {...api().getInputProps()} />
-            <span data-testid="preview" {...api().getPreviewProps()} />
+          <div {...api().getAreaProps()} class={styles.Area}>
+            <input data-testid="input" {...api().getInputProps()} class={styles.Input} />
+            <span data-testid="preview" {...api().getPreviewProps()} class={styles.Preview} />
           </div>
-          <div {...api().getControlProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
             <Show when={!api().editing}>
               <button data-testid="edit-button" {...api().getEditTriggerProps()}>
                 Edit

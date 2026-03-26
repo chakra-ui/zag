@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -29,14 +30,14 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
       <div>Focused: {{ api.focusedValueAsString }}</div>
     </output>
 
-    <div v-bind="api.getControlProps()">
+    <div v-bind="api.getControlProps()" :class="styles.Control">
       <input v-bind="api.getInputProps()" />
       <button v-bind="api.getClearTriggerProps()">❌</button>
-      <button v-bind="api.getTriggerProps()">🗓</button>
+      <button v-bind="api.getTriggerProps()" :class="styles.Trigger">🗓</button>
     </div>
 
     <div v-bind="api.getPositionerProps()">
-      <div v-bind="api.getContentProps()">
+      <div v-bind="api.getContentProps()" :class="styles.Content">
         <div style="margin-bottom: 20px">
           <select v-bind="api.getMonthSelectProps()">
             <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value">{{ month.label }}</option>
@@ -48,13 +49,13 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
         </div>
 
         <div :hidden="api.view !== 'day'">
-          <div v-bind="api.getViewControlProps({ view: 'year' })">
+          <div v-bind="api.getViewControlProps({ view: 'year' })" :class="styles.ViewControl">
             <button v-bind="api.getPrevTriggerProps()">Prev</button>
-            <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
+            <button v-bind="api.getViewTriggerProps()" :class="styles.ViewTrigger">{{ api.visibleRangeText.start }}</button>
             <button v-bind="api.getNextTriggerProps()">Next</button>
           </div>
 
-          <table v-bind="api.getTableProps({ view: 'day' })">
+          <table v-bind="api.getTableProps({ view: 'day' })" :class="styles.Table">
             <thead v-bind="api.getTableHeaderProps({ view: 'day' })">
               <tr v-bind="api.getTableRowProps({ view: 'day' })">
                 <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">{{ day.narrow }}</th>
@@ -72,13 +73,13 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
         <div style="display: flex; gap: 40px">
           <div :hidden="api.view !== 'month'" style="width: 100%">
-            <div v-bind="api.getViewControlProps({ view: 'month' })">
+            <div v-bind="api.getViewControlProps({ view: 'month' })" :class="styles.ViewControl">
               <button v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
-              <button v-bind="api.getViewTriggerProps({ view: 'month' })">{{ api.visibleRange.start.year }}</button>
+              <button v-bind="api.getViewTriggerProps({ view: 'month' })" :class="styles.ViewTrigger">{{ api.visibleRange.start.year }}</button>
               <button v-bind="api.getNextTriggerProps({ view: 'month' })">Next</button>
             </div>
 
-            <table v-bind="api.getTableProps({ view: 'month', columns: 4 })">
+            <table v-bind="api.getTableProps({ view: 'month', columns: 4 })" :class="styles.Table">
               <tbody v-bind="api.getTableBodyProps({ view: 'month' })">
                 <tr
                   v-for="(months, row) in api.getMonthsGrid({ columns: 4, format: 'short' })"
@@ -98,13 +99,13 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
           </div>
 
           <div :hidden="api.view !== 'year'" style="width: 100%">
-            <div v-bind="api.getViewControlProps({ view: 'year' })">
+            <div v-bind="api.getViewControlProps({ view: 'year' })" :class="styles.ViewControl">
               <button v-bind="api.getPrevTriggerProps({ view: 'year' })">Prev</button>
               <span> {{ api.getDecade().start }} - {{ api.getDecade().end }} </span>
               <button v-bind="api.getNextTriggerProps({ view: 'year' })">Next</button>
             </div>
 
-            <table v-bind="api.getTableProps({ view: 'year', columns: 4 })">
+            <table v-bind="api.getTableProps({ view: 'year', columns: 4 })" :class="styles.Table">
               <tbody v-bind="api.getTableBodyProps()">
                 <tr
                   v-for="(years, row) in api.getYearsGrid({ columns: 4 })"

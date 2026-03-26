@@ -1,17 +1,17 @@
-:global(.NumberInputScrubber) {
+.Scrubber {
   width: 32px;
   height: 32px;
   background: red;
 }
 
-:global(.NumberInputControl) {
+.Control {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
 }
 
-:global(.NumberInputInput) {
+.Input {
   width: 100%;
   height: 32px;
   border: 1px solid #ccc;
@@ -21,8 +21,8 @@
   font-size: 16px;
 }
 
-:global(.NumberInputIncrementTrigger),
-:global(.NumberInputDecrementTrigger) {
+.IncrementTrigger,
+.DecrementTrigger {
   width: 32px;
   height: 32px;
   display: flex;

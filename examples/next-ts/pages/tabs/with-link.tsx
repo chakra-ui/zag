@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tabs.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
@@ -23,8 +24,8 @@ export default function Page() {
   return (
     <>
       <main className="tabs">
-        <div {...api.getRootProps()}>
-          <div {...api.getListProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getListProps()} className={styles.List}>
             {tabsData.map((data) => (
               <a href={`#${data.id}`} {...(api.getTriggerProps({ value: data.id }) as any)} key={data.id}>
                 {data.label}
@@ -32,7 +33,7 @@ export default function Page() {
             ))}
           </div>
           {tabsData.map((data) => (
-            <div {...api.getContentProps({ value: data.id })} key={data.id}>
+            <div {...api.getContentProps({ value: data.id })} className={styles.Content} key={data.id}>
               <p>{data.content}</p>
               {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
             </div>

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/number-input.module.css"
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { MinusIcon, PlusIcon } from "lucide-react"
@@ -27,12 +28,12 @@ export default function Page() {
     <main>
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>Enter number:</label>
-        <div {...api.getControlProps()}>
-          <button {...api.getDecrementTriggerProps()}>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <button {...api.getDecrementTriggerProps()} className={styles.DecrementTrigger}>
             <MinusIcon />
           </button>
-          <input {...api.getInputProps()} />
-          <button {...api.getIncrementTriggerProps()}>
+          <input {...api.getInputProps()} className={styles.Input} />
+          <button {...api.getIncrementTriggerProps()} className={styles.IncrementTrigger}>
             <PlusIcon />
           </button>
         </div>

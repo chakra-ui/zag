@@ -26,24 +26,23 @@ export default function Page() {
   return (
     <main class={styles.page}>
       <header class={styles.header}>
-        <button class={styles.menuButton} {...api().getTriggerProps()}>
+        <button {...api().getTriggerProps()} class={styles.menuButton}>
           Open mobile menu
         </button>
       </header>
 
-      <Presence class={styles.backdrop} {...api().getBackdropProps()} />
-      <div class={styles.positioner} {...api().getPositionerProps()}>
-        <Presence class={styles.popup} {...api().getContentProps({ draggable: false })}>
+      <Presence {...api().getBackdropProps()} class={styles.backdrop} />
+      <div {...api().getPositionerProps()} class={styles.positioner}>
+        <Presence {...api().getContentProps({ draggable: false })} class={styles.popup}>
           <nav class={styles.panel}>
             <div class={styles.panelHeader}>
               <div aria-hidden class={styles.headerSpacer} />
-              <div class={styles.handle} {...api().getGrabberProps()}>
-                <div class={styles.handleIndicator} {...api().getGrabberIndicatorProps()} />
+              <div {...api().getGrabberProps()} class={styles.handle}>
+                <div {...api().getGrabberIndicatorProps()} class={styles.handleIndicator} />
               </div>
               <button
                 type="button"
-                class={styles.closeButton}
-                {...api().getCloseTriggerProps()}
+                {...api().getCloseTriggerProps()} class={styles.closeButton}
                 aria-label="Close menu"
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

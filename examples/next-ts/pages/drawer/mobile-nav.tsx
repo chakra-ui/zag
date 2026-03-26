@@ -26,21 +26,21 @@ export default function Page() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <button className={styles.menuButton} {...api.getTriggerProps()}>
+        <button {...api.getTriggerProps()} className={styles.menuButton}>
           Open mobile menu
         </button>
       </header>
 
-      <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-      <div className={styles.positioner} {...api.getPositionerProps()}>
-        <Presence className={styles.popup} {...api.getContentProps({ draggable: false })}>
+      <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+      <div {...api.getPositionerProps()} className={styles.positioner}>
+        <Presence {...api.getContentProps({ draggable: false })} className={styles.popup}>
           <nav className={styles.panel}>
             <div className={styles.panelHeader}>
               <div aria-hidden className={styles.headerSpacer} />
-              <div className={styles.handle} {...api.getGrabberProps()}>
-                <div className={styles.handleIndicator} {...api.getGrabberIndicatorProps()} />
+              <div {...api.getGrabberProps()} className={styles.handle}>
+                <div {...api.getGrabberIndicatorProps()} className={styles.handleIndicator} />
               </div>
-              <button className={styles.closeButton} {...api.getCloseTriggerProps()} aria-label="Close menu">
+              <button {...api.getCloseTriggerProps()} className={styles.closeButton} aria-label="Close menu">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path
                     d="M0.75 0.75L6 6M11.25 11.25L6 6M6 6L0.75 11.25M6 6L11.25 0.75"

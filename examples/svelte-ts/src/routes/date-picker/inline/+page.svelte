@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/date-picker.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -35,7 +36,7 @@
     <div>Focused: {api.focusedValueAsString}</div>
   </output>
 
-  <div {...api.getContentProps()}>
+  <div {...api.getContentProps()} class={styles.Content}>
     <div style="margin-bottom: 20px">
       <select {...api.getMonthSelectProps()}>
         {#each api.getMonths() as month, i (i)}
@@ -51,13 +52,13 @@
     </div>
 
     <div hidden={api.view !== "day"}>
-      <div {...api.getViewControlProps({ view: "year" })}>
+      <div {...api.getViewControlProps({ view: "year" })} class={styles.ViewControl}>
         <button {...api.getPrevTriggerProps()}>Prev</button>
-        <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
+        <button {...api.getViewTriggerProps()} class={styles.ViewTrigger}>{api.visibleRangeText.start}</button>
         <button {...api.getNextTriggerProps()}>Next</button>
       </div>
 
-      <table {...api.getTableProps({ view: "day" })}>
+      <table {...api.getTableProps({ view: "day" })} class={styles.Table}>
         <thead {...api.getTableHeaderProps({ view: "day" })}>
           <tr {...api.getTableRowProps({ view: "day" })}>
             {#each api.weekDays as day, i (i)}
@@ -81,13 +82,13 @@
 
     <div style="display: flex; gap: 40px">
       <div hidden={api.view !== "month"} style="width: 100%">
-        <div {...api.getViewControlProps({ view: "month" })}>
+        <div {...api.getViewControlProps({ view: "month" })} class={styles.ViewControl}>
           <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-          <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
+          <button {...api.getViewTriggerProps({ view: "month" })} class={styles.ViewTrigger}>{api.visibleRange.start.year}</button>
           <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
         </div>
 
-        <table {...api.getTableProps({ view: "month", columns: 4 })}>
+        <table {...api.getTableProps({ view: "month", columns: 4 })} class={styles.Table}>
           <tbody {...api.getTableBodyProps({ view: "month" })}>
             {#each api.getMonthsGrid({ columns: 4, format: "short" }) as months, row (row)}
               <tr {...api.getTableRowProps()}>
@@ -103,7 +104,7 @@
       </div>
 
       <div hidden={api.view !== "year"} style="width: 100%">
-        <div {...api.getViewControlProps({ view: "year" })}>
+        <div {...api.getViewControlProps({ view: "year" })} class={styles.ViewControl}>
           <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
           <span>
             {api.getDecade().start} - {api.getDecade().end}
@@ -111,7 +112,7 @@
           <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
         </div>
 
-        <table {...api.getTableProps({ view: "year", columns: 4 })}>
+        <table {...api.getTableProps({ view: "year", columns: 4 })} class={styles.Table}>
           <tbody {...api.getTableBodyProps()}>
             {#each api.getYearsGrid({ columns: 4 }) as years, row (row)}
               <tr {...api.getTableRowProps({ view: "year" })}>

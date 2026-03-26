@@ -1,10 +1,10 @@
-:global(.EditableArea) {
+.Area {
   display: inline-block;
   margin-right: 0.5em;
   margin-bottom: 1em;
 }
 
-:global(.EditableInput) {
+.Input {
   width: auto;
   background: transparent;
 
@@ -13,11 +13,11 @@
   }
 }
 
-:global(.EditablePreview)[data-empty] {
+.Preview[data-empty] {
   opacity: 0.7;
 }
 
-:global(.EditableControl) {
+.Control {
   display: flex;
   gap: 0.5em;
 }

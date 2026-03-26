@@ -14,12 +14,12 @@
 </script>
 
 <main>
-  <div class={styles.swipeArea} {...api.getSwipeAreaProps()}></div>
-  <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.content} {...api.getContentProps()}>
-      <div class={styles.grabber} {...api.getGrabberProps()}>
-        <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
+  <div {...api.getSwipeAreaProps()} class={styles.swipeArea}></div>
+  <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps()} class={styles.content}>
+      <div {...api.getGrabberProps()} class={styles.grabber}>
+        <div {...api.getGrabberIndicatorProps()} class={styles.grabberIndicator}></div>
       </div>
       <div {...api.getTitleProps()}>Drawer</div>
       <p {...api.getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>

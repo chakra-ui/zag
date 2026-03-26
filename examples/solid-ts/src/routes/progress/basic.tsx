@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/progress.module.css"
 import * as progress from "@zag-js/progress"
 import { progressControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -16,16 +17,16 @@ export default function Page() {
   return (
     <>
       <main class="progress">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
           <div {...api().getLabelProps()}>Upload progress</div>
 
-          <svg {...api().getCircleProps()}>
-            <circle {...api().getCircleTrackProps()} />
-            <circle {...api().getCircleRangeProps()} />
+          <svg {...api().getCircleProps()} class={styles.Circle}>
+            <circle {...api().getCircleTrackProps()} class={styles.CircleTrack} />
+            <circle {...api().getCircleRangeProps()} class={styles.CircleRange} />
           </svg>
 
-          <div {...api().getTrackProps()}>
-            <div {...api().getRangeProps()} />
+          <div {...api().getTrackProps()} class={styles.Track}>
+            <div {...api().getRangeProps()} class={styles.Range} />
           </div>
           <div {...api().getValueTextProps()}>{api().valueAsString}</div>
           <div>

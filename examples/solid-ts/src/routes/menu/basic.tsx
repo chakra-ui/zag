@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
@@ -23,11 +24,11 @@ export default function Page() {
 
           <Portal>
             <div {...api().getPositionerProps()}>
-              <ul {...api().getContentProps()}>
-                <li {...api().getItemProps({ value: "edit" })}>Edit</li>
-                <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
-                <li {...api().getItemProps({ value: "delete" })}>Delete</li>
-                <li {...api().getItemProps({ value: "export" })}>Export...</li>
+              <ul {...api().getContentProps()} class={styles.Content}>
+                <li {...api().getItemProps({ value: "edit" })} class={styles.Item}>Edit</li>
+                <li {...api().getItemProps({ value: "duplicate" })} class={styles.Item}>Duplicate</li>
+                <li {...api().getItemProps({ value: "delete" })} class={styles.Item}>Delete</li>
+                <li {...api().getItemProps({ value: "export" })} class={styles.Item}>Export...</li>
               </ul>
             </div>
           </Portal>

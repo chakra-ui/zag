@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/file-upload.module.css"
 import * as fileUpload from "@zag-js/file-upload"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
@@ -32,7 +33,7 @@ export default function Page() {
               }),
             )}
           />
-          <div {...api.getDropzoneProps()}>
+          <div {...api.getDropzoneProps()} className={styles.Dropzone}>
             <span>Drag your files here</span>
             <button {...api.getTriggerProps()}>Open Dialog</button>
           </div>

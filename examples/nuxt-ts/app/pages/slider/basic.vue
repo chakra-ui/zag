@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/slider.module.css"
 import * as slider from "@zag-js/slider"
 import { sliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
@@ -29,24 +30,24 @@ const api = computed(() => slider.connect(service, normalizeProps))
         }
       "
     >
-      <div v-bind="api.getRootProps()">
+      <div v-bind="api.getRootProps()" :class="styles.Root">
         <div>
           <label data-testid="label" v-bind="api.getLabelProps()"> Slider Label </label>
-          <output data-testid="output" v-bind="api.getValueTextProps()"> {{ api.value.at(0) }} </output>
+          <output data-testid="output" v-bind="api.getValueTextProps()" :class="styles.ValueText"> {{ api.value.at(0) }} </output>
         </div>
         <div class="control-area">
-          <div v-bind="api.getControlProps()">
-            <div data-testid="track" v-bind="api.getTrackProps()">
-              <div v-bind="api.getRangeProps()" />
+          <div v-bind="api.getControlProps()" :class="styles.Control">
+            <div data-testid="track" v-bind="api.getTrackProps()" :class="styles.Track">
+              <div v-bind="api.getRangeProps()" :class="styles.Range" />
             </div>
-            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
+            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })" :class="styles.Thumb">
               <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
           </div>
-          <div v-bind="api.getMarkerGroupProps()">
-            <span v-bind="api.getMarkerProps({ value: 10 })">*</span>
-            <span v-bind="api.getMarkerProps({ value: 30 })">*</span>
-            <span v-bind="api.getMarkerProps({ value: 90 })">*</span>
+          <div v-bind="api.getMarkerGroupProps()" :class="styles.MarkerGroup">
+            <span v-bind="api.getMarkerProps({ value: 10 })" :class="styles.Marker">*</span>
+            <span v-bind="api.getMarkerProps({ value: 30 })" :class="styles.Marker">*</span>
+            <span v-bind="api.getMarkerProps({ value: 90 })" :class="styles.Marker">*</span>
           </div>
         </div>
       </div>

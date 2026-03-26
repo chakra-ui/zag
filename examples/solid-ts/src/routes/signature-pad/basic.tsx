@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/signature-pad.module.css"
 import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -27,20 +28,20 @@ export default function Page() {
   return (
     <>
       <main class="signature-pad">
-        <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>Signature Pad</label>
+        <div {...api().getRootProps()} class={styles.Root}>
+          <label {...api().getLabelProps()} class={styles.Label}>Signature Pad</label>
 
-          <div {...api().getControlProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
             <svg {...api().getSegmentProps()}>
               <For each={api().paths}>{(path) => <path {...api().getSegmentPathProps({ path })} />}</For>
               <Show when={api().currentPath}>
                 {(path) => <path {...api().getSegmentPathProps({ path: path() })} />}
               </Show>
             </svg>
-            <div {...api().getGuideProps()} />
+            <div {...api().getGuideProps()} class={styles.Guide} />
           </div>
 
-          <button {...api().getClearTriggerProps()}>
+          <button {...api().getClearTriggerProps()} class={styles.ClearTrigger}>
             <RotateCcw />
           </button>
         </div>

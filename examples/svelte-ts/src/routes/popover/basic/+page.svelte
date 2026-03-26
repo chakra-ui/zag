@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/popover.module.css"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
@@ -21,23 +22,23 @@
 
     <button data-testid="popover-trigger" {...api.getTriggerProps()}>
       Click me
-      <div {...api.getIndicatorProps()}>{">"}</div>
+      <div {...api.getIndicatorProps()} class={styles.Indicator}>{">"}</div>
     </button>
 
     <div {...api.getAnchorProps()}>anchor</div>
 
-    <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()}>
-      <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()}>
-        <div {...api.getArrowProps()}>
+    <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()} class={styles.Positioner}>
+      <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()} class={styles.Content}>
+        <div {...api.getArrowProps()} class={styles.Arrow}>
           <div {...api.getArrowTipProps()}></div>
         </div>
-        <div data-testid="popover-title" {...api.getTitleProps()}>Popover Title</div>
+        <div data-testid="popover-title" {...api.getTitleProps()} class={styles.Title}>Popover Title</div>
         <div data-part="body" data-testid="popover-body">
           <!-- svelte-ignore a11y_missing_attribute -->
           <a>Non-focusable Link</a>
           <a href="# " data-testid="focusable-link"> Focusable Link </a>
           <input data-testid="input" placeholder="input" />
-          <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}> X </button>
+          <button data-testid="popover-close-button" {...api.getCloseTriggerProps()} class={styles.CloseTrigger}> X </button>
         </div>
       </Presence>
     </div>

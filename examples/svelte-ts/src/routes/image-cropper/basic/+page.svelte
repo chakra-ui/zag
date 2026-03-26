@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/image-cropper.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -37,10 +38,10 @@
 <main class="image-cropper">
   <div {...api.getRootProps()}>
     <div {...api.getViewportProps()}>
-      <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} alt="Cropper" />
-      <div {...api.getSelectionProps()}>
+      <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} class={styles.Image} alt="Cropper" />
+      <div {...api.getSelectionProps()} class={styles.Selection}>
         {#each handlePositions as position}
-          <div {...api.getHandleProps({ position })}>
+          <div {...api.getHandleProps({ position })} class={styles.Handle}>
             <div></div>
           </div>
         {/each}

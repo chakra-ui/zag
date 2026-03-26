@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/tooltip.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { normalizeProps, useMachine, portal } from "@zag-js/svelte"
@@ -19,7 +20,7 @@
     <button data-testid={`${id}-trigger`} {...api.getTriggerProps()}> Hover me </button>
     {#if api.open}
       <div {...api.getPositionerProps()}>
-        <div class="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>Tooltip</div>
+        <div class="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()} class={styles.Content}>Tooltip</div>
       </div>
     {/if}
     <button data-testid={`${id2}-trigger`} {...api2.getTriggerProps()}> Over me </button>

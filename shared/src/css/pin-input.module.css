@@ -1,16 +1,16 @@
-:global(.PinInputControl) {
+.Control {
   width: 300px;
   display: flex;
   margin-bottom: 12px;
   gap: 12px;
 }
 
-:global(.PinInputLabel) {
+.Label {
   display: block;
   margin-bottom: 8px;
 }
 
-:global(.PinInputInput) {
+.Input {
   width: 48px;
   height: 48px;
   text-align: center;

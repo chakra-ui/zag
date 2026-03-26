@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/radio-group.module.css"
 import * as radio from "@zag-js/radio-group"
 import { radioControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,14 +20,14 @@ const api = computed(() => radio.connect(service, normalizeProps))
 
 <template>
   <main class="segmented-control">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getIndicatorProps()" />
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getIndicatorProps()" :class="styles.Indicator" />
 
       <label
         v-for="opt in radioData"
         :key="opt.id"
         :data-testid="`radio-${opt.id}`"
-        v-bind="api.getItemProps({ value: opt.id })"
+        v-bind="api.getItemProps({ value: opt.id })" :class="styles.Item"
       >
         <span :data-testid="`label-${opt.id}`" v-bind="api.getItemTextProps({ value: opt.id })">
           {{ opt.label }}

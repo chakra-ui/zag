@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import React, { useState } from "react"
@@ -21,16 +22,16 @@ export default function Dialog() {
       <p>machine - isOpen: {String(api.open)}</p>
       {api.open && (
         <Portal>
-          <div {...api.getBackdropProps()} />
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              <h2 {...api.getTitleProps()}>Edit profile</h2>
-              <p {...api.getDescriptionProps()}>Make changes to your profile here. Click save when you are done.</p>
+          <div {...api.getBackdropProps()} className={styles.Backdrop} />
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div {...api.getContentProps()} className={styles.Content}>
+              <h2 {...api.getTitleProps()} className={styles.Title}>Edit profile</h2>
+              <p {...api.getDescriptionProps()} className={styles.Description}>Make changes to your profile here. Click save when you are done.</p>
               <div>
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>Close</button>
             </div>
           </div>
         </Portal>

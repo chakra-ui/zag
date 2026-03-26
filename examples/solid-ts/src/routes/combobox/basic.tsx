@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
@@ -56,14 +57,14 @@ export default function Page() {
           </button>
           <br />
 
-          <div {...api().getRootProps()}>
-            <label {...api().getLabelProps()}>Select country</label>
-            <div {...api().getControlProps()}>
-              <input data-testid="input" {...api().getInputProps()} />
+          <div {...api().getRootProps()} class={styles.Root}>
+            <label {...api().getLabelProps()} class={styles.Label}>Select country</label>
+            <div {...api().getControlProps()} class={styles.Control}>
+              <input data-testid="input" {...api().getInputProps()} class={styles.Input} />
               <button data-testid="trigger" {...api().getTriggerProps()}>
                 ▼
               </button>
-              <button {...api().getClearTriggerProps()}>
+              <button {...api().getClearTriggerProps()} class={styles.ClearTrigger}>
                 <XIcon />
               </button>
             </div>
@@ -71,7 +72,7 @@ export default function Page() {
 
           <div {...api().getPositionerProps()}>
             <Show when={options().length > 0}>
-              <ul data-testid="combobox-content" {...api().getContentProps()}>
+              <ul data-testid="combobox-content" {...api().getContentProps()} class={styles.Content}>
                 <Index each={options()}>
                   {(item) => (
                     <li class="combobox__option" {...api().getItemProps({ item: item() })}>

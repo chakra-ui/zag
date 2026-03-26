@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/toc.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { tocControls, tocData } from "@zag-js/shared"
 import * as toc from "@zag-js/toc"
@@ -21,12 +22,12 @@ export default function Page() {
     <>
       <main className="toc">
         <div style={{ display: "flex", gap: "2rem" }}>
-          <nav {...api.getRootProps()}>
-            <h5 {...api.getTitleProps()}>On this page</h5>
-            <ul {...api.getListProps()}>
+          <nav {...api.getRootProps()} className={styles.Root}>
+            <h5 {...api.getTitleProps()} className={styles.Title}>On this page</h5>
+            <ul {...api.getListProps()} className={styles.List}>
               {tocData.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
-                  <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
+                <li key={item.value} {...api.getItemProps({ item })} className={styles.Item}>
+                  <a href={`#${item.value}`} {...api.getLinkProps({ item })} className={styles.Link}>
                     {item.label}
                   </a>
                 </li>

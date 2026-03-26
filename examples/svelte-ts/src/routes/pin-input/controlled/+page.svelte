@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/pin-input.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as pinInput from "@zag-js/pin-input"
@@ -31,10 +32,10 @@
   >
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.getLabelProps()}>Enter code:</label>
-      <div {...api.getControlProps()}>
+      <label {...api.getLabelProps()} class={styles.Label}>Enter code:</label>
+      <div {...api.getControlProps()} class={styles.Control}>
         {#each api.items as index}
-          <input data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+          <input data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} class={styles.Input} />
         {/each}
       </div>
       <input {...api.getHiddenInputProps()} />

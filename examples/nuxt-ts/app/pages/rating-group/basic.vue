@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/rating-group.module.css"
 import * as rating from "@zag-js/rating-group"
 import { ratingControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -25,8 +26,8 @@ const items = computed(() =>
 <template>
   <main class="rating">
     <div v-bind="api.getRootProps()">
-      <div v-bind="api.getControlProps()">
-        <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })">
+      <div v-bind="api.getControlProps()" :class="styles.Control">
+        <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })" :class="styles.Item">
           <HalfStar v-if="state.half" />
           <Star v-else="" />
         </span>

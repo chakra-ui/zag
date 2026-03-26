@@ -19,12 +19,12 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 
 <template>
   <main>
-    <button :class="styles.trigger" v-bind="api.getTriggerProps()">Open</button>
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()"></Presence>
-    <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.content" v-bind="api.getContentProps()">
-        <div :class="styles.grabber" v-bind="api.getGrabberProps()">
-          <div :class="styles.grabberIndicator" v-bind="api.getGrabberIndicatorProps()"></div>
+    <button v-bind="api.getTriggerProps()" :class="styles.trigger">Open</button>
+    <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop"></Presence>
+    <div v-bind="api.getPositionerProps()" :class="styles.positioner">
+      <Presence v-bind="api.getContentProps()" :class="styles.content">
+        <div v-bind="api.getGrabberProps()" :class="styles.grabber">
+          <div v-bind="api.getGrabberIndicatorProps()" :class="styles.grabberIndicator"></div>
         </div>
         <div v-bind="api.getTitleProps()">Drawer</div>
         <div data-no-drag="true" :class="styles.noDrag">No drag area</div>

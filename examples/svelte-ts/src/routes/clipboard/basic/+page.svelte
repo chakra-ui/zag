@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/clipboard.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -22,12 +23,12 @@
 </script>
 
 <main class="clipboard">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>Copy this link</label>
-    <div {...api.getControlProps()}>
-      <input {...api.getInputProps()} />
-      <button {...api.getTriggerProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
+      <input {...api.getInputProps()} class={styles.Input} />
+      <button {...api.getTriggerProps()} class={styles.Trigger}>
         {#if api.copied}
           <ClipboardCheckIcon />
         {:else}
@@ -35,8 +36,8 @@
         {/if}
       </button>
     </div>
-    <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
-    <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
+    <div {...api.getIndicatorProps({ copied: true })} class={styles.Indicator}>Copied!</div>
+    <div {...api.getIndicatorProps({ copied: false })} class={styles.Indicator}>Copy</div>
   </div>
 </main>
 

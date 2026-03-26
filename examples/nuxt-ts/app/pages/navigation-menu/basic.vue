@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/navigation-menu.module.css"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { navigationMenuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,16 +20,16 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
 
 <template>
   <main class="navigation-menu basic">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getListProps()">
-        <div v-bind="api.getItemProps({ value: 'products' })">
-          <button v-bind="api.getTriggerProps({ value: 'products' })">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getListProps()" :class="styles.List">
+        <div v-bind="api.getItemProps({ value: 'products' })" :class="styles.Item">
+          <button v-bind="api.getTriggerProps({ value: 'products' })" :class="styles.Trigger">
             Products
             <ChevronDown />
           </button>
-          <Presence v-bind="api.getContentProps({ value: 'products' })">
-            <Presence v-bind="api.getIndicatorProps()">
-              <div v-bind="api.getArrowProps()" />
+          <Presence v-bind="api.getContentProps({ value: 'products' })" :class="styles.Content">
+            <Presence v-bind="api.getIndicatorProps()" :class="styles.Indicator">
+              <div v-bind="api.getArrowProps()" :class="styles.Arrow" />
             </Presence>
             <a
               v-for="(item, index) in [
@@ -41,21 +42,21 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               ]"
               :key="`products-${item}-${index}`"
               href="#"
-              v-bind="api.getLinkProps({ value: 'products' })"
+              v-bind="api.getLinkProps({ value: 'products' })" :class="styles.Link"
             >
               {{ item }}
             </a>
           </Presence>
         </div>
 
-        <div v-bind="api.getItemProps({ value: 'company' })">
-          <button v-bind="api.getTriggerProps({ value: 'company' })">
+        <div v-bind="api.getItemProps({ value: 'company' })" :class="styles.Item">
+          <button v-bind="api.getTriggerProps({ value: 'company' })" :class="styles.Trigger">
             Company
             <ChevronDown />
           </button>
-          <Presence v-bind="api.getContentProps({ value: 'company' })">
-            <Presence v-bind="api.getIndicatorProps()">
-              <div v-bind="api.getArrowProps()" />
+          <Presence v-bind="api.getContentProps({ value: 'company' })" :class="styles.Content">
+            <Presence v-bind="api.getIndicatorProps()" :class="styles.Indicator">
+              <div v-bind="api.getArrowProps()" :class="styles.Arrow" />
             </Presence>
             <a
               v-for="(item, index) in [
@@ -66,21 +67,21 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               ]"
               :key="`company-${item}-${index}`"
               href="#"
-              v-bind="api.getLinkProps({ value: 'company' })"
+              v-bind="api.getLinkProps({ value: 'company' })" :class="styles.Link"
             >
               {{ item }}
             </a>
           </Presence>
         </div>
 
-        <div v-bind="api.getItemProps({ value: 'developers' })">
-          <button v-bind="api.getTriggerProps({ value: 'developers' })">
+        <div v-bind="api.getItemProps({ value: 'developers' })" :class="styles.Item">
+          <button v-bind="api.getTriggerProps({ value: 'developers' })" :class="styles.Trigger">
             Developers
             <ChevronDown />
           </button>
-          <Presence v-bind="api.getContentProps({ value: 'developers' })">
-            <Presence v-bind="api.getIndicatorProps()">
-              <div v-bind="api.getArrowProps()" />
+          <Presence v-bind="api.getContentProps({ value: 'developers' })" :class="styles.Content">
+            <Presence v-bind="api.getIndicatorProps()" :class="styles.Indicator">
+              <div v-bind="api.getArrowProps()" :class="styles.Arrow" />
             </Presence>
             <a
               v-for="(item, index) in [
@@ -90,15 +91,15 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               ]"
               :key="`developers-${item}-${index}`"
               href="#"
-              v-bind="api.getLinkProps({ value: 'developers' })"
+              v-bind="api.getLinkProps({ value: 'developers' })" :class="styles.Link"
             >
               {{ item }}
             </a>
           </Presence>
         </div>
 
-        <div v-bind="api.getItemProps({ value: 'pricing' })">
-          <a href="#" v-bind="api.getLinkProps({ value: 'pricing' })">
+        <div v-bind="api.getItemProps({ value: 'pricing' })" :class="styles.Item">
+          <a href="#" v-bind="api.getLinkProps({ value: 'pricing' })" :class="styles.Link">
             Pricing
           </a>
         </div>

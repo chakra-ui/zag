@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/navigation-menu.module.css"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { navigationMenuControls } from "@zag-js/shared"
@@ -25,7 +26,7 @@ export default function Page() {
     return (
       <For each={items}>
         {(item) => (
-          <a href="#" {...api().getLinkProps({ value })}>
+          <a href="#" {...api().getLinkProps({ value })} class={styles.Link}>
             {item}
           </a>
         )}
@@ -36,16 +37,16 @@ export default function Page() {
   return (
     <>
       <main class="navigation-menu basic">
-        <div {...api().getRootProps()}>
-          <div {...api().getListProps()}>
-            <div {...api().getItemProps({ value: "products" })}>
-              <button {...api().getTriggerProps({ value: "products" })}>
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getListProps()} class={styles.List}>
+            <div {...api().getItemProps({ value: "products" })} class={styles.Item}>
+              <button {...api().getTriggerProps({ value: "products" })} class={styles.Trigger}>
                 Products
                 <ChevronDown />
               </button>
-              <Presence {...api().getContentProps({ value: "products" })}>
-                <Presence {...api().getIndicatorProps()}>
-                  <div {...api().getArrowProps()} />
+              <Presence {...api().getContentProps({ value: "products" })} class={styles.Content}>
+                <Presence {...api().getIndicatorProps()} class={styles.Indicator}>
+                  <div {...api().getArrowProps()} class={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "products",
@@ -61,14 +62,14 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api().getItemProps({ value: "company" })}>
-              <button {...api().getTriggerProps({ value: "company" })}>
+            <div {...api().getItemProps({ value: "company" })} class={styles.Item}>
+              <button {...api().getTriggerProps({ value: "company" })} class={styles.Trigger}>
                 Company
                 <ChevronDown />
               </button>
-              <Presence {...api().getContentProps({ value: "company" })}>
-                <Presence {...api().getIndicatorProps()}>
-                  <div {...api().getArrowProps()} />
+              <Presence {...api().getContentProps({ value: "company" })} class={styles.Content}>
+                <Presence {...api().getIndicatorProps()} class={styles.Indicator}>
+                  <div {...api().getArrowProps()} class={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "company",
@@ -77,14 +78,14 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api().getItemProps({ value: "developers" })}>
-              <button {...api().getTriggerProps({ value: "developers" })}>
+            <div {...api().getItemProps({ value: "developers" })} class={styles.Item}>
+              <button {...api().getTriggerProps({ value: "developers" })} class={styles.Trigger}>
                 Developers
                 <ChevronDown />
               </button>
-              <Presence {...api().getContentProps({ value: "developers" })}>
-                <Presence {...api().getIndicatorProps()}>
-                  <div {...api().getArrowProps()} />
+              <Presence {...api().getContentProps({ value: "developers" })} class={styles.Content}>
+                <Presence {...api().getIndicatorProps()} class={styles.Indicator}>
+                  <div {...api().getArrowProps()} class={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "developers",
@@ -93,8 +94,8 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api().getItemProps({ value: "pricing" })}>
-              <a href="#" {...api().getLinkProps({ value: "pricing" })}>
+            <div {...api().getItemProps({ value: "pricing" })} class={styles.Item}>
+              <a href="#" {...api().getLinkProps({ value: "pricing" })} class={styles.Link}>
                 Pricing
               </a>
             </div>

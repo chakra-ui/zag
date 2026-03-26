@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tree-view.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
@@ -77,15 +78,15 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   if (nodeState.isBranch) {
     return (
       <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+        <div {...api.getBranchControlProps(nodeProps)} className={styles.BranchControl}>
           <FolderIcon />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
+          <span {...api.getBranchTextProps(nodeProps)} className={styles.BranchText}>{node.name}</span>
+          <span {...api.getBranchIndicatorProps(nodeProps)} className={styles.BranchIndicator}>
             <ChevronRightIcon />
           </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getBranchContentProps(nodeProps)} className={styles.BranchContent}>
+          <div {...api.getBranchIndentGuideProps(nodeProps)} className={styles.BranchIndentGuide} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
@@ -97,18 +98,18 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   // Render as link if node has href
   if (node.href) {
     return (
-      <a href={node.href} {...api.getItemProps(nodeProps)}>
+      <a href={node.href} {...api.getItemProps(nodeProps)} className={styles.Item}>
         <FileIcon />
-        <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
+        <span {...api.getItemTextProps(nodeProps)} className={styles.ItemText}>{node.name}</span>
         {node.href.startsWith("http") && <ExternalLinkIcon size={12} />}
       </a>
     )
   }
 
   return (
-    <div {...api.getItemProps(nodeProps)}>
+    <div {...api.getItemProps(nodeProps)} className={styles.Item}>
       <FileIcon />
-      <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
+      <span {...api.getItemTextProps(nodeProps)} className={styles.ItemText}>{node.name}</span>
     </div>
   )
 }
@@ -128,7 +129,7 @@ export default function Page() {
       <main className="tree-view">
         <div {...api.getRootProps()}>
           <h3 {...api.getLabelProps()}>Docs</h3>
-          <div {...api.getTreeProps()}>
+          <div {...api.getTreeProps()} className={styles.Tree}>
             {collection.rootNode.children?.map((node, index) => (
               <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
             ))}

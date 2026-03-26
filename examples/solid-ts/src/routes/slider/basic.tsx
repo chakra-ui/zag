@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/slider.module.css"
 import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -30,19 +31,19 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div {...api().getRootProps()}>
+          <div {...api().getRootProps()} class={styles.Root}>
             <div>
               <label data-testid="label" {...api().getLabelProps()}>
                 Slider Label
               </label>
-              <output data-testid="output" {...api().getValueTextProps()}>
+              <output data-testid="output" {...api().getValueTextProps()} class={styles.ValueText}>
                 {api().value.at(0)}
               </output>
             </div>
             <div class="control-area">
-              <div {...api().getControlProps()}>
-                <div data-testid="track" {...api().getTrackProps()}>
-                  <div {...api().getRangeProps()} />
+              <div {...api().getControlProps()} class={styles.Control}>
+                <div data-testid="track" {...api().getTrackProps()} class={styles.Track}>
+                  <div {...api().getRangeProps()} class={styles.Range} />
                 </div>
                 <For each={api().value}>
                   {(_, index) => (
@@ -52,10 +53,10 @@ export default function Page() {
                   )}
                 </For>
               </div>
-              <div {...api().getMarkerGroupProps()}>
-                <span {...api().getMarkerProps({ value: 10 })}>*</span>
-                <span {...api().getMarkerProps({ value: 30 })}>*</span>
-                <span {...api().getMarkerProps({ value: 90 })}>*</span>
+              <div {...api().getMarkerGroupProps()} class={styles.MarkerGroup}>
+                <span {...api().getMarkerProps({ value: 10 })} class={styles.Marker}>*</span>
+                <span {...api().getMarkerProps({ value: 30 })} class={styles.Marker}>*</span>
+                <span {...api().getMarkerProps({ value: 90 })} class={styles.Marker}>*</span>
               </div>
             </div>
           </div>

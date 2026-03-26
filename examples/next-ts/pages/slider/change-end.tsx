@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/slider.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
 import { useId, useState } from "react"
@@ -21,13 +22,13 @@ export default function Page() {
 
   return (
     <main>
-      <div {...api.getRootProps()}>
-        <div {...api.getControlProps()}>
-          <div data-testid="track" {...api.getTrackProps()}>
-            <div {...api.getRangeProps()} />
+      <div {...api.getRootProps()} className={styles.Root}>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <div data-testid="track" {...api.getTrackProps()} className={styles.Track}>
+            <div {...api.getRangeProps()} className={styles.Range} />
           </div>
           {api.value.map((_, index) => (
-            <div key={index} {...api.getThumbProps({ index })}>
+            <div key={index} {...api.getThumbProps({ index })} className={styles.Thumb}>
               <input {...api.getHiddenInputProps({ index })} />
             </div>
           ))}

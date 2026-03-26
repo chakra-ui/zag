@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/pagination.module.css"
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
@@ -57,7 +58,7 @@ export default function Page() {
                   if (page.type === "page")
                     return (
                       <li>
-                        <button data-testid={`item-${page.value}`} {...api().getItemProps(page)}>
+                        <button data-testid={`item-${page.value}`} {...api().getItemProps(page)} class={styles.Item}>
                           {page.value}
                         </button>
                       </li>

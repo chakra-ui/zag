@@ -1,9 +1,9 @@
-:global(.ComboboxRoot) {
+.Root {
   display: inline-flex;
   flex-direction: column;
 }
 
-:global(.ComboboxContent) {
+.Content {
   background-color: white;
   list-style-type: none;
   margin: 0;
@@ -15,7 +15,7 @@
   z-index: var(--layer-index);
 }
 
-:global(.ComboboxItem) {
+.Item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,22 +35,22 @@
   }
 }
 
-:global(.ComboboxLabel) {
+.Label {
   display: block;
   margin-top: 12px;
   margin-bottom: 4px;
 }
 
-:global(.ComboboxControl) {
+.Control {
   display: inline-flex;
   width: 300px;
 }
 
-:global(.ComboboxInput) {
+.Input {
   flex: 1;
 }
 
-:global(.ComboboxClearTrigger) {
+.ClearTrigger {
   display: inline-flex;
   font-size: 1.2em;
   & svg {
@@ -59,7 +59,7 @@
   }
 }
 
-:global(.ComboboxItemGroupLabel) {
+.ItemGroupLabel {
   user-select: none;
   margin-top: 8px;
   display: flex;

@@ -1,4 +1,4 @@
-:global(.CarouselRoot) {
+.Root {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -13,13 +13,13 @@
   }
 }
 
-:global(.CarouselControl) {
+.Control {
   display: flex;
   gap: 8px;
   align-self: stretch;
 }
 
-:global(.CarouselItemGroup) {
+.ItemGroup {
   align-self: stretch;
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -30,7 +30,7 @@
   }
 }
 
-:global(.CarouselItem) {
+.Item {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,7 +53,7 @@
   }
 }
 
-:global(.CarouselIndicatorGroup) {
+.IndicatorGroup {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,7 @@
   flex-wrap: wrap;
 }
 
-:global(.CarouselIndicator) {
+.Indicator {
   display: flex;
   border: none;
   justify-content: center;
@@ -79,7 +79,7 @@
   }
 }
 
-:global(.CarouselAutoplayTrigger) {
+.AutoplayTrigger {
   display: flex;
   justify-content: center;
   align-items: center;

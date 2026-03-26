@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/password-input.module.css"
 import * as passwordInput from "@zag-js/password-input"
 import { passwordInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -14,13 +15,13 @@ const api = computed(() => passwordInput.connect(service, normalizeProps))
 
 <template>
   <main class="password-input">
-    <div v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
       <label v-bind="api.getLabelProps()">Password</label>
 
-      <div v-bind="api.getControlProps()">
-        <input v-bind="api.getInputProps()" />
-        <button v-bind="api.getVisibilityTriggerProps()">
-          <span v-bind="api.getIndicatorProps()">
+      <div v-bind="api.getControlProps()" :class="styles.Control">
+        <input v-bind="api.getInputProps()" :class="styles.Input" />
+        <button v-bind="api.getVisibilityTriggerProps()" :class="styles.VisibilityTrigger">
+          <span v-bind="api.getIndicatorProps()" :class="styles.Indicator">
             <EyeIcon v-if="api.visible" />
             <EyeOffIcon v-else />
           </span>

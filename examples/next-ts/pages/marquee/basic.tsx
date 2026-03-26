@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/marquee.module.css"
 import * as marquee from "@zag-js/marquee"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { marqueeControls, marqueeData } from "@zag-js/shared"
@@ -20,14 +21,14 @@ export default function Page() {
   return (
     <>
       <main className="marquee">
-        <div {...api.getRootProps()}>
-          <div {...api.getEdgeProps({ side: "start" })} />
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getEdgeProps({ side: "start" })} className={styles.Edge} />
 
           <div {...api.getViewportProps()}>
             {Array.from({ length: api.contentCount }).map((_, index) => (
-              <div key={index} {...api.getContentProps({ index })}>
+              <div key={index} {...api.getContentProps({ index })} className={styles.Content}>
                 {marqueeData.map((item, i) => (
-                  <div key={i} {...api.getItemProps()}>
+                  <div key={i} {...api.getItemProps()} className={styles.Item}>
                     <span className="marquee-logo">{item.logo}</span>
                     <span className="marquee-name">{item.name}</span>
                   </div>
@@ -36,7 +37,7 @@ export default function Page() {
             ))}
           </div>
 
-          <div {...api.getEdgeProps({ side: "end" })} />
+          <div {...api.getEdgeProps({ side: "end" })} className={styles.Edge} />
         </div>
 
         <div className="controls">

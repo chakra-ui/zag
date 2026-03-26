@@ -30,12 +30,12 @@
 <div>
   <h3>Controlled (open + onOpenChange)</h3>
   <p style="font-size: 14px; color: #6b7280">Standard controlled mode. Open state is managed by Svelte.</p>
-  <button class={styles.trigger} {...api.getTriggerProps()}>Open Controlled</button>
-  <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.content} {...api.getContentProps()}>
-      <div class={styles.grabber} {...api.getGrabberProps()}>
-        <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
+  <button {...api.getTriggerProps()} class={styles.trigger}>Open Controlled</button>
+  <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps()} class={styles.content}>
+      <div {...api.getGrabberProps()} class={styles.grabber}>
+        <div {...api.getGrabberIndicatorProps()} class={styles.grabberIndicator}></div>
       </div>
       <div {...api.getTitleProps()}>Controlled Drawer</div>
       <p {...api.getDescriptionProps()}>

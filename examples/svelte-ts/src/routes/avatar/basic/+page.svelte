@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/avatar.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as avatar from "@zag-js/avatar"
@@ -17,10 +18,10 @@
 </script>
 
 <main class="avatar">
-  <div {...api.getRootProps()}>
-    <span {...api.getFallbackProps()}>PA</span>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <span {...api.getFallbackProps()} class={styles.Fallback}>PA</span>
     {#if showImage}
-      <img alt="" referrerpolicy="no-referrer" {src} {...api.getImageProps()} />
+      <img alt="" referrerpolicy="no-referrer" {src} {...api.getImageProps()} class={styles.Image} />
     {/if}
   </div>
 

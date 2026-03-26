@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tags-input.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { tagsInputControls } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
@@ -25,17 +26,17 @@ export default function Page() {
     <>
       <main className="tags-input">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Enter frameworks:</label>
-          <div {...api.getControlProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>Enter frameworks:</label>
+          <div {...api.getControlProps()} className={styles.Control}>
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
-                <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
+                <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })} className={styles.ItemPreview}>
                   <span data-testid={`${toDashCase(value)}-valuetext`} {...api.getItemTextProps({ index, value })}>
                     {value}{" "}
                   </span>
                   <button
                     data-testid={`${toDashCase(value)}-close-button`}
-                    {...api.getItemDeleteTriggerProps({ index, value })}
+                    {...api.getItemDeleteTriggerProps({ index, value })} className={styles.ItemDeleteTrigger}
                   >
                     &#x2715;
                   </button>
@@ -43,8 +44,8 @@ export default function Page() {
                 <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
-            <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
-            <button {...api.getClearTriggerProps()}>X</button>
+            <input data-testid="input" placeholder="add tag" {...api.getInputProps()} className={styles.Input} />
+            <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>X</button>
           </div>
           <input {...api.getHiddenInputProps()} />
         </div>

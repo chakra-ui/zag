@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/popover.module.css"
 import { Fragment, useId, useState } from "react"
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
@@ -27,12 +28,12 @@ export function Popover() {
     <main>
       <button {...api.getTriggerProps()}>Click me</button>
       <Wrapper>
-        <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
-            <div {...api.getTitleProps()}>Presenters</div>
+        <div {...api.getPositionerProps()} className={styles.Positioner}>
+          <div {...api.getContentProps()} className={styles.Content}>
+            <div {...api.getTitleProps()} className={styles.Title}>Presenters</div>
             <div {...api.getDescriptionProps()}>Description</div>
             <button>Action Button</button>
-            <button {...api.getCloseTriggerProps()}>X</button>
+            <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>X</button>
           </div>
         </div>
       </Wrapper>

@@ -1,4 +1,5 @@
 <script setup lang="tsx">
+import styles from "../../../../../shared/src/css/select.module.css"
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import serialize from "form-serialize"
@@ -20,9 +21,9 @@ const api = computed(() => select.connect(service, normalizeProps))
 <template>
   <main class="select">
     <div v-bind="api.getRootProps()">
-      <div v-bind="api.getControlProps()">
-        <label v-bind="api.getLabelProps()">Label</label>
-        <button v-bind="api.getTriggerProps()">
+      <div v-bind="api.getControlProps()" :class="styles.Control">
+        <label v-bind="api.getLabelProps()" :class="styles.Label">Label</label>
+        <button v-bind="api.getTriggerProps()" :class="styles.Trigger">
           <span>{{ api.valueAsString || "Select option" }}</span>
           <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
@@ -41,10 +42,10 @@ const api = computed(() => select.connect(service, normalizeProps))
         </select>
       </form>
       <Teleport to="#teleports">
-        <div v-bind="api.getPositionerProps()">
-          <ul v-bind="api.getContentProps()">
-            <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-              <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+        <div v-bind="api.getPositionerProps()" :class="styles.Positioner">
+          <ul v-bind="api.getContentProps()" :class="styles.Content">
+            <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })" :class="styles.Item">
+              <span v-bind="api.getItemTextProps({ item })" :class="styles.ItemText">{{ item.label }}</span>
               <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
             </li>
           </ul>

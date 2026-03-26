@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/floating-panel.module.css"
 import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
@@ -23,11 +24,11 @@ export default function Page() {
         <div>
           <button {...api.getTriggerProps()}>Toggle Panel</button>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()} ref={contentRef}>
+            <div {...api.getContentProps()} className={styles.Content} ref={contentRef}>
               <div {...api.getDragTriggerProps()}>
-                <div {...api.getHeaderProps()}>
+                <div {...api.getHeaderProps()} className={styles.Header}>
                   <p {...api.getTitleProps()}>Floating Panel (Focus Trap)</p>
-                  <div {...api.getControlProps()}>
+                  <div {...api.getControlProps()} className={styles.Control}>
                     <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                       <Minus />
                     </button>
@@ -43,7 +44,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div {...api.getBodyProps()}>
+              <div {...api.getBodyProps()} className={styles.Body}>
                 <p>Focus is trapped within this panel when open.</p>
                 <label>
                   Name
@@ -57,7 +58,7 @@ export default function Page() {
               </div>
 
               {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+                <div key={axis} {...api.getResizeTriggerProps({ axis })} className={styles.ResizeTrigger} />
               ))}
             </div>
           </div>

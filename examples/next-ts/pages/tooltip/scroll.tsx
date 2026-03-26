@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tooltip.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { ReactNode, useId } from "react"
@@ -25,7 +26,7 @@ function Tooltip(props: TooltipProps) {
       <Portal>
         {api.open && (
           <div {...api.getPositionerProps()}>
-            <div className="tooltip-content" {...api.getContentProps()}>
+            <div className="tooltip-content" {...api.getContentProps()} className={styles.Content}>
               <div {...api.getArrowProps()}>
                 <div {...api.getArrowTipProps()} />
               </div>

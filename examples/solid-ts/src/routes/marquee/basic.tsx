@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/marquee.module.css"
 import * as marquee from "@zag-js/marquee"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, Index } from "solid-js"
@@ -22,16 +23,16 @@ export default function Page() {
   return (
     <>
       <main class="marquee">
-        <div {...api().getRootProps()}>
-          <div {...api().getEdgeProps({ side: "start" })} />
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getEdgeProps({ side: "start" })} class={styles.Edge} />
 
           <div {...api().getViewportProps()}>
             <Index each={Array.from({ length: api().contentCount })}>
               {(_, index) => (
-                <div {...api().getContentProps({ index })}>
+                <div {...api().getContentProps({ index })} class={styles.Content}>
                   <For each={marqueeData}>
                     {(item) => (
-                      <div {...api().getItemProps()}>
+                      <div {...api().getItemProps()} class={styles.Item}>
                         <span class="marquee-logo">{item.logo}</span>
                         <span class="marquee-name">{item.name}</span>
                       </div>
@@ -42,7 +43,7 @@ export default function Page() {
             </Index>
           </div>
 
-          <div {...api().getEdgeProps({ side: "end" })} />
+          <div {...api().getEdgeProps({ side: "end" })} class={styles.Edge} />
         </div>
 
         <div class="controls">

@@ -1,4 +1,4 @@
-:global(.FileUploadDropzone) {
+.Dropzone {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -8,7 +8,7 @@
   position: relative;
 }
 
-:global(.FileUploadDropzone)[data-cover] {
+.Dropzone[data-cover] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -16,12 +16,12 @@
   align-items: center;
 }
 
-:global(.FileUploadDropzone)[data-dragging] {
+.Dropzone[data-dragging] {
   border-color: blue;
   background-color: lightblue;
 }
 
-:global(.FileUploadDropzone)[data-invalid] {
+.Dropzone[data-invalid] {
   border-color: red;
   background-color: lightpink;
 }

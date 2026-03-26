@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tags-input.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId, useState } from "react"
@@ -35,19 +36,19 @@ export default function Page() {
     <>
       <main className="tags-input">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Lowercase letters only:</label>
-          <div {...api.getControlProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>Lowercase letters only:</label>
+          <div {...api.getControlProps()} className={styles.Control}>
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
-                <div {...api.getItemPreviewProps({ index, value })}>
+                <div {...api.getItemPreviewProps({ index, value })} className={styles.ItemPreview}>
                   <span {...api.getItemTextProps({ index, value })}>{value} </span>
-                  <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+                  <button {...api.getItemDeleteTriggerProps({ index, value })} className={styles.ItemDeleteTrigger}>&#x2715;</button>
                 </div>
                 <input {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
-            <input placeholder="Try: svelte or React (rejected)" {...api.getInputProps()} />
-            <button {...api.getClearTriggerProps()}>Clear all</button>
+            <input placeholder="Try: svelte or React (rejected)" {...api.getInputProps()} className={styles.Input} />
+            <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>Clear all</button>
           </div>
           {invalidReason && <p style={{ marginTop: 8, fontSize: 14, color: "red" }}>Invalid: {invalidReason}</p>}
           <input {...api.getHiddenInputProps()} />

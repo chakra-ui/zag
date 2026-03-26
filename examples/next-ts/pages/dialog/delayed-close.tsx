@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useState } from "react"
@@ -22,11 +23,11 @@ export default function Dialog() {
       <p>state - isOpen: {String(open)}</p>
       <p>machine - isOpen: {String(api.open)}</p>
       <Portal>
-        <Presence {...api.getBackdropProps()} />
-        <div {...api.getPositionerProps()}>
-          <Presence {...api.getContentProps()}>
-            <h2 {...api.getTitleProps()}>Edit profile</h2>
-            <p {...api.getDescriptionProps()}>Make changes to your profile here. Click save when you are done.</p>
+        <Presence {...api.getBackdropProps()} className={styles.Backdrop} />
+        <div {...api.getPositionerProps()} className={styles.Positioner}>
+          <Presence {...api.getContentProps()} className={styles.Content}>
+            <h2 {...api.getTitleProps()} className={styles.Title}>Edit profile</h2>
+            <p {...api.getDescriptionProps()} className={styles.Description}>Make changes to your profile here. Click save when you are done.</p>
             <button
               onClick={() => {
                 setTimeout(() => {
@@ -36,7 +37,7 @@ export default function Dialog() {
             >
               Delayed close
             </button>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>Close</button>
           </Presence>
         </div>
       </Portal>

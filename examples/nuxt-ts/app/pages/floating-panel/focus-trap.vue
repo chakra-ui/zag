@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/floating-panel.module.css"
 import * as floatingPanel from "@zag-js/floating-panel"
 import { trapFocus } from "@zag-js/focus-trap"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -39,11 +40,11 @@ watch(
     <div>
       <button v-bind="api.getTriggerProps()">Toggle Panel</button>
       <div v-bind="api.getPositionerProps()">
-        <div v-bind="api.getContentProps()" ref="contentRef">
+        <div v-bind="api.getContentProps()" :class="styles.Content" ref="contentRef">
           <div v-bind="api.getDragTriggerProps()">
-            <div v-bind="api.getHeaderProps()">
+            <div v-bind="api.getHeaderProps()" :class="styles.Header">
               <p v-bind="api.getTitleProps()">Floating Panel (Focus Trap)</p>
-              <div v-bind="api.getControlProps()">
+              <div v-bind="api.getControlProps()" :class="styles.Control">
                 <button v-bind="api.getStageTriggerProps({ stage: 'minimized' })">
                   <Minus />
                 </button>
@@ -59,7 +60,7 @@ watch(
               </div>
             </div>
           </div>
-          <div v-bind="api.getBodyProps()">
+          <div v-bind="api.getBodyProps()" :class="styles.Body">
             <p>Focus is trapped within this panel when open.</p>
             <label>
               Name
@@ -75,7 +76,7 @@ watch(
           <div
             v-for="axis in floatingPanel.resizeTriggerAxes"
             :key="axis"
-            v-bind="api.getResizeTriggerProps({ axis })"
+            v-bind="api.getResizeTriggerProps({ axis })" :class="styles.ResizeTrigger"
           />
         </div>
       </div>

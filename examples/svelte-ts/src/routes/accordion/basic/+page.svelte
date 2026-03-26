@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/accordion.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -16,18 +17,18 @@
 </script>
 
 <main class="accordion">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     {#each accordionData as item}
       <div {...api.getItemProps({ value: item.id })}>
         <h3>
-          <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
+          <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })} class={styles.ItemTrigger}>
             {item.label}
-            <div {...api.getItemIndicatorProps({ value: item.id })}>
+            <div {...api.getItemIndicatorProps({ value: item.id })} class={styles.ItemIndicator}>
               <ChevronRight />
             </div>
           </button>
         </h3>
-        <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
+        <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })} class={styles.ItemContent}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.
         </div>

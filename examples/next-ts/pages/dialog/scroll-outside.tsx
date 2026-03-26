@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -50,8 +51,8 @@ export default function Page() {
               },
             })}
           >
-            <h2 {...api.getTitleProps()}>Dialog Title</h2>
-            <p {...api.getDescriptionProps()}>
+            <h2 {...api.getTitleProps()} className={styles.Title}>Dialog Title</h2>
+            <p {...api.getDescriptionProps()} className={styles.Description}>
               Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
               et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
               Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
@@ -111,7 +112,7 @@ export default function Page() {
               nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim
               veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
             </p>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>Close</button>
           </div>
         </div>
       </Portal>

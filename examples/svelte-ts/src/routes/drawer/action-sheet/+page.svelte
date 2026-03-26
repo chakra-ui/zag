@@ -12,10 +12,10 @@
 </script>
 
 <main>
-  <button class={styles.trigger} {...api.getTriggerProps()}>Manage Profile</button>
-  <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.popup} {...api.getContentProps({ draggable: false })}>
+  <button {...api.getTriggerProps()} class={styles.trigger}>Manage Profile</button>
+  <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps({ draggable: false })} class={styles.popup}>
       <div class={styles.surface}>
         <div {...api.getTitleProps()} class={styles.title}>Profile Actions</div>
         <ul class={styles.actions}>
@@ -38,7 +38,7 @@
       </div>
 
       <div class={styles.surface}>
-        <button type="button" class={styles.actionButton} {...api.getCloseTriggerProps()}>Cancel</button>
+        <button type="button" {...api.getCloseTriggerProps()} class={styles.actionButton}>Cancel</button>
       </div>
     </Presence>
   </div>

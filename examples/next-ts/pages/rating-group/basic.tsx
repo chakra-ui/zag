@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/rating-group.module.css"
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { ratingControls } from "@zag-js/shared"
@@ -53,11 +54,11 @@ export default function Page() {
         <form action="">
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Rate:</label>
-            <div {...api.getControlProps()}>
+            <div {...api.getControlProps()} className={styles.Control}>
               {api.items.map((index) => {
                 const state = api.getItemState({ index })
                 return (
-                  <span key={index} {...api.getItemProps({ index })}>
+                  <span key={index} {...api.getItemProps({ index })} className={styles.Item}>
                     {state.half ? <HalfStar /> : <Star />}
                   </span>
                 )

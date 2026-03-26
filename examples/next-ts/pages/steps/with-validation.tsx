@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/steps.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as steps from "@zag-js/steps"
 import { useId, useState } from "react"
@@ -82,21 +83,21 @@ export default function Page() {
   return (
     <>
       <main className="steps">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           {/* Step indicators */}
-          <div {...api.getListProps()}>
+          <div {...api.getListProps()} className={styles.List}>
             {stepsData.map((step, index) => {
               const state = api.getItemState({ index })
               return (
-                <div key={index} {...api.getItemProps({ index })}>
-                  <button {...api.getTriggerProps({ index })}>
-                    <div {...api.getIndicatorProps({ index })}>{state.completed ? "✓" : index + 1}</div>
+                <div key={index} {...api.getItemProps({ index })} className={styles.Item}>
+                  <button {...api.getTriggerProps({ index })} className={styles.Trigger}>
+                    <div {...api.getIndicatorProps({ index })} className={styles.Indicator}>{state.completed ? "✓" : index + 1}</div>
                     <span>
                       {step.title}
                       {state.skippable && " (optional)"}
                     </span>
                   </button>
-                  {!state.last && <div {...api.getSeparatorProps({ index })} />}
+                  {!state.last && <div {...api.getSeparatorProps({ index })} className={styles.Separator} />}
                 </div>
               )
             })}

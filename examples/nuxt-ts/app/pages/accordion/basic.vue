@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/accordion.module.css"
 import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -18,17 +19,17 @@ const api = computed(() => accordion.connect(service, normalizeProps))
 
 <template>
   <main class="accordion">
-    <div v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
       <div v-for="item in accordionData" v-bind="api.getItemProps({ value: item.id })">
         <h3>
-          <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })">
+          <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })" :class="styles.ItemTrigger">
             {{ item.label }}
-            <div v-bind="api.getItemIndicatorProps({ value: item.id })">
+            <div v-bind="api.getItemIndicatorProps({ value: item.id })" :class="styles.ItemIndicator">
               <ChevronRight />
             </div>
           </button>
         </h3>
-        <div :data-testid="`${item.id}:content`" v-bind="api.getItemContentProps({ value: item.id })">
+        <div :data-testid="`${item.id}:content`" v-bind="api.getItemContentProps({ value: item.id })" :class="styles.ItemContent">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.
         </div>

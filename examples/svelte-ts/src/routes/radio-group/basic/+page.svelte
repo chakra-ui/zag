@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/radio-group.module.css"
   import * as radio from "@zag-js/radio-group"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { radioControls, radioData } from "@zag-js/shared"
@@ -29,12 +30,12 @@
     }}
   >
     <fieldset disabled={false}>
-      <div {...api.getRootProps()}>
+      <div {...api.getRootProps()} class={styles.Root}>
         <h3 {...api.getLabelProps()}>Fruits</h3>
-        <div {...api.getIndicatorProps()}></div>
+        <div {...api.getIndicatorProps()} class={styles.Indicator}></div>
         {#each radioData as opt}
-          <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
-            <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })}></div>
+          <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })} class={styles.Item}>
+            <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} class={styles.ItemControl}></div>
             <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
               {opt.label}
             </span>

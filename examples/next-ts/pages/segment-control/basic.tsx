@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/radio-group.module.css"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { radioControls, radioData } from "@zag-js/shared"
@@ -21,10 +22,10 @@ export default function Page() {
   return (
     <>
       <main className="segmented-control">
-        <div {...api.getRootProps()}>
-          <div {...api.getIndicatorProps()} />
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getIndicatorProps()} className={styles.Indicator} />
           {radioData.map((opt) => (
-            <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
+            <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })} className={styles.Item}>
               <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
                 {opt.label}
               </span>

@@ -25,12 +25,12 @@
 </script>
 
 <main>
-  <button class={styles.trigger} {...api.getTriggerProps()}>Open</button>
-  <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
-  <div class={styles.positioner} {...api.getPositionerProps()}>
-    <Presence class={styles.content} {...api.getContentProps()}>
-      <div class={styles.grabber} {...api.getGrabberProps()}>
-        <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
+  <button {...api.getTriggerProps()} class={styles.trigger}>Open</button>
+  <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+  <div {...api.getPositionerProps()} class={styles.positioner}>
+    <Presence {...api.getContentProps()} class={styles.content}>
+      <div {...api.getGrabberProps()} class={styles.grabber}>
+        <div {...api.getGrabberIndicatorProps()} class={styles.grabberIndicator}></div>
       </div>
       <div {...api.getTitleProps()}>Drawer + native range</div>
       <p {...api.getDescriptionProps()} style="padding: 0 16px; margin: 8px 0 0; font-size: 14px; color: #555">

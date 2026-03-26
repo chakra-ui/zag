@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/slider.module.css"
 import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -31,15 +32,15 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div {...api().getRootProps()}>
+          <div {...api().getRootProps()} class={styles.Root}>
             <div>
               <label {...api().getLabelProps()}>Quantity:</label>
-              <output {...api().getValueTextProps()}>{api().value.join(" - ")}</output>
+              <output {...api().getValueTextProps()} class={styles.ValueText}>{api().value.join(" - ")}</output>
             </div>
             <div class="control-area">
-              <div {...api().getControlProps()}>
-                <div {...api().getTrackProps()}>
-                  <div {...api().getRangeProps()} />
+              <div {...api().getControlProps()} class={styles.Control}>
+                <div {...api().getTrackProps()} class={styles.Track}>
+                  <div {...api().getRangeProps()} class={styles.Range} />
                 </div>
                 <For each={api().value}>
                   {(_, index) => (

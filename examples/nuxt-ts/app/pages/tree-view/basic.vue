@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/tree-view.module.css"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -73,7 +74,7 @@ const api = computed(() => tree.connect(service, normalizeProps))
           <button @click="api.deselect()">Deselect All</button>
         </template>
       </div>
-      <div v-bind="api.getTreeProps()">
+      <div v-bind="api.getTreeProps()" :class="styles.Tree">
         <TreeNode
           v-for="(node, index) in api.collection.rootNode.children"
           :key="node.id"

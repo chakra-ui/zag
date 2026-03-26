@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/rating-group.module.css"
   import * as rating from "@zag-js/rating-group"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ratingControls } from "@zag-js/shared"
@@ -51,10 +52,10 @@
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>Rate:</label>
-      <div {...api.getControlProps()}>
+      <div {...api.getControlProps()} class={styles.Control}>
         {#each api.items as index}
           {@const itemState = api.getItemState({ index })}
-          <span {...api.getItemProps({ index })}>
+          <span {...api.getItemProps({ index })} class={styles.Item}>
             {#if itemState.half}
               {@render HalfStar()}
             {:else}

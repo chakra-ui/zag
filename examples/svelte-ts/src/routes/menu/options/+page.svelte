@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/menu.module.css"
   import { useControls } from "$lib/use-controls.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
@@ -50,7 +51,7 @@
     </button>
 
     <div use:portal {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>
+      <div {...api.getContentProps()} class={styles.Content}>
         {#each radios as item}
           <div {...api.getOptionItemProps(item)}>
             <span {...api.getItemIndicatorProps(item)}>✅</span>

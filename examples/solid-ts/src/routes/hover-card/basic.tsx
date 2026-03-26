@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/hover-card.module.css"
 import * as hoverCard from "@zag-js/hover-card"
 import { hoverCardControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -18,13 +19,13 @@ export default function Page() {
     <>
       <main class="hover-card">
         <div style={{ display: "flex", gap: "50px" }}>
-          <a href="https://twitter.com/zag_js" target="_blank" {...api().getTriggerProps()}>
+          <a href="https://twitter.com/zag_js" target="_blank" {...api().getTriggerProps()} class={styles.Trigger}>
             Twitter
           </a>
           <Show when={api().open}>
             <Portal>
               <div {...api().getPositionerProps()}>
-                <div {...api().getContentProps()}>
+                <div {...api().getContentProps()} class={styles.Content}>
                   <div {...api().getArrowProps()}>
                     <div {...api().getArrowTipProps()} />
                   </div>

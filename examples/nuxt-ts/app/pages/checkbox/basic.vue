@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/checkbox.module.css"
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -28,8 +29,8 @@ const api = computed(() => checkbox.connect(service, normalizeProps))
       "
     >
       <fieldset>
-        <label v-bind="api.getRootProps()">
-          <div v-bind="api.getControlProps()" />
+        <label v-bind="api.getRootProps()" :class="styles.Root">
+          <div v-bind="api.getControlProps()" :class="styles.Control" />
           <span v-bind="api.getLabelProps()">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
           <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
           <div v-bind="api.getIndicatorProps()">Indicator</div>

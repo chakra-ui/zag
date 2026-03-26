@@ -1,24 +1,24 @@
-:global(.TourPositioner)[data-type="floating"] {
+.Positioner[data-type="floating"] {
   position: absolute;
 }
 
-:global(.TourPositioner)[data-type="floating"][data-placement*="bottom"] {
+.Positioner[data-type="floating"][data-placement*="bottom"] {
   bottom: 24px;
 }
 
-:global(.TourPositioner)[data-type="floating"][data-placement*="top"] {
+.Positioner[data-type="floating"][data-placement*="top"] {
   top: 24px;
 }
 
-:global(.TourPositioner)[data-type="floating"][data-placement*="end"] {
+.Positioner[data-type="floating"][data-placement*="end"] {
   inset-inline-end: 24px;
 }
 
-:global(.TourPositioner)[data-type="floating"][data-placement*="start"] {
+.Positioner[data-type="floating"][data-placement*="start"] {
   inset-inline-start: 24px;
 }
 
-:global(.TourPositioner)[data-type="dialog"] {
+.Positioner[data-type="dialog"] {
   width: 100%;
   position: fixed;
   inset: 0;
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-:global(.TourContent) {
+.Content {
   --arrow-background: white;
   --arrow-size: 10px;
   background: white;
@@ -39,45 +39,45 @@
   width: 300px;
 }
 
-:global(.TourContent)[data-type="dialog"] {
+.Content[data-type="dialog"] {
   width: 500px;
   background: lightblue;
 }
 
-:global(.TourContent)[data-type="floating"] {
+.Content[data-type="floating"] {
   width: 500px;
   background: rgb(15, 39, 136);
   color: white;
 }
 
-:global(.TourArrow) {
+.Arrow {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
 }
 
-:global(.TourTitle) {
+.Title {
   font-weight: 600;
 }
 
-:global(.TourDescription) {
+.Description {
   margin-bottom: 20px;
 }
 
-:global(.TourProgressText) {
+.ProgressText {
   margin-bottom: 20px;
   opacity: 0.72;
 }
 
-:global(.TourBackdrop) {
+.Backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-:global(.TourSpotlight) {
+.Spotlight {
   border: 3px solid pink;
 }
 
-:global(.TourCloseTrigger) {
+.CloseTrigger {
   font-family: inherit;
   height: 25px;
   width: 25px;

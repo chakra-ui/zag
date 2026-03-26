@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tooltip.module.css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo, createUniqueId, Show } from "solid-js"
@@ -23,7 +24,7 @@ export default function Page() {
           <Show when={api().open}>
             <Portal>
               <div {...api().getPositionerProps()}>
-                <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().getContentProps()}>
+                <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().getContentProps()} class={styles.Content}>
                   Tooltip
                 </div>
               </div>

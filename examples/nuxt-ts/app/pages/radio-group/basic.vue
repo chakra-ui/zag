@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/radio-group.module.css"
 import * as radio from "@zag-js/radio-group"
 import { radioControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -28,17 +29,17 @@ const api = computed(() => radio.connect(service, normalizeProps))
       "
     >
       <fieldset>
-        <div v-bind="api.getRootProps()">
+        <div v-bind="api.getRootProps()" :class="styles.Root">
           <h3 v-bind="api.getLabelProps()">Fruits</h3>
-          <div v-bind="api.getIndicatorProps()" />
+          <div v-bind="api.getIndicatorProps()" :class="styles.Indicator" />
 
           <label
             v-for="opt in radioData"
             :key="opt.id"
             :data-testid="`radio-${opt.id}`"
-            v-bind="api.getItemProps({ value: opt.id })"
+            v-bind="api.getItemProps({ value: opt.id })" :class="styles.Item"
           >
-            <div :data-testid="`control-${opt.id}`" v-bind="api.getItemControlProps({ value: opt.id })" />
+            <div :data-testid="`control-${opt.id}`" v-bind="api.getItemControlProps({ value: opt.id })" :class="styles.ItemControl" />
             <span :data-testid="`label-${opt.id}`" v-bind="api.getItemTextProps({ value: opt.id })">
               {{ opt.label }}
             </span>

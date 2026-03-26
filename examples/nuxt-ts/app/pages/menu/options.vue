@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/menu.module.css"
 import * as menu from "@zag-js/menu"
 import { menuControls, menuOptionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -49,7 +50,7 @@ const checkboxes = computed(() =>
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
-          <div v-bind="api.getContentProps()">
+          <div v-bind="api.getContentProps()" :class="styles.Content">
             <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
               <span v-bind="api.getItemIndicatorProps(item)">✅</span>
               <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>

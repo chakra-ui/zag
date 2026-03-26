@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/timer.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
@@ -19,18 +20,18 @@
 </script>
 
 <main class="timer">
-  <div {...api.getRootProps()}>
-    <div {...api.getAreaProps()}>
-      <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
-      <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
-      <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
-      <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <div {...api.getAreaProps()} class={styles.Area}>
+      <div {...api.getItemProps({ type: "days" })} class={styles.Item}>{api.formattedTime.days}</div>
+      <div {...api.getSeparatorProps()} class={styles.Separator}>:</div>
+      <div {...api.getItemProps({ type: "hours" })} class={styles.Item}>{api.formattedTime.hours}</div>
+      <div {...api.getSeparatorProps()} class={styles.Separator}>:</div>
+      <div {...api.getItemProps({ type: "minutes" })} class={styles.Item}>{api.formattedTime.minutes}</div>
+      <div {...api.getSeparatorProps()} class={styles.Separator}>:</div>
+      <div {...api.getItemProps({ type: "seconds" })} class={styles.Item}>{api.formattedTime.seconds}</div>
     </div>
 
-    <div {...api.getControlProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
       <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
       <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
       <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>

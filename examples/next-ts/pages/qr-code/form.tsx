@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/qr-code.module.css"
 import * as qrCode from "@zag-js/qr-code"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -29,8 +30,8 @@ export default function Page() {
 
       {url && (
         <div {...api.getRootProps()}>
-          <svg {...api.getFrameProps()}>
-            <path {...api.getPatternProps()} />
+          <svg {...api.getFrameProps()} className={styles.Frame}>
+            <path {...api.getPatternProps()} className={styles.Pattern} />
           </svg>
         </div>
       )}

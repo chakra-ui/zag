@@ -11,10 +11,10 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 
 <template>
   <main>
-    <button :class="styles.trigger" v-bind="api.getTriggerProps()">Manage Profile</button>
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
-    <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.popup" v-bind="api.getContentProps({ draggable: false })">
+    <button v-bind="api.getTriggerProps()" :class="styles.trigger">Manage Profile</button>
+    <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" />
+    <div v-bind="api.getPositionerProps()" :class="styles.positioner">
+      <Presence v-bind="api.getContentProps({ draggable: false })" :class="styles.popup">
         <div :class="styles.surface">
           <div v-bind="api.getTitleProps()" :class="styles.title">Profile Actions</div>
           <ul :class="styles.actions">
@@ -35,7 +35,7 @@ const api = computed(() => drawer.connect(service, normalizeProps))
         </div>
 
         <div :class="styles.surface">
-          <button type="button" :class="styles.actionButton" v-bind="api.getCloseTriggerProps()">Cancel</button>
+          <button type="button" v-bind="api.getCloseTriggerProps()" :class="styles.actionButton">Cancel</button>
         </div>
       </Presence>
     </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/tabs.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -21,18 +22,18 @@
 </script>
 
 <main class="tabs">
-  <div {...api.getRootProps()}>
-    <div {...api.getIndicatorProps()}></div>
-    <div {...api.getListProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <div {...api.getIndicatorProps()} class={styles.Indicator}></div>
+    <div {...api.getListProps()} class={styles.List}>
       {#each tabsData as data}
-        <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
+        <button {...api.getTriggerProps({ value: data.id })} class={styles.Trigger} data-testid={`${data.id}-tab`}>
           {data.label}
         </button>
       {/each}
     </div>
 
     {#each tabsData as data}
-      <div {...api.getContentProps({ value: data.id })} data-testid={`${data.id}-tab-panel`}>
+      <div {...api.getContentProps({ value: data.id })} class={styles.Content} data-testid={`${data.id}-tab-panel`}>
         <p>{data.content}</p>
         {#if data.id === "agnes"}
           <input placeholder="Agnes" />

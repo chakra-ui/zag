@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/progress.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -15,16 +16,16 @@
 </script>
 
 <main class="progress">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     <div {...api.getLabelProps()}>Upload progress</div>
 
-    <svg {...api.getCircleProps()}>
-      <circle {...api.getCircleTrackProps()} />
-      <circle {...api.getCircleRangeProps()} />
+    <svg {...api.getCircleProps()} class={styles.Circle}>
+      <circle {...api.getCircleTrackProps()} class={styles.CircleTrack} />
+      <circle {...api.getCircleRangeProps()} class={styles.CircleRange} />
     </svg>
 
-    <div {...api.getTrackProps()}>
-      <div {...api.getRangeProps()}></div>
+    <div {...api.getTrackProps()} class={styles.Track}>
+      <div {...api.getRangeProps()} class={styles.Range}></div>
     </div>
 
     <div {...api.getValueTextProps()}>{api.valueAsString}</div>

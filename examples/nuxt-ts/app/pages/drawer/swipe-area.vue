@@ -11,12 +11,12 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 
 <template>
   <main>
-    <div :class="styles.swipeArea" v-bind="api.getSwipeAreaProps()" />
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
-    <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.content" v-bind="api.getContentProps()">
-        <div :class="styles.grabber" v-bind="api.getGrabberProps()">
-          <div :class="styles.grabberIndicator" v-bind="api.getGrabberIndicatorProps()" />
+    <div v-bind="api.getSwipeAreaProps()" :class="styles.swipeArea" />
+    <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" />
+    <div v-bind="api.getPositionerProps()" :class="styles.positioner">
+      <Presence v-bind="api.getContentProps()" :class="styles.content">
+        <div v-bind="api.getGrabberProps()" :class="styles.grabber">
+          <div v-bind="api.getGrabberIndicatorProps()" :class="styles.grabberIndicator" />
         </div>
         <div v-bind="api.getTitleProps()">Drawer</div>
         <p v-bind="api.getDescriptionProps()">Swipe up from the bottom edge to open this drawer.</p>

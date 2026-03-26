@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/select.module.css"
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -26,9 +27,9 @@ export default function Page() {
       <main class="select">
         <div {...api().getRootProps()}>
           {/* control */}
-          <div {...api().getControlProps()}>
-            <label {...api().getLabelProps()}>Label</label>
-            <button {...api().getTriggerProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
+            <label {...api().getLabelProps()} class={styles.Label}>Label</label>
+            <button {...api().getTriggerProps()} class={styles.Trigger}>
               {api().valueAsString || "Select option"}
               <span {...api().getIndicatorProps()}>▼</span>
             </button>
@@ -49,8 +50,8 @@ export default function Page() {
 
           {/* UI select */}
           <Portal>
-            <div {...api().getPositionerProps()}>
-              <ul {...api().getContentProps()}>
+            <div {...api().getPositionerProps()} class={styles.Positioner}>
+              <ul {...api().getContentProps()} class={styles.Content}>
                 <Index each={selectData}>
                   {(item) => (
                     <li {...api().getItemProps({ item: item() })}>

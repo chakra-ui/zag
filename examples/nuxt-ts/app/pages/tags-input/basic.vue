@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/tags-input.module.css"
 import * as tagsInput from "@zag-js/tags-input"
 import { tagsInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -23,20 +24,20 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
 <template>
   <main class="tags-input">
     <div v-bind="api.getRootProps()">
-      <label v-bind="api.getLabelProps()">Enter frameworks:</label>
-      <div v-bind="api.getControlProps()">
+      <label v-bind="api.getLabelProps()" :class="styles.Label">Enter frameworks:</label>
+      <div v-bind="api.getControlProps()" :class="styles.Control">
         <span
           v-for="(value, index) in api.value"
           :key="`${toDashCase(value)}-tag-${index}`"
           v-bind="api.getItemProps({ index, value })"
         >
-          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemPreviewProps({ index, value })">
+          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemPreviewProps({ index, value })" :class="styles.ItemPreview">
             <span :data-testid="`${toDashCase(value)}-valuetext`" v-bind="api.getItemTextProps({ index, value })"
               >{{ value }} &nbsp;</span
             >
             <button
               :data-testid="`${toDashCase(value)}-close-button`"
-              v-bind="api.getItemDeleteTriggerProps({ index, value })"
+              v-bind="api.getItemDeleteTriggerProps({ index, value })" :class="styles.ItemDeleteTrigger"
             >
               &#x2715;
             </button>
@@ -44,8 +45,8 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
           <input :data-testid="`${toDashCase(value)}-input`" v-bind="api.getItemInputProps({ index, value })" />
         </span>
 
-        <input data-testid="input" placeholder="add tag" v-bind="api.getInputProps()" />
-        <button v-bind="api.getClearTriggerProps()">X</button>
+        <input data-testid="input" placeholder="add tag" v-bind="api.getInputProps()" :class="styles.Input" />
+        <button v-bind="api.getClearTriggerProps()" :class="styles.ClearTrigger">X</button>
       </div>
       <input v-bind="api.getHiddenInputProps()" />
     </div>

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/radio-group.module.css"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { radioControls, radioData } from "@zag-js/shared"
@@ -28,12 +29,12 @@ export default function Page() {
           }}
         >
           <fieldset disabled={false}>
-            <div {...api.getRootProps()}>
+            <div {...api.getRootProps()} className={styles.Root}>
               <h3 {...api.getLabelProps()}>Fruits</h3>
-              <div {...api.getIndicatorProps()} />
+              <div {...api.getIndicatorProps()} className={styles.Indicator} />
               {radioData.map((opt) => (
-                <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
-                  <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} />
+                <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })} className={styles.Item}>
+                  <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} className={styles.ItemControl} />
                   <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
                     {opt.label}
                   </span>

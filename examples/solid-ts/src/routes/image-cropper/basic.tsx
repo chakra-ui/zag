@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/image-cropper.module.css"
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { imageCropperControls, handlePositions } from "@zag-js/shared"
@@ -33,11 +34,11 @@ export default function Page() {
       <main class="image-cropper">
         <div {...api().getRootProps()}>
           <div {...api().getViewportProps()}>
-            <img src="https://picsum.photos/seed/a/500/300" {...api().getImageProps()} />
-            <div {...api().getSelectionProps()}>
+            <img src="https://picsum.photos/seed/a/500/300" {...api().getImageProps()} class={styles.Image} />
+            <div {...api().getSelectionProps()} class={styles.Selection}>
               <For each={handlePositions}>
                 {(position) => (
-                  <div {...api().getHandleProps({ position })}>
+                  <div {...api().getHandleProps({ position })} class={styles.Handle}>
                     <div />
                   </div>
                 )}

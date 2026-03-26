@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/date-picker.module.css"
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -29,13 +30,13 @@ export default function Page() {
           <div>Focused: {api().focusedValueAsString}</div>
         </output>
 
-        <div {...api().getControlProps()}>
+        <div {...api().getControlProps()} class={styles.Control}>
           <input {...api().getInputProps({ index: 0 })} />
           <button {...api().getClearTriggerProps()}>❌</button>
-          <button {...api().getTriggerProps()}>🗓</button>
+          <button {...api().getTriggerProps()} class={styles.Trigger}>🗓</button>
         </div>
 
-        <div {...api().getContentProps()}>
+        <div {...api().getContentProps()} class={styles.Content}>
           <div style={{ "margin-bottom": "20px" }}>
             <select {...api().getMonthSelectProps()}>
               <Index each={api().getMonths()}>
@@ -59,10 +60,10 @@ export default function Page() {
           </div>
 
           <div hidden={api().view !== "day"} style={{ width: "100%" }}>
-            <div {...api().getViewControlProps()}>
+            <div {...api().getViewControlProps()} class={styles.ViewControl}>
               <button {...api().getPrevTriggerProps()}>Prev</button>
               <button
-                {...api().getViewTriggerProps()}
+                {...api().getViewTriggerProps()} class={styles.ViewTrigger}
                 style={{ border: "0", padding: "4px 20px", "border-radius": "4px" }}
               >
                 {api().visibleRangeText.start}
@@ -70,7 +71,7 @@ export default function Page() {
               <button {...api().getNextTriggerProps()}>Next</button>
             </div>
 
-            <table {...api().getTableProps()}>
+            <table {...api().getTableProps()} class={styles.Table}>
               <thead {...api().getTableHeaderProps()}>
                 <tr {...api().getTableBodyProps()}>
                   <Index each={api().weekDays}>
@@ -102,13 +103,13 @@ export default function Page() {
 
           <div style={{ display: "flex", gap: "40px", "margin-top": "24px" }}>
             <div hidden={api().view !== "month"} style={{ width: "100%" }}>
-              <div {...api().getViewControlProps({ view: "month" })}>
+              <div {...api().getViewControlProps({ view: "month" })} class={styles.ViewControl}>
                 <button {...api().getPrevTriggerProps({ view: "month" })}>Prev</button>
-                <button {...api().getViewTriggerProps({ view: "month" })}>{api().visibleRange.start.year}</button>
+                <button {...api().getViewTriggerProps({ view: "month" })} class={styles.ViewTrigger}>{api().visibleRange.start.year}</button>
                 <button {...api().getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 
-              <table {...api().getTableProps({ view: "month", columns: 4 })}>
+              <table {...api().getTableProps({ view: "month", columns: 4 })} class={styles.Table}>
                 <tbody>
                   <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                     {(months) => (
@@ -128,7 +129,7 @@ export default function Page() {
             </div>
 
             <div hidden={api().view !== "year"} style={{ width: "100%" }}>
-              <div {...api().getViewControlProps({ view: "year" })}>
+              <div {...api().getViewControlProps({ view: "year" })} class={styles.ViewControl}>
                 <button {...api().getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
                   {api().getDecade().start} - {api().getDecade().end}
@@ -136,7 +137,7 @@ export default function Page() {
                 <button {...api().getNextTriggerProps({ view: "year" })}>Next</button>
               </div>
 
-              <table {...api().getTableProps({ view: "year", columns: 4 })}>
+              <table {...api().getTableProps({ view: "year", columns: 4 })} class={styles.Table}>
                 <tbody>
                   <Index each={api().getYearsGrid({ columns: 4 })}>
                     {(years) => (

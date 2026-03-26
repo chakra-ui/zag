@@ -1,24 +1,24 @@
-:global(.SelectControl) {
+.Control {
   display: flex;
   flex-direction: column;
   row-gap: 6px;
   align-items: flex-start;
 }
 
-:global(.SelectLabel) {
+.Label {
   font-size: 14px;
 }
 
-:global(.SelectLabel)[data-disabled] {
+.Label[data-disabled] {
   cursor: default;
   color: gray;
 }
 
-:global(.SelectLabel)[data-invalid] {
+.Label[data-invalid] {
   color: red;
 }
 
-:global(.SelectTrigger) {
+.Trigger {
   padding: 4px 12px;
   border-radius: 4px;
   border: none;
@@ -42,19 +42,19 @@
   top: 1px;
 }
 
-:global(.SelectTrigger):disabled {
+.Trigger:disabled {
   cursor: default;
 }
 
-:global(.SelectTrigger)[data-invalid] {
+.Trigger[data-invalid] {
   border: 2px solid red;
 }
 
-:global(.SelectPositioner) {
+.Positioner {
   width: max-content;
 }
 
-:global(.SelectContent) {
+.Content {
   padding: 0px;
   list-style: none;
   width: 240px;
@@ -74,7 +74,7 @@
   top: 0;
 }
 
-:global(.SelectItem) {
+.Item {
   padding: 4px 8px;
   cursor: default;
   display: flex;
@@ -82,21 +82,21 @@
   border-radius: 4px;
 }
 
-:global(.SelectItem)[data-disabled] {
+.Item[data-disabled] {
   color: #777;
 }
 
-:global(.SelectItemText) {
+.ItemText {
   flex: 1;
   width: 100%;
 }
 
-:global(.SelectItem)[data-state="checked"] {
+.Item[data-state="checked"] {
   background: blue;
   color: white;
 }
 
-:global(.SelectItem)[data-highlighted] {
+.Item[data-highlighted] {
   background: rgb(0, 0, 195);
   color: white;
 }

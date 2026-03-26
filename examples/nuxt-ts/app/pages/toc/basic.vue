@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/toc.module.css"
 import * as toc from "@zag-js/toc"
 import { tocControls, tocData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,17 +20,17 @@ const api = computed(() => toc.connect(service, normalizeProps))
 <template>
   <main class="toc">
     <div style="display: flex; gap: 2rem">
-      <nav v-bind="api.getRootProps()">
-        <h5 v-bind="api.getTitleProps()">On this page</h5>
-        <ul v-bind="api.getListProps()">
+      <nav v-bind="api.getRootProps()" :class="styles.Root">
+        <h5 v-bind="api.getTitleProps()" :class="styles.Title">On this page</h5>
+        <ul v-bind="api.getListProps()" :class="styles.List">
           <li
             v-for="item in tocData"
             :key="item.value"
-            v-bind="api.getItemProps({ item })"
+            v-bind="api.getItemProps({ item })" :class="styles.Item"
           >
             <a
               :href="`#${item.value}`"
-              v-bind="api.getLinkProps({ item })"
+              v-bind="api.getLinkProps({ item })" :class="styles.Link"
             >
               {{ item.label }}
             </a>

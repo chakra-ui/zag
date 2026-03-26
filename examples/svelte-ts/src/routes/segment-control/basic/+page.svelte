@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/radio-group.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -22,10 +23,10 @@
 </script>
 
 <main class="segmented-control">
-  <div {...api.getRootProps()}>
-    <div {...api.getIndicatorProps()}></div>
+  <div {...api.getRootProps()} class={styles.Root}>
+    <div {...api.getIndicatorProps()} class={styles.Indicator}></div>
     {#each radioData as opt}
-      <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
+      <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })} class={styles.Item}>
         <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
           {opt.label}
         </span>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/listbox.module.css"
   import * as listbox from "@zag-js/listbox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { listboxControls, selectData } from "@zag-js/shared"
@@ -32,11 +33,11 @@
 
 <main class="listbox">
   <div {...api.getRootProps()}>
-    <label {...api.getLabelProps()}>Label</label>
-    <ul {...api.getContentProps()}>
+    <label {...api.getLabelProps()} class={styles.Label}>Label</label>
+    <ul {...api.getContentProps()} class={styles.Content}>
       {#each selectData as item}
-        <li {...api.getItemProps({ item })}>
-          <span {...api.getItemTextProps({ item })}>{item.label}</span>
+        <li {...api.getItemProps({ item })} class={styles.Item}>
+          <span {...api.getItemTextProps({ item })} class={styles.ItemText}>{item.label}</span>
           <span {...api.getItemIndicatorProps({ item })}>✓</span>
         </li>
       {/each}

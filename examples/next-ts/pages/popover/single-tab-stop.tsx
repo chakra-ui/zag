@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -21,8 +22,8 @@ export default function Page() {
         </button>
 
         <Portal>
-          <div {...api.getPositionerProps()}>
-            <Presence data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <Presence data-testid="popover-content" className="popover-content" {...api.getContentProps()} className={styles.Content}>
               <fieldset style={{ border: "none", padding: 0 }}>
                 <label>
                   <input data-testid="radio-name-asc" type="radio" name="sort" value="name-asc" defaultChecked /> Name

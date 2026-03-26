@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/tour.module.css"
   import Iframe from "$lib/components/iframe.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import { tourControls, tourData } from "@zag-js/shared"
@@ -45,18 +46,18 @@
   {#if api.open && api.step}
     <div use:portal>
       {#if api.step.backdrop}
-        <div {...api.getBackdropProps()}></div>
+        <div {...api.getBackdropProps()} class={styles.Backdrop}></div>
       {/if}
-      <div {...api.getSpotlightProps()}></div>
-      <div {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>
+      <div {...api.getSpotlightProps()} class={styles.Spotlight}></div>
+      <div {...api.getPositionerProps()} class={styles.Positioner}>
+        <div {...api.getContentProps()} class={styles.Content}>
           {#if api.step.arrow}
-            <div {...api.getArrowProps()}>
+            <div {...api.getArrowProps()} class={styles.Arrow}>
               <div {...api.getArrowTipProps()}></div>
             </div>
           {/if}
-          <p {...api.getTitleProps()}>{api.step.title}</p>
-          <div {...api.getDescriptionProps()}>{api.step.description}</div>
+          <p {...api.getTitleProps()} class={styles.Title}>{api.step.title}</p>
+          <div {...api.getDescriptionProps()} class={styles.Description}>{api.step.description}</div>
 
           {#if api.step.actions}
             <div class="tour button__group">
@@ -65,7 +66,7 @@
               {/each}
             </div>
           {/if}
-          <button {...api.getCloseTriggerProps()}>
+          <button {...api.getCloseTriggerProps()} class={styles.CloseTrigger}>
             <X />
           </button>
         </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -21,20 +22,20 @@ const api = computed(() => popover.connect(service, normalizeProps))
       <button data-testid="button-before">Button :before</button>
       <button data-testid="popover-trigger" v-bind="api.getTriggerProps()">
         Click me
-        <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
+        <div v-bind="api.getIndicatorProps()" :class="styles.Indicator">{{ ">" }}</div>
       </button>
       <Teleport to="#teleports" :disabled="!api.portalled">
-        <div v-bind="api.getPositionerProps()">
-          <Presence data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
-            <div v-bind="api.getArrowProps()">
+        <div v-bind="api.getPositionerProps()" :class="styles.Positioner">
+          <Presence data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()" :class="styles.Content">
+            <div v-bind="api.getArrowProps()" :class="styles.Arrow">
               <div v-bind="api.getArrowTipProps()" />
             </div>
-            <div data-testid="popover-title" v-bind="api.getTitleProps()">Popover Title</div>
+            <div data-testid="popover-title" v-bind="api.getTitleProps()" :class="styles.Title">Popover Title</div>
             <div data-part="body" data-testid="popover-body">
               <a>Non-focusable Link</a>
               <a href="#" data-testid="focusable-link"> Focusable Link </a>
               <input data-testid="input" placeholder="input" />
-              <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()">X</button>
+              <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()" :class="styles.CloseTrigger">X</button>
             </div>
           </Presence>
         </div>

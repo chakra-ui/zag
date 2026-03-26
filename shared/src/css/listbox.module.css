@@ -1,17 +1,17 @@
-:global(.ListboxLabel) {
+.Label {
   font-size: 14px;
 }
 
-:global(.ListboxLabel)[data-disabled] {
+.Label[data-disabled] {
   cursor: default;
   color: gray;
 }
 
-:global(.ListboxLabel)[data-invalid] {
+.Label[data-invalid] {
   color: red;
 }
 
-:global(.ListboxContent) {
+.Content {
   padding: 0px;
   list-style: none;
   width: 400px;
@@ -32,7 +32,7 @@
   }
 }
 
-:global(.ListboxItem) {
+.Item {
   padding: 4px 8px;
   cursor: default;
   display: flex;
@@ -57,19 +57,19 @@
   }
 }
 
-:global(.ListboxItem)[data-disabled] {
+.Item[data-disabled] {
   color: #777;
 }
 
-:global(.ListboxItemText) {
+.ItemText {
   flex: 1;
   width: 100%;
 }
 
-:global(.ListboxItem)[data-state="checked"] {
+.Item[data-state="checked"] {
   background: rgb(197, 197, 255);
 }
 
-:global(.ListboxItem)[data-highlighted] {
+.Item[data-highlighted] {
   outline: 2px solid rgb(172, 172, 243);
 }

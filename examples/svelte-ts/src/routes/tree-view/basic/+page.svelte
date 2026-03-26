@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/tree-view.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -75,22 +76,22 @@
 
   {#if nodeState.isBranch}
     <div {...api.getBranchProps({ indexPath, node })}>
-      <div {...api.getBranchControlProps({ indexPath, node })}>
+      <div {...api.getBranchControlProps({ indexPath, node })} class={styles.BranchControl}>
         <FolderIcon />
-        <span {...api.getBranchTextProps({ indexPath, node })}>{node.name}</span>
-        <span {...api.getBranchIndicatorProps({ indexPath, node })}>
+        <span {...api.getBranchTextProps({ indexPath, node })} class={styles.BranchText}>{node.name}</span>
+        <span {...api.getBranchIndicatorProps({ indexPath, node })} class={styles.BranchIndicator}>
           <ChevronRightIcon />
         </span>
       </div>
-      <div {...api.getBranchContentProps({ indexPath, node })}>
-        <div {...api.getBranchIndentGuideProps({ indexPath, node })}></div>
+      <div {...api.getBranchContentProps({ indexPath, node })} class={styles.BranchContent}>
+        <div {...api.getBranchIndentGuideProps({ indexPath, node })} class={styles.BranchIndentGuide}></div>
         {#each node.children || [] as childNode, index}
           {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
         {/each}
       </div>
     </div>
   {:else}
-    <div {...api.getItemProps({ indexPath, node })}>
+    <div {...api.getItemProps({ indexPath, node })} class={styles.Item}>
       <FileIcon />
       {node.name}
     </div>
@@ -108,7 +109,7 @@
         <button onclick={() => api.deselect()}>Deselect All</button>
       {/if}
     </div>
-    <div {...api.getTreeProps()}>
+    <div {...api.getTreeProps()} class={styles.Tree}>
       {#each collection.rootNode.children || [] as node, index}
         {@render treeNode({ node, indexPath: [index], api })}
       {/each}

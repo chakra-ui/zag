@@ -1,4 +1,4 @@
-:global(.TabsRoot) {
+.Root {
   max-width: 32rem;
   border: 1px solid hsl(219, 1%, 72%);
   padding: 0.5rem;
@@ -8,14 +8,14 @@
   }
 }
 
-:global(.TabsList) {
+.List {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding-inline: 0.3rem;
 }
 
-:global(.TabsTrigger) {
+.Trigger {
   display: inline-flex;
   position: relative;
   margin: 0;
@@ -30,14 +30,14 @@
   }
 }
 
-:global(.TabsContent) {
+.Content {
   position: relative;
   padding: 0.25rem 0.5rem;
   margin-top: 4px;
   background: white;
 }
 
-:global(.TabsIndicator) {
+.Indicator {
   background-color: red;
   z-index: 10;
 

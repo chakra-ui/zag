@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/number-input.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -16,13 +17,13 @@
 
 <main>
   <div {...api.getRootProps()}>
-    <div data-testid="scrubber" {...api.getScrubberProps()}></div>
+    <div data-testid="scrubber" {...api.getScrubberProps()} class={styles.Scrubber}></div>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label data-testid="label" {...api.getLabelProps()}> Enter number: </label>
-    <div {...api.getControlProps()}>
-      <button data-testid="dec-button" {...api.getDecrementTriggerProps()}> DEC </button>
-      <input data-testid="input" {...api.getInputProps()} />
-      <button data-testid="inc-button" {...api.getIncrementTriggerProps()}> INC </button>
+    <div {...api.getControlProps()} class={styles.Control}>
+      <button data-testid="dec-button" {...api.getDecrementTriggerProps()} class={styles.DecrementTrigger}> DEC </button>
+      <input data-testid="input" {...api.getInputProps()} class={styles.Input} />
+      <button data-testid="inc-button" {...api.getIncrementTriggerProps()} class={styles.IncrementTrigger}> INC </button>
     </div>
   </div>
 </main>

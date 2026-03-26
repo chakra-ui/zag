@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/collapsible.module.css"
 import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -18,13 +19,13 @@ export default function Page() {
     <>
       <main class="collapsible">
         <div {...api().getRootProps()}>
-          <button {...api().getTriggerProps()}>
+          <button {...api().getTriggerProps()} class={styles.Trigger}>
             Collapsible Trigger
-            <div {...api().getIndicatorProps()}>
+            <div {...api().getIndicatorProps()} class={styles.Indicator}>
               <ChevronDownIcon />
             </div>
           </button>
-          <div {...api().getContentProps()}>
+          <div {...api().getContentProps()} class={styles.Content}>
             <p>
               Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
               dolore magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip

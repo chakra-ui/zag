@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
@@ -54,10 +55,10 @@ export default function Page() {
           <strong>Selected:</strong> {selected.join(", ")}
         </div>
 
-        <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Search Star Wars characters</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <input data-testid="input" {...api.getInputProps()} style={{ flex: 1, padding: "8px 12px" }} />
+        <div {...api.getRootProps()} className={styles.Root}>
+          <label {...api.getLabelProps()} className={styles.Label}>Search Star Wars characters</label>
+          <div {...api.getControlProps()} className={styles.Control} style={{ display: "flex", marginTop: "4px" }}>
+            <input data-testid="input" {...api.getInputProps()} className={styles.Input} style={{ flex: 1, padding: "8px 12px" }} />
             <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px" }}>
               ▼
             </button>
@@ -72,12 +73,12 @@ export default function Page() {
 
         <div {...api.getPositionerProps()}>
           {api.collection.items.length > 0 && (
-            <ul data-testid="combobox-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
+            <ul data-testid="combobox-content" {...api.getContentProps()} className={styles.Content} style={{ listStyle: "none", padding: "4px" }}>
               {api.collection.items.map((item) => (
                 <li
                   key={item.name}
                   data-testid={`item-${item.name}`}
-                  {...api.getItemProps({ item })}
+                  {...api.getItemProps({ item })} className={styles.Item}
                   style={{ padding: "8px 12px", cursor: "pointer" }}
                 >
                   {item.name}

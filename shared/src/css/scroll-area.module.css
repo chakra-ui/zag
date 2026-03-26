@@ -1,11 +1,11 @@
-:global(.ScrollAreaRoot) {
+.Root {
   box-sizing: border-box;
   width: 24rem;
   height: 8.5rem;
   max-width: calc(100vw - 8rem);
 }
 
-:global(.ScrollAreaViewport) {
+.Viewport {
   height: 100%;
   border-radius: 0.375rem;
   outline: 1px solid lightgray;
@@ -23,7 +23,7 @@
   }
 }
 
-:global(.ScrollAreaContent) {
+.Content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -32,7 +32,7 @@
   padding-inline-end: 1.5rem;
 }
 
-:global(.ScrollAreaScrollbar) {
+.Scrollbar {
   position: relative;
   background-color: lightgray;
   border-radius: 0.375rem;
@@ -84,7 +84,7 @@
   }
 }
 
-:global(.ScrollAreaThumb) {
+.Thumb {
   border-radius: inherit;
   background-color: gray;
 

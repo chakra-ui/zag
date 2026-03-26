@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import styles from "../../../../../shared/src/css/toast.module.css"
 import { toastControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as toast from "@zag-js/toast"
@@ -67,7 +68,7 @@ const id = ref<string>()
     </div>
 
     <Teleport to="#teleports">
-      <div v-bind="api.getGroupProps()">
+      <div v-bind="api.getGroupProps()" :class="styles.Group">
         <ToastItem
           v-for="(toast, index) in api.getToasts()"
           :key="toast.id"

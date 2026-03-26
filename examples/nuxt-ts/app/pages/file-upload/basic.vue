@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/file-upload.module.css"
 import * as fileUpload from "@zag-js/file-upload"
 import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -19,7 +20,7 @@ const api = computed(() => fileUpload.connect(service, normalizeProps))
   <main class="file-upload">
     <div v-bind="api.getRootProps()">
       <input v-bind="api.getHiddenInputProps()" />
-      <div v-bind="api.getDropzoneProps()">Drag your files here</div>
+      <div v-bind="api.getDropzoneProps()" :class="styles.Dropzone">Drag your files here</div>
 
       <button v-bind="api.getTriggerProps()">Choose Files...</button>
 

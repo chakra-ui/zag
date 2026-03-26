@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/pagination.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -60,13 +61,13 @@
         {#each api.pages as page, i}
           {#if page.type === "page"}
             <li>
-              <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+              <button data-testid={`item-${page.value}`} {...api.getItemProps(page)} class={styles.Item}>
                 {page.value}
               </button>
             </li>
           {:else}
             <li>
-              <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+              <span {...api.getEllipsisProps({ index: i })} class={styles.Ellipsis}>&#8230;</span>
             </li>
           {/if}
         {/each}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/tabs.module.css"
 import * as tabs from "@zag-js/tabs"
 import { tabsControls, tabsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -18,12 +19,12 @@ const api = computed(() => tabs.connect(service, normalizeProps))
 
 <template>
   <main class="tabs">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getIndicatorProps()" />
-      <div v-bind="api.getListProps()">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <div v-bind="api.getIndicatorProps()" :class="styles.Indicator" />
+      <div v-bind="api.getListProps()" :class="styles.List">
         <button
           v-for="data in tabsData"
-          v-bind="api.getTriggerProps({ value: data.id })"
+          v-bind="api.getTriggerProps({ value: data.id })" :class="styles.Trigger"
           :key="data.id"
           :data-testid="`${data.id}-tab`"
         >
@@ -33,7 +34,7 @@ const api = computed(() => tabs.connect(service, normalizeProps))
 
       <div
         v-for="data in tabsData"
-        v-bind="api.getContentProps({ value: data.id })"
+        v-bind="api.getContentProps({ value: data.id })" :class="styles.Content"
         :key="data.id"
         :data-testid="`${data.id}-tab-panel`"
       >

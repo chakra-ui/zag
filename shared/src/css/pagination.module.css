@@ -17,9 +17,9 @@
   padding-block: 4px;
 }
 
-:global(.PaginationTrigger),
-:global(.PaginationItem),
-:global(.PaginationEllipsis) {
+.Trigger,
+.Item,
+.Ellipsis {
   box-sizing: border-box;
   padding: 0 12px;
   height: 32px;
@@ -34,16 +34,16 @@
   text-decoration: none;
 }
 
-:global(.PaginationItem):hover {
+.Item:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-:global(.PaginationItem)[data-selected] {
+.Item[data-selected] {
   background-color: blue;
   color: white;
 }
 
-:global(.PaginationItem):focus {
+.Item:focus {
   outline: 2px solid var(--ring-color);
   outline-offset: 1px;
 }

@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/checkbox.module.css"
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -30,8 +31,8 @@ export default function Page() {
           }}
         >
           <fieldset>
-            <label {...api().getRootProps()}>
-              <div {...api().getControlProps()} />
+            <label {...api().getRootProps()} class={styles.Root}>
+              <div {...api().getControlProps()} class={styles.Control} />
               <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
               <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
               <div {...api().getIndicatorProps()}>Indicator</div>

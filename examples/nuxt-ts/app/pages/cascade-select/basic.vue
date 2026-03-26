@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/cascade-select.module.css"
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -36,21 +37,21 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
 <template>
   <main class="cascade-select">
     <div v-bind="api.getRootProps()">
-      <label v-bind="api.getLabelProps()">Select a location</label>
+      <label v-bind="api.getLabelProps()" :class="styles.Label">Select a location</label>
 
-      <div v-bind="api.getControlProps()">
-        <button v-bind="api.getTriggerProps()">
+      <div v-bind="api.getControlProps()" :class="styles.Control">
+        <button v-bind="api.getTriggerProps()" :class="styles.Trigger">
           <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select a location" }}</span>
           <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
-        <button v-bind="api.getClearTriggerProps()">X</button>
+        <button v-bind="api.getClearTriggerProps()" :class="styles.ClearTrigger">X</button>
       </div>
 
       <input v-bind="api.getHiddenInputProps()" />
 
       <Teleport to="#teleports">
-        <div v-bind="api.getPositionerProps()">
-          <div v-bind="api.getContentProps()">
+        <div v-bind="api.getPositionerProps()" :class="styles.Positioner">
+          <div v-bind="api.getContentProps()" :class="styles.Content">
             <CascadeSelectNode
               :node="collection.rootNode"
               :api="api"

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/select.module.css"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
@@ -32,14 +33,14 @@ export default function Page() {
   return (
     <main className="select">
       <div {...api.getRootProps()}>
-        <div {...api.getControlProps()}>
-          <label {...api.getLabelProps()}>Label</label>
-          <button {...api.getTriggerProps()}>{api.valueAsString || "Select a country"}</button>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <label {...api.getLabelProps()} className={styles.Label}>Label</label>
+          <button {...api.getTriggerProps()} className={styles.Trigger}>{api.valueAsString || "Select a country"}</button>
         </div>
 
         <Portal>
-          <div {...api.getPositionerProps()}>
-            <div ref={contentRef} {...api.getContentProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div ref={contentRef} {...api.getContentProps()} className={styles.Content}>
               <div
                 style={{
                   height: `${virtualizer.getTotalSize()}px`,
@@ -52,7 +53,7 @@ export default function Page() {
                   return (
                     <div
                       key={item.value}
-                      {...api.getItemProps({ item })}
+                      {...api.getItemProps({ item })} className={styles.Item}
                       style={{
                         position: "absolute",
                         top: 0,

@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId, createSignal } from "solid-js"
@@ -50,15 +51,15 @@ export default function Page() {
           <style innerHTML={styles} />
           <Show when={api().open}>
             <Portal mount={getRootNode()?.getElementById("portal-root")!}>
-              <div {...api().getBackdropProps()} />
-              <div {...api().getPositionerProps()} data-testid="positioner">
-                <div {...api().getContentProps()}>
-                  <h2 {...api().getTitleProps()}>Dialog with Shadow DOM</h2>
-                  <p {...api().getDescriptionProps()}>
+              <div {...api().getBackdropProps()} class={styles.Backdrop} />
+              <div {...api().getPositionerProps()} class={styles.Positioner} data-testid="positioner">
+                <div {...api().getContentProps()} class={styles.Content}>
+                  <h2 {...api().getTitleProps()} class={styles.Title}>Dialog with Shadow DOM</h2>
+                  <p {...api().getDescriptionProps()} class={styles.Description}>
                     This dialog's content is rendered in a shadow DOM. Focus should be trapped within all elements.
                   </p>
 
-                  <button {...api().getCloseTriggerProps()} data-testid="close">
+                  <button {...api().getCloseTriggerProps()} class={styles.CloseTrigger} data-testid="close">
                     Close (X)
                   </button>
 

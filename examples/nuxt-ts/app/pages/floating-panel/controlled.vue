@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/floating-panel.module.css"
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-vue-next"
@@ -78,11 +79,11 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
     <div>
       <button v-bind="api.getTriggerProps()">Toggle Panel</button>
       <div v-bind="api.getPositionerProps()">
-        <div v-bind="api.getContentProps()">
+        <div v-bind="api.getContentProps()" :class="styles.Content">
           <div v-bind="api.getDragTriggerProps()">
-            <div v-bind="api.getHeaderProps()">
+            <div v-bind="api.getHeaderProps()" :class="styles.Header">
               <p v-bind="api.getTitleProps()">Floating Panel</p>
-              <div v-bind="api.getControlProps()">
+              <div v-bind="api.getControlProps()" :class="styles.Control">
                 <button v-bind="api.getStageTriggerProps({ stage: 'minimized' })">
                   <Minus />
                 </button>
@@ -99,7 +100,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
             </div>
           </div>
 
-          <div v-bind="api.getBodyProps()">
+          <div v-bind="api.getBodyProps()" :class="styles.Body">
             <p>Drag and resize to update external state.</p>
             <p>Use the buttons above for externally controlled size and position.</p>
             <div
@@ -118,7 +119,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
             </div>
           </div>
 
-          <div v-for="axis in floatingPanel.resizeTriggerAxes" :key="axis" v-bind="api.getResizeTriggerProps({ axis })" />
+          <div v-for="axis in floatingPanel.resizeTriggerAxes" :key="axis" v-bind="api.getResizeTriggerProps({ axis })" :class="styles.ResizeTrigger" />
         </div>
       </div>
     </div>

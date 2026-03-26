@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/select.module.css"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import keyframesStyles from "../../../../../shared/src/css/keyframes.module.css?inline"
@@ -22,15 +23,15 @@ function Select(props: Partial<select.Props> & { portalRef?: HTMLElement }) {
 
   return (
     <div {...api().getRootProps()}>
-      <div {...api().getControlProps()}>
-        <button {...api().getTriggerProps()}>
+      <div {...api().getControlProps()} class={styles.Control}>
+        <button {...api().getTriggerProps()} class={styles.Trigger}>
           {api().valueAsString || "Select option"}
           <span {...api().getIndicatorProps()}>▼</span>
         </button>
       </div>
       <Portal mount={portalProps.portalRef}>
-        <div {...api().getPositionerProps()}>
-          <ul {...api().getContentProps()}>
+        <div {...api().getPositionerProps()} class={styles.Positioner}>
+          <ul {...api().getContentProps()} class={styles.Content}>
             <Index each={selectData}>
               {(item) => (
                 <li {...api().getItemProps({ item: item() })}>

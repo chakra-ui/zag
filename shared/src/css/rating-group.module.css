@@ -1,29 +1,29 @@
-:global(.RatingGroupControl) {
+.Control {
   display: inline-flex;
 }
 
-:global(.RatingGroupItem) {
+.Item {
   width: 20px;
   height: 20px;
   padding: 1px;
 }
 
-:global(.RatingGroupItem):focus {
+.Item:focus {
   outline: 2px solid royalblue;
 }
 
-:global(.RatingGroup) :global(.RatingGroupStar) {
+.RatingGroup .Star {
   color: #bdbdbd;
 }
 
-:global(.RatingGroupItem)[data-highlighted] :global(.RatingGroupStar) {
+.Item[data-highlighted] .Star {
   color: #ffb400;
 }
 
-:global(.RatingGroupItem)[data-highlighted][data-disabled] :global(.RatingGroupStar) {
+.Item[data-highlighted][data-disabled] .Star {
   color: #a1a1a1;
 }
 
-:global(.RatingGroup)[dir="rtl"] [data-half] :global(.RatingGroupStar) {
+.RatingGroup[dir="rtl"] [data-half] .Star {
   transform: scale(-1, 1);
 }

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tour.module.css"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as tour from "@zag-js/tour"
 import { X } from "lucide-react"
@@ -99,19 +100,19 @@ export default function Page() {
 
         {api.step && api.open && (
           <Portal>
-            {api.step.backdrop && <div {...api.getBackdropProps()} />}
-            <div {...api.getSpotlightProps()} />
-            <div {...api.getPositionerProps()}>
-              <div {...api.getContentProps()}>
+            {api.step.backdrop && <div {...api.getBackdropProps()} className={styles.Backdrop} />}
+            <div {...api.getSpotlightProps()} className={styles.Spotlight} />
+            <div {...api.getPositionerProps()} className={styles.Positioner}>
+              <div {...api.getContentProps()} className={styles.Content}>
                 {api.step.arrow && (
-                  <div {...api.getArrowProps()}>
+                  <div {...api.getArrowProps()} className={styles.Arrow}>
                     <div {...api.getArrowTipProps()} />
                   </div>
                 )}
 
-                <p {...api.getTitleProps()}>{api.step.title}</p>
-                <div {...api.getDescriptionProps()}>{api.step.description}</div>
-                <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
+                <p {...api.getTitleProps()} className={styles.Title}>{api.step.title}</p>
+                <div {...api.getDescriptionProps()} className={styles.Description}>{api.step.description}</div>
+                <div {...api.getProgressTextProps()} className={styles.ProgressText}>{api.getProgressText()}</div>
 
                 {api.step.actions && (
                   <div className="tour button__group">
@@ -123,7 +124,7 @@ export default function Page() {
                   </div>
                 )}
 
-                <button {...api.getCloseTriggerProps()}>
+                <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>
                   <X />
                 </button>
               </div>

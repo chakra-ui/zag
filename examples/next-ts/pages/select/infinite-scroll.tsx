@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/select.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { useId, useMemo, useRef } from "react"
@@ -48,15 +49,15 @@ export default function Page() {
   return (
     <main className="select">
       <div {...api.getRootProps()}>
-        <div {...api.getControlProps()}>
-          <label {...api.getLabelProps()}>Pokemon</label>
-          <button {...api.getTriggerProps()}>{api.valueAsString || "Select a Pokemon"}</button>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <label {...api.getLabelProps()} className={styles.Label}>Pokemon</label>
+          <button {...api.getTriggerProps()} className={styles.Trigger}>{api.valueAsString || "Select a Pokemon"}</button>
           <button {...api.getClearTriggerProps()}>✕</button>
         </div>
 
         <Portal>
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div {...api.getContentProps()} className={styles.Content}>
               {isInitialLoading && (
                 <div role="status" aria-live="polite" style={{ padding: "8px 12px" }}>
                   Loading...
@@ -64,8 +65,8 @@ export default function Page() {
               )}
 
               {listApi.items.map((item) => (
-                <div key={item.name} {...api.getItemProps({ item })}>
-                  <span {...api.getItemTextProps({ item })}>{item.name}</span>
+                <div key={item.name} {...api.getItemProps({ item })} className={styles.Item}>
+                  <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.name}</span>
                   <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </div>
               ))}

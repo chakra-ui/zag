@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/listbox.module.css"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { getComputedStyle } from "@zag-js/dom-query"
 import * as listbox from "@zag-js/listbox"
@@ -58,8 +59,8 @@ export default function Page() {
     <>
       <main className="listbox">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Label</label>
-          <div ref={contentRef} {...api.getContentProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>Label</label>
+          <div ref={contentRef} {...api.getContentProps()} className={styles.Content}>
             <div
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,
@@ -72,7 +73,7 @@ export default function Page() {
                 return (
                   <div
                     key={item.value}
-                    {...api.getItemProps({ item })}
+                    {...api.getItemProps({ item })} className={styles.Item}
                     data-index={virtualItem.index}
                     aria-setsize={items.length}
                     aria-posinset={virtualItem.index + 1}
@@ -85,7 +86,7 @@ export default function Page() {
                       width: "100%",
                     }}
                   >
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemTextProps({ item })} className={styles.ItemText}>{item.label}</span>
                     <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </div>
                 )

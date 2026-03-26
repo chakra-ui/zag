@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/switch.module.css"
 import * as zagSwitch from "@zag-js/switch"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { useId } from "react"
@@ -21,12 +22,12 @@ export default function Page() {
     <>
       <main className="switch">
         <button onClick={() => api.toggleChecked()}>Toggle</button>
-        <label {...api.getRootProps()}>
+        <label {...api.getRootProps()} className={styles.Root}>
           <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
-          <span {...api.getControlProps()}>
-            <span {...api.getThumbProps()} />
+          <span {...api.getControlProps()} className={styles.Control}>
+            <span {...api.getThumbProps()} className={styles.Thumb} />
           </span>
-          <span {...api.getLabelProps()}>Feature is {api.checked ? "enabled" : "disabled"}</span>
+          <span {...api.getLabelProps()} className={styles.Label}>Feature is {api.checked ? "enabled" : "disabled"}</span>
         </label>
       </main>
 

@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useEffect, useId, useRef } from "react"
@@ -72,9 +73,9 @@ export default function Page() {
         Doloremque ea sequi totam laudantium laboriosam repellat quasi commodi omnis aut nulla. Numquam, beatae maxime.
       </div>
       <div data-part="root">
-        <div {...api.getPositionerProps()}>
-          <div ref={contentRef} data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
-            <div {...api.getArrowProps()}>
+        <div {...api.getPositionerProps()} className={styles.Positioner}>
+          <div ref={contentRef} data-testid="popover-content" className="popover-content" {...api.getContentProps()} className={styles.Content}>
+            <div {...api.getArrowProps()} className={styles.Arrow}>
               <div {...api.getArrowTipProps()} />
             </div>
             <button>Save</button>

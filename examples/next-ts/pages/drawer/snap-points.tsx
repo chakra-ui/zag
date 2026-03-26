@@ -22,14 +22,14 @@ export default function Page() {
   return (
     <>
       <main>
-        <button className={styles.trigger} {...api.getTriggerProps()}>
+        <button {...api.getTriggerProps()} className={styles.trigger}>
           Open
         </button>
-        <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-        <div className={styles.positioner} {...api.getPositionerProps()}>
-          <Presence className={styles.content} {...api.getContentProps()}>
-            <div className={styles.grabber} {...api.getGrabberProps()}>
-              <div className={styles.grabberIndicator} {...api.getGrabberIndicatorProps()} />
+        <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+        <div {...api.getPositionerProps()} className={styles.positioner}>
+          <Presence {...api.getContentProps()} className={styles.content}>
+            <div {...api.getGrabberProps()} className={styles.grabber}>
+              <div {...api.getGrabberIndicatorProps()} className={styles.grabberIndicator} />
             </div>
             <div {...api.getTitleProps()}>Drawer</div>
             <div data-no-drag className={styles.noDrag}>

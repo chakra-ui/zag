@@ -9,6 +9,7 @@
  * 5. When Chrome shows "Use saved address", select it
  * 6. The State select should update to show the autofilled value
  */
+import styles from "../../../../shared/src/css/select.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { useId } from "react"
@@ -57,10 +58,10 @@ export default function SelectAutofillPage() {
         </div>
 
         <div {...api.getRootProps()} style={{ marginBottom: "1rem" }}>
-          <label {...api.getLabelProps()}>State</label>
-          <div {...api.getControlProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>State</label>
+          <div {...api.getControlProps()} className={styles.Control}>
             <button
-              {...api.getTriggerProps()}
+              {...api.getTriggerProps()} className={styles.Trigger}
               style={{
                 display: "flex",
                 width: "100%",
@@ -85,10 +86,10 @@ export default function SelectAutofillPage() {
           </select>
 
           <Portal>
-            <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
+            <div {...api.getPositionerProps()} className={styles.Positioner}>
+              <ul {...api.getContentProps()} className={styles.Content}>
                 {US_STATES.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ item })}>
+                  <li key={item.value} {...api.getItemProps({ item })} className={styles.Item}>
                     {item.label}
                   </li>
                 ))}

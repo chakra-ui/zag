@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/progress.module.css"
 import * as progress from "@zag-js/progress"
 import { progressControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -17,14 +18,14 @@ const api = computed(() => progress.connect(service, normalizeProps))
 
 <template>
   <main class="progress">
-    <div v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()" :class="styles.Root">
       <div v-bind="api.getLabelProps()">Upload progress</div>
-      <svg v-bind="api.getCircleProps()">
-        <circle v-bind="api.getCircleTrackProps()" />
-        <circle v-bind="api.getCircleRangeProps()" />
+      <svg v-bind="api.getCircleProps()" :class="styles.Circle">
+        <circle v-bind="api.getCircleTrackProps()" :class="styles.CircleTrack" />
+        <circle v-bind="api.getCircleRangeProps()" :class="styles.CircleRange" />
       </svg>
-      <div v-bind="api.getTrackProps()">
-        <div v-bind="api.getRangeProps()" />
+      <div v-bind="api.getTrackProps()" :class="styles.Track">
+        <div v-bind="api.getRangeProps()" :class="styles.Range" />
       </div>
       <div v-bind="api.getValueTextProps()">{{ api.valueAsString }}</div>
       <div>

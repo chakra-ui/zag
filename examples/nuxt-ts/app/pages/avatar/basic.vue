@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import styles from "../../../../../shared/src/css/avatar.module.css"
 import * as avatar from "@zag-js/avatar"
 import { avatarData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -15,9 +16,9 @@ const api = computed(() => avatar.connect(service, normalizeProps))
 
 <template>
   <main class="avatar">
-    <div v-bind="api.getRootProps()">
-      <span v-bind="api.getFallbackProps()">PA</span>
-      <img v-if="showImage" alt="" referrerPolicy="no-referrer" :src="src" v-bind="api.getImageProps()" />
+    <div v-bind="api.getRootProps()" :class="styles.Root">
+      <span v-bind="api.getFallbackProps()" :class="styles.Fallback">PA</span>
+      <img v-if="showImage" alt="" referrerPolicy="no-referrer" :src="src" v-bind="api.getImageProps()" :class="styles.Image" />
     </div>
 
     <div class="controls">

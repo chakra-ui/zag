@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/password-input.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -16,12 +17,12 @@
 </script>
 
 <main class="password-input">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     <label {...api.getLabelProps()}>Password</label>
-    <div {...api.getControlProps()}>
-      <input {...api.getInputProps()} />
-      <button {...api.getVisibilityTriggerProps()}>
-        <span {...api.getIndicatorProps()}>
+    <div {...api.getControlProps()} class={styles.Control}>
+      <input {...api.getInputProps()} class={styles.Input} />
+      <button {...api.getVisibilityTriggerProps()} class={styles.VisibilityTrigger}>
+        <span {...api.getIndicatorProps()} class={styles.Indicator}>
           {#if api.visible}
             <EyeIcon />
           {:else}

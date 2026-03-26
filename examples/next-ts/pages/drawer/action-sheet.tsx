@@ -13,12 +13,12 @@ export default function Page() {
 
   return (
     <main>
-      <button className={styles.trigger} {...api.getTriggerProps()}>
+      <button {...api.getTriggerProps()} className={styles.trigger}>
         Manage Profile
       </button>
-      <Presence className={styles.backdrop} {...api.getBackdropProps()} />
-      <div className={styles.positioner} {...api.getPositionerProps()}>
-        <Presence className={styles.popup} {...api.getContentProps({ draggable: false })}>
+      <Presence {...api.getBackdropProps()} className={styles.backdrop} />
+      <div {...api.getPositionerProps()} className={styles.positioner}>
+        <Presence {...api.getContentProps({ draggable: false })} className={styles.popup}>
           <div className={styles.surface}>
             <div {...api.getTitleProps()} className={styles.title}>
               Profile Actions
@@ -49,7 +49,7 @@ export default function Page() {
           </div>
 
           <div className={styles.surface}>
-            <button className={styles.actionButton} {...api.getCloseTriggerProps()}>
+            <button {...api.getCloseTriggerProps()} className={styles.actionButton}>
               Cancel
             </button>
           </div>

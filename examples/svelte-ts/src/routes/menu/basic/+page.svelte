@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/menu.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -26,11 +27,11 @@
       Actions <span {...api.getIndicatorProps()}>▾</span>
     </button>
     <div use:portal {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()}>
-        <li {...api.getItemProps({ value: "edit" })}>Edit</li>
-        <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
-        <li {...api.getItemProps({ value: "delete" })}>Delete</li>
-        <li {...api.getItemProps({ value: "export" })}>Export...</li>
+      <ul {...api.getContentProps()} class={styles.Content}>
+        <li {...api.getItemProps({ value: "edit" })} class={styles.Item}>Edit</li>
+        <li {...api.getItemProps({ value: "duplicate" })} class={styles.Item}>Duplicate</li>
+        <li {...api.getItemProps({ value: "delete" })} class={styles.Item}>Delete</li>
+        <li {...api.getItemProps({ value: "export" })} class={styles.Item}>Export...</li>
       </ul>
     </div>
   </div>

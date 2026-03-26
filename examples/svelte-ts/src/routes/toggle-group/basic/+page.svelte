@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/toggle-group.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -16,9 +17,9 @@
 
 <main class="toggle-group">
   <button>Outside</button>
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class={styles.Root}>
     {#each toggleGroupData as item}
-      <button {...api.getItemProps({ value: item.value })}>
+      <button {...api.getItemProps({ value: item.value })} class={styles.Item}>
         {item.label}
       </button>
     {/each}

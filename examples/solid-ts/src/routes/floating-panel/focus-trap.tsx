@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/floating-panel.module.css"
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-solid"
@@ -25,11 +26,11 @@ export default function Page() {
         <div>
           <button {...api().getTriggerProps()}>Toggle Panel</button>
           <div {...api().getPositionerProps()}>
-            <div {...api().getContentProps()} ref={contentRef}>
+            <div {...api().getContentProps()} class={styles.Content} ref={contentRef}>
               <div {...api().getDragTriggerProps()}>
-                <div {...api().getHeaderProps()}>
+                <div {...api().getHeaderProps()} class={styles.Header}>
                   <p {...api().getTitleProps()}>Floating Panel (Focus Trap)</p>
-                  <div {...api().getControlProps()}>
+                  <div {...api().getControlProps()} class={styles.Control}>
                     <button {...api().getStageTriggerProps({ stage: "minimized" })}>
                       <Minus />
                     </button>
@@ -45,7 +46,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div {...api().getBodyProps()}>
+              <div {...api().getBodyProps()} class={styles.Body}>
                 <p>Focus is trapped within this panel when open.</p>
                 <label>
                   Name
@@ -59,7 +60,7 @@ export default function Page() {
               </div>
 
               <For each={floatingPanel.resizeTriggerAxes}>
-                {(axis) => <div {...api().getResizeTriggerProps({ axis })} />}
+                {(axis) => <div {...api().getResizeTriggerProps({ axis })} class={styles.ResizeTrigger} />}
               </For>
             </div>
           </div>

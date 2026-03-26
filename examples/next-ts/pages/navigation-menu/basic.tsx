@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/navigation-menu.module.css"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { navigationMenuControls } from "@zag-js/shared"
@@ -21,7 +22,7 @@ export default function Page() {
   const renderLinks = (opts: { value: string; items: string[] }) => {
     const { value, items } = opts
     return items.map((item, index) => (
-      <a href="#" key={`${value}-${item}-${index}`} {...api.getLinkProps({ value })}>
+      <a href="#" key={`${value}-${item}-${index}`} {...api.getLinkProps({ value })} className={styles.Link}>
         {item}
       </a>
     ))
@@ -30,16 +31,16 @@ export default function Page() {
   return (
     <>
       <main className="navigation-menu basic">
-        <div {...api.getRootProps()}>
-          <div {...api.getListProps()}>
-            <div {...api.getItemProps({ value: "products" })}>
-              <button {...api.getTriggerProps({ value: "products" })}>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getListProps()} className={styles.List}>
+            <div {...api.getItemProps({ value: "products" })} className={styles.Item}>
+              <button {...api.getTriggerProps({ value: "products" })} className={styles.Trigger}>
                 Products
                 <ChevronDown />
               </button>
-              <Presence {...api.getContentProps({ value: "products" })}>
-                <Presence {...api.getIndicatorProps()}>
-                  <div {...api.getArrowProps()} />
+              <Presence {...api.getContentProps({ value: "products" })} className={styles.Content}>
+                <Presence {...api.getIndicatorProps()} className={styles.Indicator}>
+                  <div {...api.getArrowProps()} className={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "products",
@@ -55,14 +56,14 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api.getItemProps({ value: "company" })}>
-              <button {...api.getTriggerProps({ value: "company" })}>
+            <div {...api.getItemProps({ value: "company" })} className={styles.Item}>
+              <button {...api.getTriggerProps({ value: "company" })} className={styles.Trigger}>
                 Company
                 <ChevronDown />
               </button>
-              <Presence {...api.getContentProps({ value: "company" })}>
-                <Presence {...api.getIndicatorProps()}>
-                  <div {...api.getArrowProps()} />
+              <Presence {...api.getContentProps({ value: "company" })} className={styles.Content}>
+                <Presence {...api.getIndicatorProps()} className={styles.Indicator}>
+                  <div {...api.getArrowProps()} className={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "company",
@@ -71,14 +72,14 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api.getItemProps({ value: "developers" })}>
-              <button {...api.getTriggerProps({ value: "developers" })}>
+            <div {...api.getItemProps({ value: "developers" })} className={styles.Item}>
+              <button {...api.getTriggerProps({ value: "developers" })} className={styles.Trigger}>
                 Developers
                 <ChevronDown />
               </button>
-              <Presence {...api.getContentProps({ value: "developers" })}>
-                <Presence {...api.getIndicatorProps()}>
-                  <div {...api.getArrowProps()} />
+              <Presence {...api.getContentProps({ value: "developers" })} className={styles.Content}>
+                <Presence {...api.getIndicatorProps()} className={styles.Indicator}>
+                  <div {...api.getArrowProps()} className={styles.Arrow} />
                 </Presence>
                 {renderLinks({
                   value: "developers",
@@ -87,8 +88,8 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api.getItemProps({ value: "pricing" })}>
-              <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+            <div {...api.getItemProps({ value: "pricing" })} className={styles.Item}>
+              <a href="#" {...api.getLinkProps({ value: "pricing" })} className={styles.Link}>
                 Pricing
               </a>
             </div>

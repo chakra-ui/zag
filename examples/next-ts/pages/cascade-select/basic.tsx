@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/cascade-select.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import * as cascadeSelect from "@zag-js/cascade-select"
@@ -40,7 +41,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 
   return (
     <>
-      <ul {...api.getListProps(nodeProps)}>
+      <ul {...api.getListProps(nodeProps)} className={styles.List}>
         {children.map((item, index) => {
           const itemProps = {
             indexPath: [...indexPath, index],
@@ -51,8 +52,8 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           const itemState = api.getItemState(itemProps)
 
           return (
-            <li key={item.label} {...api.getItemProps(itemProps)}>
-              <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+            <li key={item.label} {...api.getItemProps(itemProps)} className={styles.Item}>
+              <span {...api.getItemTextProps(itemProps)} className={styles.ItemText}>{item.label}</span>
               <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
               {itemState.hasChildren && (
                 <span>
@@ -102,15 +103,15 @@ export default function Page() {
     <>
       <main className="cascade-select">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Select a location</label>
+          <label {...api.getLabelProps()} className={styles.Label}>Select a location</label>
 
           {/* control */}
-          <div {...api.getControlProps()}>
-            <button {...api.getTriggerProps()}>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <button {...api.getTriggerProps()} className={styles.Trigger}>
               <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
               <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>
+            <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>
               <XIcon size={16} />
             </button>
           </div>
@@ -127,8 +128,8 @@ export default function Page() {
 
           {/* UI select */}
           <Portal>
-            <div {...api.getPositionerProps()}>
-              <div {...api.getContentProps()}>
+            <div {...api.getPositionerProps()} className={styles.Positioner}>
+              <div {...api.getContentProps()} className={styles.Content}>
                 <TreeNode node={collection.rootNode} api={api} />
               </div>
             </div>

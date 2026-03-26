@@ -1,11 +1,11 @@
-:global(.HoverCardTrigger) {
+.Trigger {
   background: rgb(110, 86, 207);
   color: white;
   width: fit-content;
   padding: 6px;
 }
 
-:global(.HoverCardContent) {
+.Content {
   background: rgb(225, 223, 228);
   padding: 6px;
   height: 150px;

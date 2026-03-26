@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tags-input.module.css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
@@ -24,8 +25,8 @@ export default function Page() {
     <>
       <main class="tags-input">
         <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>Enter frameworks:</label>
-          <div {...api().getControlProps()}>
+          <label {...api().getLabelProps()} class={styles.Label}>Enter frameworks:</label>
+          <div {...api().getControlProps()} class={styles.Control}>
             <For each={api().value}>
               {(value, index) => (
                 <span {...api().getItemProps({ index: index(), value })}>
@@ -53,8 +54,8 @@ export default function Page() {
                 </span>
               )}
             </For>
-            <input data-testid="input" placeholder="add tag" {...api().getInputProps()} />
-            <button {...api().getClearTriggerProps()}>X</button>
+            <input data-testid="input" placeholder="add tag" {...api().getInputProps()} class={styles.Input} />
+            <button {...api().getClearTriggerProps()} class={styles.ClearTrigger}>X</button>
           </div>
           <input {...api().getHiddenInputProps()} />
         </div>

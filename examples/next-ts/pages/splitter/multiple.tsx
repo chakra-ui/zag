@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/splitter.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as splitter from "@zag-js/splitter"
 import { createContext, useContext, useId } from "react"
@@ -10,19 +11,19 @@ const PanelGroup = (props: React.PropsWithChildren<Omit<splitter.Props, "id">>) 
   const api = splitter.connect(service, normalizeProps)
   return (
     <PanelContext.Provider value={api}>
-      <div {...api.getRootProps()}>{props.children}</div>
+      <div {...api.getRootProps()} className={styles.Root}>{props.children}</div>
     </PanelContext.Provider>
   )
 }
 
 const Panel = (props: React.PropsWithChildren<splitter.PanelProps>) => {
   const api = useContext(PanelContext)
-  return <div {...api.getPanelProps(props)}>{props.children}</div>
+  return <div {...api.getPanelProps(props)} className={styles.Panel}>{props.children}</div>
 }
 
 const ResizeTrigger = (props: splitter.ResizeTriggerProps) => {
   const api = useContext(PanelContext)
-  return <div {...api.getResizeTriggerProps(props)} />
+  return <div {...api.getResizeTriggerProps(props)} className={styles.ResizeTrigger} />
 }
 
 export default function Page() {

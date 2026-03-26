@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tree-view.module.css"
 import { treeviewControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
@@ -66,21 +67,21 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <Show
       when={nodeState().isBranch}
       fallback={
-        <div {...api().getItemProps(nodeProps)}>
+        <div {...api().getItemProps(nodeProps)} class={styles.Item}>
           <FileIcon /> {node.name}
         </div>
       }
     >
       <div {...api().getBranchProps(nodeProps)}>
-        <div {...api().getBranchControlProps(nodeProps)}>
+        <div {...api().getBranchControlProps(nodeProps)} class={styles.BranchControl}>
           <FolderIcon />
-          <span {...api().getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api().getBranchIndicatorProps(nodeProps)}>
+          <span {...api().getBranchTextProps(nodeProps)} class={styles.BranchText}>{node.name}</span>
+          <span {...api().getBranchIndicatorProps(nodeProps)} class={styles.BranchIndicator}>
             <ChevronRightIcon />
           </span>
         </div>
-        <div {...api().getBranchContentProps(nodeProps)}>
-          <div {...api().getBranchIndentGuideProps(nodeProps)} />
+        <div {...api().getBranchContentProps(nodeProps)} class={styles.BranchContent}>
+          <div {...api().getBranchIndentGuideProps(nodeProps)} class={styles.BranchIndentGuide} />
           <Index each={node.children}>
             {(childNode, index) => <TreeNode node={childNode()} indexPath={[...indexPath, index]} api={api} />}
           </Index>
@@ -113,7 +114,7 @@ export default function Page() {
               <button onClick={() => api().deselect()}>Deselect All</button>
             </Show>
           </div>
-          <div {...api().getTreeProps()}>
+          <div {...api().getTreeProps()} class={styles.Tree}>
             <Index each={collection.rootNode.children}>
               {(node, index) => <TreeNode node={node()} indexPath={[index]} api={api} />}
             </Index>

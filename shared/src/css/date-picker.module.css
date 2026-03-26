@@ -1,4 +1,4 @@
-:global(.DatePickerTrigger) {
+.Trigger {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +10,7 @@
   }
 }
 
-:global(.DatePickerTableCellTrigger) {
+.TableCellTrigger {
   padding: 4px;
   min-width: 30px;
   min-height: 30px;
@@ -20,49 +20,49 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-:global(.DatePickerTableCellTrigger):hover {
+.TableCellTrigger:hover {
   background: rgba(126, 126, 126, 0.171);
 }
 
-:global(.DatePickerTableCellTrigger)[data-focus] {
+.TableCellTrigger[data-focus] {
   background: rgba(165, 151, 165, 0.085);
   color: rgba(128, 0, 128, 0.959);
 }
 
-:global(.DatePickerTableCellTrigger)[data-outside-range] {
+.TableCellTrigger[data-outside-range] {
   visibility: hidden;
 }
 
-:global(.DatePickerTableCellTrigger)[data-selected] {
+.TableCellTrigger[data-selected] {
   background: purple !important;
   color: white !important ;
 }
 
-:global(.DatePickerTableCellTrigger)[data-in-range]:not([data-selected]) {
+.TableCellTrigger[data-in-range]:not([data-selected]) {
   background: rgb(240, 219, 240);
 }
 
-:global(.DatePickerControl) {
+.Control {
   display: flex;
   gap: 10px;
   margin-top: 20px;
   margin-bottom: 16px;
 }
 
-:global(.DatePickerTableCellTrigger)[data-today] {
+.TableCellTrigger[data-today] {
   color: purple;
 }
 
-:global(.DatePickerTableCellTrigger)[data-unavailable] {
+.TableCellTrigger[data-unavailable] {
   text-decoration: line-through;
   opacity: 0.4;
 }
 
-:global(.DatePickerTableCellTrigger)[data-disabled] {
+.TableCellTrigger[data-disabled] {
   opacity: 0.4;
 }
 
-:global(.DatePickerContent) {
+.Content {
   border: 1px solid gray;
   padding: 1.5rem;
   min-width: 320px;
@@ -70,31 +70,31 @@
   border-radius: 8px;
 }
 
-:global(.DatePickerContent)[data-inline] {
+.Content[data-inline] {
   border: 0;
   padding: 0;
   border-radius: 0;
 }
 
-:global(.DatePickerTable) {
+.Table {
   min-width: 240px;
   width: 100%;
   border-collapse: collapse;
 }
 
-:global(.DatePickerViewTrigger) {
+.ViewTrigger {
   border: 0;
   padding: 4px 20px;
   border-radius: 4px;
 }
 
-:global(.DatePickerViewControl) {
+.ViewControl {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-block: 10px;
 }
 
-:global(.DatePickerView) {
+.View {
   width: 100%;
 }

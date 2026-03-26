@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/cascade-select.module.css"
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -91,15 +92,15 @@ export default function Page() {
     <>
       <main class="cascade-select">
         <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>Select a location</label>
+          <label {...api().getLabelProps()} class={styles.Label}>Select a location</label>
 
           {/* control */}
-          <div {...api().getControlProps()}>
-            <button {...api().getTriggerProps()}>
+          <div {...api().getControlProps()} class={styles.Control}>
+            <button {...api().getTriggerProps()} class={styles.Trigger}>
               <span {...api().getValueTextProps()}>{api().valueAsString || "Select a location"}</span>
               <span {...api().getIndicatorProps()}>▼</span>
             </button>
-            <button {...api().getClearTriggerProps()}>X</button>
+            <button {...api().getClearTriggerProps()} class={styles.ClearTrigger}>X</button>
           </div>
 
           {/* Hidden input */}
@@ -107,8 +108,8 @@ export default function Page() {
 
           {/* UI select */}
           <Portal>
-            <div {...api().getPositionerProps()}>
-              <div {...api().getContentProps()}>
+            <div {...api().getPositionerProps()} class={styles.Positioner}>
+              <div {...api().getContentProps()} class={styles.Content}>
                 <TreeNode node={collection.rootNode} api={api()} />
               </div>
             </div>

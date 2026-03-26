@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/tabs.module.css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tabs from "@zag-js/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
@@ -22,13 +23,13 @@ export default function Page() {
   return (
     <>
       <main class="tabs">
-        <div {...api().getRootProps()}>
-          <div {...api().getIndicatorProps()} />
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getIndicatorProps()} class={styles.Indicator} />
 
-          <div {...api().getListProps()}>
+          <div {...api().getListProps()} class={styles.List}>
             <For each={tabsData}>
               {(item) => (
-                <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>
+                <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })} class={styles.Trigger}>
                   {item.label}
                 </button>
               )}
@@ -37,7 +38,7 @@ export default function Page() {
 
           <For each={tabsData}>
             {(item) => (
-              <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
+              <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })} class={styles.Content}>
                 <p>{item.content}</p>
                 {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
               </div>

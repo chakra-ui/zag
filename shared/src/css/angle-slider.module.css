@@ -1,10 +1,10 @@
-:global(.AngleSliderRoot) {
+.Root {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-:global(.AngleSliderControl) {
+.Control {
   --size: 100px;
   --thumb-size: 40px;
   --thumb-indicator-size: min(var(--thumb-size), calc(var(--size) / 2));
@@ -19,7 +19,7 @@
   position: relative;
 }
 
-:global(.AngleSliderThumb) {
+.Thumb {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -39,20 +39,20 @@
   }
 }
 
-:global(.AngleSliderLabel) {
+.Label {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-:global(.AngleSliderMarkerGroup) {
+.MarkerGroup {
   position: absolute;
   inset: 1px;
   border-radius: var(--size);
   pointer-events: none;
 }
 
-:global(.AngleSliderMarker) {
+.Marker {
   width: 2px;
   position: absolute;
   top: 0;

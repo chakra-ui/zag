@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/progress.module.css"
 import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { progressControls } from "@zag-js/shared"
@@ -19,16 +20,16 @@ export default function Page() {
   return (
     <>
       <main className="progress">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           <div {...api.getLabelProps()}>Upload progress</div>
 
-          <svg {...api.getCircleProps()}>
-            <circle {...api.getCircleTrackProps()} />
-            <circle {...api.getCircleRangeProps()} />
+          <svg {...api.getCircleProps()} className={styles.Circle}>
+            <circle {...api.getCircleTrackProps()} className={styles.CircleTrack} />
+            <circle {...api.getCircleRangeProps()} className={styles.CircleRange} />
           </svg>
 
-          <div {...api.getTrackProps()}>
-            <div {...api.getRangeProps()} />
+          <div {...api.getTrackProps()} className={styles.Track}>
+            <div {...api.getRangeProps()} className={styles.Range} />
           </div>
 
           <div {...api.getValueTextProps()}>{api.valueAsString}</div>

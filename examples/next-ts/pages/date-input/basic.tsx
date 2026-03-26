@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/date-input.module.css"
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { dateInputControls } from "@zag-js/shared"
@@ -19,12 +20,12 @@ export default function Page() {
     <>
       <main className="date-input">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Date</label>
+          <label {...api.getLabelProps()} className={styles.Label}>Date</label>
 
-          <div {...api.getControlProps()}>
-            <div {...api.getSegmentGroupProps()}>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <div {...api.getSegmentGroupProps()} className={styles.SegmentGroup}>
               {api.getSegments().map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment })}>
+                <span key={i} {...api.getSegmentProps({ segment })} className={styles.Segment}>
                   {segment.text}
                 </span>
               ))}

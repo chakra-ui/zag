@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/splitter.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { splitterControls } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
@@ -61,16 +62,16 @@ export default function Page() {
         <pre>{JSON.stringify(sizes, null, 2)}</pre>
         <button onClick={() => hidePanel("a")}>Hide Panel A</button>
         <button onClick={() => showPanel("a")}>Show Panel A</button>
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
           {api.getItems().map((item) => {
             if (item.type === "panel") {
               return (
-                <div key={item.id} {...api.getPanelProps({ id: item.id })}>
+                <div key={item.id} {...api.getPanelProps({ id: item.id })} className={styles.Panel}>
                   <p>{item.id}</p>
                 </div>
               )
             }
-            return <div key={item.id} {...api.getResizeTriggerProps({ id: item.id })} />
+            return <div key={item.id} {...api.getResizeTriggerProps({ id: item.id })} className={styles.ResizeTrigger} />
           })}
         </div>
       </main>

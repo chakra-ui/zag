@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tour.module.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tour from "@zag-js/tour"
 import { useId } from "react"
@@ -34,22 +35,22 @@ export default function Tour(props: TourProps) {
 
       {api.step && api.open && (
         <Portal>
-          {api.step.backdrop && <div {...api.getBackdropProps()} />}
-          <div {...api.getSpotlightProps()} />
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              <button {...api.getCloseTriggerProps()}>X</button>
+          {api.step.backdrop && <div {...api.getBackdropProps()} className={styles.Backdrop} />}
+          <div {...api.getSpotlightProps()} className={styles.Spotlight} />
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div {...api.getContentProps()} className={styles.Content}>
+              <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>X</button>
 
               {api.step.arrow && (
-                <div {...api.getArrowProps()}>
+                <div {...api.getArrowProps()} className={styles.Arrow}>
                   <div {...api.getArrowTipProps()} />
                 </div>
               )}
 
-              <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
+              <div {...api.getProgressTextProps()} className={styles.ProgressText}>{api.getProgressText()}</div>
 
-              <p {...api.getTitleProps()}>{api.step.title}</p>
-              <div {...api.getDescriptionProps()}>{api.step.description}</div>
+              <p {...api.getTitleProps()} className={styles.Title}>{api.step.title}</p>
+              <div {...api.getDescriptionProps()} className={styles.Description}>{api.step.description}</div>
 
               {api.step.actions && (
                 <div style={{ display: "flex", gap: "5px" }}>

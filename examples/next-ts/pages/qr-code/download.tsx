@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/qr-code.module.css"
 import * as qrCode from "@zag-js/qr-code"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -22,8 +23,8 @@ export default function Page() {
 
         <button onClick={() => api.getDataUrl("image/png", 1).then((data) => setPreview(data))}>Preview</button>
 
-        <svg fill="green" {...api.getFrameProps()}>
-          <path {...api.getPatternProps()} />
+        <svg fill="green" {...api.getFrameProps()} className={styles.Frame}>
+          <path {...api.getPatternProps()} className={styles.Pattern} />
           <foreignObject x="0" y="0" width="100%" height="100%">
             <div
               {...mergeProps(api.getOverlayProps(), {

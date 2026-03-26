@@ -1,26 +1,26 @@
-:global(.TimerRoot) {
+.Root {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-:global(.TimerArea) {
+.Area {
   display: flex;
   align-items: center;
 }
 
-:global(.TimerItem) {
+.Item {
   font-size: 2rem;
   font-weight: 500;
 }
 
-:global(.TimerSeparator) {
+.Separator {
   font-size: 1rem;
   font-weight: 500;
   margin-inline: 0.5rem;
 }
 
-:global(.TimerControl) {
+.Control {
   display: flex;
   gap: 4px;
 }

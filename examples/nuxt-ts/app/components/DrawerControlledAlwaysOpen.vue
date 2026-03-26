@@ -22,11 +22,11 @@ const api = computed(() => drawer.connect(service, normalizeProps))
       This drawer has <code>open: true</code> without <code>onOpenChange</code>. Swiping, escape, and outside click should
       have no effect.
     </p>
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
-    <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.content" v-bind="api.getContentProps()">
-        <div :class="styles.grabber" v-bind="api.getGrabberProps()">
-          <div :class="styles.grabberIndicator" v-bind="api.getGrabberIndicatorProps()" />
+    <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" />
+    <div v-bind="api.getPositionerProps()" :class="styles.positioner">
+      <Presence v-bind="api.getContentProps()" :class="styles.content">
+        <div v-bind="api.getGrabberProps()" :class="styles.grabber">
+          <div v-bind="api.getGrabberIndicatorProps()" :class="styles.grabberIndicator" />
         </div>
         <div v-bind="api.getTitleProps()">Always Open</div>
         <p v-bind="api.getDescriptionProps()">

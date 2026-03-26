@@ -1,10 +1,10 @@
-.popover :global(.PopoverRoot) {
+.popover .Root {
   display: flex;
   align-items: flex-start;
   gap: 24px;
 }
 
-:global(.PopoverContent) {
+.Content {
   --arrow-background: white;
   --arrow-size: 10px;
   background: white;
@@ -32,17 +32,17 @@
   }
 }
 
-:global(.PopoverPositioner)[data-fullscreen] {
+.Positioner[data-fullscreen] {
   display: contents;
 }
 
-:global(.PopoverTitle) {
+.Title {
   font-size: 15px;
   line-height: 19px;
   font-weight: bold;
 }
 
-:global(.Popover) :global(.PopoverBody) {
+.Popover .Body {
   padding-top: 12px;
   display: flex;
   align-items: flex-start;
@@ -52,23 +52,23 @@
   font-size: 14px;
 }
 
-:global(.PopoverCloseTrigger) {
+.CloseTrigger {
   position: absolute;
   right: 0px;
   top: -20px;
 }
 
-:global(.PopoverArrow) {
+.Arrow {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
 }
 
-:global(.PopoverIndicator) {
+.Indicator {
   display: inline-flex;
   margin-inline-start: 4px;
 }
 
-:global(.PopoverIndicator)[data-state="open"] {
+.Indicator[data-state="open"] {
   rotate: 90deg;
 }

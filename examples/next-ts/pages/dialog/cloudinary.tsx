@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
@@ -23,11 +24,11 @@ export default function Page() {
       <button {...api.getTriggerProps()}>Open Dialog</button>
       {api.open && (
         <Portal>
-          <div {...api.getBackdropProps()} />
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              <h2 {...api.getTitleProps()}>Edit profile</h2>
-              <p {...api.getDescriptionProps()}>Make changes to your profile here. Click save when you are done.</p>
+          <div {...api.getBackdropProps()} className={styles.Backdrop} />
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
+            <div {...api.getContentProps()} className={styles.Content}>
+              <h2 {...api.getTitleProps()} className={styles.Title}>Edit profile</h2>
+              <p {...api.getDescriptionProps()} className={styles.Description}>Make changes to your profile here. Click save when you are done.</p>
 
               <CldUploadWidget
                 uploadPreset="ml_default"
@@ -44,7 +45,7 @@ export default function Page() {
                 }}
               </CldUploadWidget>
 
-              <button {...api.getCloseTriggerProps()}>
+              <button {...api.getCloseTriggerProps()} className={styles.CloseTrigger}>
                 <XIcon />
               </button>
             </div>

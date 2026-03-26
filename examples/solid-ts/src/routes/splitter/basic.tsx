@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/splitter.module.css"
 import { splitterControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
@@ -22,12 +23,12 @@ export default function Page() {
   return (
     <>
       <main class="splitter">
-        <div {...api().getRootProps()}>
-          <div {...api().getPanelProps({ id: "a" })}>
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getPanelProps({ id: "a" })} class={styles.Panel}>
             <p>A</p>
           </div>
-          <div {...api().getResizeTriggerProps({ id: "a:b" })} />
-          <div {...api().getPanelProps({ id: "b" })}>
+          <div {...api().getResizeTriggerProps({ id: "a:b" })} class={styles.ResizeTrigger} />
+          <div {...api().getPanelProps({ id: "b" })} class={styles.Panel}>
             <p>B</p>
           </div>
         </div>

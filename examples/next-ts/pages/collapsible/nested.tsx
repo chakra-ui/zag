@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/collapsible.module.css"
 import * as collapsible from "@zag-js/collapsible"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -18,7 +19,7 @@ const Collapsible = (props: CollapsibleProps) => {
   return (
     <>
       <div {...api.getRootProps()}>
-        <button {...api.getTriggerProps()}>{trigger}</button>
+        <button {...api.getTriggerProps()} className={styles.Trigger}>{trigger}</button>
         <div {...mergeProps(api.getContentProps(), { style: { background: "red" } })}>{children}</div>
       </div>
       {debug && (

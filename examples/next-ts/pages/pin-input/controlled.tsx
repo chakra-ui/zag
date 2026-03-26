@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/pin-input.module.css"
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -29,10 +30,10 @@ export default function Page() {
           }}
         >
           <div {...api.getRootProps()}>
-            <label {...api.getLabelProps()}>Enter code:</label>
-            <div {...api.getControlProps()}>
+            <label {...api.getLabelProps()} className={styles.Label}>Enter code:</label>
+            <div {...api.getControlProps()} className={styles.Control}>
               {api.items.map((index) => (
-                <input key={index} data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+                <input key={index} data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} className={styles.Input} />
               ))}
             </div>
             <input {...api.getHiddenInputProps()} />

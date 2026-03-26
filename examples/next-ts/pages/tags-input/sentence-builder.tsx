@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tags-input.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId } from "react"
@@ -30,22 +31,22 @@ export default function Page() {
     <>
       <main className="tags-input">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Sentence builder (tokens can repeat):</label>
-          <div {...api.getControlProps()}>
+          <label {...api.getLabelProps()} className={styles.Label}>Sentence builder (tokens can repeat):</label>
+          <div {...api.getControlProps()} className={styles.Control}>
             {api.value.map((value, index) => (
               <span key={toKey(value, index)} {...api.getItemProps({ index, value })}>
-                <div {...api.getItemPreviewProps({ index, value })}>
+                <div {...api.getItemPreviewProps({ index, value })} className={styles.ItemPreview}>
                   <span {...api.getItemTextProps({ index, value })}>{value} </span>
-                  <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+                  <button {...api.getItemDeleteTriggerProps({ index, value })} className={styles.ItemDeleteTrigger}>&#x2715;</button>
                 </div>
                 <input {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
             <input
               placeholder='Add tokens: type "Hello" or paste "a, b, a" (comma/space splits)'
-              {...api.getInputProps()}
+              {...api.getInputProps()} className={styles.Input}
             />
-            <button {...api.getClearTriggerProps()}>Clear all</button>
+            <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>Clear all</button>
           </div>
           <input {...api.getHiddenInputProps()} />
         </div>

@@ -2,18 +2,18 @@
   width: 100%;
 }
 
-:global(.SliderRoot) {
+.Root {
   max-width: 320px;
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-:global(.SliderRoot)[data-orientation="vertical"] {
+.Root[data-orientation="vertical"] {
   height: 240px;
 }
 
-:global(.SliderControl) {
+.Control {
   --slider-thumb-size: 20px;
   --slider-track-height: 4px;
   display: flex;
@@ -22,15 +22,15 @@
   position: relative;
 }
 
-:global(.SliderControl)[data-orientation="horizontal"] {
+.Control[data-orientation="horizontal"] {
   height: var(--slider-thumb-size);
 }
 
-:global(.SliderControl)[data-orientation="vertical"] {
+.Control[data-orientation="vertical"] {
   width: var(--slider-thumb-size);
 }
 
-:global(.SliderThumb) {
+.Thumb {
   all: unset;
   width: var(--slider-thumb-size);
   height: var(--slider-thumb-size);
@@ -39,19 +39,19 @@
   box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 10px;
 }
 
-:global(.SliderThumb):focus-visible {
+.Thumb:focus-visible {
   box-shadow: rgb(0 0 0 / 22%) 0px 0px 0px 5px;
 }
 
-:global(.SliderThumb):hover:not([data-disabled]) {
+.Thumb:hover:not([data-disabled]) {
   background-color: rgb(245, 242, 255);
 }
 
-:global(.SliderThumb)[data-disabled] {
+.Thumb[data-disabled] {
   background-color: lightgray;
 }
 
-:global(.Slider) .control-area {
+.Slider .control-area {
   margin-top: 12px;
   display: flex;
 }
@@ -66,55 +66,55 @@
   height: 100%;
 }
 
-:global(.SliderTrack) {
+.Track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 9999px;
 }
 
-:global(.SliderTrack)[data-orientation="horizontal"] {
+.Track[data-orientation="horizontal"] {
   height: var(--slider-track-height);
   width: 100%;
 }
 
-:global(.SliderTrack)[data-orientation="vertical"] {
+.Track[data-orientation="vertical"] {
   height: 100%;
   width: var(--slider-track-height);
 }
 
-:global(.SliderRange) {
+.Range {
   background: magenta;
   border-radius: inherit;
 }
 
-:global(.SliderRange)[data-disabled] {
+.Range[data-disabled] {
   background: rgba(0, 0, 0, 0.4);
 }
 
-:global(.SliderRange)[data-orientation="horizontal"] {
+.Range[data-orientation="horizontal"] {
   height: 100%;
 }
 
-:global(.SliderRange)[data-orientation="vertical"] {
+.Range[data-orientation="vertical"] {
   width: 100%;
 }
 
-:global(.SliderValueText) {
+.ValueText {
   margin-inline-start: 12px;
 }
 
-:global(.SliderMarkerGroup)[data-orientation="vertical"] {
+.MarkerGroup[data-orientation="vertical"] {
   height: 100%;
 }
 
-:global(.SliderMarker) {
+.Marker {
   color: lightgray;
 }
 
-:global(.SliderMarker):is([data-state="under-value"], [data-state="at-value"]) {
+.Marker:is([data-state="under-value"], [data-state="at-value"]) {
   color: red;
 }
 
-:global(.SliderDraggingIndicator) {
+.DraggingIndicator {
   background: magenta;
   border-radius: 4px;
   padding: 2px 4px;

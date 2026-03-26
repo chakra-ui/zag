@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/tree-view.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
@@ -67,15 +68,15 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   if (nodeState.isBranch) {
     return (
       <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+        <div {...api.getBranchControlProps(nodeProps)} className={styles.BranchControl}>
           {nodeState.loading ? "..." : <FolderIcon />}
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
+          <span {...api.getBranchTextProps(nodeProps)} className={styles.BranchText}>{node.name}</span>
+          <span {...api.getBranchIndicatorProps(nodeProps)} className={styles.BranchIndicator}>
             <ChevronRightIcon />
           </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getBranchContentProps(nodeProps)} className={styles.BranchContent}>
+          <div {...api.getBranchIndentGuideProps(nodeProps)} className={styles.BranchIndentGuide} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
@@ -85,7 +86,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   }
 
   return (
-    <div {...api.getItemProps(nodeProps)}>
+    <div {...api.getItemProps(nodeProps)} className={styles.Item}>
       <FileIcon /> {node.name}
     </div>
   )
@@ -115,7 +116,7 @@ export default function Page() {
           <button onClick={() => api.expand(["node_modules"])}>Expand node_modules</button>
           <button onClick={() => api.collapse(["node_modules"])}>Collapse node_modules</button>
         </div>
-        <div {...api.getTreeProps()}>
+        <div {...api.getTreeProps()} className={styles.Tree}>
           {collection.rootNode.children?.map((node, index) => (
             <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
           ))}

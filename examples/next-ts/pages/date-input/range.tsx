@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/date-input.module.css"
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { dateInputControls } from "@zag-js/shared"
@@ -20,12 +21,12 @@ export default function Page() {
     <>
       <main className="date-input">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Date Range</label>
+          <label {...api.getLabelProps()} className={styles.Label}>Date Range</label>
 
-          <div {...api.getControlProps()}>
-            <div {...api.getSegmentGroupProps({ index: 0 })}>
+          <div {...api.getControlProps()} className={styles.Control}>
+            <div {...api.getSegmentGroupProps({ index: 0 })} className={styles.SegmentGroup}>
               {api.getSegments({ index: 0 }).map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment, index: 0 })}>
+                <span key={i} {...api.getSegmentProps({ segment, index: 0 })} className={styles.Segment}>
                   {segment.text}
                 </span>
               ))}
@@ -33,9 +34,9 @@ export default function Page() {
 
             <span> &ndash; </span>
 
-            <div {...api.getSegmentGroupProps({ index: 1 })}>
+            <div {...api.getSegmentGroupProps({ index: 1 })} className={styles.SegmentGroup}>
               {api.getSegments({ index: 1 }).map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment, index: 1 })}>
+                <span key={i} {...api.getSegmentProps({ segment, index: 1 })} className={styles.Segment}>
                   {segment.text}
                 </span>
               ))}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/floating-panel.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as floatingPanel from "@zag-js/floating-panel"
@@ -24,11 +25,11 @@
   <div>
     <button {...api.getTriggerProps()}>Toggle Panel</button>
     <div {...api.getPositionerProps()}>
-      <div {...api.getContentProps()} bind:this={contentRef}>
+      <div {...api.getContentProps()} class={styles.Content} bind:this={contentRef}>
         <div {...api.getDragTriggerProps()}>
-          <div {...api.getHeaderProps()}>
+          <div {...api.getHeaderProps()} class={styles.Header}>
             <p {...api.getTitleProps()}>Floating Panel (Focus Trap)</p>
-            <div {...api.getControlProps()}>
+            <div {...api.getControlProps()} class={styles.Control}>
               <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                 <Minus />
               </button>
@@ -44,7 +45,7 @@
             </div>
           </div>
         </div>
-        <div {...api.getBodyProps()}>
+        <div {...api.getBodyProps()} class={styles.Body}>
           <p>Focus is trapped within this panel when open.</p>
           <label>
             Name
@@ -58,7 +59,7 @@
         </div>
 
         {#each floatingPanel.resizeTriggerAxes as axis}
-          <div {...api.getResizeTriggerProps({ axis })}></div>
+          <div {...api.getResizeTriggerProps({ axis })} class={styles.ResizeTrigger}></div>
         {/each}
       </div>
     </div>

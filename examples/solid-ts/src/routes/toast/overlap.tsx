@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/toast.module.css"
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { createMemo, createUniqueId } from "solid-js"
@@ -97,7 +98,7 @@ export default function ToastGroup() {
       </div>
 
       <Portal>
-        <div {...api().getGroupProps()}>
+        <div {...api().getGroupProps()} class={styles.Group}>
           <Key each={api().getToasts()} by={(t) => t.id}>
             {(toast, index) => <ToastItem actor={toast} index={index} parent={service} />}
           </Key>

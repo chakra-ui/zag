@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/combobox.module.css"
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
@@ -56,23 +57,23 @@ export default function Page() {
 
   return (
     <main className="combobox">
-      <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Select country</label>
-        <div {...api.getControlProps()}>
-          <input data-testid="input" {...api.getInputProps()} />
+      <div {...api.getRootProps()} className={styles.Root}>
+        <label {...api.getLabelProps()} className={styles.Label}>Select country</label>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <input data-testid="input" {...api.getInputProps()} className={styles.Input} />
           <button data-testid="trigger" {...api.getTriggerProps()}>
             ▼
           </button>
-          <button {...api.getClearTriggerProps()}>
+          <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>
             <XIcon />
           </button>
         </div>
       </div>
       <div {...api.getPositionerProps()}>
         {api.collection.items.length > 0 && (
-          <ul data-testid="combobox-content" {...api.getContentProps()}>
+          <ul data-testid="combobox-content" {...api.getContentProps()} className={styles.Content}>
             {api.collection.items.map((item) => (
-              <li data-testid={item.name} key={item.name} {...api.getItemProps({ item })}>
+              <li data-testid={item.name} key={item.name} {...api.getItemProps({ item })} className={styles.Item}>
                 <span {...api.getItemIndicatorProps({ item })}>✅</span>
                 <span>{item.name}</span>
               </li>

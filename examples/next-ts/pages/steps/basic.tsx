@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/steps.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import * as steps from "@zag-js/steps"
@@ -20,15 +21,15 @@ export default function Page() {
   return (
     <>
       <main className="steps">
-        <div {...api.getRootProps()}>
-          <div {...api.getListProps()}>
+        <div {...api.getRootProps()} className={styles.Root}>
+          <div {...api.getListProps()} className={styles.List}>
             {stepsData.map((step, index) => (
-              <div key={index} {...api.getItemProps({ index })}>
-                <button {...api.getTriggerProps({ index })}>
-                  <div {...api.getIndicatorProps({ index })}>{index + 1}</div>
+              <div key={index} {...api.getItemProps({ index })} className={styles.Item}>
+                <button {...api.getTriggerProps({ index })} className={styles.Trigger}>
+                  <div {...api.getIndicatorProps({ index })} className={styles.Indicator}>{index + 1}</div>
                   <span>{step.title}</span>
                 </button>
-                <div {...api.getSeparatorProps({ index })} />
+                <div {...api.getSeparatorProps({ index })} className={styles.Separator} />
               </div>
             ))}
           </div>

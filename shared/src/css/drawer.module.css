@@ -1,4 +1,4 @@
-:global(.DrawerBackdrop) {
+.Backdrop {
   --backdrop-opacity: 0.5;
   position: fixed;
   inset: 0;
@@ -24,7 +24,7 @@
   }
 }
 
-:global(.DrawerPositioner) {
+.Positioner {
   position: fixed;
   inset: 0;
   display: flex;
@@ -32,21 +32,21 @@
   justify-content: center;
 }
 
-:global(.DrawerPositioner)[data-swipe-direction="up"] {
+.Positioner[data-swipe-direction="up"] {
   align-items: flex-start;
 }
 
-:global(.DrawerPositioner)[data-swipe-direction="left"] {
+.Positioner[data-swipe-direction="left"] {
   justify-content: flex-start;
   align-items: stretch;
 }
 
-:global(.DrawerPositioner)[data-swipe-direction="right"] {
+.Positioner[data-swipe-direction="right"] {
   justify-content: flex-end;
   align-items: stretch;
 }
 
-:global(.DrawerContent) {
+.Content {
   background: white;
   transition: transform calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
   animation-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
@@ -121,7 +121,7 @@
   }
 }
 
-:global(.DrawerGrabber) {
+.Grabber {
   width: 100%;
   padding: 20px 0;
   display: flex;
@@ -129,21 +129,21 @@
   align-items: center;
 }
 
-:global(.DrawerGrabberIndicator) {
+.GrabberIndicator {
   height: 4px;
   width: 40px;
   background-color: gray;
   border-radius: 1000px;
 }
 
-:global(.Drawer) [data-no-drag="true"] {
+.Drawer [data-no-drag="true"] {
   width: 100%;
   padding: 40px 0;
   border: 1px solid black;
   border-radius: 16px;
 }
 
-:global(.Drawer) .scrollable {
+.Drawer .scrollable {
   overflow-y: auto;
 }
 

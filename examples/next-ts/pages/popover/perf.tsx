@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/popover.module.css"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -43,9 +44,9 @@ export default function Page() {
         </button>
 
         <Portal>
-          <div {...api.getPositionerProps()}>
+          <div {...api.getPositionerProps()} className={styles.Positioner}>
             <Presence
-              {...api.getContentProps()}
+              {...api.getContentProps()} className={styles.Content}
               style={{
                 background: "white",
                 border: "1px solid #ccc",
@@ -57,7 +58,7 @@ export default function Page() {
                 padding: 16,
               }}
             >
-              <div {...api.getArrowProps()}>
+              <div {...api.getArrowProps()} className={styles.Arrow}>
                 <div {...api.getArrowTipProps()} />
               </div>
 
@@ -106,7 +107,7 @@ export default function Page() {
               </div>
 
               <button
-                {...api.getCloseTriggerProps()}
+                {...api.getCloseTriggerProps()} className={styles.CloseTrigger}
                 style={{
                   marginTop: 12,
                   padding: "6px 12px",

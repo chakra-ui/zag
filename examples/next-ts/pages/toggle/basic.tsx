@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/toggle.module.css"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as toggle from "@zag-js/toggle"
 import { BoldIcon } from "lucide-react"
@@ -11,7 +12,7 @@ export default function Page() {
   return (
     <>
       <main className="toggle">
-        <button {...api.getRootProps()}>
+        <button {...api.getRootProps()} className={styles.Root}>
           <span {...api.getIndicatorProps()}>
             <BoldIcon />
           </span>

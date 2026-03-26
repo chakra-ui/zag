@@ -7,10 +7,10 @@
   }
 }
 
-:global(.Swap)[data-state="open"] {
+.Swap[data-state="open"] {
   animation: scaleFadeIn 0.2s ease-out;
 }
 
-:global(.Swap)[data-state="closed"] {
+.Swap[data-state="closed"] {
   animation: scaleFadeOut 0.1s ease-in;
 }

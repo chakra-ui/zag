@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/toggle-group.module.css"
 import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toggle from "@zag-js/toggle-group"
@@ -22,9 +23,9 @@ export default function Page() {
     <>
       <main class="toggle-group">
         <button>Outside</button>
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class={styles.Root}>
           <For each={toggleGroupData}>
-            {(item) => <button {...api().getItemProps({ value: item.value })}>{item.label}</button>}
+            {(item) => <button {...api().getItemProps({ value: item.value })} class={styles.Item}>{item.label}</button>}
           </For>
         </div>
       </main>

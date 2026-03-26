@@ -1,3 +1,4 @@
+import styles from "../../../../shared/src/css/combobox.module.css"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
@@ -49,21 +50,21 @@ export default function Page() {
 
   return (
     <main className="combobox">
-      <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Select country</label>
-        <div {...api.getControlProps()}>
-          <input data-testid="input" {...api.getInputProps()} />
+      <div {...api.getRootProps()} className={styles.Root}>
+        <label {...api.getLabelProps()} className={styles.Label}>Select country</label>
+        <div {...api.getControlProps()} className={styles.Control}>
+          <input data-testid="input" {...api.getInputProps()} className={styles.Input} />
           <button data-testid="trigger" {...api.getTriggerProps()}>
             ▼
           </button>
-          <button {...api.getClearTriggerProps()}>
+          <button {...api.getClearTriggerProps()} className={styles.ClearTrigger}>
             <XIcon />
           </button>
         </div>
       </div>
 
       <div {...api.getPositionerProps()}>
-        <div data-testid="combobox-content" ref={contentRef} {...api.getContentProps()}>
+        <div data-testid="combobox-content" ref={contentRef} {...api.getContentProps()} className={styles.Content}>
           <div
             style={{
               height: `${virtualizer.getTotalSize()}px`,
@@ -77,7 +78,7 @@ export default function Page() {
                 <div
                   data-testid={item.code}
                   key={item.code}
-                  {...api.getItemProps({ item })}
+                  {...api.getItemProps({ item })} className={styles.Item}
                   style={{
                     position: "absolute",
                     top: 0,

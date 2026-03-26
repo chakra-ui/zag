@@ -1,3 +1,4 @@
+import styles from "../../../../../shared/src/css/radio-group.module.css"
 import * as radio from "@zag-js/radio-group"
 import { radioControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -23,8 +24,8 @@ export default function Page() {
   return (
     <>
       <main class="segmented-control">
-        <div {...api().getRootProps()}>
-          <div {...api().getIndicatorProps()} />
+        <div {...api().getRootProps()} class={styles.Root}>
+          <div {...api().getIndicatorProps()} class={styles.Indicator} />
           <Index each={radioData}>
             {(opt) => (
               <label data-testid={`radio-${opt().id}`} {...api().getItemProps({ value: opt().id })}>

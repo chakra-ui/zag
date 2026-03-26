@@ -1,4 +1,5 @@
 <script lang="ts">
+  import styles from "../../../../../../shared/src/css/switch.module.css"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -22,12 +23,12 @@
 
 <main class="switch">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label {...api.getRootProps()}>
+  <label {...api.getRootProps()} class={styles.Root}>
     <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
-    <span {...api.getControlProps()}>
-      <span {...api.getThumbProps()}></span>
+    <span {...api.getControlProps()} class={styles.Control}>
+      <span {...api.getThumbProps()} class={styles.Thumb}></span>
     </span>
-    <span {...api.getLabelProps()}>Feature is {api.checked ? "enabled" : "disabled"}</span>
+    <span {...api.getLabelProps()} class={styles.Label}>Feature is {api.checked ? "enabled" : "disabled"}</span>
   </label>
 </main>
 

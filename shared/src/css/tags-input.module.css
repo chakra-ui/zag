@@ -1,9 +1,9 @@
-:global(.TagsInputLabel) {
+.Label {
   display: block;
   margin-bottom: 8px;
 }
 
-:global(.TagsInputControl) {
+.Control {
   padding: 0 2px;
   background: #fff;
   border: 1px solid #ccc;
@@ -23,7 +23,7 @@
   }
 }
 
-:global(.TagsInputItemPreview) {
+.ItemPreview {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -50,7 +50,7 @@
   }
 }
 
-:global(.TagsInputInput) {
+.Input {
   appearance: none;
   padding: 3px;
   margin: 0;
@@ -71,11 +71,11 @@
   }
 }
 
-:global(.TagsInputItemDeleteTrigger) {
+.ItemDeleteTrigger {
   all: unset;
 }
 
-:global(.TagsInputClearTrigger) {
+.ClearTrigger {
   position: absolute;
   top: 0;
   right: 0.5px;
