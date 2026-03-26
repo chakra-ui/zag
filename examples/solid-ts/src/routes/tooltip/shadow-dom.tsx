@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
-import styles from "@zag-js/shared/src/style.css?inline"
+import styles from "../../../../shared/styles/style.module.css?inline"
 import { createMemo, createSignal, Show } from "solid-js"
 import { Portal } from "solid-js/web"
 

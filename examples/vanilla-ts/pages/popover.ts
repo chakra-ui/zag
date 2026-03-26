@@ -1,4 +1,4 @@
-import "@zag-js/shared/src/style.css"
+import "../../shared/styles/style.module.css"
 
 import { Popover } from "../src/popover"
 import { nanoid } from "nanoid"

@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import styles from "@zag-js/shared/src/style.css?inline"
+import styles from "../../../../shared/styles/style.module.css?inline"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Index, createMemo, createSignal, createUniqueId, splitProps } from "solid-js"
 import { Portal } from "solid-js/web"

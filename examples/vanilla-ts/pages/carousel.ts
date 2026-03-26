@@ -1,4 +1,4 @@
-import "@zag-js/shared/src/style.css"
+import "../../shared/styles/style.module.css"
 
 import { carouselData } from "@zag-js/shared"
 import { nanoid } from "nanoid"

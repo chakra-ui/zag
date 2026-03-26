@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 import { render } from "preact"
 import { LocationProvider, Route, Router, useLocation } from "preact-iso"
-import "../../../shared/src/style.css"
+import "../../shared/styles/style.module.css"
 import { NotFound } from "./pages/_404.jsx"
 import { routes } from "./routes"
 

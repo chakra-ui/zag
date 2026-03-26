@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId, createSignal } from "solid-js"
 import { Portal } from "solid-js/web"
-import styles from "@zag-js/shared/src/style.css?inline"
+import styles from "../../../../shared/styles/style.module.css?inline"
 
 export default function Page() {
   let mountRef!: HTMLElement

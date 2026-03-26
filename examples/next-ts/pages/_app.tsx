@@ -1,6 +1,6 @@
 import { dataAttr } from "@zag-js/dom-query"
 import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
-import "@zag-js/shared/src/style.css"
+import "../../shared/styles/style.module.css"
 import { AppProps } from "next/app"
 import Head from "next/head"
 import Link from "next/link"
