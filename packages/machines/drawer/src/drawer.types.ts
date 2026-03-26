@@ -11,6 +11,18 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface TriggerValueChangeDetails {
+  value: string | null
+  triggerElement: HTMLElement | null
+}
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
+
 export interface ResolvedSnapPoint {
   value: SnapPoint
   height: number
@@ -50,7 +62,7 @@ export type ElementIds = Partial<{
   title: string
   description: string
   header: string
-  trigger: string
+  trigger: string | ((value?: string) => string)
   grabber: string
   grabberIndicator: string
   closeTrigger: string
@@ -95,6 +107,18 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
    * @default "dialog"
    */
   role?: "dialog" | "alertdialog" | undefined
+  /**
+   * The value of the trigger that currently controls the drawer.
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The default trigger value (uncontrolled).
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Callback when the active trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
   /**
    * Whether the drawer is open.
    */
@@ -190,6 +214,7 @@ export interface DrawerSchema {
   state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
   tag: "open" | "closed"
   context: {
+    triggerValue: string | null
     dragOffset: number | null
     snapPoint: SnapPoint | null
     resolvedActiveSnapPoint: ResolvedSnapPoint | null
@@ -249,6 +274,14 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
    */
   dragging: boolean
   /**
+   * The value of the active trigger.
+   */
+  triggerValue: string | null
+  /**
+   * Set the active trigger value.
+   */
+  setTriggerValue: (value: string | null) => void
+  /**
    * Function to open or close the menu.
    */
   setOpen: (open: boolean) => void
@@ -290,7 +323,7 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
   getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]
   getDescriptionProps: () => T["element"]
-  getTriggerProps: () => T["element"]
+  getTriggerProps: (props?: TriggerProps) => T["element"]
   getBackdropProps: () => T["element"]
   getGrabberProps: () => T["element"]
   getGrabberIndicatorProps: () => T["element"]

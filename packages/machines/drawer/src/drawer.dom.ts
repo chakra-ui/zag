@@ -1,11 +1,24 @@
 import type { Scope } from "@zag-js/core"
 import { isHTMLElement, queryAll } from "@zag-js/dom-query"
+import { isFunction } from "@zag-js/utils"
 
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `drawer:${ctx.id}:content`
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `drawer:${ctx.id}:positioner`
 export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `drawer:${ctx.id}:title`
 export const getDescriptionId = (ctx: Scope) => ctx.ids?.description ?? `drawer:${ctx.id}:description`
-export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `drawer:${ctx.id}:trigger`
+export const getTriggerId = (ctx: Scope, value?: string) => {
+  const customId = ctx.ids?.trigger
+  if (customId != null) return isFunction(customId) ? customId(value) : customId
+  return value ? `drawer:${ctx.id}:trigger:${value}` : `drawer:${ctx.id}:trigger`
+}
+
+export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
+  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="drawer"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+
+export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
+  if (value == null) return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
+  return ctx.getById(getTriggerId(ctx, value))
+}
 export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `drawer:${ctx.id}:backdrop`
 export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `drawer:${ctx.id}:header`
 export const getGrabberId = (ctx: Scope) => ctx.ids?.grabber ?? `drawer:${ctx.id}:grabber`

@@ -20,4 +20,6 @@ export type {
   SnapPointChangeDetails,
   SwipeAreaProps,
   SwipeDirection,
+  TriggerProps,
+  TriggerValueChangeDetails,
 } from "./drawer.types"

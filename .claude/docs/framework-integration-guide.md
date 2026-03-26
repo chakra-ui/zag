@@ -234,8 +234,8 @@ import * as component from "@zag-js/component"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { componentControls } from "@zag-js/shared"
 import { useId } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -301,8 +301,8 @@ import * as component from "@zag-js/component"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { componentControls } from "@zag-js/shared"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {

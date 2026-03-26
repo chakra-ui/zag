@@ -54,8 +54,18 @@ export const machine = createMachine<DrawerSchema>({
     }
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope }) {
     return {
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
+        onChange(value) {
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
+        },
+      })),
       dragOffset: bindable<number | null>(() => ({
         defaultValue: null,
       })),
@@ -202,6 +212,9 @@ export const machine = createMachine<DrawerSchema>({
         "trackDrawerStack",
       ],
       on: {
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
+        },
         "CONTROLLED.CLOSE": {
           target: "closing",
           actions: ["clearSwipeOpenAnimation", "resetSwipeStrength"],
@@ -276,6 +289,20 @@ export const machine = createMachine<DrawerSchema>({
     closing: {
       effects: ["trackExitAnimation", "trackDrawerStack"],
       on: {
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["setTriggerValue", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setTriggerValue", "invokeOnOpen"],
+          },
+        ],
+        "TRIGGER_VALUE.SET": {
+          target: "open",
+          actions: ["setTriggerValue", "invokeOnOpen"],
+        },
         ANIMATION_END: {
           target: "closed",
           actions: [
@@ -355,11 +382,11 @@ export const machine = createMachine<DrawerSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
         "SWIPE_AREA.START": {
@@ -469,6 +496,11 @@ export const machine = createMachine<DrawerSchema>({
         const backdropEl = dom.getBackdropEl(scope)
         if (contentEl) contentEl.style.removeProperty("animation")
         if (backdropEl) backdropEl.style.removeProperty("animation")
+      },
+
+      setTriggerValue({ context, event }) {
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
 
       invokeOnOpen({ prop }) {
@@ -683,14 +715,28 @@ export const machine = createMachine<DrawerSchema>({
         return preventBodyScroll(scope.getDoc())
       },
 
-      trapFocus({ scope, prop }) {
+      trapFocus({ scope, prop, context }) {
         if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
-          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? dom.getTriggerEl(scope) ?? el,
+          setReturnFocus: (el) => {
+            const finalFocusEl = prop("finalFocusEl")?.()
+            if (finalFocusEl) return finalFocusEl
+
+            const triggerValue = context.get("triggerValue")
+            if (triggerValue) {
+              const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
+              if (activeTriggerEl) return activeTriggerEl
+            }
+
+            const fallbackTrigger = dom.getTriggerEls(scope)[0]
+            if (fallbackTrigger) return fallbackTrigger
+
+            return el
+          },
           getShadowRoot: true,
         })
       },

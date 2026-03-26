@@ -1,11 +1,11 @@
-import { getEventPoint, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, compact, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
 import { isNegativeSwipeDirection, isVerticalSwipeDirection } from "./utils/session"
-import type { DrawerApi, DrawerService } from "./drawer.types"
+import type { DrawerApi, DrawerService, TriggerProps } from "./drawer.types"
 
 const SWIPE_OPEN_HIDDEN_OFFSET = 9999
 
@@ -19,11 +19,13 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
+  const closing = state.matches("closing")
   const swipingOpen = state.matches("swiping-open")
 
   const dragOffset = context.get("dragOffset")
   const dragging = dragOffset !== null
 
+  const triggerValue = context.get("triggerValue")
   const snapPoint = context.get("snapPoint")
   const swipeDirection = prop("swipeDirection")
   const physicalDirection = resolveSwipeDirection(swipeDirection, prop("dir"))
@@ -117,7 +119,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-state": open ? "open" : "closed",
         "data-swipe-direction": physicalDirection,
         style: compact<JSX.CSSProperties>({
-          pointerEvents: prop("modal") ? undefined : "none",
+          pointerEvents: closing || !prop("modal") ? "none" : undefined,
         }),
       })
     },
@@ -184,13 +186,30 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       })
     },
 
-    getTriggerProps() {
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "OPEN", value: value ?? undefined })
+    },
+
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : triggerValue === value
       return normalize.button({
         ...parts.trigger.attrs,
-        id: dom.getTriggerId(scope),
+        dir: prop("dir"),
+        id: dom.getTriggerId(scope, value),
+        "data-ownedby": scope.id,
+        "data-value": value,
+        "aria-haspopup": "dialog",
         type: "button",
-        onClick() {
-          send({ type: open ? "CLOSE" : "OPEN" })
+        "aria-expanded": value == null ? open : open && current,
+        "data-state": open ? "open" : "closed",
+        "aria-controls": dom.getContentId(scope),
+        "data-current": dataAttr(current),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          const shouldSwitch = open && value != null && !current
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : open ? "CLOSE" : "OPEN", value })
         },
       })
     },
@@ -204,6 +223,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         style: {
           willChange: "opacity",
+          pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,
           "--drawer-swipe-strength": `${swipeStrength}`,
         },
