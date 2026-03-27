@@ -42,24 +42,6 @@ function toVueProp(prop: string) {
   return prop.toLowerCase()
 }
 
-function toPascalCase(value: string) {
-  return value
-    .split("-")
-    .filter(Boolean)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join("")
-}
-
-function toPartClassNames(props: Record<string, unknown>) {
-  const scope = typeof props["data-scope"] === "string" ? props["data-scope"] : undefined
-  const part = typeof props["data-part"] === "string" ? props["data-part"] : undefined
-  if (!part) return undefined
-  const partClass = toPascalCase(part)
-  if (!scope) return [partClass]
-  const scopeClass = toPascalCase(scope)
-  return [scopeClass, partClass, `${scopeClass}${partClass}`]
-}
-
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
@@ -74,12 +56,5 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
       normalized[toVueProp(key)] = props[key]
     }
   }
-
-  const partClasses = toPartClassNames(props as unknown as Record<string, unknown>)
-  if (partClasses) {
-    const existingClass = String((normalized as any).class ?? "").trim()
-    ;(normalized as any).class = [...partClasses, existingClass].filter(Boolean).join(" ")
-  }
-
   return normalized
 })

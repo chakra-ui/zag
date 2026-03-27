@@ -20,7 +20,9 @@
     <button data-testid={`${id}-trigger`} {...api.getTriggerProps()}> Hover me </button>
     {#if api.open}
       <div {...api.getPositionerProps()}>
-        <div class="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()} class={styles.Content}>Tooltip</div>
+        <div {...api.getContentProps()} class="tooltip-content" data-testid={`${id}-tooltip`}>
+          Tooltip
+        </div>
       </div>
     {/if}
     <button data-testid={`${id2}-trigger`} {...api2.getTriggerProps()}> Over me </button>

@@ -1,4 +1,4 @@
-import styles from "../../../../../shared/src/css/dialog.module.css"
+import dialogStyles from "../../../../../shared/src/css/dialog.module.css"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId, createSignal } from "solid-js"
@@ -7,7 +7,7 @@ import keyframesStyles from "../../../../../shared/src/css/keyframes.module.css?
 import layoutStyles from "../../../../../shared/src/css/layout.module.css?inline"
 import componentStyles from "../../../../../shared/src/css/dialog.module.css?inline"
 
-const styles = [keyframesStyles, layoutStyles, componentStyles].join("\n")
+const shadowStyles = [keyframesStyles, layoutStyles, componentStyles].join("\n")
 
 export default function Page() {
   let mountRef!: HTMLElement
@@ -48,18 +48,20 @@ export default function Page() {
         </button>
 
         <Portal ref={setShadowRef} useShadow mount={mountRef}>
-          <style innerHTML={styles} />
+          <style innerHTML={shadowStyles} />
           <Show when={api().open}>
             <Portal mount={getRootNode()?.getElementById("portal-root")!}>
-              <div {...api().getBackdropProps()} class={styles.Backdrop} />
-              <div {...api().getPositionerProps()} class={styles.Positioner} data-testid="positioner">
-                <div {...api().getContentProps()} class={styles.Content}>
-                  <h2 {...api().getTitleProps()} class={styles.Title}>Dialog with Shadow DOM</h2>
-                  <p {...api().getDescriptionProps()} class={styles.Description}>
+              <div {...api().getBackdropProps()} class={dialogStyles.Backdrop} />
+              <div {...api().getPositionerProps()} class={dialogStyles.Positioner} data-testid="positioner">
+                <div {...api().getContentProps()} class={dialogStyles.Content}>
+                  <h2 {...api().getTitleProps()} class={dialogStyles.Title}>
+                    Dialog with Shadow DOM
+                  </h2>
+                  <p {...api().getDescriptionProps()} class={dialogStyles.Description}>
                     This dialog's content is rendered in a shadow DOM. Focus should be trapped within all elements.
                   </p>
 
-                  <button {...api().getCloseTriggerProps()} class={styles.CloseTrigger} data-testid="close">
+                  <button {...api().getCloseTriggerProps()} class={dialogStyles.CloseTrigger} data-testid="close">
                     Close (X)
                   </button>
 

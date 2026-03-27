@@ -43,7 +43,7 @@ export abstract class Component<Props, Api> implements ComponentInterface<Api> {
     this.machine.stop()
   }
 
-  spreadProps = (node: HTMLElement, attrs: Attrs) => {
+  spreadProps = (node: Element, attrs: Attrs) => {
     spreadProps(node, attrs, this.machine.scope.id)
   }
 

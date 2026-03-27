@@ -1,29 +1,25 @@
-:root {
+.page {
   --ring-color: blue;
 }
 
-body {
-  position: relative;
-}
-
-* {
+.page * {
   box-sizing: border-box;
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
     sans-serif;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+.page input::-webkit-outer-spin-button,
+.page input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-*:focus {
+.page *:focus {
   outline: 2px solid var(--ring-color);
   outline-offset: 2px;
 }
 
-button {
+.page button {
   flex-shrink: 0;
 }
 
@@ -31,11 +27,11 @@ button {
   margin: 24px;
 }
 
-ul {
+.page ul {
   padding-inline-start: 0;
 }
 
-[hidden] {
+.page [hidden] {
   display: none !important;
 }
 
@@ -95,13 +91,9 @@ ul {
   margin: 16px 12px;
 }
 
-body {
+.page {
   margin: 0;
   font-size: 14px;
-  overflow: hidden;
-}
-
-.page {
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -149,7 +141,7 @@ body {
 }
 
 .nav a[data-active],
-a[aria-current="page"] {
+.page a[aria-current="page"] {
   border-color: green;
   font-weight: 500;
 }

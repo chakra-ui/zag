@@ -17,7 +17,7 @@ export class CascadeSelect extends Component<cascadeSelect.Props, cascadeSelect.
     return cascadeSelect.collection<Node>({
       nodeToValue: (node) => node.value,
       nodeToString: (node) => node.label,
-      nodeToChildren: (node) => node.continents ?? node.countries ?? node.states,
+      nodeToChildren: (node) => node.continents ?? node.countries ?? node.states ?? [],
       rootNode: cascadeSelectData,
     })
   }

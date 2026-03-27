@@ -32,12 +32,12 @@ export class Progress extends Component<progress.Props, progress.Api> {
     }
 
     const circle = this.rootEl.querySelector<SVGSVGElement>(".progress-circle")
-    if (circle) this.spreadProps(circle, this.api.getCircleProps())
+    if (circle) this.spreadProps(circle as unknown as HTMLElement, this.api.getCircleProps())
 
     const circleTrack = this.rootEl.querySelector<SVGCircleElement>(".progress-circle-track")
-    if (circleTrack) this.spreadProps(circleTrack, this.api.getCircleTrackProps())
+    if (circleTrack) this.spreadProps(circleTrack as unknown as HTMLElement, this.api.getCircleTrackProps())
 
     const circleRange = this.rootEl.querySelector<SVGCircleElement>(".progress-circle-range")
-    if (circleRange) this.spreadProps(circleRange, this.api.getCircleRangeProps())
+    if (circleRange) this.spreadProps(circleRange as unknown as HTMLElement, this.api.getCircleRangeProps())
   }
 }

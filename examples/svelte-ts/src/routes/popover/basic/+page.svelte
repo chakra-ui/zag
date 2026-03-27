@@ -28,7 +28,7 @@
     <div {...api.getAnchorProps()}>anchor</div>
 
     <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()} class={styles.Positioner}>
-      <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()} class={styles.Content}>
+      <Presence {...api.getContentProps()} class="popover-content" data-testid="popover-content">
         <div {...api.getArrowProps()} class={styles.Arrow}>
           <div {...api.getArrowTipProps()}></div>
         </div>

@@ -4,31 +4,6 @@ export interface AttrMap {
   [key: string]: string
 }
 
-function toPascalCase(value: string) {
-  return value.replace(/(^|-)([a-z0-9])/g, (_, __, char: string) => char.toUpperCase())
-}
-
-function appendScopePartClasses(props: any) {
-  const scope = props["data-scope"]
-  const part = props["data-part"]
-  if (typeof part !== "string" || part.length === 0) return
-
-  const classes = new Set<string>()
-  const scopeClass = typeof scope === "string" && scope.length > 0 ? toPascalCase(scope) : undefined
-  const partClass = toPascalCase(part)
-  classes.add(partClass)
-  if (scopeClass) classes.add(scopeClass)
-  if (scopeClass) classes.add(`${scopeClass}${partClass}`)
-
-  const existingClass = typeof props.className === "string" ? props.className : typeof props.class === "string" ? props.class : ""
-  for (const item of existingClass.split(/\s+/)) {
-    if (item) classes.add(item)
-  }
-
-  const classValue = Array.from(classes).join(" ")
-  props.className = classValue
-}
-
 export const propMap: AttrMap = {
   onFocus: "onFocusin",
   onBlur: "onFocusout",
@@ -55,8 +30,6 @@ export const toStyleString = (style: any) => {
 }
 
 export const normalizeProps = createNormalizer((props: any) => {
-  appendScopePartClasses(props)
-
   return Object.entries(props).reduce<any>((acc, [key, value]) => {
     if (value === undefined) return acc
 

@@ -40,7 +40,7 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
         segment.appendChild(pathEl)
       }
 
-      this.spreadProps(pathEl, this.api.getSegmentPathProps({ path: pathData }))
+      this.spreadProps(pathEl as unknown as HTMLElement, this.api.getSegmentPathProps({ path: pathData }))
     })
 
     // Handle current path
@@ -54,7 +54,10 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
         segment.appendChild(currentPathEl)
       }
 
-      this.spreadProps(currentPathEl, this.api.getSegmentPathProps({ path: this.api.currentPath }))
+      this.spreadProps(
+        currentPathEl as unknown as HTMLElement,
+        this.api.getSegmentPathProps({ path: this.api.currentPath }),
+      )
     } else {
       // Remove current path element if it exists but there's no current path
       const currentPathEl = segment.querySelector(".signature-pad-current-path")
@@ -72,7 +75,7 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
     if (control) this.spreadProps(control, this.api.getControlProps())
 
     const segment = this.rootEl.querySelector<SVGSVGElement>(".signature-pad-segment")
-    if (segment) this.spreadProps(segment, this.api.getSegmentProps())
+    if (segment) this.spreadProps(segment as unknown as HTMLElement, this.api.getSegmentProps())
 
     const guide = this.rootEl.querySelector<HTMLElement>(".signature-pad-guide")
     if (guide) this.spreadProps(guide, this.api.getGuideProps())
