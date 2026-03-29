@@ -67,7 +67,7 @@ describe("HotkeyStore", () => {
       })
 
       store.init({
-        rootNode: document,
+        target: document,
         defaultOptions: {
           capture: false,
         },
@@ -81,7 +81,7 @@ describe("HotkeyStore", () => {
 
   describe("isPressed", () => {
     it("matches physical code when logical key differs (layout-independent letter)", async () => {
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({ id: "q", hotkey: "Q", action: () => {} })
 
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "a", code: "KeyQ", bubbles: true, cancelable: true }))
@@ -93,7 +93,7 @@ describe("HotkeyStore", () => {
     })
 
     it("returns false for key sequences (not a chord)", async () => {
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({ id: "seq", hotkey: "a>b", action: () => {} })
 
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "a", code: "KeyA", bubbles: true }))
@@ -104,7 +104,7 @@ describe("HotkeyStore", () => {
     })
 
     it("for symbol hotkeys, rejects extra Control (matches chord semantics)", async () => {
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({ id: "slash", hotkey: "/", action: () => {} })
 
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Control", code: "ControlLeft", bubbles: true }))
@@ -116,7 +116,7 @@ describe("HotkeyStore", () => {
     })
 
     it("clears pressedCodes on blur", async () => {
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({ id: "x", hotkey: "x", action: () => {} })
 
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "x", code: "KeyX", bubbles: true }))
@@ -133,7 +133,7 @@ describe("HotkeyStore", () => {
   describe("sequences", () => {
     it("accepts a symbol step typed with Option/Alt held when Alt is not in the binding", async () => {
       const action = vi.fn()
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({
         id: "seq-pipe",
         hotkey: "a>|",
@@ -160,7 +160,7 @@ describe("HotkeyStore", () => {
 
     it("does not complete when Alt is required for the symbol step but not pressed", async () => {
       const action = vi.fn()
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({
         id: "seq-alt-slash-fail",
         hotkey: "b>Alt+/",
@@ -186,7 +186,7 @@ describe("HotkeyStore", () => {
 
     it("does not complete Control+letter step when AltGraph is active", async () => {
       const action = vi.fn()
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({
         id: "seq-ctrl-x-altg",
         hotkey: "a>Control+x",
@@ -216,7 +216,7 @@ describe("HotkeyStore", () => {
 
     it("completes Control+letter step when Ctrl is held and AltGraph is not active", async () => {
       const action = vi.fn()
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({
         id: "seq-ctrl-x-ok",
         hotkey: "a>Control+x",
@@ -243,7 +243,7 @@ describe("HotkeyStore", () => {
 
     it("completes Alt+symbol step when Alt is held", async () => {
       const action = vi.fn()
-      const store = createHotkeyStore({ rootNode: document })
+      const store = createHotkeyStore({ target: document })
       store.register({
         id: "seq-alt-slash-ok",
         hotkey: "b>Alt+/",

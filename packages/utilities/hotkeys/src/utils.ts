@@ -1,13 +1,13 @@
-import type { FormTagName, Platform, RootNode } from "./types"
+import type { FormTagName, HotkeyTarget, Platform } from "./types"
 
 const typeOf = (value: unknown) => Object.prototype.toString.call(value).slice(8, -1)
 const isDocument = (value: unknown): value is Document => typeOf(value) === "Document"
 
-export function getDoc(root: RootNode | Element): Document {
+export function getDoc(root: HotkeyTarget): Document {
   return isDocument(root) ? root : root.ownerDocument || document
 }
 
-export function getWin(root: RootNode | Element): Window & typeof globalThis {
+export function getWin(root: HotkeyTarget): Window & typeof globalThis {
   return getDoc(root).defaultView || window
 }
 

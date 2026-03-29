@@ -214,11 +214,19 @@ export function matchesHotkeyStep(
   const isSymbol = isSymbolKey(step.key)
 
   if (isSymbol) {
-    if (!keyMatches) return false
+    // Try key match first. Fall back to physical code when a modifier (Alt/Meta)
+    // has transformed the character (e.g., macOS Option+/ → "÷" but code is still "Slash").
+    // Only use code fallback when a modifier is held, to avoid false positives on
+    // international layouts where the same physical key produces a different character.
+    const modifierHeld = event.altKey || event.metaKey || event.ctrlKey
+    if (!keyMatches && !(modifierHeld && step.code && step.code === event.code)) return false
 
+    // AltGraph guard for symbols: real AltGr (European) sets both ctrlKey and altKey.
+    // macOS Firefox Option only sets altKey. Only neutralize modifiers for real AltGr.
     const isAltGraph = event.getModifierState?.("AltGraph") ?? false
-    const effectiveCtrl = isAltGraph ? false : event.ctrlKey
-    const effectiveAlt = isAltGraph ? false : event.altKey
+    const isRealAltGr = isAltGraph && event.ctrlKey
+    const effectiveCtrl = isRealAltGr ? false : event.ctrlKey
+    const effectiveAlt = isRealAltGr ? false : event.altKey
 
     if ((step.ctrl || false) !== effectiveCtrl) return false
     if ((step.meta || false) !== event.metaKey) return false
@@ -228,8 +236,13 @@ export function matchesHotkeyStep(
     return true
   }
 
+  // AltGraph guard: on European keyboards, AltGr produces composed characters
+  // (e.g., AltGr+E → €) and reports ctrlKey/altKey as true. When AltGraph is active,
+  // the user is typing a character, not triggering a shortcut. Block the match entirely.
+  // Exception: macOS Firefox reports AltGraph for plain Option presses but does NOT
+  // set ctrlKey — only altKey. So we only block when ctrlKey is also set (real AltGr).
   const isAltGraph = event.getModifierState?.("AltGraph") ?? false
-  if (isAltGraph && (step.ctrl || step.alt)) return false
+  if (isAltGraph && event.ctrlKey) return false
 
   if ((step.alt || false) !== event.altKey) return false
   if ((step.ctrl || false) !== event.ctrlKey) return false
@@ -270,16 +283,57 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
 }
 
 // Check if a keyboard event matches a hotkey string or array of hotkey strings
-export function isHotKey(hotkey: string | string[], event: KeyboardEvent, options: HotkeyOptions = {}): boolean {
+export function isHotKey(
+  hotkey: string | string[],
+  event: KeyboardEvent,
+  options: HotkeyOptions = {},
+  platform?: Platform,
+): boolean {
   // Dead keys (accent/compose keys on international layouts) cannot match any shortcut
   if (event.key === "Dead") return false
   // Check if the hotkey should trigger in current context
   if (!shouldTrigger(event, options)) return false
-  const platform = getPlatform()
+  const resolved = platform ?? getPlatform()
   return toArray(hotkey).some((h) => {
-    const parsed = parseHotkey(h, platform)
+    const parsed = parseHotkey(h, resolved)
     return matchesHotkey(parsed, event)
   })
+}
+
+// Check if two hotkey strings are semantically equal (resolves aliases like mod → Meta/Control)
+export function isHotkeyEqual(a: string, b: string, platform?: Platform): boolean {
+  const resolved = platform ?? getPlatform()
+  const pa = parseHotkey(a, resolved)
+  const pb = parseHotkey(b, resolved)
+
+  if (pa.isSequence !== pb.isSequence) return false
+
+  // For sequences, compare each step's key and modifiers individually
+  if (pa.isSequence && pb.isSequence) {
+    const stepsA = pa.sequenceSteps
+    const stepsB = pb.sequenceSteps
+    if (!stepsA || !stepsB || stepsA.length !== stepsB.length) return false
+    return stepsA.every((stepA, i) => {
+      const stepB = stepsB[i]
+      return (
+        stepA.key === stepB.key &&
+        (stepA.ctrl ?? false) === (stepB.ctrl ?? false) &&
+        (stepA.alt ?? false) === (stepB.alt ?? false) &&
+        (stepA.shift ?? false) === (stepB.shift ?? false) &&
+        (stepA.meta ?? false) === (stepB.meta ?? false)
+      )
+    })
+  }
+
+  // For chords, compare top-level modifiers and keys
+  return (
+    pa.ctrl === pb.ctrl &&
+    pa.alt === pb.alt &&
+    pa.shift === pb.shift &&
+    pa.meta === pb.meta &&
+    pa.keys.length === pb.keys.length &&
+    pa.keys.every((k, i) => k === pb.keys[i])
+  )
 }
 
 // Simple priority scoring (higher = more specific)

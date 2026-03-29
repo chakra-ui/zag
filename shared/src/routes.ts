@@ -494,6 +494,17 @@ export const componentRoutes: ComponentRoute[] = [
     label: "JSON Tree",
     examples: [{ slug: "basic", title: "Basic" }],
   },
+  {
+    slug: "hotkeys",
+    label: "Hotkeys",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sequences", title: "Sequences" },
+      { slug: "scopes", title: "Scopes" },
+      { slug: "command-dialog", title: "Command Dialog" },
+      { slug: "key-recorder", title: "Key Recorder" },
+    ],
+  },
 ]
 
 export const exampleRoutes: ExampleRoute[] = componentRoutes.flatMap((componentRoute) =>

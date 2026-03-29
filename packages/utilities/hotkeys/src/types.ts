@@ -1,4 +1,4 @@
-export type RootNode = Document | ShadowRoot
+export type HotkeyTarget = Document | ShadowRoot | Element
 
 export type Platform = "mac" | "windows" | "linux"
 
@@ -23,9 +23,9 @@ export interface ParsedHotkey extends KeyboardModifiers {
 }
 
 // Store-based hotkey system types
-export type HotkeyAction<TContext = any> = (context: TContext, event: KeyboardEvent) => Promise<void> | void
+export type HotkeyAction = (event: KeyboardEvent) => void
 
-export interface CommandDefinition<TContext = any> {
+export interface CommandDefinition {
   /**
    * The unique identifier for the command.
    */
@@ -37,7 +37,7 @@ export interface CommandDefinition<TContext = any> {
   /**
    * The action to perform when the hotkey is triggered.
    */
-  action: HotkeyAction<TContext>
+  action: HotkeyAction
   /**
    * Human-readable label for the command
    */
@@ -57,7 +57,7 @@ export interface CommandDefinition<TContext = any> {
   /**
    * Whether the command is enabled.
    */
-  enabled?: boolean | ((context: TContext) => boolean) | undefined
+  enabled?: boolean | (() => boolean) | undefined
   /**
    * The scopes to use for the hotkey command.
    *
@@ -71,15 +71,15 @@ export interface CommandDefinition<TContext = any> {
   keywords?: string[] | undefined
 }
 
-export interface HotkeyCommand<TContext = any> {
+export interface HotkeyCommand {
   id: string
   hotkey: string
-  action: HotkeyAction<TContext>
+  action: HotkeyAction
   label?: string | undefined
   description?: string | undefined
   category?: string | undefined
   options: HotkeyOptions
-  enabled: boolean | ((context: TContext) => boolean)
+  enabled: boolean | (() => boolean)
   scopes: string[]
   keywords: string[]
   // Cached parsed hotkey for performance
@@ -88,15 +88,13 @@ export interface HotkeyCommand<TContext = any> {
   _registrationOrder: number
 }
 
-export interface HotkeyStoreOptions<TContext = any> {
+export type ConflictBehavior = "warn" | "error" | "replace" | "allow"
+
+export interface HotkeyStoreOptions {
   /**
-   * The root node to listen for hotkeys
+   * The target element to listen for hotkeys
    */
-  rootNode?: RootNode | undefined
-  /**
-   * The context to use for the store
-   */
-  context?: TContext | undefined
+  target?: HotkeyTarget | undefined
   /**
    * The default options to use for the store
    */
@@ -111,6 +109,16 @@ export interface HotkeyStoreOptions<TContext = any> {
    * @default ["*"]
    */
   activeScopes?: string | string[] | undefined
+  /**
+   * How to handle conflicts when two commands register the same hotkey.
+   * @see ConflictBehavior
+   * - `"warn"`: Log a warning but allow both (default)
+   * - `"error"`: Throw an error preventing registration
+   * - `"replace"`: Unregister the existing command
+   * - `"allow"`: Silently allow duplicates
+   * @default "warn"
+   */
+  conflictBehavior?: ConflictBehavior | undefined
 }
 
 export type FormTagName = "input" | "textarea" | "select"
@@ -140,14 +148,27 @@ export interface HotkeyOptions {
    * Use capture phase for event listeners (default: true)
    */
   capture?: boolean | undefined
+  /**
+   * When true, the hotkey fires only once per key press.
+   * The key must be released before it can fire again.
+   * @default false
+   */
+  requireReset?: boolean | undefined
+  /**
+   * The event type to listen for.
+   * - `"keydown"`: Fire when the key is pressed (default)
+   * - `"keyup"`: Fire when the key is released
+   * @default "keydown"
+   */
+  eventType?: "keydown" | "keyup" | undefined
 }
 
 // Store state interface
-export interface HotkeyStoreState<TContext = any> {
+export interface HotkeyStoreState {
   pressedKeys: Set<string>
   /** Physical `KeyboardEvent.code` values currently held (mirrors `matchesHotkey` code path). */
   pressedCodes: Set<string>
-  commands: Map<string, HotkeyCommand<TContext>>
+  commands: Map<string, HotkeyCommand>
   listening: boolean
   activeScopes: Set<string>
 }
