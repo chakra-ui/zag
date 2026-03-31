@@ -227,7 +227,12 @@ function extractCSSVariablesFromConnect(filePath: string, project: Project): CSS
 
   sourceFile.forEachDescendant((node) => {
     if (Node.isPropertyAssignment(node) && node.getName() === "style") {
-      const initializer = node.getInitializer()
+      let initializer = node.getInitializer()
+      // Unwrap function calls like compact({...})
+      if (Node.isCallExpression(initializer)) {
+        const firstArg = initializer.getArguments()[0]
+        if (firstArg && Node.isObjectLiteralExpression(firstArg)) initializer = firstArg
+      }
       if (Node.isObjectLiteralExpression(initializer)) {
         initializer.getProperties().forEach((prop) => {
           if (Node.isPropertyAssignment(prop)) {

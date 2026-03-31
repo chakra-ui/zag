@@ -229,16 +229,25 @@ export function useMachine<T extends MachineSchema>(
   }))
 
   let status = MachineStatus.NotStarted
+  let pendingEvents: T["event"][] = []
 
   onMounted(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
     debug(started ? "rehydrating..." : "initializing...")
     state.invoke(state.initial!, INIT_STATE)
+
+    // Replay events buffered before machine started (child mounts before parent in Vue)
+    const events = pendingEvents
+    pendingEvents = []
+    for (const event of events) {
+      send(event)
+    }
   })
 
   onBeforeUnmount(() => {
     status = MachineStatus.Stopped
+    pendingEvents = []
     debug("unmounting...")
 
     const fns = effects.values()
@@ -248,7 +257,10 @@ export function useMachine<T extends MachineSchema>(
   })
 
   const send = (event: any) => {
-    if (status !== MachineStatus.Started) return
+    if (status !== MachineStatus.Started) {
+      pendingEvents.push(event)
+      return
+    }
 
     previousEventRef.current = eventRef.current
     eventRef.current = event
