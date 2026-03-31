@@ -1,4 +1,4 @@
-import { createHotkeyStore, formatHotkey, type HotkeyCommand } from "@zag-js/hotkeys"
+import { createHotkeyStore, formatHotkey } from "@zag-js/hotkeys"
 import { createSignal, For, onCleanup, onMount } from "solid-js"
 
 let addLog: (message: string) => void = () => {}
