@@ -93,7 +93,7 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "lucide-vue-next": "1.0.0",
-    "vue": "3.5.30",
+    "vue": "3.5.31",
     "vue-router": "5.0.4"
   },
   "devDependencies": {

@@ -33,7 +33,7 @@
     "@types/jsdom": "^28.0.1",
     "clean-package": "2.2.0",
     "jsdom": "^29.0.1",
-    "vitest": "^4.1.1"
+    "vitest": "^4.1.2"
   },
   "scripts": {
     "build": "tsup",
