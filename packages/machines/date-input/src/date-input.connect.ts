@@ -1,4 +1,11 @@
-import { ariaAttr, dataAttr, getEventKey, getNativeEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  dataAttr,
+  getEventKey,
+  getNativeEvent,
+  isComposingEvent,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-input.anatomy"
 import * as dom from "./date-input.dom"
@@ -212,7 +219,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             event.shiftKey ||
             event.altKey ||
             readOnly ||
-            event.nativeEvent.isComposing
+            isComposingEvent(event)
           ) {
             return
           }
