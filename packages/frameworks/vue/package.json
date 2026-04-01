@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "clean-package": "2.2.0",
-    "vue": "3.5.30"
+    "vue": "3.5.31"
   },
   "peerDependencies": {
     "vue": ">=3.0.0"

@@ -37,7 +37,7 @@
     "@types/jsdom": "^28.0.1",
     "clean-package": "2.2.0",
     "jsdom": "^29.0.1",
-    "solid-js": "1.9.11",
+    "solid-js": "1.9.12",
     "vite-plugin-solid": "^2.11.11"
   },
   "peerDependencies": {

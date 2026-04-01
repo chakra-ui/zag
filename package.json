@@ -77,12 +77,12 @@
     "@eslint/js": "^10.0.1",
     "@internationalized/date": "3.12.0",
     "@octokit/rest": "22.0.1",
-    "@playwright/test": "1.58.2",
+    "@playwright/test": "1.59.1",
     "@swc/core": "1.15.21",
     "@types/jsdom": "^28.0.1",
     "@types/node": "25.5.0",
     "@types/signale": "1.4.7",
-    "axe-core": "4.11.1",
+    "axe-core": "4.11.2",
     "commitlint": "20.5.0",
     "cross-env": "^10.1.0",
     "dotenv": "17.3.1",
@@ -104,9 +104,9 @@
     "tsx": "4.21.0",
     "typescript": "6.0.2",
     "typescript-eslint": "^8.57.2",
-    "vite": "8.0.2",
+    "vite": "8.0.3",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.1.1"
+    "vitest": "4.1.2"
   },
   "engines": {
     "node": ">=18.0.0"
