@@ -199,42 +199,39 @@ export const machine = createMachine<SplitterSchema>({
         const registry = prop("registry")
         if (!registry) return
 
-        let cleanupFns: VoidFunction[] = []
+        let cleanups: VoidFunction[] = []
 
-        function registerHandles() {
-          cleanupFns.forEach((fn) => fn())
-          cleanupFns = []
-
-          const resizeTriggers = dom.getResizeTriggerEls(scope)
-          resizeTriggers.forEach((element) => {
-            const id = element.dataset.id
-            if (!id) return
-
-            const unregister = registry!.register({
-              id: dom.getResizeTriggerId(scope, id),
-              element: element as HTMLElement,
-              orientation: prop("orientation"),
-              onActivate(point) {
-                send({ type: "POINTER_DOWN", id, point })
-              },
-              onDeactivate() {
-                send({ type: "POINTER_UP" })
-              },
+        const exec = () => {
+          cleanups.forEach((fn) => fn())
+          cleanups = dom
+            .getResizeTriggerEls(scope)
+            .map((resizeTriggerEl) => {
+              const id = resizeTriggerEl.dataset.id
+              if (!id) return
+              return registry!.register({
+                id: dom.getResizeTriggerId(scope, id),
+                element: resizeTriggerEl as HTMLElement,
+                orientation: prop("orientation"),
+                onActivate(point) {
+                  send({ type: "POINTER_DOWN", id, point })
+                },
+                onDeactivate() {
+                  send({ type: "POINTER_UP" })
+                },
+              })
             })
-
-            cleanupFns.push(unregister)
-          })
+            .filter(Boolean) as VoidFunction[]
         }
 
-        registerHandles()
+        exec()
 
         // Re-register when panels change (DOM updates)
         const observeCleanup = observeChildren(dom.getRootEl(scope), {
-          callback: registerHandles,
+          callback: exec,
         })
 
         return () => {
-          cleanupFns.forEach((fn) => fn())
+          cleanups.forEach((fn) => fn())
           observeCleanup?.()
         }
       },
