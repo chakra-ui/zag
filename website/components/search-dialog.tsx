@@ -96,7 +96,7 @@ export function Search() {
                         className={css({
                           px: "3",
                           py: "1",
-                          _selected: {
+                          _highlighted: {
                             bg: "bg.primary.bold",
                             color: "text.inverse",
                           },
