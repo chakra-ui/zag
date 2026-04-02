@@ -17,6 +17,7 @@ Toast provides brief feedback after an action.
 - Handles promise lifecycles
 - Pauses on hover, focus, or page idle
 - Supports programmatic update/remove
+- Priority-based queue system for ordering queued toasts
 
 ## Installation
 
@@ -91,6 +92,8 @@ The options you can pass in are:
   transition.
 - `action` — Optional action button with `label` and `onClick`.
 - `closable` — Whether to render a close trigger.
+- `priority` — Queue priority (1–8, lower is higher). Auto-assigned based on
+  `type` and `action` when omitted.
 
 ## Changing the placement
 
@@ -271,6 +274,33 @@ experience. To limit visible toasts, set `max` on the store.
 ```tsx {3}
 const toaster = toast.createStore({
   max: 10,
+})
+```
+
+## Toast priority
+
+When the max number of visible toasts is reached, queued toasts are sorted by
+priority before being displayed. Priority ranges from `1` (highest) to `8`
+(lowest).
+
+Default priorities are assigned automatically based on toast type and whether it
+has an action:
+
+| Type      | With action | Without action |
+| --------- | ----------- | -------------- |
+| `error`   | 1           | 2              |
+| `warning` | 3           | 6              |
+| `loading` | 4           | 5              |
+| `success` | 5           | 7              |
+| `info`    | 6           | 8              |
+
+You can override the priority by passing the `priority` option:
+
+```tsx
+toaster.create({
+  title: "Critical update",
+  type: "info",
+  priority: 1, // treat as highest priority
 })
 ```
 

@@ -21,6 +21,7 @@ A splitter creates resizable layouts with horizontal or vertical panels.
 - Implements the
   [Window Splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
   for accessibility and keyboard controls
+- Supports multi-drag at handle intersections via a shared registry
 
 ## Installation
 
@@ -187,6 +188,55 @@ api.resizePanel("a", 40)
 api.collapsePanel("a")
 api.expandPanel("a")
 api.resetSizes()
+```
+
+## Multi-drag with registry
+
+When you have nested splitters (e.g. horizontal and vertical), users can drag at
+handle intersections to resize both directions simultaneously. Use
+`splitter.registry()` to coordinate multiple splitter instances.
+
+```tsx
+import * as splitter from "@zag-js/splitter"
+
+// Create a shared registry (once, at the layout level)
+const registry = splitter.registry()
+```
+
+Pass the `registry` to each splitter machine that should participate in
+multi-drag:
+
+```tsx
+const horizontalService = useMachine(splitter.machine, {
+  panels: [{ id: "left" }, { id: "right" }],
+  registry,
+})
+
+const verticalService = useMachine(splitter.machine, {
+  orientation: "vertical",
+  panels: [{ id: "top" }, { id: "bottom" }],
+  registry,
+})
+```
+
+When a user drags near the intersection of two resize handles, the registry
+detects both handles and resizes them together. The registry also manages the
+cursor globally during intersection dragging.
+
+### Registry options
+
+The `splitter.registry()` function accepts optional configuration:
+
+```tsx
+const registry = splitter.registry({
+  // Nonce for injected cursor stylesheet (CSP compliance)
+  nonce: "abc123",
+  // Hit area margins for intersection detection
+  hitAreaMargins: {
+    coarse: 20, // touch devices (default: 15)
+    fine: 10, // pointer devices (default: 5)
+  },
+})
 ```
 
 ## Styling guide

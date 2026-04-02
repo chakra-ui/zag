@@ -1964,11 +1964,19 @@
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the dialog"
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The active trigger value"
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the active trigger value"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
+        "type": "Partial<{ trigger: string | ((value?: string) => string); positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
         "description": "The ids of the elements in the dialog. Useful for composition."
       },
       "trapFocus": {
@@ -2030,6 +2038,18 @@
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function to call when the dialog's open state changes"
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The controlled active trigger value"
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The initial active trigger value when rendered.\nUse when you don't need to control the active trigger value."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Function to call when the active trigger changes"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -2079,6 +2099,14 @@
         "type": "boolean",
         "description": "Whether the drawer is currently being dragged."
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The value of the active trigger."
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Set the active trigger value."
+      },
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the menu."
@@ -2114,7 +2142,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ backdrop: string; positioner: string; content: string; title: string; description: string; header: string; trigger: string; grabber: string; grabberIndicator: string; closeTrigger: string; swipeArea: string; }>",
+        "type": "Partial<{ backdrop: string; positioner: string; content: string; title: string; description: string; header: string; trigger: string | ((value?: string) => string); grabber: string; grabberIndicator: string; closeTrigger: string; swipeArea: string; }>",
         "description": "The ids of the elements in the drawer. Useful for composition."
       },
       "trapFocus": {
@@ -2149,6 +2177,18 @@
         "type": "\"dialog\" | \"alertdialog\"",
         "description": "The sheet's role",
         "defaultValue": "\"dialog\""
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The value of the trigger that currently controls the drawer."
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The default trigger value (uncontrolled)."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Callback when the active trigger value changes."
       },
       "open": {
         "type": "boolean",
@@ -2796,6 +2836,14 @@
         "type": "(open: boolean) => void",
         "description": "Function to open the hover card"
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The trigger value"
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the trigger value"
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -2803,7 +2851,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; content: string; positioner: string; arrow: string; }>",
+        "type": "Partial<{ trigger: string | ((value?: string) => string); content: string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the popover. Useful for composition."
       },
       "onOpenChange": {
@@ -2835,6 +2883,18 @@
       "positioning": {
         "type": "PositioningOptions",
         "description": "The user provided options used to position the popover content"
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The controlled trigger value"
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The initial trigger value when rendered.\nUse when you don't need to control the trigger value."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Function called when the trigger value changes."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3395,6 +3455,14 @@
         "type": "(open: boolean) => void",
         "description": "Function to open or close the menu"
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The trigger value"
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the trigger value"
+      },
       "highlightedValue": {
         "type": "string",
         "description": "The id of the currently highlighted menuitem"
@@ -3430,7 +3498,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; groupLabel: (id: string) => string; group: (id: string) => string; positioner: string; arrow: string; }>",
+        "type": "Partial<{ trigger: string | ((value?: string) => string); contextTrigger: string | ((value?: string) => string); content: string; groupLabel: (id: string) => string; group: (id: string) => string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the menu. Useful for composition."
       },
       "defaultHighlightedValue": {
@@ -3496,6 +3564,18 @@
       "navigate": {
         "type": "(details: NavigateDetails) => void",
         "description": "Function to navigate to the selected item if it's an anchor element"
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The controlled trigger value"
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The initial trigger value when rendered.\nUse when you don't need to control the trigger value."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Function called when the trigger value changes."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -4202,6 +4282,14 @@
         "type": "(open: boolean) => void",
         "description": "Function to open or close the popover"
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The trigger value"
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the trigger value"
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -4213,7 +4301,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "ids": {
-        "type": "Partial<{ anchor: string; trigger: string; content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }>",
+        "type": "Partial<{ anchor: string; trigger: string | ((value?: string) => string); content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the popover. Useful for composition."
       },
       "modal": {
@@ -4260,6 +4348,18 @@
       "defaultOpen": {
         "type": "boolean",
         "description": "The initial open state of the popover when rendered.\nUse when you don't need to control the open state of the popover."
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The controlled trigger value"
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The initial trigger value when rendered.\nUse when you don't need to control the trigger value."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Function called when the trigger value changes."
       },
       "id": {
         "type": "string",
@@ -5362,6 +5462,10 @@
         "type": "(details: ExpandCollapseDetails) => void",
         "description": "Function called when a panel is expanded."
       },
+      "registry": {
+        "type": "SplitterRegistry",
+        "description": "The splitter registry to use for multi-drag support.\nWhen provided, enables dragging at the intersection of multiple splitters."
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -5854,6 +5958,11 @@
         "type": "boolean",
         "description": "Whether to allow tags to exceed max. In this case,\nwe'll attach `data-invalid` to the root"
       },
+      "sanitizeValue": {
+        "type": "(value: string) => string",
+        "description": "Function to sanitize the tag value before adding.\nUseful for trimming whitespace, normalizing case, or stripping special characters.",
+        "defaultValue": "(value) => value.trim()"
+      },
       "name": {
         "type": "string",
         "description": "The name attribute for the input. Useful for form submissions"
@@ -6284,6 +6393,14 @@
         "type": "(open: boolean) => void",
         "description": "Function to open the tooltip."
       },
+      "triggerValue": {
+        "type": "string",
+        "description": "The trigger value"
+      },
+      "setTriggerValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the trigger value"
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -6291,7 +6408,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; content: string; arrow: string; positioner: string; }>",
+        "type": "Partial<{ trigger: string | ((value?: string) => string); content: string; arrow: string; positioner: string; }>",
         "description": "The ids of the elements in the tooltip. Useful for composition."
       },
       "openDelay": {
@@ -6352,6 +6469,18 @@
       "defaultOpen": {
         "type": "boolean",
         "description": "The initial open state of the tooltip when rendered.\nUse when you don't need to control the open state of the tooltip."
+      },
+      "triggerValue": {
+        "type": "string",
+        "description": "The controlled trigger value"
+      },
+      "defaultTriggerValue": {
+        "type": "string",
+        "description": "The initial trigger value when rendered.\nUse when you don't need to control the trigger value."
+      },
+      "onTriggerValueChange": {
+        "type": "(details: TriggerValueChangeDetails) => void",
+        "description": "Function called when the trigger value changes."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

@@ -18,6 +18,7 @@ clickable trigger element.
 - Supports modal and non-modal modes
 - Ensures correct DOM order after tabbing out of the popover, whether it's
   portalled or not
+- Supports multiple triggers sharing a single popover instance
 
 ## Installation
 
@@ -181,6 +182,36 @@ const service = useMachine(popover.machine, {
   },
 })
 ```
+
+### Multiple triggers
+
+A single popover instance can be shared across multiple trigger elements. Pass a
+`value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const service = useMachine(popover.machine, {
+  onTriggerValueChange({ value }) {
+    console.log("active trigger:", value)
+  },
+})
+
+const api = popover.connect(service, normalizeProps)
+
+return (
+  <>
+    <button {...api.getTriggerProps({ value: "info" })}>Info</button>
+    <button {...api.getTriggerProps({ value: "help" })}>Help</button>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        {api.triggerValue === "info" ? "Info content" : "Help content"}
+      </div>
+    </div>
+  </>
+)
+```
+
+When the popover is open and a different trigger is clicked, it repositions
+without closing. Focus returns to the correct trigger on close.
 
 ### Usage within dialog
 

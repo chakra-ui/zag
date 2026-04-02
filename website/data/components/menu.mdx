@@ -17,6 +17,7 @@ actions or options that a user can choose.
 - Focus is fully managed using `aria-activedescendant` pattern
 - Typeahead to allow focusing items by typing text
 - Keyboard navigation support including arrow keys, home/end, page up/down
+- Supports multiple triggers sharing a single menu instance
 
 ## Installation
 
@@ -183,6 +184,37 @@ const service = useMachine(menu.machine, {
   positioning: { placement: "bottom-start" },
 })
 ```
+
+### Multiple triggers
+
+A single menu instance can be shared across multiple trigger elements. Pass a
+`value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const service = useMachine(menu.machine, {
+  onTriggerValueChange({ value }) {
+    console.log("active trigger:", value)
+  },
+})
+
+const api = menu.connect(service, normalizeProps)
+
+return (
+  <>
+    <button {...api.getTriggerProps({ value: "file" })}>File</button>
+    <button {...api.getTriggerProps({ value: "edit" })}>Edit</button>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        {/* Menu items based on api.triggerValue */}
+      </div>
+    </div>
+  </>
+)
+```
+
+When the menu is open and a different trigger is activated, it repositions
+without closing. `aria-expanded` is scoped to the active trigger, and focus
+returns to the correct trigger on close.
 
 ### Labeling the menu without visible text
 

@@ -17,6 +17,7 @@ A hover card lets sighted users preview content behind a link.
 - Supports custom open and close delays
 - Opens on hover only
 - Ignored by screen readers
+- Supports multiple triggers sharing a single hover card instance
 
 ## Installation
 
@@ -96,6 +97,43 @@ const service = useMachine(hoverCard.machine, {
   },
 })
 ```
+
+### Multiple triggers
+
+A single hover card instance can be shared across multiple trigger elements.
+Pass a `value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const users = [
+  { id: "1", name: "Alice", avatar: "/alice.png" },
+  { id: "2", name: "Bob", avatar: "/bob.png" },
+]
+
+const service = useMachine(hoverCard.machine, {
+  onTriggerValueChange({ value }) {
+    const user = users.find((u) => u.id === value) ?? null
+    setActiveUser(user)
+  },
+})
+
+const api = hoverCard.connect(service, normalizeProps)
+
+return (
+  <>
+    {users.map((user) => (
+      <a {...api.getTriggerProps({ value: user.id })}>{user.name}</a>
+    ))}
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        {/* Content updates based on activeUser */}
+      </div>
+    </div>
+  </>
+)
+```
+
+When hovering a different trigger while the card is open, it repositions without
+closing.
 
 ### Disabling the hover card
 

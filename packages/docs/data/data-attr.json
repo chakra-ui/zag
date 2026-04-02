@@ -786,7 +786,9 @@
     "Trigger": {
       "data-scope": "dialog",
       "data-part": "trigger",
-      "data-state": "\"open\" | \"closed\""
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-current": "Present when current"
     },
     "Backdrop": {
       "data-scope": "dialog",
@@ -816,6 +818,13 @@
       "data-swipe-direction": "",
       "data-swiping": "",
       "data-dragging": "Present when in the dragging state"
+    },
+    "Trigger": {
+      "data-scope": "drawer",
+      "data-part": "trigger",
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-current": "Present when current"
     },
     "Backdrop": {
       "data-scope": "drawer",
@@ -1011,6 +1020,8 @@
       "data-scope": "hover-card",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-value": "The value of the item",
+      "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
     },
     "Content": {
@@ -1162,12 +1173,16 @@
     "ContextTrigger": {
       "data-scope": "menu",
       "data-part": "context-trigger",
+      "data-value": "The value of the item",
+      "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
     },
     "Trigger": {
       "data-scope": "menu",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-value": "The value of the item",
+      "data-current": "Present when current",
       "data-controls": "",
       "data-state": "\"open\" | \"closed\""
     },
@@ -1463,6 +1478,8 @@
       "data-scope": "popover",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-value": "The value of the item",
+      "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
     },
     "Indicator": {
@@ -2135,6 +2152,8 @@
     "Trigger": {
       "data-scope": "tooltip",
       "data-part": "trigger",
+      "data-value": "The value of the item",
+      "data-current": "Present when current",
       "data-expanded": "Present when expanded",
       "data-state": "\"open\" | \"closed\""
     },
@@ -2201,6 +2220,8 @@
       "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
       "data-renaming": "",
+      "data-checked": "Present when checked",
+      "data-indeterminate": "",
       "data-depth": "The depth of the item"
     },
     "ItemText": {
@@ -2255,6 +2276,8 @@
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-renaming": "",
+      "data-checked": "Present when checked",
+      "data-indeterminate": "",
       "data-value": "The value of the item",
       "data-depth": "The depth of the item",
       "data-loading": "Present when loading"

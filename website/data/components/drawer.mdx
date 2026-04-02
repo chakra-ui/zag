@@ -20,6 +20,7 @@ mobile applications to present additional content or actions.
 - Provides screen reader announcements via rendered title
 - Pressing `Esc` closes the drawer
 - Supports touch gestures for smooth interaction on mobile devices
+- Supports multiple triggers sharing a single drawer instance
 
 ## Installation
 
@@ -195,6 +196,38 @@ api.getSwipeAreaProps({ disabled: true })
 // Override the open direction (defaults to opposite of drawer's swipeDirection)
 api.getSwipeAreaProps({ swipeDirection: "up" })
 ```
+
+### Multiple triggers
+
+A single drawer instance can be shared across multiple trigger elements. Pass a
+`value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const service = useMachine(drawer.machine, {
+  id: useId(),
+  onTriggerValueChange({ value }) {
+    // value is the id of the trigger that activated the drawer
+    console.log("active trigger:", value)
+  },
+})
+
+const api = drawer.connect(service, normalizeProps)
+
+return (
+  <>
+    <button {...api.getTriggerProps({ value: "settings" })}>Settings</button>
+    <button {...api.getTriggerProps({ value: "profile" })}>Profile</button>
+    {/* single shared drawer */}
+    <div {...api.getBackdropProps()} />
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>{/* ... */}</div>
+    </div>
+  </>
+)
+```
+
+When the drawer is open and a different trigger is activated, it switches without
+closing. Focus returns to the correct trigger on close.
 
 ### Content draggable
 

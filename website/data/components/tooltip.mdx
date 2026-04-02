@@ -21,6 +21,7 @@ hovered.
 - Custom show and hide delay support
 - Matches native tooltip behavior with delay on hover of first tooltip and no
   delay on subsequent tooltips
+- Supports multiple triggers sharing a single tooltip instance
 
 ## Installation
 
@@ -145,6 +146,36 @@ const service = useMachine(tooltip.machine, {
   },
 })
 ```
+
+### Multiple triggers
+
+A single tooltip instance can be shared across multiple trigger elements. Pass a
+`value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const service = useMachine(tooltip.machine, {
+  onTriggerValueChange({ value }) {
+    console.log("active trigger:", value)
+  },
+})
+
+const api = tooltip.connect(service, normalizeProps)
+
+return (
+  <>
+    <button {...api.getTriggerProps({ value: "bold" })}>B</button>
+    <button {...api.getTriggerProps({ value: "italic" })}>I</button>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        {api.triggerValue === "bold" ? "Bold" : "Italic"}
+      </div>
+    </div>
+  </>
+)
+```
+
+When hovering a different trigger while the tooltip is open, it repositions
+without closing. `aria-describedby` is scoped to the active trigger.
 
 ### Controlled tooltip
 
