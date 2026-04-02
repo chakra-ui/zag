@@ -13,6 +13,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
   const horizontal = computed("horizontal")
   const dragging = state.matches("dragging")
+  const registry = prop("registry")
 
   const orientation = prop("orientation")
 
@@ -191,7 +192,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
             : triggerState.dragging && !triggerState.focused
               ? "none"
               : undefined,
-          cursor: triggerState.disabled ? undefined : horizontal ? "col-resize" : "row-resize",
+          cursor: triggerState.disabled || registry ? undefined : horizontal ? "col-resize" : "row-resize",
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
@@ -200,6 +201,12 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
             event.preventDefault()
             return
           }
+
+          // If registry is enabled, it handles pointer events
+          if (registry) {
+            return
+          }
+
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", id, point })
           event.currentTarget.setPointerCapture(event.pointerId)
@@ -214,11 +221,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           }
         },
         onPointerOver() {
-          if (triggerState.disabled) return
+          if (triggerState.disabled || registry) return
           send({ type: "POINTER_OVER", id })
         },
         onPointerLeave() {
-          if (triggerState.disabled) return
+          if (triggerState.disabled || registry) return
           send({ type: "POINTER_LEAVE", id })
         },
         onBlur() {

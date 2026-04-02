@@ -18,6 +18,7 @@ export const props = createProps<SplitterProps>()([
   "panels",
   "keyboardResizeBy",
   "nonce",
+  "registry",
 ])
 
 export const splitProps = createSplitProps<Partial<SplitterProps>>(props)

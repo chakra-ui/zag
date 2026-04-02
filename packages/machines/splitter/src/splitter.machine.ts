@@ -1,5 +1,5 @@
 import { createMachine, type Params } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-query"
+import { observeChildren, trackPointerMove } from "@zag-js/dom-query"
 import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
 import type { CursorState, ResizeTriggerId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
@@ -105,6 +105,8 @@ export const machine = createMachine<SplitterSchema>({
   entry: ["syncSize"],
   exit: ["clearGlobalCursor"],
 
+  effects: ["trackResizeHandles"],
+
   states: {
     idle: {
       entry: ["clearDraggingState", "clearKeyboardState"],
@@ -193,6 +195,46 @@ export const machine = createMachine<SplitterSchema>({
 
   implementations: {
     effects: {
+      trackResizeHandles: ({ prop, scope, send }) => {
+        const registry = prop("registry")
+        if (!registry) return
+
+        let cleanups: VoidFunction[] = []
+
+        const exec = () => {
+          cleanups.forEach((fn) => fn())
+          cleanups = dom
+            .getResizeTriggerEls(scope)
+            .map((resizeTriggerEl) => {
+              const id = resizeTriggerEl.dataset.id
+              if (!id) return
+              return registry!.register({
+                id: dom.getResizeTriggerId(scope, id),
+                element: resizeTriggerEl as HTMLElement,
+                orientation: prop("orientation"),
+                onActivate(point) {
+                  send({ type: "POINTER_DOWN", id, point })
+                },
+                onDeactivate() {
+                  send({ type: "POINTER_UP" })
+                },
+              })
+            })
+            .filter(Boolean) as VoidFunction[]
+        }
+
+        exec()
+
+        // Re-register when panels change (DOM updates)
+        const observeCleanup = observeChildren(dom.getRootEl(scope), {
+          callback: exec,
+        })
+
+        return () => {
+          cleanups.forEach((fn) => fn())
+          observeCleanup?.()
+        }
+      },
       waitForHoverDelay: ({ send }) => {
         return setRafTimeout(() => {
           send({ type: "HOVER_DELAY" })
@@ -519,6 +561,10 @@ export const machine = createMachine<SplitterSchema>({
       },
 
       setGlobalCursor({ context, scope, prop }) {
+        const registry = prop("registry")
+        // Don't set cursor when registry is enabled - registry manages cursor globally
+        if (registry) return
+
         const dragState = context.get("dragState")
         if (!dragState) return
 
@@ -560,8 +606,22 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
   const panelsArray = prop("panels")
   const onCollapse = prop("onCollapse")
   const onExpand = prop("onExpand")
+  const onResizeStart = prop("onResizeStart")
+  const onResizeEnd = prop("onResizeEnd")
 
   const panelIdToLastNotifiedSizeMap = refs.get("panelIdToLastNotifiedSizeMap")
+
+  // Check if this is a programmatic resize (not user interaction)
+  const dragState = context.get("dragState")
+  const keyboardState = context.get("keyboardState")
+  const isProgrammatic = dragState === null && keyboardState === null
+
+  // Call onResizeStart for programmatic resizes
+  if (isProgrammatic && onResizeStart) {
+    queueMicrotask(() => {
+      onResizeStart()
+    })
+  }
 
   context.set("size", sizes)
 
@@ -593,4 +653,14 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
       }
     }
   })
+
+  // Call onResizeEnd for programmatic resizes
+  if (isProgrammatic && onResizeEnd) {
+    queueMicrotask(() => {
+      onResizeEnd({
+        size: sizes,
+        resizeTriggerId: null, // Programmatic changes don't have a resize trigger
+      })
+    })
+  }
 }

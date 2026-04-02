@@ -8,7 +8,7 @@
     "jsx": "react-jsx",
     "lib": ["dom", "esnext", "dom.iterable"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,

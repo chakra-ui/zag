@@ -487,7 +487,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "splitter",
     label: "Splitter",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "collapsible", title: "Collapsible" },
+      { slug: "conditional", title: "Conditional" },
+      { slug: "multiple", title: "Multiple" },
+      { slug: "nested", title: "Nested" },
+    ],
   },
   {
     slug: "json-tree",

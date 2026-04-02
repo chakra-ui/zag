@@ -29,8 +29,8 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

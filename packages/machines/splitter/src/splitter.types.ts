@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { SplitterRegistry } from "./utils/registry"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -121,6 +122,11 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
    * Function called when a panel is expanded.
    */
   onExpand?: ((details: ExpandCollapseDetails) => void) | undefined
+  /**
+   * The splitter registry to use for multi-drag support.
+   * When provided, enables dragging at the intersection of multiple splitters.
+   */
+  registry?: SplitterRegistry | undefined
 }
 
 type PropsWithDefault = "orientation" | "panels"
