@@ -1,8 +1,11 @@
 ---
-"@zag-js/splitter": patch
+"@zag-js/splitter": minor
 ---
 
-- Fix cursor behavior during intersection dragging. When using the registry for multi-drag support, individual splitter machines no longer overwrite the registry's cursor, preventing the cursor from shifting from four-corner (`move`) to two-corner (`ew-resize`/`ns-resize`) during drag operations.
+Add multi-drag support for splitter intersections via a shared registry. When nested
+splitters share a registry, users can drag at handle intersections to resize both
+directions simultaneously.
 
-- Fix `onResizeStart` and `onResizeEnd` callbacks to fire for programmatic resizes. Previously, these callbacks only fired during user interactions (drag/keyboard). Now they also fire when panels are resized programmatically via `setSizes()`, `resizePanel()`, `collapsePanel()`, or `expandPanel()` methods.
-
+- Add `registry` prop and `splitter.registry()` factory for coordinating multiple splitter instances
+- Fix cursor behavior during intersection dragging — registry manages cursor globally
+- Fix `onResizeStart` and `onResizeEnd` callbacks to fire for programmatic resizes

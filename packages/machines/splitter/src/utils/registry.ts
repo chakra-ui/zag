@@ -299,12 +299,7 @@ export class SplitterRegistry {
   }
 
   private clearGlobalCursor() {
-    const rootNode = this.options.getRootNode()
-    const doc = "nodeType" in rootNode ? (rootNode as Document) : (rootNode as ShadowRoot).ownerDocument
-
-    if (!doc) return
-
-    const styleEl = doc.getElementById(this.globalCursorId)
+    const styleEl = this.doc.getElementById(this.globalCursorId)
     styleEl?.remove()
   }
 }

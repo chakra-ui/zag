@@ -1,5 +1,5 @@
 import { createMachine, type Params } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-query"
+import { observeChildren, trackPointerMove } from "@zag-js/dom-query"
 import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
 import type { CursorState, ResizeTriggerId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
@@ -199,31 +199,43 @@ export const machine = createMachine<SplitterSchema>({
         const registry = prop("registry")
         if (!registry) return
 
-        const cleanupFns: VoidFunction[] = []
+        let cleanupFns: VoidFunction[] = []
 
-        // Register all resize handles with the registry
-        const resizeTriggers = dom.getResizeTriggerEls(scope)
-        resizeTriggers.forEach((element) => {
-          const id = element.dataset.id
-          if (!id) return
+        function registerHandles() {
+          cleanupFns.forEach((fn) => fn())
+          cleanupFns = []
 
-          const unregister = registry.register({
-            id: dom.getResizeTriggerId(scope, id),
-            element: element as HTMLElement,
-            orientation: prop("orientation"),
-            onActivate(point) {
-              send({ type: "POINTER_DOWN", id, point })
-            },
-            onDeactivate() {
-              send({ type: "POINTER_UP" })
-            },
+          const resizeTriggers = dom.getResizeTriggerEls(scope)
+          resizeTriggers.forEach((element) => {
+            const id = element.dataset.id
+            if (!id) return
+
+            const unregister = registry!.register({
+              id: dom.getResizeTriggerId(scope, id),
+              element: element as HTMLElement,
+              orientation: prop("orientation"),
+              onActivate(point) {
+                send({ type: "POINTER_DOWN", id, point })
+              },
+              onDeactivate() {
+                send({ type: "POINTER_UP" })
+              },
+            })
+
+            cleanupFns.push(unregister)
           })
+        }
 
-          cleanupFns.push(unregister)
+        registerHandles()
+
+        // Re-register when panels change (DOM updates)
+        const observeCleanup = observeChildren(dom.getRootEl(scope), {
+          callback: registerHandles,
         })
 
         return () => {
-          cleanupFns.forEach((cleanup) => cleanup())
+          cleanupFns.forEach((fn) => fn())
+          observeCleanup?.()
         }
       },
       waitForHoverDelay: ({ send }) => {
