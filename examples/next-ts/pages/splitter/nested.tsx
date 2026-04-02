@@ -2,12 +2,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as splitter from "@zag-js/splitter"
 import { createContext, useContext, useId } from "react"
 
-// Create a shared registry for multi-drag support at intersections
 const registry = splitter.registry({
-  hitAreaMargins: { coarse: 15, fine: 8 }, // Touch-friendly margins
+  // Touch-friendly margins
+  hitAreaMargins: { coarse: 15, fine: 8 },
 })
 
-const PanelContext = createContext<splitter.Api>({} as any)
+const PanelContext = createContext({} as splitter.Api)
 
 const PanelGroup = (props: React.PropsWithChildren<Omit<splitter.Props, "id">>) => {
   const id = useId()
@@ -94,31 +94,9 @@ export default function Page() {
         </Panel>
       </PanelGroup>
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>How it works:</h3>
-        <ul>
-          <li>
-            All splitters share the same <code>splitterRegistry</code> instance
-          </li>
-          <li>When your cursor is near the intersection of resize handles, the registry detects both handles</li>
-          <li>The cursor changes to "move" to indicate multi-directional resizing</li>
-          <li>Dragging at the intersection resizes both the horizontal and vertical panels simultaneously</li>
-          <li>Each splitter's state machine operates independently while the registry coordinates their activation</li>
-        </ul>
-
-        <h3>Hit Area Margins:</h3>
-        <p>
-          The <code>hitAreaMargins</code> prop makes it easier to grab handles:
-        </p>
-        <ul>
-          <li>
-            <strong>Fine pointers (mouse):</strong> 8px margin
-          </li>
-          <li>
-            <strong>Coarse pointers (touch):</strong> 15px margin
-          </li>
-        </ul>
-      </div>
+      <p style={{ marginTop: "20px" }}>
+        Drag at the intersection of resize handles to resize both directions simultaneously.
+      </p>
     </main>
   )
 }

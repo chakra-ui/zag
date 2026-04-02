@@ -1,48 +1,12 @@
-/**
- * Check if two rectangles intersect.
- * Based on react-resizable-panels
- * @see https://github.com/bvaughn/react-resizable-panels
- */
+import type { Rect } from "@zag-js/types"
 
-export interface Rectangle {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-/**
- * Check if two rectangles intersect.
- * @param rectOne First rectangle
- * @param rectTwo Second rectangle
- * @param strict If true, uses strict intersection (touching edges don't count)
- */
-export function intersects(rectOne: Rectangle, rectTwo: Rectangle, strict: boolean = false): boolean {
+export function intersects(r1: Rect, r2: Rect, strict: boolean = false): boolean {
   if (strict) {
-    return (
-      rectOne.x < rectTwo.x + rectTwo.width &&
-      rectOne.x + rectOne.width > rectTwo.x &&
-      rectOne.y < rectTwo.y + rectTwo.height &&
-      rectOne.y + rectOne.height > rectTwo.y
-    )
-  } else {
-    return (
-      rectOne.x <= rectTwo.x + rectTwo.width &&
-      rectOne.x + rectOne.width >= rectTwo.x &&
-      rectOne.y <= rectTwo.y + rectTwo.height &&
-      rectOne.y + rectOne.height >= rectTwo.y
-    )
+    return r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height && r1.y + r1.height > r2.y
   }
+  return r1.x <= r2.x + r2.width && r1.x + r1.width >= r2.x && r1.y <= r2.y + r2.height && r1.y + r1.height >= r2.y
 }
 
-/**
- * Convert a DOMRect to a Rectangle.
- */
-export function rectToRectangle(rect: DOMRect): Rectangle {
-  return {
-    x: rect.x,
-    y: rect.y,
-    width: rect.width,
-    height: rect.height,
-  }
+export function toRect(r: DOMRect): Rect {
+  return { x: r.x, y: r.y, width: r.width, height: r.height }
 }

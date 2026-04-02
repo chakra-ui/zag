@@ -64,19 +64,30 @@ export function isEditableElement(el: HTMLElement | EventTarget | null) {
 type Target = HTMLElement | EventTarget | null | undefined
 
 /** Whether `parent` contains `child` in the light tree, or `child` is inside a shadow tree hosted under `parent`. */
+export function getParentElement(node: Element): Element | null {
+  const parentNode = node.parentNode
+  if (isShadowRoot(parentNode)) return parentNode.host
+  return parentNode as Element | null
+}
+
+export function getAncestorElements(node: Element | null): Element[] {
+  const ancestors: Element[] = []
+  while (node) {
+    ancestors.push(node)
+    node = getParentElement(node)
+  }
+  return ancestors
+}
+
 export function contains(parent: Target, child: Target) {
   if (!parent || !child) return false
   if (!isHTMLElement(parent) || !isNode(child)) return false
   if (isHTMLElement(child) && parent === child) return true
   if (parent.contains(child)) return true
-  const rootNode = child.getRootNode?.()
-  if (rootNode && isShadowRoot(rootNode)) {
-    let next: Node | null = child
-    while (next) {
-      if (parent === next) return true
-      // @ts-ignore ShadowRoot has host
-      next = next.parentNode || next.host
-    }
+  let next = isHTMLElement(child) ? getParentElement(child) : null
+  while (next) {
+    if (parent === next) return true
+    next = getParentElement(next)
   }
   return false
 }

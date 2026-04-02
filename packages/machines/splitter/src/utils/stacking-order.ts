@@ -1,12 +1,4 @@
-/**
- * Stacking order comparison utility.
- * Based on stacking-order@2.0.0 library
- * @see https://github.com/Rich-Harris/stacking-order
- * Background at https://github.com/Rich-Harris/stacking-order/issues/3
- * Background at https://github.com/Rich-Harris/stacking-order/issues/6
- */
-
-import { getComputedStyle, isShadowRoot } from "@zag-js/dom-query"
+import { getAncestorElements, getComputedStyle, getParentElement } from "@zag-js/dom-query"
 import { ensure, hasProp } from "@zag-js/utils"
 
 /**
@@ -19,8 +11,8 @@ export function compareStackingOrder(a: Element, b: Element): number {
   if (a === b) throw new Error("Cannot compare node with itself")
 
   const ancestors = {
-    a: getAncestors(a),
-    b: getAncestors(b),
+    a: getAncestorElements(a),
+    b: getAncestorElements(b),
   }
 
   let commonAncestor: Element | null = null
@@ -61,10 +53,11 @@ export function compareStackingOrder(a: Element, b: Element): number {
   return Math.sign(zIndexes.a - zIndexes.b)
 }
 
-const props = /\b(?:position|zIndex|opacity|transform|webkitTransform|mixBlendMode|filter|webkitFilter|isolation)\b/
+const STACKING_PROPS_REGEX =
+  /\b(?:position|zIndex|opacity|transform|webkitTransform|mixBlendMode|filter|webkitFilter|isolation)\b/
 
 function isFlexItem(node: Element) {
-  const parent = getParent(node)
+  const parent = getParentElement(node)
   const display = getComputedStyle(parent ?? node).display
   return display === "flex" || display === "inline-flex"
 }
@@ -83,7 +76,7 @@ function createsStackingContext(node: Element) {
   if (hasProp(style, "filter") && style.filter !== "none") return true
   if (hasProp(style, "webkitFilter") && style.webkitFilter !== "none") return true
   if (hasProp(style, "isolation") && style.isolation === "isolate") return true
-  if (props.test(style.willChange)) return true
+  if (STACKING_PROPS_REGEX.test(style.willChange)) return true
   // @ts-expect-error
   if (style.webkitOverflowScrolling === "touch") return true
   return false
@@ -102,19 +95,4 @@ function findStackingContext(nodes: Element[]) {
 
 const getZIndex = (node: Element | null) => {
   return (node && Number(getComputedStyle(node).zIndex)) || 0
-}
-
-const getAncestors = (node: Element | null) => {
-  const ancestors: Element[] = []
-  while (node) {
-    ancestors.push(node)
-    node = getParent(node)
-  }
-  return ancestors // [ node, ... <body>, <html>, document ]
-}
-
-const getParent = (node: Element) => {
-  const { parentNode } = node
-  if (isShadowRoot(parentNode)) return parentNode.host
-  return parentNode as Element | null
 }
