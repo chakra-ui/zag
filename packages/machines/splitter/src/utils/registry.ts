@@ -31,11 +31,6 @@ export interface HitAreaMargins {
 
 export interface SplitterRegistryOptions {
   /**
-   * The root node for the registry. Use this to scope the registry to a shadow DOM.
-   * @default document
-   */
-  getRootNode?: () => Document | ShadowRoot
-  /**
    * The nonce for the injected cursor stylesheet (for CSP compliance).
    */
   nonce?: string
@@ -52,15 +47,14 @@ export class SplitterRegistry {
     activeHandleIds: new Set(),
     isPointerDown: false,
   }
-  private cleanupFns: Array<VoidFunction> = []
   private listenerAttached = false
-  private options: Required<Omit<SplitterRegistryOptions, "hitAreaMargins">> & {
+  private options: {
+    nonce: string
     hitAreaMargins: Required<HitAreaMargins>
   }
 
   constructor(options: SplitterRegistryOptions = {}) {
     this.options = {
-      getRootNode: options.getRootNode ?? (() => document),
       nonce: options.nonce ?? "",
       hitAreaMargins: {
         coarse: options.hitAreaMargins?.coarse ?? 15,
@@ -97,9 +91,6 @@ export class SplitterRegistry {
     this.doc.removeEventListener("pointerdown", this.handlePointerDown, true)
     this.doc.removeEventListener("pointerup", this.handlePointerUp, true)
     this.listenerAttached = false
-
-    this.cleanupFns.forEach((fn) => fn())
-    this.cleanupFns = []
   }
 
   private getPointerType(event: PointerEvent): "coarse" | "fine" {
@@ -107,7 +98,8 @@ export class SplitterRegistry {
   }
 
   private get doc() {
-    return getDocument(this.options.getRootNode())
+    const firstHandle = this.handles.values().next().value
+    return getDocument(firstHandle?.element)
   }
 
   /**
@@ -255,28 +247,19 @@ export class SplitterRegistry {
   private globalCursorId = "splitter-registry-cursor"
 
   private setGlobalCursor(cursor: string) {
-    let styleEl = this.doc.getElementById(this.globalCursorId) as HTMLStyleElement | null
+    const doc = this.doc
+    let styleEl = doc.getElementById(this.globalCursorId) as HTMLStyleElement | null
     const textContent = `* { cursor: ${cursor} !important; }`
     if (styleEl) {
       styleEl.textContent = textContent
     } else {
-      styleEl = this.doc.createElement("style")
+      styleEl = doc.createElement("style")
       styleEl.id = this.globalCursorId
       styleEl.textContent = textContent
-
-      // Apply nonce if provided (for CSP compliance)
       if (this.options.nonce) {
         styleEl.nonce = this.options.nonce
       }
-
-      // Append to appropriate location
-      if ("head" in this.doc) {
-        this.doc.head.appendChild(styleEl)
-      } else {
-        // For ShadowRoot, append to the root
-        const rootNode = this.options.getRootNode()
-        rootNode.appendChild(styleEl)
-      }
+      doc.head.appendChild(styleEl)
     }
   }
 
