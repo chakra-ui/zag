@@ -1,5 +1,60 @@
 # @zag-js/popover
 
+## 1.39.0
+
+### Minor Changes
+
+- [#2929](https://github.com/chakra-ui/zag/pull/2929)
+  [`024dc75`](https://github.com/chakra-ui/zag/commit/024dc75fdcc377ac74f7a36f8667ac064574fa0d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for multiple triggers in Dialog, Hover Card, Menu,
+  Popover, and Tooltip.
+
+  A single component instance can now be shared across multiple trigger elements. Each trigger is identified by a
+  `value` passed to `getTriggerProps`:
+
+  ```jsx
+  const users = [{ id: 1, name: "Alice Johnson" }]
+
+  const Demo = () => {
+    // One dialog, many triggers
+    const service = useMachine(dialog.machine, {
+      id: useId(),
+      // Track the active trigger change
+      onTriggerValueChange({ value }) {
+        const user = users.find((u) => u.id === value) ?? null
+        setActiveUser(user)
+      },
+    })
+
+    const api = dialog.connect(service, normalizeProps)
+
+    return (
+      <>
+        {users.map((user) => (
+          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+        ))}
+      </>
+    )
+  }
+  ```
+
+  When the component is open and a different trigger is activated, it switches and repositions without closing.
+  `aria-expanded` is scoped to the active trigger, and focus returns to the correct trigger on close.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/aria-hidden@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dismissable@1.39.0
+  - @zag-js/dom-query@1.39.0
+  - @zag-js/focus-trap@1.39.0
+  - @zag-js/popper@1.39.0
+  - @zag-js/remove-scroll@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

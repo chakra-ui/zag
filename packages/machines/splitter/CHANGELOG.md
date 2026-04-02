@@ -1,5 +1,27 @@
 # @zag-js/splitter
 
+## 1.39.0
+
+### Minor Changes
+
+- [#2853](https://github.com/chakra-ui/zag/pull/2853)
+  [`48725fe`](https://github.com/chakra-ui/zag/commit/48725fe639db39661d122e649ef28197be6fb104) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add multi-drag support for splitter intersections via a shared
+  registry. When nested splitters share a registry, users can drag at handle intersections to resize both directions
+  simultaneously.
+  - Add `registry` prop and `splitter.registry()` factory for coordinating multiple splitter instances
+  - Fix cursor behavior during intersection dragging — registry manages cursor globally
+  - Fix `onResizeStart` and `onResizeEnd` callbacks to fire for programmatic resizes
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

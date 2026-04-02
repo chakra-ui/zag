@@ -1,5 +1,26 @@
 # @zag-js/toast
 
+## 1.39.0
+
+### Minor Changes
+
+- [#2628](https://github.com/chakra-ui/zag/pull/2628)
+  [`afd8047`](https://github.com/chakra-ui/zag/commit/afd80476226114eb5ee68ee644b30ef841732fdb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add priority-based queue system for toasts. When the max number of
+  toasts is reached, queued toasts are sorted by priority (1-8, lower is higher priority) before being displayed.
+  Priorities are automatically assigned based on toast type and whether it has an action. Custom priorities can be set
+  via the `priority` option.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dismissable@1.39.0
+  - @zag-js/dom-query@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

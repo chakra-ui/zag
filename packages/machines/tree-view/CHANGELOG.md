@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 1.39.0
+
+### Patch Changes
+
+- [`4049a49`](https://github.com/chakra-ui/zag/commit/4049a494cb3d09aedf6a0b40db48d285c4e86725) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-checked` and `data-indeterminate` attributes to item and
+  branch control elements for styling based on checked state.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/collection@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes
