@@ -4,6 +4,108 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.39.0](./#1.39.0) - 2026-04-02
+
+### Added
+
+- **Dialog, Drawer, Hover Card, Menu, Popover, Tooltip**
+
+  Add support for multiple triggers. A single component instance can now be shared across multiple trigger elements.
+  Each trigger is identified by a `value` passed to `getTriggerProps`:
+
+  ```jsx
+  const users = [{ id: 1, name: "Alice Johnson" }]
+
+  const Demo = () => {
+    const service = useMachine(dialog.machine, {
+      id: useId(),
+      onTriggerValueChange({ value }) {
+        const user = users.find((u) => u.id === value) ?? null
+        setActiveUser(user)
+      },
+    })
+
+    const api = dialog.connect(service, normalizeProps)
+
+    return (
+      <>
+        {users.map((user) => (
+          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+        ))}
+      </>
+    )
+  }
+  ```
+
+  When the component is open and a different trigger is activated, it switches and repositions without closing.
+  `aria-expanded` is scoped to the active trigger, and focus returns to the correct trigger on close.
+
+- **Splitter**: Add multi-drag support for nested splitter layouts. When a horizontal and vertical splitter meet at the
+  same point (e.g. a grid layout), users can drag the intersection to resize both directions at once.
+
+  Create a shared registry and pass it to each splitter instance:
+
+  ```ts
+  // shared across all splitters on the page
+  const registry = splitter.registry()
+
+  // horizontal splitter
+  const serviceH = useMachine(splitter.machine, { id: "h", registry })
+
+  // vertical splitter (nested inside a panel of the horizontal one)
+  const serviceV = useMachine(splitter.machine, { id: "v", orientation: "vertical", registry })
+  ```
+
+  The registry automatically detects when resize handles overlap, activates both splitters on drag, and switches the
+  cursor to `move` at intersection points.
+
+- **Tags Input**: Add `sanitizeValue` prop to normalize tag values before they are added. This runs on every new tag, so
+  you can enforce consistent formatting in one place — strip whitespace, lowercase, remove special characters, etc.
+  Defaults to `(v) => v.trim()`.
+
+  ```ts
+  const service = useMachine(tagsInput.machine, {
+    // normalize emails to lowercase
+    sanitizeValue: (v) => v.trim().toLowerCase(),
+  })
+  ```
+
+- **Toast**: Add priority-based queue system. When the max number of visible toasts is reached, incoming toasts are
+  queued and sorted by priority so the most important ones display first.
+
+  Default priorities (1 = highest, 8 = lowest):
+
+  | Type      | With action | Without action |
+  | --------- | ----------- | -------------- |
+  | `error`   | 1           | 2              |
+  | `warning` | 3           | 6              |
+  | `loading` | 4           | 5              |
+  | `success` | 5           | 7              |
+  | `info`    | 6           | 8              |
+
+  Toasts with an action button are bumped higher because they require user interaction. You can override the automatic
+  priority by passing a custom `priority` value:
+
+  ```ts
+  toaster.create({ type: "info", title: "Heads up", priority: 1 })
+  ```
+
+### Fixed
+
+- **Date Input**: Fix crash in non-React frameworks (Vue, Solid, Svelte) where `event.nativeEvent.isComposing` is
+  `undefined`. The composing check now uses a framework-agnostic utility that works across all adapters.
+
+- **Splitter**: Fix `onResizeStart` and `onResizeEnd` callbacks to fire for programmatic resizes
+
+- **Tags Input**: Set `enterKeyHint` to `"done"` on the input element so mobile virtual keyboards show a "Done" button
+  that triggers tag addition
+
+- **Tree View**: Add `data-checked` and `data-indeterminate` attributes to item and branch control elements for styling
+  based on checked state
+
+- **Vue**: Fix keyboard navigation for nested menus. ArrowRight now correctly opens submenus when using nested component
+  patterns (e.g. Ark UI's `Menu.Root` inside `Menu.Root`)
+
 ## [1.38.2](./#1.38.2) - 2026-03-25
 
 ### Fixed
