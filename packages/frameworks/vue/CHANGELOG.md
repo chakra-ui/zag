@@ -1,5 +1,18 @@
 # @zag-js/vue
 
+## 1.39.0
+
+### Patch Changes
+
+- [`fe6edba`](https://github.com/chakra-ui/zag/commit/fe6edba6874f8271605b61b9112df9cb0df421f0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix keyboard navigation for nested menus in Vue. ArrowRight now
+  correctly opens submenus when using nested component patterns (e.g. Ark UI's `Menu.Root` inside `Menu.Root`).
+- Updated dependencies []:
+  - @zag-js/core@1.39.0
+  - @zag-js/store@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

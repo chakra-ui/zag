@@ -1,5 +1,14 @@
 # @zag-js/presence
 
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/dom-query@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/date-input
 
+## 1.39.0
+
+### Patch Changes
+
+- [`fb4b868`](https://github.com/chakra-ui/zag/commit/fb4b868731188abe52414da5b4f2a92c41b6a7eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `event.nativeEvent.isComposing` to use framework-agnostic
+  `isComposingEvent` utility
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/date-utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+  - @zag-js/live-region@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes

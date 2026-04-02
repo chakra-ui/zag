@@ -1,5 +1,28 @@
 # @zag-js/tags-input
 
+## 1.39.0
+
+### Minor Changes
+
+- [`e352a49`](https://github.com/chakra-ui/zag/commit/e352a4938c6462c1cb7514a69df27f401e121da3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `sanitizeValue` prop to transform tag values before adding.
+  Defaults to `(v) => v.trim()`.
+
+### Patch Changes
+
+- [`e33abb5`](https://github.com/chakra-ui/zag/commit/e33abb5fb291c2d99fd59785e4fe7881e3fcf14b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Set `enterKeyHint` to `"done"` on the input element so mobile
+  virtual keyboards show a "Done" button that triggers tag addition.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/auto-resize@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+  - @zag-js/interact-outside@1.39.0
+  - @zag-js/live-region@1.39.0
+
 ## 1.38.2
 
 ### Patch Changes
