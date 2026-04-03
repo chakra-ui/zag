@@ -213,7 +213,7 @@ function getPlacementImpl(
 
   const resolveReference = () => {
     const anchor = resolveAnchor()
-    if (!anchor) return null
+    if (!anchor && !opts.getAnchorRect) return null
     return getAnchorElement(anchor, opts.getAnchorRect)
   }
 
@@ -311,10 +311,6 @@ function getPlacementImpl(
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
 
-    // apply transform directly to avoid expensive CSS variable cascade
-    floating.style.transform = `translate3d(${x}px, ${y}px, 0)`
-
-    // still set --x/--y for backward compat, but only when changed
     if (!isApproximatelyEqual(lastX, x)) {
       floating.style.setProperty("--x", `${x}px`)
       lastX = x
