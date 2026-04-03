@@ -1,6 +1,6 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
-import { getComputedStyle, getWindow, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
 import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
@@ -187,34 +187,71 @@ function createStyleCleanup(el: HTMLElement | null, props: string[]) {
   }
 }
 
-function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
-  const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
-  const reference = getAnchorElement(anchor, opts.getAnchorRect)
-  if (!floating || !reference) return
+function anchorIdentity(anchor: MaybeRectElement | null | undefined): unknown {
+  if (anchor == null) return null
+  if (isHTMLElement(anchor)) return anchor
+  if (typeof anchor === "object" && anchor && "contextElement" in anchor && anchor.contextElement) {
+    return anchor.contextElement as HTMLElement
+  }
+  return anchor
+}
+
+function getPlacementImpl(
+  referenceOrVirtual: MaybeFn<MaybeRectElement>,
+  floatingOrVirtual: MaybeFn<MaybeElement>,
+  opts: PositioningOptions = {},
+) {
+  const resolveFloating = () => {
+    const raw = typeof floatingOrVirtual === "function" ? floatingOrVirtual() : floatingOrVirtual
+    return raw ?? null
+  }
+
+  const resolveAnchor = () => {
+    const raw = typeof referenceOrVirtual === "function" ? referenceOrVirtual() : referenceOrVirtual
+    return opts.getAnchorElement?.() ?? raw
+  }
+
+  const resolveReference = () => {
+    const anchor = resolveAnchor()
+    if (!anchor) return null
+    return getAnchorElement(anchor, opts.getAnchorRect)
+  }
+
   const options = Object.assign({}, defaultOptions, opts) as Options
 
   /* -----------------------------------------------------------------------------
-   * The middleware stack
+   * The middleware stack (rebuilt when the floating element is a new node)
    * -----------------------------------------------------------------------------*/
 
-  const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
-  const restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
-  const restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
+  let middleware: (Middleware | undefined)[] = []
+  let cachedMiddlewareFloating: HTMLElement | null = null
+  let restoreFloatingStyles: VoidFunction | undefined
+  let restoreArrowStyles: VoidFunction | undefined
 
-  const middleware: (Middleware | undefined)[] = [
-    getOffsetMiddleware(arrowEl, options),
-    getFlipMiddleware(options),
-    getShiftMiddleware(options),
-    getArrowMiddleware(arrowEl, floating.ownerDocument, options),
-    shiftArrowMiddleware(arrowEl),
-    createTransformOriginMiddleware(
-      { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
-      arrowEl,
-    ),
-    getSizeMiddleware(options),
-    hideWhenDetachedMiddleware(options),
-    rectMiddleware,
-  ]
+  function rebuildMiddlewareForFloating(floating: HTMLElement) {
+    restoreFloatingStyles?.()
+    restoreArrowStyles?.()
+
+    cachedMiddlewareFloating = floating
+    restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
+    const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
+    restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
+
+    middleware = [
+      getOffsetMiddleware(arrowEl, options),
+      getFlipMiddleware(options),
+      getShiftMiddleware(options),
+      getArrowMiddleware(arrowEl, floating.ownerDocument, options),
+      shiftArrowMiddleware(arrowEl),
+      createTransformOriginMiddleware(
+        { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
+        arrowEl,
+      ),
+      getSizeMiddleware(options),
+      hideWhenDetachedMiddleware(options),
+      rectMiddleware,
+    ]
+  }
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function
@@ -226,8 +263,41 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   let lastY: number | undefined
   let zIndexComputed = false
 
-  const updatePosition = async () => {
+  let lastAnchorForObserve: MaybeRectElement | null | undefined = undefined
+  let lastFloatingForObserve: MaybeElement | undefined = undefined
+  let cancelAutoUpdate: VoidFunction = noop
+  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
+
+  function syncAutoUpdateObservers() {
+    if (!options.listeners) return
+    const anchor = resolveAnchor()
+    const reference = resolveReference()
+    const floating = resolveFloating()
     if (!reference || !floating) return
+
+    const anchorChanged = anchorIdentity(anchor) !== anchorIdentity(lastAnchorForObserve)
+    const floatingChanged = floating !== lastFloatingForObserve
+    if (anchorChanged || floatingChanged) {
+      cancelAutoUpdate()
+      lastAnchorForObserve = anchor
+      lastFloatingForObserve = floating
+      cancelAutoUpdate = autoUpdate(reference, floating, runUpdate, autoUpdateOptions)
+    }
+  }
+
+  async function updatePosition() {
+    syncAutoUpdateObservers()
+
+    const floating = resolveFloating()
+    if (!floating) return
+
+    if (floating !== cachedMiddlewareFloating) {
+      rebuildMiddlewareForFloating(floating)
+      zIndexComputed = false
+    }
+
+    const reference = resolveReference()
+    if (!reference) return
 
     const pos = await computePosition(reference, floating, {
       placement,
@@ -275,22 +345,19 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     }
   }
 
-  const update = async () => {
+  async function runUpdate() {
     if (opts.updatePosition) {
-      await opts.updatePosition({ updatePosition, floatingElement: floating })
+      await opts.updatePosition({ updatePosition, floatingElement: resolveFloating() })
       onPositioned?.({ placed: true })
     } else {
       await updatePosition()
     }
   }
 
-  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
-  const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, autoUpdateOptions) : noop
-
-  update()
+  runUpdate()
 
   return () => {
-    cancelAutoUpdate?.()
+    cancelAutoUpdate()
     restoreArrowStyles?.()
     restoreFloatingStyles?.()
     onPositioned?.({ placed: false })
@@ -307,9 +374,7 @@ export function getPlacement(
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
     func(() => {
-      const reference = typeof referenceOrFn === "function" ? referenceOrFn() : referenceOrFn
-      const floating = typeof floatingOrFn === "function" ? floatingOrFn() : floatingOrFn
-      cleanups.push(getPlacementImpl(reference, floating, options))
+      cleanups.push(getPlacementImpl(referenceOrFn, floatingOrFn, options))
     }),
   )
   return () => {
