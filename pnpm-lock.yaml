@@ -2287,9 +2287,6 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
-      '@zag-js/aria-hidden':
-        specifier: workspace:*
-        version: link:../../utilities/aria-hidden
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../utilities/collection
@@ -2305,6 +2302,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
