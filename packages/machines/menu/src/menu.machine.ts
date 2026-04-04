@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Scope } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -18,7 +18,15 @@ import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
 import * as dom from "./menu.dom"
-import type { ChildMenuService, MenuSchema, ParentMenuService } from "./menu.types"
+import type { MenuSchema } from "./menu.types"
+import {
+  closeRootMenu,
+  isWithinPolygon,
+  resolveItemId,
+  setParentRoutingLock,
+  unlockParentAfterChildClose,
+  unlockParentOnSubmenuClose,
+} from "./menu.utils"
 
 const { not, and, or } = createGuards<MenuSchema>()
 
@@ -47,9 +55,6 @@ export const machine = createMachine<MenuSchema>({
 
   context({ bindable, prop, scope }) {
     return {
-      suspendPointer: bindable<boolean>(() => ({
-        defaultValue: false,
-      })),
       highlightedValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
@@ -85,6 +90,9 @@ export const machine = createMachine<MenuSchema>({
           onTriggerValueChange({ value, triggerElement })
         },
       })),
+      pointerRoutingMode: bindable<"interactive" | "locked">(() => ({
+        defaultValue: "interactive",
+      })),
     }
   },
 
@@ -92,6 +100,7 @@ export const machine = createMachine<MenuSchema>({
     return {
       parent: null,
       children: {},
+      pointerRoutingLocked: false,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
     }
@@ -151,11 +160,11 @@ export const machine = createMachine<MenuSchema>({
     CLOSE: [
       {
         guard: "isOpenControlled",
-        actions: ["invokeOnClose"],
+        actions: ["invokeOnClose", "releaseParentRoutingLock"],
       },
       {
         target: "closed",
-        actions: ["invokeOnClose", "focusTrigger"],
+        actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
       },
     ],
     "HIGHLIGHTED.RESTORE": {
@@ -163,6 +172,9 @@ export const machine = createMachine<MenuSchema>({
     },
     "HIGHLIGHTED.SET": {
       actions: ["setHighlightedItem"],
+    },
+    "HIGHLIGHTED.SUGGEST": {
+      actions: ["suggestHighlightedItem"],
     },
   },
 
@@ -220,11 +232,11 @@ export const machine = createMachine<MenuSchema>({
         CONTEXT_MENU_CANCEL: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose", "focusTrigger"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
           },
         ],
         "LONG_PRESS.OPEN": [
@@ -254,21 +266,21 @@ export const machine = createMachine<MenuSchema>({
         BLUR: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose", "focusTrigger"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
           },
         ],
         TRIGGER_POINTERLEAVE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose", "focusTrigger"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
           },
         ],
         "DELAY.OPEN": [
@@ -303,7 +315,7 @@ export const machine = createMachine<MenuSchema>({
         POINTER_MOVED_AWAY_FROM_SUBMENU: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             target: "closed",
@@ -313,11 +325,11 @@ export const machine = createMachine<MenuSchema>({
         "DELAY.CLOSE": [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             target: "closed",
-            actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose"],
+            actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose", "releaseParentRoutingLock"],
           },
         ],
       },
@@ -325,7 +337,7 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "resumePointer", "clearAnchorPoint"],
+      entry: ["clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -397,7 +409,7 @@ export const machine = createMachine<MenuSchema>({
     open: {
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
-      entry: ["focusMenu", "resumePointer"],
+      entry: ["focusMenu", "unlockParentOnOpen"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -413,12 +425,12 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_CLICK: [
           {
             guard: and(not("isTriggerItem"), "isOpenControlled"),
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             guard: not("isTriggerItem"),
             target: "closed",
-            actions: ["invokeOnClose", "focusTrigger"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
           },
         ],
         CONTEXT_MENU: {
@@ -433,12 +445,12 @@ export const machine = createMachine<MenuSchema>({
         ARROW_LEFT: [
           {
             guard: and("isSubmenu", "isOpenControlled"),
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             guard: "isSubmenu",
             target: "closed",
-            actions: ["focusParentMenu", "invokeOnClose"],
+            actions: ["focusParentMenu", "invokeOnClose", "releaseParentRoutingLock"],
           },
         ],
         HOME: {
@@ -462,7 +474,7 @@ export const machine = createMachine<MenuSchema>({
         ],
         ITEM_POINTERMOVE: [
           {
-            guard: not("isPointerSuspended"),
+            guard: not("isPointerRoutingLocked"),
             actions: ["setHighlightedItem", "focusMenu", "closeSiblingMenus"],
           },
           {
@@ -470,7 +482,7 @@ export const machine = createMachine<MenuSchema>({
           },
         ],
         ITEM_POINTERLEAVE: {
-          guard: and(not("isPointerSuspended"), not("isTriggerItem")),
+          guard: and(not("isPointerRoutingLocked"), not("isTriggerItem")),
           actions: ["clearHighlightedItem"],
         },
         ITEM_CLICK: [
@@ -482,12 +494,19 @@ export const machine = createMachine<MenuSchema>({
               "closeOnSelect",
               "isOpenControlled",
             ),
-            actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
+            actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose", "releaseParentRoutingLock"],
           },
           {
             guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable"), "closeOnSelect"),
             target: "closed",
-            actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose", "focusTrigger"],
+            actions: [
+              "invokeOnSelect",
+              "setOptionState",
+              "closeRootMenu",
+              "invokeOnClose",
+              "releaseParentRoutingLock",
+              "focusTrigger",
+            ],
           },
           //
           {
@@ -531,7 +550,7 @@ export const machine = createMachine<MenuSchema>({
         return !!target?.hasAttribute("data-controls")
       },
       isSubmenu: ({ context }) => context.get("isSubmenu"),
-      isPointerSuspended: ({ context }) => context.get("suspendPointer"),
+      isPointerRoutingLocked: ({ refs }) => refs.get("pointerRoutingLocked"),
       isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
@@ -605,6 +624,10 @@ export const machine = createMachine<MenuSchema>({
               event.preventDefault()
               return
             }
+            if (dom.isTargetWithinMenuTree(target, refs.get("children"))) {
+              event.preventDefault()
+              return
+            }
           },
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
@@ -628,13 +651,11 @@ export const machine = createMachine<MenuSchema>({
           },
         })
       },
-      trackPointerMove({ context, scope, send, refs, flush }) {
+      trackPointerMove({ context, scope, send, refs }) {
         const parent = refs.get("parent")
+        if (!parent) return
 
-        // NOTE: we're mutating parent context here. sending events to parent doesn't work
-        flush(() => {
-          parent!.context.set("suspendPointer", true)
-        })
+        setParentRoutingLock(parent, true)
 
         const doc = scope.getDoc()
 
@@ -646,7 +667,7 @@ export const machine = createMachine<MenuSchema>({
 
           if (!isMovingToSubmenu) {
             send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU" })
-            parent!.context.set("suspendPointer", false)
+            setParentRoutingLock(parent, false)
           }
         })
       },
@@ -751,12 +772,16 @@ export const machine = createMachine<MenuSchema>({
       clearAnchorPoint({ context }) {
         context.set("anchorPoint", null)
       },
-      resumePointer({ refs, flush }) {
+      unlockParentOnOpen({ refs, context, scope }) {
         const parent = refs.get("parent")
-        if (!parent) return
-        flush(() => {
-          parent.context.set("suspendPointer", false)
-        })
+        if (context.get("isSubmenu")) {
+          const value = dom.getTriggerId(scope)
+          parent?.send({ type: "HIGHLIGHTED.SUGGEST", value })
+        }
+        setParentRoutingLock(parent, false)
+      },
+      unlockParentOnClose({ refs, context }) {
+        unlockParentAfterChildClose(refs.get("parent"), context.get("isSubmenu"))
       },
       setHighlightedItem({ context, event }) {
         const value = event.value || dom.getItemValue(event.target)
@@ -881,10 +906,20 @@ export const machine = createMachine<MenuSchema>({
       setLastHighlightedItem({ context, event }) {
         context.set("lastHighlightedValue", dom.getItemValue(event.target))
       },
+      suggestHighlightedItem({ context, event }) {
+        const value = event.value
+        if (!value) return
+        if (context.get("highlightedValue") != null) {
+          context.set("lastHighlightedValue", value)
+          return
+        }
+        context.set("highlightedValue", value)
+      },
       restoreHighlightedItem({ context }) {
-        if (!context.get("lastHighlightedValue")) return
-        context.set("highlightedValue", context.get("lastHighlightedValue"))
+        const last = context.get("lastHighlightedValue")
         context.set("lastHighlightedValue", null)
+        if (!last) return
+        context.set("highlightedValue", last)
       },
       restoreParentHighlightedItem({ refs }) {
         refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
@@ -894,6 +929,10 @@ export const machine = createMachine<MenuSchema>({
       },
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
+      },
+      releaseParentRoutingLock({ refs, context }) {
+        if (!context.get("isSubmenu")) return
+        unlockParentOnSubmenuClose(refs.get("parent"))
       },
       toggleVisibility({ prop, event, send }) {
         send({
@@ -908,32 +947,3 @@ export const machine = createMachine<MenuSchema>({
     },
   },
 })
-
-function closeRootMenu(ctx: { parent: ParentMenuService | null }) {
-  let parent = ctx.parent
-  while (parent && parent.context.get("isSubmenu")) {
-    parent = parent.refs.get("parent")
-  }
-  parent?.send({ type: "CLOSE" })
-}
-
-function isWithinPolygon(polygon: Point[] | null, point: Point) {
-  if (!polygon) return false
-  return isPointInPolygon(polygon, point)
-}
-
-function resolveItemId(children: Record<string, ChildMenuService>, value: string | null, scope: Scope) {
-  const hasChildren = Object.keys(children).length > 0
-  if (!value) return null
-  if (!hasChildren) {
-    return dom.getItemId(scope, value)
-  }
-  for (const id in children) {
-    const childMenu = children[id]
-    const childTriggerId = dom.getTriggerId(childMenu.scope)
-    if (childTriggerId === value) {
-      return childTriggerId
-    }
-  }
-  return dom.getItemId(scope, value)
-}

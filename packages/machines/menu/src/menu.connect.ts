@@ -20,6 +20,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
+import { setParentRoutingLock } from "./menu.utils"
 import type {
   ItemProps,
   ItemState,
@@ -239,6 +240,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           if (dom.isTargetDisabled(event.currentTarget)) return
           if (event.pointerType !== "mouse") return
           if (!isSubmenu) return
+          // Refs update synchronously; `send` may be deferred (e.g. React).
+          setParentRoutingLock(service.refs.get("parent"), true)
+
           const point = getEventPoint(event)
           send({
             type: "TRIGGER_POINTERLEAVE",

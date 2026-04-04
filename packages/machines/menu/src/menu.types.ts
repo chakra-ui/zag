@@ -157,9 +157,9 @@ export interface MenuSchema {
     currentPlacement: Placement | undefined
     intentPolygon: Point[] | null
     anchorPoint: Point | null
-    suspendPointer: boolean
     isSubmenu: boolean
     triggerValue: string | null
+    pointerRoutingMode: "interactive" | "locked"
   }
   computed: {
     isRtl: boolean
@@ -167,8 +167,9 @@ export interface MenuSchema {
     highlightedId: string | null
   }
   refs: {
-    parent: ParentMenuService | null
-    children: Record<string, ChildMenuService>
+    parent: MenuService | null
+    children: Record<string, MenuService>
+    pointerRoutingLocked: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
   }
@@ -187,16 +188,11 @@ export type MenuService = Service<MenuSchema>
 
 export type MenuMachine = Machine<MenuSchema>
 
-/**
- * Minimal interface required for child menu relationship.
- */
 // zag-ignore-export
-export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope" | "context">
-/**
- * Minimal interface required for parent menu relationship.
- */
+export type ChildMenuService = MenuService
+
 // zag-ignore-export
-export type ParentMenuService = Pick<MenuService, "prop" | "send" | "refs" | "context">
+export type ParentMenuService = MenuService
 
 /* -----------------------------------------------------------------------------
  * Component props
@@ -340,11 +336,11 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to register a parent menu. This is used for submenus
    */
-  setParent: (parent: ParentMenuService) => void
+  setParent: (parent: MenuService) => void
   /**
    * Function to register a child menu. This is used for submenus
    */
-  setChild: (child: ChildMenuService) => void
+  setChild: (child: MenuService) => void
   /**
    * Function to reposition the popover
    */

@@ -51,6 +51,25 @@ test.describe("nested menu / pointer", async () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/menu/nested")
   })
+
+  test("should keep trigger highlighted when moving pointer toward submenu across sibling items", async ({ page }) => {
+    await page.click(menu_1.trigger)
+    await page.hover(menu_1.sub_trigger)
+    await expect(page.locator(menu_2.menu)).toBeVisible()
+
+    // Get bounding rects
+    const triggerBox = await rect(page.locator(menu_1.sub_trigger))
+    const submenuBox = await rect(page.locator(menu_2.menu))
+
+    // Move diagonally from trigger toward submenu content.
+    // This path crosses through "Export" (the item directly below the trigger).
+    await page.mouse.move(triggerBox.maxX - 5, triggerBox.maxY - 2, { steps: 2 })
+    await page.mouse.move(submenuBox.x + 20, submenuBox.midY, { steps: 10 })
+
+    // Trigger should stay highlighted and submenu should remain open
+    await expectToBeFocused(page, menu_1.sub_trigger)
+    await expect(page.locator(menu_2.menu)).toBeVisible()
+  })
 })
 
 test.describe("nested menu / keyboard navigation", async () => {

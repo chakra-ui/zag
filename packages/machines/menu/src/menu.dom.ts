@@ -1,6 +1,7 @@
 import type { Scope } from "@zag-js/core"
-import { getByTypeahead, getWindow, isHTMLElement, queryAll, type TypeaheadState } from "@zag-js/dom-query"
+import { contains, getByTypeahead, getWindow, isHTMLElement, queryAll, type TypeaheadState } from "@zag-js/dom-query"
 import { first, isFunction, last, next, prev } from "@zag-js/utils"
+import type { MenuService } from "./menu.types"
 
 export const getTriggerId = (ctx: Scope, value?: string) => {
   const customId = ctx.ids?.trigger
@@ -112,4 +113,21 @@ export function dispatchSelectionEvent(el: HTMLElement | null, value: string) {
   const win = getWindow(el)
   const event = new win.CustomEvent(itemSelectEvent, { detail: { value } })
   el.dispatchEvent(event)
+}
+
+function getPortaledContentEl(scope: MenuService["scope"]): HTMLElement | null {
+  const contentId = getContentId(scope)
+  return getContentEl(scope) ?? scope.getDoc().getElementById(contentId)
+}
+
+export function isTargetWithinMenuTree(target: EventTarget | null, children: Record<string, MenuService>): boolean {
+  if (!isHTMLElement(target)) return false
+  for (const id in children) {
+    const child = children[id]
+    const childContent = getPortaledContentEl(child.scope)
+    if (childContent && contains(childContent, target)) return true
+    const nested = child.refs.get("children")
+    if (Object.keys(nested).length > 0 && isTargetWithinMenuTree(target, nested)) return true
+  }
+  return false
 }
