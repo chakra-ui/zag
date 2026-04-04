@@ -1,5 +1,21 @@
 # @zag-js/accordion
 
+## 1.39.1
+
+### Patch Changes
+
+- [#3059](https://github.com/chakra-ui/zag/pull/3059)
+  [`2a90590`](https://github.com/chakra-ui/zag/commit/2a90590f0e5cf7f8c4e149894fef76f78be795ec) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix missing `data-focus` attribute on
+  `getItemTriggerProps`. This makes the trigger consistent with the other accordion parts (`getItemProps`,
+  `getItemContentProps`, `getItemIndicatorProps`) which already expose `data-focus`.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
 ## 1.39.0
 
 ### Patch Changes
