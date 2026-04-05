@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.39.1](./#1.39.1) - 2026-04-05
+
+### Added
+
+- **Floating Panel**: Add `initialFocusEl`, `finalFocusEl`, and `restoreFocus` props for focus management when the panel
+  opens or closes.
+
+### Fixed
+
+- **Accordion**: Fix missing `data-focus` attribute on `getItemTriggerProps`. This makes the trigger consistent with
+  other accordion parts (`getItemProps`, `getItemContentProps`, `getItemIndicatorProps`) which already expose
+  `data-focus`.
+
+- **Combobox**: Fix VoiceOver not announcing combobox options when navigating with arrow keys. Safari/VoiceOver ignores
+  `aria-activedescendant` changes on combobox inputs, so we now use a live region to announce the highlighted item on
+  Apple devices.
+
+- **Menu**: Fix issue where quick diagonal pointer movement toward an open submenu could flash the highlight across
+  sibling items you skim past. The active item now stays stable while you move fast toward the submenu.
+
+- **Popper**: Fix incorrect positioning when the anchor or floating element changes while the popover is still open
+  (e.g. switching between multiple triggers without closing first).
+
 ## [1.39.0](./#1.39.0) - 2026-04-02
 
 ### Added
