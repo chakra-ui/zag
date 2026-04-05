@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 1.39.1
+
+### Patch Changes
+
+- [`44033dd`](https://github.com/chakra-ui/zag/commit/44033ddc77209faf84d84da7f6e629b757564289) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix VoiceOver not announcing combobox options when navigating with
+  arrow keys. Safari/VoiceOver ignores `aria-activedescendant` changes on combobox inputs, so we now use a live region
+  to announce the highlighted item on Apple devices.
+- Updated dependencies [[`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82)]:
+  - @zag-js/popper@1.39.1
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/collection@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dismissable@1.39.1
+  - @zag-js/dom-query@1.39.1
+  - @zag-js/focus-visible@1.39.1
+  - @zag-js/live-region@1.39.1
+
 ## 1.39.0
 
 ### Patch Changes

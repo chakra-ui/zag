@@ -1,5 +1,23 @@
 # @zag-js/floating-panel
 
+## 1.39.1
+
+### Patch Changes
+
+- [`925e1b4`](https://github.com/chakra-ui/zag/commit/925e1b4a33793b2e027fd8c67e8ccebe23e0e0e5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `initialFocusEl`, `finalFocusEl`, and `restoreFocus` props for
+  focus management when the panel opens or closes.
+
+- Updated dependencies [[`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82)]:
+  - @zag-js/popper@1.39.1
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/store@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+  - @zag-js/rect-utils@1.39.1
+
 ## 1.39.0
 
 ### Patch Changes

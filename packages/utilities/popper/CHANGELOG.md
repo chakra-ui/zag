@@ -1,5 +1,16 @@
 # @zag-js/popper
 
+## 1.39.1
+
+### Patch Changes
+
+- [`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix incorrect positioning when the anchor or floating element
+  changes while the popover is still open (e.g. switching between multiple triggers without closing first).
+- Updated dependencies []:
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
 ## 1.39.0
 
 ### Patch Changes

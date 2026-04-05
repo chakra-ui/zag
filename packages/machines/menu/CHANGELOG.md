@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 1.39.1
+
+### Patch Changes
+
+- [`d7dd8cf`](https://github.com/chakra-ui/zag/commit/d7dd8cfb2a1b5d5e10b80905d919a2024807ade4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where quick diagonal pointer movement toward an open
+  submenu could flash the highlight across sibling items you skim past. The active item now stays stable while you move
+  fast toward the submenu.
+- Updated dependencies [[`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82)]:
+  - @zag-js/popper@1.39.1
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dismissable@1.39.1
+  - @zag-js/dom-query@1.39.1
+  - @zag-js/focus-visible@1.39.1
+  - @zag-js/rect-utils@1.39.1
+
 ## 1.39.0
 
 ### Minor Changes
