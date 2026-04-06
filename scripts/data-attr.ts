@@ -266,7 +266,10 @@ async function main() {
                   return !name.endsWith("Props")
                 },
                 cb({ part, name, desc }) {
-                  result[part] ||= {}
+                  if (!result[part]) {
+                    const partAttr = `data-${widget}-${dashCase(part)}`
+                    result[part] = { [partAttr]: "<uid>" }
+                  }
                   result[part][name] = desc
 
                   // Add layer attributes for content part if widget uses dismissable
@@ -276,8 +279,10 @@ async function main() {
                   }
                 },
                 eval({ part, name }) {
+                  const partAttr = `data-${widget}-${dashCase(part)}`
+
                   if (name === "dataAttrs") {
-                    result[part] ||= {}
+                    if (!result[part]) result[part] = { [partAttr]: "<uid>" }
                     Object.assign(result[part], dataAttrs)
 
                     // Add layer attributes for content part if widget uses dismissable
@@ -289,7 +294,7 @@ async function main() {
                   }
 
                   if (functions.has(name)) {
-                    result[part] ||= {}
+                    if (!result[part]) result[part] = { [partAttr]: "<uid>" }
                     Object.assign(result[part], functions.get(name))
 
                     // Add layer attributes for content part if widget uses dismissable
