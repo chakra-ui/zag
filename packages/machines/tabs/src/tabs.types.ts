@@ -83,9 +83,15 @@ export interface TabsProps extends DirectionProperty, CommonProperties {
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
-   * Whether the tab is composite
+   * Whether the tabs use virtual focus instead of roving tabindex.
+   *
+   * When `true`, triggers receive no DOM focus — arrow keys update `focusedValue`
+   * and all triggers remain `tabIndex: -1`. Useful when tabs live inside another
+   * widget that manages focus (e.g. a combobox).
+   *
+   * @default false
    */
-  composite?: boolean | undefined
+  virtualFocus?: boolean | undefined
   /**
    * Whether the active tab can be deselected when clicking on it.
    */

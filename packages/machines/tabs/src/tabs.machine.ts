@@ -14,7 +14,6 @@ export const machine = createMachine({
       orientation: "horizontal",
       activationMode: "automatic",
       loopFocus: true,
-      composite: true,
       navigate(details) {
         clickIfLink(details.node)
       },
@@ -210,10 +209,12 @@ export const machine = createMachine({
         })
 
         raf(() => {
-          if (prop("composite")) {
+          if (prop("virtualFocus")) {
+            if (triggerEl?.dataset.value != null) {
+              context.set("focusedValue", triggerEl.dataset.value)
+            }
+          } else {
             triggerEl?.focus()
-          } else if (triggerEl?.dataset.value != null) {
-            context.set("focusedValue", triggerEl.dataset.value)
           }
         })
       },
@@ -228,10 +229,12 @@ export const machine = createMachine({
         })
 
         raf(() => {
-          if (prop("composite")) {
+          if (prop("virtualFocus")) {
+            if (triggerEl?.dataset.value != null) {
+              context.set("focusedValue", triggerEl.dataset.value)
+            }
+          } else {
             triggerEl?.focus()
-          } else if (triggerEl?.dataset.value != null) {
-            context.set("focusedValue", triggerEl.dataset.value)
           }
         })
       },

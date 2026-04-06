@@ -88,7 +88,7 @@ export default function Page() {
 
   const tabService = useMachine(tabs.machine, {
     id: useId(),
-    composite: false,
+    virtualFocus: true,
     value: selectedTab,
     onValueChange(details) {
       setSelectedTab(details.value as SelectedTab)

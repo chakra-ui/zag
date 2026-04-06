@@ -4,7 +4,7 @@ import type { ContentProps, TriggerProps, TabsProps } from "./tabs.types"
 
 export const props = createProps<TabsProps>()([
   "activationMode",
-  "composite",
+  "virtualFocus",
   "deselectable",
   "dir",
   "getRootNode",

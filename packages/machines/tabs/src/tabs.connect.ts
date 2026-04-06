@@ -22,7 +22,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
 
   const isVertical = prop("orientation") === "vertical"
   const isHorizontal = prop("orientation") === "horizontal"
-  const composite = prop("composite")
+  const virtualFocus = prop("virtualFocus")
 
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
@@ -148,7 +148,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
         "data-ssr": dataAttr(context.get("ssr")),
         id: dom.getTriggerId(scope, value),
-        tabIndex: triggerState.selected && composite ? 0 : -1,
+        tabIndex: triggerState.selected && !virtualFocus ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },
@@ -177,7 +177,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope, value),
-        tabIndex: composite ? 0 : -1,
+        tabIndex: !virtualFocus ? 0 : -1,
         "aria-labelledby": dom.getTriggerId(scope, value),
         role: "tabpanel",
         "data-selected": dataAttr(selected),
