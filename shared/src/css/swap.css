@@ -7,10 +7,10 @@
   }
 }
 
-[data-scope="swap"][data-state="open"] {
+[data-swap-root][data-state="open"] {
   animation: scaleFadeIn 0.2s ease-out;
 }
 
-[data-scope="swap"][data-state="closed"] {
+[data-swap-root][data-state="closed"] {
   animation: scaleFadeOut 0.1s ease-in;
 }

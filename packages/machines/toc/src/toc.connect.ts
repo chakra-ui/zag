@@ -40,8 +40,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
     getRootProps() {
       const rect = context.get("indicatorRect")
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "aria-labelledby": dom.getTitleId(scope),
         style: {
@@ -55,7 +54,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         dir: prop("dir"),
       })
@@ -63,8 +62,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
 
     getListProps() {
       return normalize.element({
-        ...parts.list.attrs,
-        id: dom.getListId(scope),
+        ...parts.list.attrs(scope.id),
         dir: prop("dir"),
       })
     },
@@ -74,8 +72,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.item.attrs,
-        id: dom.getItemId(scope, item.value),
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-value": item.value,
         "data-depth": String(itemState.depth),
@@ -93,8 +90,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.link.attrs,
-        id: dom.getLinkId(scope, item.value),
+        ...parts.link.attrs(scope.id),
         dir: prop("dir"),
         "data-value": item.value,
         "data-active": dataAttr(itemState.active),
@@ -106,8 +102,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
       const rect = context.get("indicatorRect")
 
       return normalize.element({
-        ...parts.indicator.attrs,
-        id: dom.getIndicatorId(scope),
+        ...parts.indicator.attrs(scope.id),
         hidden: isRectEmpty(rect),
         style: {
           position: "absolute",

@@ -80,6 +80,9 @@ export interface Scope {
   ids?: Record<string, any> | undefined
   getRootNode: () => ShadowRoot | Document | Node
   getById: <T extends Element = HTMLElement>(id: string) => T | null
+  query: <T extends Element = HTMLElement>(selector: string) => T | null
+  queryAll: <T extends Element = HTMLElement>(selector: string) => T[]
+  selector: (part: { attr: string }) => string
   getActiveElement: () => HTMLElement | null
   isActiveElement: (elem: HTMLElement | null) => boolean
   getDoc: () => typeof document

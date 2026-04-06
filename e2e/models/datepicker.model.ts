@@ -41,7 +41,7 @@ export class DatePickerModel extends Model {
   }
 
   checkAccessibility() {
-    return a11y(this.page, "[data-part=content]")
+    return a11y(this.page, "[data-date-picker-content]")
   }
 
   private today() {
@@ -57,55 +57,59 @@ export class DatePickerModel extends Model {
   }
 
   get trigger() {
-    return this.page.locator("[data-scope=date-picker][data-part=trigger]")
+    return this.page.locator("[data-date-picker-trigger]")
   }
 
   getInput(index = 0) {
-    const selector = `[data-scope=date-picker][data-part=input][data-index="${index}"]`
+    const selector = `[data-date-picker-input][data-index="${index}"]`
     return this.page.locator(selector)
   }
 
   get content() {
-    return this.page.locator("[data-scope=date-picker][data-part=content]")
+    return this.page.locator("[data-date-picker-content]")
   }
 
   get monthSelect() {
-    return this.page.locator("[data-scope=date-picker][data-part=month-select]")
+    return this.page.locator("[data-date-picker-month-select]")
   }
 
   get yearSelect() {
-    return this.page.locator("[data-scope=date-picker][data-part=year-select]")
+    return this.page.locator("[data-date-picker-year-select]")
   }
 
   get prevTrigger() {
-    return this.page.locator("[data-scope=date-picker][data-part=prev-trigger]")
+    return this.page.locator("[data-date-picker-prev-trigger]")
   }
 
   get nextTrigger() {
-    return this.page.locator("[data-scope=date-picker][data-part=next-trigger]")
+    return this.page.locator("[data-date-picker-next-trigger]")
   }
 
   get table() {
-    return this.page.locator("[data-scope=date-picker][data-part=table]")
+    return this.page.locator("[data-date-picker-table]")
   }
 
   get todayCell() {
-    return this.page.locator("[data-scope=date-picker][data-part=table-cell-trigger][data-today]")
+    return this.page.locator("[data-date-picker-table-cell-trigger][data-today]")
   }
 
   get firstDayCell() {
     const start = startOfMonth(this.today())
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]`)
+    return this.page.locator(
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]`,
+    )
   }
 
   get lastDayCell() {
     const end = endOfMonth(this.today())
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`)
+    return this.page.locator(
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`,
+    )
   }
 
   private getViewCell(view: "day" | "month" | "year", value: string | number) {
     return this.page
-      .locator(`[data-scope=date-picker][data-part=table-cell-trigger][data-view=${view}]`)
+      .locator(`[data-date-picker-table-cell-trigger][data-view=${view}]`)
       .filter({ hasText: value.toString() })
       .first()
   }
@@ -114,14 +118,18 @@ export class DatePickerModel extends Model {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : this.today()
     const next = now.add({ days: step })
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]`)
+    return this.page.locator(
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]`,
+    )
   }
 
   getPrevDayCell(opts: DayCellOptions = {}) {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : this.today()
     const prev = now.add({ days: -1 * step })
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]`)
+    return this.page.locator(
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]`,
+    )
   }
 
   getDayCell(value: string | number) {
@@ -175,7 +183,7 @@ export class DatePickerModel extends Model {
   }
 
   selectMonth(value: string) {
-    return this.page.selectOption("[data-scope=date-picker][data-part=month-select]", value)
+    return this.page.selectOption("[data-date-picker-month-select]", value)
   }
 
   async waitForCalendarRender() {
@@ -186,9 +194,7 @@ export class DatePickerModel extends Model {
 
   getCurrentMonthDayCells() {
     // Only get cells that belong to the current month (not previous/next month spillover)
-    return this.page.locator(
-      "[data-scope=date-picker][data-part=table-cell-trigger][data-view=day]:not([data-outside-range])",
-    )
+    return this.page.locator("[data-date-picker-table-cell-trigger][data-view=day]:not([data-outside-range])")
   }
 
   async clickOutsideToBlur() {

@@ -52,10 +52,9 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.label({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
           if (disabled) return
@@ -76,7 +75,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.element({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
         id: dom.getLabelId(scope),
@@ -85,17 +84,16 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "aria-hidden": true,
       })
     },
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
         hidden: !indeterminate && !checked,

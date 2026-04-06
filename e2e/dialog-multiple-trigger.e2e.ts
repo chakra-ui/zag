@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test"
 
-const trigger = (id: number) => `[data-scope="dialog"][data-part="trigger"][data-value="${id}"]`
-const content = '[data-scope="dialog"][data-part="content"]'
-const closeTrigger = '[data-scope="dialog"][data-part="close-trigger"]'
+const trigger = (id: number) => `[data-dialog-trigger][data-value="${id}"]`
+const content = "[data-dialog-content]"
+const closeTrigger = "[data-dialog-close-trigger]"
 
 test.describe("dialog / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {

@@ -16,19 +16,19 @@ export class NavigationMenuModel extends Model {
   }
 
   getTrigger(value: string) {
-    return this.page.locator(`[data-scope="navigation-menu"][data-part="trigger"][data-value="${value}"]`)
+    return this.page.locator(`[data-navigation-menu-trigger][data-value="${value}"]`)
   }
 
   getContent(value: string) {
-    return this.page.locator(`[data-scope="navigation-menu"][data-part="content"][data-value="${value}"]`)
+    return this.page.locator(`[data-navigation-menu-content][data-value="${value}"]`)
   }
 
   getViewport() {
-    return this.page.locator(`[data-scope="navigation-menu"][data-part="viewport"]`)
+    return this.page.locator(`[data-navigation-menu-viewport]`)
   }
 
   getLink(value: string) {
-    return this.page.locator(`[data-scope="navigation-menu"][data-part="link"][data-value="${value}"]`)
+    return this.page.locator(`[data-navigation-menu-link][data-value="${value}"]`)
   }
 
   getContentLink(value: string, text: string) {

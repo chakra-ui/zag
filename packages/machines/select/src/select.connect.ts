@@ -114,9 +114,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
       })
@@ -126,7 +125,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.label({
         dir: prop("dir"),
         id: dom.getLabelId(scope),
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
@@ -142,9 +141,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
@@ -154,7 +152,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -176,7 +174,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-invalid": invalid,
         "aria-required": required,
         "aria-labelledby": dom.getLabelId(scope),
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
@@ -252,7 +250,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
         "data-state": open ? "open" : "closed",
@@ -268,7 +266,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         id: dom.getItemId(scope, itemState.value),
         role: "option",
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
@@ -302,7 +300,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemTextProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -313,7 +311,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         "aria-hidden": true,
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         "data-state": itemState.selected ? "checked" : "unchecked",
         hidden: !itemState.selected,
       })
@@ -322,7 +320,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
-        ...parts.itemGroupLabel.attrs,
+        ...parts.itemGroupLabel.attrs(scope.id),
         id: dom.getItemGroupLabelId(scope, htmlFor),
         dir: prop("dir"),
         role: "presentation",
@@ -332,7 +330,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemGroupProps(props) {
       const { id } = props
       return normalize.element({
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
@@ -343,8 +341,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
-        id: dom.getClearTriggerId(scope),
+        ...parts.clearTrigger.attrs(scope.id),
         type: "button",
         "aria-label": translations.clearTriggerLabel,
         "data-invalid": dataAttr(invalid),
@@ -393,9 +390,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
@@ -406,7 +402,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: composite ? "listbox" : "dialog",
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         "data-activedescendant": ariaActiveDescendant,
@@ -478,7 +474,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getListProps() {
       return normalize.element({
-        ...parts.list.attrs,
+        ...parts.list.attrs(scope.id),
         tabIndex: 0,
         role: !composite ? "listbox" : undefined,
         "aria-labelledby": dom.getTriggerId(scope),

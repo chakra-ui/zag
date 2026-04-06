@@ -64,9 +64,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
-        "aria-label": translations?.rootLabel,
+        ...parts.root.attrs(scope.id),
+        "aria-label": translations.rootLabel,
         "data-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {
@@ -84,8 +83,7 @@ export function connect<T extends PropTypes>(
 
     getListProps() {
       return normalize.element({
-        ...parts.list.attrs,
-        id: dom.getListId(scope),
+        ...parts.list.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         style: { position: "relative" },
@@ -95,7 +93,7 @@ export function connect<T extends PropTypes>(
     getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         id: itemState.itemId,
         dir: prop("dir"),
         "data-value": props.value,
@@ -124,7 +122,7 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         "aria-hidden": true,
         dir: prop("dir"),
         hidden: !open,
@@ -139,7 +137,7 @@ export function connect<T extends PropTypes>(
 
     getArrowProps() {
       return normalize.element({
-        ...parts.arrow.attrs,
+        ...parts.arrow.attrs(scope.id),
         "aria-hidden": true,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
@@ -149,9 +147,8 @@ export function connect<T extends PropTypes>(
     getTriggerProps(props) {
       const itemState = getItemState(props)
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
-        "data-uid": prop("id"),
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
         disabled: itemState.disabled,
@@ -253,12 +250,11 @@ export function connect<T extends PropTypes>(
     getLinkProps(props) {
       const { closeOnClick = true } = props
       return normalize.element({
-        ...parts.link.attrs,
+        ...parts.link.attrs(scope.id),
         dir: prop("dir"),
         "data-value": props.value,
         "data-current": dataAttr(props.current),
         "aria-current": props.current ? "page" : undefined,
-        "data-ownedby": dom.getContentId(scope, props.value),
         onClick(event) {
           const target = event.currentTarget
 
@@ -283,7 +279,7 @@ export function connect<T extends PropTypes>(
           const currentElement = event.currentTarget as HTMLElement
 
           // Check if this link is inside a content element (vs. direct child of item)
-          const contentEl = currentElement.closest('[data-scope="navigation-menu"][data-part="content"]')
+          const contentEl = currentElement.closest("[data-navigation-menu-content]")
 
           // If link is inside content, navigate among content links
           // Otherwise, navigate among top-level elements (triggers and direct child links)
@@ -312,12 +308,11 @@ export function connect<T extends PropTypes>(
       const selected = isViewportRendered ? currentValue === props.value : itemState.selected
 
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: itemState.contentId,
         dir: prop("dir"),
         hidden: !selected,
         "aria-labelledby": itemState.triggerId,
-        "data-uid": prop("id"),
         "data-state": selected ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
@@ -333,8 +328,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
 
           // prevent parent menu triggering keydown event
-          if (event.currentTarget.closest("[data-scope=navigation-menu][data-part=root]") !== dom.getRootEl(scope))
-            return
+          if (event.currentTarget.closest("[data-navigation-menu-root]") !== dom.getRootEl(scope)) return
 
           const isMetaKey = event.altKey || event.ctrlKey || event.metaKey
           const isTabKey = event.key === "Tab" && !isMetaKey
@@ -380,7 +374,7 @@ export function connect<T extends PropTypes>(
     getViewportPositionerProps(props = {}) {
       const { align = "center" } = props
       return normalize.element({
-        ...parts.viewportPositioner.attrs,
+        ...parts.viewportPositioner.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-align": align,
@@ -391,8 +385,7 @@ export function connect<T extends PropTypes>(
       const { align = "center" } = props
       const open = Boolean(value)
       return normalize.element({
-        ...parts.viewport.attrs,
-        id: dom.getViewportId(scope),
+        ...parts.viewport.attrs(scope.id),
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
@@ -422,7 +415,7 @@ export function connect<T extends PropTypes>(
     getItemIndicatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         "aria-hidden": true,
         dir: prop("dir"),
         hidden: !itemState.selected,

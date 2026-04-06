@@ -118,7 +118,7 @@ export const machine = createMachine<MarqueeSchema>({
         if (!viewportEl) return
 
         // Query all content elements (original + clones)
-        const contentElements = viewportEl.querySelectorAll<HTMLDivElement>('[data-part="content"]')
+        const contentElements = viewportEl.querySelectorAll<HTMLDivElement>("[data-marquee-content]")
 
         contentElements.forEach((el) => {
           // Remove animation

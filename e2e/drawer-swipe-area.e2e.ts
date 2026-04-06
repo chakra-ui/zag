@@ -16,7 +16,7 @@ test.describe("drawer [swipe-area]", () => {
   })
 
   test("should not open on pointer down without swipe", async ({ page }) => {
-    const swipeArea = page.locator("[data-part=swipe-area]")
+    const swipeArea = page.locator("[data-drawer-swipe-area]")
     const box = await swipeArea.boundingBox()
     if (!box) throw new Error("Swipe area not found")
 
@@ -66,7 +66,7 @@ test.describe("drawer [swipe-area]", () => {
     await I.swipeArea("up", 300)
     await I.waitForOpenState()
 
-    await page.click("[data-part=close-trigger]")
+    await page.click("[data-drawer-close-trigger]")
 
     await I.dontSeeContent()
     await I.dontSeeBackdrop()

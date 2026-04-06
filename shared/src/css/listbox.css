@@ -1,17 +1,17 @@
-[data-scope="listbox"][data-part="label"] {
+[data-listbox-label] {
   font-size: 14px;
 }
 
-[data-scope="listbox"][data-part="label"][data-disabled] {
+[data-listbox-label][data-disabled] {
   cursor: default;
   color: gray;
 }
 
-[data-scope="listbox"][data-part="label"][data-invalid] {
+[data-listbox-label][data-invalid] {
   color: red;
 }
 
-[data-scope="listbox"][data-part="content"] {
+[data-listbox-content] {
   padding: 0px;
   list-style: none;
   width: 400px;
@@ -32,7 +32,7 @@
   }
 }
 
-[data-scope="listbox"][data-part="item"] {
+[data-listbox-item] {
   padding: 4px 8px;
   cursor: default;
   display: flex;
@@ -57,19 +57,19 @@
   }
 }
 
-[data-scope="listbox"][data-part="item"][data-disabled] {
+[data-listbox-item][data-disabled] {
   color: #777;
 }
 
-[data-scope="listbox"][data-part="item-text"] {
+[data-listbox-item-text] {
   flex: 1;
   width: 100%;
 }
 
-[data-scope="listbox"][data-part="item"][data-state="checked"] {
+[data-listbox-item][data-state="checked"] {
   background: rgb(197, 197, 255);
 }
 
-[data-scope="listbox"][data-part="item"][data-highlighted] {
+[data-listbox-item][data-highlighted] {
   outline: 2px solid rgb(172, 172, 243);
 }

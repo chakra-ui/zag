@@ -113,8 +113,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getBackdropProps() {
       return normalize.element({
-        ...parts.backdrop.attrs,
-        id: dom.getBackdropId(scope),
+        ...parts.backdrop.attrs(scope.id),
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
@@ -131,7 +130,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getSpotlightProps() {
       return normalize.element({
-        ...parts.spotlight.attrs,
+        ...parts.spotlight.attrs(scope.id),
         hidden: !open || !step?.target?.(),
         style: {
           "--tour-layer": 1,
@@ -148,15 +147,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getProgressTextProps() {
       return normalize.element({
-        ...parts.progressText.attrs,
+        ...parts.progressText.attrs(scope.id),
       })
     },
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         "data-type": step?.type,
         "data-placement": placement,
         style: {
@@ -168,8 +166,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(scope),
-        ...parts.arrow.attrs,
+        ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
         hidden: step?.type !== "tooltip",
         style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
@@ -179,7 +176,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getArrowTipProps() {
       return normalize.element({
-        ...parts.arrowTip.attrs,
+        ...parts.arrowTip.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
@@ -187,7 +184,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         dir: prop("dir"),
         role: "alertdialog",
@@ -224,7 +221,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         "data-placement": hasTarget ? placement : "center",
       })
@@ -232,7 +229,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getDescriptionProps() {
       return normalize.element({
-        ...parts.description.attrs,
+        ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
         "data-placement": hasTarget ? placement : "center",
       })
@@ -240,7 +237,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
     getCloseTriggerProps() {
       return normalize.element({
-        ...parts.closeTrigger.attrs,
+        ...parts.closeTrigger.attrs(scope.id),
         "data-type": step?.type,
         "aria-label": prop("translations").close,
         onClick: actionMap.dismiss,
@@ -294,7 +291,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       }
 
       return normalize.button({
-        ...parts.actionTrigger.attrs,
+        ...parts.actionTrigger.attrs(scope.id),
         type: "button",
         ...attrs,
         ...actionProps,

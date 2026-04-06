@@ -1,19 +1,22 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
 import type { CursorState } from "./splitter.types"
+import { parts } from "./splitter.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `splitter:${ctx.id}`
-export const getResizeTriggerId = (ctx: Scope, id: string) =>
-  ctx.ids?.resizeTrigger?.(id) ?? `splitter:${ctx.id}:splitter:${id}`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `splitter:${ctx.id}:label`
-export const getPanelId = (ctx: Scope, id: string | number) => ctx.ids?.panel?.(id) ?? `splitter:${ctx.id}:panel:${id}`
-export const getPanelEls = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=panel][data-ownedby=${getRootId(ctx)}]`)
-export const getGlobalCursorId = (ctx: Scope) => `splitter:${ctx.id}:global-cursor`
+// ID generators — kept for ARIA attributes in connect
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getResizeTriggerId = (ctx: Scope, id: string) => ctx.ids?.resizeTrigger?.(id) ?? `${ctx.id}:splitter:${id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
+export const getPanelId = (ctx: Scope, id: string | number) => ctx.ids?.panel?.(id) ?? `${ctx.id}:panel:${id}`
+export const getGlobalCursorId = (ctx: Scope) => `${ctx.id}:global-cursor`
 
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getResizeTriggerEl = (ctx: Scope, id: string) => ctx.getById(getResizeTriggerId(ctx, id))
-export const getPanelEl = (ctx: Scope, id: string | number) => ctx.getById(getPanelId(ctx, id))
+// Element lookups — use querySelector with merged data attributes
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getPanelEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.panel))
+export const getResizeTriggerEl = (ctx: Scope, id: string) =>
+  ctx.query(`${ctx.selector(parts.resizeTrigger)}[data-id="${id}"]`)
+export const getPanelEl = (ctx: Scope, id: string | number) =>
+  ctx.query(`${ctx.selector(parts.panel)}[data-id="${id}"]`)
 
 export const getCursor = (state: CursorState, x: boolean) => {
   let cursor: Style["cursor"] = x ? "col-resize" : "row-resize"
@@ -23,7 +26,7 @@ export const getCursor = (state: CursorState, x: boolean) => {
 }
 
 export const getResizeTriggerEls = (ctx: Scope) => {
-  return queryAll(getRootEl(ctx), `[role=separator][data-ownedby='${CSS.escape(getRootId(ctx))}']`)
+  return ctx.queryAll(ctx.selector(parts.resizeTrigger))
 }
 
 export const getGlobalCursorEl = (ctx: Scope) => {

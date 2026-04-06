@@ -16,39 +16,39 @@ export class CascadeSelectModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator("[data-scope=cascade-select][data-part=trigger]")
+    return this.page.locator("[data-cascade-select-trigger]")
   }
 
   private get content() {
-    return this.page.locator("[data-scope=cascade-select][data-part=content]")
+    return this.page.locator("[data-cascade-select-content]")
   }
 
   private get label() {
-    return this.page.locator("[data-scope=cascade-select][data-part=label]")
+    return this.page.locator("[data-cascade-select-label]")
   }
 
   private get clearTrigger() {
-    return this.page.locator("[data-scope=cascade-select][data-part=clear-trigger]")
+    return this.page.locator("[data-cascade-select-clear-trigger]")
   }
 
   getItem = (text: string) => {
     // Use item-text element for exact text matching to avoid partial matches
     // e.g., "Africa" should not match "South Africa" or "Central African Republic"
-    return this.page.locator(`[data-part=item]`).filter({
-      has: this.page.locator(`[data-part=item-text]`, { hasText: new RegExp(`^${text}$`) }),
+    return this.page.locator(`[data-cascade-select-item]`).filter({
+      has: this.page.locator(`[data-cascade-select-item-text]`, { hasText: new RegExp(`^${text}$`) }),
     })
   }
 
   getList = (depth: number) => {
-    return this.page.locator(`[data-part=list][data-depth="${depth}"]`)
+    return this.page.locator(`[data-cascade-select-list][data-depth="${depth}"]`)
   }
 
   get highlightedItems() {
-    return this.page.locator("[data-part=item][data-highlighted]")
+    return this.page.locator("[data-cascade-select-item][data-highlighted]")
   }
 
   get selectedItems() {
-    return this.page.locator("[data-part=item][data-state='checked']")
+    return this.page.locator("[data-cascade-select-item][data-state='checked']")
   }
 
   focusTrigger = async () => {
@@ -123,13 +123,13 @@ export class CascadeSelectModel extends Model {
 
   seeItemHasIndicator = async (text: string) => {
     const item = this.getItem(text)
-    const indicator = item.locator("[data-part=item-indicator]")
+    const indicator = item.locator("[data-cascade-select-item-indicator]")
     await expect(indicator).toBeVisible()
   }
 
   dontSeeItemHasIndicator = async (text: string) => {
     const item = this.getItem(text)
-    const indicator = item.locator("[data-part=item-indicator]")
+    const indicator = item.locator("[data-cascade-select-item-indicator]")
     await expect(indicator).not.toBeVisible()
   }
 

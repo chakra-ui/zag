@@ -16,15 +16,15 @@ export class TourModel extends Model {
   }
 
   private get content() {
-    return this.page.locator("[data-scope=tour][data-part=content]")
+    return this.page.locator("[data-tour-content]")
   }
 
   private getStep(stepId: string) {
-    return this.page.locator(`[data-scope=tour][data-part=content][data-step=${stepId}]`)
+    return this.page.locator(`[data-tour-content][data-step=${stepId}]`)
   }
 
   private get title() {
-    return this.content.locator("[data-part=title]")
+    return this.content.locator("[data-tour-title]")
   }
 
   private get target() {
@@ -32,7 +32,7 @@ export class TourModel extends Model {
   }
 
   private get spotlight() {
-    return this.page.locator("[data-scope=tour][data-part=spotlight]")
+    return this.page.locator("[data-tour-spotlight]")
   }
 
   getTargetRect() {

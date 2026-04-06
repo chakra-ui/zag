@@ -11,7 +11,7 @@ test.describe("splitter", () => {
   })
 
   test("should be focused on next splitter when tabbed", async ({ page }) => {
-    await page.click(part("root"))
+    await page.click(part("splitter", "root"))
     await page.keyboard.press("Tab")
 
     expect(page.locator(testid("trigger-b:c"))).toHaveAttribute("data-focus", "")
@@ -25,7 +25,7 @@ test.describe("splitter", () => {
     await page.keyboard.press("ArrowRight")
     await page.keyboard.press("ArrowRight")
 
-    expect(page.locator(part("resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "36")
+    expect(page.locator(part("splitter", "resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "36")
   })
 
   test("should decrease panel when arrow left pressed", async ({ page }) => {
@@ -36,14 +36,14 @@ test.describe("splitter", () => {
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("ArrowLeft")
 
-    expect(page.locator(part("resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "30")
+    expect(page.locator(part("splitter", "resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "30")
   })
 
   test("should manage splitter panels when vertical orientation", async ({ page }) => {
     await controls(page).select("orientation", "vertical")
 
-    expect(page.locator(part("root"))).toHaveAttribute("data-orientation", "vertical")
-    expect(page.locator(part("panel")).first()).toHaveAttribute("data-orientation", "vertical")
-    expect(page.locator(part("resize-trigger")).first()).toHaveAttribute("data-orientation", "vertical")
+    expect(page.locator(part("splitter", "root"))).toHaveAttribute("data-orientation", "vertical")
+    expect(page.locator(part("splitter", "panel")).first()).toHaveAttribute("data-orientation", "vertical")
+    expect(page.locator(part("splitter", "resize-trigger")).first()).toHaveAttribute("data-orientation", "vertical")
   })
 })

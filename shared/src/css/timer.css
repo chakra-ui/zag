@@ -1,26 +1,26 @@
-[data-scope="timer"][data-part="root"] {
+[data-timer-root] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-[data-scope="timer"][data-part="area"] {
+[data-timer-area] {
   display: flex;
   align-items: center;
 }
 
-[data-scope="timer"][data-part="item"] {
+[data-timer-item] {
   font-size: 2rem;
   font-weight: 500;
 }
 
-[data-scope="timer"][data-part="separator"] {
+[data-timer-separator] {
   font-size: 1rem;
   font-weight: 500;
   margin-inline: 0.5rem;
 }
 
-[data-scope="timer"][data-part="control"] {
+[data-timer-control] {
   display: flex;
   gap: 4px;
 }

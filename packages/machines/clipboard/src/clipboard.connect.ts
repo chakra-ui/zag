@@ -21,15 +21,14 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-copied": dataAttr(copied),
-        id: dom.getRootId(scope),
       })
     },
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         htmlFor: dom.getInputId(scope),
         "data-copied": dataAttr(copied),
         id: dom.getLabelId(scope),
@@ -38,14 +37,14 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         "data-copied": dataAttr(copied),
       })
     },
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         defaultValue: context.get("value"),
         "data-copied": dataAttr(copied),
         readOnly: true,
@@ -62,7 +61,7 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
 
     getTriggerProps() {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         type: "button",
         "aria-label": translations.triggerLabel?.(copied),
         "data-copied": dataAttr(copied),
@@ -74,7 +73,7 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
 
     getIndicatorProps(props) {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         hidden: props.copied !== copied,
       })
     },

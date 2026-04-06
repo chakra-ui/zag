@@ -16,27 +16,27 @@ export class CarouselModel extends Model {
   }
 
   getItem(index: number) {
-    return this.page.locator(part("item")).nth(index)
+    return this.page.locator(part("carousel", "item")).nth(index)
   }
 
   getIndicator(index: number) {
-    return this.page.locator(part("indicator")).nth(index)
+    return this.page.locator(part("carousel", "indicator")).nth(index)
   }
 
   get prevTrigger() {
-    return this.page.locator(part("prev-trigger"))
+    return this.page.locator(part("carousel", "prev-trigger"))
   }
 
   get nextTrigger() {
-    return this.page.locator(part("next-trigger"))
+    return this.page.locator(part("carousel", "next-trigger"))
   }
 
   get autoplayTrigger() {
-    return this.page.locator(part("autoplay-trigger"))
+    return this.page.locator(part("carousel", "autoplay-trigger"))
   }
 
   get carousel() {
-    return this.page.locator(part("item-group"))
+    return this.page.locator(part("carousel", "item-group"))
   }
 
   async clickPrevTrigger() {
@@ -128,7 +128,7 @@ export class CarouselModel extends Model {
 
   async seeNumOfItems(count: number) {
     await expect(this.carousel).toBeVisible()
-    const items = this.page.locator(part("item"))
+    const items = this.page.locator(part("carousel", "item"))
     await expect(items).toHaveCount(count)
   }
 

@@ -1,18 +1,22 @@
 import type { Scope } from "@zag-js/core"
+import { parts } from "./image-cropper.anatomy"
 import type { ImageCropperService } from "./image-cropper.types"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `image-cropper:${ctx.id}`
-export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `image-cropper:${ctx.id}:viewport`
-export const getImageId = (ctx: Scope) => ctx.ids?.image ?? `image-cropper:${ctx.id}:image`
-export const getSelectionId = (ctx: Scope) => ctx.ids?.selection ?? `image-cropper:${ctx.id}:selection`
+// ID generators — only for parts referenced by ARIA attributes
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `${ctx.id}:viewport`
+export const getImageId = (ctx: Scope) => ctx.ids?.image ?? `${ctx.id}:image`
+export const getSelectionId = (ctx: Scope) => ctx.ids?.selection ?? `${ctx.id}:selection`
 export const getHandleId = (ctx: Scope, position: string) =>
-  ctx.ids?.handle?.(position) ?? `image-cropper:${ctx.id}:handle:${position}`
+  ctx.ids?.handle?.(position) ?? `${ctx.id}:handle:${position}`
 
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getViewportEl = (ctx: Scope) => ctx.getById(getViewportId(ctx))
-export const getImageEl = (ctx: Scope) => ctx.getById<HTMLImageElement>(getImageId(ctx))
-export const getSelectionEl = (ctx: Scope) => ctx.getById(getSelectionId(ctx))
-export const getHandleEl = (ctx: Scope, position: string) => ctx.getById(getHandleId(ctx, position))
+// Element lookups — use querySelector with merged data attributes
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getViewportEl = (ctx: Scope) => ctx.query(ctx.selector(parts.viewport))
+export const getImageEl = (ctx: Scope) => ctx.query<HTMLImageElement>(ctx.selector(parts.image))
+export const getSelectionEl = (ctx: Scope) => ctx.query(ctx.selector(parts.selection))
+export const getHandleEl = (ctx: Scope, position: string) =>
+  ctx.query(`${ctx.selector(parts.handle)}[data-value="${position}"]`)
 
 export function drawCroppedImageToCanvas(params: ImageCropperService): HTMLCanvasElement | null {
   const { context, scope } = params

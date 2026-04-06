@@ -36,8 +36,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -51,7 +50,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         dir: prop("dir"),
@@ -78,9 +77,8 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         role: "presentation",
-        id: dom.getControlId(scope),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -117,7 +115,7 @@ export function connect<T extends PropTypes>(
 
     getThumbProps() {
       return normalize.element({
-        ...parts.thumb.attrs,
+        ...parts.thumb.attrs(scope.id),
         id: dom.getThumbId(scope),
         role: "slider",
         dir: prop("dir"),
@@ -181,15 +179,14 @@ export function connect<T extends PropTypes>(
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
-        id: dom.getValueTextId(scope),
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
       })
     },
 
     getMarkerGroupProps() {
       return normalize.element({
-        ...parts.markerGroup.attrs,
+        ...parts.markerGroup.attrs(scope.id),
         dir: prop("dir"),
       })
     },
@@ -208,7 +205,7 @@ export function connect<T extends PropTypes>(
       const markerDisplayAngle = getDisplayAngle(props.value, dir)
 
       return normalize.element({
-        ...parts.marker.attrs,
+        ...parts.marker.attrs(scope.id),
         dir: prop("dir"),
         "data-value": props.value,
         "data-state": markerState,

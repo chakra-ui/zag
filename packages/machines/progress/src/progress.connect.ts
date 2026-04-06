@@ -53,8 +53,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getRootProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         "data-max": max,
         "data-value": value ?? undefined,
         "data-state": progressState,
@@ -69,7 +68,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         id: dom.getLabelId(scope),
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         "data-orientation": orientation,
       })
     },
@@ -78,15 +77,14 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         "aria-live": "polite",
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
       })
     },
 
     getTrackProps() {
       return normalize.element({
         dir: prop("dir"),
-        id: dom.getTrackId(scope),
-        ...parts.track.attrs,
+        ...parts.track.attrs(scope.id),
         ...progressbarProps,
       })
     },
@@ -94,7 +92,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getRangeProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.range.attrs,
+        ...parts.range.attrs(scope.id),
         "data-orientation": orientation,
         "data-state": progressState,
         style: {
@@ -106,8 +104,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getCircleProps() {
       return normalize.element({
         dir: prop("dir"),
-        id: dom.getCircleId(scope),
-        ...parts.circle.attrs,
+        ...parts.circle.attrs(scope.id),
         ...progressbarProps,
         ...circleProps.root,
       })
@@ -117,7 +114,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         "data-orientation": orientation,
-        ...parts.circleTrack.attrs,
+        ...parts.circleTrack.attrs(scope.id),
         ...circleProps.track,
       })
     },
@@ -125,7 +122,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getCircleRangeProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.circleRange.attrs,
+        ...parts.circleRange.attrs(scope.id),
         ...circleProps.range,
         "data-state": progressState,
       })
@@ -134,7 +131,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getViewProps(props) {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.view.attrs,
+        ...parts.view.attrs(scope.id),
         "data-state": props.state,
         hidden: props.state !== progressState,
       })

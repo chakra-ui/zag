@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
 import { rect } from "./_utils"
 
-const trigger = (id: number) => `[data-scope="tooltip"][data-part="trigger"][data-value="${id}"]`
-const content = '[data-scope="tooltip"][data-part="content"]'
-const positioner = '[data-scope="tooltip"][data-part="positioner"]'
+const trigger = (id: number) => `[data-tooltip-trigger][data-value="${id}"]`
+const content = "[data-tooltip-content]"
+const positioner = "[data-tooltip-positioner]"
 
 test.describe("tooltip / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {

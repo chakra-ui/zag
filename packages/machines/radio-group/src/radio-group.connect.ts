@@ -61,9 +61,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         role: "radiogroup",
-        id: dom.getRootId(scope),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-required": prop("required") || undefined,
         "aria-disabled": groupDisabled || undefined,
@@ -82,7 +81,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.element({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
@@ -99,7 +98,7 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
 
       return normalize.label({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemId(scope, props.value),
         htmlFor: dom.getItemHiddenInputId(scope, props.value),
@@ -137,7 +136,7 @@ export function connect<T extends PropTypes>(
 
     getItemTextProps(props) {
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemLabelId(scope, props.value),
         ...getItemDataAttrs(props),
@@ -148,9 +147,8 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.itemControl.attrs,
+        ...parts.itemControl.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemControlId(scope, props.value),
         "data-active": dataAttr(itemState.active),
         "aria-hidden": true,
         ...getItemDataAttrs(props),
@@ -161,7 +159,6 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
 
       return normalize.input({
-        "data-ownedby": dom.getRootId(scope),
         id: dom.getItemHiddenInputId(scope, props.value),
         type: "radio",
         name: prop("name") || prop("id"),
@@ -210,8 +207,7 @@ export function connect<T extends PropTypes>(
       const animateIndicator = context.get("animateIndicator")
 
       return normalize.element({
-        id: dom.getIndicatorId(scope),
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         hidden: context.get("value") == null || isRectEmpty(rect),
         "data-disabled": dataAttr(groupDisabled),

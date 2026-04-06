@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
 
-export async function a11y(page: Page, selector = "[data-part=root]", disableRules: string[] = []) {
+export async function a11y(page: Page, selector = "main", disableRules: string[] = []) {
   await page.waitForSelector(selector)
 
   const results = await new AxeBuilder({ page: page as any })
@@ -39,7 +39,7 @@ export const controls = (page: Page) => {
   }
 }
 
-export const part = (part: string) => `[data-part=${esc(part)}]`
+export const part = (scope: string, name: string) => `[data-${scope}-${name}]`
 
 const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
 

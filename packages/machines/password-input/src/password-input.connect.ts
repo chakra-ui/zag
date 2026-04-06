@@ -34,7 +34,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         htmlFor: dom.getInputId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -55,7 +55,7 @@ export function connect<T extends PropTypes>(
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         id: dom.getInputId(scope),
         autoCapitalize: "off",
         name: prop("name"),
@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(
 
     getVisibilityTriggerProps() {
       return normalize.button({
-        ...parts.visibilityTrigger.attrs,
+        ...parts.visibilityTrigger.attrs(scope.id),
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
@@ -97,7 +97,7 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         "aria-hidden": true,
         "data-state": visible ? "visible" : "hidden",
         "data-disabled": dataAttr(disabled),
@@ -108,7 +108,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),

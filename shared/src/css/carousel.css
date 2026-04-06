@@ -1,4 +1,4 @@
-[data-scope="carousel"][data-part="root"] {
+[data-carousel-root] {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -13,13 +13,13 @@
   }
 }
 
-[data-scope="carousel"][data-part="control"] {
+[data-carousel-control] {
   display: flex;
   gap: 8px;
   align-self: stretch;
 }
 
-[data-scope="carousel"][data-part="item-group"] {
+[data-carousel-item-group] {
   align-self: stretch;
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -30,7 +30,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="item"] {
+[data-carousel-item] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,7 +53,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="indicator-group"] {
+[data-carousel-indicator-group] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,7 @@
   flex-wrap: wrap;
 }
 
-[data-scope="carousel"][data-part="indicator"] {
+[data-carousel-indicator] {
   display: flex;
   border: none;
   justify-content: center;
@@ -79,7 +79,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="autoplay-trigger"] {
+[data-carousel-autoplay-trigger] {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -16,19 +16,19 @@ export class ListboxModel extends Model {
   }
 
   get label() {
-    return this.page.locator("[data-scope=listbox][data-part=label]")
+    return this.page.locator("[data-listbox-label]")
   }
 
   get input() {
-    return this.page.locator("[data-scope=listbox][data-part=input]")
+    return this.page.locator("[data-listbox-input]")
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-scope=listbox][data-part=item]`, { hasText: text })
+    return this.page.locator(`[data-listbox-item]`, { hasText: text })
   }
 
   get content() {
-    return this.page.locator("[data-scope=listbox][data-part=content]")
+    return this.page.locator("[data-listbox-content]")
   }
 
   async tabToContent() {

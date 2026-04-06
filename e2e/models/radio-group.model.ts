@@ -11,11 +11,11 @@ export class RadioGroupModel extends Model {
   }
 
   get root() {
-    return this.page.locator("[data-scope='radio-group'][data-part='root']")
+    return this.page.locator("[data-radio-group-root]")
   }
 
   get label() {
-    return this.page.locator("[data-scope='radio-group'][data-part='label']")
+    return this.page.locator("[data-radio-group-label]")
   }
 
   getRadio(value: string) {

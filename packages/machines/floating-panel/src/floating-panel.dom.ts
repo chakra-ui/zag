@@ -2,17 +2,21 @@ import type { Scope } from "@zag-js/core"
 import { isHTMLElement } from "@zag-js/dom-query"
 import { createRect, getElementRect, getWindowRect, type Rect } from "@zag-js/rect-utils"
 import { pick } from "@zag-js/utils"
+import { parts } from "./floating-panel.anatomy"
 
-export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `float:${ctx.id}:trigger`
-export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `float:${ctx.id}:positioner`
-export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `float:${ctx.id}:content`
-export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `float:${ctx.id}:title`
-export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `float:${ctx.id}:header`
+// ID generators — only for parts referenced by ARIA attributes
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `${ctx.id}:trigger`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
+export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `${ctx.id}:title`
+export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `${ctx.id}:header`
+export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `${ctx.id}:positioner`
 
-export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
-export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
-export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
-export const getHeaderEl = (ctx: Scope) => ctx.getById(getHeaderId(ctx))
+// Element lookups — use querySelector with merged data attributes
+export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
+export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
+export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
+export const getHeaderEl = (ctx: Scope) => ctx.query(ctx.selector(parts.header))
+
 export const getBoundaryRect = (ctx: Scope, boundaryEl: HTMLElement | undefined | null, allowOverflow: boolean) => {
   let boundaryRect: Rect
 

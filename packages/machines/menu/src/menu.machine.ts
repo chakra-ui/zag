@@ -17,6 +17,7 @@ import { getInteractionModality, setInteractionModality, trackFocusVisible } fro
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
+import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import type { MenuSchema } from "./menu.types"
 import {
@@ -874,7 +875,7 @@ export const machine = createMachine<MenuSchema>({
       closeSiblingMenus({ refs, event, scope }) {
         const target = event.target
         if (!dom.isTriggerItem(target)) return
-        const hoveredChildId = target?.getAttribute("data-uid")
+        const hoveredChildId = target?.getAttribute(parts.triggerItem.attr)
         const children = refs.get("children")
         for (const id in children) {
           if (id === hoveredChildId) continue
@@ -895,7 +896,7 @@ export const machine = createMachine<MenuSchema>({
       },
       openSubmenu({ refs, scope, computed }) {
         const item = scope.getById(computed("highlightedId")!)
-        const id = item?.getAttribute("data-uid")
+        const id = item?.getAttribute(parts.triggerItem.attr)
         const children = refs.get("children")
         const child = id ? children[id] : null
         child?.send({ type: "OPEN_AUTOFOCUS" })

@@ -14,43 +14,43 @@ export class ColorPickerModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator(part("trigger"))
+    return this.page.locator(part("color-picker", "trigger"))
   }
 
   private get content() {
-    return this.page.locator(part("content"))
+    return this.page.locator(part("color-picker", "content"))
   }
 
   private get hexInput() {
-    return this.page.locator(`[data-part=control] [data-channel=hex]`)
+    return this.page.locator(`[data-color-picker-control] [data-channel=hex]`)
   }
 
   private get alphaInput() {
-    return this.page.locator(`[data-part=control] [data-channel=alpha]`)
+    return this.page.locator(`[data-color-picker-control] [data-channel=alpha]`)
   }
 
   private get areaThumb() {
-    return this.page.locator(part("area-thumb"))
+    return this.page.locator(part("color-picker", "area-thumb"))
   }
 
   private get area() {
-    return this.page.locator(part("area"))
+    return this.page.locator(part("color-picker", "area"))
   }
 
   channelInput(channel: string) {
-    return this.page.locator(`[data-part=channel-input][data-channel=${channel}]`)
+    return this.page.locator(`[data-color-picker-channel-input][data-channel=${channel}]`)
   }
 
   channelThumb(channel: string) {
-    return this.page.locator(`[data-part=channel-slider-thumb][data-channel=${channel}]`)
+    return this.page.locator(`[data-color-picker-channel-slider-thumb][data-channel=${channel}]`)
   }
 
   channelSlider(channel: string) {
-    return this.page.locator(`[data-part=channel-slider][data-channel=${channel}]`)
+    return this.page.locator(`[data-color-picker-channel-slider][data-channel=${channel}]`)
   }
 
   private get swatchTriggers() {
-    return this.page.locator(part("swatch-trigger"))
+    return this.page.locator(part("color-picker", "swatch-trigger"))
   }
 
   private get resetButton() {

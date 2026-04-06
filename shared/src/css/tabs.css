@@ -1,4 +1,4 @@
-[data-scope="tabs"][data-part="root"] {
+[data-tabs-root] {
   max-width: 32rem;
   border: 1px solid hsl(219, 1%, 72%);
   padding: 0.5rem;
@@ -8,14 +8,14 @@
   }
 }
 
-[data-scope="tabs"][data-part="list"] {
+[data-tabs-list] {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding-inline: 0.3rem;
 }
 
-[data-scope="tabs"][data-part="trigger"] {
+[data-tabs-trigger] {
   display: inline-flex;
   position: relative;
   margin: 0;
@@ -30,14 +30,14 @@
   }
 }
 
-[data-scope="tabs"][data-part="content"] {
+[data-tabs-content] {
   position: relative;
   padding: 0.25rem 0.5rem;
   margin-top: 4px;
   background: white;
 }
 
-[data-scope="tabs"][data-part="indicator"] {
+[data-tabs-indicator] {
   background-color: red;
   z-index: 10;
 

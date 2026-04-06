@@ -294,6 +294,6 @@ test.describe("compositions", () => {
 
     await I.seeTriggerHasText("Solid")
     await I.clickTrigger()
-    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
+    await expect(page.locator("[data-select-item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })

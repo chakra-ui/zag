@@ -1,4 +1,4 @@
-[data-scope="menu"][data-part="content"] {
+[data-menu-content] {
   margin: 0;
   width: 160px;
   background-color: white;
@@ -8,8 +8,8 @@
   list-style-type: none;
 }
 
-[data-scope="menu"][data-part="item"],
-[data-scope="menu"][data-part="trigger-item"] {
+[data-menu-item],
+[data-menu-trigger-item] {
   all: unset;
   font-size: 14px;
   line-height: 1;
@@ -24,19 +24,19 @@
   padding: 0px 5px;
 }
 
-[data-scope="menu"][data-part="item"][data-highlighted],
-[data-scope="menu"][data-part="trigger-item"][data-highlighted] {
+[data-menu-item][data-highlighted],
+[data-menu-trigger-item][data-highlighted] {
   outline: none;
   background-color: rgb(110, 86, 207);
   color: rgb(253, 252, 254);
 }
 
-[data-scope="menu"][data-part="item"][data-disabled],
-[data-scope="menu"][data-part="trigger-item"][data-disabled] {
+[data-menu-item][data-disabled],
+[data-menu-trigger-item][data-disabled] {
   opacity: 0.4;
 }
 
-[data-scope="menu"][data-part="context-trigger"] {
+[data-menu-context-trigger] {
   border: 2px dashed blue;
   border-radius: 4px;
   font-size: 15px;

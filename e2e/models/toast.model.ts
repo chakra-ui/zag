@@ -16,11 +16,11 @@ export class ToastModel extends Model {
   }
 
   private get region() {
-    return this.page.locator("[data-scope='toast'][data-part='group']")
+    return this.page.locator("[data-toast-group]")
   }
 
   private getCloseButton(num: number) {
-    return this.page.locator("[data-scope=toast][data-part=close-trigger]").nth(num)
+    return this.page.locator("[data-toast-close-trigger]").nth(num)
   }
 
   async clickLoadingToast(times = 1) {

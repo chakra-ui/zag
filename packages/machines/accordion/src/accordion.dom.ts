@@ -1,18 +1,19 @@
 import { nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { Scope } from "@zag-js/core"
+import { parts } from "./accordion.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `accordion:${ctx.id}`
-export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.id}:item:${value}`
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `${ctx.id}:item:${value}`
 export const getItemContentId = (ctx: Scope, value: string) =>
-  ctx.ids?.itemContent?.(value) ?? `accordion:${ctx.id}:content:${value}`
+  ctx.ids?.itemContent?.(value) ?? `${ctx.id}:content:${value}`
 export const getItemTriggerId = (ctx: Scope, value: string) =>
-  ctx.ids?.itemTrigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`
+  ctx.ids?.itemTrigger?.(value) ?? `${ctx.id}:trigger:${value}`
 
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getTriggerEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `[data-controls][data-ownedby='${ownerId}']:not([disabled])`
+  const ownerId = CSS.escape(ctx.id!)
+  const selector = `[data-controls][${parts.itemTrigger.attr}='${ownerId}']:not([disabled])`
   return queryAll(getRootEl(ctx), selector)
 }
 

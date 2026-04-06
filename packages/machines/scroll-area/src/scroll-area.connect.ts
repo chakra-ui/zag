@@ -51,8 +51,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         role: "presentation",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
@@ -89,10 +88,8 @@ export function connect<T extends PropTypes>(
         send({ type: "user.scroll" })
       }
       return normalize.element({
-        ...parts.viewport.attrs,
+        ...parts.viewport.attrs(scope.id),
         role: "presentation",
-        "data-ownedby": dom.getRootId(scope),
-        id: dom.getViewportId(scope),
         "data-at-top": dataAttr(atSides.top),
         "data-at-bottom": dataAttr(atSides.bottom),
         "data-at-left": dataAttr(atSides.left),
@@ -116,8 +113,7 @@ export function connect<T extends PropTypes>(
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
-        id: dom.getContentId(scope),
+        ...parts.content.attrs(scope.id),
         role: "presentation",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
@@ -130,8 +126,7 @@ export function connect<T extends PropTypes>(
     getScrollbarProps(props = {}) {
       const { orientation = "vertical" } = props
       return normalize.element({
-        ...parts.scrollbar.attrs,
-        "data-ownedby": dom.getRootId(scope),
+        ...parts.scrollbar.attrs(scope.id),
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
         "data-hover": dataAttr(hovering),
@@ -174,8 +169,7 @@ export function connect<T extends PropTypes>(
     getThumbProps(props = {}) {
       const { orientation = "vertical" } = props
       return normalize.element({
-        ...parts.thumb.attrs,
-        "data-ownedby": dom.getRootId(scope),
+        ...parts.thumb.attrs(scope.id),
         "data-orientation": orientation,
         "data-hover": dataAttr(hovering),
         "data-dragging": dataAttr(dragging),
@@ -197,8 +191,7 @@ export function connect<T extends PropTypes>(
 
     getCornerProps() {
       return normalize.element({
-        ...parts.corner.attrs,
-        "data-ownedby": dom.getRootId(scope),
+        ...parts.corner.attrs(scope.id),
         "data-hover": dataAttr(hovering),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),

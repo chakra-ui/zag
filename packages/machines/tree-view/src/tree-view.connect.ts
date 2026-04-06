@@ -131,15 +131,14 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
       })
     },
 
     getLabelProps() {
       return normalize.element({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
       })
@@ -147,8 +146,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
     getTreeProps() {
       return normalize.element({
-        ...parts.tree.attrs,
-        id: dom.getTreeId(scope),
+        ...parts.tree.attrs(scope.id),
         dir: prop("dir"),
         role: "tree",
         "aria-label": translations.treeLabel,
@@ -163,7 +161,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           // allow typing in input elements within the tree
           if (isEditableElement(target)) return
 
-          const node = target?.closest<HTMLElement>("[data-part=branch-control], [data-part=item]")
+          const node = target?.closest<HTMLElement>("[data-tree-view-branch-control], [data-tree-view-item]")
           if (!node) return
 
           const nodeId = node.dataset.value
@@ -173,7 +171,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             return
           }
 
-          const isBranchNode = node.matches("[data-part=branch-control]")
+          const isBranchNode = node.matches("[data-tree-view-branch-control]")
 
           const keyMap: EventKeyMap = {
             ArrowDown(event) {
@@ -276,10 +274,9 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getItemProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         id: nodeState.id,
         dir: prop("dir"),
-        "data-ownedby": dom.getTreeId(scope),
         "data-path": props.indexPath.join("/"),
         "data-value": nodeState.value,
         tabIndex: nodeState.focused ? 0 : -1,
@@ -321,7 +318,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getItemTextProps(props) {
       const itemState = getNodeState(props)
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         "data-disabled": dataAttr(itemState.disabled),
         "data-selected": dataAttr(itemState.selected),
         "data-focus": dataAttr(itemState.focused),
@@ -331,7 +328,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getItemIndicatorProps(props) {
       const itemState = getNodeState(props)
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         "aria-hidden": true,
         "data-disabled": dataAttr(itemState.disabled),
         "data-selected": dataAttr(itemState.selected),
@@ -343,12 +340,11 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branch.attrs,
+        ...parts.branch.attrs(scope.id),
         "data-depth": nodeState.depth,
         dir: prop("dir"),
         "data-branch": nodeState.value,
         role: "treeitem",
-        "data-ownedby": dom.getTreeId(scope),
         "data-value": nodeState.value,
         "aria-level": nodeState.depth,
         "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
@@ -369,7 +365,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchIndicatorProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchIndicator.attrs,
+        ...parts.branchIndicator.attrs(scope.id),
         "aria-hidden": true,
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(nodeState.disabled),
@@ -382,7 +378,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchTriggerProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchTrigger.attrs,
+        ...parts.branchTrigger.attrs(scope.id),
         role: "button",
         dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
@@ -401,7 +397,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchControlProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchControl.attrs,
+        ...parts.branchControl.attrs(scope.id),
         role: "button",
         id: nodeState.id,
         dir: prop("dir"),
@@ -438,7 +434,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchTextProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchText.attrs,
+        ...parts.branchText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
@@ -449,7 +445,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchContentProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchContent.attrs,
+        ...parts.branchContent.attrs(scope.id),
         role: "group",
         dir: prop("dir"),
         "data-state": nodeState.expanded ? "open" : "closed",
@@ -463,7 +459,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getBranchIndentGuideProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchIndentGuide.attrs,
+        ...parts.branchIndentGuide.attrs(scope.id),
         "data-depth": nodeState.depth,
       })
     },
@@ -472,7 +468,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       const nodeState = getNodeState(props)
       const checkedState = nodeState.checked
       return normalize.element({
-        ...parts.nodeCheckbox.attrs,
+        ...parts.nodeCheckbox.attrs(scope.id),
         tabIndex: -1,
         role: "checkbox",
         "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
@@ -495,7 +491,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getNodeRenameInputProps(props) {
       const nodeState = getNodeState(props)
       return normalize.input({
-        ...parts.nodeRenameInput.attrs,
+        ...parts.nodeRenameInput.attrs(scope.id),
         id: dom.getRenameInputId(scope, nodeState.value),
         type: "text",
         "aria-label": translations.renameInputLabel,

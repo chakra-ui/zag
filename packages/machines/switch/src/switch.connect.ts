@@ -42,10 +42,9 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
 
     getRootProps() {
       return normalize.label({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
           if (disabled) return
@@ -70,7 +69,7 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
 
     getLabelProps() {
       return normalize.element({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
         id: dom.getLabelId(scope),
@@ -79,20 +78,18 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
 
     getThumbProps() {
       return normalize.element({
-        ...parts.thumb.attrs,
+        ...parts.thumb.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
-        id: dom.getThumbId(scope),
         "aria-hidden": true,
       })
     },
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         ...dataAttrs,
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "aria-hidden": true,
       })
     },

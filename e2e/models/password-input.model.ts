@@ -16,11 +16,11 @@ export class PasswordInputModel extends Model {
   }
 
   get input() {
-    return this.page.locator(`[data-scope=password-input][data-part=input]`)
+    return this.page.locator(`[data-password-input-input]`)
   }
 
   get visibilityTrigger() {
-    return this.page.locator("[data-scope=password-input][data-part=visibility-trigger]")
+    return this.page.locator("[data-password-input-visibility-trigger]")
   }
 
   clickVisibilityTrigger = async () => {

@@ -11,7 +11,7 @@ export function groupConnect<T extends PropTypes, O = any>(
   normalize: NormalizeProps<T>,
 ): ToastGroupApi<T, O> {
   //
-  const { context, prop, send, refs, computed } = service
+  const { context, prop, send, refs, computed, scope } = service
 
   return {
     getCount() {
@@ -28,7 +28,7 @@ export function groupConnect<T extends PropTypes, O = any>(
       const [side, align = "center"] = placement.split("-")
 
       return normalize.element({
-        ...parts.group.attrs,
+        ...parts.group.attrs(scope.id),
         dir: prop("dir"),
         tabIndex: -1,
         role: "region",

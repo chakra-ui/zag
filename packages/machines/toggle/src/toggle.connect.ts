@@ -4,7 +4,7 @@ import { parts } from "./toggle.anatomy"
 import type { ToggleApi, ToggleService } from "./toggle.types"
 
 export function connect<T extends PropTypes>(service: ToggleService, normalize: NormalizeProps<T>): ToggleApi<T> {
-  const { context, prop, send } = service
+  const { context, prop, send, scope } = service
   const pressed = context.get("pressed")
   return {
     pressed,
@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(service: ToggleService, normalize: 
     getRootProps() {
       return normalize.element({
         type: "button",
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         disabled: prop("disabled"),
         "aria-pressed": pressed,
         "data-state": pressed ? "on" : "off",
@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(service: ToggleService, normalize: 
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         "data-disabled": dataAttr(prop("disabled")),
         "data-pressed": dataAttr(pressed),
         "data-state": pressed ? "on" : "off",

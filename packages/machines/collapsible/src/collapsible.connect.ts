@@ -42,16 +42,15 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-state": open ? "open" : "closed",
         dir: prop("dir"),
-        id: dom.getRootId(scope),
       })
     },
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "data-collapsible": "",
         "data-state": skip ? undefined : open ? "open" : "closed",
@@ -82,7 +81,7 @@ export function connect<T extends PropTypes>(
 
     getTriggerProps() {
       return normalize.element({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
@@ -100,7 +99,7 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),

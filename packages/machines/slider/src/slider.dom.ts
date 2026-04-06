@@ -1,28 +1,32 @@
 import type { Params, Scope } from "@zag-js/core"
-import { dispatchInputValueEvent, queryAll } from "@zag-js/dom-query"
+import { dispatchInputValueEvent } from "@zag-js/dom-query"
 import type { Orientation, Point, Size } from "@zag-js/types"
 import { clampPercent, getPercentValue } from "@zag-js/utils"
 import type { SliderSchema, ThumbAlignment } from "./slider.types"
+import { parts } from "./slider.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `slider:${ctx.id}`
-export const getThumbId = (ctx: Scope, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`
+// ID generators — kept for ARIA attributes in connect
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getThumbId = (ctx: Scope, index: number) => ctx.ids?.thumb?.(index) ?? `${ctx.id}:thumb:${index}`
 export const getHiddenInputId = (ctx: Scope, index: number) =>
-  ctx.ids?.hiddenInput?.(index) ?? `slider:${ctx.id}:input:${index}`
-export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `slider:${ctx.id}:control`
-export const getTrackId = (ctx: Scope) => ctx.ids?.track ?? `slider:${ctx.id}:track`
-export const getRangeId = (ctx: Scope) => ctx.ids?.range ?? `slider:${ctx.id}:range`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `slider:${ctx.id}:label`
-export const getValueTextId = (ctx: Scope) => ctx.ids?.valueText ?? `slider:${ctx.id}:value-text`
-export const getMarkerId = (ctx: Scope, value: number) => ctx.ids?.marker?.(value) ?? `slider:${ctx.id}:marker:${value}`
+  ctx.ids?.hiddenInput?.(index) ?? `${ctx.id}:input:${index}`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `${ctx.id}:control`
+export const getTrackId = (ctx: Scope) => ctx.ids?.track ?? `${ctx.id}:track`
+export const getRangeId = (ctx: Scope) => ctx.ids?.range ?? `${ctx.id}:range`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
+export const getValueTextId = (ctx: Scope) => ctx.ids?.valueText ?? `${ctx.id}:value-text`
+export const getMarkerId = (ctx: Scope, value: number) => ctx.ids?.marker?.(value) ?? `${ctx.id}:marker:${value}`
 
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getThumbEl = (ctx: Scope, index: number) => ctx.getById(getThumbId(ctx, index))
-export const getThumbEls = (ctx: Scope) => queryAll(getControlEl(ctx), "[role=slider]")
+// Element lookups — use querySelector with merged data attributes
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getThumbEl = (ctx: Scope, index: number) =>
+  ctx.query(`${ctx.selector(parts.thumb)}[data-index="${index}"]`)
+export const getThumbEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.thumb))
 export const getFirstThumbEl = (ctx: Scope) => getThumbEls(ctx)[0]
 export const getHiddenInputEl = (ctx: Scope, index: number) =>
   ctx.getById<HTMLInputElement>(getHiddenInputId(ctx, index))
-export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
-export const getRangeEl = (ctx: Scope) => ctx.getById(getRangeId(ctx))
+export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
+export const getRangeEl = (ctx: Scope) => ctx.query(ctx.selector(parts.range))
 
 const getThumbInset = (thumbSize: Size | null, thumbAlignment: ThumbAlignment, orientation: Orientation) => {
   const isContain = thumbAlignment === "contain"

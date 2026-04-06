@@ -105,9 +105,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
       })
@@ -115,7 +114,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
         id: dom.getLabelId(scope),
@@ -134,9 +133,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
@@ -146,16 +144,15 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
@@ -267,7 +264,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getTriggerProps(props = {}) {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope),
         "aria-haspopup": composite ? "listbox" : "dialog",
@@ -327,7 +324,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: !composite ? "dialog" : "listbox",
@@ -348,7 +345,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getListProps() {
       return normalize.element({
-        ...parts.list.attrs,
+        ...parts.list.attrs(scope.id),
         role: !composite ? "listbox" : undefined,
         "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
@@ -358,9 +355,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
+        ...parts.clearTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getClearTriggerId(scope),
         type: "button",
         tabIndex: -1,
         disabled: disabled,
@@ -387,7 +383,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       const value = itemState.value
 
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemId(scope, value),
         role: "option",
@@ -424,7 +420,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getItemTextProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         dir: prop("dir"),
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
@@ -435,7 +431,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       const itemState = getItemState(props)
       return normalize.element({
         "aria-hidden": true,
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         dir: prop("dir"),
         "data-state": itemState.selected ? "checked" : "unchecked",
         hidden: !itemState.selected,
@@ -445,7 +441,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getItemGroupProps(props) {
       const { id } = props
       return normalize.element({
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
@@ -457,7 +453,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
-        ...parts.itemGroupLabel.attrs,
+        ...parts.itemGroupLabel.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemGroupLabelId(scope, htmlFor),
         role: "presentation",

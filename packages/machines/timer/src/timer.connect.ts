@@ -42,8 +42,7 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(scope),
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
       })
     },
 
@@ -53,20 +52,20 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
         id: dom.getAreaId(scope),
         "aria-label": translations.areaLabel?.(time, formattedTime),
         "aria-atomic": true,
-        ...parts.area.attrs,
+        ...parts.area.attrs(scope.id),
       })
     },
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
       })
     },
 
     getItemProps(props) {
       const value = time[props.type]
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         "data-type": props.type,
         style: {
           "--value": value,
@@ -76,14 +75,14 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
 
     getItemLabelProps(props) {
       return normalize.element({
-        ...parts.itemLabel.attrs,
+        ...parts.itemLabel.attrs(scope.id),
         "data-type": props.type,
       })
     },
 
     getItemValueProps(props) {
       return normalize.element({
-        ...parts.itemValue.attrs,
+        ...parts.itemValue.attrs(scope.id),
         "data-type": props.type,
       })
     },
@@ -91,7 +90,7 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
     getSeparatorProps() {
       return normalize.element({
         "aria-hidden": true,
-        ...parts.separator.attrs,
+        ...parts.separator.attrs(scope.id),
       })
     },
 
@@ -103,7 +102,7 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
       }
 
       return normalize.button({
-        ...parts.actionTrigger.attrs,
+        ...parts.actionTrigger.attrs(scope.id),
         hidden: match(props.action, {
           start: () => running || paused,
           pause: () => !running,

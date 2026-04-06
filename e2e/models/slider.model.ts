@@ -16,19 +16,19 @@ export class SliderModel extends Model {
   }
 
   getThumb(index = 0) {
-    return this.page.locator(`[data-scope='slider'][data-part='thumb'][data-index='${index}']`)
+    return this.page.locator(`[data-slider-thumb][data-index='${index}']`)
   }
 
   get control() {
-    return this.page.locator("[data-scope='slider'][data-part='control']")
+    return this.page.locator("[data-slider-control]")
   }
 
   get track() {
-    return this.page.locator("[data-scope='slider'][data-part='track']")
+    return this.page.locator("[data-slider-track]")
   }
 
   get output() {
-    return this.page.locator("[data-scope='slider'][data-part='value-text']")
+    return this.page.locator("[data-slider-value-text]")
   }
 
   focusThumb(index?: number) {

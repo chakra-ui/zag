@@ -1,52 +1,56 @@
 import type { Scope } from "@zag-js/core"
-import { getTabbables, getWindow, queryAll } from "@zag-js/dom-query"
+import { getTabbables, getWindow } from "@zag-js/dom-query"
+import { parts } from "./navigation-menu.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `nav-menu:${ctx.id}`
-export const getTriggerId = (ctx: Scope, value: string) =>
-  ctx.ids?.trigger?.(value) ?? `nav-menu:${ctx.id}:trigger:${value}`
+// ID generators — only for parts referenced by ARIA attributes
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getTriggerId = (ctx: Scope, value: string) => ctx.ids?.trigger?.(value) ?? `${ctx.id}:trigger:${value}`
 export const getTriggerProxyId = (ctx: Scope, value: string) =>
-  ctx.ids?.triggerProxy?.(value) ?? `nav-menu:${ctx.id}:trigger-proxy:${value}`
-export const getContentId = (ctx: Scope, value: string) =>
-  ctx.ids?.content?.(value) ?? `nav-menu:${ctx.id}:content:${value}`
-export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `nav-menu:${ctx.id}:viewport`
-export const getListId = (ctx: Scope) => ctx.ids?.list ?? `nav-menu:${ctx.id}:list`
-export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `nav-menu:${ctx.id}:item:${value}`
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getViewportEl = (ctx: Scope) => ctx.getById(getViewportId(ctx))
+  ctx.ids?.triggerProxy?.(value) ?? `${ctx.id}:trigger-proxy:${value}`
+export const getContentId = (ctx: Scope, value: string) => ctx.ids?.content?.(value) ?? `${ctx.id}:content:${value}`
+export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `${ctx.id}:viewport`
+export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
+export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `${ctx.id}:item:${value}`
+
+// Element lookups — use querySelector with merged data attributes
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getViewportEl = (ctx: Scope) => ctx.query(ctx.selector(parts.viewport))
 
 export const getTriggerEl = (ctx: Scope, value: string | null) => {
   if (!value) return null
-  return ctx.getById(getTriggerId(ctx, value))
+  return ctx.query(`${ctx.selector(parts.trigger)}[data-value="${value}"]`)
 }
 export const getTriggerProxyEl = (ctx: Scope, value: string | null) => {
   if (!value) return null
   return ctx.getById(getTriggerProxyId(ctx, value))
 }
 
-export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
+export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
 
 export const getContentEl = (ctx: Scope, value: string | null) => {
   if (!value) return null
-  return ctx.getById(getContentId(ctx, value))
+  return ctx.query(`${ctx.selector(parts.content)}[data-value="${value}"]`)
 }
 
-export const getContentEls = (ctx: Scope) =>
-  queryAll(ctx.getDoc(), `[data-scope=navigation-menu][data-part=content][data-uid='${ctx.id}']`)
+export const getContentEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.content))
 
 export const getTabbableEls = (ctx: Scope, value: string) => {
   return getTabbables(getContentEl(ctx, value))
 }
 
-export const getTriggerEls = (ctx: Scope) => queryAll(getListEl(ctx), `[data-part=trigger][data-uid='${ctx.id}']`)
+export const getTriggerEls = (ctx: Scope) => ctx.queryAll<HTMLElement>(ctx.selector(parts.trigger))
+
 export const getLinkEls = (ctx: Scope, value: string) => {
   const contentEl = getContentEl(ctx, value)
-  return queryAll(contentEl, `[data-part=link][data-ownedby="${getContentId(ctx, value)}"]`)
+  return contentEl ? Array.from(contentEl.querySelectorAll<HTMLElement>(`[${parts.link.attr}="${ctx.id}"]`)) : []
 }
 
 export const getElements = (ctx: Scope) => {
-  const topLevelTriggerSelector = `[data-part=trigger][data-uid='${ctx.id}']:not([data-disabled])`
-  const topLevelLinkSelector = `[data-part=item] > [data-part=link]`
-  return queryAll(getListEl(ctx), `${topLevelTriggerSelector}, ${topLevelLinkSelector}`)
+  const listEl = getListEl(ctx)
+  if (!listEl) return []
+  const topLevelTriggerSelector = `[${parts.trigger.attr}="${ctx.id}"]:not([data-disabled])`
+  const topLevelLinkSelector = `[${parts.item.attr}="${ctx.id}"] > [${parts.link.attr}="${ctx.id}"]`
+  return Array.from(listEl.querySelectorAll<HTMLElement>(`${topLevelTriggerSelector}, ${topLevelLinkSelector}`))
 }
 
 export function trackResizeObserver(element: Array<HTMLElement | null>, onResize: () => void) {

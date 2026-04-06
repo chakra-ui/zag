@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
 import { a11y, part } from "./_utils"
 
-const trigger = part("trigger")
-const content = part("content")
-const testText = part("test-text")
+const trigger = part("hover-card", "trigger")
+const content = part("hover-card", "content")
+const testText = "[data-testid=test-text]"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/hover-card/basic")

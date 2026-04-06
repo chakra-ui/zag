@@ -16,15 +16,15 @@ export class PopoverModel extends Model {
   }
 
   get trigger() {
-    return this.page.locator("[data-scope=popover][data-part=trigger]")
+    return this.page.locator("[data-popover-trigger]")
   }
 
   get content() {
-    return this.page.locator("[data-scope=popover][data-part=content]")
+    return this.page.locator("[data-popover-content]")
   }
 
   get closeTrigger() {
-    return this.page.locator("[data-scope=popover][data-part=close-trigger]")
+    return this.page.locator("[data-popover-close-trigger]")
   }
 
   get buttonBefore() {

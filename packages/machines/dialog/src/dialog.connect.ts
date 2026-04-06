@@ -32,10 +32,9 @@ export function connect<T extends PropTypes>(
       const { value } = props
       const current = value == null ? false : triggerValue === value
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope, value),
-        "data-ownedby": scope.id,
         "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
@@ -53,19 +52,17 @@ export function connect<T extends PropTypes>(
 
     getBackdropProps() {
       return normalize.element({
-        ...parts.backdrop.attrs,
+        ...parts.backdrop.attrs(scope.id),
         dir: prop("dir"),
         hidden: !open,
-        id: dom.getBackdropId(scope),
         "data-state": open ? "open" : "closed",
       })
     },
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: compact<JSX.CSSProperties>({
           pointerEvents: !open || !prop("modal") ? "none" : undefined,
         }),
@@ -75,7 +72,7 @@ export function connect<T extends PropTypes>(
     getContentProps() {
       const rendered = context.get("rendered")
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         role: prop("role"),
         hidden: !open,
@@ -94,7 +91,7 @@ export function connect<T extends PropTypes>(
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTitleId(scope),
       })
@@ -102,7 +99,7 @@ export function connect<T extends PropTypes>(
 
     getDescriptionProps() {
       return normalize.element({
-        ...parts.description.attrs,
+        ...parts.description.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getDescriptionId(scope),
       })
@@ -110,9 +107,8 @@ export function connect<T extends PropTypes>(
 
     getCloseTriggerProps() {
       return normalize.button({
-        ...parts.closeTrigger.attrs,
+        ...parts.closeTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getCloseTriggerId(scope),
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return

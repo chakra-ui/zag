@@ -72,13 +72,12 @@ export function connect<T extends PropTypes>(
     getRootProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-empty": dataAttr(empty),
-        id: dom.getRootId(scope),
         onPointerDown() {
           if (!interactive) return
           send({ type: "POINTER_DOWN" })
@@ -88,12 +87,11 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         "data-required": dataAttr(required),
-        id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
       })
@@ -101,8 +99,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        id: dom.getControlId(scope),
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         tabIndex: readOnly ? 0 : undefined,
         "data-disabled": dataAttr(disabled),
@@ -114,7 +111,7 @@ export function connect<T extends PropTypes>(
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(invalid),
@@ -219,7 +216,7 @@ export function connect<T extends PropTypes>(
 
     getItemProps(props) {
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-value": props.value,
         "data-disabled": dataAttr(disabled),
@@ -229,7 +226,7 @@ export function connect<T extends PropTypes>(
     getItemPreviewProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemPreview.attrs,
+        ...parts.itemPreview.attrs(scope.id),
         id: itemState.id,
         dir: prop("dir"),
         hidden: itemState.editing,
@@ -252,7 +249,7 @@ export function connect<T extends PropTypes>(
     getItemTextProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -262,7 +259,7 @@ export function connect<T extends PropTypes>(
     getItemInputProps(props) {
       const itemState = getItemState(props)
       return normalize.input({
-        ...parts.itemInput.attrs,
+        ...parts.itemInput.attrs(scope.id),
         dir: prop("dir"),
         "aria-label": translations?.tagEdited?.(props.value),
         disabled: disabled,
@@ -305,12 +302,11 @@ export function connect<T extends PropTypes>(
     getItemDeleteTriggerProps(props) {
       const itemState = getItemState(props)
       return normalize.button({
-        ...parts.itemDeleteTrigger.attrs,
+        ...parts.itemDeleteTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "aria-disabled": itemState.disabled,
         "data-highlighted": dataAttr(itemState.highlighted),
-        id: dom.getItemDeleteTriggerId(scope, props),
         type: "button",
         disabled: itemState.disabled,
         "aria-label": translations?.deleteTagTriggerLabel?.(props.value),
@@ -339,9 +335,8 @@ export function connect<T extends PropTypes>(
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
+        ...parts.clearTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getClearTriggerId(scope),
         type: "button",
         "data-readonly": dataAttr(readOnly),
         disabled: disabled,

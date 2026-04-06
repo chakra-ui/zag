@@ -16,32 +16,32 @@ export class ComboboxModel extends Model {
   }
 
   private get input() {
-    return this.page.locator("[data-part=input]")
+    return this.page.locator("[data-combobox-input]")
   }
 
   private get trigger() {
-    return this.page.locator("[data-part=trigger]")
+    return this.page.locator("[data-combobox-trigger]")
   }
 
   private get clearTrigger() {
-    return this.page.locator("[data-part=clear-trigger]")
+    return this.page.locator("[data-combobox-clear-trigger]")
   }
 
   private get content() {
-    return this.page.locator("[data-part=content]")
+    return this.page.locator("[data-combobox-content]")
   }
 
   private get items() {
-    const options = "[data-part=item]:not([data-disabled])"
+    const options = "[data-combobox-item]:not([data-disabled])"
     return this.page.locator(options)
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item]`, { hasText: text })
+    return this.page.locator(`[data-combobox-item]`, { hasText: text })
   }
 
   get highlightedItem() {
-    return this.page.locator("[data-part=item][data-highlighted]")
+    return this.page.locator("[data-combobox-item][data-highlighted]")
   }
 
   type(input: string) {

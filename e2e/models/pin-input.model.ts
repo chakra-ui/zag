@@ -20,7 +20,7 @@ export class PinInputModel extends Model {
   }
 
   private get allInputs() {
-    return this.page.locator("[data-part=input]")
+    return this.page.locator("[data-pin-input-input]")
   }
 
   // --- Actions ---

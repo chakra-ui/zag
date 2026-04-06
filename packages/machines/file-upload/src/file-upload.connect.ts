@@ -91,9 +91,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-dragging": dataAttr(dragging),
@@ -102,9 +101,8 @@ export function connect<T extends PropTypes>(
 
     getDropzoneProps(props = {}) {
       return normalize.element({
-        ...parts.dropzone.attrs,
+        ...parts.dropzone.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getDropzoneId(scope),
         tabIndex: disabled || readOnly || props.disableClick ? undefined : 0,
         role: props.disableClick ? "application" : "button",
         "aria-label": translations.dropzone,
@@ -188,9 +186,8 @@ export function connect<T extends PropTypes>(
 
     getTriggerProps() {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getTriggerId(scope),
         disabled: disabled || readOnly,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
@@ -238,7 +235,7 @@ export function connect<T extends PropTypes>(
     getItemGroupProps(props = {}) {
       const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
@@ -248,9 +245,8 @@ export function connect<T extends PropTypes>(
     getItemProps(props) {
       const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -259,9 +255,8 @@ export function connect<T extends PropTypes>(
     getItemNameProps(props) {
       const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
-        ...parts.itemName.attrs,
+        ...parts.itemName.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemNameId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -270,9 +265,8 @@ export function connect<T extends PropTypes>(
     getItemSizeTextProps(props) {
       const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
-        ...parts.itemSizeText.attrs,
+        ...parts.itemSizeText.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemSizeTextId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -281,9 +275,8 @@ export function connect<T extends PropTypes>(
     getItemPreviewProps(props) {
       const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
-        ...parts.itemPreview.attrs,
+        ...parts.itemPreview.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemPreviewId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -296,7 +289,7 @@ export function connect<T extends PropTypes>(
         throw new Error("Preview Image is only supported for image files")
       }
       return normalize.img({
-        ...parts.itemPreviewImage.attrs,
+        ...parts.itemPreviewImage.attrs(scope.id),
         alt: translations.itemPreview?.(file),
         src: url,
         "data-disabled": dataAttr(disabled),
@@ -307,9 +300,8 @@ export function connect<T extends PropTypes>(
     getItemDeleteTriggerProps(props) {
       const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.button({
-        ...parts.itemDeleteTrigger.attrs,
+        ...parts.itemDeleteTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getItemDeleteTriggerId(scope, dom.getFileId(file)),
         type: "button",
         disabled: disabled || readOnly,
         "data-disabled": dataAttr(disabled),
@@ -325,7 +317,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
@@ -336,7 +328,7 @@ export function connect<T extends PropTypes>(
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
+        ...parts.clearTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         disabled: disabled || readOnly,

@@ -1,9 +1,9 @@
-[data-scope="hover-card"][data-part="trigger"] {
+[data-hover-card-trigger] {
   width: fit-content;
   padding: 6px;
 }
 
-[data-scope="hover-card"][data-part="content"] {
+[data-hover-card-content] {
   background: rgb(225, 223, 228);
   padding: 6px;
   min-height: 150px;

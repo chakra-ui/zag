@@ -15,11 +15,11 @@ export class TagsInputModel extends Model {
   }
 
   get clearTrigger() {
-    return this.page.locator("[data-part=clear-trigger]")
+    return this.page.locator("[data-tags-input-clear-trigger]")
   }
 
   getTagElements() {
-    return this.page.locator("[data-part=item]")
+    return this.page.locator("[data-tags-input-item]")
   }
 
   getTag(value: string) {
@@ -35,7 +35,7 @@ export class TagsInputModel extends Model {
   }
 
   getControl() {
-    return this.page.locator(`[data-scope=tags-input][data-part=control]`)
+    return this.page.locator(`[data-tags-input-control]`)
   }
 
   async paste(value: string) {
@@ -126,7 +126,7 @@ export class TagsInputModel extends Model {
   }
 
   async seeNoHighlightedTag() {
-    return expect(await this.page.locator("[data-part=item][data-selected]").count()).toBe(0)
+    return expect(await this.page.locator("[data-tags-input-item][data-selected]").count()).toBe(0)
   }
 
   async seeClearTriggerIsFocused() {

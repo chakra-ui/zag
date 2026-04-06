@@ -60,11 +60,10 @@ export function connect<T extends PropTypes>(
 
     getTriggerProps() {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         disabled: prop("disabled"),
-        id: dom.getTriggerId(scope),
         "data-state": open ? "open" : "closed",
         "data-dragging": dataAttr(dragging),
         "aria-controls": dom.getContentId(scope),
@@ -79,9 +78,8 @@ export function connect<T extends PropTypes>(
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: {
           "--width": toPx(size?.width),
           "--height": toPx(size?.height),
@@ -96,7 +94,7 @@ export function connect<T extends PropTypes>(
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         role: "dialog",
         tabIndex: 0,
@@ -156,7 +154,7 @@ export function connect<T extends PropTypes>(
 
     getCloseTriggerProps() {
       return normalize.button({
-        ...parts.closeTrigger.attrs,
+        ...parts.closeTrigger.attrs(scope.id),
         dir: prop("dir"),
         disabled: prop("disabled"),
         "aria-label": "Close Window",
@@ -191,7 +189,7 @@ export function connect<T extends PropTypes>(
       })
 
       return normalize.button({
-        ...parts.stageTrigger.attrs,
+        ...parts.stageTrigger.attrs(scope.id),
         dir: prop("dir"),
         disabled: prop("disabled"),
         "data-stage": props.stage,
@@ -212,7 +210,7 @@ export function connect<T extends PropTypes>(
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       return normalize.element({
-        ...parts.resizeTrigger.attrs,
+        ...parts.resizeTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(!canResize),
         "data-axis": props.axis,
@@ -246,7 +244,7 @@ export function connect<T extends PropTypes>(
 
     getDragTriggerProps() {
       return normalize.element({
-        ...parts.dragTrigger.attrs,
+        ...parts.dragTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(!canDrag),
         onPointerDown(event) {
@@ -290,7 +288,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(prop("disabled")),
         "data-stage": context.get("stage"),
@@ -302,7 +300,7 @@ export function connect<T extends PropTypes>(
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTitleId(scope),
       })
@@ -310,9 +308,8 @@ export function connect<T extends PropTypes>(
 
     getHeaderProps() {
       return normalize.element({
-        ...parts.header.attrs,
+        ...parts.header.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getHeaderId(scope),
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
@@ -324,7 +321,7 @@ export function connect<T extends PropTypes>(
 
     getBodyProps() {
       return normalize.element({
-        ...parts.body.attrs,
+        ...parts.body.attrs(scope.id),
         dir: prop("dir"),
         "data-dragging": dataAttr(dragging),
         "data-minimized": dataAttr(isMinimized),

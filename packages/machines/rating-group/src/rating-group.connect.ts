@@ -47,9 +47,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
       })
     },
 
@@ -69,7 +68,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
@@ -87,8 +86,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        id: dom.getControlId(scope),
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         role: "radiogroup",
         "aria-orientation": "horizontal",
@@ -117,7 +115,7 @@ export function connect<T extends PropTypes>(
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemId(scope, index.toString()),
         role: "radio",

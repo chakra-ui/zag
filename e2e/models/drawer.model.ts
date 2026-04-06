@@ -2,10 +2,10 @@ import { expect, type Page } from "@playwright/test"
 import { a11y, mouseSwipe, part, touchPointerSwipe, touchSwipe } from "../_utils"
 import { Model } from "./model"
 
-const content = part("content")
-const trigger = part("trigger")
-const grabber = part("grabber")
-const backdrop = part("backdrop")
+const content = part("drawer", "content")
+const trigger = part("drawer", "trigger")
+const grabber = part("drawer", "grabber")
+const backdrop = part("drawer", "backdrop")
 
 export class DrawerModel extends Model {
   constructor(public page: Page) {
@@ -13,7 +13,7 @@ export class DrawerModel extends Model {
   }
 
   checkAccessibility() {
-    return a11y(this.page, "[data-part=content]", ["scrollable-region-focusable"])
+    return a11y(this.page, "[data-drawer-content]", ["scrollable-region-focusable"])
   }
 
   goto(url = "/drawer/basic") {
@@ -37,7 +37,7 @@ export class DrawerModel extends Model {
   }
 
   private get swipeAreaEl() {
-    return this.page.locator(part("swipe-area"))
+    return this.page.locator(part("drawer", "swipe-area"))
   }
 
   private get noDragArea() {

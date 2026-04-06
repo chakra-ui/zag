@@ -288,7 +288,7 @@ test.describe("combobox", () => {
     await page.getByTestId("set-solid-button").click()
     await expect(page.getByTestId("input")).toHaveValue("Solid")
     await I.clickTrigger()
-    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
+    await expect(page.locator("[data-combobox-item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 
   test("[composition] async list should filter server results as user types", async ({ page }) => {
@@ -299,9 +299,9 @@ test.describe("combobox", () => {
     await I.type("lan")
     await I.seeDropdown()
 
-    await expect(page.locator("[data-part=item]", { hasText: "Lando Calrissian" })).toBeVisible()
-    await expect(page.locator("[data-part=item]", { hasText: "Leia Organa" })).not.toBeVisible()
-    await expect(page.locator("[data-part=item]", { hasText: "Luke Skywalker" })).not.toBeVisible()
+    await expect(page.locator("[data-combobox-item]", { hasText: "Lando Calrissian" })).toBeVisible()
+    await expect(page.locator("[data-combobox-item]", { hasText: "Leia Organa" })).not.toBeVisible()
+    await expect(page.locator("[data-combobox-item]", { hasText: "Luke Skywalker" })).not.toBeVisible()
   })
 
   test("[composition] async list should select fetched item", async ({ page }) => {

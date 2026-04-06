@@ -55,16 +55,14 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
       })
     },
 
     getAreaProps() {
       return normalize.element({
-        ...parts.area.attrs,
-        id: dom.getAreaId(scope),
+        ...parts.area.attrs(scope.id),
         dir: prop("dir"),
         style: autoResize ? { display: "inline-grid" } : undefined,
         "data-focus": dataAttr(editing),
@@ -75,7 +73,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
@@ -92,7 +90,7 @@ export function connect<T extends PropTypes>(
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         "aria-label": translations?.input,
         name: prop("name"),
@@ -165,7 +163,7 @@ export function connect<T extends PropTypes>(
     getPreviewProps() {
       return normalize.element({
         id: dom.getPreviewId(scope),
-        ...parts.preview.attrs,
+        ...parts.preview.attrs(scope.id),
         dir: prop("dir"),
         "data-placeholder-shown": dataAttr(empty),
         "aria-readonly": ariaAttr(readOnly),
@@ -210,7 +208,7 @@ export function connect<T extends PropTypes>(
 
     getEditTriggerProps() {
       return normalize.button({
-        ...parts.editTrigger.attrs,
+        ...parts.editTrigger.attrs(scope.id),
         id: dom.getEditTriggerId(scope),
         dir: prop("dir"),
         "aria-label": translations?.edit,
@@ -227,15 +225,14 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        id: dom.getControlId(scope),
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
       })
     },
 
     getSubmitTriggerProps() {
       return normalize.button({
-        ...parts.submitTrigger.attrs,
+        ...parts.submitTrigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getSubmitTriggerId(scope),
         "aria-label": translations?.submit,
@@ -252,7 +249,7 @@ export function connect<T extends PropTypes>(
 
     getCancelTriggerProps() {
       return normalize.button({
-        ...parts.cancelTrigger.attrs,
+        ...parts.cancelTrigger.attrs(scope.id),
         dir: prop("dir"),
         "aria-label": translations?.cancel,
         id: dom.getCancelTriggerId(scope),

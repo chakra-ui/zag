@@ -23,11 +23,11 @@ export class TreeViewModel extends Model {
   }
 
   private branch(value: string) {
-    return this.page.locator(`[data-part=branch][data-value="${value}"]`)
+    return this.page.locator(`[data-tree-view-branch][data-value="${value}"]`)
   }
 
   private branchTrigger(value: string) {
-    return this.page.locator(`[data-part=branch-control][data-value="${value}"]`)
+    return this.page.locator(`[data-tree-view-branch-control][data-value="${value}"]`)
   }
 
   private button(name: string) {

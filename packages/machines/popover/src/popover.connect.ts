@@ -38,8 +38,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(scope),
-        ...parts.arrow.attrs,
+        ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrow,
       })
@@ -47,7 +46,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getArrowTipProps() {
       return normalize.element({
-        ...parts.arrowTip.attrs,
+        ...parts.arrowTip.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
@@ -55,9 +54,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getAnchorProps() {
       return normalize.element({
-        ...parts.anchor.attrs,
+        ...parts.anchor.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getAnchorId(scope),
       })
     },
 
@@ -66,12 +64,10 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       const current = value == null ? false : triggerValue === value
 
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
-        id: dom.getTriggerId(scope, value),
-        "data-ownedby": scope.id,
         "data-value": value,
         "data-current": dataAttr(current),
         "aria-haspopup": "dialog",
@@ -97,7 +93,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
       })
@@ -105,8 +101,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getPositionerProps() {
       return normalize.element({
-        id: dom.getPositionerId(scope),
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.floating,
       })
@@ -114,7 +109,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         tabIndex: -1,
@@ -131,7 +126,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         dir: prop("dir"),
       })
@@ -139,7 +134,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getDescriptionProps() {
       return normalize.element({
-        ...parts.description.attrs,
+        ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
         dir: prop("dir"),
       })
@@ -147,9 +142,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getCloseTriggerProps() {
       return normalize.button({
-        ...parts.closeTrigger.attrs,
+        ...parts.closeTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getCloseTriggerId(scope),
         type: "button",
         "aria-label": translations.closeTriggerLabel,
         onClick(event) {

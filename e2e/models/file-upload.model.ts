@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test"
 import { part, testid } from "../_utils"
 import { Model } from "./model"
 
-const DROPZONE_SELECTOR = part("dropzone")
+const DROPZONE_SELECTOR = part("file-upload", "dropzone")
 
 export class FileUploadModel extends Model {
   constructor(public page: Page) {
@@ -14,11 +14,11 @@ export class FileUploadModel extends Model {
   }
 
   getDropzone() {
-    return this.page.locator(part("dropzone"))
+    return this.page.locator(part("file-upload", "dropzone"))
   }
 
   getTrigger() {
-    return this.page.locator(part("trigger"))
+    return this.page.locator(part("file-upload", "trigger"))
   }
 
   getHiddenInput() {
@@ -26,11 +26,11 @@ export class FileUploadModel extends Model {
   }
 
   getItem() {
-    return this.page.locator(part("item")).first()
+    return this.page.locator(part("file-upload", "item")).first()
   }
 
   getDeleteTrigger() {
-    return this.page.locator(part("item-delete-trigger")).first()
+    return this.page.locator(part("file-upload", "item-delete-trigger")).first()
   }
 
   async focusDropzone() {

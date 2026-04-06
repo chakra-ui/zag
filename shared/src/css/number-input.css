@@ -1,17 +1,17 @@
-[data-scope="number-input"][data-part="scrubber"] {
+[data-number-input-scrubber] {
   width: 32px;
   height: 32px;
   background: red;
 }
 
-[data-scope="number-input"][data-part="control"] {
+[data-number-input-control] {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
 }
 
-[data-scope="number-input"][data-part="input"] {
+[data-number-input-input] {
   width: 100%;
   height: 32px;
   border: 1px solid #ccc;
@@ -21,8 +21,8 @@
   font-size: 16px;
 }
 
-[data-scope="number-input"][data-part="increment-trigger"],
-[data-scope="number-input"][data-part="decrement-trigger"] {
+[data-number-input-increment-trigger],
+[data-number-input-decrement-trigger] {
   width: 32px;
   height: 32px;
   display: flex;

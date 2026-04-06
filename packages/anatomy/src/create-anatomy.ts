@@ -1,6 +1,7 @@
 export interface AnatomyPart {
   selector: string
-  attrs: Record<"data-scope" | "data-part", string>
+  attr: string
+  attrs: (uid: string | undefined) => Record<string, string>
 }
 
 export type AnatomyInstance<T extends string> = Omit<Anatomy<T>, "parts">
@@ -29,19 +30,19 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
   rename: (newName) => createAnatomy(newName, parts),
   keys: () => parts,
   build: () =>
-    [...new Set(parts)].reduce<Record<string, AnatomyPart>>(
-      (prev, part) =>
-        Object.assign(prev, {
-          [part]: {
-            selector: [
-              `&[data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
-              `& [data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
-            ].join(", "),
-            attrs: { "data-scope": toKebabCase(name), "data-part": toKebabCase(part) },
+    [...new Set(parts)].reduce<Record<string, AnatomyPart>>((prev, part) => {
+      const attrName = `data-${toKebabCase(name)}-${toKebabCase(part)}`
+      return Object.assign(prev, {
+        [part]: {
+          selector: [`&[${attrName}]`, `& [${attrName}]`].join(", "),
+          attr: attrName,
+          attrs: (uid: string | undefined) => {
+            if (uid == null) throw new Error(`[zag-js] Cannot spread anatomy attrs without a uid for "${attrName}"`)
+            return { [attrName]: uid }
           },
-        }),
-      {},
-    ),
+        },
+      })
+    }, {}),
 })
 
 const toKebabCase = (value: string) =>

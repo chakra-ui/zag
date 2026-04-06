@@ -16,7 +16,7 @@ export class RatingGroupModel extends Model {
   }
 
   get control() {
-    return this.page.locator(part("control"))
+    return this.page.locator(part("rating-group", "control"))
   }
 
   get hiddenInput() {
@@ -24,11 +24,11 @@ export class RatingGroupModel extends Model {
   }
 
   get label() {
-    return this.page.locator(part("label"))
+    return this.page.locator(part("rating-group", "label"))
   }
 
   getRating(value: number): Locator {
-    return this.page.locator(part("item")).nth(value - 1)
+    return this.page.locator(part("rating-group", "item")).nth(value - 1)
   }
 
   async hoverOut() {
@@ -78,13 +78,13 @@ export class RatingGroupModel extends Model {
   }
 
   async seeAllRatingsAreDisabled() {
-    const items = this.page.locator(part("item"))
+    const items = this.page.locator(part("rating-group", "item"))
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
     expect(isAllItemsDisabled).toBeTruthy()
   }
 
   async seeAllRatingsAreReadonly() {
-    const items = this.page.locator(part("item"))
+    const items = this.page.locator(part("rating-group", "item"))
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
     expect(isAllItemsReadonly).toBeTruthy()
   }

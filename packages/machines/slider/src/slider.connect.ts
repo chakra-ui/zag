@@ -90,7 +90,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
@@ -113,13 +113,12 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
         "data-dragging": dataAttr(dragging),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-        id: dom.getRootId(scope),
         dir: prop("dir"),
         style: getRootStyle(service),
       })
@@ -127,21 +126,19 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-        id: dom.getValueTextId(scope),
       })
     },
 
     getTrackProps() {
       return normalize.element({
-        ...parts.track.attrs,
+        ...parts.track.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getTrackId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-dragging": dataAttr(dragging),
@@ -161,11 +158,10 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element({
-        ...parts.thumb.attrs,
+        ...parts.thumb.attrs(scope.id),
         dir: prop("dir"),
         "data-index": index,
         "data-name": name,
-        id: dom.getThumbId(scope, index),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
         "data-focus": dataAttr(focused && focusedIndex === index),
@@ -275,8 +271,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getRangeProps() {
       return normalize.element({
-        id: dom.getRangeId(scope),
-        ...parts.range.attrs,
+        ...parts.range.attrs(scope.id),
         dir: prop("dir"),
         "data-dragging": dataAttr(dragging),
         "data-focus": dataAttr(focused),
@@ -289,9 +284,8 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "data-dragging": dataAttr(dragging),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
@@ -314,7 +308,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getMarkerGroupProps() {
       return normalize.element({
-        ...parts.markerGroup.attrs,
+        ...parts.markerGroup.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
         "aria-hidden": true,
@@ -336,8 +330,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       }
 
       return normalize.element({
-        ...parts.marker.attrs,
-        id: dom.getMarkerId(scope, props.value),
+        ...parts.marker.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
@@ -352,7 +345,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       const { index = 0 } = props
       const isDragging = index === focusedIndex && dragging
       return normalize.element({
-        ...parts.draggingIndicator.attrs,
+        ...parts.draggingIndicator.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
         hidden: !isDragging,

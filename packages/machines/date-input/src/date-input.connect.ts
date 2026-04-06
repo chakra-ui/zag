@@ -90,9 +90,8 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
@@ -102,7 +101,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
     getLabelProps(props = {}) {
       const { index = 0 } = props
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope, index),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope, index),
@@ -118,9 +117,8 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
@@ -133,7 +131,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       const activeIndex = context.get("activeIndex")
 
       return normalize.element({
-        ...parts.segmentGroup.attrs,
+        ...parts.segmentGroup.attrs(scope.id),
         id: dom.getSegmentGroupId(scope, index),
         dir: prop("dir"),
         role: "group",
@@ -154,7 +152,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
       if (segment.type === "literal") {
         return normalize.element({
-          ...parts.segment.attrs,
+          ...parts.segment.attrs(scope.id),
           dir: prop("dir"),
           "aria-hidden": true,
           "data-type": segment.type,
@@ -164,7 +162,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       }
 
       return normalize.element({
-        ...parts.segment.attrs,
+        ...parts.segment.attrs(scope.id),
         dir: prop("dir"),
         role: "spinbutton",
         tabIndex: disabled ? undefined : 0,
@@ -332,7 +330,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       const inputName = name || prop("name")
 
       return normalize.input({
-        ...parts.hiddenInput.attrs,
+        ...parts.hiddenInput.attrs(scope.id),
         type: "hidden",
         id: dom.getHiddenInputId(scope, index),
         name: inputName ? (value.length > 1 ? `${inputName}[${index}]` : inputName) : undefined,

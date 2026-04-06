@@ -16,23 +16,23 @@ export class MenuModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator("[data-scope=menu][data-part=trigger]")
+    return this.page.locator("[data-menu-trigger]")
   }
 
   private get contextTrigger() {
-    return this.page.locator("[data-scope=menu][data-part=context-trigger]")
+    return this.page.locator("[data-menu-context-trigger]")
   }
 
   private get content() {
-    return this.page.locator("[data-scope=menu][data-part=content]")
+    return this.page.locator("[data-menu-content]")
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item]`, { hasText: text })
+    return this.page.locator(`[data-menu-item]`, { hasText: text })
   }
 
   get highlightedItem() {
-    return this.page.locator("[data-part=item][data-highlighted]")
+    return this.page.locator("[data-menu-item][data-highlighted]")
   }
 
   type(input: string) {
@@ -104,7 +104,7 @@ export class MenuModel extends Model {
   }
 
   seeMenuIsPositioned = async () => {
-    const positioner = this.page.locator("[data-scope=menu][data-part=positioner]")
+    const positioner = this.page.locator("[data-menu-positioner]")
     await expect(positioner).toHaveCSS("--x", /\d+px/)
     await expect(positioner).toHaveCSS("--y", /\d+px/)
   }

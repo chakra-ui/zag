@@ -16,19 +16,19 @@ export class ImageCropperModel extends Model {
   }
 
   get viewport() {
-    return this.page.locator("[data-scope='image-cropper'][data-part='viewport']")
+    return this.page.locator("[data-image-cropper-viewport]")
   }
 
   get image() {
-    return this.page.locator("[data-scope='image-cropper'][data-part='image']")
+    return this.page.locator("[data-image-cropper-image]")
   }
 
   get selection() {
-    return this.page.locator("[data-scope='image-cropper'][data-part='selection']")
+    return this.page.locator("[data-image-cropper-selection]")
   }
 
   get overlay() {
-    return this.page.locator("[data-scope='image-cropper'][data-part='overlay']")
+    return this.page.locator("[data-image-cropper-overlay]")
   }
 
   get zoomSlider() {
@@ -60,7 +60,7 @@ export class ImageCropperModel extends Model {
   }
 
   getHandle(position: string) {
-    return this.page.locator(`[data-scope='image-cropper'][data-part='handle'][data-position='${position}']`)
+    return this.page.locator(`[data-image-cropper-handle][data-position='${position}']`)
   }
 
   async getSelectionRect() {

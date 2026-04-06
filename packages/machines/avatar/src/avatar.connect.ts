@@ -25,18 +25,16 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
       })
     },
 
     getImageProps() {
       return normalize.img({
-        ...parts.image.attrs,
+        ...parts.image.attrs(scope.id),
         hidden: !loaded,
         dir: prop("dir"),
-        id: dom.getImageId(scope),
         "data-state": loaded ? "visible" : "hidden",
         onLoad() {
           send({ type: "img.loaded", src: "element" })
@@ -49,9 +47,8 @@ export function connect<T extends PropTypes>(
 
     getFallbackProps() {
       return normalize.element({
-        ...parts.fallback.attrs,
+        ...parts.fallback.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getFallbackId(scope),
         hidden: loaded,
         "data-state": loaded ? "hidden" : "visible",
       })

@@ -1,29 +1,33 @@
 import type { Scope } from "@zag-js/core"
-import { dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { dispatchInputValueEvent, indexOfId, nextById, prevById } from "@zag-js/dom-query"
 import type { ItemProps } from "./tags-input.types"
+import { parts } from "./tags-input.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `tags-input:${ctx.id}`
-export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `tags-input:${ctx.id}:input`
-export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`
-export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `tags-input:${ctx.id}:hidden-input`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `tags-input:${ctx.id}:label`
-export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `tags-input:${ctx.id}:control`
+// ID generators — kept for ARIA attributes in connect
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
+export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearBtn ?? `${ctx.id}:clear-btn`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `${ctx.id}:hidden-input`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `${ctx.id}:control`
 export const getItemId = (ctx: Scope, opt: ItemProps) =>
-  ctx.ids?.item?.(opt) ?? `tags-input:${ctx.id}:tag:${opt.value}:${opt.index}`
+  ctx.ids?.item?.(opt) ?? `${ctx.id}:tag:${opt.value}:${opt.index}`
 export const getItemDeleteTriggerId = (ctx: Scope, opt: ItemProps) =>
-  ctx.ids?.itemDeleteTrigger?.(opt) ?? `${getItemId(ctx, opt)}:delete-btn`
+  ctx.ids?.itemDeleteTrigger?.(opt) ?? `${getItemId(ctx, opt)}-delete-btn`
 export const getItemInputId = (ctx: Scope, opt: ItemProps) =>
-  ctx.ids?.itemInput?.(opt) ?? `${getItemId(ctx, opt)}:input`
+  ctx.ids?.itemInput?.(opt) ?? `${getItemId(ctx, opt)}-input`
 
-export const getEditInputId = (id: string) => `${id}:input`
+export const getEditInputId = (id: string) => `${id}-input`
+
+// Element lookups — use querySelector with merged data attributes
 export const getEditInputEl = (ctx: Scope, id: string) => ctx.getById<HTMLInputElement>(getEditInputId(id))
 
-export const getItemEls = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=item]`)
+export const getItemEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.item))
 export const getTagInputEl = (ctx: Scope, opt: ItemProps) => ctx.getById<HTMLInputElement>(getItemInputId(ctx, opt))
-export const getRootEl = (ctx: Scope) => ctx.getById<HTMLDivElement>(getRootId(ctx))
-export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
+export const getRootEl = (ctx: Scope) => ctx.query<HTMLDivElement>(ctx.selector(parts.root))
+export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
-export const getTagElements = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=item-preview]:not([data-disabled])`)
+export const getTagElements = (ctx: Scope) => ctx.queryAll(`${ctx.selector(parts.itemPreview)}:not([data-disabled])`)
 export const getFirstEl = (ctx: Scope) => getTagElements(ctx)[0]
 export const getLastEl = (ctx: Scope) => getTagElements(ctx)[getTagElements(ctx).length - 1]
 export const getPrevEl = (ctx: Scope, id: string) => prevById(getTagElements(ctx), id, false)
@@ -40,13 +44,13 @@ export const getTagValue = (ctx: Scope, id: string | null) => {
 }
 
 export const setHoverIntent = (el: Element) => {
-  const tagEl = el.closest<HTMLElement>("[data-part=item-preview]")
+  const tagEl = el.closest<HTMLElement>("[data-tags-input-item-preview]")
   if (!tagEl) return
   tagEl.dataset.deleteIntent = ""
 }
 
 export const clearHoverIntent = (el: Element) => {
-  const tagEl = el.closest<HTMLElement>("[data-part=item-preview]")
+  const tagEl = el.closest<HTMLElement>("[data-tags-input-item-preview]")
   if (!tagEl) return
   delete tagEl.dataset.deleteIntent
 }

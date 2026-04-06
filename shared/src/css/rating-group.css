@@ -1,29 +1,29 @@
-[data-scope="rating-group"][data-part="control"] {
+[data-rating-group-control] {
   display: inline-flex;
 }
 
-[data-scope="rating-group"][data-part="item"] {
+[data-rating-group-item] {
   width: 20px;
   height: 20px;
   padding: 1px;
 }
 
-[data-scope="rating-group"][data-part="item"]:focus {
+[data-rating-group-item]:focus {
   outline: 2px solid royalblue;
 }
 
-[data-scope="rating-group"] [data-part="star"] {
+[data-rating-group-star] {
   color: #bdbdbd;
 }
 
-[data-scope="rating-group"][data-part="item"][data-highlighted] [data-part="star"] {
+[data-rating-group-item][data-highlighted] [data-rating-group-star] {
   color: #ffb400;
 }
 
-[data-scope="rating-group"][data-part="item"][data-highlighted][data-disabled] [data-part="star"] {
+[data-rating-group-item][data-highlighted][data-disabled] [data-rating-group-star] {
   color: #a1a1a1;
 }
 
-[data-scope="rating-group"][dir="rtl"] [data-half] [data-part="star"] {
+[data-rating-group-root][dir="rtl"] [data-half] [data-rating-group-star] {
   transform: scale(-1, 1);
 }

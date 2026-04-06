@@ -1,16 +1,16 @@
-[data-scope="color-picker"][data-part="root"] {
+[data-color-picker-root] {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-[data-scope="color-picker"][data-part="control"] {
+[data-color-picker-control] {
   display: flex;
   gap: 4px;
 }
 
-[data-scope="color-picker"][data-part="content"] {
+[data-color-picker-content] {
   width: 260px;
   box-sizing: border-box;
   padding: 24px;
@@ -19,26 +19,26 @@
   z-index: var(--layer-index);
 }
 
-[data-scope="color-picker"][data-part="content"] > .content__inner {
+[data-color-picker-content] > .content__inner {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-[data-scope="color-picker"][data-part="area"] {
+[data-color-picker-area] {
   height: 200px;
   border-radius: 4px;
   border: 1px solid #ebebeb;
 }
 
-[data-scope="color-picker"][data-part="area-background"] {
+[data-color-picker-area-background] {
   background: rgb(142, 142, 142);
   border-radius: 4px;
   height: 200px;
 }
 
-[data-scope="color-picker"][data-part="area-thumb"],
-[data-scope="color-picker"][data-part="channel-slider-thumb"] {
+[data-color-picker-area-thumb],
+[data-color-picker-channel-slider-thumb] {
   border: 2px solid white;
   border-radius: 9999px;
   box-sizing: border-box;
@@ -50,23 +50,23 @@
   height: 16px;
 }
 
-[data-scope="color-picker"][data-part="channel-slider-track"] {
+[data-color-picker-channel-slider-track] {
   height: 20px;
   border-radius: 4px;
 }
 
-[data-scope="color-picker"][data-part="channel-input"] {
+[data-color-picker-channel-input] {
   border-radius: 4px;
   width: 100%;
   border: 1px solid #c2c2c2;
 }
 
-[data-scope="color-picker"][data-part="swatch"] {
+[data-color-picker-swatch] {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-[data-scope="color-picker"][data-part="transparency-grid"] {
+[data-color-picker-transparency-grid] {
   border-radius: 4px;
 }

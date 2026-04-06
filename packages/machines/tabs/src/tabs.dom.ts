@@ -1,25 +1,24 @@
 import type { Scope } from "@zag-js/core"
-import { itemById, nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { itemById, nextById, prevById } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
+import { parts } from "./tabs.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `tabs:${ctx.id}`
-export const getListId = (ctx: Scope) => ctx.ids?.list ?? `tabs:${ctx.id}:list`
-export const getContentId = (ctx: Scope, value: string) =>
-  ctx.ids?.content?.(value) ?? `tabs:${ctx.id}:content-${value}`
-export const getTriggerId = (ctx: Scope, value: string) =>
-  ctx.ids?.trigger?.(value) ?? `tabs:${ctx.id}:trigger-${value}`
-export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`
+// ID generators — kept for ARIA attributes in connect
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
+export const getContentId = (ctx: Scope, value: string) => ctx.ids?.content?.(value) ?? `${ctx.id}:content:${value}`
+export const getTriggerId = (ctx: Scope, value: string) => ctx.ids?.trigger?.(value) ?? `${ctx.id}:trigger:${value}`
+export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `${ctx.id}:indicator`
 
-export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
+// Element lookups — use querySelector with merged data attributes
+export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
 export const getContentEl = (ctx: Scope, value: string) => ctx.getById(getContentId(ctx, value))
 export const getTriggerEl = (ctx: Scope, value: string | null) =>
-  value != null ? ctx.getById(getTriggerId(ctx, value)) : null
-export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
+  value != null ? ctx.query(`${ctx.selector(parts.trigger)}[data-value="${value}"]`) : null
+export const getIndicatorEl = (ctx: Scope) => ctx.query(ctx.selector(parts.indicator))
 
 export const getElements = (ctx: Scope) => {
-  const ownerId = CSS.escape(getListId(ctx))
-  const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-  return queryAll(getListEl(ctx), selector)
+  return ctx.queryAll(`${ctx.selector(parts.trigger)}:not([disabled])`)
 }
 
 export const getFirstTriggerEl = (ctx: Scope) => first(getElements(ctx))

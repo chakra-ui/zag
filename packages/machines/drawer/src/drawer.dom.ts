@@ -1,42 +1,42 @@
 import type { Scope } from "@zag-js/core"
 import { isHTMLElement, queryAll } from "@zag-js/dom-query"
 import { isFunction } from "@zag-js/utils"
+import { parts } from "./drawer.anatomy"
 
-export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `drawer:${ctx.id}:content`
-export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `drawer:${ctx.id}:positioner`
-export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `drawer:${ctx.id}:title`
-export const getDescriptionId = (ctx: Scope) => ctx.ids?.description ?? `drawer:${ctx.id}:description`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
+export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `${ctx.id}:positioner`
+export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `${ctx.id}:title`
+export const getDescriptionId = (ctx: Scope) => ctx.ids?.description ?? `${ctx.id}:description`
 export const getTriggerId = (ctx: Scope, value?: string) => {
   const customId = ctx.ids?.trigger
   if (customId != null) return isFunction(customId) ? customId(value) : customId
-  return value ? `drawer:${ctx.id}:trigger:${value}` : `drawer:${ctx.id}:trigger`
+  return value ? `${ctx.id}:trigger:${value}` : `${ctx.id}:trigger`
 }
 
-export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="drawer"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+export const getTriggerEls = (ctx: Scope): HTMLElement[] => ctx.queryAll<HTMLElement>(ctx.selector(parts.trigger))
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   if (value == null) return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
   return ctx.getById(getTriggerId(ctx, value))
 }
-export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `drawer:${ctx.id}:backdrop`
-export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `drawer:${ctx.id}:header`
-export const getGrabberId = (ctx: Scope) => ctx.ids?.grabber ?? `drawer:${ctx.id}:grabber`
-export const getGrabberIndicatorId = (ctx: Scope) => ctx.ids?.grabberIndicator ?? `drawer:${ctx.id}:grabber-indicator`
-export const getCloseTriggerId = (ctx: Scope) => ctx.ids?.closeTrigger ?? `drawer:${ctx.id}:close-trigger`
-export const getSwipeAreaId = (ctx: Scope) => ctx.ids?.swipeArea ?? `drawer:${ctx.id}:swipe-area`
+export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `${ctx.id}:backdrop`
+export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `${ctx.id}:header`
+export const getGrabberId = (ctx: Scope) => ctx.ids?.grabber ?? `${ctx.id}:grabber`
+export const getGrabberIndicatorId = (ctx: Scope) => ctx.ids?.grabberIndicator ?? `${ctx.id}:grabber-indicator`
+export const getCloseTriggerId = (ctx: Scope) => ctx.ids?.closeTrigger ?? `${ctx.id}:close-trigger`
+export const getSwipeAreaId = (ctx: Scope) => ctx.ids?.swipeArea ?? `${ctx.id}:swipe-area`
 
-export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
-export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
-export const getTitleEl = (ctx: Scope) => ctx.getById(getTitleId(ctx))
-export const getDescriptionEl = (ctx: Scope) => ctx.getById(getDescriptionId(ctx))
-export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
-export const getBackdropEl = (ctx: Scope) => ctx.getById(getBackdropId(ctx))
+export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
+export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
+export const getTitleEl = (ctx: Scope) => ctx.query(ctx.selector(parts.title))
+export const getDescriptionEl = (ctx: Scope) => ctx.query(ctx.selector(parts.description))
+export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
+export const getBackdropEl = (ctx: Scope) => ctx.query(ctx.selector(parts.backdrop))
 export const getHeaderEl = (ctx: Scope) => ctx.getById(getHeaderId(ctx))
-export const getGrabberEl = (ctx: Scope) => ctx.getById(getGrabberId(ctx))
-export const getGrabberIndicatorEl = (ctx: Scope) => ctx.getById(getGrabberIndicatorId(ctx))
-export const getCloseTriggerEl = (ctx: Scope) => ctx.getById(getCloseTriggerId(ctx))
-export const getSwipeAreaEl = (ctx: Scope) => ctx.getById(getSwipeAreaId(ctx))
+export const getGrabberEl = (ctx: Scope) => ctx.query(ctx.selector(parts.grabber))
+export const getGrabberIndicatorEl = (ctx: Scope) => ctx.query(ctx.selector(parts.grabberIndicator))
+export const getCloseTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.closeTrigger))
+export const getSwipeAreaEl = (ctx: Scope) => ctx.query(ctx.selector(parts.swipeArea))
 
 /** Whether the event target lies inside the drawer content or swipe-area subtree. */
 export function isPointerWithinContentOrSwipeArea(

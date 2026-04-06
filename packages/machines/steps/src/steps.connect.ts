@@ -68,8 +68,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         style: {
@@ -82,9 +81,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
       const arr = fromLength(count)
       const triggerIds = arr.map((_, index) => dom.getTriggerId(scope, index))
       return normalize.element({
-        ...parts.list.attrs,
+        ...parts.list.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getListId(scope),
         role: "tablist",
         "aria-owns": triggerIds.join(" "),
         "aria-orientation": prop("orientation"),
@@ -95,7 +93,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "aria-current": itemState.current ? "step" : undefined,
         "data-orientation": prop("orientation"),
@@ -106,7 +104,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getTriggerProps(props) {
       const itemState = getItemState(props)
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
         role: "tab",
         dir: prop("dir"),
@@ -129,7 +127,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getContentProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: itemState.contentId,
         role: "tabpanel",
@@ -144,7 +142,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getIndicatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
         "data-complete": dataAttr(itemState.completed),
@@ -156,7 +154,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getSeparatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.separator.attrs,
+        ...parts.separator.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-complete": dataAttr(itemState.completed),
@@ -167,7 +165,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
 
     getNextTriggerProps() {
       return normalize.button({
-        ...parts.nextTrigger.attrs,
+        ...parts.nextTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         disabled: !hasNextStep,
@@ -181,7 +179,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getPrevTriggerProps() {
       return normalize.button({
         dir: prop("dir"),
-        ...parts.prevTrigger.attrs,
+        ...parts.prevTrigger.attrs(scope.id),
         type: "button",
         disabled: !hasPrevStep,
         onClick(event) {
@@ -194,7 +192,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     getProgressProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.progress.attrs,
+        ...parts.progress.attrs(scope.id),
         role: "progressbar",
         "aria-valuenow": percent,
         "aria-valuemin": 0,

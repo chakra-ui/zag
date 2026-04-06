@@ -270,7 +270,7 @@ test.describe("pin input", () => {
   // --- Accessibility ---
 
   test("should have no accessibility violations", async () => {
-    await I.checkAccessibility("[data-part=root]")
+    await I.checkAccessibility("[data-pin-input-root]")
   })
 
   // --- Paste max length ---

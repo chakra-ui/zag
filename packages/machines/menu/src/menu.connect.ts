@@ -76,12 +76,11 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     const itemState = getItemState(props)
     const id = dom.getItemId(scope, value)
     return normalize.element({
-      ...parts.item.attrs,
+      ...parts.item.attrs(scope.id),
       id,
       role: "menuitem",
       "aria-disabled": ariaAttr(itemState.disabled),
       "data-disabled": dataAttr(itemState.disabled),
-      "data-ownedby": dom.getContentId(scope),
       "data-highlighted": dataAttr(itemState.highlighted),
       "data-value": value,
       "data-valuetext": valueText,
@@ -160,10 +159,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const current = value == null ? false : triggerValue === value
       const contextTriggerId = dom.getContextTriggerId(scope, value)
       return normalize.element({
-        ...parts.contextTrigger.attrs,
+        ...parts.contextTrigger.attrs(scope.id),
         dir: prop("dir"),
         id: contextTriggerId,
-        "data-ownedby": scope.id,
         "data-value": value,
         "data-current": dataAttr(current),
         "data-state": open ? "open" : "closed",
@@ -212,18 +210,16 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
-        ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
+        ...(isSubmenu ? parts.triggerItem.attrs(scope.id) : parts.trigger.attrs(scope.id)),
         "data-placement": context.get("currentPlacement"),
         type: "button",
         dir: prop("dir"),
         id: triggerId,
         // Multi-trigger attributes - only included when value is provided
         ...(value != null && {
-          "data-ownedby": scope.id,
           "data-value": value,
           "data-current": dataAttr(current),
         }),
-        "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
@@ -304,7 +300,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
       })
@@ -312,17 +308,15 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(scope),
-        ...parts.arrow.attrs,
+        ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrow,
       })
@@ -330,7 +324,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getArrowTipProps() {
       return normalize.element({
-        ...parts.arrowTip.attrs,
+        ...parts.arrowTip.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
@@ -338,7 +332,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "aria-label": prop("aria-label"),
         hidden: !open,
@@ -427,7 +421,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getSeparatorProps() {
       return normalize.element({
-        ...parts.separator.attrs,
+        ...parts.separator.attrs(scope.id),
         role: "separator",
         dir: prop("dir"),
         "aria-orientation": "horizontal",
@@ -450,7 +444,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...getItemProps(option),
         ...normalize.element({
           "data-type": type,
-          ...parts.item.attrs,
+          ...parts.item.attrs(scope.id),
           dir: prop("dir"),
           "data-value": option.value,
           role: `menuitem${type}`,
@@ -471,7 +465,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const itemState = getOptionItemState(cast(props))
       const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -484,7 +478,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const itemState = getOptionItemState(cast(props))
       const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -494,7 +488,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getItemGroupLabelProps(props) {
       return normalize.element({
-        ...parts.itemGroupLabel.attrs,
+        ...parts.itemGroupLabel.attrs(scope.id),
         id: dom.getGroupLabelId(scope, props.htmlFor),
         dir: prop("dir"),
       })
@@ -503,7 +497,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     getItemGroupProps(props) {
       return normalize.element({
         id: dom.getGroupId(scope, props.id),
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         dir: prop("dir"),
         "aria-labelledby": dom.getGroupLabelId(scope, props.id),
         role: "group",

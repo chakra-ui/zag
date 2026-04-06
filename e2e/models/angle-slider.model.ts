@@ -16,15 +16,15 @@ export class AngleSliderModel extends Model {
   }
 
   get thumb() {
-    return this.page.locator("[data-scope='angle-slider'][data-part='thumb']")
+    return this.page.locator("[data-angle-slider-thumb]")
   }
 
   get control() {
-    return this.page.locator("[data-scope='angle-slider'][data-part='control']")
+    return this.page.locator("[data-angle-slider-control]")
   }
 
   get output() {
-    return this.page.locator("[data-scope='angle-slider'][data-part='value-text']")
+    return this.page.locator("[data-angle-slider-value-text]")
   }
 
   focusThumb() {

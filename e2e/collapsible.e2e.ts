@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test"
 import { a11y, part } from "./_utils"
 
-const trigger = part("trigger")
-const content = part("content")
+const trigger = part("collapsible", "trigger")
+const content = part("collapsible", "content")
 
 test.describe("collapsible", () => {
   test.beforeEach(async ({ page }) => {

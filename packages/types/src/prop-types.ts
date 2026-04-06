@@ -23,15 +23,11 @@ type DataAttr = {
   "data-empty"?: any | undefined
   "data-placeholder-shown"?: any | undefined
   "data-half"?: any | undefined
-  "data-scope"?: string | undefined
-  "data-uid"?: string | undefined
   "data-name"?: string | undefined
-  "data-ownedby"?: string | undefined
   "data-type"?: string | undefined
   "data-valuetext"?: string | undefined
   "data-placement"?: string | undefined
   "data-controls"?: string | undefined
-  "data-part"?: string | undefined
   "data-label"?: string | undefined
   "data-state"?: string | null | undefined
   "data-value"?: string | number | undefined

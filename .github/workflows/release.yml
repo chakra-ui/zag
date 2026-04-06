@@ -7,6 +7,7 @@ on:
       - "packages/**"
     branches:
       - main
+      - v2
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,12 +35,20 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Enter pre-release mode
+        if: github.ref == 'refs/heads/v2'
+        run: |
+          if [ ! -f .changeset/pre.json ]; then
+            pnpm changeset pre enter next
+          fi
+
       - name: Publish packages
         id: changesets
         uses: changesets/action@v1
         with:
           publish: pnpm release
           commit: "ci(changesets): version packages"
+          title: ${{ github.ref == 'refs/heads/v2' && 'Version Packages (next)' || 'Version Packages' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

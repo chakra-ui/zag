@@ -1,24 +1,24 @@
-[data-scope="tour"][data-part="positioner"][data-type="floating"] {
+[data-tour-positioner][data-type="floating"] {
   position: absolute;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="bottom"] {
+[data-tour-positioner][data-type="floating"][data-placement*="bottom"] {
   bottom: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="top"] {
+[data-tour-positioner][data-type="floating"][data-placement*="top"] {
   top: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="end"] {
+[data-tour-positioner][data-type="floating"][data-placement*="end"] {
   inset-inline-end: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="start"] {
+[data-tour-positioner][data-type="floating"][data-placement*="start"] {
   inset-inline-start: 24px;
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="dialog"] {
+[data-tour-positioner][data-type="dialog"] {
   width: 100%;
   position: fixed;
   inset: 0;
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-[data-scope="tour"][data-part="content"] {
+[data-tour-content] {
   --arrow-background: white;
   --arrow-size: 10px;
   background: white;
@@ -39,45 +39,45 @@
   width: 300px;
 }
 
-[data-scope="tour"][data-part="content"][data-type="dialog"] {
+[data-tour-content][data-type="dialog"] {
   width: 500px;
   background: lightblue;
 }
 
-[data-scope="tour"][data-part="content"][data-type="floating"] {
+[data-tour-content][data-type="floating"] {
   width: 500px;
   background: rgb(15, 39, 136);
   color: white;
 }
 
-[data-scope="tour"][data-part="arrow"] {
+[data-tour-arrow] {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
 }
 
-[data-scope="tour"][data-part="title"] {
+[data-tour-title] {
   font-weight: 600;
 }
 
-[data-scope="tour"][data-part="description"] {
+[data-tour-description] {
   margin-bottom: 20px;
 }
 
-[data-scope="tour"][data-part="progress-text"] {
+[data-tour-progress-text] {
   margin-bottom: 20px;
   opacity: 0.72;
 }
 
-[data-scope="tour"][data-part="backdrop"] {
+[data-tour-backdrop] {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-[data-scope="tour"][data-part="spotlight"] {
+[data-tour-spotlight] {
   border: 3px solid pink;
 }
 
-[data-scope="tour"][data-part="close-trigger"] {
+[data-tour-close-trigger] {
   font-family: inherit;
   height: 25px;
   width: 25px;

@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test"
 import { rect } from "./_utils"
 
-const contextTrigger = (id: number) => `[data-scope="menu"][data-part="context-trigger"][data-value="${id}"]`
-const menu = '[data-scope="menu"][data-part="content"]'
-const menuItem = (value: string) => `[data-scope="menu"][data-part="item"][data-value="${value}"]`
-const positioner = '[data-scope="menu"][data-part="positioner"]'
+const contextTrigger = (id: number) => `[data-menu-context-trigger][data-value="${id}"]`
+const menu = "[data-menu-content]"
+const menuItem = (value: string) => `[data-menu-item][data-value="${value}"]`
+const positioner = "[data-menu-positioner]"
 
 test.describe("context menu / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {

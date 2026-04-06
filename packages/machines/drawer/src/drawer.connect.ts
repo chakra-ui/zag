@@ -112,8 +112,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
-        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
         hidden: closed,
         "data-state": open ? "open" : "closed",
@@ -130,7 +129,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       const rendered = context.get("rendered")
 
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         tabIndex: -1,
@@ -172,7 +171,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         dir: prop("dir"),
       })
@@ -180,7 +179,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getDescriptionProps() {
       return normalize.element({
-        ...parts.description.attrs,
+        ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
         dir: prop("dir"),
       })
@@ -195,10 +194,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       const { value } = props
       const current = value == null ? false : triggerValue === value
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope, value),
-        "data-ownedby": scope.id,
         "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
@@ -216,8 +214,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getBackdropProps() {
       return normalize.element({
-        ...parts.backdrop.attrs,
-        id: dom.getBackdropId(scope),
+        ...parts.backdrop.attrs(scope.id),
         hidden: !open || (swipingOpen && dragOffset === null),
         "data-state": open ? "open" : "closed",
         "data-swiping": dragging || swipingOpen ? "" : undefined,
@@ -232,8 +229,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getGrabberProps() {
       return normalize.element({
-        ...parts.grabber.attrs,
-        id: dom.getGrabberId(scope),
+        ...parts.grabber.attrs(scope.id),
         onPointerDown(event) {
           onGrabberPointerDown(event)
         },
@@ -245,15 +241,13 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getGrabberIndicatorProps() {
       return normalize.element({
-        ...parts.grabberIndicator.attrs,
-        id: dom.getGrabberIndicatorId(scope),
+        ...parts.grabberIndicator.attrs(scope.id),
       })
     },
 
     getCloseTriggerProps() {
       return normalize.button({
-        ...parts.closeTrigger.attrs,
-        id: dom.getCloseTriggerId(scope),
+        ...parts.closeTrigger.attrs(scope.id),
         onClick() {
           send({ type: "CLOSE" })
         },
@@ -266,8 +260,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       const physicalOpenDirection = resolveSwipeDirection(openDirection, prop("dir"))
 
       return normalize.element({
-        ...parts.swipeArea.attrs,
-        id: dom.getSwipeAreaId(scope),
+        ...parts.swipeArea.attrs(scope.id),
         role: "presentation",
         "aria-hidden": true,
         "data-state": open ? "open" : "closed",

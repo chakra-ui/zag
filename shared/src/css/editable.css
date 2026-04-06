@@ -1,10 +1,10 @@
-[data-scope="editable"][data-part="area"] {
+[data-editable-area] {
   display: inline-block;
   margin-right: 0.5em;
   margin-bottom: 1em;
 }
 
-[data-scope="editable"][data-part="input"] {
+[data-editable-input] {
   width: auto;
   background: transparent;
 
@@ -13,11 +13,11 @@
   }
 }
 
-[data-scope="editable"][data-part="preview"][data-empty] {
+[data-editable-preview][data-empty] {
   opacity: 0.7;
 }
 
-[data-scope="editable"][data-part="control"] {
+[data-editable-control] {
   display: flex;
   gap: 0.5em;
 }

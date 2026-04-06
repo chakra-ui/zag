@@ -75,7 +75,7 @@ export const machine = createMachine<AvatarSchema>({
           callback(records) {
             const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
             const removed = removedNodes.find(
-              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-scope=avatar][data-part=image]"),
+              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-avatar-image]"),
             )
             if (removed) {
               send({ type: "img.unmount" })

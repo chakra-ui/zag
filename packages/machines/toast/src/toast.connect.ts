@@ -50,9 +50,8 @@ export function connect<T extends PropTypes, O>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-state": visible ? "open" : "closed",
         "data-type": type,
         "data-placement": placement,
@@ -100,21 +99,21 @@ export function connect<T extends PropTypes, O>(
 
     getTitleProps() {
       return normalize.element({
-        ...parts.title.attrs,
+        ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
       })
     },
 
     getDescriptionProps() {
       return normalize.element({
-        ...parts.description.attrs,
+        ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
       })
     },
 
     getActionTriggerProps() {
       return normalize.button({
-        ...parts.actionTrigger.attrs,
+        ...parts.actionTrigger.attrs(scope.id),
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
@@ -126,8 +125,7 @@ export function connect<T extends PropTypes, O>(
 
     getCloseTriggerProps() {
       return normalize.button({
-        id: dom.getCloseTriggerId(scope),
-        ...parts.closeTrigger.attrs,
+        ...parts.closeTrigger.attrs(scope.id),
         type: "button",
         "aria-label": translations?.closeTriggerLabel,
         onClick(event) {

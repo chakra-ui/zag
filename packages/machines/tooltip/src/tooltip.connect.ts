@@ -50,9 +50,8 @@ export function connect<P extends PropTypes>(
       const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         id: triggerId,
-        "data-ownedby": scope.id,
         "data-value": value,
         "data-current": dataAttr(current),
         dir: prop("dir"),
@@ -80,7 +79,7 @@ export function connect<P extends PropTypes>(
           // Check if focus moved to another trigger in the same tooltip.
           // If so, don't close - the focus handler will handle the switch.
           const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
-          const focusedAnotherTrigger = activeEl?.closest(`[data-ownedby="${scope.id}"]`) != null
+          const focusedAnotherTrigger = activeEl?.closest(`[${parts.trigger.attr}="${scope.id}"]`) != null
           if (!focusedAnotherTrigger) {
             send({ type: "close", src: "trigger.blur", value, triggerId })
           }
@@ -120,8 +119,7 @@ export function connect<P extends PropTypes>(
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(scope),
-        ...parts.arrow.attrs,
+        ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrow,
       })
@@ -129,7 +127,7 @@ export function connect<P extends PropTypes>(
 
     getArrowTipProps() {
       return normalize.element({
-        ...parts.arrowTip.attrs,
+        ...parts.arrowTip.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
@@ -137,8 +135,7 @@ export function connect<P extends PropTypes>(
 
     getPositionerProps() {
       return normalize.element({
-        id: dom.getPositionerId(scope),
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.floating,
       })
@@ -150,7 +147,7 @@ export function connect<P extends PropTypes>(
       const instant = store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
 
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",

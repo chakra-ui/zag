@@ -40,7 +40,7 @@ export default function Page() {
             </Portal>
           )}
 
-          <div data-part="test-text">Test text</div>
+          <div data-testid="test-text">Test text</div>
         </div>
       </main>
 

@@ -1,9 +1,9 @@
 import { expect, type Page, test } from "@playwright/test"
 import { a11y, controls, part, testid } from "./_utils"
 
-const root = part("root")
-const label = part("label")
-const control = part("control")
+const root = part("checkbox", "root")
+const label = part("checkbox", "label")
+const control = part("checkbox", "control")
 const input = testid("hidden-input")
 
 const expectToBeChecked = async (page: Page) => {

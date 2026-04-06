@@ -165,8 +165,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         role: "group",
         "aria-roledescription": translations.rootRoleDescription,
@@ -203,10 +202,9 @@ export function connect<T extends PropTypes>(
       const viewportId = dom.getViewportId(scope)
 
       return normalize.element({
-        ...parts.viewport.attrs,
+        ...parts.viewport.attrs(scope.id),
         id: viewportId,
         role: "presentation",
-        "data-ownedby": dom.getRootId(scope),
         "data-disabled": dataAttr(!!fixedCropArea),
         style: {
           position: "relative",
@@ -226,7 +224,7 @@ export function connect<T extends PropTypes>(
           const selectionEl = dom.getSelectionEl(scope)
           if (!fixedCropArea && contains(selectionEl, target)) return
 
-          const handleEl = target.closest('[data-scope="image-cropper"][data-part="handle"]') as HTMLElement | null
+          const handleEl = target.closest("[data-image-cropper-handle]") as HTMLElement | null
           if (handleEl && contains(rootEl, handleEl)) return
 
           const point = getEventPoint(event)
@@ -246,13 +244,11 @@ export function connect<T extends PropTypes>(
       const scale = `scale(${scaleX}, ${scaleY})`
 
       return normalize.element({
-        ...parts.image.attrs,
-        id: dom.getImageId(scope),
+        ...parts.image.attrs(scope.id),
         draggable: false,
         role: "presentation",
         alt: "",
         "aria-hidden": true,
-        "data-ownedby": dom.getViewportId(scope),
         "data-ready": dataAttr(isImageReady),
         "data-flip-horizontal": dataAttr(flipHorizontal),
         "data-flip-vertical": dataAttr(flipVertical),
@@ -274,7 +270,7 @@ export function connect<T extends PropTypes>(
     getSelectionProps() {
       const disabled = !!fixedCropArea
       return normalize.element({
-        ...parts.selection.attrs,
+        ...parts.selection.attrs(scope.id),
         id: dom.getSelectionId(scope),
         tabIndex: disabled ? undefined : 0,
         role: "slider",
@@ -375,8 +371,7 @@ export function connect<T extends PropTypes>(
       const disabled = !!fixedCropArea
 
       return normalize.element({
-        ...parts.handle.attrs,
-        id: dom.getHandleId(scope, handlePosition),
+        ...parts.handle.attrs(scope.id),
         "data-position": handlePosition,
         "aria-hidden": "true",
         role: "presentation",
@@ -400,7 +395,7 @@ export function connect<T extends PropTypes>(
       const isMeasured = computed("isMeasured")
 
       return normalize.element({
-        ...parts.grid.attrs,
+        ...parts.grid.attrs(scope.id),
         "aria-hidden": "true",
         "data-axis": axis,
         "data-dragging": dataAttr(dragging),

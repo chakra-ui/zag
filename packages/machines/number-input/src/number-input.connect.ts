@@ -67,8 +67,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(scope),
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
@@ -79,7 +78,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
@@ -98,7 +97,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         role: "group",
         "aria-disabled": disabled,
@@ -112,7 +111,7 @@ export function connect<T extends PropTypes>(
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -123,7 +122,7 @@ export function connect<T extends PropTypes>(
 
     getInputProps() {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         name: prop("name"),
         form: prop("form"),
@@ -212,9 +211,8 @@ export function connect<T extends PropTypes>(
 
     getDecrementTriggerProps() {
       return normalize.button({
-        ...parts.decrementTrigger.attrs,
+        ...parts.decrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getDecrementTriggerId(scope),
         disabled: isDecrementDisabled,
         "data-disabled": dataAttr(isDecrementDisabled),
         "aria-label": translations.decrementLabel,
@@ -245,9 +243,8 @@ export function connect<T extends PropTypes>(
 
     getIncrementTriggerProps() {
       return normalize.button({
-        ...parts.incrementTrigger.attrs,
+        ...parts.incrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getIncrementTriggerId(scope),
         disabled: isIncrementDisabled,
         "data-disabled": dataAttr(isIncrementDisabled),
         "aria-label": translations.incrementLabel,
@@ -276,10 +273,9 @@ export function connect<T extends PropTypes>(
 
     getScrubberProps() {
       return normalize.element({
-        ...parts.scrubber.attrs,
+        ...parts.scrubber.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
-        id: dom.getScrubberId(scope),
         role: "presentation",
         "data-scrubbing": dataAttr(scrubbing),
         onMouseDown(event) {

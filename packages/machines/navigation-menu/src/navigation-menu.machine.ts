@@ -260,10 +260,7 @@ export const machine = createMachine({
           onFocusOutside(event) {
             const target = event.detail.target as HTMLElement
 
-            if (
-              target.matches("[data-scope=navigation-menu][data-part=trigger]") ||
-              target.matches("[data-trigger-proxy]")
-            ) {
+            if (target.matches("[data-navigation-menu-trigger]") || target.matches("[data-trigger-proxy]")) {
               event.preventDefault()
             }
 

@@ -1,14 +1,14 @@
-[data-scope="qr-code"][data-part="frame"] {
+[data-qr-code-frame] {
   width: 120px;
   height: 120px;
   background-color: white;
 }
 
-[data-scope="qr-code"][data-part="pattern"] {
+[data-qr-code-pattern] {
   fill: green;
 }
 
-[data-scope="qr-code"][data-part="overlay"] {
+[data-qr-code-overlay] {
   width: 25%;
   height: 25%;
   outline: 4px solid white;

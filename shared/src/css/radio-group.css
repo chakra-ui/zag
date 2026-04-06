@@ -1,11 +1,11 @@
-[data-scope="radio-group"][data-part="root"] {
+[data-radio-group-root] {
   position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-[data-scope="radio-group"][data-part="item"] {
+[data-radio-group-item] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -25,19 +25,19 @@
   }
 }
 
-[data-scope="radio-group"][data-part="item-control"] {
+[data-radio-group-item-control] {
   &[data-focus-visible] {
     outline: 2px solid royalblue;
   }
 }
 
-[data-scope="radio-group"][data-part="radio-label"] {
+[data-radio-group-radio-label] {
   &[data-disabled] {
     opacity: 0.4;
   }
 }
 
-[data-scope="radio-group"][data-part="item-control"] {
+[data-radio-group-item-control] {
   height: 20px;
   width: 20px;
   background-color: #eee;
@@ -72,7 +72,7 @@
   }
 }
 
-[data-scope="radio-group"][data-part="indicator"] {
+[data-radio-group-indicator] {
   height: 4px;
   background-color: red;
   z-index: 1;

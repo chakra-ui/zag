@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test"
 import { rect } from "./_utils"
 
-const trigger = (id: number) => `[data-scope="popover"][data-part="trigger"][data-value="${id}"]`
-const content = '[data-scope="popover"][data-part="content"]'
-const positioner = '[data-scope="popover"][data-part="positioner"]'
-const closeTrigger = '[data-scope="popover"][data-part="close-trigger"]'
+const trigger = (id: number) => `[data-popover-trigger][data-value="${id}"]`
+const content = "[data-popover-content]"
+const positioner = "[data-popover-positioner]"
+const closeTrigger = "[data-popover-close-trigger]"
 
 test.describe("popover / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {

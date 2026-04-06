@@ -16,28 +16,28 @@ export class DateInputModel extends Model {
   }
 
   get root() {
-    return this.page.locator(`[data-scope=date-input][data-part=root]`)
+    return this.page.locator(`[data-date-input-root]`)
   }
 
   get label() {
-    return this.page.locator(`[data-scope=date-input][data-part=label]`)
+    return this.page.locator(`[data-date-input-label]`)
   }
 
   get control() {
-    return this.page.locator(`[data-scope=date-input][data-part=control]`)
+    return this.page.locator(`[data-date-input-control]`)
   }
 
   getSegmentGroup(index?: number) {
-    const locator = this.page.locator(`[data-scope=date-input][data-part=segment-group]`)
+    const locator = this.page.locator(`[data-date-input-segment-group]`)
     return index != null ? locator.nth(index) : locator
   }
 
   getEditableSegments() {
-    return this.page.locator(`[data-scope=date-input][data-part=segment][data-editable]`)
+    return this.page.locator(`[data-date-input-segment][data-editable]`)
   }
 
   getSegment(type: string) {
-    return this.page.locator(`[data-scope=date-input][data-part=segment][data-type=${type}]`)
+    return this.page.locator(`[data-date-input-segment][data-type=${type}]`)
   }
 
   get output() {
@@ -45,7 +45,7 @@ export class DateInputModel extends Model {
   }
 
   getSegmentInGroup(type: string, groupIndex: number) {
-    return this.getSegmentGroup(groupIndex).locator(`[data-scope=date-input][data-part=segment][data-type=${type}]`)
+    return this.getSegmentGroup(groupIndex).locator(`[data-date-input-segment][data-type=${type}]`)
   }
 
   getSegmentNth(type: string, index = 0) {

@@ -1,8 +1,8 @@
-[data-scope="checkbox"][data-part="control"][data-focus] {
+[data-checkbox-control][data-focus] {
   outline: 2px solid royalblue;
 }
 
-[data-scope="checkbox"][data-part="root"] {
+[data-checkbox-root] {
   display: flex;
   align-items: center;
   position: relative;
@@ -12,7 +12,7 @@
   gap: 8px;
 }
 
-[data-scope="checkbox"][data-part="control"] {
+[data-checkbox-control] {
   height: 16px;
   width: 16px;
   background-color: #eee;
@@ -24,20 +24,20 @@
   position: relative;
 }
 
-[data-scope="checkbox"][data-part="control"][data-hover] {
+[data-checkbox-control][data-hover] {
   background-color: #ccc;
 }
 
-[data-scope="checkbox"][data-part="control"][data-state="checked"] {
+[data-checkbox-control][data-state="checked"] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-[data-scope="checkbox"][data-part="control"][data-state="checked"]::after {
+[data-checkbox-control][data-state="checked"]::after {
   display: block;
 }
 
-[data-scope="checkbox"][data-part="control"]::after {
+[data-checkbox-control]::after {
   content: "";
   display: none;
   position: relative;
@@ -50,12 +50,12 @@
   top: -1px;
 }
 
-[data-scope="checkbox"][data-part="control"][data-state="indeterminate"] {
+[data-checkbox-control][data-state="indeterminate"] {
   background-color: white;
   border-color: gray;
 }
 
-[data-scope="checkbox"][data-part="control"][data-state="indeterminate"]::after {
+[data-checkbox-control][data-state="indeterminate"]::after {
   display: block;
   left: 50%;
   top: 50%;

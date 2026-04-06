@@ -44,8 +44,7 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
       const dir = prop("dir")
 
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir,
         role: "region",
         "aria-roledescription": "marquee",
@@ -91,9 +90,7 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
 
     getViewportProps() {
       return normalize.element({
-        ...parts.viewport.attrs,
-        id: dom.getViewportId(scope),
-        "data-part": "viewport",
+        ...parts.viewport.attrs(scope.id),
         "data-orientation": orientation,
         "data-side": side,
         onAnimationIteration(event) {
@@ -128,10 +125,9 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
       const { index } = props
       const clone = index > 0
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope, index),
         dir: prop("dir"),
-        "data-part": "content",
         "data-index": index,
         "data-orientation": orientation,
         "data-side": side,
@@ -161,9 +157,8 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
       const dir = prop("dir")
 
       return normalize.element({
-        ...parts.edge.attrs,
+        ...parts.edge.attrs(scope.id),
         dir,
-        "data-part": "edge",
         "data-side": side,
         "data-orientation": orientation,
         style: {
@@ -176,7 +171,7 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
 
     getItemProps() {
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         style: {
           [isVertical ? "marginBlock" : "marginInline"]: "calc(var(--marquee-spacing) / 2)",

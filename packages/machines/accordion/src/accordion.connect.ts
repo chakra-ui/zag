@@ -39,9 +39,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-orientation": prop("orientation"),
       })
     },
@@ -49,7 +48,7 @@ export function connect<T extends PropTypes>(
     getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getItemId(scope, props.value),
         "data-state": itemState.expanded ? "open" : "closed",
@@ -62,7 +61,7 @@ export function connect<T extends PropTypes>(
     getItemContentProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemContent.attrs,
+        ...parts.itemContent.attrs(scope.id),
         dir: prop("dir"),
         role: "region",
         id: dom.getItemContentId(scope, props.value),
@@ -78,7 +77,7 @@ export function connect<T extends PropTypes>(
     getItemIndicatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
         "data-state": itemState.expanded ? "open" : "closed",
@@ -93,7 +92,7 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
 
       return normalize.button({
-        ...parts.itemTrigger.attrs,
+        ...parts.itemTrigger.attrs(scope.id),
         type: "button",
         dir: prop("dir"),
         id: dom.getItemTriggerId(scope, value),
@@ -105,7 +104,6 @@ export function connect<T extends PropTypes>(
         "aria-disabled": itemState.disabled,
         "data-state": itemState.expanded ? "open" : "closed",
         "data-focus": dataAttr(itemState.focused),
-        "data-ownedby": dom.getRootId(scope),
         onFocus() {
           if (itemState.disabled) return
           send({ type: "TRIGGER.FOCUS", value })

@@ -1,9 +1,9 @@
-[data-scope="tags-input"][data-part="label"] {
+[data-tags-input-label] {
   display: block;
   margin-bottom: 8px;
 }
 
-[data-scope="tags-input"][data-part="control"] {
+[data-tags-input-control] {
   padding: 0 2px;
   background: #fff;
   border: 1px solid #ccc;
@@ -23,7 +23,7 @@
   }
 }
 
-[data-scope="tags-input"][data-part="item-preview"] {
+[data-tags-input-item-preview] {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -50,7 +50,7 @@
   }
 }
 
-[data-scope="tags-input"][data-part*="input"] {
+[data-tags-input-input] {
   appearance: none;
   padding: 3px;
   margin: 0;
@@ -71,11 +71,11 @@
   }
 }
 
-[data-scope="tags-input"][data-part="item-delete-trigger"] {
+[data-tags-input-item-delete-trigger] {
   all: unset;
 }
 
-[data-scope="tags-input"][data-part="clear-trigger"] {
+[data-tags-input-clear-trigger] {
   position: absolute;
   top: 0;
   right: 0.5px;

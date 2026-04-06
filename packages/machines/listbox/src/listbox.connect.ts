@@ -114,9 +114,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(disabled),
       })
@@ -125,7 +124,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getInputProps(props = {}) {
       const keyboardPriority = props.keyboardPriority ?? "caret"
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         disabled,
         "data-disabled": dataAttr(disabled),
@@ -205,14 +204,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         dir: prop("dir"),
         id: dom.getLabelId(scope),
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
       })
     },
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
       })
@@ -224,7 +223,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         id: dom.getItemId(scope, itemState.value),
         role: "option",
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
@@ -265,7 +264,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemTextProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -275,7 +274,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemIndicatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         "aria-hidden": true,
         "data-state": itemState.selected ? "checked" : "unchecked",
         hidden: !itemState.selected,
@@ -285,7 +284,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
-        ...parts.itemGroupLabel.attrs,
+        ...parts.itemGroupLabel.attrs(scope.id),
         id: dom.getItemGroupLabelId(scope, htmlFor),
         dir: prop("dir"),
         role: "presentation",
@@ -295,7 +294,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemGroupProps(props) {
       const { id } = props
       return normalize.element({
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
         "data-empty": dataAttr(collection.size === 0),
@@ -311,7 +310,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: "listbox",
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": ariaActiveDescendant,
         "data-orientation": prop("orientation"),

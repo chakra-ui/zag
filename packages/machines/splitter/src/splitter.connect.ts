@@ -116,10 +116,9 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-orientation": orientation,
         "data-dragging": dataAttr(dragging),
-        id: dom.getRootId(scope),
         dir: prop("dir"),
         style: {
           display: "flex",
@@ -134,14 +133,13 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getPanelProps(props) {
       const { id } = props
       return normalize.element({
-        ...parts.panel.attrs,
+        ...parts.panel.attrs(scope.id),
         "data-orientation": orientation,
         "data-dragging": dataAttr(dragging),
         dir: prop("dir"),
         "data-id": id,
         "data-index": findPanelIndex(prop("panels"), id),
         id: dom.getPanelId(scope, id),
-        "data-ownedby": dom.getRootId(scope),
         style: getPanelStyle(id),
       })
     },
@@ -151,12 +149,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getResizeTriggerIndicator(props) {
       const triggerState = getResizeTriggerState(props)
       return normalize.element({
-        ...parts.resizeTriggerIndicator.attrs,
+        ...parts.resizeTriggerIndicator.attrs(scope.id),
         "data-orientation": orientation,
         "data-focus": dataAttr(triggerState.focused),
         "data-dragging": dataAttr(triggerState.dragging),
         "data-disabled": dataAttr(triggerState.disabled),
-        "data-ownedby": dom.getRootId(scope),
       })
     },
 
@@ -166,12 +163,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       const aria = getAriaValue(context.get("size"), prop("panels"), id)
 
       return normalize.element({
-        ...parts.resizeTrigger.attrs,
+        ...parts.resizeTrigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getResizeTriggerId(scope, id),
         role: "separator",
         "data-id": id,
-        "data-ownedby": dom.getRootId(scope),
         tabIndex: triggerState.disabled ? undefined : 0,
         "aria-valuenow": aria.valueNow,
         "aria-valuemin": aria.valueMin,

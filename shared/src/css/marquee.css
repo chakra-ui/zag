@@ -1,6 +1,6 @@
 @import "./keyframes.css";
 
-[data-scope="marquee"][data-part="root"] {
+[data-marquee-root] {
   width: 100%;
   max-width: 600px;
   border: 1px solid #e5e7eb;
@@ -23,7 +23,7 @@
   }
 }
 
-[data-scope="marquee"][data-part="content"] {
+[data-marquee-content] {
   animation-timing-function: linear;
   animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
@@ -48,7 +48,7 @@
   }
 }
 
-[data-scope="marquee"][data-part="edge"] {
+[data-marquee-edge] {
   /* Default size and gradient styles - users can override these */
   z-index: 10;
 
@@ -82,7 +82,7 @@
 }
 
 /* Demo-specific styles */
-[data-scope="marquee"][data-part="item"] {
+[data-marquee-item] {
   display: flex;
   align-items: center;
   gap: 12px;

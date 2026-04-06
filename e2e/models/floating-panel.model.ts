@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test"
 import { a11y, rect } from "../_utils"
 import { Model } from "./model"
 
-const part = (p: string) => `[data-scope=floating-panel][data-part=${p}]`
+const part = (p: string) => `[data-floating-panel-${p}]`
 
 type Axis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
 

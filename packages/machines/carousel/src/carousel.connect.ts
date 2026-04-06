@@ -65,8 +65,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         role: "region",
         "aria-roledescription": "carousel",
         "data-orientation": prop("orientation"),
@@ -83,7 +82,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getItemGroupProps() {
       return normalize.element({
-        ...parts.itemGroup.attrs,
+        ...parts.itemGroup.attrs(scope.id),
         id: dom.getItemGroupId(scope),
         "data-orientation": prop("orientation"),
         "data-dragging": dataAttr(isDragging),
@@ -140,7 +139,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
     getItemProps(props) {
       const isInView = context.get("slidesInView").includes(props.index)
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         id: dom.getItemId(scope, props.index),
         dir: prop("dir"),
         role: "group",
@@ -166,14 +165,14 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         "data-orientation": prop("orientation"),
       })
     },
 
     getPrevTriggerProps() {
       return normalize.button({
-        ...parts.prevTrigger.attrs,
+        ...parts.prevTrigger.attrs(scope.id),
         id: dom.getPrevTriggerId(scope),
         type: "button",
         disabled: !canScrollPrev,
@@ -190,7 +189,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getNextTriggerProps() {
       return normalize.button({
-        ...parts.nextTrigger.attrs,
+        ...parts.nextTrigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getNextTriggerId(scope),
         type: "button",
@@ -207,9 +206,8 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getIndicatorGroupProps() {
       return normalize.element({
-        ...parts.indicatorGroup.attrs,
+        ...parts.indicatorGroup.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getIndicatorGroupId(scope),
         "data-orientation": prop("orientation"),
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -258,9 +256,8 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getIndicatorProps(props) {
       return normalize.button({
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getIndicatorId(scope, props.index),
         type: "button",
         "data-orientation": prop("orientation"),
         "data-index": props.index,
@@ -277,7 +274,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getAutoplayTriggerProps() {
       return normalize.button({
-        ...parts.autoplayTrigger.attrs,
+        ...parts.autoplayTrigger.attrs(scope.id),
         type: "button",
         "data-orientation": prop("orientation"),
         "data-pressed": dataAttr(isPlaying),
@@ -291,7 +288,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
     getProgressTextProps() {
       return normalize.element({
-        ...parts.progressText.attrs,
+        ...parts.progressText.attrs(scope.id),
       })
     },
   }

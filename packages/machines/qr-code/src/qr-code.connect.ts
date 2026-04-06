@@ -37,8 +37,7 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(scope),
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         style: {
           "--qrcode-pixel-size": `${pixelSize}px`,
           "--qrcode-width": `${width}px`,
@@ -50,8 +49,7 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
 
     getFrameProps() {
       return normalize.svg({
-        id: dom.getFrameId(scope),
-        ...parts.frame.attrs,
+        ...parts.frame.attrs(scope.id),
         xmlns: "http://www.w3.org/2000/svg",
         viewBox: `0 0 ${width} ${height}`,
       })
@@ -60,13 +58,13 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
     getPatternProps() {
       return normalize.path({
         d: paths.join(""),
-        ...parts.pattern.attrs,
+        ...parts.pattern.attrs(scope.id),
       })
     },
 
     getOverlayProps() {
       return normalize.element({
-        ...parts.overlay.attrs,
+        ...parts.overlay.attrs(scope.id),
         style: {
           position: "absolute",
           top: "50%",
@@ -79,7 +77,7 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
     getDownloadTriggerProps(props) {
       return normalize.button({
         type: "button",
-        ...parts.downloadTrigger.attrs,
+        ...parts.downloadTrigger.attrs(scope.id),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "DOWNLOAD_TRIGGER.CLICK", ...props })

@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
 import { rect } from "./_utils"
 
-const trigger = (id: number) => `[data-scope="menu"][data-part="trigger"][data-value="${id}"]`
-const menu = '[data-scope="menu"][data-part="content"]'
-const positioner = '[data-scope="menu"][data-part="positioner"]'
+const trigger = (id: number) => `[data-menu-trigger][data-value="${id}"]`
+const menu = "[data-menu-content]"
+const positioner = "[data-menu-positioner]"
 
 test.describe("menu / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {

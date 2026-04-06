@@ -101,9 +101,8 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
@@ -115,7 +114,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.element({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
@@ -134,8 +133,7 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
-        id: dom.getControlId(scope),
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
@@ -147,7 +145,7 @@ export function connect<T extends PropTypes>(
 
     getTriggerProps() {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         disabled: disabled,
@@ -179,8 +177,7 @@ export function connect<T extends PropTypes>(
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
-        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
         style: popperStyles.floating,
       })
@@ -188,7 +185,7 @@ export function connect<T extends PropTypes>(
 
     getContentProps() {
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         dir: prop("dir"),
         role: prop("inline") ? undefined : "dialog",
@@ -201,7 +198,7 @@ export function connect<T extends PropTypes>(
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
@@ -217,8 +214,7 @@ export function connect<T extends PropTypes>(
       })
 
       return normalize.element({
-        ...parts.area.attrs,
-        id: dom.getAreaId(scope),
+        ...parts.area.attrs(scope.id),
         role: "group",
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
@@ -252,8 +248,7 @@ export function connect<T extends PropTypes>(
       })
 
       return normalize.element({
-        ...parts.areaBackground.attrs,
-        id: dom.getAreaGradientId(scope),
+        ...parts.areaBackground.attrs(scope.id),
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
@@ -281,7 +276,7 @@ export function connect<T extends PropTypes>(
       const color = areaValue.withChannelValue("alpha", 1).toString("css")
 
       return normalize.element({
-        ...parts.areaThumb.attrs,
+        ...parts.areaThumb.attrs(scope.id),
         id: dom.getAreaThumbId(scope),
         dir: prop("dir"),
         tabIndex: disabled ? undefined : 0,
@@ -357,7 +352,7 @@ export function connect<T extends PropTypes>(
     getTransparencyGridProps(props = {}) {
       const { size = "12px" } = props
       return normalize.element({
-        ...parts.transparencyGrid.attrs,
+        ...parts.transparencyGrid.attrs(scope.id),
         style: {
           "--size": size,
           width: "100%",
@@ -376,7 +371,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderProps(props) {
       const { orientation = "horizontal", channel, format } = props
       return normalize.element({
-        ...parts.channelSlider.attrs,
+        ...parts.channelSlider.attrs(scope.id),
         "data-channel": channel,
         "data-orientation": orientation,
         role: "presentation",
@@ -402,8 +397,7 @@ export function connect<T extends PropTypes>(
       const normalizedValue = format ? value.toFormat(format) : areaValue
 
       return normalize.element({
-        ...parts.channelSliderTrack.attrs,
-        id: dom.getChannelSliderTrackId(scope, channel),
+        ...parts.channelSliderTrack.attrs(scope.id),
         role: "group",
         "data-channel": channel,
         "data-orientation": orientation,
@@ -423,7 +417,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderLabelProps(props) {
       const { channel } = props
       return normalize.element({
-        ...parts.channelSliderLabel.attrs,
+        ...parts.channelSliderLabel.attrs(scope.id),
         "data-channel": channel,
         onClick(event) {
           if (!interactive) return
@@ -440,7 +434,7 @@ export function connect<T extends PropTypes>(
 
     getChannelSliderValueTextProps(props) {
       return normalize.element({
-        ...parts.channelSliderValueText.attrs,
+        ...parts.channelSliderValueText.attrs(scope.id),
         "data-channel": props.channel,
       })
     },
@@ -462,7 +456,7 @@ export function connect<T extends PropTypes>(
           : { top: `${offset * 100}%`, left: "50%" }
 
       return normalize.element({
-        ...parts.channelSliderThumb.attrs,
+        ...parts.channelSliderThumb.attrs(scope.id),
         id: dom.getChannelSliderThumbId(scope, channel),
         role: "slider",
         "aria-label": channel,
@@ -544,7 +538,7 @@ export function connect<T extends PropTypes>(
       const channelRange = getChannelRange(value, channel)
 
       return normalize.input({
-        ...parts.channelInput.attrs,
+        ...parts.channelInput.attrs(scope.id),
         dir: prop("dir"),
         type: isTextField ? "text" : "number",
         "data-channel": channel,
@@ -610,7 +604,7 @@ export function connect<T extends PropTypes>(
 
     getEyeDropperTriggerProps() {
       return normalize.button({
-        ...parts.eyeDropperTrigger.attrs,
+        ...parts.eyeDropperTrigger.attrs(scope.id),
         type: "button",
         dir: prop("dir"),
         disabled: disabled,
@@ -627,7 +621,7 @@ export function connect<T extends PropTypes>(
 
     getSwatchGroupProps() {
       return normalize.element({
-        ...parts.swatchGroup.attrs,
+        ...parts.swatchGroup.attrs(scope.id),
         role: "group",
       })
     },
@@ -637,7 +631,7 @@ export function connect<T extends PropTypes>(
     getSwatchTriggerProps(props) {
       const swatchState = getSwatchTriggerState(props)
       return normalize.button({
-        ...parts.swatchTrigger.attrs,
+        ...parts.swatchTrigger.attrs(scope.id),
         disabled: swatchState.disabled,
         dir: prop("dir"),
         type: "button",
@@ -659,7 +653,7 @@ export function connect<T extends PropTypes>(
     getSwatchIndicatorProps(props) {
       const swatchState = getSwatchTriggerState(props)
       return normalize.element({
-        ...parts.swatchIndicator.attrs,
+        ...parts.swatchIndicator.attrs(scope.id),
         dir: prop("dir"),
         hidden: !swatchState.checked,
       })
@@ -670,7 +664,7 @@ export function connect<T extends PropTypes>(
       const swatchState = getSwatchTriggerState(props)
       const color = swatchState.value.toString(respectAlpha ? "css" : "hex")
       return normalize.element({
-        ...parts.swatch.attrs,
+        ...parts.swatch.attrs(scope.id),
         dir: prop("dir"),
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
@@ -684,7 +678,7 @@ export function connect<T extends PropTypes>(
 
     getFormatTriggerProps() {
       return normalize.button({
-        ...parts.formatTrigger.attrs,
+        ...parts.formatTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         "aria-label": `change color format to ${getNextFormat(format)}`,
@@ -698,7 +692,7 @@ export function connect<T extends PropTypes>(
 
     getFormatSelectProps() {
       return normalize.select({
-        ...parts.formatSelect.attrs,
+        ...parts.formatSelect.attrs(scope.id),
         "aria-label": "change color format",
         dir: prop("dir"),
         defaultValue: prop("format"),

@@ -67,8 +67,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(scope),
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "aria-label": translations.rootLabel,
       })
@@ -76,8 +75,7 @@ export function connect<T extends PropTypes>(
 
     getEllipsisProps(props) {
       return normalize.element({
-        id: dom.getEllipsisId(scope, props.index),
-        ...parts.ellipsis.attrs,
+        ...parts.ellipsis.attrs(scope.id),
         dir: prop("dir"),
       })
     },
@@ -88,7 +86,7 @@ export function connect<T extends PropTypes>(
 
       return normalize.element({
         id: dom.getItemId(scope, index),
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-index": index,
         "data-selected": dataAttr(isCurrentPage),
@@ -107,8 +105,7 @@ export function connect<T extends PropTypes>(
 
     getPrevTriggerProps() {
       return normalize.element({
-        id: dom.getPrevTriggerId(scope),
-        ...parts.prevTrigger.attrs,
+        ...parts.prevTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isFirstPage),
         "aria-label": translations.prevTriggerLabel,
@@ -126,8 +123,7 @@ export function connect<T extends PropTypes>(
 
     getFirstTriggerProps() {
       return normalize.element({
-        id: dom.getFirstTriggerId(scope),
-        ...parts.firstTrigger.attrs,
+        ...parts.firstTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isFirstPage),
         "aria-label": translations.firstTriggerLabel,
@@ -144,8 +140,7 @@ export function connect<T extends PropTypes>(
 
     getNextTriggerProps() {
       return normalize.element({
-        id: dom.getNextTriggerId(scope),
-        ...parts.nextTrigger.attrs,
+        ...parts.nextTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isLastPage),
         "aria-label": translations.nextTriggerLabel,
@@ -163,8 +158,7 @@ export function connect<T extends PropTypes>(
 
     getLastTriggerProps() {
       return normalize.element({
-        id: dom.getLastTriggerId(scope),
-        ...parts.lastTrigger.attrs,
+        ...parts.lastTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isLastPage),
         "aria-label": translations.lastTriggerLabel,

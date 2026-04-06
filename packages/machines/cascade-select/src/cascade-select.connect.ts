@@ -112,8 +112,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
@@ -124,7 +123,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
@@ -142,9 +141,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-readonly": dataAttr(prop("readOnly")),
@@ -155,7 +153,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getTriggerProps() {
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope),
         type: "button",
@@ -219,9 +217,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
+        ...parts.clearTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getClearTriggerId(scope),
         type: "button",
         "aria-label": "Clear value",
         hidden: !hasSelectedItems,
@@ -238,9 +235,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getPositionerProps() {
       return normalize.element({
-        ...parts.positioner.attrs,
+        ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
@@ -249,7 +245,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue.toString()) : undefined
 
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         role: "listbox",
         "aria-labelledby": dom.getLabelId(scope),
@@ -324,7 +320,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.list.attrs,
+        ...parts.list.attrs(scope.id),
         id: dom.getListId(scope, itemState.value.toString()),
         dir: prop("dir"),
         "data-depth": itemState.depth,
@@ -335,8 +331,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getIndicatorProps() {
       return normalize.element({
-        ...parts.indicator.attrs,
-        id: dom.getIndicatorId(scope),
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
         "data-state": open ? "open" : "closed",
@@ -351,7 +346,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         id: dom.getItemId(scope, itemState.value.toString()),
         dir: prop("dir"),
         role: "treeitem",
@@ -414,7 +409,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const itemState = getItemState(props)
       return normalize.element({
         dir: prop("dir"),
-        ...parts.itemText.attrs,
+        ...parts.itemText.attrs(scope.id),
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
@@ -428,7 +423,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const itemState = getItemState(props)
 
       return normalize.element({
-        ...parts.itemIndicator.attrs,
+        ...parts.itemIndicator.attrs(scope.id),
         dir: prop("dir"),
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -440,7 +435,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getValueTextProps() {
       return normalize.element({
-        ...parts.valueText.attrs,
+        ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(prop("invalid")),

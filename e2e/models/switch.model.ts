@@ -16,19 +16,19 @@ export class SwitchModel extends Model {
   }
 
   get root() {
-    return this.page.locator("[data-scope='switch'][data-part='root']")
+    return this.page.locator("[data-switch-root]")
   }
 
   get label() {
-    return this.page.locator("[data-scope='switch'][data-part='label']")
+    return this.page.locator("[data-switch-label]")
   }
 
   get control() {
-    return this.page.locator("[data-scope='switch'][data-part='control']")
+    return this.page.locator("[data-switch-control]")
   }
 
   get input() {
-    return this.page.locator("[data-scope='switch'][data-part='root'] input")
+    return this.page.locator("[data-switch-root] input")
   }
 
   async clickCheckbox() {

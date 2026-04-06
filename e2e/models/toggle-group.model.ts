@@ -10,7 +10,7 @@ export class ToggleGroupModel extends Model {
   }
 
   private __item(item: Item) {
-    return this.page.locator(part("item")).nth(["bold", "italic", "underline"].indexOf(item))
+    return this.page.locator(part("toggle-group", "item")).nth(["bold", "italic", "underline"].indexOf(item))
   }
 
   clickItem(item: Item) {

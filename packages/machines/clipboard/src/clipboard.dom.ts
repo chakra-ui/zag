@@ -1,10 +1,11 @@
 import type { Scope } from "@zag-js/core"
 import { getWindow } from "@zag-js/dom-query"
+import { parts } from "./clipboard.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `clip:${ctx.id}`
-export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `clip:${ctx.id}:input`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `clip:${ctx.id}:label`
-export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
+export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
 export const writeToClipboard = (ctx: Scope, value: string) => copyText(ctx.getDoc(), value)
 
 function createNode(doc: Document, text: string): HTMLElement {

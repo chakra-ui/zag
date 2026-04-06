@@ -28,7 +28,7 @@ export class TabsModel extends Model {
   }
 
   private getIndicator = () => {
-    return this.page.locator("[data-scope='tabs'][data-part='indicator']")
+    return this.page.locator("[data-tabs-indicator]")
   }
 
   clickTab = async (id: string) => {
@@ -105,7 +105,7 @@ export class TabsModel extends Model {
     await this.page.waitForFunction(
       ({ tabId, tolerance }) => {
         const tab = document.querySelector(`[data-testid="${tabId}-tab"]`)
-        const indicator = document.querySelector('[data-scope="tabs"][data-part="indicator"]')
+        const indicator = document.querySelector("[data-tabs-indicator]")
         if (!tab || !indicator) return false
 
         const tabRect = tab.getBoundingClientRect()

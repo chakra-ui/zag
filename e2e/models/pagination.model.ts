@@ -16,15 +16,15 @@ export class PaginationModel extends Model {
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-scope=pagination][data-testid=item-${text}]`)
+    return this.page.locator(`[data-testid=item-${text}]`)
   }
 
   get nextTrigger() {
-    return this.page.locator("[data-scope=pagination][data-part=next-trigger]")
+    return this.page.locator("[data-pagination-next-trigger]")
   }
 
   get prevTrigger() {
-    return this.page.locator("[data-scope=pagination][data-part=prev-trigger]")
+    return this.page.locator("[data-pagination-prev-trigger]")
   }
 
   get output() {

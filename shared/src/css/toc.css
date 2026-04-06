@@ -1,4 +1,4 @@
-[data-scope="toc"][data-part="root"] {
+[data-toc-root] {
   position: relative;
   max-width: 16rem;
   max-height: 20rem;
@@ -8,7 +8,7 @@
   padding: 0.5rem;
 }
 
-[data-scope="toc"][data-part="title"] {
+[data-toc-title] {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -18,7 +18,7 @@
   padding: 0 0.5rem;
 }
 
-[data-scope="toc"][data-part="list"] {
+[data-toc-list] {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,12 +28,12 @@
   margin: 0;
 }
 
-[data-scope="toc"][data-part="item"] {
+[data-toc-item] {
   display: block;
   padding-inline-start: calc(var(--depth, 2) * 0.75rem - 1rem);
 }
 
-[data-scope="toc"][data-part="link"] {
+[data-toc-link] {
   display: block;
   padding: 0.25rem 0.5rem;
   color: hsl(219, 1%, 52%);
@@ -53,7 +53,7 @@
   }
 }
 
-[data-scope="toc"][data-part="indicator"] {
+[data-toc-indicator] {
   width: 2px;
   background-color: hsl(216, 98%, 52%);
   position: absolute;

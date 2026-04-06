@@ -64,8 +64,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         "data-orientation": prop("orientation"),
         "data-focus": dataAttr(focused),
         dir: prop("dir"),
@@ -74,8 +73,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
 
     getListProps() {
       return normalize.element({
-        ...parts.list.attrs,
-        id: dom.getListId(scope),
+        ...parts.list.attrs(scope.id),
         role: "tablist",
         dir: prop("dir"),
         "data-focus": dataAttr(focused),
@@ -135,7 +133,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       const triggerState = getTriggerState(props)
 
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.trigger.attrs(scope.id),
         role: "tab",
         type: "button",
         disabled,
@@ -148,7 +146,6 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "data-selected": dataAttr(triggerState.selected),
         "data-focus": dataAttr(triggerState.focused),
         "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
-        "data-ownedby": dom.getListId(scope),
         "data-ssr": dataAttr(context.get("ssr")),
         id: dom.getTriggerId(scope, value),
         tabIndex: triggerState.selected && composite ? 0 : -1,
@@ -177,13 +174,12 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       const { value } = props
       const selected = context.get("value") === value
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope, value),
         tabIndex: composite ? 0 : -1,
         "aria-labelledby": dom.getTriggerId(scope, value),
         role: "tabpanel",
-        "data-ownedby": dom.getListId(scope),
         "data-selected": dataAttr(selected),
         "data-orientation": prop("orientation"),
         hidden: !selected,
@@ -195,8 +191,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       const animateIndicator = context.get("animateIndicator")
 
       return normalize.element({
-        id: dom.getIndicatorId(scope),
-        ...parts.indicator.attrs,
+        ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         hidden: isRectEmpty(rect),

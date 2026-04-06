@@ -1,11 +1,11 @@
-[data-scope="scroll-area"][data-part="root"] {
+[data-scroll-area-root] {
   box-sizing: border-box;
   width: 24rem;
   height: 8.5rem;
   max-width: calc(100vw - 8rem);
 }
 
-[data-scope="scroll-area"][data-part="viewport"] {
+[data-scroll-area-viewport] {
   height: 100%;
   border-radius: 0.375rem;
   outline: 1px solid lightgray;
@@ -23,7 +23,7 @@
   }
 }
 
-[data-scope="scroll-area"][data-part="content"] {
+[data-scroll-area-content] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -32,7 +32,7 @@
   padding-inline-end: 1.5rem;
 }
 
-[data-scope="scroll-area"][data-part="scrollbar"] {
+[data-scroll-area-scrollbar] {
   position: relative;
   background-color: lightgray;
   border-radius: 0.375rem;
@@ -84,7 +84,7 @@
   }
 }
 
-[data-scope="scroll-area"][data-part="thumb"] {
+[data-scroll-area-thumb] {
   border-radius: inherit;
   background-color: gray;
 

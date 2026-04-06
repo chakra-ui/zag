@@ -2,20 +2,23 @@ import type { Scope } from "@zag-js/core"
 import { isSafari, MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
 import { roundToDpr, wrap } from "@zag-js/utils"
+import { parts } from "./number-input.anatomy"
 import type { HintValue } from "./number-input.types"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `number-input:${ctx.id}`
-export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `number-input:${ctx.id}:input`
-export const getIncrementTriggerId = (ctx: Scope) => ctx.ids?.incrementTrigger ?? `number-input:${ctx.id}:inc`
-export const getDecrementTriggerId = (ctx: Scope) => ctx.ids?.decrementTrigger ?? `number-input:${ctx.id}:dec`
-export const getScrubberId = (ctx: Scope) => ctx.ids?.scrubber ?? `number-input:${ctx.id}:scrubber`
-export const getCursorId = (ctx: Scope) => `number-input:${ctx.id}:cursor`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `number-input:${ctx.id}:label`
+// ID generators — only for parts referenced by ARIA attributes
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
+export const getIncrementTriggerId = (ctx: Scope) => ctx.ids?.incrementTrigger ?? `${ctx.id}:inc`
+export const getDecrementTriggerId = (ctx: Scope) => ctx.ids?.decrementTrigger ?? `${ctx.id}:dec`
+export const getScrubberId = (ctx: Scope) => ctx.ids?.scrubber ?? `${ctx.id}:scrubber`
+export const getCursorId = (ctx: Scope) => `${ctx.id}:cursor`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
 
-export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
-export const getIncrementTriggerEl = (ctx: Scope) => ctx.getById<HTMLButtonElement>(getIncrementTriggerId(ctx))
-export const getDecrementTriggerEl = (ctx: Scope) => ctx.getById<HTMLButtonElement>(getDecrementTriggerId(ctx))
-export const getScrubberEl = (ctx: Scope) => ctx.getById(getScrubberId(ctx))
+// Element lookups — use querySelector with merged data attributes
+export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
+export const getIncrementTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.incrementTrigger))
+export const getDecrementTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.decrementTrigger))
+export const getScrubberEl = (ctx: Scope) => ctx.query(ctx.selector(parts.scrubber))
 export const getCursorEl = (ctx: Scope) => ctx.getDoc().getElementById(getCursorId(ctx))
 
 export const getPressedTriggerEl = (ctx: Scope, hint: HintValue | null) => {

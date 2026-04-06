@@ -58,8 +58,7 @@ export function connect<T extends PropTypes>(
     getRootProps() {
       return normalize.element({
         dir: prop("dir"),
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
@@ -69,7 +68,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
+        ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
         id: dom.getLabelId(scope),
@@ -104,9 +103,8 @@ export function connect<T extends PropTypes>(
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getControlId(scope),
       })
     },
 
@@ -117,7 +115,7 @@ export function connect<T extends PropTypes>(
       const tabbableIndex =
         focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         disabled,
         tabIndex: index === tabbableIndex ? 0 : -1,
@@ -126,7 +124,6 @@ export function connect<T extends PropTypes>(
         "data-filled": dataAttr(context.get("value")[index] !== ""),
         id: dom.getInputId(scope, index.toString()),
         "data-index": index,
-        "data-ownedby": dom.getRootId(scope),
         "aria-label": translations?.inputLabel?.(index, computed("valueLength")),
         inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(invalid),

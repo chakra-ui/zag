@@ -1,9 +1,9 @@
-[data-scope="combobox"][data-part="root"] {
+[data-combobox-root] {
   display: inline-flex;
   flex-direction: column;
 }
 
-[data-scope="combobox"][data-part="content"] {
+[data-combobox-content] {
   background-color: white;
   list-style-type: none;
   margin: 0;
@@ -15,7 +15,7 @@
   z-index: var(--layer-index);
 }
 
-[data-scope="combobox"][data-part="item"] {
+[data-combobox-item] {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,22 +35,22 @@
   }
 }
 
-[data-scope="combobox"][data-part="label"] {
+[data-combobox-label] {
   display: block;
   margin-top: 12px;
   margin-bottom: 4px;
 }
 
-[data-scope="combobox"][data-part="control"] {
+[data-combobox-control] {
   display: inline-flex;
   width: 300px;
 }
 
-[data-scope="combobox"][data-part="input"] {
+[data-combobox-input] {
   flex: 1;
 }
 
-[data-scope="combobox"][data-part="clear-trigger"] {
+[data-combobox-clear-trigger] {
   display: inline-flex;
   font-size: 1.2em;
   & svg {
@@ -59,7 +59,7 @@
   }
 }
 
-[data-scope="combobox"][data-part="item-group-label"] {
+[data-combobox-item-group-label] {
   user-select: none;
   margin-top: 8px;
   display: flex;

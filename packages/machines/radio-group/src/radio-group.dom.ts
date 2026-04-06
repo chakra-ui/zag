@@ -1,21 +1,23 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { parts } from "./radio-group.anatomy"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `radio-group:${ctx.id}`
-export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `radio-group:${ctx.id}:label`
-export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `radio-group:${ctx.id}:radio:${value}`
+// ID generators — kept for ARIA attributes in connect
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
+export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `${ctx.id}:radio:${value}`
 export const getItemHiddenInputId = (ctx: Scope, value: string) =>
-  ctx.ids?.itemHiddenInput?.(value) ?? `radio-group:${ctx.id}:radio:input:${value}`
+  ctx.ids?.itemHiddenInput?.(value) ?? `${ctx.id}:radio-input:${value}`
 export const getItemControlId = (ctx: Scope, value: string) =>
-  ctx.ids?.itemControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`
+  ctx.ids?.itemControl?.(value) ?? `${ctx.id}:radio-control:${value}`
 export const getItemLabelId = (ctx: Scope, value: string) =>
-  ctx.ids?.itemLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`
-export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `radio-group:${ctx.id}:indicator`
+  ctx.ids?.itemLabel?.(value) ?? `${ctx.id}:radio-label:${value}`
+export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `${ctx.id}:indicator`
 
-export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+// Element lookups — use querySelector with merged data attributes
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getItemHiddenInputEl = (ctx: Scope, value: string) =>
   ctx.getById<HTMLInputElement>(getItemHiddenInputId(ctx, value))
-export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
+export const getIndicatorEl = (ctx: Scope) => ctx.query(ctx.selector(parts.indicator))
 
 export const getFirstEnabledInputEl = (ctx: Scope) =>
   getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled)")
@@ -23,9 +25,7 @@ export const getFirstEnabledAndCheckedInputEl = (ctx: Scope) =>
   getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled):checked")
 
 export const getInputEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `input[type=radio][data-ownedby='${ownerId}']:not([disabled])`
-  return queryAll<HTMLInputElement>(getRootEl(ctx), selector)
+  return ctx.queryAll<HTMLInputElement>(`${ctx.selector(parts.item)} input[type=radio]:not([disabled])`)
 }
 
 export const getRadioEl = (ctx: Scope, value: string | null) => {

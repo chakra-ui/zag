@@ -7,12 +7,15 @@ describe("Anatomy", () => {
     expect(anatomy).toMatchInlineSnapshot(`
       {
         "root": {
-          "attrs": {
-            "data-part": "root",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "attr": "data-accordion-root",
+          "attrs": [Function],
+          "selector": "&[data-accordion-root], & [data-accordion-root]",
         },
+      }
+    `)
+    expect(anatomy.root.attrs("accordion:1")).toMatchInlineSnapshot(`
+      {
+        "data-accordion-root": "accordion:1",
       }
     `)
   })
@@ -22,12 +25,15 @@ describe("Anatomy", () => {
     expect(anatomy).toMatchInlineSnapshot(`
       {
         "toggleButton": {
-          "attrs": {
-            "data-part": "toggle-button",
-            "data-scope": "hover-card",
-          },
-          "selector": "&[data-scope="hover-card"][data-part="toggle-button"], & [data-scope="hover-card"][data-part="toggle-button"]",
+          "attr": "data-hover-card-toggle-button",
+          "attrs": [Function],
+          "selector": "&[data-hover-card-toggle-button], & [data-hover-card-toggle-button]",
         },
+      }
+    `)
+    expect(anatomy.toggleButton.attrs("hc:1")).toMatchInlineSnapshot(`
+      {
+        "data-hover-card-toggle-button": "hc:1",
       }
     `)
   })
@@ -37,18 +43,14 @@ describe("Anatomy", () => {
     expect(anatomy).toMatchInlineSnapshot(`
       {
         "control": {
-          "attrs": {
-            "data-part": "control",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "attr": "data-accordion-control",
+          "attrs": [Function],
+          "selector": "&[data-accordion-control], & [data-accordion-control]",
         },
         "root": {
-          "attrs": {
-            "data-part": "root",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "attr": "data-accordion-root",
+          "attrs": [Function],
+          "selector": "&[data-accordion-root], & [data-accordion-root]",
         },
       }
     `)
@@ -61,18 +63,14 @@ describe("Anatomy", () => {
     expect(extendedAnatomy).toMatchInlineSnapshot(`
       {
         "control": {
-          "attrs": {
-            "data-part": "control",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "attr": "data-accordion-control",
+          "attrs": [Function],
+          "selector": "&[data-accordion-control], & [data-accordion-control]",
         },
         "root": {
-          "attrs": {
-            "data-part": "root",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "attr": "data-accordion-root",
+          "attrs": [Function],
+          "selector": "&[data-accordion-root], & [data-accordion-root]",
         },
       }
     `)
@@ -85,18 +83,14 @@ describe("Anatomy", () => {
     expect(extendedAnatomy).toMatchInlineSnapshot(`
       {
         "control": {
-          "attrs": {
-            "data-part": "control",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "attr": "data-accordion-control",
+          "attrs": [Function],
+          "selector": "&[data-accordion-control], & [data-accordion-control]",
         },
         "root": {
-          "attrs": {
-            "data-part": "root",
-            "data-scope": "accordion",
-          },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "attr": "data-accordion-root",
+          "attrs": [Function],
+          "selector": "&[data-accordion-root], & [data-accordion-root]",
         },
       }
     `)
@@ -107,18 +101,14 @@ describe("Anatomy", () => {
     expect(anatomy.build()).toMatchInlineSnapshot(`
       {
         "control": {
-          "attrs": {
-            "data-part": "control",
-            "data-scope": "segmented-control",
-          },
-          "selector": "&[data-scope="segmented-control"][data-part="control"], & [data-scope="segmented-control"][data-part="control"]",
+          "attr": "data-segmented-control-control",
+          "attrs": [Function],
+          "selector": "&[data-segmented-control-control], & [data-segmented-control-control]",
         },
         "root": {
-          "attrs": {
-            "data-part": "root",
-            "data-scope": "segmented-control",
-          },
-          "selector": "&[data-scope="segmented-control"][data-part="root"], & [data-scope="segmented-control"][data-part="root"]",
+          "attr": "data-segmented-control-root",
+          "attrs": [Function],
+          "selector": "&[data-segmented-control-root], & [data-segmented-control-root]",
         },
       }
     `)

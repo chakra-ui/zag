@@ -16,11 +16,11 @@ export class ClipboardModel extends Model {
   }
 
   getTrigger() {
-    return this.page.locator(part("trigger"))
+    return this.page.locator(part("clipboard", "trigger"))
   }
 
   getContent(text: string) {
-    return this.page.locator(part("indicator")).getByText(text)
+    return this.page.locator(part("clipboard", "indicator")).getByText(text)
   }
 
   async focusTrigger() {

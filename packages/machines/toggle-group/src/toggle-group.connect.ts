@@ -34,8 +34,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
-        id: dom.getRootId(scope),
+        ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         role: isSingle ? "radiogroup" : "group",
         tabIndex: context.get("isTabbingBackward") ? -1 : 0,
@@ -70,10 +69,9 @@ export function connect<T extends PropTypes>(
       const rovingTabIndex = itemState.focused ? 0 : -1
 
       return normalize.button({
-        ...parts.item.attrs,
+        ...parts.item.attrs(scope.id),
         id: itemState.id,
         type: "button",
-        "data-ownedby": dom.getRootId(scope),
         "data-focus": dataAttr(itemState.focused),
         disabled: itemState.disabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,

@@ -50,6 +50,6 @@ test.describe("listbox", () => {
     await page.getByTestId("set-solid-button").click()
 
     await expect(page.getByTestId("selected-items")).toContainText("Solid")
-    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
+    await expect(page.locator("[data-listbox-item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })

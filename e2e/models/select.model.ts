@@ -16,27 +16,27 @@ export class SelectModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator("[data-scope=select][data-part=trigger]")
+    return this.page.locator("[data-select-trigger]")
   }
 
   private get content() {
-    return this.page.locator("[data-scope=select][data-part=content]")
+    return this.page.locator("[data-select-content]")
   }
 
   private get label() {
-    return this.page.locator("[data-scope=select][data-part=label]")
+    return this.page.locator("[data-select-label]")
   }
 
   private get clearTrigger() {
-    return this.page.locator("[data-scope=select][data-part=clear-trigger]")
+    return this.page.locator("[data-select-clear-trigger]")
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item]`, { hasText: text })
+    return this.page.locator(`[data-select-item]`, { hasText: text })
   }
 
   get highlightedItem() {
-    return this.page.locator("[data-part=item][data-highlighted]")
+    return this.page.locator("[data-select-item][data-highlighted]")
   }
 
   type(input: string) {
@@ -120,7 +120,7 @@ export class SelectModel extends Model {
 
   autofill = async (value: string) => {
     await this.page.evaluate((value) => {
-      const select = document.querySelector<HTMLSelectElement>("[data-scope='select'] select[aria-hidden]")
+      const select = document.querySelector<HTMLSelectElement>("[data-select-root] select[aria-hidden]")
       if (!select) throw new Error("Hidden select not found")
       select.value = value
       select.dispatchEvent(new Event("change", { bubbles: true }))

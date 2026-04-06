@@ -1,10 +1,10 @@
-[data-scope="angle-slider"][data-part="root"] {
+[data-angle-slider-root] {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-[data-scope="angle-slider"][data-part="control"] {
+[data-angle-slider-control] {
   --size: 100px;
   --thumb-size: 40px;
   --thumb-indicator-size: min(var(--thumb-size), calc(var(--size) / 2));
@@ -19,7 +19,7 @@
   position: relative;
 }
 
-[data-scope="angle-slider"][data-part="thumb"] {
+[data-angle-slider-thumb] {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -39,20 +39,20 @@
   }
 }
 
-[data-scope="angle-slider"][data-part="label"] {
+[data-angle-slider-label] {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-[data-scope="angle-slider"][data-part="marker-group"] {
+[data-angle-slider-marker-group] {
   position: absolute;
   inset: 1px;
   border-radius: var(--size);
   pointer-events: none;
 }
 
-[data-scope="angle-slider"][data-part="marker"] {
+[data-angle-slider-marker] {
   width: 2px;
   position: absolute;
   top: 0;

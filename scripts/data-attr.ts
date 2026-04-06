@@ -71,7 +71,7 @@ const docsMap = {
   "data-has-collapsed-size": "Present when the {{widget}} has collapsed width or height",
 }
 
-const skipAttrs = ["data-ownedby", "data-uid"]
+const skipAttrs: string[] = []
 
 // Mapping of widgets to their layer types (only for widgets that use dismissable)
 const widgetLayerTypes: Record<string, string> = {
@@ -266,7 +266,7 @@ async function main() {
                   return !name.endsWith("Props")
                 },
                 cb({ part, name, desc }) {
-                  result[part] ||= { "data-scope": widget, "data-part": dashCase(part) }
+                  result[part] ||= {}
                   result[part][name] = desc
 
                   // Add layer attributes for content part if widget uses dismissable
@@ -289,7 +289,7 @@ async function main() {
                   }
 
                   if (functions.has(name)) {
-                    result[part] ||= { "data-scope": widget, "data-part": dashCase(part) }
+                    result[part] ||= {}
                     Object.assign(result[part], functions.get(name))
 
                     // Add layer attributes for content part if widget uses dismissable

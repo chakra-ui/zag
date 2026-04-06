@@ -34,8 +34,7 @@ export function connect<T extends PropTypes>(
 
     getLabelProps() {
       return normalize.label({
-        ...parts.label.attrs,
-        id: dom.getLabelId(scope),
+        ...parts.label.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
         "data-required": dataAttr(required),
         htmlFor: dom.getHiddenInputId(scope),
@@ -50,17 +49,15 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
-        id: dom.getRootId(scope),
       })
     },
 
     getControlProps() {
       return normalize.element({
-        ...parts.control.attrs,
+        ...parts.control.attrs(scope.id),
         tabIndex: disabled ? undefined : 0,
-        id: dom.getControlId(scope),
         role: "application",
         "aria-roledescription": "signature pad",
         "aria-label": translations.control,
@@ -72,7 +69,7 @@ export function connect<T extends PropTypes>(
           if (!interactive) return
 
           const target = getEventTarget<HTMLElement>(event)
-          if (target?.closest("[data-part=clear-trigger]")) return
+          if (target?.closest("[data-signature-pad-clear-trigger]")) return
           event.currentTarget.setPointerCapture(event.pointerId)
 
           const point = { x: event.clientX, y: event.clientY }
@@ -100,7 +97,7 @@ export function connect<T extends PropTypes>(
 
     getSegmentProps() {
       return normalize.svg({
-        ...parts.segment.attrs,
+        ...parts.segment.attrs(scope.id),
         style: {
           position: "absolute",
           top: 0,
@@ -115,21 +112,21 @@ export function connect<T extends PropTypes>(
 
     getSegmentPathProps(props) {
       return normalize.path({
-        ...parts.segmentPath.attrs,
+        ...parts.segmentPath.attrs(scope.id),
         d: props.path,
       })
     },
 
     getGuideProps() {
       return normalize.element({
-        ...parts.guide.attrs,
+        ...parts.guide.attrs(scope.id),
         "data-disabled": dataAttr(disabled),
       })
     },
 
     getClearTriggerProps() {
       return normalize.button({
-        ...parts.clearTrigger.attrs,
+        ...parts.clearTrigger.attrs(scope.id),
         type: "button",
         "aria-label": translations.clearTrigger,
         hidden: !context.get("paths").length || drawing,

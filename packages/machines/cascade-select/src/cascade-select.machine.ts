@@ -577,8 +577,8 @@ export const machine = createMachine<CascadeSelectSchema>({
       isPointerNotInAnyItem: ({ event }) => {
         const target = event.target as HTMLElement
         // Check if the pointer is over any item element or within the content area
-        const itemElement = target.closest('[data-part="item"]')
-        const contentElement = target.closest('[data-part="content"]')
+        const itemElement = target.closest("[data-cascade-select-item]")
+        const contentElement = target.closest("[data-cascade-select-content]")
 
         // Only consider the pointer "not in any item" if it's outside the content area entirely
         // or if it's in the content but not over any item
@@ -1014,7 +1014,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         // Scroll all lists to the top when closing
         raf(() => {
           const contentEl = dom.getContentEl(scope)
-          const listEls = contentEl?.querySelectorAll('[data-part="list"]')
+          const listEls = contentEl?.querySelectorAll("[data-cascade-select-list]")
           listEls?.forEach((listEl, index) => {
             if (scrollToIndexFn) {
               scrollToIndexFn({ index: 0, immediate: true, depth: index })
