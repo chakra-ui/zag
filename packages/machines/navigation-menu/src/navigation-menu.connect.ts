@@ -66,7 +66,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
-        "aria-label": translations.rootLabel,
+        "aria-label": translations?.rootLabel ? translations.rootLabel : undefined,
         "data-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {
