@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
-import { isEqual, setValueAtIndex } from "@zag-js/utils"
+import { ensureProps, isEqual, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
@@ -8,11 +8,12 @@ const { choose, createMachine } = setup<PinInputSchema>()
 
 export const machine = createMachine({
   props({ props }) {
+    ensureProps(props, ["count"], "pin-input")
     return {
       placeholder: "○",
       otp: false,
       type: "numeric",
-      defaultValue: props.count ? fill([], props.count) : [],
+      defaultValue: fill([], props.count!),
       ...props,
       translations: {
         inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -39,15 +40,11 @@ export const machine = createMachine({
         sync: true,
         defaultValue: -1,
       })),
-      // TODO: Move this to `props` in next major version
-      count: bindable(() => ({
-        defaultValue: prop("count"),
-      })),
     }
   },
 
   computed: {
-    _value: ({ context }) => fill(context.get("value"), context.get("count")),
+    _value: ({ context, prop }) => fill(context.get("value"), prop("count")),
     valueLength: ({ computed }) => computed("_value").length,
     filledValueLength: ({ computed }) => computed("_value").filter((v) => v?.trim() !== "").length,
     isValueComplete: ({ computed }) => computed("valueLength") === computed("filledValueLength"),
@@ -58,9 +55,8 @@ export const machine = createMachine({
   entry: choose([
     {
       guard: "autoFocus",
-      actions: ["setInputCount", "setFocusIndexToFirst"],
+      actions: ["setFocusIndexToFirst"],
     },
-    { actions: ["setInputCount"] },
   ]),
 
   watch({ action, track, context, computed }) {
@@ -165,11 +161,6 @@ export const machine = createMachine({
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
-      setInputCount({ scope, context, prop }) {
-        if (prop("count")) return
-        const inputEls = dom.getInputEls(scope)
-        context.set("count", inputEls.length)
-      },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
         if (focusedIndex === -1) return
@@ -204,8 +195,8 @@ export const machine = createMachine({
         const maxIndex = Math.min(computed("filledValueLength"), computed("valueLength") - 1)
         context.set("focusedIndex", Math.min(event.index, maxIndex))
       },
-      setValue({ context, event }) {
-        const value = fill(event.value, context.get("count"))
+      setValue({ context, event, prop }) {
+        const value = fill(event.value, prop("count"))
         context.set("value", value)
       },
       setFocusedValue({ context, event, computed, flush }) {
@@ -257,8 +248,8 @@ export const machine = createMachine({
         const nextValue = getNextValue(computed("focusedValue"), event.value)
         context.set("value", setValueAtIndex(computed("_value"), event.index, nextValue))
       },
-      clearValue({ context }) {
-        const nextValue = Array.from<string>({ length: context.get("count") }).fill("")
+      clearValue({ context, prop }) {
+        const nextValue = Array.from<string>({ length: prop("count") }).fill("")
         queueMicrotask(() => {
           context.set("value", nextValue)
         })

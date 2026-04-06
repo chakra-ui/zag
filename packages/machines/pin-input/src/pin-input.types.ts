@@ -131,13 +131,12 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    */
   translations?: IntlTranslations | undefined
   /**
-   * The number of inputs to render to improve SSR aria attributes.
-   * This will be required in next major version.
+   * The number of pin input fields.
    */
-  count?: number | undefined
+  count: number
 }
 
-type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue"
+type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue" | "count"
 
 export interface PinInputSchema {
   state: "idle" | "focused"
@@ -145,8 +144,6 @@ export interface PinInputSchema {
   context: {
     value: string[]
     focusedIndex: number
-    // TODO: Move this to `props` in next major version
-    count: number
   }
   computed: {
     // normalized value
