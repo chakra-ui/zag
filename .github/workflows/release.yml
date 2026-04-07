@@ -48,7 +48,6 @@ jobs:
         with:
           publish: pnpm release
           commit: "ci(changesets): version packages"
-          title: ${{ github.ref == 'refs/heads/v2' && 'Version Packages (next)' || 'Version Packages' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
