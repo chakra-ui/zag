@@ -51,8 +51,8 @@ The carousel package exports two key functions:
 
 Then use the framework integration helpers:
 
-> **Note:** The carousel requires that you provide a `slideCount` property in
-> the machine context. This is the total number of slides.
+> **Note:** The carousel requires that you provide a `count` property in the
+> machine context. This is the total number of slides.
 
 <CodeSnippet id="carousel/usage.mdx" />
 
@@ -86,7 +86,7 @@ Use `page` and `onPageChange` for controlled navigation.
 
 ```tsx
 const service = useMachine(carousel.machine, {
-  slideCount: 8,
+  count: 8,
   page,
   onPageChange(details) {
     setPage(details.page)
@@ -146,11 +146,11 @@ const service = useMachine(carousel.machine, {
 
 ### Setting viewport padding
 
-Set `padding` to keep neighboring slides partially visible.
+Set `itemSpacing` to keep neighboring slides partially visible.
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
-  padding: "16px",
+  itemSpacing: "16px",
 })
 ```
 
@@ -204,11 +204,11 @@ const service = useMachine(carousel.machine, {
 
 ### Autoplaying the carousel
 
-Set `autoplay` to `true` to start automatic slide movement.
+Set `autoPlay` to `true` to start automatic slide movement.
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
-  autoplay: true,
+  autoPlay: true,
 })
 ```
 
@@ -217,7 +217,7 @@ property.
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
-  autoplay: { delay: 2000 },
+  autoPlay: { delay: 2000 },
 })
 ```
 
@@ -227,7 +227,7 @@ Use `translations` to customize localized trigger, item, and progress text.
 
 ```tsx
 const service = useMachine(carousel.machine, {
-  slideCount: 5,
+  count: 5,
   translations: {
     nextTrigger: "Next slide",
     prevTrigger: "Previous slide",

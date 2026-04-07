@@ -10,9 +10,9 @@ export default function Page() {
 
   const service = useMachine(carousel.machine, {
     id: useId(),
-    slideCount: images.length,
+    count: images.length,
     loop: true,
-    autoplay: { delay: 1000 },
+    autoPlay: { delay: 1000 },
     onPageChange: ({ page }) => setIndex(page),
     page: index,
   })

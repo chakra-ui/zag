@@ -7,7 +7,7 @@ const items = Array.from({ length: 10 }, (_, index) => index)
 function useCarousel(props: Partial<carousel.Props> = {}) {
   const service = useMachine(carousel.machine, {
     id: useId(),
-    slideCount: items.length,
+    count: items.length,
     ...props,
   })
   return carousel.connect(service, normalizeProps)

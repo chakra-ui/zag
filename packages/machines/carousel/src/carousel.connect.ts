@@ -21,7 +21,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const activePage = pageSnapPoints.length ? clampValue(page, 0, pageSnapPoints.length - 1) : 0
   const slidesPerPage = prop("slidesPerPage")
 
-  const padding = prop("padding")
+  const itemSpacing = prop("itemSpacing")
   const translations = prop("translations")
 
   return {
@@ -129,8 +129,8 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           scrollbarWidth: "none",
           overscrollBehaviorX: "contain",
           [horizontal ? "gridAutoColumns" : "gridAutoRows"]: autoSize ? undefined : "var(--slide-item-size)",
-          [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
-          [horizontal ? "paddingInline" : "paddingBlock"]: padding,
+          [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: itemSpacing,
+          [horizontal ? "paddingInline" : "paddingBlock"]: itemSpacing,
           [horizontal ? "overflowX" : "overflowY"]: "auto",
         },
       })
@@ -147,7 +147,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
         "data-orientation": prop("orientation"),
-        "aria-label": translations.item(props.index, prop("slideCount")),
+        "aria-label": translations.item(props.index, prop("count")),
         "aria-hidden": ariaAttr(!isInView),
         style: {
           flex: "0 0 auto",

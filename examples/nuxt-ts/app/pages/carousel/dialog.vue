@@ -14,7 +14,7 @@ const carouselService = useMachine(
   carousel.machine,
   computed(() => ({
     id: `${useId()}-carousel`,
-    slideCount: SLIDE_COUNT,
+    count: SLIDE_COUNT,
     page: page.value,
     onPageChange(details: { page: number }) {
       page.value = details.page

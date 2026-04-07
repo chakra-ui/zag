@@ -11,7 +11,7 @@
 
   const id = $props.id()
   const service = useMachine(
-    carousel.machine, ({ id: id, slideCount: items.length }),
+    carousel.machine, ({ id: id, count: items.length }),
   )
   const api = $derived(carousel.connect(service, normalizeProps))
 </script>

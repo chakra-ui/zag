@@ -12,7 +12,7 @@
 
   const service = useMachine(carousel.machine, {
     id: "1",
-    slideCount: items.length,
+    count: items.length,
   })
 
   const api = computed(() => carousel.connect(service, normalizeProps))

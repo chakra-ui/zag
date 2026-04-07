@@ -9,17 +9,17 @@ const DRIFT_THRESHOLD = 1
 
 export const machine = createMachine<CarouselSchema>({
   props({ props }) {
-    ensureProps(props, ["slideCount"], "carousel")
+    ensureProps(props, ["count"], "carousel")
     return {
       dir: "ltr",
       defaultPage: 0,
       orientation: "horizontal",
       snapType: "mandatory",
-      loop: !!props.autoplay,
+      loop: !!props.autoPlay,
       slidesPerPage: 1,
       slidesPerMove: "auto",
       spacing: "0px",
-      autoplay: false,
+      autoPlay: false,
       allowMouseDrag: false,
       inViewThreshold: 0.6,
       autoSize: false,
@@ -44,7 +44,7 @@ export const machine = createMachine<CarouselSchema>({
   },
 
   initialState({ prop }) {
-    return prop("autoplay") ? "autoplay" : "idle"
+    return prop("autoPlay") ? "autoplay" : "idle"
   },
 
   context({ prop, bindable, getContext }) {
@@ -61,8 +61,8 @@ export const machine = createMachine<CarouselSchema>({
       pageSnapPoints: bindable(() => {
         return {
           defaultValue: prop("autoSize")
-            ? Array.from({ length: prop("slideCount") }, (_, i) => i) // Initialize with slide indices for variable width
-            : getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
+            ? Array.from({ length: prop("count") }, (_, i) => i) // Initialize with slide indices for variable width
+            : getPageSnapPoints(prop("count"), prop("slidesPerMove"), prop("slidesPerPage")),
         }
       }),
       slidesInView: bindable<number[]>(() => ({
@@ -78,8 +78,8 @@ export const machine = createMachine<CarouselSchema>({
       prop("loop") || context.get("page") < context.get("pageSnapPoints").length - 1,
     canScrollPrev: ({ prop, context }) => prop("loop") || context.get("page") > 0,
     autoplayInterval: ({ prop }) => {
-      const autoplay = prop("autoplay")
-      return isObject(autoplay) ? autoplay.delay : 4000
+      const autoPlay = prop("autoPlay")
+      return isObject(autoPlay) ? autoPlay.delay : 4000
     },
   },
 
@@ -93,11 +93,11 @@ export const machine = createMachine<CarouselSchema>({
     track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
       action(["setSnapPoints", "scrollToPage"])
     })
-    track([() => prop("slideCount")], () => {
+    track([() => prop("count")], () => {
       send({ type: "SNAP.REFRESH", src: "slide.count" })
     })
-    track([() => !!prop("autoplay")], () => {
-      send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
+    track([() => !!prop("autoPlay")], () => {
+      send({ type: prop("autoPlay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
   },
 

@@ -161,30 +161,34 @@
   "async-list": {
     "api": {
       "items": {
-        "type": "T[]",
+        "type": "Item[]",
         "description": "The items in the list."
       },
-      "filterText": {
-        "type": "string",
-        "description": "The filter text."
+      "filter": {
+        "type": "Filter",
+        "description": "The current filter state."
       },
       "cursor": {
-        "type": "C",
-        "description": "The cursor."
-      },
-      "sortDescriptor": {
-        "type": "SortDescriptor<T>",
-        "description": "The sort descriptor."
-      },
-      "loading": {
-        "type": "boolean",
-        "description": "Whether the list is loading."
+        "type": "Cursor",
+        "description": "The cursor for pagination."
       },
       "sorting": {
-        "type": "boolean",
-        "description": "Whether the list is sorting."
+        "type": "Sorting",
+        "description": "The current sorting state."
       },
-      "empty": {
+      "isLoading": {
+        "type": "boolean",
+        "description": "Whether the list is loading (includes both fetching and sorting)."
+      },
+      "isLoadingMore": {
+        "type": "boolean",
+        "description": "Whether the list is loading more items via pagination."
+      },
+      "isSorting": {
+        "type": "boolean",
+        "description": "Whether a client-side sort is in progress."
+      },
+      "isEmpty": {
         "type": "boolean",
         "description": "Whether the list is empty."
       },
@@ -208,39 +212,44 @@
         "type": "VoidFunction",
         "description": "Function to load more items"
       },
-      "sort": {
-        "type": "(sortDescriptor: SortDescriptor<T>) => void",
-        "description": "Function to sort the list"
+      "setSorting": {
+        "type": "(sorting: Updater<Sorting>) => void",
+        "description": "Function to update the sorting state and trigger a sort.\nAccepts a value or an updater function."
       },
-      "setFilterText": {
-        "type": "(filterText: string) => void",
-        "description": "Function to set the filter text"
+      "setFilter": {
+        "type": "(filter: Updater<Filter>) => void",
+        "description": "Function to update the filter state and trigger a reload.\nAccepts a value or an updater function."
       },
       "clearFilter": {
         "type": "VoidFunction",
-        "description": "Function to clear the filter text"
+        "description": "Function to reset the filter to `initialFilter`.\nNo-op if `initialFilter` was not provided."
       }
     },
     "context": {
       "load": {
-        "type": "(args: LoadDetails<T, C>) => Promise<LoadResult<T, C>>",
+        "type": "(args: LoadDetails<Filter, Sorting, Cursor>) => Promise<LoadResult<Item, Cursor>>",
         "description": "The function to call when the list is loaded"
       },
       "sort": {
-        "type": "(args: SortDetails<T>) => Promise<{ items: T[]; }> | { items: T[]; }",
-        "description": "The function to call when the list is sorted"
+        "type": "(args: SortDetails<Item, Filter, Sorting>) => Promise<{ items: Item[]; }> | { items: Item[]; }",
+        "description": "The function to call when the list is sorted client-side.\nWhen provided, sorting is performed locally instead of triggering a new load."
       },
       "initialItems": {
-        "type": "T[]",
+        "type": "Item[]",
         "description": "The initial items to display"
       },
-      "initialSortDescriptor": {
-        "type": "SortDescriptor<T>",
-        "description": "The initial sort descriptor to use"
+      "initialSorting": {
+        "type": "Sorting",
+        "description": "The initial sorting state"
       },
-      "initialFilterText": {
-        "type": "string",
-        "description": "The initial filter text to use"
+      "initialFilter": {
+        "type": "Filter",
+        "description": "The initial filter state"
+      },
+      "keepPreviousItems": {
+        "type": "boolean",
+        "description": "Whether to keep the previous items visible while new data is loading.\nPrevents content flash when filter or sort changes.",
+        "defaultValue": "false"
       },
       "dependencies": {
         "type": "LoadDependency[]",
@@ -251,7 +260,7 @@
         "description": "Whether to automatically reload the list when the dependencies change"
       },
       "onSuccess": {
-        "type": "(details: { items: T[]; }) => void",
+        "type": "(details: { items: Item[]; }) => void",
         "description": "The function to call when the list is loaded successfully"
       },
       "onError": {
@@ -394,7 +403,7 @@
         "description": "The number of slides to scroll at a time.\n\nWhen set to `auto`, the number of slides to scroll is determined by the\n`slidesPerPage` property.",
         "defaultValue": "\"auto\""
       },
-      "autoplay": {
+      "autoPlay": {
         "type": "boolean | { delay: number; }",
         "description": "Whether to scroll automatically. The default delay is 4000ms.",
         "defaultValue": "false"
@@ -423,7 +432,7 @@
         "description": "The amount of space between items.",
         "defaultValue": "\"0px\""
       },
-      "padding": {
+      "itemSpacing": {
         "type": "string",
         "description": "Defines the extra space added around the scrollable area,\nenabling nearby items to remain partially in view."
       },
@@ -441,9 +450,9 @@
         "description": "The snap type of the item.",
         "defaultValue": "\"mandatory\""
       },
-      "slideCount": {
+      "count": {
         "type": "number",
-        "description": "The total number of slides.\nUseful for SSR to render the initial ating the snap points."
+        "description": "The total number of slides.\nUseful for SSR to render the initial snap points."
       },
       "onDragStatusChange": {
         "type": "(details: DragStatusDetails) => void",
@@ -4264,7 +4273,7 @@
       },
       "count": {
         "type": "number",
-        "description": "The number of inputs to render to improve SSR aria attributes.\nThis will be required in next major version."
+        "description": "The number of pin input fields."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

@@ -13,7 +13,7 @@ export default function Page() {
     id: useId(),
     spacing: "20px",
     slidesPerPage: 2,
-    slideCount: carouselData.length,
+    count: carouselData.length,
     allowMouseDrag: true,
     ...controls.context,
   })

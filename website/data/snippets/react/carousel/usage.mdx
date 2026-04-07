@@ -11,7 +11,7 @@ const items = [
 export function Carousel() {
   const service = useMachine(carousel.machine, {
     id: "1",
-    slideCount: items.length,
+    count: items.length,
   })
 
   const api = carousel.connect(service, normalizeProps)

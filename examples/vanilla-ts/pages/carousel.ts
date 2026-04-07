@@ -9,7 +9,7 @@ document.querySelectorAll<HTMLElement>(".carousel").forEach((rootEl) => {
     id: nanoid(),
     spacing: "20px",
     slidesPerPage: 2,
-    slideCount: carouselData.length,
+    count: carouselData.length,
     allowMouseDrag: true,
     images: carouselData,
   })

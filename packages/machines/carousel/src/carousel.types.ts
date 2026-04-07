@@ -84,7 +84,7 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
    */
-  autoplay?: boolean | { delay: number } | undefined
+  autoPlay?: boolean | { delay: number } | undefined
   /**
    * Whether to allow scrolling via dragging with mouse
    * @default false
@@ -114,7 +114,7 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    * Defines the extra space added around the scrollable area,
    * enabling nearby items to remain partially in view.
    */
-  padding?: string | undefined
+  itemSpacing?: string | undefined
   /**
    * Function called when the page changes.
    */
@@ -131,9 +131,9 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
   snapType?: "proximity" | "mandatory" | undefined
   /**
    * The total number of slides.
-   * Useful for SSR to render the initial ating the snap points.
+   * Useful for SSR to render the initial snap points.
    */
-  slideCount: number
+  count: number
   /**
    * Function called when the drag status changes.
    */
@@ -153,11 +153,11 @@ type PropsWithDefault =
   | "slidesPerPage"
   | "slidesPerMove"
   | "spacing"
-  | "autoplay"
+  | "autoPlay"
   | "allowMouseDrag"
   | "inViewThreshold"
   | "translations"
-  | "slideCount"
+  | "count"
   | "autoSize"
 
 interface PrivateContext {

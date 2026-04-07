@@ -9,7 +9,7 @@ const SLIDE_COUNT = 30
 function CarouselInDialog({ page, onPageChange }: { page: number; onPageChange: (page: number) => void }) {
   const service = useMachine(carousel.machine, {
     id: useId(),
-    slideCount: SLIDE_COUNT,
+    count: SLIDE_COUNT,
     page,
     onPageChange({ page }) {
       onPageChange(page)

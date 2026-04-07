@@ -12,13 +12,13 @@ const items = [
   "https://tinyurl.com/yp4rfum7",
 ]
 
-interface CarouselProps extends Omit<carousel.Props, "id" | "slideCount"> {}
+interface CarouselProps extends Omit<carousel.Props, "id" | "count"> {}
 
 export function Carousel(props: CarouselProps) {
   const service = useMachine(carousel.machine, {
     id: useId(),
     ...props,
-    slideCount: items.length,
+    count: items.length,
   })
 
   const api = carousel.connect(service, normalizeProps)

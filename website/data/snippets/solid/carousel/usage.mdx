@@ -12,7 +12,7 @@ const items = [
 export function Carousel() {
   const service = useMachine(carousel.machine, {
     id: createUniqueId(),
-    slideCount: items.length,
+    count: items.length,
   })
 
   const api = createMemo(() => carousel.connect(service, normalizeProps))

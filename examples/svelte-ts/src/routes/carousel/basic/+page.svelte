@@ -15,7 +15,7 @@
       id,
       spacing: "20px",
       slidesPerPage: 2,
-      slideCount: carouselData.length,
+      count: carouselData.length,
       allowMouseDrag: true,
     }),
   )

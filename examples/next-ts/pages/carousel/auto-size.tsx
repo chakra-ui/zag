@@ -26,7 +26,7 @@ export default function Page() {
     id: useId(),
     autoSize: true,
     spacing: "16px",
-    slideCount: variableWidthData.length,
+    count: variableWidthData.length,
     allowMouseDrag: true,
     snapType: "mandatory",
   })
@@ -134,7 +134,7 @@ function FixedWidthExample() {
     autoSize: false,
     spacing: "16px",
     slidesPerPage: 2,
-    slideCount: variableWidthData.length,
+    count: variableWidthData.length,
     allowMouseDrag: true,
   })
 
