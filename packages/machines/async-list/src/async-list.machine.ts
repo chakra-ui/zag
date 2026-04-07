@@ -1,8 +1,8 @@
 import { createMachine } from "@zag-js/core"
 import { ensure, ensureProps } from "@zag-js/utils"
-import type { AsyncListSchema, LoadDependency, SortDescriptor } from "./async-list.types"
+import type { AsyncListSchema, LoadDependency } from "./async-list.types"
 
-export const machine = createMachine<AsyncListSchema<any, any>>({
+export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
   props({ props }) {
     ensureProps(props, ["load"], "load is required")
     return props
@@ -16,14 +16,17 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
       cursor: bindable<any>(() => ({
         defaultValue: null,
       })),
-      filterText: bindable<string>(() => ({
-        defaultValue: prop("initialFilterText") ?? "",
+      filter: bindable<any>(() => ({
+        defaultValue: prop("initialFilter"),
       })),
-      sortDescriptor: bindable<SortDescriptor<any> | undefined>(() => ({
-        defaultValue: prop("initialSortDescriptor"),
+      sorting: bindable<any>(() => ({
+        defaultValue: prop("initialSorting"),
       })),
       error: bindable<any>(() => ({
         defaultValue: undefined,
+      })),
+      isLoadMore: bindable<boolean>(() => ({
+        defaultValue: false,
       })),
     }
   },
@@ -49,7 +52,7 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
     RELOAD: {
       target: "loading",
       reenter: true,
-      actions: ["clearItems"],
+      actions: ["clearItems", "clearIsLoadMore"],
     },
   },
 
@@ -61,21 +64,22 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         LOAD_MORE: {
           guard: "hasCursor",
           target: "loading",
+          actions: ["setIsLoadMore"],
         },
         SORT: [
           {
             guard: "hasSortFn",
             target: "sorting",
-            actions: ["setSortDescriptor", "clearCursor", "performSort"],
+            actions: ["setSorting", "clearCursor", "clearIsLoadMore", "performSort"],
           },
           {
             target: "loading",
-            actions: ["setSortDescriptor", "clearCursor"],
+            actions: ["setSorting", "clearCursor", "clearIsLoadMore"],
           },
         ],
         FILTER: {
           target: "loading",
-          actions: ["setFilterText", "clearCursor"],
+          actions: ["setFilter", "clearCursor", "clearIsLoadMore"],
         },
       },
     },
@@ -98,7 +102,7 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         FILTER: {
           reenter: true,
           target: "loading",
-          actions: ["setFilterText", "clearCursor"],
+          actions: ["setFilter", "clearCursor", "clearIsLoadMore"],
         },
       },
     },
@@ -118,22 +122,22 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         },
         FILTER: {
           target: "loading",
-          actions: ["setFilterText", "clearCursor", "cancelSort"],
+          actions: ["setFilter", "clearCursor", "cancelSort", "clearIsLoadMore"],
         },
         RELOAD: {
           target: "loading",
-          actions: ["clearItems", "cancelSort"],
+          actions: ["clearItems", "cancelSort", "clearIsLoadMore"],
         },
         SORT: [
           {
             guard: "hasSortFn",
             target: "sorting",
             reenter: true,
-            actions: ["setSortDescriptor", "clearCursor", "cancelSort", "performSort"],
+            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadMore", "performSort"],
           },
           {
             target: "loading",
-            actions: ["setSortDescriptor", "clearCursor", "cancelSort"],
+            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadMore"],
           },
         ],
       },
@@ -152,9 +156,16 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
 
     actions: {
       loadIfNeeded({ prop, send }) {
-        // if (prop("dependencies") == null) return
         if (!prop("autoReload")) return
         send({ type: "RELOAD" })
+      },
+
+      setIsLoadMore({ context }) {
+        context.set("isLoadMore", true)
+      },
+
+      clearIsLoadMore({ context }) {
+        context.set("isLoadMore", false)
       },
 
       performFetch({ context, prop, refs, send, event }) {
@@ -165,21 +176,21 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         const seq = refs.get("seq") + 1
         refs.set("seq", seq)
 
-        const isLoadMore = event.type === "LOAD_MORE"
+        const isLoadMore = context.get("isLoadMore")
 
         const loadFn = prop("load")
         loadFn({
           signal: abort?.signal,
           cursor: isLoadMore ? context.get("cursor") : null,
-          filterText: event.filterText ?? context.get("filterText"),
-          sortDescriptor: event.sortDescriptor ?? context.get("sortDescriptor"),
+          filter: event.filter ?? context.get("filter"),
+          sorting: event.sorting ?? context.get("sorting"),
         })
           .then(({ items, cursor }) => {
-            if (seq !== refs.get("seq")) return // stale
+            if (seq !== refs.get("seq")) return
             send({ type: "SUCCESS", items, cursor, append: isLoadMore })
           })
           .catch((error) => {
-            if (seq !== refs.get("seq")) return // stale
+            if (seq !== refs.get("seq")) return
             if (isAbortError(error)) return
             send({ type: "ERROR", error })
           })
@@ -189,7 +200,7 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         const sortFn = prop("sort")
         ensure(sortFn, () => "[zag-js/async-list] sort is required")
         const currentItems = context.get("items")
-        const filterText = context.get("filterText")
+        const filter = context.get("filter")
 
         const seq = refs.get("seq") + 1
         refs.set("seq", seq)
@@ -197,28 +208,27 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         Promise.resolve(
           sortFn({
             items: currentItems,
-            descriptor: event.sortDescriptor,
-            filterText,
+            sorting: event.sorting,
+            filter,
           }),
         )
           .then((r) => {
-            if (seq !== refs.get("seq")) return // stale
-            // If sort function returns undefined or no items, keep existing data
+            if (seq !== refs.get("seq")) return
             const sortedItems = r?.items ?? currentItems
             send({ type: "SUCCESS", items: sortedItems, cursor: undefined, append: false })
           })
           .catch((e) => {
-            if (seq !== refs.get("seq")) return // stale
+            if (seq !== refs.get("seq")) return
             send({ type: "ERROR", error: e as Error })
           })
       },
 
-      setSortDescriptor({ context, event }) {
-        context.set("sortDescriptor", event.sortDescriptor)
+      setSorting({ context, event }) {
+        context.set("sorting", event.sorting)
       },
 
-      setFilterText({ context, event }) {
-        context.set("filterText", event.filterText)
+      setFilter({ context, event }) {
+        context.set("filter", event.filter)
       },
       invokeOnSuccess({ prop, event }) {
         prop("onSuccess")?.({ items: event.items })
@@ -226,7 +236,8 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
       invokeOnError({ prop, event }) {
         prop("onError")?.({ error: event.error })
       },
-      clearItems({ context }) {
+      clearItems({ context, prop }) {
+        if (prop("keepPreviousItems")) return
         context.set("items", [])
       },
       setItems({ context, event }) {
@@ -250,7 +261,6 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
         refs.set("abort", null)
       },
       cancelSort({ refs }) {
-        // Increment sequence to invalidate any pending sort results
         const seq = refs.get("seq") + 1
         refs.set("seq", seq)
       },

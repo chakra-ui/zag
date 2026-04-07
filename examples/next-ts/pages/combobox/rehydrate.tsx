@@ -16,8 +16,8 @@ interface Item {
 export default function Page() {
   const asyncList = useAsyncList<Item>({
     autoReload: true,
-    async load({ signal, filterText }) {
-      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filterText}`, { signal })
+    async load({ signal, filter }) {
+      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filter}`, { signal })
       const data = await response.json()
       return {
         items: data.results,
@@ -42,7 +42,7 @@ export default function Page() {
     defaultValue: ["C-3PO"],
     placeholder: "Example: Dexter",
     onInputValueChange({ inputValue }) {
-      asyncList.setFilterText(inputValue)
+      asyncList.setFilter(inputValue)
     },
   })
 

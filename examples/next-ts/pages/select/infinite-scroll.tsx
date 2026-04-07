@@ -12,7 +12,7 @@ interface Pokemon {
 export default function Page() {
   const sentinelRef = useRef<HTMLDivElement>(null)
 
-  const listApi = useAsyncList<Pokemon, string>({
+  const listApi = useAsyncList<Pokemon>({
     autoReload: true,
     async load({ signal, cursor }) {
       const url = cursor ?? "https://pokeapi.co/api/v2/pokemon?limit=20"
@@ -25,7 +25,7 @@ export default function Page() {
   useSentinelObserver({
     getSentinel: () => sentinelRef.current,
     onIntersect() {
-      if (listApi.hasMore && !listApi.loading) listApi.loadMore()
+      if (listApi.hasMore && !listApi.isLoading) listApi.loadMore()
     },
   })
 
@@ -42,8 +42,8 @@ export default function Page() {
   const service = useMachine(select.machine, { id: useId(), collection })
   const api = select.connect(service, normalizeProps)
 
-  const isInitialLoading = listApi.loading && listApi.items.length === 0
-  const isLoadingMore = listApi.loading && listApi.items.length > 0
+  const isInitialLoading = listApi.isLoading && listApi.items.length === 0
+  const isLoadingMore = listApi.isLoading && listApi.items.length > 0
 
   return (
     <main className="select">

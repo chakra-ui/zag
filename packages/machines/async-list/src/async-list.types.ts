@@ -2,52 +2,61 @@ import type { EventObject, Service, Machine } from "@zag-js/core"
 
 export type SortDirection = "ascending" | "descending"
 
-export interface SortDescriptor<T> {
-  column: keyof T
+export interface SortDescriptor<Item> {
+  column: keyof Item
   direction: SortDirection
 }
 
-export interface LoadDetails<T, C> {
+export interface LoadDetails<Filter, Sorting, Cursor> {
   signal: AbortSignal | undefined
-  filterText: string
-  cursor?: C | undefined
-  sortDescriptor?: SortDescriptor<T> | undefined
+  filter: Filter
+  cursor?: Cursor | undefined
+  sorting?: Sorting | undefined
 }
 
-export interface LoadResult<T, C> {
-  items: T[]
-  cursor?: C | undefined
+export interface LoadResult<Item, Cursor> {
+  items: Item[]
+  cursor?: Cursor | undefined
 }
 
-export interface SortDetails<T> {
-  items: T[]
-  descriptor: SortDescriptor<T>
-  filterText: string
+export interface SortDetails<Item, Filter, Sorting> {
+  items: Item[]
+  sorting: Sorting
+  filter: Filter
 }
 
 export type LoadDependency = string | number | boolean | undefined | null
 
-export interface AsyncListProps<T, C> {
+export interface AsyncListProps<Item, Filter, Sorting, Cursor> {
   /**
    * The function to call when the list is loaded
    */
-  load: (args: LoadDetails<T, C>) => Promise<LoadResult<T, C>>
+  load: (args: LoadDetails<Filter, Sorting, Cursor>) => Promise<LoadResult<Item, Cursor>>
   /**
-   * The function to call when the list is sorted
+   * The function to call when the list is sorted client-side.
+   * When provided, sorting is performed locally instead of triggering a new load.
    */
-  sort?: ((args: SortDetails<T>) => Promise<{ items: T[] }> | { items: T[] } | undefined) | undefined
+  sort?:
+    | ((args: SortDetails<Item, Filter, Sorting>) => Promise<{ items: Item[] }> | { items: Item[] } | undefined)
+    | undefined
   /**
    * The initial items to display
    */
-  initialItems?: T[] | undefined
+  initialItems?: Item[] | undefined
   /**
-   * The initial sort descriptor to use
+   * The initial sorting state
    */
-  initialSortDescriptor?: SortDescriptor<T> | undefined
+  initialSorting?: Sorting | undefined
   /**
-   * The initial filter text to use
+   * The initial filter state
    */
-  initialFilterText?: string | undefined
+  initialFilter?: Filter | undefined
+  /**
+   * Whether to keep the previous items visible while new data is loading.
+   * Prevents content flash when filter or sort changes.
+   * @default false
+   */
+  keepPreviousItems?: boolean | undefined
   /**
    * The dependencies to watch for changes
    */
@@ -59,22 +68,23 @@ export interface AsyncListProps<T, C> {
   /**
    * The function to call when the list is loaded successfully
    */
-  onSuccess?: ((details: { items: T[] }) => void | undefined) | undefined
+  onSuccess?: ((details: { items: Item[] }) => void | undefined) | undefined
   /**
    * The function to call when the list fails to load
    */
   onError?: ((details: { error: Error }) => void | undefined) | undefined
 }
 
-export interface AsyncListSchema<T, C> {
+export interface AsyncListSchema<Item, Filter, Sorting, Cursor> {
   state: "idle" | "loading" | "sorting"
-  props: AsyncListProps<T, C>
+  props: AsyncListProps<Item, Filter, Sorting, Cursor>
   context: {
-    items: T[]
-    filterText: string
-    cursor?: C | undefined
-    sortDescriptor?: SortDescriptor<T> | undefined
+    items: Item[]
+    filter: Filter
+    cursor?: Cursor | undefined
+    sorting?: Sorting | undefined
     error?: any | undefined
+    isLoadMore: boolean
   }
   refs: {
     abort: AbortController | null
@@ -86,39 +96,45 @@ export interface AsyncListSchema<T, C> {
   effect: string
 }
 
-export type AsyncListService<T, C> = Service<AsyncListSchema<T, C>>
+export type AsyncListService<Item, Filter, Sorting, Cursor> = Service<AsyncListSchema<Item, Filter, Sorting, Cursor>>
 
-export type AsyncListMachine<T, C> = Machine<AsyncListSchema<T, C>>
+export type AsyncListMachine<Item, Filter, Sorting, Cursor> = Machine<AsyncListSchema<Item, Filter, Sorting, Cursor>>
 
-export interface AsyncListApi<T, C> {
+type Updater<T> = T | ((prev: T) => T)
+
+export interface AsyncListApi<Item, Filter, Sorting, Cursor> {
   /**
    * The items in the list.
    */
-  items: T[]
+  items: Item[]
   /**
-   * The filter text.
+   * The current filter state.
    */
-  filterText: string
+  filter: Filter
   /**
-   * The cursor.
+   * The cursor for pagination.
    */
-  cursor: C | undefined
+  cursor: Cursor | undefined
   /**
-   * The sort descriptor.
+   * The current sorting state.
    */
-  sortDescriptor: SortDescriptor<T> | undefined
+  sorting: Sorting | undefined
   /**
-   * Whether the list is loading.
+   * Whether the list is loading (includes both fetching and sorting).
    */
-  loading: boolean
+  isLoading: boolean
   /**
-   * Whether the list is sorting.
+   * Whether the list is loading more items via pagination.
    */
-  sorting: boolean
+  isLoadingMore: boolean
+  /**
+   * Whether a client-side sort is in progress.
+   */
+  isSorting: boolean
   /**
    * Whether the list is empty.
    */
-  empty: boolean
+  isEmpty: boolean
   /**
    * Whether there are more items to load.
    */
@@ -140,15 +156,18 @@ export interface AsyncListApi<T, C> {
    */
   loadMore: VoidFunction
   /**
-   * Function to sort the list
+   * Function to update the sorting state and trigger a sort.
+   * Accepts a value or an updater function.
    */
-  sort: (sortDescriptor: SortDescriptor<T>) => void
+  setSorting: (sorting: Updater<Sorting | undefined>) => void
   /**
-   * Function to set the filter text
+   * Function to update the filter state and trigger a reload.
+   * Accepts a value or an updater function.
    */
-  setFilterText: (filterText: string) => void
+  setFilter: (filter: Updater<Filter>) => void
   /**
-   * Function to clear the filter text
+   * Function to reset the filter to `initialFilter`.
+   * No-op if `initialFilter` was not provided.
    */
   clearFilter: VoidFunction
 }

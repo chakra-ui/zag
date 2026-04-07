@@ -1,26 +1,30 @@
 import type { AsyncListApi, AsyncListService } from "./async-list.types"
 
-export function connect<T, C>(service: AsyncListService<T, C>): AsyncListApi<T, C> {
-  const { state, context, send } = service
+export function connect<Item, Filter, Sorting, Cursor>(
+  service: AsyncListService<Item, Filter, Sorting, Cursor>,
+): AsyncListApi<Item, Filter, Sorting, Cursor> {
+  const { state, context, send, prop } = service
 
-  const loading = state.matches("loading", "sorting")
-  const sorting = state.matches("sorting")
+  const isLoading = state.matches("loading", "sorting")
+  const isLoadingMore = state.matches("loading") && context.get("isLoadMore")
+  const isSorting = state.matches("sorting")
 
   const items = context.get("items")
   const cursor = context.get("cursor")
 
-  const empty = items.length === 0
+  const isEmpty = items.length === 0
   const hasMore = cursor != null
 
   return {
     items,
-    sortDescriptor: context.get("sortDescriptor"),
-    loading,
-    sorting,
-    empty,
+    sorting: context.get("sorting"),
+    isLoading,
+    isLoadingMore,
+    isSorting,
+    isEmpty,
     hasMore,
     error: context.get("error"),
-    filterText: context.get("filterText"),
+    filter: context.get("filter"),
     cursor,
     abort() {
       send({ type: "ABORT" })
@@ -31,14 +35,24 @@ export function connect<T, C>(service: AsyncListService<T, C>): AsyncListApi<T, 
     loadMore() {
       send({ type: "LOAD_MORE" })
     },
-    sort(sortDescriptor) {
-      send({ type: "SORT", sortDescriptor })
+    setSorting(sortingOrUpdater) {
+      const sorting =
+        typeof sortingOrUpdater === "function"
+          ? (sortingOrUpdater as (prev: Sorting | undefined) => Sorting)(context.get("sorting"))
+          : sortingOrUpdater
+      send({ type: "SORT", sorting })
     },
-    setFilterText(filterText) {
-      send({ type: "FILTER", filterText })
+    setFilter(filterOrUpdater) {
+      const filter =
+        typeof filterOrUpdater === "function"
+          ? (filterOrUpdater as (prev: Filter) => Filter)(context.get("filter"))
+          : filterOrUpdater
+      send({ type: "FILTER", filter })
     },
     clearFilter() {
-      send({ type: "FILTER", filterText: "" })
+      const initial = prop("initialFilter")
+      if (initial === undefined) return
+      send({ type: "FILTER", filter: initial })
     },
   }
 }
