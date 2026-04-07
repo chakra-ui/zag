@@ -26,7 +26,7 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import { compact, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
+import { compact, ensure, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
@@ -136,16 +136,15 @@ export class VanillaMachine<T extends MachineSchema> {
     this.context = ctx
 
     const computed: ComputedFn<T> = (key) => {
-      return (
-        machine.computed?.[key]({
-          context: ctx as any,
-          event: this.getEvent(),
-          prop,
-          refs: this.refs,
-          scope: this.scope,
-          computed: computed as any,
-        }) ?? ({} as any)
-      )
+      ensure(machine.computed, () => `[zag-js] No computed object found on machine`)
+      return machine.computed[key]({
+        context: ctx as any,
+        event: this.getEvent(),
+        prop,
+        refs: this.refs,
+        scope: this.scope,
+        computed: computed as any,
+      })
     }
     this.computed = computed
 
