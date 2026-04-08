@@ -36,8 +36,7 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
         [part]: {
           selector: [`&[${attrName}]`, `& [${attrName}]`].join(", "),
           attr: attrName,
-          attrs: (uid: string | undefined) => {
-            if (uid == null) throw new Error(`[zag-js] Cannot spread anatomy attrs without a uid for "${attrName}"`)
+          attrs: (uid = "") => {
             return { [attrName]: uid }
           },
         },

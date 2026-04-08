@@ -103,11 +103,6 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
-    }
-  },
   "image-cropper": {
     "Root": {
       "--crop-width": "The width of the Root",
@@ -118,6 +113,11 @@
       "--image-rotation": "The image rotation value for the Root",
       "--image-offset-x": "The offset position for image",
       "--image-offset-y": "The offset position for image"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
     }
   },
   "marquee": {

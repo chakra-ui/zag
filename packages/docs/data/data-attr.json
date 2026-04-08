@@ -1194,6 +1194,10 @@
     }
   },
   "pagination": {
+    "Ellipsis": {
+      "data-pagination-ellipsis": "<uid>",
+      "data-index": "The index of the item"
+    },
     "Item": {
       "data-pagination-item": "<uid>",
       "data-index": "The index of the item",
