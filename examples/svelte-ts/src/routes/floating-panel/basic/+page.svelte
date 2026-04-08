@@ -43,8 +43,8 @@
           <p>Some content</p>
         </div>
 
-        {#each floatingPanel.resizeTriggerAxes as axis}
-          <div {...api.getResizeTriggerProps({ axis })}></div>
+        {#each floatingPanel.resizeTriggerPlacements as placement}
+          <div {...api.getResizeTriggerProps({ placement })}></div>
         {/each}
       </div>
     </div>

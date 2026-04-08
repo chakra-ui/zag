@@ -3,7 +3,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as imageCropper from "@zag-js/image-cropper"
-  import { imageCropperControls, handlePositions } from "@zag-js/shared"
+  import { imageCropperControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const controls = useControls(imageCropperControls)
@@ -39,8 +39,8 @@
     <div {...api.getViewportProps()}>
       <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} alt="Cropper" />
       <div {...api.getSelectionProps()}>
-        {#each handlePositions as position}
-          <div {...api.getHandleProps({ position })}>
+        {#each imageCropper.placements as placement}
+          <div {...api.getHandleProps({ placement })}>
             <div></div>
           </div>
         {/each}

@@ -1,21 +1,22 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
-  addPoints,
+  applyMove,
+  applyResize,
+  centerInRect,
   clampPoint,
   clampSize,
   constrainRect,
-  createRect,
+  getDirectionDelta,
   getElementRect,
   isPointEqual,
   isSizeEqual,
-  resizeRect,
   subtractPoints,
   type Point,
   type Size,
 } from "@zag-js/rect-utils"
 import { subscribe } from "@zag-js/store"
-import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
+import { clampValue, ensureProps, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
 import type { FloatingPanelSchema, IntlTranslations, Stage } from "./floating-panel.types"
@@ -270,7 +271,7 @@ export const machine = createMachine<FloatingPanelSchema>({
             const { altKey, shiftKey } = event
             let x = clampValue(point.x, boundaryRect.x, boundaryRect.x + boundaryRect.width)
             let y = clampValue(point.y, boundaryRect.y, boundaryRect.y + boundaryRect.height)
-            send({ type: "DRAG", position: { x, y }, axis: evt.axis, altKey, shiftKey })
+            send({ type: "DRAG", position: { x, y }, placement: evt.placement, altKey, shiftKey })
           },
           onPointerUp() {
             send({ type: "DRAG_END" })
@@ -370,11 +371,7 @@ export const machine = createMachine<FloatingPanelSchema>({
 
         // If no anchor position specified, center in boundary
         if (!anchorPosition) {
-          const size = context.get("size")
-          anchorPosition = {
-            x: boundaryRect.x + (boundaryRect.width - size.width) / 2,
-            y: boundaryRect.y + (boundaryRect.height - size.height) / 2,
-          }
+          anchorPosition = centerInRect(context.get("size"), boundaryRect)
         }
 
         if (!anchorPosition) return
@@ -397,20 +394,20 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setPositionFromDrag({ context, event, prop, scope }) {
-        let diff = subtractPoints(event.position, context.get("lastEventPosition"))
-
-        diff.x = Math.round(diff.x / prop("gridSize")) * prop("gridSize")
-        diff.y = Math.round(diff.y / prop("gridSize")) * prop("gridSize")
-
         const prevPosition = context.get("prevPosition")
         if (!prevPosition) return
 
-        let position = addPoints(prevPosition, diff)
+        const delta = subtractPoints(event.position, context.get("lastEventPosition"))
         const boundaryEl = prop("getBoundaryEl")?.()
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, prop("allowOverflow"))
-        position = clampPoint(position, context.get("size"), boundaryRect)
+        const size = context.get("size")
 
-        context.set("position", position)
+        const result = applyMove({ ...prevPosition, ...size }, delta, {
+          boundary: boundaryRect,
+          gridSize: prop("gridSize"),
+        })
+
+        context.set("position", pick(result, ["x", "y"]))
       },
 
       setPositionStyle({ scope, context }) {
@@ -454,28 +451,23 @@ export const machine = createMachine<FloatingPanelSchema>({
 
         if (!prevSize || !prevPosition || !lastEventPosition) return
 
-        const prevRect = createRect({ ...prevPosition, ...prevSize })
-        const offset = subtractPoints(event.position, lastEventPosition)
-
-        const nextRect = resizeRect(prevRect, offset, event.axis, {
-          scalingOriginMode: event.altKey ? "center" : "extent",
-          lockAspectRatio: !!prop("lockAspectRatio") || event.shiftKey,
-        })
-
-        let nextSize = pick(nextRect, ["width", "height"])
-        let nextPosition = pick(nextRect, ["x", "y"])
-
+        const delta = subtractPoints(event.position, lastEventPosition)
         const boundaryEl = prop("getBoundaryEl")?.()
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
 
-        nextSize = clampSize(nextSize, prop("minSize"), prop("maxSize"))
-        nextSize = clampSize(nextSize, prop("minSize"), boundaryRect)
-        context.set("size", nextSize)
+        const lockAspect = !!prop("lockAspectRatio") || event.shiftKey
+        const aspectRatio = lockAspect ? prevSize.width / prevSize.height : undefined
 
-        if (nextPosition) {
-          const point = clampPoint(nextPosition, nextSize, boundaryRect)
-          context.set("position", point)
-        }
+        const result = applyResize({ ...prevPosition, ...prevSize }, delta, event.placement, {
+          boundary: boundaryRect,
+          minSize: prop("minSize"),
+          maxSize: prop("maxSize"),
+          aspectRatio,
+          origin: event.altKey ? "center" : "extent",
+        })
+
+        context.set("size", pick(result, ["width", "height"]))
+        context.set("position", pick(result, ["x", "y"]))
       },
 
       setSizeStyle({ scope, context }) {
@@ -565,22 +557,15 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setPositionFromKeyboard({ context, event, prop, scope }) {
-        invariant(event.step == null, "step is required")
-
+        const size = context.get("size")
         const position = context.get("position")
-        const step = event.step
-
-        let nextPosition = match(event.direction, {
-          left: { x: position.x - step, y: position.y },
-          right: { x: position.x + step, y: position.y },
-          up: { x: position.x, y: position.y - step },
-          down: { x: position.x, y: position.y + step },
-        })
-
         const boundaryEl = prop("getBoundaryEl")?.()
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
-        nextPosition = clampPoint(nextPosition, context.get("size"), boundaryRect)
-        context.set("position", nextPosition)
+
+        const delta = getDirectionDelta(event.direction, event.step)
+        const result = applyMove({ ...position, ...size }, delta, { boundary: boundaryRect })
+
+        context.set("position", pick(result, ["x", "y"]))
       },
 
       bringToFrontOfPanelStack({ prop }) {

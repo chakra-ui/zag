@@ -10,7 +10,6 @@ export type {
   ElementIds,
   OpenChangeDetails,
   PositionChangeDetails,
-  ResizeTriggerAxis,
   ResizeTriggerProps,
   SizeChangeDetails,
   StageChangeDetails,
@@ -19,4 +18,4 @@ export type {
   IntlTranslations,
   Stage,
 } from "./floating-panel.types"
-export type { Rect, Point, Size } from "@zag-js/rect-utils"
+export type { HandlePosition, Rect, Point, Size } from "@zag-js/rect-utils"

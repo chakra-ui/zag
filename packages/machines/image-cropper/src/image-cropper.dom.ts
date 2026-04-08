@@ -16,7 +16,7 @@ export const getViewportEl = (ctx: Scope) => ctx.query(ctx.selector(parts.viewpo
 export const getImageEl = (ctx: Scope) => ctx.query<HTMLImageElement>(ctx.selector(parts.image))
 export const getSelectionEl = (ctx: Scope) => ctx.query(ctx.selector(parts.selection))
 export const getHandleEl = (ctx: Scope, position: string) =>
-  ctx.query(`${ctx.selector(parts.handle)}[data-value="${position}"]`)
+  ctx.query(`${ctx.selector(parts.handle)}[data-placement="${position}"]`)
 
 export function drawCroppedImageToCanvas(params: ImageCropperService): HTMLCanvasElement | null {
   const { context, scope } = params

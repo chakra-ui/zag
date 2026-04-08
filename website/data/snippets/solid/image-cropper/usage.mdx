@@ -21,8 +21,8 @@ export function ImageCropper() {
 
         <div {...api().getSelectionProps()}>
           <For each={imageCropper.handles}>
-            {(position) => (
-              <div {...api().getHandleProps({ position })}>
+            {(placement) => (
+              <div {...api().getHandleProps({ placement })}>
                 <span />
               </div>
             )}

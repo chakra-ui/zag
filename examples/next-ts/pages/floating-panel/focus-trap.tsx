@@ -56,8 +56,8 @@ export default function Page() {
                 <button type="button">Submit</button>
               </div>
 
-              {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+              {floating.resizeTriggerPlacements.map((placement) => (
+                <div key={placement} {...api.getResizeTriggerProps({ placement })} />
               ))}
             </div>
           </div>

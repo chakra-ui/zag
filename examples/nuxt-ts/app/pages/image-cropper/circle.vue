@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as imageCropper from "@zag-js/image-cropper"
-import { imageCropperControls, handlePositions } from "@zag-js/shared"
+import { imageCropperControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(imageCropperControls)
@@ -34,7 +34,7 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
       <div v-bind="api.getViewportProps()">
         <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" />
         <div v-bind="api.getSelectionProps()">
-          <div v-for="position in handlePositions" :key="position" v-bind="api.getHandleProps({ position })">
+          <div v-for="placement in imageCropper.placements" :key="placement" v-bind="api.getHandleProps({ placement })">
             <div />
           </div>
         </div>

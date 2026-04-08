@@ -16,13 +16,13 @@
   width: var(--handle-size);
   height: var(--handle-size);
 
-  &[data-position="n"],
-  &[data-position="s"] {
+  &[data-placement="n"],
+  &[data-placement="s"] {
     height: 6px;
   }
 
-  &[data-position="e"],
-  &[data-position="w"] {
+  &[data-placement="e"],
+  &[data-placement="w"] {
     width: 6px;
   }
 

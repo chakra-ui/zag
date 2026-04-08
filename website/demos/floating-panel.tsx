@@ -66,35 +66,35 @@ export function FloatingPanel(props: FloatingPanelProps) {
 
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "n" })}
+                {...api.getResizeTriggerProps({ placement: "n" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "e" })}
+                {...api.getResizeTriggerProps({ placement: "e" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "w" })}
+                {...api.getResizeTriggerProps({ placement: "w" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "s" })}
+                {...api.getResizeTriggerProps({ placement: "s" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "ne" })}
+                {...api.getResizeTriggerProps({ placement: "ne" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "se" })}
+                {...api.getResizeTriggerProps({ placement: "se" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "sw" })}
+                {...api.getResizeTriggerProps({ placement: "sw" })}
               />
               <div
                 className={styles.ResizeTrigger}
-                {...api.getResizeTriggerProps({ axis: "nw" })}
+                {...api.getResizeTriggerProps({ placement: "nw" })}
               />
             </div>
           </div>

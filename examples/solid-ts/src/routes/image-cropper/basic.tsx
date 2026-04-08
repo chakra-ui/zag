@@ -1,6 +1,6 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { imageCropperControls, handlePositions } from "@zag-js/shared"
+import { imageCropperControls } from "@zag-js/shared"
 import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -35,9 +35,9 @@ export default function Page() {
           <div {...api().getViewportProps()}>
             <img src="https://picsum.photos/seed/a/500/300" {...api().getImageProps()} />
             <div {...api().getSelectionProps()}>
-              <For each={handlePositions}>
-                {(position) => (
-                  <div {...api().getHandleProps({ position })}>
+              <For each={imageCropper.placements}>
+                {(placement) => (
+                  <div {...api().getHandleProps({ placement })}>
                     <div />
                   </div>
                 )}

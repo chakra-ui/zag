@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { Point, Size } from "@zag-js/rect-utils"
+import type { HandlePosition, Point, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -245,13 +245,11 @@ export type FloatingPanelMachine = Machine<FloatingPanelSchema>
  * Component props
  * -----------------------------------------------------------------------------*/
 
-export type ResizeTriggerAxis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
-
 export interface ResizeTriggerProps {
   /**
-   * The axis of the resize handle
+   * The placement of the resize handle
    */
-  axis: ResizeTriggerAxis
+  placement: HandlePosition
 }
 
 export interface StageTriggerProps {

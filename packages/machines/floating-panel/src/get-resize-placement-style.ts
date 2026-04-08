@@ -1,8 +1,8 @@
+import type { HandlePosition } from "@zag-js/rect-utils"
 import type { JSX } from "@zag-js/types"
-import type { ResizeTriggerAxis } from "./floating-panel.types"
 
-export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
-  switch (axis) {
+export function getResizePlacementStyle(placement: HandlePosition): JSX.CSSProperties {
+  switch (placement) {
     case "n":
       return {
         cursor: "n-resize",
@@ -68,6 +68,6 @@ export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
       }
 
     default:
-      throw new Error(`Invalid axis: ${axis}`)
+      throw new Error(`Invalid placement: ${placement}`)
   }
 }

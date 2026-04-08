@@ -1,8 +1,10 @@
-import type { Point, Rect, RectEdge, RectInit } from "./types"
+import type { Point, Rect, RectEdge, RectInit, Size } from "./types"
 
 /* -----------------------------------------------------------------------------
  * Point
  * -----------------------------------------------------------------------------*/
+
+export const ZERO_POINT: Point = Object.freeze({ x: 0, y: 0 })
 
 export const createPoint = (x: number, y: number) => ({ x, y })
 
@@ -12,6 +14,11 @@ export const subtractPoints = (a: Point, b: Point | null) => {
 }
 
 export const addPoints = (a: Point, b: Point) => createPoint(a.x + b.x, a.y + b.y)
+
+export const getMidpoint = (a: Point, b: Point, offset?: Point): Point => ({
+  x: (a.x + b.x) / 2 - (offset?.x ?? 0),
+  y: (a.y + b.y) / 2 - (offset?.y ?? 0),
+})
 
 export function isPoint(v: any): v is Point {
   return Reflect.has(v, "x") && Reflect.has(v, "y")
@@ -68,3 +75,29 @@ export function getRectEdges(v: Rect) {
   const left: RectEdge = [c.top, c.left]
   return { top, right, bottom, left }
 }
+
+export const getCenterPoint = (rect: RectInit): Point => ({
+  x: rect.x + rect.width / 2,
+  y: rect.y + rect.height / 2,
+})
+
+export const isVisibleSize = (size: Size): boolean => size.width > 0 && size.height > 0
+
+export const scaleSize = (size: Size, factor: number): Size => ({
+  width: size.width * factor,
+  height: size.height * factor,
+})
+
+export const scaleRect = (rect: RectInit, scale: Point): RectInit => ({
+  x: rect.x * scale.x,
+  y: rect.y * scale.y,
+  width: rect.width * scale.x,
+  height: rect.height * scale.y,
+})
+
+export const roundRect = (rect: RectInit): RectInit => ({
+  x: Math.round(rect.x),
+  y: Math.round(rect.y),
+  width: Math.round(rect.width),
+  height: Math.round(rect.height),
+})

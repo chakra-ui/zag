@@ -57,56 +57,56 @@
       transform: translate(-50%, -50%);
     }
 
-    &[data-position="top-left"] {
+    &[data-placement="top-left"] {
       top: 0;
       left: 0;
       transform: translate(-50%, -50%);
       cursor: nwse-resize;
     }
 
-    &[data-position="top"] {
+    &[data-placement="top"] {
       top: 0;
       left: 50%;
       transform: translate(-50%, -50%);
       cursor: ns-resize;
     }
 
-    &[data-position="top-right"] {
+    &[data-placement="top-right"] {
       top: 0;
       right: 0;
       transform: translate(50%, -50%);
       cursor: nesw-resize;
     }
 
-    &[data-position="right"] {
+    &[data-placement="right"] {
       top: 50%;
       right: 0;
       transform: translate(50%, -50%);
       cursor: ew-resize;
     }
 
-    &[data-position="bottom-right"] {
+    &[data-placement="bottom-right"] {
       bottom: 0;
       right: 0;
       transform: translate(50%, 50%);
       cursor: nwse-resize;
     }
 
-    &[data-position="bottom"] {
+    &[data-placement="bottom"] {
       bottom: 0;
       left: 50%;
       transform: translate(-50%, 50%);
       cursor: ns-resize;
     }
 
-    &[data-position="bottom-left"] {
+    &[data-placement="bottom-left"] {
       bottom: 0;
       left: 0;
       transform: translate(-50%, 50%);
       cursor: nesw-resize;
     }
 
-    &[data-position="left"] {
+    &[data-placement="left"] {
       top: 50%;
       left: 0;
       transform: translate(-50%, -50%);

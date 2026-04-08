@@ -118,7 +118,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
             </div>
           </div>
 
-          <div v-for="axis in floatingPanel.resizeTriggerAxes" :key="axis" v-bind="api.getResizeTriggerProps({ axis })" />
+          <div v-for="placement in floatingPanel.resizeTriggerPlacements" :key="placement" v-bind="api.getResizeTriggerProps({ placement })" />
         </div>
       </div>
     </div>

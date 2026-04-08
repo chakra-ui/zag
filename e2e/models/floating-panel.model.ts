@@ -52,7 +52,7 @@ export class FloatingPanelModel extends Model {
   }
 
   getResizeTrigger(axis: Axis) {
-    return this.page.locator(`${part("resize-trigger")}[data-axis=${axis}]`)
+    return this.page.locator(`${part("resize-trigger")}[data-placement=${axis}]`)
   }
 
   clickTrigger() {

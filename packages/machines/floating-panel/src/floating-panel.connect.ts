@@ -4,7 +4,7 @@ import { match, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
 import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
-import { getResizeAxisStyle } from "./get-resize-axis-style"
+import { getResizePlacementStyle } from "./get-resize-placement-style"
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -213,7 +213,7 @@ export function connect<T extends PropTypes>(
         ...parts.resizeTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(!canResize),
-        "data-axis": props.axis,
+        "data-placement": props.placement,
         onPointerDown(event) {
           if (!canResize) return
           if (!isLeftClick(event)) return
@@ -223,7 +223,7 @@ export function connect<T extends PropTypes>(
 
           send({
             type: "RESIZE_START",
-            axis: props.axis,
+            placement: props.placement,
             position: { x: event.clientX, y: event.clientY },
           })
         },
@@ -237,7 +237,7 @@ export function connect<T extends PropTypes>(
         style: {
           position: "absolute",
           touchAction: "none",
-          ...getResizeAxisStyle(props.axis),
+          ...getResizePlacementStyle(props.placement),
         },
       })
     },

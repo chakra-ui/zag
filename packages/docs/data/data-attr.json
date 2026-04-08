@@ -856,7 +856,7 @@
     "ResizeTrigger": {
       "data-floating-panel-resize-trigger": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-axis": "The axis to resize"
+      "data-placement": "The placement of the resizetrigger"
     },
     "DragTrigger": {
       "data-floating-panel-drag-trigger": "<uid>",
@@ -932,7 +932,7 @@
     },
     "Handle": {
       "data-image-cropper-handle": "<uid>",
-      "data-position": "",
+      "data-placement": "The placement of the handle",
       "data-disabled": "Present when disabled"
     },
     "Grid": {

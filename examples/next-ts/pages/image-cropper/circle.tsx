@@ -4,7 +4,6 @@ import { imageCropperControls } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
-import { handlePositions } from "@zag-js/shared"
 import { useControls } from "../../hooks/use-controls"
 
 export default function Page() {
@@ -35,8 +34,8 @@ export default function Page() {
           <div {...api.getViewportProps()}>
             <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} />
             <div {...api.getSelectionProps()}>
-              {handlePositions.map((position) => (
-                <div key={position} {...api.getHandleProps({ position })}>
+              {imageCropper.placements.map((placement) => (
+                <div key={placement} {...api.getHandleProps({ placement })}>
                   <div />
                 </div>
               ))}

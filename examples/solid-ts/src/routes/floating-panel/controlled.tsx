@@ -115,8 +115,8 @@ export default function Page() {
                 </div>
               </div>
 
-              <For each={floatingPanel.resizeTriggerAxes}>
-                {(axis) => <div {...api().getResizeTriggerProps({ axis })} />}
+              <For each={floatingPanel.resizeTriggerPlacements}>
+                {(placement) => <div {...api().getResizeTriggerProps({ placement })} />}
               </For>
             </div>
           </div>

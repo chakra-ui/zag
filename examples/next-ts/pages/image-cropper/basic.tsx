@@ -1,6 +1,6 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { handlePositions, imageCropperControls } from "@zag-js/shared"
+import { imageCropperControls } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -89,8 +89,8 @@ export default function Page() {
           <div {...api.getViewportProps()}>
             <img src="https://picsum.photos/seed/a/500/300" crossOrigin="anonymous" {...api.getImageProps()} />
             <div {...api.getSelectionProps()}>
-              {handlePositions.map((position) => (
-                <div key={position} {...api.getHandleProps({ position })}>
+              {imageCropper.placements.map((placement) => (
+                <div key={placement} {...api.getHandleProps({ placement })}>
                   <div />
                 </div>
               ))}
@@ -161,9 +161,9 @@ export default function Page() {
               value={selectedHandle}
               onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePosition)}
             >
-              {handlePositions.map((position) => (
-                <option key={position} value={position}>
-                  {position}
+              {imageCropper.placements.map((placement) => (
+                <option key={placement} value={placement}>
+                  {placement}
                 </option>
               ))}
             </select>

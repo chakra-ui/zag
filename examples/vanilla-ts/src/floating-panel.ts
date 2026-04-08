@@ -52,9 +52,9 @@ export class FloatingPanel extends Component<floating.Props, floating.Api> {
 
     // Resize handles
     const axes = ["n", "e", "w", "s", "ne", "se", "sw", "nw"] as const
-    axes.forEach((axis) => {
-      const handle = this.doc.querySelector<HTMLElement>(`.floating-panel-resize-${axis}`)
-      if (handle) this.spreadProps(handle, this.api.getResizeTriggerProps({ axis }))
+    axes.forEach((placement) => {
+      const handle = this.doc.querySelector<HTMLElement>(`.floating-panel-resize-${placement}`)
+      if (handle) this.spreadProps(handle, this.api.getResizeTriggerProps({ placement }))
     })
   }
 }

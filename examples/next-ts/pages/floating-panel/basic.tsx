@@ -47,8 +47,8 @@ export default function Page() {
                 <p>Some content</p>
               </div>
 
-              {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+              {floating.resizeTriggerPlacements.map((placement) => (
+                <div key={placement} {...api.getResizeTriggerProps({ placement })} />
               ))}
             </div>
           </div>

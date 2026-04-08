@@ -47,8 +47,8 @@ export default function Page() {
                 <Popover />
               </div>
 
-              <For each={floatingPanel.resizeTriggerAxes}>
-                {(axis) => <div {...api().getResizeTriggerProps({ axis })} />}
+              <For each={floatingPanel.resizeTriggerPlacements}>
+                {(placement) => <div {...api().getResizeTriggerProps({ placement })} />}
               </For>
             </div>
           </div>

@@ -52,11 +52,11 @@ export function ImageCropper(props: ImageCropperProps) {
             {...api.getImageProps()}
           />
           <div className={styles.Selection} {...api.getSelectionProps()}>
-            {imageCropper.handles.map((position) => (
+            {imageCropper.placements.map((placement) => (
               <div
                 className={styles.Handle}
-                key={position}
-                {...api.getHandleProps({ position })}
+                key={placement}
+                {...api.getHandleProps({ placement })}
               >
                 <div />
               </div>

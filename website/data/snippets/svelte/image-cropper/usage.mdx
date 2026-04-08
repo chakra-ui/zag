@@ -19,8 +19,8 @@
     />
 
     <div {...api.getSelectionProps()}>
-      {#each imageCropper.handles as position}
-        <div {...api.getHandleProps({ position })}>
+      {#each imageCropper.handles as placement}
+        <div {...api.getHandleProps({ placement })}>
           <span />
         </div>
       {/each}

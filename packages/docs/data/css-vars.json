@@ -1,11 +1,4 @@
 {
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
-    }
-  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",
@@ -14,6 +7,13 @@
     "Marker": {
       "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
       "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -103,6 +103,11 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
+    }
+  },
   "image-cropper": {
     "Root": {
       "--crop-width": "The width of the Root",
@@ -122,11 +127,6 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
-    }
-  },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
     }
   },
   "navigation-menu": {
@@ -162,6 +162,13 @@
       "--offset": "The offset position of the element"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -169,13 +176,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "scroll-area": {

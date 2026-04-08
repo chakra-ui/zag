@@ -73,9 +73,9 @@ watch(
           </div>
 
           <div
-            v-for="axis in floatingPanel.resizeTriggerAxes"
-            :key="axis"
-            v-bind="api.getResizeTriggerProps({ axis })"
+            v-for="placement in floatingPanel.resizeTriggerPlacements"
+            :key="placement"
+            v-bind="api.getResizeTriggerProps({ placement })"
           />
         </div>
       </div>

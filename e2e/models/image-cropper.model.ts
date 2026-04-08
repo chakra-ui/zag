@@ -60,7 +60,7 @@ export class ImageCropperModel extends Model {
   }
 
   getHandle(position: string) {
-    return this.page.locator(`[data-image-cropper-handle][data-position='${position}']`)
+    return this.page.locator(`[data-image-cropper-handle][data-placement='${position}']`)
   }
 
   async getSelectionRect() {

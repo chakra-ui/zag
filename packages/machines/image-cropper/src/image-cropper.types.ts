@@ -250,9 +250,9 @@ export type ImageCropperMachine = Machine<ImageCropperSchema>
 
 export interface HandleProps {
   /**
-   * The position of the handle
+   * The placement of the handle
    */
-  position: HandlePosition
+  placement: HandlePosition
 }
 
 export interface GridProps {

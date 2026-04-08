@@ -1,20 +1,12 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
+import { isBottomHandle, isLeftHandle, isRightHandle, isTopHandle, isVisibleSize, roundRect } from "@zag-js/rect-utils"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import {
-  roundRect,
-  isEqualFlip,
-  isVisibleRect,
-  normalizeFlipState,
-  isLeftHandle,
-  isRightHandle,
-  isTopHandle,
-  isBottomHandle,
-} from "./image-cropper.utils"
+import { isEqualFlip, normalizeFlipState } from "./image-cropper.utils"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -143,7 +135,7 @@ export function connect<T extends PropTypes>(
 
     async getCroppedImage(options = {}) {
       const { type = "image/png", quality = 1, output = "blob" } = options
-      if (!isVisibleRect(naturalSize)) return null
+      if (!isVisibleSize(naturalSize)) return null
 
       const canvas = dom.drawCroppedImageToCanvas(service)
       if (!canvas) return null
@@ -278,7 +270,7 @@ export function connect<T extends PropTypes>(
         "aria-roledescription": translations.selectionRoleDescription,
         "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
-        "aria-valuemax": isVisibleRect(viewportRect)
+        "aria-valuemax": isVisibleSize(viewportRect)
           ? Math.max(0, Math.round(viewportRect.width - crop.width))
           : Math.max(roundedCrop.x, 0),
         "aria-valuenow": roundedCrop.x,
@@ -367,12 +359,12 @@ export function connect<T extends PropTypes>(
     },
 
     getHandleProps(props) {
-      const handlePosition = props.position
+      const handlePosition = props.placement
       const disabled = !!fixedCropArea
 
       return normalize.element({
         ...parts.handle.attrs(scope.id),
-        "data-position": handlePosition,
+        "data-placement": handlePosition,
         "aria-hidden": "true",
         role: "presentation",
         "data-disabled": dataAttr(disabled),

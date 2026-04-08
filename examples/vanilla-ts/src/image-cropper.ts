@@ -32,7 +32,7 @@ export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api
       if (!handleEl) {
         handleEl = this.doc.createElement("div")
         handleEl.className = "image-cropper-handle"
-        handleEl.setAttribute("data-position", position)
+        handleEl.setAttribute("data-placement", position)
 
         // Add inner div for styling
         const innerDiv = this.doc.createElement("div")
@@ -41,7 +41,7 @@ export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api
         selection.appendChild(handleEl)
       }
 
-      this.spreadProps(handleEl, this.api.getHandleProps({ position }))
+      this.spreadProps(handleEl, this.api.getHandleProps({ placement: position }))
     })
   }
 

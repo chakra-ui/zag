@@ -73,11 +73,6 @@ export interface SymmetricRectInset {
   dy?: number | undefined
 }
 
-export interface ScalingOptions {
-  scalingOriginMode: "center" | "extent"
-  lockAspectRatio: boolean
-}
-
 /* -----------------------------------------------------------------------------
  * Alignment
  * -----------------------------------------------------------------------------*/

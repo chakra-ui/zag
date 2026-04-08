@@ -20,8 +20,8 @@ export function ImageCropper() {
         />
 
         <div {...api.getSelectionProps()}>
-          {imageCropper.handles.map((position) => (
-            <div key={position} {...api.getHandleProps({ position })}>
+          {imageCropper.handles.map((placement) => (
+            <div key={placement} {...api.getHandleProps({ placement })}>
               <span />
             </div>
           ))}
