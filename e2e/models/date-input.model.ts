@@ -102,6 +102,10 @@ export class DateInputModel extends Model {
     return expect(this.getSegmentNth(type, index)).toHaveAttribute("data-placeholder-shown", "")
   }
 
+  seeSegmentNotPresent(type: string) {
+    return expect(this.getSegment(type)).not.toBeAttached()
+  }
+
   seeSelectedValue(value: string) {
     return expect(this.output).toContainText(`Selected: ${value || "-"}`)
   }

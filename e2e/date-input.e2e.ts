@@ -223,9 +223,52 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentFocused("month")
   })
 
+  test("[input] year granularity", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "year")
+
+    // Month (and finer) segments should not be present
+    await I.seeSegmentNotPresent("month")
+    await I.seeSegmentNotPresent("day")
+    await I.seeSegmentNotPresent("minute")
+    await I.seeSegmentNotPresent("seconds")
+
+    // Year segment should be present and focusable
+    await I.focusSegment("year")
+    await I.seeSegmentFocused("year")
+    await I.seeSegmentIsPlaceholder("year")
+
+    // ArrowUp should initialize year from placeholder
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentIsNotPlaceholder("year")
+  })
+
+  test("[input] month granularity", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "month")
+
+    // Day (and finer) segments should not be present
+    await I.seeSegmentNotPresent("day")
+    await I.seeSegmentNotPresent("minute")
+    await I.seeSegmentNotPresent("seconds")
+
+    // Month segment should be present and focusable
+    await I.focusSegment("month")
+    await I.seeSegmentFocused("month")
+    await I.seeSegmentIsPlaceholder("month")
+
+    // ArrowUp should initialize month from placeholder
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentIsNotPlaceholder("month")
+  })
+
   test("[input] hour granularity", async () => {
     await I.clickControls()
     await I.controls.select("granularity", "hour")
+
+    // Minute and second segments should not be present
+    await I.seeSegmentNotPresent("minute")
+    await I.seeSegmentNotPresent("seconds")
 
     // Hour segment should be present and focusable
     await I.focusSegment("hour")
@@ -240,6 +283,9 @@ test.describe("date-input [single]", () => {
   test("[input] minute granularity", async () => {
     await I.clickControls()
     await I.controls.select("granularity", "minute")
+
+    // Second segment should not be present
+    await I.seeSegmentNotPresent("second")
 
     // Minute segment should be present and focusable
     await I.focusSegment("minute")

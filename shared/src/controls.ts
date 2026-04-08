@@ -231,7 +231,7 @@ export const dateInputControls = defineControls({
   },
   granularity: {
     type: "select",
-    options: ["day", "hour", "minute", "second"] as const,
+    options: ["year", "month", "day", "hour", "minute", "second"] as const,
     defaultValue: "day",
   },
   placeholderValue: {
