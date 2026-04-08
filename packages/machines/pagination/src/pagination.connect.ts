@@ -77,6 +77,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.ellipsis.attrs(scope.id),
         dir: prop("dir"),
+        "data-index": props.index,
       })
     },
 

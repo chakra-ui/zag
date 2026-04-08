@@ -243,7 +243,7 @@ export function connect<T extends PropTypes>(
     },
 
     getItemProps(props) {
-      const { file, type = DEFAULT_ITEM_TYPE } = props
+      const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.item.attrs(scope.id),
         dir: prop("dir"),
@@ -253,7 +253,7 @@ export function connect<T extends PropTypes>(
     },
 
     getItemNameProps(props) {
-      const { file, type = DEFAULT_ITEM_TYPE } = props
+      const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemName.attrs(scope.id),
         dir: prop("dir"),
@@ -263,7 +263,7 @@ export function connect<T extends PropTypes>(
     },
 
     getItemSizeTextProps(props) {
-      const { file, type = DEFAULT_ITEM_TYPE } = props
+      const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemSizeText.attrs(scope.id),
         dir: prop("dir"),
@@ -273,7 +273,7 @@ export function connect<T extends PropTypes>(
     },
 
     getItemPreviewProps(props) {
-      const { file, type = DEFAULT_ITEM_TYPE } = props
+      const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemPreview.attrs(scope.id),
         dir: prop("dir"),
