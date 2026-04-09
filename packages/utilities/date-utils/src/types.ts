@@ -2,7 +2,7 @@ import type { CalendarDate, CalendarDateTime, DateFormatter, ZonedDateTime } fro
 
 export type DateValue = CalendarDate | CalendarDateTime | ZonedDateTime
 
-export type DateGranularity = "day" | "hour" | "minute" | "second" | "year" | "month"
+export type DateGranularity = "day" | "hour" | "minute" | "second"
 export type DateAlignment = "start" | "end" | "center"
 
 export type GetFormatterFn = (options: Intl.DateTimeFormatOptions) => DateFormatter
