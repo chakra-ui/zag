@@ -421,8 +421,9 @@ export const machine = createMachine<DateInputSchema>({
         } else {
           dv = dv.set(type, Number(newValue), placeholderValue)
           setDisplayValue(params, index, dv)
-          // Re-check: if now complete, commit
-          if (dv.isComplete(allSegmentTypes)) {
+          // Don't commit while the user is editing a partially-typed segment value.
+          // The value will be committed when the segment is finalized or on blur.
+          if (enteredKeys === "" && dv.isComplete(allSegmentTypes)) {
             commitValue(params, index, dv)
           }
         }
@@ -458,7 +459,7 @@ export const machine = createMachine<DateInputSchema>({
         // After the set, check if we should commit (using the original group, not the one we may have advanced to)
         const allSegmentTypes = Object.keys(params.prop("allSegments")) as SegmentType[]
         const displayValue = context.get("displayValues")[index]
-        if (displayValue && displayValue.isComplete(allSegmentTypes)) {
+        if (displayValue && displayValue.isComplete(allSegmentTypes) && context.get("enteredKeys") === "") {
           commitValue(params, index, displayValue)
         }
       },
@@ -569,7 +570,8 @@ export const machine = createMachine<DateInputSchema>({
         announcer.announce(`${getSegmentLabel(segment.type)}, ${valueText}`)
       },
 
-      // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value
+      // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value.
+      // Also commit any complete display values that were deferred during partial typing.
       confirmPlaceholder(params) {
         const { context, prop, computed } = params
         const allSegments = prop("allSegments")
@@ -591,6 +593,9 @@ export const machine = createMachine<DateInputSchema>({
             )
             setDisplayValue(params, i, filled)
             commitValue(params, i, filled)
+          } else if (displayValue.isComplete(allSegmentTypes)) {
+            // Commit complete display values that were deferred during partial typing
+            commitValue(params, i, displayValue)
           }
         }
       },

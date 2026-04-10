@@ -246,6 +246,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "min-max", title: "Min Max" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
     ],

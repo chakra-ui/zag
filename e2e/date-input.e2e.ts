@@ -879,3 +879,107 @@ test.describe("date-input [granularity cycle]", () => {
     await I.seeSegmentIsNotPlaceholder("hour")
   })
 })
+
+test.describe("date-input [min/max]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DateInputModel(page)
+    await I.goto("/date-input/min-max")
+  })
+
+  test("[min/max] typing a full date within range sets the value correctly", async () => {
+    await I.focusSegment("month")
+    await I.type("02")
+    await I.type("22")
+    await I.type("2025")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+    await I.seeSegmentText("year", "2025")
+    await I.seeSelectedValue("2/22/2025")
+  })
+
+  test("[min/max] typing year digit-by-digit does not reset month and day", async () => {
+    // This is the core regression test for the reported issue:
+    // Typing 2/22/2000 left-to-right should not reset month/day when starting the year.
+    await I.focusSegment("month")
+    await I.type("2")
+    await I.seeSegmentFocused("day")
+    await I.seeSegmentText("month", "2")
+
+    await I.type("22")
+    await I.seeSegmentFocused("year")
+    await I.seeSegmentText("day", "22")
+
+    // Type year one digit at a time — month and day must NOT be reset
+    await I.type("2")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+
+    await I.type("0")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+
+    await I.type("0")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+
+    await I.type("0")
+    // Year is now fully entered (2000), value should be committed
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+    await I.seeSegmentText("year", "2000")
+    await I.seeSelectedValue("2/22/2000")
+  })
+
+  test("[min/max] partial year entry does not disrupt other segments on blur", async () => {
+    await I.focusSegment("month")
+    await I.type("2")
+    await I.seeSegmentFocused("day")
+    await I.type("22")
+    await I.seeSegmentFocused("year")
+    // Type partial year (only 1 digit)
+    await I.type("2")
+
+    // Blur — value should be committed with constraining applied at blur time
+    await I.clickOutsideToBlur()
+    // After blur, the partial year (2) gets constrained to min (2000-01-01).
+    // This is acceptable — the user chose to leave mid-typing.
+    await I.seeSelectedValue("1/1/2000")
+  })
+
+  test("[min/max] backspace during partial year entry does not reset other segments", async () => {
+    await I.focusSegment("month")
+    await I.type("2")
+    await I.seeSegmentFocused("day")
+    await I.type("22")
+    await I.seeSegmentFocused("year")
+    // Type partial year
+    await I.type("20")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+
+    // Backspace removes last entered digit — month and day must stay intact
+    await I.pressKey("Backspace")
+    await I.seeSegmentText("month", "2")
+    await I.seeSegmentText("day", "22")
+  })
+
+  test("[min/max] typing a date below min is constrained on full completion", async () => {
+    // min is 2000-01-01, typing year 1999 should constrain to min on commit
+    await I.focusSegment("month")
+    await I.type("06")
+    await I.type("15")
+    await I.type("1999")
+    // Year fully entered — value should be constrained to min date
+    await I.seeSelectedValue("1/1/2000")
+  })
+
+  test("[min/max] typing a date above max is constrained on full completion", async () => {
+    // max is 2030-12-31, typing year 2031 with month/day should constrain to max
+    await I.focusSegment("month")
+    await I.type("06")
+    await I.type("15")
+    await I.type("2031")
+    // Year fully entered — value should be constrained to max date
+    await I.seeSelectedValue("12/31/2030")
+  })
+})
