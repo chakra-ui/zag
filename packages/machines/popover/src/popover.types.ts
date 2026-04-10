@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -80,6 +80,16 @@ export interface PopoverProps
    */
   initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
+   * Element to receive focus when the popover is closed.
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
+  /**
+   * Whether to restore focus to the element that had focus before the popover was opened.
+   *
+   * @default true
+   */
+  restoreFocus?: boolean | undefined
+  /**
    * Whether to close the popover when the user clicks outside of the popover.
    * @default true
    */
@@ -127,6 +137,7 @@ type PropsWithDefault =
   | "modal"
   | "portalled"
   | "autoFocus"
+  | "restoreFocus"
   | "positioning"
   | "translations"
 

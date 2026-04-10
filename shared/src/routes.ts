@@ -246,6 +246,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "min-max", title: "Min Max" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
     ],
@@ -393,6 +394,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "selection", title: "Selection" },
       { slug: "single-tab-stop", title: "Single Tab Stop" },
       { slug: "responsive", title: "Responsive" },
+      { slug: "sibling-dialog", title: "Sibling Dialog" },
       { slug: "tooltip", title: "Tooltip" },
     ],
   },
