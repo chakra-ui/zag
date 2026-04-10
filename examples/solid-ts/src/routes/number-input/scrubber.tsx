@@ -1,6 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
+import { MoveHorizontalIcon } from "lucide-solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -17,6 +18,11 @@ export default function Page() {
     <>
       <main>
         <div {...api().getRootProps()}>
+          <div data-testid="scrubber" {...api().getScrubberProps()}>
+            <span {...api().getScrubberCursorProps()}>
+              <MoveHorizontalIcon />
+            </span>
+          </div>
           <label data-testid="label" {...api().getLabelProps()}>
             Enter number:
           </label>

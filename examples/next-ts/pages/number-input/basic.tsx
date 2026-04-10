@@ -20,7 +20,6 @@ export default function Page() {
     <>
       <main>
         <div {...api.getRootProps()}>
-          <div data-testid="scrubber" {...api.getScrubberProps()} />
           <label data-testid="label" {...api.getLabelProps()}>
             Enter number:
           </label>

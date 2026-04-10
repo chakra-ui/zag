@@ -9,6 +9,7 @@ export const anatomy = createAnatomy("numberInput").parts(
   "incrementTrigger",
   "decrementTrigger",
   "scrubber",
+  "scrubberCursor",
 )
 
 export const parts = anatomy.build()

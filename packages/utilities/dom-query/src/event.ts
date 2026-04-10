@@ -120,14 +120,22 @@ export function getNativeEvent<E>(event: E): NativeEvent<E> {
 const pageKeys = new Set(["PageUp", "PageDown"])
 const arrowKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
 
-export function getEventStep(event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "key" | "shiftKey">) {
-  if (event.ctrlKey || event.metaKey) {
-    return 0.1
-  } else {
-    const isPageKey = pageKeys.has(event.key)
-    const isSkipKey = isPageKey || (event.shiftKey && arrowKeys.has(event.key))
-    return isSkipKey ? 10 : 1
-  }
+interface StepConfig {
+  step: number
+  largeStep: number
+  smallStep: number
+}
+
+export function getEventStep(
+  event: Pick<KeyboardEvent, "altKey" | "ctrlKey" | "metaKey" | "key" | "shiftKey">,
+  config?: StepConfig,
+) {
+  if (event.altKey) return config?.smallStep ?? 0.1
+  if (event.ctrlKey || event.metaKey) return config?.smallStep ?? 0.1
+  const isPageKey = pageKeys.has(event.key)
+  const isSkipKey = isPageKey || (event.shiftKey && arrowKeys.has(event.key))
+  if (isSkipKey) return config?.largeStep ?? 10
+  return config?.step ?? 1
 }
 
 export function getEventPoint(event: any, type: "page" | "client" = "client"): { x: number; y: number } {

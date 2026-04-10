@@ -4,6 +4,7 @@ import {
   getEventPoint,
   getEventStep,
   getWindow,
+  MAX_Z_INDEX,
   isComposingEvent,
   isLeftClick,
   isModifierKey,
@@ -11,7 +12,7 @@ import {
   setCaretToEnd,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { roundToDpr } from "@zag-js/utils"
+import { roundToDpr, toPx } from "@zag-js/utils"
 import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
@@ -21,7 +22,7 @@ export function connect<T extends PropTypes>(
   service: NumberInputService,
   normalize: NormalizeProps<T>,
 ): NumberInputApi<T> {
-  const { state, send, prop, scope, computed } = service
+  const { state, send, prop, scope, computed, context } = service
 
   const focused = state.hasTag("focus")
   const disabled = computed("isDisabled")
@@ -39,6 +40,7 @@ export function connect<T extends PropTypes>(
 
   return {
     focused: focused,
+    scrubbing: scrubbing,
     invalid: invalid,
     empty: empty,
     value: computed("formattedValue"),
@@ -176,7 +178,11 @@ export function connect<T extends PropTypes>(
           if (readOnly) return
           if (isComposingEvent(event)) return
 
-          const step = getEventStep(event) * prop("step")
+          const step = getEventStep(event, {
+            step: prop("step"),
+            largeStep: prop("largeStep"),
+            smallStep: prop("smallStep"),
+          })
 
           const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
@@ -272,6 +278,8 @@ export function connect<T extends PropTypes>(
     },
 
     getScrubberProps() {
+      const direction = prop("scrubberDirection")
+      const point = context.get("scrubberCursorPoint")
       return normalize.element({
         ...parts.scrubber.attrs(scope.id),
         dir: prop("dir"),
@@ -282,21 +290,40 @@ export function connect<T extends PropTypes>(
           if (disabled) return
           if (!isLeftClick(event)) return
 
-          const point = getEventPoint(event)
+          const pt = getEventPoint(event)
           const win = getWindow(event.currentTarget)
 
           const dpr = win.devicePixelRatio
-          point.x = point.x - roundToDpr(7.5, dpr)
-          point.y = point.y - roundToDpr(7.5, dpr)
+          pt.x = pt.x - roundToDpr(7.5, dpr)
+          pt.y = pt.y - roundToDpr(7.5, dpr)
 
-          send({ type: "SCRUBBER.PRESS_DOWN", point })
+          send({ type: "SCRUBBER.PRESS_DOWN", point: pt })
           event.preventDefault()
           raf(() => {
             setCaretToEnd(dom.getInputEl(scope))
           })
         },
         style: {
-          cursor: disabled ? undefined : "ew-resize",
+          cursor: disabled ? undefined : direction === "vertical" ? "ns-resize" : "ew-resize",
+          "--scrubber-x": point ? toPx(point.x) : undefined,
+          "--scrubber-y": point ? toPx(point.y) : undefined,
+          "--scrubber-scale": `${1 / context.get("visualScale")}`,
+        },
+      })
+    },
+
+    getScrubberCursorProps() {
+      return normalize.element({
+        ...parts.scrubberCursor.attrs(scope.id),
+        hidden: !scrubbing || !context.get("isPointerLockSupported"),
+        style: {
+          position: "fixed",
+          pointerEvents: "none",
+          left: "0px",
+          top: "0px",
+          zIndex: MAX_Z_INDEX,
+          transform: "translate3d(var(--scrubber-x, 0px), var(--scrubber-y, 0px), 0px) scale(var(--scrubber-scale, 1))",
+          willChange: "transform",
         },
       })
     },

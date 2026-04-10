@@ -1,5 +1,4 @@
 import type { Scope } from "@zag-js/core"
-import { isSafari, MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
 import { roundToDpr, wrap } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
@@ -11,7 +10,7 @@ export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
 export const getIncrementTriggerId = (ctx: Scope) => ctx.ids?.incrementTrigger ?? `${ctx.id}:inc`
 export const getDecrementTriggerId = (ctx: Scope) => ctx.ids?.decrementTrigger ?? `${ctx.id}:dec`
 export const getScrubberId = (ctx: Scope) => ctx.ids?.scrubber ?? `${ctx.id}:scrubber`
-export const getCursorId = (ctx: Scope) => `${ctx.id}:cursor`
+export const getScrubberCursorId = (ctx: Scope) => ctx.ids?.scrubberCursor ?? `${ctx.id}:scrubber-cursor`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
 
 // Element lookups — use querySelector with merged data attributes
@@ -19,7 +18,7 @@ export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.select
 export const getIncrementTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.incrementTrigger))
 export const getDecrementTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.decrementTrigger))
 export const getScrubberEl = (ctx: Scope) => ctx.query(ctx.selector(parts.scrubber))
-export const getCursorEl = (ctx: Scope) => ctx.getDoc().getElementById(getCursorId(ctx))
+export const getScrubberCursorEl = (ctx: Scope) => ctx.query(ctx.selector(parts.scrubberCursor))
 
 export const getPressedTriggerEl = (ctx: Scope, hint: HintValue | null) => {
   let btnEl: HTMLButtonElement | null = null
@@ -32,22 +31,14 @@ export const getPressedTriggerEl = (ctx: Scope, hint: HintValue | null) => {
   return btnEl
 }
 
-export const setupVirtualCursor = (ctx: Scope, point: Point | null) => {
-  if (isSafari()) return
-  createVirtualCursor(ctx, point)
-  return () => {
-    getCursorEl(ctx)?.remove()
-  }
-}
-
-export const preventTextSelection = (ctx: Scope) => {
+export const preventTextSelection = (ctx: Scope, direction: "horizontal" | "vertical") => {
   const doc = ctx.getDoc()
   const html = doc.documentElement
   const body = doc.body
 
   body.style.pointerEvents = "none"
   html.style.userSelect = "none"
-  html.style.cursor = "ew-resize"
+  html.style.cursor = direction === "vertical" ? "ns-resize" : "ew-resize"
 
   return () => {
     body.style.pointerEvents = ""
@@ -62,51 +53,68 @@ export const preventTextSelection = (ctx: Scope) => {
   }
 }
 
-export const getMousemoveValue = (ctx: Scope, opts: { point: Point | null; isRtl: boolean; event: MouseEvent }) => {
-  const { point, isRtl, event } = opts
+interface MousemoveOpts {
+  point: Point | null
+  isRtl: boolean
+  event: MouseEvent
+  direction: "horizontal" | "vertical"
+  teleportDistance?: number | undefined
+}
+
+export const getMousemoveValue = (ctx: Scope, opts: MousemoveOpts) => {
+  const { point, isRtl, event, direction, teleportDistance } = opts
 
   const win = ctx.getWin()
   const x = roundToDpr(event.movementX, win.devicePixelRatio)
   const y = roundToDpr(event.movementY, win.devicePixelRatio)
 
-  let hint = x > 0 ? "increment" : x < 0 ? "decrement" : null
+  const isVertical = direction === "vertical"
+  const delta = isVertical ? y : x
 
-  if (isRtl && hint === "increment") hint = "decrement"
-  if (isRtl && hint === "decrement") hint = "increment"
+  // For vertical: up (negative y) = increment, down (positive y) = decrement
+  // For horizontal: right (positive x) = increment, left (negative x) = decrement
+  let hint: string | null
+  if (isVertical) {
+    hint = delta < 0 ? "increment" : delta > 0 ? "decrement" : null
+  } else {
+    hint = delta > 0 ? "increment" : delta < 0 ? "decrement" : null
+  }
+
+  if (!isVertical && isRtl) {
+    if (hint === "increment") hint = "decrement"
+    else if (hint === "decrement") hint = "increment"
+  }
 
   const newPoint = { x: point!.x + x, y: point!.y + y }
-  const width = win.innerWidth
   const half = roundToDpr(7.5, win.devicePixelRatio)
-  newPoint.x = wrap(newPoint.x + half, width) - half
 
-  return { hint, point: newPoint }
-}
+  if (teleportDistance != null) {
+    // Wrap within teleport distance centered on the scrubber element
+    const scrubberEl = getScrubberEl(ctx)
+    if (scrubberEl) {
+      const rect = scrubberEl.getBoundingClientRect()
+      if (isVertical) {
+        const center = rect.top + rect.height / 2
+        const min = center - teleportDistance / 2
+        const max = center + teleportDistance / 2
+        newPoint.y = wrap(newPoint.y + half - min, max - min) + min - half
+      } else {
+        const center = rect.left + rect.width / 2
+        const min = center - teleportDistance / 2
+        const max = center + teleportDistance / 2
+        newPoint.x = wrap(newPoint.x + half - min, max - min) + min - half
+      }
+    }
+  } else {
+    // Default: wrap at viewport bounds
+    if (isVertical) {
+      const height = win.innerHeight
+      newPoint.y = wrap(newPoint.y + half, height) - half
+    } else {
+      const width = win.innerWidth
+      newPoint.x = wrap(newPoint.x + half, width) - half
+    }
+  }
 
-export const createVirtualCursor = (ctx: Scope, point: Point | null) => {
-  const doc = ctx.getDoc()
-  const el = doc.createElement("div")
-  el.className = "scrubber--cursor"
-  el.id = getCursorId(ctx)
-
-  Object.assign(el.style, {
-    width: "15px",
-    height: "15px",
-    position: "fixed",
-    pointerEvents: "none",
-    left: "0px",
-    top: "0px",
-    zIndex: MAX_Z_INDEX,
-    transform: point ? `translate3d(${point.x}px, ${point.y}px, 0px)` : undefined,
-    willChange: "transform",
-  })
-
-  el.innerHTML = `
-      <svg width="46" height="15" style="left: -15.5px; position: absolute; top: 0; filter: drop-shadow(rgba(0, 0, 0, 0.4) 0px 1px 1.1px);">
-        <g transform="translate(2 3)">
-          <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z" style="stroke-width: 2px; stroke: white;"></path>
-          <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z"></path>
-        </g>
-      </svg>`
-
-  doc.body.appendChild(el)
+  return { hint, point: newPoint, delta }
 }

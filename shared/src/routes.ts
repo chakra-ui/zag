@@ -360,6 +360,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Number Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "scrubber", title: "Scrubber" },
       { slug: "wrapped", title: "Wrapped" },
     ],
   },

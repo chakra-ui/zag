@@ -92,14 +92,14 @@ test.describe("number input", () => {
     await I.seeInputHasValue("0")
   })
 
-  test("ctrl+arrowup: should change for 0.1 steps", async () => {
+  test("alt+arrowup: should change for smallStep (0.1x)", async () => {
     await I.controls.num("step", "0.1")
 
     await I.type("0.10", { delay: 20 })
-    await I.pressKey("Control+ArrowUp")
+    await I.pressKey("Alt+ArrowUp")
     await I.seeInputHasValue("0.11")
 
-    await I.pressKey("Control+ArrowDown")
+    await I.pressKey("Alt+ArrowDown")
     await I.seeInputHasValue("0.1")
 
     await I.pressKey("ArrowDown")

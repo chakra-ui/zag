@@ -30,5 +30,8 @@ export class NumberInput extends Component<numberInput.Props, numberInput.Api> {
 
     const scrubber = this.rootEl.querySelector<HTMLElement>(".number-input-scrubber")
     if (scrubber) this.spreadProps(scrubber, this.api.getScrubberProps())
+
+    const scrubberCursor = this.rootEl.querySelector<HTMLElement>(".number-input-scrubber-cursor")
+    if (scrubberCursor) this.spreadProps(scrubberCursor, this.api.getScrubberCursorProps())
   }
 }

@@ -1,6 +1,7 @@
 import { memo, setup } from "@zag-js/core"
 import {
   addDomEvent,
+  isFirefox,
   isSafari,
   observeAttributes,
   raf,
@@ -17,6 +18,7 @@ import {
   isValueAtMax,
   isValueAtMin,
   isValueWithinRange,
+  snapValueToStep,
 } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
@@ -40,9 +42,14 @@ export const machine = createMachine({
       pattern: "-?[0-9]*(.[0-9]+)?",
       defaultValue: "",
       step,
+      largeStep: props.largeStep ?? step * 10,
+      smallStep: props.smallStep ?? step * 0.1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,
+      scrubberPixelSensitivity: 2,
+      scrubberDirection: "horizontal",
+      snapOnStep: false,
       ...props,
       translations: {
         incrementLabel: "increment value",
@@ -75,6 +82,9 @@ export const machine = createMachine({
         },
       })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
+      cumulativeDelta: bindable<number>(() => ({ defaultValue: 0 })),
+      isPointerLockSupported: bindable<boolean>(() => ({ defaultValue: false })),
+      visualScale: bindable<number>(() => ({ defaultValue: 1 })),
     }
   },
 
@@ -114,7 +124,7 @@ export const machine = createMachine({
     })
   },
 
-  effects: ["trackFormControl"],
+  effects: ["trackFormControl", "detectPointerLock"],
 
   on: {
     "VALUE.SET": {
@@ -243,22 +253,16 @@ export const machine = createMachine({
 
     scrubbing: {
       tags: ["focus"],
-      effects: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
+      effects: ["activatePointerLock", "trackMousemove", "preventTextSelection", "trackVisualViewport"],
+      entry: ["clearCumulativeDelta"],
       on: {
         "SCRUBBER.POINTER_UP": {
           target: "focused",
-          actions: ["focusInput", "clearCursorPoint"],
+          actions: ["focusInput", "clearCursorPoint", "clearCumulativeDelta"],
         },
-        "SCRUBBER.POINTER_MOVE": [
-          {
-            guard: "isIncrementHint",
-            actions: ["increment", "setCursorPoint"],
-          },
-          {
-            guard: "isDecrementHint",
-            actions: ["decrement", "setCursorPoint"],
-          },
-        ],
+        "SCRUBBER.POINTER_MOVE": {
+          actions: ["accumulateDelta", "setCursorPoint"],
+        },
       },
     },
   },
@@ -288,6 +292,9 @@ export const machine = createMachine({
         return () => clearInterval(id)
       },
 
+      detectPointerLock({ context }) {
+        context.set("isPointerLockSupported", !isSafari())
+      },
       trackFormControl({ context, scope }) {
         const inputEl = dom.getInputEl(scope)
         return trackFormControl(inputEl, {
@@ -299,12 +306,8 @@ export const machine = createMachine({
           },
         })
       },
-      setupVirtualCursor({ context, scope }) {
-        const point = context.get("scrubberCursorPoint")
-        return dom.setupVirtualCursor(scope, point)
-      },
-      preventTextSelection({ scope }) {
-        return dom.preventTextSelection(scope)
+      preventTextSelection({ scope, prop }) {
+        return dom.preventTextSelection(scope, prop("scrubberDirection"))
       },
       trackButtonDisabled({ context, scope, send }) {
         const hint = context.get("hint")
@@ -332,22 +335,42 @@ export const machine = createMachine({
 
         return addDomEvent(inputEl, "wheel", onWheel, { passive: false })
       },
+      trackVisualViewport({ scope, context }) {
+        const vV = scope.getWin().visualViewport
+        if (!vV) return
+        function onResize() {
+          context.set("visualScale", vV!.scale)
+        }
+        onResize()
+        return addDomEvent(vV, "resize", onResize)
+      },
       activatePointerLock({ scope }) {
         if (isSafari()) return
-        return requestPointerLock(scope.getDoc())
+        const cleanup = requestPointerLock(scope.getDoc())
+        return () => {
+          // Firefox needs a small delay before releasing pointer lock on soft-clicks,
+          // otherwise the lock won't release properly.
+          if (isFirefox()) {
+            setTimeout(() => cleanup?.(), 20)
+          } else {
+            cleanup?.()
+          }
+        }
       },
-      trackMousemove({ scope, send, context, computed }) {
+      trackMousemove({ scope, send, context, computed, prop }) {
         const doc = scope.getDoc()
 
         function onMousemove(event: MouseEvent) {
           const point = context.get("scrubberCursorPoint")
           const isRtl = computed("isRtl")
-          const value = dom.getMousemoveValue(scope, { point, isRtl, event })
-          if (!value.hint) return
+          const direction = prop("scrubberDirection")
+          const teleportDistance = prop("scrubberTeleportDistance")
+          const value = dom.getMousemoveValue(scope, { point, isRtl, event, direction, teleportDistance })
           send({
             type: "SCRUBBER.POINTER_MOVE",
             hint: value.hint,
             point: value.point,
+            delta: value.delta,
           })
         }
 
@@ -369,11 +392,15 @@ export const machine = createMachine({
       increment({ context, event, prop, computed }) {
         let nextValue = incrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
         if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
+        if (prop("snapOnStep"))
+          nextValue = snapValueToStep(nextValue, prop("min"), prop("max"), event.step ?? prop("step"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
       decrement({ context, event, prop, computed }) {
         let nextValue = decrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
         if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
+        if (prop("snapOnStep"))
+          nextValue = snapValueToStep(nextValue, prop("min"), prop("max"), event.step ?? prop("step"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setClampedValue({ context, prop, computed }) {
@@ -457,10 +484,34 @@ export const machine = createMachine({
         context.set("scrubberCursorPoint", null)
       },
       setVirtualCursorPosition({ context, scope }) {
-        const cursorEl = dom.getCursorEl(scope)
+        const scrubberEl = dom.getScrubberEl(scope)
         const point = context.get("scrubberCursorPoint")
-        if (!cursorEl || !point) return
-        cursorEl.style.transform = `translate3d(${point.x}px, ${point.y}px, 0px)`
+        if (!scrubberEl || !point) return
+        scrubberEl.style.setProperty("--scrubber-x", `${point.x}px`)
+        scrubberEl.style.setProperty("--scrubber-y", `${point.y}px`)
+      },
+      accumulateDelta({ context, event, prop, send }) {
+        const delta = event.delta ?? 0
+        const newDelta = context.get("cumulativeDelta") + delta
+        const sensitivity = prop("scrubberPixelSensitivity")
+
+        if (Math.abs(newDelta) >= sensitivity) {
+          // Determine step based on modifier keys
+          const step = prop("step")
+          const hint = event.hint
+          if (hint === "increment") {
+            send({ type: "VALUE.INCREMENT", step })
+          } else if (hint === "decrement") {
+            send({ type: "VALUE.DECREMENT", step })
+          }
+          // Reset the accumulator (keep remainder for sub-pixel accuracy)
+          context.set("cumulativeDelta", newDelta % sensitivity)
+        } else {
+          context.set("cumulativeDelta", newDelta)
+        }
+      },
+      clearCumulativeDelta({ context }) {
+        context.set("cumulativeDelta", 0)
       },
     },
   },

@@ -1,6 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { numberInputControls } from "@zag-js/shared"
+import { MoveHorizontalIcon } from "lucide-preact"
 import { useId } from "react"
 import { useControls } from "../../hooks/use-controls"
 import { Toolbar } from "../../components/toolbar"
@@ -20,6 +21,11 @@ export default function NumberInput() {
     <>
       <main>
         <div {...api.getRootProps()}>
+          <div data-testid="scrubber" {...api.getScrubberProps()}>
+            <span {...api.getScrubberCursorProps()}>
+              <MoveHorizontalIcon />
+            </span>
+          </div>
           <label data-testid="label" {...api.getLabelProps()}>
             Enter number:
           </label>

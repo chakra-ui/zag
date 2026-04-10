@@ -2,6 +2,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { MoveHorizontalIcon } from "lucide-vue-next"
 
 const controls = useControls(numberInputControls)
 
@@ -18,6 +19,11 @@ const api = computed(() => numberInput.connect(service, normalizeProps))
 <template>
   <main>
     <div v-bind="api.getRootProps()">
+      <div data-testid="scrubber" v-bind="api.getScrubberProps()">
+        <span v-bind="api.getScrubberCursorProps()">
+          <MoveHorizontalIcon />
+        </span>
+      </div>
       <label data-testid="label" v-bind="api.getLabelProps()"> Enter number </label>
       <div v-bind="api.getControlProps()">
         <button data-testid="dec-button" v-bind="api.getDecrementTriggerProps()">DEC</button>

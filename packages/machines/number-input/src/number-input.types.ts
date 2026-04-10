@@ -34,6 +34,7 @@ export type ElementIds = Partial<{
   incrementTrigger: string
   decrementTrigger: string
   scrubber: string
+  scrubberCursor: string
 }>
 
 export interface IntlTranslations {
@@ -165,6 +166,37 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    * @default true
    */
   spinOnPress?: boolean | undefined
+  /**
+   * Step value when Shift key is held (large increments).
+   * @default step * 10
+   */
+  largeStep?: number | undefined
+  /**
+   * Step value when Alt/Option key is held (fine control).
+   * @default step * 0.1
+   */
+  smallStep?: number | undefined
+  /**
+   * How many pixels the pointer must move to change the value by one step.
+   * Higher values mean more precise control. Lower values mean more sensitivity.
+   * @default 2
+   */
+  scrubberPixelSensitivity?: number | undefined
+  /**
+   * Distance in pixels before the virtual cursor wraps around.
+   * When not set, the viewport bounds are used (default behavior).
+   */
+  scrubberTeleportDistance?: number | undefined
+  /**
+   * The direction of scrubbing.
+   * @default "horizontal"
+   */
+  scrubberDirection?: "horizontal" | "vertical" | undefined
+  /**
+   * Whether values snap to step multiples when scrubbing.
+   * @default false
+   */
+  snapOnStep?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -180,8 +212,11 @@ type PropsWithDefault =
   | "spinOnPress"
   | "min"
   | "max"
-  | "step"
-  | "translations"
+  | "largeStep"
+  | "smallStep"
+  | "scrubberPixelSensitivity"
+  | "scrubberDirection"
+  | "snapOnStep"
 
 type ComputedContext = Readonly<{
   /**
@@ -257,6 +292,18 @@ interface PrivateContext {
    * The value of the input
    */
   value: string
+  /**
+   * The accumulated delta for pixel sensitivity tracking
+   */
+  cumulativeDelta: number
+  /**
+   * Whether the browser supports pointer lock (false on Safari, false during SSR)
+   */
+  isPointerLockSupported: boolean
+  /**
+   * The visual viewport scale (for pinch-zoom compensation on the cursor)
+   */
+  visualScale: number
 }
 
 export interface NumberInputSchema {
@@ -284,6 +331,10 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
    * Whether the input is focused.
    */
   focused: boolean
+  /**
+   * Whether the input is being scrubbed.
+   */
+  scrubbing: boolean
   /**
    * Whether the input is invalid.
    */
@@ -337,4 +388,5 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
   getDecrementTriggerProps: () => T["button"]
   getIncrementTriggerProps: () => T["button"]
   getScrubberProps: () => T["element"]
+  getScrubberCursorProps: () => T["element"]
 }

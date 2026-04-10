@@ -1,12 +1,13 @@
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine } from "@zag-js/preact"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { numberInputControls } from "@zag-js/shared"
+import { MoveHorizontalIcon } from "lucide-react"
 import { useId } from "react"
-import { useControls } from "../../hooks/use-controls"
-import { Toolbar } from "../../components/toolbar"
 import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 
-export default function NumberInput() {
+export default function Page() {
   const controls = useControls(numberInputControls)
 
   const service = useMachine(numberInput.machine, {
@@ -20,6 +21,11 @@ export default function NumberInput() {
     <>
       <main>
         <div {...api.getRootProps()}>
+          <div data-testid="scrubber" {...api.getScrubberProps()}>
+            <span {...api.getScrubberCursorProps()}>
+              <MoveHorizontalIcon />
+            </span>
+          </div>
           <label data-testid="label" {...api.getLabelProps()}>
             Enter number:
           </label>
@@ -34,7 +40,6 @@ export default function NumberInput() {
           </div>
         </div>
       </main>
-
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} omit={["formatter", "parser"]} />
       </Toolbar>

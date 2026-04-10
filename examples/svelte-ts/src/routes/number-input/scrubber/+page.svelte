@@ -5,6 +5,7 @@
   import * as numberInput from "@zag-js/number-input"
   import { numberInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import MoveHorizontalIcon from "lucide-svelte/icons/move-horizontal"
 
   const controls = useControls(numberInputControls)
 
@@ -16,6 +17,9 @@
 
 <main>
   <div {...api.getRootProps()}>
+    <div data-testid="scrubber" {...api.getScrubberProps()}>
+      <span {...api.getScrubberCursorProps()}><MoveHorizontalIcon /></span>
+    </div>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label data-testid="label" {...api.getLabelProps()}> Enter number: </label>
     <div {...api.getControlProps()}>
