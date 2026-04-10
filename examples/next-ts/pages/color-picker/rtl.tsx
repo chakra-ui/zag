@@ -8,7 +8,7 @@ export default function Page() {
     id: useId(),
     defaultValue: colorPicker.parse("#3b82f6"),
     name: "color",
-    format: "rgba",
+    format: "hsla",
     dir: "rtl",
   })
 
