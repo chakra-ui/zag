@@ -34,8 +34,7 @@
       "data-part": "item-trigger",
       "data-controls": "",
       "data-orientation": "The orientation of the item",
-      "data-state": "\"open\" | \"closed\"",
-      "data-focus": "Present when focused"
+      "data-state": "\"open\" | \"closed\""
     }
   },
   "angle-slider": {
