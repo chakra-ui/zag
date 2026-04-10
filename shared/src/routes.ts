@@ -248,6 +248,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
+      { slug: "min-max", title: "Min Max" },
     ],
   },
   {

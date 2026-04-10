@@ -2774,6 +2774,19 @@
         "type": "() => HTMLElement",
         "description": "The boundary of the panel. Useful for recalculating the boundary rect when\nthe it is resized."
       },
+      "initialFocusEl": {
+        "type": "() => HTMLElement",
+        "description": "Element to receive focus when the panel is opened.\nBy default, the first focusable element in the content is focused."
+      },
+      "finalFocusEl": {
+        "type": "() => HTMLElement",
+        "description": "Element to receive focus when the panel is closed.\nBy default, the trigger element is focused."
+      },
+      "restoreFocus": {
+        "type": "boolean",
+        "description": "Whether to restore focus to the trigger when the panel is closed.",
+        "defaultValue": "true"
+      },
       "disabled": {
         "type": "boolean",
         "description": "Whether the panel is disabled"
@@ -3472,11 +3485,11 @@
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
-        "type": "(parent: ParentMenuService) => void",
+        "type": "(parent: MenuService) => void",
         "description": "Function to register a parent menu. This is used for submenus"
       },
       "setChild": {
-        "type": "(child: ChildMenuService) => void",
+        "type": "(child: MenuService) => void",
         "description": "Function to register a child menu. This is used for submenus"
       },
       "reposition": {
