@@ -3,6 +3,7 @@ import {
   isEqualDay,
   isEqualMonth,
   isEqualYear,
+  isSameDay,
   isToday,
   isWeekend,
   toCalendarDateTime,
@@ -23,7 +24,6 @@ import {
   getWeekOfYear,
   getDefaultYearRange,
   getYearsRange,
-  isDateEqual,
   isDateOutsideRange,
   isDateUnavailable,
 } from "@zag-js/date-utils"
@@ -224,17 +224,17 @@ export function connect<T extends PropTypes>(
 
     // Calculate range states
     const isInSelectedRange = isRangePicker && isDateWithinRange(value, selectedValue)
-    const isFirstInSelectedRange = isRangePicker && isDateEqual(value, selectedValue[0])
-    const isLastInSelectedRange = isRangePicker && isDateEqual(value, selectedValue[1])
+    const isFirstInSelectedRange = isRangePicker && selectedValue[0] && isSameDay(value, selectedValue[0])
+    const isLastInSelectedRange = isRangePicker && selectedValue[1] && isSameDay(value, selectedValue[1])
 
     // Calculate hover range states
     const hasHoveredRange = isRangePicker && hoveredRangeValue.length > 0
     const isInHoveredRange = hasHoveredRange && isDateWithinRange(value, hoveredRangeValue)
-    const isFirstInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[0])
-    const isLastInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[1])
+    const isFirstInHoveredRange = hasHoveredRange && hoveredRangeValue[0] && isSameDay(value, hoveredRangeValue[0])
+    const isLastInHoveredRange = hasHoveredRange && hoveredRangeValue[1] && isSameDay(value, hoveredRangeValue[1])
 
     // Check if max number of dates has been reached (for multiple selection mode)
-    const isSelected = selectedValue.some((date) => isDateEqual(value, date))
+    const isSelected = selectedValue.some((date) => date != null && isSameDay(value, date))
 
     const cellState = {
       invalid: isDateOutsideRange(value, min, max),
@@ -252,7 +252,9 @@ export function connect<T extends PropTypes>(
       value,
       valueText: formatter.format(value.toDate(timeZone)),
       get focused() {
-        return isDateEqual(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
+        return (
+          focusedValue != null && isSameDay(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
+        )
       },
       get selectable() {
         return !cellState.disabled && !cellState.unavailable
