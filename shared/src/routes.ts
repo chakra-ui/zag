@@ -393,6 +393,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "selection", title: "Selection" },
       { slug: "single-tab-stop", title: "Single Tab Stop" },
       { slug: "responsive", title: "Responsive" },
+      { slug: "sibling-dialog", title: "Sibling Dialog" },
       { slug: "tooltip", title: "Tooltip" },
     ],
   },
