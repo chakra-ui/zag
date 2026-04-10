@@ -263,6 +263,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/meter':
+        specifier: workspace:*
+        version: link:../../packages/machines/meter
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../../packages/machines/navigation-menu
@@ -2672,6 +2675,24 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
+
+  packages/machines/meter:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
 
   packages/machines/navigation-menu:
     dependencies:
