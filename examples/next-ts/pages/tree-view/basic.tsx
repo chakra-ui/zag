@@ -65,29 +65,27 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
-          <FolderIcon />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getCellProps(nodeProps)}>
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <FileIcon /> {node.name}
+      )}
     </div>
   )
 }

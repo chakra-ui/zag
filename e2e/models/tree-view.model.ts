@@ -15,19 +15,19 @@ export class TreeViewModel extends Model {
   }
 
   private item(name: string) {
-    return this.page.getByRole("treeitem", { name })
+    return this.page.getByRole("row", { name })
   }
 
   private get tree() {
-    return this.page.locator('[role="tree"]')
+    return this.page.locator('[role="treegrid"]')
   }
 
-  private branch(value: string) {
-    return this.page.locator(`[data-tree-view-branch][data-value="${value}"]`)
+  private nodeGroup(value: string) {
+    return this.page.locator(`[data-tree-view-node-group][data-value="${value}"]`)
   }
 
-  private branchTrigger(value: string) {
-    return this.page.locator(`[data-tree-view-branch-control][data-value="${value}"]`)
+  private node(value: string) {
+    return this.page.locator(`[data-tree-view-node][data-value="${value}"]`)
   }
 
   private button(name: string) {
@@ -39,7 +39,7 @@ export class TreeViewModel extends Model {
   }
 
   clickBranch(name: string, options?: ClickOptions) {
-    return this.branchTrigger(name).click(options)
+    return this.node(name).click(options)
   }
 
   clickButton(name: string, options?: ClickOptions) {
@@ -55,7 +55,7 @@ export class TreeViewModel extends Model {
   }
 
   async focusFirstNode() {
-    await this.branchTrigger("node_modules").focus()
+    await this.node("node_modules").focus()
   }
 
   private _seeItemIsSelected(name: string) {
@@ -71,11 +71,11 @@ export class TreeViewModel extends Model {
   }
 
   seeBranchIsFocused(name: string) {
-    return expect(this.branchTrigger(name)).toBeFocused()
+    return expect(this.node(name)).toBeFocused()
   }
 
   private _expectToBeExpanded(name: string) {
-    return expect(this.branch(name)).toHaveAttribute("aria-expanded", "true")
+    return expect(this.node(name)).toHaveAttribute("aria-expanded", "true")
   }
 
   seeBranchIsExpanded(nodes: string[]) {
@@ -83,19 +83,19 @@ export class TreeViewModel extends Model {
   }
 
   seeBranchIsCollapsed(name: string) {
-    return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
+    return expect(this.node(name)).toHaveAttribute("aria-expanded", "false")
   }
 
   seeAllBranchesAreCollapsed() {
-    return expect(this.tree.locator('[role="treeitem"][aria-expanded="true"]')).toHaveCount(0)
+    return expect(this.tree.locator('[role="row"][aria-expanded="true"]')).toHaveCount(0)
   }
 
   seeAllBranchesAreExpanded() {
-    return expect(this.tree.locator('[role="treeitem"][aria-expanded="false"]')).toHaveCount(0)
+    return expect(this.tree.locator('[role="row"][aria-expanded="false"]')).toHaveCount(0)
   }
 
   seeBranchIsTabbable(name: string) {
-    return expect(this.branchTrigger(name)).toHaveAttribute("tabindex", "0")
+    return expect(this.node(name)).toHaveAttribute("tabindex", "0")
   }
 
   seeItemIsTabbable(name: string) {

@@ -1,13 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
-  import { treeviewControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
-  import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-svelte"
-
-  const controls = useControls(treeviewControls)
+  import { ChevronRightIcon } from "lucide-svelte"
 
   interface Node {
     id: string
@@ -34,14 +28,6 @@
           children: [
             { id: "node_modules/zag-js", name: "zag-js" },
             { id: "node_modules/pandacss", name: "panda" },
-            {
-              id: "node_modules/@types",
-              name: "@types",
-              children: [
-                { id: "node_modules/@types/react", name: "react" },
-                { id: "node_modules/@types/react-dom", name: "react-dom" },
-              ],
-            },
           ],
         },
         {
@@ -54,8 +40,6 @@
         },
         { id: "panda.config", name: "panda.config.ts" },
         { id: "package.json", name: "package.json" },
-        { id: "renovate.json", name: "renovate.json" },
-        { id: "readme.md", name: "README.md" },
       ],
     },
   })
@@ -64,6 +48,7 @@
   const service = useMachine(tree.machine, {
     id,
     collection,
+    defaultCheckedValue: [],
   })
 
   const api = $derived(tree.connect(service, normalizeProps))
@@ -72,15 +57,22 @@
 {#snippet treeNode(nodeProps: TreeNodeProps)}
   {@const { node, indexPath, api } = nodeProps}
   {@const nodeState = api.getNodeState({ indexPath, node })}
+  {@const checked = nodeState.checked}
 
   <div {...api.getNodeGroupProps({ indexPath, node })}>
     <div {...api.getNodeProps({ indexPath, node })}>
       <div {...api.getCellProps({ indexPath, node })}>
-        {#if nodeState.isBranch}
-          <FolderIcon />
-        {:else}
-          <FileIcon />
-        {/if}
+        <span {...api.getNodeCheckboxProps({ indexPath, node })}>
+          {#if checked === true}
+            ☑
+          {:else if checked === "indeterminate"}
+            ☐
+          {:else}
+            ☐
+          {/if}
+        </span>
+      </div>
+      <div {...api.getCellProps({ indexPath, node })}>
         <span {...api.getNodeTextProps({ indexPath, node })}>{node.name}</span>
         {#if nodeState.isBranch}
           <span {...api.getNodeIndicatorProps({ indexPath, node, type: "expanded" })}>
@@ -103,22 +95,11 @@
 <main class="tree-view">
   <div {...api.getRootProps()}>
     <h3 {...api.getLabelProps()}>My Documents</h3>
-    <div style="display: flex; gap: 10px">
-      <button onclick={() => api.collapse()}>Collapse All</button>
-      <button onclick={() => api.expand()}>Expand All</button>
-      {#if controls.context.selectionMode === "multiple"}
-        <button onclick={() => api.select()}>Select All</button>
-        <button onclick={() => api.deselect()}>Deselect All</button>
-      {/if}
-    </div>
     <div {...api.getTreeProps()}>
       {#each collection.rootNode.children || [] as node, index}
         {@render treeNode({ node, indexPath: [index], api })}
       {/each}
     </div>
   </div>
+  <pre>{JSON.stringify(api.checkedValue, null, 2)}</pre>
 </main>
-
-<Toolbar {controls}>
-  <StateVisualizer state={service} />
-</Toolbar>

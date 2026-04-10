@@ -63,45 +63,34 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getCellProps(nodeProps)}>
           {nodeState.renaming ? (
             <input {...api.getNodeRenameInputProps(nodeProps)} />
           ) : (
             <>
-              <FolderIcon />
-              <span {...api.getBranchTextProps(nodeProps)} style={{ display: nodeState.renaming ? "none" : "inline" }}>
+              {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+              <span {...api.getNodeTextProps(nodeProps)} style={{ display: nodeState.renaming ? "none" : "inline" }}>
                 {node.name}
               </span>
-              <span {...api.getBranchIndicatorProps(nodeProps)}>
-                <ChevronRightIcon />
-              </span>
+              {nodeState.isBranch && (
+                <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+                  <ChevronRightIcon />
+                </span>
+              )}
             </>
           )}
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      {nodeState.renaming ? (
-        <input {...api.getNodeRenameInputProps(nodeProps)} />
-      ) : (
-        <>
-          <FileIcon />
-          <span {...api.getItemTextProps(nodeProps)} style={{ display: nodeState.renaming ? "none" : "inline" }}>
-            {node.name}
-          </span>
-        </>
       )}
     </div>
   )

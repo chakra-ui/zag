@@ -107,67 +107,51 @@ export class TreeView extends Component<tree.Props, tree.Api> {
     const nodeProps = { indexPath, node }
     const nodeState = this.api.getNodeState(nodeProps)
 
-    if (nodeState.isBranch) {
-      this.renderBranch(container, node, indexPath, nodeProps)
-    } else {
-      this.renderItem(container, node, nodeProps)
-    }
-  }
+    // Node group wrapper
+    const groupEl = this.doc.createElement("div")
+    this.spreadProps(groupEl, this.api.getNodeGroupProps(nodeProps))
 
-  private renderBranch(
-    container: HTMLElement,
-    node: Node,
-    indexPath: number[],
-    nodeProps: { indexPath: number[]; node: Node },
-  ) {
-    const branchEl = this.doc.createElement("div")
-    this.spreadProps(branchEl, this.api.getBranchProps(nodeProps))
+    // Node row (unified for branch and leaf)
+    const rowEl = this.doc.createElement("div")
+    this.spreadProps(rowEl, this.api.getNodeProps(nodeProps))
 
-    // Branch control
-    const controlEl = this.doc.createElement("div")
-    this.spreadProps(controlEl, this.api.getBranchControlProps(nodeProps))
+    const cellEl = this.doc.createElement("div")
+    this.spreadProps(cellEl, this.api.getCellProps(nodeProps))
 
-    controlEl.appendChild(this.createFolderIcon())
+    cellEl.appendChild(nodeState.isBranch ? this.createFolderIcon() : this.createFileIcon())
 
     const textEl = this.doc.createElement("span")
     textEl.textContent = node.name
-    this.spreadProps(textEl, this.api.getBranchTextProps(nodeProps))
-    controlEl.appendChild(textEl)
+    this.spreadProps(textEl, this.api.getNodeTextProps(nodeProps))
+    cellEl.appendChild(textEl)
 
-    const indicatorEl = this.doc.createElement("span")
-    indicatorEl.appendChild(this.createChevronIcon())
-    this.spreadProps(indicatorEl, this.api.getBranchIndicatorProps(nodeProps))
-    controlEl.appendChild(indicatorEl)
+    if (nodeState.isBranch) {
+      const indicatorEl = this.doc.createElement("span")
+      indicatorEl.appendChild(this.createChevronIcon())
+      this.spreadProps(indicatorEl, this.api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" }))
+      cellEl.appendChild(indicatorEl)
+    }
 
-    branchEl.appendChild(controlEl)
+    rowEl.appendChild(cellEl)
+    groupEl.appendChild(rowEl)
 
     // Branch content (children)
-    const contentEl = this.doc.createElement("div")
-    this.spreadProps(contentEl, this.api.getBranchContentProps(nodeProps))
+    if (nodeState.isBranch) {
+      const contentEl = this.doc.createElement("div")
+      this.spreadProps(contentEl, this.api.getNodeGroupContentProps(nodeProps))
 
-    const indentGuideEl = this.doc.createElement("div")
-    this.spreadProps(indentGuideEl, this.api.getBranchIndentGuideProps(nodeProps))
-    contentEl.appendChild(indentGuideEl)
+      const indentGuideEl = this.doc.createElement("div")
+      this.spreadProps(indentGuideEl, this.api.getIndentGuideProps(nodeProps))
+      contentEl.appendChild(indentGuideEl)
 
-    // Render children
-    node.children?.forEach((childNode, index) => {
-      this.renderNode(contentEl, childNode, [...indexPath, index])
-    })
+      node.children?.forEach((childNode, index) => {
+        this.renderNode(contentEl, childNode, [...indexPath, index])
+      })
 
-    branchEl.appendChild(contentEl)
-    container.appendChild(branchEl)
-  }
+      groupEl.appendChild(contentEl)
+    }
 
-  private renderItem(container: HTMLElement, node: Node, nodeProps: { indexPath: number[]; node: Node }) {
-    const itemEl = this.doc.createElement("div")
-    this.spreadProps(itemEl, this.api.getItemProps(nodeProps))
-
-    itemEl.appendChild(this.createFileIcon())
-
-    const textNode = this.doc.createTextNode(" " + node.name)
-    itemEl.appendChild(textNode)
-
-    container.appendChild(itemEl)
+    container.appendChild(groupEl)
   }
 
   private syncTree = () => {

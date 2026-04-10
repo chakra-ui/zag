@@ -94,34 +94,35 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div
-          className={styles.BranchControl}
-          {...api.getBranchControlProps(nodeProps)}
-        >
-          <LuFolder />
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div className={styles.Node} {...api.getNodeProps(nodeProps)}>
+        <div className={styles.Cell} {...api.getCellProps(nodeProps)}>
+          {nodeState.isBranch ? <LuFolder /> : <LuFile />}
           <span
-            className={styles.BranchText}
-            {...api.getBranchTextProps(nodeProps)}
+            className={styles.NodeText}
+            {...api.getNodeTextProps(nodeProps)}
           >
             {node.name}
           </span>
-          <span
-            className={styles.BranchIndicator}
-            {...api.getBranchIndicatorProps(nodeProps)}
-          >
-            <LuChevronRight />
-          </span>
+          {nodeState.isBranch && (
+            <span
+              className={styles.NodeIndicator}
+              {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}
+            >
+              <LuChevronRight />
+            </span>
+          )}
         </div>
+      </div>
+      {nodeState.isBranch && (
         <div
-          className={styles.BranchContent}
-          {...api.getBranchContentProps(nodeProps)}
+          className={styles.NodeGroupContent}
+          {...api.getNodeGroupContentProps(nodeProps)}
         >
           <div
-            className={styles.BranchIndentGuide}
-            {...api.getBranchIndentGuideProps(nodeProps)}
+            className={styles.IndentGuide}
+            {...api.getIndentGuideProps(nodeProps)}
           />
           {node.children?.map((childNode, index) => (
             <TreeNode
@@ -132,13 +133,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
             />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className={styles.Item} {...api.getItemProps(nodeProps)}>
-      <LuFile /> {node.name}
+      )}
     </div>
   )
 }

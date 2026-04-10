@@ -295,6 +295,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   computed: {
     isTypingAhead: boolean
     isMultipleSelection: boolean
+    isCheckboxMode: boolean
     visibleNodes: { node: T; indexPath: number[] }[]
   }
   action: string
@@ -319,6 +320,19 @@ export interface NodeProps {
    * The index path of the tree node
    */
   indexPath: number[]
+}
+
+export type NodeIndicatorType = "expanded" | "selected" | "checked" | "indeterminate"
+
+export interface NodeIndicatorProps extends NodeProps {
+  /**
+   * The type of indicator
+   * - "expanded": always visible, reflects open/closed state
+   * - "selected": shown when the node is selected
+   * - "checked": shown when the node is checked
+   * - "indeterminate": shown when the node is indeterminate (partially checked)
+   */
+  type: NodeIndicatorType
 }
 
 export type CheckedState = boolean | "indeterminate"
@@ -470,23 +484,25 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    * Function to cancel renaming without changes
    */
   cancelRenaming: () => void
+  /**
+   * Returns the state of a node including whether it's selected, expanded,
+   * focused, disabled, checked, loading, renaming, and its depth/path info.
+   */
+  getNodeState: (props: NodeProps) => NodeState
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
   getTreeProps: () => T["element"]
-  getNodeState: (props: NodeProps) => NodeState
-  getItemProps: (props: NodeProps) => T["element"]
+  getNodeGroupProps: (props: NodeProps) => T["element"]
+  getNodeGroupContentProps: (props: NodeProps) => T["element"]
+  getNodeProps: (props: NodeProps) => T["element"]
+  getNodeExpandTriggerProps: (props: NodeProps) => T["element"]
+  getNodeTextProps: (props: NodeProps) => T["element"]
+  getNodeIndicatorProps: (props: NodeIndicatorProps) => T["element"]
+  getIndentGuideProps: (props: NodeProps) => T["element"]
   getNodeCheckboxProps: (props: NodeProps) => T["element"]
-  getItemIndicatorProps: (props: NodeProps) => T["element"]
-  getItemTextProps: (props: NodeProps) => T["element"]
-  getBranchProps: (props: NodeProps) => T["element"]
-  getBranchIndicatorProps: (props: NodeProps) => T["element"]
-  getBranchTriggerProps: (props: NodeProps) => T["element"]
-  getBranchControlProps: (props: NodeProps) => T["element"]
-  getBranchContentProps: (props: NodeProps) => T["element"]
-  getBranchTextProps: (props: NodeProps) => T["element"]
-  getBranchIndentGuideProps: (props: NodeProps) => T["element"]
   getNodeRenameInputProps: (props: NodeProps) => T["input"]
+  getCellProps: (props: NodeProps) => T["element"]
 }
 
 export type { TreeNode } from "@zag-js/collection"

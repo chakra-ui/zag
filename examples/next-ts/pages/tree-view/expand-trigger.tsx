@@ -1,49 +1,45 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
-import { JSX, useId, useState } from "react"
+import { JSX, useId } from "react"
 
 interface Node {
   id: string
   name: string
   children?: Node[]
-  childrenCount?: number
 }
 
-const apiResult = {
-  node_modules: [
-    { id: "zag-js", name: "zag-js" },
-    { id: "pandacss", name: "panda" },
-    { id: "@types", name: "@types", childrenCount: 2 },
-  ],
-  "node_modules/@types": [
-    { id: "@types/react", name: "react" },
-    { id: "@types/react-dom", name: "react-dom" },
-  ],
-  src: [
-    { id: "src/app.tsx", name: "app.tsx" },
-    { id: "src/index.ts", name: "index.ts" },
-  ],
-}
-
-function loadChildren(details: tree.LoadChildrenDetails<Node>): Promise<Node[]> {
-  const value = details.valuePath.join("/")
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(apiResult[value] ?? [])
-    }, 1200)
-  })
-}
-
-const initCollection = tree.collection<Node>({
+const collection = tree.collection<Node>({
   nodeToValue: (node) => node.id,
   nodeToString: (node) => node.name,
   rootNode: {
     id: "ROOT",
     name: "",
     children: [
-      { id: "node_modules", name: "node_modules", childrenCount: 3 },
-      { id: "src", name: "src", childrenCount: 2 },
+      {
+        id: "node_modules",
+        name: "node_modules",
+        children: [
+          { id: "node_modules/zag-js", name: "zag-js" },
+          { id: "node_modules/pandacss", name: "panda" },
+          {
+            id: "node_modules/@types",
+            name: "@types",
+            children: [
+              { id: "node_modules/@types/react", name: "react" },
+              { id: "node_modules/@types/react-dom", name: "react-dom" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "src",
+        name: "src",
+        children: [
+          { id: "src/app.tsx", name: "app.tsx" },
+          { id: "src/index.ts", name: "index.ts" },
+        ],
+      },
       { id: "panda.config", name: "panda.config.ts" },
       { id: "package.json", name: "package.json" },
       { id: "renovate.json", name: "renovate.json" },
@@ -67,14 +63,16 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div {...api.getNodeProps(nodeProps)}>
-        <div {...api.getCellProps(nodeProps)}>
-          {nodeState.loading ? "..." : nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
-          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
-          {nodeState.isBranch && (
-            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+        {nodeState.isBranch && (
+          <div {...api.getCellProps(nodeProps)}>
+            <button {...api.getNodeExpandTriggerProps(nodeProps)}>
               <ChevronRightIcon />
-            </span>
-          )}
+            </button>
+          </div>
+        )}
+        <div {...api.getCellProps(nodeProps)}>
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
         </div>
       </div>
       {nodeState.isBranch && (
@@ -90,28 +88,23 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 }
 
 export default function Page() {
-  const [collection, setCollection] = useState(initCollection)
-
   const service = useMachine(tree.machine, {
     id: useId(),
     collection,
-    loadChildren,
-    onLoadChildrenComplete({ collection }) {
-      setCollection(collection)
-    },
+    expandOnClick: false,
   })
-
   const api = tree.connect(service, normalizeProps)
 
   return (
     <main className="tree-view">
       <div {...api.getRootProps()}>
         <h3 {...api.getLabelProps()}>My Documents</h3>
+        <p style={{ fontSize: "14px", color: "#666", marginBottom: "10px" }}>
+          Clicking a row only selects it. Use the chevron button to expand/collapse.
+        </p>
         <div style={{ display: "flex", gap: "10px" }}>
           <button onClick={() => api.collapse()}>Collapse All</button>
           <button onClick={() => api.expand()}>Expand All</button>
-          <button onClick={() => api.expand(["node_modules"])}>Expand node_modules</button>
-          <button onClick={() => api.collapse(["node_modules"])}>Collapse node_modules</button>
         </div>
         <div {...api.getTreeProps()}>
           {collection.rootNode.children?.map((node, index) => (

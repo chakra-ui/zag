@@ -63,11 +63,13 @@ const iconMap = {
 function TreeNodeCheckbox(props: TreeNodeProps) {
   const { api, ...nodeProps } = props
   const nodeState = api.getNodeState(nodeProps)
-
-  const checkboxProps = api.getNodeCheckboxProps(nodeProps)
   const Icon = iconMap[nodeState.checked.toString()]
 
-  return <Icon {...checkboxProps} />
+  return (
+    <span {...api.getNodeCheckboxProps(nodeProps)}>
+      <Icon />
+    </span>
+  )
 }
 
 const TreeNode = (props: TreeNodeProps): JSX.Element => {
@@ -76,29 +78,29 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getCellProps(nodeProps)}>
           <TreeNodeCheckbox {...props} />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getCellProps(nodeProps)}>
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
+        </div>
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <TreeNodeCheckbox {...props} /> {node.name}
+      )}
     </div>
   )
 }

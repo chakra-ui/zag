@@ -166,6 +166,9 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "rename", title: "Rename" },
       { slug: "filtering", title: "Filtering" },
       { slug: "links", title: "Links" },
+      { slug: "virtualized", title: "Virtualized" },
+      { slug: "expand-trigger", title: "Expand Trigger" },
+      { slug: "actions", title: "Actions" },
     ],
   },
   {

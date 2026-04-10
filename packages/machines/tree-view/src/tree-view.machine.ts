@@ -107,6 +107,7 @@ export const machine = createMachine<TreeViewSchema>({
 
   computed: {
     isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
+    isCheckboxMode: ({ prop }) => prop("checkedValue") !== undefined || prop("defaultCheckedValue") !== undefined,
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar.length > 0,
     visibleNodes: ({ prop, context }) => {
       const nodes: { node: TreeNode; indexPath: number[] }[] = []
@@ -188,27 +189,19 @@ export const machine = createMachine<TreeViewSchema>({
         actions: ["focusTreePrevNode"],
       },
     ],
-    "NODE.ARROW_LEFT": {
-      actions: ["focusBranchNode"],
-    },
-    "BRANCH_NODE.ARROW_LEFT": [
+    "NODE.ARROW_LEFT": [
       {
-        guard: "isBranchExpanded",
+        guard: and("isBranchNode", "isBranchExpanded"),
         actions: ["collapseBranch"],
       },
       {
         actions: ["focusBranchNode"],
       },
     ],
-    "BRANCH_NODE.ARROW_RIGHT": [
-      {
-        guard: and("isBranchFocused", "isBranchExpanded"),
-        actions: ["focusBranchFirstNode"],
-      },
-      {
-        actions: ["expandBranch"],
-      },
-    ],
+    "NODE.ARROW_RIGHT": {
+      guard: "isBranchNode",
+      actions: ["expandBranch"],
+    },
     "SIBLINGS.EXPAND": {
       actions: ["expandSiblingBranches"],
     },
@@ -240,27 +233,14 @@ export const machine = createMachine<TreeViewSchema>({
         actions: ["extendSelectionToNode"],
       },
       {
-        actions: ["selectNode"],
-      },
-    ],
-    "BRANCH_NODE.CLICK": [
-      {
-        guard: and("isCtrlKey", "isMultipleSelection"),
-        actions: ["toggleNodeSelection"],
-      },
-      {
-        guard: and("isShiftKey", "isMultipleSelection"),
-        actions: ["extendSelectionToNode"],
-      },
-      {
-        guard: "expandOnClick",
+        guard: and("isBranchNode", "expandOnClick"),
         actions: ["selectNode", "toggleBranchNode"],
       },
       {
         actions: ["selectNode"],
       },
     ],
-    "BRANCH_TOGGLE.CLICK": {
+    "EXPAND_TRIGGER.CLICK": {
       actions: ["toggleBranchNode"],
     },
     "TREE.TYPEAHEAD": {
@@ -297,11 +277,10 @@ export const machine = createMachine<TreeViewSchema>({
 
   implementations: {
     guards: {
-      isBranchFocused: ({ context, event }) => context.get("focusedValue") === event.id,
+      isBranchNode: ({ event }) => !!event.isBranch,
       isBranchExpanded: ({ context, event }) => context.get("expandedValue").includes(event.id),
       isShiftKey: ({ event }) => event.shiftKey,
       isCtrlKey: ({ event }) => event.ctrlKey,
-      hasSelectedItems: ({ context }) => context.get("selectedValue").length > 0,
       isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
       moveFocus: ({ event }) => !!event.moveFocus,
       expandOnClick: ({ prop }) => !!prop("expandOnClick"),
@@ -322,12 +301,6 @@ export const machine = createMachine<TreeViewSchema>({
       },
       setFocusedNode({ context, event }) {
         context.set("focusedValue", event.id)
-      },
-      clearFocusedNode({ context }) {
-        context.set("focusedValue", null)
-      },
-      clearSelectedItem({ context }) {
-        context.set("selectedValue", [])
       },
       toggleBranchNode({ context, event, action }) {
         const isExpanded = context.get("expandedValue").includes(event.id)
@@ -382,17 +355,6 @@ export const machine = createMachine<TreeViewSchema>({
         const scrolled = scrollToNode(params, lastValue)
         if (scrolled) raf(() => dom.focusNode(scope, lastValue))
         else dom.focusNode(scope, lastValue)
-      },
-      focusBranchFirstNode(params) {
-        const { event, prop, scope } = params
-        const collection = prop("collection")
-        const branchNode = collection.findNode(event.id)
-        const firstNode = collection.getFirstNode(branchNode, { skip: skipFn(params) })
-        if (!firstNode) return
-        const firstValue = collection.getNodeValue(firstNode)
-        const scrolled = scrollToNode(params, firstValue)
-        if (scrolled) raf(() => dom.focusNode(scope, firstValue))
-        else dom.focusNode(scope, firstValue)
       },
       focusTreeNextNode(params) {
         const { event, prop, scope } = params
@@ -491,7 +453,6 @@ export const machine = createMachine<TreeViewSchema>({
         const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
         if (!nextNode) return
 
-        // extend selection to nextNode (preserve the anchor node)
         const values = new Set(context.get("selectedValue"))
         const nextValue = collection.getNodeValue(nextNode)
 
@@ -511,7 +472,6 @@ export const machine = createMachine<TreeViewSchema>({
         const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
         if (!prevNode) return
 
-        // extend selection to prevNode (preserve the anchor node)
         const values = new Set(context.get("selectedValue"))
         const prevValue = collection.getNodeValue(prevNode)
 
@@ -582,7 +542,6 @@ export const machine = createMachine<TreeViewSchema>({
       setRenamingValue({ context, event, prop }) {
         context.set("renamingValue", event.value)
 
-        // Call onRenameStart callback if provided
         const onRenameStartFn = prop("onRenameStart")
         if (onRenameStartFn) {
           const collection = prop("collection")
@@ -607,10 +566,8 @@ export const machine = createMachine<TreeViewSchema>({
         const indexPath = collection.getIndexPath(renamingValue)
         if (!indexPath) return
 
-        // Trim the label before passing to callbacks
         const trimmedLabel = event.label.trim()
 
-        // Check onBeforeRename callback if provided
         const onBeforeRenameFn = prop("onBeforeRename")
         if (onBeforeRenameFn) {
           const details = {
@@ -620,7 +577,6 @@ export const machine = createMachine<TreeViewSchema>({
           }
           const shouldRename = onBeforeRenameFn(details)
           if (!shouldRename) {
-            // Cancel rename without calling onRenameComplete
             context.set("renamingValue", null)
             dom.focusNode(scope, renamingValue)
             return

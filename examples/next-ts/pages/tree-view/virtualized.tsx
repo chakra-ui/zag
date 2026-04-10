@@ -63,36 +63,9 @@ const TreeNode = (props: TreeNodeProps) => {
   // Calculate indentation based on depth
   const indent = nodeState.depth * 20
 
-  if (nodeState.isBranch) {
-    return (
-      <div
-        {...api.getBranchControlProps(nodeProps)}
-        style={{
-          paddingLeft: indent,
-          height: ROW_HEIGHT,
-          display: "flex",
-          alignItems: "center",
-          gap: "4px",
-        }}
-      >
-        <span {...api.getBranchIndicatorProps(nodeProps)}>
-          <ChevronRightIcon
-            size={16}
-            style={{
-              transform: nodeState.expanded ? "rotate(90deg)" : "rotate(0deg)",
-              transition: "transform 0.15s",
-            }}
-          />
-        </span>
-        <FolderIcon size={16} />
-        <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-      </div>
-    )
-  }
-
   return (
     <div
-      {...api.getItemProps(nodeProps)}
+      {...api.getNodeProps(nodeProps)}
       style={{
         paddingLeft: indent,
         height: ROW_HEIGHT,
@@ -101,8 +74,21 @@ const TreeNode = (props: TreeNodeProps) => {
         gap: "4px",
       }}
     >
-      <FileIcon size={16} />
-      <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
+      <div {...api.getCellProps(nodeProps)}>
+        {nodeState.isBranch && (
+          <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+            <ChevronRightIcon
+              size={16}
+              style={{
+                transform: nodeState.expanded ? "rotate(90deg)" : "rotate(0deg)",
+                transition: "transform 0.15s",
+              }}
+            />
+          </span>
+        )}
+        {nodeState.isBranch ? <FolderIcon size={16} /> : <FileIcon size={16} />}
+        <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+      </div>
     </div>
   )
 }

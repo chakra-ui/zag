@@ -4,6 +4,7 @@ import {
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  getFocusables,
   isAnchorElement,
   isComposingEvent,
   isEditableElement,
@@ -11,10 +12,17 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, uniq } from "@zag-js/utils"
+import { add, match, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
-import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
+import type {
+  NodeIndicatorProps,
+  NodeProps,
+  NodeState,
+  TreeNode,
+  TreeViewApi,
+  TreeViewService,
+} from "./tree-view.types"
 import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
 export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
@@ -33,6 +41,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const focusedValue = context.get("focusedValue")
   const loadingStatus = context.get("loadingStatus")
   const renamingValue = context.get("renamingValue")
+  const isCheckboxMode = computed("isCheckboxMode")
 
   const skip = ({ indexPath }: { indexPath: number[] }) => {
     const paths = collection.getValuePath(indexPath).slice(0, -1)
@@ -148,7 +157,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       return normalize.element({
         ...parts.tree.attrs(scope.id),
         dir: prop("dir"),
-        role: "tree",
+        role: "treegrid",
         "aria-label": translations.treeLabel,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("selectionMode") === "multiple" || undefined,
@@ -161,7 +170,77 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           // allow typing in input elements within the tree
           if (isEditableElement(target)) return
 
-          const node = target?.closest<HTMLElement>("[data-tree-view-branch-control], [data-tree-view-item]")
+          // Check if focus is inside a gridcell — handle cell navigation via DOM
+          const cell = target?.closest<HTMLElement>('[role="gridcell"]')
+          if (cell) {
+            const row = cell.closest<HTMLElement>("[data-tree-view-node]")
+            if (!row) return
+
+            const nodeId = row.dataset.value
+
+            // Only include cells that have focusable children (skip text-only cells)
+            const interactiveCells = getInteractiveCells(row)
+            const cellIndex = interactiveCells.indexOf(cell)
+
+            const cellKeyMap: EventKeyMap = {
+              ArrowRight(event) {
+                event.preventDefault()
+                const next = interactiveCells[cellIndex + 1]
+                if (next) {
+                  getFocusables(next)[0]?.focus()
+                } else {
+                  row.focus()
+                }
+              },
+              ArrowLeft(event) {
+                event.preventDefault()
+                const prev = interactiveCells[cellIndex - 1]
+                if (prev) {
+                  getFocusables(prev)[0]?.focus()
+                } else {
+                  row.focus()
+                }
+              },
+              ArrowUp(event) {
+                event.preventDefault()
+                if (nodeId) {
+                  row.focus()
+                  send({ type: "NODE.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
+                }
+              },
+              ArrowDown(event) {
+                event.preventDefault()
+                if (nodeId) {
+                  row.focus()
+                  send({ type: "NODE.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
+                }
+              },
+              Home(event) {
+                event.preventDefault()
+                getFocusables(interactiveCells[0])?.[0]?.focus()
+              },
+              End(event) {
+                event.preventDefault()
+                getFocusables(interactiveCells[interactiveCells.length - 1])?.[0]?.focus()
+              },
+              Escape(event) {
+                event.preventDefault()
+                row.focus()
+              },
+            }
+
+            const key = getEventKey(event, { dir: prop("dir") })
+            const exec = cellKeyMap[key]
+            if (exec) {
+              exec(event)
+              return
+            }
+            // Let Tab/Shift+Tab pass through for within-cell focus
+            return
+          }
+
+          // Row-mode keyboard handling
+          const node = target?.closest<HTMLElement>("[data-tree-view-node]")
           if (!node) return
 
           const nodeId = node.dataset.value
@@ -171,7 +250,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             return
           }
 
-          const isBranchNode = node.matches("[data-tree-view-branch-control]")
+          const isBranchNode = node.hasAttribute("data-branch")
 
           const keyMap: EventKeyMap = {
             ArrowDown(event) {
@@ -187,12 +266,23 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             ArrowLeft(event) {
               if (isModifierKey(event) || node.dataset.disabled) return
               event.preventDefault()
-              send({ type: isBranchNode ? "BRANCH_NODE.ARROW_LEFT" : "NODE.ARROW_LEFT", id: nodeId })
+              send({ type: "NODE.ARROW_LEFT", id: nodeId, isBranch: isBranchNode })
             },
             ArrowRight(event) {
-              if (!isBranchNode || node.dataset.disabled) return
+              if (node.dataset.disabled) return
               event.preventDefault()
-              send({ type: "BRANCH_NODE.ARROW_RIGHT", id: nodeId })
+
+              // Collapsed branch → expand
+              if (isBranchNode && node.getAttribute("aria-expanded") === "false") {
+                send({ type: "NODE.ARROW_RIGHT", id: nodeId, isBranch: true })
+                return
+              }
+
+              // Expanded branch or leaf → enter cell nav if interactive cells exist
+              const interactiveCells = getInteractiveCells(node)
+              if (interactiveCells.length > 0) {
+                getFocusables(interactiveCells[0])[0]?.focus()
+              }
             },
             Home(event) {
               if (isModifierKey(event)) return
@@ -209,6 +299,13 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
               if (isTypingAhead) {
                 send({ type: "TREE.TYPEAHEAD", key: event.key })
+                return
+              }
+
+              event.preventDefault()
+
+              if (isCheckboxMode) {
+                send({ type: "CHECKED.TOGGLE", value: nodeId, isBranch: isBranchNode })
               } else {
                 keyMap.Enter?.(event)
               }
@@ -217,7 +314,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
               if (node.dataset.disabled) return
               if (isAnchorElement(target) && isModifierKey(event)) return
 
-              send({ type: isBranchNode ? "BRANCH_NODE.CLICK" : "NODE.CLICK", id: nodeId, src: "keyboard" })
+              send({ type: "NODE.CLICK", id: nodeId, isBranch: isBranchNode, src: "keyboard" })
 
               if (!isAnchorElement(target)) {
                 event.preventDefault()
@@ -236,7 +333,6 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             F2(event) {
               if (node.dataset.disabled) return
 
-              // Check canRename callback - return early if not provided (opt-in)
               const canRenameFn = prop("canRename")
               if (!canRenameFn) return
 
@@ -271,27 +367,53 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
     getNodeState,
 
-    getItemProps(props) {
+    getNodeGroupProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.item.attrs(scope.id),
+        ...parts.nodeGroup.attrs(scope.id),
+        "data-depth": nodeState.depth,
+        dir: prop("dir"),
+        "data-value": nodeState.value,
+        "data-path": props.indexPath.join("/"),
+        "data-state": nodeState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-loading": dataAttr(nodeState.loading),
+        style: {
+          "--depth": nodeState.depth,
+        },
+      })
+    },
+
+    getNodeProps(props) {
+      const nodeState = getNodeState(props)
+      const siblings = collection.getSiblingNodes(props.indexPath)
+      const posInSet = props.indexPath[props.indexPath.length - 1] + 1
+      return normalize.element({
+        ...parts.node.attrs(scope.id),
         id: nodeState.id,
         dir: prop("dir"),
+        role: "row",
         "data-path": props.indexPath.join("/"),
         "data-value": nodeState.value,
         tabIndex: nodeState.focused ? 0 : -1,
         "data-focus": dataAttr(nodeState.focused),
-        role: "treeitem",
+        "aria-level": nodeState.depth,
+        "aria-setsize": siblings.length,
+        "aria-posinset": posInSet,
         "aria-current": nodeState.selected ? "true" : undefined,
         "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
         "data-selected": dataAttr(nodeState.selected),
+        "aria-expanded": nodeState.isBranch ? nodeState.expanded : undefined,
+        "data-state": nodeState.isBranch ? (nodeState.expanded ? "open" : "closed") : undefined,
         "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-renaming": dataAttr(nodeState.renaming),
         "data-checked": dataAttr(nodeState.checked === true),
         "data-indeterminate": dataAttr(nodeState.checked === "indeterminate"),
-        "aria-level": nodeState.depth,
         "data-depth": nodeState.depth,
+        "data-loading": dataAttr(nodeState.loading),
+        "aria-busy": ariaAttr(nodeState.loading),
+        "data-branch": dataAttr(nodeState.isBranch),
         style: {
           "--depth": nodeState.depth,
         },
@@ -301,11 +423,18 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         },
         onClick(event) {
           if (nodeState.disabled) return
+          if (nodeState.loading) return
           if (!isLeftClick(event)) return
           if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({
+            type: "NODE.CLICK",
+            id: nodeState.value,
+            isBranch: nodeState.isBranch,
+            shiftKey: event.shiftKey,
+            ctrlKey: isMetaKey,
+          })
           event.stopPropagation()
 
           if (!isAnchorElement(event.currentTarget)) {
@@ -315,72 +444,14 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       })
     },
 
-    getItemTextProps(props) {
-      const itemState = getNodeState(props)
-      return normalize.element({
-        ...parts.itemText.attrs(scope.id),
-        "data-disabled": dataAttr(itemState.disabled),
-        "data-selected": dataAttr(itemState.selected),
-        "data-focus": dataAttr(itemState.focused),
-      })
-    },
-
-    getItemIndicatorProps(props) {
-      const itemState = getNodeState(props)
-      return normalize.element({
-        ...parts.itemIndicator.attrs(scope.id),
-        "aria-hidden": true,
-        "data-disabled": dataAttr(itemState.disabled),
-        "data-selected": dataAttr(itemState.selected),
-        "data-focus": dataAttr(itemState.focused),
-        hidden: !itemState.selected,
-      })
-    },
-
-    getBranchProps(props) {
+    getNodeExpandTriggerProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branch.attrs(scope.id),
-        "data-depth": nodeState.depth,
-        dir: prop("dir"),
-        "data-branch": nodeState.value,
-        role: "treeitem",
-        "data-value": nodeState.value,
-        "aria-level": nodeState.depth,
-        "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
-        "data-path": props.indexPath.join("/"),
-        "data-selected": dataAttr(nodeState.selected),
-        "aria-expanded": nodeState.expanded,
-        "data-state": nodeState.expanded ? "open" : "closed",
-        "aria-disabled": ariaAttr(nodeState.disabled),
-        "data-disabled": dataAttr(nodeState.disabled),
-        "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": ariaAttr(nodeState.loading),
-        style: {
-          "--depth": nodeState.depth,
-        },
-      })
-    },
-
-    getBranchIndicatorProps(props) {
-      const nodeState = getNodeState(props)
-      return normalize.element({
-        ...parts.branchIndicator.attrs(scope.id),
-        "aria-hidden": true,
-        "data-state": nodeState.expanded ? "open" : "closed",
-        "data-disabled": dataAttr(nodeState.disabled),
-        "data-selected": dataAttr(nodeState.selected),
-        "data-focus": dataAttr(nodeState.focused),
-        "data-loading": dataAttr(nodeState.loading),
-      })
-    },
-
-    getBranchTriggerProps(props) {
-      const nodeState = getNodeState(props)
-      return normalize.element({
-        ...parts.branchTrigger.attrs(scope.id),
+        ...parts.nodeExpandTrigger.attrs(scope.id),
         role: "button",
         dir: prop("dir"),
+        tabIndex: -1,
+        "aria-hidden": true,
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-value": nodeState.value,
@@ -388,64 +459,53 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         disabled: nodeState.loading,
         onClick(event) {
           if (nodeState.disabled || nodeState.loading) return
-          send({ type: "BRANCH_TOGGLE.CLICK", id: nodeState.value })
+          send({ type: "EXPAND_TRIGGER.CLICK", id: nodeState.value })
           event.stopPropagation()
         },
       })
     },
 
-    getBranchControlProps(props) {
+    getNodeTextProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchControl.attrs(scope.id),
-        role: "button",
-        id: nodeState.id,
+        ...parts.nodeText.attrs(scope.id),
         dir: prop("dir"),
-        tabIndex: nodeState.focused ? 0 : -1,
-        "data-path": props.indexPath.join("/"),
-        "data-state": nodeState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(nodeState.disabled),
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
-        "data-renaming": dataAttr(nodeState.renaming),
-        "data-checked": dataAttr(nodeState.checked === true),
-        "data-indeterminate": dataAttr(nodeState.checked === "indeterminate"),
-        "data-value": nodeState.value,
-        "data-depth": nodeState.depth,
+        "data-state": nodeState.isBranch ? (nodeState.expanded ? "open" : "closed") : undefined,
         "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": ariaAttr(nodeState.loading),
-        onFocus(event) {
-          send({ type: "NODE.FOCUS", id: nodeState.value })
-          event.stopPropagation()
-        },
-        onClick(event) {
-          if (nodeState.disabled) return
-          if (nodeState.loading) return
-          if (!isLeftClick(event)) return
-          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
-
-          const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
-          event.stopPropagation()
-        },
       })
     },
 
-    getBranchTextProps(props) {
+    getNodeIndicatorProps(props: NodeIndicatorProps) {
       const nodeState = getNodeState(props)
+      const { type } = props
+
+      const hidden = match(type, {
+        expanded: false,
+        selected: !nodeState.selected,
+        checked: nodeState.checked !== true,
+        indeterminate: nodeState.checked !== "indeterminate",
+      })
+
       return normalize.element({
-        ...parts.branchText.attrs(scope.id),
-        dir: prop("dir"),
+        ...parts.nodeIndicator.attrs(scope.id),
+        "aria-hidden": true,
+        "data-type": type,
+        "data-state": type === "expanded" ? (nodeState.expanded ? "open" : "closed") : undefined,
         "data-disabled": dataAttr(nodeState.disabled),
-        "data-state": nodeState.expanded ? "open" : "closed",
+        "data-selected": dataAttr(nodeState.selected),
+        "data-focus": dataAttr(nodeState.focused),
         "data-loading": dataAttr(nodeState.loading),
+        hidden,
       })
     },
 
-    getBranchContentProps(props) {
+    getNodeGroupContentProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchContent.attrs(scope.id),
+        ...parts.nodeGroupContent.attrs(scope.id),
         role: "group",
         dir: prop("dir"),
         "data-state": nodeState.expanded ? "open" : "closed",
@@ -456,10 +516,10 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       })
     },
 
-    getBranchIndentGuideProps(props) {
+    getIndentGuideProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.branchIndentGuide.attrs(scope.id),
+        ...parts.indentGuide.attrs(scope.id),
         "data-depth": nodeState.depth,
       })
     },
@@ -471,8 +531,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         ...parts.nodeCheckbox.attrs(scope.id),
         tabIndex: -1,
         role: "checkbox",
-        "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
         "aria-checked": checkedState === true ? "true" : checkedState === false ? "false" : "mixed",
+        "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
         "data-disabled": dataAttr(nodeState.disabled),
         onClick(event) {
           if (event.defaultPrevented) return
@@ -481,9 +541,13 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
           send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
           event.stopPropagation()
-
-          const node = event.currentTarget.closest("[role=treeitem]") as HTMLElement | null
-          node?.focus({ preventScroll: true })
+        },
+        onKeyDown(event) {
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault()
+            event.stopPropagation()
+            send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
+          }
         },
       })
     },
@@ -497,7 +561,6 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "aria-label": translations.renameInputLabel,
         hidden: !nodeState.renaming,
         onKeyDown(event) {
-          // CRITICAL: Ignore keyboard events during IME composition
           if (isComposingEvent(event)) return
 
           if (event.key === "Escape") {
@@ -508,7 +571,6 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             send({ type: "RENAME.SUBMIT", label: event.currentTarget.value })
             event.preventDefault()
           }
-          // Stop propagation to prevent tree navigation during renaming
           event.stopPropagation()
         },
         onBlur(event) {
@@ -516,5 +578,19 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         },
       })
     },
+
+    getCellProps(props) {
+      const nodeState = getNodeState(props)
+      return normalize.element({
+        ...parts.cell.attrs(scope.id),
+        role: "gridcell",
+        "data-value": nodeState.value,
+      })
+    },
   }
+}
+
+function getInteractiveCells(row: HTMLElement): HTMLElement[] {
+  const cells = Array.from(row.querySelectorAll<HTMLElement>('[role="gridcell"]'))
+  return cells.filter((cell) => getFocusables(cell).length > 0)
 }

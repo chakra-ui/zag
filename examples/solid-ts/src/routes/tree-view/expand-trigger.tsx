@@ -1,11 +1,7 @@
-import { treeviewControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
 import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
-import { StateVisualizer } from "~/components/state-visualizer"
-import { Toolbar } from "~/components/toolbar"
-import { useControls } from "~/hooks/use-controls"
 
 interface Node {
   id: string
@@ -26,14 +22,6 @@ const collection = tree.collection<Node>({
         children: [
           { id: "node_modules/zag-js", name: "zag-js" },
           { id: "node_modules/pandacss", name: "panda" },
-          {
-            id: "node_modules/@types",
-            name: "@types",
-            children: [
-              { id: "node_modules/@types/react", name: "react" },
-              { id: "node_modules/@types/react-dom", name: "react-dom" },
-            ],
-          },
         ],
       },
       {
@@ -46,8 +34,6 @@ const collection = tree.collection<Node>({
       },
       { id: "panda.config", name: "panda.config.ts" },
       { id: "package.json", name: "package.json" },
-      { id: "renovate.json", name: "renovate.json" },
-      { id: "readme.md", name: "README.md" },
     ],
   },
 })
@@ -62,19 +48,22 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const { node, indexPath, api } = props
   const nodeProps = { indexPath, node }
   const nodeState = createMemo(() => api().getNodeState(nodeProps))
+
   return (
     <div {...api().getNodeGroupProps(nodeProps)}>
       <div {...api().getNodeProps(nodeProps)}>
+        <Show when={nodeState().isBranch}>
+          <div {...api().getCellProps(nodeProps)}>
+            <button {...api().getNodeExpandTriggerProps(nodeProps)}>
+              <ChevronRightIcon />
+            </button>
+          </div>
+        </Show>
         <div {...api().getCellProps(nodeProps)}>
           <Show when={nodeState().isBranch} fallback={<FileIcon />}>
             <FolderIcon />
           </Show>
           <span {...api().getNodeTextProps(nodeProps)}>{node.name}</span>
-          <Show when={nodeState().isBranch}>
-            <span {...api().getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
-              <ChevronRightIcon />
-            </span>
-          </Show>
         </div>
       </div>
       <Show when={nodeState().isBranch}>
@@ -90,39 +79,27 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 }
 
 export default function Page() {
-  const controls = useControls(treeviewControls)
-
   const service = useMachine(tree.machine, {
     id: createUniqueId(),
     collection,
+    expandOnClick: false,
   })
 
   const api = createMemo(() => tree.connect(service, normalizeProps))
 
   return (
-    <>
-      <main class="tree-view">
-        <div {...api().getRootProps()}>
-          <h3 {...api().getLabelProps()}>My Documents</h3>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button onClick={() => api().collapse()}>Collapse All</button>
-            <button onClick={() => api().expand()}>Expand All</button>
-            <Show when={controls.state().selectionMode === "multiple"}>
-              <button onClick={() => api().select()}>Select All</button>
-              <button onClick={() => api().deselect()}>Deselect All</button>
-            </Show>
-          </div>
-          <div {...api().getTreeProps()}>
-            <Index each={collection.rootNode.children}>
-              {(node, index) => <TreeNode node={node()} indexPath={[index]} api={api} />}
-            </Index>
-          </div>
+    <main class="tree-view">
+      <div {...api().getRootProps()}>
+        <h3 {...api().getLabelProps()}>My Documents</h3>
+        <p style={{ "font-size": "14px", color: "#666", "margin-bottom": "10px" }}>
+          Clicking a row only selects. Use the chevron to expand/collapse.
+        </p>
+        <div {...api().getTreeProps()}>
+          <Index each={collection.rootNode.children}>
+            {(node, index) => <TreeNode node={node()} indexPath={[index]} api={api} />}
+          </Index>
         </div>
-      </main>
-
-      <Toolbar controls={controls}>
-        <StateVisualizer state={service} />
-      </Toolbar>
-    </>
+      </div>
+    </main>
   )
 }

@@ -25,28 +25,26 @@ const nodeState = computed(() => props.api.getNodeState(nodeProps.value))
 </script>
 
 <template>
-  <template v-if="nodeState.isBranch">
-    <div v-bind="api.getBranchProps(nodeProps)">
-      <div v-bind="api.getBranchControlProps(nodeProps)">
-        <FolderIcon />
-        <span v-bind="api.getBranchTextProps(nodeProps)">{{ node.name }}</span>
-        <span v-bind="api.getBranchIndicatorProps(nodeProps)">
+  <div v-bind="api.getNodeGroupProps(nodeProps)">
+    <div v-bind="api.getNodeProps(nodeProps)">
+      <div v-bind="api.getCellProps({ ...nodeProps, cell: 'content' })">
+        <FolderIcon v-if="nodeState.isBranch" />
+        <FileIcon v-else />
+        <span v-bind="api.getNodeTextProps(nodeProps)">{{ node.name }}</span>
+        <span v-if="nodeState.isBranch" v-bind="api.getNodeIndicatorProps({ ...nodeProps, type: 'expanded' })">
           <ChevronRightIcon />
         </span>
       </div>
-      <div v-bind="api.getBranchContentProps(nodeProps)">
-        <div v-bind="api.getBranchIndentGuideProps(nodeProps)" />
-        <TreeNode
-          v-for="(childNode, index) in node.children"
-          :key="childNode.id"
-          :node="childNode"
-          :index-path="[...indexPath, index]"
-          :api="api"
-        />
-      </div>
     </div>
-  </template>
-  <template v-else>
-    <div v-bind="api.getItemProps(nodeProps)"><FileIcon /> {{ node.name }}</div>
-  </template>
+    <div v-if="nodeState.isBranch" v-bind="api.getNodeGroupContentProps(nodeProps)">
+      <div v-bind="api.getIndentGuideProps(nodeProps)" />
+      <TreeNode
+        v-for="(childNode, index) in node.children"
+        :key="childNode.id"
+        :node="childNode"
+        :index-path="[...indexPath, index]"
+        :api="api"
+      />
+    </div>
+  </div>
 </template>

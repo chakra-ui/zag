@@ -79,20 +79,22 @@ test.describe("tree view / keyboard", () => {
     await I.focusItem("README.md")
   })
 
-  test("Branch: Arrow Right", async () => {
+  test("Branch: Arrow Right expands, Arrow Down navigates to child", async () => {
     await I.focusFirstNode()
 
     await I.pressKey("ArrowRight")
     await I.seeBranchIsExpanded(["node_modules"])
+    await I.seeBranchIsFocused("node_modules")
 
-    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowDown")
     await I.seeItemIsFocused("zag-js")
   })
 
   test("Branch: Arrow Left", async () => {
     await I.focusFirstNode()
 
-    await I.pressKey("ArrowRight", 2)
+    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowDown")
     await I.pressKey("ArrowLeft")
     await I.seeBranchIsFocused("node_modules")
 
