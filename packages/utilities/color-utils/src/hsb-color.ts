@@ -17,6 +17,41 @@ export class HSBColor extends Color {
     super()
   }
 
+  /**
+   * Create HSBColor from float sRGB values (0-1 range, clamped).
+   * Higher precision than going through integer RGBColor (0-255).
+   */
+  static fromSrgbFloat(r: number, g: number, b: number, alpha: number): HSBColor {
+    const rc = Math.max(0, Math.min(1, r))
+    const gc = Math.max(0, Math.min(1, g))
+    const bc = Math.max(0, Math.min(1, b))
+    const min = Math.min(rc, gc, bc)
+    const brightness = Math.max(rc, gc, bc)
+    const chroma = brightness - min
+    const saturation = brightness === 0 ? 0 : chroma / brightness
+    let hue = 0
+    if (chroma !== 0) {
+      switch (brightness) {
+        case rc:
+          hue = (gc - bc) / chroma + (gc < bc ? 6 : 0)
+          break
+        case gc:
+          hue = (bc - rc) / chroma + 2
+          break
+        case bc:
+          hue = (rc - gc) / chroma + 4
+          break
+      }
+      hue /= 6
+    }
+    return new HSBColor(
+      toFixedNumber(hue * 360, 4),
+      toFixedNumber(saturation * 100, 4),
+      toFixedNumber(brightness * 100, 4),
+      toFixedNumber(alpha, 4),
+    )
+  }
+
   static parse(value: string): HSBColor | void {
     let m: RegExpMatchArray | null
     if ((m = value.match(HSB_REGEX))) {
@@ -56,6 +91,9 @@ export class HSBColor extends Color {
         return this.toHSL()
       case "rgba":
         return this.toRGB()
+      case "oklab":
+      case "oklch":
+        return this.toRGB().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: hsb -> " + format)
     }

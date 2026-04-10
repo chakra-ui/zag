@@ -201,6 +201,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "inline", title: "Inline" },
       { slug: "in-dialog", title: "Dialog" },
+      { slug: "oklch", title: "OKLCH + gamut overlay" },
+      { slug: "oklab", title: "OKLab + gamut overlay" },
     ],
   },
   {

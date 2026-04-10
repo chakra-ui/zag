@@ -2,6 +2,8 @@ import { clampValue, toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
+import { linearRgbToOklab, srgbToLinearRgb } from "./oklab-math"
+import { OklabColor } from "./oklab-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
 const HEX_COLOR_REGEX = /^#[\da-f]+$/i
@@ -40,8 +42,7 @@ export class RGBColor extends Color {
         .map((num, i) => clampValue(num, 0, i < 3 ? 255 : 1))
     }
 
-    //@ts-expect-error
-    return colors.length < 3 ? undefined : new RGBColor(colors[0], colors[1], colors[2], colors[3] ?? 1)
+    return colors.length < 3 ? undefined : new RGBColor(colors[0]!, colors[1]!, colors[2]!, colors[3] ?? 1)
   }
 
   toString(format: ColorStringFormat = "css") {
@@ -89,6 +90,13 @@ export class RGBColor extends Color {
         return this.toHSB()
       case "hsla":
         return this.toHSL()
+      case "oklab": {
+        const lin = srgbToLinearRgb(this.red, this.green, this.blue)
+        const { L, a, b } = linearRgbToOklab(lin)
+        return new OklabColor(L, a, b, toFixedNumber(this.alpha, 4))
+      }
+      case "oklch":
+        return this.toFormat("oklab").toFormat("oklch")
       default:
         throw new Error("Unsupported color conversion: rgb -> " + format)
     }

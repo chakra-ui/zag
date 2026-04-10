@@ -1,4 +1,5 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
+import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
@@ -172,6 +173,8 @@ export type ColorPickerSchema = {
     activeId: string | null
     activeChannel: Partial<ColorAxes> | null
     activeOrientation: Orientation | null
+    areaBaseColor: Color | null
+    areaDragPosition: { x: number; y: number } | null
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
     restoreFocus: boolean
@@ -207,6 +210,17 @@ export interface ChannelInputProps {
 export interface AreaProps {
   xChannel?: ColorChannel | undefined
   yChannel?: ColorChannel | undefined
+}
+
+/**
+ * Same channel overrides as {@link AreaProps}, plus optional DPR for overlay sampling.
+ * Pass the **same** object to `getAreaProps`, `getGamutOverlay`, and `getGamutOverlayProps`.
+ */
+export interface GamutOverlayProps extends AreaProps {
+  /**
+   * Overrides `globalThis.devicePixelRatio` for boundary resolution (default browser DPR in connect).
+   */
+  pixelRatio?: number | undefined
 }
 
 export interface SwatchTriggerProps {
@@ -264,6 +278,11 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
    */
   valueAsString: string
   /**
+   * Whether the current color lies inside the sRGB gamut (linear RGB cube).
+   * When `false`, wide-gamut CSS strings may still be valid while 8-bit RGB / hex are clamped.
+   */
+  isInSrgbGamut: boolean
+  /**
    * Function to set the color value
    */
   setValue: (value: string | Color) => void
@@ -311,6 +330,15 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
 
   getAreaProps: (props?: AreaProps) => T["element"]
   getAreaBackgroundProps: (props?: AreaProps) => T["element"]
+  /**
+   * SVG path + label position for the sRGB gamut boundary (oklch/oklab + HSB area only); `null` when not shown.
+   * Use the **same** `props` as {@link getAreaProps} / {@link getGamutOverlayProps} (including `pixelRatio`).
+   */
+  getGamutOverlay: (props?: GamutOverlayProps) => GamutOverlayData | null
+  /**
+   * Props for an `<svg>` gamut overlay; pair with {@link getGamutOverlay} using the same `props`.
+   */
+  getGamutOverlayProps: (props?: GamutOverlayProps) => T["svg"]
   getAreaThumbProps: (props?: AreaProps) => T["element"]
 
   getChannelInputProps: (props: ChannelInputProps) => T["input"]
@@ -340,3 +368,4 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
  * -----------------------------------------------------------------------------*/
 
 export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType, PositioningOptions }
+export type { GamutOverlayData } from "./utils/get-gamut-overlay-path"

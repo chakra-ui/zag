@@ -28,4 +28,6 @@ export type {
   TransparencyGridProps,
   ValueChangeDetails,
   ExtendedColorChannel,
+  GamutOverlayData,
+  GamutOverlayProps,
 } from "./color-picker.types"

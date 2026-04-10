@@ -17,7 +17,8 @@ provides a more customizable and consistent user experience.
 **Features**
 
 - Supports custom color area
-- Supports RGBA, HSLA, HEX, and HSBA formats
+- Supports RGBA, HSLA, HEX, HSBA, **OKLab**, and **OKLCH** formats
+- Optional **sRGB gamut overlay** on the 2D area when using OKLab/OKLCH (`getGamutOverlay`, `getGamutOverlayProps`, anatomy part `gamutOverlay`)
 - Supports channel inputs and sliders
 - Supports mouse, touch, and keyboard interactions
 - Supports form submission and reset events
@@ -111,6 +112,14 @@ const [current, send] = useMachine(colorPicker.machine, {
   },
 })
 ```
+
+### Wide gamut (OKLab / OKLCH)
+
+The **2D color area** stays **HSBA** (saturation × brightness, **hue** on the third-axis slider) for a familiar control surface, even when the **output format** is OKLab or OKLCH.
+
+Use **`api.getGamutOverlay(props?)`** for SVG path data (`path`, `labelPosition`) that draws the **sRGB gamut boundary** in that HSB view. The boundary is computed like Chrome DevTools (HSV interpreted in a wide working space vs sRGB). Pass the **same** `props` to **`getAreaProps`**, **`getGamutOverlay`**, and **`getGamutOverlayProps`**—including optional `xChannel` / `yChannel` overrides and optional **`pixelRatio`** (defaults to `globalThis.devicePixelRatio` in the browser for sharper curves on retina).
+
+**`api.isInSrgbGamut`** is `true` when the current color lies inside the sRGB cube in linear RGB space. When `false`, your OKLab/OKLCH **string** may still be wide-gamut while **hex** or 8-bit **RGBA** outputs **clamp**—use this flag for badges, tooltips, or warnings.
 
 ### Setting the initial format
 

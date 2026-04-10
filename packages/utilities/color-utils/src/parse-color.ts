@@ -1,5 +1,6 @@
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
+import { OklabColor, OklchColor } from "./oklab-color"
 import { nativeColorMap } from "./native-color"
 import { RGBColor } from "./rgb-color"
 import type { ColorType } from "./types"
@@ -9,7 +10,12 @@ export const parseColor = (value: string): ColorType => {
     return parseColor(nativeColorMap.get(value)!)
   }
 
-  const result = RGBColor.parse(value) || HSBColor.parse(value) || HSLColor.parse(value)
+  const result =
+    OklabColor.parse(value) ||
+    OklchColor.parse(value) ||
+    RGBColor.parse(value) ||
+    HSBColor.parse(value) ||
+    HSLColor.parse(value)
 
   if (!result) {
     const error = new Error("Invalid color value: " + value)

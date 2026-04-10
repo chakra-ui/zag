@@ -1,4 +1,4 @@
-import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
+import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/color-utils"
 import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -10,11 +10,13 @@ import type {
   ColorFormat,
   ColorPickerService,
   ColorPickerApi,
+  GamutOverlayProps,
   SwatchTriggerProps,
   SwatchTriggerState,
 } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
+import { getGamutOverlayData } from "./utils/get-gamut-overlay-path"
 import { getSliderBackground } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(
@@ -27,6 +29,7 @@ export function connect<T extends PropTypes>(
   const format = context.get("format")
 
   const areaValue = computed("areaValue")
+  const stableAreaValue = context.get("areaBaseColor") ?? areaValue
   const valueAsString = computed("valueAsString")
 
   const disabled = computed("disabled")
@@ -45,6 +48,17 @@ export function connect<T extends PropTypes>(
       xChannel: props.xChannel ?? channels[1],
       yChannel: props.yChannel ?? channels[2],
     }
+  }
+
+  function getDefaultDevicePixelRatio(): number {
+    if (typeof globalThis === "undefined") return 1
+    const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
+    return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
+  }
+
+  function resolveGamutOverlay(props: GamutOverlayProps = {}) {
+    const pixelRatio = props.pixelRatio ?? getDefaultDevicePixelRatio()
+    return getGamutOverlayData(stableAreaValue, getAreaChannels(props), format, { pixelRatio })
   }
 
   const currentPlacement = context.get("currentPlacement")
@@ -68,6 +82,10 @@ export function connect<T extends PropTypes>(
     open,
     valueAsString,
     value,
+    isInSrgbGamut: isInSrgbGamut(value),
+    getGamutOverlay(props = {}) {
+      return resolveGamutOverlay(props)
+    },
     inline: !!prop("inline"),
     setOpen(nextOpen) {
       if (prop("inline")) return
@@ -89,9 +107,8 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
     format: context.get("format"),
-    setFormat(format) {
-      const formatValue = value.toFormat(format)
-      send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
+    setFormat(nextFormat) {
+      send({ type: "FORMAT.SET", format: nextFormat, src: "set-format" })
     },
     alpha: value.getChannelValue("alpha"),
     setAlpha(alphaValue) {
@@ -207,7 +224,7 @@ export function connect<T extends PropTypes>(
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaStyles } = getColorAreaGradient(areaValue, {
+      const { areaStyles } = getColorAreaGradient(stableAreaValue, {
         xChannel,
         yChannel,
         dir: prop("dir"),
@@ -241,7 +258,7 @@ export function connect<T extends PropTypes>(
 
     getAreaBackgroundProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaGradientStyles } = getColorAreaGradient(areaValue, {
+      const { areaGradientStyles } = getColorAreaGradient(stableAreaValue, {
         xChannel,
         yChannel,
         dir: prop("dir"),
@@ -261,13 +278,42 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getGamutOverlayProps(props = {}) {
+      const data = resolveGamutOverlay(props)
+      return normalize.element({
+        ...parts.gamutOverlay.attrs(scope.id),
+        viewBox: "0 0 100 100",
+        preserveAspectRatio: "none",
+        xmlns: "http://www.w3.org/2000/svg",
+        "aria-hidden": true,
+        "data-state": data ? "visible" : "hidden",
+        style: {
+          position: "absolute",
+          inset: "0",
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          pointerEvents: "none",
+        },
+      })
+    },
+
     getAreaThumbProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const xPercent = areaValue.getChannelValuePercent(xChannel)
-      const yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+      const dragPos = context.get("areaDragPosition")
       const isRtl = prop("dir") === "rtl"
+
+      let xPercent: number
+      let yPercent: number
+      if (dragPos) {
+        xPercent = dragPos.x
+        yPercent = dragPos.y
+      } else {
+        xPercent = areaValue.getChannelValuePercent(xChannel)
+        yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+      }
       const finalXPercent = isRtl ? 1 - xPercent : xPercent
 
       const xValue = areaValue.getChannelValue(xChannel)
@@ -394,7 +440,7 @@ export function connect<T extends PropTypes>(
 
     getChannelSliderTrackProps(props) {
       const { orientation = "horizontal", channel, format } = props
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : stableAreaValue
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs(scope.id),
@@ -442,7 +488,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel, format } = props
 
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : stableAreaValue
       const channelRange = normalizedValue.getChannelRange(channel)
       const channelValue = normalizedValue.getChannelValue(channel)
 
@@ -473,7 +519,7 @@ export function connect<T extends PropTypes>(
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(areaValue, channel).toString("css"),
+          background: getChannelDisplayColor(stableAreaValue, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
@@ -706,7 +752,7 @@ export function connect<T extends PropTypes>(
   }
 }
 
-const formats: ColorFormat[] = ["hsba", "hsla", "rgba"]
+const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab", "oklch"]
 const formatRegex = new RegExp(`^(${formats.join("|")})$`)
 
 function getNextFormat(format: ColorFormat) {

@@ -55,6 +55,9 @@ export class HSLColor extends Color {
         return this.toHSB()
       case "rgba":
         return this.toRGB()
+      case "oklab":
+      case "oklch":
+        return this.toRGB().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: hsl -> " + format)
     }

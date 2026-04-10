@@ -16,6 +16,7 @@ import { tryCatch } from "@zag-js/utils"
 import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
+import { getAreaFormat } from "./utils/get-area-format"
 import { getChannelValue } from "./utils/get-channel-input-value"
 import { prefixHex } from "./utils/is-valid-hex"
 
@@ -79,6 +80,8 @@ export const machine = createMachine<ColorPickerSchema>({
       activeId: bindable<string | null>(() => ({ defaultValue: null })),
       activeChannel: bindable<any>(() => ({ defaultValue: null })),
       activeOrientation: bindable<Orientation | null>(() => ({ defaultValue: null })),
+      areaBaseColor: bindable<Color | null>(() => ({ defaultValue: null })),
+      areaDragPosition: bindable<{ x: number; y: number } | null>(() => ({ defaultValue: null })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       restoreFocus: bindable<boolean>(() => ({ defaultValue: true })),
       currentPlacement: bindable<Placement | undefined>(() => ({
@@ -93,8 +96,7 @@ export const machine = createMachine<ColorPickerSchema>({
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
-      const format = context.get("format").startsWith("hsl") ? "hsla" : "hsba"
-      return context.get("value").toFormat(format)
+      return context.get("value").toFormat(getAreaFormat(context.get("format")))
     },
   },
 
@@ -451,32 +453,47 @@ export const machine = createMachine<ColorPickerSchema>({
           })
           .catch(() => void 0)
       },
-      setActiveChannel({ context, event }) {
+      setActiveChannel({ context, event, computed }) {
         context.set("activeId", event.id)
         if (event.channel) context.set("activeChannel", event.channel)
         if (event.orientation) context.set("activeOrientation", event.orientation)
+        const areaFormat = getAreaFormat(context.get("format"))
+        if (areaFormat !== context.get("format")) {
+          context.set("areaBaseColor", computed("areaValue"))
+        }
       },
       clearActiveChannel({ context }) {
         context.set("activeChannel", null)
         context.set("activeId", null)
         context.set("activeOrientation", null)
+        context.set("areaBaseColor", null)
+        context.set("areaDragPosition", null)
       },
       setAreaColorFromPoint({ context, event, computed, scope, prop }) {
-        const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const storeFormat = context.get("format")
+        const v = event.format
+          ? context.get("value").toFormat(event.format)
+          : (context.get("areaBaseColor") ?? computed("areaValue"))
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
         const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
         if (!percent) return
 
+        context.set("areaDragPosition", { x: percent.x, y: percent.y })
+
         const xValue = v.getChannelPercentValue(xChannel, percent.x)
         const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
 
-        const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
+        const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue).toFormat(storeFormat)
         context.set("value", color)
       },
       setChannelColorFromPoint({ context, event, computed, scope, prop }) {
+        const storeFormat = context.get("format")
         const channel = event.channel || context.get("activeId")
-        const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const baseColor = context.get("areaBaseColor")
+        const normalizedValue = event.format
+          ? context.get("value").toFormat(event.format)
+          : (baseColor ?? computed("areaValue"))
 
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
@@ -485,8 +502,9 @@ export const machine = createMachine<ColorPickerSchema>({
         const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
-        const color = normalizedValue.withChannelValue(channel, value)
-        context.set("value", color)
+        const updatedBase = normalizedValue.withChannelValue(channel, value)
+        context.set("areaBaseColor", updatedBase)
+        context.set("value", updatedBase.toFormat(storeFormat))
       },
       setValue({ context, event }) {
         const format = context.get("format")
@@ -559,24 +577,32 @@ export const machine = createMachine<ColorPickerSchema>({
         const color = context.get("value").decrementChannel(event.channel, event.step)
         context.set("value", color)
       },
-      incrementAreaXChannel({ context, event, computed }) {
+      incrementAreaXChannel({ context, event }) {
         const { xChannel } = event.channel
-        const color = computed("areaValue").incrementChannel(xChannel, event.step)
+        const storeFormat = context.get("format")
+        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
+        const color = v.incrementChannel(xChannel, event.step).toFormat(storeFormat)
         context.set("value", color)
       },
-      decrementAreaXChannel({ context, event, computed }) {
+      decrementAreaXChannel({ context, event }) {
         const { xChannel } = event.channel
-        const color = computed("areaValue").decrementChannel(xChannel, event.step)
+        const storeFormat = context.get("format")
+        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
+        const color = v.decrementChannel(xChannel, event.step).toFormat(storeFormat)
         context.set("value", color)
       },
-      incrementAreaYChannel({ context, event, computed }) {
+      incrementAreaYChannel({ context, event }) {
         const { yChannel } = event.channel
-        const color = computed("areaValue").incrementChannel(yChannel, event.step)
+        const storeFormat = context.get("format")
+        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
+        const color = v.incrementChannel(yChannel, event.step).toFormat(storeFormat)
         context.set("value", color)
       },
-      decrementAreaYChannel({ context, event, computed }) {
+      decrementAreaYChannel({ context, event }) {
         const { yChannel } = event.channel
-        const color = computed("areaValue").decrementChannel(yChannel, event.step)
+        const storeFormat = context.get("format")
+        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
+        const color = v.decrementChannel(yChannel, event.step).toFormat(storeFormat)
         context.set("value", color)
       },
       setChannelToMax({ context, event }) {

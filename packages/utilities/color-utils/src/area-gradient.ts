@@ -9,6 +9,7 @@ import {
   generateHSB_S,
   generateHSB_B,
   generateHSL_L,
+  generateOKLAB_AB,
 } from "./color-format-gradient"
 import type { ColorChannel } from "./types"
 
@@ -85,6 +86,11 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
     }
 
     case "lightness": {
+      if (color.getFormat() === "oklab") {
+        dir = xChannel === "b"
+        background = generateOKLAB_AB(orientation, dir, zValue)
+        break
+      }
       dir = xChannel === "hue"
       background = generateHSL_L(orientation, dir, zValue)
       break

@@ -137,3 +137,36 @@ export const generateHSB_B = (orientation: [string, string], dir: boolean, alpha
   }
   return result
 }
+
+/** oklab: x = a, y = b, z = lightness (fixed L) */
+export const generateOKLAB_AB = (orientation: [string, string], dir: boolean, L: number) => {
+  const l = L === 0 ? "none" : `${(L * 100).toFixed(2)}%`
+  const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, black, transparent)`
+  const result = {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(dir)]} in oklab, oklab(${l} -100% 100%), oklab(${l} 100% 100%))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(dir)]} in oklab, oklab(${l} -100% -100%), oklab(${l} 100% -100%))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+  return result
+}
+
+/** oklch: x = lightness, y = chroma, z = hue (fixed H) */
+export const generateOKLCH_LC = (orientation: [string, string], dir: boolean, H: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(dir)]}, transparent, black)`
+  const result = {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(!dir)]} in oklch, oklch(0 0.001 ${H}), oklch(1 0.001 ${H}))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(!dir)]} in oklch, oklch(0 0.5 ${H}), oklch(1 0.5 ${H}))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+  return result
+}

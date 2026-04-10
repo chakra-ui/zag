@@ -33,6 +33,12 @@ describe("color.test.ts", () => {
     `)
   })
 
+  test("oklch parse and css output", () => {
+    const c = parseColor("oklch(0.65 0.15 250)")
+    expect(c.getFormat()).toBe("oklch")
+    expect(c.toString("oklch")).toMatch(/oklch\(/)
+  })
+
   test("hexint", () => {
     expect(parseColor("hsl(0, 92%, 13%)")).toMatchInlineSnapshot(`
       {

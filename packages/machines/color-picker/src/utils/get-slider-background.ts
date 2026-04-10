@@ -23,8 +23,15 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
   const bgDirection = getSliderBackgroundDirection(orientation, dir)
   const { minValue, maxValue } = value.getChannelRange(channel)
 
+  const fmt = value.getFormat()
+
   switch (channel) {
     case "hue":
+      if (fmt === "oklch") {
+        const L = value.getChannelValue("lightness")
+        const C = value.getChannelValue("chroma")
+        return `linear-gradient(to ${bgDirection} in oklch increasing hue, oklch(${L} ${C} 0), oklch(${L} ${C} 360))`
+      }
       return `linear-gradient(to ${bgDirection}, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%)`
     case "lightness": {
       let start = value.withChannelValue(channel, minValue).toString("css")
@@ -37,9 +44,18 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
     case "red":
     case "green":
     case "blue":
-    case "alpha": {
+    case "alpha":
+    case "a":
+    case "b":
+    case "chroma": {
       let start = value.withChannelValue(channel, minValue).toString("css")
       let end = value.withChannelValue(channel, maxValue).toString("css")
+      if (fmt === "oklab" && (channel === "a" || channel === "b")) {
+        return `linear-gradient(to ${bgDirection} in oklab, ${start}, ${end})`
+      }
+      if (fmt === "oklch" && channel === "chroma") {
+        return `linear-gradient(to ${bgDirection} in oklch, ${start}, ${end})`
+      }
       return `linear-gradient(to ${bgDirection}, ${start}, ${end})`
     }
     default:

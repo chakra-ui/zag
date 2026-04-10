@@ -44,7 +44,7 @@
     "release": "changeset publish",
     "version-snapshot": "changeset version --snapshot v1-beta",
     "release-snapshot": "changeset publish --tag v1-beta",
-    "test-js": "vitest packages/{utilities,core} --passWithNoTests",
+    "test-js": "vitest packages/utilities packages/core packages/machines/color-picker --passWithNoTests",
     "test-react": "cd packages/frameworks/react && pnpm exec vitest --passWithNoTests",
     "test-svelte": "cd packages/frameworks/svelte && pnpm exec vitest --passWithNoTests",
     "test-solid": "cd packages/frameworks/solid && pnpm exec vitest --passWithNoTests",
