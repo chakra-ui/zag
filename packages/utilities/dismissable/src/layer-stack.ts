@@ -1,4 +1,4 @@
-import { contains, nextTick } from "@zag-js/dom-query"
+import { contains } from "@zag-js/dom-query"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 
@@ -103,7 +103,7 @@ export const layerStack = {
 
     // Schedule cleanup after two frames to ensure it outlasts any deferred
     // focusin handlers (which also use requestAnimationFrame)
-    nextTick(() => this.recentlyRemoved.delete(node))
+    requestAnimationFrame(() => this.recentlyRemoved.delete(node))
 
     // dismiss nested layers
     if (index < this.count() - 1) {
