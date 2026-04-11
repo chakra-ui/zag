@@ -1,5 +1,21 @@
 # @zag-js/navigation-menu
 
+## 1.40.0
+
+### Patch Changes
+
+- [#3062](https://github.com/chakra-ui/zag/pull/3062)
+  [`9ee6381`](https://github.com/chakra-ui/zag/commit/9ee6381c0e724c2f6b171099822be285eacf88ca) Thanks
+  [@jramke](https://github.com/jramke)! - Remove agressive and redundant default aria-label
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @zag-js/color-picker
 
+## 1.40.0
+
+### Patch Changes
+
+- [`43e5a18`](https://github.com/chakra-ui/zag/commit/43e5a18be5910a6d1a2387782b8e6157b9d2500e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color value to respect the specified `format` when setting
+  values via props or `setValue`.
+
+  Previously, the internal color object could retain a mismatched format (e.g., RGB when `format` is `hsla`), causing
+  inconsistent `value` objects in `onValueChange` callbacks.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/color-utils@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/popper@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes
