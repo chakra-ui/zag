@@ -32,21 +32,6 @@ how we name its parts.
 
 <Anatomy id="scroll-area" />
 
-## Required style
-
-It's important to note that the scroll area requires the following styles to be
-applied to the viewport element to hide the scrollbar:
-
-```css
-[data-scope="scroll-area"][data-part="viewport"] {
-  /* hide scrollbar */
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-```
-
 ## Usage
 
 Import the scroll area package:
@@ -153,6 +138,20 @@ const verticalState = api.getScrollbarState({ orientation: "vertical" })
 ## Styling guide
 
 Each part includes a `data-part` attribute you can target in CSS.
+
+### Required styles
+
+The scroll area requires the following styles on the viewport element to hide
+the native scrollbar:
+
+```css
+[data-scope="scroll-area"][data-part="viewport"] {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+```
 
 ### Scrolling state
 
