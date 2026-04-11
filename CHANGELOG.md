@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.40.0](./#1.40.0) - 2026-04-07
+
+### Added
+
+- **Popover**: Add `finalFocusEl` and `restoreFocus` props to control focus behavior when the popover closes.
+  - `finalFocusEl`: specify an element to receive focus instead of the trigger
+  - `restoreFocus`: set to `false` to prevent focus from returning to the trigger (default `true`)
+
+  Both work in modal and non-modal modes.
+
+### Fixed
+
+- **Color Picker**: Fix color value to respect the specified `format` when setting values via props or `setValue`.
+  Previously, the internal color object could retain a mismatched format (e.g., RGB when `format` is `hsla`), causing
+  inconsistent `value` objects in `onValueChange` callbacks.
+
+- **Date Input**: Defer min/max constraint until segment is fully typed or on blur to prevent resetting other segments
+  mid-keystroke.
+
+- **Date Picker**: Fix `isDateEqual` to consider time components of `CalendarDateTime` and `ZonedDateTime` values. This
+  ensures `onValueChange` fires correctly when time segments change in the date input.
+
+- **Navigation Menu**: Remove aggressive and redundant default `aria-label`.
+
+- **Vanilla**: Do not use `{}` instead of `undefined` and `null` computed value (fixes `accept="[object Object]"` in
+  File Upload with `accept: undefined`).
+
+### Changed
+
+- **Date Utils**: Remove unsupported `"month"` and `"year"` values from `DateGranularity` type.
+
 ## [1.39.1](./#1.39.1) - 2026-04-05
 
 ### Added
