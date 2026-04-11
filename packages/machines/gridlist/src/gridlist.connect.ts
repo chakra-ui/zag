@@ -251,8 +251,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
             Enter(event) {
               const target = getEventTarget<HTMLElement>(event)
-              const isCheckbox =
-                (target as HTMLElement | null)?.tagName === "INPUT" && (target as HTMLInputElement).type === "checkbox"
+              const isCheckbox = (target as HTMLElement | null)?.getAttribute?.("role") === "checkbox"
               const isRow = (target as HTMLElement | null)?.getAttribute?.("role") === "row"
 
               if (isCheckbox) return
@@ -281,7 +280,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
             Space(event) {
               const target = getEventTarget<HTMLElement>(event)
-              const isCheckbox = target?.tagName === "INPUT" && (target as HTMLInputElement).type === "checkbox"
+              const isCheckbox = target?.getAttribute?.("role") === "checkbox"
               const isRow = target?.getAttribute?.("role") === "row"
 
               if (isCheckbox) return
