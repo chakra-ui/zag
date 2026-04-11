@@ -12,7 +12,7 @@ import type {
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type MeterState = "optimal" | "normal" | "high" | "low"
+export type MeterState = "optimal" | "normal" | "warning" | "caution" | "low"
 
 export interface ValueTranslationDetails {
   value: number

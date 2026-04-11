@@ -10,30 +10,12 @@ function getMeterState(
   high?: number,
   optimum?: number,
 ): MeterState {
-  if (optimum != null) {
-    const isOptimumInRange = low != null && high != null && optimum >= low && optimum <= high
-    if (isOptimumInRange) {
-      if (low != null && value < low) return "low"
-      if (high != null && value > high) return "high"
-      return "optimal"
-    }
+  const percent = ((value - min) / (max - min)) * 100
 
-    if (low != null && optimum < low) {
-      if (value <= optimum) return "optimal"
-      if (value <= low) return "normal"
-      return "high"
-    }
-
-    if (high != null && optimum > high) {
-      if (value >= optimum) return "optimal"
-      if (value >= high) return "normal"
-      return "low"
-    }
-  }
-
-  // Fallbacks if only low/high are defined
-  if (low != null && value < low) return "low"
-  if (high != null && value > high) return "high"
+  if (percent > 60) return "optimal"
+  if (percent > 40) return "caution"
+  if (percent > 20) return "warning"
+  if (percent > 0) return "low"
 
   return "normal"
 }
