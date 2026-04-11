@@ -41,7 +41,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const focusVisible = refs.get("focusVisible") && focused
 
   const value = context.get("value")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
 
   const focusedValue = context.get("focusedValue")
   const focusedItem = context.get("focusedItem")

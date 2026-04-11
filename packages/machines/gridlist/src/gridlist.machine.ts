@@ -1,5 +1,5 @@
 import type { CollectionItem } from "@zag-js/collection"
-import { Selection } from "@zag-js/collection"
+import { Selection, createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import {
   AnimationFrame,
@@ -37,15 +37,26 @@ export const machine = createMachine({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
+    const initialValue = prop("value") ?? prop("defaultValue") ?? []
+    const initialSelectedItems = prop("collection").findMany(initialValue)
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual,
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          return prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const collection = prop("collection")
+          const selectedItemMap = context.get("selectedItemMap")
+          const { selectedItems, nextSelectedItemMap } = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
+          context.set("selectedItemMap", nextSelectedItemMap)
+          return prop("onValueChange")?.({ value, items: selectedItems })
         },
       })),
 
@@ -65,11 +76,12 @@ export const machine = createMachine({
         defaultValue: null,
       })),
 
-      selectedItems: bindable<CollectionItem[]>(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const items = prop("collection").findMany(value)
-        return { defaultValue: items }
-      }),
+      selectedItemMap: bindable<Map<string, CollectionItem>>(() => ({
+        defaultValue: createSelectedItemMap({
+          selectedItems: initialSelectedItems,
+          collection: prop("collection"),
+        }),
+      })),
 
       focused: bindable(() => ({
         sync: true,
@@ -96,7 +108,13 @@ export const machine = createMachine({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple",
-    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
+    selectedItems: ({ context, prop }) =>
+      resolveSelectedItems({
+        values: context.get("value"),
+        collection: prop("collection"),
+        selectedItemMap: context.get("selectedItemMap"),
+      }),
+    valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
     showCheckboxes: ({ prop }) => {
       return prop("selectionMode") !== "none" && prop("selectionBehavior") === "toggle"
     },
@@ -109,9 +127,6 @@ export const machine = createMachine({
   entry: ["applyAutoFocus"],
 
   watch({ context, prop, track, action }) {
-    track([() => context.get("value").toString()], () => {
-      action(["syncSelectedItems"])
-    })
     track([() => context.get("focusedValue")], () => {
       action(["syncFocusedItem"])
     })
@@ -396,21 +411,6 @@ export const machine = createMachine({
         if (prop("disallowEmptySelection")) return
         if (context.get("value").length === 0) return
         context.set("value", [])
-      },
-
-      syncSelectedItems({ context, prop }) {
-        const collection = prop("collection")
-        const prevSelectedItems = context.get("selectedItems")
-
-        const value = context.get("value")
-        const selectedItems = value
-          .map((v) => {
-            const item = prevSelectedItems.find((it) => collection.getItemValue(it) === v)
-            return item || collection.find(v)
-          })
-          .filter(Boolean) as CollectionItem[]
-
-        context.set("selectedItems", selectedItems)
       },
 
       syncFocusedItem({ context, prop }) {
