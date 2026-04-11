@@ -61,6 +61,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
+      { slug: "column-reverse", title: "Column Reverse" },
     ],
   },
   {
