@@ -35,19 +35,6 @@ test.describe("tags-input", () => {
     await I.seeInputIsFocused()
   })
 
-  test("delete tag by clearing its content and hit enter", async () => {
-    await I.focusInput()
-    await I.pressKey("ArrowLeft")
-    await I.pressKey("Enter")
-    await I.seeTagInputIsFocused("Vue")
-
-    await I.pressKey("Backspace")
-    await I.pressKey("Enter")
-
-    await I.seeInputIsFocused()
-    await I.dontSeeTag("Vue")
-  })
-
   test("delete tag with delete key, show allow keyboard navigation", async () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft")
@@ -118,58 +105,13 @@ test.describe("tags-input", () => {
     await I.seeInputIsFocused()
   })
 
-  test("edit tag with enter key", async () => {
-    await I.addTag("Svelte")
-    await I.addTag("Solid")
-
-    await I.pressKey("ArrowLeft", 2)
-    await I.seeTagIsHighlighted("Svelte")
-
-    await I.pressKey("Enter")
-    await I.seeTagInputIsFocused("Svelte")
-    await I.editTag("Jenkins")
-
-    await I.seeTag("Jenkins")
-    await I.dontSeeTagInput("Jenkins")
-
-    await I.seeInputIsFocused()
-  })
-
-  test("edit with double click", async () => {
-    await I.addTag("Svelte")
-    await I.doubleClickTag("Svelte")
-
-    await I.seeTagInputIsFocused("Svelte")
-    await I.editTag("Jenkins")
-
-    await I.seeTag("Jenkins")
-    await I.dontSeeTagInput("Jenkins")
-  })
-
-  test("[allowDuplicates: false] editing should not create duplicates", async () => {
+  test("pressing enter on a highlighted tag does not enter edit mode by default", async () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft")
     await I.seeTagIsHighlighted("Vue")
+
     await I.pressKey("Enter")
-    await I.seeTagInputIsFocused("Vue")
-    await I.editTag("React")
-
-    await expect(I.getTag("React")).toHaveCount(1)
-    await expect(I.getTag("Vue")).toHaveCount(1)
-  })
-
-  test("[allowDuplicates: true] editing can create duplicates", async () => {
-    await I.controls.bool("allowDuplicates", true)
-
-    await I.focusInput()
-    await I.pressKey("ArrowLeft")
-    await I.seeTagIsHighlighted("Vue")
-    await I.pressKey("Enter")
-    await I.seeTagInputIsFocused("Vue")
-    await I.editTag("React")
-
-    await expect(I.getTag("React")).toHaveCount(2)
-    await expect(I.getTag("Vue")).toHaveCount(0)
+    await I.dontSeeTagInput("Vue")
   })
 
   test("clears highlighted tag on escape press", async () => {
@@ -311,5 +253,80 @@ test.describe("tags-input", () => {
     await I.seeNoTags()
 
     await I.seeInputIsFocused()
+  })
+})
+
+test.describe("tags-input / editable", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/editable")
+  })
+
+  test("delete tag by clearing its content and hit enter", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+
+    await I.pressKey("Backspace")
+    await I.pressKey("Enter")
+
+    await I.seeInputIsFocused()
+    await I.dontSeeTag("Vue")
+  })
+
+  test("edit tag with enter key", async () => {
+    await I.addTag("Svelte")
+    await I.addTag("Solid")
+
+    await I.pressKey("ArrowLeft", 2)
+    await I.seeTagIsHighlighted("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Svelte")
+    await I.editTag("Jenkins")
+
+    await I.seeTag("Jenkins")
+    await I.dontSeeTagInput("Jenkins")
+
+    await I.seeInputIsFocused()
+  })
+
+  test("edit with double click", async () => {
+    await I.addTag("Svelte")
+    await I.doubleClickTag("Svelte")
+
+    await I.seeTagInputIsFocused("Svelte")
+    await I.editTag("Jenkins")
+
+    await I.seeTag("Jenkins")
+    await I.dontSeeTagInput("Jenkins")
+  })
+
+  test("[allowDuplicates: false] editing should not create duplicates", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(1)
+    await expect(I.getTag("Vue")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true] editing can create duplicates", async () => {
+    await I.controls.bool("allowDuplicates", true)
+
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(2)
+    await expect(I.getTag("Vue")).toHaveCount(0)
   })
 })

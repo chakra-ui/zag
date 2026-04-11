@@ -108,7 +108,7 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
   required?: boolean | undefined
   /**
    * Whether a tag can be edited after creation, by pressing `Enter` or double clicking.
-   * @default true
+   * @default false
    */
   editable?: boolean | undefined
   /**

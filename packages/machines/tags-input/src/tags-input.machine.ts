@@ -14,7 +14,7 @@ export const machine = createMachine<TagsInputSchema>({
     return {
       dir: "ltr",
       addOnPaste: false,
-      editable: true,
+      editable: false,
       validate: () => true,
       allowDuplicates: false,
       delimiter: ",",

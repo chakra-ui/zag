@@ -210,14 +210,14 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-### Disable tag editing
+### Enable tag editing
 
-By default, tags can be edited by double-clicking a tag or focusing it and
-pressing `Enter`. To disable this behavior, set `editable: false`.
+By default, tags are add/remove only. To allow inline editing — double-clicking
+a tag or focusing it and pressing `Enter` — set `editable: true`.
 
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
-  editable: false,
+  editable: true,
 })
 ```
 
