@@ -74,6 +74,18 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "gridlist",
+    label: "Grid List",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "grid", title: "Grid Layout" },
+      { slug: "grouped", title: "Grouped" },
+      { slug: "load-more", title: "Load More" },
+      { slug: "virtualized", title: "Virtualized" },
+      { slug: "links", title: "Links" },
+    ],
+  },
+  {
     slug: "listbox",
     label: "Listbox",
     examples: [

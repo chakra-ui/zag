@@ -147,6 +147,44 @@ export const toggleGroupData = [
   { value: "underline", label: "U" },
 ]
 
+export const gridListGroupedData = [
+  { id: "fav-zag", name: "Zag.js", url: "https://zagjs.com", category: "Favorites" },
+  { id: "fav-panda", name: "Panda CSS", url: "https://panda-css.com", category: "Favorites" },
+  { id: "fav-ark", name: "Ark UI", url: "https://ark-ui.com", category: "Favorites" },
+  { id: "tools-vite", name: "Vite", url: "https://vitejs.dev", category: "Tools" },
+  { id: "tools-vitest", name: "Vitest", url: "https://vitest.dev", category: "Tools" },
+  { id: "tools-pnpm", name: "pnpm", url: "https://pnpm.io", category: "Tools" },
+  { id: "fw-react", name: "React", url: "https://react.dev", category: "Frameworks" },
+  { id: "fw-vue", name: "Vue", url: "https://vuejs.org", category: "Frameworks" },
+  { id: "fw-svelte", name: "Svelte", url: "https://svelte.dev", category: "Frameworks" },
+  { id: "fw-solid", name: "SolidJS", url: "https://solidjs.com", category: "Frameworks" },
+]
+
+export const gridListGridData = [
+  { id: "apple", name: "Apple", icon: "🍎" },
+  { id: "banana", name: "Banana", icon: "🍌" },
+  { id: "cherry", name: "Cherry", icon: "🍒" },
+  { id: "grapes", name: "Grapes", icon: "🍇" },
+  { id: "kiwi", name: "Kiwi", icon: "🥝" },
+  { id: "lemon", name: "Lemon", icon: "🍋" },
+  { id: "mango", name: "Mango", icon: "🥭" },
+  { id: "orange", name: "Orange", icon: "🍊" },
+  { id: "peach", name: "Peach", icon: "🍑" },
+  { id: "pear", name: "Pear", icon: "🍐" },
+  { id: "pineapple", name: "Pineapple", icon: "🍍" },
+  { id: "strawberry", name: "Strawberry", icon: "🍓" },
+]
+
+export const gridListData = [
+  { id: "INBOX", name: "Inbox", description: "Unread messages and updates", badge: "42" },
+  { id: "STARRED", name: "Starred", description: "Messages you marked important", badge: "7" },
+  { id: "SENT", name: "Sent", description: "Messages you've sent", badge: "128" },
+  { id: "DRAFTS", name: "Drafts", description: "Unfinished messages", badge: "3" },
+  { id: "ARCHIVE", name: "Archive", description: "Older threads you've archived", badge: "1.2k" },
+  { id: "SPAM", name: "Spam", description: "Filtered suspicious messages", badge: "14" },
+  { id: "TRASH", name: "Trash", description: "Deleted messages", badge: "0" },
+]
+
 export const treeViewData = {
   name: "",
   children: [

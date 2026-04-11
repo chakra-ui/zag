@@ -230,6 +230,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../../packages/machines/gridlist
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -534,6 +537,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../../packages/machines/gridlist
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1091,6 +1097,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../../packages/machines/gridlist
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1349,6 +1358,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../../packages/machines/gridlist
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -2528,6 +2540,34 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../store
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/gridlist:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

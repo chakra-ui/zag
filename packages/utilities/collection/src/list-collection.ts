@@ -251,9 +251,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
-   * Returns the next value in the collection
+   * Returns the next value in the collection. Passing `null` returns `null`.
    */
-  getNextValue = (value: string, step = 1, clamp = false): string | null => {
+  getNextValue = (value: string | null, step = 1, clamp = false): string | null => {
     let index = this.indexOf(value)
     if (index === -1) return null
     index = clamp ? Math.min(index + step, this.size - 1) : index + step
@@ -262,9 +262,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
-   * Returns the previous value in the collection
+   * Returns the previous value in the collection. Passing `null` returns `null`.
    */
-  getPreviousValue = (value: string, step = 1, clamp = false): string | null => {
+  getPreviousValue = (value: string | null, step = 1, clamp = false): string | null => {
     let index = this.indexOf(value)
     if (index === -1) return null
     index = clamp ? Math.max(index - step, 0) : index - step
@@ -273,28 +273,28 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
-   * Get the index of an item based on its key
+   * Get the index of an item based on its key.
    */
   indexOf = (value: string | null): number => {
     if (value == null) return -1
 
-    // If no grouping is used, use the simple findIndex
-    if (!this.options.groupBy && !this.options.groupSort) {
-      return this.items.findIndex((item) => this.getItemValue(item) === value)
-    }
-
-    // Use cache for grouped lookups
+    // Lazy-build an index map (grouped order when grouping is active).
     if (!this.indexMap) {
       this.indexMap = new Map()
-      let idx = 0
-      const groups = this.group()
-      for (const [, items] of groups) {
-        for (const item of items) {
-          const itemValue = this.getItemValue(item)
-          if (itemValue != null) {
-            this.indexMap.set(itemValue, idx)
+      const isGrouped = !!(this.options.groupBy || this.options.groupSort)
+      if (isGrouped) {
+        let idx = 0
+        for (const [, items] of this.group()) {
+          for (const item of items) {
+            const itemValue = this.getItemValue(item)
+            if (itemValue != null) this.indexMap.set(itemValue, idx)
+            idx++
           }
-          idx++
+        }
+      } else {
+        for (let i = 0; i < this.items.length; i++) {
+          const itemValue = this.getItemValue(this.items[i])
+          if (itemValue != null) this.indexMap.set(itemValue, i)
         }
       }
     }

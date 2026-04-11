@@ -214,6 +214,33 @@ export const listboxControls = defineControls({
   loopFocus: { type: "boolean", defaultValue: false },
 })
 
+export const gridListControls = defineControls({
+  selectionMode: {
+    type: "select",
+    options: ["none", "single", "multiple"] as const,
+    defaultValue: "multiple",
+  },
+  selectionBehavior: {
+    type: "select",
+    options: ["toggle", "replace"] as const,
+    defaultValue: "toggle",
+  },
+  keyboardNavigationBehavior: {
+    type: "select",
+    options: ["arrow", "tab"] as const,
+    defaultValue: "arrow",
+  },
+  escapeKeyBehavior: {
+    type: "select",
+    options: ["clearSelection", "none"] as const,
+    defaultValue: "clearSelection",
+  },
+  deselectable: { type: "boolean", defaultValue: true },
+  disabled: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: false },
+  typeahead: { type: "boolean", defaultValue: true },
+})
+
 export const datePickerControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
