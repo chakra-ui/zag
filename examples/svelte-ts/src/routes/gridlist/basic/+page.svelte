@@ -48,7 +48,7 @@
         {#each gridListData as item}
           <div {...api.getItemProps({ item, focusOnHover: true })}>
             <div {...api.getCellProps()}>
-              {#if api.showCheckboxes}
+              {#if api.hasCheckbox}
                 <button {...api.getItemCheckboxProps({ item })}>
                   <CheckIcon {...api.getItemIndicatorProps({ item })} />
                 </button>

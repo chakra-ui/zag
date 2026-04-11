@@ -214,7 +214,7 @@ export interface GridListSchema<T extends CollectionItem = CollectionItem> {
     multiple: boolean
     selectedItems: T[]
     valueAsString: string
-    showCheckboxes: boolean
+    hasCheckbox: boolean
   }
   refs: {
     typeahead: TypeaheadState
@@ -344,10 +344,10 @@ export interface GridListApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   disabled: boolean
   /**
-   * Whether the gridlist should render checkboxes (i.e. `selectionMode` is not `none`
-   * and `selectionBehavior` is `toggle`).
+   * Whether the gridlist surfaces a per-item checkbox affordance.
+   * True when `selectionMode` is not `none` and `selectionBehavior` is `toggle`.
    */
-  showCheckboxes: boolean
+  hasCheckbox: boolean
   /**
    * Function to select an item by value
    */

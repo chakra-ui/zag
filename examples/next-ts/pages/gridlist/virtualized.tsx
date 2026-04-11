@@ -87,7 +87,7 @@ export default function Page() {
                       }}
                     >
                       <div {...api.getCellProps()}>
-                        {api.showCheckboxes && (
+                        {api.hasCheckbox && (
                           <button {...api.getItemCheckboxProps({ item })}>
                             <CheckIcon {...api.getItemIndicatorProps({ item })} />
                           </button>

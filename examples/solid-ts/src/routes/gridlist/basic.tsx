@@ -49,7 +49,7 @@ export default function Page() {
                 {(item) => (
                   <div {...api().getItemProps({ item, focusOnHover: true })}>
                     <div {...api().getCellProps()}>
-                      <Show when={api().showCheckboxes}>
+                      <Show when={api().hasCheckbox}>
                         <button {...api().getItemCheckboxProps({ item })}>
                           <CheckIcon {...api().getItemIndicatorProps({ item })} />
                         </button>

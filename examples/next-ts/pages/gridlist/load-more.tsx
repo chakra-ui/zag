@@ -71,7 +71,7 @@ export default function Page() {
               {listApi.items.map((item) => (
                 <div key={item.name} {...api.getItemProps({ item, focusOnHover: true })}>
                   <div {...api.getCellProps()}>
-                    {api.showCheckboxes && (
+                    {api.hasCheckbox && (
                       <button {...api.getItemCheckboxProps({ item })}>
                         <CheckIcon {...api.getItemIndicatorProps({ item })} />
                       </button>

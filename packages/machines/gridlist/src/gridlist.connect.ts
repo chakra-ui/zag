@@ -94,7 +94,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     valueAsString: computed("valueAsString"),
     collection,
     disabled: !!disabled,
-    showCheckboxes: computed("showCheckboxes"),
+    hasCheckbox: computed("hasCheckbox"),
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
     },

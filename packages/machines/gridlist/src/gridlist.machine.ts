@@ -115,7 +115,7 @@ export const machine = createMachine({
         selectedItemMap: context.get("selectedItemMap"),
       }),
     valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
-    showCheckboxes: ({ prop }) => {
+    hasCheckbox: ({ prop }) => {
       return prop("selectionMode") !== "none" && prop("selectionBehavior") === "toggle"
     },
   },
