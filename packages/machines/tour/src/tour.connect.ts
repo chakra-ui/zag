@@ -30,6 +30,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
     placement: isTooltipPlacement(placement) ? placement : undefined,
+    positioned: context.get("positioned"),
   })
 
   const clipPath = getClipPath({

@@ -177,6 +177,7 @@ export type ColorPickerSchema = {
     areaDragPosition: { x: number; y: number } | null
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
+    positioned: boolean
     restoreFocus: boolean
   }
   event: EventObject

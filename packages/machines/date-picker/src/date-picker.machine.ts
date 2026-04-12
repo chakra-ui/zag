@@ -214,6 +214,7 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
+      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -414,7 +415,7 @@ export const machine = createMachine<DatePickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearHoveredDate", "resetView"],
+      exit: ["clearHoveredDate", "resetView", "clearPositioned"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -745,6 +746,7 @@ export const machine = createMachine<DatePickerSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },
@@ -902,6 +904,9 @@ export const machine = createMachine<DatePickerSchema>({
       },
       clearHoveredDate({ context }) {
         context.set("hoveredValue", null)
+      },
+      clearPositioned({ context }) {
+        context.set("positioned", false)
       },
       selectFocusedDate({ context, computed }) {
         const values = Array.from(context.get("value"))

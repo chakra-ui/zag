@@ -26,6 +26,7 @@ export function connect<P extends PropTypes>(
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: context.get("currentPlacement"),
+    positioned: context.get("positioned"),
   })
 
   return {

@@ -77,6 +77,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
+      positioned: bindable(() => ({ defaultValue: false })),
       fieldsetDisabled: bindable<boolean>(() => ({
         defaultValue: false,
       })),
@@ -298,7 +299,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearHighlightedValue", "scrollContentToTop"],
+      exit: ["clearHighlightedValue", "scrollContentToTop", "clearPositioned"],
       effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -625,6 +626,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           ...prop("positioning"),
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },
@@ -1008,6 +1010,9 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       dispatchChangeEvent({ scope, context }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: context.hash("value") })
+      },
+      clearPositioned({ context }) {
+        context.set("positioned", false)
       },
       scrollContentToTop({ scope, prop }) {
         const scrollToIndexFn = prop("scrollToIndexFn")

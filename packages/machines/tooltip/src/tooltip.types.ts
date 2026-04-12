@@ -133,6 +133,7 @@ export interface TooltipSchema {
     currentPlacement: Placement | undefined
     hasPointerMoveOpened: string | null
     triggerValue: string | null
+    positioned: boolean
   }
   event: EventObject
   action: string

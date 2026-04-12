@@ -87,6 +87,7 @@ export const machine = createMachine<ColorPickerSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
+      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -212,6 +213,7 @@ export const machine = createMachine<ColorPickerSchema>({
 
     open: {
       tags: ["open"],
+      exit: ["clearPositioned"],
       effects: ["trackPositioning", "trackDismissableElement"],
       initial: "idle",
       on: {
@@ -385,6 +387,7 @@ export const machine = createMachine<ColorPickerSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },
@@ -439,6 +442,9 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
+      clearPositioned({ context }) {
+        context.set("positioned", false)
+      },
       openEyeDropper({ scope, context }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win

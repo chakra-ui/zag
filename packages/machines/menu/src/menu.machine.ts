@@ -94,6 +94,7 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingMode: bindable<"interactive" | "locked">(() => ({
         defaultValue: "interactive",
       })),
+      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -411,6 +412,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "unlockParentOnOpen"],
+      exit: ["clearPositioned"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -599,6 +601,7 @@ export const machine = createMachine<MenuSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },
@@ -934,6 +937,9 @@ export const machine = createMachine<MenuSchema>({
       releaseParentRoutingLock({ refs, context }) {
         if (!context.get("isSubmenu")) return
         unlockParentOnSubmenuClose(refs.get("parent"))
+      },
+      clearPositioned({ context }) {
+        context.set("positioned", false)
       },
       toggleVisibility({ prop, event, send }) {
         send({

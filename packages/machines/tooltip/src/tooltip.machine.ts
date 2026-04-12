@@ -52,6 +52,7 @@ export const machine = createMachine<TooltipSchema>({
         onTriggerValueChange({ value, triggerElement })
       },
     })),
+    positioned: bindable(() => ({ defaultValue: false })),
   }),
 
   watch({ track, action, prop }) {
@@ -166,6 +167,7 @@ export const machine = createMachine<TooltipSchema>({
     open: {
       effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
       entry: ["setGlobalId"],
+      exit: ["clearPositioned"],
       on: {
         "controlled.close": {
           target: "closed",
@@ -361,6 +363,10 @@ export const machine = createMachine<TooltipSchema>({
           send({ type: "reopen" })
         })
       },
+
+      clearPositioned({ context }) {
+        context.set("positioned", false)
+      },
     },
     effects: {
       trackFocusVisible: ({ scope }) => {
@@ -379,6 +385,7 @@ export const machine = createMachine<TooltipSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },

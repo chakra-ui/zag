@@ -14,9 +14,11 @@ const ARROW_FLOATING_STYLE = {
 } as const
 
 export function getPlacementStyles(
-  options: Pick<PositioningOptions, "placement" | "sameWidth" | "fitViewport" | "strategy"> = {},
+  options: Pick<PositioningOptions, "placement" | "sameWidth" | "fitViewport" | "strategy"> & {
+    positioned?: boolean | undefined
+  } = {},
 ) {
-  const { placement, sameWidth, fitViewport, strategy = "absolute" } = options
+  const { placement, sameWidth, fitViewport, strategy = "absolute", positioned = true } = options
 
   return {
     arrow: {
@@ -51,6 +53,7 @@ export function getPlacementStyles(
       left: "0px",
       // move off-screen if placement is not defined
       transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
+      opacity: !positioned ? "0" : undefined,
       zIndex: "var(--z-index)",
     } as const,
   }

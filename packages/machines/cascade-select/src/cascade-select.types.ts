@@ -171,6 +171,7 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     value: string[][]
     highlightedValue: string[]
     currentPlacement: Placement | undefined
+    positioned: boolean
     fieldsetDisabled: boolean
     graceArea: Point[] | null
     valueIndexPath: IndexPath[]

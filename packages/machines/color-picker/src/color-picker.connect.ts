@@ -65,6 +65,7 @@ export function connect<T extends PropTypes>(
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
+    positioned: context.get("positioned"),
   })
 
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
