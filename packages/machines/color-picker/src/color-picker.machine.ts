@@ -437,7 +437,7 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
-      openEyeDropper({ scope, context }) {
+      openEyeDropper({ scope, context, prop }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win
         if (!isSupported) return
@@ -448,6 +448,13 @@ export const machine = createMachine<ColorPickerSchema>({
             const format = context.get("value").getFormat()
             const color = parseColor(sRGBHex).toFormat(format) as Color
             context.set("value", color)
+            return color
+          })
+          .then((value) => {
+            prop("onValueChangeEnd")?.({
+              value,
+              valueAsString: value.toString(context.get("format")),
+            })
           })
           .catch(() => void 0)
       },
