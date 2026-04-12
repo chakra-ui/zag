@@ -272,6 +272,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Select",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "align-item-with-trigger", title: "Align Item With Trigger" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "async", title: "Async" },

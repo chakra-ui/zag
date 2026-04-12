@@ -4,6 +4,7 @@ import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { AutoScrollHandlers } from "./select.dom"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -174,6 +175,13 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * **Note:** this is only applicable for single selection
    */
   deselectable?: boolean | undefined
+  /**
+   * Whether the positioner overlaps the trigger so the selected item's text is
+   * aligned with the trigger's value text. Only applies to mouse/keyboard input
+   * and is automatically disabled for touch or when there is not enough space.
+   * @default false
+   */
+  alignItemWithTrigger?: boolean | undefined
 }
 
 type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
@@ -188,6 +196,9 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     fieldsetDisabled: boolean
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
+    scrollArrowVisibility: "none" | "top" | "bottom" | "both"
+    positioned: boolean
+    aligned: boolean
   }
   computed: {
     hasSelectedItems: boolean
@@ -199,6 +210,11 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   }
   refs: {
     typeahead: TypeaheadState
+    openMethod: "mouse" | "touch" | "keyboard" | null
+    autoScrollTop: AutoScrollHandlers | null
+    autoScrollBottom: AutoScrollHandlers | null
+    realignWithTrigger: VoidFunction | null
+    handleGrowth: VoidFunction | null
   }
   action: string
   guard: string
@@ -252,7 +268,24 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
+export interface ScrollArrowProps {
+  /**
+   * Where the scroll arrow is placed.
+   * - `"top"`: the arrow shown at the top of the popup (scrolls content up)
+   * - `"bottom"`: the arrow shown at the bottom of the popup (scrolls content down)
+   */
+  placement: "top" | "bottom"
+}
+
 export interface SelectApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
+  /**
+   * Which scroll arrows should be visible based on the content's scroll position.
+   * - `"none"`: content fits, no scrolling needed
+   * - `"top"`: scrolled past the top (top arrow visible)
+   * - `"bottom"`: more content below (bottom arrow visible)
+   * - `"both"`: scrolled somewhere in the middle (both arrows visible)
+   */
+  scrollArrowVisibility: "none" | "top" | "bottom" | "both"
   /**
    * Whether the select is focused
    */
@@ -358,6 +391,7 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   getItemIndicatorProps: (props: ItemProps) => T["element"]
   getItemGroupProps: (props: ItemGroupProps) => T["element"]
   getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
+  getScrollArrowProps: (props: ScrollArrowProps) => T["element"]
   getHiddenSelectProps: () => T["select"]
 }
 

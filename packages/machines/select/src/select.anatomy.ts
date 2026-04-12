@@ -16,5 +16,6 @@ export const anatomy = createAnatomy("select").parts(
   "root",
   "control",
   "valueText",
+  "scrollArrow",
 )
 export const parts = anatomy.build()

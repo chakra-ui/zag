@@ -1,18 +1,21 @@
+import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
   markAsInternalChangeEvent,
+  nextTick,
   observeAttributes,
   raf,
+  resizeObserverContentBox,
   scrollIntoView,
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
-import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
+import { trackAlignItemWithTrigger } from "./align-with-trigger"
 import { collection } from "./select.collection"
 import * as dom from "./select.dom"
 import type { CollectionItem, SelectSchema } from "./select.types"
@@ -103,12 +106,26 @@ export const machine = createMachine<SelectSchema>({
           }),
         }
       }),
+      scrollArrowVisibility: bindable<"none" | "top" | "bottom" | "both">(() => ({
+        defaultValue: "none",
+      })),
+      positioned: bindable(() => ({
+        defaultValue: false,
+      })),
+      aligned: bindable(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
   refs() {
     return {
       typeahead: { ...getByTypeahead.defaultOptions },
+      openMethod: null,
+      autoScrollTop: null,
+      autoScrollBottom: null,
+      realignWithTrigger: null,
+      handleGrowth: null,
     }
   },
 
@@ -144,7 +161,7 @@ export const machine = createMachine<SelectSchema>({
       action(["syncHighlightedItem"])
     })
     track([() => prop("collection").toString()], () => {
-      action(["syncCollection"])
+      action(["syncCollection", "realignWithTrigger"])
     })
   },
 
@@ -329,8 +346,14 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollContentToTop"],
-      effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItem"],
+      exit: ["scrollContentToTop", "cleanupScrollArrows", "clearPlacementState"],
+      effects: [
+        "trackDismissableElement",
+        "trackFocusVisible",
+        "computePlacement",
+        "scrollToHighlightedItem",
+        "trackScrollArrowVisibility",
+      ],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -426,6 +449,12 @@ export const machine = createMachine<SelectSchema>({
         "POSITIONING.SET": {
           actions: ["reposition"],
         },
+        "SCROLL_ARROW.POINTER_MOVE": {
+          actions: ["startAutoScroll"],
+        },
+        "SCROLL_ARROW.POINTER_LEAVE": {
+          actions: ["stopAutoScroll"],
+        },
       },
     },
   },
@@ -483,18 +512,65 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      computePlacement({ context, prop, scope }) {
+      computePlacement({ context, prop, scope, refs }) {
         const positioning = prop("positioning")
         context.set("currentPlacement", positioning.placement)
-        const triggerEl = () => dom.getTriggerEl(scope)
-        const positionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(triggerEl, positionerEl, {
-          defer: true,
-          ...positioning,
-          onComplete(data) {
-            context.set("currentPlacement", data.placement)
+        const markPositioned = () => {
+          context.set("positioned", true)
+        }
+        const onPlacementChange = (placement: Placement) => {
+          context.set("currentPlacement", placement)
+          markPositioned()
+        }
+
+        if (!prop("alignItemWithTrigger") || refs.get("openMethod") === "touch") {
+          return getPlacement(
+            () => dom.getTriggerEl(scope),
+            () => dom.getPositionerEl(scope),
+            { defer: true, ...positioning, onComplete: (data) => onPlacementChange(data.placement) },
+          )
+        }
+
+        const tracker = trackAlignItemWithTrigger(scope, {
+          dir: prop("dir"),
+          positioning,
+          onPlacementChange,
+          onAligned() {
+            markPositioned()
+            context.set("aligned", true)
           },
         })
+
+        refs.set("realignWithTrigger", tracker.realign)
+        refs.set("handleGrowth", tracker.handleGrowth)
+        return tracker.cleanup
+      },
+
+      trackScrollArrowVisibility({ context, scope }) {
+        const exec = () => {
+          const next = dom.computeScrollArrowVisibility(dom.getContentEl(scope))
+          context.set("scrollArrowVisibility", next)
+        }
+
+        let contentEl: HTMLElement | null = null
+        let unobserveResize: VoidFunction | undefined
+        const win = scope.getWin()
+
+        // Defer listener attachment — contentEl may not exist until React commits
+        raf(() => {
+          exec()
+          contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+          unobserveResize = resizeObserverContentBox.observe(contentEl, exec)
+          contentEl.addEventListener("scroll", exec, { passive: true })
+          win.addEventListener("resize", exec)
+        })
+
+        return () => {
+          unobserveResize?.()
+          contentEl?.removeEventListener("scroll", exec)
+          win.removeEventListener("resize", exec)
+        }
       },
 
       scrollToHighlightedItem({ context, prop, scope }) {
@@ -520,10 +596,14 @@ export const machine = createMachine<SelectSchema>({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollIntoView(itemEl, { rootEl: contentEl, block: immediate ? "center" : "nearest" })
         }
 
-        raf(() => {
+        // nextTick (double raf) so this runs after the align utility's initial
+        // pass. In aligned mode the align utility manages scroll — skip.
+        // In fallback mode, scroll the selected item into view.
+        nextTick(() => {
+          if (context.get("aligned")) return
           setInteractionModality("virtual")
           exec(true)
         })
@@ -708,6 +788,44 @@ export const machine = createMachine<SelectSchema>({
         })
         if (value == null) return
         context.set("value", [value])
+      },
+
+      cleanupScrollArrows({ context, refs }) {
+        context.set("scrollArrowVisibility", "none")
+        refs.get("autoScrollTop")?.stop()
+        refs.get("autoScrollBottom")?.stop()
+      },
+
+      clearPlacementState({ context }) {
+        context.set("currentPlacement", undefined)
+        context.set("positioned", false)
+        context.set("aligned", false)
+      },
+
+      startAutoScroll({ refs, scope, prop, event }) {
+        const placement: "top" | "bottom" = event.placement
+        const key = placement === "top" ? "autoScrollTop" : "autoScrollBottom"
+        let handlers = refs.get(key)
+        if (!handlers) {
+          handlers = dom.createAutoScroll({
+            placement,
+            getScroller: () => dom.getContentEl(scope),
+            getItems: () => (prop("scrollToIndexFn") ? [] : dom.getItemEls(scope)),
+            getWin: () => scope.getWin(),
+            onStep: () => refs.get("handleGrowth")?.(),
+          })
+          refs.set(key, handlers)
+        }
+        handlers.start()
+      },
+
+      stopAutoScroll({ refs, event }) {
+        const key = event.placement === "top" ? "autoScrollTop" : "autoScrollBottom"
+        refs.get(key)?.stop()
+      },
+
+      realignWithTrigger({ refs }) {
+        refs.get("realignWithTrigger")?.()
       },
 
       scrollContentToTop({ prop, scope }) {

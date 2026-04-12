@@ -17,13 +17,13 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
+import type { CollectionItem, ItemProps, ItemState, ScrollArrowProps, SelectApi, SelectSchema } from "./select.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
-  const { context, prop, scope, state, computed, send } = service
+  const { context, prop, scope, state, computed, send, refs } = service
   const translations = prop("translations")
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
@@ -36,10 +36,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const open = state.hasTag("open")
   const focused = state.matches("focused")
 
+  const scrollArrowVisibility = context.get("scrollArrowVisibility")
+  const scrollTopArrowVisible = scrollArrowVisibility === "top" || scrollArrowVisibility === "both"
+  const scrollBottomArrowVisible = scrollArrowVisibility === "bottom" || scrollArrowVisibility === "both"
+  const openMethod = refs.get("openMethod")
+  const scrollArrowsEnabled = openMethod !== "touch"
+
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
   const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
+  const aligned = context.get("aligned")
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
@@ -61,11 +68,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
+    positioned: context.get("positioned"),
   })
 
   return {
     open: open,
     focused: focused,
+    scrollArrowVisibility: scrollArrowsEnabled ? scrollArrowVisibility : "none",
     empty: context.get("value").length === 0,
     highlightedItem,
     highlightedValue,
@@ -179,10 +188,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         "data-placement": currentPlacement,
+        "data-align-with-trigger": dataAttr(aligned),
         "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
         onClick(event) {
           if (!interactive) return
           if (event.defaultPrevented) return
+          const pointerType = (getNativeEvent(event) as PointerEvent)?.pointerType
+          refs.set("openMethod", pointerType === "mouse" ? "mouse" : pointerType ? "touch" : "keyboard")
           send({ type: "TRIGGER.CLICK" })
         },
         onFocus() {
@@ -194,6 +206,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
+          refs.set("openMethod", "keyboard")
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
@@ -355,6 +368,30 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getScrollArrowProps(props: ScrollArrowProps) {
+      const { placement } = props
+      const isTop = placement === "top"
+      const visible = isTop ? scrollTopArrowVisible : scrollBottomArrowVisible
+      const enabled = visible && scrollArrowsEnabled
+
+      return normalize.element({
+        ...parts.scrollArrow.attrs(scope.id),
+        dir: prop("dir"),
+        "data-placement": placement,
+        "data-state": enabled ? "visible" : "hidden",
+        "aria-hidden": true,
+        hidden: !enabled,
+        onMouseMove(event) {
+          if (!enabled) return
+          if (event.movementX === 0 && event.movementY === 0) return
+          send({ type: "SCROLL_ARROW.POINTER_MOVE", placement })
+        },
+        onMouseLeave() {
+          send({ type: "SCROLL_ARROW.POINTER_LEAVE", placement })
+        },
+      })
+    },
+
     getHiddenSelectProps() {
       const value = context.get("value")
       const defaultValue = prop("multiple") ? value : value?.[0]
@@ -405,6 +442,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.content.attrs(scope.id),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-align-with-trigger": dataAttr(aligned),
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,

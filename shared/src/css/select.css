@@ -100,3 +100,41 @@
   background: rgb(0, 0, 195);
   color: white;
 }
+
+[data-select-scroll-arrow] {
+  width: 100%;
+  background: #efefef;
+  z-index: 1;
+  text-align: center;
+  cursor: default;
+  border-radius: inherit;
+  height: 1rem;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+  }
+
+  &[data-placement="top"]::before {
+    top: -100%;
+  }
+
+  &[data-placement="bottom"] {
+    bottom: 0;
+
+    &::before {
+      bottom: -100%;
+    }
+  }
+
+  &[data-state="hidden"] {
+    display: none;
+  }
+}
