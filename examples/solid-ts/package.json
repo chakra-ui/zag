@@ -95,6 +95,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/virtualizer": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-solid": "1.7.0",
     "solid-js": "1.9.12",
