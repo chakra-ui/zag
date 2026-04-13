@@ -1,8 +1,7 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
-import { getComputedStyle } from "@zag-js/dom-query"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { useId, useRef } from "react"
+import { useId } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const items = new Array(10000).fill(0).map((_, index) => ({
   label: `Item ${index}`,
@@ -17,57 +16,37 @@ interface Item {
 }
 
 export default function Page() {
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  const rowVirtualizer = useVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    getScrollElement: () => contentRef.current,
-    estimateSize: () => 28,
+    estimatedSize: () => 28,
     overscan: 12,
-    get scrollPaddingStart() {
-      if (!contentRef.current) return 0
-      const style = getComputedStyle(contentRef.current)
-      return (
-        Number.parseFloat(style.paddingBlockStart || style.paddingTop) +
-        Number.parseFloat(style.borderBlockStartWidth || style.borderTopWidth) +
-        Number.parseFloat(style.outlineWidth)
-      )
-    },
-    get scrollPaddingEnd() {
-      if (!contentRef.current) return 0
-      const style = getComputedStyle(contentRef.current)
-      return (
-        Number.parseFloat(style.paddingBlockEnd || style.paddingBottom) +
-        Number.parseFloat(style.borderBlockEndWidth || style.borderBottomWidth) +
-        Number.parseFloat(style.outlineWidth)
-      )
-    },
   })
 
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     collection,
     id: useId(),
-    scrollToIndexFn: (e) => {
-      rowVirtualizer.scrollToIndex(e.index, { align: "auto" })
+    scrollToIndexFn(details) {
+      virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
   })
 
   const api = listbox.connect(service, normalizeProps)
+  const virtualItems = virtualizer.getVirtualItems()
 
   return (
     <>
       <main className="listbox">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Label</label>
-          <div ref={contentRef} {...api.getContentProps()}>
+          <div ref={ref} {...api.getContentProps()} onScroll={virtualizer.handleScroll}>
             <div
               style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
+                height: virtualizer.getTotalSize(),
                 width: "100%",
                 position: "relative",
               }}
             >
-              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+              {virtualItems.map((virtualItem) => {
                 const item = items[virtualItem.index]
                 return (
                   <div
@@ -77,12 +56,8 @@ export default function Page() {
                     aria-setsize={items.length}
                     aria-posinset={virtualItem.index + 1}
                     style={{
-                      position: "absolute",
-                      top: 0,
-                      insetBlockStart: 0,
-                      transform: `translateY(${virtualItem.start}px)`,
+                      ...virtualizer.getItemStyle(virtualItem),
                       overflowAnchor: "none",
-                      width: "100%",
                     }}
                   >
                     <span {...api.getItemTextProps({ item })}>{item.label}</span>

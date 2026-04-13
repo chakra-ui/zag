@@ -1,9 +1,9 @@
-import { useVirtualizer, type Virtualizer } from "@tanstack/react-virtual"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
-import { useId, useRef } from "react"
+import { useId } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -14,30 +14,16 @@ interface Node {
   children?: Node[]
 }
 
-// Generate a large tree for virtualization demo
 function generateLargeTree(): Node {
   const folders: Node[] = []
-
   for (let i = 0; i < 50; i++) {
     const children: Node[] = []
     for (let j = 0; j < 20; j++) {
-      children.push({
-        id: `folder-${i}/file-${j}.ts`,
-        name: `file-${j}.ts`,
-      })
+      children.push({ id: `folder-${i}/file-${j}.ts`, name: `file-${j}.ts` })
     }
-    folders.push({
-      id: `folder-${i}`,
-      name: `folder-${i}`,
-      children,
-    })
+    folders.push({ id: `folder-${i}`, name: `folder-${i}`, children })
   }
-
-  return {
-    id: "ROOT",
-    name: "",
-    children: folders,
-  }
+  return { id: "ROOT", name: "", children: folders }
 }
 
 const collection = tree.collection<Node>({
@@ -56,23 +42,14 @@ interface TreeNodeProps {
 
 const TreeNode = (props: TreeNodeProps) => {
   const { node, indexPath, api } = props
-
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
-
-  // Calculate indentation based on depth
   const indent = nodeState.depth * 20
 
   return (
     <div
       {...api.getNodeProps(nodeProps)}
-      style={{
-        paddingLeft: indent,
-        height: ROW_HEIGHT,
-        display: "flex",
-        alignItems: "center",
-        gap: "4px",
-      }}
+      style={{ paddingLeft: indent, height: ROW_HEIGHT, display: "flex", alignItems: "center", gap: "4px" }}
     >
       <div {...api.getCellProps(nodeProps)}>
         {nodeState.isBranch && (
@@ -95,32 +72,26 @@ const TreeNode = (props: TreeNodeProps) => {
 
 export default function Page() {
   const controls = useControls(treeviewControls)
-  const parentRef = useRef<HTMLDivElement>(null)
-  const virtualizerRef = useRef<Virtualizer<HTMLDivElement, Element>>(null)
+
+  const { virtualizer, ref } = useListVirtualizer({
+    count: 0,
+    estimatedSize: () => ROW_HEIGHT,
+    overscan: 10,
+  })
 
   const service = useMachine(tree.machine, {
     id: useId(),
     collection,
     ...controls.context,
     scrollToIndexFn(details) {
-      virtualizerRef.current?.scrollToIndex(details.index, { align: "auto" })
+      virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
   })
 
   const api = tree.connect(service, normalizeProps)
-
-  // Get visible nodes (now returns { node, indexPath }[])
   const visibleNodes = api.getVisibleNodes()
 
-  const virtualizer = useVirtualizer({
-    count: visibleNodes.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => ROW_HEIGHT,
-    overscan: 10,
-  })
-
-  // Keep ref updated for scrollToIndexFn
-  virtualizerRef.current = virtualizer
+  virtualizer.updateOptions({ count: visibleNodes.length })
 
   return (
     <>
@@ -138,42 +109,17 @@ export default function Page() {
             )}
           </div>
 
-          {/* Scrollable container */}
           <div
-            ref={parentRef}
+            ref={ref}
             {...api.getTreeProps()}
-            style={{
-              height: 400,
-              overflow: "auto",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
+            onScroll={virtualizer.handleScroll}
+            style={{ height: 400, overflow: "auto", border: "1px solid #ccc", borderRadius: "4px" }}
           >
-            {/* Total size container */}
-            <div
-              style={{
-                height: `${virtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {/* Only render visible items */}
-              {virtualizer.getVirtualItems().map((virtualItem) => {
-                const { node, indexPath } = visibleNodes[virtualItem.index]
-
+            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+              {virtualizer.getVirtualItems().map((vi) => {
+                const { node, indexPath } = visibleNodes[vi.index]
                 return (
-                  <div
-                    key={node.id}
-                    data-index={virtualItem.index}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: `${virtualItem.size}px`,
-                      transform: `translateY(${virtualItem.start}px)`,
-                    }}
-                  >
+                  <div key={node.id} data-index={vi.index} style={virtualizer.getItemStyle(vi)}>
                     <TreeNode node={node} indexPath={indexPath} api={api} />
                   </div>
                 )

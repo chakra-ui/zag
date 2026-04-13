@@ -546,6 +546,19 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "key-recorder", title: "Key Recorder" },
     ],
   },
+  {
+    slug: "virtualizer",
+    label: "Virtualizer",
+    examples: [
+      { slug: "list", title: "List" },
+      { slug: "grid", title: "Grid" },
+      { slug: "padding", title: "Padding" },
+      { slug: "sticky", title: "Sticky Headers" },
+      { slug: "perf", title: "Perf: Fixed Height" },
+      { slug: "perf-variable", title: "Perf: Variable (measureElement)" },
+      { slug: "perf-dynamic", title: "Perf: Variable (Known Sizes)" },
+    ],
+  },
 ]
 
 export const exampleRoutes: ExampleRoute[] = componentRoutes.flatMap((componentRoute) =>

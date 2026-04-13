@@ -1,8 +1,8 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import { useId, useRef } from "react"
+import { useId } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const collection = select.collection({
   items: selectData,
@@ -11,19 +11,17 @@ const collection = select.collection({
 })
 
 export default function Page() {
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  const virtualizer = useVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer({
     count: selectData.length,
-    getScrollElement: () => contentRef.current,
-    estimateSize: () => 32,
+    estimatedSize: () => 32,
+    observeScrollElementSize: true,
   })
 
   const service = useMachine(select.machine, {
     id: useId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+      virtualizer.scrollToIndex(details.index, { align: "center" })
     },
   })
 
@@ -39,27 +37,16 @@ export default function Page() {
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div ref={contentRef} {...api.getContentProps()}>
-              <div
-                style={{
-                  height: `${virtualizer.getTotalSize()}px`,
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                {virtualizer.getVirtualItems().map((virtualItem) => {
-                  const item = selectData[virtualItem.index]
+            <div {...api.getContentProps()} ref={ref} onScroll={virtualizer.handleScroll}>
+              <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+                {virtualizer.getVirtualItems().map((vi) => {
+                  const item = selectData[vi.index]
                   return (
                     <div
                       key={item.value}
                       {...api.getItemProps({ item })}
                       style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: `${virtualItem.size}px`,
-                        transform: `translateY(${virtualItem.start}px)`,
+                        ...virtualizer.getItemStyle(vi),
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",

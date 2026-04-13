@@ -62,7 +62,6 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
-    // Initialize size tracker if needed
     if (!this.sizeTracker) {
       this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
@@ -70,20 +69,19 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const changed = this.sizeTracker.setMeasuredSize(index, size)
     if (!changed) return false
 
-    // Also update parent's cache
     this.itemSizeCache.set(index, size)
-
-    // Clear range cache as measurements changed
-    if (this.rangeCache) {
-      this.rangeCache.clear()
-    }
-
+    // Measured sizes change the mapping from viewport offset to visible range.
+    // Clear rangeCache so stale ranges aren't reused at the same scroll position.
+    this.rangeCache?.clear()
     return true
   }
 
   protected getMeasurement(index: number): { start: number; size: number; end: number } {
-    const cached = this.measureCache.get(index)
-    if (cached) return cached
+    // Use cache if entry is below the dirty floor (unaffected by recent measurements)
+    if (index < this.measureCacheDirtyFrom) {
+      const cached = this.measureCache.get(index)
+      if (cached) return cached
+    }
 
     const { paddingStart, gap } = this.options
     const size = this.getItemSize(index)

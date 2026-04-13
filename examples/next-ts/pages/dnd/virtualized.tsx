@@ -1,8 +1,8 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as dnd from "@zag-js/dnd"
 import { GripVerticalIcon } from "lucide-react"
-import { useId, useRef, useState } from "react"
+import { useId, useState } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
@@ -13,14 +13,15 @@ const initialItems = Array.from({ length: 500 }, (_, i) => ({
 
 export default function Page() {
   const [items, setItems] = useState(initialItems)
-  const scrollRef = useRef<HTMLDivElement>(null)
 
-  const rowVirtualizer = useVirtualizer({
-    count: items.length,
-    getScrollElement: () => scrollRef.current,
-    estimateSize: () => 40,
+  const { virtualizer, ref } = useListVirtualizer({
+    count: initialItems.length,
+    estimatedSize: () => 40,
     overscan: 10,
   })
+
+  // Sync count before render
+  virtualizer.updateOptions({ count: items.length })
 
   const service = useMachine(dnd.machine, {
     id: useId(),
@@ -37,28 +38,12 @@ export default function Page() {
       <main className="dnd">
         <div {...api.getRootProps()}>
           <h3>Virtualized (500 items)</h3>
-          <div ref={scrollRef} style={{ maxHeight: 400, overflow: "auto" }}>
-            <div
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-                const item = items[virtualItem.index]
+          <div ref={ref} onScroll={virtualizer.handleScroll} style={{ maxHeight: 400, overflow: "auto" }}>
+            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+              {virtualizer.getVirtualItems().map((vi) => {
+                const item = items[vi.index]
                 return (
-                  <div
-                    key={item.id}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      transform: `translateY(${virtualItem.start}px)`,
-                      height: virtualItem.size,
-                    }}
-                  >
+                  <div key={item.id} style={virtualizer.getItemStyle(vi)}>
                     <div style={{ position: "relative", height: "100%" }}>
                       <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} />
                       <div

@@ -1,9 +1,11 @@
 "use client"
-import { useVirtualizer } from "@tanstack/react-virtual"
+
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import { useId, useRef } from "react"
+import { ListVirtualizer } from "@zag-js/virtualizer"
+import { useCallback, useEffect, useId, useReducer, useState } from "react"
+import { flushSync } from "react-dom"
 
 const collection = select.collection({
   items: selectData,
@@ -11,8 +13,10 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-interface SelectProps
-  extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"> {
+interface SelectProps extends Omit<
+  select.Props,
+  "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"
+> {
   defaultValue?: string | null | undefined
   value?: string | null | undefined
   onValueChange?: (value: string) => void
@@ -23,15 +27,30 @@ const toArray = (value: string | null | undefined) => (value ? [value] : undefin
 export function VirtualizedSelect(props: SelectProps) {
   const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
-  const contentRef = useRef<HTMLDivElement>(null)
+  const [, rerender] = useReducer(() => ({}), {})
 
-  const rowVirtualizer = useVirtualizer({
-    count: selectData.length,
-    getScrollElement: () => contentRef.current,
-    estimateSize: () => 32,
-  })
+  const [virtualizer] = useState(
+    () =>
+      new ListVirtualizer({
+        count: selectData.length,
+        estimatedSize: () => 32,
+        observeScrollElementSize: true,
+        onRangeChange() {
+          flushSync(rerender)
+        },
+      }),
+  )
 
-  const timerRef = useRef<NodeJS.Timeout>()
+  const setRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      if (!el) return
+      virtualizer.init(el)
+      rerender()
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   const service = useMachine(select.machine, {
     id: useId(),
@@ -45,14 +64,7 @@ export function VirtualizedSelect(props: SelectProps) {
       onValueChange?.(details.value[0])
     },
     scrollToIndexFn(details) {
-      if (!details.immediate) {
-        rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
-      } else {
-        clearTimeout(timerRef.current)
-        timerRef.current = setTimeout(() => {
-          rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
-        })
-      }
+      virtualizer.scrollToIndex(details.index, { align: "center" })
     },
   })
 
@@ -67,27 +79,22 @@ export function VirtualizedSelect(props: SelectProps) {
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div ref={contentRef} {...api.getContentProps()}>
+          <div {...api.getContentProps()} ref={setRef} onScroll={virtualizer.handleScroll}>
             <div
               style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
+                height: virtualizer.getTotalSize(),
                 width: "100%",
                 position: "relative",
               }}
             >
-              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+              {virtualizer.getVirtualItems().map((virtualItem) => {
                 const item = selectData[virtualItem.index]
                 return (
                   <div
                     key={item.value}
                     {...api.getItemProps({ item })}
                     style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: `${virtualItem.size}px`,
-                      transform: `translateY(${virtualItem.start}px)`,
+                      ...virtualizer.getItemStyle(virtualItem),
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",

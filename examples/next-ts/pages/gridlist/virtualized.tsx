@@ -1,8 +1,8 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { CheckIcon } from "lucide-react"
-import { useId, useMemo, useRef } from "react"
+import { useId, useMemo } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
@@ -22,8 +22,6 @@ const items: Row[] = Array.from({ length: ROW_COUNT }, (_, i) => ({
 }))
 
 export default function Page() {
-  const rootRef = useRef<HTMLDivElement>(null)
-
   const collection = useMemo(
     () =>
       gridlist.collection<Row>({
@@ -34,10 +32,9 @@ export default function Page() {
     [],
   )
 
-  const rowVirtualizer = useVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    getScrollElement: () => rootRef.current,
-    estimateSize: () => ROW_HEIGHT,
+    estimatedSize: () => ROW_HEIGHT,
     overscan: 8,
   })
 
@@ -46,12 +43,12 @@ export default function Page() {
     collection,
     selectionMode: "multiple",
     scrollToIndexFn(details) {
-      rowVirtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
   })
 
   const api = gridlist.connect(service, normalizeProps)
-  const virtualItems = rowVirtualizer.getVirtualItems()
+  const virtualItems = virtualizer.getVirtualItems()
 
   return (
     <>
@@ -59,32 +56,23 @@ export default function Page() {
         <div className="gridlist">
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>10,000 rows</label>
-            <div ref={rootRef} {...api.getContentProps()} style={{ height: 360, width: 480 }}>
-              <div
-                style={{
-                  height: rowVirtualizer.getTotalSize(),
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                {virtualItems.map((virtualItem) => {
-                  const item = items[virtualItem.index]
+            <div
+              ref={ref}
+              {...api.getContentProps()}
+              onScroll={virtualizer.handleScroll}
+              style={{ height: 360, width: 480 }}
+            >
+              <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+                {virtualItems.map((vi) => {
+                  const item = items[vi.index]
                   return (
                     <div
                       key={item.id}
                       {...api.getItemProps({ item })}
-                      data-index={virtualItem.index}
+                      data-index={vi.index}
                       aria-setsize={items.length}
-                      aria-posinset={virtualItem.index + 1}
-                      style={{
-                        position: "absolute",
-                        insetBlockStart: 0,
-                        insetInlineStart: 0,
-                        width: "100%",
-                        height: `${virtualItem.size}px`,
-                        transform: `translateY(${virtualItem.start}px)`,
-                        overflowAnchor: "none",
-                      }}
+                      aria-posinset={vi.index + 1}
+                      style={{ ...virtualizer.getItemStyle(vi), overflowAnchor: "none" }}
                     >
                       <div {...api.getCellProps()}>
                         {api.hasCheckbox && (

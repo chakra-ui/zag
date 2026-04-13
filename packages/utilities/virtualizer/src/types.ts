@@ -34,22 +34,8 @@ export interface ScrollAnchor {
   offset: number
 }
 
-type ScrollAlignment = "start" | "center" | "end"
-type ScrollEasingFunction = (t: number) => number
-export type ScrollEasing =
-  | ScrollEasingFunction
-  | "linear"
-  | "easeInQuad"
-  | "easeOutQuad"
-  | "easeInOutQuad"
-  | "easeInCubic"
-  | "easeOutCubic"
-  | "easeInOutCubic"
-  | "easeInQuart"
-  | "easeOutQuart"
-  | "easeInOutQuart"
-  | "easeOutExpo"
-  | "easeOutBack"
+type ScrollAlignment = "start" | "center" | "end" | "auto"
+export type ScrollEasing = (t: number) => number
 
 export interface ScrollToIndexOptions {
   align?: ScrollAlignment
@@ -71,49 +57,12 @@ export interface ScrollToIndexResult {
   scrollLeft?: number
 }
 
-export interface ScrollHistoryEntry {
-  offset: number
-  timestamp: number
-  key?: string | number | undefined
-  reason: "user" | "programmatic" | "resize" | "data-change"
-}
-
-export interface ScrollRestorationConfig {
-  /** Maximum number of history entries to keep (default: 10) */
-  maxEntries?: number
-  /** Key to identify scroll position for restoration */
-  key?: string
-  /** Tolerance for considering positions equal in pixels (default: 5) */
-  tolerance?: number
-}
-
-/** Internal options for ScrollRestorationManager */
-export interface ScrollRestorationOptions {
-  enableScrollRestoration?: boolean
-  maxHistoryEntries?: number
-  restorationKey?: string
-  restorationTolerance?: number
-}
-
-export interface OverscanConfig {
-  /** Base number of items to render outside viewport (default: 3) */
-  count?: number
-  /** Enable dynamic overscan based on scroll velocity */
-  dynamic?: boolean
-}
-
 export interface Range {
   startIndex: number
   endIndex: number
 }
 
-export interface MeasureCache {
-  size: number
-  start: number
-  end: number
-}
-
-export interface VirtualizerBaseOptions {
+export interface VirtualizerOptions {
   /**
    * Get a stable key for an item at an index. This is critical for:
    * - preserving scroll position across insertions/removals
@@ -141,15 +90,8 @@ export interface VirtualizerBaseOptions {
   /** Gap between items */
   gap?: number
 
-  /**
-   * Overscan configuration - extra items to render outside viewport.
-   */
-  overscan?: OverscanConfig | number
-
-  /**
-   * Scroll restoration configuration - enables saving and restoring scroll position.
-   */
-  scrollRestoration?: ScrollRestorationConfig
+  /** Number of extra items to render outside the visible viewport (default: 3) */
+  overscan?: number
 
   /** Horizontal scrolling */
   horizontal?: boolean
@@ -185,10 +127,7 @@ export interface VirtualizerBaseOptions {
   onVisibilityChange?: (index: number, isVisible: boolean) => void
 }
 
-/** Alias for VirtualizerBaseOptions */
-export type VirtualizerOptions = VirtualizerBaseOptions
-
-export interface ListVirtualizerOptions extends VirtualizerBaseOptions {
+export interface ListVirtualizerOptions extends VirtualizerOptions {
   /** Number of lanes (columns for vertical, rows for horizontal). Defaults to 1. */
   lanes?: number
 
@@ -211,7 +150,7 @@ export interface GroupMeta {
   headerSize?: number
 }
 
-export interface GridVirtualizerOptions extends Omit<VirtualizerBaseOptions, "count" | "estimatedSize"> {
+export interface GridVirtualizerOptions extends Omit<VirtualizerOptions, "count" | "estimatedSize"> {
   /** Number of rows in the grid */
   rowCount: number
 
@@ -224,32 +163,6 @@ export interface GridVirtualizerOptions extends Omit<VirtualizerBaseOptions, "co
   /** Estimated column width for each column */
   estimatedColumnSize: (columnIndex: number) => number
 
-  /**
-   * The initial size of the viewport for server-side rendering.
-   * @see https://tanstack.com/virtual/v3/docs/framework/react/ssr
-   */
+  /** The initial size of the viewport for server-side rendering. */
   initialSize?: { width: number; height: number }
-}
-
-/** Virtual cell for grid virtualizer */
-export interface VirtualCell {
-  /** Row index */
-  row: number
-  /** Column index */
-  column: number
-  /** X position (left offset) */
-  x: number
-  /** Y position (top offset) */
-  y: number
-  /** Cell width */
-  width: number
-  /** Cell height */
-  height: number
-  /** Ref callback for measuring cell */
-  measureElement: (element: HTMLElement | null) => void
-}
-
-export interface MasonryVirtualizerOptions extends VirtualizerBaseOptions {
-  /** Number of lanes (columns) */
-  lanes: number
 }

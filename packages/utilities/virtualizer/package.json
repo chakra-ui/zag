@@ -31,7 +31,6 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
-    "@zag-js/types": "workspace:*",
     "@zag-js/dom-query": "workspace:*"
   },
   "devDependencies": {
