@@ -41,7 +41,7 @@ export const controls = (page: Page) => {
 
 export const part = (scope: string, name: string) => `[data-${scope}-${name}]`
 
-const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
+export const esc = (str: string) => `"${str.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`
 
 export const clickViz = (page: Page) => page.locator("text=Visualizer").first().click()
 

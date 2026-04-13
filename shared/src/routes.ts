@@ -372,6 +372,21 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "dnd",
+    label: "Drag n Drop",
+    examples: [
+      { slug: "list", title: "List" },
+      { slug: "tree-dnd", title: "Tree" },
+      { slug: "grid", title: "Grid" },
+      { slug: "gridlist", title: "Grid List" },
+      { slug: "drag-preview", title: "Drag Preview" },
+      { slug: "transfer", title: "Transfer" },
+      { slug: "multi-item", title: "Multi Item" },
+      { slug: "auto-scroll", title: "Auto Scroll" },
+      { slug: "virtualized", title: "Virtualized" },
+    ],
+  },
+  {
     slug: "number-input",
     label: "Number Input",
     examples: [

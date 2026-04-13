@@ -1,0 +1,123 @@
+.dnd {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-item-dragging: #f0f0f0;
+  --dnd-indicator: #3b82f6;
+  --dnd-drop-on: #3b82f6;
+  --dnd-handle: #a1a1aa;
+  width: 100%;
+  max-width: 540px;
+
+  [data-dnd-draggable] {
+    position: relative;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border: 1px solid var(--dnd-border, #d4d4d8);
+    border-radius: 4px;
+    background: var(--dnd-item-bg, #ffffff);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+[data-dnd-root] {
+  position: relative;
+}
+
+[data-dnd-draggable] {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+
+  &[data-dragging] {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  &[data-selected-dragging] {
+    opacity: 0.5;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+[data-dnd-drag-handle] {
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle, #a1a1aa);
+
+  &:hover {
+    color: #52525b;
+  }
+}
+
+[data-dnd-drop-target] {
+  position: relative;
+
+  &[data-drop-target][data-drop-placement="on"] {
+    outline: 2px solid var(--dnd-drop-on, #3b82f6);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+}
+
+[data-dnd-drop-indicator] {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dnd-indicator, #3b82f6);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.1s;
+
+  &[data-placement="before"] {
+    top: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(-50%);
+  }
+
+  &[data-placement="after"] {
+    bottom: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(50%);
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+[data-dnd-drag-preview] {
+  padding: 8px 12px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+/* Grid layout */
+.dnd-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count, 3), 1fr);
+  gap: 8px;
+}
+
+/* Tree DnD composition */
+.tree-view [data-dnd-drag-handle] {
+  opacity: 0.5;
+  display: flex;
+}
+
+.tree-view [data-dnd-drop-indicator] {
+  left: calc(var(--depth, 0) * 24px);
+}

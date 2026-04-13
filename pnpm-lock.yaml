@@ -203,6 +203,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../packages/utilities/dismissable
+      '@zag-js/dnd':
+        specifier: workspace:*
+        version: link:../../packages/machines/dnd
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
@@ -510,6 +513,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../packages/utilities/dismissable
+      '@zag-js/dnd':
+        specifier: workspace:*
+        version: link:../../packages/machines/dnd
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
@@ -1070,6 +1076,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../packages/utilities/dismissable
+      '@zag-js/dnd':
+        specifier: workspace:*
+        version: link:../../packages/machines/dnd
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
@@ -1331,6 +1340,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../packages/utilities/dismissable
+      '@zag-js/dnd':
+        specifier: workspace:*
+        version: link:../../packages/machines/dnd
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
@@ -2422,6 +2434,37 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../utilities/remove-scroll
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/dnd:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/aria-hidden':
+        specifier: workspace:*
+        version: link:../../utilities/aria-hidden
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
+      '@zag-js/rect-utils':
+        specifier: workspace:*
+        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
