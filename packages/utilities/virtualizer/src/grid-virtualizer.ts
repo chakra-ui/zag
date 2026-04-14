@@ -1,5 +1,5 @@
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
-import type { CSSProperties, GridVirtualizerOptions, Range } from "./types"
+import type { CSSProperties, GridVirtualizerOptions, Range, TimerId } from "./types"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
 import { SizeTracker } from "./utils/size-tracker"
@@ -57,7 +57,7 @@ export class GridVirtualizer {
   private scrollTop = 0
   private scrollLeft = 0
   private isScrolling = false
-  private scrollEndTimer: ReturnType<typeof setTimeout> | null = null
+  private scrollEndTimer: TimerId | null = null
 
   // Viewport dimensions
   private viewportWidth = 0
@@ -75,13 +75,20 @@ export class GridVirtualizer {
 
   // Row element tracking for measurement
   private rowElementsByIndex = new Map<number, Element>()
-  private rowResizeCleanups = new Map<Element, () => void>()
+  private rowResizeCleanups = new Map<Element, VoidFunction>()
 
   // Scroll element
   private scrollElement: Element | Window | null = null
 
+  /** Cached for {@link handleScroll} getter — stable `onScroll={virtualizer.handleScroll}`. */
+  private scrollHandler?: (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void
+
+  /** For useSyncExternalStore (React) — row/col/range/viewport updates. */
+  private storeVersion = 0
+  private storeListeners = new Set<VoidFunction>()
+
   // Auto-sizing cleanup
-  private scrollElementResizeCleanup?: () => void
+  private scrollElementResizeCleanup?: VoidFunction
 
   constructor(options: GridVirtualizerOptions) {
     this.options = {
@@ -114,6 +121,26 @@ export class GridVirtualizer {
     }
 
     this.measure()
+  }
+
+  /** Class field — stable reference for `useSyncExternalStore(virtualizer.subscribe, …)`. */
+  subscribe = (listener: VoidFunction): VoidFunction => {
+    this.storeListeners.add(listener)
+    return () => {
+      this.storeListeners.delete(listener)
+    }
+  }
+
+  /** Class field — stable reference for `useSyncExternalStore(…, virtualizer.getSnapshot, …)`. */
+  getSnapshot = (): number => {
+    return this.storeVersion
+  }
+
+  private notifyStore(): void {
+    this.storeVersion++
+    for (const listener of this.storeListeners) {
+      listener()
+    }
   }
 
   private observeScrollElementSize(element: HTMLElement): void {
@@ -470,7 +497,16 @@ export class GridVirtualizer {
   // Scroll handling
   // ============================================
 
-  handleScroll = (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void => {
+  get handleScroll(): (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void {
+    if (!this.scrollHandler) {
+      this.scrollHandler = (event) => {
+        this.handleScrollEvent(event)
+      }
+    }
+    return this.scrollHandler
+  }
+
+  private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
 
     if (scrollTop === this.scrollTop && scrollLeft === this.scrollLeft) return
@@ -500,7 +536,10 @@ export class GridVirtualizer {
         },
         isScrolling: false,
       })
+      this.notifyStore()
     }, SCROLL_END_DELAY_MS)
+
+    this.notifyStore()
   }
 
   getScrollHandler() {
@@ -517,6 +556,7 @@ export class GridVirtualizer {
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
     this.calculateRange()
+    this.notifyStore()
   }
 
   measure(): void {
@@ -634,6 +674,7 @@ export class GridVirtualizer {
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
     this.calculateRange()
+    this.notifyStore()
   }
 
   updateOptions(options: Partial<GridVirtualizerOptions>): void {
@@ -656,6 +697,7 @@ export class GridVirtualizer {
     }
     this.rowResizeCleanups.clear()
     this.rowElementsByIndex.clear()
+    this.storeListeners.clear()
   }
 
   // ============================================

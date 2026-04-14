@@ -1,4 +1,12 @@
-import type { CSSProperties, ItemState, ListVirtualizerOptions, Range, VirtualItem } from "./types"
+import type {
+  CSSProperties,
+  GroupMeta,
+  ItemMeasurement,
+  ItemState,
+  ListVirtualizerOptions,
+  Range,
+  VirtualItem,
+} from "./types"
 import { Virtualizer } from "./virtualizer"
 import { CacheManager } from "./utils/cache-manager"
 import { SizeTracker } from "./utils/size-tracker"
@@ -15,7 +23,6 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
   constructor(options: ListVirtualizerOptions) {
     super(options)
-    // These will be initialized lazily if needed
     if (options.initialSize) {
       this.setViewportSize(options.initialSize)
     }
@@ -29,6 +36,10 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     return this.lanes > 1
   }
 
+  /**
+   * Must be regular methods (not class fields): `Virtualizer`'s constructor calls
+   * `initializeMeasurements()` during `super()` before subclass field initializers run.
+   */
   protected initializeMeasurements(): void {
     this.resetMeasurements()
   }
@@ -76,7 +87,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     return true
   }
 
-  protected getMeasurement(index: number): { start: number; size: number; end: number } {
+  protected getMeasurement(index: number): ItemMeasurement {
     // Use cache if entry is below the dirty floor (unaffected by recent measurements)
     if (index < this.measureCacheDirtyFrom) {
       const cached = this.measureCache.get(index)
@@ -98,7 +109,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       start = paddingStart + prefix
     }
 
-    const measurement: { start: number; size: number; end: number } = {
+    const measurement: ItemMeasurement = {
       start,
       size,
       end: start + size,
@@ -310,7 +321,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   /**
    * Group helpers (for sticky headers)
    */
-  getGroupForIndex(index: number) {
+  getGroupForIndex(index: number): GroupMeta | null {
     if (!this.groups || this.groups.length === 0) return null
     // Groups are sorted; find the last group whose startIndex <= index
     let lo = 0
@@ -420,5 +431,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     if (anchor) {
       this.restoreScrollAnchor(anchor)
     }
+
+    this.notifyStore()
   }
 }

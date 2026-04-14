@@ -1,6 +1,5 @@
 import { GridVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useReducer, useState } from "react"
-import { flushSync } from "react-dom"
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
 // Grid configuration
 const TOTAL_ROWS = 1000
@@ -17,30 +16,32 @@ const generateCellData = (row: number, col: number) => ({
 
 export default function Page() {
   const [isSmooth, setIsSmooth] = useState(true)
-  const [, rerender] = useReducer(() => ({}), {})
-  const [virtualizer] = useState(() => {
-    return new GridVirtualizer({
-      rowCount: TOTAL_ROWS,
-      columnCount: TOTAL_COLUMNS,
-      estimatedRowSize: () => CELL_HEIGHT,
-      estimatedColumnSize: () => CELL_WIDTH,
-      overscan: 3,
-      gap: 0,
-      paddingStart: 0,
-      paddingEnd: 0,
-      observeScrollElementSize: true,
-      onRangeChange: () => {
-        flushSync(rerender)
-      },
-    })
-  })
+  const [virtualizer] = useState(
+    () =>
+      new GridVirtualizer({
+        rowCount: TOTAL_ROWS,
+        columnCount: TOTAL_COLUMNS,
+        estimatedRowSize: () => CELL_HEIGHT,
+        estimatedColumnSize: () => CELL_WIDTH,
+        overscan: 3,
+        gap: 0,
+        paddingStart: 0,
+        paddingEnd: 0,
+        observeScrollElementSize: true,
+      }),
+  )
 
-  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
-    if (!element) return
-    virtualizer.init(element)
-    rerender()
-    return () => virtualizer.destroy()
-  }, [])
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+
+  const setScrollElementRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      if (!element) return
+      virtualizer.init(element)
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   const virtualRows = virtualizer.getVirtualRows()
   const totalWidth = virtualizer.getTotalWidth()

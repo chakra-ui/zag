@@ -11,16 +11,16 @@ export interface SmoothScrollOptions {
   /** Custom scroll function to use instead of element.scrollTo */
   scrollFunction?: (position: { scrollTop?: number; scrollLeft?: number }) => void
   /** Callback when scroll completes */
-  onComplete?: () => void
+  onComplete?: VoidFunction
   /** Callback when scroll is cancelled */
-  onCancel?: () => void
+  onCancel?: VoidFunction
 }
 
 export interface SmoothScrollResult {
   /** Promise that resolves when scroll completes */
   promise: Promise<void>
   /** Function to cancel the ongoing scroll */
-  cancel: () => void
+  cancel: VoidFunction
 }
 
 const easeOutCubic = (t: number): number => --t * t * t + 1
@@ -78,7 +78,7 @@ export function smoothScrollTo(
 
   const startTime = performance.now()
 
-  let resolvePromise: (() => void) | null = null
+  let resolvePromise: VoidFunction | null = null
 
   const promise = new Promise<void>((resolve) => {
     resolvePromise = resolve

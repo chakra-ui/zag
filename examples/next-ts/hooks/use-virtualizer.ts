@@ -1,64 +1,67 @@
 import {
   GridVirtualizer,
   ListVirtualizer,
+  WindowVirtualizer,
   type GridVirtualizerOptions,
   type ListVirtualizerOptions,
+  type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useReducer, useState } from "react"
-import { flushSync } from "react-dom"
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
 export function useListVirtualizer(options: ListVirtualizerOptions) {
-  const [, rerender] = useReducer(() => ({}), {})
-
-  const [virtualizer] = useState(
-    () =>
-      new ListVirtualizer({
-        ...options,
-        onRangeChange(...args) {
-          flushSync(rerender)
-          options.onRangeChange?.(...args)
-        },
-      }),
-  )
+  const [virtualizer] = useState(() => new ListVirtualizer(options))
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
   const ref = useCallback(
     (el: HTMLElement | null) => {
       if (!el) return
       virtualizer.init(el)
-      rerender()
     },
     [virtualizer],
   )
 
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
+  useEffect(() => {
+    return () => virtualizer.destroy()
+  }, [])
+
+  return { virtualizer, ref }
+}
+
+export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
+  const [virtualizer] = useState(() => new WindowVirtualizer(options))
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+
+  const ref = useCallback(
+    (el: HTMLElement | null) => {
+      if (!el) return
+      virtualizer.init(el)
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => {
+    return () => virtualizer.destroy()
+  }, [virtualizer])
 
   return { virtualizer, ref }
 }
 
 export function useGridVirtualizer(options: GridVirtualizerOptions) {
-  const [, rerender] = useReducer(() => ({}), {})
+  const [virtualizer] = useState(() => new GridVirtualizer(options))
 
-  const [virtualizer] = useState(
-    () =>
-      new GridVirtualizer({
-        ...options,
-        onRangeChange(...args) {
-          flushSync(rerender)
-          options.onRangeChange?.(...args)
-        },
-      }),
-  )
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
   const ref = useCallback(
     (el: HTMLElement | null) => {
       if (!el) return
       virtualizer.init(el)
-      rerender()
     },
     [virtualizer],
   )
 
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
+  useEffect(() => {
+    return () => virtualizer.destroy()
+  }, [])
 
   return { virtualizer, ref }
 }

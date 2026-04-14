@@ -554,9 +554,11 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "grid", title: "Grid" },
       { slug: "padding", title: "Padding" },
       { slug: "sticky", title: "Sticky Headers" },
+      { slug: "window", title: "Window scroll" },
       { slug: "perf", title: "Perf: Fixed Height" },
       { slug: "perf-variable", title: "Perf: Variable (measureElement)" },
       { slug: "perf-dynamic", title: "Perf: Variable (Known Sizes)" },
+      { slug: "perf-window", title: "Perf: Window scroll" },
     ],
   },
 ]

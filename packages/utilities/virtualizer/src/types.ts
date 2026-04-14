@@ -8,6 +8,13 @@ export interface VirtualItem {
   measureElement: (element: HTMLElement | null) => void
 }
 
+/** Measured layout for one item along the scroll axis (`start`/`end` are offsets; `size` is the span). */
+export interface ItemMeasurement {
+  start: number
+  size: number
+  end: number
+}
+
 export interface ItemState {
   index: number
   key: string | number
@@ -18,6 +25,9 @@ export interface ItemState {
 }
 
 export type CSSProperties = Record<string, string | number | undefined>
+
+/** Handle returned by `setTimeout` — use with `clearTimeout`. */
+export type TimerId = ReturnType<typeof setTimeout>
 
 export type ScrollAxisDirection = "forward" | "backward" | "idle"
 

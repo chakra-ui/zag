@@ -4,6 +4,7 @@ export type {
   CSSProperties,
   GridVirtualizerOptions,
   GroupMeta,
+  ItemMeasurement,
   ItemState,
   ListVirtualizerOptions,
   Range,
@@ -11,7 +12,8 @@ export type {
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
+  TimerId,
   VirtualItem,
   VirtualizerOptions,
 } from "./types"
-export { WindowVirtualizer } from "./window-virtualizer"
+export { WindowVirtualizer, type WindowVirtualizerOptions } from "./window-virtualizer"

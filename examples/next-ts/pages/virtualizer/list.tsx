@@ -1,6 +1,5 @@
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useReducer, useState } from "react"
-import { flushSync } from "react-dom"
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
 
 const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
@@ -13,30 +12,30 @@ const items = generateItems(10000)
 
 export default function Page() {
   const [isSmooth, setIsSmooth] = useState(true)
-  const [virtualizer] = useState<ListVirtualizer | null>(() => {
-    return new ListVirtualizer({
-      count: items.length,
-      estimatedSize: () => 142,
-      overscan: 5,
-      gap: 0,
-      paddingStart: 0,
-      paddingEnd: 0,
-      onRangeChange: () => {
-        flushSync(rerender)
-      },
-    })
-  })
-  const [, rerender] = useReducer(() => ({}), {})
+  const [virtualizer] = useState(
+    () =>
+      new ListVirtualizer({
+        count: items.length,
+        estimatedSize: () => 142,
+        overscan: 5,
+        gap: 0,
+        paddingStart: 0,
+        paddingEnd: 0,
+      }),
+  )
+
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
   // Callback ref to measure when element mounts
-  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
-    if (!element) return
-    if (virtualizer) {
+  const setScrollElementRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      if (!element) return
       virtualizer.init(element)
-      rerender()
-      return () => virtualizer.destroy()
-    }
-  }, [])
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()
@@ -53,18 +52,18 @@ export default function Page() {
         </label>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
-          <button type="button" onClick={() => virtualizer?.scrollToIndex(0, { smooth: isSmooth })}>
+          <button type="button" onClick={() => virtualizer.scrollToIndex(0, { smooth: isSmooth })}>
             Scroll to Top
           </button>
           <button
             type="button"
             onClick={() =>
-              virtualizer?.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })
+              virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })
             }
           >
             Scroll to Middle
           </button>
-          <button type="button" onClick={() => virtualizer?.scrollToIndex(items.length - 1, { smooth: isSmooth })}>
+          <button type="button" onClick={() => virtualizer.scrollToIndex(items.length - 1, { smooth: isSmooth })}>
             Scroll to Bottom
           </button>
         </div>

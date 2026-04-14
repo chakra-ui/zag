@@ -1,7 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useReducer, useRef, useState } from "react"
-import { flushSync } from "react-dom"
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
@@ -17,7 +16,6 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 
 function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
   const scrollRef = useRef<HTMLDivElement | null>(null)
-  const [, rerender] = useReducer(() => ({}), {})
 
   const [virtualizer] = useState(
     () =>
@@ -25,18 +23,16 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
         count: ITEM_COUNT,
         estimatedSize: () => ITEM_HEIGHT,
         overscan: 5,
-        onRangeChange() {
-          flushSync(rerender)
-        },
       }),
   )
+
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
   const setRef = useCallback(
     (el: HTMLDivElement | null) => {
       if (!el) return
       scrollRef.current = el
       virtualizer.init(el)
-      rerender()
     },
     [virtualizer],
   )

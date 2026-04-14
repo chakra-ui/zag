@@ -4,8 +4,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useId, useReducer, useState } from "react"
-import { flushSync } from "react-dom"
+import { useCallback, useEffect, useId, useState, useSyncExternalStore } from "react"
 
 const collection = select.collection({
   items: selectData,
@@ -27,25 +26,21 @@ const toArray = (value: string | null | undefined) => (value ? [value] : undefin
 export function VirtualizedSelect(props: SelectProps) {
   const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
-  const [, rerender] = useReducer(() => ({}), {})
-
   const [virtualizer] = useState(
     () =>
       new ListVirtualizer({
         count: selectData.length,
         estimatedSize: () => 32,
         observeScrollElementSize: true,
-        onRangeChange() {
-          flushSync(rerender)
-        },
       }),
   )
+
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
   const setRef = useCallback(
     (el: HTMLDivElement | null) => {
       if (!el) return
       virtualizer.init(el)
-      rerender()
     },
     [virtualizer],
   )

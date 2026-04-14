@@ -1,12 +1,14 @@
-import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
+  ItemMeasurement,
   ItemState,
   Range,
   ScrollAnchor,
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
+  TimerId,
   VirtualItem,
   VirtualizerOptions,
 } from "./types"
@@ -27,7 +29,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected options: ResolvedBaseOptions & O
 
   // Measurements — lazy invalidation via dirty floor instead of Map iteration
-  protected measureCache: Map<number, { start: number; size: number; end: number }> = new Map()
+  protected measureCache: Map<number, ItemMeasurement> = new Map()
   protected itemSizeCache: Map<number, number> = new Map()
   protected measureCacheDirtyFrom = Infinity
 
@@ -36,7 +38,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected prevScrollOffset = 0
   protected scrollDirection: "forward" | "backward" = "forward"
   protected isScrolling = false
-  private scrollEndTimer: ReturnType<typeof setTimeout> | null = null
+  private scrollEndTimer: TimerId | null = null
 
   // Viewport
   protected viewportSize = 0
@@ -52,9 +54,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private keyIndexCache: Map<string | number, number> = new Map()
 
   // Advanced features
-  private resizeObserverCleanups = new Map<Element, () => void>()
+  private resizeObserverCleanups = new Map<Element, VoidFunction>()
   private intersectionObserver?: IntersectionObserverManager
-  private scrollElementResizeCleanup?: () => void
+  private scrollElementResizeCleanup?: VoidFunction
 
   // Dynamic sizing — microtask batch for ResizeObserver updates only
   private pendingSizeUpdates = new Map<number, number>()
@@ -71,6 +73,16 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   // Scroll listener management
   protected scrollElement: HTMLElement | null = null
+
+  /**
+   * Cached function for {@link handleScroll} getter — stable reference for `onScroll={virtualizer.handleScroll}`.
+   * (Only `subscribe` / `getSnapshot` use class fields so `useSyncExternalStore` can pass them without `.bind`.)
+   */
+  private scrollHandler?: (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void
+
+  /** Incremented when external-store subscribers (e.g. React useSyncExternalStore) should re-render. */
+  private storeVersion = 0
+  private storeListeners = new Set<VoidFunction>()
 
   constructor(options: O) {
     this.options = {
@@ -99,6 +111,26 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
 
     this.measure()
+  }
+
+  /** Class field — stable reference for `useSyncExternalStore(virtualizer.subscribe, …)`. */
+  subscribe = (listener: VoidFunction): VoidFunction => {
+    this.storeListeners.add(listener)
+    return () => {
+      this.storeListeners.delete(listener)
+    }
+  }
+
+  /** Class field — stable reference for `useSyncExternalStore(…, virtualizer.getSnapshot, …)`. */
+  getSnapshot = (): number => {
+    return this.storeVersion
+  }
+
+  protected notifyStore(): void {
+    this.storeVersion++
+    for (const listener of this.storeListeners) {
+      listener()
+    }
   }
 
   private initializeAdvancedFeatures(): void {
@@ -139,6 +171,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Style Getters
   // ============================================
 
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   getContainerStyle(): CSSProperties {
     return {
       position: "relative",
@@ -149,6 +182,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   getContentStyle(): CSSProperties {
     const totalSize = this.getTotalSize()
     const { horizontal } = this.options
@@ -161,6 +195,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   getScrollHandler() {
     return this.handleScroll
   }
@@ -252,7 +287,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   protected abstract initializeMeasurements(): void
   protected abstract resetMeasurements(): void
-  protected abstract getMeasurement(index: number): { start: number; size: number; end: number }
+  protected abstract getMeasurement(index: number): ItemMeasurement
   protected abstract getItemLane(index: number): number
   protected abstract findVisibleRange(viewportStart: number, viewportEnd: number): Range
   protected abstract findIndexAtOffset(offset: number): number
@@ -347,7 +382,16 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Scroll Handling
   // ============================================
 
-  handleScroll = (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void => {
+  get handleScroll(): (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void {
+    if (!this.scrollHandler) {
+      this.scrollHandler = (event) => {
+        this.handleScrollEvent(event)
+      }
+    }
+    return this.scrollHandler
+  }
+
+  private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
     const { horizontal } = this.options
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
     const offset = horizontal ? scrollLeft : scrollTop
@@ -366,7 +410,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.isScrolling = true
 
-    // Process synchronously — consumers wrap in flushSync for immediate re-render.
+    // Process synchronously; React consumers subscribe via useSyncExternalStore.
     this.calculateRange()
     this.notifyScroll()
 
@@ -380,7 +424,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       // Now that scrolling stopped, observe all currently tracked elements
       // so future size changes (image load, accordion, etc.) are detected.
       this.observeUnobservedElements()
+      this.notifyStore()
     }, SCROLL_END_DELAY_MS)
+
+    this.notifyStore()
   }
 
   private notifyScroll(): void {
@@ -401,12 +448,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Public API
   // ============================================
 
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   setViewportSize(size: number): void {
     this.viewportSize = size
     this.lastCalculatedOffset = -1
     this.cachedRangeStart = -1
     this.cachedRangeEnd = -2
     this.calculateRange()
+    this.notifyStore()
   }
 
   setCrossAxisSize(size: number): void {
@@ -419,6 +468,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.cachedRangeEnd = -2
       this.onCrossAxisSizeChange(size)
       this.calculateRange()
+      this.notifyStore()
     }
   }
 
@@ -432,11 +482,20 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.setCrossAxisSize(horizontal ? rect.height : rect.width)
   }
 
+  /**
+   * When `false`, `scrollTo` only updates internal scroll state — the subclass scrolls the real container
+   * (e.g. `window` or an overflow parent). Default `true` applies offset to `scrollElement`.
+   */
+  protected shouldApplyScrollToScrollElement(): boolean {
+    return true
+  }
+
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
     const { horizontal } = this.options
     const existing = this.scrollElement ? getScrollPosition(this.scrollElement) : { scrollTop: 0, scrollLeft: 0 }
 
-    if (this.scrollElement) {
+    if (this.scrollElement && this.shouldApplyScrollToScrollElement()) {
       setScrollPosition(this.scrollElement, horizontal ? { scrollLeft: offset } : { scrollTop: offset })
     }
 
@@ -452,21 +511,21 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.calculateRange()
     this.notifyScroll()
+    this.notifyStore()
 
     if (horizontal) return { scrollLeft: offset, scrollTop: existing.scrollTop }
     return { scrollTop: offset, scrollLeft: existing.scrollLeft }
   }
 
-  scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
-    const { align = "start", smooth } = options
+  /**
+   * Compute the list-space scroll offset for a given index + alignment.
+   * Returns `null` when `align: "auto"` and the item is already visible.
+   */
+  protected resolveScrollToOffset(index: number, align: ScrollToIndexOptions["align"] = "start"): number | null {
     const { count } = this.options
-
-    if (index < 0 || index >= count) {
-      return this.scrollTo(this.scrollOffset)
-    }
+    if (index < 0 || index >= count) return this.scrollOffset
 
     const measurement = this.getMeasurement(index)
-    let offset: number
 
     if (align === "auto") {
       const itemStart = measurement.start
@@ -474,26 +533,31 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       const viewportStart = this.scrollOffset
       const viewportEnd = this.scrollOffset + this.viewportSize
 
-      if (itemStart < viewportStart) {
-        offset = itemStart
-      } else if (itemEnd > viewportEnd) {
-        offset = itemEnd - this.viewportSize
-      } else {
-        return this.options.horizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
-      }
-    } else {
-      offset = measurement.start
-      switch (align) {
-        case "center":
-          offset -= (this.viewportSize - measurement.size) / 2
-          break
-        case "end":
-          offset -= this.viewportSize - measurement.size
-          break
-      }
+      if (itemStart < viewportStart) return itemStart
+      if (itemEnd > viewportEnd) return itemEnd - this.viewportSize
+      return null
     }
 
-    const targetOffset = Math.max(0, offset)
+    let offset = measurement.start
+    switch (align) {
+      case "center":
+        offset -= (this.viewportSize - measurement.size) / 2
+        break
+      case "end":
+        offset -= this.viewportSize - measurement.size
+        break
+    }
+    return Math.max(0, offset)
+  }
+
+  /** Regular method (not a class field) so subclasses can override with `super`. */
+  scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
+    const { align = "start", smooth } = options
+
+    const targetOffset = this.resolveScrollToOffset(index, align)
+    if (targetOffset === null) {
+      return this.options.horizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
+    }
 
     if (smooth) {
       return this.performSmoothScroll(targetOffset, smooth)
@@ -547,6 +611,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
         this.calculateRange()
         this.notifyScroll()
+        this.notifyStore()
       })
 
     const target = horizontal ? { x: targetOffset } : { y: targetOffset }
@@ -565,10 +630,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         this.currentSmoothScroll = null
         this.isScrolling = false
         this.notifyScroll()
+        this.notifyStore()
       },
       onCancel: () => {
         this.currentSmoothScroll = null
         this.isScrolling = false
+        this.notifyStore()
       },
     })
 
@@ -587,6 +654,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.invalidateMeasurements(index)
     }
     this.calculateRange()
+    this.notifyStore()
   }
 
   /**
@@ -620,6 +688,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         this.calculateRange()
         this.options.onRangeChange?.(this.range)
         this.measureCacheDirtyFrom = Infinity
+        this.notifyStore()
       })
     }
   }
@@ -677,16 +746,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.options.onRangeChange?.(this.range)
     }
 
-    // Reset dirty floor AFTER notification — the flushSync re-render above
-    // needs measureCacheDirtyFrom to still be set so getMeasurement misses stale cache
+    // Reset dirty floor AFTER notification — React subscribers re-render while
+    // measureCacheDirtyFrom must still be set so getMeasurement misses stale cache until then
     this.measureCacheDirtyFrom = Infinity
+    this.notifyStore()
   }
 
   /**
    * Preserve scroll position during updates that change measurements.
    * Skips anchor queries when measured item is below anchor (common case during downward scroll).
    */
-  private preserveScrollPosition(fromIndex: number, callback: () => void): void {
+  private preserveScrollPosition(fromIndex: number, callback: VoidFunction): void {
     if (!this.options.preserveScrollAnchor || this.range.startIndex < 0) {
       callback()
       return
@@ -762,6 +832,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.measureCache.clear()
     this.resetMeasurements()
     this.calculateRange()
+    this.notifyStore()
   }
 
   /**
@@ -883,7 +954,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   setScrollElement(element: Element): void {
-    if (element instanceof HTMLElement) {
+    if (isHTMLElement(element)) {
       this.init(element)
     }
   }
@@ -911,6 +982,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.forceUpdate()
   }
 
+  /** Regular method (not a class field) so subclasses can override with `super`. */
   destroy(): void {
     if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
 
@@ -926,5 +998,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.measureCache.clear()
     this.pendingSizeUpdates.clear()
     this.elementsByIndex.clear()
+    this.storeListeners.clear()
   }
 }
