@@ -27,7 +27,7 @@ export interface SortDetails<Item, Filter, Sorting> {
 
 export type LoadDependency = string | number | boolean | undefined | null
 
-export interface AsyncListProps<Item, Filter, Sorting, Cursor> {
+export interface AsyncListProps<Item, Filter = string, Sorting = SortDescriptor<Item>, Cursor = string> {
   /**
    * The function to call when the list is loaded
    */
@@ -96,13 +96,17 @@ export interface AsyncListSchema<Item, Filter, Sorting, Cursor> {
   effect: string
 }
 
-export type AsyncListService<Item, Filter, Sorting, Cursor> = Service<AsyncListSchema<Item, Filter, Sorting, Cursor>>
+export type AsyncListService<Item, Filter = string, Sorting = SortDescriptor<Item>, Cursor = string> = Service<
+  AsyncListSchema<Item, Filter, Sorting, Cursor>
+>
 
-export type AsyncListMachine<Item, Filter, Sorting, Cursor> = Machine<AsyncListSchema<Item, Filter, Sorting, Cursor>>
+export type AsyncListMachine<Item, Filter = string, Sorting = SortDescriptor<Item>, Cursor = string> = Machine<
+  AsyncListSchema<Item, Filter, Sorting, Cursor>
+>
 
 type Updater<T> = T | ((prev: T) => T)
 
-export interface AsyncListApi<Item, Filter, Sorting, Cursor> {
+export interface AsyncListApi<Item, Filter = string, Sorting = SortDescriptor<Item>, Cursor = string> {
   /**
    * The items in the list.
    */
