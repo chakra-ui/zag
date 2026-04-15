@@ -142,6 +142,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Tags Input", id: "tags-input" },
         { type: "doc", label: "Timer", id: "timer" },
         { type: "doc", label: "Toast", id: "toast" },
+        { type: "doc", label: "Toggle", id: "toggle" },
         { type: "doc", label: "Toggle Group", id: "toggle-group" },
         { type: "doc", label: "Tooltip", id: "tooltip" },
         { type: "doc", label: "Tour", id: "tour" },

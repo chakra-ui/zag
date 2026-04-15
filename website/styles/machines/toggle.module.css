@@ -1,0 +1,29 @@
+.Root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--grey-200);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--grey-700);
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.Root:hover:not([data-disabled]) {
+  background: var(--grey-100);
+}
+
+.Root[data-state="on"] {
+  background: var(--grey-200);
+  color: var(--grey-900);
+}
+
+.Root[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
