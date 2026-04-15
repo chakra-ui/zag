@@ -1,11 +1,4 @@
 {
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
-    }
-  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",
@@ -14,6 +7,13 @@
     "Marker": {
       "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
       "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -154,19 +154,19 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
-    }
-  },
   "progress": {
     "Root": {
       "--percent": "The percent value for the root",
       "--radius": "The border radius value",
       "--circumference": "The circumference value for the root",
       "--offset": "The offset position of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
     }
   },
   "radio-group": {
@@ -321,31 +321,6 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "hover-card": {
-    "Arrow": {
-      "--arrow-size": "The size of the arrow",
-      "--arrow-size-half": "Half the size of the arrow",
-      "--arrow-background": "Use this variable to style the arrow background",
-      "--arrow-offset": "The offset position of the arrow"
-    },
-    "Positioner": {
-      "--reference-width": "The width of the reference element",
-      "--reference-height": "The height of the root",
-      "--available-width": "The available width in viewport",
-      "--available-height": "The available height in viewport",
-      "--x": "The x position for transform",
-      "--y": "The y position for transform",
-      "--z-index": "The z-index value",
-      "--transform-origin": "The transform origin for animations"
-    },
-    "Content": {
-      "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested hover-cards"
-    },
-    "Backdrop": {
-      "--layer-index": "The index of the dismissable in the layer stack"
-    }
-  },
   "date-picker": {
     "Arrow": {
       "--arrow-size": "The size of the arrow",
@@ -366,6 +341,31 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested date-pickers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "hover-card": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--reference-width": "The width of the reference element",
+      "--reference-height": "The height of the root",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--transform-origin": "The transform origin for animations"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested hover-cards"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"
