@@ -56,6 +56,10 @@ function resolveOverlapColumns(events: SchedulerEvent[]): Map<string, ColumnAssi
  * Compute CSS percentage position for an event within a single day column.
  * All values are percentage strings (e.g. "12.5%") relative to the column height/width.
  */
+/**
+ * Compute position for an event as 0–1 fractions of the day column.
+ * Consumers multiply by 100 for %, or by container dimensions for px.
+ */
 export function getEventPosition(
   event: SchedulerEvent,
   events: SchedulerEvent[],
@@ -63,7 +67,7 @@ export function getEventPosition(
   dayEndHour: number,
 ): EventPosition {
   if (event.allDay) {
-    return { top: "0%", height: "100%", left: "0%", width: "100%", column: 0, totalColumns: 1 }
+    return { top: 0, height: 1, left: 0, width: 1, column: 0, totalColumns: 1 }
   }
 
   const timed = events.filter((e) => !e.allDay)
@@ -77,10 +81,10 @@ export function getEventPosition(
   const startMins = Math.max(0, (sh - dayStartHour) * 60 + sm)
   const endMins = Math.min(totalMinutes, (eh - dayStartHour) * 60 + em)
 
-  const top = `${(startMins / totalMinutes) * 100}%`
-  const height = `${((endMins - startMins) / totalMinutes) * 100}%`
-  const left = `${(column / totalColumns) * 100}%`
-  const width = `${(1 / totalColumns) * 100}%`
+  const top = startMins / totalMinutes
+  const height = (endMins - startMins) / totalMinutes
+  const left = column / totalColumns
+  const width = 1 / totalColumns
 
   return { top, height, left, width, column, totalColumns }
 }

@@ -1,15 +1,28 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek, type DateValue } from "@internationalized/date"
 import type { ViewType } from "../scheduler.types"
 
-export function getVisibleRange(view: ViewType, date: DateValue, locale: string): { start: DateValue; end: DateValue } {
+const DAY_NAMES = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const
+type DayOfWeek = (typeof DAY_NAMES)[number]
+
+function toDayOfWeek(n?: number): DayOfWeek | undefined {
+  return n == null ? undefined : DAY_NAMES[n]
+}
+
+export function getVisibleRange(
+  view: ViewType,
+  date: DateValue,
+  locale: string,
+  weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6,
+): { start: DateValue; end: DateValue } {
+  const wsd = toDayOfWeek(weekStartDay)
   switch (view) {
     case "day":
       return { start: date, end: date }
 
     case "week":
       return {
-        start: startOfWeek(date, locale),
-        end: endOfWeek(date, locale),
+        start: startOfWeek(date, locale, wsd),
+        end: endOfWeek(date, locale, wsd),
       }
 
     case "month": {
@@ -17,8 +30,8 @@ export function getVisibleRange(view: ViewType, date: DateValue, locale: string)
       const monthEnd = endOfMonth(date)
       // Extend to full weeks so the month grid always shows complete rows
       return {
-        start: startOfWeek(monthStart, locale),
-        end: endOfWeek(monthEnd, locale),
+        start: startOfWeek(monthStart, locale, wsd),
+        end: endOfWeek(monthEnd, locale, wsd),
       }
     }
 

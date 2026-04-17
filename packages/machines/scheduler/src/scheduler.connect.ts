@@ -26,6 +26,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   const date = context.get("date")
   const visibleRange = computed("visibleRange")
   const focusedEventId = context.get("focusedEventId")
+  const selectedEventId = context.get("selectedEventId")
   const dragEventId = refs.get("dragEventId")
 
   const isDragging = state.matches("event-dragging")
@@ -33,6 +34,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   const isResizing = state.matches("event-resizing")
 
   const events = prop("events") ?? []
+  const resources = prop("resources") ?? []
   const translations = prop("translations")
 
   const defaultTranslations = {
@@ -56,6 +58,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     view,
     date,
     visibleRange,
+    events,
+    resources,
     isDragging,
     isSlotSelecting,
     isResizing,
@@ -80,11 +84,12 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const draggingThis = isDragging && dragEventId === id
       const resizingThis = isResizing && dragEventId === id
       const focused = focusedEventId === id
+      const selected = selectedEventId === id
       const evt = events.find((e) => e.id === id)
       const conflict = evt
         ? events.some((e) => e.id !== id && rangesOverlap(e.start, e.end, evt.start, evt.end))
         : false
-      return { dragging: draggingThis, resizing: resizingThis, focused, conflict }
+      return { dragging: draggingThis, resizing: resizingThis, focused, selected, conflict }
     },
 
     getEventPosition(event) {
@@ -319,18 +324,22 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         "data-dragging": dataAttr(evtState.dragging),
         "data-resizing": dataAttr(evtState.resizing),
         "data-focused": dataAttr(evtState.focused),
+        "data-selected": dataAttr(evtState.selected),
         "data-conflict": dataAttr(evtState.conflict),
         "data-disabled": dataAttr(!!event.disabled),
         "data-all-day": dataAttr(!!event.allDay),
         style: event.allDay
           ? undefined
-          : {
-              position: "absolute",
-              ...(() => {
-                const pos = this.getEventPosition(event)
-                return { top: pos.top, height: pos.height, left: pos.left, width: pos.width }
-              })(),
-            },
+          : (() => {
+              const pos = this.getEventPosition(event)
+              return {
+                position: "absolute" as const,
+                top: `${pos.top * 100}%`,
+                height: `${pos.height * 100}%`,
+                left: `${pos.left * 100}%`,
+                width: `${pos.width * 100}%`,
+              }
+            })(),
         onClick(e) {
           e.stopPropagation()
           send({ type: "EVENT_CLICK", eventId: event.id })

@@ -18,6 +18,7 @@ export const machine = createMachine<SchedulerSchema>({
       locale: "en-US",
       showCurrentTime: true,
       showWeekNumbers: false,
+      recurrenceExpansionLimit: 2000,
       ...props,
     }
   },
@@ -45,6 +46,9 @@ export const machine = createMachine<SchedulerSchema>({
       focusedEventId: bindable<string | null>(() => ({
         defaultValue: null,
       })),
+      selectedEventId: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
       selectedSlot: bindable<{
         start: import("@internationalized/date").DateValue
         end: import("@internationalized/date").DateValue
@@ -70,8 +74,8 @@ export const machine = createMachine<SchedulerSchema>({
 
   computed: {
     visibleRange: memo(
-      ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale")] as const,
-      ([view, date, locale]) => getVisibleRange(view, date, locale),
+      ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale"), prop("weekStartDay")] as const,
+      ([view, date, locale, weekStartDay]) => getVisibleRange(view, date, locale, weekStartDay),
     ),
     isInteractive: ({ prop }) => !prop("disabled"),
   },
@@ -93,7 +97,7 @@ export const machine = createMachine<SchedulerSchema>({
         SLOT_POINTER_DOWN: {
           guard: "isNotDisabled",
           target: "slot-selecting",
-          actions: ["initSlotDrag"],
+          actions: ["initSlotDrag", "clearSelectedEvent"],
         },
         EVENT_POINTER_DOWN: {
           guard: "canDragEvent",
@@ -105,6 +109,7 @@ export const machine = createMachine<SchedulerSchema>({
           target: "event-resizing",
           actions: ["initEventResize"],
         },
+        ESCAPE: { actions: ["clearSelectedEvent"] },
       },
     },
 
@@ -202,10 +207,14 @@ export const machine = createMachine<SchedulerSchema>({
       goToPrev({ context }) {
         context.set("date", getPrevDate(context.get("view"), context.get("date")))
       },
-      invokeOnEventClick({ prop, event }) {
+      invokeOnEventClick({ context, prop, event }) {
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt) return
+        context.set("selectedEventId", event.eventId)
         prop("onEventClick")?.({ event: evt })
+      },
+      clearSelectedEvent({ context }) {
+        context.set("selectedEventId", null)
       },
       setFocusedEvent({ context, event }) {
         context.set("focusedEventId", event.eventId)

@@ -246,10 +246,10 @@ export default function Page() {
                               style={
                                 {
                                   position: "absolute",
-                                  top: pos.top,
-                                  height: pos.height,
-                                  left: `calc(${pos.left} + 2px)`,
-                                  width: `calc(${pos.width} - 4px)`,
+                                  top: `${pos.top * 100}%`,
+                                  height: `${pos.height * 100}%`,
+                                  left: `calc(${pos.left * 100}% + 2px)`,
+                                  width: `calc(${pos.width * 100}% - 4px)`,
                                   opacity: isDraggingThis ? 0.25 : 1,
                                   ["--event-color"]: event.color ?? "#3b82f6",
                                 } as React.CSSProperties
@@ -285,8 +285,8 @@ export default function Page() {
                                   {
                                     top: `${(startMins / total) * 100}%`,
                                     height: `${Math.max(0.5, ((endMins - startMins) / total) * 100)}%`,
-                                    left: `calc(${origPos.left} + 2px)`,
-                                    width: `calc(${origPos.width} - 4px)`,
+                                    left: `calc(${origPos.left * 100}% + 2px)`,
+                                    width: `calc(${origPos.width * 100}% - 4px)`,
                                     ["--event-color"]: ghostEvent.color ?? "#3b82f6",
                                   } as React.CSSProperties
                                 }

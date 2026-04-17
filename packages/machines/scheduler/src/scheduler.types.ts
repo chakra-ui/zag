@@ -120,9 +120,13 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   locale?: string | undefined
   /** IANA timezone string. Defaults to local timezone. */
   timeZone?: string | undefined
+  /** Override the first day of the week (0=Sun…6=Sat). Falls back to locale default. */
+  weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined
   showWeekNumbers?: boolean | undefined
   /** Show a line at the current time in day/week views. @default true */
   showCurrentTime?: boolean | undefined
+  /** Upper bound on expanded recurring instances per visible range. @default 2000 */
+  recurrenceExpansionLimit?: number | undefined
   translations?: SchedulerTranslations | undefined
   disabled?: boolean | undefined
 }
@@ -136,6 +140,7 @@ type PropsWithDefault =
   | "locale"
   | "showCurrentTime"
   | "showWeekNumbers"
+  | "recurrenceExpansionLimit"
 
 /* -----------------------------------------------------------------------------
  * Machine schema
@@ -145,6 +150,7 @@ interface SchedulerContext {
   view: ViewType
   date: DateValue
   focusedEventId: string | null
+  selectedEventId: string | null
   selectedSlot: { start: DateValue; end: DateValue; resourceId?: string } | null
 }
 
@@ -182,10 +188,11 @@ export type SchedulerMachine<T = Record<string, unknown>> = Machine<SchedulerSch
  * -----------------------------------------------------------------------------*/
 
 export interface EventPosition {
-  top: string
-  height: string
-  left: string
-  width: string
+  /** 0–1 fraction of the day column. Multiply by 100 for %, or by container height for px. */
+  top: number
+  height: number
+  left: number
+  width: number
   column: number
   totalColumns: number
 }
@@ -194,6 +201,7 @@ export interface EventStateDetail {
   dragging: boolean
   resizing: boolean
   focused: boolean
+  selected: boolean
   conflict: boolean
 }
 
@@ -238,6 +246,9 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   view: ViewType
   date: DateValue
   visibleRange: { start: DateValue; end: DateValue }
+  /** All events (recurring instances expanded against the visible range). */
+  events: SchedulerEvent<E>[]
+  resources: Resource[]
   isDragging: boolean
   isSlotSelecting: boolean
   isResizing: boolean

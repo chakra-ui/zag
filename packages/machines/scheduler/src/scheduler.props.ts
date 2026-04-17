@@ -32,6 +32,7 @@ export const props = createProps<SchedulerProps>()([
   "onEventResize",
   "onSlotSelect",
   "onViewChange",
+  "recurrenceExpansionLimit",
   "resources",
   "showCurrentTime",
   "showWeekNumbers",
@@ -39,6 +40,7 @@ export const props = createProps<SchedulerProps>()([
   "timeZone",
   "translations",
   "view",
+  "weekStartDay",
   "workWeekDays",
 ])
 
