@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./scheduler.anatomy"
 import * as dom from "./scheduler.dom"
@@ -10,7 +10,6 @@ import type {
   MoreEventsProps,
   ResourceHeaderProps,
   SchedulerApi,
-  SchedulerEvent,
   SchedulerService,
   TimeSlotProps,
   ViewType,
