@@ -18,6 +18,11 @@ export interface ComponentRoute {
 
 export const componentRoutes: ComponentRoute[] = [
   {
+    slug: "scheduler",
+    label: "Scheduler",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
     slug: "cascade-select",
     label: "Cascade Select",
     examples: [{ slug: "basic", title: "Basic" }],

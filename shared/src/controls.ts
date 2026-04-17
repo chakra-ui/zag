@@ -1,6 +1,19 @@
 import { defineControls } from "./define-controls"
 import * as dateInput from "@zag-js/date-input"
 
+export const schedulerControls = defineControls({
+  defaultView: {
+    type: "select",
+    options: ["day", "week", "month"] as const,
+    defaultValue: "week",
+  },
+  disabled: { type: "boolean", defaultValue: false },
+  showCurrentTime: { type: "boolean", defaultValue: true },
+  dayStartHour: { type: "number", defaultValue: 7 },
+  dayEndHour: { type: "number", defaultValue: 20 },
+  slotInterval: { type: "number", defaultValue: 30 },
+})
+
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },

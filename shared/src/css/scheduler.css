@@ -1,0 +1,143 @@
+.scheduler {
+  font-family: system-ui, sans-serif;
+}
+
+[data-scope="scheduler"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+[data-scope="scheduler"][data-part="header"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-scope="scheduler"][data-part="header-title"] {
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+[data-scope="scheduler"][data-part="view-select"] {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.scheduler button {
+  padding: 4px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.scheduler button[aria-pressed="true"],
+.scheduler button[data-active] {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+[data-scope="scheduler"][data-part="grid"] {
+  display: grid;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.scheduler-header-cell {
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+  background: #f9fafb;
+  text-align: center;
+  font-weight: 600;
+}
+
+[data-scope="scheduler"][data-part="time-gutter"] {
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+}
+
+.scheduler-hour-label {
+  position: absolute;
+  right: 6px;
+  font-size: 11px;
+  color: #6b7280;
+  transform: translateY(-50%);
+}
+
+[data-scope="scheduler"][data-part="day-column"] {
+  position: relative;
+  border-left: 1px solid #f3f4f6;
+}
+
+[data-scope="scheduler"][data-part="day-column"]:first-of-type {
+  border-left: none;
+}
+
+.scheduler-hour-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+[data-scope="scheduler"][data-part="event"] {
+  background: var(--event-color, #3b82f6);
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  overflow: hidden;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+[data-scope="scheduler"][data-part="event"]:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+[data-scope="scheduler"][data-part="event"][data-dragging] {
+  opacity: 0.6;
+}
+
+[data-scope="scheduler"][data-part="event"][data-conflict] {
+  box-shadow: 0 0 0 2px #ef4444;
+}
+
+[data-scope="scheduler"][data-part="event-resize-handle"] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+[data-scope="scheduler"][data-part="current-time-indicator"] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #ef4444;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scheduler-event-title {
+  font-weight: 600;
+}
+
+.scheduler-event-time {
+  opacity: 0.9;
+  font-size: 10px;
+}
