@@ -271,8 +271,10 @@ export const machine = createMachine<SchedulerSchema>({
         const eventId = refs.get("dragEventId")
         const evt = prop("events")?.find((e) => e.id === eventId)
         if (!evt) return
+        const snapshot = refs.get("dragStartSnapshot")
         const newStart = refs.get("dragCurrentStart") ?? evt.start
         const newEnd = refs.get("dragCurrentEnd") ?? evt.end
+        if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         prop("onEventDrop")?.({ event: evt, newStart, newEnd })
       },
 
@@ -313,9 +315,11 @@ export const machine = createMachine<SchedulerSchema>({
         const eventId = refs.get("dragEventId")
         const evt = prop("events")?.find((e) => e.id === eventId)
         if (!evt) return
+        const snapshot = refs.get("dragStartSnapshot")
         const newStart = refs.get("dragCurrentStart") ?? evt.start
         const newEnd = refs.get("dragCurrentEnd") ?? evt.end
         const edge = refs.get("dragEdge") ?? "end"
+        if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         prop("onEventResize")?.({ event: evt, newStart, newEnd, edge })
       },
 

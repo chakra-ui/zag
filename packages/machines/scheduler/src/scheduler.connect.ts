@@ -14,7 +14,8 @@ import type {
   TimeSlotProps,
   ViewType,
 } from "./scheduler.types"
-import { rangesOverlap } from "./utils/time"
+import { now, getLocalTimeZone } from "@internationalized/date"
+import { getTimePercent, rangesOverlap } from "./utils/time"
 import { getEventPosition } from "./utils/layout"
 
 export function connect<T extends PropTypes>(service: SchedulerService, normalize: NormalizeProps<T>): SchedulerApi<T> {
@@ -106,7 +107,44 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
+        tabIndex: 0,
         "data-view": view,
+        onKeyDown(e) {
+          if (e.defaultPrevented) return
+          const target = e.target as HTMLElement
+          if (target.isContentEditable || ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) return
+          const key = getEventKey(e)
+          switch (key) {
+            case "Escape":
+              send({ type: "ESCAPE" })
+              return
+            case "t":
+            case "T":
+              send({ type: "GO_TO_TODAY" })
+              e.preventDefault()
+              return
+            case "d":
+            case "D":
+              send({ type: "SET_VIEW", view: "day" })
+              e.preventDefault()
+              return
+            case "w":
+            case "W":
+              send({ type: "SET_VIEW", view: "week" })
+              e.preventDefault()
+              return
+            case "m":
+            case "M":
+              send({ type: "SET_VIEW", view: "month" })
+              e.preventDefault()
+              return
+            case "y":
+            case "Y":
+              send({ type: "SET_VIEW", view: "year" })
+              e.preventDefault()
+              return
+          }
+        },
       })
     },
 
@@ -314,10 +352,24 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     },
 
     getCurrentTimeIndicatorProps() {
+      const currentTime = now(prop("timeZone") ?? getLocalTimeZone())
+      const dayStart = prop("dayStartHour")
+      const dayEnd = prop("dayEndHour")
+      const hour = currentTime.hour
+      const inRange = hour >= dayStart && hour < dayEnd
+      const percent = getTimePercent(currentTime, dayStart, dayEnd)
       return normalize.element({
         ...parts.currentTimeIndicator.attrs,
         "aria-hidden": "true",
         role: "presentation",
+        "data-hidden": dataAttr(!inRange),
+        hidden: !inRange || !prop("showCurrentTime") ? true : undefined,
+        style: {
+          position: "absolute",
+          left: "0",
+          right: "0",
+          top: `${percent * 100}%`,
+        },
       })
     },
 
