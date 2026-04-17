@@ -1,0 +1,30 @@
+{
+  "replace": {
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      },
+      "./anatomy": {
+        "import": {
+          "types": "./dist/scheduler.anatomy.d.mts",
+          "default": "./dist/scheduler.anatomy.mjs"
+        },
+        "require": {
+          "types": "./dist/scheduler.anatomy.d.ts",
+          "default": "./dist/scheduler.anatomy.js"
+        }
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

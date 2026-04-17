@@ -3028,6 +3028,31 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/machines/scheduler:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      '@internationalized/date':
+        specifier: 3.12.0
+        version: 3.12.0
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/machines/scroll-area:
     dependencies:
       '@zag-js/anatomy':
