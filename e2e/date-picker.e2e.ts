@@ -101,6 +101,18 @@ test.describe("datepicker [single]", () => {
     await I.seeInputHasValue(`02/28/${year}`)
   })
 
+  test("cs-CZ locale: typing date with dot separators commits correctly", async () => {
+    await I.clickControls()
+    await I.controls.select("locale", "cs-CZ")
+
+    await I.focusInput()
+    await I.type("28.02.2024")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("28. 02. 2024")
+    await I.seeSelectedValue("28. 02. 2024")
+  })
+
   test("keyboard selection + re-selection", async () => {
     await I.type(`02/28/${year}`)
     await I.pressKey("Enter")

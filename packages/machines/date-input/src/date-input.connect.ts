@@ -10,7 +10,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-input.anatomy"
 import * as dom from "./date-input.dom"
 import type { DateInputApi, DateInputService, SegmentProps, SegmentState } from "./date-input.types"
-import { getLocaleSeparator, isValidCharacter } from "./utils/locale"
+import { getLocaleSeparator, isValidCharacter } from "@zag-js/date-utils"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 import { getGroupOffset } from "./utils/validity"
 
