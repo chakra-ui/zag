@@ -58,7 +58,7 @@ function resolveOverlapColumns(events: SchedulerEvent[]): Map<string, ColumnAssi
  */
 export function getEventPosition(
   event: SchedulerEvent,
-  allDayEvents: SchedulerEvent[],
+  events: SchedulerEvent[],
   dayStartHour: number,
   dayEndHour: number,
 ): EventPosition {
@@ -66,7 +66,7 @@ export function getEventPosition(
     return { top: "0%", height: "100%", left: "0%", width: "100%", column: 0, totalColumns: 1 }
   }
 
-  const timed = allDayEvents.filter((e) => !e.allDay)
+  const timed = events.filter((e) => !e.allDay)
   const columns = resolveOverlapColumns(timed)
   const { column, totalColumns } = columns.get(event.id) ?? { column: 0, totalColumns: 1 }
 
