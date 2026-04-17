@@ -25,7 +25,10 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "views", title: "Day / Week / Month Views" },
       { slug: "controlled", title: "Controlled" },
       { slug: "work-week", title: "Work Week" },
+      { slug: "all-day", title: "All-Day Events" },
       { slug: "recurring", title: "Recurring Events" },
+      { slug: "mobile-month-view", title: "Mobile Month View" },
+      { slug: "year-view", title: "Year View" },
     ],
   },
   {
