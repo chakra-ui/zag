@@ -123,7 +123,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getRootProps() {
       return normalize.element({
-        ...parts.root.attrs,
+        ...parts.root.attrs(scope.id),
         id: dom.getRootId(scope),
         tabIndex: 0,
         "data-view": view,
@@ -168,20 +168,20 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getHeaderProps() {
       return normalize.element({
-        ...parts.header.attrs,
+        ...parts.header.attrs(scope.id),
       })
     },
 
     getHeaderTitleProps() {
       return normalize.element({
-        ...parts.headerTitle.attrs,
+        ...parts.headerTitle.attrs(scope.id),
         "aria-live": "polite",
       })
     },
 
     getPrevTriggerProps() {
       return normalize.button({
-        ...parts.prevTrigger.attrs,
+        ...parts.prevTrigger.attrs(scope.id),
         type: "button",
         "aria-label": t.prevTriggerLabel,
         onClick() {
@@ -192,7 +192,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getNextTriggerProps() {
       return normalize.button({
-        ...parts.nextTrigger.attrs,
+        ...parts.nextTrigger.attrs(scope.id),
         type: "button",
         "aria-label": t.nextTriggerLabel,
         onClick() {
@@ -203,7 +203,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getTodayTriggerProps() {
       return normalize.button({
-        ...parts.todayTrigger.attrs,
+        ...parts.todayTrigger.attrs(scope.id),
         type: "button",
         "aria-label": t.todayTriggerLabel,
         onClick() {
@@ -214,7 +214,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getViewSelectProps() {
       return normalize.element({
-        ...parts.viewSelect.attrs,
+        ...parts.viewSelect.attrs(scope.id),
         role: "toolbar",
         "aria-label": "Calendar view",
       })
@@ -223,7 +223,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     getViewItemProps(props: ViewItemProps) {
       const isActive = view === props.view
       return normalize.button({
-        ...parts.viewSelect.attrs,
+        ...parts.viewSelect.attrs(scope.id),
         type: "button",
         "aria-pressed": isActive,
         "data-active": dataAttr(isActive),
@@ -236,7 +236,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getGridProps() {
       return normalize.element({
-        ...parts.grid.attrs,
+        ...parts.grid.attrs(scope.id),
         id: dom.getGridId(scope),
         role: "grid",
         "data-view": view,
@@ -245,14 +245,14 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getAllDayRowProps() {
       return normalize.element({
-        ...parts.allDayRow.attrs,
+        ...parts.allDayRow.attrs(scope.id),
         role: "row",
       })
     },
 
     getTimeGutterProps() {
       return normalize.element({
-        ...parts.timeGutter.attrs,
+        ...parts.timeGutter.attrs(scope.id),
         "aria-hidden": "true",
       })
     },
@@ -260,7 +260,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     getTimeSlotProps(props: TimeSlotProps) {
       const key = `${props.start.toString()}:${props.end.toString()}`
       return normalize.element({
-        ...parts.timeSlot.attrs,
+        ...parts.timeSlot.attrs(scope.id),
         id: dom.getTimeSlotId(scope, key),
         role: "gridcell",
         "data-resource-id": props.resourceId,
@@ -275,7 +275,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     getDayColumnProps(props: DayColumnProps) {
       const key = props.date.toString()
       return normalize.element({
-        ...parts.dayColumn.attrs,
+        ...parts.dayColumn.attrs(scope.id),
         id: dom.getDayColumnId(scope, key),
         role: "gridcell",
         "data-date": key,
@@ -286,7 +286,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     getDayCellProps(props: DayCellProps) {
       const key = props.date.toString()
       return normalize.element({
-        ...parts.dayCell.attrs,
+        ...parts.dayCell.attrs(scope.id),
         id: dom.getDayCellId(scope, key),
         role: "gridcell",
         "data-date": key,
@@ -302,7 +302,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getResourceHeaderProps(props: ResourceHeaderProps) {
       return normalize.element({
-        ...parts.resourceHeader.attrs,
+        ...parts.resourceHeader.attrs(scope.id),
         "data-resource-id": props.resource.id,
       })
     },
@@ -311,7 +311,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const { event } = props
       const evtState = this.getEventState(event.id)
       return normalize.element({
-        ...parts.event.attrs,
+        ...parts.event.attrs(scope.id),
         id: dom.getEventId(scope, event.id),
         role: "button",
         tabIndex: 0,
@@ -371,7 +371,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     getEventResizeHandleProps(props: EventResizeHandleProps) {
       const { event, edge } = props
       return normalize.element({
-        ...parts.eventResizeHandle.attrs,
+        ...parts.eventResizeHandle.attrs(scope.id),
         "data-edge": edge,
         "aria-hidden": "true",
         onPointerDown(e) {
@@ -391,7 +391,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const inRange = hour >= dayStart && hour < dayEnd
       const percent = getTimePercent(currentTime, dayStart, dayEnd)
       return normalize.element({
-        ...parts.currentTimeIndicator.attrs,
+        ...parts.currentTimeIndicator.attrs(scope.id),
         "aria-hidden": "true",
         role: "presentation",
         "data-hidden": dataAttr(!inRange),
@@ -407,7 +407,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getMoreEventsProps(props: MoreEventsProps) {
       return normalize.button({
-        ...parts.moreEvents.attrs,
+        ...parts.moreEvents.attrs(scope.id),
         type: "button",
         "data-date": props.date.toString(),
         "data-count": props.count,

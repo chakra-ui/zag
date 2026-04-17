@@ -261,7 +261,7 @@ export const machine = createMachine<SchedulerSchema>({
         const visibleRange = computed("visibleRange")
 
         // Use the first day-column element to get the content rect (excludes header row and time gutter)
-        const firstCol = gridEl.querySelector("[data-part='day-column']") as HTMLElement | null
+        const firstCol = gridEl.querySelector("[data-scheduler-day-column]") as HTMLElement | null
         const colRect = firstCol?.getBoundingClientRect()
         const contentRect = colRect
           ? { left: colRect.left, top: colRect.top, width: gridRect.right - colRect.left, height: colRect.height }
@@ -324,7 +324,7 @@ export const machine = createMachine<SchedulerSchema>({
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const gridRect = gridEl.getBoundingClientRect()
-        const firstCol = gridEl.querySelector("[data-part='day-column']") as HTMLElement | null
+        const firstCol = gridEl.querySelector("[data-scheduler-day-column]") as HTMLElement | null
         const colRect = firstCol?.getBoundingClientRect()
         const contentTop = colRect ? colRect.top : gridRect.top
         const contentHeight = colRect ? colRect.height : gridRect.height

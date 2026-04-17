@@ -4,7 +4,7 @@
   font-family: system-ui, sans-serif;
 }
 
-[data-scope="scheduler"][data-part="root"] {
+[data-scheduler-root] {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -13,18 +13,18 @@
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="header"] {
+[data-scheduler-header] {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-[data-scope="scheduler"][data-part="header-title"] {
+[data-scheduler-header-title] {
   font-weight: 600;
   margin-left: 8px;
 }
 
-[data-scope="scheduler"][data-part="view-select"] {
+[data-scheduler-view-select] {
   margin-left: auto;
   display: flex;
   gap: 4px;
@@ -54,7 +54,7 @@
 
 /* ── Grid (aria role only — layout is on wrapper) ────────────────────────── */
 
-[data-scope="scheduler"][data-part="grid"] {
+[data-scheduler-grid] {
   display: grid;
   position: relative;
 }
@@ -145,7 +145,7 @@
 
 /* ── Time gutter ──────────────────────────────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="time-gutter"] {
+[data-scheduler-time-gutter] {
   position: relative;
   border-right: 1px solid #e5e7eb;
   background: #fff;
@@ -163,12 +163,12 @@
 
 /* ── Day columns ──────────────────────────────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="day-column"] {
+[data-scheduler-day-column] {
   position: relative;
   border-left: 1px solid #f3f4f6;
 }
 
-[data-scope="scheduler"][data-part="day-column"]:first-of-type {
+[data-scheduler-day-column]:first-of-type {
   border-left: none;
 }
 
@@ -190,7 +190,7 @@
 
 /* ── Events ───────────────────────────────────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="event"] {
+[data-scheduler-event] {
   background: color-mix(in srgb, var(--event-color, #3b82f6) 15%, white);
   border-left: 3px solid var(--event-color, #3b82f6);
   color: color-mix(in srgb, var(--event-color, #3b82f6) 80%, #111);
@@ -205,26 +205,26 @@
   position: relative;
 }
 
-[data-scope="scheduler"][data-part="event"]:hover {
+[data-scheduler-event]:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-[data-scope="scheduler"][data-part="event"]:focus-visible {
+[data-scheduler-event]:focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
 
-[data-scope="scheduler"][data-part="event"][data-dragging] {
+[data-scheduler-event][data-dragging] {
   cursor: grabbing;
 }
 
-[data-scope="scheduler"][data-part="event"][data-conflict] {
+[data-scheduler-event][data-conflict] {
   box-shadow: 0 0 0 2px #ef4444;
 }
 
 /* ── Resize handle (Mantine-style grip) ───────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="event-resize-handle"] {
+[data-scheduler-event-resize-handle] {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -246,8 +246,8 @@
   transition: opacity 120ms, width 120ms;
 }
 
-[data-scope="scheduler"][data-part="event"]:hover .scheduler-resize-grip,
-[data-scope="scheduler"][data-part="event"][data-resizing] .scheduler-resize-grip {
+[data-scheduler-event]:hover .scheduler-resize-grip,
+[data-scheduler-event][data-resizing] .scheduler-resize-grip {
   opacity: 1;
   width: 32px;
 }
@@ -270,7 +270,7 @@
 
 /* ── Current time indicator ───────────────────────────────────────────────── */
 
-[data-scope="scheduler"][data-part="current-time-indicator"] {
+[data-scheduler-current-time-indicator] {
   position: absolute;
   left: -1px;
   right: 0;
@@ -280,7 +280,7 @@
   pointer-events: none;
 }
 
-[data-scope="scheduler"][data-part="current-time-indicator"]::before {
+[data-scheduler-current-time-indicator]::before {
   content: "";
   position: absolute;
   left: -1px;
