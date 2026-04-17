@@ -5,6 +5,7 @@ export interface SchedulerEvent<T = Record<string, unknown>> {
   start: DateValue
   end: DateValue
   recurrence?: { rrule: string; exdate?: DateValue[] } | undefined
+  payload?: T | undefined
   [key: string]: unknown
 }
 
