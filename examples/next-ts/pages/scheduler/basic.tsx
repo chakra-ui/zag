@@ -56,7 +56,7 @@ const ROW_HEIGHT = 48
 function enumerateDays(start: DateValue, end: DateValue): DateValue[] {
   const days: DateValue[] = []
   let current = start
-  while (current.compare(end) < 0) {
+  while (current.compare(end) <= 0) {
     days.push(current)
     current = current.add({ days: 1 })
   }
@@ -118,59 +118,137 @@ export default function Page() {
             </div>
           </div>
 
-          <div {...api.getGridProps()} style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}>
-            <div className="scheduler-header-cell" />
-            {days.map((d) => (
-              <div key={`h-${d.toString()}`} className="scheduler-header-cell">
-                {DAY_LABELS[new Date(d.toString()).getDay()]} {d.day}
+          {api.view === "month" ? (
+            <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", overflow: "hidden" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(7, 1fr)",
+                  background: "#f9fafb",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                {DAY_LABELS.map((d) => (
+                  <div key={d} className="scheduler-header-cell">
+                    {d}
+                  </div>
+                ))}
               </div>
-            ))}
-
-            <div {...api.getTimeGutterProps()} style={{ height: gridHeight }}>
-              {hours.map((h) => (
-                <div key={h} className="scheduler-hour-label" style={{ top: `${pct(h)}%` }}>
-                  {h}:00
-                </div>
-              ))}
-            </div>
-
-            {days.map((d) => {
-              const dayEvents = api.getEventsForDay(d)
-              return (
-                <div key={d.toString()} {...api.getDayColumnProps({ date: d })} style={{ height: gridHeight }}>
-                  {hours.map((h) => (
-                    <div key={h} className="scheduler-hour-line" style={{ top: `${pct(h)}%` }} />
-                  ))}
-
-                  <div {...api.getCurrentTimeIndicatorProps()} />
-
-                  {dayEvents.map((event) => {
-                    const pos = api.getEventPosition(event)
+              {Array.from({ length: Math.ceil(days.length / 7) }, (_, wi) => (
+                <div key={wi} style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+                  {days.slice(wi * 7, wi * 7 + 7).map((d) => {
+                    const dayEvents = api.getEventsForDay(d)
+                    const isToday = d.year === today.year && d.month === today.month && d.day === today.day
                     return (
                       <div
-                        key={event.id}
-                        {...api.getEventProps({ event })}
-                        style={
-                          {
-                            position: "absolute",
-                            top: pos.top,
-                            height: pos.height,
-                            left: `calc(${pos.left} + 2px)`,
-                            width: `calc(${pos.width} - 4px)`,
-                            ["--event-color"]: event.color ?? "#3b82f6",
-                          } as React.CSSProperties
-                        }
+                        key={d.toString()}
+                        {...api.getDayCellProps({ date: d })}
+                        style={{
+                          minHeight: 90,
+                          padding: "4px",
+                          borderRight: "1px solid #f3f4f6",
+                          borderBottom: "1px solid #f3f4f6",
+                          background: isToday ? "#eff6ff" : undefined,
+                          overflow: "hidden",
+                        }}
                       >
-                        <div className="scheduler-event-title">{String(event.title ?? "")}</div>
-                        <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
-                        <div {...api.getEventResizeHandleProps({ event, edge: "end" })} />
+                        <div
+                          style={{ fontSize: 12, fontWeight: isToday ? 700 : 400, marginBottom: 2, textAlign: "right" }}
+                        >
+                          {d.day}
+                        </div>
+                        {dayEvents.slice(0, 3).map((event) => (
+                          <div
+                            key={event.id}
+                            {...api.getEventProps({ event })}
+                            style={
+                              {
+                                position: "static",
+                                display: "block",
+                                marginBottom: 2,
+                                padding: "1px 4px",
+                                fontSize: 11,
+                                height: "auto",
+                                borderRadius: 3,
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                ["--event-color"]: event.color ?? "#3b82f6",
+                              } as React.CSSProperties
+                            }
+                          >
+                            {String(event.title ?? "")}
+                          </div>
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <div
+                            {...api.getMoreEventsProps({ date: d, count: dayEvents.length - 3 })}
+                            style={{ fontSize: 11, color: "#6b7280", cursor: "pointer", padding: "1px 4px" }}
+                          >
+                            +{dayEvents.length - 3} more
+                          </div>
+                        )}
                       </div>
                     )
                   })}
                 </div>
-              )
-            })}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div {...api.getGridProps()} style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}>
+              <div className="scheduler-header-cell" />
+              {days.map((d) => (
+                <div key={`h-${d.toString()}`} className="scheduler-header-cell">
+                  {DAY_LABELS[new Date(d.toString()).getDay()]} {d.day}
+                </div>
+              ))}
+
+              <div {...api.getTimeGutterProps()} style={{ height: gridHeight }}>
+                {hours.map((h) => (
+                  <div key={h} className="scheduler-hour-label" style={{ top: `${pct(h)}%` }}>
+                    {h}:00
+                  </div>
+                ))}
+              </div>
+
+              {days.map((d) => {
+                const dayEvents = api.getEventsForDay(d)
+                return (
+                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })} style={{ height: gridHeight }}>
+                    {hours.map((h) => (
+                      <div key={h} className="scheduler-hour-line" style={{ top: `${pct(h)}%` }} />
+                    ))}
+
+                    <div {...api.getCurrentTimeIndicatorProps()} />
+
+                    {dayEvents.map((event) => {
+                      const pos = api.getEventPosition(event)
+                      return (
+                        <div
+                          key={event.id}
+                          {...api.getEventProps({ event })}
+                          style={
+                            {
+                              position: "absolute",
+                              top: pos.top,
+                              height: pos.height,
+                              left: `calc(${pos.left} + 2px)`,
+                              width: `calc(${pos.width} - 4px)`,
+                              ["--event-color"]: event.color ?? "#3b82f6",
+                            } as React.CSSProperties
+                          }
+                        >
+                          <div className="scheduler-event-title">{String(event.title ?? "")}</div>
+                          <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
+                          <div {...api.getEventResizeHandleProps({ event, edge: "end" })} />
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </main>
 

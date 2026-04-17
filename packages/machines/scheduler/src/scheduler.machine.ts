@@ -257,18 +257,44 @@ export const machine = createMachine<SchedulerSchema>({
       updateEventDragPosition({ refs, event, prop, computed, scope }) {
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
-        const rect = gridEl.getBoundingClientRect()
+        const gridRect = gridEl.getBoundingClientRect()
         const visibleRange = computed("visibleRange")
-        const newStart = pointToDateTime(
+
+        // Use the first day-column element to get the content rect (excludes header row and time gutter)
+        const firstCol = gridEl.querySelector("[data-part='day-column']") as HTMLElement | null
+        const colRect = firstCol?.getBoundingClientRect()
+        const contentRect = colRect
+          ? { left: colRect.left, top: colRect.top, width: gridRect.right - colRect.left, height: colRect.height }
+          : gridRect
+
+        const snapshot = refs.get("dragStartSnapshot")
+        if (!snapshot) return
+
+        const cursorTime = pointToDateTime(
           event.point,
-          rect,
+          contentRect,
           visibleRange,
           prop("dayStartHour"),
           prop("dayEndHour"),
           prop("slotInterval"),
         )
-        const snapshot = refs.get("dragStartSnapshot")
-        if (!snapshot) return
+
+        // Maintain grab offset: keep cursor at the same relative position within the event
+        const dragOrigin = refs.get("dragOrigin")
+        let newStart = cursorTime
+        if (dragOrigin) {
+          const originTime = pointToDateTime(
+            dragOrigin,
+            contentRect,
+            visibleRange,
+            prop("dayStartHour"),
+            prop("dayEndHour"),
+            prop("slotInterval"),
+          )
+          const offsetMins = getMinutesBetween(originTime, snapshot.start)
+          newStart = cursorTime.add({ minutes: offsetMins })
+        }
+
         const durationMins = getMinutesBetween(snapshot.start, snapshot.end)
         refs.set("dragCurrentStart", newStart)
         refs.set("dragCurrentEnd", newStart.add({ minutes: durationMins }))
@@ -297,15 +323,20 @@ export const machine = createMachine<SchedulerSchema>({
       updateEventResizePosition({ refs, event, prop, scope }) {
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
-        const rect = gridEl.getBoundingClientRect()
+        const gridRect = gridEl.getBoundingClientRect()
+        const firstCol = gridEl.querySelector("[data-part='day-column']") as HTMLElement | null
+        const colRect = firstCol?.getBoundingClientRect()
+        const contentTop = colRect ? colRect.top : gridRect.top
+        const contentHeight = colRect ? colRect.height : gridRect.height
+
         const edge = refs.get("dragEdge")
         const snapshot = refs.get("dragStartSnapshot")
         if (!snapshot) return
         const refDate = edge === "start" ? snapshot.start : snapshot.end
         const newTime = pointToTimeOnDay(
           event.point.y,
-          rect.top,
-          rect.height,
+          contentTop,
+          contentHeight,
           prop("dayStartHour"),
           prop("dayEndHour"),
           prop("slotInterval"),
