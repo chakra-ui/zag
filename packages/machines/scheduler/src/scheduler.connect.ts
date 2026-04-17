@@ -15,8 +15,8 @@ import type {
   ViewItemProps,
   ViewType,
 } from "./scheduler.types"
-import { now, getLocalTimeZone, toCalendarDate } from "@internationalized/date"
-import { getTimePercent, rangesOverlap, getHourMinute } from "./utils/time"
+import { now, getLocalTimeZone } from "@internationalized/date"
+import { getTimePercent, rangesOverlap } from "./utils/time"
 import { getEventPosition } from "./utils/layout"
 
 export function connect<T extends PropTypes>(service: SchedulerService, normalize: NormalizeProps<T>): SchedulerApi<T> {
@@ -43,7 +43,10 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   }
   const t = { ...defaultTranslations, ...translations }
 
-  const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, visibleRange.end))
+  // Extend end by 1 day: visibleRange.end is a CalendarDate (midnight), so events
+  // on the final day would be excluded by a strict range check.
+  const rangeFilterEnd = visibleRange.end.add({ days: 1 })
+  const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, rangeFilterEnd))
   const eventPositions = new Map<string, ReturnType<typeof getEventPosition>>()
   for (const e of visibleEvents) {
     eventPositions.set(e.id, getEventPosition(e, visibleEvents, prop("dayStartHour"), prop("dayEndHour")))
@@ -85,37 +88,19 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     },
 
     getEventPosition(event) {
-      // During drag, update top/height live using drag state while preserving left/width
-      if ((isDragging || isResizing) && dragEventId === event.id) {
-        const dragStart = refs.get("dragCurrentStart")
-        const dragEnd = refs.get("dragCurrentEnd")
-        const originalPos =
-          eventPositions.get(event.id) ??
-          getEventPosition(event, visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
-        if (dragStart && dragEnd) {
-          const dayStartHour = prop("dayStartHour")
-          const dayEndHour = prop("dayEndHour")
-          const totalMinutes = (dayEndHour - dayStartHour) * 60
-          // Only update position visually if still on same day (cross-day handled on drop)
-          const sameDay = toCalendarDate(dragStart).compare(toCalendarDate(event.start)) === 0
-          if (sameDay) {
-            const { hour: sh, minute: sm } = getHourMinute(dragStart)
-            const { hour: eh, minute: em } = getHourMinute(dragEnd)
-            const startMins = Math.max(0, (sh - dayStartHour) * 60 + sm)
-            const endMins = Math.min(totalMinutes, (eh - dayStartHour) * 60 + em)
-            return {
-              ...originalPos,
-              top: `${(startMins / totalMinutes) * 100}%`,
-              height: `${Math.max(0.5, (endMins - startMins) / totalMinutes) * 100}%`,
-            }
-          }
-        }
-        return originalPos
-      }
       return (
         eventPositions.get(event.id) ?? getEventPosition(event, visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
       )
     },
+
+    dragPreview:
+      isDragging && dragEventId
+        ? {
+            eventId: dragEventId,
+            start: refs.get("dragCurrentStart"),
+            end: refs.get("dragCurrentEnd"),
+          }
+        : null,
 
     getEventsForDay(d) {
       return events.filter((e) => {

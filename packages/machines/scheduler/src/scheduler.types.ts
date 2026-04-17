@@ -241,6 +241,8 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   isDragging: boolean
   isSlotSelecting: boolean
   isResizing: boolean
+  /** Live preview of the event being dragged — null when not dragging. */
+  dragPreview: { eventId: string; start: DateValue | null; end: DateValue | null } | null
 
   setView: (view: ViewType) => void
   setDate: (date: DateValue) => void
