@@ -24,6 +24,7 @@ export type {
   EventResizeHandleProps,
   EventStateDetail,
   MoreEventsProps,
+  RecurrenceExpander,
   ResourceHeaderProps,
   TimeSlotProps,
   ViewItemProps,

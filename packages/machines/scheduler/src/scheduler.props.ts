@@ -22,6 +22,7 @@ export const props = createProps<SchedulerProps>()([
   "defaultView",
   "disabled",
   "events",
+  "expandRecurrence",
   "getRootNode",
   "id",
   "ids",

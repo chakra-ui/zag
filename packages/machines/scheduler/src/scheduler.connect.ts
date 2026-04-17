@@ -33,7 +33,13 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   const isSlotSelecting = state.matches("slot-selecting")
   const isResizing = state.matches("event-resizing")
 
-  const events = prop("events") ?? []
+  const rawEvents = prop("events") ?? []
+  const expandRecurrence = prop("expandRecurrence")
+  const limit = prop("recurrenceExpansionLimit")
+  const expandedEvents = expandRecurrence
+    ? rawEvents.flatMap((e) => (e.recurrence ? expandRecurrence(e, visibleRange) : [e]))
+    : rawEvents
+  const events = typeof limit === "number" ? expandedEvents.slice(0, limit) : expandedEvents
   const resources = prop("resources") ?? []
   const translations = prop("translations")
 

@@ -1,35 +1,59 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { CalendarDateTime, type DateValue } from "@internationalized/date"
-import { useId, useState } from "react"
+import { useId } from "react"
 
 const today = new CalendarDateTime(2026, 4, 17, 0, 0)
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
 
+// One weekly recurring event + one one-off. The machine expands the recurring
+// one across the visible range via the expandRecurrence prop.
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
-    id: "1",
-    title: "Team standup",
+    id: "weekly-standup",
+    title: "Weekly standup",
     start: new CalendarDateTime(2026, 4, 13, 9, 0),
     end: new CalendarDateTime(2026, 4, 13, 9, 30),
     color: "#3b82f6",
+    recurrence: { rrule: "FREQ=WEEKLY;BYDAY=MO" },
   },
   {
-    id: "2",
-    title: "Design review",
-    start: new CalendarDateTime(2026, 4, 15, 10, 0),
-    end: new CalendarDateTime(2026, 4, 15, 11, 30),
-    color: "#10b981",
-  },
-  {
-    id: "3",
-    title: "Lunch",
-    start: new CalendarDateTime(2026, 4, 17, 12, 0),
-    end: new CalendarDateTime(2026, 4, 17, 13, 0),
+    id: "one-off",
+    title: "Quarterly review",
+    start: new CalendarDateTime(2026, 4, 15, 14, 0),
+    end: new CalendarDateTime(2026, 4, 15, 15, 0),
     color: "#f59e0b",
   },
 ]
+
+// A minimal weekly expander. In a real app, use rrule.js to honor the full
+// RRULE grammar (BYDAY, COUNT, UNTIL, etc.). Kept inline so this example has
+// zero external deps.
+const weeklyExpander: scheduler.RecurrenceExpander = (event, range) => {
+  const out: scheduler.SchedulerEvent[] = []
+  const durationMs =
+    new Date((event.end as CalendarDateTime).toString()).getTime() -
+    new Date((event.start as CalendarDateTime).toString()).getTime()
+  let cur = event.start
+  let i = 0
+  while (cur.compare(range.end) <= 0 && i < 100) {
+    const start = cur as CalendarDateTime
+    const endMs = new Date(start.toString()).getTime() + durationMs
+    const endDate = new Date(endMs)
+    const end = new CalendarDateTime(
+      endDate.getFullYear(),
+      endDate.getMonth() + 1,
+      endDate.getDate(),
+      endDate.getHours(),
+      endDate.getMinutes(),
+    )
+    out.push({ ...event, id: `${event.id}:${i}`, start, end })
+    cur = cur.add({ weeks: 1 })
+    i++
+  }
+  return out
+}
 
 function enumerateDays(start: DateValue, end: DateValue): DateValue[] {
   const days: DateValue[] = []
@@ -42,19 +66,15 @@ function enumerateDays(start: DateValue, end: DateValue): DateValue[] {
 }
 
 export default function Page() {
-  const [events, setEvents] = useState(INITIAL)
-
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultDate: today,
     defaultView: "week",
+    defaultDate: today,
     dayStartHour: 8,
     dayEndHour: 18,
-    events,
-    onEventDrop: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
-    onEventResize: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    events: INITIAL,
+    expandRecurrence: weeklyExpander,
+    recurrenceExpansionLimit: 500,
   })
 
   const api = scheduler.connect(service, normalizeProps)
@@ -70,7 +90,8 @@ export default function Page() {
           <button {...api.getTodayTriggerProps()}>Today</button>
           <button {...api.getNextTriggerProps()}>→</button>
           <span {...api.getHeaderTitleProps()}>
-            {api.visibleRange.start.toString().slice(0, 10)} – {api.visibleRange.end.toString().slice(0, 10)}
+            {api.visibleRange.start.toString().slice(0, 10)} – {api.visibleRange.end.toString().slice(0, 10)} ·{" "}
+            {api.events.length} expanded events
           </span>
         </div>
 
@@ -124,12 +145,6 @@ export default function Page() {
                         }
                       >
                         <div className="scheduler-event-title">{event.title}</div>
-                        <div
-                          {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                          className="scheduler-resize-handle"
-                        >
-                          <div className="scheduler-resize-grip" />
-                        </div>
                       </div>
                     )
                   })}

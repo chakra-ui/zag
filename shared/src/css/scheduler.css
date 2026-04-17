@@ -222,6 +222,11 @@
   box-shadow: 0 0 0 2px #ef4444;
 }
 
+[data-scheduler-event][data-selected] {
+  box-shadow: 0 0 0 2px var(--event-color, #3b82f6), 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+}
+
 /* ── Resize handle (Mantine-style grip) ───────────────────────────────────── */
 
 [data-scheduler-event-resize-handle] {

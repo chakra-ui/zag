@@ -20,7 +20,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "scheduler",
     label: "Scheduler",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "views", title: "Day / Week / Month Views" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "work-week", title: "Work Week" },
+      { slug: "recurring", title: "Recurring Events" },
+    ],
   },
   {
     slug: "cascade-select",

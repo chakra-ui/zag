@@ -5,28 +5,29 @@ import { useId, useState } from "react"
 
 const today = new CalendarDateTime(2026, 4, 17, 0, 0)
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
+const HOURS = Array.from({ length: 10 }, (_, i) => 9 + i)
+const WORK_WEEK = [1, 2, 3, 4, 5] // Mon–Fri
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
-    title: "Team standup",
-    start: new CalendarDateTime(2026, 4, 13, 9, 0),
-    end: new CalendarDateTime(2026, 4, 13, 9, 30),
+    title: "Daily standup",
+    start: new CalendarDateTime(2026, 4, 13, 9, 30),
+    end: new CalendarDateTime(2026, 4, 13, 10, 0),
     color: "#3b82f6",
   },
   {
     id: "2",
     title: "Design review",
-    start: new CalendarDateTime(2026, 4, 15, 10, 0),
-    end: new CalendarDateTime(2026, 4, 15, 11, 30),
+    start: new CalendarDateTime(2026, 4, 14, 11, 0),
+    end: new CalendarDateTime(2026, 4, 14, 12, 30),
     color: "#10b981",
   },
   {
     id: "3",
-    title: "Lunch",
-    start: new CalendarDateTime(2026, 4, 17, 12, 0),
-    end: new CalendarDateTime(2026, 4, 17, 13, 0),
+    title: "Friday demo",
+    start: new CalendarDateTime(2026, 4, 17, 15, 0),
+    end: new CalendarDateTime(2026, 4, 17, 16, 0),
     color: "#f59e0b",
   },
 ]
@@ -46,9 +47,11 @@ export default function Page() {
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultDate: today,
     defaultView: "week",
-    dayStartHour: 8,
+    defaultDate: today,
+    weekStartDay: 1, // Monday
+    workWeekDays: WORK_WEEK,
+    dayStartHour: 9,
     dayEndHour: 18,
     events,
     onEventDrop: (d) =>
@@ -58,9 +61,12 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  const days = enumerateDays(api.visibleRange.start, api.visibleRange.end)
-  const gridHeight = 10 * 56
-  const pct = (h: number) => ((h - 8) / 10) * 100
+  // Filter visible days to the work week only
+  const days = enumerateDays(api.visibleRange.start, api.visibleRange.end).filter((d) =>
+    WORK_WEEK.includes(new Date(d.year, d.month - 1, d.day).getDay()),
+  )
+  const gridHeight = (18 - 9) * 56
+  const pct = (h: number) => ((h - 9) / (18 - 9)) * 100
 
   return (
     <main className="scheduler">
@@ -70,7 +76,8 @@ export default function Page() {
           <button {...api.getTodayTriggerProps()}>Today</button>
           <button {...api.getNextTriggerProps()}>→</button>
           <span {...api.getHeaderTitleProps()}>
-            {api.visibleRange.start.toString().slice(0, 10)} – {api.visibleRange.end.toString().slice(0, 10)}
+            Work Week · {api.visibleRange.start.toString().slice(0, 10)} –{" "}
+            {api.visibleRange.end.toString().slice(0, 10)}
           </span>
         </div>
 

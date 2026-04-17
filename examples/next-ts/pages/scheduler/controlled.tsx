@@ -10,24 +10,24 @@ const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
-    title: "Team standup",
+    title: "Sprint planning",
     start: new CalendarDateTime(2026, 4, 13, 9, 0),
-    end: new CalendarDateTime(2026, 4, 13, 9, 30),
+    end: new CalendarDateTime(2026, 4, 13, 10, 0),
     color: "#3b82f6",
   },
   {
     id: "2",
-    title: "Design review",
-    start: new CalendarDateTime(2026, 4, 15, 10, 0),
-    end: new CalendarDateTime(2026, 4, 15, 11, 30),
-    color: "#10b981",
+    title: "Interview",
+    start: new CalendarDateTime(2026, 4, 14, 11, 0),
+    end: new CalendarDateTime(2026, 4, 14, 12, 0),
+    color: "#ef4444",
   },
   {
     id: "3",
-    title: "Lunch",
-    start: new CalendarDateTime(2026, 4, 17, 12, 0),
-    end: new CalendarDateTime(2026, 4, 17, 13, 0),
-    color: "#f59e0b",
+    title: "1:1 with manager",
+    start: new CalendarDateTime(2026, 4, 16, 14, 0),
+    end: new CalendarDateTime(2026, 4, 16, 14, 30),
+    color: "#10b981",
   },
 ]
 
@@ -42,15 +42,22 @@ function enumerateDays(start: DateValue, end: DateValue): DateValue[] {
 }
 
 export default function Page() {
+  // controlled view + date
+  const [view, setView] = useState<scheduler.ViewType>("week")
+  const [date, setDate] = useState<DateValue>(today)
   const [events, setEvents] = useState(INITIAL)
+  const [selectedTitle, setSelectedTitle] = useState<string | null>(null)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultDate: today,
-    defaultView: "week",
+    view,
+    date,
     dayStartHour: 8,
     dayEndHour: 18,
     events,
+    onViewChange: (d) => setView(d.view),
+    onDateChange: (d) => setDate(d.date),
+    onEventClick: (d) => setSelectedTitle(d.event.title),
     onEventDrop: (d) =>
       setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
     onEventResize: (d) =>
@@ -72,6 +79,23 @@ export default function Page() {
           <span {...api.getHeaderTitleProps()}>
             {api.visibleRange.start.toString().slice(0, 10)} – {api.visibleRange.end.toString().slice(0, 10)}
           </span>
+          <div {...api.getViewSelectProps()}>
+            {(["day", "week"] as scheduler.ViewType[]).map((v) => (
+              <button key={v} {...api.getViewItemProps({ view: v })}>
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 4 }}>
+          View: <strong>{view}</strong> · {events.length} events
+          {selectedTitle ? (
+            <>
+              {" · Selected: "}
+              <strong>{selectedTitle}</strong>
+            </>
+          ) : null}
         </div>
 
         <div className="scheduler-time-grid-wrapper">

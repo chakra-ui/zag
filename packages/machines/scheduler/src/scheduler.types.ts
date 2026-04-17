@@ -27,6 +27,15 @@ export interface Resource {
   children?: Resource[] | undefined
 }
 
+/**
+ * Expands a recurring event into concrete instances within a date range.
+ * Consumers provide their preferred RRULE library (rrule.js, rrule-alt, etc.).
+ */
+export type RecurrenceExpander<T = Record<string, unknown>> = (
+  event: SchedulerEvent<T>,
+  range: { start: DateValue; end: DateValue },
+) => SchedulerEvent<T>[]
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
@@ -127,6 +136,8 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   showCurrentTime?: boolean | undefined
   /** Upper bound on expanded recurring instances per visible range. @default 2000 */
   recurrenceExpansionLimit?: number | undefined
+  /** Called on each recurring event to expand instances within the visible range. */
+  expandRecurrence?: RecurrenceExpander<T> | undefined
   translations?: SchedulerTranslations | undefined
   disabled?: boolean | undefined
 }
