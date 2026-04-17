@@ -92,7 +92,7 @@ export default function Page() {
   const days = enumerateDays(api.visibleRange.start, api.visibleRange.end)
   const dayStart = controls.context.dayStartHour ?? 7
   const dayEnd = controls.context.dayEndHour ?? 20
-  const hours = Array.from({ length: dayEnd - dayStart }, (_, i) => dayStart + i)
+  const hours = Array.from({ length: dayEnd - dayStart + 1 }, (_, i) => dayStart + i)
   const gridHeight = (dayEnd - dayStart) * ROW_HEIGHT
   const pct = (h: number) => ((h - dayStart) / (dayEnd - dayStart)) * 100
 
@@ -284,7 +284,7 @@ export default function Page() {
                                 style={
                                   {
                                     top: `${(startMins / total) * 100}%`,
-                                    height: `${Math.max(0.5, (endMins - startMins) / total) * 100}%`,
+                                    height: `${Math.max(0.5, ((endMins - startMins) / total) * 100)}%`,
                                     left: `calc(${origPos.left} + 2px)`,
                                     width: `calc(${origPos.width} - 4px)`,
                                     ["--event-color"]: ghostEvent.color ?? "#3b82f6",
