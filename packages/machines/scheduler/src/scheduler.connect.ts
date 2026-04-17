@@ -12,6 +12,7 @@ import type {
   SchedulerApi,
   SchedulerService,
   TimeSlotProps,
+  ViewItemProps,
   ViewType,
 } from "./scheduler.types"
 import { now, getLocalTimeZone } from "@internationalized/date"
@@ -41,6 +42,12 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     viewLabels: { day: "Day", week: "Week", month: "Month", year: "Year", agenda: "Agenda" },
   }
   const t = { ...defaultTranslations, ...translations }
+
+  const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, visibleRange.end))
+  const eventPositions = new Map<string, ReturnType<typeof getEventPosition>>()
+  for (const e of visibleEvents) {
+    eventPositions.set(e.id, getEventPosition(e, visibleEvents, prop("dayStartHour"), prop("dayEndHour")))
+  }
 
   return {
     view,
@@ -78,10 +85,9 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     },
 
     getEventPosition(event) {
-      const dayEvents = events.filter((e) => {
-        return rangesOverlap(e.start, e.end, visibleRange.start, visibleRange.end)
-      })
-      return getEventPosition(event, dayEvents, prop("dayStartHour"), prop("dayEndHour"))
+      return (
+        eventPositions.get(event.id) ?? getEventPosition(event, visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
+      )
     },
 
     getEventsForDay(d) {
@@ -199,6 +205,20 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         ...parts.viewSelect.attrs,
         role: "toolbar",
         "aria-label": "Calendar view",
+      })
+    },
+
+    getViewItemProps(props: ViewItemProps) {
+      const isActive = view === props.view
+      return normalize.button({
+        ...parts.viewSelect.attrs,
+        type: "button",
+        "aria-pressed": isActive,
+        "data-active": dataAttr(isActive),
+        "data-view": props.view,
+        onClick() {
+          send({ type: "SET_VIEW", view: props.view })
+        },
       })
     },
 

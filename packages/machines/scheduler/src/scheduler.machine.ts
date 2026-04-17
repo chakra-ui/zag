@@ -73,7 +73,7 @@ export const machine = createMachine<SchedulerSchema>({
       ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale")] as const,
       ([view, date, locale]) => getVisibleRange(view, date, locale),
     ),
-    isInteractive: () => true,
+    isInteractive: ({ prop }) => !prop("disabled"),
   },
 
   on: {
@@ -91,6 +91,7 @@ export const machine = createMachine<SchedulerSchema>({
     idle: {
       on: {
         SLOT_POINTER_DOWN: {
+          guard: "isNotDisabled",
           target: "slot-selecting",
           actions: ["initSlotDrag"],
         },
@@ -155,12 +156,17 @@ export const machine = createMachine<SchedulerSchema>({
 
   implementations: {
     guards: {
+      isNotDisabled({ prop }) {
+        return !prop("disabled")
+      },
       canDragEvent({ prop, event }) {
+        if (prop("disabled")) return false
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt || evt.disabled) return false
         return prop("canDragEvent")?.(evt) ?? true
       },
       canResizeEvent({ prop, event }) {
+        if (prop("disabled")) return false
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt || evt.disabled) return false
         return prop("canResizeEvent")?.(evt) ?? true

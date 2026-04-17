@@ -124,6 +124,7 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   /** Show a line at the current time in day/week views. @default true */
   showCurrentTime?: boolean | undefined
   translations?: SchedulerTranslations | undefined
+  disabled?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -229,6 +230,10 @@ export interface MoreEventsProps {
   count: number
 }
 
+export interface ViewItemProps {
+  view: ViewType
+}
+
 export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string, unknown>> {
   view: ViewType
   date: DateValue
@@ -256,6 +261,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   getNextTriggerProps: () => T["button"]
   getTodayTriggerProps: () => T["button"]
   getViewSelectProps: () => T["element"]
+  getViewItemProps: (props: ViewItemProps) => T["button"]
   getGridProps: () => T["element"]
   getAllDayRowProps: () => T["element"]
   getTimeSlotProps: (props: TimeSlotProps) => T["element"]

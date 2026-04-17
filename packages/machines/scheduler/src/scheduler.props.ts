@@ -9,6 +9,7 @@ import type {
   ResourceHeaderProps,
   SchedulerProps,
   TimeSlotProps,
+  ViewItemProps,
 } from "./scheduler.types"
 
 export const props = createProps<SchedulerProps>()([
@@ -19,6 +20,7 @@ export const props = createProps<SchedulerProps>()([
   "dayStartHour",
   "defaultDate",
   "defaultView",
+  "disabled",
   "events",
   "getRootNode",
   "id",
@@ -62,3 +64,6 @@ export const splitMoreEventsProps = createSplitProps<MoreEventsProps>(moreEvents
 
 export const resourceHeaderProps = createProps<ResourceHeaderProps>()(["resource"])
 export const splitResourceHeaderProps = createSplitProps<ResourceHeaderProps>(resourceHeaderProps)
+
+export const viewItemProps = createProps<ViewItemProps>()(["view"])
+export const splitViewItemProps = createSplitProps<ViewItemProps>(viewItemProps)

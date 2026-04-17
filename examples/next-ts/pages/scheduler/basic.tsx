@@ -74,7 +74,7 @@ export default function Page() {
           {(["day", "week", "month"] as scheduler.ViewType[]).map((v) => (
             <button
               key={v}
-              onClick={() => api.setView(v)}
+              {...api.getViewItemProps({ view: v })}
               style={{ fontWeight: api.view === v ? "bold" : "normal", marginRight: "0.25rem" }}
             >
               {v}

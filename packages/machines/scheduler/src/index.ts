@@ -26,5 +26,6 @@ export type {
   MoreEventsProps,
   ResourceHeaderProps,
   TimeSlotProps,
+  ViewItemProps,
   ViewType,
 } from "./scheduler.types"
