@@ -214,7 +214,7 @@ export const datePickerControls = defineControls({
   openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
 })
@@ -226,7 +226,7 @@ export const dateInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
   granularity: {

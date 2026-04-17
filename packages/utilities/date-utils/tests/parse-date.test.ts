@@ -56,4 +56,31 @@ describe("parse date", () => {
       year: 2930,
     })
   })
+
+  test("cs-CZ full format with dot-space separators", () => {
+    const date = parseDateString("20. 10. 2000", "cs-CZ", "UTC")
+    expect(date).contain({
+      day: 20,
+      month: 10,
+      year: 2000,
+    })
+  })
+
+  test("cs-CZ short form without spaces", () => {
+    const date = parseDateString("20.10.2000", "cs-CZ", "UTC")
+    expect(date).contain({
+      day: 20,
+      month: 10,
+      year: 2000,
+    })
+  })
+
+  test("sk-SK full format with dot-space separators", () => {
+    const date = parseDateString("20. 10. 2000", "sk-SK", "UTC")
+    expect(date).contain({
+      day: 20,
+      month: 10,
+      year: 2000,
+    })
+  })
 })
