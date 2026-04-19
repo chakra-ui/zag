@@ -1,7 +1,11 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { schedulerControls } from "@zag-js/shared"
 import { CalendarDateTime, toCalendarDate, type DateValue } from "@internationalized/date"
 import { useId, useState } from "react"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 
 const today = new CalendarDateTime(2026, 4, 17, 0, 0)
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -65,12 +69,14 @@ function formatLongDate(d: DateValue) {
 }
 
 export default function Page() {
+  const controls = useControls(schedulerControls)
   const [selectedDate, setSelectedDate] = useState<DateValue>(today)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     defaultView: "month",
     defaultDate: today,
+    ...controls.context,
     events: INITIAL,
   })
 
@@ -80,83 +86,88 @@ export default function Page() {
   const selectedDayEvents = api.getEventsForDay(selectedDate)
 
   return (
-    <main className="scheduler">
-      <div {...api.getRootProps()} style={{ maxWidth: 420 }}>
-        <div {...api.getHeaderProps()}>
-          <button {...api.getPrevTriggerProps()}>←</button>
-          <span {...api.getHeaderTitleProps()}>
-            {new Date(api.date.year, api.date.month - 1, api.date.day).toLocaleDateString(undefined, {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          <button {...api.getNextTriggerProps()}>→</button>
-        </div>
+    <>
+      <main className="scheduler">
+        <div {...api.getRootProps()} style={{ maxWidth: 420 }}>
+          <div {...api.getHeaderProps()}>
+            <button {...api.getPrevTriggerProps()}>←</button>
+            <span {...api.getHeaderTitleProps()}>
+              {new Date(api.date.year, api.date.month - 1, api.date.day).toLocaleDateString(undefined, {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+            <button {...api.getNextTriggerProps()}>→</button>
+          </div>
 
-        {/* Month grid */}
-        <div className="scheduler-mobile-month">
-          <div className="scheduler-mobile-weekdays">
-            {DAY_LABELS.map((d) => (
-              <div key={d}>{d}</div>
+          {/* Month grid */}
+          <div className="scheduler-mobile-month">
+            <div className="scheduler-mobile-weekdays">
+              {DAY_LABELS.map((d) => (
+                <div key={d}>{d}</div>
+              ))}
+            </div>
+            {weeks.map((week, wi) => (
+              <div key={wi} className="scheduler-mobile-week">
+                {week.map((d) => {
+                  const inMonth = d.month === api.date.month
+                  const isToday = d.year === today.year && d.month === today.month && d.day === today.day
+                  const isSelected = toCalendarDate(d).compare(toCalendarDate(selectedDate)) === 0
+                  const dayEvents = api.getEventsForDay(d)
+                  return (
+                    <button
+                      key={d.toString()}
+                      type="button"
+                      className="scheduler-mobile-day"
+                      data-today={isToday || undefined}
+                      data-selected={isSelected || undefined}
+                      data-outside={!inMonth || undefined}
+                      onClick={() => setSelectedDate(d)}
+                      aria-label={formatLongDate(d)}
+                    >
+                      <span className="scheduler-mobile-day-num">{d.day}</span>
+                      <span className="scheduler-mobile-dots">
+                        {dayEvents.slice(0, 3).map((e) => (
+                          <span
+                            key={e.id}
+                            className="scheduler-mobile-dot"
+                            style={{ background: e.color ?? "#3b82f6" }}
+                          />
+                        ))}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
             ))}
           </div>
-          {weeks.map((week, wi) => (
-            <div key={wi} className="scheduler-mobile-week">
-              {week.map((d) => {
-                const inMonth = d.month === api.date.month
-                const isToday = d.year === today.year && d.month === today.month && d.day === today.day
-                const isSelected = toCalendarDate(d).compare(toCalendarDate(selectedDate)) === 0
-                const dayEvents = api.getEventsForDay(d)
-                return (
-                  <button
-                    key={d.toString()}
-                    type="button"
-                    className="scheduler-mobile-day"
-                    data-today={isToday || undefined}
-                    data-selected={isSelected || undefined}
-                    data-outside={!inMonth || undefined}
-                    onClick={() => setSelectedDate(d)}
-                    aria-label={formatLongDate(d)}
-                  >
-                    <span className="scheduler-mobile-day-num">{d.day}</span>
-                    <span className="scheduler-mobile-dots">
-                      {dayEvents.slice(0, 3).map((e) => (
-                        <span
-                          key={e.id}
-                          className="scheduler-mobile-dot"
-                          style={{ background: e.color ?? "#3b82f6" }}
-                        />
-                      ))}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          ))}
-        </div>
 
-        {/* Selected day event list */}
-        <div className="scheduler-mobile-agenda">
-          <div className="scheduler-mobile-agenda-title">{formatLongDate(selectedDate)}</div>
-          {selectedDayEvents.length === 0 ? (
-            <div className="scheduler-mobile-agenda-empty">No events</div>
-          ) : (
-            selectedDayEvents.map((event) => (
-              <div
-                key={event.id}
-                {...api.getEventProps({ event })}
-                className="scheduler-mobile-agenda-event"
-                style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
-              >
-                <div className="scheduler-mobile-agenda-time">
-                  {formatTime(event.start)} – {formatTime(event.end)}
+          {/* Selected day event list */}
+          <div className="scheduler-mobile-agenda">
+            <div className="scheduler-mobile-agenda-title">{formatLongDate(selectedDate)}</div>
+            {selectedDayEvents.length === 0 ? (
+              <div className="scheduler-mobile-agenda-empty">No events</div>
+            ) : (
+              selectedDayEvents.map((event) => (
+                <div
+                  key={event.id}
+                  {...api.getEventProps({ event })}
+                  className="scheduler-mobile-agenda-event"
+                  style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
+                >
+                  <div className="scheduler-mobile-agenda-time">
+                    {formatTime(event.start)} – {formatTime(event.end)}
+                  </div>
+                  <div className="scheduler-event-title">{event.title}</div>
                 </div>
-                <div className="scheduler-event-title">{event.title}</div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} />
+      </Toolbar>
+    </>
   )
 }

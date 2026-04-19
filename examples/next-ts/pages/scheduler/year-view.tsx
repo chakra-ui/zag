@@ -9,7 +9,11 @@ import {
   endOfWeek,
   type DateValue,
 } from "@internationalized/date"
+import { schedulerControls } from "@zag-js/shared"
 import { useId } from "react"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 
 const today = new CalendarDateTime(2026, 4, 17, 0, 0)
 const MONTHS = [
@@ -108,10 +112,12 @@ function MiniMonth({
 }
 
 export default function Page() {
+  const controls = useControls(schedulerControls)
   const service = useMachine(scheduler.machine, {
     id: useId(),
     defaultView: "year",
     defaultDate: today,
+    ...controls.context,
     events: INITIAL,
   })
 
@@ -119,27 +125,32 @@ export default function Page() {
   const year = api.date.year
 
   return (
-    <main className="scheduler">
-      <div {...api.getRootProps()}>
-        <div {...api.getHeaderProps()}>
-          <button {...api.getPrevTriggerProps()}>←</button>
-          <button {...api.getTodayTriggerProps()}>Today</button>
-          <button {...api.getNextTriggerProps()}>→</button>
-          <span {...api.getHeaderTitleProps()}>{year}</span>
-        </div>
+    <>
+      <main className="scheduler">
+        <div {...api.getRootProps()}>
+          <div {...api.getHeaderProps()}>
+            <button {...api.getPrevTriggerProps()}>←</button>
+            <button {...api.getTodayTriggerProps()}>Today</button>
+            <button {...api.getNextTriggerProps()}>→</button>
+            <span {...api.getHeaderTitleProps()}>{year}</span>
+          </div>
 
-        <div className="scheduler-year-grid">
-          {Array.from({ length: 12 }, (_, i) => (
-            <MiniMonth
-              key={i}
-              year={year}
-              month={i + 1}
-              events={api.events.filter((e) => e.start.month === i + 1 && e.start.year === year)}
-              locale="en-US"
-            />
-          ))}
+          <div className="scheduler-year-grid">
+            {Array.from({ length: 12 }, (_, i) => (
+              <MiniMonth
+                key={i}
+                year={year}
+                month={i + 1}
+                events={api.events.filter((e) => e.start.month === i + 1 && e.start.year === year)}
+                locale="en-US"
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} />
+      </Toolbar>
+    </>
   )
 }
