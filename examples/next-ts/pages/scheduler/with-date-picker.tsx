@@ -93,7 +93,7 @@ export default function Page() {
 
   return (
     <main className="scheduler">
-      <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 16, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 16, alignItems: "start" }}>
         {/* ── Inline date-picker ─────────────────────────────────────────── */}
         <div
           className="date-picker"
