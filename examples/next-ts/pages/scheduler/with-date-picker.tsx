@@ -92,8 +92,16 @@ export default function Page() {
   const pct = (h: number) => ((h - 8) / 10) * 100
 
   return (
-    <main className="scheduler">
-      <div style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 16, alignItems: "start" }}>
+    <main className="scheduler" style={{ alignSelf: "stretch", width: "100%" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "340px minmax(0, 1fr)",
+          gap: 16,
+          alignItems: "start",
+          width: "100%",
+        }}
+      >
         {/* ── Inline date-picker ─────────────────────────────────────────── */}
         <div
           className="date-picker"
