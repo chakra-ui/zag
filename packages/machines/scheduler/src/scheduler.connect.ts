@@ -15,7 +15,7 @@ import type {
   ViewItemProps,
   ViewType,
 } from "./scheduler.types"
-import { now, getLocalTimeZone } from "@internationalized/date"
+import { now, getLocalTimeZone, type CalendarDateTime, type DateValue } from "@internationalized/date"
 import { getTimePercent, rangesOverlap } from "./utils/time"
 import { getEventPosition } from "./utils/layout"
 
@@ -99,13 +99,37 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     },
 
     getEventPosition(event) {
-      return (
+      const basePos =
         eventPositions.get(event.id) ?? getEventPosition(event, visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
-      )
+
+      // Live resize: reflect current drag bounds on the actual event (not a ghost).
+      // Safe because resize doesn't change day or left/width — only top/height.
+      if (isResizing && dragEventId === event.id) {
+        const dragStart = refs.get("dragCurrentStart") as DateValue | null
+        const dragEnd = refs.get("dragCurrentEnd") as DateValue | null
+        if (dragStart && dragEnd) {
+          const dayStartHour = prop("dayStartHour")
+          const dayEndHour = prop("dayEndHour")
+          const totalMinutes = (dayEndHour - dayStartHour) * 60
+          const sh = (dragStart as CalendarDateTime).hour ?? 0
+          const sm = (dragStart as CalendarDateTime).minute ?? 0
+          const eh = (dragEnd as CalendarDateTime).hour ?? 0
+          const em = (dragEnd as CalendarDateTime).minute ?? 0
+          const startMins = Math.max(0, (sh - dayStartHour) * 60 + sm)
+          const endMins = Math.min(totalMinutes, (eh - dayStartHour) * 60 + em)
+          return {
+            ...basePos,
+            top: startMins / totalMinutes,
+            height: Math.max(0.005, (endMins - startMins) / totalMinutes),
+          }
+        }
+      }
+
+      return basePos
     },
 
     dragPreview:
-      isDragging && dragEventId
+      (isDragging || isResizing) && dragEventId
         ? {
             eventId: dragEventId,
             start: refs.get("dragCurrentStart"),

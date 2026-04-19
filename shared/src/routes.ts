@@ -29,6 +29,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "recurring", title: "Recurring Events" },
       { slug: "mobile-month-view", title: "Mobile Month View" },
       { slug: "year-view", title: "Year View" },
+      { slug: "with-date-picker", title: "With Date Picker" },
     ],
   },
   {
