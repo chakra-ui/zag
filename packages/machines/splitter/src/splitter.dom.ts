@@ -12,7 +12,8 @@ export const getPanelEls = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=
 export const getGlobalCursorId = (ctx: Scope) => `splitter:${ctx.id}:global-cursor`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getResizeTriggerEl = (ctx: Scope, id: string) => ctx.getById(getResizeTriggerId(ctx, id))
+export const getResizeTriggerEl = (ctx: Scope, id: string | null | undefined) =>
+  id != null ? ctx.getById(getResizeTriggerId(ctx, id)) : null
 export const getPanelEl = (ctx: Scope, id: string | number) => ctx.getById(getPanelId(ctx, id))
 
 export const getCursor = (state: CursorState, x: boolean) => {

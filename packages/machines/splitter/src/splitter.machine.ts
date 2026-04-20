@@ -185,15 +185,29 @@ export const machine = createMachine<SplitterSchema>({
         POINTER_MOVE: {
           actions: ["setPointerValue", "setGlobalCursor"],
         },
-        POINTER_UP: {
-          target: "idle",
-          actions: ["invokeOnResizeEnd", "clearGlobalCursor"],
-        },
+        POINTER_UP: [
+          {
+            guard: "isResizeTriggerFocused",
+            target: "focused",
+            actions: ["invokeOnResizeEnd", "setKeyboardState", "clearDraggingState", "clearGlobalCursor"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnResizeEnd", "clearGlobalCursor"],
+          },
+        ],
       },
     },
   },
 
   implementations: {
+    guards: {
+      isResizeTriggerFocused({ context, scope }) {
+        const dragState = context.get("dragState")
+        return scope.isActiveElement(dom.getResizeTriggerEl(scope, dragState?.resizeTriggerId))
+      },
+    },
+
     effects: {
       trackResizeHandles: ({ prop, scope, send }) => {
         const registry = prop("registry")
@@ -320,8 +334,10 @@ export const machine = createMachine<SplitterSchema>({
       },
 
       setKeyboardState({ context, event }) {
+        const id = event.id ?? context.get("dragState")?.resizeTriggerId
+        if (id == null) return
         context.set("keyboardState", {
-          resizeTriggerId: event.id,
+          resizeTriggerId: id,
         })
       },
 

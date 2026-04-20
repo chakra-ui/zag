@@ -34,7 +34,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
   const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
     const { id, disabled } = props
     const dragging = context.get("dragState")?.resizeTriggerId === id
-    const focused = dragging || context.get("keyboardState")?.resizeTriggerId === id
+    const focused = dragging || (state.matches("focused") && context.get("keyboardState")?.resizeTriggerId === id)
     return {
       dragging,
       focused,
@@ -201,6 +201,10 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
             event.preventDefault()
             return
           }
+
+          // Safari doesn't move focus to non-form elements on pointer down,
+          // so focus explicitly to enable keyboard resizing after clicking.
+          event.currentTarget.focus({ preventScroll: true })
 
           // If registry is enabled, it handles pointer events
           if (registry) {
