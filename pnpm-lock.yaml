@@ -4015,6 +4015,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../packages/machines/toast
+      '@zag-js/toggle':
+        specifier: workspace:*
+        version: link:../packages/machines/toggle
       '@zag-js/toggle-group':
         specifier: workspace:*
         version: link:../packages/machines/toggle-group

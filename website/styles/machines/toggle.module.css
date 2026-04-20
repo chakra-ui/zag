@@ -1,0 +1,38 @@
+@layer recipes {
+  .Root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &[data-state="on"] {
+      background: var(--colors-bg-primary-bold);
+      color: var(--colors-text-inverse);
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    &[data-focus] {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+}
