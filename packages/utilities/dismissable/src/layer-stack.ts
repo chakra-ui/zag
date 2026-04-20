@@ -86,6 +86,12 @@ export const layerStack = {
     return Array.from(this.branches).some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
+    // Idempotent per DOM node: React Strict Mode (and similar races) can register
+    // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
+    const existingIndex = this.indexOf(layer.node)
+    if (existingIndex !== -1) {
+      this.layers.splice(existingIndex, 1)
+    }
     this.layers.push(layer)
     this.syncLayers()
   },
