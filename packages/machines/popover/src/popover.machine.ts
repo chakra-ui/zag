@@ -1,5 +1,5 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine } from "@zag-js/core"
+import { createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
@@ -7,6 +7,21 @@ import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./popover.dom"
 import type { Placement, PopoverSchema } from "./popover.types"
+
+function startPositioning({ context, prop, scope }: Params<PopoverSchema>) {
+  context.set("currentPlacement", prop("positioning").placement)
+  const anchorEl = dom.getAnchorEl(scope)
+  const getPositionerEl = () => dom.getPositionerEl(scope)
+  const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+
+  return getPlacement(getTriggerEl, getPositionerEl, {
+    ...prop("positioning"),
+    defer: true,
+    onComplete(data) {
+      context.set("currentPlacement", data.placement)
+    },
+  })
+}
 
 export const machine = createMachine<PopoverSchema>({
   props({ props }) {
@@ -52,6 +67,12 @@ export const machine = createMachine<PopoverSchema>({
           onTriggerValueChange({ value, triggerElement })
         },
       })),
+    }
+  },
+
+  refs() {
+    return {
+      positioningCleanup: null,
     }
   },
 
@@ -137,6 +158,9 @@ export const machine = createMachine<PopoverSchema>({
             actions: ["invokeOnClose"],
           },
         ],
+        "POSITIONING.RESTART": {
+          actions: ["restartPositioning"],
+        },
         "POSITIONING.SET": {
           actions: ["reposition"],
         },
@@ -149,18 +173,16 @@ export const machine = createMachine<PopoverSchema>({
       isOpenControlled: ({ prop }) => prop("open") != undefined,
     },
     effects: {
-      trackPositioning({ context, prop, scope }) {
-        context.set("currentPlacement", prop("positioning").placement)
-        const anchorEl = dom.getAnchorEl(scope)
-        const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-        return getPlacement(getTriggerEl, getPositionerEl, {
-          ...prop("positioning"),
-          defer: true,
-          onComplete(data) {
-            context.set("currentPlacement", data.placement)
-          },
-        })
+      trackPositioning(params) {
+        const { refs } = params
+
+        refs.get("positioningCleanup")?.()
+        refs.set("positioningCleanup", startPositioning(params))
+
+        return () => {
+          refs.get("positioningCleanup")?.()
+          refs.set("positioningCleanup", null)
+        }
       },
 
       trackDismissableElement({ send, prop, scope }) {
@@ -251,7 +273,14 @@ export const machine = createMachine<PopoverSchema>({
     },
 
     actions: {
-      reposition({ event, prop, scope, context }) {
+      restartPositioning(params) {
+        const { refs } = params
+        refs.get("positioningCleanup")?.()
+        refs.set("positioningCleanup", startPositioning(params))
+      },
+
+      reposition(params) {
+        const { event, prop, scope, context } = params
         const anchorEl = dom.getAnchorEl(scope)
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))

@@ -35,6 +35,9 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
+    restartPositioning() {
+      send({ type: "POSITIONING.RESTART" })
+    },
 
     getArrowProps() {
       return normalize.element({

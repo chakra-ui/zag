@@ -170,6 +170,9 @@ export interface PopoverSchema {
   props: RequiredBy<PopoverProps, PropsWithDefault>
   state: "open" | "closed"
   context: PrivateContext
+  refs: {
+    positioningCleanup: VoidFunction | null
+  }
   computed: ComputedContext
   event: EventObject
   action: string
@@ -221,6 +224,10 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
+  /**
+   * Function to restart the tracked positioning session.
+   */
+  restartPositioning: () => void
 
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
