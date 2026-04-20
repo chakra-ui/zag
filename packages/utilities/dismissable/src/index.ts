@@ -5,4 +5,4 @@ export type {
   PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
 export * from "./dismissable-layer"
-export type { LayerType } from "./layer-stack"
+export type { LayerStyleTarget, LayerType } from "./layer-stack"

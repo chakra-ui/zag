@@ -1,7 +1,7 @@
 import { getRootNode } from "./node"
 
 // Roles that represent interactive containers that should be included in controlled element detection
-const INTERACTIVE_CONTAINER_ROLE = new Set(["menu", "listbox", "dialog", "grid", "tree", "region"])
+const INTERACTIVE_CONTAINER_ROLE = new Set(["menu", "listbox", "dialog", "grid", "tree", "region", "application"])
 
 const isInteractiveContainerRole = (role: string) => INTERACTIVE_CONTAINER_ROLE.has(role)
 

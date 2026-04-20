@@ -858,6 +858,7 @@ export function connect<T extends PropTypes>(
         "data-placement": currentPlacement,
         "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(scope),
+        "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",

@@ -1,4 +1,4 @@
-import { contains, nextTick } from "@zag-js/dom-query"
+import { contains, nextTick, getComputedStyle } from "@zag-js/dom-query"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 
@@ -11,12 +11,15 @@ export type LayerDismissEventDetail = {
 
 export type LayerDismissEvent = CustomEvent<LayerDismissEventDetail>
 
+export type LayerStyleTarget = () => HTMLElement | null
+
 export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
+  styleTargets?: LayerStyleTarget[] | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
@@ -102,6 +105,14 @@ export const layerStack = {
     const index = this.indexOf(node)
     if (index < 0) return
 
+    const layer = this.layers[index]
+    layer.styleTargets?.forEach((getTarget) => {
+      const target = getTarget()
+      if (target) {
+        clearLayerStyleMirror(target)
+      }
+    })
+
     // Track this node as recently removed to handle focus race conditions
     // during layer cleanup. This prevents parent layers from incorrectly
     // dismissing when focus moves from a closing nested layer.
@@ -127,26 +138,14 @@ export const layerStack = {
   },
   syncLayers() {
     this.layers.forEach((layer, index) => {
-      layer.node.style.setProperty("--layer-index", `${index}`)
-
-      // Remove previous data attributes
-      layer.node.removeAttribute("data-nested")
-      layer.node.removeAttribute("data-has-nested")
-
-      // Check if this layer is nested within another of the same type
-      const parentOfSameType = this.getParentLayerOfType(layer.node, layer.type)
-      if (parentOfSameType) {
-        layer.node.setAttribute("data-nested", layer.type)
-      }
-
-      // Check if this layer has nested layers of the same type
-      const nestedCount = this.countNestedLayersOfType(layer.node, layer.type)
-      if (nestedCount > 0) {
-        layer.node.setAttribute("data-has-nested", layer.type)
-      }
-
-      // Set the nested layer count
-      layer.node.style.setProperty("--nested-layer-count", `${nestedCount}`)
+      applyLayerStackMetadata(layer, index, layer.node)
+      layer.styleTargets?.forEach((getTarget) => {
+        const target = getTarget()
+        if (!target || target === layer.node) return
+        applyLayerStackMetadata(layer, index, target)
+        const { zIndex } = getComputedStyle(layer.node)
+        target.style.setProperty("--z-index", zIndex)
+      })
     })
   },
   indexOf(node: HTMLElement | undefined) {
@@ -178,6 +177,33 @@ export const layerStack = {
   clear() {
     this.remove(this.layers[0].node)
   },
+}
+
+function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {
+  el.style.setProperty("--layer-index", `${index}`)
+
+  el.removeAttribute("data-nested")
+  el.removeAttribute("data-has-nested")
+
+  const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
+  if (parentOfSameType) {
+    el.setAttribute("data-nested", layer.type)
+  }
+
+  const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+  if (nestedCount > 0) {
+    el.setAttribute("data-has-nested", layer.type)
+  }
+
+  el.style.setProperty("--nested-layer-count", `${nestedCount}`)
+}
+
+function clearLayerStyleMirror(el: HTMLElement) {
+  el.style.removeProperty("--layer-index")
+  el.style.removeProperty("--nested-layer-count")
+  el.style.removeProperty("--z-index")
+  el.removeAttribute("data-nested")
+  el.removeAttribute("data-has-nested")
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, detail?: LayerDismissEventDetail) {

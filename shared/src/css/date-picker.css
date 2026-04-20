@@ -81,6 +81,8 @@
   min-width: 320px;
   background: white;
   border-radius: 8px;
+  position: relative;
+  z-index: var(--layer-index);
 
   &[data-inline] {
     border: 0;

@@ -769,6 +769,7 @@ export const machine = createMachine<DatePickerSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
             context.set("restoreFocus", !event.detail.focusable)

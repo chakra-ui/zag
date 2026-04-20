@@ -2,7 +2,7 @@
 
 import { compact, noop } from "@zag-js/utils"
 import { afterEach, describe, expect, test, vi } from "vitest"
-import type { Layer, LayerDismissEvent, LayerType } from "../src/layer-stack"
+import type { Layer, LayerDismissEvent, LayerStyleTarget, LayerType } from "../src/layer-stack"
 import { layerStack } from "../src/layer-stack"
 
 function createLayer(
@@ -12,15 +12,17 @@ function createLayer(
     pointerBlocking?: boolean
     dismiss?: VoidFunction
     requestDismiss?: (event: LayerDismissEvent) => void
+    styleTargets?: LayerStyleTarget[]
   } = {},
 ): Layer {
-  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss } = options
+  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets } = options
   return compact({
     type,
     node,
     pointerBlocking,
     dismiss,
     requestDismiss,
+    styleTargets,
   })
 }
 
@@ -83,6 +85,58 @@ describe("layerStack", () => {
       expect(layerStack.count()).toBe(1)
       layerStack.layers[0]?.dismiss()
       expect(dismissCount).toBe(10)
+    })
+  })
+
+  describe("styleTargets", () => {
+    test("mirrors stack metadata to extra elements", () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(
+        createLayer(primary, {
+          styleTargets: [() => backdrop],
+        }),
+      )
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
+      expect(backdrop.style.getPropertyValue("--nested-layer-count")).toBe("0")
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe(getComputedStyle(primary).zIndex)
+      expect(backdrop.hasAttribute("data-nested")).toBe(false)
+      expect(backdrop.hasAttribute("data-has-nested")).toBe(false)
+    })
+
+    test("clears mirrored styles when the layer is removed", () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(
+        createLayer(primary, {
+          styleTargets: [() => backdrop],
+        }),
+      )
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
+
+      layerStack.remove(primary)
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
+    })
+
+    test("skips mirroring when target is the same node as the layer", () => {
+      const node = document.createElement("div")
+      document.body.append(node)
+
+      layerStack.add(
+        createLayer(node, {
+          styleTargets: [() => node],
+        }),
+      )
+
+      expect(node.style.getPropertyValue("--layer-index")).toBe("0")
     })
   })
 

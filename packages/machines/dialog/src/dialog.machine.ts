@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getComputedStyle, getInitialFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -56,7 +56,7 @@ export const machine = createMachine<DialogSchema>({
 
   states: {
     open: {
-      entry: ["checkRenderedElements", "syncZIndex", "setInitialFocus"],
+      entry: ["checkRenderedElements", "setInitialFocus"],
       effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
@@ -132,6 +132,7 @@ export const machine = createMachine<DialogSchema>({
           type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
+          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
           exclude: dom.getTriggerEls(scope),
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
@@ -214,20 +215,6 @@ export const machine = createMachine<DialogSchema>({
           context.set("rendered", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
-          })
-        })
-      },
-
-      syncZIndex({ scope }) {
-        raf(() => {
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-
-          const styles = getComputedStyle(contentEl)
-          const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
-          elems.forEach((node) => {
-            node?.style.setProperty("--z-index", styles.zIndex)
-            node?.style.setProperty("--layer-index", styles.getPropertyValue("--layer-index"))
           })
         })
       },
