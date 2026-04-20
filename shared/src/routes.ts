@@ -224,6 +224,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "range", title: "Range" },
+      { slug: "range-calendar", title: "Range calendar" },
       { slug: "multi", title: "Multi" },
       { slug: "inline", title: "Inline" },
       { slug: "month-range", title: "Month + Range" },

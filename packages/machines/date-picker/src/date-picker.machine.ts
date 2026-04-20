@@ -496,10 +496,16 @@ export const machine = createMachine<DatePickerSchema>({
           },
           // ===
         ],
-        "CELL.POINTER_MOVE": {
-          guard: and("isRangePicker", "isSelectingEndDate"),
-          actions: ["setHoveredDate", "setFocusedDate"],
-        },
+        "CELL.POINTER_MOVE": [
+          {
+            guard: and("isRangePicker", "isSelectingEndDate", "isDayPointerMoveOutsideVisibleMonth"),
+            actions: ["setHoveredDate"],
+          },
+          {
+            guard: and("isRangePicker", "isSelectingEndDate"),
+            actions: ["setHoveredDate", "setFocusedDate"],
+          },
+        ],
         "TABLE.POINTER_LEAVE": {
           guard: "isRangePicker",
           actions: ["clearHoveredDate"],
@@ -729,6 +735,7 @@ export const machine = createMachine<DatePickerSchema>({
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
+      isDayPointerMoveOutsideVisibleMonth: ({ event }) => event.cell === "day" && event.outsideRange === true,
     },
 
     effects: {

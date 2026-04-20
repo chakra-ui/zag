@@ -644,6 +644,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(!cellState.selectable),
         "aria-invalid": ariaAttr(cellState.invalid),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value.toString(),
         "data-view": "day",
@@ -669,7 +670,13 @@ export function connect<T extends PropTypes>(
               if (!cellState.selectable) return
               const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
-              send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
+              send({
+                type: "CELL.POINTER_MOVE",
+                cell: "day",
+                value,
+                focus,
+                outsideRange: cellState.outsideRange,
+              })
             }
           : undefined,
       })
@@ -704,6 +711,7 @@ export function connect<T extends PropTypes>(
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "month",
@@ -761,6 +769,7 @@ export function connect<T extends PropTypes>(
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "year",
