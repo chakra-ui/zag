@@ -54,6 +54,8 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
+  allowCustomValue: { type: "boolean", defaultValue: false },
+  alwaysSubmitOnEnter: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({

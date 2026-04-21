@@ -140,4 +140,20 @@ export class ComboboxModel extends Model {
   seeOnValueChangeItemsIsEmpty = async () => {
     await expect(this.valueChangeText).toContainText("N/A")
   }
+
+  get submitCount() {
+    return this.page.locator("[data-testid=submit-count]")
+  }
+
+  get lastSubmit() {
+    return this.page.locator("[data-testid=last-submit]")
+  }
+
+  seeSubmitCount = async (count: number) => {
+    await expect(this.submitCount).toHaveText(String(count))
+  }
+
+  seeLastSubmit = async (value: string) => {
+    await expect(this.lastSubmit).toHaveText(value)
+  }
 }
