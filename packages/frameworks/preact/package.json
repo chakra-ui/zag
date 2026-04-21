@@ -28,10 +28,9 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "proxy-compare": "3.0.1"
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/utils": "workspace:*",
     "@testing-library/preact": "^3.2.4",
     "preact": "10.29.0",
     "clean-package": "2.2.0"
