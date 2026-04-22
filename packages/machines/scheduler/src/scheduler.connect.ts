@@ -555,12 +555,29 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     getDayColumnProps(props: DayColumnProps) {
       const key = props.date.toString()
       const isDropTarget = !!liveDrag && liveDrag.kind === "drag" && toCalendarDate(liveDrag.start).toString() === key
+      const slotMinutes = prop("slotInterval")
       return normalize.element({
         ...parts.dayColumn.attrs(scope.id),
         id: dom.getDayColumnId(scope, key),
         role: "gridcell",
         "data-date": key,
         "data-drop-target": dataAttr(isDropTarget),
+        onPointerDown(event) {
+          if (!isLeftClick(event)) return
+          if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
+          const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+          const relY = Math.max(0, Math.min(event.clientY - rect.top, rect.height - 1))
+          const totalMinutes = (dayEndHour - dayStartHour) * 60
+          const raw = (relY / rect.height) * totalMinutes
+          const snapped = Math.round(raw / slotMinutes) * slotMinutes
+          const start = toCalendarDateTime(props.date).set({
+            hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
+            minute: snapped % 60,
+          })
+          const end = start.add({ minutes: slotMinutes })
+          const point = getEventPoint(event)
+          send({ type: "SLOT_POINTER_DOWN", start, end, point })
+        },
       })
     },
 
