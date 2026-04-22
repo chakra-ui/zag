@@ -231,6 +231,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const formatTime = (d: DateValue): string => timeFormatter.format(toJsDate(d))
   const formatTimeRange = (s: DateValue, e: DateValue): string => `${formatTime(s)} – ${formatTime(e)}`
   const formatLongDate = (d: DateValue): string => longDateFormatter.format(toJsDate(d))
+  const formatDuration = (s: DateValue, e: DateValue): string => {
+    const diff = Math.max(0, getDurationMinutes(s, e))
+    const h = Math.floor(diff / 60)
+    const m = diff % 60
+    if (h && m) return `${h}h ${m}m`
+    if (h) return `${h}h`
+    return `${m}m`
+  }
 
   const monthFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "long" })
   const getMonthName = (d: DateValue) => monthFormatter.format(d.toDate(timeZone))
@@ -297,6 +305,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     formatTime,
     formatTimeRange,
     formatLongDate,
+    formatDuration,
     weekDays,
     hourRange,
     dir,

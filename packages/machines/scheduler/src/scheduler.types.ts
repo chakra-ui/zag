@@ -408,6 +408,8 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   formatTimeRange: (start: DateValue, end: DateValue) => string
   /** Locale/timezone-aware long date, e.g. "Friday, April 24". */
   formatLongDate: (date: DateValue) => string
+  /** Human-friendly duration between two dates, e.g. "1h 30m" / "45m". */
+  formatDuration: (start: DateValue, end: DateValue) => string
   /** Day-of-week labels ordered by weekStartDay/locale. */
   weekDays: WeekDay[]
   /** Hour range shown in day/week time grids (honors dayStartHour/dayEndHour). */

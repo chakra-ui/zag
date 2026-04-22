@@ -36,21 +36,6 @@ const INITIAL: scheduler.SchedulerEvent[] = [
   },
 ]
 
-function toMinutes(d: scheduler.SchedulerEvent["start"]) {
-  const hour = "hour" in d ? d.hour : 0
-  const minute = "minute" in d ? d.minute : 0
-  return { hour, minute, total: hour * 60 + minute }
-}
-
-function formatDuration(start: scheduler.SchedulerEvent["start"], end: scheduler.SchedulerEvent["end"]) {
-  const diff = Math.max(0, toMinutes(end).total - toMinutes(start).total)
-  const h = Math.floor(diff / 60)
-  const m = diff % 60
-  if (h && m) return `${h}h ${m}m`
-  if (h) return `${h}h`
-  return `${m}m`
-}
-
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(INITIAL)
@@ -197,56 +182,41 @@ export default function Page() {
 
         <Portal>
           <div {...popoverApi.getPositionerProps()}>
-            <div
-              {...popoverApi.getContentProps()}
-              style={{
-                background: "white",
-                border: "1px solid #e5e7eb",
-                borderRadius: 8,
-                boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-                padding: 12,
-                minWidth: 240,
-                fontSize: 13,
-              }}
-            >
+            <div {...popoverApi.getContentProps()} className="scheduler-event-popover">
               {selectedEvent ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span
-                      aria-hidden
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: selectedEvent.color ?? "#6b7280",
-                        flexShrink: 0,
-                      }}
-                    />
+                <div
+                  className="scheduler-event-popover-body"
+                  style={{ ["--event-color"]: selectedEvent.color } as React.CSSProperties}
+                >
+                  <div className="scheduler-event-popover-row">
+                    <span aria-hidden className="scheduler-event-popover-dot" />
                     {editing ? (
                       <input
                         autoFocus
+                        className="scheduler-event-popover-title"
                         value={draftTitle}
                         onChange={(e) => setDraftTitle(e.target.value)}
                         onBlur={commitRename}
                         onKeyDown={handleRenameKey}
-                        style={{ flex: 1, font: "inherit", padding: "2px 4px" }}
                       />
                     ) : (
-                      <strong style={{ flex: 1 }}>{selectedEvent.title}</strong>
+                      <strong className="scheduler-event-popover-title">{selectedEvent.title}</strong>
                     )}
                   </div>
-                  <div style={{ color: "#4b5563" }}>{api.formatTimeRange(selectedEvent.start, selectedEvent.end)}</div>
-                  <div style={{ color: "#6b7280" }}>
-                    Duration: {formatDuration(selectedEvent.start, selectedEvent.end)}
+                  <div className="scheduler-event-popover-time">
+                    {api.formatTimeRange(selectedEvent.start, selectedEvent.end)}
                   </div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+                  <div className="scheduler-event-popover-duration">
+                    Duration: {api.formatDuration(selectedEvent.start, selectedEvent.end)}
+                  </div>
+                  <div className="scheduler-event-popover-actions">
                     <button type="button" onClick={() => setEditing((v) => !v)}>
                       {editing ? "Done" : "Edit"}
                     </button>
                     <button type="button" onClick={handleDelete}>
                       Delete
                     </button>
-                    <button type="button" {...popoverApi.getCloseTriggerProps()} style={{ marginLeft: "auto" }}>
+                    <button type="button" {...popoverApi.getCloseTriggerProps()} data-close>
                       Close
                     </button>
                   </div>

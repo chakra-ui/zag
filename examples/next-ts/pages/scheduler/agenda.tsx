@@ -77,7 +77,7 @@ export default function Page() {
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
           </div>
 
-          <div className="scheduler-mobile-agenda" style={{ marginTop: 12 }}>
+          <div className="scheduler-mobile-agenda">
             {api.agendaGroups.length === 0 ? (
               <div className="scheduler-mobile-agenda-empty">
                 No events between {api.formatLongDate(api.visibleRange.start)} and{" "}
