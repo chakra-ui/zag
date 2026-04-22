@@ -115,7 +115,7 @@ export const machine = createMachine<SchedulerSchema>({
         SLOT_POINTER_DOWN: {
           guard: "isNotDisabled",
           target: "slot-selecting",
-          actions: ["initSlotDrag", "clearSelectedEvent"],
+          actions: ["initSlotDrag", "clearSelectedEvent", "clearSelectedSlot"],
         },
         EVENT_POINTER_DOWN: {
           guard: "canDragEvent",
@@ -127,7 +127,7 @@ export const machine = createMachine<SchedulerSchema>({
           target: "event-resizing",
           actions: ["initEventResize"],
         },
-        ESCAPE: { actions: ["clearSelectedEvent"] },
+        ESCAPE: { actions: ["clearSelectedEvent", "clearSelectedSlot"] },
       },
     },
 
@@ -297,6 +297,9 @@ export const machine = createMachine<SchedulerSchema>({
         context.set("selectedEventId", event.eventId)
         prop("onEventClick")?.({ event: evt })
       },
+      clearSelectedSlot({ context }) {
+        context.set("selectedSlot", null)
+      },
       clearSelectedEvent({ context }) {
         context.set("selectedEventId", null)
       },
@@ -332,15 +335,18 @@ export const machine = createMachine<SchedulerSchema>({
           context.set("liveSlot", { start: s, end: e })
         }
       },
-      invokeOnSlotSelect({ prop, refs }) {
+      invokeOnSlotSelect({ prop, refs, context }) {
         const start = refs.get("dragSlotStart")
         const end = refs.get("dragSlotEnd")
         if (!start || !end) return
         const [s, e] = start.compare(end) <= 0 ? [start, end] : [end, start]
         if (s.compare(e) === 0) {
-          prop("onSlotClick")?.({ start: s, end: s.add({ minutes: prop("slotInterval") }) })
+          const slotEnd = s.add({ minutes: prop("slotInterval") })
+          context.set("selectedSlot", { start: s, end: slotEnd })
+          prop("onSlotClick")?.({ start: s, end: slotEnd })
           return
         }
+        context.set("selectedSlot", { start: s, end: e })
         prop("onSlotSelect")?.({ start: s, end: e })
       },
       clearSlotDrag({ refs, context }) {

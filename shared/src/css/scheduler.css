@@ -329,6 +329,65 @@
   transform: translateZ(0);
 }
 
+/* Pale highlight at the clicked/selected slot — shown immediately on click so
+ * the user has visual confirmation before any dialog / create flow opens. */
+/* Create-event dialog — used by the click-to-create example. */
+.scheduler-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.35);
+  z-index: 50;
+}
+.scheduler-dialog-positioner {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 51;
+}
+.scheduler-dialog {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 320px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.scheduler-dialog h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+.scheduler-dialog input {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.scheduler-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.scheduler-dialog-actions button[data-primary] {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.scheduler-slot-selected {
+  position: absolute;
+  inset-inline-start: var(--scheduler-event-inset, 2px);
+  inset-inline-end: var(--scheduler-event-inset, 2px);
+  border-radius: 4px;
+  background: color-mix(in srgb, #2563eb 10%, transparent);
+  border: 1px dashed color-mix(in srgb, #2563eb 50%, transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+
 /* Dashed outline at the gesture origin so the user always sees where the
  * event started — "was here" marker without interrupting the source. */
 .scheduler-drag-origin {

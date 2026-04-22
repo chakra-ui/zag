@@ -390,12 +390,22 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   dragPreview: { eventId: string; start: DateValue | null; end: DateValue | null } | null
   /** Where the active drag/resize started — use to render a "was here" ghost outline. */
   dragOrigin: { eventId: string; start: DateValue; end: DateValue } | null
+  /** Slot the user selected (clicked or drag-selected). Clears on escape or new click. */
+  selectedSlot: { start: DateValue; end: DateValue } | null
 
   setView: (view: ViewType) => void
   setDate: (date: DateValue) => void
   goToToday: () => void
   goToNext: () => void
   goToPrev: () => void
+  /** Dismiss the selected slot highlight (e.g. when a create dialog closes). */
+  clearSelectedSlot: () => void
+  /**
+   * Returns positioning + bounds for the selected slot in the given day column,
+   * or null when the slot doesn't belong to that day. Spread `style` onto your
+   * highlight element.
+   */
+  getSelectedSlot: (params: { date: DateValue }) => { style: EventStyle; start: DateValue; end: DateValue } | null
 
   getEventState: (id: string) => EventStateDetail
   /** Numeric position within a day column — use for custom layouts. */

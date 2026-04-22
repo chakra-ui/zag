@@ -249,6 +249,28 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     goToPrev() {
       send({ type: "GO_TO_PREV" })
     },
+    clearSelectedSlot() {
+      context.set("selectedSlot", null)
+    },
+
+    selectedSlot: context.get("selectedSlot"),
+
+    getSelectedSlot({ date: d }) {
+      const slot = context.get("selectedSlot")
+      if (!slot) return null
+      if (toCalendarDate(slot.start).toString() !== toCalendarDate(d).toString()) return null
+      const topPct = timePercent(slot.start) * 100
+      const heightPct = (timePercent(slot.end) - timePercent(slot.start)) * 100
+      return {
+        start: slot.start,
+        end: slot.end,
+        style: {
+          position: "absolute",
+          top: `${topPct}%`,
+          height: `${heightPct}%`,
+        } as EventStyle,
+      }
+    },
 
     getEventById(id) {
       return eventsById.get(id)

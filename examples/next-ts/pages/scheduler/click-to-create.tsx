@@ -1,40 +1,35 @@
+import * as dialog from "@zag-js/dialog"
 import * as scheduler from "@zag-js/scheduler"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
+import type { DateValue } from "@internationalized/date"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
 const TODAY = scheduler.getToday()
+const PALETTE = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
     title: "Team standup",
-    start: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 0 }),
-    end: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 30 }),
+    start: TODAY.set({ hour: 9, minute: 0 }),
+    end: TODAY.set({ hour: 9, minute: 30 }),
     color: "#3b82f6",
-  },
-  {
-    id: "2",
-    title: "Design review",
-    start: TODAY.set({ hour: 10, minute: 0 }),
-    end: TODAY.set({ hour: 11, minute: 30 }),
-    color: "#10b981",
-  },
-  {
-    id: "3",
-    title: "Lunch",
-    start: TODAY.add({ days: 2 }).set({ hour: 12, minute: 0 }),
-    end: TODAY.add({ days: 2 }).set({ hour: 13, minute: 0 }),
-    color: "#f59e0b",
   },
 ]
 
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(INITIAL)
+  const nextIdRef = useRef(INITIAL.length)
+  const pendingSlotRef = useRef<{ start: DateValue; end: DateValue } | null>(null)
+  const [title, setTitle] = useState("")
+
+  const dialogService = useMachine(dialog.machine, { id: useId() })
+  const dialogApi = dialog.connect(dialogService, normalizeProps)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
@@ -42,10 +37,36 @@ export default function Page() {
     events,
     onEventDrop: (d) => setEvents(d.apply),
     onEventResize: (d) => setEvents(d.apply),
+    onSlotClick(d) {
+      pendingSlotRef.current = { start: d.start, end: d.end }
+      setTitle("")
+      dialogApi.setOpen(true)
+    },
   })
 
   const api = scheduler.connect(service, normalizeProps)
   const { visibleDays, hourRange, weekDays } = api
+
+  const commit = () => {
+    const slot = pendingSlotRef.current
+    if (!slot || !title.trim()) {
+      dialogApi.setOpen(false)
+      return
+    }
+    const id = `new-${++nextIdRef.current}`
+    setEvents((p) => [
+      ...p,
+      { id, title: title.trim(), start: slot.start, end: slot.end, color: PALETTE[nextIdRef.current % PALETTE.length] },
+    ])
+    pendingSlotRef.current = null
+    dialogApi.setOpen(false)
+  }
+
+  const cancel = () => {
+    pendingSlotRef.current = null
+    api.clearSelectedSlot()
+    dialogApi.setOpen(false)
+  }
 
   return (
     <>
@@ -114,6 +135,37 @@ export default function Page() {
           </div>
         </div>
       </main>
+
+      {dialogApi.open && (
+        <Portal>
+          <div {...dialogApi.getBackdropProps()} className="scheduler-dialog-backdrop" />
+          <div {...dialogApi.getPositionerProps()} className="scheduler-dialog-positioner">
+            <div {...dialogApi.getContentProps()} className="scheduler-dialog">
+              <h2 {...dialogApi.getTitleProps()}>New event</h2>
+              <input
+                autoFocus
+                type="text"
+                placeholder="Event title"
+                value={title}
+                onChange={(e) => setTitle(e.currentTarget.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commit()
+                  if (e.key === "Escape") cancel()
+                }}
+              />
+              <div className="scheduler-dialog-actions">
+                <button type="button" onClick={cancel}>
+                  Cancel
+                </button>
+                <button type="button" onClick={commit} data-primary>
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </Portal>
+      )}
+
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} />
       </Toolbar>
