@@ -27,6 +27,7 @@ import {
   startOfWeek,
   endOfWeek,
   toCalendarDate,
+  toCalendarDateTime,
   type CalendarDateTime,
   type DateValue,
 } from "@internationalized/date"
@@ -114,10 +115,21 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     narrow: w.narrow,
   }))
 
+  const hourFormatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
+  const hourSpan = dayEndHour - dayStartHour
+  const hourRefDate = toCalendarDateTime(visibleRange.start)
   const hourRange: HourRange = {
     start: dayStartHour,
     end: dayEndHour,
-    hours: Array.from({ length: dayEndHour - dayStartHour + 1 }, (_, i) => dayStartHour + i),
+    hours: Array.from({ length: hourSpan + 1 }, (_, i) => {
+      const value = dayStartHour + i
+      const labelDate = hourRefDate.set({ hour: Math.min(value, 23), minute: 0 })
+      return {
+        value,
+        label: hourFormatter.format(labelDate.toDate(timeZone)),
+        percent: hourSpan === 0 ? 0 : i / hourSpan,
+      }
+    }),
   }
 
   const rangeFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "short", day: "numeric", year: "numeric" })

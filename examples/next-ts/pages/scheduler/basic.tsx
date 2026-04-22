@@ -75,12 +75,8 @@ export default function Page() {
               <div {...api.getGridProps()} className="scheduler-time-grid">
                 <div {...api.getTimeGutterProps()}>
                   {hourRange.hours.map((h) => (
-                    <div
-                      key={h}
-                      className="scheduler-hour-label"
-                      style={{ top: `${((h - hourRange.start) / (hourRange.end - hourRange.start)) * 100}%` }}
-                    >
-                      {String(h).padStart(2, "0")}:00
+                    <div key={h.value} className="scheduler-hour-label" style={{ top: `${h.percent * 100}%` }}>
+                      {h.label}
                     </div>
                   ))}
                 </div>
@@ -88,11 +84,7 @@ export default function Page() {
                 {visibleDays.map((d) => (
                   <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
                     {hourRange.hours.map((h) => (
-                      <div
-                        key={h}
-                        className="scheduler-hour-line"
-                        style={{ top: `${((h - hourRange.start) / (hourRange.end - hourRange.start)) * 100}%` }}
-                      />
+                      <div key={h.value} className="scheduler-hour-line" style={{ top: `${h.percent * 100}%` }} />
                     ))}
                     {api.getEventsForDay(d).map((event) => (
                       <div

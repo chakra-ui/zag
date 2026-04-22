@@ -307,13 +307,25 @@ export interface VisibleRangeText {
   formatted: string
 }
 
+export interface HourEntry {
+  /** Hour value, 0–24. */
+  value: number
+  /** Localized label, e.g. "09:00" / "9 AM" depending on locale. */
+  label: string
+  /** 0..1 vertical position within the visible grid — drop in as `${percent * 100}%`. */
+  percent: number
+}
+
 export interface HourRange {
   /** Inclusive start hour (0–24). */
   start: number
   /** Exclusive end hour (0–24). */
   end: number
-  /** Hours from start..end inclusive, e.g. [7,8,…,20]. */
-  hours: number[]
+  /**
+   * Hours from start..end inclusive, each with its localized label and grid
+   * position pre-computed. Replaces manual `(h - start) / (end - start)` math.
+   */
+  hours: HourEntry[]
 }
 
 export interface EventStyle {
