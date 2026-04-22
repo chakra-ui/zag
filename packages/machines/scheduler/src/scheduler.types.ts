@@ -234,6 +234,27 @@ export interface DayColumnProps {
 
 export interface DayCellProps {
   date: DateValue
+  /**
+   * Reference date for month-based layouts — used to decide whether the cell is
+   * "outside" the current month (greys it out). Defaults to `api.date`.
+   */
+  referenceDate?: DateValue
+}
+
+/**
+ * A single day in a month-grid rendering. Produced by `api.getMonthGrid`.
+ * Data attributes are already surfaced via `getDayCellProps` — this shape is
+ * for when consumers need the booleans directly (e.g. to render a dot for
+ * events, or a custom className).
+ */
+export interface MonthGridDay {
+  date: DateValue
+  /** Whether this day falls inside the reference month (false = leading/trailing filler). */
+  inMonth: boolean
+  /** Whether this day is today (locale/timezone aware). */
+  isToday: boolean
+  /** Whether this day is a Saturday or Sunday. */
+  isWeekend: boolean
 }
 
 export interface EventProps<T = Record<string, unknown>> {
@@ -330,6 +351,15 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   getEventStyle: (event: SchedulerEvent<E>) => EventStyle
   /** 0..1 fraction of the visible day range corresponding to the given date's time-of-day. */
   getTimePercent: (date: DateValue) => number
+  /** Localized full month name for the given date, e.g. "April". */
+  getMonthName: (date: DateValue) => string
+  /** Twelve localized month names in order. */
+  monthNames: string[]
+  /**
+   * Weeks × days covering the month that contains `date`, padded to full weeks.
+   * Use for month grids and mini-month cells.
+   */
+  getMonthGrid: (date?: DateValue) => MonthGridDay[][]
   /** O(1) event lookup by id (reads from the current events list). */
   getEventById: (id: string) => SchedulerEvent<E> | undefined
   getEventsForDay: (date: DateValue) => SchedulerEvent<E>[]

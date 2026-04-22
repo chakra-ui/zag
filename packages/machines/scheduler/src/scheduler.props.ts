@@ -52,7 +52,7 @@ export const splitTimeSlotProps = createSplitProps<TimeSlotProps>(timeSlotProps)
 export const dayColumnProps = createProps<DayColumnProps>()(["date"])
 export const splitDayColumnProps = createSplitProps<DayColumnProps>(dayColumnProps)
 
-export const dayCellProps = createProps<DayCellProps>()(["date"])
+export const dayCellProps = createProps<DayCellProps>()(["date", "referenceDate"])
 export const splitDayCellProps = createSplitProps<DayCellProps>(dayCellProps)
 
 export const eventProps = createProps<EventProps>()(["event"])

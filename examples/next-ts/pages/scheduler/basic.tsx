@@ -64,10 +64,7 @@ export default function Page() {
           </div>
 
           <div className="scheduler-time-grid-wrapper">
-            <div
-              className="scheduler-col-headers"
-              style={{ gridTemplateColumns: `60px repeat(${visibleDays.length}, 1fr)` }}
-            >
+            <div className="scheduler-col-headers">
               <div className="scheduler-header-cell scheduler-gutter-header" />
               {visibleDays.map((d, i) => (
                 <div key={d.toString()} className="scheduler-header-cell">
@@ -78,11 +75,7 @@ export default function Page() {
             </div>
 
             <div className="scheduler-time-grid-scroll">
-              <div
-                {...api.getGridProps()}
-                className="scheduler-time-grid"
-                style={{ gridTemplateColumns: `60px repeat(${visibleDays.length}, 1fr)`, height: gridHeight }}
-              >
+              <div {...api.getGridProps()} className="scheduler-time-grid" style={{ height: gridHeight }}>
                 <div {...api.getTimeGutterProps()} style={{ height: gridHeight }}>
                   {hourRange.hours.map((h) => (
                     <div

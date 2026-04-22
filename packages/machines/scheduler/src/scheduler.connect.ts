@@ -19,10 +19,22 @@ import type {
   VisibleRangeText,
   WeekDay,
 } from "./scheduler.types"
-import { now, getLocalTimeZone, type CalendarDateTime, type DateValue } from "@internationalized/date"
+import {
+  now,
+  getLocalTimeZone,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  toCalendarDate,
+  type CalendarDateTime,
+  type DateValue,
+} from "@internationalized/date"
 import { getTimePercent, rangesOverlap } from "./utils/time"
 import { getEventPosition } from "./utils/layout"
+import { toDayOfWeekToken } from "./utils/visible-range"
 import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
+import type { MonthGridDay } from "./scheduler.types"
 
 export function connect<T extends PropTypes>(service: SchedulerService, normalize: NormalizeProps<T>): SchedulerApi<T> {
   const { state, send, context, prop, computed, scope, refs } = service
@@ -128,6 +140,46 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     return mins / totalDayMinutes
   }
 
+  const monthFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "long" })
+  const getMonthName = (d: DateValue) => monthFormatter.format(d.toDate(timeZone))
+  const monthNames = Array.from({ length: 12 }, (_, i) =>
+    monthFormatter.format(date.set({ month: i + 1 }).toDate(timeZone)),
+  )
+
+  const todayKey = toCalendarDate(today).toString()
+  const sameDay = (a: DateValue, b: DateValue) => toCalendarDate(a).compare(toCalendarDate(b)) === 0
+  const isTodayDate = (d: DateValue) => toCalendarDate(d).toString() === todayKey
+  const isWeekendDate = (d: DateValue) => {
+    // JS Date dow: 0 = Sun, 6 = Sat
+    const dow = new Date(d.year, d.month - 1, d.day).getDay()
+    return dow === 0 || dow === 6
+  }
+
+  const weekStartDayName = toDayOfWeekToken(weekStartDay)
+
+  const getMonthGrid = (ref: DateValue = date): MonthGridDay[][] => {
+    const monthStart = startOfMonth(ref)
+    const monthEnd = endOfMonth(ref)
+    const gridStart = startOfWeek(monthStart, locale, weekStartDayName)
+    const gridEnd = endOfWeek(monthEnd, locale, weekStartDayName)
+    const weeks: MonthGridDay[][] = []
+    let cur: DateValue = gridStart
+    while (cur.compare(gridEnd) <= 0) {
+      const week: MonthGridDay[] = []
+      for (let i = 0; i < 7; i++) {
+        week.push({
+          date: cur,
+          inMonth: cur.month === ref.month && cur.year === ref.year,
+          isToday: isTodayDate(cur),
+          isWeekend: isWeekendDate(cur),
+        })
+        cur = cur.add({ days: 1 })
+      }
+      weeks.push(week)
+    }
+    return weeks
+  }
+
   return {
     view,
     date,
@@ -165,6 +217,14 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getTimePercent(d) {
       return timePercent(d)
+    },
+
+    getMonthName(d) {
+      return getMonthName(d)
+    },
+    monthNames,
+    getMonthGrid(d) {
+      return getMonthGrid(d ?? date)
     },
 
     getEventStyle(event) {
@@ -253,6 +313,14 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         dir,
         "data-view": view,
         "data-dir": dir,
+        style: {
+          // Expose layout-critical counts so children can lay themselves out via
+          // CSS (grid-template-columns) without plumbing JS. Consumers can still
+          // override the gutter width or hour-row height via matching vars.
+          ["--scheduler-visible-days" as any]: visibleDays.length,
+          ["--scheduler-day-count" as any]: visibleDays.length,
+          ["--scheduler-hour-count" as any]: hourRange.end - hourRange.start,
+        },
         onKeyDown(e) {
           if (e.defaultPrevented) return
           const target = e.target as HTMLElement
@@ -408,17 +476,27 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     },
 
     getDayCellProps(props: DayCellProps) {
-      const key = props.date.toString()
+      const { date: d, referenceDate = date } = props
+      const key = d.toString()
+      const outside = d.month !== referenceDate.month || d.year !== referenceDate.year
+      const todayCell = isTodayDate(d)
+      const weekend = isWeekendDate(d)
+      const selected = !!context.get("selectedSlot") && sameDay(d, context.get("selectedSlot")!.start)
       return normalize.element({
         ...parts.dayCell.attrs(scope.id),
         id: dom.getDayCellId(scope, key),
         role: "gridcell",
         "data-date": key,
+        "data-today": dataAttr(todayCell),
+        "data-outside": dataAttr(outside),
+        "data-weekend": dataAttr(weekend),
+        "data-selected": dataAttr(selected),
+        "aria-current": todayCell ? "date" : undefined,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           const point = getEventPoint(event)
-          const start = props.date
-          const end = props.date.add({ days: 1 })
+          const start = d
+          const end = d.add({ days: 1 })
           send({ type: "SLOT_POINTER_DOWN", start, end, point })
         },
       })

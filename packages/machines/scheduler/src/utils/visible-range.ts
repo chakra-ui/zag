@@ -1,11 +1,20 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek, type DateValue } from "@internationalized/date"
 import type { ViewType } from "../scheduler.types"
 
+/**
+ * Identifier tokens consumed by `@internationalized/date`'s startOfWeek/endOfWeek
+ * `firstDay` parameter. NOT display labels — those come from Intl.DateTimeFormat
+ * via `getWeekDays`, which is locale/RTL aware.
+ */
 const DAY_NAMES = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const
 type DayOfWeek = (typeof DAY_NAMES)[number]
 
-function toDayOfWeek(n?: number): DayOfWeek | undefined {
+export function toDayOfWeekToken(n?: number): DayOfWeek | undefined {
   return n == null ? undefined : DAY_NAMES[n]
+}
+
+function toDayOfWeek(n?: number): DayOfWeek | undefined {
+  return toDayOfWeekToken(n)
 }
 
 export function getVisibleRange(

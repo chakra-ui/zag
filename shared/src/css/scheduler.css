@@ -70,9 +70,13 @@
   background: #fff;
 }
 
-/* Sticky column headers */
+/* Sticky column headers. Grid columns driven by CSS vars from root:
+ *   --scheduler-time-gutter-width (default 60px)
+ *   --scheduler-visible-days      (exposed by the machine)
+ */
 .scheduler-col-headers {
   display: grid;
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
@@ -91,6 +95,7 @@
 
 .scheduler-time-grid {
   display: grid;
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
   position: relative;
 }
 
