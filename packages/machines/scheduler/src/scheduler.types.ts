@@ -448,7 +448,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
    * or null when the slot doesn't belong to that day. Spread `style` onto your
    * highlight element.
    */
-  getSelectedSlot: (params: { date: DateValue }) => { style: EventStyle; start: DateValue; end: DateValue } | null
+  getSelectedSlot: (params: { date: DateValue }) => { props: T["element"]; start: DateValue; end: DateValue } | null
 
   getEventState: (id: string) => EventStateDetail
   /** Numeric position within a day column — use for custom layouts. */
@@ -456,17 +456,17 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   /** Ready-to-spread CSS with logical props (RTL-safe) — use for default time-grid rendering. */
   getEventStyle: (event: SchedulerEvent<E>) => EventStyle
   /**
-   * Returns the drag ghost for a day column (the floating preview at the
-   * predicted drop position), or null when nothing should render there.
-   * Spread `style` onto your ghost element; `event` is the source event so you
-   * can pull its title/color.
+   * Drag ghost for a day column — floating preview at the predicted drop
+   * position. Spread `props` onto your ghost element. Null when nothing to
+   * render in this column.
    */
-  getDragGhost: (params: { date: DateValue }) => { style: EventStyle; event: SchedulerEvent<E> } | null
+  getDragGhost: (params: { date: DateValue }) => { props: T["element"]; event: SchedulerEvent<E> } | null
   /**
-   * Returns the origin outline for a day column (the "was here" marker at the
-   * gesture's starting bounds), or null when nothing should render there.
+   * Origin outline for a day column — "was here" marker at the gesture's
+   * starting bounds. Spread `props` onto your outline element. Null when no
+   * drag is active or it's not in this column.
    */
-  getDragOrigin: (params: { date: DateValue }) => { style: EventStyle; event: SchedulerEvent<E> } | null
+  getDragOrigin: (params: { date: DateValue }) => { props: T["element"]; event: SchedulerEvent<E> } | null
   /** 0..1 fraction of the visible day range corresponding to the given date's time-of-day. */
   getTimePercent: (date: DateValue) => number
   /** Localized full month name for the given date, e.g. "April". */

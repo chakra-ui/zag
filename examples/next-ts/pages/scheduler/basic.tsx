@@ -99,10 +99,10 @@ export default function Page() {
                           </div>
                         </div>
                       ))}
-                      {slot && <div className="scheduler-slot-selected" style={slot.style as React.CSSProperties} />}
-                      {origin && <div className="scheduler-drag-origin" style={origin.style as React.CSSProperties} />}
+                      {slot && <div {...slot.props} />}
+                      {origin && <div {...origin.props} />}
                       {ghost && (
-                        <div className="scheduler-drag-ghost" style={ghost.style as React.CSSProperties}>
+                        <div {...ghost.props}>
                           <div className="scheduler-event-title">{ghost.event.title}</div>
                         </div>
                       )}

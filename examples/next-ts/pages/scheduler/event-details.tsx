@@ -166,9 +166,9 @@ export default function Page() {
                           </div>
                         </div>
                       ))}
-                      {origin && <div className="scheduler-drag-origin" style={origin.style as React.CSSProperties} />}
+                      {origin && <div {...origin.props} />}
                       {ghost && (
-                        <div className="scheduler-drag-ghost" style={ghost.style as React.CSSProperties}>
+                        <div {...ghost.props}>
                           <div className="scheduler-event-title">{ghost.event.title}</div>
                         </div>
                       )}

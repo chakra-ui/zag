@@ -1,18 +1,23 @@
 # @zag-js/scheduler
 
-Framework-agnostic scheduler machine for building calendar and time-grid UIs. It emits headless render data (positions, visible ranges, prop-getters, drag state) so you own every piece of markup and every pixel of style.
+Framework-agnostic headless scheduler machine for building calendar / time-grid UIs. Emits render data (visible days, hours, positions, formatted labels, drag overlays); you own markup and styles.
+
+- Day / week / month / year / agenda views
+- Drag to move, resize from the bottom edge
+- Click vs double-click disambiguation (select highlight vs create trigger)
+- Native recurring events — no user-supplied RRULE expander needed for basic rules
+- Conflict detection, keyboard navigation (`T` today, `D/W/M/Y` switch views, `Escape` cancel)
+- First-class RTL via logical CSS properties and direction-aware arrows
+- Locale-aware formatting via `Intl.DateTimeFormat`
+- O(N log N) layout + O(1) per-day / conflict lookups — tested to 5000 events
 
 ## Install
 
-```bash
-pnpm add @zag-js/scheduler @zag-js/react
-# or
-npm install @zag-js/scheduler @zag-js/react
-# or
-yarn add @zag-js/scheduler @zag-js/react
+```sh
+pnpm add @zag-js/scheduler @zag-js/react @internationalized/date
 ```
 
-Adapters also exist for `@zag-js/solid`, `@zag-js/vue`, `@zag-js/svelte`, and `@zag-js/preact`.
+Any `@zag-js/{react, solid, svelte, vue, preact}` works as the framework adapter.
 
 ## Quick start
 
@@ -26,31 +31,34 @@ const TODAY = scheduler.getToday()
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
-    title: "Design review",
-    start: TODAY.set({ hour: 10, minute: 0 }),
-    end: TODAY.set({ hour: 11, minute: 30 }),
-    color: "#10b981",
+    title: "Team standup",
+    start: TODAY.set({ hour: 9, minute: 0 }),
+    end: TODAY.set({ hour: 9, minute: 30 }),
+    color: "#3b82f6",
   },
 ]
 
 export function Calendar() {
   const [events, setEvents] = useState(INITIAL)
+
   const service = useMachine(scheduler.machine, {
     id: useId(),
     events,
     onEventDrop: (d) => setEvents(d.apply),
     onEventResize: (d) => setEvents(d.apply),
   })
+
   const api = scheduler.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>
       <div {...api.getHeaderProps()}>
         <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
-        <button {...api.getTodayTriggerProps()}>Today</button>
+        <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
         <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
         <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
       </div>
+
       <div {...api.getGridProps()}>
         <div {...api.getTimeGutterProps()}>
           {api.hourRange.hours.map((h) => (
@@ -75,247 +83,252 @@ export function Calendar() {
 ## Event model
 
 ```ts
-interface SchedulerEvent<T = Record<string, unknown>> {
+interface SchedulerEvent<T = any> {
   id: string
   title: string
-  start: DateValue
+  start: DateValue     // from @internationalized/date
   end: DateValue
   allDay?: boolean
-  color?: string
-  recurrence?: { rrule: string; exdate?: DateValue[] }
+  color?: string       // surfaces as --event-color CSS var
   disabled?: boolean
-  payload?: T
+  recurrence?: RecurrenceRule | { rrule: string; exdate?: DateValue[] }
+  payload?: T          // your own metadata; flows through every callback detail
 }
 ```
 
-| Field | Notes |
-| --- | --- |
-| `id` | Stable unique key. Powers O(1) lookups and drag tracking. |
-| `title` | Display label. The machine doesn't format or truncate it. |
-| `start` / `end` | `DateValue` from `@internationalized/date` (CalendarDate or CalendarDateTime). |
-| `allDay` | When true, `getEventStyle` is skipped — render in your own all-day row. |
-| `color` | Surfaced as `--event-color` on event style so CSS can pick it up. |
-| `recurrence` | An RRULE string (and optional exdates). Only read if you pass `expandRecurrence`. |
-| `disabled` | Blocks drag and resize for that event. |
-| `payload` | Arbitrary typed metadata. |
+Typed payload:
 
-The `payload` slot is typed via the generic parameter:
+```tsx
+interface MeetingPayload { attendees: string[]; location: string }
+type Event = scheduler.SchedulerEvent<MeetingPayload>
 
-```ts
-type Meeting = SchedulerEvent<{ attendees: string[]; meetingUrl: string }>
-
-const m: Meeting = {
-  id: "1",
-  title: "Design review",
-  start, end,
-  payload: { attendees: ["ada", "grace"], meetingUrl: "https://meet…" },
-}
-```
-
-## Views
-
-Pass via `view` / `defaultView`. The machine computes `api.visibleRange` per view.
-
-| View | `visibleRange` covers |
-| --- | --- |
-| `day` | The single focused day. |
-| `week` | 7 days, ordered by `weekStartDay` / locale. |
-| `month` | Full month, padded to complete weeks (use `api.getMonthGrid`). |
-| `year` | 12 months — iterate `api.monthNames` and render `api.getMonthGrid(date)` per month. |
-| `agenda` | A rolling window from the focused date forward; render as a flat list. |
-
-## API surface
-
-### Data
-
-| Name | Type | Description |
-| --- | --- | --- |
-| `view` | `ViewType` | Current view. |
-| `date` | `DateValue` | Focused date. |
-| `today` | `DateValue` | Locale/timezone-aware today. |
-| `visibleRange` | `{ start; end }` | Raw bounds of the currently visible range. |
-| `visibleRangeText` | `VisibleRangeText` | Pre-localized start / end / formatted title. |
-| `visibleDays` | `DateValue[]` | Inclusive enumeration of `visibleRange`. |
-| `weekDays` | `WeekDay[]` | 7 localized weekday headers, ordered by `weekStartDay`. |
-| `hourRange` | `HourRange` | `start`, `end`, and `hours[]` with pre-computed labels + `style.top`. |
-| `dir` | `"ltr" \| "rtl"` | Resolved writing direction. |
-| `prevTriggerIcon` | `string` | Direction-aware previous arrow glyph. |
-| `nextTriggerIcon` | `string` | Direction-aware next arrow glyph. |
-| `events` | `SchedulerEvent<E>[]` | Flat list with recurring events expanded. |
-| `dragPreview` | `{ eventId; start; end } \| null` | Live drag/resize bounds. |
-| `dragOrigin` | `{ eventId; start; end } \| null` | Snapshot of where the gesture started. |
-| `isDragging` | `boolean` | Machine is in `event-dragging`. |
-| `isSlotSelecting` | `boolean` | Machine is in `slot-selecting`. |
-| `isResizing` | `boolean` | Machine is in `event-resizing`. |
-| `monthNames` | `string[]` | Twelve localized month names. |
-
-### Lookups
-
-| Name | Description |
-| --- | --- |
-| `getEventById(id)` | O(1) lookup against the expanded events list. |
-| `getEventsForDay(date)` | O(1) bucket lookup for a day (multi-day events appear in each bucket). |
-| `getEventsForSlot(start, end)` | Events intersecting a slot; scans only the start-day bucket. |
-| `hasConflict(event)` | Whether the event overlaps another timed event. O(1), precomputed. |
-| `getEventState(id)` | `{ dragging, resizing, focused, selected, conflict }`. |
-
-### Layout
-
-| Name | Description |
-| --- | --- |
-| `getEventPosition(event)` | Numeric `EventPosition` — `top`, `height`, `left`, `width`, `column`, `totalColumns`, each 0..1. |
-| `getEventStyle(event)` | Ready-to-spread CSS with logical insets and `--event-color`. |
-| `getTimePercent(date)` | 0..1 vertical position of a given time within the day grid. |
-| `getMonthGrid(date?)` | `MonthGridDay[][]` — weeks × days, padded to full weeks. |
-| `getMonthName(date)` | Localized full month name. |
-
-### Drag overlays
-
-| Name | Description |
-| --- | --- |
-| `getDragGhost({ date })` | `{ style, event }` for the floating preview on this day, or `null`. |
-| `getDragOrigin({ date })` | `{ style, event }` for the "was here" outline on this day, or `null`. |
-
-### Navigation
-
-| Name | Description |
-| --- | --- |
-| `setView(view)` | Switch view (`day`/`week`/`month`/`year`/`agenda`). |
-| `setDate(date)` | Focus a specific date. |
-| `goToToday()` | Jump to today in the active timezone. |
-| `goToNext()` | Advance by one view unit. |
-| `goToPrev()` | Go back by one view unit. |
-
-### Prop-getters
-
-```
-getRootProps                  getHeaderProps                getHeaderTitleProps
-getPrevTriggerProps           getNextTriggerProps           getTodayTriggerProps
-getViewSelectProps            getViewItemProps({ view })    getGridProps
-getAllDayRowProps             getTimeSlotProps(slot)        getTimeGutterProps
-getDayColumnProps({ date })   getDayCellProps({ date })     getEventProps({ event })
-getEventResizeHandleProps({ event, edge })                  getCurrentTimeIndicatorProps
-getMoreEventsProps({ date, count })
-```
-
-## Callbacks
-
-```ts
-useMachine(scheduler.machine, {
+const service = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
   events,
-  onSlotClick: (d) => openCreate({ start: d.start, end: d.end }),
-  onSlotSelect: (d) => openCreate({ start: d.start, end: d.end }),
-  onEventClick: (d) => select(d.event),
-  onEventDrop: (d) => setEvents(d.apply),
-  onEventResize: (d) => setEvents(d.apply),
-  onDateChange: (d) => setDate(d.date),
-  onViewChange: (d) => setView(d.view),
+  onEventClick: (d) => console.log(d.event.payload.attendees),
 })
 ```
 
-| Callback | Fires when |
-| --- | --- |
-| `onSlotClick` | Pointer-down and up on the same slot (no drag). Use to open a "new event" popover. |
-| `onSlotSelect` | Slot drag — `start`/`end` are always normalized (start ≤ end). |
-| `onEventClick` | Event is clicked or activated by Enter/Space. |
-| `onEventDrop` | After a drag that changed bounds. Includes `index` and `apply`. |
-| `onEventResize` | After a resize that changed bounds. Includes `edge`, `index`, `apply`. |
-| `onDateChange` | Focused date changed (nav buttons or `setDate`). |
-| `onViewChange` | Active view changed. |
+One cast at the machine boundary — `connect`'s return infers the payload type.
 
-`EventDropDetails.apply` and `EventResizeDetails.apply` return a new events array with just this event's bounds updated:
+## Views
+
+| view | visible range |
+|---|---|
+| `day` | focused date |
+| `week` | start-of-week to end-of-week, honoring `weekStartDay` / locale |
+| `month` | full weeks enclosing the focused month |
+| `year` | January to December of focused year |
+| `agenda` | 30-day rolling window from focused date |
+
+Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
+
+## Props
+
+| name | type | default | description |
+|---|---|---|---|
+| `events` | `SchedulerEvent<T>[]` | `[]` | event list |
+| `view` / `defaultView` | `ViewType` | `"week"` | controlled / uncontrolled view |
+| `date` / `defaultDate` | `DateValue` | today | controlled / uncontrolled focused date |
+| `slotInterval` | `15 \| 30 \| 60` | `30` | snap granularity for drag / resize |
+| `dayStartHour` | `number` | `0` | first hour shown in day/week grid |
+| `dayEndHour` | `number` | `24` | last hour shown |
+| `workWeekDays` | `number[]` | `[1,2,3,4,5]` | `0`=Sun…`6`=Sat |
+| `workWeekOnly` | `boolean` | `false` | in week view, filter `visibleDays` to `workWeekDays` |
+| `weekStartDay` | `0–6` | locale default | override first day of week |
+| `locale` | BCP 47 string | `"en-US"` | drives formatters + start-of-week |
+| `timeZone` | IANA string | local | drives `today` + all formatters |
+| `dir` | `"ltr" \| "rtl"` | `"ltr"` | writing direction; flips arrows + logical props |
+| `showCurrentTime` | `boolean` | `true` | red line in day/week views |
+| `showWeekNumbers` | `boolean` | `false` | |
+| `translations` | `SchedulerTranslations` | | override `prevTriggerLabel`, `nextTriggerLabel`, `todayTriggerLabel`, `viewLabels` |
+| `canDragEvent` | `(e) => boolean` | `() => true` | gate drag per event |
+| `canResizeEvent` | `(e) => boolean` | `() => true` | gate resize per event |
+| `disabled` | `boolean` | `false` | disable all interaction |
+| `expandRecurrence` | `RecurrenceExpander<T>` | | user RRULE expander (only called for `{ rrule }` recurrences) |
+| `maxRecurrenceInstances` | `number` | `2000` | cap on expanded events |
+
+### Callbacks
+
+| callback | fires when |
+|---|---|
+| `onSlotClick(d)` | empty slot clicked without drag — `d = { start, end }` (end = start + slotInterval) |
+| `onSlotDoubleClick(d)` | empty slot double-clicked — the conventional "create event" trigger |
+| `onSlotSelect(d)` | drag-selection across multiple slots |
+| `onEventClick(d)` | `d.event` |
+| `onEventDrop(d)` | `d = { event, index, newStart, newEnd, apply }`; use `setEvents(d.apply)` |
+| `onEventResize(d)` | `d = { event, index, newStart, newEnd, edge, apply }` |
+| `onViewChange(d)` | `d = { view }` |
+| `onDateChange(d)` | `d = { date }` |
+
+## api surface
+
+### Data
+
+| | |
+|---|---|
+| `view` | current view |
+| `date` | focused date |
+| `today` | locale / timezone-aware today |
+| `visibleRange` | `{ start, end }` |
+| `visibleRangeText` | `{ start, end, formatted }` localized |
+| `visibleDays` | `DateValue[]` — honors `workWeekOnly` |
+| `visibleEvents` | events filtered to `visibleRange` |
+| `agendaGroups` | `[{ date, events }]` grouped by day |
+| `weekDays` | 7 localized day labels `{ value, short, long, narrow }` |
+| `hourRange.hours` | `[{ value, label, percent, style }]` |
+| `events` | all events (recurring expanded, capped by `maxRecurrenceInstances`) |
+| `monthNames` / `getMonthName(d)` | localized month names |
+| `dir` | `"ltr" \| "rtl"` |
+| `prevTriggerIcon` / `nextTriggerIcon` | direction-aware `←` / `→` |
+| `todayTriggerLabel` | from `translations` |
+| `dragPreview` | live drag bounds: `{ eventId, start, end }` or null |
+| `dragOrigin` | where the drag started: `{ eventId, start, end }` or null |
+| `selectedSlot` | last-clicked slot: `{ start, end }` or null |
+| `isDragging` / `isResizing` / `isSlotSelecting` | |
+
+### Lookups (O(1))
+
+| | |
+|---|---|
+| `getEventById(id)` | `SchedulerEvent \| undefined` |
+| `getEventsForDay(date)` | multi-day events appear in every day they touch |
+| `getEventsForSlot(start, end)` | |
+| `hasConflict(event)` | pre-computed sweep |
+| `getEventState(id)` | `{ dragging, resizing, focused, selected, conflict }` |
+
+### Layout / positioning
+
+| | |
+|---|---|
+| `getEventPosition(event)` | `{ top, height, left, width, column, totalColumns }` — 0–1 fractions |
+| `getEventStyle(event)` | ready-to-spread CSS with logical props + `--event-color` |
+| `getTimePercent(date)` | 0–1 within `dayStartHour..dayEndHour` |
+| `getMonthGrid(date?)` | weeks × `MonthGridDay[]` — `{ date, inMonth, isToday, isWeekend }` |
+
+### Drag / selection overlays
+
+Each returns `{ props, event?, start?, end? }` or `null`. Spread `props` onto your element — the machine emits positioning + `data-scheduler-*` attrs.
+
+| | renders when |
+|---|---|
+| `getDragGhost({ date })` | active drag; ghost follows the pointer |
+| `getDragOrigin({ date })` | active drag / resize; "was here" outline |
+| `getSelectedSlot({ date })` | slot was clicked once |
+
+### Navigation / mutation
+
+| | |
+|---|---|
+| `setView(v)` / `setDate(d)` | |
+| `goToToday()` / `goToNext()` / `goToPrev()` | |
+| `clearSelectedSlot()` | dismiss the highlight (e.g. on dialog close) |
+
+### Formatters
+
+All locale + timezone aware.
+
+| | |
+|---|---|
+| `formatTime(date)` | `"09:30"` / `"9:30 AM"` per locale |
+| `formatTimeRange(start, end)` | `"09:30 – 11:00"` |
+| `formatLongDate(date)` | `"Friday, April 24"` |
+| `formatDuration(start, end)` | `"1h 30m"` / `"45m"` |
+
+### Prop-getters
+
+`getRootProps`, `getHeaderProps`, `getHeaderTitleProps`, `getPrevTriggerProps`, `getNextTriggerProps`, `getTodayTriggerProps`, `getViewSelectProps`, `getViewItemProps({ view })`, `getGridProps`, `getAllDayRowProps`, `getTimeSlotProps({ start, end })`, `getTimeGutterProps`, `getDayColumnProps({ date })`, `getDayCellProps({ date, referenceDate? })`, `getEventProps({ event })`, `getEventResizeHandleProps({ event, edge })`, `getCurrentTimeIndicatorProps`, `getMoreEventsProps({ date, count })`.
+
+### Static utilities
 
 ```ts
-onEventDrop: (d) => setEvents(d.apply),
-// equivalent to:
-onEventDrop: (d) =>
-  setEvents((events) => events.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+scheduler.getToday(timeZone?)           // CalendarDateTime at midnight
+scheduler.getDurationMinutes(start, end)
 ```
 
 ## Recurring events
 
-The machine does not bundle an RRULE engine. You supply `expandRecurrence`, which is called for each event that carries a `recurrence` field and returns concrete instances for the visible range. Use `rrule.js`, `rrule-alt`, or your own implementation.
+Native expansion for common rules — no user code needed:
 
 ```ts
-import { RRule } from "rrule"
-import { CalendarDateTime } from "@internationalized/date"
-
-const expandRecurrence: scheduler.RecurrenceExpander = (event, range) => {
-  const rule = RRule.fromString(event.recurrence!.rrule)
-  const durationMs =
-    new Date(event.end.toString()).getTime() - new Date(event.start.toString()).getTime()
-  return rule
-    .between(new Date(range.start.toString()), new Date(range.end.toString()), true)
-    .map((date, i) => {
-      const endDate = new Date(date.getTime() + durationMs)
-      const toCDT = (d: Date) =>
-        new CalendarDateTime(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes())
-      return { ...event, id: `${event.id}:${i}`, start: toCDT(date), end: toCDT(endDate) }
-    })
+{
+  id: "standup",
+  title: "Daily standup",
+  start: today.set({ hour: 9 }),
+  end: today.set({ hour: 9, minute: 30 }),
+  recurrence: { freq: "daily", until: endOfMonth },   // or weekly / monthly / yearly
 }
+{
+  recurrence: { freq: "weekly", interval: 2, count: 12 },  // biweekly × 12
+}
+{
+  recurrence: { freq: "monthly", exdate: [holidayDate] },
+}
+```
 
+For complex rules (BYDAY, BYMONTHDAY, …) supply your own expander:
+
+```tsx
 useMachine(scheduler.machine, {
   events,
-  expandRecurrence,
-  maxRecurrenceInstances: 500, // safety cap on total expanded events, default 2000
+  expandRecurrence: (event, range) => {
+    // your rrule.js / rrule-alt call here
+    // only invoked when event.recurrence has { rrule: string }
+  },
 })
 ```
 
 ## Styling
 
-The machine does not ship CSS. `getRootProps` sets three layout-critical custom properties on the root element:
+The machine ships headless — it emits `data-scheduler-*` attrs on every anatomy part and these CSS variables on the root element:
 
-| Variable | Value |
-| --- | --- |
-| `--scheduler-visible-days` | Number of columns in the current view. |
-| `--scheduler-day-count` | Alias of the above. |
-| `--scheduler-hour-count` | `dayEndHour - dayStartHour`. |
+| var | meaning | default |
+|---|---|---|
+| `--scheduler-visible-days` | column count | — |
+| `--scheduler-day-count` | alias | — |
+| `--scheduler-hour-count` | `dayEndHour - dayStartHour` | — |
+| `--scheduler-time-gutter-width` | left gutter width | `60px` |
+| `--scheduler-hour-height` | per-hour row height | `56px` |
+| `--scheduler-grid-height` | `hours × hour-height` | computed |
+| `--scheduler-event-inset` | ghost / origin inline padding | `2px` |
 
-Consumer-overridable variables (not set by the machine):
-
-| Variable | Purpose |
-| --- | --- |
-| `--scheduler-time-gutter-width` | Left time column width. |
-| `--scheduler-hour-height` | Per-hour row height. |
-| `--scheduler-grid-height` | Total grid height; defaults to `hours × hour-height`. |
-| `--scheduler-event-inset` | Inline padding between ghost/origin overlays and the day column. |
-
-`getEventStyle` returns logical properties (`insetInlineStart` / `insetInlineEnd`), so event layout mirrors correctly in RTL without extra work. Event color is exposed as `--event-color` inside the style so your CSS can reference `color-mix(in srgb, var(--event-color) 15%, white)` or similar.
+Target parts via attribute selectors: `[data-scheduler-root]`, `[data-scheduler-event]`, `[data-scheduler-drag-ghost]`, etc. `getEventStyle` uses logical properties (`inset-inline-start/end`) so RTL works without a separate stylesheet.
 
 ## RTL
 
-```tsx
-useMachine(scheduler.machine, { dir: "rtl", events })
-```
+Pass `dir="rtl"` on props. `api.prevTriggerIcon` / `api.nextTriggerIcon` flip automatically. Every built-in style uses logical CSS properties (`border-inline-start`, `margin-inline-start`, `inset-inline-start/end`) — nothing to swap per locale. Latin content (hour labels, range titles) uses `unicode-bidi: plaintext` so numbers stay LTR inside an RTL grid.
 
-- `api.prevTriggerIcon` / `api.nextTriggerIcon` flip automatically.
-- All emitted styles use logical properties — no separate RTL stylesheet needed.
-- `api.dir` is exposed so you can mirror custom decorations.
+## Performance
 
-## Performance notes
+- `computeEventLayout` runs once per render (O(N log N) sweep-line + interval-graph coloring) — `getEventPosition` is a `Map.get` afterward.
+- `getEventsForDay`, `getEventsForSlot`, `getEventById`, `hasConflict` are O(1) via pre-built Maps and Sets.
+- Pointer-move dispatches are RAF-coalesced — at most one per frame on 120/240Hz pointers.
+- Auto-scroll during drag kicks in when the pointer nears the scroll container edge.
 
-- `getEventById`, `getEventsForDay`, and `hasConflict` are O(1) — the connect layer prebuilds a Map by id, a Map of events bucketed by day key, and a sweep-line conflict set before returning.
-- Event layout runs once as a single O(N log N) sweep (`computeEventLayout`), replacing a prior O(N²) per-event resolver.
-- The `examples/next-ts/pages/scheduler/stress.tsx` example renders 1000–5000 events at steady 60fps with drag and resize enabled.
+The stress example (`examples/next-ts/pages/scheduler/stress.tsx`) generates 100–5000 events via a seeded PRNG and stays drag-interactive at 5000.
 
 ## Controlled vs uncontrolled
 
-`view` and `date` are independently controllable. Pass `defaultView` / `defaultDate` for uncontrolled mode, or the `view` / `date` pair plus `onViewChange` / `onDateChange` for controlled mode.
-
 ```tsx
-// Uncontrolled — the machine owns both
-useMachine(scheduler.machine, { defaultView: "week", events })
+// uncontrolled
+useMachine(scheduler.machine, { defaultView: "week", defaultDate: today })
 
-// Controlled
-const [view, setView] = useState<scheduler.ViewType>("week")
-const [date, setDate] = useState<DateValue>(scheduler.getToday())
-useMachine(scheduler.machine, {
-  view,
-  date,
-  events,
-  onViewChange: (d) => setView(d.view),
-  onDateChange: (d) => setDate(d.date),
-})
+// controlled
+const [view, setView] = useState<ViewType>("week")
+useMachine(scheduler.machine, { view, onViewChange: (d) => setView(d.view) })
 ```
 
-If `defaultDate` is omitted the machine defaults to today in `timeZone` (or the local timezone).
+Same pattern for `date` / `defaultDate`.
+
+## Composition
+
+Scheduler composes with other zag machines — see `examples/next-ts/pages/scheduler/`:
+
+- `click-to-create.tsx` — `@zag-js/dialog` for the create flow
+- `event-details.tsx` — `@zag-js/popover` for event details, anchored via `positioning.getAnchorRect`
+- `with-date-picker.tsx` — `@zag-js/date-picker` for navigation
+
+## Anatomy
+
+Parts emitted by `parts.*.attrs(scope.id)`:
+
+`root`, `header`, `headerTitle`, `prevTrigger`, `nextTrigger`, `todayTrigger`, `viewSelect`, `grid`, `allDayRow`, `timeSlot`, `timeGutter`, `dayColumn`, `dayCell`, `event`, `eventResizeHandle`, `currentTimeIndicator`, `moreEvents`, `dragGhost`, `dragOrigin`, `slotHighlight`, `hourLabel`, `hourLine`, `agendaGroup`, `agendaGroupTitle`.

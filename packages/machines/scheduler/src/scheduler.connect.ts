@@ -348,11 +348,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       return {
         start: slot.start,
         end: slot.end,
-        style: {
-          position: "absolute",
-          top: `${topPct}%`,
-          height: `${heightPct}%`,
-        } as EventStyle,
+        props: normalize.element({
+          ...parts.slotHighlight.attrs(scope.id),
+          style: {
+            position: "absolute",
+            top: `${topPct}%`,
+            height: `${heightPct}%`,
+          } as EventStyle,
+        }),
       }
     },
 
@@ -393,12 +396,15 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       const heightPct = (timePercent(liveDrag.end) - timePercent(liveDrag.start)) * 100
       return {
         event: evt,
-        style: {
-          position: "absolute",
-          top: `${topPct}%`,
-          height: `${heightPct}%`,
-          "--event-color": evt.color,
-        } as EventStyle,
+        props: normalize.element({
+          ...parts.dragGhost.attrs(scope.id),
+          style: {
+            position: "absolute",
+            top: `${topPct}%`,
+            height: `${heightPct}%`,
+            "--event-color": evt.color,
+          } as EventStyle,
+        }),
       }
     },
 
@@ -417,12 +423,15 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       const heightPct = (timePercent(origin.end) - timePercent(origin.start)) * 100
       return {
         event: evt,
-        style: {
-          position: "absolute",
-          top: `${topPct}%`,
-          height: `${heightPct}%`,
-          "--event-color": evt.color,
-        } as EventStyle,
+        props: normalize.element({
+          ...parts.dragOrigin.attrs(scope.id),
+          style: {
+            position: "absolute",
+            top: `${topPct}%`,
+            height: `${heightPct}%`,
+            "--event-color": evt.color,
+          } as EventStyle,
+        }),
       }
     },
 

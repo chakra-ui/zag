@@ -18,6 +18,13 @@ export const anatomy = createAnatomy("scheduler").parts(
   "eventResizeHandle",
   "currentTimeIndicator",
   "moreEvents",
+  "dragGhost",
+  "dragOrigin",
+  "slotHighlight",
+  "hourLabel",
+  "hourLine",
+  "agendaGroup",
+  "agendaGroupTitle",
 )
 
 export const parts = anatomy.build()

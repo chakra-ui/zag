@@ -192,7 +192,7 @@ export default function Page() {
                         })}
 
                         {ghost && (
-                          <div className="scheduler-drag-ghost" style={ghost.style as React.CSSProperties}>
+                          <div {...ghost.props}>
                             <div className="scheduler-event-title">{String(ghost.event.title ?? "")}</div>
                           </div>
                         )}

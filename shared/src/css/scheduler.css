@@ -266,8 +266,7 @@
   width: 32px;
 }
 
-.scheduler-drag-ghost {
-  position: absolute;
+[data-scheduler-drag-ghost] {
   inset-inline-start: var(--scheduler-event-inset, 2px);
   inset-inline-end: var(--scheduler-event-inset, 2px);
   border-radius: 4px;
@@ -327,8 +326,7 @@
   border-color: #111827;
 }
 
-.scheduler-slot-selected {
-  position: absolute;
+[data-scheduler-slot-highlight] {
   inset-inline-start: var(--scheduler-event-inset, 2px);
   inset-inline-end: var(--scheduler-event-inset, 2px);
   border-radius: 4px;
@@ -338,8 +336,7 @@
   z-index: 5;
 }
 
-.scheduler-drag-origin {
-  position: absolute;
+[data-scheduler-drag-origin] {
   inset-inline-start: var(--scheduler-event-inset, 2px);
   inset-inline-end: var(--scheduler-event-inset, 2px);
   border-radius: 4px;
