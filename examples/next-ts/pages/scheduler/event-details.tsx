@@ -42,13 +42,6 @@ function toMinutes(d: scheduler.SchedulerEvent["start"]) {
   return { hour, minute, total: hour * 60 + minute }
 }
 
-function formatTime(d: scheduler.SchedulerEvent["start"]) {
-  const { hour, minute } = toMinutes(d)
-  const period = hour >= 12 ? "PM" : "AM"
-  const h12 = ((hour + 11) % 12) + 1
-  return `${h12}:${String(minute).padStart(2, "0")} ${period}`
-}
-
 function formatDuration(start: scheduler.SchedulerEvent["start"], end: scheduler.SchedulerEvent["end"]) {
   const diff = Math.max(0, toMinutes(end).total - toMinutes(start).total)
   const h = Math.floor(diff / 60)
@@ -107,7 +100,7 @@ export default function Page() {
   })
   const popoverApi = popover.connect(popoverService, normalizeProps)
 
-  const selectedEvent = selectedId ? events.find((e) => e.id === selectedId) : undefined
+  const selectedEvent = selectedId ? api.getEventById(selectedId) : undefined
 
   function commitRename() {
     if (!selectedId) return
@@ -143,7 +136,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
-            <button {...api.getTodayTriggerProps()}>Today</button>
+            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
             <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
           </div>
@@ -242,9 +235,7 @@ export default function Page() {
                       <strong style={{ flex: 1 }}>{selectedEvent.title}</strong>
                     )}
                   </div>
-                  <div style={{ color: "#4b5563" }}>
-                    {formatTime(selectedEvent.start)} – {formatTime(selectedEvent.end)}
-                  </div>
+                  <div style={{ color: "#4b5563" }}>{api.formatTimeRange(selectedEvent.start, selectedEvent.end)}</div>
                   <div style={{ color: "#6b7280" }}>
                     Duration: {formatDuration(selectedEvent.start, selectedEvent.end)}
                   </div>

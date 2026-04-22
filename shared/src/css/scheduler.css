@@ -620,6 +620,13 @@
   border-radius: 50%;
 }
 
+.scheduler-agenda-group {
+  margin-block-end: var(--scheduler-agenda-group-gap, 16px);
+}
+.scheduler-agenda-group:last-child {
+  margin-block-end: 0;
+}
+
 .scheduler-mobile-agenda {
   margin-top: 16px;
   padding: 12px;

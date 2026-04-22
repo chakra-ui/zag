@@ -1,7 +1,6 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { toCalendarDate } from "@internationalized/date"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -73,9 +72,9 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>←</button>
-            <button {...api.getTodayTriggerProps()}>Today</button>
-            <button {...api.getNextTriggerProps()}>→</button>
+            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
             <div {...api.getViewSelectProps()}>
               {(["day", "week", "month"] as scheduler.ViewType[]).map((v) => (
@@ -156,10 +155,7 @@ export default function Page() {
 
                   {visibleDays.map((d) => {
                     const dayEvents = api.getEventsForDay(d)
-                    const ghostEvent =
-                      dragPreview?.start && toCalendarDate(dragPreview.start).compare(toCalendarDate(d)) === 0
-                        ? events.find((e) => e.id === dragPreview.eventId)
-                        : null
+                    const ghost = api.getDragGhost({ date: d })
 
                     return (
                       <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
@@ -195,29 +191,11 @@ export default function Page() {
                           )
                         })}
 
-                        {ghostEvent &&
-                          dragPreview?.start &&
-                          dragPreview.end &&
-                          (() => {
-                            const topPct = api.getTimePercent(dragPreview.start) * 100
-                            const endPct = api.getTimePercent(dragPreview.end) * 100
-                            return (
-                              <div
-                                className="scheduler-drag-ghost"
-                                style={
-                                  {
-                                    ...api.getEventStyle(ghostEvent),
-                                    top: `${topPct}%`,
-                                    height: `${Math.max(0.5, endPct - topPct)}%`,
-                                    ["--event-color"]: ghostEvent.color ?? "#3b82f6",
-                                  } as React.CSSProperties
-                                }
-                              >
-                                <div className="scheduler-event-title">{String(ghostEvent.title ?? "")}</div>
-                                <div className="scheduler-event-time">{dragPreview.start.toString().slice(11, 16)}</div>
-                              </div>
-                            )
-                          })()}
+                        {ghost && (
+                          <div className="scheduler-drag-ghost" style={ghost.style as React.CSSProperties}>
+                            <div className="scheduler-event-title">{String(ghost.event.title ?? "")}</div>
+                          </div>
+                        )}
                       </div>
                     )
                   })}

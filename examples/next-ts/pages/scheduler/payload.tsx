@@ -1,7 +1,7 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useMemo, useState } from "react"
+import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -51,7 +51,6 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState<Event[]>(INITIAL)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const timeFormatter = useMemo(() => new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }), [])
 
   const service = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
     id: useId(),
@@ -64,7 +63,7 @@ export default function Page() {
 
   const api = scheduler.connect(service, normalizeProps)
   const { visibleDays, hourRange, weekDays } = api
-  const selected = events.find((e) => e.id === selectedId) ?? null
+  const selected = selectedId ? (api.getEventById(selectedId) ?? null) : null
 
   return (
     <>
@@ -72,7 +71,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
-            <button {...api.getTodayTriggerProps()}>Today</button>
+            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
             <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
           </div>
@@ -149,10 +148,7 @@ export default function Page() {
           {selected && selected.payload ? (
             <>
               <div style={{ fontWeight: 600, fontSize: 15 }}>{selected.title}</div>
-              <div style={{ color: "#6b7280", marginTop: 2 }}>
-                {timeFormatter.format(selected.start.toDate("UTC"))} –{" "}
-                {timeFormatter.format(selected.end.toDate("UTC"))}
-              </div>
+              <div style={{ color: "#6b7280", marginTop: 2 }}>{api.formatTimeRange(selected.start, selected.end)}</div>
               <div style={{ marginTop: 12, color: "#111" }}>
                 <div style={{ fontWeight: 500, marginBottom: 4 }}>Attendees</div>
                 <div>{selected.payload.attendees.join(", ")}</div>

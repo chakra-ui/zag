@@ -137,6 +137,8 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
   dayEndHour?: number | undefined
   /** Days of week to show in work-week mode, 0=Sun…6=Sat. @default [1,2,3,4,5] */
   workWeekDays?: number[] | undefined
+  /** When true, `api.visibleDays` in week view is filtered down to `workWeekDays`. @default false */
+  workWeekOnly?: boolean | undefined
   onSlotSelect?: ((details: SlotSelectDetails) => void) | undefined
   /** Fires when an empty slot is clicked once — use to highlight/select the slot. */
   onSlotClick?: ((details: SlotClickDetails) => void) | undefined
@@ -371,8 +373,16 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   visibleRange: { start: DateValue; end: DateValue }
   /** Localized text for the visible range — prefer this over formatting by hand. */
   visibleRangeText: VisibleRangeText
-  /** Enumerated dates from visibleRange.start to visibleRange.end, inclusive. */
+  /** Enumerated dates from visibleRange.start to visibleRange.end, inclusive. When `workWeekOnly` is true and `view === "week"`, this is filtered down to `workWeekDays`. */
   visibleDays: DateValue[]
+  /** Localized label for the "today" trigger button — sourced from translations. */
+  todayTriggerLabel: string
+  /** Locale/timezone-aware hour+minute label, e.g. "09:30" / "9:30 AM". */
+  formatTime: (date: DateValue) => string
+  /** Locale/timezone-aware time range, e.g. "09:30 – 11:00". */
+  formatTimeRange: (start: DateValue, end: DateValue) => string
+  /** Locale/timezone-aware long date, e.g. "Friday, April 24". */
+  formatLongDate: (date: DateValue) => string
   /** Day-of-week labels ordered by weekStartDay/locale. */
   weekDays: WeekDay[]
   /** Hour range shown in day/week time grids (honors dayStartHour/dayEndHour). */
@@ -385,6 +395,10 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   nextTriggerIcon: string
   /** All events (recurring instances expanded against the visible range). */
   events: SchedulerEvent<E>[]
+  /** Events whose range overlaps `visibleRange` — the set you actually render. */
+  visibleEvents: SchedulerEvent<E>[]
+  /** Visible events grouped by day and sorted by start. Use for agenda / list layouts. */
+  agendaGroups: { date: DateValue; events: SchedulerEvent<E>[] }[]
   isDragging: boolean
   isSlotSelecting: boolean
   isResizing: boolean

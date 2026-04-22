@@ -117,13 +117,19 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
   const today = getTodayDate(timeZone, visibleRange.start.calendar)
 
-  const visibleDays: DateValue[] = []
+  let visibleDays: DateValue[] = []
   {
     let cur = visibleRange.start
     while (cur.compare(visibleRange.end) <= 0) {
       visibleDays.push(cur)
       cur = cur.add({ days: 1 })
     }
+  }
+
+  const workWeekDays = prop("workWeekDays")
+  if (prop("workWeekOnly") && view === "week" && workWeekDays.length > 0 && workWeekDays.length < 7) {
+    const allowed = new Set(workWeekDays)
+    visibleDays = visibleDays.filter((d) => allowed.has(new Date(d.year, d.month - 1, d.day).getDay()))
   }
 
   const weekDaysRaw = getWeekDays(visibleRange.start, weekStartDay, timeZone, locale) as unknown as Array<{
@@ -178,6 +184,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     return mins / totalDayMinutes
   }
 
+  const timeFormatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
+  const longDateFormatter = new Intl.DateTimeFormat(locale, {
+    timeZone,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  })
+  const toJsDate = (d: DateValue): Date => toCalendarDateTime(d).toDate(timeZone)
+  const formatTime = (d: DateValue): string => timeFormatter.format(toJsDate(d))
+  const formatTimeRange = (s: DateValue, e: DateValue): string => `${formatTime(s)} – ${formatTime(e)}`
+  const formatLongDate = (d: DateValue): string => longDateFormatter.format(toJsDate(d))
+
   const monthFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "long" })
   const getMonthName = (d: DateValue) => monthFormatter.format(d.toDate(timeZone))
   const monthNames = Array.from({ length: 12 }, (_, i) =>
@@ -217,6 +235,21 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     return weeks
   }
 
+  const agendaGroups: { date: DateValue; events: SchedulerEvent<E>[] }[] = []
+  {
+    const byKey = new Map<string, { date: DateValue; events: SchedulerEvent<E>[] }>()
+    const sorted = [...visibleEvents].sort((a, b) => a.start.compare(b.start))
+    for (const e of sorted) {
+      const cal = toCalendarDate(e.start)
+      const key = cal.toString()
+      const bucket = byKey.get(key)
+      if (bucket) bucket.events.push(e)
+      else byKey.set(key, { date: cal, events: [e] })
+    }
+    for (const g of byKey.values()) agendaGroups.push(g)
+    agendaGroups.sort((a, b) => a.date.compare(b.date))
+  }
+
   return {
     view,
     date,
@@ -224,12 +257,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     visibleRange,
     visibleRangeText,
     visibleDays,
+    todayTriggerLabel: t.todayTriggerLabel,
+    formatTime,
+    formatTimeRange,
+    formatLongDate,
     weekDays,
     hourRange,
     dir,
     prevTriggerIcon: dir === "rtl" ? "→" : "←",
     nextTriggerIcon: dir === "rtl" ? "←" : "→",
     events,
+    visibleEvents,
+    agendaGroups,
     isDragging,
     isSlotSelecting,
     isResizing,

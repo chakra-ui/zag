@@ -1,7 +1,7 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { CalendarDateTime, type DateValue } from "@internationalized/date"
+import type { DateValue } from "@internationalized/date"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -47,16 +47,6 @@ const INITIAL: scheduler.SchedulerEvent[] = [
   },
 ]
 
-function formatTime(d: DateValue) {
-  const dt = d as CalendarDateTime
-  return `${String(dt.hour ?? 0).padStart(2, "0")}:${String(dt.minute ?? 0).padStart(2, "0")}`
-}
-
-function formatLongDate(d: DateValue) {
-  const js = new Date(d.year, d.month - 1, d.day)
-  return js.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })
-}
-
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [selectedDate, setSelectedDate] = useState<DateValue>(TODAY)
@@ -78,14 +68,14 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()} style={{ maxWidth: 420 }}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>←</button>
+            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>
               {new Date(api.date.year, api.date.month - 1, api.date.day).toLocaleDateString(undefined, {
                 month: "long",
                 year: "numeric",
               })}
             </span>
-            <button {...api.getNextTriggerProps()}>→</button>
+            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
           </div>
 
           <div className="scheduler-mobile-month">
@@ -107,7 +97,7 @@ export default function Page() {
                       className="scheduler-mobile-day"
                       data-selected={isSelected || undefined}
                       onClick={() => setSelectedDate(cell.date)}
-                      aria-label={formatLongDate(cell.date)}
+                      aria-label={api.formatLongDate(cell.date)}
                     >
                       <span className="scheduler-mobile-day-num">{cell.date.day}</span>
                       <span className="scheduler-mobile-dots">
@@ -127,7 +117,7 @@ export default function Page() {
           </div>
 
           <div className="scheduler-mobile-agenda">
-            <div className="scheduler-mobile-agenda-title">{formatLongDate(selectedDate)}</div>
+            <div className="scheduler-mobile-agenda-title">{api.formatLongDate(selectedDate)}</div>
             {selectedDayEvents.length === 0 ? (
               <div className="scheduler-mobile-agenda-empty">No events</div>
             ) : (
@@ -138,9 +128,7 @@ export default function Page() {
                   className="scheduler-mobile-agenda-event"
                   style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
                 >
-                  <div className="scheduler-mobile-agenda-time">
-                    {formatTime(event.start)} – {formatTime(event.end)}
-                  </div>
+                  <div className="scheduler-mobile-agenda-time">{api.formatTimeRange(event.start, event.end)}</div>
                   <div className="scheduler-event-title">{event.title}</div>
                 </div>
               ))

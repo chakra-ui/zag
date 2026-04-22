@@ -44,6 +44,7 @@ export const props = createProps<SchedulerProps>()([
   "view",
   "weekStartDay",
   "workWeekDays",
+  "workWeekOnly",
 ])
 
 export const splitProps = createSplitProps<Partial<SchedulerProps>>(props)

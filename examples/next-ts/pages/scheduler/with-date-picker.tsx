@@ -100,11 +100,11 @@ export default function Page() {
                   {...dp.getViewControlProps({ view: "day" })}
                   style={{ display: "flex", gap: 6, marginBottom: 10, alignItems: "center" }}
                 >
-                  <button {...dp.getPrevTriggerProps()}>←</button>
+                  <button {...dp.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
                   <button {...dp.getViewTriggerProps()} style={{ flex: 1, fontWeight: 600 }}>
                     {dp.visibleRangeText.start}
                   </button>
-                  <button {...dp.getNextTriggerProps()}>→</button>
+                  <button {...dp.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
                 </div>
                 <table
                   {...dp.getTableProps({ view: "day" })}
@@ -146,9 +146,9 @@ export default function Page() {
 
           <div {...api.getRootProps()}>
             <div {...api.getHeaderProps()}>
-              <button {...api.getPrevTriggerProps()}>←</button>
-              <button {...api.getTodayTriggerProps()}>Today</button>
-              <button {...api.getNextTriggerProps()}>→</button>
+              <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+              <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+              <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
               <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
             </div>
 
