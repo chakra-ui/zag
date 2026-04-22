@@ -1,5 +1,3 @@
-/* ── Base ──────────────────────────────────────────────────────────────────── */
-
 .scheduler {
   font-family: system-ui, sans-serif;
 }
@@ -11,8 +9,6 @@
   width: 100%;
 }
 
-/* ── Header ──────────────────────────────────────────────────────────────── */
-
 [data-scheduler-header] {
   display: flex;
   align-items: center;
@@ -22,8 +18,6 @@
 [data-scheduler-header-title] {
   font-weight: 600;
   margin-inline-start: 8px;
-  /* Auto-detect direction from content — English formatter output stays LTR
-   * even inside an RTL scheduler; Arabic locale text stays RTL naturally. */
   unicode-bidi: plaintext;
 }
 
@@ -55,14 +49,10 @@
   border-color: #111827;
 }
 
-/* ── Grid (aria role only — layout is on wrapper) ────────────────────────── */
-
 [data-scheduler-grid] {
   display: grid;
   position: relative;
 }
-
-/* ── Time grid layout (day / week) ───────────────────────────────────────── */
 
 .scheduler-time-grid-wrapper {
   border: 1px solid #e5e7eb;
@@ -73,19 +63,6 @@
   background: #fff;
 }
 
-/* CSS vars driven by the machine's root:
- *   --scheduler-visible-days  (column count)
- *   --scheduler-day-count     (alias)
- *   --scheduler-hour-count    (dayEndHour - dayStartHour)
- *
- * Consumer-overridable (with defaults):
- *   --scheduler-time-gutter-width  (default 60px) — left time column width
- *   --scheduler-hour-height        (default 56px) — per-hour row height
- *   --scheduler-grid-height        (default: hours × hour-height)
- *   --scheduler-event-inset        (default 2px)  — inline padding between
- *                                                   ghost/origin overlays
- *                                                   and their day column
- */
 .scheduler-col-headers {
   display: grid;
   grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
@@ -96,7 +73,6 @@
   z-index: 3;
 }
 
-/* Scrollable body */
 .scheduler-time-grid-scroll {
   overflow-y: auto;
   max-height: 620px;
@@ -111,8 +87,6 @@
   position: relative;
   height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
 }
-
-/* ── Header cells ─────────────────────────────────────────────────────────── */
 
 .scheduler-header-cell {
   padding: 8px 4px;
@@ -161,8 +135,6 @@
   color: #fff;
 }
 
-/* ── Time gutter ──────────────────────────────────────────────────────────── */
-
 [data-scheduler-time-gutter] {
   position: relative;
   border-inline-end: 1px solid #e5e7eb;
@@ -182,14 +154,9 @@
   transform: translateY(-50%);
   white-space: nowrap;
   user-select: none;
-  /* Keep the "7:00 AM" formatter output from being reordered by the RTL
-   * bidi algorithm into "AM 7:00". Time labels are locale-formatted numeric
-   * content; their internal direction is independent of the grid layout. */
   direction: ltr;
   unicode-bidi: isolate;
 }
-
-/* ── Day columns ──────────────────────────────────────────────────────────── */
 
 [data-scheduler-day-column] {
   position: relative;
@@ -213,8 +180,6 @@
   border-block-start: 1px dashed #f3f4f6;
   pointer-events: none;
 }
-
-/* ── Events ───────────────────────────────────────────────────────────────── */
 
 [data-scheduler-event] {
   background: color-mix(in srgb, var(--event-color, #3b82f6) 15%, white);
@@ -242,22 +207,16 @@
   outline-offset: 2px;
 }
 
-/* Mantine-style drag feel: the source event fades in place (the "was here"
- * marker) while a floating ghost follows the cursor. */
 [data-scheduler-event][data-dragging] {
   cursor: grabbing;
   opacity: 0.25;
   transition: opacity 80ms ease-out;
 }
 
-/* While any event is being dragged, stop other events from intercepting
- * hovers/clicks so the ghost-follow feels predictable. */
 [data-scheduler-root][data-dragging] [data-scheduler-event]:not([data-dragging]) {
   pointer-events: none;
 }
 
-/* Drop-target column highlight while dragging — previews where the event
- * will land without waiting for pointer-up. */
 [data-scheduler-day-column][data-drop-target]::before {
   content: "";
   position: absolute;
@@ -276,8 +235,6 @@
   box-shadow: 0 0 0 1px var(--event-color, #3b82f6);
   z-index: 3;
 }
-
-/* ── Resize handle (Mantine-style grip) ───────────────────────────────────── */
 
 [data-scheduler-event-resize-handle] {
   position: absolute;
@@ -309,10 +266,6 @@
   width: 32px;
 }
 
-/* ── Drag ghost ───────────────────────────────────────────────────────────── */
-
-/* Floating preview of the dragged event at the predicted drop position.
- * Mantine feel: filled color, crisp shadow, slightly scaled, above everything. */
 .scheduler-drag-ghost {
   position: absolute;
   inset-inline-start: var(--scheduler-event-inset, 2px);
@@ -329,9 +282,6 @@
   transform: translateZ(0);
 }
 
-/* Pale highlight at the clicked/selected slot — shown immediately on click so
- * the user has visual confirmation before any dialog / create flow opens. */
-/* Create-event dialog — used by the click-to-create example. */
 .scheduler-dialog-backdrop {
   position: fixed;
   inset: 0;
@@ -388,8 +338,6 @@
   z-index: 5;
 }
 
-/* Dashed outline at the gesture origin so the user always sees where the
- * event started — "was here" marker without interrupting the source. */
 .scheduler-drag-origin {
   position: absolute;
   inset-inline-start: var(--scheduler-event-inset, 2px);
@@ -400,8 +348,6 @@
   pointer-events: none;
   z-index: 19;
 }
-
-/* ── Current time indicator ───────────────────────────────────────────────── */
 
 [data-scheduler-current-time-indicator] {
   position: absolute;
@@ -424,8 +370,6 @@
   border-radius: 50%;
   background: #ef4444;
 }
-
-/* ── Event text ───────────────────────────────────────────────────────────── */
 
 .scheduler-event-title {
   font-weight: 600;
@@ -451,8 +395,6 @@
   opacity: 0.8;
   margin-top: 1px;
 }
-
-/* ── Month view ───────────────────────────────────────────────────────────── */
 
 .scheduler-month-grid {
   border: 1px solid #e5e7eb;
@@ -553,8 +495,6 @@
   color: #374151;
 }
 
-/* ── All-day row ──────────────────────────────────────────────────────────── */
-
 .scheduler-all-day-row {
   display: grid;
   border-bottom: 1px solid #e5e7eb;
@@ -590,8 +530,6 @@
   text-overflow: ellipsis;
   cursor: grab;
 }
-
-/* ── Mobile Month View ────────────────────────────────────────────────────── */
 
 .scheduler-mobile-month {
   border: 1px solid #e5e7eb;
@@ -718,8 +656,6 @@
   color: #6b7280;
   margin-bottom: 2px;
 }
-
-/* ── Year View ────────────────────────────────────────────────────────────── */
 
 .scheduler-year-grid {
   display: grid;
