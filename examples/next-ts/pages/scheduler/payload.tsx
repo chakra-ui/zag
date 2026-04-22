@@ -67,7 +67,7 @@ export default function Page() {
 
   return (
     <>
-      <main className="scheduler" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
+      <main className="scheduler scheduler-with-aside">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
@@ -135,26 +135,17 @@ export default function Page() {
           </div>
         </div>
 
-        <aside
-          style={{
-            border: "1px solid #e5e7eb",
-            borderRadius: 8,
-            padding: 16,
-            background: "#fff",
-            alignSelf: "start",
-            fontSize: 13,
-          }}
-        >
+        <aside className="scheduler-event-panel">
           {selected && selected.payload ? (
             <>
-              <div style={{ fontWeight: 600, fontSize: 15 }}>{selected.title}</div>
-              <div style={{ color: "#6b7280", marginTop: 2 }}>{api.formatTimeRange(selected.start, selected.end)}</div>
-              <div style={{ marginTop: 12, color: "#111" }}>
-                <div style={{ fontWeight: 500, marginBottom: 4 }}>Attendees</div>
+              <div className="scheduler-event-panel-title">{selected.title}</div>
+              <div className="scheduler-event-panel-time">{api.formatTimeRange(selected.start, selected.end)}</div>
+              <div className="scheduler-event-panel-section">
+                <div className="scheduler-event-panel-section-label">Attendees</div>
                 <div>{selected.payload.attendees.join(", ")}</div>
               </div>
-              <div style={{ marginTop: 8 }}>
-                <span style={{ color: "#6b7280" }}>Location: </span>
+              <div className="scheduler-event-panel-row">
+                <span className="scheduler-event-panel-row-label">Location: </span>
                 {selected.payload.location}
               </div>
               {selected.payload.meetingUrl && (
@@ -162,14 +153,14 @@ export default function Page() {
                   href={selected.payload.meetingUrl}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: "inline-block", marginTop: 10, color: "#2563eb" }}
+                  className="scheduler-event-panel-link"
                 >
                   Join meeting →
                 </a>
               )}
             </>
           ) : (
-            <div style={{ color: "#9ca3af" }}>Click an event to see its typed payload.</div>
+            <div className="scheduler-event-panel-empty">Click an event to see its typed payload.</div>
           )}
         </aside>
       </main>

@@ -70,10 +70,7 @@ export default function Page() {
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>
-              {new Date(api.date.year, api.date.month - 1, api.date.day).toLocaleDateString(undefined, {
-                month: "long",
-                year: "numeric",
-              })}
+              {api.getMonthName(api.date)} {api.date.year}
             </span>
             <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
           </div>

@@ -627,6 +627,51 @@
   margin-block-end: 0;
 }
 
+.scheduler-with-aside {
+  display: grid;
+  grid-template-columns: 1fr var(--scheduler-aside-width, 280px);
+  gap: var(--scheduler-aside-gap, 16px);
+}
+
+.scheduler-event-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  align-self: start;
+  font-size: 13px;
+}
+.scheduler-event-panel-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+.scheduler-event-panel-time {
+  color: #6b7280;
+  margin-block-start: 2px;
+}
+.scheduler-event-panel-section {
+  margin-block-start: 12px;
+  color: #111;
+}
+.scheduler-event-panel-section-label {
+  font-weight: 500;
+  margin-block-end: 4px;
+}
+.scheduler-event-panel-row {
+  margin-block-start: 8px;
+}
+.scheduler-event-panel-row-label {
+  color: #6b7280;
+}
+.scheduler-event-panel-link {
+  display: inline-block;
+  margin-block-start: 10px;
+  color: #2563eb;
+}
+.scheduler-event-panel-empty {
+  color: #9ca3af;
+}
+
 .scheduler-mobile-agenda {
   margin-top: 16px;
   padding: 12px;
