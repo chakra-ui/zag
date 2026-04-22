@@ -22,6 +22,9 @@
 [data-scheduler-header-title] {
   font-weight: 600;
   margin-inline-start: 8px;
+  /* Auto-detect direction from content — English formatter output stays LTR
+   * even inside an RTL scheduler; Arabic locale text stays RTL naturally. */
+  unicode-bidi: plaintext;
 }
 
 [data-scheduler-view-select] {
@@ -179,6 +182,11 @@
   transform: translateY(-50%);
   white-space: nowrap;
   user-select: none;
+  /* Keep the "7:00 AM" formatter output from being reordered by the RTL
+   * bidi algorithm into "AM 7:00". Time labels are locale-formatted numeric
+   * content; their internal direction is independent of the grid layout. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 /* ── Day columns ──────────────────────────────────────────────────────────── */
