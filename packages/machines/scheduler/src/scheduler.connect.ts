@@ -578,6 +578,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       const key = props.date.toString()
       const isDropTarget = !!liveDrag && liveDrag.kind === "drag" && toCalendarDate(liveDrag.start).toString() === key
       const slotMinutes = prop("slotInterval")
+      const slotFromClientY = (currentTarget: HTMLElement, clientY: number) => {
+        const rect = currentTarget.getBoundingClientRect()
+        const relY = Math.max(0, Math.min(clientY - rect.top, rect.height - 1))
+        const totalMinutes = (dayEndHour - dayStartHour) * 60
+        const raw = (relY / rect.height) * totalMinutes
+        const snapped = Math.round(raw / slotMinutes) * slotMinutes
+        const start = toCalendarDateTime(props.date).set({
+          hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
+          minute: snapped % 60,
+        })
+        return { start, end: start.add({ minutes: slotMinutes }) }
+      }
       return normalize.element({
         ...parts.dayColumn.attrs(scope.id),
         id: dom.getDayColumnId(scope, key),
@@ -587,18 +599,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
-          const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-          const relY = Math.max(0, Math.min(event.clientY - rect.top, rect.height - 1))
-          const totalMinutes = (dayEndHour - dayStartHour) * 60
-          const raw = (relY / rect.height) * totalMinutes
-          const snapped = Math.round(raw / slotMinutes) * slotMinutes
-          const start = toCalendarDateTime(props.date).set({
-            hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
-            minute: snapped % 60,
-          })
-          const end = start.add({ minutes: slotMinutes })
-          const point = getEventPoint(event)
-          send({ type: "SLOT_POINTER_DOWN", start, end, point })
+          const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
+          send({ type: "SLOT_POINTER_DOWN", start, end, point: getEventPoint(event) })
+        },
+        onDoubleClick(event) {
+          if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
+          const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
+          context.set("selectedSlot", { start, end })
+          prop("onSlotDoubleClick")?.({ start, end })
         },
       })
     },
@@ -626,6 +634,12 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           const start = d
           const end = d.add({ days: 1 })
           send({ type: "SLOT_POINTER_DOWN", start, end, point })
+        },
+        onDoubleClick() {
+          const start = d
+          const end = d.add({ days: 1 })
+          context.set("selectedSlot", { start, end })
+          prop("onSlotDoubleClick")?.({ start, end })
         },
       })
     },

@@ -32,6 +32,7 @@ export const props = createProps<SchedulerProps>()([
   "onEventDrop",
   "onEventResize",
   "onSlotClick",
+  "onSlotDoubleClick",
   "onSlotSelect",
   "onViewChange",
   "maxRecurrenceInstances",

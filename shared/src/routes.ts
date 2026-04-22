@@ -33,7 +33,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "with-date-picker", title: "With Date Picker" },
       { slug: "payload", title: "Typed Payload" },
       { slug: "event-details", title: "Event Details (Popover)" },
-      { slug: "click-to-create", title: "Click to Create (Dialog)" },
+      { slug: "click-to-create", title: "Double-click to Create (Dialog)" },
       { slug: "stress", title: "Stress (1000+ events)" },
     ],
   },

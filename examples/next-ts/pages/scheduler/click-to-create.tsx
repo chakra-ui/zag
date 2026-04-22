@@ -37,7 +37,7 @@ export default function Page() {
     events,
     onEventDrop: (d) => setEvents(d.apply),
     onEventResize: (d) => setEvents(d.apply),
-    onSlotClick(d) {
+    onSlotDoubleClick(d) {
       pendingSlotRef.current = { start: d.start, end: d.end }
       setTitle("")
       dialogApi.setOpen(true)

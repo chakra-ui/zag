@@ -138,8 +138,10 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
   /** Days of week to show in work-week mode, 0=Sun…6=Sat. @default [1,2,3,4,5] */
   workWeekDays?: number[] | undefined
   onSlotSelect?: ((details: SlotSelectDetails) => void) | undefined
-  /** Fires when an empty slot is clicked without dragging (use to open a "new event" popover). */
+  /** Fires when an empty slot is clicked once — use to highlight/select the slot. */
   onSlotClick?: ((details: SlotClickDetails) => void) | undefined
+  /** Fires on double-click of an empty slot — the conventional "create event" trigger. */
+  onSlotDoubleClick?: ((details: SlotClickDetails) => void) | undefined
   onEventClick?: ((details: EventClickDetails<T>) => void) | undefined
   onEventDrop?: ((details: EventDropDetails<T>) => void) | undefined
   onEventResize?: ((details: EventResizeDetails<T>) => void) | undefined
