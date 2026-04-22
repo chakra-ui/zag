@@ -157,12 +157,28 @@ type PropsWithDefault =
  * Machine schema
  * -----------------------------------------------------------------------------*/
 
+interface LiveDrag {
+  eventId: string
+  kind: "drag" | "resize"
+  edge: "start" | "end" | null
+  start: DateValue
+  end: DateValue
+}
+
+interface LiveSlot {
+  start: DateValue
+  end: DateValue
+  resourceId?: string
+}
+
 interface SchedulerContext {
   view: ViewType
   date: DateValue
   focusedEventId: string | null
   selectedEventId: string | null
   selectedSlot: { start: DateValue; end: DateValue; resourceId?: string } | null
+  liveDrag: LiveDrag | null
+  liveSlot: LiveSlot | null
 }
 
 type Computed = Readonly<{

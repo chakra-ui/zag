@@ -27,7 +27,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   const visibleRange = computed("visibleRange")
   const focusedEventId = context.get("focusedEventId")
   const selectedEventId = context.get("selectedEventId")
-  const dragEventId = refs.get("dragEventId")
+  const liveDrag = context.get("liveDrag")
+  const dragEventId = liveDrag?.eventId ?? refs.get("dragEventId")
 
   const isDragging = state.matches("event-dragging")
   const isSlotSelecting = state.matches("slot-selecting")
@@ -105,8 +106,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       // Live resize: reflect current drag bounds on the actual event (not a ghost).
       // Safe because resize doesn't change day or left/width — only top/height.
       if (isResizing && dragEventId === event.id) {
-        const dragStart = refs.get("dragCurrentStart") as DateValue | null
-        const dragEnd = refs.get("dragCurrentEnd") as DateValue | null
+        const dragStart = (liveDrag?.start ?? refs.get("dragCurrentStart")) as DateValue | null
+        const dragEnd = (liveDrag?.end ?? refs.get("dragCurrentEnd")) as DateValue | null
         if (dragStart && dragEnd) {
           const dayStartHour = prop("dayStartHour")
           const dayEndHour = prop("dayEndHour")
@@ -132,8 +133,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       (isDragging || isResizing) && dragEventId
         ? {
             eventId: dragEventId,
-            start: refs.get("dragCurrentStart"),
-            end: refs.get("dragCurrentEnd"),
+            start: liveDrag?.start ?? refs.get("dragCurrentStart"),
+            end: liveDrag?.end ?? refs.get("dragCurrentEnd"),
           }
         : null,
 

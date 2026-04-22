@@ -113,11 +113,13 @@ function MiniMonth({
 
 export default function Page() {
   const controls = useControls(schedulerControls)
+  const { view: _view, ...controlsRest } = controls.context as any
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultView: "year",
     defaultDate: today,
-    ...controls.context,
+    ...controlsRest,
+    // This page is purpose-built for year view — ignore the panel's view pick.
+    view: "year",
     events: INITIAL,
   })
 

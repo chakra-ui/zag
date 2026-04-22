@@ -56,6 +56,12 @@ export const machine = createMachine<SchedulerSchema>({
       } | null>(() => ({
         defaultValue: null,
       })),
+      liveDrag: bindable<SchedulerSchema["context"]["liveDrag"]>(() => ({
+        defaultValue: null,
+      })),
+      liveSlot: bindable<SchedulerSchema["context"]["liveSlot"]>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
@@ -180,11 +186,26 @@ export const machine = createMachine<SchedulerSchema>({
 
     effects: {
       trackPointerMove({ scope, send }) {
+        // Coalesce pointermove dispatches to the next animation frame so we
+        // re-render at most once per frame even on 120/240Hz pointers.
+        let rafId: number | null = null
+        let latest: { x: number; y: number } | null = null
+        const win = scope.getWin()
         return trackPointerMove(scope.getDoc(), {
           onPointerMove(info) {
-            send({ type: "POINTER_MOVE", point: info.point })
+            latest = info.point
+            if (rafId != null) return
+            rafId = win.requestAnimationFrame(() => {
+              rafId = null
+              if (!latest) return
+              send({ type: "POINTER_MOVE", point: latest })
+            })
           },
           onPointerUp() {
+            if (rafId != null) {
+              win.cancelAnimationFrame(rafId)
+              rafId = null
+            }
             send({ type: "POINTER_UP" })
           },
         })
@@ -223,11 +244,12 @@ export const machine = createMachine<SchedulerSchema>({
         context.set("focusedEventId", null)
       },
 
-      initSlotDrag({ refs, event }) {
+      initSlotDrag({ refs, context, event }) {
         refs.set("dragSlotStart", event.start)
         refs.set("dragSlotEnd", event.end)
+        context.set("liveSlot", { start: event.start, end: event.end, resourceId: event.resourceId })
       },
-      updateSlotDragEnd({ refs, event, prop, computed, scope }) {
+      updateSlotDragEnd({ refs, context, event, prop, computed, scope }) {
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const rect = gridEl.getBoundingClientRect()
@@ -241,6 +263,11 @@ export const machine = createMachine<SchedulerSchema>({
           prop("slotInterval"),
         )
         refs.set("dragSlotEnd", newEnd)
+        const start = refs.get("dragSlotStart")
+        if (start) {
+          const [s, e] = start.compare(newEnd) <= 0 ? [start, newEnd] : [newEnd, start]
+          context.set("liveSlot", { start: s, end: e })
+        }
       },
       invokeOnSlotSelect({ prop, refs }) {
         const start = refs.get("dragSlotStart")
@@ -249,12 +276,13 @@ export const machine = createMachine<SchedulerSchema>({
         const [s, e] = start.compare(end) <= 0 ? [start, end] : [end, start]
         prop("onSlotSelect")?.({ start: s, end: e })
       },
-      clearSlotDrag({ refs }) {
+      clearSlotDrag({ refs, context }) {
         refs.set("dragSlotStart", null)
         refs.set("dragSlotEnd", null)
+        context.set("liveSlot", null)
       },
 
-      initEventDrag({ refs, event, prop }) {
+      initEventDrag({ refs, context, event, prop }) {
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt) return
         refs.set("dragEventId", event.eventId)
@@ -262,8 +290,9 @@ export const machine = createMachine<SchedulerSchema>({
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
         refs.set("dragCurrentStart", evt.start)
         refs.set("dragCurrentEnd", evt.end)
+        context.set("liveDrag", { eventId: event.eventId, kind: "drag", edge: null, start: evt.start, end: evt.end })
       },
-      updateEventDragPosition({ refs, event, prop, computed, scope }) {
+      updateEventDragPosition({ refs, context, event, prop, computed, scope }) {
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const gridRect = gridEl.getBoundingClientRect()
@@ -305,8 +334,14 @@ export const machine = createMachine<SchedulerSchema>({
         }
 
         const durationMins = getMinutesBetween(snapshot.start, snapshot.end)
+        const newEnd = newStart.add({ minutes: durationMins })
         refs.set("dragCurrentStart", newStart)
-        refs.set("dragCurrentEnd", newStart.add({ minutes: durationMins }))
+        refs.set("dragCurrentEnd", newEnd)
+        const eventId = refs.get("dragEventId")
+        const prev = context.get("liveDrag")
+        if (eventId && (!prev || prev.start.compare(newStart) !== 0 || prev.end.compare(newEnd) !== 0)) {
+          context.set("liveDrag", { eventId, kind: "drag", edge: null, start: newStart, end: newEnd })
+        }
       },
       invokeOnEventDrop({ prop, refs }) {
         const eventId = refs.get("dragEventId")
@@ -319,7 +354,7 @@ export const machine = createMachine<SchedulerSchema>({
         prop("onEventDrop")?.({ event: evt, newStart, newEnd })
       },
 
-      initEventResize({ refs, event, prop }) {
+      initEventResize({ refs, context, event, prop }) {
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt) return
         refs.set("dragEventId", event.eventId)
@@ -328,8 +363,15 @@ export const machine = createMachine<SchedulerSchema>({
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
         refs.set("dragCurrentStart", evt.start)
         refs.set("dragCurrentEnd", evt.end)
+        context.set("liveDrag", {
+          eventId: event.eventId,
+          kind: "resize",
+          edge: event.edge,
+          start: evt.start,
+          end: evt.end,
+        })
       },
-      updateEventResizePosition({ refs, event, prop, scope }) {
+      updateEventResizePosition({ refs, context, event, prop, scope }) {
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const gridRect = gridEl.getBoundingClientRect()
@@ -356,6 +398,13 @@ export const machine = createMachine<SchedulerSchema>({
         } else {
           refs.set("dragCurrentEnd", newTime)
         }
+        const eventId = refs.get("dragEventId")
+        const start = refs.get("dragCurrentStart")
+        const end = refs.get("dragCurrentEnd")
+        const prev = context.get("liveDrag")
+        if (eventId && start && end && (!prev || prev.start.compare(start) !== 0 || prev.end.compare(end) !== 0)) {
+          context.set("liveDrag", { eventId, kind: "resize", edge: edge ?? "end", start, end })
+        }
       },
       invokeOnEventResize({ prop, refs }) {
         const eventId = refs.get("dragEventId")
@@ -369,19 +418,21 @@ export const machine = createMachine<SchedulerSchema>({
         prop("onEventResize")?.({ event: evt, newStart, newEnd, edge })
       },
 
-      restoreEventFromSnapshot({ refs }) {
+      restoreEventFromSnapshot({ refs, context }) {
         const snapshot = refs.get("dragStartSnapshot")
         if (!snapshot) return
         refs.set("dragCurrentStart", snapshot.start)
         refs.set("dragCurrentEnd", snapshot.end)
+        context.set("liveDrag", null)
       },
-      clearEventDrag({ refs }) {
+      clearEventDrag({ refs, context }) {
         refs.set("dragEventId", null)
         refs.set("dragOrigin", null)
         refs.set("dragEdge", null)
         refs.set("dragStartSnapshot", null)
         refs.set("dragCurrentStart", null)
         refs.set("dragCurrentEnd", null)
+        context.set("liveDrag", null)
       },
     },
   },

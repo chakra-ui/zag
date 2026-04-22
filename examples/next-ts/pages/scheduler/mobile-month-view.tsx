@@ -72,11 +72,13 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [selectedDate, setSelectedDate] = useState<DateValue>(today)
 
+  const { view: _view, ...controlsRest } = controls.context as any
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultView: "month",
     defaultDate: today,
-    ...controls.context,
+    ...controlsRest,
+    // This page is purpose-built for month view — ignore the panel's view pick.
+    view: "month",
     events: INITIAL,
   })
 
