@@ -76,9 +76,12 @@
  *   --scheduler-hour-count    (dayEndHour - dayStartHour)
  *
  * Consumer-overridable (with defaults):
- *   --scheduler-time-gutter-width  (default 60px)
- *   --scheduler-hour-height        (default 56px)
+ *   --scheduler-time-gutter-width  (default 60px) — left time column width
+ *   --scheduler-hour-height        (default 56px) — per-hour row height
  *   --scheduler-grid-height        (default: hours × hour-height)
+ *   --scheduler-event-inset        (default 2px)  — inline padding between
+ *                                                   ghost/origin overlays
+ *                                                   and their day column
  */
 .scheduler-col-headers {
   display: grid;
@@ -302,6 +305,8 @@
  * Mantine feel: filled color, crisp shadow, slightly scaled, above everything. */
 .scheduler-drag-ghost {
   position: absolute;
+  inset-inline-start: var(--scheduler-event-inset, 2px);
+  inset-inline-end: var(--scheduler-event-inset, 2px);
   border-radius: 4px;
   padding: 4px 6px;
   font-size: 12px;
@@ -318,6 +323,8 @@
  * event started — "was here" marker without interrupting the source. */
 .scheduler-drag-origin {
   position: absolute;
+  inset-inline-start: var(--scheduler-event-inset, 2px);
+  inset-inline-end: var(--scheduler-event-inset, 2px);
   border-radius: 4px;
   border: 2px dashed color-mix(in srgb, var(--event-color, #3b82f6) 60%, transparent);
   background: color-mix(in srgb, var(--event-color, #3b82f6) 6%, transparent);

@@ -343,9 +343,10 @@ export interface EventStyle {
   position: "absolute"
   top: string
   height: string
-  insetInlineStart: string
-  insetInlineEnd: string
-  /** `--event-color` is always present so consumers can reference it in CSS. */
+  /** Column-based logical inset; omitted by ghost/origin styles which let CSS own the inset. */
+  insetInlineStart?: string
+  insetInlineEnd?: string
+  /** `--event-color` so CSS can reference var(--event-color). */
   "--event-color"?: string | undefined
   [key: string]: string | undefined
 }

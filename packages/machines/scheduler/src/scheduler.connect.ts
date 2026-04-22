@@ -294,12 +294,12 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const heightPct = (timePercent(liveDrag.end) - timePercent(liveDrag.start)) * 100
       return {
         event: evt,
+        // Insets live in .scheduler-drag-ghost / -drag-origin CSS (via
+        // --scheduler-event-inset). JS just emits positioning + color.
         style: {
           position: "absolute",
           top: `${topPct}%`,
           height: `${heightPct}%`,
-          insetInlineStart: "2px",
-          insetInlineEnd: "2px",
           "--event-color": evt.color,
         } as EventStyle,
       }
@@ -320,12 +320,12 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const heightPct = (timePercent(origin.end) - timePercent(origin.start)) * 100
       return {
         event: evt,
+        // Insets live in .scheduler-drag-ghost / -drag-origin CSS (via
+        // --scheduler-event-inset). JS just emits positioning + color.
         style: {
           position: "absolute",
           top: `${topPct}%`,
           height: `${heightPct}%`,
-          insetInlineStart: "2px",
-          insetInlineEnd: "2px",
           "--event-color": evt.color,
         } as EventStyle,
       }
