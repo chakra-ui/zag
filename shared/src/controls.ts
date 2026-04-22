@@ -9,6 +9,7 @@ export const schedulerControls = defineControls({
     options: ["day", "week", "month", "year", "agenda"] as const,
     defaultValue: "week",
   },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   showCurrentTime: { type: "boolean", defaultValue: true },
   dayStartHour: { type: "number", defaultValue: 7 },

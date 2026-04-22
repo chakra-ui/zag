@@ -21,11 +21,11 @@
 
 [data-scheduler-header-title] {
   font-weight: 600;
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 
 [data-scheduler-view-select] {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   gap: 4px;
 }
@@ -113,7 +113,7 @@
 
 .scheduler-header-cell {
   padding: 8px 4px;
-  border-right: 1px solid #f3f4f6;
+  border-inline-end: 1px solid #f3f4f6;
   font-size: 12px;
   background: #fff;
   text-align: center;
@@ -122,11 +122,11 @@
 }
 
 .scheduler-header-cell:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .scheduler-gutter-header {
-  border-right: 1px solid #e5e7eb;
+  border-inline-end: 1px solid #e5e7eb;
 }
 
 .scheduler-header-cell[data-today] {
@@ -162,7 +162,7 @@
 
 [data-scheduler-time-gutter] {
   position: relative;
-  border-right: 1px solid #e5e7eb;
+  border-inline-end: 1px solid #e5e7eb;
   background: #fff;
   height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
 }
@@ -173,7 +173,7 @@
 
 .scheduler-hour-label {
   position: absolute;
-  right: 8px;
+  inset-inline-end: 8px;
   font-size: 11px;
   color: #9ca3af;
   transform: translateY(-50%);
@@ -185,26 +185,24 @@
 
 [data-scheduler-day-column] {
   position: relative;
-  border-left: 1px solid #f3f4f6;
+  border-inline-start: 1px solid #f3f4f6;
 }
 
 [data-scheduler-day-column]:first-of-type {
-  border-left: none;
+  border-inline-start: none;
 }
 
 .scheduler-hour-line {
   position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px solid #f3f4f6;
+  inset-inline: 0;
+  border-block-start: 1px solid #f3f4f6;
   pointer-events: none;
 }
 
 .scheduler-half-hour-line {
   position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px dashed #f3f4f6;
+  inset-inline: 0;
+  border-block-start: 1px dashed #f3f4f6;
   pointer-events: none;
 }
 
@@ -212,10 +210,12 @@
 
 [data-scheduler-event] {
   background: color-mix(in srgb, var(--event-color, #3b82f6) 15%, white);
-  border-left: 3px solid var(--event-color, #3b82f6);
+  border-inline-start: 3px solid var(--event-color, #3b82f6);
   color: color-mix(in srgb, var(--event-color, #3b82f6) 80%, #111);
   border-radius: 4px;
-  padding: 4px 6px 14px 6px;
+  padding-block-start: 4px;
+  padding-block-end: 14px;
+  padding-inline: 6px;
   font-size: 12px;
   overflow: hidden;
   cursor: grab;
@@ -273,15 +273,17 @@
 
 [data-scheduler-event-resize-handle] {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset-block-end: 0;
+  inset-inline: 0;
   height: 14px;
   cursor: ns-resize;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 4px 4px;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  border-end-start-radius: 4px;
+  border-end-end-radius: 4px;
 }
 
 .scheduler-resize-grip {
@@ -336,8 +338,8 @@
 
 [data-scheduler-current-time-indicator] {
   position: absolute;
-  left: -1px;
-  right: 0;
+  inset-inline-start: -1px;
+  inset-inline-end: 0;
   height: 2px;
   background: #ef4444;
   z-index: 2;
@@ -347,7 +349,7 @@
 [data-scheduler-current-time-indicator]::before {
   content: "";
   position: absolute;
-  left: -1px;
+  inset-inline-start: -1px;
   top: 50%;
   transform: translateY(-50%);
   width: 8px;

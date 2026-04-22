@@ -370,6 +370,10 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   hourRange: HourRange
   /** Writing direction. */
   dir: "ltr" | "rtl"
+  /** Direction-aware previous-arrow glyph — "←" in LTR, "→" in RTL. */
+  prevTriggerIcon: string
+  /** Direction-aware next-arrow glyph — "→" in LTR, "←" in RTL. */
+  nextTriggerIcon: string
   /** All events (recurring instances expanded against the visible range). */
   events: SchedulerEvent<E>[]
   isDragging: boolean

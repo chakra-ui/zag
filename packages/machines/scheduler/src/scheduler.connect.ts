@@ -236,6 +236,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     weekDays,
     hourRange,
     dir,
+    prevTriggerIcon: dir === "rtl" ? "→" : "←",
+    nextTriggerIcon: dir === "rtl" ? "←" : "→",
     events,
     isDragging,
     isSlotSelecting,

@@ -55,9 +55,9 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>←</button>
+            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
             <button {...api.getTodayTriggerProps()}>Today</button>
-            <button {...api.getNextTriggerProps()}>→</button>
+            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
           </div>
 
