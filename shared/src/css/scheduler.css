@@ -231,8 +231,30 @@
   outline-offset: 2px;
 }
 
+/* Mantine-style drag feel: the source event fades in place (the "was here"
+ * marker) while a floating ghost follows the cursor. */
 [data-scheduler-event][data-dragging] {
   cursor: grabbing;
+  opacity: 0.25;
+  transition: opacity 80ms ease-out;
+}
+
+/* While any event is being dragged, stop other events from intercepting
+ * hovers/clicks so the ghost-follow feels predictable. */
+[data-scheduler-root][data-dragging] [data-scheduler-event]:not([data-dragging]) {
+  pointer-events: none;
+}
+
+/* Drop-target column highlight while dragging — previews where the event
+ * will land without waiting for pointer-up. */
+[data-scheduler-day-column][data-drop-target]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--drop-target-color, #2563eb) 8%, transparent);
+  border-inline-start: 2px solid var(--drop-target-color, #2563eb);
+  pointer-events: none;
+  z-index: 1;
 }
 
 [data-scheduler-event][data-conflict] {
@@ -276,6 +298,8 @@
 
 /* ── Drag ghost ───────────────────────────────────────────────────────────── */
 
+/* Floating preview of the dragged event at the predicted drop position.
+ * Mantine feel: filled color, crisp shadow, slightly scaled, above everything. */
 .scheduler-drag-ghost {
   position: absolute;
   border-radius: 4px;
@@ -283,11 +307,22 @@
   font-size: 12px;
   color: #fff;
   background: var(--event-color, #3b82f6);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22), 0 0 0 2px rgba(255, 255, 255, 0.7);
   pointer-events: none;
   z-index: 20;
   overflow: hidden;
+  transform: translateZ(0);
+}
+
+/* Dashed outline at the gesture origin so the user always sees where the
+ * event started — "was here" marker without interrupting the source. */
+.scheduler-drag-origin {
+  position: absolute;
+  border-radius: 4px;
+  border: 2px dashed color-mix(in srgb, var(--event-color, #3b82f6) 60%, transparent);
+  background: color-mix(in srgb, var(--event-color, #3b82f6) 6%, transparent);
+  pointer-events: none;
+  z-index: 19;
 }
 
 /* ── Current time indicator ───────────────────────────────────────────────── */

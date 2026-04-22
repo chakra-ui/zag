@@ -370,6 +370,11 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         dir,
         "data-view": view,
         "data-dir": dir,
+        // Root-level flags so descendants (events, columns) can dim / disable
+        // pointer-events while any gesture is active — the Mantine pattern.
+        "data-dragging": dataAttr(isDragging),
+        "data-resizing": dataAttr(isResizing),
+        "data-slot-selecting": dataAttr(isSlotSelecting),
         style: {
           // Expose layout-critical counts so children can lay themselves out via
           // CSS (grid-template-columns) without plumbing JS. Consumers can still
@@ -524,11 +529,15 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getDayColumnProps(props: DayColumnProps) {
       const key = props.date.toString()
+      // When a drag preview resolves to this day, mark the column as the
+      // drop target so consumers can light it up (Mantine-style).
+      const isDropTarget = !!liveDrag && liveDrag.kind === "drag" && toCalendarDate(liveDrag.start).toString() === key
       return normalize.element({
         ...parts.dayColumn.attrs(scope.id),
         id: dom.getDayColumnId(scope, key),
         role: "gridcell",
         "data-date": key,
+        "data-drop-target": dataAttr(isDropTarget),
       })
     },
 
