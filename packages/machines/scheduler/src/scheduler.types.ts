@@ -47,6 +47,13 @@ export interface SlotSelectDetails {
   end: DateValue
 }
 
+export interface SlotClickDetails {
+  /** The single slot that was clicked (no drag). */
+  start: DateValue
+  /** slotInterval after `start`, for convenience when creating an event. */
+  end: DateValue
+}
+
 export interface EventClickDetails<T = Record<string, unknown>> {
   event: SchedulerEvent<T>
 }
@@ -121,6 +128,8 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   /** Days of week to show in work-week mode, 0=Sun…6=Sat. @default [1,2,3,4,5] */
   workWeekDays?: number[] | undefined
   onSlotSelect?: ((details: SlotSelectDetails) => void) | undefined
+  /** Fires when an empty slot is clicked without dragging (use to open a "new event" popover). */
+  onSlotClick?: ((details: SlotClickDetails) => void) | undefined
   onEventClick?: ((details: EventClickDetails<T>) => void) | undefined
   onEventDrop?: ((details: EventDropDetails<T>) => void) | undefined
   onEventResize?: ((details: EventResizeDetails<T>) => void) | undefined

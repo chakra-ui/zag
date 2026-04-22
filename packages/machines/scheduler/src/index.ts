@@ -12,6 +12,7 @@ export type {
   EventClickDetails,
   EventDropDetails,
   EventResizeDetails,
+  SlotClickDetails,
   SlotSelectDetails,
   ViewChangeDetails,
   SchedulerEvent,

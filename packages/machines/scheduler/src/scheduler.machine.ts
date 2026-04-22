@@ -342,6 +342,13 @@ export const machine = createMachine<SchedulerSchema>({
         const end = refs.get("dragSlotEnd")
         if (!start || !end) return
         const [s, e] = start.compare(end) <= 0 ? [start, end] : [end, start]
+        // If the slot didn't grow (pointer never moved past a snap boundary),
+        // treat it as a click → useful for "create event at this time".
+        if (s.compare(e) === 0) {
+          const slotEnd = s.add({ minutes: prop("slotInterval") })
+          prop("onSlotClick")?.({ start: s, end: slotEnd })
+          return
+        }
         prop("onSlotSelect")?.({ start: s, end: e })
       },
       clearSlotDrag({ refs, context }) {
