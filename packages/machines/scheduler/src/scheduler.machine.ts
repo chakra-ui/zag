@@ -31,7 +31,7 @@ export const machine = createMachine<SchedulerSchema>({
       locale: "en-US",
       showCurrentTime: true,
       showWeekNumbers: false,
-      recurrenceExpansionLimit: 2000,
+      maxRecurrenceInstances: 2000,
       ...props,
     }
   },

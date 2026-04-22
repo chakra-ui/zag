@@ -32,7 +32,7 @@ import {
   type DateValue,
 } from "@internationalized/date"
 import { getTimePercent, rangesOverlap } from "./utils/time"
-import { getEventPosition } from "./utils/layout"
+import { computeEventLayout } from "./utils/layout"
 import { toDayOfWeekToken } from "./utils/visible-range"
 import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
 import type { MonthGridDay } from "./scheduler.types"
@@ -54,7 +54,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
   const rawEvents = prop("events") ?? []
   const expandRecurrence = prop("expandRecurrence")
-  const limit = prop("recurrenceExpansionLimit")
+  const limit = prop("maxRecurrenceInstances")
   const expandedEvents = expandRecurrence
     ? rawEvents.flatMap((e) => (e.recurrence ? expandRecurrence(e, visibleRange) : [e]))
     : rawEvents
@@ -73,14 +73,46 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   // on the final day would be excluded by a strict range check.
   const rangeFilterEnd = visibleRange.end.add({ days: 1 })
   const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, rangeFilterEnd))
-  const eventPositions = new Map<string, ReturnType<typeof getEventPosition>>()
-  for (const e of visibleEvents) {
-    eventPositions.set(e.id, getEventPosition(e, visibleEvents, prop("dayStartHour"), prop("dayEndHour")))
-  }
+
+  // Single O(N log N) layout pass — avoids calling getEventPosition N times
+  // with O(N²) overlap resolution each, which previously crashed the browser
+  // at a few hundred events.
+  const eventPositions = computeEventLayout(visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
 
   // Index every event by id for O(1) lookup from consumer code.
   const eventsById = new Map<string, SchedulerEvent>()
   for (const e of events) eventsById.set(e.id, e)
+
+  // Pre-bucket events by day key for O(1) `getEventsForDay`. A single event
+  // can span multiple days (overnight) — push it into each key it touches.
+  const eventsByDayKey = new Map<string, SchedulerEvent[]>()
+  for (const e of visibleEvents) {
+    let cur = toCalendarDate(e.start)
+    const stop = toCalendarDate(e.end)
+    while (cur.compare(stop) <= 0) {
+      const key = cur.toString()
+      const bucket = eventsByDayKey.get(key)
+      if (bucket) bucket.push(e)
+      else eventsByDayKey.set(key, [e])
+      cur = cur.add({ days: 1 })
+    }
+  }
+
+  // Pre-compute conflicting event ids via a sweep, so hasConflict / getEventState
+  // are O(1) instead of O(N) per call. Sort by start; two events conflict iff
+  // their intervals overlap, i.e. max(startA, startB) < min(endA, endB).
+  const conflictIds = new Set<string>()
+  const timedSorted = visibleEvents.filter((e) => !e.allDay).sort((a, b) => a.start.compare(b.start))
+  // Active = events we've opened but not yet passed their end, sorted by end asc.
+  let active: SchedulerEvent[] = []
+  for (const e of timedSorted) {
+    active = active.filter((a) => a.end.compare(e.start) > 0)
+    if (active.length > 0) {
+      conflictIds.add(e.id)
+      for (const a of active) conflictIds.add(a.id)
+    }
+    active.push(e)
+  }
 
   const locale = prop("locale")
   const timeZone = prop("timeZone") ?? getLocalTimeZone()
@@ -257,16 +289,19 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const resizingThis = isResizing && dragEventId === id
       const focused = focusedEventId === id
       const selected = selectedEventId === id
-      const evt = eventsById.get(id)
-      const conflict = evt
-        ? events.some((e) => e.id !== id && rangesOverlap(e.start, e.end, evt.start, evt.end))
-        : false
+      const conflict = conflictIds.has(id)
       return { dragging: draggingThis, resizing: resizingThis, focused, selected, conflict }
     },
 
     getEventPosition(event) {
-      const basePos =
-        eventPositions.get(event.id) ?? getEventPosition(event, visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
+      const basePos = eventPositions.get(event.id) ?? {
+        top: 0,
+        height: 0,
+        left: 0,
+        width: 1,
+        column: 0,
+        totalColumns: 1,
+      }
 
       // Live resize: reflect current drag bounds on the actual event (not a ghost).
       // Safe because resize doesn't change day or left/width — only top/height.
@@ -303,20 +338,28 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
           }
         : null,
 
+    dragOrigin: (() => {
+      if (!(isDragging || isResizing) || !dragEventId) return null
+      const snap = refs.get("dragStartSnapshot")
+      if (!snap) return null
+      return { eventId: dragEventId, start: snap.start, end: snap.end }
+    })(),
+
     getEventsForDay(d) {
-      return events.filter((e) => {
-        const dayStart = d
-        const dayEnd = d.add({ days: 1 })
-        return rangesOverlap(e.start, e.end, dayStart, dayEnd)
-      })
+      // O(1): hit the prebuilt per-day bucket.
+      return eventsByDayKey.get(toCalendarDate(d).toString()) ?? []
     },
 
     getEventsForSlot(start, end) {
-      return events.filter((e) => rangesOverlap(e.start, e.end, start, end))
+      // Slot windows are narrow (minutes) — filter the bucket of the start
+      // day rather than scanning every event. O(K) where K = events in that day.
+      const bucket = eventsByDayKey.get(toCalendarDate(start).toString()) ?? []
+      return bucket.filter((e) => rangesOverlap(e.start, e.end, start, end))
     },
 
     hasConflict(event) {
-      return events.some((e) => e.id !== event.id && rangesOverlap(e.start, e.end, event.start, event.end))
+      // O(1): conflict set was precomputed by the sweep.
+      return conflictIds.has(event.id)
     },
 
     getRootProps() {

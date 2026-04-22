@@ -77,7 +77,7 @@ export default function Page() {
     ...controls.context,
     events: INITIAL,
     expandRecurrence: weeklyExpander,
-    recurrenceExpansionLimit: 500,
+    maxRecurrenceInstances: 500,
   })
 
   const api = scheduler.connect(service, normalizeProps)

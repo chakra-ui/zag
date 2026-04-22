@@ -34,7 +34,7 @@ export const props = createProps<SchedulerProps>()([
   "onSlotClick",
   "onSlotSelect",
   "onViewChange",
-  "recurrenceExpansionLimit",
+  "maxRecurrenceInstances",
   "showCurrentTime",
   "showWeekNumbers",
   "slotInterval",

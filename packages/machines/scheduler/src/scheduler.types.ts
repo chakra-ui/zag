@@ -148,7 +148,7 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   showCurrentTime?: boolean | undefined
   // TODO: Consider renamining this to something more intuitive like `maxExpandedInstances` or `recurrenceInstanceLimit`
   /** Upper bound on expanded recurring instances per visible range. @default 2000 */
-  recurrenceExpansionLimit?: number | undefined
+  maxRecurrenceInstances?: number | undefined
   /** Called on each recurring event to expand instances within the visible range. */
   expandRecurrence?: RecurrenceExpander<T> | undefined
   translations?: SchedulerTranslations | undefined
@@ -166,7 +166,7 @@ type PropsWithDefault =
   | "locale"
   | "showCurrentTime"
   | "showWeekNumbers"
-  | "recurrenceExpansionLimit"
+  | "maxRecurrenceInstances"
 
 /* -----------------------------------------------------------------------------
  * Machine schema
@@ -374,6 +374,8 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   isResizing: boolean
   /** Live preview of the event being dragged — null when not dragging. */
   dragPreview: { eventId: string; start: DateValue | null; end: DateValue | null } | null
+  /** Where the active drag/resize started — use to render a "was here" ghost outline. */
+  dragOrigin: { eventId: string; start: DateValue; end: DateValue } | null
 
   setView: (view: ViewType) => void
   setDate: (date: DateValue) => void
