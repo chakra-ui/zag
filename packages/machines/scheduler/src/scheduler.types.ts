@@ -6,7 +6,16 @@ import type { DateValue } from "@internationalized/date"
  * Event data model
  * -----------------------------------------------------------------------------*/
 
-export interface SchedulerEvent<T = Record<string, unknown>> {
+/**
+ * Base type for event payloads. Defaults to `any` so the generic-threading
+ * pattern `scheduler.machine as scheduler.Machine<MyPayload>` works without
+ * coercing through `unknown`. Matches the `CollectionItem = any` convention
+ * used by select / combobox / listbox / gridlist / tree-view.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SchedulerPayload = any
+
+export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
   id: string
   title: string
   start: DateValue
@@ -23,7 +32,7 @@ export interface SchedulerEvent<T = Record<string, unknown>> {
  * Expands a recurring event into concrete instances within a date range.
  * Consumers provide their preferred RRULE library (rrule.js, rrule-alt, etc.).
  */
-export type RecurrenceExpander<T = Record<string, unknown>> = (
+export type RecurrenceExpander<T extends SchedulerPayload = SchedulerPayload> = (
   event: SchedulerEvent<T>,
   range: { start: DateValue; end: DateValue },
 ) => SchedulerEvent<T>[]
@@ -54,11 +63,11 @@ export interface SlotClickDetails {
   end: DateValue
 }
 
-export interface EventClickDetails<T = Record<string, unknown>> {
+export interface EventClickDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
 }
 
-export interface EventDropDetails<T = Record<string, unknown>> {
+export interface EventDropDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
   /** Index of the event in the `events` prop array (-1 if not found). */
   index: number
@@ -71,7 +80,7 @@ export interface EventDropDetails<T = Record<string, unknown>> {
   apply: (events: SchedulerEvent<T>[]) => SchedulerEvent<T>[]
 }
 
-export interface EventResizeDetails<T = Record<string, unknown>> {
+export interface EventResizeDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
   /** Index of the event in the `events` prop array (-1 if not found). */
   index: number
@@ -105,7 +114,8 @@ export type ElementIds = Partial<{
   dayCell: (key: string) => string
 }>
 
-export interface SchedulerProps<T = Record<string, unknown>> extends CommonProperties, DirectionProperty {
+export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
+  extends CommonProperties, DirectionProperty {
   ids?: ElementIds | undefined
   /** Current view mode */
   view?: ViewType | undefined
@@ -146,15 +156,12 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   showWeekNumbers?: boolean | undefined
   /** Show a line at the current time in day/week views. @default true */
   showCurrentTime?: boolean | undefined
-  // TODO: Consider renamining this to something more intuitive like `maxExpandedInstances` or `recurrenceInstanceLimit`
   /** Upper bound on expanded recurring instances per visible range. @default 2000 */
   maxRecurrenceInstances?: number | undefined
   /** Called on each recurring event to expand instances within the visible range. */
   expandRecurrence?: RecurrenceExpander<T> | undefined
   translations?: SchedulerTranslations | undefined
   disabled?: boolean | undefined
-
-  // TODO: Implement RTL layout support, then add a control/example for RTL mode.
 }
 
 type PropsWithDefault =
@@ -200,7 +207,7 @@ type Computed = Readonly<{
   isInteractive: boolean
 }>
 
-export interface SchedulerSchema<T = Record<string, unknown>> {
+export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> {
   state: "idle" | "slot-selecting" | "event-dragging" | "event-resizing"
   props: RequiredBy<SchedulerProps<T>, PropsWithDefault>
   context: SchedulerContext
@@ -221,8 +228,8 @@ export interface SchedulerSchema<T = Record<string, unknown>> {
   guard: string
 }
 
-export type SchedulerService<T = Record<string, unknown>> = Service<SchedulerSchema<T>>
-export type SchedulerMachine<T = Record<string, unknown>> = Machine<SchedulerSchema<T>>
+export type SchedulerService<T extends SchedulerPayload = SchedulerPayload> = Service<SchedulerSchema<T>>
+export type SchedulerMachine<T extends SchedulerPayload = SchedulerPayload> = Machine<SchedulerSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Connect API types
@@ -280,11 +287,11 @@ export interface MonthGridDay {
   isWeekend: boolean
 }
 
-export interface EventProps<T = Record<string, unknown>> {
+export interface EventProps<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
 }
 
-export interface EventResizeHandleProps<T = Record<string, unknown>> {
+export interface EventResizeHandleProps<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
   edge: "start" | "end"
 }
@@ -351,7 +358,7 @@ export interface EventStyle {
   [key: string]: string | undefined
 }
 
-export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string, unknown>> {
+export interface SchedulerApi<T extends PropTypes = PropTypes, E extends SchedulerPayload = SchedulerPayload> {
   /** Current view. */
   view: ViewType
   /** Focused date (drives which range is visible). */

@@ -1,3 +1,4 @@
+import type { Service } from "@zag-js/core"
 import { dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./scheduler.anatomy"
@@ -12,7 +13,8 @@ import type {
   MoreEventsProps,
   SchedulerApi,
   SchedulerEvent,
-  SchedulerService,
+  SchedulerPayload,
+  SchedulerSchema,
   TimeSlotProps,
   ViewItemProps,
   ViewType,
@@ -37,7 +39,10 @@ import { toDayOfWeekToken } from "./utils/visible-range"
 import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
 import type { MonthGridDay } from "./scheduler.types"
 
-export function connect<T extends PropTypes>(service: SchedulerService, normalize: NormalizeProps<T>): SchedulerApi<T> {
+export function connect<T extends PropTypes, E extends SchedulerPayload = SchedulerPayload>(
+  service: Service<SchedulerSchema<E>>,
+  normalize: NormalizeProps<T>,
+): SchedulerApi<T, E> {
   const { state, send, context, prop, computed, scope, refs } = service
 
   const view = context.get("view")
@@ -69,23 +74,16 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   }
   const t = { ...defaultTranslations, ...translations }
 
-  // Extend end by 1 day: visibleRange.end is a CalendarDate (midnight), so events
-  // on the final day would be excluded by a strict range check.
+  // visibleRange.end is midnight, so extend by a day for the overlap check.
   const rangeFilterEnd = visibleRange.end.add({ days: 1 })
   const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, rangeFilterEnd))
 
-  // Single O(N log N) layout pass — avoids calling getEventPosition N times
-  // with O(N²) overlap resolution each, which previously crashed the browser
-  // at a few hundred events.
   const eventPositions = computeEventLayout(visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
 
-  // Index every event by id for O(1) lookup from consumer code.
-  const eventsById = new Map<string, SchedulerEvent>()
+  const eventsById = new Map<string, SchedulerEvent<E>>()
   for (const e of events) eventsById.set(e.id, e)
 
-  // Pre-bucket events by day key for O(1) `getEventsForDay`. A single event
-  // can span multiple days (overnight) — push it into each key it touches.
-  const eventsByDayKey = new Map<string, SchedulerEvent[]>()
+  const eventsByDayKey = new Map<string, SchedulerEvent<E>[]>()
   for (const e of visibleEvents) {
     let cur = toCalendarDate(e.start)
     const stop = toCalendarDate(e.end)
@@ -98,13 +96,9 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     }
   }
 
-  // Pre-compute conflicting event ids via a sweep, so hasConflict / getEventState
-  // are O(1) instead of O(N) per call. Sort by start; two events conflict iff
-  // their intervals overlap, i.e. max(startA, startB) < min(endA, endB).
   const conflictIds = new Set<string>()
   const timedSorted = visibleEvents.filter((e) => !e.allDay).sort((a, b) => a.start.compare(b.start))
-  // Active = events we've opened but not yet passed their end, sorted by end asc.
-  let active: SchedulerEvent[] = []
+  let active: SchedulerEvent<E>[] = []
   for (const e of timedSorted) {
     active = active.filter((a) => a.end.compare(e.start) > 0)
     if (active.length > 0) {
@@ -123,7 +117,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
   const today = getTodayDate(timeZone, visibleRange.start.calendar)
 
-  // Enumerate inclusive dates in the visible range.
   const visibleDays: DateValue[] = []
   {
     let cur = visibleRange.start
@@ -133,7 +126,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     }
   }
 
-  // 7 localized weekday headers ordered by the week's start day.
   const weekDaysRaw = getWeekDays(visibleRange.start, weekStartDay, timeZone, locale) as unknown as Array<{
     value: DateValue
     short: string
@@ -196,7 +188,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
   const sameDay = (a: DateValue, b: DateValue) => toCalendarDate(a).compare(toCalendarDate(b)) === 0
   const isTodayDate = (d: DateValue) => toCalendarDate(d).toString() === todayKey
   const isWeekendDate = (d: DateValue) => {
-    // JS Date dow: 0 = Sun, 6 = Sat
     const dow = new Date(d.year, d.month - 1, d.day).getDay()
     return dow === 0 || dow === 6
   }
@@ -296,8 +287,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const heightPct = (timePercent(liveDrag.end) - timePercent(liveDrag.start)) * 100
       return {
         event: evt,
-        // Insets live in .scheduler-drag-ghost / -drag-origin CSS (via
-        // --scheduler-event-inset). JS just emits positioning + color.
         style: {
           position: "absolute",
           top: `${topPct}%`,
@@ -322,8 +311,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       const heightPct = (timePercent(origin.end) - timePercent(origin.start)) * 100
       return {
         event: evt,
-        // Insets live in .scheduler-drag-ghost / -drag-origin CSS (via
-        // --scheduler-event-inset). JS just emits positioning + color.
         style: {
           position: "absolute",
           top: `${topPct}%`,
@@ -352,8 +339,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         totalColumns: 1,
       }
 
-      // Live resize: reflect current drag bounds on the actual event (not a ghost).
-      // Safe because resize doesn't change day or left/width — only top/height.
       if (isResizing && dragEventId === event.id) {
         const dragStart = (liveDrag?.start ?? refs.get("dragCurrentStart")) as DateValue | null
         const dragEnd = (liveDrag?.end ?? refs.get("dragCurrentEnd")) as DateValue | null
@@ -395,19 +380,15 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     })(),
 
     getEventsForDay(d) {
-      // O(1): hit the prebuilt per-day bucket.
       return eventsByDayKey.get(toCalendarDate(d).toString()) ?? []
     },
 
     getEventsForSlot(start, end) {
-      // Slot windows are narrow (minutes) — filter the bucket of the start
-      // day rather than scanning every event. O(K) where K = events in that day.
       const bucket = eventsByDayKey.get(toCalendarDate(start).toString()) ?? []
       return bucket.filter((e) => rangesOverlap(e.start, e.end, start, end))
     },
 
     hasConflict(event) {
-      // O(1): conflict set was precomputed by the sweep.
       return conflictIds.has(event.id)
     },
 
@@ -419,15 +400,10 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         dir,
         "data-view": view,
         "data-dir": dir,
-        // Root-level flags so descendants (events, columns) can dim / disable
-        // pointer-events while any gesture is active — the Mantine pattern.
         "data-dragging": dataAttr(isDragging),
         "data-resizing": dataAttr(isResizing),
         "data-slot-selecting": dataAttr(isSlotSelecting),
         style: {
-          // Expose layout-critical counts so children can lay themselves out via
-          // CSS (grid-template-columns) without plumbing JS. Consumers can still
-          // override the gutter width or hour-row height via matching vars.
           ["--scheduler-visible-days" as any]: visibleDays.length,
           ["--scheduler-day-count" as any]: visibleDays.length,
           ["--scheduler-hour-count" as any]: hourRange.end - hourRange.start,
@@ -578,8 +554,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
 
     getDayColumnProps(props: DayColumnProps) {
       const key = props.date.toString()
-      // When a drag preview resolves to this day, mark the column as the
-      // drop target so consumers can light it up (Mantine-style).
       const isDropTarget = !!liveDrag && liveDrag.kind === "drag" && toCalendarDate(liveDrag.start).toString() === key
       return normalize.element({
         ...parts.dayColumn.attrs(scope.id),
@@ -617,7 +591,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       })
     },
 
-    getEventProps(props: EventProps) {
+    getEventProps(props: EventProps<E>) {
       const { event } = props
       const evtState = this.getEventState(event.id)
       return normalize.element({
@@ -671,7 +645,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       })
     },
 
-    getEventResizeHandleProps(props: EventResizeHandleProps) {
+    getEventResizeHandleProps(props: EventResizeHandleProps<E>) {
       const { event, edge } = props
       return normalize.element({
         ...parts.eventResizeHandle.attrs(scope.id),

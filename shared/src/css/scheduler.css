@@ -273,7 +273,7 @@
 }
 
 [data-scheduler-event][data-selected] {
-  box-shadow: 0 0 0 2px var(--event-color, #3b82f6), 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px var(--event-color, #3b82f6);
   z-index: 3;
 }
 
@@ -374,9 +374,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  /* Let the title pick its own direction so "Design review" doesn't get
-   * truncated as "...sign review" inside an RTL container — the Latin text
-   * stays LTR and ellipsizes from its own inline-end. */
+  unicode-bidi: plaintext;
+}
+
+.scheduler-event-meta {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   unicode-bidi: plaintext;
 }
 

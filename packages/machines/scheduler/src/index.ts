@@ -16,6 +16,7 @@ export type {
   SlotSelectDetails,
   ViewChangeDetails,
   SchedulerEvent,
+  SchedulerPayload,
   SchedulerTranslations,
   ElementIds,
   DayCellProps,

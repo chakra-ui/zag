@@ -1,16 +1,10 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
-
-/**
- * Typed `payload` example. `SchedulerEvent<T>` threads a user-defined type
- * through `SchedulerProps<T>` and every callback detail, letting consumers
- * attach arbitrary metadata (attendees, location, links) with full type safety.
- */
 
 interface MeetingPayload {
   attendees: string[]
@@ -18,20 +12,18 @@ interface MeetingPayload {
   meetingUrl?: string
 }
 
+type Event = scheduler.SchedulerEvent<MeetingPayload>
+
 const TODAY = scheduler.getToday()
 
-const INITIAL: scheduler.SchedulerEvent<MeetingPayload>[] = [
+const INITIAL: Event[] = [
   {
     id: "1",
     title: "Team standup",
     start: TODAY.subtract({ days: 1 }).set({ hour: 9, minute: 0 }),
     end: TODAY.subtract({ days: 1 }).set({ hour: 9, minute: 30 }),
     color: "#3b82f6",
-    payload: {
-      attendees: ["AB", "CD", "EF"],
-      location: "Zoom",
-      meetingUrl: "https://zoom.us/j/123",
-    },
+    payload: { attendees: ["Ada", "Ben", "Cai"], location: "Zoom", meetingUrl: "https://zoom.us/j/123" },
   },
   {
     id: "2",
@@ -39,10 +31,7 @@ const INITIAL: scheduler.SchedulerEvent<MeetingPayload>[] = [
     start: TODAY.set({ hour: 10, minute: 0 }),
     end: TODAY.set({ hour: 11, minute: 30 }),
     color: "#10b981",
-    payload: {
-      attendees: ["GH", "IJ"],
-      location: "Studio B",
-    },
+    payload: { attendees: ["Dee", "Eli"], location: "Studio B" },
   },
   {
     id: "3",
@@ -51,63 +40,35 @@ const INITIAL: scheduler.SchedulerEvent<MeetingPayload>[] = [
     end: TODAY.add({ days: 2 }).set({ hour: 15, minute: 0 }),
     color: "#f59e0b",
     payload: {
-      attendees: ["KL", "MN", "OP"],
+      attendees: ["Finn", "Gwen", "Hana"],
       location: "Google Meet",
       meetingUrl: "https://meet.google.com/xyz",
     },
   },
 ]
 
-const chipStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minWidth: 18,
-  height: 18,
-  padding: "0 4px",
-  marginRight: 2,
-  borderRadius: 9,
-  background: "rgba(255,255,255,0.35)",
-  color: "inherit",
-  fontSize: 10,
-  fontWeight: 600,
-}
-
-const metaStyle: React.CSSProperties = {
-  fontSize: 10,
-  opacity: 0.85,
-  marginTop: 2,
-  display: "flex",
-  gap: 6,
-  alignItems: "center",
-}
-
-type Event = scheduler.SchedulerEvent<MeetingPayload>
-
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState<Event[]>(INITIAL)
-  const [selected, setSelected] = useState<Event | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const timeFormatter = useMemo(() => new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }), [])
 
-  const service = useMachine(scheduler.machine, {
+  const service = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
     id: useId(),
     ...controls.context,
-    events: events as unknown as scheduler.SchedulerEvent[],
-    onEventDrop: (d) => setEvents(d.apply as unknown as (e: Event[]) => Event[]),
-    onEventResize: (d) => setEvents(d.apply as unknown as (e: Event[]) => Event[]),
-    onEventClick: (d) => {
-      const event = d.event as unknown as Event
-      console.log("payload:", event.payload)
-      setSelected(event)
-    },
+    events,
+    onEventDrop: (d) => setEvents(d.apply),
+    onEventResize: (d) => setEvents(d.apply),
+    onEventClick: (d) => setSelectedId(d.event.id),
   })
 
   const api = scheduler.connect(service, normalizeProps)
   const { visibleDays, hourRange, weekDays } = api
+  const selected = events.find((e) => e.id === selectedId) ?? null
 
   return (
     <>
-      <main className="scheduler">
+      <main className="scheduler" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
@@ -145,32 +106,16 @@ export default function Page() {
                       {hourRange.hours.map((h) => (
                         <div key={h.value} className="scheduler-hour-line" style={h.style} />
                       ))}
-                      {(api.getEventsForDay(d) as unknown as Event[]).map((event) => (
-                        <div
-                          key={event.id}
-                          {...api.getEventProps({ event: event as unknown as scheduler.SchedulerEvent })}
-                        >
+                      {api.getEventsForDay(d).map((event) => (
+                        <div key={event.id} {...api.getEventProps({ event })}>
                           <div className="scheduler-event-title">{event.title}</div>
                           {event.payload && (
-                            <>
-                              <div>
-                                {event.payload.attendees.map((a) => (
-                                  <span key={a} style={chipStyle}>
-                                    {a}
-                                  </span>
-                                ))}
-                              </div>
-                              <div style={metaStyle}>
-                                <span>{event.payload.location}</span>
-                                {event.payload.meetingUrl && <span>· Join</span>}
-                              </div>
-                            </>
+                            <div className="scheduler-event-meta">
+                              {event.payload.attendees.length} · {event.payload.location}
+                            </div>
                           )}
                           <div
-                            {...api.getEventResizeHandleProps({
-                              event: event as unknown as scheduler.SchedulerEvent,
-                              edge: "end",
-                            })}
+                            {...api.getEventResizeHandleProps({ event, edge: "end" })}
                             className="scheduler-resize-handle"
                           >
                             <div className="scheduler-resize-grip" />
@@ -191,16 +136,46 @@ export default function Page() {
           </div>
         </div>
 
-        {selected && selected.payload && (
-          <div style={{ marginTop: 16, padding: 12, border: "1px solid #e5e7eb", borderRadius: 6 }}>
-            <strong>{selected.title}</strong>
-            <div style={{ fontSize: 12, marginTop: 4 }}>
-              <div>Attendees: {selected.payload.attendees.join(", ")}</div>
-              <div>Location: {selected.payload.location}</div>
-              {selected.payload.meetingUrl && <div>URL: {selected.payload.meetingUrl}</div>}
-            </div>
-          </div>
-        )}
+        <aside
+          style={{
+            border: "1px solid #e5e7eb",
+            borderRadius: 8,
+            padding: 16,
+            background: "#fff",
+            alignSelf: "start",
+            fontSize: 13,
+          }}
+        >
+          {selected && selected.payload ? (
+            <>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>{selected.title}</div>
+              <div style={{ color: "#6b7280", marginTop: 2 }}>
+                {timeFormatter.format(selected.start.toDate("UTC"))} –{" "}
+                {timeFormatter.format(selected.end.toDate("UTC"))}
+              </div>
+              <div style={{ marginTop: 12, color: "#111" }}>
+                <div style={{ fontWeight: 500, marginBottom: 4 }}>Attendees</div>
+                <div>{selected.payload.attendees.join(", ")}</div>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <span style={{ color: "#6b7280" }}>Location: </span>
+                {selected.payload.location}
+              </div>
+              {selected.payload.meetingUrl && (
+                <a
+                  href={selected.payload.meetingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: "inline-block", marginTop: 10, color: "#2563eb" }}
+                >
+                  Join meeting →
+                </a>
+              )}
+            </>
+          ) : (
+            <div style={{ color: "#9ca3af" }}>Click an event to see its typed payload.</div>
+          )}
+        </aside>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} />

@@ -1,14 +1,13 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
-// Events anchored relative to today (resolved by the machine's helper) so the
-// default view always has content, regardless of when the demo runs.
 const TODAY = scheduler.getToday()
+const PALETTE = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
@@ -37,14 +36,23 @@ const INITIAL: scheduler.SchedulerEvent[] = [
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(INITIAL)
+  const nextIdRef = useRef(INITIAL.length)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    // defaultDate defaults to today via the machine itself — no need to pass it.
     ...controls.context,
     events,
     onEventDrop: (d) => setEvents(d.apply),
     onEventResize: (d) => setEvents(d.apply),
+    onSlotClick(d) {
+      const title = typeof window !== "undefined" ? window.prompt("Event title") : null
+      if (!title) return
+      const id = `new-${++nextIdRef.current}`
+      setEvents((p) => [
+        ...p,
+        { id, title, start: d.start, end: d.end, color: PALETTE[nextIdRef.current % PALETTE.length] },
+      ])
+    },
   })
 
   const api = scheduler.connect(service, normalizeProps)

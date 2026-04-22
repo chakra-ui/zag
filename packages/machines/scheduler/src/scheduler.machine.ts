@@ -198,15 +198,10 @@ export const machine = createMachine<SchedulerSchema>({
 
     effects: {
       trackPointerMove({ scope, send }) {
-        // Coalesce pointermove dispatches to the next animation frame so we
-        // re-render at most once per frame even on 120/240Hz pointers.
         let rafId: number | null = null
         let latest: { x: number; y: number } | null = null
         const win = scope.getWin()
 
-        // Auto-scroll when the pointer gets within EDGE_THRESHOLD of the
-        // nearest scrollable ancestor's edge during a drag/resize/slot gesture.
-        // The speed ramps with proximity, capped at MAX_SCROLL_SPEED px/frame.
         const EDGE_THRESHOLD = 50
         const MAX_SCROLL_SPEED = 12
         const scrollEl = findScrollableAncestor(dom.getGridEl(scope))
@@ -342,11 +337,8 @@ export const machine = createMachine<SchedulerSchema>({
         const end = refs.get("dragSlotEnd")
         if (!start || !end) return
         const [s, e] = start.compare(end) <= 0 ? [start, end] : [end, start]
-        // If the slot didn't grow (pointer never moved past a snap boundary),
-        // treat it as a click → useful for "create event at this time".
         if (s.compare(e) === 0) {
-          const slotEnd = s.add({ minutes: prop("slotInterval") })
-          prop("onSlotClick")?.({ start: s, end: slotEnd })
+          prop("onSlotClick")?.({ start: s, end: s.add({ minutes: prop("slotInterval") }) })
           return
         }
         prop("onSlotSelect")?.({ start: s, end: e })
@@ -373,7 +365,6 @@ export const machine = createMachine<SchedulerSchema>({
         const gridRect = gridEl.getBoundingClientRect()
         const visibleRange = computed("visibleRange")
 
-        // Use the first day-column element to get the content rect (excludes header row and time gutter)
         const firstCol = gridEl.querySelector("[data-scheduler-day-column]") as HTMLElement | null
         const colRect = firstCol?.getBoundingClientRect()
         const contentRect = colRect
@@ -392,7 +383,6 @@ export const machine = createMachine<SchedulerSchema>({
           prop("slotInterval"),
         )
 
-        // Maintain grab offset: keep cursor at the same relative position within the event
         const dragOrigin = refs.get("dragOrigin")
         let newStart = cursorTime
         if (dragOrigin) {

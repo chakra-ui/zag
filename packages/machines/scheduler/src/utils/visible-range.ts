@@ -37,7 +37,6 @@ export function getVisibleRange(
     case "month": {
       const monthStart = startOfMonth(date)
       const monthEnd = endOfMonth(date)
-      // Extend to full weeks so the month grid always shows complete rows
       return {
         start: startOfWeek(monthStart, locale, wsd),
         end: endOfWeek(monthEnd, locale, wsd),
@@ -51,7 +50,6 @@ export function getVisibleRange(
       }
 
     case "agenda":
-      // 30-day rolling window from the focused date
       return {
         start: date,
         end: date.add({ days: 30 }),
