@@ -1854,16 +1854,13 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
-      proxy-compare:
-        specifier: 3.0.1
-        version: 3.0.1
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       '@testing-library/preact':
         specifier: ^3.2.4
         version: 3.2.4(preact@10.29.0)
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
