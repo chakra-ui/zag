@@ -374,6 +374,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* Let the title pick its own direction so "Design review" doesn't get
+   * truncated as "...sign review" inside an RTL container — the Latin text
+   * stays LTR and ellipsizes from its own inline-end. */
+  unicode-bidi: plaintext;
 }
 
 .scheduler-event-time {
