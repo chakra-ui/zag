@@ -1,49 +1,37 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { CalendarDateTime, type DateValue } from "@internationalized/date"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
-const today = new CalendarDateTime(2026, 4, 17, 0, 0)
-const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-const WORK_WEEK = [1, 2, 3, 4, 5] // Mon–Fri
+const TODAY = scheduler.getToday()
+const WORK_WEEK = [1, 2, 3, 4, 5]
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
     title: "Daily standup",
-    start: new CalendarDateTime(2026, 4, 13, 9, 30),
-    end: new CalendarDateTime(2026, 4, 13, 10, 0),
+    start: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 30 }),
+    end: TODAY.subtract({ days: 2 }).set({ hour: 10, minute: 0 }),
     color: "#3b82f6",
   },
   {
     id: "2",
     title: "Design review",
-    start: new CalendarDateTime(2026, 4, 14, 11, 0),
-    end: new CalendarDateTime(2026, 4, 14, 12, 30),
+    start: TODAY.subtract({ days: 1 }).set({ hour: 11, minute: 0 }),
+    end: TODAY.subtract({ days: 1 }).set({ hour: 12, minute: 30 }),
     color: "#10b981",
   },
   {
     id: "3",
     title: "Friday demo",
-    start: new CalendarDateTime(2026, 4, 17, 15, 0),
-    end: new CalendarDateTime(2026, 4, 17, 16, 0),
+    start: TODAY.add({ days: 2 }).set({ hour: 15, minute: 0 }),
+    end: TODAY.add({ days: 2 }).set({ hour: 16, minute: 0 }),
     color: "#f59e0b",
   },
 ]
-
-function enumerateDays(start: DateValue, end: DateValue): DateValue[] {
-  const days: DateValue[] = []
-  let cur = start
-  while (cur.compare(end) <= 0) {
-    days.push(cur)
-    cur = cur.add({ days: 1 })
-  }
-  return days
-}
 
 export default function Page() {
   const controls = useControls(schedulerControls)
@@ -51,27 +39,17 @@ export default function Page() {
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultDate: today,
-    weekStartDay: 1, // Monday
+    weekStartDay: 1,
     workWeekDays: WORK_WEEK,
     ...controls.context,
     events,
-    onEventDrop: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
-    onEventResize: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventDrop: (d) => setEvents(d.apply),
+    onEventResize: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  // Filter visible days to the work week only
-  const days = enumerateDays(api.visibleRange.start, api.visibleRange.end).filter((d) =>
-    WORK_WEEK.includes(new Date(d.year, d.month - 1, d.day).getDay()),
-  )
-  const dayStart = controls.context.dayStartHour ?? 9
-  const dayEnd = controls.context.dayEndHour ?? 18
-  const HOURS_DYN = Array.from({ length: dayEnd - dayStart + 1 }, (_, i) => dayStart + i)
-  const gridHeight = (dayEnd - dayStart) * 56
-  const pct = (h: number) => ((h - dayStart) / (dayEnd - dayStart)) * 100
+  const { hourRange, weekDays } = api
+  const days = api.visibleDays.filter((d) => WORK_WEEK.includes(new Date(d.year, d.month - 1, d.day).getDay()))
 
   return (
     <>
@@ -81,71 +59,55 @@ export default function Page() {
             <button {...api.getPrevTriggerProps()}>←</button>
             <button {...api.getTodayTriggerProps()}>Today</button>
             <button {...api.getNextTriggerProps()}>→</button>
-            <span {...api.getHeaderTitleProps()}>
-              Work Week · {api.visibleRange.start.toString().slice(0, 10)} –{" "}
-              {api.visibleRange.end.toString().slice(0, 10)}
-            </span>
+            <span {...api.getHeaderTitleProps()}>Work Week · {api.visibleRangeText.formatted}</span>
           </div>
 
           <div className="scheduler-time-grid-wrapper">
-            <div className="scheduler-col-headers" style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}>
+            <div className="scheduler-col-headers">
               <div className="scheduler-header-cell scheduler-gutter-header" />
-              {days.map((d) => (
+              {days.map((d, i) => (
                 <div key={d.toString()} className="scheduler-header-cell">
-                  <span className="scheduler-header-day-label">
-                    {DAY_LABELS[new Date(d.year, d.month - 1, d.day).getDay()]}
-                  </span>
+                  <span className="scheduler-header-day-label">{weekDays[i % 7].short}</span>
                   <span className="scheduler-header-day-num">{d.day}</span>
                 </div>
               ))}
             </div>
 
             <div className="scheduler-time-grid-scroll">
-              <div
-                {...api.getGridProps()}
-                className="scheduler-time-grid"
-                style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)`, height: gridHeight }}
-              >
-                <div {...api.getTimeGutterProps()} style={{ height: gridHeight }}>
-                  {HOURS_DYN.map((h) => (
-                    <div key={h} className="scheduler-hour-label" style={{ top: `${pct(h)}%` }}>
-                      {String(h).padStart(2, "0")}:00
+              <div {...api.getGridProps()} className="scheduler-time-grid">
+                <div {...api.getTimeGutterProps()}>
+                  {hourRange.hours.map((h) => (
+                    <div key={h.value} className="scheduler-hour-label" style={h.style}>
+                      {h.label}
                     </div>
                   ))}
                 </div>
 
                 {days.map((d) => (
-                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })} style={{ height: gridHeight }}>
-                    {HOURS_DYN.map((h) => (
-                      <div key={h} className="scheduler-hour-line" style={{ top: `${pct(h)}%` }} />
+                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
+                    {hourRange.hours.map((h) => (
+                      <div key={h.value} className="scheduler-hour-line" style={h.style} />
                     ))}
-                    {api.getEventsForDay(d).map((event) => {
-                      const pos = api.getEventPosition(event)
-                      return (
+                    {api.getEventsForDay(d).map((event) => (
+                      <div
+                        key={event.id}
+                        {...api.getEventProps({ event })}
+                        style={
+                          {
+                            ...api.getEventStyle(event),
+                            ["--event-color"]: event.color,
+                          } as React.CSSProperties
+                        }
+                      >
+                        <div className="scheduler-event-title">{event.title}</div>
                         <div
-                          key={event.id}
-                          {...api.getEventProps({ event })}
-                          style={
-                            {
-                              position: "absolute",
-                              top: `${pos.top * 100}%`,
-                              height: `${pos.height * 100}%`,
-                              left: `calc(${pos.left * 100}% + 2px)`,
-                              width: `calc(${pos.width * 100}% - 4px)`,
-                              ["--event-color"]: event.color,
-                            } as React.CSSProperties
-                          }
+                          {...api.getEventResizeHandleProps({ event, edge: "end" })}
+                          className="scheduler-resize-handle"
                         >
-                          <div className="scheduler-event-title">{event.title}</div>
-                          <div
-                            {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                            className="scheduler-resize-handle"
-                          >
-                            <div className="scheduler-resize-grip" />
-                          </div>
+                          <div className="scheduler-resize-grip" />
                         </div>
-                      )
-                    })}
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
