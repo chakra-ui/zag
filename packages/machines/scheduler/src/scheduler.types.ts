@@ -1,9 +1,9 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { DateValue } from "@internationalized/date"
 
 /* -----------------------------------------------------------------------------
- * Event / Resource data models
+ * Event data model
  * -----------------------------------------------------------------------------*/
 
 export interface SchedulerEvent<T = Record<string, unknown>> {
@@ -13,18 +13,10 @@ export interface SchedulerEvent<T = Record<string, unknown>> {
   end: DateValue
   allDay?: boolean | undefined
   color?: string | undefined
-  resourceId?: string | undefined
   recurrence?: { rrule: string; exdate?: DateValue[] | undefined } | undefined
   disabled?: boolean | undefined
-  display?: "default" | "background" | undefined
+  /** Arbitrary typed metadata attached to the event (attendees, location, links…). */
   payload?: T | undefined
-}
-
-export interface Resource {
-  id: string
-  title: string
-  color?: string | undefined
-  children?: Resource[] | undefined
 }
 
 /**
@@ -53,7 +45,6 @@ export interface DateChangeDetails {
 export interface SlotSelectDetails {
   start: DateValue
   end: DateValue
-  resourceId?: string | undefined
 }
 
 export interface EventClickDetails<T = Record<string, unknown>> {
@@ -64,7 +55,6 @@ export interface EventDropDetails<T = Record<string, unknown>> {
   event: SchedulerEvent<T>
   newStart: DateValue
   newEnd: DateValue
-  newResourceId?: string | undefined
 }
 
 export interface EventResizeDetails<T = Record<string, unknown>> {
@@ -94,7 +84,7 @@ export type ElementIds = Partial<{
   dayCell: (key: string) => string
 }>
 
-export interface SchedulerProps<T = Record<string, unknown>> extends CommonProperties {
+export interface SchedulerProps<T = Record<string, unknown>> extends CommonProperties, DirectionProperty {
   ids?: ElementIds | undefined
   /** Current view mode */
   view?: ViewType | undefined
@@ -108,7 +98,6 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   onDateChange?: ((details: DateChangeDetails) => void) | undefined
   /** Flat list of events (expand recurring events before passing) */
   events?: SchedulerEvent<T>[] | undefined
-  resources?: Resource[] | undefined
   /** Minutes per time slot — 15, 30, or 60. @default 30 */
   slotInterval?: 15 | 30 | 60 | undefined
   /** First hour shown in day/week time grid. @default 0 */
@@ -134,12 +123,15 @@ export interface SchedulerProps<T = Record<string, unknown>> extends CommonPrope
   showWeekNumbers?: boolean | undefined
   /** Show a line at the current time in day/week views. @default true */
   showCurrentTime?: boolean | undefined
+  // TODO: Consider renamining this to something more intuitive like `maxExpandedInstances` or `recurrenceInstanceLimit`
   /** Upper bound on expanded recurring instances per visible range. @default 2000 */
   recurrenceExpansionLimit?: number | undefined
   /** Called on each recurring event to expand instances within the visible range. */
   expandRecurrence?: RecurrenceExpander<T> | undefined
   translations?: SchedulerTranslations | undefined
   disabled?: boolean | undefined
+
+  // TODO: Implement RTL layout support, then add a control/example for RTL mode.
 }
 
 type PropsWithDefault =
@@ -168,7 +160,6 @@ interface LiveDrag {
 interface LiveSlot {
   start: DateValue
   end: DateValue
-  resourceId?: string
 }
 
 interface SchedulerContext {
@@ -176,7 +167,7 @@ interface SchedulerContext {
   date: DateValue
   focusedEventId: string | null
   selectedEventId: string | null
-  selectedSlot: { start: DateValue; end: DateValue; resourceId?: string } | null
+  selectedSlot: { start: DateValue; end: DateValue } | null
   liveDrag: LiveDrag | null
   liveSlot: LiveSlot | null
 }
@@ -235,20 +226,14 @@ export interface EventStateDetail {
 export interface TimeSlotProps {
   start: DateValue
   end: DateValue
-  resourceId?: string | undefined
 }
 
 export interface DayColumnProps {
   date: DateValue
-  resourceId?: string | undefined
 }
 
 export interface DayCellProps {
   date: DateValue
-}
-
-export interface ResourceHeaderProps {
-  resource: Resource
 }
 
 export interface EventProps<T = Record<string, unknown>> {
@@ -275,7 +260,6 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   visibleRange: { start: DateValue; end: DateValue }
   /** All events (recurring instances expanded against the visible range). */
   events: SchedulerEvent<E>[]
-  resources: Resource[]
   isDragging: boolean
   isSlotSelecting: boolean
   isResizing: boolean
@@ -291,7 +275,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   getEventState: (id: string) => EventStateDetail
   getEventPosition: (event: SchedulerEvent<E>) => EventPosition
   getEventsForDay: (date: DateValue) => SchedulerEvent<E>[]
-  getEventsForSlot: (start: DateValue, end: DateValue, resourceId?: string) => SchedulerEvent<E>[]
+  getEventsForSlot: (start: DateValue, end: DateValue) => SchedulerEvent<E>[]
   hasConflict: (event: SchedulerEvent<E>) => boolean
 
   getRootProps: () => T["element"]
@@ -308,7 +292,6 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   getTimeGutterProps: () => T["element"]
   getDayColumnProps: (props: DayColumnProps) => T["element"]
   getDayCellProps: (props: DayCellProps) => T["element"]
-  getResourceHeaderProps: (props: ResourceHeaderProps) => T["element"]
   getEventProps: (props: EventProps<E>) => T["element"]
   getEventResizeHandleProps: (props: EventResizeHandleProps<E>) => T["element"]
   getCurrentTimeIndicatorProps: () => T["element"]

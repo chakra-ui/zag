@@ -14,7 +14,6 @@ export const anatomy = createAnatomy("scheduler").parts(
   "timeGutter",
   "dayColumn",
   "dayCell",
-  "resourceHeader",
   "event",
   "eventResizeHandle",
   "currentTimeIndicator",

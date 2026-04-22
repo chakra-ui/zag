@@ -6,7 +6,6 @@ import type {
   EventProps,
   EventResizeHandleProps,
   MoreEventsProps,
-  ResourceHeaderProps,
   SchedulerProps,
   TimeSlotProps,
   ViewItemProps,
@@ -20,6 +19,7 @@ export const props = createProps<SchedulerProps>()([
   "dayStartHour",
   "defaultDate",
   "defaultView",
+  "dir",
   "disabled",
   "events",
   "expandRecurrence",
@@ -34,7 +34,6 @@ export const props = createProps<SchedulerProps>()([
   "onSlotSelect",
   "onViewChange",
   "recurrenceExpansionLimit",
-  "resources",
   "showCurrentTime",
   "showWeekNumbers",
   "slotInterval",
@@ -47,10 +46,10 @@ export const props = createProps<SchedulerProps>()([
 
 export const splitProps = createSplitProps<Partial<SchedulerProps>>(props)
 
-export const timeSlotProps = createProps<TimeSlotProps>()(["start", "end", "resourceId"])
+export const timeSlotProps = createProps<TimeSlotProps>()(["start", "end"])
 export const splitTimeSlotProps = createSplitProps<TimeSlotProps>(timeSlotProps)
 
-export const dayColumnProps = createProps<DayColumnProps>()(["date", "resourceId"])
+export const dayColumnProps = createProps<DayColumnProps>()(["date"])
 export const splitDayColumnProps = createSplitProps<DayColumnProps>(dayColumnProps)
 
 export const dayCellProps = createProps<DayCellProps>()(["date"])
@@ -64,9 +63,6 @@ export const splitEventResizeHandleProps = createSplitProps<EventResizeHandlePro
 
 export const moreEventsProps = createProps<MoreEventsProps>()(["date", "count"])
 export const splitMoreEventsProps = createSplitProps<MoreEventsProps>(moreEventsProps)
-
-export const resourceHeaderProps = createProps<ResourceHeaderProps>()(["resource"])
-export const splitResourceHeaderProps = createSplitProps<ResourceHeaderProps>(resourceHeaderProps)
 
 export const viewItemProps = createProps<ViewItemProps>()(["view"])
 export const splitViewItemProps = createSplitProps<ViewItemProps>(viewItemProps)

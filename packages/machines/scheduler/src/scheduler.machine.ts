@@ -52,7 +52,6 @@ export const machine = createMachine<SchedulerSchema>({
       selectedSlot: bindable<{
         start: import("@internationalized/date").DateValue
         end: import("@internationalized/date").DateValue
-        resourceId?: string
       } | null>(() => ({
         defaultValue: null,
       })),
@@ -247,7 +246,7 @@ export const machine = createMachine<SchedulerSchema>({
       initSlotDrag({ refs, context, event }) {
         refs.set("dragSlotStart", event.start)
         refs.set("dragSlotEnd", event.end)
-        context.set("liveSlot", { start: event.start, end: event.end, resourceId: event.resourceId })
+        context.set("liveSlot", { start: event.start, end: event.end })
       },
       updateSlotDragEnd({ refs, context, event, prop, computed, scope }) {
         const gridEl = dom.getGridEl(scope)

@@ -8,7 +8,6 @@ import type {
   EventProps,
   EventResizeHandleProps,
   MoreEventsProps,
-  ResourceHeaderProps,
   SchedulerApi,
   SchedulerService,
   TimeSlotProps,
@@ -41,7 +40,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     ? rawEvents.flatMap((e) => (e.recurrence ? expandRecurrence(e, visibleRange) : [e]))
     : rawEvents
   const events = typeof limit === "number" ? expandedEvents.slice(0, limit) : expandedEvents
-  const resources = prop("resources") ?? []
   const translations = prop("translations")
 
   const defaultTranslations = {
@@ -66,7 +64,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     date,
     visibleRange,
     events,
-    resources,
     isDragging,
     isSlotSelecting,
     isResizing,
@@ -146,11 +143,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       })
     },
 
-    getEventsForSlot(start, end, resourceId) {
-      return events.filter((e) => {
-        const matchesResource = resourceId ? e.resourceId === resourceId : true
-        return matchesResource && rangesOverlap(e.start, e.end, start, end)
-      })
+    getEventsForSlot(start, end) {
+      return events.filter((e) => rangesOverlap(e.start, e.end, start, end))
     },
 
     hasConflict(event) {
@@ -299,11 +293,10 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         ...parts.timeSlot.attrs(scope.id),
         id: dom.getTimeSlotId(scope, key),
         role: "gridcell",
-        "data-resource-id": props.resourceId,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           const point = getEventPoint(event)
-          send({ type: "SLOT_POINTER_DOWN", start: props.start, end: props.end, point, resourceId: props.resourceId })
+          send({ type: "SLOT_POINTER_DOWN", start: props.start, end: props.end, point })
         },
       })
     },
@@ -315,7 +308,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         id: dom.getDayColumnId(scope, key),
         role: "gridcell",
         "data-date": key,
-        "data-resource-id": props.resourceId,
       })
     },
 
@@ -333,13 +325,6 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
           const end = props.date.add({ days: 1 })
           send({ type: "SLOT_POINTER_DOWN", start, end, point })
         },
-      })
-    },
-
-    getResourceHeaderProps(props: ResourceHeaderProps) {
-      return normalize.element({
-        ...parts.resourceHeader.attrs(scope.id),
-        "data-resource-id": props.resource.id,
       })
     },
 
