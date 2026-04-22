@@ -124,10 +124,12 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     hours: Array.from({ length: hourSpan + 1 }, (_, i) => {
       const value = dayStartHour + i
       const labelDate = hourRefDate.set({ hour: Math.min(value, 23), minute: 0 })
+      const percent = hourSpan === 0 ? 0 : i / hourSpan
       return {
         value,
         label: hourFormatter.format(labelDate.toDate(timeZone)),
-        percent: hourSpan === 0 ? 0 : i / hourSpan,
+        percent,
+        style: { top: `${percent * 100}%` },
       }
     }),
   }

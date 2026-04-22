@@ -312,8 +312,10 @@ export interface HourEntry {
   value: number
   /** Localized label, e.g. "09:00" / "9 AM" depending on locale. */
   label: string
-  /** 0..1 vertical position within the visible grid — drop in as `${percent * 100}%`. */
+  /** 0..1 vertical position within the visible grid. */
   percent: number
+  /** Ready-to-spread style with `top` already computed. */
+  style: { top: string }
 }
 
 export interface HourRange {

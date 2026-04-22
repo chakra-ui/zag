@@ -1,34 +1,35 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { CalendarDateTime } from "@internationalized/date"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
-const today = new CalendarDateTime(2026, 4, 17, 0, 0)
+// Events anchored relative to today (resolved by the machine's helper) so the
+// default view always has content, regardless of when the demo runs.
+const TODAY = scheduler.getToday()
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
     id: "1",
     title: "Team standup",
-    start: new CalendarDateTime(2026, 4, 13, 9, 0),
-    end: new CalendarDateTime(2026, 4, 13, 9, 30),
+    start: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 0 }),
+    end: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 30 }),
     color: "#3b82f6",
   },
   {
     id: "2",
     title: "Design review",
-    start: new CalendarDateTime(2026, 4, 15, 10, 0),
-    end: new CalendarDateTime(2026, 4, 15, 11, 30),
+    start: TODAY.set({ hour: 10, minute: 0 }),
+    end: TODAY.set({ hour: 11, minute: 30 }),
     color: "#10b981",
   },
   {
     id: "3",
     title: "Lunch",
-    start: new CalendarDateTime(2026, 4, 17, 12, 0),
-    end: new CalendarDateTime(2026, 4, 17, 13, 0),
+    start: TODAY.add({ days: 2 }).set({ hour: 12, minute: 0 }),
+    end: TODAY.add({ days: 2 }).set({ hour: 13, minute: 0 }),
     color: "#f59e0b",
   },
 ]
@@ -39,7 +40,7 @@ export default function Page() {
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    defaultDate: today,
+    // defaultDate defaults to today via the machine itself — no need to pass it.
     ...controls.context,
     events,
     onEventDrop: (d) => setEvents(d.apply),
@@ -75,7 +76,7 @@ export default function Page() {
               <div {...api.getGridProps()} className="scheduler-time-grid">
                 <div {...api.getTimeGutterProps()}>
                   {hourRange.hours.map((h) => (
-                    <div key={h.value} className="scheduler-hour-label" style={{ top: `${h.percent * 100}%` }}>
+                    <div key={h.value} className="scheduler-hour-label" style={h.style}>
                       {h.label}
                     </div>
                   ))}
@@ -84,7 +85,7 @@ export default function Page() {
                 {visibleDays.map((d) => (
                   <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
                     {hourRange.hours.map((h) => (
-                      <div key={h.value} className="scheduler-hour-line" style={{ top: `${h.percent * 100}%` }} />
+                      <div key={h.value} className="scheduler-hour-line" style={h.style} />
                     ))}
                     {api.getEventsForDay(d).map((event) => (
                       <div
