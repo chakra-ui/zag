@@ -31,6 +31,9 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "year-view", title: "Year View" },
       { slug: "agenda", title: "Agenda" },
       { slug: "with-date-picker", title: "With Date Picker" },
+      { slug: "payload", title: "Typed Payload" },
+      { slug: "event-details", title: "Event Details (Popover)" },
+      { slug: "rtl", title: "RTL" },
     ],
   },
   {

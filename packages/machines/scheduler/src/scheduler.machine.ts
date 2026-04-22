@@ -7,6 +7,19 @@ import { getMinutesBetween } from "./utils/time"
 import { getNextDate, getPrevDate, getVisibleRange } from "./utils/visible-range"
 import { pointToDateTime, pointToTimeOnDay } from "./utils/drag"
 
+function findScrollableAncestor(el: HTMLElement | null | undefined): HTMLElement | null {
+  let node: HTMLElement | null = el?.parentElement ?? null
+  while (node) {
+    const style = node.ownerDocument.defaultView?.getComputedStyle(node)
+    const overflowY = style?.overflowY ?? ""
+    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
+      return node
+    }
+    node = node.parentElement
+  }
+  return null
+}
+
 export const machine = createMachine<SchedulerSchema>({
   props({ props }) {
     return {
@@ -190,9 +203,59 @@ export const machine = createMachine<SchedulerSchema>({
         let rafId: number | null = null
         let latest: { x: number; y: number } | null = null
         const win = scope.getWin()
-        return trackPointerMove(scope.getDoc(), {
+
+        // Auto-scroll when the pointer gets within EDGE_THRESHOLD of the
+        // nearest scrollable ancestor's edge during a drag/resize/slot gesture.
+        // The speed ramps with proximity, capped at MAX_SCROLL_SPEED px/frame.
+        const EDGE_THRESHOLD = 50
+        const MAX_SCROLL_SPEED = 12
+        const scrollEl = findScrollableAncestor(dom.getGridEl(scope))
+        let scrollRafId: number | null = null
+        let scrollDir = 0
+
+        const stopScroll = () => {
+          if (scrollRafId != null) {
+            win.cancelAnimationFrame(scrollRafId)
+            scrollRafId = null
+          }
+          scrollDir = 0
+        }
+
+        const startScroll = () => {
+          if (scrollRafId != null || !scrollEl) return
+          const tick = () => {
+            if (!scrollEl || scrollDir === 0) {
+              scrollRafId = null
+              return
+            }
+            scrollEl.scrollTop += scrollDir
+            scrollRafId = win.requestAnimationFrame(tick)
+          }
+          scrollRafId = win.requestAnimationFrame(tick)
+        }
+
+        const maybeAutoScroll = (point: { x: number; y: number }) => {
+          if (!scrollEl) return
+          const rect = scrollEl.getBoundingClientRect()
+          const fromTop = point.y - rect.top
+          const fromBottom = rect.bottom - point.y
+          if (fromTop < EDGE_THRESHOLD && fromTop > -EDGE_THRESHOLD) {
+            const proximity = 1 - Math.max(0, fromTop) / EDGE_THRESHOLD
+            scrollDir = -Math.ceil(proximity * MAX_SCROLL_SPEED)
+            startScroll()
+          } else if (fromBottom < EDGE_THRESHOLD && fromBottom > -EDGE_THRESHOLD) {
+            const proximity = 1 - Math.max(0, fromBottom) / EDGE_THRESHOLD
+            scrollDir = Math.ceil(proximity * MAX_SCROLL_SPEED)
+            startScroll()
+          } else {
+            stopScroll()
+          }
+        }
+
+        const cleanupTracker = trackPointerMove(scope.getDoc(), {
           onPointerMove(info) {
             latest = info.point
+            maybeAutoScroll(info.point)
             if (rafId != null) return
             rafId = win.requestAnimationFrame(() => {
               rafId = null
@@ -205,9 +268,15 @@ export const machine = createMachine<SchedulerSchema>({
               win.cancelAnimationFrame(rafId)
               rafId = null
             }
+            stopScroll()
             send({ type: "POINTER_UP" })
           },
         })
+
+        return () => {
+          stopScroll()
+          cleanupTracker()
+        }
       },
     },
 
