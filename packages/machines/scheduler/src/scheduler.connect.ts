@@ -7,16 +7,22 @@ import type {
   DayColumnProps,
   EventProps,
   EventResizeHandleProps,
+  EventStyle,
+  HourRange,
   MoreEventsProps,
   SchedulerApi,
+  SchedulerEvent,
   SchedulerService,
   TimeSlotProps,
   ViewItemProps,
   ViewType,
+  VisibleRangeText,
+  WeekDay,
 } from "./scheduler.types"
 import { now, getLocalTimeZone, type CalendarDateTime, type DateValue } from "@internationalized/date"
 import { getTimePercent, rangesOverlap } from "./utils/time"
 import { getEventPosition } from "./utils/layout"
+import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
 
 export function connect<T extends PropTypes>(service: SchedulerService, normalize: NormalizeProps<T>): SchedulerApi<T> {
   const { state, send, context, prop, computed, scope, refs } = service
@@ -59,10 +65,79 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
     eventPositions.set(e.id, getEventPosition(e, visibleEvents, prop("dayStartHour"), prop("dayEndHour")))
   }
 
+  // Index every event by id for O(1) lookup from consumer code.
+  const eventsById = new Map<string, SchedulerEvent>()
+  for (const e of events) eventsById.set(e.id, e)
+
+  const locale = prop("locale")
+  const timeZone = prop("timeZone") ?? getLocalTimeZone()
+  const weekStartDay = prop("weekStartDay")
+  const dayStartHour = prop("dayStartHour")
+  const dayEndHour = prop("dayEndHour")
+  const dir = (prop("dir") ?? "ltr") as "ltr" | "rtl"
+
+  const today = getTodayDate(timeZone, visibleRange.start.calendar)
+
+  // Enumerate inclusive dates in the visible range.
+  const visibleDays: DateValue[] = []
+  {
+    let cur = visibleRange.start
+    while (cur.compare(visibleRange.end) <= 0) {
+      visibleDays.push(cur)
+      cur = cur.add({ days: 1 })
+    }
+  }
+
+  // 7 localized weekday headers ordered by the week's start day.
+  const weekDaysRaw = getWeekDays(visibleRange.start, weekStartDay, timeZone, locale) as unknown as Array<{
+    value: DateValue
+    short: string
+    long: string
+    narrow: string
+  }>
+  const weekDays: WeekDay[] = weekDaysRaw.map((w) => ({
+    value: w.value,
+    short: w.short,
+    long: w.long,
+    narrow: w.narrow,
+  }))
+
+  const hourRange: HourRange = {
+    start: dayStartHour,
+    end: dayEndHour,
+    hours: Array.from({ length: dayEndHour - dayStartHour + 1 }, (_, i) => dayStartHour + i),
+  }
+
+  const rangeFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "short", day: "numeric", year: "numeric" })
+  const startText = rangeFormatter.format(visibleRange.start.toDate(timeZone))
+  const endText = rangeFormatter.format(visibleRange.end.toDate(timeZone))
+  const visibleRangeText: VisibleRangeText = {
+    start: startText,
+    end: endText,
+    formatted: startText === endText ? startText : `${startText} – ${endText}`,
+  }
+
+  const totalDayMinutes = (dayEndHour - dayStartHour) * 60
+  const timePercent = (d: DateValue): number => {
+    const dt = d as CalendarDateTime
+    const h = dt.hour ?? 0
+    const m = dt.minute ?? 0
+    const mins = (h - dayStartHour) * 60 + m
+    if (mins <= 0) return 0
+    if (mins >= totalDayMinutes) return 1
+    return mins / totalDayMinutes
+  }
+
   return {
     view,
     date,
+    today,
     visibleRange,
+    visibleRangeText,
+    visibleDays,
+    weekDays,
+    hourRange,
+    dir,
     events,
     isDragging,
     isSlotSelecting,
@@ -84,12 +159,31 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
       send({ type: "GO_TO_PREV" })
     },
 
+    getEventById(id) {
+      return eventsById.get(id)
+    },
+
+    getTimePercent(d) {
+      return timePercent(d)
+    },
+
+    getEventStyle(event) {
+      const pos = this.getEventPosition(event)
+      return {
+        position: "absolute",
+        top: `${pos.top * 100}%`,
+        height: `${pos.height * 100}%`,
+        insetInlineStart: `${pos.left * 100}%`,
+        insetInlineEnd: `${(1 - pos.left - pos.width) * 100}%`,
+      } as EventStyle
+    },
+
     getEventState(id) {
       const draggingThis = isDragging && dragEventId === id
       const resizingThis = isResizing && dragEventId === id
       const focused = focusedEventId === id
       const selected = selectedEventId === id
-      const evt = events.find((e) => e.id === id)
+      const evt = eventsById.get(id)
       const conflict = evt
         ? events.some((e) => e.id !== id && rangesOverlap(e.start, e.end, evt.start, evt.end))
         : false
@@ -156,7 +250,9 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         ...parts.root.attrs(scope.id),
         id: dom.getRootId(scope),
         tabIndex: 0,
+        dir,
         "data-view": view,
+        "data-dir": dir,
         onKeyDown(e) {
           if (e.defaultPrevented) return
           const target = e.target as HTMLElement
@@ -344,18 +440,7 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         "data-conflict": dataAttr(evtState.conflict),
         "data-disabled": dataAttr(!!event.disabled),
         "data-all-day": dataAttr(!!event.allDay),
-        style: event.allDay
-          ? undefined
-          : (() => {
-              const pos = this.getEventPosition(event)
-              return {
-                position: "absolute" as const,
-                top: `${pos.top * 100}%`,
-                height: `${pos.height * 100}%`,
-                left: `${pos.left * 100}%`,
-                width: `${pos.width * 100}%`,
-              }
-            })(),
+        style: event.allDay ? undefined : this.getEventStyle(event),
         onClick(e) {
           e.stopPropagation()
           send({ type: "EVENT_CLICK", eventId: event.id })
@@ -423,8 +508,8 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         hidden: !inRange || !prop("showCurrentTime") ? true : undefined,
         style: {
           position: "absolute",
-          left: "0",
-          right: "0",
+          insetInlineStart: "0",
+          insetInlineEnd: "0",
           top: `${percent * 100}%`,
         },
       })

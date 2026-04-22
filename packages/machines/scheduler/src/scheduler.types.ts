@@ -254,10 +254,61 @@ export interface ViewItemProps {
   view: ViewType
 }
 
+export interface WeekDay {
+  /** The date of this weekday in the current visible week. */
+  value: DateValue
+  /** Localized short label, e.g. "Mon". */
+  short: string
+  /** Localized long label, e.g. "Monday". */
+  long: string
+  /** Localized narrow label, e.g. "M". */
+  narrow: string
+}
+
+export interface VisibleRangeText {
+  start: string
+  end: string
+  /** Single localized string suitable for a header title, e.g. "Apr 13 – 19, 2026". */
+  formatted: string
+}
+
+export interface HourRange {
+  /** Inclusive start hour (0–24). */
+  start: number
+  /** Exclusive end hour (0–24). */
+  end: number
+  /** Hours from start..end inclusive, e.g. [7,8,…,20]. */
+  hours: number[]
+}
+
+export interface EventStyle {
+  position: "absolute"
+  top: string
+  height: string
+  insetInlineStart: string
+  insetInlineEnd: string
+  [key: string]: string
+}
+
 export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string, unknown>> {
+  /** Current view. */
   view: ViewType
+  /** Focused date (drives which range is visible). */
   date: DateValue
+  /** Locale/timezone-aware "today" date — useful for highlighting current day. */
+  today: DateValue
+  /** Raw start/end of the currently visible range. */
   visibleRange: { start: DateValue; end: DateValue }
+  /** Localized text for the visible range — prefer this over formatting by hand. */
+  visibleRangeText: VisibleRangeText
+  /** Enumerated dates from visibleRange.start to visibleRange.end, inclusive. */
+  visibleDays: DateValue[]
+  /** Day-of-week labels ordered by weekStartDay/locale. */
+  weekDays: WeekDay[]
+  /** Hour range shown in day/week time grids (honors dayStartHour/dayEndHour). */
+  hourRange: HourRange
+  /** Writing direction. */
+  dir: "ltr" | "rtl"
   /** All events (recurring instances expanded against the visible range). */
   events: SchedulerEvent<E>[]
   isDragging: boolean
@@ -273,7 +324,14 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   goToPrev: () => void
 
   getEventState: (id: string) => EventStateDetail
+  /** Numeric position within a day column — use for custom layouts. */
   getEventPosition: (event: SchedulerEvent<E>) => EventPosition
+  /** Ready-to-spread CSS with logical props (RTL-safe) — use for default time-grid rendering. */
+  getEventStyle: (event: SchedulerEvent<E>) => EventStyle
+  /** 0..1 fraction of the visible day range corresponding to the given date's time-of-day. */
+  getTimePercent: (date: DateValue) => number
+  /** O(1) event lookup by id (reads from the current events list). */
+  getEventById: (id: string) => SchedulerEvent<E> | undefined
   getEventsForDay: (date: DateValue) => SchedulerEvent<E>[]
   getEventsForSlot: (start: DateValue, end: DateValue) => SchedulerEvent<E>[]
   hasConflict: (event: SchedulerEvent<E>) => boolean
