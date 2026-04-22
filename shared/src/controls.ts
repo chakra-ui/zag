@@ -6,7 +6,7 @@ export const schedulerControls = defineControls({
   // (a `defaultView` only applies on mount and ignores later edits).
   view: {
     type: "select",
-    options: ["day", "week", "month"] as const,
+    options: ["day", "week", "month", "year", "agenda"] as const,
     defaultValue: "week",
   },
   disabled: { type: "boolean", defaultValue: false },
