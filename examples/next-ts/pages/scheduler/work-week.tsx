@@ -7,7 +7,6 @@ import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
 const TODAY = scheduler.getToday()
-const WORK_WEEK = [1, 2, 3, 4, 5]
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
@@ -40,7 +39,8 @@ export default function Page() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     weekStartDay: 1,
-    workWeekDays: WORK_WEEK,
+    workWeekDays: [1, 2, 3, 4, 5],
+    workWeekOnly: true,
     ...controls.context,
     events,
     onEventDrop: (d) => setEvents(d.apply),
@@ -48,8 +48,7 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  const { hourRange, weekDays } = api
-  const days = api.visibleDays.filter((d) => WORK_WEEK.includes(new Date(d.year, d.month - 1, d.day).getDay()))
+  const { visibleDays: days, hourRange, weekDays } = api
 
   return (
     <>

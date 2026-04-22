@@ -1,7 +1,6 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { CalendarDateTime } from "@internationalized/date"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -28,24 +27,12 @@ const INITIAL: scheduler.SchedulerEvent[] = [
 ]
 
 const weeklyExpander: scheduler.RecurrenceExpander = (event, range) => {
+  const durationMinutes = scheduler.getDurationMinutes(event.start, event.end)
   const out: scheduler.SchedulerEvent[] = []
-  const durationMs =
-    new Date((event.end as CalendarDateTime).toString()).getTime() -
-    new Date((event.start as CalendarDateTime).toString()).getTime()
   let cur = event.start
   let i = 0
   while (cur.compare(range.end) <= 0 && i < 100) {
-    const start = cur as CalendarDateTime
-    const endMs = new Date(start.toString()).getTime() + durationMs
-    const endDate = new Date(endMs)
-    const end = new CalendarDateTime(
-      endDate.getFullYear(),
-      endDate.getMonth() + 1,
-      endDate.getDate(),
-      endDate.getHours(),
-      endDate.getMinutes(),
-    )
-    out.push({ ...event, id: `${event.id}:${i}`, start, end })
+    out.push({ ...event, id: `${event.id}:${i}`, start: cur, end: cur.add({ minutes: durationMinutes }) })
     cur = cur.add({ weeks: 1 })
     i++
   }

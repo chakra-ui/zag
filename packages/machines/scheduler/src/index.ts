@@ -1,7 +1,7 @@
 export { anatomy } from "./scheduler.anatomy"
 export { connect } from "./scheduler.connect"
 export { machine } from "./scheduler.machine"
-export { getToday } from "./scheduler.utils"
+export { getToday, getDurationMinutes } from "./scheduler.utils"
 export * from "./scheduler.props"
 export type {
   SchedulerApi as Api,
