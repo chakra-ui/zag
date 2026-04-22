@@ -281,7 +281,54 @@ export function connect<T extends PropTypes>(service: SchedulerService, normaliz
         height: `${pos.height * 100}%`,
         insetInlineStart: `${pos.left * 100}%`,
         insetInlineEnd: `${(1 - pos.left - pos.width) * 100}%`,
+        "--event-color": event.color,
       } as EventStyle
+    },
+
+    getDragGhost({ date: d }) {
+      if (!liveDrag) return null
+      if (toCalendarDate(liveDrag.start).toString() !== toCalendarDate(d).toString()) return null
+      const evt = eventsById.get(liveDrag.eventId)
+      if (!evt) return null
+      const topPct = timePercent(liveDrag.start) * 100
+      const heightPct = (timePercent(liveDrag.end) - timePercent(liveDrag.start)) * 100
+      return {
+        event: evt,
+        style: {
+          position: "absolute",
+          top: `${topPct}%`,
+          height: `${heightPct}%`,
+          insetInlineStart: "2px",
+          insetInlineEnd: "2px",
+          "--event-color": evt.color,
+        } as EventStyle,
+      }
+    },
+
+    getDragOrigin({ date: d }) {
+      const origin = (() => {
+        if (!(isDragging || isResizing) || !dragEventId) return null
+        const snap = refs.get("dragStartSnapshot")
+        if (!snap) return null
+        return { eventId: dragEventId, start: snap.start, end: snap.end }
+      })()
+      if (!origin) return null
+      if (toCalendarDate(origin.start).toString() !== toCalendarDate(d).toString()) return null
+      const evt = eventsById.get(origin.eventId)
+      if (!evt) return null
+      const topPct = timePercent(origin.start) * 100
+      const heightPct = (timePercent(origin.end) - timePercent(origin.start)) * 100
+      return {
+        event: evt,
+        style: {
+          position: "absolute",
+          top: `${topPct}%`,
+          height: `${heightPct}%`,
+          insetInlineStart: "2px",
+          insetInlineEnd: "2px",
+          "--event-color": evt.color,
+        } as EventStyle,
+      }
     },
 
     getEventState(id) {

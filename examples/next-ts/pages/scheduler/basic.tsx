@@ -1,7 +1,6 @@
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { toCalendarDate } from "@internationalized/date"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -49,9 +48,7 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  const { visibleDays, hourRange, weekDays, dragPreview, dragOrigin } = api
-
-  const ghostColor = (id: string) => api.getEventById(id)?.color ?? "#3b82f6"
+  const { visibleDays, hourRange, weekDays } = api
 
   return (
     <>
@@ -86,27 +83,15 @@ export default function Page() {
                 </div>
 
                 {visibleDays.map((d) => {
-                  const dayKey = toCalendarDate(d).toString()
-                  const ghostHere =
-                    dragPreview?.start && toCalendarDate(dragPreview.start).toString() === dayKey ? dragPreview : null
-                  const originHere =
-                    dragOrigin && toCalendarDate(dragOrigin.start).toString() === dayKey ? dragOrigin : null
+                  const ghost = api.getDragGhost({ date: d })
+                  const origin = api.getDragOrigin({ date: d })
                   return (
                     <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
                       {hourRange.hours.map((h) => (
                         <div key={h.value} className="scheduler-hour-line" style={h.style} />
                       ))}
                       {api.getEventsForDay(d).map((event) => (
-                        <div
-                          key={event.id}
-                          {...api.getEventProps({ event })}
-                          style={
-                            {
-                              ...api.getEventStyle(event),
-                              ["--event-color"]: event.color,
-                            } as React.CSSProperties
-                          }
-                        >
+                        <div key={event.id} {...api.getEventProps({ event })}>
                           <div className="scheduler-event-title">{event.title}</div>
                           <div
                             {...api.getEventResizeHandleProps({ event, edge: "end" })}
@@ -116,40 +101,10 @@ export default function Page() {
                           </div>
                         </div>
                       ))}
-
-                      {/* Origin outline: dashed marker at where the drag started. */}
-                      {originHere && dragPreview?.eventId !== undefined && (
-                        <div
-                          className="scheduler-drag-origin"
-                          style={
-                            {
-                              top: `${api.getTimePercent(originHere.start) * 100}%`,
-                              height: `${(api.getTimePercent(originHere.end) - api.getTimePercent(originHere.start)) * 100}%`,
-                              insetInlineStart: "2px",
-                              insetInlineEnd: "2px",
-                              ["--event-color"]: ghostColor(originHere.eventId),
-                            } as React.CSSProperties
-                          }
-                        />
-                      )}
-
-                      {/* Drop preview: filled ghost following the pointer's snapped position. */}
-                      {ghostHere?.start && ghostHere.end && (
-                        <div
-                          className="scheduler-drag-ghost"
-                          style={
-                            {
-                              top: `${api.getTimePercent(ghostHere.start) * 100}%`,
-                              height: `${(api.getTimePercent(ghostHere.end) - api.getTimePercent(ghostHere.start)) * 100}%`,
-                              insetInlineStart: "2px",
-                              insetInlineEnd: "2px",
-                              ["--event-color"]: ghostColor(ghostHere.eventId),
-                            } as React.CSSProperties
-                          }
-                        >
-                          <div className="scheduler-event-title">
-                            {api.getEventById(ghostHere.eventId)?.title ?? ""}
-                          </div>
+                      {origin && <div className="scheduler-drag-origin" style={origin.style as React.CSSProperties} />}
+                      {ghost && (
+                        <div className="scheduler-drag-ghost" style={ghost.style as React.CSSProperties}>
+                          <div className="scheduler-event-title">{ghost.event.title}</div>
                         </div>
                       )}
                     </div>

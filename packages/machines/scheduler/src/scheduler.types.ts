@@ -345,7 +345,9 @@ export interface EventStyle {
   height: string
   insetInlineStart: string
   insetInlineEnd: string
-  [key: string]: string
+  /** `--event-color` is always present so consumers can reference it in CSS. */
+  "--event-color"?: string | undefined
+  [key: string]: string | undefined
 }
 
 export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string, unknown>> {
@@ -388,6 +390,18 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E = Record<string
   getEventPosition: (event: SchedulerEvent<E>) => EventPosition
   /** Ready-to-spread CSS with logical props (RTL-safe) — use for default time-grid rendering. */
   getEventStyle: (event: SchedulerEvent<E>) => EventStyle
+  /**
+   * Returns the drag ghost for a day column (the floating preview at the
+   * predicted drop position), or null when nothing should render there.
+   * Spread `style` onto your ghost element; `event` is the source event so you
+   * can pull its title/color.
+   */
+  getDragGhost: (params: { date: DateValue }) => { style: EventStyle; event: SchedulerEvent<E> } | null
+  /**
+   * Returns the origin outline for a day column (the "was here" marker at the
+   * gesture's starting bounds), or null when nothing should render there.
+   */
+  getDragOrigin: (params: { date: DateValue }) => { style: EventStyle; event: SchedulerEvent<E> } | null
   /** 0..1 fraction of the visible day range corresponding to the given date's time-of-day. */
   getTimePercent: (date: DateValue) => number
   /** Localized full month name for the given date, e.g. "April". */
