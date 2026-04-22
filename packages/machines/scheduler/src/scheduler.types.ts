@@ -15,6 +15,31 @@ import type { DateValue } from "@internationalized/date"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SchedulerPayload = any
 
+export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly"
+
+/**
+ * Structured recurrence the machine can expand natively — no user code needed.
+ * For rules beyond freq + interval + count/until + exdate, use the `rrule`
+ * variant and supply an `expandRecurrence` prop.
+ */
+export interface RecurrenceRule {
+  freq: RecurrenceFrequency
+  /** Repeat every N units of `freq`. @default 1 */
+  interval?: number | undefined
+  /** Stop after this many instances (inclusive of the original). */
+  count?: number | undefined
+  /** Last date (inclusive) at which instances may occur. */
+  until?: DateValue | undefined
+  /** Dates to skip. */
+  exdate?: DateValue[] | undefined
+}
+
+/** Legacy rrule-string form — user supplies their own RRULE library via `expandRecurrence`. */
+export interface RRuleRecurrence {
+  rrule: string
+  exdate?: DateValue[] | undefined
+}
+
 export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
   id: string
   title: string
@@ -22,7 +47,7 @@ export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
   end: DateValue
   allDay?: boolean | undefined
   color?: string | undefined
-  recurrence?: { rrule: string; exdate?: DateValue[] | undefined } | undefined
+  recurrence?: RecurrenceRule | RRuleRecurrence | undefined
   disabled?: boolean | undefined
   /** Arbitrary typed metadata attached to the event (attendees, location, links…). */
   payload?: T | undefined

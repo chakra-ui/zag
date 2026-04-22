@@ -15,7 +15,15 @@ const INITIAL: scheduler.SchedulerEvent[] = [
     start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
     end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
     color: "#3b82f6",
-    recurrence: { rrule: "FREQ=WEEKLY;BYDAY=MO" },
+    recurrence: { freq: "weekly" },
+  },
+  {
+    id: "biweekly-sync",
+    title: "Biweekly team sync",
+    start: TODAY.subtract({ days: 3 }).set({ hour: 11, minute: 0 }),
+    end: TODAY.subtract({ days: 3 }).set({ hour: 12, minute: 0 }),
+    color: "#10b981",
+    recurrence: { freq: "weekly", interval: 2, count: 8 },
   },
   {
     id: "one-off",
@@ -26,19 +34,6 @@ const INITIAL: scheduler.SchedulerEvent[] = [
   },
 ]
 
-const weeklyExpander: scheduler.RecurrenceExpander = (event, range) => {
-  const durationMinutes = scheduler.getDurationMinutes(event.start, event.end)
-  const out: scheduler.SchedulerEvent[] = []
-  let cur = event.start
-  let i = 0
-  while (cur.compare(range.end) <= 0 && i < 100) {
-    out.push({ ...event, id: `${event.id}:${i}`, start: cur, end: cur.add({ minutes: durationMinutes }) })
-    cur = cur.add({ weeks: 1 })
-    i++
-  }
-  return out
-}
-
 export default function Page() {
   const controls = useControls(schedulerControls)
 
@@ -46,7 +41,6 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events: INITIAL,
-    expandRecurrence: weeklyExpander,
     maxRecurrenceInstances: 500,
   })
 
