@@ -109,7 +109,9 @@ export default function Page() {
 
           <div className="scheduler-mobile-agenda" style={{ marginTop: 12 }}>
             {groups.length === 0 ? (
-              <div className="scheduler-mobile-agenda-empty">No events in the next 30 days</div>
+              <div className="scheduler-mobile-agenda-empty">
+                No events between {formatLongDate(api.visibleRange.start)} and {formatLongDate(api.visibleRange.end)}
+              </div>
             ) : (
               groups.map((group) => (
                 <div key={group.date.toString()} style={{ marginBottom: 16 }}>
