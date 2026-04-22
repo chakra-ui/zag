@@ -42,15 +42,12 @@ export default function Page() {
     defaultDate: today,
     ...controls.context,
     events,
-    onEventDrop: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
-    onEventResize: (d) =>
-      setEvents((p) => p.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventDrop: (d) => setEvents(d.apply),
+    onEventResize: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)
   const { visibleDays, hourRange, weekDays } = api
-  const gridHeight = (hourRange.end - hourRange.start) * 56
 
   return (
     <>
@@ -75,8 +72,8 @@ export default function Page() {
             </div>
 
             <div className="scheduler-time-grid-scroll">
-              <div {...api.getGridProps()} className="scheduler-time-grid" style={{ height: gridHeight }}>
-                <div {...api.getTimeGutterProps()} style={{ height: gridHeight }}>
+              <div {...api.getGridProps()} className="scheduler-time-grid">
+                <div {...api.getTimeGutterProps()}>
                   {hourRange.hours.map((h) => (
                     <div
                       key={h}
@@ -89,7 +86,7 @@ export default function Page() {
                 </div>
 
                 {visibleDays.map((d) => (
-                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })} style={{ height: gridHeight }}>
+                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
                     {hourRange.hours.map((h) => (
                       <div
                         key={h}

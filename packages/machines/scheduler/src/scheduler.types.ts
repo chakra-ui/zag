@@ -53,15 +53,29 @@ export interface EventClickDetails<T = Record<string, unknown>> {
 
 export interface EventDropDetails<T = Record<string, unknown>> {
   event: SchedulerEvent<T>
+  /** Index of the event in the `events` prop array (-1 if not found). */
+  index: number
   newStart: DateValue
   newEnd: DateValue
+  /**
+   * Returns a new events array with this event's `start`/`end` updated.
+   * Lets consumers write `setEvents(d.apply)` instead of mapping by hand.
+   */
+  apply: (events: SchedulerEvent<T>[]) => SchedulerEvent<T>[]
 }
 
 export interface EventResizeDetails<T = Record<string, unknown>> {
   event: SchedulerEvent<T>
+  /** Index of the event in the `events` prop array (-1 if not found). */
+  index: number
   newStart: DateValue
   newEnd: DateValue
   edge: "start" | "end"
+  /**
+   * Returns a new events array with this event's `start`/`end` updated.
+   * Lets consumers write `setEvents(d.apply)` instead of mapping by hand.
+   */
+  apply: (events: SchedulerEvent<T>[]) => SchedulerEvent<T>[]
 }
 
 /* -----------------------------------------------------------------------------

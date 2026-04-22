@@ -143,6 +143,7 @@ export default function Page() {
                           key={event.id}
                           {...api.getEventProps({ event })}
                           style={
+                            // TODO: Consider moving this styling logic to the machine or anatomy instead of hardcoding here. and expose the top height left as CSS variables, what does it look like also for RTL layouts?
                             {
                               position: "absolute",
                               top: `${pos.top * 100}%`,

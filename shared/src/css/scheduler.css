@@ -70,9 +70,15 @@
   background: #fff;
 }
 
-/* Sticky column headers. Grid columns driven by CSS vars from root:
- *   --scheduler-time-gutter-width (default 60px)
- *   --scheduler-visible-days      (exposed by the machine)
+/* CSS vars driven by the machine's root:
+ *   --scheduler-visible-days  (column count)
+ *   --scheduler-day-count     (alias)
+ *   --scheduler-hour-count    (dayEndHour - dayStartHour)
+ *
+ * Consumer-overridable (with defaults):
+ *   --scheduler-time-gutter-width  (default 60px)
+ *   --scheduler-hour-height        (default 56px)
+ *   --scheduler-grid-height        (default: hours × hour-height)
  */
 .scheduler-col-headers {
   display: grid;
@@ -97,6 +103,7 @@
   display: grid;
   grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
   position: relative;
+  height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
 }
 
 /* ── Header cells ─────────────────────────────────────────────────────────── */
@@ -154,6 +161,11 @@
   position: relative;
   border-right: 1px solid #e5e7eb;
   background: #fff;
+  height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
+}
+
+[data-scheduler-day-column] {
+  height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
 }
 
 .scheduler-hour-label {
