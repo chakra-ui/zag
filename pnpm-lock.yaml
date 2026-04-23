@@ -1818,6 +1818,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/vanilla':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/vanilla
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer

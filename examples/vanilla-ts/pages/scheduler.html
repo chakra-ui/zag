@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scheduler - Zag.js</title>
+    <style>
+      @import url("@zag-js/shared/src/style.css");
+    </style>
+  </head>
+  <body style="padding: 40px">
+    <h1>Scheduler</h1>
+
+    <div data-part="root" class="scheduler">
+      <div class="scheduler-header">
+        <button class="scheduler-prev"></button>
+        <button class="scheduler-today"></button>
+        <button class="scheduler-next"></button>
+        <span class="scheduler-title"></span>
+      </div>
+
+      <div class="scheduler-time-grid-wrapper">
+        <div class="scheduler-col-headers">
+          <div class="scheduler-header-cell scheduler-gutter-header"></div>
+        </div>
+
+        <div class="scheduler-time-grid-scroll">
+          <div class="scheduler-time-grid">
+            <div class="scheduler-time-gutter"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./scheduler.ts"></script>
+  </body>
+</html>
