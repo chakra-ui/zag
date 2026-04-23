@@ -627,6 +627,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scheduler':
+        specifier: workspace:*
+        version: link:../../packages/machines/scheduler
       '@zag-js/scroll-area':
         specifier: workspace:*
         version: link:../../packages/machines/scroll-area
@@ -1190,6 +1193,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scheduler':
+        specifier: workspace:*
+        version: link:../../packages/machines/scheduler
       '@zag-js/scroll-area':
         specifier: workspace:*
         version: link:../../packages/machines/scroll-area
@@ -1457,6 +1463,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scheduler':
+        specifier: workspace:*
+        version: link:../../packages/machines/scheduler
       '@zag-js/scroll-area':
         specifier: workspace:*
         version: link:../../packages/machines/scroll-area
@@ -1740,6 +1749,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scheduler':
+        specifier: workspace:*
+        version: link:../../packages/machines/scheduler
       '@zag-js/scroll-area':
         specifier: workspace:*
         version: link:../../packages/machines/scroll-area

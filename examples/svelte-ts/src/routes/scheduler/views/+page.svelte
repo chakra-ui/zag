@@ -136,6 +136,7 @@
             </div>
 
             {#each api.visibleDays as d (d.toString())}
+              {@const ghost = api.getDragGhost({ date: d })}
               <div {...api.getDayColumnProps({ date: d })}>
                 {#each api.hourRange.hours as h (h.value)}
                   <div class="scheduler-hour-line" style={h.style}></div>
@@ -157,7 +158,6 @@
                     </div>
                   </div>
                 {/each}
-                {@const ghost = api.getDragGhost({ date: d })}
                 {#if ghost}
                   <div {...ghost.props}>
                     <div class="scheduler-event-title">{String(ghost.event.title ?? "")}</div>
