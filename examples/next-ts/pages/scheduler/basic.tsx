@@ -41,8 +41,10 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDrop: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventResize: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
   })
 
   const api = scheduler.connect(service, normalizeProps)
@@ -56,7 +58,7 @@ export default function Page() {
             <button {...api.getPrevTriggerProps()}>
               <ChevronLeft />
             </button>
-            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+            <button {...api.getTodayTriggerProps()}>Today</button>
             <button {...api.getNextTriggerProps()}>
               <ChevronRight />
             </button>

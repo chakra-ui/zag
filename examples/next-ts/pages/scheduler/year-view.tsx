@@ -72,7 +72,7 @@ export default function Page() {
             <button {...api.getPrevTriggerProps()}>
               <ChevronLeft />
             </button>
-            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+            <button {...api.getTodayTriggerProps()}>Today</button>
             <button {...api.getNextTriggerProps()}>
               <ChevronRight />
             </button>

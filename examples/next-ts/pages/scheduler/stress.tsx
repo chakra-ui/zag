@@ -52,13 +52,15 @@ export default function Page() {
     ...controls.context,
     events,
     onEventDrop: (d) => {
-      // Exercise the apply path end-to-end — parent re-renders with a fresh
-      // event list. The machine's O(1) lookups keep this smooth.
-      events.splice(0, events.length, ...d.apply(events))
+      // Mutate in place + bump tick — parent re-renders with a fresh event
+      // list. The machine's O(1) lookups keep this smooth.
+      const i = events.findIndex((e) => e.id === d.event.id)
+      if (i >= 0) events[i] = { ...events[i], start: d.newStart, end: d.newEnd }
       setTick((t) => t + 1)
     },
     onEventResize: (d) => {
-      events.splice(0, events.length, ...d.apply(events))
+      const i = events.findIndex((e) => e.id === d.event.id)
+      if (i >= 0) events[i] = { ...events[i], start: d.newStart, end: d.newEnd }
       setTick((t) => t + 1)
     },
   })
@@ -74,7 +76,7 @@ export default function Page() {
             <button {...api.getPrevTriggerProps()}>
               <ChevronLeft />
             </button>
-            <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+            <button {...api.getTodayTriggerProps()}>Today</button>
             <button {...api.getNextTriggerProps()}>
               <ChevronRight />
             </button>

@@ -44,8 +44,10 @@ export function Calendar() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDrop: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventResize: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
   })
 
   const api = scheduler.connect(service, normalizeProps)
@@ -54,7 +56,7 @@ export function Calendar() {
     <div {...api.getRootProps()}>
       <div {...api.getHeaderProps()}>
         <button {...api.getPrevTriggerProps()}><ChevronLeft /></button>
-        <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+        <button {...api.getTodayTriggerProps()}>Today</button>
         <button {...api.getNextTriggerProps()}><ChevronRight /></button>
         <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
       </div>
@@ -155,8 +157,8 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `onSlotDoubleClick(d)` | empty slot double-clicked — the conventional "create event" trigger |
 | `onSlotRangeSelect(d)` | drag-selection across multiple slots — `d = { start, end }` spans the drag |
 | `onEventClick(d)` | `d.event` |
-| `onEventDrop(d)` | `d = { event, index, newStart, newEnd, apply }`; use `setEvents(d.apply)` |
-| `onEventResize(d)` | `d = { event, index, newStart, newEnd, edge, apply }` |
+| `onEventDrop(d)` | `d = { event, newStart, newEnd }` |
+| `onEventResize(d)` | `d = { event, newStart, newEnd, edge }` |
 | `onViewChange(d)` | `d = { view }` |
 | `onDateChange(d)` | `d = { date }` |
 
@@ -179,7 +181,6 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `events` | all events (recurring expanded, capped by `maxRecurrenceInstances`) |
 | `monthNames` / `getMonthName(d)` | localized month names |
 | `dir` | `"ltr" \| "rtl"` |
-| `todayTriggerLabel` | from `translations` |
 | `dragPreview` | live drag bounds: `{ eventId, start, end }` or null |
 | `dragOrigin` | where the drag started: `{ eventId, start, end }` or null |
 | `selectedSlot` | last-clicked slot: `{ start, end }` or null |

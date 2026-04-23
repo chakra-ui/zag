@@ -1,6 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-query"
-import { getLocalTimeZone, today, type DateValue } from "@internationalized/date"
+import { getLocalTimeZone, today } from "@internationalized/date"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
 import { getMinutesBetween } from "./utils/time"
@@ -416,17 +416,13 @@ export const machine = createMachine<SchedulerSchema>({
       },
       invokeOnEventDrop({ prop, refs }) {
         const eventId = refs.get("dragEventId")
-        const list = prop("events") ?? []
-        const index = list.findIndex((e) => e.id === eventId)
-        const evt = index >= 0 ? list[index] : undefined
+        const evt = prop("events")?.find((e) => e.id === eventId)
         if (!evt) return
         const snapshot = refs.get("dragStartSnapshot")
         const newStart = refs.get("dragCurrentStart") ?? evt.start
         const newEnd = refs.get("dragCurrentEnd") ?? evt.end
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
-        const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
-          events.map((e) => (e.id === evt.id ? { ...e, start: newStart, end: newEnd } : e))
-        prop("onEventDrop")?.({ event: evt, index, newStart, newEnd, apply })
+        prop("onEventDrop")?.({ event: evt, newStart, newEnd })
       },
 
       initEventResize({ refs, context, event, prop }) {
@@ -483,18 +479,14 @@ export const machine = createMachine<SchedulerSchema>({
       },
       invokeOnEventResize({ prop, refs }) {
         const eventId = refs.get("dragEventId")
-        const list = prop("events") ?? []
-        const index = list.findIndex((e) => e.id === eventId)
-        const evt = index >= 0 ? list[index] : undefined
+        const evt = prop("events")?.find((e) => e.id === eventId)
         if (!evt) return
         const snapshot = refs.get("dragStartSnapshot")
         const newStart = refs.get("dragCurrentStart") ?? evt.start
         const newEnd = refs.get("dragCurrentEnd") ?? evt.end
         const edge = refs.get("dragEdge") ?? "end"
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
-        const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
-          events.map((e) => (e.id === evt.id ? { ...e, start: newStart, end: newEnd } : e))
-        prop("onEventResize")?.({ event: evt, index, newStart, newEnd, edge, apply })
+        prop("onEventResize")?.({ event: evt, newStart, newEnd, edge })
       },
 
       restoreEventFromSnapshot({ refs, context }) {

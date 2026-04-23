@@ -16,7 +16,6 @@ import type {
   SchedulerSchema,
   TimeSlotProps,
   ViewItemProps,
-  ViewType,
   VisibleRangeText,
   WeekDay,
 } from "./scheduler.types"
@@ -323,7 +322,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     visibleRange,
     visibleRangeText,
     visibleDays,
-    todayTriggerLabel: t.todayTriggerLabel,
     formatTime,
     formatTimeRange,
     formatLongDate,
@@ -338,11 +336,11 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     isSlotSelecting,
     isResizing,
 
-    setView(v: ViewType) {
-      send({ type: "SET_VIEW", view: v })
+    setView(view) {
+      send({ type: "SET_VIEW", view })
     },
-    setDate(d) {
-      send({ type: "SET_DATE", date: d })
+    setDate(date) {
+      send({ type: "SET_DATE", date })
     },
     goToToday() {
       send({ type: "GO_TO_TODAY" })
@@ -382,7 +380,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         ...parts.dragGhost.attrs(scope.id),
         hidden: !active,
         style: {
-          position: "absolute" as const,
+          position: "absolute",
           top: "var(--scheduler-drag-preview-top)",
           height: "var(--scheduler-drag-preview-height)",
           "--event-color": dragState?.event.color,
@@ -396,7 +394,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         ...parts.dragOrigin.attrs(scope.id),
         hidden: !active,
         style: {
-          position: "absolute" as const,
+          position: "absolute",
           top: "var(--scheduler-drag-origin-top)",
           height: "var(--scheduler-drag-origin-height)",
           "--event-color": dragState?.event.color,
@@ -410,7 +408,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         ...parts.slotHighlight.attrs(scope.id),
         hidden: !active,
         style: {
-          position: "absolute" as const,
+          position: "absolute",
           top: "var(--scheduler-slot-top)",
           height: "var(--scheduler-slot-height)",
         },
@@ -752,7 +750,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-all-day": dataAttr(!!event.allDay),
         style: pos
           ? {
-              position: "absolute" as const,
+              position: "absolute",
               top: `${pos.top * 100}%`,
               height: `${pos.height * 100}%`,
               insetInlineStart: `${pos.left * 100}%`,
