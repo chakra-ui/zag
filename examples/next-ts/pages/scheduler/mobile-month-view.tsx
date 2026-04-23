@@ -52,10 +52,9 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [selectedDate, setSelectedDate] = useState<DateValue>(TODAY)
 
-  const { view: _view, ...controlsRest } = controls.context as any
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    ...controlsRest,
+    ...controls.context,
     view: "month",
     events: INITIAL,
   })

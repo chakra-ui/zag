@@ -446,6 +446,9 @@ export interface DayColumnProps {
 }
 
 export interface DayCellProps {
+  /**
+   * The date of the day cell.
+   */
   date: DateValue
   /**
    * Reference date for month-based layouts — used to decide whether the cell is
@@ -468,6 +471,9 @@ export interface DayCellProps {
  * events, or a custom className).
  */
 export interface MonthGridDay {
+  /**
+   * The date of the day cell.
+   */
   date: DateValue
   /**
    * Whether this day falls inside the reference month (false = leading/trailing filler).
@@ -484,16 +490,31 @@ export interface MonthGridDay {
 }
 
 export interface EventProps<T extends SchedulerPayload = SchedulerPayload> {
+  /**
+   * The event to render.
+   */
   event: SchedulerEvent<T>
 }
 
 export interface EventResizeHandleProps<T extends SchedulerPayload = SchedulerPayload> {
+  /**
+   * The event to resize.
+   */
   event: SchedulerEvent<T>
+  /**
+   * The edge of the event to resize.
+   */
   edge: "start" | "end"
 }
 
 export interface MoreEventsProps {
+  /**
+   * The date of the day cell.
+   */
   date: DateValue
+  /**
+   * The number of events to show.
+   */
   count: number
 }
 

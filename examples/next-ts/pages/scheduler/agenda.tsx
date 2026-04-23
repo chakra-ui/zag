@@ -56,11 +56,10 @@ const INITIAL: scheduler.SchedulerEvent[] = [
 
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const { view: _view, ...controlsRest } = controls.context as any
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
-    ...controlsRest,
+    ...controls.context,
     view: "agenda",
     events: INITIAL,
   })

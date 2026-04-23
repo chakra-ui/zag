@@ -53,11 +53,10 @@ function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
 
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const { view: _view, ...controlsRest } = controls.context as any
   const service = useMachine(scheduler.machine, {
     id: useId(),
     defaultDate: INITIAL[0].start,
-    ...controlsRest,
+    ...controls.context,
     view: "year",
     events: INITIAL,
   })

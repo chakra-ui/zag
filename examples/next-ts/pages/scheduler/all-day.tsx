@@ -118,7 +118,7 @@ export default function Page() {
                     {api.hourRange.hours.map((hour) => (
                       <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
                     ))}
-                    <div {...api.getCurrentTimeIndicatorProps()} />
+                    <div {...api.getCurrentTimeIndicatorProps({ date })} />
                     {api
                       .getEventsForDay(date)
                       .filter((e) => !e.allDay)
