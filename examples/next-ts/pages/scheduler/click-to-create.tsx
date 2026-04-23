@@ -1,10 +1,9 @@
-import * as dialog from "@zag-js/dialog"
+import * as popover from "@zag-js/popover"
 import * as scheduler from "@zag-js/scheduler"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, XIcon } from "lucide-react"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useRef, useState } from "react"
-import type { DateValue } from "@internationalized/date"
+import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -26,11 +25,23 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(INITIAL)
   const nextIdRef = useRef(INITIAL.length)
-  const pendingSlotRef = useRef<{ start: DateValue; end: DateValue } | null>(null)
   const [title, setTitle] = useState("")
 
-  const dialogService = useMachine(dialog.machine, { id: useId() })
-  const dialogApi = dialog.connect(dialogService, normalizeProps)
+  const popoverService = useMachine(popover.machine, {
+    id: useId(),
+    positioning: {
+      placement: "right-start",
+      gutter: 8,
+      getAnchorElement: () => api.getSelectedSlotEl(),
+    },
+    onOpenChange: (d) => {
+      if (!d.open) {
+        api.clearSelectedSlot()
+        setTitle("")
+      }
+    },
+  })
+  const popoverApi = popover.connect(popoverService, normalizeProps)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
@@ -40,34 +51,39 @@ export default function Page() {
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
     onEventResize: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
-    onSlotDoubleClick(d) {
-      pendingSlotRef.current = { start: d.start, end: d.end }
+    // Fires on both single click (action: "click") and drag-release (action: "drag").
+    // Single click gives a `slotInterval`-sized slot; drag gives the dragged bounds.
+    onSlotSelect() {
       setTitle("")
-      dialogApi.setOpen(true)
+      popoverApi.setOpen(true)
+      popoverApi.reposition()
     },
   })
 
   const api = scheduler.connect(service, normalizeProps)
+  const pending = api.selectedSlot
 
-  const commit = () => {
-    const slot = pendingSlotRef.current
-    if (!slot || !title.trim()) {
-      dialogApi.setOpen(false)
-      return
-    }
+  function commit() {
+    if (!pending || !title.trim()) return
     const id = `new-${++nextIdRef.current}`
     setEvents((p) => [
       ...p,
-      { id, title: title.trim(), start: slot.start, end: slot.end, color: PALETTE[nextIdRef.current % PALETTE.length] },
+      {
+        id,
+        title: title.trim(),
+        start: pending.start,
+        end: pending.end,
+        color: PALETTE[nextIdRef.current % PALETTE.length],
+      },
     ])
-    pendingSlotRef.current = null
-    dialogApi.setOpen(false)
+    popoverApi.setOpen(false)
   }
 
-  const cancel = () => {
-    pendingSlotRef.current = null
-    api.clearSelectedSlot()
-    dialogApi.setOpen(false)
+  function handleKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      commit()
+    }
   }
 
   return (
@@ -83,6 +99,9 @@ export default function Page() {
               <ChevronRight />
             </button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
+            <span style={{ marginInlineStart: "auto", fontSize: 12, color: "#6b7280" }}>
+              Click or drag on an empty slot to create an event
+            </span>
           </div>
 
           <div className="scheduler-time-grid-wrapper">
@@ -131,38 +150,39 @@ export default function Page() {
             </div>
           </div>
         </div>
-      </main>
 
-      {dialogApi.open && (
         <Portal>
-          <div {...dialogApi.getBackdropProps()} className="scheduler-dialog-backdrop" />
-          <div {...dialogApi.getPositionerProps()} className="scheduler-dialog-positioner">
-            <div {...dialogApi.getContentProps()} className="scheduler-dialog">
-              <h2 {...dialogApi.getTitleProps()}>New event</h2>
-              <input
-                autoFocus
-                type="text"
-                placeholder="Event title"
-                value={title}
-                onChange={(e) => setTitle(e.currentTarget.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") commit()
-                  if (e.key === "Escape") cancel()
-                }}
-              />
-              <div className="scheduler-dialog-actions">
-                <button type="button" onClick={cancel}>
-                  Cancel
-                </button>
-                <button type="button" onClick={commit} data-primary>
-                  Create
-                </button>
-              </div>
+          <div {...popoverApi.getPositionerProps()}>
+            <div {...popoverApi.getContentProps()} className="scheduler-event-popover">
+              {pending ? (
+                <div className="scheduler-event-popover-body">
+                  <div {...popoverApi.getTitleProps()} style={{ fontSize: 13, fontWeight: 600 }}>
+                    New event
+                  </div>
+                  <div className="scheduler-event-popover-time">{api.formatTimeRange(pending.start, pending.end)}</div>
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Event title"
+                    value={title}
+                    onChange={(e) => setTitle(e.currentTarget.value)}
+                    onKeyDown={handleKey}
+                    style={{ marginBlockStart: 6, padding: "4px 6px", fontSize: 13, width: "100%" }}
+                  />
+                  <div className="scheduler-event-popover-actions">
+                    <button type="button" {...popoverApi.getCloseTriggerProps()}>
+                      <XIcon />
+                    </button>
+                    <button type="button" onClick={commit} data-primary>
+                      Create
+                    </button>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </Portal>
-      )}
-
+      </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} />
       </Toolbar>

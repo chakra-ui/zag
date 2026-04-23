@@ -92,25 +92,32 @@ export interface DateChangeDetails {
   date: DateValue
 }
 
-export interface SlotRangeSelectDetails {
+export interface SlotSelectDetails {
+  /**
+   * Start of the selected slot range.
+   */
   start: DateValue
+  /**
+   * End of the selected slot range. For `action: "click"`, equals
+   * `start + slotInterval` (timed cells) or `start + 1 day` (all-day / month).
+   * For `action: "drag"`, the dragged bounds.
+   */
   end: DateValue
+  /**
+   * Whether the selection originated in an all-day context (month cell or the
+   * all-day row).
+   */
+  allDay: boolean
+  /**
+   * Which gesture produced the selection — lets consumers branch UX
+   * (e.g. drag opens a popover, double-click opens a full dialog).
+   */
+  action: "click" | "drag"
 }
 
-export interface SlotClickDetails {
-  /**
-   * The single slot that was clicked (no drag).
-   */
+export interface SlotDoubleClickDetails {
   start: DateValue
-  /**
-   * End of the clicked slot — `start + slotInterval` for time-grid clicks,
-   * `start + 1 day` for day-cell / all-day-cell clicks.
-   */
   end: DateValue
-  /**
-   * Whether the click originated in an all-day context (month cell or the
-   * all-day row). Lets consumers branch create-flow semantics on day vs time.
-   */
   allDay: boolean
 }
 
@@ -211,19 +218,16 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
    */
   workWeekOnly?: boolean | undefined
   /**
-   * Fires when the user drag-selects a slot range. `start`/`end` span the
-   * dragged bounds — differs from `onSlotClick` (single slot, end = start +
-   * slotInterval) and `onSlotDoubleClick` (create-intent on a single slot).
+   * Fires when a user selects an empty slot — either by single click or by
+   * drag-release. Discriminate via `details.action`. Use to open a quick-create
+   * popover anchored to `selectedSlot`.
    */
-  onSlotRangeSelect?: ((details: SlotRangeSelectDetails) => void) | undefined
+  onSlotSelect?: ((details: SlotSelectDetails) => void) | undefined
   /**
-   * Fires when an empty slot is clicked once — use to highlight/select the slot.
+   * Fires on double-click of an empty slot — the conventional "create event"
+   * fast-path that bypasses slot selection (selectedSlot is not set).
    */
-  onSlotClick?: ((details: SlotClickDetails) => void) | undefined
-  /**
-   * Fires on double-click of an empty slot — the conventional "create event" trigger.
-   */
-  onSlotDoubleClick?: ((details: SlotClickDetails) => void) | undefined
+  onSlotDoubleClick?: ((details: SlotDoubleClickDetails) => void) | undefined
   /**
    * Fires when an event is clicked.
    */
@@ -340,14 +344,9 @@ export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> 
   props: RequiredBy<SchedulerProps<T>, PropsWithDefault>
   context: SchedulerContext
   refs: {
-    dragEventId: string | null
     dragOrigin: { x: number; y: number } | null
-    dragEdge: "start" | "end" | null
     dragStartSnapshot: { start: DateValue; end: DateValue } | null
-    dragCurrentStart: DateValue | null
-    dragCurrentEnd: DateValue | null
-    dragSlotStart: DateValue | null
-    dragSlotEnd: DateValue | null
+    slotAnchor: DateValue | null
   }
   computed: Computed
   event: EventObject
@@ -749,6 +748,18 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    * Whether the event has a conflict.
    */
   hasConflict: (event: SchedulerEvent<P>) => boolean
+  /**
+   * The DOM element rendered by `getEventProps` for the given event id.
+   * Useful for anchoring a popover/menu to a specific event from outside
+   * React render cycles. Returns `null` if not yet mounted.
+   */
+  getEventEl: (id: string) => HTMLElement | null
+  /**
+   * The DOM element rendered by `getSelectedSlotProps` for the active
+   * `selectedSlot` day. Useful for anchoring a popover to the selection
+   * (e.g. click-to-create). Returns `null` when nothing is selected.
+   */
+  getSelectedSlotEl: () => HTMLElement | null
 
   getRootProps: () => T["element"]
   getHeaderProps: () => T["element"]

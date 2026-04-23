@@ -58,7 +58,6 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events: INITIAL,
-    maxRecurrenceInstances: 500,
   })
 
   const api = scheduler.connect(service, normalizeProps)

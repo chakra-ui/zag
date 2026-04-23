@@ -1,6 +1,6 @@
 // Click an event to open a popover anchored to that event element showing
 // its details, with minimal rename + delete actions. Demonstrates wiring
-// scheduler's onEventClick into a controlled popover via getAnchorRect.
+// scheduler's onEventClick into a controlled popover via getAnchorElement.
 import * as popover from "@zag-js/popover"
 import * as scheduler from "@zag-js/scheduler"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -54,8 +54,7 @@ export default function Page() {
     onEventResize: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
     onEventClick: (d) => {
-      const el = document.getElementById(`scheduler:${schedulerService.scope.id}:event:${d.event.id}`)
-      anchorRef.current = el
+      anchorRef.current = api.getEventEl(d.event.id)
       setSelectedId(d.event.id)
       setEditing(false)
       setDraftTitle(d.event.title)
@@ -71,12 +70,7 @@ export default function Page() {
     positioning: {
       placement: "right",
       gutter: 8,
-      getAnchorRect: () => {
-        const el = anchorRef.current
-        if (!el) return null
-        const r = el.getBoundingClientRect()
-        return { x: r.x, y: r.y, width: r.width, height: r.height }
-      },
+      getAnchorElement: () => anchorRef.current,
     },
     onOpenChange: (details) => {
       if (!details.open) {

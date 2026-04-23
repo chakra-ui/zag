@@ -64,14 +64,9 @@ export const machine = createMachine<SchedulerSchema>({
 
   refs() {
     return {
-      dragEventId: null,
       dragOrigin: null,
-      dragEdge: null,
       dragStartSnapshot: null,
-      dragCurrentStart: null,
-      dragCurrentEnd: null,
-      dragSlotStart: null,
-      dragSlotEnd: null,
+      slotAnchor: null,
     }
   },
 
@@ -97,7 +92,7 @@ export const machine = createMachine<SchedulerSchema>({
     GO_TO_TODAY: { actions: ["goToToday"] },
     GO_TO_NEXT: { actions: ["goToNext"] },
     GO_TO_PREV: { actions: ["goToPrev"] },
-    EVENT_CLICK: { actions: ["invokeOnEventClick"] },
+    EVENT_CLICK: { actions: ["invokeOnEventClick", "clearSelectedSlot"] },
     EVENT_FOCUS: { actions: ["setFocusedEvent"] },
     EVENT_BLUR: { actions: ["clearFocusedEvent"] },
   },
@@ -113,12 +108,12 @@ export const machine = createMachine<SchedulerSchema>({
         EVENT_POINTER_DOWN: {
           guard: "canDragEvent",
           target: "event-dragging",
-          actions: ["initEventDrag"],
+          actions: ["initEventDrag", "clearSelectedSlot"],
         },
         RESIZE_HANDLE_POINTER_DOWN: {
           guard: "canResizeEvent",
           target: "event-resizing",
-          actions: ["initEventResize"],
+          actions: ["initEventResize", "clearSelectedSlot"],
         },
         ESCAPE: { actions: ["clearSelectedEvent", "clearSelectedSlot"] },
       },
@@ -145,11 +140,11 @@ export const machine = createMachine<SchedulerSchema>({
         POINTER_MOVE: { actions: ["updateEventDragPosition"] },
         POINTER_UP: {
           target: "idle",
-          actions: ["invokeOnEventDrop", "clearEventDrag"],
+          actions: ["invokeOnEventDrop", "clearEventGesture"],
         },
         ESCAPE: {
           target: "idle",
-          actions: ["restoreEventFromSnapshot", "clearEventDrag"],
+          actions: ["restoreEventFromSnapshot", "clearEventGesture"],
         },
       },
     },
@@ -160,11 +155,11 @@ export const machine = createMachine<SchedulerSchema>({
         POINTER_MOVE: { actions: ["updateEventResizePosition"] },
         POINTER_UP: {
           target: "idle",
-          actions: ["invokeOnEventResize", "clearEventDrag"],
+          actions: ["invokeOnEventResize", "clearEventGesture"],
         },
         ESCAPE: {
           target: "idle",
-          actions: ["restoreEventFromSnapshot", "clearEventDrag"],
+          actions: ["restoreEventFromSnapshot", "clearEventGesture"],
         },
       },
     },
@@ -305,11 +300,12 @@ export const machine = createMachine<SchedulerSchema>({
       },
 
       initSlotDrag({ refs, context, event }) {
-        refs.set("dragSlotStart", event.start)
-        refs.set("dragSlotEnd", event.end)
+        refs.set("slotAnchor", event.start)
         context.set("liveSlot", { start: event.start, end: event.end })
       },
       updateSlotDragEnd({ refs, context, event, prop, computed, scope }) {
+        const anchor = refs.get("slotAnchor")
+        if (!anchor) return
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const rect = gridEl.getBoundingClientRect()
@@ -322,44 +318,40 @@ export const machine = createMachine<SchedulerSchema>({
           prop("dayEndHour"),
           prop("slotInterval"),
         )
-        refs.set("dragSlotEnd", newEnd)
-        const start = refs.get("dragSlotStart")
-        if (start) {
-          const [s, e] = start.compare(newEnd) <= 0 ? [start, newEnd] : [newEnd, start]
-          context.set("liveSlot", { start: s, end: e })
-        }
+        const [s, e] = anchor.compare(newEnd) <= 0 ? [anchor, newEnd] : [newEnd, anchor]
+        context.set("liveSlot", { start: s, end: e })
       },
-      invokeOnSlotSelect({ prop, refs, context }) {
-        const start = refs.get("dragSlotStart")
-        const end = refs.get("dragSlotEnd")
-        if (!start || !end) return
-        const [s, e] = start.compare(end) <= 0 ? [start, end] : [end, start]
-        if (s.compare(e) === 0) {
-          const slotEnd = s.add({ minutes: prop("slotInterval") })
-          context.set("selectedSlot", { start: s, end: slotEnd })
-          prop("onSlotClick")?.({ start: s, end: slotEnd, allDay: false })
-          return
-        }
-        context.set("selectedSlot", { start: s, end: e })
-        prop("onSlotRangeSelect")?.({ start: s, end: e })
+      invokeOnSlotSelect({ prop, context }) {
+        const live = context.get("liveSlot")
+        if (!live) return
+        const { start: s, end: e } = live
+        const isClick = s.compare(e) === 0
+        const end = isClick ? s.add({ minutes: prop("slotInterval") }) : e
+        context.set("selectedSlot", { start: s, end })
+        prop("onSlotSelect")?.({
+          start: s,
+          end,
+          allDay: false,
+          action: isClick ? "click" : "drag",
+        })
       },
       clearSlotDrag({ refs, context }) {
-        refs.set("dragSlotStart", null)
-        refs.set("dragSlotEnd", null)
+        refs.set("slotAnchor", null)
         context.set("liveSlot", null)
       },
 
       initEventDrag({ refs, context, event, prop }) {
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt) return
-        refs.set("dragEventId", event.eventId)
         refs.set("dragOrigin", event.point)
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
-        refs.set("dragCurrentStart", evt.start)
-        refs.set("dragCurrentEnd", evt.end)
         context.set("liveDrag", { eventId: event.eventId, kind: "drag", edge: null, start: evt.start, end: evt.end })
       },
       updateEventDragPosition({ refs, context, event, prop, computed, scope }) {
+        const snapshot = refs.get("dragStartSnapshot")
+        const prev = context.get("liveDrag")
+        if (!snapshot || !prev) return
+
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const gridRect = gridEl.getBoundingClientRect()
@@ -370,9 +362,6 @@ export const machine = createMachine<SchedulerSchema>({
         const contentRect = colRect
           ? { left: colRect.left, top: colRect.top, width: gridRect.right - colRect.left, height: colRect.height }
           : gridRect
-
-        const snapshot = refs.get("dragStartSnapshot")
-        if (!snapshot) return
 
         const cursorTime = pointToDateTime(
           event.point,
@@ -400,21 +389,17 @@ export const machine = createMachine<SchedulerSchema>({
 
         const durationMins = getMinutesBetween(snapshot.start, snapshot.end)
         const newEnd = newStart.add({ minutes: durationMins })
-        refs.set("dragCurrentStart", newStart)
-        refs.set("dragCurrentEnd", newEnd)
-        const eventId = refs.get("dragEventId")
-        const prev = context.get("liveDrag")
-        if (eventId && (!prev || prev.start.compare(newStart) !== 0 || prev.end.compare(newEnd) !== 0)) {
-          context.set("liveDrag", { eventId, kind: "drag", edge: null, start: newStart, end: newEnd })
+        if (prev.start.compare(newStart) !== 0 || prev.end.compare(newEnd) !== 0) {
+          context.set("liveDrag", { ...prev, start: newStart, end: newEnd })
         }
       },
-      invokeOnEventDrop({ prop, refs }) {
-        const eventId = refs.get("dragEventId")
-        const evt = prop("events")?.find((e) => e.id === eventId)
+      invokeOnEventDrop({ prop, refs, context }) {
+        const live = context.get("liveDrag")
+        if (!live) return
+        const evt = prop("events")?.find((e) => e.id === live.eventId)
         if (!evt) return
         const snapshot = refs.get("dragStartSnapshot")
-        const newStart = refs.get("dragCurrentStart") ?? evt.start
-        const newEnd = refs.get("dragCurrentEnd") ?? evt.end
+        const { start: newStart, end: newEnd } = live
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         prop("onEventDrop")?.({ event: evt, newStart, newEnd })
       },
@@ -422,12 +407,8 @@ export const machine = createMachine<SchedulerSchema>({
       initEventResize({ refs, context, event, prop }) {
         const evt = prop("events")?.find((e) => e.id === event.eventId)
         if (!evt) return
-        refs.set("dragEventId", event.eventId)
-        refs.set("dragEdge", event.edge)
         refs.set("dragOrigin", event.point)
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
-        refs.set("dragCurrentStart", evt.start)
-        refs.set("dragCurrentEnd", evt.end)
         context.set("liveDrag", {
           eventId: event.eventId,
           kind: "resize",
@@ -437,6 +418,10 @@ export const machine = createMachine<SchedulerSchema>({
         })
       },
       updateEventResizePosition({ refs, context, event, prop, scope }) {
+        const snapshot = refs.get("dragStartSnapshot")
+        const prev = context.get("liveDrag")
+        if (!snapshot || !prev) return
+
         const gridEl = dom.getGridEl(scope)
         if (!gridEl) return
         const gridRect = gridEl.getBoundingClientRect()
@@ -445,9 +430,7 @@ export const machine = createMachine<SchedulerSchema>({
         const contentTop = colRect ? colRect.top : gridRect.top
         const contentHeight = colRect ? colRect.height : gridRect.height
 
-        const edge = refs.get("dragEdge")
-        const snapshot = refs.get("dragStartSnapshot")
-        if (!snapshot) return
+        const edge = prev.edge
         const refDate = edge === "start" ? snapshot.start : snapshot.end
         const newTime = pointToTimeOnDay(
           event.point.y,
@@ -458,45 +441,30 @@ export const machine = createMachine<SchedulerSchema>({
           prop("slotInterval"),
           refDate,
         )
-        if (edge === "start") {
-          refs.set("dragCurrentStart", newTime)
-        } else {
-          refs.set("dragCurrentEnd", newTime)
-        }
-        const eventId = refs.get("dragEventId")
-        const start = refs.get("dragCurrentStart")
-        const end = refs.get("dragCurrentEnd")
-        const prev = context.get("liveDrag")
-        if (eventId && start && end && (!prev || prev.start.compare(start) !== 0 || prev.end.compare(end) !== 0)) {
-          context.set("liveDrag", { eventId, kind: "resize", edge: edge ?? "end", start, end })
+        const start = edge === "start" ? newTime : prev.start
+        const end = edge === "start" ? prev.end : newTime
+        if (prev.start.compare(start) !== 0 || prev.end.compare(end) !== 0) {
+          context.set("liveDrag", { ...prev, start, end })
         }
       },
-      invokeOnEventResize({ prop, refs }) {
-        const eventId = refs.get("dragEventId")
-        const evt = prop("events")?.find((e) => e.id === eventId)
+      invokeOnEventResize({ prop, refs, context }) {
+        const live = context.get("liveDrag")
+        if (!live) return
+        const evt = prop("events")?.find((e) => e.id === live.eventId)
         if (!evt) return
         const snapshot = refs.get("dragStartSnapshot")
-        const newStart = refs.get("dragCurrentStart") ?? evt.start
-        const newEnd = refs.get("dragCurrentEnd") ?? evt.end
-        const edge = refs.get("dragEdge") ?? "end"
+        const { start: newStart, end: newEnd } = live
+        const edge = live.edge ?? "end"
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         prop("onEventResize")?.({ event: evt, newStart, newEnd, edge })
       },
 
-      restoreEventFromSnapshot({ refs, context }) {
-        const snapshot = refs.get("dragStartSnapshot")
-        if (!snapshot) return
-        refs.set("dragCurrentStart", snapshot.start)
-        refs.set("dragCurrentEnd", snapshot.end)
+      restoreEventFromSnapshot({ context }) {
         context.set("liveDrag", null)
       },
-      clearEventDrag({ refs, context }) {
-        refs.set("dragEventId", null)
+      clearEventGesture({ refs, context }) {
         refs.set("dragOrigin", null)
-        refs.set("dragEdge", null)
         refs.set("dragStartSnapshot", null)
-        refs.set("dragCurrentStart", null)
-        refs.set("dragCurrentEnd", null)
         context.set("liveDrag", null)
       },
     },

@@ -62,8 +62,8 @@ export default function Page() {
     onEventClick(d) {
       console.log("event clicked", d.event.title)
     },
-    onSlotRangeSelect(d) {
-      console.log("slot range selected", d)
+    onSlotSelect(d) {
+      console.log("slot selected", d)
     },
   })
 

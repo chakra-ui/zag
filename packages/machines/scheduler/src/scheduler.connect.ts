@@ -50,10 +50,12 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const view = context.get("view")
   const date = context.get("date")
   const visibleRange = computed("visibleRange")
+
   const focusedEventId = context.get("focusedEventId")
   const selectedEventId = context.get("selectedEventId")
+
   const liveDrag = context.get("liveDrag")
-  const dragEventId = liveDrag?.eventId ?? refs.get("dragEventId")
+  const dragEventId = liveDrag?.eventId
 
   const isDragging = state.matches("event-dragging")
   const isSlotSelecting = state.matches("slot-selecting")
@@ -272,8 +274,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     if (!evt) return null
     const snap = refs.get("dragStartSnapshot")
     if (!snap) return null
-    const curStart = liveDrag?.start ?? refs.get("dragCurrentStart") ?? snap.start
-    const curEnd = liveDrag?.end ?? refs.get("dragCurrentEnd") ?? snap.end
+    const curStart = liveDrag?.start ?? snap.start
+    const curEnd = liveDrag?.end ?? snap.end
     return {
       kind: isResizing ? "resize" : "drag",
       event: evt,
@@ -284,6 +286,10 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   })()
 
   const selectedSlot = context.get("selectedSlot")
+  const liveSlot = context.get("liveSlot")
+  // The slot highlight tracks the live selection during drag and persists
+  // as selectedSlot after release until cleared. Single overlay, dual source.
+  const activeSlot = liveSlot ?? selectedSlot
 
   return {
     view,
@@ -374,10 +380,12 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     },
 
     getSelectedSlotProps({ date: d }) {
-      const active = !!selectedSlot && sameDay(selectedSlot.start, d)
+      const active = !!activeSlot && sameDay(activeSlot.start, d)
       return normalize.element({
         ...parts.slotHighlight.attrs(scope.id),
         hidden: !active,
+        "data-active": dataAttr(active),
+        "data-pending": dataAttr(!!liveSlot),
         style: {
           position: "absolute",
           top: "var(--scheduler-slot-top)",
@@ -406,8 +414,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       }
 
       if (isResizing && dragEventId === event.id) {
-        const dragStart = (liveDrag?.start ?? refs.get("dragCurrentStart")) as DateValue | null
-        const dragEnd = (liveDrag?.end ?? refs.get("dragCurrentEnd")) as DateValue | null
+        const dragStart = liveDrag?.start ?? null
+        const dragEnd = liveDrag?.end ?? null
         if (dragStart && dragEnd) {
           const dayStartHour = prop("dayStartHour")
           const dayEndHour = prop("dayEndHour")
@@ -440,6 +448,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
     hasConflict(event) {
       return conflictIds.has(event.id)
+    },
+
+    getEventEl(id) {
+      return dom.getEventEl(scope, id)
+    },
+
+    getSelectedSlotEl() {
+      return scope.query(`${scope.selector(parts.slotHighlight)}[data-active]`)
     },
 
     getRootProps() {
@@ -651,7 +667,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         isDropTarget: !!liveDrag && liveDrag.kind === "drag" && sameDay(liveDrag.start, d),
         isDragPreviewDay: !!dragState && sameDay(dragState.start, d),
         isDragOriginDay: !!dragState && sameDay(dragState.origin.start, d),
-        isSelectedSlotDay: !!selectedSlot && sameDay(selectedSlot.start, d),
+        isSelectedSlotDay: !!activeSlot && sameDay(activeSlot.start, d),
       }
     },
 
@@ -685,7 +701,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         overlayVars["--scheduler-drag-origin-height"] = b.height
       }
       if (dayState.isSelectedSlotDay) {
-        const b = pctBounds(selectedSlot!.start, selectedSlot!.end)
+        const b = pctBounds(activeSlot!.start, activeSlot!.end)
         overlayVars["--scheduler-slot-top"] = b.top
         overlayVars["--scheduler-slot-height"] = b.height
       }
@@ -706,7 +722,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onDoubleClick(event) {
           if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
           const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
-          context.set("selectedSlot", { start, end })
           prop("onSlotDoubleClick")?.({ start, end, allDay: false })
         },
       })
@@ -735,10 +750,9 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onClick(event) {
           if (!isLeftClick(event)) return
           context.set("selectedSlot", { start, end })
-          prop("onSlotClick")?.({ start, end, allDay: true })
+          prop("onSlotSelect")?.({ start, end, allDay: true, action: "click" })
         },
         onDoubleClick() {
-          context.set("selectedSlot", { start, end })
           prop("onSlotDoubleClick")?.({ start, end, allDay: true })
         },
       })

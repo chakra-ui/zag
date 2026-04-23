@@ -351,8 +351,8 @@ Same pattern for `date` / `defaultDate`.
 
 Scheduler composes with other zag machines — see `examples/next-ts/pages/scheduler/`:
 
-- `click-to-create.tsx` — `@zag-js/dialog` for the create flow
-- `event-details.tsx` — `@zag-js/popover` for event details, anchored via `positioning.getAnchorRect`
+- `click-to-create.tsx` — `@zag-js/popover` anchored to `selectedSlot` for the create flow
+- `event-details.tsx` — `@zag-js/popover` for event details, anchored via `positioning.getAnchorElement`
 - `with-date-picker.tsx` — `@zag-js/date-picker` for navigation
 
 ## Anatomy
