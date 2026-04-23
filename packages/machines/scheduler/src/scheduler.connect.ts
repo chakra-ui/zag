@@ -8,7 +8,6 @@ import type {
   DayColumnProps,
   EventProps,
   EventResizeHandleProps,
-  EventStyle,
   HourRange,
   MoreEventsProps,
   SchedulerApi,
@@ -219,6 +218,10 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     if (mins >= totalDayMinutes) return 1
     return mins / totalDayMinutes
   }
+  const pctBounds = (start: DateValue, end: DateValue) => ({
+    top: `${timePercent(start) * 100}%`,
+    height: `${(timePercent(end) - timePercent(start)) * 100}%`,
+  })
 
   const timeFormatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
   const longDateFormatter = new Intl.DateTimeFormat(locale, {
@@ -294,6 +297,25 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     agendaGroups.sort((a, b) => a.date.compare(b.date))
   }
 
+  const dragState: SchedulerApi<T, E>["dragState"] = (() => {
+    if (!(isDragging || isResizing) || !dragEventId) return null
+    const evt = eventsById.get(dragEventId)
+    if (!evt) return null
+    const snap = refs.get("dragStartSnapshot")
+    if (!snap) return null
+    const curStart = liveDrag?.start ?? refs.get("dragCurrentStart") ?? snap.start
+    const curEnd = liveDrag?.end ?? refs.get("dragCurrentEnd") ?? snap.end
+    return {
+      kind: isResizing ? "resize" : "drag",
+      event: evt,
+      start: curStart,
+      end: curEnd,
+      origin: { start: snap.start, end: snap.end },
+    }
+  })()
+
+  const selectedSlot = context.get("selectedSlot")
+
   return {
     view,
     date,
@@ -309,8 +331,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     weekDays,
     hourRange,
     dir,
-    prevTriggerIcon: dir === "rtl" ? "→" : "←",
-    nextTriggerIcon: dir === "rtl" ? "←" : "→",
     events,
     visibleEvents,
     agendaGroups,
@@ -337,27 +357,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       context.set("selectedSlot", null)
     },
 
-    selectedSlot: context.get("selectedSlot"),
-
-    getSelectedSlot({ date: d }) {
-      const slot = context.get("selectedSlot")
-      if (!slot) return null
-      if (toCalendarDate(slot.start).toString() !== toCalendarDate(d).toString()) return null
-      const topPct = timePercent(slot.start) * 100
-      const heightPct = (timePercent(slot.end) - timePercent(slot.start)) * 100
-      return {
-        start: slot.start,
-        end: slot.end,
-        props: normalize.element({
-          ...parts.slotHighlight.attrs(scope.id),
-          style: {
-            position: "absolute",
-            top: `${topPct}%`,
-            height: `${heightPct}%`,
-          } as EventStyle,
-        }),
-      }
-    },
+    selectedSlot,
+    dragState,
 
     getEventById(id) {
       return eventsById.get(id)
@@ -375,64 +376,45 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       return getMonthGrid(d ?? date)
     },
 
-    getEventStyle(event) {
-      const pos = this.getEventPosition(event)
-      return {
-        position: "absolute",
-        top: `${pos.top * 100}%`,
-        height: `${pos.height * 100}%`,
-        insetInlineStart: `${pos.left * 100}%`,
-        insetInlineEnd: `${(1 - pos.left - pos.width) * 100}%`,
-        "--event-color": event.color,
-      } as EventStyle
+    getDragPreviewProps({ date: d }) {
+      const active = !!dragState && sameDay(dragState.start, d)
+      return normalize.element({
+        ...parts.dragGhost.attrs(scope.id),
+        hidden: !active,
+        style: {
+          position: "absolute" as const,
+          top: "var(--scheduler-drag-preview-top)",
+          height: "var(--scheduler-drag-preview-height)",
+          "--event-color": dragState?.event.color,
+        },
+      })
     },
 
-    getDragGhost({ date: d }) {
-      if (!liveDrag) return null
-      if (toCalendarDate(liveDrag.start).toString() !== toCalendarDate(d).toString()) return null
-      const evt = eventsById.get(liveDrag.eventId)
-      if (!evt) return null
-      const topPct = timePercent(liveDrag.start) * 100
-      const heightPct = (timePercent(liveDrag.end) - timePercent(liveDrag.start)) * 100
-      return {
-        event: evt,
-        props: normalize.element({
-          ...parts.dragGhost.attrs(scope.id),
-          style: {
-            position: "absolute",
-            top: `${topPct}%`,
-            height: `${heightPct}%`,
-            "--event-color": evt.color,
-          } as EventStyle,
-        }),
-      }
+    getDragOriginProps({ date: d }) {
+      const active = !!dragState && sameDay(dragState.origin.start, d)
+      return normalize.element({
+        ...parts.dragOrigin.attrs(scope.id),
+        hidden: !active,
+        style: {
+          position: "absolute" as const,
+          top: "var(--scheduler-drag-origin-top)",
+          height: "var(--scheduler-drag-origin-height)",
+          "--event-color": dragState?.event.color,
+        },
+      })
     },
 
-    getDragOrigin({ date: d }) {
-      const origin = (() => {
-        if (!(isDragging || isResizing) || !dragEventId) return null
-        const snap = refs.get("dragStartSnapshot")
-        if (!snap) return null
-        return { eventId: dragEventId, start: snap.start, end: snap.end }
-      })()
-      if (!origin) return null
-      if (toCalendarDate(origin.start).toString() !== toCalendarDate(d).toString()) return null
-      const evt = eventsById.get(origin.eventId)
-      if (!evt) return null
-      const topPct = timePercent(origin.start) * 100
-      const heightPct = (timePercent(origin.end) - timePercent(origin.start)) * 100
-      return {
-        event: evt,
-        props: normalize.element({
-          ...parts.dragOrigin.attrs(scope.id),
-          style: {
-            position: "absolute",
-            top: `${topPct}%`,
-            height: `${heightPct}%`,
-            "--event-color": evt.color,
-          } as EventStyle,
-        }),
-      }
+    getSelectedSlotProps({ date: d }) {
+      const active = !!selectedSlot && sameDay(selectedSlot.start, d)
+      return normalize.element({
+        ...parts.slotHighlight.attrs(scope.id),
+        hidden: !active,
+        style: {
+          position: "absolute" as const,
+          top: "var(--scheduler-slot-top)",
+          height: "var(--scheduler-slot-height)",
+        },
+      })
     },
 
     getEventState(id) {
@@ -477,22 +459,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
       return basePos
     },
-
-    dragPreview:
-      (isDragging || isResizing) && dragEventId
-        ? {
-            eventId: dragEventId,
-            start: liveDrag?.start ?? refs.get("dragCurrentStart"),
-            end: liveDrag?.end ?? refs.get("dragCurrentEnd"),
-          }
-        : null,
-
-    dragOrigin: (() => {
-      if (!(isDragging || isResizing) || !dragEventId) return null
-      const snap = refs.get("dragStartSnapshot")
-      if (!snap) return null
-      return { eventId: dragEventId, start: snap.start, end: snap.end }
-    })(),
 
     getEventsForDay(d) {
       return eventsByDayKey.get(toCalendarDate(d).toString()) ?? []
@@ -667,9 +633,21 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
+    getDayColumnState({ date: d }) {
+      return {
+        isToday: isTodayDate(d),
+        isWeekend: isWeekendDate(d),
+        isDropTarget: !!liveDrag && liveDrag.kind === "drag" && sameDay(liveDrag.start, d),
+        isDragPreviewDay: !!dragState && sameDay(dragState.start, d),
+        isDragOriginDay: !!dragState && sameDay(dragState.origin.start, d),
+        isSelectedSlotDay: !!selectedSlot && sameDay(selectedSlot.start, d),
+      }
+    },
+
     getDayColumnProps(props: DayColumnProps) {
-      const key = props.date.toString()
-      const isDropTarget = !!liveDrag && liveDrag.kind === "drag" && toCalendarDate(liveDrag.start).toString() === key
+      const { date: d } = props
+      const key = d.toString()
+      const dayState = this.getDayColumnState({ date: d })
       const slotMinutes = prop("slotInterval")
       const slotFromClientY = (currentTarget: HTMLElement, clientY: number) => {
         const rect = currentTarget.getBoundingClientRect()
@@ -677,18 +655,37 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         const totalMinutes = (dayEndHour - dayStartHour) * 60
         const raw = (relY / rect.height) * totalMinutes
         const snapped = Math.round(raw / slotMinutes) * slotMinutes
-        const start = toCalendarDateTime(props.date).set({
+        const start = toCalendarDateTime(d).set({
           hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
           minute: snapped % 60,
         })
         return { start, end: start.add({ minutes: slotMinutes }) }
       }
+
+      const overlayVars: Record<string, string> = {}
+      if (dayState.isDragPreviewDay) {
+        const b = pctBounds(dragState!.start, dragState!.end)
+        overlayVars["--scheduler-drag-preview-top"] = b.top
+        overlayVars["--scheduler-drag-preview-height"] = b.height
+      }
+      if (dayState.isDragOriginDay) {
+        const b = pctBounds(dragState!.origin.start, dragState!.origin.end)
+        overlayVars["--scheduler-drag-origin-top"] = b.top
+        overlayVars["--scheduler-drag-origin-height"] = b.height
+      }
+      if (dayState.isSelectedSlotDay) {
+        const b = pctBounds(selectedSlot!.start, selectedSlot!.end)
+        overlayVars["--scheduler-slot-top"] = b.top
+        overlayVars["--scheduler-slot-height"] = b.height
+      }
+
       return normalize.element({
         ...parts.dayColumn.attrs(scope.id),
         id: dom.getDayColumnId(scope, key),
         role: "gridcell",
         "data-date": key,
-        "data-drop-target": dataAttr(isDropTarget),
+        "data-drop-target": dataAttr(dayState.isDropTarget),
+        style: overlayVars,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
@@ -699,18 +696,20 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
           const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
           context.set("selectedSlot", { start, end })
-          prop("onSlotDoubleClick")?.({ start, end })
+          prop("onSlotDoubleClick")?.({ start, end, allDay: false })
         },
       })
     },
 
     getDayCellProps(props: DayCellProps) {
-      const { date: d, referenceDate = date } = props
+      const { date: d, referenceDate = date, allDay = false } = props
       const key = d.toString()
-      const outside = d.month !== referenceDate.month || d.year !== referenceDate.year
+      const outside = !allDay && (d.month !== referenceDate.month || d.year !== referenceDate.year)
       const todayCell = isTodayDate(d)
       const weekend = isWeekendDate(d)
       const selected = !!context.get("selectedSlot") && sameDay(d, context.get("selectedSlot")!.start)
+      const start = d
+      const end = d.add({ days: 1 })
       return normalize.element({
         ...parts.dayCell.attrs(scope.id),
         id: dom.getDayCellId(scope, key),
@@ -720,19 +719,16 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-outside": dataAttr(outside),
         "data-weekend": dataAttr(weekend),
         "data-selected": dataAttr(selected),
+        "data-all-day": dataAttr(allDay),
         "aria-current": todayCell ? "date" : undefined,
-        onPointerDown(event) {
+        onClick(event) {
           if (!isLeftClick(event)) return
-          const point = getEventPoint(event)
-          const start = d
-          const end = d.add({ days: 1 })
-          send({ type: "SLOT_POINTER_DOWN", start, end, point })
+          context.set("selectedSlot", { start, end })
+          prop("onSlotClick")?.({ start, end, allDay: true })
         },
         onDoubleClick() {
-          const start = d
-          const end = d.add({ days: 1 })
           context.set("selectedSlot", { start, end })
-          prop("onSlotDoubleClick")?.({ start, end })
+          prop("onSlotDoubleClick")?.({ start, end, allDay: true })
         },
       })
     },
@@ -740,6 +736,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     getEventProps(props: EventProps<E>) {
       const { event } = props
       const evtState = this.getEventState(event.id)
+      const pos = event.allDay ? null : this.getEventPosition(event)
       return normalize.element({
         ...parts.event.attrs(scope.id),
         id: dom.getEventId(scope, event.id),
@@ -753,7 +750,16 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-conflict": dataAttr(evtState.conflict),
         "data-disabled": dataAttr(!!event.disabled),
         "data-all-day": dataAttr(!!event.allDay),
-        style: event.allDay ? undefined : this.getEventStyle(event),
+        style: pos
+          ? {
+              position: "absolute" as const,
+              top: `${pos.top * 100}%`,
+              height: `${pos.height * 100}%`,
+              insetInlineStart: `${pos.left * 100}%`,
+              insetInlineEnd: `${(1 - pos.left - pos.width) * 100}%`,
+              "--event-color": event.color,
+            }
+          : { "--event-color": event.color },
         onClick(e) {
           e.stopPropagation()
           send({ type: "EVENT_CLICK", eventId: event.id })

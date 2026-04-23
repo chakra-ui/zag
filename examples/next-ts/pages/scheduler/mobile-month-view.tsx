@@ -1,4 +1,5 @@
 import * as scheduler from "@zag-js/scheduler"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
 import type { DateValue } from "@internationalized/date"
@@ -68,17 +69,21 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()} style={{ maxWidth: 420 }}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeft />
+            </button>
             <span {...api.getHeaderTitleProps()}>
               {api.getMonthName(api.date)} {api.date.year}
             </span>
-            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
           </div>
 
           <div className="scheduler-mobile-month">
             <div className="scheduler-mobile-weekdays">
-              {api.weekDays.map((d, i) => (
-                <div key={i}>{d.short}</div>
+              {api.weekDays.map((day, i) => (
+                <div key={i}>{day.short}</div>
               ))}
             </div>
             {weeks.map((week, wi) => (

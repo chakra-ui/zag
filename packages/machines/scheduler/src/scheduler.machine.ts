@@ -343,11 +343,11 @@ export const machine = createMachine<SchedulerSchema>({
         if (s.compare(e) === 0) {
           const slotEnd = s.add({ minutes: prop("slotInterval") })
           context.set("selectedSlot", { start: s, end: slotEnd })
-          prop("onSlotClick")?.({ start: s, end: slotEnd })
+          prop("onSlotClick")?.({ start: s, end: slotEnd, allDay: false })
           return
         }
         context.set("selectedSlot", { start: s, end: e })
-        prop("onSlotSelect")?.({ start: s, end: e })
+        prop("onSlotRangeSelect")?.({ start: s, end: e })
       },
       clearSlotDrag({ refs, context }) {
         refs.set("dragSlotStart", null)

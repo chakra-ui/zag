@@ -1,4 +1,5 @@
 import * as scheduler from "@zag-js/scheduler"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
 import { useId, useState } from "react"
@@ -55,19 +56,23 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeft />
+            </button>
             <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
-            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
             <span {...api.getHeaderTitleProps()}>Work Week · {api.visibleRangeText.formatted}</span>
           </div>
 
           <div className="scheduler-time-grid-wrapper">
             <div className="scheduler-col-headers">
               <div className="scheduler-header-cell scheduler-gutter-header" />
-              {days.map((d, i) => (
-                <div key={d.toString()} className="scheduler-header-cell">
+              {days.map((date, i) => (
+                <div key={date.toString()} className="scheduler-header-cell">
                   <span className="scheduler-header-day-label">{weekDays[i % 7].short}</span>
-                  <span className="scheduler-header-day-num">{d.day}</span>
+                  <span className="scheduler-header-day-num">{date.day}</span>
                 </div>
               ))}
             </div>
@@ -75,29 +80,20 @@ export default function Page() {
             <div className="scheduler-time-grid-scroll">
               <div {...api.getGridProps()} className="scheduler-time-grid">
                 <div {...api.getTimeGutterProps()}>
-                  {hourRange.hours.map((h) => (
-                    <div key={h.value} className="scheduler-hour-label" style={h.style}>
-                      {h.label}
+                  {hourRange.hours.map((hour) => (
+                    <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
+                      {hour.label}
                     </div>
                   ))}
                 </div>
 
-                {days.map((d) => (
-                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
-                    {hourRange.hours.map((h) => (
-                      <div key={h.value} className="scheduler-hour-line" style={h.style} />
+                {days.map((date) => (
+                  <div key={date.toString()} {...api.getDayColumnProps({ date })}>
+                    {hourRange.hours.map((hour) => (
+                      <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
                     ))}
-                    {api.getEventsForDay(d).map((event) => (
-                      <div
-                        key={event.id}
-                        {...api.getEventProps({ event })}
-                        style={
-                          {
-                            ...api.getEventStyle(event),
-                            ["--event-color"]: event.color,
-                          } as React.CSSProperties
-                        }
-                      >
+                    {api.getEventsForDay(date).map((event) => (
+                      <div key={event.id} {...api.getEventProps({ event })}>
                         <div className="scheduler-event-title">{event.title}</div>
                         <div
                           {...api.getEventResizeHandleProps({ event, edge: "end" })}

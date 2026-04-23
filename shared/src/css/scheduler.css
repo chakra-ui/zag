@@ -494,6 +494,7 @@
 
 .scheduler-all-day-row {
   display: grid;
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
   border-bottom: 1px solid #e5e7eb;
   background: #fafafa;
   min-height: 32px;

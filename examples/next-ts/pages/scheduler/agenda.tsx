@@ -1,4 +1,5 @@
 import * as scheduler from "@zag-js/scheduler"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
 import { useId } from "react"
@@ -71,9 +72,13 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()} style={{ maxWidth: 520 }}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeft />
+            </button>
             <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
-            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
           </div>
 

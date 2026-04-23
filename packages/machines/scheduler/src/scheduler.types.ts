@@ -24,17 +24,28 @@ export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly"
  */
 export interface RecurrenceRule {
   freq: RecurrenceFrequency
-  /** Repeat every N units of `freq`. @default 1 */
+  /**
+   * Repeat every N units of `freq`.
+   * @default 1
+   */
   interval?: number | undefined
-  /** Stop after this many instances (inclusive of the original). */
+  /**
+   * Stop after this many instances (inclusive of the original).
+   */
   count?: number | undefined
-  /** Last date (inclusive) at which instances may occur. */
+  /**
+   * Last date (inclusive) at which instances may occur.
+   */
   until?: DateValue | undefined
-  /** Dates to skip. */
+  /**
+   * Dates to skip.
+   */
   exdate?: DateValue[] | undefined
 }
 
-/** Legacy rrule-string form — user supplies their own RRULE library via `expandRecurrence`. */
+/**
+ * Legacy rrule-string form — user supplies their own RRULE library via `expandRecurrence`.
+ */
 export interface RRuleRecurrence {
   rrule: string
   exdate?: DateValue[] | undefined
@@ -49,7 +60,9 @@ export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
   color?: string | undefined
   recurrence?: RecurrenceRule | RRuleRecurrence | undefined
   disabled?: boolean | undefined
-  /** Arbitrary typed metadata attached to the event (attendees, location, links…). */
+  /**
+   * Arbitrary typed metadata attached to the event (attendees, location, links…).
+   */
   payload?: T | undefined
 }
 
@@ -76,16 +89,26 @@ export interface DateChangeDetails {
   date: DateValue
 }
 
-export interface SlotSelectDetails {
+export interface SlotRangeSelectDetails {
   start: DateValue
   end: DateValue
 }
 
 export interface SlotClickDetails {
-  /** The single slot that was clicked (no drag). */
+  /**
+   * The single slot that was clicked (no drag).
+   */
   start: DateValue
-  /** slotInterval after `start`, for convenience when creating an event. */
+  /**
+   * End of the clicked slot — `start + slotInterval` for time-grid clicks,
+   * `start + 1 day` for day-cell / all-day-cell clicks.
+   */
   end: DateValue
+  /**
+   * Whether the click originated in an all-day context (month cell or the
+   * all-day row). Lets consumers branch create-flow semantics on day vs time.
+   */
+  allDay: boolean
 }
 
 export interface EventClickDetails<T extends SchedulerPayload = SchedulerPayload> {
@@ -94,7 +117,9 @@ export interface EventClickDetails<T extends SchedulerPayload = SchedulerPayload
 
 export interface EventDropDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
-  /** Index of the event in the `events` prop array (-1 if not found). */
+  /**
+   * Index of the event in the `events` prop array (-1 if not found).
+   */
   index: number
   newStart: DateValue
   newEnd: DateValue
@@ -107,7 +132,9 @@ export interface EventDropDetails<T extends SchedulerPayload = SchedulerPayload>
 
 export interface EventResizeDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
-  /** Index of the event in the `events` prop array (-1 if not found). */
+  /**
+   * Index of the event in the `events` prop array (-1 if not found).
+   */
   index: number
   newStart: DateValue
   newEnd: DateValue
@@ -141,55 +168,137 @@ export type ElementIds = Partial<{
 
 export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
   extends CommonProperties, DirectionProperty {
+  /**
+   * Element IDs for the scheduler.
+   */
   ids?: ElementIds | undefined
-  /** Current view mode */
+  /**
+   * Current view mode
+   */
   view?: ViewType | undefined
-  /** Initial view mode when uncontrolled */
+  /**
+   * Initial view mode when uncontrolled
+   */
   defaultView?: ViewType | undefined
+  /**
+   * Fires when the view mode changes.
+   */
   onViewChange?: ((details: ViewChangeDetails) => void) | undefined
-  /** Current focused date */
+  /**
+   * Current focused date
+   */
   date?: DateValue | undefined
-  /** Initial focused date when uncontrolled */
+  /**
+   * Initial focused date when uncontrolled
+   */
   defaultDate?: DateValue | undefined
+  /**
+   * Fires when the focused date changes.
+   */
   onDateChange?: ((details: DateChangeDetails) => void) | undefined
-  /** Flat list of events (expand recurring events before passing) */
+  /**
+   * Flat list of events (expand recurring events before passing)
+   */
   events?: SchedulerEvent<T>[] | undefined
-  /** Minutes per time slot — 15, 30, or 60. @default 30 */
+  /**
+   * Minutes per time slot — 15, 30, or 60.
+   * @default 30
+   */
   slotInterval?: 15 | 30 | 60 | undefined
-  /** First hour shown in day/week time grid. @default 0 */
+  /**
+   * First hour shown in day/week time grid.
+   * @default 0
+   */
   dayStartHour?: number | undefined
-  /** Last hour shown in day/week time grid. @default 24 */
+  /**
+   * Last hour shown in day/week time grid.
+   * @default 24
+   */
   dayEndHour?: number | undefined
-  /** Days of week to show in work-week mode, 0=Sun…6=Sat. @default [1,2,3,4,5] */
+  /**
+   * Days of week to show in work-week mode, 0=Sun…6=Sat.
+   * @default [1,2,3,4,5]
+   */
   workWeekDays?: number[] | undefined
-  /** When true, `api.visibleDays` in week view is filtered down to `workWeekDays`. @default false */
+  /**
+   * When true, `api.visibleDays` in week view is filtered down to `workWeekDays`.
+   * @default false
+   */
   workWeekOnly?: boolean | undefined
-  onSlotSelect?: ((details: SlotSelectDetails) => void) | undefined
-  /** Fires when an empty slot is clicked once — use to highlight/select the slot. */
+  /**
+   * Fires when the user drag-selects a slot range. `start`/`end` span the
+   * dragged bounds — differs from `onSlotClick` (single slot, end = start +
+   * slotInterval) and `onSlotDoubleClick` (create-intent on a single slot).
+   */
+  onSlotRangeSelect?: ((details: SlotRangeSelectDetails) => void) | undefined
+  /**
+   * Fires when an empty slot is clicked once — use to highlight/select the slot.
+   */
   onSlotClick?: ((details: SlotClickDetails) => void) | undefined
-  /** Fires on double-click of an empty slot — the conventional "create event" trigger. */
+  /**
+   * Fires on double-click of an empty slot — the conventional "create event" trigger.
+   */
   onSlotDoubleClick?: ((details: SlotClickDetails) => void) | undefined
+  /**
+   * Fires when an event is clicked.
+   */
   onEventClick?: ((details: EventClickDetails<T>) => void) | undefined
+  /**
+   * Fires when an event is dropped.
+   */
   onEventDrop?: ((details: EventDropDetails<T>) => void) | undefined
+  /**
+   * Fires when an event is resized.
+   */
   onEventResize?: ((details: EventResizeDetails<T>) => void) | undefined
-  /** Return false to prevent dragging an event. Gates entry to event-dragging state. */
+  /**
+   * Return false to prevent dragging an event. Gates entry to event-dragging state.
+   */
   canDragEvent?: ((event: SchedulerEvent<T>) => boolean) | undefined
-  /** Return false to prevent resizing an event. Gates entry to event-resizing state. */
+  /**
+   * Return false to prevent resizing an event. Gates entry to event-resizing state.
+   */
   canResizeEvent?: ((event: SchedulerEvent<T>) => boolean) | undefined
-  /** BCP 47 locale used for week-start day and date formatting. @default "en-US" */
+  /**
+   * BCP 47 locale used for week-start day and date formatting.
+   * @default "en-US"
+   */
   locale?: string | undefined
-  /** IANA timezone string. Defaults to local timezone. */
+  /**
+   * IANA timezone string. Defaults to local timezone.
+   */
   timeZone?: string | undefined
-  /** Override the first day of the week (0=Sun…6=Sat). Falls back to locale default. */
+  /**
+   * Override the first day of the week (0=Sun…6=Sat). Falls back to locale default.
+   */
   weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined
+  /**
+   * Show week numbers in week view.
+   * @default false
+   */
   showWeekNumbers?: boolean | undefined
-  /** Show a line at the current time in day/week views. @default true */
+  /**
+   * Show a line at the current time in day/week views.
+   * @default true
+   */
   showCurrentTime?: boolean | undefined
-  /** Upper bound on expanded recurring instances per visible range. @default 2000 */
+  /**
+   * Upper bound on expanded recurring instances per visible range.
+   * @default 2000
+   */
   maxRecurrenceInstances?: number | undefined
-  /** Called on each recurring event to expand instances within the visible range. */
+  /**
+   * Called on each recurring event to expand instances within the visible range.
+   */
   expandRecurrence?: RecurrenceExpander<T> | undefined
+  /**
+   * Translations for the scheduler.
+   */
   translations?: SchedulerTranslations | undefined
+  /**
+   * Disable all interaction.
+   * @default false
+   */
   disabled?: boolean | undefined
 }
 
@@ -265,7 +374,9 @@ export type SchedulerMachine<T extends SchedulerPayload = SchedulerPayload> = Ma
  * -----------------------------------------------------------------------------*/
 
 export interface EventPosition {
-  /** 0–1 fraction of the day column. Multiply by 100 for %, or by container height for px. */
+  /**
+   * 0–1 fraction of the day column. Multiply by 100 for %, or by container height for px.
+   */
   top: number
   height: number
   left: number
@@ -280,6 +391,34 @@ export interface EventStateDetail {
   focused: boolean
   selected: boolean
   conflict: boolean
+}
+
+export interface DayColumnState {
+  /**
+   * Whether this day is today (locale/timezone aware).
+   */
+  isToday: boolean
+  /**
+   * Whether this day is a Saturday or Sunday.
+   */
+  isWeekend: boolean
+  /**
+   * Whether a live drag is currently hovering this column.
+   */
+  isDropTarget: boolean
+  /**
+   * Whether the drag preview (floating ghost) renders in this column.
+   */
+  isDragPreviewDay: boolean
+  /**
+   * Whether the drag/resize gesture started in this column — i.e. the origin
+   * outline renders here.
+   */
+  isDragOriginDay: boolean
+  /**
+   * Whether the selected slot highlight renders in this column.
+   */
+  isSelectedSlotDay: boolean
 }
 
 export interface TimeSlotProps {
@@ -298,6 +437,13 @@ export interface DayCellProps {
    * "outside" the current month (greys it out). Defaults to `api.date`.
    */
   referenceDate?: DateValue
+  /**
+   * Marks the cell as part of the all-day row. Emits `data-all-day="true"`,
+   * skips the "outside the reference month" check, and routes clicks with
+   * `allDay: true` on the callback detail.
+   * @default false
+   */
+  allDay?: boolean
 }
 
 /**
@@ -308,11 +454,17 @@ export interface DayCellProps {
  */
 export interface MonthGridDay {
   date: DateValue
-  /** Whether this day falls inside the reference month (false = leading/trailing filler). */
+  /**
+   * Whether this day falls inside the reference month (false = leading/trailing filler).
+   */
   inMonth: boolean
-  /** Whether this day is today (locale/timezone aware). */
+  /**
+   * Whether this day is today (locale/timezone aware).
+   */
   isToday: boolean
-  /** Whether this day is a Saturday or Sunday. */
+  /**
+   * Whether this day is a Saturday or Sunday.
+   */
   isWeekend: boolean
 }
 
@@ -335,38 +487,60 @@ export interface ViewItemProps {
 }
 
 export interface WeekDay {
-  /** The date of this weekday in the current visible week. */
+  /**
+   * The date of this weekday in the current visible week.
+   */
   value: DateValue
-  /** Localized short label, e.g. "Mon". */
+  /**
+   * Localized short label, e.g. "Mon".
+   */
   short: string
-  /** Localized long label, e.g. "Monday". */
+  /**
+   * Localized long label, e.g. "Monday".
+   */
   long: string
-  /** Localized narrow label, e.g. "M". */
+  /**
+   * Localized narrow label, e.g. "M".
+   */
   narrow: string
 }
 
 export interface VisibleRangeText {
   start: string
   end: string
-  /** Single localized string suitable for a header title, e.g. "Apr 13 – 19, 2026". */
+  /**
+   * Single localized string suitable for a header title, e.g. "Apr 13 – 19, 2026".
+   */
   formatted: string
 }
 
 export interface HourEntry {
-  /** Hour value, 0–24. */
+  /**
+   * Hour value, 0–24.
+   */
   value: number
-  /** Localized label, e.g. "09:00" / "9 AM" depending on locale. */
+  /**
+   * Localized label, e.g. "09:00" / "9 AM" depending on locale.
+   */
   label: string
-  /** 0..1 vertical position within the visible grid. */
+  /**
+   * 0..1 vertical position within the visible grid.
+   */
   percent: number
-  /** Ready-to-spread style with `top` already computed. */
+  /**
+   * Ready-to-spread style with `top` already computed.
+   */
   style: { top: string }
 }
 
 export interface HourRange {
-  /** Inclusive start hour (0–24). */
+  /**
+   * Inclusive start hour (0–24).
+   */
   start: number
-  /** Exclusive end hour (0–24). */
+  /**
+   * Exclusive end hour (0–24).
+   */
   end: number
   /**
    * Hours from start..end inclusive, each with its localized label and grid
@@ -375,65 +549,94 @@ export interface HourRange {
   hours: HourEntry[]
 }
 
-export interface EventStyle {
-  position: "absolute"
-  top: string
-  height: string
-  /** Column-based logical inset; omitted by ghost/origin styles which let CSS own the inset. */
-  insetInlineStart?: string
-  insetInlineEnd?: string
-  /** `--event-color` so CSS can reference var(--event-color). */
-  "--event-color"?: string | undefined
-  [key: string]: string | undefined
-}
-
 export interface SchedulerApi<T extends PropTypes = PropTypes, E extends SchedulerPayload = SchedulerPayload> {
-  /** Current view. */
+  /**
+   * Current view.
+   */
   view: ViewType
-  /** Focused date (drives which range is visible). */
+  /**
+   * Focused date (drives which range is visible).
+   */
   date: DateValue
-  /** Locale/timezone-aware "today" date — useful for highlighting current day. */
+  /**
+   * Locale/timezone-aware "today" date — useful for highlighting current day.
+   */
   today: DateValue
-  /** Raw start/end of the currently visible range. */
+  /**
+   * Raw start/end of the currently visible range.
+   */
   visibleRange: { start: DateValue; end: DateValue }
-  /** Localized text for the visible range — prefer this over formatting by hand. */
+  /**
+   * Localized text for the visible range — prefer this over formatting by hand.
+   */
   visibleRangeText: VisibleRangeText
-  /** Enumerated dates from visibleRange.start to visibleRange.end, inclusive. When `workWeekOnly` is true and `view === "week"`, this is filtered down to `workWeekDays`. */
+  /**
+   * Enumerated dates from visibleRange.start to visibleRange.end, inclusive.
+   * When `workWeekOnly` is true and `view === "week"`, this is filtered down
+   * to `workWeekDays`.
+   */
   visibleDays: DateValue[]
-  /** Localized label for the "today" trigger button — sourced from translations. */
+  /**
+   * Localized label for the "today" trigger button — sourced from translations.
+   */
   todayTriggerLabel: string
-  /** Locale/timezone-aware hour+minute label, e.g. "09:30" / "9:30 AM". */
+  /**
+   * Locale/timezone-aware hour+minute label, e.g. "09:30" / "9:30 AM".
+   */
   formatTime: (date: DateValue) => string
-  /** Locale/timezone-aware time range, e.g. "09:30 – 11:00". */
+  /**
+   * Locale/timezone-aware time range, e.g. "09:30 – 11:00".
+   */
   formatTimeRange: (start: DateValue, end: DateValue) => string
-  /** Locale/timezone-aware long date, e.g. "Friday, April 24". */
+  /**
+   * Locale/timezone-aware long date, e.g. "Friday, April 24".
+   */
   formatLongDate: (date: DateValue) => string
-  /** Human-friendly duration between two dates, e.g. "1h 30m" / "45m". */
+  /**
+   * Human-friendly duration between two dates, e.g. "1h 30m" / "45m".
+   */
   formatDuration: (start: DateValue, end: DateValue) => string
-  /** Day-of-week labels ordered by weekStartDay/locale. */
+  /**
+   * Day-of-week labels ordered by weekStartDay/locale.
+   */
   weekDays: WeekDay[]
-  /** Hour range shown in day/week time grids (honors dayStartHour/dayEndHour). */
+  /**
+   * Hour range shown in day/week time grids (honors dayStartHour/dayEndHour).
+   */
   hourRange: HourRange
-  /** Writing direction. */
+  /**
+   * Writing direction.
+   */
   dir: "ltr" | "rtl"
-  /** Direction-aware previous-arrow glyph — "←" in LTR, "→" in RTL. */
-  prevTriggerIcon: string
-  /** Direction-aware next-arrow glyph — "→" in LTR, "←" in RTL. */
-  nextTriggerIcon: string
-  /** All events (recurring instances expanded against the visible range). */
+  /**
+   * All events (recurring instances expanded against the visible range).
+   */
   events: SchedulerEvent<E>[]
-  /** Events whose range overlaps `visibleRange` — the set you actually render. */
+  /**
+   * Events whose range overlaps `visibleRange` — the set you actually render.
+   */
   visibleEvents: SchedulerEvent<E>[]
-  /** Visible events grouped by day and sorted by start. Use for agenda / list layouts. */
+  /**
+   * Visible events grouped by day and sorted by start. Use for agenda / list layouts.
+   */
   agendaGroups: { date: DateValue; events: SchedulerEvent<E>[] }[]
   isDragging: boolean
   isSlotSelecting: boolean
   isResizing: boolean
-  /** Live preview of the event being dragged — null when not dragging. */
-  dragPreview: { eventId: string; start: DateValue | null; end: DateValue | null } | null
-  /** Where the active drag/resize started — use to render a "was here" ghost outline. */
-  dragOrigin: { eventId: string; start: DateValue; end: DateValue } | null
-  /** Slot the user selected (clicked or drag-selected). Clears on escape or new click. */
+  /**
+   * State of the active drag or resize — null when idle. `start`/`end` track the
+   * current pointer-predicted position; `origin` is where the gesture began.
+   */
+  dragState: {
+    kind: "drag" | "resize"
+    event: SchedulerEvent<E>
+    start: DateValue
+    end: DateValue
+    origin: { start: DateValue; end: DateValue }
+  } | null
+  /**
+   * Slot the user selected (clicked or drag-selected). Clears on escape or new click.
+   */
   selectedSlot: { start: DateValue; end: DateValue } | null
 
   setView: (view: ViewType) => void
@@ -441,44 +644,42 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   goToToday: () => void
   goToNext: () => void
   goToPrev: () => void
-  /** Dismiss the selected slot highlight (e.g. when a create dialog closes). */
-  clearSelectedSlot: () => void
   /**
-   * Returns positioning + bounds for the selected slot in the given day column,
-   * or null when the slot doesn't belong to that day. Spread `style` onto your
-   * highlight element.
+   * Dismiss the selected slot highlight (e.g. when a create dialog closes).
    */
-  getSelectedSlot: (params: { date: DateValue }) => { props: T["element"]; start: DateValue; end: DateValue } | null
+  clearSelectedSlot: () => void
 
   getEventState: (id: string) => EventStateDetail
-  /** Numeric position within a day column — use for custom layouts. */
+  /**
+   * Day-level flags for the given column — use to conditionally render custom
+   * UI (drop-target hint, day-specific styling) without reconstructing the
+   * comparisons from `dragState` / `selectedSlot`.
+   */
+  getDayColumnState: (props: DayColumnProps) => DayColumnState
+  /**
+   * Numeric position within a day column — use for custom layouts.
+   */
   getEventPosition: (event: SchedulerEvent<E>) => EventPosition
-  /** Ready-to-spread CSS with logical props (RTL-safe) — use for default time-grid rendering. */
-  getEventStyle: (event: SchedulerEvent<E>) => EventStyle
   /**
-   * Drag ghost for a day column — floating preview at the predicted drop
-   * position. Spread `props` onto your ghost element. Null when nothing to
-   * render in this column.
+   * 0..1 fraction of the visible day range corresponding to the given date's time-of-day.
    */
-  getDragGhost: (params: { date: DateValue }) => { props: T["element"]; event: SchedulerEvent<E> } | null
-  /**
-   * Origin outline for a day column — "was here" marker at the gesture's
-   * starting bounds. Spread `props` onto your outline element. Null when no
-   * drag is active or it's not in this column.
-   */
-  getDragOrigin: (params: { date: DateValue }) => { props: T["element"]; event: SchedulerEvent<E> } | null
-  /** 0..1 fraction of the visible day range corresponding to the given date's time-of-day. */
   getTimePercent: (date: DateValue) => number
-  /** Localized full month name for the given date, e.g. "April". */
+  /**
+   * Localized full month name for the given date, e.g. "April".
+   */
   getMonthName: (date: DateValue) => string
-  /** Twelve localized month names in order. */
+  /**
+   * Twelve localized month names in order.
+   */
   monthNames: string[]
   /**
    * Weeks × days covering the month that contains `date`, padded to full weeks.
    * Use for month grids and mini-month cells.
    */
   getMonthGrid: (date?: DateValue) => MonthGridDay[][]
-  /** O(1) event lookup by id (reads from the current events list). */
+  /**
+   * O(1) event lookup by id (reads from the current events list).
+   */
   getEventById: (id: string) => SchedulerEvent<E> | undefined
   getEventsForDay: (date: DateValue) => SchedulerEvent<E>[]
   getEventsForSlot: (start: DateValue, end: DateValue) => SchedulerEvent<E>[]
@@ -502,4 +703,21 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   getEventResizeHandleProps: (props: EventResizeHandleProps<E>) => T["element"]
   getCurrentTimeIndicatorProps: () => T["element"]
   getMoreEventsProps: (props: MoreEventsProps) => T["button"]
+  /**
+   * Drag preview overlay for a day column — floating box at the predicted drop
+   * position. Always returns spreadable props; hidden when no drag is active or
+   * the drag isn't in this column.
+   */
+  getDragPreviewProps: (props: DayColumnProps) => T["element"]
+  /**
+   * Drag origin outline for a day column — "was here" marker at the gesture's
+   * starting bounds. Always returns spreadable props; hidden when no drag is
+   * active or the drag didn't start in this column.
+   */
+  getDragOriginProps: (props: DayColumnProps) => T["element"]
+  /**
+   * Selected-slot highlight for a day column. Always returns spreadable props;
+   * hidden when no slot is selected or the slot isn't in this column.
+   */
+  getSelectedSlotProps: (props: DayColumnProps) => T["element"]
 }

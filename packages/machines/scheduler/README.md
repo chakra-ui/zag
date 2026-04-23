@@ -53,9 +53,9 @@ export function Calendar() {
   return (
     <div {...api.getRootProps()}>
       <div {...api.getHeaderProps()}>
-        <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+        <button {...api.getPrevTriggerProps()}><ChevronLeft /></button>
         <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
-        <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+        <button {...api.getNextTriggerProps()}><ChevronRight /></button>
         <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
       </div>
 
@@ -153,7 +153,7 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 |---|---|
 | `onSlotClick(d)` | empty slot clicked without drag — `d = { start, end }` (end = start + slotInterval) |
 | `onSlotDoubleClick(d)` | empty slot double-clicked — the conventional "create event" trigger |
-| `onSlotSelect(d)` | drag-selection across multiple slots |
+| `onSlotRangeSelect(d)` | drag-selection across multiple slots — `d = { start, end }` spans the drag |
 | `onEventClick(d)` | `d.event` |
 | `onEventDrop(d)` | `d = { event, index, newStart, newEnd, apply }`; use `setEvents(d.apply)` |
 | `onEventResize(d)` | `d = { event, index, newStart, newEnd, edge, apply }` |
@@ -179,7 +179,6 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `events` | all events (recurring expanded, capped by `maxRecurrenceInstances`) |
 | `monthNames` / `getMonthName(d)` | localized month names |
 | `dir` | `"ltr" \| "rtl"` |
-| `prevTriggerIcon` / `nextTriggerIcon` | direction-aware `←` / `→` |
 | `todayTriggerLabel` | from `translations` |
 | `dragPreview` | live drag bounds: `{ eventId, start, end }` or null |
 | `dragOrigin` | where the drag started: `{ eventId, start, end }` or null |
@@ -201,7 +200,6 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | | |
 |---|---|
 | `getEventPosition(event)` | `{ top, height, left, width, column, totalColumns }` — 0–1 fractions |
-| `getEventStyle(event)` | ready-to-spread CSS with logical props + `--event-color` |
 | `getTimePercent(date)` | 0–1 within `dayStartHour..dayEndHour` |
 | `getMonthGrid(date?)` | weeks × `MonthGridDay[]` — `{ date, inMonth, isToday, isWeekend }` |
 
@@ -291,11 +289,11 @@ The machine ships headless — it emits `data-scheduler-*` attrs on every anatom
 | `--scheduler-grid-height` | `hours × hour-height` | computed |
 | `--scheduler-event-inset` | ghost / origin inline padding | `2px` |
 
-Target parts via attribute selectors: `[data-scheduler-root]`, `[data-scheduler-event]`, `[data-scheduler-drag-ghost]`, etc. `getEventStyle` uses logical properties (`inset-inline-start/end`) so RTL works without a separate stylesheet.
+Target parts via attribute selectors: `[data-scheduler-root]`, `[data-scheduler-event]`, `[data-scheduler-drag-ghost]`, etc. `getEventProps` uses logical properties (`inset-inline-start/end`) so RTL works without a separate stylesheet.
 
 ## RTL
 
-Pass `dir="rtl"` on props. `api.prevTriggerIcon` / `api.nextTriggerIcon` flip automatically. Every built-in style uses logical CSS properties (`border-inline-start`, `margin-inline-start`, `inset-inline-start/end`) — nothing to swap per locale. Latin content (hour labels, range titles) uses `unicode-bidi: plaintext` so numbers stay LTR inside an RTL grid.
+Pass `dir="rtl"` on props. Flip your own arrow glyphs by reading `api.dir`. Every built-in style uses logical CSS properties (`border-inline-start`, `margin-inline-start`, `inset-inline-start/end`) — nothing to swap per locale. Latin content (hour labels, range titles) uses `unicode-bidi: plaintext` so numbers stay LTR inside an RTL grid.
 
 ## Performance
 

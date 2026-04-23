@@ -1,4 +1,5 @@
 import * as scheduler from "@zag-js/scheduler"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
 import { useId, useState } from "react"
@@ -59,22 +60,26 @@ export default function Page() {
     onEventClick(d) {
       console.log("event clicked", d.event.title)
     },
-    onSlotSelect(d) {
-      console.log("slot selected", d)
+    onSlotRangeSelect(d) {
+      console.log("slot range selected", d)
     },
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  const { visibleDays, hourRange, weekDays, dragPreview } = api
+  const { visibleDays, hourRange, weekDays, dragState } = api
 
   return (
     <>
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeft />
+            </button>
             <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
-            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
             <div {...api.getViewSelectProps()}>
               {(["day", "week", "month"] as scheduler.ViewType[]).map((v) => (
@@ -88,9 +93,9 @@ export default function Page() {
           {api.view === "month" ? (
             <div className="scheduler-month-grid">
               <div className="scheduler-month-header">
-                {weekDays.map((d, i) => (
+                {weekDays.map((day, i) => (
                   <div key={i} className="scheduler-header-cell">
-                    {d.short}
+                    {day.short}
                   </div>
                 ))}
               </div>
@@ -135,10 +140,10 @@ export default function Page() {
             <div className="scheduler-time-grid-wrapper">
               <div className="scheduler-col-headers">
                 <div className="scheduler-header-cell scheduler-gutter-header" />
-                {visibleDays.map((d, i) => (
-                  <div key={`h-${d.toString()}`} className="scheduler-header-cell">
+                {visibleDays.map((date, i) => (
+                  <div key={`h-${date.toString()}`} className="scheduler-header-cell">
                     <span className="scheduler-header-day-label">{weekDays[i % 7].short}</span>
-                    <span className="scheduler-header-day-num">{d.day}</span>
+                    <span className="scheduler-header-day-num">{date.day}</span>
                   </div>
                 ))}
               </div>
@@ -146,56 +151,40 @@ export default function Page() {
               <div className="scheduler-time-grid-scroll">
                 <div {...api.getGridProps()} className="scheduler-time-grid">
                   <div {...api.getTimeGutterProps()}>
-                    {hourRange.hours.map((h) => (
-                      <div key={h.value} className="scheduler-hour-label" style={h.style}>
-                        {h.label}
+                    {hourRange.hours.map((hour) => (
+                      <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
+                        {hour.label}
                       </div>
                     ))}
                   </div>
 
-                  {visibleDays.map((d) => {
-                    const dayEvents = api.getEventsForDay(d)
-                    const ghost = api.getDragGhost({ date: d })
+                  {visibleDays.map((date) => {
+                    const dayEvents = api.getEventsForDay(date)
 
                     return (
-                      <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
-                        {hourRange.hours.map((h) => (
-                          <div key={h.value} className="scheduler-hour-line" style={h.style} />
+                      <div key={date.toString()} {...api.getDayColumnProps({ date })}>
+                        {hourRange.hours.map((hour) => (
+                          <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
                         ))}
 
                         <div {...api.getCurrentTimeIndicatorProps()} />
 
-                        {dayEvents.map((event) => {
-                          const isDraggingThis = dragPreview?.eventId === event.id
-                          return (
+                        {dayEvents.map((event) => (
+                          <div key={event.id} {...api.getEventProps({ event })}>
+                            <div className="scheduler-event-title">{String(event.title ?? "")}</div>
+                            <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
                             <div
-                              key={event.id}
-                              {...api.getEventProps({ event })}
-                              style={
-                                {
-                                  ...api.getEventStyle(event),
-                                  opacity: isDraggingThis ? 0.25 : 1,
-                                  ["--event-color"]: event.color ?? "#3b82f6",
-                                } as React.CSSProperties
-                              }
+                              {...api.getEventResizeHandleProps({ event, edge: "end" })}
+                              className="scheduler-resize-handle"
                             >
-                              <div className="scheduler-event-title">{String(event.title ?? "")}</div>
-                              <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
-                              <div
-                                {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                                className="scheduler-resize-handle"
-                              >
-                                <div className="scheduler-resize-grip" />
-                              </div>
+                              <div className="scheduler-resize-grip" />
                             </div>
-                          )
-                        })}
-
-                        {ghost && (
-                          <div {...ghost.props}>
-                            <div className="scheduler-event-title">{String(ghost.event.title ?? "")}</div>
                           </div>
-                        )}
+                        ))}
+
+                        <div {...api.getDragPreviewProps({ date })}>
+                          <div className="scheduler-event-title">{String(dragState?.event.title ?? "")}</div>
+                        </div>
                       </div>
                     )
                   })}

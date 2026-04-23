@@ -1,4 +1,5 @@
 import * as scheduler from "@zag-js/scheduler"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { CalendarDateTime } from "@internationalized/date"
 import { schedulerControls } from "@zag-js/shared"
@@ -23,8 +24,8 @@ function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
     <div className="scheduler-mini-month">
       <div className="scheduler-mini-month-title">{api.getMonthName(reference)}</div>
       <div className="scheduler-mini-weekdays">
-        {api.weekDays.map((d, i) => (
-          <div key={i}>{d.narrow}</div>
+        {api.weekDays.map((day, i) => (
+          <div key={i}>{day.narrow}</div>
         ))}
       </div>
       {weeks.map((week, wi) => (
@@ -68,9 +69,13 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeft />
+            </button>
             <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
-            <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
             <span {...api.getHeaderTitleProps()}>{api.date.year}</span>
           </div>
 
