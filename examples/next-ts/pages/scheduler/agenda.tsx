@@ -89,8 +89,13 @@ export default function Page() {
               </div>
             ) : (
               api.agendaGroups.map((group) => (
-                <div key={group.date.toString()} className="scheduler-agenda-group">
-                  <div className="scheduler-mobile-agenda-title">{api.formatLongDate(group.date)}</div>
+                <div key={group.date.toString()} {...api.getAgendaGroupProps({ date: group.date })}>
+                  <div
+                    {...api.getAgendaGroupTitleProps({ date: group.date })}
+                    className="scheduler-mobile-agenda-title"
+                  >
+                    {api.formatLongDate(group.date)}
+                  </div>
                   {group.events.map((event) => (
                     <div
                       key={event.id}

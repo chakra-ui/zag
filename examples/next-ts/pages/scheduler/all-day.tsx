@@ -74,28 +74,24 @@ export default function Page() {
           </div>
 
           <div className="scheduler-time-grid-wrapper">
-            <div className="scheduler-col-headers">
-              <div className="scheduler-header-cell scheduler-gutter-header" />
+            <div {...api.getColumnHeadersProps()}>
+              <div className="scheduler-gutter-header" />
               {api.visibleDays.map((date) => (
-                <div key={date.toString()} className="scheduler-header-cell">
+                <div key={date.toString()} {...api.getColumnHeaderProps({ date })}>
                   <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
                   <span className="scheduler-header-day-num">{date.day}</span>
                 </div>
               ))}
             </div>
 
-            <div {...api.getAllDayRowProps()} className="scheduler-all-day-row">
-              <div className="scheduler-all-day-label">All day</div>
+            <div {...api.getAllDayRowProps()}>
+              <div {...api.getAllDayLabelProps()}>All day</div>
               {api.visibleDays.map((date) => {
                 const allDayEvents = api.getEventsForDay(date).filter((e) => e.allDay)
                 return (
-                  <div
-                    key={date.toString()}
-                    {...api.getDayCellProps({ date, allDay: true })}
-                    className="scheduler-all-day-cell"
-                  >
+                  <div key={date.toString()} {...api.getDayCellProps({ date, allDay: true })}>
                     {allDayEvents.map((event) => (
-                      <div key={event.id} {...api.getEventProps({ event })} className="scheduler-all-day-event">
+                      <div key={event.id} {...api.getEventProps({ event })}>
                         {event.title}
                       </div>
                     ))}
@@ -105,10 +101,10 @@ export default function Page() {
             </div>
 
             <div className="scheduler-time-grid-scroll">
-              <div {...api.getGridProps()} className="scheduler-time-grid">
+              <div {...api.getGridProps()}>
                 <div {...api.getTimeGutterProps()}>
                   {api.hourRange.hours.map((hour) => (
-                    <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
+                    <div key={hour.value} {...api.getHourLabelProps({ hour })}>
                       {hour.label}
                     </div>
                   ))}
@@ -116,7 +112,7 @@ export default function Page() {
                 {api.visibleDays.map((date) => (
                   <div key={date.toString()} {...api.getDayColumnProps({ date })}>
                     {api.hourRange.hours.map((hour) => (
-                      <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
+                      <div key={hour.value} {...api.getHourLineProps({ hour })} />
                     ))}
                     <div {...api.getCurrentTimeIndicatorProps({ date })} />
                     {api
@@ -125,10 +121,7 @@ export default function Page() {
                       .map((event) => (
                         <div key={event.id} {...api.getEventProps({ event })}>
                           <div className="scheduler-event-title">{event.title}</div>
-                          <div
-                            {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                            className="scheduler-resize-handle"
-                          >
+                          <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
                             <div className="scheduler-resize-grip" />
                           </div>
                         </div>

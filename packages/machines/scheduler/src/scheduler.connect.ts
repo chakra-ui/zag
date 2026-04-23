@@ -4,10 +4,12 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./scheduler.anatomy"
 import * as dom from "./scheduler.dom"
 import type {
+  AgendaGroupProps,
   DayCellProps,
   DayColumnProps,
   EventProps,
   EventResizeHandleProps,
+  HourEntryProps,
   HourRange,
   MoreEventsProps,
   SchedulerApi,
@@ -159,7 +161,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         value,
         label: hourFormatter.format(labelDate.toDate(timeZone)),
         percent,
-        style: { top: `${percent * 100}%` },
       }
     }),
   }
@@ -553,7 +554,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     getViewItemProps(props: ViewItemProps) {
       const isActive = view === props.view
       return normalize.button({
-        ...parts.viewSelect.attrs(scope.id),
+        ...parts.viewItem.attrs(scope.id),
         type: "button",
         "aria-pressed": isActive,
         "data-active": dataAttr(isActive),
@@ -561,6 +562,24 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onClick() {
           send({ type: "SET_VIEW", view: props.view })
         },
+      })
+    },
+
+    getColumnHeadersProps() {
+      return normalize.element({
+        ...parts.columnHeaders.attrs(scope.id),
+        role: "row",
+      })
+    },
+
+    getColumnHeaderProps(props: DayColumnProps) {
+      const { date: d } = props
+      return normalize.element({
+        ...parts.columnHeader.attrs(scope.id),
+        role: "columnheader",
+        "data-date": d.toString(),
+        "data-today": dataAttr(isTodayDate(d)),
+        "data-weekend": dataAttr(isWeekendDate(d)),
       })
     },
 
@@ -580,10 +599,34 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
+    getAllDayLabelProps() {
+      return normalize.element({
+        ...parts.allDayLabel.attrs(scope.id),
+        "aria-hidden": "true",
+      })
+    },
+
     getTimeGutterProps() {
       return normalize.element({
         ...parts.timeGutter.attrs(scope.id),
         "aria-hidden": "true",
+      })
+    },
+
+    getHourLabelProps(props: HourEntryProps) {
+      return normalize.element({
+        ...parts.hourLabel.attrs(scope.id),
+        "data-hour": props.hour.value,
+        style: { top: `${props.hour.percent * 100}%` },
+      })
+    },
+
+    getHourLineProps(props: HourEntryProps) {
+      return normalize.element({
+        ...parts.hourLine.attrs(scope.id),
+        "aria-hidden": "true",
+        "data-hour": props.hour.value,
+        style: { top: `${props.hour.percent * 100}%` },
       })
     },
 
@@ -809,6 +852,20 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         type: "button",
         "data-date": props.date.toString(),
         "data-count": props.count,
+      })
+    },
+
+    getAgendaGroupProps(props: AgendaGroupProps) {
+      return normalize.element({
+        ...parts.agendaGroup.attrs(scope.id),
+        "data-date": props.date.toString(),
+      })
+    },
+
+    getAgendaGroupTitleProps(props: AgendaGroupProps) {
+      return normalize.element({
+        ...parts.agendaGroupTitle.attrs(scope.id),
+        "data-date": props.date.toString(),
       })
     },
   }

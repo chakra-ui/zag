@@ -95,7 +95,7 @@ export default function Page() {
             <div className="scheduler-month-grid">
               <div className="scheduler-month-header">
                 {api.weekDays.map((day, i) => (
-                  <div key={i} className="scheduler-header-cell">
+                  <div key={i} className="scheduler-month-weekday">
                     {day.short}
                   </div>
                 ))}
@@ -123,10 +123,7 @@ export default function Page() {
                             </div>
                           ))}
                           {dayEvents.length > 3 && (
-                            <button
-                              {...api.getMoreEventsProps({ date: cell.date, count: dayEvents.length - 3 })}
-                              className="scheduler-more-events"
-                            >
+                            <button {...api.getMoreEventsProps({ date: cell.date, count: dayEvents.length - 3 })}>
                               +{dayEvents.length - 3} more
                             </button>
                           )}
@@ -139,10 +136,10 @@ export default function Page() {
             </div>
           ) : (
             <div className="scheduler-time-grid-wrapper">
-              <div className="scheduler-col-headers">
-                <div className="scheduler-header-cell scheduler-gutter-header" />
+              <div {...api.getColumnHeadersProps()}>
+                <div className="scheduler-gutter-header" />
                 {api.visibleDays.map((date) => (
-                  <div key={`h-${date.toString()}`} className="scheduler-header-cell">
+                  <div key={`h-${date.toString()}`} {...api.getColumnHeaderProps({ date })}>
                     <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
                     <span className="scheduler-header-day-num">{date.day}</span>
                   </div>
@@ -150,10 +147,10 @@ export default function Page() {
               </div>
 
               <div className="scheduler-time-grid-scroll">
-                <div {...api.getGridProps()} className="scheduler-time-grid">
+                <div {...api.getGridProps()}>
                   <div {...api.getTimeGutterProps()}>
                     {api.hourRange.hours.map((hour) => (
-                      <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
+                      <div key={hour.value} {...api.getHourLabelProps({ hour })}>
                         {hour.label}
                       </div>
                     ))}
@@ -165,7 +162,7 @@ export default function Page() {
                     return (
                       <div key={date.toString()} {...api.getDayColumnProps({ date })}>
                         {api.hourRange.hours.map((hour) => (
-                          <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
+                          <div key={hour.value} {...api.getHourLineProps({ hour })} />
                         ))}
 
                         <div {...api.getCurrentTimeIndicatorProps({ date })} />
@@ -174,10 +171,7 @@ export default function Page() {
                           <div key={event.id} {...api.getEventProps({ event })}>
                             <div className="scheduler-event-title">{String(event.title ?? "")}</div>
                             <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
-                            <div
-                              {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                              className="scheduler-resize-handle"
-                            >
+                            <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
                               <div className="scheduler-resize-grip" />
                             </div>
                           </div>

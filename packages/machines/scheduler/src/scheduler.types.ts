@@ -500,6 +500,20 @@ export interface ViewItemProps {
   view: ViewType
 }
 
+export interface HourEntryProps {
+  /**
+   * A single hour entry from `api.hourRange.hours`.
+   */
+  hour: HourEntry
+}
+
+export interface AgendaGroupProps {
+  /**
+   * The date of the agenda group.
+   */
+  date: DateValue
+}
+
 export interface WeekDay {
   /**
    * The date of this weekday in the current visible week.
@@ -547,10 +561,6 @@ export interface HourEntry {
    * 0..1 vertical position within the visible grid.
    */
   percent: number
-  /**
-   * Ready-to-spread style with `top` already computed.
-   */
-  style: { top: string }
 }
 
 export interface HourRange {
@@ -748,10 +758,15 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getTodayTriggerProps: () => T["button"]
   getViewSelectProps: () => T["element"]
   getViewItemProps: (props: ViewItemProps) => T["button"]
+  getColumnHeadersProps: () => T["element"]
+  getColumnHeaderProps: (props: DayColumnProps) => T["element"]
   getGridProps: () => T["element"]
   getAllDayRowProps: () => T["element"]
+  getAllDayLabelProps: () => T["element"]
   getTimeSlotProps: (props: TimeSlotProps) => T["element"]
   getTimeGutterProps: () => T["element"]
+  getHourLabelProps: (props: HourEntryProps) => T["element"]
+  getHourLineProps: (props: HourEntryProps) => T["element"]
   getDayColumnProps: (props: DayColumnProps) => T["element"]
   getDayCellProps: (props: DayCellProps) => T["element"]
   getEventProps: (props: EventProps<P>) => T["element"]
@@ -761,4 +776,6 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getDragPreviewProps: (props: DayColumnProps) => T["element"]
   getDragOriginProps: (props: DayColumnProps) => T["element"]
   getSelectedSlotProps: (props: DayColumnProps) => T["element"]
+  getAgendaGroupProps: (props: AgendaGroupProps) => T["element"]
+  getAgendaGroupTitleProps: (props: AgendaGroupProps) => T["element"]
 }

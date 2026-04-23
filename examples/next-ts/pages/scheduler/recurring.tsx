@@ -81,10 +81,10 @@ export default function Page() {
           </div>
 
           <div className="scheduler-time-grid-wrapper">
-            <div className="scheduler-col-headers">
-              <div className="scheduler-header-cell scheduler-gutter-header" />
+            <div {...api.getColumnHeadersProps()}>
+              <div className="scheduler-gutter-header" />
               {api.visibleDays.map((date) => (
-                <div key={date.toString()} className="scheduler-header-cell">
+                <div key={date.toString()} {...api.getColumnHeaderProps({ date })}>
                   <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
                   <span className="scheduler-header-day-num">{date.day}</span>
                 </div>
@@ -92,10 +92,10 @@ export default function Page() {
             </div>
 
             <div className="scheduler-time-grid-scroll">
-              <div {...api.getGridProps()} className="scheduler-time-grid">
+              <div {...api.getGridProps()}>
                 <div {...api.getTimeGutterProps()}>
                   {api.hourRange.hours.map((hour) => (
-                    <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
+                    <div key={hour.value} {...api.getHourLabelProps({ hour })}>
                       {hour.label}
                     </div>
                   ))}
@@ -104,7 +104,7 @@ export default function Page() {
                 {api.visibleDays.map((date) => (
                   <div key={date.toString()} {...api.getDayColumnProps({ date })}>
                     {api.hourRange.hours.map((hour) => (
-                      <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
+                      <div key={hour.value} {...api.getHourLineProps({ hour })} />
                     ))}
                     <div {...api.getCurrentTimeIndicatorProps({ date })} />
                     {api.getEventsForDay(date).map((event) => (
