@@ -834,3 +834,23 @@
 .scheduler-event-popover-actions [data-close] {
   margin-inline-start: auto;
 }
+.scheduler-event-popover-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #111;
+  margin-block-start: 4px;
+}
+.scheduler-event-popover-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  margin-block-end: 2px;
+}
+.scheduler-event-popover-link {
+  display: inline-block;
+  color: #2563eb;
+  margin-block-start: 2px;
+}

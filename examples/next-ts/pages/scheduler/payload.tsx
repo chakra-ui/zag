@@ -1,7 +1,8 @@
+import * as popover from "@zag-js/popover"
 import * as scheduler from "@zag-js/scheduler"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { schedulerControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -51,23 +52,49 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState<Event[]>(INITIAL)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const anchorRef = useRef<HTMLElement | null>(null)
 
-  const service = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
+  const schedulerService = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
     id: useId(),
     ...controls.context,
     events,
     onEventDragEnd: (d) => setEvents(d.apply),
     onEventResizeEnd: (d) => setEvents(d.apply),
-    onEventClick: (d) => setSelectedId(d.event.id),
+    onEventClick: (d) => {
+      const el = document.getElementById(`scheduler:${schedulerService.scope.id}:event:${d.event.id}`)
+      anchorRef.current = el
+      setSelectedId(d.event.id)
+      popoverApi.setOpen(true)
+      popoverApi.reposition()
+    },
   })
 
-  const api = scheduler.connect(service, normalizeProps)
+  const api = scheduler.connect(schedulerService, normalizeProps)
   const { visibleDays, hourRange, weekDays } = api
+
+  const popoverService = useMachine(popover.machine, {
+    id: useId(),
+    positioning: {
+      placement: "right",
+      gutter: 8,
+      getAnchorRect: () => {
+        const el = anchorRef.current
+        if (!el) return null
+        const r = el.getBoundingClientRect()
+        return { x: r.x, y: r.y, width: r.width, height: r.height }
+      },
+    },
+    onOpenChange: (details) => {
+      if (!details.open) setSelectedId(null)
+    },
+  })
+  const popoverApi = popover.connect(popoverService, normalizeProps)
+
   const selected = selectedId ? (api.getEventById(selectedId) ?? null) : null
 
   return (
     <>
-      <main className="scheduler scheduler-with-aside">
+      <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
@@ -135,37 +162,50 @@ export default function Page() {
           </div>
         </div>
 
-        <aside className="scheduler-event-panel">
-          {selected && selected.payload ? (
-            <>
-              <div className="scheduler-event-panel-title">{selected.title}</div>
-              <div className="scheduler-event-panel-time">{api.formatTimeRange(selected.start, selected.end)}</div>
-              <div className="scheduler-event-panel-section">
-                <div className="scheduler-event-panel-section-label">Attendees</div>
-                <div>{selected.payload.attendees.join(", ")}</div>
-              </div>
-              <div className="scheduler-event-panel-row">
-                <span className="scheduler-event-panel-row-label">Location: </span>
-                {selected.payload.location}
-              </div>
-              {selected.payload.meetingUrl && (
-                <a
-                  href={selected.payload.meetingUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="scheduler-event-panel-link"
+        <Portal>
+          <div {...popoverApi.getPositionerProps()}>
+            <div {...popoverApi.getContentProps()} className="scheduler-event-popover">
+              {selected && selected.payload ? (
+                <div
+                  className="scheduler-event-popover-body"
+                  style={{ ["--event-color"]: selected.color } as React.CSSProperties}
                 >
-                  Join meeting →
-                </a>
-              )}
-            </>
-          ) : (
-            <div className="scheduler-event-panel-empty">Click an event to see its typed payload.</div>
-          )}
-        </aside>
+                  <div className="scheduler-event-popover-row">
+                    <span aria-hidden className="scheduler-event-popover-dot" />
+                    <strong className="scheduler-event-popover-title">{selected.title}</strong>
+                  </div>
+                  <div className="scheduler-event-popover-time">
+                    {api.formatTimeRange(selected.start, selected.end)} ·{" "}
+                    {api.formatDuration(selected.start, selected.end)}
+                  </div>
+                  <div className="scheduler-event-popover-meta">
+                    <div>
+                      <span className="scheduler-event-popover-label">Attendees</span>
+                      <div>{selected.payload.attendees.join(", ")}</div>
+                    </div>
+                    <div>
+                      <span className="scheduler-event-popover-label">Location</span>
+                      <div>{selected.payload.location}</div>
+                    </div>
+                    {selected.payload.meetingUrl && (
+                      <a
+                        href={selected.payload.meetingUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="scheduler-event-popover-link"
+                      >
+                        Join meeting →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </Portal>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} />
+        <StateVisualizer state={schedulerService} />
       </Toolbar>
     </>
   )

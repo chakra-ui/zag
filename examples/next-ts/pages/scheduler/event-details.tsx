@@ -1,6 +1,3 @@
-// Click an event to open a popover anchored to that event element showing
-// its details, with minimal rename + delete actions. Demonstrates wiring
-// scheduler's onEventClick into a controlled popover via getAnchorRect.
 import * as popover from "@zag-js/popover"
 import * as scheduler from "@zag-js/scheduler"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
