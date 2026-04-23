@@ -144,7 +144,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
   const locale = prop("locale")
   const timeZone = prop("timeZone") ?? getLocalTimeZone()
-  const weekStartDay = prop("weekStartDay")
+  const startOfWeekProp = prop("startOfWeek")
   const dayStartHour = prop("dayStartHour")
   const dayEndHour = prop("dayEndHour")
   const dir = (prop("dir") ?? "ltr") as "ltr" | "rtl"
@@ -166,7 +166,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     visibleDays = visibleDays.filter((d) => allowed.has(new Date(d.year, d.month - 1, d.day).getDay()))
   }
 
-  const weekDaysRaw = getWeekDays(visibleRange.start, weekStartDay, timeZone, locale) as unknown as Array<{
+  const weekDaysRaw = getWeekDays(visibleRange.start, startOfWeekProp, timeZone, locale) as unknown as Array<{
     value: DateValue
     short: string
     long: string
@@ -256,13 +256,13 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     return dow === 0 || dow === 6
   }
 
-  const weekStartDayName = toDayOfWeekToken(weekStartDay)
+  const startOfWeekToken = toDayOfWeekToken(startOfWeekProp)
 
   const getMonthGrid = (ref: DateValue = date): MonthGridDay[][] => {
     const monthStart = startOfMonth(ref)
     const monthEnd = endOfMonth(ref)
-    const gridStart = startOfWeek(monthStart, locale, weekStartDayName)
-    const gridEnd = endOfWeek(monthEnd, locale, weekStartDayName)
+    const gridStart = startOfWeek(monthStart, locale, startOfWeekToken)
+    const gridEnd = endOfWeek(monthEnd, locale, startOfWeekToken)
     const weeks: MonthGridDay[][] = []
     let cur: DateValue = gridStart
     while (cur.compare(gridEnd) <= 0) {
@@ -810,12 +810,13 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getCurrentTimeIndicatorProps() {
+    getCurrentTimeIndicatorProps({ date: d }) {
       const currentTime = now(prop("timeZone") ?? getLocalTimeZone())
       const dayStart = prop("dayStartHour")
       const dayEnd = prop("dayEndHour")
       const hour = currentTime.hour
-      const inRange = hour >= dayStart && hour < dayEnd
+      const isToday = sameDay(currentTime, d)
+      const inRange = isToday && hour >= dayStart && hour < dayEnd
       const percent = getTimePercent(currentTime, dayStart, dayEnd)
       return normalize.element({
         ...parts.currentTimeIndicator.attrs(scope.id),

@@ -21,9 +21,9 @@ export function getVisibleRange(
   view: ViewType,
   date: DateValue,
   locale: string,
-  weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6,
+  firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6,
 ): { start: DateValue; end: DateValue } {
-  const wsd = toDayOfWeek(weekStartDay)
+  const wsd = toDayOfWeek(firstDay)
   switch (view) {
     case "day":
       return { start: date, end: date }

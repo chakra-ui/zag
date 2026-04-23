@@ -42,7 +42,7 @@ export const props = createProps<SchedulerProps>()([
   "timeZone",
   "translations",
   "view",
-  "weekStartDay",
+  "startOfWeek",
   "workWeekDays",
   "workWeekOnly",
 ])

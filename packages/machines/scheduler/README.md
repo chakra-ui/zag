@@ -117,7 +117,7 @@ One cast at the machine boundary — `connect`'s return infers the payload type.
 | view | visible range |
 |---|---|
 | `day` | focused date |
-| `week` | start-of-week to end-of-week, honoring `weekStartDay` / locale |
+| `week` | start-of-week to end-of-week, honoring `startOfWeek` / locale |
 | `month` | full weeks enclosing the focused month |
 | `year` | January to December of focused year |
 | `agenda` | 30-day rolling window from focused date |
@@ -136,7 +136,7 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `dayEndHour` | `number` | `24` | last hour shown |
 | `workWeekDays` | `number[]` | `[1,2,3,4,5]` | `0`=Sun…`6`=Sat |
 | `workWeekOnly` | `boolean` | `false` | in week view, filter `visibleDays` to `workWeekDays` |
-| `weekStartDay` | `0–6` | locale default | override first day of week |
+| `startOfWeek` | `0–6` | locale default | override first day of week |
 | `locale` | BCP 47 string | `"en-US"` | drives formatters + start-of-week |
 | `timeZone` | IANA string | local | drives `today` + all formatters |
 | `dir` | `"ltr" \| "rtl"` | `"ltr"` | writing direction; flips arrows + logical props |

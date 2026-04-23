@@ -1,24 +1,12 @@
-import { createMachine, memo } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-query"
 import { getLocalTimeZone, today } from "@internationalized/date"
+import { createMachine, memo } from "@zag-js/core"
+import type { DateValue } from "@zag-js/date-utils"
+import { getNearestScrollableAncestor, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
+import { pointToDateTime, pointToTimeOnDay } from "./utils/drag"
 import { getMinutesBetween } from "./utils/time"
 import { getNextDate, getPrevDate, getVisibleRange } from "./utils/visible-range"
-import { pointToDateTime, pointToTimeOnDay } from "./utils/drag"
-
-function findScrollableAncestor(el: HTMLElement | null | undefined): HTMLElement | null {
-  let node: HTMLElement | null = el?.parentElement ?? null
-  while (node) {
-    const style = node.ownerDocument.defaultView?.getComputedStyle(node)
-    const overflowY = style?.overflowY ?? ""
-    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
-      return node
-    }
-    node = node.parentElement
-  }
-  return null
-}
 
 export const machine = createMachine<SchedulerSchema>({
   props({ props }) {
@@ -62,10 +50,7 @@ export const machine = createMachine<SchedulerSchema>({
       selectedEventId: bindable<string | null>(() => ({
         defaultValue: null,
       })),
-      selectedSlot: bindable<{
-        start: import("@internationalized/date").DateValue
-        end: import("@internationalized/date").DateValue
-      } | null>(() => ({
+      selectedSlot: bindable<{ start: DateValue; end: DateValue } | null>(() => ({
         defaultValue: null,
       })),
       liveDrag: bindable<SchedulerSchema["context"]["liveDrag"]>(() => ({
@@ -92,8 +77,8 @@ export const machine = createMachine<SchedulerSchema>({
 
   computed: {
     visibleRange: memo(
-      ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale"), prop("weekStartDay")] as const,
-      ([view, date, locale, weekStartDay]) => getVisibleRange(view, date, locale, weekStartDay),
+      ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale"), prop("startOfWeek")],
+      ([view, date, locale, startOfWeek]) => getVisibleRange(view, date, locale, startOfWeek),
     ),
     isInteractive: ({ prop }) => !prop("disabled"),
   },
@@ -204,7 +189,8 @@ export const machine = createMachine<SchedulerSchema>({
 
         const EDGE_THRESHOLD = 50
         const MAX_SCROLL_SPEED = 12
-        const scrollEl = findScrollableAncestor(dom.getGridEl(scope))
+        const gridEl = dom.getGridEl(scope)
+        const scrollEl = gridEl ? getNearestScrollableAncestor(gridEl) : null
         let scrollRafId: number | null = null
         let scrollDir = 0
 

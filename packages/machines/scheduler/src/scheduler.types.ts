@@ -23,6 +23,9 @@ export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly"
  * variant and supply an `expandRecurrence` prop.
  */
 export interface RecurrenceRule {
+  /**
+   * Repeat frequency.
+   */
   freq: RecurrenceFrequency
   /**
    * Repeat every N units of `freq`.
@@ -47,18 +50,48 @@ export interface RecurrenceRule {
  * Legacy rrule-string form — user supplies their own RRULE library via `expandRecurrence`.
  */
 export interface RRuleRecurrence {
+  /**
+   * The rrule string. For example, "RRULE:FREQ=DAILY;INTERVAL=1".
+   */
   rrule: string
+  /**
+   * Dates to skip.
+   */
   exdate?: DateValue[] | undefined
 }
 
 export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
+  /**
+   * The event id.
+   */
   id: string
+  /**
+   * The event title.
+   */
   title: string
+  /**
+   * The event start date.
+   */
   start: DateValue
+  /**
+   * The event end date.
+   */
   end: DateValue
+  /**
+   * Whether the event is all-day.
+   */
   allDay?: boolean | undefined
+  /**
+   * The event color.
+   */
   color?: string | undefined
+  /**
+   * The event recurrence.
+   */
   recurrence?: RecurrenceRule | RRuleRecurrence | undefined
+  /**
+   * Whether the event is disabled.
+   */
   disabled?: boolean | undefined
   /**
    * Arbitrary typed metadata attached to the event (attendees, location, links…).
@@ -253,7 +286,7 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
   /**
    * Override the first day of the week (0=Sun…6=Sat). Falls back to locale default.
    */
-  weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined
+  startOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined
   /**
    * Show week numbers in week view.
    * @default false
@@ -575,7 +608,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
    */
   formatDuration: (start: DateValue, end: DateValue) => string
   /**
-   * Day-of-week labels ordered by weekStartDay/locale.
+   * Day-of-week labels ordered by startOfWeek/locale.
    */
   weekDays: WeekDay[]
   /**
@@ -679,7 +712,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   getDayCellProps: (props: DayCellProps) => T["element"]
   getEventProps: (props: EventProps<E>) => T["element"]
   getEventResizeHandleProps: (props: EventResizeHandleProps<E>) => T["element"]
-  getCurrentTimeIndicatorProps: () => T["element"]
+  getCurrentTimeIndicatorProps: (props: DayColumnProps) => T["element"]
   getMoreEventsProps: (props: MoreEventsProps) => T["button"]
   /**
    * Drag preview overlay for a day column — floating box at the predicted drop

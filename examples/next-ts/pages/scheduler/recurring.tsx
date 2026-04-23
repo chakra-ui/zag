@@ -46,7 +46,6 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
-  const { visibleDays, hourRange, weekDays } = api
 
   return (
     <>
@@ -68,9 +67,9 @@ export default function Page() {
           <div className="scheduler-time-grid-wrapper">
             <div className="scheduler-col-headers">
               <div className="scheduler-header-cell scheduler-gutter-header" />
-              {visibleDays.map((date, i) => (
+              {api.visibleDays.map((date, i) => (
                 <div key={date.toString()} className="scheduler-header-cell">
-                  <span className="scheduler-header-day-label">{weekDays[i % 7].short}</span>
+                  <span className="scheduler-header-day-label">{api.weekDays[i % 7].short}</span>
                   <span className="scheduler-header-day-num">{date.day}</span>
                 </div>
               ))}
@@ -79,18 +78,19 @@ export default function Page() {
             <div className="scheduler-time-grid-scroll">
               <div {...api.getGridProps()} className="scheduler-time-grid">
                 <div {...api.getTimeGutterProps()}>
-                  {hourRange.hours.map((hour) => (
+                  {api.hourRange.hours.map((hour) => (
                     <div key={hour.value} className="scheduler-hour-label" style={hour.style}>
                       {hour.label}
                     </div>
                   ))}
                 </div>
 
-                {visibleDays.map((date) => (
+                {api.visibleDays.map((date) => (
                   <div key={date.toString()} {...api.getDayColumnProps({ date })}>
-                    {hourRange.hours.map((hour) => (
+                    {api.hourRange.hours.map((hour) => (
                       <div key={hour.value} className="scheduler-hour-line" style={hour.style} />
                     ))}
+                    <div {...api.getCurrentTimeIndicatorProps({ date })} />
                     {api.getEventsForDay(date).map((event) => (
                       <div key={event.id} {...api.getEventProps({ event })}>
                         <div className="scheduler-event-title">{event.title}</div>

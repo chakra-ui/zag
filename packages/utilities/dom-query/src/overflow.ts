@@ -52,8 +52,20 @@ export interface ScrollOptions extends ScrollIntoViewOptions {
   rootEl: HTMLElement | null
 }
 
-function isScrollable(el: HTMLElement): boolean {
+export function isScrollable(el: HTMLElement): boolean {
   return el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
+}
+
+const SCROLLABLE_RE = /auto|scroll/
+
+export function getNearestScrollableAncestor(el: Node): HTMLElement | null {
+  const parent = getParentNode(el)
+  if (isRootElement(parent)) return null
+  if (isHTMLElement(parent)) {
+    const { overflow, overflowX, overflowY } = getWindow(parent).getComputedStyle(parent)
+    if (SCROLLABLE_RE.test(overflow + overflowX + overflowY) && isScrollable(parent)) return parent
+  }
+  return getNearestScrollableAncestor(parent)
 }
 
 export function scrollIntoView(el: HTMLElement | null | undefined, options?: ScrollOptions): void {
