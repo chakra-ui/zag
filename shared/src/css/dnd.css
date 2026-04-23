@@ -110,14 +110,38 @@
   display: grid;
   grid-template-columns: repeat(var(--column-count, 3), 1fr);
   gap: 8px;
+
+  [data-dnd-drop-indicator] {
+    inset: 0;
+    height: auto;
+    background: transparent;
+    border: 2px solid var(--dnd-indicator, #3b82f6);
+    border-radius: 8px;
+    transform: none;
+
+    &[data-placement="before"],
+    &[data-placement="after"] {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transform: none;
+    }
+  }
+
+  [data-dnd-drop-target][data-drop-target] {
+    opacity: 0.2;
+  }
 }
 
 /* Tree DnD composition */
-.tree-view [data-dnd-drag-handle] {
-  opacity: 0.5;
-  display: flex;
-}
+.tree-view {
+  [data-dnd-drag-handle] {
+    opacity: 0.5;
+    display: flex;
+  }
 
-.tree-view [data-dnd-drop-indicator] {
-  left: calc(var(--depth, 0) * 24px);
+  [data-dnd-drop-indicator] {
+    left: calc(var(--depth, 0) * 24px);
+  }
 }
