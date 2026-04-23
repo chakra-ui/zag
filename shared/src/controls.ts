@@ -1,6 +1,22 @@
 import { defineControls } from "./define-controls"
 import * as dateInput from "@zag-js/date-input"
 
+export const schedulerControls = defineControls({
+  // Controlled "view" so changes in the panel immediately take effect
+  // (a `defaultView` only applies on mount and ignores later edits).
+  view: {
+    type: "select",
+    options: ["day", "week", "month", "year", "agenda"] as const,
+    defaultValue: "week",
+  },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  disabled: { type: "boolean", defaultValue: false },
+  showCurrentTime: { type: "boolean", defaultValue: true },
+  dayStartHour: { type: "number", defaultValue: 7 },
+  dayEndHour: { type: "number", defaultValue: 20 },
+  slotInterval: { type: "number", defaultValue: 30 },
+})
+
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },

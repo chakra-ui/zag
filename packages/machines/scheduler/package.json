@@ -1,0 +1,38 @@
+{
+  "name": "@zag-js/scheduler",
+  "version": "1.40.0",
+  "description": "Core logic for the scheduler widget implemented as a state machine",
+  "keywords": ["js", "machine", "statechart", "component", "chakra-ui", "scheduler"],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/scheduler",
+  "sideEffects": false,
+  "files": ["dist"],
+  "publishConfig": { "access": "public" },
+  "bugs": { "url": "https://github.com/chakra-ui/zag/issues" },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/date-utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "@internationalized/date": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@internationalized/date": "3.12.0",
+    "clean-package": "2.2.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "clean-package": "./clean-package.config.json"
+}

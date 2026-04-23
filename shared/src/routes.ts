@@ -18,6 +18,26 @@ export interface ComponentRoute {
 
 export const componentRoutes: ComponentRoute[] = [
   {
+    slug: "scheduler",
+    label: "Scheduler",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "views", title: "Day / Week / Month Views" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "work-week", title: "Work Week" },
+      { slug: "all-day", title: "All-Day Events" },
+      { slug: "recurring", title: "Recurring Events" },
+      { slug: "mobile-month-view", title: "Mobile Month View" },
+      { slug: "year-view", title: "Year View" },
+      { slug: "agenda", title: "Agenda" },
+      { slug: "with-date-picker", title: "With Date Picker" },
+      { slug: "payload", title: "Typed Payload" },
+      { slug: "event-details", title: "Event Details (Popover)" },
+      { slug: "click-to-create", title: "Double-click to Create (Dialog)" },
+      { slug: "stress", title: "Stress (1000+ events)" },
+    ],
+  },
+  {
     slug: "cascade-select",
     label: "Cascade Select",
     examples: [{ slug: "basic", title: "Basic" }],

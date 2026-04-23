@@ -74,6 +74,7 @@
     "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
+    "@zag-js/scheduler": "workspace:*",
     "@zag-js/scroll-area": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
