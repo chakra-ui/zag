@@ -11,12 +11,12 @@ const TODAY = scheduler.getToday()
 
 const INITIAL: scheduler.SchedulerEvent[] = [
   {
-    id: "weekly-standup",
-    title: "Weekly standup",
-    start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
-    end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
+    id: "mwf-meeting",
+    title: "MWF standup",
+    start: TODAY.subtract({ days: 7 }).set({ hour: 9, minute: 0 }),
+    end: TODAY.subtract({ days: 7 }).set({ hour: 9, minute: 30 }),
     color: "#3b82f6",
-    recurrence: { freq: "weekly" },
+    recurrence: { rrule: "FREQ=WEEKLY;BYDAY=MO,WE,FR" },
   },
   {
     id: "biweekly-sync",
@@ -24,13 +24,29 @@ const INITIAL: scheduler.SchedulerEvent[] = [
     start: TODAY.subtract({ days: 3 }).set({ hour: 11, minute: 0 }),
     end: TODAY.subtract({ days: 3 }).set({ hour: 12, minute: 0 }),
     color: "#10b981",
-    recurrence: { freq: "weekly", interval: 2, count: 8 },
+    recurrence: { rrule: "FREQ=WEEKLY;INTERVAL=2;BYDAY=TU;COUNT=8" },
+  },
+  {
+    id: "first-monday",
+    title: "First-Monday review",
+    start: TODAY.set({ day: 1, hour: 14, minute: 0 }),
+    end: TODAY.set({ day: 1, hour: 15, minute: 0 }),
+    color: "#8b5cf6",
+    recurrence: { rrule: "FREQ=MONTHLY;BYDAY=1MO" },
+  },
+  {
+    id: "month-15",
+    title: "Invoice day",
+    start: TODAY.set({ day: 15, hour: 10, minute: 0 }),
+    end: TODAY.set({ day: 15, hour: 10, minute: 30 }),
+    color: "#ec4899",
+    recurrence: { rrule: "FREQ=MONTHLY;BYMONTHDAY=15" },
   },
   {
     id: "one-off",
     title: "Quarterly review",
-    start: TODAY.subtract({ days: 2 }).set({ hour: 14, minute: 0 }),
-    end: TODAY.subtract({ days: 2 }).set({ hour: 15, minute: 0 }),
+    start: TODAY.subtract({ days: 2 }).set({ hour: 16, minute: 0 }),
+    end: TODAY.subtract({ days: 2 }).set({ hour: 17, minute: 0 }),
     color: "#f59e0b",
   },
 ]
@@ -67,9 +83,9 @@ export default function Page() {
           <div className="scheduler-time-grid-wrapper">
             <div className="scheduler-col-headers">
               <div className="scheduler-header-cell scheduler-gutter-header" />
-              {api.visibleDays.map((date, i) => (
+              {api.visibleDays.map((date) => (
                 <div key={date.toString()} className="scheduler-header-cell">
-                  <span className="scheduler-header-day-label">{api.weekDays[i % 7].short}</span>
+                  <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
                   <span className="scheduler-header-day-num">{date.day}</span>
                 </div>
               ))}

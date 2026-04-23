@@ -1,4 +1,4 @@
-import type { EventPosition, SchedulerEvent } from "../scheduler.types"
+import type { EventPosition, SchedulerEvent, SchedulerPayload } from "../scheduler.types"
 import { getHourMinute } from "./time"
 
 interface LayoutAssignment {
@@ -6,7 +6,9 @@ interface LayoutAssignment {
   totalColumns: number
 }
 
-function computeColumnLayout<E>(events: SchedulerEvent<E>[]): Map<string, LayoutAssignment> {
+function computeColumnLayout<E extends SchedulerPayload = SchedulerPayload>(
+  events: SchedulerEvent<E>[],
+): Map<string, LayoutAssignment> {
   const result = new Map<string, LayoutAssignment>()
   if (events.length === 0) return result
 
@@ -57,7 +59,7 @@ function computeColumnLayout<E>(events: SchedulerEvent<E>[]): Map<string, Layout
   return result
 }
 
-export function computeEventLayout<E>(
+export function computeEventLayout<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
   dayStartHour: number,
   dayEndHour: number,
@@ -98,7 +100,7 @@ export function computeEventLayout<E>(
   return result
 }
 
-export function getEventPosition<E>(
+export function getEventPosition<E extends SchedulerPayload = SchedulerPayload>(
   event: SchedulerEvent<E>,
   events: SchedulerEvent<E>[],
   dayStartHour: number,

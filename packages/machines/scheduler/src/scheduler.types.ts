@@ -6,102 +6,72 @@ import type { DateValue } from "@internationalized/date"
  * Event data model
  * -----------------------------------------------------------------------------*/
 
-/**
- * Base type for event payloads. Defaults to `any` so the generic-threading
- * pattern `scheduler.machine as scheduler.Machine<MyPayload>` works without
- * coercing through `unknown`. Matches the `CollectionItem = any` convention
- * used by select / combobox / listbox / gridlist / tree-view.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SchedulerPayload = any
-
-export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly"
+export type SchedulerPayload = Record<string, any>
 
 /**
- * Structured recurrence the machine can expand natively — no user code needed.
- * For rules beyond freq + interval + count/until + exdate, use the `rrule`
- * variant and supply an `expandRecurrence` prop.
+ * Recurrence rule for an event. The `rrule` field follows RFC5545.
+ *
+ * Simple rules (`FREQ` + `INTERVAL` + `COUNT`/`UNTIL`) are expanded natively
+ * by the machine. Rules using `BYDAY`, `BYMONTHDAY`, `BYSETPOS`, etc. require
+ * the consumer to supply an `expandRecurrence` prop backed by a full RRULE
+ * library (e.g. `rrule.js`).
  */
-export interface RecurrenceRule {
+export interface Recurrence {
   /**
-   * Repeat frequency.
-   */
-  freq: RecurrenceFrequency
-  /**
-   * Repeat every N units of `freq`.
-   * @default 1
-   */
-  interval?: number | undefined
-  /**
-   * Stop after this many instances (inclusive of the original).
-   */
-  count?: number | undefined
-  /**
-   * Last date (inclusive) at which instances may occur.
-   */
-  until?: DateValue | undefined
-  /**
-   * Dates to skip.
-   */
-  exdate?: DateValue[] | undefined
-}
-
-/**
- * Legacy rrule-string form — user supplies their own RRULE library via `expandRecurrence`.
- */
-export interface RRuleRecurrence {
-  /**
-   * The rrule string. For example, "RRULE:FREQ=DAILY;INTERVAL=1".
+   * RFC5545 RRULE string, e.g. `"FREQ=WEEKLY;BYDAY=MO,WE;COUNT=16"`.
    */
   rrule: string
   /**
-   * Dates to skip.
+   * Dates to skip (excluded occurrences).
    */
   exdate?: DateValue[] | undefined
+  /**
+   * Explicit series start. Defaults to the event's `start`.
+   */
+  dtstart?: DateValue | undefined
 }
 
 export interface SchedulerEvent<T extends SchedulerPayload = SchedulerPayload> {
   /**
-   * The event id.
+   * Unique id.
    */
   id: string
   /**
-   * The event title.
+   * Display title.
    */
   title: string
   /**
-   * The event start date.
+   * Start date/time.
    */
   start: DateValue
   /**
-   * The event end date.
+   * End date/time.
    */
   end: DateValue
   /**
-   * Whether the event is all-day.
+   * Render as an all-day event.
    */
   allDay?: boolean | undefined
   /**
-   * The event color.
+   * Surfaces as the `--event-color` CSS var.
    */
   color?: string | undefined
   /**
-   * The event recurrence.
+   * Recurrence rule (RFC5545 RRULE string + exclusions).
    */
-  recurrence?: RecurrenceRule | RRuleRecurrence | undefined
+  recurrence?: Recurrence | undefined
   /**
-   * Whether the event is disabled.
+   * When true, the event cannot be clicked, dragged, or resized.
    */
   disabled?: boolean | undefined
   /**
-   * Arbitrary typed metadata attached to the event (attendees, location, links…).
+   * Arbitrary typed metadata — flows through every callback detail.
    */
   payload?: T | undefined
 }
 
 /**
  * Expands a recurring event into concrete instances within a date range.
- * Consumers provide their preferred RRULE library (rrule.js, rrule-alt, etc.).
  */
 export type RecurrenceExpander<T extends SchedulerPayload = SchedulerPayload> = (
   event: SchedulerEvent<T>,
@@ -357,6 +327,11 @@ interface SchedulerContext {
 
 type Computed = Readonly<{
   visibleRange: { start: DateValue; end: DateValue }
+  weekDayFormatters: {
+    short: Intl.DateTimeFormat
+    long: Intl.DateTimeFormat
+    narrow: Intl.DateTimeFormat
+  }
   isInteractive: boolean
 }>
 
@@ -519,6 +494,9 @@ export interface MoreEventsProps {
 }
 
 export interface ViewItemProps {
+  /**
+   * The view type to render.
+   */
   view: ViewType
 }
 
@@ -542,7 +520,13 @@ export interface WeekDay {
 }
 
 export interface VisibleRangeText {
+  /**
+   * Start date of the visible range.
+   */
   start: string
+  /**
+   * End date of the visible range.
+   */
   end: string
   /**
    * Single localized string suitable for a header title, e.g. "Apr 13 – 19, 2026".
@@ -585,7 +569,7 @@ export interface HourRange {
   hours: HourEntry[]
 }
 
-export interface SchedulerApi<T extends PropTypes = PropTypes, E extends SchedulerPayload = SchedulerPayload> {
+export interface SchedulerApi<T extends PropTypes = PropTypes, P extends SchedulerPayload = SchedulerPayload> {
   /**
    * Current view.
    */
@@ -629,6 +613,11 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
    */
   formatDuration: (start: DateValue, end: DateValue) => string
   /**
+   * Locale/timezone-aware weekday label for a specific date.
+   * @default "short"
+   */
+  formatWeekDay: (date: DateValue, style?: "short" | "long" | "narrow") => string
+  /**
    * Day-of-week labels ordered by startOfWeek/locale.
    */
   weekDays: WeekDay[]
@@ -643,17 +632,26 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   /**
    * All events (recurring instances expanded against the visible range).
    */
-  events: SchedulerEvent<E>[]
+  events: SchedulerEvent<P>[]
   /**
    * Events whose range overlaps `visibleRange` — the set you actually render.
    */
-  visibleEvents: SchedulerEvent<E>[]
+  visibleEvents: SchedulerEvent<P>[]
   /**
    * Visible events grouped by day and sorted by start. Use for agenda / list layouts.
    */
-  agendaGroups: { date: DateValue; events: SchedulerEvent<E>[] }[]
+  agendaGroups: { date: DateValue; events: SchedulerEvent<P>[] }[]
+  /**
+   * Whether the user is currently dragging an event.
+   */
   isDragging: boolean
+  /**
+   * Whether the user is currently selecting a slot.
+   */
   isSlotSelecting: boolean
+  /**
+   * Whether the user is currently resizing an event.
+   */
   isResizing: boolean
   /**
    * State of the active drag or resize — null when idle. `start`/`end` track the
@@ -661,7 +659,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
    */
   dragState: {
     kind: "drag" | "resize"
-    event: SchedulerEvent<E>
+    event: SchedulerEvent<P>
     start: DateValue
     end: DateValue
     origin: { start: DateValue; end: DateValue }
@@ -670,17 +668,33 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
    * Slot the user selected (clicked or drag-selected). Clears on escape or new click.
    */
   selectedSlot: { start: DateValue; end: DateValue } | null
-
+  /**
+   * Set the current view.
+   */
   setView: (view: ViewType) => void
+  /**
+   * Set the current date.
+   */
   setDate: (date: DateValue) => void
+  /**
+   * Go to today.
+   */
   goToToday: () => void
+  /**
+   * Go to next.
+   */
   goToNext: () => void
+  /**
+   * Go to previous.
+   */
   goToPrev: () => void
   /**
    * Dismiss the selected slot highlight (e.g. when a create dialog closes).
    */
   clearSelectedSlot: () => void
-
+  /**
+   * Get the state of the event.
+   */
   getEventState: (id: string) => EventStateDetail
   /**
    * Day-level flags for the given column — use to conditionally render custom
@@ -691,7 +705,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   /**
    * Numeric position within a day column — use for custom layouts.
    */
-  getEventPosition: (event: SchedulerEvent<E>) => EventPosition
+  getEventPosition: (event: SchedulerEvent<P>) => EventPosition
   /**
    * 0..1 fraction of the visible day range corresponding to the given date's time-of-day.
    */
@@ -712,10 +726,19 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   /**
    * O(1) event lookup by id (reads from the current events list).
    */
-  getEventById: (id: string) => SchedulerEvent<E> | undefined
-  getEventsForDay: (date: DateValue) => SchedulerEvent<E>[]
-  getEventsForSlot: (start: DateValue, end: DateValue) => SchedulerEvent<E>[]
-  hasConflict: (event: SchedulerEvent<E>) => boolean
+  getEventById: (id: string) => SchedulerEvent<P> | undefined
+  /**
+   * Get events for a given day.
+   */
+  getEventsForDay: (date: DateValue) => SchedulerEvent<P>[]
+  /**
+   * Get events for a given slot.
+   */
+  getEventsForSlot: (start: DateValue, end: DateValue) => SchedulerEvent<P>[]
+  /**
+   * Whether the event has a conflict.
+   */
+  hasConflict: (event: SchedulerEvent<P>) => boolean
 
   getRootProps: () => T["element"]
   getHeaderProps: () => T["element"]
@@ -731,25 +754,11 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, E extends Schedul
   getTimeGutterProps: () => T["element"]
   getDayColumnProps: (props: DayColumnProps) => T["element"]
   getDayCellProps: (props: DayCellProps) => T["element"]
-  getEventProps: (props: EventProps<E>) => T["element"]
-  getEventResizeHandleProps: (props: EventResizeHandleProps<E>) => T["element"]
+  getEventProps: (props: EventProps<P>) => T["element"]
+  getEventResizeHandleProps: (props: EventResizeHandleProps<P>) => T["element"]
   getCurrentTimeIndicatorProps: (props: DayColumnProps) => T["element"]
   getMoreEventsProps: (props: MoreEventsProps) => T["button"]
-  /**
-   * Drag preview overlay for a day column — floating box at the predicted drop
-   * position. Always returns spreadable props; hidden when no drag is active or
-   * the drag isn't in this column.
-   */
   getDragPreviewProps: (props: DayColumnProps) => T["element"]
-  /**
-   * Drag origin outline for a day column — "was here" marker at the gesture's
-   * starting bounds. Always returns spreadable props; hidden when no drag is
-   * active or the drag didn't start in this column.
-   */
   getDragOriginProps: (props: DayColumnProps) => T["element"]
-  /**
-   * Selected-slot highlight for a day column. Always returns spreadable props;
-   * hidden when no slot is selected or the slot isn't in this column.
-   */
   getSelectedSlotProps: (props: DayColumnProps) => T["element"]
 }

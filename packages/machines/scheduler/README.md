@@ -93,7 +93,7 @@ interface SchedulerEvent<T = any> {
   allDay?: boolean
   color?: string       // surfaces as --event-color CSS var
   disabled?: boolean
-  recurrence?: RecurrenceRule | { rrule: string; exdate?: DateValue[] }
+  recurrence?: { rrule: string; exdate?: DateValue[]; dtstart?: DateValue }
   payload?: T          // your own metadata; flows through every callback detail
 }
 ```
@@ -246,33 +246,62 @@ scheduler.getDurationMinutes(start, end)
 
 ## Recurring events
 
-Native expansion for common rules — no user code needed:
+Recurrence follows RFC5545 — an `rrule` string plus optional `exdate` / `dtstart`:
 
 ```ts
-{
-  id: "standup",
-  title: "Daily standup",
-  start: today.set({ hour: 9 }),
-  end: today.set({ hour: 9, minute: 30 }),
-  recurrence: { freq: "daily", until: endOfMonth },   // or weekly / monthly / yearly
-}
-{
-  recurrence: { freq: "weekly", interval: 2, count: 12 },  // biweekly × 12
-}
-{
-  recurrence: { freq: "monthly", exdate: [holidayDate] },
-}
+// every day
+recurrence: { rrule: "FREQ=DAILY" }
+
+// biweekly on Tuesdays, 8 times
+recurrence: { rrule: "FREQ=WEEKLY;INTERVAL=2;BYDAY=TU;COUNT=8" }
+
+// MWF meetings
+recurrence: { rrule: "FREQ=WEEKLY;BYDAY=MO,WE,FR" }
+
+// first Monday of each month
+recurrence: { rrule: "FREQ=MONTHLY;BYDAY=1MO" }
+
+// last Friday of each month
+recurrence: { rrule: "FREQ=MONTHLY;BYDAY=-1FR" }
+
+// 15th of each month
+recurrence: { rrule: "FREQ=MONTHLY;BYMONTHDAY=15" }
+
+// last day of each month
+recurrence: { rrule: "FREQ=MONTHLY;BYMONTHDAY=-1" }
+
+// with exclusions
+recurrence: { rrule: "FREQ=WEEKLY", exdate: [holidayDate] }
 ```
 
-For complex rules (BYDAY, BYMONTHDAY, …) supply your own expander:
+The machine natively expands:
+- `FREQ` / `INTERVAL` / `COUNT` / `UNTIL`
+- `BYDAY` (plain in weekly, positional in monthly — e.g. `1MO`, `-1FR`)
+- `BYMONTHDAY` (positive or negative, e.g. `15`, `-1`)
+- `exdate`, `dtstart`
+
+For rules using `BYSETPOS`, `BYMONTH`, `BYWEEKNO`, `BYYEARDAY`, or other unsupported features, supply an expander backed by a full RRULE library:
 
 ```tsx
 useMachine(scheduler.machine, {
   events,
   expandRecurrence: (event, range) => {
-    // your rrule.js / rrule-alt call here
-    // only invoked when event.recurrence has { rrule: string }
+    // invoke rrule.js (or similar) here
+    // only called when the rrule uses features beyond the simple subset
   },
+})
+```
+
+The same logic is exposed as a standalone util for server-side or custom rendering:
+
+```ts
+import { expandRecurringEvents } from "@zag-js/scheduler"
+
+const flat = expandRecurringEvents({
+  events,
+  range: { start, end },
+  limit: 2000,
+  expander: (event, range) => /* rrule.js */,
 })
 ```
 

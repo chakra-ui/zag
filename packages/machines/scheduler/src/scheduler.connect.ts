@@ -35,40 +35,9 @@ import { getTimePercent, rangesOverlap } from "./utils/time"
 import { computeEventLayout } from "./utils/layout"
 import { toDayOfWeekToken } from "./utils/visible-range"
 import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
-import type { MonthGridDay, RecurrenceRule, RecurrenceFrequency } from "./scheduler.types"
+import type { MonthGridDay } from "./scheduler.types"
 import { getDurationMinutes } from "./scheduler.utils"
-
-const FREQ_STEP: Record<RecurrenceFrequency, (i: number) => Parameters<DateValue["add"]>[0]> = {
-  daily: (i) => ({ days: i }),
-  weekly: (i) => ({ weeks: i }),
-  monthly: (i) => ({ months: i }),
-  yearly: (i) => ({ years: i }),
-}
-
-function expandNativeRecurrence<E extends SchedulerPayload>(
-  event: SchedulerEvent<E>,
-  rule: RecurrenceRule,
-  range: { start: DateValue; end: DateValue },
-): SchedulerEvent<E>[] {
-  const durationMinutes = getDurationMinutes(event.start, event.end)
-  const interval = rule.interval ?? 1
-  const step = FREQ_STEP[rule.freq]
-  const max = rule.count ?? Infinity
-  const exdate = rule.exdate ?? []
-  const out: SchedulerEvent<E>[] = []
-  let cur = event.start
-  let i = 0
-  while (i < max && cur.compare(range.end) <= 0) {
-    if (rule.until && cur.compare(rule.until) > 0) break
-    const skipped = exdate.some((d) => d.compare(cur) === 0)
-    if (!skipped && cur.compare(range.start) >= 0) {
-      out.push({ ...event, id: `${event.id}:${i}`, start: cur, end: cur.add({ minutes: durationMinutes }) })
-    }
-    cur = cur.add(step(interval))
-    i++
-  }
-  return out
-}
+import { expandRecurringEvents } from "./utils/rrule"
 
 export function connect<T extends PropTypes, E extends SchedulerPayload = SchedulerPayload>(
   service: Service<SchedulerSchema<E>>,
@@ -89,15 +58,12 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const isResizing = state.matches("event-resizing")
 
   const rawEvents = prop("events") ?? []
-  const expandRecurrence = prop("expandRecurrence")
-  const limit = prop("maxRecurrenceInstances")
-  const expandedEvents = rawEvents.flatMap((e) => {
-    const rec = e.recurrence
-    if (!rec) return [e]
-    if ("freq" in rec) return expandNativeRecurrence(e, rec, visibleRange)
-    return expandRecurrence ? expandRecurrence(e, visibleRange) : [e]
+  const events = expandRecurringEvents({
+    events: rawEvents,
+    range: visibleRange,
+    limit: prop("maxRecurrenceInstances"),
+    expander: prop("expandRecurrence"),
   })
-  const events = typeof limit === "number" ? expandedEvents.slice(0, limit) : expandedEvents
   const translations = prop("translations")
 
   const defaultTranslations = {
@@ -229,10 +195,13 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     month: "long",
     day: "numeric",
   })
+  const weekDayFormatters = computed("weekDayFormatters")
   const toJsDate = (d: DateValue): Date => toCalendarDateTime(d).toDate(timeZone)
   const formatTime = (d: DateValue): string => timeFormatter.format(toJsDate(d))
   const formatTimeRange = (s: DateValue, e: DateValue): string => `${formatTime(s)} – ${formatTime(e)}`
   const formatLongDate = (d: DateValue): string => longDateFormatter.format(toJsDate(d))
+  const formatWeekDay = (d: DateValue, style: "short" | "long" | "narrow" = "short"): string =>
+    weekDayFormatters[style].format(toJsDate(d))
   const formatDuration = (s: DateValue, e: DateValue): string => {
     const diff = Math.max(0, getDurationMinutes(s, e))
     const h = Math.floor(diff / 60)
@@ -326,6 +295,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     formatTimeRange,
     formatLongDate,
     formatDuration,
+    formatWeekDay,
     weekDays,
     hourRange,
     dir,

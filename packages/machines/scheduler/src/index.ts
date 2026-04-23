@@ -2,6 +2,8 @@ export { anatomy } from "./scheduler.anatomy"
 export { connect } from "./scheduler.connect"
 export { machine } from "./scheduler.machine"
 export { getToday, getDurationMinutes } from "./scheduler.utils"
+export { expandRecurringEvents } from "./utils/rrule"
+export type { ExpandRecurringEventsParams } from "./utils/rrule"
 export * from "./scheduler.props"
 export type {
   SchedulerApi as Api,
@@ -28,9 +30,7 @@ export type {
   EventStateDetail,
   MoreEventsProps,
   RecurrenceExpander,
-  RecurrenceRule,
-  RecurrenceFrequency,
-  RRuleRecurrence,
+  Recurrence,
   TimeSlotProps,
   ViewItemProps,
   ViewType,

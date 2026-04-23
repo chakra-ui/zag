@@ -165,9 +165,9 @@ export default function Page() {
             <div className="scheduler-time-grid-wrapper">
               <div className="scheduler-col-headers">
                 <div className="scheduler-header-cell scheduler-gutter-header" />
-                {api.visibleDays.map((date, i) => (
+                {api.visibleDays.map((date) => (
                   <div key={date.toString()} className="scheduler-header-cell">
-                    <span className="scheduler-header-day-label">{api.weekDays[i % 7].short}</span>
+                    <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
                     <span className="scheduler-header-day-num">{date.day}</span>
                   </div>
                 ))}

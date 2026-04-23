@@ -80,6 +80,14 @@ export const machine = createMachine<SchedulerSchema>({
       ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale"), prop("startOfWeek")],
       ([view, date, locale, startOfWeek]) => getVisibleRange(view, date, locale, startOfWeek),
     ),
+    weekDayFormatters: memo(
+      ({ prop }) => [prop("locale"), prop("timeZone")],
+      ([locale, timeZone]) => ({
+        short: new Intl.DateTimeFormat(locale, { timeZone, weekday: "short" }),
+        long: new Intl.DateTimeFormat(locale, { timeZone, weekday: "long" }),
+        narrow: new Intl.DateTimeFormat(locale, { timeZone, weekday: "narrow" }),
+      }),
+    ),
     isInteractive: ({ prop }) => !prop("disabled"),
   },
 
