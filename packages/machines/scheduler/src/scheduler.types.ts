@@ -92,7 +92,7 @@ export interface EventClickDetails<T extends SchedulerPayload = SchedulerPayload
   event: SchedulerEvent<T>
 }
 
-export interface EventDropDetails<T extends SchedulerPayload = SchedulerPayload> {
+export interface EventDragDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
   /** Index of the event in the `events` prop array (-1 if not found). */
   index: number
@@ -104,6 +104,8 @@ export interface EventDropDetails<T extends SchedulerPayload = SchedulerPayload>
    */
   apply: (events: SchedulerEvent<T>[]) => SchedulerEvent<T>[]
 }
+
+export type EventDragEndDetails<T extends SchedulerPayload = SchedulerPayload> = EventDragDetails<T>
 
 export interface EventResizeDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
@@ -118,6 +120,8 @@ export interface EventResizeDetails<T extends SchedulerPayload = SchedulerPayloa
    */
   apply: (events: SchedulerEvent<T>[]) => SchedulerEvent<T>[]
 }
+
+export type EventResizeEndDetails<T extends SchedulerPayload = SchedulerPayload> = EventResizeDetails<T>
 
 /* -----------------------------------------------------------------------------
  * Props
@@ -170,8 +174,14 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
   /** Fires on double-click of an empty slot — the conventional "create event" trigger. */
   onSlotDoubleClick?: ((details: SlotClickDetails) => void) | undefined
   onEventClick?: ((details: EventClickDetails<T>) => void) | undefined
-  onEventDrop?: ((details: EventDropDetails<T>) => void) | undefined
+  /** Fires continuously during a drag as the event position changes. */
+  onEventDrag?: ((details: EventDragDetails<T>) => void) | undefined
+  /** Fires once when the drag ends — commit the new position here. */
+  onEventDragEnd?: ((details: EventDragEndDetails<T>) => void) | undefined
+  /** Fires continuously during a resize as the event edge changes. */
   onEventResize?: ((details: EventResizeDetails<T>) => void) | undefined
+  /** Fires once when the resize ends — commit the new size here. */
+  onEventResizeEnd?: ((details: EventResizeEndDetails<T>) => void) | undefined
   /** Return false to prevent dragging an event. Gates entry to event-dragging state. */
   canDragEvent?: ((event: SchedulerEvent<T>) => boolean) | undefined
   /** Return false to prevent resizing an event. Gates entry to event-resizing state. */

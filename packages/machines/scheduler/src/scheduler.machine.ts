@@ -1,6 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-query"
-import { getLocalTimeZone, today, type DateValue } from "@internationalized/date"
+import { CalendarDateTime, getLocalTimeZone, today, toCalendarDate, type DateValue } from "@internationalized/date"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
 import { getMinutesBetween } from "./utils/time"
@@ -152,7 +152,7 @@ export const machine = createMachine<SchedulerSchema>({
         POINTER_MOVE: { actions: ["updateEventDragPosition"] },
         POINTER_UP: {
           target: "idle",
-          actions: ["invokeOnEventDrop", "clearEventDrag"],
+          actions: ["invokeOnEventDragEnd", "clearEventDrag"],
         },
         ESCAPE: {
           target: "idle",
@@ -167,7 +167,7 @@ export const machine = createMachine<SchedulerSchema>({
         POINTER_MOVE: { actions: ["updateEventResizePosition"] },
         POINTER_UP: {
           target: "idle",
-          actions: ["invokeOnEventResize", "clearEventDrag"],
+          actions: ["invokeOnEventResizeEnd", "clearEventDrag"],
         },
         ESCAPE: {
           target: "idle",
@@ -185,13 +185,13 @@ export const machine = createMachine<SchedulerSchema>({
       canDragEvent({ prop, event }) {
         if (prop("disabled")) return false
         const evt = prop("events")?.find((e) => e.id === event.eventId)
-        if (!evt || evt.disabled) return false
+        if (!evt || evt.disabled || evt.allDay) return false
         return prop("canDragEvent")?.(evt) ?? true
       },
       canResizeEvent({ prop, event }) {
         if (prop("disabled")) return false
         const evt = prop("events")?.find((e) => e.id === event.eventId)
-        if (!evt || evt.disabled) return false
+        if (!evt || evt.disabled || evt.allDay) return false
         return prop("canResizeEvent")?.(evt) ?? true
       },
     },
@@ -405,6 +405,20 @@ export const machine = createMachine<SchedulerSchema>({
         }
 
         const durationMins = getMinutesBetween(snapshot.start, snapshot.end)
+        const dayStartHour = prop("dayStartHour")
+        const dayEndHour = prop("dayEndHour")
+        const ns = newStart as CalendarDateTime
+        const startMinsOfDay = ns.hour * 60 + ns.minute
+        const minStartMins = dayStartHour * 60
+        const maxStartMins = dayEndHour * 60 - durationMins
+        if (startMinsOfDay < minStartMins) {
+          const base = toCalendarDate(newStart)
+          newStart = new CalendarDateTime(base.year, base.month, base.day, dayStartHour, 0)
+        } else if (startMinsOfDay > maxStartMins) {
+          const clamped = Math.max(minStartMins, maxStartMins)
+          const base = toCalendarDate(newStart)
+          newStart = new CalendarDateTime(base.year, base.month, base.day, Math.floor(clamped / 60), clamped % 60)
+        }
         const newEnd = newStart.add({ minutes: durationMins })
         refs.set("dragCurrentStart", newStart)
         refs.set("dragCurrentEnd", newEnd)
@@ -412,9 +426,17 @@ export const machine = createMachine<SchedulerSchema>({
         const prev = context.get("liveDrag")
         if (eventId && (!prev || prev.start.compare(newStart) !== 0 || prev.end.compare(newEnd) !== 0)) {
           context.set("liveDrag", { eventId, kind: "drag", edge: null, start: newStart, end: newEnd })
+          const list = prop("events") ?? []
+          const index = list.findIndex((e) => e.id === eventId)
+          const evt = index >= 0 ? list[index] : undefined
+          if (evt) {
+            const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
+              events.map((e) => (e.id === evt.id ? { ...e, start: newStart, end: newEnd } : e))
+            prop("onEventDrag")?.({ event: evt, index, newStart, newEnd, apply })
+          }
         }
       },
-      invokeOnEventDrop({ prop, refs }) {
+      invokeOnEventDragEnd({ prop, refs }) {
         const eventId = refs.get("dragEventId")
         const list = prop("events") ?? []
         const index = list.findIndex((e) => e.id === eventId)
@@ -426,7 +448,7 @@ export const machine = createMachine<SchedulerSchema>({
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
           events.map((e) => (e.id === evt.id ? { ...e, start: newStart, end: newEnd } : e))
-        prop("onEventDrop")?.({ event: evt, index, newStart, newEnd, apply })
+        prop("onEventDragEnd")?.({ event: evt, index, newStart, newEnd, apply })
       },
 
       initEventResize({ refs, context, event, prop }) {
@@ -478,10 +500,19 @@ export const machine = createMachine<SchedulerSchema>({
         const end = refs.get("dragCurrentEnd")
         const prev = context.get("liveDrag")
         if (eventId && start && end && (!prev || prev.start.compare(start) !== 0 || prev.end.compare(end) !== 0)) {
-          context.set("liveDrag", { eventId, kind: "resize", edge: edge ?? "end", start, end })
+          const resolvedEdge = edge ?? "end"
+          context.set("liveDrag", { eventId, kind: "resize", edge: resolvedEdge, start, end })
+          const list = prop("events") ?? []
+          const index = list.findIndex((e) => e.id === eventId)
+          const evt = index >= 0 ? list[index] : undefined
+          if (evt) {
+            const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
+              events.map((e) => (e.id === evt.id ? { ...e, start, end } : e))
+            prop("onEventResize")?.({ event: evt, index, newStart: start, newEnd: end, edge: resolvedEdge, apply })
+          }
         }
       },
-      invokeOnEventResize({ prop, refs }) {
+      invokeOnEventResizeEnd({ prop, refs }) {
         const eventId = refs.get("dragEventId")
         const list = prop("events") ?? []
         const index = list.findIndex((e) => e.id === eventId)
@@ -494,7 +525,7 @@ export const machine = createMachine<SchedulerSchema>({
         if (snapshot && snapshot.start.compare(newStart) === 0 && snapshot.end.compare(newEnd) === 0) return
         const apply = <U extends { id: string; start: DateValue; end: DateValue }>(events: U[]): U[] =>
           events.map((e) => (e.id === evt.id ? { ...e, start: newStart, end: newEnd } : e))
-        prop("onEventResize")?.({ event: evt, index, newStart, newEnd, edge, apply })
+        prop("onEventResizeEnd")?.({ event: evt, index, newStart, newEnd, edge, apply })
       },
 
       restoreEventFromSnapshot({ refs, context }) {

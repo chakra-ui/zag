@@ -48,8 +48,8 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
     onEventClick: (d) => {
       const el = document.getElementById(`scheduler:${schedulerService.scope.id}:event:${d.event.id}`)
       anchorRef.current = el

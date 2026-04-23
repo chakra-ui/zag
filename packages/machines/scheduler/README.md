@@ -44,8 +44,8 @@ export function Calendar() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)
@@ -155,8 +155,10 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `onSlotDoubleClick(d)` | empty slot double-clicked — the conventional "create event" trigger |
 | `onSlotSelect(d)` | drag-selection across multiple slots |
 | `onEventClick(d)` | `d.event` |
-| `onEventDrop(d)` | `d = { event, index, newStart, newEnd, apply }`; use `setEvents(d.apply)` |
-| `onEventResize(d)` | `d = { event, index, newStart, newEnd, edge, apply }` |
+| `onEventDrag(d)` | fires continuously during a drag — live preview; `d = { event, index, newStart, newEnd, apply }` |
+| `onEventDragEnd(d)` | drag committed on pointer up — `d = { event, index, newStart, newEnd, apply }`; use `setEvents(d.apply)` |
+| `onEventResize(d)` | fires continuously during a resize — live preview; `d = { event, index, newStart, newEnd, edge, apply }` |
+| `onEventResizeEnd(d)` | resize committed on pointer up — `d = { event, index, newStart, newEnd, edge, apply }` |
 | `onViewChange(d)` | `d = { view }` |
 | `onDateChange(d)` | `d = { date }` |
 

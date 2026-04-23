@@ -49,8 +49,8 @@ export default function Page() {
     onViewChange: (d) => setView(d.view),
     onDateChange: (d) => setDate(d.date),
     onEventClick: (d) => setSelectedTitle(d.event.title),
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)
@@ -105,33 +105,34 @@ export default function Page() {
                   ))}
                 </div>
 
-                {visibleDays.map((d) => (
-                  <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
-                    {hourRange.hours.map((h) => (
-                      <div key={h.value} className="scheduler-hour-line" style={h.style} />
-                    ))}
-                    {api.getEventsForDay(d).map((event) => (
-                      <div
-                        key={event.id}
-                        {...api.getEventProps({ event })}
-                        style={
-                          {
-                            ...api.getEventStyle(event),
-                            ["--event-color"]: event.color,
-                          } as React.CSSProperties
-                        }
-                      >
-                        <div className="scheduler-event-title">{event.title}</div>
-                        <div
-                          {...api.getEventResizeHandleProps({ event, edge: "end" })}
-                          className="scheduler-resize-handle"
-                        >
-                          <div className="scheduler-resize-grip" />
+                {visibleDays.map((d) => {
+                  const ghost = api.getDragGhost({ date: d })
+                  const origin = api.getDragOrigin({ date: d })
+                  return (
+                    <div key={d.toString()} {...api.getDayColumnProps({ date: d })}>
+                      {hourRange.hours.map((h) => (
+                        <div key={h.value} className="scheduler-hour-line" style={h.style} />
+                      ))}
+                      {api.getEventsForDay(d).map((event) => (
+                        <div key={event.id} {...api.getEventProps({ event })}>
+                          <div className="scheduler-event-title">{event.title}</div>
+                          <div
+                            {...api.getEventResizeHandleProps({ event, edge: "end" })}
+                            className="scheduler-resize-handle"
+                          >
+                            <div className="scheduler-resize-grip" />
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ))}
+                      ))}
+                      {origin && <div {...origin.props} />}
+                      {ghost && (
+                        <div {...ghost.props}>
+                          <div className="scheduler-event-title">{ghost.event.title}</div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>

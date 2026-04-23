@@ -40,8 +40,8 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)

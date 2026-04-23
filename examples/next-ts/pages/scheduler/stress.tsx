@@ -50,13 +50,13 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) => {
+    onEventDragEnd: (d) => {
       // Exercise the apply path end-to-end — parent re-renders with a fresh
       // event list. The machine's O(1) lookups keep this smooth.
       events.splice(0, events.length, ...d.apply(events))
       setTick((t) => t + 1)
     },
-    onEventResize: (d) => {
+    onEventResizeEnd: (d) => {
       events.splice(0, events.length, ...d.apply(events))
       setTick((t) => t + 1)
     },

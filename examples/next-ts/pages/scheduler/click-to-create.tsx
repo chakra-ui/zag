@@ -35,8 +35,8 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
     onSlotDoubleClick(d) {
       pendingSlotRef.current = { start: d.start, end: d.end }
       setTitle("")
@@ -59,6 +59,7 @@ export default function Page() {
       { id, title: title.trim(), start: slot.start, end: slot.end, color: PALETTE[nextIdRef.current % PALETTE.length] },
     ])
     pendingSlotRef.current = null
+    api.clearSelectedSlot()
     dialogApi.setOpen(false)
   }
 

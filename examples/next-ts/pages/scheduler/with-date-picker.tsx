@@ -65,8 +65,8 @@ export default function Page() {
     date,
     events,
     onDateChange: (d) => setDate(d.date),
-    onEventDrop: (d) => setEvents(d.apply),
-    onEventResize: (d) => setEvents(d.apply),
+    onEventDragEnd: (d) => setEvents(d.apply),
+    onEventResizeEnd: (d) => setEvents(d.apply),
   })
 
   const api = scheduler.connect(service, normalizeProps)
