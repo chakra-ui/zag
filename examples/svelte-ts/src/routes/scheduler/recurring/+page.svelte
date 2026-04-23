@@ -1,0 +1,104 @@
+<script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import * as scheduler from "@zag-js/scheduler"
+  import { schedulerControls } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const TODAY = scheduler.getToday()
+  const INITIAL: scheduler.SchedulerEvent[] = [
+    {
+      id: "weekly-standup",
+      title: "Weekly standup",
+      start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
+      end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
+      color: "#3b82f6",
+      recurrence: { freq: "weekly" },
+    },
+    {
+      id: "biweekly-sync",
+      title: "Biweekly team sync",
+      start: TODAY.subtract({ days: 3 }).set({ hour: 11, minute: 0 }),
+      end: TODAY.subtract({ days: 3 }).set({ hour: 12, minute: 0 }),
+      color: "#10b981",
+      recurrence: { freq: "weekly", interval: 2, count: 8 },
+    },
+    {
+      id: "one-off",
+      title: "Quarterly review",
+      start: TODAY.subtract({ days: 2 }).set({ hour: 14, minute: 0 }),
+      end: TODAY.subtract({ days: 2 }).set({ hour: 15, minute: 0 }),
+      color: "#f59e0b",
+    },
+  ]
+
+  const controls = useControls(schedulerControls)
+  const id = $props.id()
+  const service = useMachine(
+    scheduler.machine,
+    controls.mergeProps<scheduler.Props>({
+      id,
+      events: INITIAL,
+      maxRecurrenceInstances: 500,
+    }),
+  )
+  const api = $derived(scheduler.connect(service, normalizeProps))
+</script>
+
+<main class="scheduler">
+  <div {...api.getRootProps()}>
+    <div {...api.getHeaderProps()}>
+      <button {...api.getPrevTriggerProps()}>{api.prevTriggerIcon}</button>
+      <button {...api.getTodayTriggerProps()}>{api.todayTriggerLabel}</button>
+      <button {...api.getNextTriggerProps()}>{api.nextTriggerIcon}</button>
+      <span {...api.getHeaderTitleProps()}>
+        {api.visibleRangeText.formatted} · {api.events.length} expanded events
+      </span>
+    </div>
+
+    <div class="scheduler-time-grid-wrapper">
+      <div class="scheduler-col-headers">
+        <div class="scheduler-header-cell scheduler-gutter-header"></div>
+        {#each api.visibleDays as d, i (d.toString())}
+          <div class="scheduler-header-cell">
+            <span class="scheduler-header-day-label">{api.weekDays[i % 7].short}</span>
+            <span class="scheduler-header-day-num">{d.day}</span>
+          </div>
+        {/each}
+      </div>
+
+      <div class="scheduler-time-grid-scroll">
+        <div {...api.getGridProps()} class="scheduler-time-grid">
+          <div {...api.getTimeGutterProps()}>
+            {#each api.hourRange.hours as h (h.value)}
+              <div class="scheduler-hour-label" style={h.style}>{h.label}</div>
+            {/each}
+          </div>
+
+          {#each api.visibleDays as d (d.toString())}
+            <div {...api.getDayColumnProps({ date: d })}>
+              {#each api.hourRange.hours as h (h.value)}
+                <div class="scheduler-hour-line" style={h.style}></div>
+              {/each}
+              {#each api.getEventsForDay(d) as event (event.id)}
+                <div
+                  {...api.getEventProps({ event })}
+                  style="--event-color: {event.color}; {Object.entries(api.getEventStyle(event))
+                    .map(([k, v]) => `${k}:${v}`)
+                    .join(';')}"
+                >
+                  <div class="scheduler-event-title">{event.title}</div>
+                </div>
+              {/each}
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<Toolbar {controls}>
+  <StateVisualizer state={service} />
+</Toolbar>
