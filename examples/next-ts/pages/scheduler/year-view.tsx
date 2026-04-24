@@ -20,33 +20,42 @@ function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
   const reference = api.date.set({ month, day: 1 })
   const weeks = api.getMonthGrid(reference)
   return (
-    <div className="scheduler-mini-month">
-      <div className="scheduler-mini-month-title">{api.getMonthName(reference)}</div>
-      <div className="scheduler-mini-weekdays">
-        {api.weekDays.map((day, i) => (
-          <div key={i}>{day.narrow}</div>
+    <section className="scheduler-mini-month">
+      <h3 className="scheduler-mini-month-title">{api.getMonthName(reference)}</h3>
+      <div {...api.getMonthGridProps({ date: reference })}>
+        <div {...api.getWeekdayHeaderRowProps()} className="scheduler-mini-weekdays">
+          {api.weekDays.map((day) => (
+            <div key={day.long} {...api.getWeekdayHeaderCellProps({ day })}>
+              {day.narrow}
+            </div>
+          ))}
+        </div>
+        {weeks.map((week, wi) => (
+          <div key={wi} {...api.getWeekRowProps()} className="scheduler-mini-week">
+            {week.map((date) => {
+              const dayEvents = api.getEventsForDay(date)
+              return (
+                <div key={date.toString()} {...api.getDayCellProps({ date, referenceDate: reference })}>
+                  <div
+                    {...api.getDayCellTriggerProps({ date, referenceDate: reference })}
+                    className="scheduler-mini-day"
+                  >
+                    <span aria-hidden>{date.day}</span>
+                    {dayEvents.length > 0 && (
+                      <span
+                        aria-hidden
+                        className="scheduler-mini-dot"
+                        style={{ background: dayEvents[0].color ?? "#3b82f6" }}
+                      />
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         ))}
       </div>
-      {weeks.map((week, wi) => (
-        <div key={wi} className="scheduler-mini-week">
-          {week.map((date) => {
-            const dayEvents = api.getEventsForDay(date)
-            return (
-              <div
-                key={date.toString()}
-                {...api.getDayCellProps({ date, referenceDate: reference })}
-                className="scheduler-mini-day"
-              >
-                <span>{date.day}</span>
-                {dayEvents.length > 0 && (
-                  <span className="scheduler-mini-dot" style={{ background: dayEvents[0].color ?? "#3b82f6" }} />
-                )}
-              </div>
-            )
-          })}
-        </div>
-      ))}
-    </div>
+    </section>
   )
 }
 
@@ -55,6 +64,7 @@ export default function Page() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     defaultDate: INITIAL[0].start,
+    startOfWeek: 1,
     ...controls.context,
     view: "year",
     events: INITIAL,
@@ -64,17 +74,19 @@ export default function Page() {
 
   return (
     <>
-      <main className="scheduler">
+      <main className="scheduler scheduler-year-page">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>
-              <ChevronLeft />
-            </button>
-            <button {...api.getTodayTriggerProps()}>Today</button>
-            <button {...api.getNextTriggerProps()}>
-              <ChevronRight />
-            </button>
             <span {...api.getHeaderTitleProps()}>{api.date.year}</span>
+            <div className="scheduler-year-nav">
+              <button {...api.getPrevTriggerProps()} aria-label="Previous year">
+                <ChevronLeft />
+              </button>
+              <button {...api.getTodayTriggerProps()}>Today</button>
+              <button {...api.getNextTriggerProps()} aria-label="Next year">
+                <ChevronRight />
+              </button>
+            </div>
           </div>
 
           <div className="scheduler-year-grid">

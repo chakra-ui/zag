@@ -1,7 +1,7 @@
-import { getLocalTimeZone, toCalendarDateTime, today } from "@internationalized/date"
+import { getLocalTimeZone, toCalendarDate, today } from "@internationalized/date"
 import { createMachine, memo } from "@zag-js/core"
-import type { DateValue } from "@zag-js/date-utils"
-import { getNearestScrollableAncestor, trackPointerMove } from "@zag-js/dom-query"
+import { getEndOfWeek, getStartOfWeek, type DateValue } from "@zag-js/date-utils"
+import { getNearestScrollableAncestor, raf, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./scheduler.dom"
 import type { HourRange, SchedulerSchema } from "./scheduler.types"
 import { pointToDateTime, pointToTimeOnDay } from "./utils/drag"
@@ -49,6 +49,9 @@ export const machine = createMachine<SchedulerSchema>({
       focusedEventId: bindable<string | null>(() => ({
         defaultValue: null,
       })),
+      focusedDate: bindable<DateValue | null>(() => ({
+        defaultValue: null,
+      })),
       selectedEventId: bindable<string | null>(() => ({
         defaultValue: null,
       })),
@@ -89,30 +92,41 @@ export const machine = createMachine<SchedulerSchema>({
         month: new Intl.DateTimeFormat(locale, { timeZone, month: "long" }),
       }),
     ),
+    dayCellLabels: memo(
+      ({ prop, computed }) => [prop("locale"), prop("timeZone"), computed("visibleRange")],
+      ([locale, timeZone, range]) => {
+        const formatter = new Intl.DateTimeFormat(locale, {
+          timeZone,
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+        // Buffer ±7 days so month grids that show leading/trailing outside
+        // dates still hit the cache.
+        let cur = toCalendarDate(range.start).subtract({ days: 7 })
+        const stop = toCalendarDate(range.end).add({ days: 7 })
+        const map = new Map<string, string>()
+        while (cur.compare(stop) <= 0) {
+          map.set(cur.toString(), formatter.format(cur.toDate(timeZone)))
+          cur = cur.add({ days: 1 })
+        }
+        return map
+      },
+    ),
     hourRange: memo(
-      ({ prop, computed }) => [
-        prop("dayStartHour"),
-        prop("dayEndHour"),
-        computed("visibleRange").start,
-        prop("locale"),
-        prop("timeZone"),
-      ],
-      ([dayStartHour, dayEndHour, visibleStart, locale, timeZone]): HourRange => {
+      ({ prop }) => [prop("dayStartHour"), prop("dayEndHour"), prop("locale")],
+      ([dayStartHour, dayEndHour, locale]): HourRange => {
         const hourSpan = dayEndHour - dayStartHour
-        const refDate = toCalendarDateTime(visibleStart)
-        const formatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
+        const formatter = new Intl.DateTimeFormat(locale, { hour: "numeric", minute: "2-digit", timeZone: "UTC" })
         return {
           start: dayStartHour,
           end: dayEndHour,
           hours: Array.from({ length: hourSpan + 1 }, (_, i) => {
             const value = dayStartHour + i
-            const labelDate = refDate.set({ hour: Math.min(value, 23), minute: 0 })
+            const labelDate = new Date(Date.UTC(2020, 5, 15, Math.min(value, 23), 0))
             const percent = hourSpan === 0 ? 0 : i / hourSpan
-            return {
-              value,
-              label: formatter.format(labelDate.toDate(timeZone)),
-              percent,
-            }
+            return { value, label: formatter.format(labelDate), percent }
           }),
         }
       },
@@ -129,6 +143,15 @@ export const machine = createMachine<SchedulerSchema>({
     EVENT_CLICK: { actions: ["invokeOnEventClick", "clearSelectedSlot"] },
     EVENT_FOCUS: { actions: ["setFocusedEvent"] },
     EVENT_BLUR: { actions: ["clearFocusedEvent"] },
+    FOCUS_DATE_KEYDOWN: { actions: ["handleFocusDateKeydown"] },
+    FOCUS_DATE_SET: { actions: ["setFocusedDate"] },
+    FOCUS_DATE_CLEAR: { actions: ["clearFocusedDate"] },
+  },
+
+  watch({ track, context, action }) {
+    track([() => context.get("focusedDate")?.toString() ?? ""], () => {
+      action(["focusActiveDayCell"])
+    })
   },
 
   states: {
@@ -331,6 +354,46 @@ export const machine = createMachine<SchedulerSchema>({
       },
       clearFocusedEvent({ context }) {
         context.set("focusedEventId", null)
+      },
+
+      setFocusedDate({ context, event }) {
+        context.set("focusedDate", event.date)
+      },
+      clearFocusedDate({ context }) {
+        context.set("focusedDate", null)
+      },
+      focusActiveDayCell({ scope, context }) {
+        if (!context.get("focusedDate")) return
+        raf(() => {
+          dom.getFocusedDayCellTriggerEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+      handleFocusDateKeydown({ context, event, prop }) {
+        const cur = context.get("focusedDate") ?? context.get("date")
+        switch (event.key) {
+          case "ArrowLeft":
+            context.set("focusedDate", cur.subtract({ days: 1 }))
+            return
+          case "ArrowRight":
+            context.set("focusedDate", cur.add({ days: 1 }))
+            return
+          case "ArrowUp":
+            context.set("focusedDate", cur.subtract({ weeks: 1 }))
+            return
+          case "ArrowDown":
+            context.set("focusedDate", cur.add({ weeks: 1 }))
+            return
+          case "Home":
+            context.set("focusedDate", getStartOfWeek(cur, prop("locale"), prop("startOfWeek")))
+            return
+          case "End":
+            context.set("focusedDate", getEndOfWeek(cur, prop("locale"), prop("startOfWeek")))
+            return
+          case "Enter":
+          case " ":
+            prop("onDayActivate")?.({ date: cur })
+            return
+        }
       },
 
       initSlotDrag({ refs, context, event }) {

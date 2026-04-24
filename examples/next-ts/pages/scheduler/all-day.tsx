@@ -126,6 +126,10 @@ export default function Page() {
                           </div>
                         </div>
                       ))}
+                    <div {...api.getDragOriginProps({ date })} />
+                    <div {...api.getDragPreviewProps({ date })}>
+                      <div className="scheduler-event-title">{api.dragState?.event.title}</div>
+                    </div>
                   </div>
                 ))}
               </div>

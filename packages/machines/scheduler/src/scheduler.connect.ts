@@ -44,6 +44,8 @@ const defaultTranslations = {
   viewLabels: { day: "Day", week: "Week", month: "Month", year: "Year", agenda: "Agenda" },
 }
 
+const FOCUS_DATE_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Enter", " "])
+
 const getTimeRangeBounds = (start: DateValue, end: DateValue, dayStartHour: number, dayEndHour: number) => {
   const s = getTimePercent(start, dayStartHour, dayEndHour)
   const e = getTimePercent(end, dayStartHour, dayEndHour)
@@ -70,6 +72,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const visibleRange = computed("visibleRange")
 
   const focusedEventId = context.get("focusedEventId")
+  const focusedDate = context.get("focusedDate")
   const selectedEventId = context.get("selectedEventId")
 
   const liveDrag = context.get("liveDrag")
@@ -124,6 +127,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const weekDays = getWeekDays(visibleRange.start, startOfWeekProp, timeZone, locale) as WeekDay[]
 
   const formatters = computed("formatters")
+  const dayCellLabels = computed("dayCellLabels")
 
   const hourRange = computed("hourRange")
 
@@ -216,6 +220,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     selectedSlot,
     dragState,
 
+    focusedDate,
+    setFocusedDate(date) {
+      send({ type: "FOCUS_DATE_SET", date })
+    },
+    clearFocusedDate() {
+      send({ type: "FOCUS_DATE_CLEAR" })
+    },
+
     getEventById(id) {
       return eventsById.get(id)
     },
@@ -229,7 +241,9 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     },
     monthNames,
     getMonthGrid(ref = date) {
-      return getMonthDays(startOfMonth(ref), locale, undefined, startOfWeekProp)
+      // Always 6 rows, matching Google/Apple Calendar. Short months fill with
+      // next-month trailing days; styling dims them via `[data-outside]`.
+      return getMonthDays(startOfMonth(ref), locale, 6, startOfWeekProp)
     },
 
     getDragPreviewProps({ date }) {
@@ -592,7 +606,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         role: "gridcell",
         "data-date": key,
         "data-drop-target": dataAttr(dayState.isDropTarget),
-        style: overlayVars,
+        style: { userSelect: "none", ...overlayVars },
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           const target = getEventTarget<HTMLElement>(event)
@@ -629,6 +643,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-selected": dataAttr(selected),
         "data-all-day": dataAttr(allDay),
         "aria-current": todayCell ? "date" : undefined,
+        "aria-selected": selected || undefined,
         onClick(event) {
           if (!isLeftClick(event)) return
           context.set("selectedSlot", { start, end })
@@ -637,6 +652,78 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onDoubleClick() {
           prop("onSlotDoubleClick")?.({ start, end, allDay: true })
         },
+      })
+    },
+
+    getDayCellTriggerProps(props) {
+      const { date, referenceDate } = props
+      const tabTarget = focusedDate ?? context.get("date")
+      const focused = isSameDay(date, tabTarget)
+      const todayCell = isToday(date, timeZone)
+      const inMonth = referenceDate ? date.month === referenceDate.month && date.year === referenceDate.year : undefined
+      const dateKey = toCalendarDate(date).toString()
+      const events = eventsByDayKey.get(dateKey) ?? []
+      // Cached formatter result (see `computed.dayCellLabels`) — avoids
+      // N formatter.format() calls per render on a re-focused grid.
+      const dateLabel =
+        dayCellLabels.get(dateKey) ?? formatters.longDate.format(toCalendarDateTime(date).toDate(timeZone))
+      const parts_: string[] = [dateLabel]
+      if (todayCell) parts_.push(t.todayTriggerLabel ?? "Today")
+      if (events.length > 0) parts_.push(`${events.length} ${events.length === 1 ? "event" : "events"}`)
+      return normalize.element({
+        ...parts.dayCellTrigger.attrs(scope.id),
+        role: "button",
+        tabIndex: focused ? 0 : -1,
+        "aria-label": parts_.join(", "),
+        "data-date": date.toString(),
+        "data-focus": dataAttr(focused),
+        "data-in-month": inMonth === undefined ? undefined : dataAttr(inMonth),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "FOCUS_DATE_SET", date })
+          prop("onDayActivate")?.({ date })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
+          const key = getEventKey(event)
+          if (FOCUS_DATE_KEYS.has(key)) {
+            event.preventDefault()
+            send({ type: "FOCUS_DATE_KEYDOWN", key })
+          }
+        },
+      })
+    },
+
+    getMonthGridProps(props) {
+      const { date } = props
+      return normalize.element({
+        ...parts.monthGrid.attrs(scope.id),
+        role: "grid",
+        "aria-label": `${formatters.month.format(date.toDate(timeZone))} ${date.year}`,
+      })
+    },
+
+    getWeekRowProps() {
+      return normalize.element({
+        ...parts.weekRow.attrs(scope.id),
+        role: "row",
+      })
+    },
+
+    getWeekdayHeaderRowProps() {
+      return normalize.element({
+        ...parts.weekdayHeaderRow.attrs(scope.id),
+        role: "row",
+      })
+    },
+
+    getWeekdayHeaderCellProps(props) {
+      const { day } = props
+      return normalize.element({
+        ...parts.weekdayHeaderCell.attrs(scope.id),
+        role: "columnheader",
+        "aria-label": day.long,
       })
     },
 
@@ -665,9 +752,10 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
               height: `${pos.height * 100}%`,
               insetInlineStart: `${pos.left * 100}%`,
               insetInlineEnd: `${(1 - pos.left - pos.width) * 100}%`,
+              userSelect: "none",
               "--event-color": event.color,
             }
-          : { "--event-color": event.color },
+          : { userSelect: "none", "--event-color": event.color },
         onClick(e) {
           e.stopPropagation()
           send({ type: "EVENT_CLICK", eventId: event.id })

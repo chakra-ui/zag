@@ -121,6 +121,13 @@ export interface SlotDoubleClickDetails {
   allDay: boolean
 }
 
+export interface DayActivateDetails {
+  /**
+   * The date that was activated (clicked, or Enter/Space while focused).
+   */
+  date: DateValue
+}
+
 export interface EventClickDetails<T extends SchedulerPayload = SchedulerPayload> {
   event: SchedulerEvent<T>
 }
@@ -253,6 +260,12 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
    */
   onSlotDoubleClick?: ((details: SlotDoubleClickDetails) => void) | undefined
   /**
+   * Fires when a day cell is activated via click, Enter, or Space while focused.
+   * Typically used in month or year views to navigate to that day's detail view
+   * or open a quick-add dialog.
+   */
+  onDayActivate?: ((details: DayActivateDetails) => void) | undefined
+  /**
    * Fires when an event is clicked.
    */
   onEventClick?: ((details: EventClickDetails<T>) => void) | undefined
@@ -349,6 +362,7 @@ interface SchedulerContext {
   view: ViewType
   date: DateValue
   focusedEventId: string | null
+  focusedDate: DateValue | null
   selectedEventId: string | null
   selectedSlot: { start: DateValue; end: DateValue } | null
   liveDrag: LiveDrag | null
@@ -367,6 +381,7 @@ type Computed = Readonly<{
     month: Intl.DateTimeFormat
   }
   hourRange: HourRange
+  dayCellLabels: Map<string, string>
   isInteractive: boolean
 }>
 
@@ -448,6 +463,36 @@ export interface TimeSlotProps {
 
 export interface DayColumnProps {
   date: DateValue
+}
+
+export interface DayCellTriggerProps {
+  /**
+   * The date of the cell.
+   */
+  date: DateValue
+  /**
+   * Reference date for the containing month grid. When the cell's date falls
+   * outside this month (leading/trailing filler), the trigger is marked as
+   * not-in-month via `data-in-month="false"`. The machine uses this to route
+   * keyboard focus to the in-month instance when the same date appears in
+   * two adjacent mini-grids.
+   */
+  referenceDate?: DateValue
+}
+
+export interface MonthGridProps {
+  /**
+   * Reference date whose month the grid represents. The grid's aria-label is
+   * derived from this (e.g. "January 2026").
+   */
+  date: DateValue
+}
+
+export interface WeekdayHeaderCellProps {
+  /**
+   * Weekday entry from `api.weekDays`.
+   */
+  day: WeekDay
 }
 
 export interface DayCellProps {
@@ -688,6 +733,22 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    */
   selectedSlot: { start: DateValue; end: DateValue } | null
   /**
+   * Day cell that currently has keyboard focus in a month/year grid. Drives the
+   * roving tabindex emitted by `getDayCellTriggerProps`. `null` when focus
+   * hasn't entered the grid yet — the cell matching `api.date` receives
+   * `tabIndex=0` in that case.
+   */
+  focusedDate: DateValue | null
+  /**
+   * Imperatively move keyboard focus to a specific date. Use this to jump
+   * focus from outside the grid (e.g. a "Today" button).
+   */
+  setFocusedDate: (date: DateValue) => void
+  /**
+   * Clear keyboard focus. Typically called on grid blur or Escape.
+   */
+  clearFocusedDate: () => void
+  /**
    * Set the current view.
    */
   setView: (view: ViewType) => void
@@ -790,6 +851,11 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getHourLineProps: (props: HourEntryProps) => T["element"]
   getDayColumnProps: (props: DayColumnProps) => T["element"]
   getDayCellProps: (props: DayCellProps) => T["element"]
+  getDayCellTriggerProps: (props: DayCellTriggerProps) => T["element"]
+  getMonthGridProps: (props: MonthGridProps) => T["element"]
+  getWeekRowProps: () => T["element"]
+  getWeekdayHeaderRowProps: () => T["element"]
+  getWeekdayHeaderCellProps: (props: WeekdayHeaderCellProps) => T["element"]
   getEventProps: (props: EventProps<P>) => T["element"]
   getEventResizeHandleProps: (props: EventResizeHandleProps<P>) => T["element"]
   getCurrentTimeIndicatorProps: (props: DayColumnProps) => T["element"]
