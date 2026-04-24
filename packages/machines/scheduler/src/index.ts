@@ -11,6 +11,7 @@ export type {
   SchedulerProps as Props,
   SchedulerService as Service,
   DateChangeDetails,
+  DragState,
   EventClickDetails,
   EventDropDetails,
   EventResizeDetails,

@@ -1,7 +1,7 @@
-import * as scheduler from "@zag-js/scheduler"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import * as scheduler from "@zag-js/scheduler"
 import { schedulerControls } from "@zag-js/shared"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -65,6 +65,7 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
+  const groups = api.getAgendaGroups()
 
   return (
     <>
@@ -82,27 +83,17 @@ export default function Page() {
           </div>
 
           <div className="scheduler-mobile-agenda">
-            {api.agendaGroups.length === 0 ? (
+            {groups.length === 0 ? (
               <div className="scheduler-mobile-agenda-empty">
                 No events between {api.formatLongDate(api.visibleRange.start)} and{" "}
                 {api.formatLongDate(api.visibleRange.end)}
               </div>
             ) : (
-              api.agendaGroups.map((group) => (
+              groups.map((group) => (
                 <div key={group.date.toString()} {...api.getAgendaGroupProps({ date: group.date })}>
-                  <div
-                    {...api.getAgendaGroupTitleProps({ date: group.date })}
-                    className="scheduler-mobile-agenda-title"
-                  >
-                    {api.formatLongDate(group.date)}
-                  </div>
+                  <div {...api.getAgendaGroupTitleProps({ date: group.date })}>{api.formatLongDate(group.date)}</div>
                   {group.events.map((event) => (
-                    <div
-                      key={event.id}
-                      {...api.getEventProps({ event })}
-                      className="scheduler-mobile-agenda-event"
-                      style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
-                    >
+                    <div key={event.id} {...api.getEventProps({ event, layout: "list" })}>
                       <div className="scheduler-mobile-agenda-time">{api.formatTimeRange(event.start, event.end)}</div>
                       <div className="scheduler-event-title">{event.title}</div>
                     </div>

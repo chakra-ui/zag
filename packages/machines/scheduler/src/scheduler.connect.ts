@@ -1,45 +1,63 @@
-import type { Service } from "@zag-js/core"
-import { dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { parts } from "./scheduler.anatomy"
-import * as dom from "./scheduler.dom"
-import type {
-  AgendaGroupProps,
-  DayCellProps,
-  DayColumnProps,
-  EventProps,
-  EventResizeHandleProps,
-  HourEntryProps,
-  HourRange,
-  MoreEventsProps,
-  SchedulerApi,
-  SchedulerEvent,
-  SchedulerPayload,
-  SchedulerSchema,
-  TimeSlotProps,
-  ViewItemProps,
-  VisibleRangeText,
-  WeekDay,
-} from "./scheduler.types"
 import {
+  isSameDay,
+  isToday,
+  isWeekend,
   now,
-  getLocalTimeZone,
   startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
   toCalendarDate,
   toCalendarDateTime,
   type CalendarDateTime,
   type DateValue,
 } from "@internationalized/date"
-import { getTimePercent, rangesOverlap } from "./utils/time"
-import { computeEventLayout } from "./utils/layout"
-import { toDayOfWeekToken } from "./utils/visible-range"
-import { getTodayDate, getWeekDays } from "@zag-js/date-utils"
-import type { MonthGridDay } from "./scheduler.types"
+import type { Service } from "@zag-js/core"
+import { getMonthDays, getMonthNames, getTodayDate, getWeekDays } from "@zag-js/date-utils"
+import {
+  dataAttr,
+  getEventKey,
+  getEventPoint,
+  getEventTarget,
+  isComposingEvent,
+  isEditableElement,
+  isLeftClick,
+} from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./scheduler.anatomy"
+import * as dom from "./scheduler.dom"
+import type {
+  DayColumnProps,
+  SchedulerApi,
+  SchedulerPayload,
+  SchedulerSchema,
+  ViewItemProps,
+  VisibleRangeText,
+  WeekDay,
+} from "./scheduler.types"
 import { getDurationMinutes } from "./scheduler.utils"
+import { getAgendaGroups, getEventConflicts, getEventLayout, getVisibleEvents, groupEventsByDay } from "./utils/layout"
 import { expandRecurringEvents } from "./utils/rrule"
+import { getTimePercent, rangesOverlap } from "./utils/time"
+
+const defaultTranslations = {
+  prevTriggerLabel: "Previous",
+  nextTriggerLabel: "Next",
+  todayTriggerLabel: "Today",
+  viewLabels: { day: "Day", week: "Week", month: "Month", year: "Year", agenda: "Agenda" },
+}
+
+const getTimeRangeBounds = (start: DateValue, end: DateValue, dayStartHour: number, dayEndHour: number) => {
+  const s = getTimePercent(start, dayStartHour, dayEndHour)
+  const e = getTimePercent(end, dayStartHour, dayEndHour)
+  return { top: `${s * 100}%`, height: `${(e - s) * 100}%` }
+}
+
+const formatDuration = (start: DateValue, end: DateValue): string => {
+  const diff = Math.max(0, getDurationMinutes(start, end))
+  const h = Math.floor(diff / 60)
+  const m = diff % 60
+  if (h && m) return `${h}h ${m}m`
+  if (h) return `${h}h`
+  return `${m}m`
+}
 
 export function connect<T extends PropTypes, E extends SchedulerPayload = SchedulerPayload>(
   service: Service<SchedulerSchema<E>>,
@@ -58,7 +76,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const dragEventId = liveDrag?.eventId
 
   const isDragging = state.matches("event-dragging")
-  const isSlotSelecting = state.matches("slot-selecting")
+  const isSelectingSlot = state.matches("slot-selecting")
   const isResizing = state.matches("event-resizing")
 
   const rawEvents = prop("events") ?? []
@@ -69,55 +87,22 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     expander: prop("expandRecurrence"),
   })
   const translations = prop("translations")
-
-  const defaultTranslations = {
-    prevTriggerLabel: "Previous",
-    nextTriggerLabel: "Next",
-    todayTriggerLabel: "Today",
-    viewLabels: { day: "Day", week: "Week", month: "Month", year: "Year", agenda: "Agenda" },
-  }
   const t = { ...defaultTranslations, ...translations }
 
-  // visibleRange.end is midnight, so extend by a day for the overlap check.
-  const rangeFilterEnd = visibleRange.end.add({ days: 1 })
-  const visibleEvents = events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, rangeFilterEnd))
+  const visibleEvents = getVisibleEvents(events, visibleRange)
 
-  const eventPositions = computeEventLayout(visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
+  const eventPositions = getEventLayout(visibleEvents, prop("dayStartHour"), prop("dayEndHour"))
 
-  const eventsById = new Map<string, SchedulerEvent<E>>()
-  for (const e of events) eventsById.set(e.id, e)
-
-  const eventsByDayKey = new Map<string, SchedulerEvent<E>[]>()
-  for (const e of visibleEvents) {
-    let cur = toCalendarDate(e.start)
-    const stop = toCalendarDate(e.end)
-    while (cur.compare(stop) <= 0) {
-      const key = cur.toString()
-      const bucket = eventsByDayKey.get(key)
-      if (bucket) bucket.push(e)
-      else eventsByDayKey.set(key, [e])
-      cur = cur.add({ days: 1 })
-    }
-  }
-
-  const conflictIds = new Set<string>()
-  const timedSorted = visibleEvents.filter((e) => !e.allDay).sort((a, b) => a.start.compare(b.start))
-  let active: SchedulerEvent<E>[] = []
-  for (const e of timedSorted) {
-    active = active.filter((a) => a.end.compare(e.start) > 0)
-    if (active.length > 0) {
-      conflictIds.add(e.id)
-      for (const a of active) conflictIds.add(a.id)
-    }
-    active.push(e)
-  }
+  const eventsById = new Map(events.map((e) => [e.id, e]))
+  const eventsByDayKey = groupEventsByDay(visibleEvents)
+  const conflictIds = getEventConflicts(visibleEvents)
 
   const locale = prop("locale")
-  const timeZone = prop("timeZone") ?? getLocalTimeZone()
+  const timeZone = prop("timeZone")
   const startOfWeekProp = prop("startOfWeek")
   const dayStartHour = prop("dayStartHour")
   const dayEndHour = prop("dayEndHour")
-  const dir = (prop("dir") ?? "ltr") as "ltr" | "rtl"
+  const dir = prop("dir")
 
   const today = getTodayDate(timeZone, visibleRange.start.calendar)
 
@@ -136,159 +121,45 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     visibleDays = visibleDays.filter((d) => allowed.has(new Date(d.year, d.month - 1, d.day).getDay()))
   }
 
-  const weekDaysRaw = getWeekDays(visibleRange.start, startOfWeekProp, timeZone, locale) as unknown as Array<{
-    value: DateValue
-    short: string
-    long: string
-    narrow: string
-  }>
-  const weekDays: WeekDay[] = weekDaysRaw.map((w) => ({
-    value: w.value,
-    short: w.short,
-    long: w.long,
-    narrow: w.narrow,
-  }))
+  const weekDays = getWeekDays(visibleRange.start, startOfWeekProp, timeZone, locale) as WeekDay[]
 
-  const hourFormatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
-  const hourSpan = dayEndHour - dayStartHour
-  const hourRefDate = toCalendarDateTime(visibleRange.start)
-  const hourRange: HourRange = {
-    start: dayStartHour,
-    end: dayEndHour,
-    hours: Array.from({ length: hourSpan + 1 }, (_, i) => {
-      const value = dayStartHour + i
-      const labelDate = hourRefDate.set({ hour: Math.min(value, 23), minute: 0 })
-      const percent = hourSpan === 0 ? 0 : i / hourSpan
-      return {
-        value,
-        label: hourFormatter.format(labelDate.toDate(timeZone)),
-        percent,
-      }
-    }),
-  }
+  const formatters = computed("formatters")
 
-  const rangeFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "short", day: "numeric", year: "numeric" })
-  const startText = rangeFormatter.format(visibleRange.start.toDate(timeZone))
-  const endText = rangeFormatter.format(visibleRange.end.toDate(timeZone))
+  const hourRange = computed("hourRange")
+
+  const startText = formatters.range.format(visibleRange.start.toDate(timeZone))
+  const endText = formatters.range.format(visibleRange.end.toDate(timeZone))
   const visibleRangeText: VisibleRangeText = {
     start: startText,
     end: endText,
     formatted: startText === endText ? startText : `${startText} – ${endText}`,
   }
 
-  const totalDayMinutes = (dayEndHour - dayStartHour) * 60
-  const timePercent = (d: DateValue): number => {
-    const dt = d as CalendarDateTime
-    const h = dt.hour ?? 0
-    const m = dt.minute ?? 0
-    const mins = (h - dayStartHour) * 60 + m
-    if (mins <= 0) return 0
-    if (mins >= totalDayMinutes) return 1
-    return mins / totalDayMinutes
-  }
-  const pctBounds = (start: DateValue, end: DateValue) => ({
-    top: `${timePercent(start) * 100}%`,
-    height: `${(timePercent(end) - timePercent(start)) * 100}%`,
-  })
-
-  const timeFormatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
-  const longDateFormatter = new Intl.DateTimeFormat(locale, {
-    timeZone,
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  })
-  const weekDayFormatters = computed("weekDayFormatters")
   const toJsDate = (d: DateValue): Date => toCalendarDateTime(d).toDate(timeZone)
-  const formatTime = (d: DateValue): string => timeFormatter.format(toJsDate(d))
-  const formatTimeRange = (s: DateValue, e: DateValue): string => `${formatTime(s)} – ${formatTime(e)}`
-  const formatLongDate = (d: DateValue): string => longDateFormatter.format(toJsDate(d))
-  const formatWeekDay = (d: DateValue, style: "short" | "long" | "narrow" = "short"): string =>
-    weekDayFormatters[style].format(toJsDate(d))
-  const formatDuration = (s: DateValue, e: DateValue): string => {
-    const diff = Math.max(0, getDurationMinutes(s, e))
-    const h = Math.floor(diff / 60)
-    const m = diff % 60
-    if (h && m) return `${h}h ${m}m`
-    if (h) return `${h}h`
-    return `${m}m`
-  }
+  const monthNames = getMonthNames(locale, "long", date)
 
-  const monthFormatter = new Intl.DateTimeFormat(locale, { timeZone, month: "long" })
-  const getMonthName = (d: DateValue) => monthFormatter.format(d.toDate(timeZone))
-  const monthNames = Array.from({ length: 12 }, (_, i) =>
-    monthFormatter.format(date.set({ month: i + 1 }).toDate(timeZone)),
-  )
-
-  const todayKey = toCalendarDate(today).toString()
-  const sameDay = (a: DateValue, b: DateValue) => toCalendarDate(a).compare(toCalendarDate(b)) === 0
-  const isTodayDate = (d: DateValue) => toCalendarDate(d).toString() === todayKey
-  const isWeekendDate = (d: DateValue) => {
-    const dow = new Date(d.year, d.month - 1, d.day).getDay()
-    return dow === 0 || dow === 6
-  }
-
-  const startOfWeekToken = toDayOfWeekToken(startOfWeekProp)
-
-  const getMonthGrid = (ref: DateValue = date): MonthGridDay[][] => {
-    const monthStart = startOfMonth(ref)
-    const monthEnd = endOfMonth(ref)
-    const gridStart = startOfWeek(monthStart, locale, startOfWeekToken)
-    const gridEnd = endOfWeek(monthEnd, locale, startOfWeekToken)
-    const weeks: MonthGridDay[][] = []
-    let cur: DateValue = gridStart
-    while (cur.compare(gridEnd) <= 0) {
-      const week: MonthGridDay[] = []
-      for (let i = 0; i < 7; i++) {
-        week.push({
-          date: cur,
-          inMonth: cur.month === ref.month && cur.year === ref.year,
-          isToday: isTodayDate(cur),
-          isWeekend: isWeekendDate(cur),
-        })
-        cur = cur.add({ days: 1 })
-      }
-      weeks.push(week)
-    }
-    return weeks
-  }
-
-  const agendaGroups: { date: DateValue; events: SchedulerEvent<E>[] }[] = []
-  {
-    const byKey = new Map<string, { date: DateValue; events: SchedulerEvent<E>[] }>()
-    const sorted = [...visibleEvents].sort((a, b) => a.start.compare(b.start))
-    for (const e of sorted) {
-      const cal = toCalendarDate(e.start)
-      const key = cal.toString()
-      const bucket = byKey.get(key)
-      if (bucket) bucket.events.push(e)
-      else byKey.set(key, { date: cal, events: [e] })
-    }
-    for (const g of byKey.values()) agendaGroups.push(g)
-    agendaGroups.sort((a, b) => a.date.compare(b.date))
-  }
-
-  const dragState: SchedulerApi<T, E>["dragState"] = (() => {
+  const getDragState = (): SchedulerApi<T, E>["dragState"] => {
     if (!(isDragging || isResizing) || !dragEventId) return null
+
     const evt = eventsById.get(dragEventId)
     if (!evt) return null
+
     const snap = refs.get("dragStartSnapshot")
     if (!snap) return null
-    const curStart = liveDrag?.start ?? snap.start
-    const curEnd = liveDrag?.end ?? snap.end
+
     return {
       kind: isResizing ? "resize" : "drag",
       event: evt,
-      start: curStart,
-      end: curEnd,
-      origin: { start: snap.start, end: snap.end },
+      start: liveDrag?.start ?? snap.start,
+      end: liveDrag?.end ?? snap.end,
+      origin: snap,
     }
-  })()
+  }
+
+  const dragState = getDragState()
 
   const selectedSlot = context.get("selectedSlot")
   const liveSlot = context.get("liveSlot")
-  // The slot highlight tracks the live selection during drag and persists
-  // as selectedSlot after release until cleared. Single overlay, dual source.
   const activeSlot = liveSlot ?? selectedSlot
 
   return {
@@ -298,19 +169,29 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     visibleRange,
     visibleRangeText,
     visibleDays,
-    formatTime,
-    formatTimeRange,
-    formatLongDate,
+    formatTime(d) {
+      return formatters.time.format(toJsDate(d))
+    },
+    formatTimeRange(s, e) {
+      return `${formatters.time.format(toJsDate(s))} – ${formatters.time.format(toJsDate(e))}`
+    },
+    formatLongDate(d) {
+      return formatters.longDate.format(toJsDate(d))
+    },
     formatDuration,
-    formatWeekDay,
+    formatWeekDay(d, style = "short") {
+      const key = style === "short" ? "weekDayShort" : style === "long" ? "weekDayLong" : "weekDayNarrow"
+      return formatters[key].format(toJsDate(d))
+    },
     weekDays,
     hourRange,
-    dir,
     events,
     visibleEvents,
-    agendaGroups,
+    getAgendaGroups() {
+      return getAgendaGroups(visibleEvents)
+    },
     isDragging,
-    isSlotSelecting,
+    isSelectingSlot,
     isResizing,
 
     setView(view) {
@@ -339,20 +220,20 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       return eventsById.get(id)
     },
 
-    getTimePercent(d) {
-      return timePercent(d)
+    getTimePercent(date) {
+      return getTimePercent(date, dayStartHour, dayEndHour)
     },
 
     getMonthName(d) {
-      return getMonthName(d)
+      return formatters.month.format(d.toDate(timeZone))
     },
     monthNames,
-    getMonthGrid(d) {
-      return getMonthGrid(d ?? date)
+    getMonthGrid(ref = date) {
+      return getMonthDays(startOfMonth(ref), locale, undefined, startOfWeekProp)
     },
 
-    getDragPreviewProps({ date: d }) {
-      const active = !!dragState && sameDay(dragState.start, d)
+    getDragPreviewProps({ date }) {
+      const active = !!dragState && isSameDay(dragState.start, date)
       return normalize.element({
         ...parts.dragGhost.attrs(scope.id),
         hidden: !active,
@@ -365,8 +246,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getDragOriginProps({ date: d }) {
-      const active = !!dragState && sameDay(dragState.origin.start, d)
+    getDragOriginProps({ date }) {
+      const active = !!dragState && isSameDay(dragState.origin.start, date)
       return normalize.element({
         ...parts.dragOrigin.attrs(scope.id),
         hidden: !active,
@@ -379,8 +260,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getSelectedSlotProps({ date: d }) {
-      const active = !!activeSlot && sameDay(activeSlot.start, d)
+    getSelectedSlotProps({ date }) {
+      const active = !!activeSlot && isSameDay(activeSlot.start, date)
       return normalize.element({
         ...parts.slotHighlight.attrs(scope.id),
         hidden: !active,
@@ -437,21 +318,21 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       return basePos
     },
 
-    getEventsForDay(d) {
-      return eventsByDayKey.get(toCalendarDate(d).toString()) ?? []
+    getEventsForDay(date) {
+      return eventsByDayKey.get(toCalendarDate(date).toString()) ?? []
     },
 
     getEventsForSlot(start, end) {
-      const bucket = eventsByDayKey.get(toCalendarDate(start).toString()) ?? []
-      return bucket.filter((e) => rangesOverlap(e.start, e.end, start, end))
+      const events = eventsByDayKey.get(toCalendarDate(start).toString()) ?? []
+      return events.filter((e) => rangesOverlap(e.start, e.end, start, end))
     },
 
     hasConflict(event) {
       return conflictIds.has(event.id)
     },
 
-    getEventEl(id) {
-      return dom.getEventEl(scope, id)
+    getEventEl(eventId) {
+      return dom.getEventEl(scope, eventId)
     },
 
     getSelectedSlotEl() {
@@ -465,19 +346,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         tabIndex: 0,
         dir,
         "data-view": view,
-        "data-dir": dir,
         "data-dragging": dataAttr(isDragging),
         "data-resizing": dataAttr(isResizing),
-        "data-slot-selecting": dataAttr(isSlotSelecting),
+        "data-selecting-slot": dataAttr(isSelectingSlot),
         style: {
-          ["--scheduler-visible-days" as any]: visibleDays.length,
-          ["--scheduler-day-count" as any]: visibleDays.length,
-          ["--scheduler-hour-count" as any]: hourRange.end - hourRange.start,
+          "--scheduler-visible-days": visibleDays.length,
+          "--scheduler-day-count": visibleDays.length,
+          "--scheduler-hour-count": hourRange.end - hourRange.start,
         },
         onKeyDown(e) {
           if (e.defaultPrevented) return
-          const target = e.target as HTMLElement
-          if (target.isContentEditable || ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) return
+          if (isComposingEvent(e)) return
+          if (isEditableElement(getEventTarget(e))) return
           const key = getEventKey(e)
           switch (key) {
             case "Escape":
@@ -589,13 +469,13 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     },
 
     getColumnHeaderProps(props: DayColumnProps) {
-      const { date: d } = props
+      const { date } = props
       return normalize.element({
         ...parts.columnHeader.attrs(scope.id),
         role: "columnheader",
-        "data-date": d.toString(),
-        "data-today": dataAttr(isTodayDate(d)),
-        "data-weekend": dataAttr(isWeekendDate(d)),
+        "data-date": date.toString(),
+        "data-today": dataAttr(isToday(date, timeZone)),
+        "data-weekend": dataAttr(isWeekend(date, locale)),
       })
     },
 
@@ -629,7 +509,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getHourLabelProps(props: HourEntryProps) {
+    getHourLabelProps(props) {
       return normalize.element({
         ...parts.hourLabel.attrs(scope.id),
         "data-hour": props.hour.value,
@@ -637,7 +517,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getHourLineProps(props: HourEntryProps) {
+    getHourLineProps(props) {
       return normalize.element({
         ...parts.hourLine.attrs(scope.id),
         "aria-hidden": "true",
@@ -646,7 +526,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getTimeSlotProps(props: TimeSlotProps) {
+    getTimeSlotProps(props) {
       const key = `${props.start.toString()}:${props.end.toString()}`
       return normalize.element({
         ...parts.timeSlot.attrs(scope.id),
@@ -660,21 +540,21 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getDayColumnState({ date: d }) {
+    getDayColumnState({ date }) {
       return {
-        isToday: isTodayDate(d),
-        isWeekend: isWeekendDate(d),
-        isDropTarget: !!liveDrag && liveDrag.kind === "drag" && sameDay(liveDrag.start, d),
-        isDragPreviewDay: !!dragState && sameDay(dragState.start, d),
-        isDragOriginDay: !!dragState && sameDay(dragState.origin.start, d),
-        isSelectedSlotDay: !!activeSlot && sameDay(activeSlot.start, d),
+        isToday: isToday(date, timeZone),
+        isWeekend: isWeekend(date, locale),
+        isDropTarget: !!liveDrag && liveDrag.kind === "drag" && isSameDay(liveDrag.start, date),
+        isDragPreviewDay: !!dragState && isSameDay(dragState.start, date),
+        isDragOriginDay: !!dragState && isSameDay(dragState.origin.start, date),
+        isSelectedSlotDay: !!activeSlot && isSameDay(activeSlot.start, date),
       }
     },
 
-    getDayColumnProps(props: DayColumnProps) {
-      const { date: d } = props
-      const key = d.toString()
-      const dayState = this.getDayColumnState({ date: d })
+    getDayColumnProps(props) {
+      const { date } = props
+      const key = date.toString()
+      const dayState = this.getDayColumnState({ date })
       const slotMinutes = prop("slotInterval")
       const slotFromClientY = (currentTarget: HTMLElement, clientY: number) => {
         const rect = currentTarget.getBoundingClientRect()
@@ -682,7 +562,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         const totalMinutes = (dayEndHour - dayStartHour) * 60
         const raw = (relY / rect.height) * totalMinutes
         const snapped = Math.round(raw / slotMinutes) * slotMinutes
-        const start = toCalendarDateTime(d).set({
+        const start = toCalendarDateTime(date).set({
           hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
           minute: snapped % 60,
         })
@@ -691,17 +571,17 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
       const overlayVars: Record<string, string> = {}
       if (dayState.isDragPreviewDay) {
-        const b = pctBounds(dragState!.start, dragState!.end)
+        const b = getTimeRangeBounds(dragState!.start, dragState!.end, dayStartHour, dayEndHour)
         overlayVars["--scheduler-drag-preview-top"] = b.top
         overlayVars["--scheduler-drag-preview-height"] = b.height
       }
       if (dayState.isDragOriginDay) {
-        const b = pctBounds(dragState!.origin.start, dragState!.origin.end)
+        const b = getTimeRangeBounds(dragState!.origin.start, dragState!.origin.end, dayStartHour, dayEndHour)
         overlayVars["--scheduler-drag-origin-top"] = b.top
         overlayVars["--scheduler-drag-origin-height"] = b.height
       }
       if (dayState.isSelectedSlotDay) {
-        const b = pctBounds(activeSlot!.start, activeSlot!.end)
+        const b = getTimeRangeBounds(activeSlot!.start, activeSlot!.end, dayStartHour, dayEndHour)
         overlayVars["--scheduler-slot-top"] = b.top
         overlayVars["--scheduler-slot-height"] = b.height
       }
@@ -715,27 +595,29 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         style: overlayVars,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
-          if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
-          const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
+          const target = getEventTarget<HTMLElement>(event)
+          if (!target || target.closest(scope.selector(parts.event))) return
+          const { start, end } = slotFromClientY(target, event.clientY)
           send({ type: "SLOT_POINTER_DOWN", start, end, point: getEventPoint(event) })
         },
         onDoubleClick(event) {
-          if ((event.target as HTMLElement).closest("[data-scheduler-event]")) return
-          const { start, end } = slotFromClientY(event.currentTarget as HTMLElement, event.clientY)
+          const target = getEventTarget<HTMLElement>(event)
+          if (!target || target.closest(scope.selector(parts.event))) return
+          const { start, end } = slotFromClientY(target, event.clientY)
           prop("onSlotDoubleClick")?.({ start, end, allDay: false })
         },
       })
     },
 
-    getDayCellProps(props: DayCellProps) {
-      const { date: d, referenceDate = date, allDay = false } = props
-      const key = d.toString()
-      const outside = !allDay && (d.month !== referenceDate.month || d.year !== referenceDate.year)
-      const todayCell = isTodayDate(d)
-      const weekend = isWeekendDate(d)
-      const selected = !!context.get("selectedSlot") && sameDay(d, context.get("selectedSlot")!.start)
-      const start = d
-      const end = d.add({ days: 1 })
+    getDayCellProps(props) {
+      const { date, referenceDate = date, allDay = false } = props
+      const key = date.toString()
+      const outside = !allDay && (date.month !== referenceDate.month || date.year !== referenceDate.year)
+      const todayCell = isToday(date, timeZone)
+      const weekend = isWeekend(date, locale)
+      const selected = !!context.get("selectedSlot") && isSameDay(date, context.get("selectedSlot")!.start)
+      const start = date
+      const end = date.add({ days: 1 })
       return normalize.element({
         ...parts.dayCell.attrs(scope.id),
         id: dom.getDayCellId(scope, key),
@@ -758,16 +640,17 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getEventProps(props: EventProps<E>) {
-      const { event } = props
+    getEventProps(props) {
+      const { event, layout = "grid" } = props
       const evtState = this.getEventState(event.id)
-      const pos = event.allDay ? null : this.getEventPosition(event)
+      const pos = event.allDay || layout === "list" ? null : this.getEventPosition(event)
       return normalize.element({
         ...parts.event.attrs(scope.id),
         id: dom.getEventId(scope, event.id),
         role: "button",
         tabIndex: 0,
         "data-event-id": event.id,
+        "data-layout": layout,
         "data-dragging": dataAttr(evtState.dragging),
         "data-resizing": dataAttr(evtState.resizing),
         "data-focused": dataAttr(evtState.focused),
@@ -802,6 +685,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           send({ type: "EVENT_POINTER_DOWN", eventId: event.id, point })
         },
         onKeyDown(e) {
+          if (e.defaultPrevented) return
+          if (isComposingEvent(e)) return
           const keyMap: EventKeyMap = {
             Enter() {
               send({ type: "EVENT_CLICK", eventId: event.id })
@@ -822,7 +707,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getEventResizeHandleProps(props: EventResizeHandleProps<E>) {
+    getEventResizeHandleProps(props) {
       const { event, edge } = props
       return normalize.element({
         ...parts.eventResizeHandle.attrs(scope.id),
@@ -837,13 +722,13 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getCurrentTimeIndicatorProps({ date: d }) {
-      const currentTime = now(prop("timeZone") ?? getLocalTimeZone())
+    getCurrentTimeIndicatorProps({ date }) {
+      const currentTime = now(prop("timeZone"))
       const dayStart = prop("dayStartHour")
       const dayEnd = prop("dayEndHour")
       const hour = currentTime.hour
-      const isToday = sameDay(currentTime, d)
-      const inRange = isToday && hour >= dayStart && hour < dayEnd
+      const showIndicator = isSameDay(currentTime, date)
+      const inRange = showIndicator && hour >= dayStart && hour < dayEnd
       const percent = getTimePercent(currentTime, dayStart, dayEnd)
       return normalize.element({
         ...parts.currentTimeIndicator.attrs(scope.id),
@@ -860,7 +745,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getMoreEventsProps(props: MoreEventsProps) {
+    getMoreEventsProps(props) {
       return normalize.button({
         ...parts.moreEvents.attrs(scope.id),
         type: "button",
@@ -869,14 +754,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getAgendaGroupProps(props: AgendaGroupProps) {
+    getAgendaGroupProps(props) {
       return normalize.element({
         ...parts.agendaGroup.attrs(scope.id),
         "data-date": props.date.toString(),
       })
     },
 
-    getAgendaGroupTitleProps(props: AgendaGroupProps) {
+    getAgendaGroupTitleProps(props) {
       return normalize.element({
         ...parts.agendaGroupTitle.attrs(scope.id),
         "data-date": props.date.toString(),

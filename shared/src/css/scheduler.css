@@ -689,7 +689,7 @@
   background: #fff;
 }
 
-.scheduler-mobile-agenda-title {
+[data-scheduler-agenda-group-title] {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -703,13 +703,12 @@
   padding: 24px 0;
 }
 
-.scheduler-mobile-agenda-event {
+[data-scheduler-event][data-layout="list"] {
   padding: 10px 12px;
   border-left: 3px solid var(--event-color, #3b82f6);
   background: color-mix(in srgb, var(--event-color, #3b82f6) 10%, white);
   border-radius: 6px;
   margin-bottom: 6px;
-  position: static !important;
 }
 
 .scheduler-mobile-agenda-time {

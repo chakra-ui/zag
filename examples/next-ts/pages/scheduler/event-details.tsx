@@ -1,11 +1,8 @@
-// Click an event to open a popover anchored to that event element showing
-// its details, with minimal rename + delete actions. Demonstrates wiring
-// scheduler's onEventClick into a controlled popover via getAnchorElement.
 import * as popover from "@zag-js/popover"
-import * as scheduler from "@zag-js/scheduler"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import * as scheduler from "@zag-js/scheduler"
 import { schedulerControls } from "@zag-js/shared"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

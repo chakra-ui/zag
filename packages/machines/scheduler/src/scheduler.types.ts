@@ -138,6 +138,30 @@ export interface EventResizeDetails<T extends SchedulerPayload = SchedulerPayloa
   edge: "start" | "end"
 }
 
+export interface DragState<T extends SchedulerPayload = SchedulerPayload> {
+  /**
+   * Which gesture is in progress.
+   */
+  kind: "drag" | "resize"
+  /**
+   * The event being dragged or resized.
+   */
+  event: SchedulerEvent<T>
+  /**
+   * Current pointer-predicted start of the event (snapped to `slotInterval`).
+   */
+  start: DateValue
+  /**
+   * Current pointer-predicted end of the event.
+   */
+  end: DateValue
+  /**
+   * The event's start/end at the moment the gesture began — restore target
+   * for escape-to-cancel, and anchor for the "origin" outline overlay.
+   */
+  origin: { start: DateValue; end: DateValue }
+}
+
 /* -----------------------------------------------------------------------------
  * Props
  * -----------------------------------------------------------------------------*/
@@ -298,6 +322,8 @@ type PropsWithDefault =
   | "dayEndHour"
   | "workWeekDays"
   | "locale"
+  | "timeZone"
+  | "dir"
   | "showCurrentTime"
   | "showWeekNumbers"
   | "maxRecurrenceInstances"
@@ -331,11 +357,16 @@ interface SchedulerContext {
 
 type Computed = Readonly<{
   visibleRange: { start: DateValue; end: DateValue }
-  weekDayFormatters: {
-    short: Intl.DateTimeFormat
-    long: Intl.DateTimeFormat
-    narrow: Intl.DateTimeFormat
+  formatters: {
+    weekDayShort: Intl.DateTimeFormat
+    weekDayLong: Intl.DateTimeFormat
+    weekDayNarrow: Intl.DateTimeFormat
+    time: Intl.DateTimeFormat
+    range: Intl.DateTimeFormat
+    longDate: Intl.DateTimeFormat
+    month: Intl.DateTimeFormat
   }
+  hourRange: HourRange
   isInteractive: boolean
 }>
 
@@ -438,36 +469,24 @@ export interface DayCellProps {
   allDay?: boolean
 }
 
-/**
- * A single day in a month-grid rendering. Produced by `api.getMonthGrid`.
- * Data attributes are already surfaced via `getDayCellProps` — this shape is
- * for when consumers need the booleans directly (e.g. to render a dot for
- * events, or a custom className).
- */
-export interface MonthGridDay {
-  /**
-   * The date of the day cell.
-   */
-  date: DateValue
-  /**
-   * Whether this day falls inside the reference month (false = leading/trailing filler).
-   */
-  inMonth: boolean
-  /**
-   * Whether this day is today (locale/timezone aware).
-   */
-  isToday: boolean
-  /**
-   * Whether this day is a Saturday or Sunday.
-   */
-  isWeekend: boolean
-}
-
 export interface EventProps<T extends SchedulerPayload = SchedulerPayload> {
   /**
    * The event to render.
    */
   event: SchedulerEvent<T>
+  /**
+   * Rendering context for the event.
+   * - `"grid"` (default): time-grid view — emits `position: absolute` and
+   *   percentage-based `top`/`height`/`inset-inline` so the event tile positions
+   *   itself within its day column.
+   * - `"list"`: agenda / month-chip / other stacked layouts — emits no
+   *   positioning so the element flows naturally as a list item. Use when the
+   *   surrounding container handles layout (flex column, grid cell, etc).
+   *
+   * Ignored when `event.allDay` is true; all-day events always return minimal
+   * style regardless of layout.
+   */
+  layout?: "grid" | "list"
 }
 
 export interface EventResizeHandleProps<T extends SchedulerPayload = SchedulerPayload> {
@@ -635,10 +654,6 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    */
   hourRange: HourRange
   /**
-   * Writing direction.
-   */
-  dir: "ltr" | "rtl"
-  /**
    * All events (recurring instances expanded against the visible range).
    */
   events: SchedulerEvent<P>[]
@@ -647,9 +662,10 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    */
   visibleEvents: SchedulerEvent<P>[]
   /**
-   * Visible events grouped by day and sorted by start. Use for agenda / list layouts.
+   * Visible events grouped by day and sorted by start. Lazy — computed only
+   * when called. Use for agenda / list layouts.
    */
-  agendaGroups: { date: DateValue; events: SchedulerEvent<P>[] }[]
+  getAgendaGroups: () => { date: DateValue; events: SchedulerEvent<P>[] }[]
   /**
    * Whether the user is currently dragging an event.
    */
@@ -657,7 +673,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   /**
    * Whether the user is currently selecting a slot.
    */
-  isSlotSelecting: boolean
+  isSelectingSlot: boolean
   /**
    * Whether the user is currently resizing an event.
    */
@@ -666,13 +682,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    * State of the active drag or resize — null when idle. `start`/`end` track the
    * current pointer-predicted position; `origin` is where the gesture began.
    */
-  dragState: {
-    kind: "drag" | "resize"
-    event: SchedulerEvent<P>
-    start: DateValue
-    end: DateValue
-    origin: { start: DateValue; end: DateValue }
-  } | null
+  dragState: DragState<P> | null
   /**
    * Slot the user selected (clicked or drag-selected). Clears on escape or new click.
    */
@@ -731,7 +741,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    * Weeks × days covering the month that contains `date`, padded to full weeks.
    * Use for month grids and mini-month cells.
    */
-  getMonthGrid: (date?: DateValue) => MonthGridDay[][]
+  getMonthGrid: (date?: DateValue) => DateValue[][]
   /**
    * O(1) event lookup by id (reads from the current events list).
    */

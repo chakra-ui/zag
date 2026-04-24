@@ -57,7 +57,7 @@ export const splitDayColumnProps = createSplitProps<DayColumnProps>(dayColumnPro
 export const dayCellProps = createProps<DayCellProps>()(["date", "referenceDate", "allDay"])
 export const splitDayCellProps = createSplitProps<DayCellProps>(dayCellProps)
 
-export const eventProps = createProps<EventProps>()(["event"])
+export const eventProps = createProps<EventProps>()(["event", "layout"])
 export const splitEventProps = createSplitProps<EventProps>(eventProps)
 
 export const eventResizeHandleProps = createProps<EventResizeHandleProps>()(["event", "edge"])

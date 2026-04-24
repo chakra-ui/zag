@@ -184,7 +184,7 @@ Navigation: `setView`, `setDate`, `goToPrev`, `goToNext`, `goToToday`.
 | `dragPreview` | live drag bounds: `{ eventId, start, end }` or null |
 | `dragOrigin` | where the drag started: `{ eventId, start, end }` or null |
 | `selectedSlot` | last-clicked slot: `{ start, end }` or null |
-| `isDragging` / `isResizing` / `isSlotSelecting` | |
+| `isDragging` / `isResizing` / `isSelectingSlot` | |
 
 ### Lookups (O(1))
 

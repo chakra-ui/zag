@@ -1,14 +1,13 @@
-import * as scheduler from "@zag-js/scheduler"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { normalizeProps, useMachine } from "@zag-js/react"
 import { CalendarDateTime } from "@internationalized/date"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as scheduler from "@zag-js/scheduler"
 import { schedulerControls } from "@zag-js/shared"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
-// A meeting on the 10th-ish of every month, so each mini-month tile has content.
 const INITIAL: scheduler.SchedulerEvent[] = Array.from({ length: 12 }, (_, m) => ({
   id: `evt-${m}`,
   title: `Meeting ${m + 1}`,
@@ -30,15 +29,15 @@ function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
       </div>
       {weeks.map((week, wi) => (
         <div key={wi} className="scheduler-mini-week">
-          {week.map((cell) => {
-            const dayEvents = api.getEventsForDay(cell.date)
+          {week.map((date) => {
+            const dayEvents = api.getEventsForDay(date)
             return (
               <div
-                key={cell.date.toString()}
-                {...api.getDayCellProps({ date: cell.date, referenceDate: reference })}
+                key={date.toString()}
+                {...api.getDayCellProps({ date, referenceDate: reference })}
                 className="scheduler-mini-day"
               >
-                <span>{cell.date.day}</span>
+                <span>{date.day}</span>
                 {dayEvents.length > 0 && (
                   <span className="scheduler-mini-dot" style={{ background: dayEvents[0].color ?? "#3b82f6" }} />
                 )}

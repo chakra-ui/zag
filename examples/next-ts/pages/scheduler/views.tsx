@@ -101,29 +101,28 @@ export default function Page() {
                 ))}
               </div>
               <div className="scheduler-month-body">
-                {api.getMonthGrid(api.date).map((week, wi) => (
-                  <div key={wi} className="scheduler-month-week">
-                    {week.map((cell) => {
-                      const dayEvents = api.getEventsForDay(cell.date)
+                {api.getMonthGrid(api.date).map((week, weekIndex) => (
+                  <div key={weekIndex} className="scheduler-month-week">
+                    {week.map((date) => {
+                      const dayEvents = api.getEventsForDay(date)
                       return (
                         <div
-                          key={cell.date.toString()}
-                          {...api.getDayCellProps({ date: cell.date, referenceDate: api.date })}
+                          key={date.toString()}
+                          {...api.getDayCellProps({ date, referenceDate: api.date })}
                           className="scheduler-month-cell"
                         >
-                          <div className="scheduler-month-day-number">{cell.date.day}</div>
+                          <div className="scheduler-month-day-number">{date.day}</div>
                           {dayEvents.slice(0, 3).map((event) => (
                             <div
                               key={event.id}
-                              {...api.getEventProps({ event })}
+                              {...api.getEventProps({ event, layout: "list" })}
                               className="scheduler-month-event"
-                              style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
                             >
-                              {String(event.title ?? "")}
+                              {event.title}
                             </div>
                           ))}
                           {dayEvents.length > 3 && (
-                            <button {...api.getMoreEventsProps({ date: cell.date, count: dayEvents.length - 3 })}>
+                            <button {...api.getMoreEventsProps({ date, count: dayEvents.length - 3 })}>
                               +{dayEvents.length - 3} more
                             </button>
                           )}
@@ -169,7 +168,7 @@ export default function Page() {
 
                         {dayEvents.map((event) => (
                           <div key={event.id} {...api.getEventProps({ event })}>
-                            <div className="scheduler-event-title">{String(event.title ?? "")}</div>
+                            <div className="scheduler-event-title">{event.title}</div>
                             <div className="scheduler-event-time">{event.start.toString().slice(11, 16)}</div>
                             <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
                               <div className="scheduler-resize-grip" />
@@ -178,7 +177,7 @@ export default function Page() {
                         ))}
 
                         <div {...api.getDragPreviewProps({ date })}>
-                          <div className="scheduler-event-title">{String(api.dragState?.event.title ?? "")}</div>
+                          <div className="scheduler-event-title">{api.dragState?.event.title}</div>
                         </div>
                       </div>
                     )

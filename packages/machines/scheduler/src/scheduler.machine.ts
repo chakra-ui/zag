@@ -1,9 +1,9 @@
-import { getLocalTimeZone, today } from "@internationalized/date"
+import { getLocalTimeZone, toCalendarDateTime, today } from "@internationalized/date"
 import { createMachine, memo } from "@zag-js/core"
 import type { DateValue } from "@zag-js/date-utils"
 import { getNearestScrollableAncestor, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./scheduler.dom"
-import type { SchedulerSchema } from "./scheduler.types"
+import type { HourRange, SchedulerSchema } from "./scheduler.types"
 import { pointToDateTime, pointToTimeOnDay } from "./utils/drag"
 import { getMinutesBetween } from "./utils/time"
 import { getNextDate, getPrevDate, getVisibleRange } from "./utils/visible-range"
@@ -17,6 +17,8 @@ export const machine = createMachine<SchedulerSchema>({
       dayEndHour: 24,
       workWeekDays: [1, 2, 3, 4, 5],
       locale: "en-US",
+      timeZone: getLocalTimeZone(),
+      dir: "ltr",
       showCurrentTime: true,
       showWeekNumbers: false,
       maxRecurrenceInstances: 2000,
@@ -38,7 +40,7 @@ export const machine = createMachine<SchedulerSchema>({
         },
       })),
       date: bindable(() => ({
-        defaultValue: prop("defaultDate") ?? today(prop("timeZone") ?? getLocalTimeZone()),
+        defaultValue: prop("defaultDate") ?? today(prop("timeZone")),
         value: prop("date"),
         onChange(date) {
           prop("onDateChange")?.({ date })
@@ -75,13 +77,45 @@ export const machine = createMachine<SchedulerSchema>({
       ({ context, prop }) => [context.get("view"), context.get("date"), prop("locale"), prop("startOfWeek")],
       ([view, date, locale, startOfWeek]) => getVisibleRange(view, date, locale, startOfWeek),
     ),
-    weekDayFormatters: memo(
+    formatters: memo(
       ({ prop }) => [prop("locale"), prop("timeZone")],
       ([locale, timeZone]) => ({
-        short: new Intl.DateTimeFormat(locale, { timeZone, weekday: "short" }),
-        long: new Intl.DateTimeFormat(locale, { timeZone, weekday: "long" }),
-        narrow: new Intl.DateTimeFormat(locale, { timeZone, weekday: "narrow" }),
+        weekDayShort: new Intl.DateTimeFormat(locale, { timeZone, weekday: "short" }),
+        weekDayLong: new Intl.DateTimeFormat(locale, { timeZone, weekday: "long" }),
+        weekDayNarrow: new Intl.DateTimeFormat(locale, { timeZone, weekday: "narrow" }),
+        time: new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" }),
+        range: new Intl.DateTimeFormat(locale, { timeZone, month: "short", day: "numeric", year: "numeric" }),
+        longDate: new Intl.DateTimeFormat(locale, { timeZone, weekday: "long", month: "long", day: "numeric" }),
+        month: new Intl.DateTimeFormat(locale, { timeZone, month: "long" }),
       }),
+    ),
+    hourRange: memo(
+      ({ prop, computed }) => [
+        prop("dayStartHour"),
+        prop("dayEndHour"),
+        computed("visibleRange").start,
+        prop("locale"),
+        prop("timeZone"),
+      ],
+      ([dayStartHour, dayEndHour, visibleStart, locale, timeZone]): HourRange => {
+        const hourSpan = dayEndHour - dayStartHour
+        const refDate = toCalendarDateTime(visibleStart)
+        const formatter = new Intl.DateTimeFormat(locale, { timeZone, hour: "numeric", minute: "2-digit" })
+        return {
+          start: dayStartHour,
+          end: dayEndHour,
+          hours: Array.from({ length: hourSpan + 1 }, (_, i) => {
+            const value = dayStartHour + i
+            const labelDate = refDate.set({ hour: Math.min(value, 23), minute: 0 })
+            const percent = hourSpan === 0 ? 0 : i / hourSpan
+            return {
+              value,
+              label: formatter.format(labelDate.toDate(timeZone)),
+              percent,
+            }
+          }),
+        }
+      },
     ),
     isInteractive: ({ prop }) => !prop("disabled"),
   },
@@ -272,7 +306,7 @@ export const machine = createMachine<SchedulerSchema>({
         context.set("date", event.date)
       },
       goToToday({ context, prop }) {
-        context.set("date", today(prop("timeZone") ?? getLocalTimeZone()))
+        context.set("date", today(prop("timeZone")))
       },
       goToNext({ context }) {
         context.set("date", getNextDate(context.get("view"), context.get("date")))

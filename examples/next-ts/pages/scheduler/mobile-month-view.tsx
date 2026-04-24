@@ -1,8 +1,8 @@
-import * as scheduler from "@zag-js/scheduler"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { schedulerControls } from "@zag-js/shared"
 import type { DateValue } from "@internationalized/date"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as scheduler from "@zag-js/scheduler"
+import { schedulerControls } from "@zag-js/shared"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -87,20 +87,20 @@ export default function Page() {
             </div>
             {weeks.map((week, wi) => (
               <div key={wi} className="scheduler-mobile-week">
-                {week.map((cell) => {
-                  const isSelected = cell.date.compare(selectedDate) === 0
-                  const dayEvents = api.getEventsForDay(cell.date)
+                {week.map((date) => {
+                  const isSelected = date.compare(selectedDate) === 0
+                  const dayEvents = api.getEventsForDay(date)
                   return (
                     <button
-                      key={cell.date.toString()}
+                      key={date.toString()}
                       type="button"
-                      {...api.getDayCellProps({ date: cell.date, referenceDate: api.date })}
+                      {...api.getDayCellProps({ date, referenceDate: api.date })}
                       className="scheduler-mobile-day"
                       data-selected={isSelected || undefined}
-                      onClick={() => setSelectedDate(cell.date)}
-                      aria-label={api.formatLongDate(cell.date)}
+                      onClick={() => setSelectedDate(date)}
+                      aria-label={api.formatLongDate(date)}
                     >
-                      <span className="scheduler-mobile-day-num">{cell.date.day}</span>
+                      <span className="scheduler-mobile-day-num">{date.day}</span>
                       <span className="scheduler-mobile-dots">
                         {dayEvents.slice(0, 3).map((e) => (
                           <span
@@ -118,17 +118,12 @@ export default function Page() {
           </div>
 
           <div className="scheduler-mobile-agenda">
-            <div className="scheduler-mobile-agenda-title">{api.formatLongDate(selectedDate)}</div>
+            <div {...api.getAgendaGroupTitleProps({ date: selectedDate })}>{api.formatLongDate(selectedDate)}</div>
             {selectedDayEvents.length === 0 ? (
               <div className="scheduler-mobile-agenda-empty">No events</div>
             ) : (
               selectedDayEvents.map((event) => (
-                <div
-                  key={event.id}
-                  {...api.getEventProps({ event })}
-                  className="scheduler-mobile-agenda-event"
-                  style={{ ["--event-color"]: event.color ?? "#3b82f6" } as React.CSSProperties}
-                >
+                <div key={event.id} {...api.getEventProps({ event, layout: "list" })}>
                   <div className="scheduler-mobile-agenda-time">{api.formatTimeRange(event.start, event.end)}</div>
                   <div className="scheduler-event-title">{event.title}</div>
                 </div>
