@@ -29,19 +29,21 @@ export default function Page() {
       <main className="listbox">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Label</label>
-          <ul {...api.getContentProps()}>
-            {selectData.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {selectData.map((item) => (
+                <li key={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} context={["highlightedValue"]} />
+        <StateVisualizer state={service} context={["highlightedValue", "focused"]} />
       </Toolbar>
     </>
   )

@@ -37,19 +37,21 @@ export default function Page() {
     <>
       <main className="listbox">
         <div {...api.getRootProps()}>
-          <input
-            {...api.getInputProps({ autoHighlight: true })}
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-          />
-          <ul {...api.getContentProps()}>
-            {collection.items.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <input
+              {...api.getInputProps({ autoHighlight: true })}
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+            />
+            <ul {...api.getListProps()}>
+              {collection.items.map((item) => (
+                <li key={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </main>
 

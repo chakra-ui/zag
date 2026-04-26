@@ -38,21 +38,23 @@ function ListboxFiltering() {
 
   return (
     <div {...api().getRootProps()}>
-      <input
-        {...api().getInputProps({ autoHighlight: true })}
-        onInput={(e) => setSearch(e.currentTarget.value)}
-        value={search()}
-      />
-      <ul {...api().getContentProps()}>
-        <For each={collection().items}>
-          {(item) => (
-            <li {...api().getItemProps({ item })}>
-              <span {...api().getItemTextProps({ item })}>{item.label}</span>
-              <span {...api().getItemIndicatorProps({ item })}>✓</span>
-            </li>
-          )}
-        </For>
-      </ul>
+      <div {...api().getContentProps()}>
+        <input
+          {...api().getInputProps({ autoHighlight: true })}
+          onInput={(e) => setSearch(e.currentTarget.value)}
+          value={search()}
+        />
+        <ul {...api().getListProps()}>
+          <For each={collection().items}>
+            {(item) => (
+              <li {...api().getItemProps({ item })}>
+                <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                <span {...api().getItemIndicatorProps({ item })}>✓</span>
+              </li>
+            )}
+          </For>
+        </ul>
+      </div>
     </div>
   )
 }

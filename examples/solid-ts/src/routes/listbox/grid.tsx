@@ -34,16 +34,18 @@ export default function Page() {
       <main class="listbox">
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>Label</label>
-          <ul {...api().getContentProps()}>
-            <For each={collection.items}>
-              {(item) => (
-                <li {...api().getItemProps({ item })}>
-                  {item.label}
-                  <span {...api().getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              )}
-            </For>
-          </ul>
+          <div {...api().getContentProps()}>
+            <ul {...api().getListProps()}>
+              <For each={collection.items}>
+                {(item) => (
+                  <li {...api().getItemProps({ item })}>
+                    {item.label}
+                    <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
         </div>
       </main>
 

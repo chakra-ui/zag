@@ -23,14 +23,16 @@ function Listbox() {
   return (
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>Select country</label>
-      <ul {...api.getContentProps()}>
-        {data.map((item) => (
-          <li key={item.value} {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
-            <span {...api.getItemIndicatorProps({ item })}>✓</span>
-          </li>
-        ))}
-      </ul>
+      <div {...api.getContentProps()}>
+        <ul {...api.getListProps()}>
+          {data.map((item) => (
+            <li key={item.value} {...api.getItemProps({ item })}>
+              <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <span {...api.getItemIndicatorProps({ item })}>✓</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

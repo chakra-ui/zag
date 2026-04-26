@@ -23,16 +23,18 @@ function Listbox() {
   return (
     <div {...api().getRootProps()}>
       <label {...api().getLabelProps()}>Select country</label>
-      <ul {...api().getContentProps()}>
-        <For each={data}>
-          {(item) => (
-            <li {...api().getItemProps({ item })}>
-              <span {...api().getItemTextProps({ item })}>{item.label}</span>
-              <span {...api().getItemIndicatorProps({ item })}>✓</span>
-            </li>
-          )}
-        </For>
-      </ul>
+      <div {...api().getContentProps()}>
+        <ul {...api().getListProps()}>
+          <For each={data}>
+            {(item) => (
+              <li {...api().getItemProps({ item })}>
+                <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                <span {...api().getItemIndicatorProps({ item })}>✓</span>
+              </li>
+            )}
+          </For>
+        </ul>
+      </div>
     </div>
   )
 }

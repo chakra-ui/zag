@@ -38,33 +38,35 @@ export default function Page() {
       <main className="listbox">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Label</label>
-          <div ref={ref} {...api.getContentProps()} onScroll={virtualizer.handleScroll}>
-            <div
-              style={{
-                height: virtualizer.getTotalSize(),
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {virtualItems.map((virtualItem) => {
-                const item = items[virtualItem.index]
-                return (
-                  <div
-                    key={item.value}
-                    {...api.getItemProps({ item })}
-                    data-index={virtualItem.index}
-                    aria-setsize={items.length}
-                    aria-posinset={virtualItem.index + 1}
-                    style={{
-                      ...virtualizer.getItemStyle(virtualItem),
-                      overflowAnchor: "none",
-                    }}
-                  >
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </div>
-                )
-              })}
+          <div {...api.getContentProps()}>
+            <div ref={ref} {...api.getListProps()} onScroll={virtualizer.handleScroll}>
+              <div
+                style={{
+                  height: virtualizer.getTotalSize(),
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                {virtualItems.map((virtualItem) => {
+                  const item = items[virtualItem.index]
+                  return (
+                    <div
+                      key={item.value}
+                      {...api.getItemProps({ item })}
+                      data-index={virtualItem.index}
+                      aria-setsize={items.length}
+                      aria-posinset={virtualItem.index + 1}
+                      style={{
+                        ...virtualizer.getItemStyle(virtualItem),
+                        overflowAnchor: "none",
+                      }}
+                    >
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>

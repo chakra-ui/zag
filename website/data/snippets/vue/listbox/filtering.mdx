@@ -46,16 +46,18 @@
       v-bind="api.getInputProps({ autoHighlight: true })"
       v-model="search"
     />
-    <ul v-bind="api.getContentProps()">
-      <li
-        v-for="item in collection.items"
-        :key="item.value"
-        v-bind="api.getItemProps({ item })"
-      >
-        <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
-        <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
-      </li>
-    </ul>
+    <div v-bind="api.getContentProps()">
+      <ul v-bind="api.getListProps()">
+        <li
+          v-for="item in collection.items"
+          :key="item.value"
+          v-bind="api.getItemProps({ item })"
+        >
+          <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+          <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 ```

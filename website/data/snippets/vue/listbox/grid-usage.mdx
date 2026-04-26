@@ -29,17 +29,19 @@
 <template>
   <div v-bind="api.getRootProps()">
     <label v-bind="api.getLabelProps()">Select color</label>
-    <div
-      v-bind="api.getContentProps()"
-      style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px"
-    >
+    <div v-bind="api.getContentProps()">
       <div
-        v-for="item in collection.items"
-        :key="item.value"
-        v-bind="api.getItemProps({ item })"
+        v-bind="api.getListProps()"
+        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px"
       >
-        <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
-        <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+        <div
+          v-for="item in collection.items"
+          :key="item.value"
+          v-bind="api.getItemProps({ item })"
+        >
+          <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+          <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+        </div>
       </div>
     </div>
   </div>

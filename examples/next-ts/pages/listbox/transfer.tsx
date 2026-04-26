@@ -20,14 +20,16 @@ function ListBox({ label, collection, ...props }: { label?: React.ReactNode } & 
   return (
     <div {...api.getRootProps()} style={{ flex: "1" }}>
       {label && <label {...api.getLabelProps()}>{label}</label>}
-      <ul {...api.getContentProps()} style={{ width: "100%", height: "100%" }}>
-        {collection.items.map((item) => (
-          <li key={item.value} {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
-            <span {...api.getItemIndicatorProps({ item })}>✓</span>
-          </li>
-        ))}
-      </ul>
+      <div {...api.getContentProps()} style={{ width: "100%", height: "100%" }}>
+        <ul {...api.getListProps()} style={{ width: "100%", height: "100%" }}>
+          {collection.items.map((item) => (
+            <li key={item.value} {...api.getItemProps({ item })}>
+              <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <span {...api.getItemIndicatorProps({ item })}>✓</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

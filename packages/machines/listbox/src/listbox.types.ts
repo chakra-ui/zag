@@ -35,6 +35,7 @@ export interface SelectionDetails {
 export type ElementIds = Partial<{
   root: string
   content: string
+  list: string
   label: string
   item: (id: string | number) => string
   itemGroup: (id: string | number) => string
@@ -321,6 +322,7 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   getLabelProps: () => T["label"]
   getValueTextProps: () => T["element"]
   getContentProps: () => T["element"]
+  getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]

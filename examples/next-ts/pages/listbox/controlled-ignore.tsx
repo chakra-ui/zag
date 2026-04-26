@@ -46,14 +46,16 @@ export default function Page() {
         </div>
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select framework</label>
-          <ul data-testid="listbox-content" {...api.getContentProps()}>
-            {items.map((item) => (
-              <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <div data-testid="listbox-content" {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {items.map((item) => (
+                <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </main>

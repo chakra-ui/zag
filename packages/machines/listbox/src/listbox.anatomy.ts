@@ -9,6 +9,7 @@ export const anatomy = createAnatomy("listbox").parts(
   "itemGroup",
   "itemGroupLabel",
   "content",
+  "list",
   "root",
   "valueText",
 )

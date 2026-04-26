@@ -28,22 +28,24 @@ function ListboxGrid() {
   return (
     <div {...api().getRootProps()}>
       <label {...api().getLabelProps()}>Select color</label>
-      <div
-        {...api().getContentProps()}
-        style={{
-          display: "grid",
-          "grid-template-columns": "repeat(3, 1fr)",
-          gap: "8px",
-        }}
-      >
-        <For each={collection.items}>
-          {(item) => (
-            <div {...api().getItemProps({ item })}>
-              <span {...api().getItemTextProps({ item })}>{item.label}</span>
-              <span {...api().getItemIndicatorProps({ item })}>✓</span>
-            </div>
-          )}
-        </For>
+      <div {...api().getContentProps()}>
+        <div
+          {...api().getListProps()}
+          style={{
+            display: "grid",
+            "grid-template-columns": "repeat(3, 1fr)",
+            gap: "8px",
+          }}
+        >
+          <For each={collection.items}>
+            {(item) => (
+              <div {...api().getItemProps({ item })}>
+                <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                <span {...api().getItemIndicatorProps({ item })}>✓</span>
+              </div>
+            )}
+          </For>
+        </div>
       </div>
     </div>
   )

@@ -131,7 +131,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         autoComplete: "off",
         autoCorrect: "off",
         "aria-haspopup": "listbox",
-        "aria-controls": dom.getContentId(scope),
+        "aria-controls": dom.getListId(scope),
         "aria-autocomplete": "list",
         "aria-activedescendant": ariaActiveDescendant,
         spellCheck: false,
@@ -160,7 +160,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             event.preventDefault()
             const win = scope.getWin()
             const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
-            dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+            dom.getListEl(scope)?.dispatchEvent(keyboardEvent)
           }
 
           switch (nativeEvent.key) {
@@ -242,7 +242,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onMouseDown(event) {
           event.preventDefault()
-          dom.getContentEl(scope)?.focus()
+          dom.getListEl(scope)?.focus()
         },
         onClick(event) {
           if (event.defaultPrevented) return
@@ -309,27 +309,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role: "listbox",
         ...parts.content.attrs(scope.id),
-        "data-activedescendant": ariaActiveDescendant,
-        "aria-activedescendant": ariaActiveDescendant,
         "data-orientation": prop("orientation"),
-        "aria-multiselectable": computed("multiple") ? true : undefined,
-        "aria-labelledby": dom.getLabelId(scope),
-        tabIndex: 0,
         "data-layout": layout,
         "data-empty": dataAttr(collection.size === 0),
-        style: {
-          "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
-        },
-        onFocus() {
-          send({ type: "CONTENT.FOCUS" })
-        },
-        onBlur() {
-          send({ type: "CONTENT.BLUR" })
-        },
         onKeyDown(event) {
           if (!interactive) return
+          if (event.defaultPrevented) return
           const target = getEventTarget<Element>(event)
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
@@ -443,6 +429,32 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })
             event.preventDefault()
           }
+        },
+      })
+    },
+
+    getListProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        id: dom.getListId(scope),
+        role: "listbox",
+        ...parts.list.attrs(scope.id),
+        "data-activedescendant": ariaActiveDescendant,
+        "aria-activedescendant": ariaActiveDescendant,
+        "data-orientation": prop("orientation"),
+        "aria-multiselectable": computed("multiple") ? true : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        tabIndex: 0,
+        "data-layout": layout,
+        "data-empty": dataAttr(collection.size === 0),
+        style: {
+          "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
+        },
+        onFocus() {
+          send({ type: "CONTENT.FOCUS" })
+        },
+        onBlur() {
+          send({ type: "CONTENT.BLUR" })
         },
       })
     },
