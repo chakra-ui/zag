@@ -1,5 +1,17 @@
 # @zag-js/tree-view
 
+## 1.40.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/collection@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes

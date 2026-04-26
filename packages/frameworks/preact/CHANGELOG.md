@@ -1,5 +1,19 @@
 # @zag-js/preact
 
+## 1.40.1
+
+### Patch Changes
+
+- [#3094](https://github.com/chakra-ui/zag/pull/3094)
+  [`ad426d3`](https://github.com/chakra-ui/zag/commit/ad426d3efdfb11d7d8e457c6aac3708116ad7b1c) Thanks
+  [@aleclarson](https://github.com/aleclarson)! - Avoid bundling @zag-js/utils and remove unused proxy-compare
+
+- Updated dependencies []:
+  - @zag-js/core@1.40.1
+  - @zag-js/store@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/utils@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes

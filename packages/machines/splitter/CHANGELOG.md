@@ -1,5 +1,20 @@
 # @zag-js/splitter
 
+## 1.40.1
+
+### Patch Changes
+
+- [`53871f5`](https://github.com/chakra-ui/zag/commit/53871f5e51c0cab203dfd8693fcb5d2e7236c8f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicking a `ResizeTrigger` not moving focus to it, which
+  prevented arrow keys from resizing the splitter until it was tab-focused (notably on Safari).
+  - Fix `data-focus` being applied on hover by only setting it when the trigger is actually focused.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes
