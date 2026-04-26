@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/gridlist",
-  "version": "0.0.0",
+  "version": "2.0.0-next.0",
   "description": "Core logic for the gridlist widget implemented as a state machine",
   "keywords": [
     "js",
