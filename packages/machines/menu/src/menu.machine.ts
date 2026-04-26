@@ -732,6 +732,7 @@ export const machine = createMachine<MenuSchema>({
           listeners: false,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
+            context.set("positioned", true)
           },
         })
       },
