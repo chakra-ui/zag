@@ -301,7 +301,11 @@ export const machine = createMachine({
         exec()
 
         const triggerEls = dom.getElements(scope)
-        const indicatorCleanup = callAll(...triggerEls.map((el) => resizeObserverBorderBox.observe(el, exec)))
+        const listEl = dom.getListEl(scope)
+        const indicatorCleanup = callAll(
+          ...triggerEls.map((el) => resizeObserverBorderBox.observe(el, exec)),
+          ...(listEl ? [resizeObserverBorderBox.observe(listEl, exec)] : []),
+        )
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },
