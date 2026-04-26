@@ -63,14 +63,16 @@ export default function Page() {
                 </div>
               )}
 
-              {listApi.items.map((item) => (
-                <div key={item.name} {...api.getItemProps({ item })}>
-                  <span {...api.getItemTextProps({ item })}>{item.name}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                </div>
-              ))}
+              <div {...api.getListProps()}>
+                {listApi.items.map((item) => (
+                  <div key={item.name} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.name}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </div>
+                ))}
 
-              <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+                <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+              </div>
 
               {isLoadingMore && (
                 <div role="status" aria-live="polite" style={{ padding: "8px 12px" }}>

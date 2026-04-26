@@ -55,23 +55,77 @@
 }
 
 [data-select-content] {
-  padding: 0px;
-  list-style: none;
   width: 240px;
-  margin: 0;
   margin-top: 4px;
-  padding: 4px;
   background: #efefef;
-  max-height: min(var(--available-height), 400px);
-  overflow-y: auto;
   position: relative;
-  overscroll-behavior: contain;
   z-index: var(--layer-index);
+  max-height: min(var(--available-height), 400px);
+  display: flex;
+  flex-direction: column;
+}
+
+[data-select-list] {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  scroll-padding-block: 1.5rem;
 }
 
 .select input {
   position: sticky;
   top: 0;
+}
+
+[data-select-search] {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+}
+
+[data-select-empty] {
+  padding: 12px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+[data-select-footer] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-top: 1px solid #ccc;
+  background: #f7f7f7;
+  font-size: 12px;
+  color: #555;
+}
+
+[data-select-select-all] {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: #f7f7f7;
+  font-size: 13px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-select-select-all-count] {
+  margin-left: auto;
+  color: #777;
+  font-size: 12px;
 }
 
 [data-select-item] {
@@ -102,6 +156,8 @@
 }
 
 [data-select-scroll-arrow] {
+  position: absolute;
+  left: 0;
   width: 100%;
   background: #efefef;
   z-index: 1;
@@ -114,24 +170,12 @@
   align-items: center;
   justify-content: center;
 
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-  }
-
-  &[data-placement="top"]::before {
-    top: -100%;
+  &[data-placement="top"] {
+    top: 0;
   }
 
   &[data-placement="bottom"] {
     bottom: 0;
-
-    &::before {
-      bottom: -100%;
-    }
   }
 
   &[data-state="hidden"] {

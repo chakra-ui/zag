@@ -2,6 +2,7 @@ import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
+import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { AutoScrollHandlers } from "./select.dom"
@@ -40,13 +41,25 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface ItemAnnouncementDetails {
+  value: string
+  label: string
+  selected: boolean
+}
+
 export interface IntlTranslations {
   clearTriggerLabel?: string | undefined
+  /**
+   * Format the live-region announcement when the highlighted item changes.
+   * Useful for localizing the "selected" suffix or customizing the message.
+   */
+  itemAnnouncement?: ((details: ItemAnnouncementDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
   content: string
+  list: string
   control: string
   trigger: string
   clearTrigger: string
@@ -165,11 +178,6 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * Whether the select is a composed with other composite widgets like tabs or combobox
-   * @default true
-   */
-  composite?: boolean | undefined
-  /**
    * Whether the value can be cleared by clicking the selected item.
    *
    * **Note:** this is only applicable for single selection
@@ -182,9 +190,14 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * @default false
    */
   alignItemWithTrigger?: boolean | undefined
+  /**
+   * Element to receive focus when the select is opened. Defaults to the first
+   * tabbable element inside the content (typically the list).
+   */
+  initialFocusEl?: (() => HTMLElement | null) | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "collection" | "translations"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
@@ -215,6 +228,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     autoScrollBottom: AutoScrollHandlers | null
     realignWithTrigger: VoidFunction | null
     handleGrowth: VoidFunction | null
+    liveRegion: LiveRegion | null
   }
   action: string
   guard: string
@@ -275,6 +289,17 @@ export interface ScrollArrowProps {
    * - `"bottom"`: the arrow shown at the bottom of the popup (scrolls content down)
    */
   placement: "top" | "bottom"
+}
+
+export interface ContentProps {
+  /**
+   * The ARIA role applied to the content element.
+   * - `"presentation"` (default) — content is a passthrough wrapper; the list bears `role="listbox"`.
+   * - `"dialog"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.
+   *
+   * @default "presentation"
+   */
+  role?: "presentation" | "dialog" | undefined
 }
 
 export interface SelectApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
@@ -384,7 +409,7 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   getClearTriggerProps: () => T["button"]
   getValueTextProps: () => T["element"]
   getPositionerProps: () => T["element"]
-  getContentProps: () => T["element"]
+  getContentProps: (props?: ContentProps) => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]

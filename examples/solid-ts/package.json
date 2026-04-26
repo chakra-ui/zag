@@ -101,6 +101,9 @@
     "solid-js": "1.9.12",
     "vinxi": "0.5.11"
   },
+  "devDependencies": {
+    "@types/form-serialize": "0.7.4"
+  },
   "engines": {
     "node": ">=18"
   }

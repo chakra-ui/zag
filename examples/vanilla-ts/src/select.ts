@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
-import { Component } from "./component"
 import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
+import { Component } from "./component"
 
 interface Item {
   label: string
@@ -42,15 +42,15 @@ export class Select extends Component<select.Props, select.Api> {
   }
 
   syncItems = () => {
-    const content = this.rootEl.querySelector<HTMLElement>(".select-content")
-    if (!content) return
+    const list = this.rootEl.querySelector<HTMLElement>(".select-list")
+    if (!list) return
 
-    const existingItems = Array.from(content.querySelectorAll<HTMLElement>(".select-item"))
+    const existingItems = Array.from(list.querySelectorAll<HTMLElement>(".select-item"))
 
     // Remove excess items
     while (existingItems.length > selectData.length) {
       const item = existingItems.pop()
-      if (item) content.removeChild(item)
+      if (item) list.removeChild(item)
     }
 
     // Update or create items
@@ -59,7 +59,7 @@ export class Select extends Component<select.Props, select.Api> {
 
       if (!itemEl) {
         // Create new item
-        itemEl = this.doc.createElement("li")
+        itemEl = this.doc.createElement("div")
         itemEl.className = "select-item"
 
         const textEl = this.doc.createElement("span")
@@ -71,7 +71,7 @@ export class Select extends Component<select.Props, select.Api> {
         indicatorEl.textContent = "✓"
         itemEl.appendChild(indicatorEl)
 
-        content.appendChild(itemEl)
+        list.appendChild(itemEl)
       }
 
       // Always spread props
@@ -154,6 +154,9 @@ export class Select extends Component<select.Props, select.Api> {
 
     const content = this.rootEl.querySelector<HTMLElement>(".select-content")
     if (content) this.spreadProps(content, this.api.getContentProps())
+
+    const list = this.rootEl.querySelector<HTMLElement>(".select-list")
+    if (list) this.spreadProps(list, this.api.getListProps())
 
     // Sync items after all other props are set
     this.syncItems()

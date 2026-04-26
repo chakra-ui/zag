@@ -57,14 +57,16 @@
     </form>
 
     <div use:portal {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()}>
-        {#each selectData as item}
-          <li {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
-            <span {...api.getItemIndicatorProps({ item })}>✓</span>
-          </li>
-        {/each}
-      </ul>
+      <div {...api.getContentProps()}>
+        <div {...api.getListProps()}>
+          {#each selectData as item}
+            <div {...api.getItemProps({ item })}>
+              <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <span {...api.getItemIndicatorProps({ item })}>✓</span>
+            </div>
+          {/each}
+        </div>
+      </div>
     </div>
   </div>
 </main>

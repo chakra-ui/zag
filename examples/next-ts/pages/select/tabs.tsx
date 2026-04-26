@@ -2,7 +2,7 @@ import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import * as tabs from "@zag-js/tabs"
 import { GitBranchIcon, TagIcon } from "lucide-react"
-import { useEffect, useId, useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 
 const branchData = [
   { value: "master", label: "master" },
@@ -33,11 +33,12 @@ export default function Page() {
     [selectedTab],
   )
 
+  const listRef = useRef<HTMLDivElement>(null)
   const selectService = useMachine(select.machine, {
     collection,
     id: useId(),
-    composite: false,
     highlightedValue: highlighted,
+    initialFocusEl: () => listRef.current,
     onHighlightChange({ highlightedValue }) {
       setHighlighted(highlightedValue)
     },
@@ -55,6 +56,7 @@ export default function Page() {
   const tabService = useMachine(tabs.machine, {
     id: useId(),
     value: selectedTab,
+    virtualFocus: true,
     onValueChange(details) {
       setSelectedTab(details.value as SelectedTab)
     },
@@ -64,12 +66,8 @@ export default function Page() {
 
   useEffect(() => {
     if (!selectApi.open) return
-    tabApi.syncTabIndex()
-  }, [selectApi.open, tabApi])
-
-  useEffect(() => {
-    if (!selectApi.open) return
-    selectApi.highlightValue(collection.firstValue!)
+    selectApi.setHighlightValue(collection.firstValue!)
+    listRef.current?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collection])
 
@@ -86,7 +84,7 @@ export default function Page() {
 
         <Portal>
           <div {...selectApi.getPositionerProps()}>
-            <ul {...selectApi.getContentProps()}>
+            <div {...selectApi.getContentProps({ role: "dialog" })}>
               <div {...tabApi.getRootProps()}>
                 <div
                   {...mergeProps(tabApi.getListProps(), {
@@ -103,11 +101,21 @@ export default function Page() {
 
                 <div {...tabApi.getContentProps({ value: "branch" })}>
                   {selectedTab === "branch" && (
-                    <div {...selectApi.getListProps()}>
+                    <div
+                      ref={listRef}
+                      {...mergeProps(selectApi.getListProps(), {
+                        onKeyDown(event) {
+                          if (event.key === "ArrowLeft") tabApi.selectPrev()
+                          else if (event.key === "ArrowRight") tabApi.selectNext()
+                          else return
+                          event.preventDefault()
+                        },
+                      })}
+                    >
                       {branchData.map((item) => (
-                        <li key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
+                        <div key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
                           {item.label}
-                        </li>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -115,17 +123,27 @@ export default function Page() {
 
                 <div {...tabApi.getContentProps({ value: "tag" })}>
                   {selectedTab === "tag" && (
-                    <div {...selectApi.getListProps()}>
+                    <div
+                      ref={listRef}
+                      {...mergeProps(selectApi.getListProps(), {
+                        onKeyDown(event) {
+                          if (event.key === "ArrowLeft") tabApi.selectPrev()
+                          else if (event.key === "ArrowRight") tabApi.selectNext()
+                          else return
+                          event.preventDefault()
+                        },
+                      })}
+                    >
                       {tagData.map((item) => (
-                        <li key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
+                        <div key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
                           {item.label}
-                        </li>
+                        </div>
                       ))}
                     </div>
                   )}
                 </div>
               </div>
-            </ul>
+            </div>
           </div>
         </Portal>
       </div>

@@ -55,19 +55,21 @@ export default function Page() {
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul data-testid="select-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
-                {items.map((item) => (
-                  <li
-                    key={item.value}
-                    data-testid={item.value}
-                    {...api.getItemProps({ item })}
-                    style={{ padding: "8px 12px" }}
-                  >
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                ))}
-              </ul>
+              <div data-testid="select-content" {...api.getContentProps()} style={{ padding: "4px" }}>
+                <div {...api.getListProps()}>
+                  {items.map((item) => (
+                    <div
+                      key={item.value}
+                      data-testid={item.value}
+                      {...api.getItemProps({ item })}
+                      style={{ padding: "8px 12px" }}
+                    >
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

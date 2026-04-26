@@ -302,6 +302,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "tabs", title: "Tabs" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "with-search", title: "With Search" },
+      { slug: "with-select-all", title: "With Select All" },
     ],
   },
   {

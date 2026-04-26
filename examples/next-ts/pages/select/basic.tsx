@@ -67,14 +67,16 @@ export default function Page() {
           {/* UI select */}
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
-                {selectData.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ item })}>
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                ))}
-              </ul>
+              <div {...api.getContentProps()}>
+                <div {...api.getListProps()}>
+                  {selectData.map((item) => (
+                    <div key={item.value} {...api.getItemProps({ item })}>
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

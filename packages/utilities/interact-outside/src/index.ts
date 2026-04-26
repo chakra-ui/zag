@@ -146,7 +146,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     if (followControlledElements && isControlledElement(node!, target)) return false
 
     // Ex: page content that is scrollable
-    const triggerEl = doc.querySelector(`[aria-controls="${node!.id}"]`)
+    const triggerEl = doc.querySelector<HTMLElement>(`[aria-controls~="${node!.id}"]`)
     if (triggerEl) {
       const triggerAncestor = getNearestOverflowAncestor(triggerEl)
       if (isEventWithinScrollbar(event, triggerAncestor)) return false

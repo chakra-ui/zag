@@ -1277,6 +1277,10 @@ importers:
       vinxi:
         specifier: 0.5.11
         version: 0.5.11(@types/node@25.5.0)(db0@0.3.4)(ioredis@5.10.1)(jiti@2.6.1)(lightningcss@1.32.0)(rolldown@1.0.0-rc.12(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2))(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+    devDependencies:
+      '@types/form-serialize':
+        specifier: 0.7.4
+        version: 0.7.4
 
   examples/svelte-ts:
     dependencies:
@@ -1806,6 +1810,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/vanilla':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/vanilla
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
@@ -1819,6 +1826,9 @@ importers:
         specifier: ^5.1.6
         version: 5.1.7
     devDependencies:
+      '@types/form-serialize':
+        specifier: 0.7.4
+        version: 0.7.4
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -3101,6 +3111,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper

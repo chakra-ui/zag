@@ -37,26 +37,28 @@ export default function Page() {
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-              <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
-                {virtualizer.getVirtualItems().map((vi) => {
-                  const item = selectData[vi.index]
-                  return (
-                    <div
-                      key={item.value}
-                      {...api.getItemProps({ item })}
-                      style={{
-                        ...virtualizer.getItemStyle(vi),
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      <span>{item.label}</span>
-                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                    </div>
-                  )
-                })}
+            <div {...api.getContentProps()}>
+              <div {...api.getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
+                <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+                  {virtualizer.getVirtualItems().map((vi) => {
+                    const item = selectData[vi.index]
+                    return (
+                      <div
+                        key={item.value}
+                        {...api.getItemProps({ item })}
+                        style={{
+                          ...virtualizer.getItemStyle(vi),
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        <span>{item.label}</span>
+                        <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>

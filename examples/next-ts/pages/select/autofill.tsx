@@ -86,13 +86,15 @@ export default function SelectAutofillPage() {
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
-                {US_STATES.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ item })}>
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
+              <div {...api.getContentProps()}>
+                <div {...api.getListProps()}>
+                  {US_STATES.map((item) => (
+                    <div key={item.value} {...api.getItemProps({ item })}>
+                      {item.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

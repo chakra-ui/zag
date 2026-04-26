@@ -23,6 +23,10 @@ export class SelectModel extends Model {
     return this.page.locator("[data-select-content]")
   }
 
+  private get list() {
+    return this.page.locator("[data-select-list]")
+  }
+
   private get label() {
     return this.page.locator("[data-select-label]")
   }
@@ -40,7 +44,7 @@ export class SelectModel extends Model {
   }
 
   type(input: string) {
-    return this.content.pressSequentially(input)
+    return this.list.pressSequentially(input)
   }
 
   focusTrigger = async () => {
@@ -96,7 +100,7 @@ export class SelectModel extends Model {
   }
 
   seeDropdownIsFocused = async () => {
-    await expect(this.content).toBeFocused()
+    await expect(this.list).toBeFocused()
   }
 
   seeItemIsHighlighted = async (text: string) => {
@@ -115,7 +119,7 @@ export class SelectModel extends Model {
 
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
-    expect(await isInViewport(this.content, item)).toBe(true)
+    expect(await isInViewport(this.list, item)).toBe(true)
   }
 
   autofill = async (value: string) => {

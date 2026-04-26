@@ -61,16 +61,18 @@ function AlignedSelect({ label, defaultValue }: DemoProps) {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div {...api.getScrollArrowProps({ placement: "top" })}>▲</div>
-            <ul {...api.getContentProps()}>
-              {items.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
-                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              ))}
-            </ul>
-            <div {...api.getScrollArrowProps({ placement: "bottom" })}>▼</div>
+            <div {...api.getContentProps()}>
+              <div {...api.getScrollArrowProps({ placement: "top" })}>▲</div>
+              <div {...api.getListProps()}>
+                {items.map((item) => (
+                  <div key={item.value} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </div>
+                ))}
+              </div>
+              <div {...api.getScrollArrowProps({ placement: "bottom" })}>▼</div>
+            </div>
           </div>
         </Portal>
       )}

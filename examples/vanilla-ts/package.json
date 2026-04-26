@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/form-serialize": "0.7.4",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
   },
@@ -90,6 +91,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/vanilla": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "8.1.0",

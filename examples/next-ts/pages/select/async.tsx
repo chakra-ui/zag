@@ -57,14 +57,16 @@ export default function Page() {
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
-                {items.map((item) => (
-                  <li key={item.name} {...api.getItemProps({ item })}>
-                    <span {...api.getItemTextProps({ item })}>{item.name}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                ))}
-              </ul>
+              <div {...api.getContentProps()}>
+                <div {...api.getListProps()}>
+                  {items.map((item) => (
+                    <div key={item.name} {...api.getItemProps({ item })}>
+                      <span {...api.getItemTextProps({ item })}>{item.name}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

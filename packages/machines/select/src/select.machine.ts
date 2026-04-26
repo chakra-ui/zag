@@ -4,6 +4,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
+  isApple,
   markAsInternalChangeEvent,
   nextTick,
   observeAttributes,
@@ -13,6 +14,7 @@ import {
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
 import { trackAlignItemWithTrigger } from "./align-with-trigger"
@@ -27,7 +29,6 @@ export const machine = createMachine<SelectSchema>({
     return {
       loopFocus: false,
       closeOnSelect: !props.multiple,
-      composite: true,
       defaultValue: [],
       ...props,
       collection: props.collection ?? collection.empty(),
@@ -126,6 +127,7 @@ export const machine = createMachine<SelectSchema>({
       autoScrollBottom: null,
       realignWithTrigger: null,
       handleGrowth: null,
+      liveRegion: null,
     }
   },
 
@@ -158,7 +160,7 @@ export const machine = createMachine<SelectSchema>({
       action(["toggleVisibility"])
     })
     track([() => context.get("highlightedValue")], () => {
-      action(["syncHighlightedItem"])
+      action(["syncHighlightedItem", "announceHighlightedItem"])
     })
     track([() => prop("collection").toString()], () => {
       action(["syncCollection", "realignWithTrigger"])
@@ -346,13 +348,14 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollContentToTop", "cleanupScrollArrows", "clearPlacementState"],
+      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState"],
       effects: [
         "trackDismissableElement",
         "trackFocusVisible",
         "computePlacement",
         "scrollToHighlightedItem",
         "trackScrollArrowVisibility",
+        "trackLiveRegion",
       ],
       on: {
         "CONTROLLED.CLOSE": [
@@ -548,29 +551,38 @@ export const machine = createMachine<SelectSchema>({
 
       trackScrollArrowVisibility({ context, scope }) {
         const exec = () => {
-          const next = dom.computeScrollArrowVisibility(dom.getContentEl(scope))
+          const next = dom.computeScrollArrowVisibility(dom.getListEl(scope))
           context.set("scrollArrowVisibility", next)
         }
 
-        let contentEl: HTMLElement | null = null
+        let listEl: HTMLElement | null = null
         let unobserveResize: VoidFunction | undefined
         const win = scope.getWin()
 
-        // Defer listener attachment — contentEl may not exist until React commits
+        // Defer listener attachment — listEl may not exist until React commits
         raf(() => {
           exec()
-          contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-          unobserveResize = resizeObserverContentBox.observe(contentEl, exec)
-          contentEl.addEventListener("scroll", exec, { passive: true })
+          listEl = dom.getListEl(scope)
+          if (!listEl) return
+          unobserveResize = resizeObserverContentBox.observe(listEl, exec)
+          listEl.addEventListener("scroll", exec, { passive: true })
           win.addEventListener("resize", exec)
         })
 
         return () => {
           unobserveResize?.()
-          contentEl?.removeEventListener("scroll", exec)
+          listEl?.removeEventListener("scroll", exec)
           win.removeEventListener("resize", exec)
         }
+      },
+
+      trackLiveRegion({ refs, scope }) {
+        const liveRegion = createLiveRegion({
+          level: "assertive",
+          document: scope.getDoc(),
+        })
+        refs.set("liveRegion", liveRegion)
+        return () => liveRegion.destroy()
       },
 
       scrollToHighlightedItem({ context, prop, scope }) {
@@ -582,7 +594,7 @@ export const machine = createMachine<SelectSchema>({
           const modality = getInteractionModality()
           if (modality === "pointer") return
 
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -596,7 +608,7 @@ export const machine = createMachine<SelectSchema>({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: contentEl, block: immediate ? "center" : "nearest" })
+          scrollIntoView(itemEl, { rootEl: listEl, block: immediate ? "center" : "nearest" })
         }
 
         // nextTick (double raf) so this runs after the align utility's initial
@@ -608,8 +620,8 @@ export const machine = createMachine<SelectSchema>({
           exec(true)
         })
 
-        const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const listEl = () => dom.getListEl(scope)
+        return observeAttributes(listEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {
@@ -663,10 +675,11 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", value)
       },
 
-      setInitialFocus({ scope }) {
+      setInitialFocus({ prop, scope }) {
         raf(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
+            getInitialEl: prop("initialFocusEl"),
           })
           element?.focus({ preventScroll: true })
         })
@@ -809,7 +822,7 @@ export const machine = createMachine<SelectSchema>({
         if (!handlers) {
           handlers = dom.createAutoScroll({
             placement,
-            getScroller: () => dom.getContentEl(scope),
+            getScroller: () => dom.getListEl(scope),
             getItems: () => (prop("scrollToIndexFn") ? [] : dom.getItemEls(scope)),
             getWin: () => scope.getWin(),
             onStep: () => refs.get("handleGrowth")?.(),
@@ -828,7 +841,7 @@ export const machine = createMachine<SelectSchema>({
         refs.get("realignWithTrigger")?.()
       },
 
-      scrollContentToTop({ prop, scope }) {
+      scrollToTop({ prop, scope }) {
         if (prop("scrollToIndexFn")) {
           const firstValue = prop("collection").firstValue
           prop("scrollToIndexFn")?.({
@@ -837,7 +850,7 @@ export const machine = createMachine<SelectSchema>({
             getElement: () => dom.getItemEl(scope, firstValue),
           })
         } else {
-          dom.getContentEl(scope)?.scrollTo(0, 0)
+          dom.getListEl(scope)?.scrollTo(0, 0)
         }
       },
 
@@ -866,8 +879,14 @@ export const machine = createMachine<SelectSchema>({
       syncCollection({ context, prop }) {
         const collection = prop("collection")
 
-        const highlightedItem = collection.find(context.get("highlightedValue"))
-        if (highlightedItem) context.set("highlightedItem", highlightedItem)
+        const highlightedValue = context.get("highlightedValue")
+        if (highlightedValue != null && !collection.has(highlightedValue)) {
+          context.set("highlightedValue", null)
+          context.set("highlightedItem", null)
+        } else {
+          const highlightedItem = collection.find(highlightedValue)
+          if (highlightedItem) context.set("highlightedItem", highlightedItem)
+        }
 
         const next = deriveSelectionState({
           values: context.get("value"),
@@ -891,6 +910,21 @@ export const machine = createMachine<SelectSchema>({
         const highlightedValue = context.get("highlightedValue")
         const highlightedItem = highlightedValue ? collection.find(highlightedValue) : null
         context.set("highlightedItem", highlightedItem)
+      },
+
+      announceHighlightedItem({ context, prop, refs, scope }) {
+        const value = context.get("highlightedValue")
+        if (value == null) return
+        // Skip on non-Apple platforms when list is focused — activedescendant is announced natively.
+        const listFocused = scope.isActiveElement(dom.getListEl(scope))
+        if (listFocused && !isApple()) return
+        const collection = prop("collection")
+        const label = collection.stringifyItem(collection.find(value))
+        if (!label) return
+        const selected = context.get("value").includes(value)
+        const formatter = prop("translations").itemAnnouncement
+        const message = formatter ? formatter({ value, label, selected }) : selected ? `${label}, selected` : label
+        refs.get("liveRegion")?.announce(message)
       },
 
       dispatchChangeEvent({ scope }) {

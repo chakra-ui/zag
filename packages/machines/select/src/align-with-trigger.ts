@@ -150,10 +150,10 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
   const triggerRect = getScaledRect(triggerEl, scale)
   const positionerRect = getScaledRect(positionerEl, scale)
 
-  // The content may be offset inside the positioner by margin/padding/border.
-  // Vertical scroll math must be relative to content, not positioner.
-  const contentRect = contentEl === scroller ? getScaledRect(contentEl, scale) : positionerRect
-  const contentOffsetTop = contentRect.top - positionerRect.top
+  // The scroller may be offset inside the positioner by margin/padding/border
+  // on content/list. Vertical scroll math must be relative to scroller.
+  const scrollerRect = scroller === positionerEl ? positionerRect : getScaledRect(scroller, scale)
+  const contentOffsetTop = scrollerRect.top - positionerRect.top
   const scrollHeight = scroller.scrollHeight
 
   const marginTop = padding?.top ?? 10
@@ -306,13 +306,14 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
 
     const positionerEl = dom.getPositionerEl(scope)
     const contentEl = dom.getContentEl(scope)
-    if (!positionerEl || !contentEl) return
+    const listEl = dom.getListEl(scope)
+    if (!positionerEl || !contentEl || !listEl) return
 
     const isTopPositioned = positionerEl.style.top === "0px"
     const isBottomPositioned = positionerEl.style.bottom === "0px"
     if (!isTopPositioned && !isBottomPositioned) return
 
-    const scroller = contentEl
+    const scroller = listEl
     const scale = getScale(positionerEl)
     const currentHeight = positionerEl.getBoundingClientRect().height / scale.y
 
@@ -375,6 +376,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
       triggerEl: dom.getTriggerEl(scope),
       positionerEl: dom.getPositionerEl(scope),
       contentEl: dom.getContentEl(scope),
+      scrollerEl: dom.getListEl(scope),
       valueTextEl: dom.getValueTextEl(scope),
       selectedItemTextEl: dom.getSelectedItemTextEl(scope),
       dir: options.dir,

@@ -363,11 +363,12 @@ const collection = select.collection({
 })
 ```
 
-Then, use the `collection.group()` method to render the grouped items.
+Then, use the `collection.group()` method to render the grouped items inside
+`getListProps()`.
 
 ```tsx
-{
-  collection.group().map(([group, items], index) => (
+<div {...api.getListProps()}>
+  {collection.group().map(([group, items], index) => (
     <div key={`${group}-${index}`}>
       <div {...api.getItemGroupProps({ id: group })}>{group}</div>
       {items.map((item, index) => (
@@ -377,8 +378,8 @@ Then, use the `collection.group()` method to render the grouped items.
         </div>
       ))}
     </div>
-  ))
-}
+  ))}
+</div>
 ```
 
 ### Usage with large data
@@ -392,11 +393,11 @@ Example with `@tanstack/react-virtual`:
 function Demo() {
   const selectData = []
 
-  const contentRef = useRef(null)
+  const listRef = useRef(null)
 
   const rowVirtualizer = useVirtualizer({
     count: selectData.length,
-    getScrollElement: () => contentRef.current,
+    getScrollElement: () => listRef.current,
     estimateSize: () => 32,
   })
 
@@ -418,37 +419,39 @@ function Demo() {
       {/* ... */}
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div ref={contentRef} {...api.getContentProps()}>
-            <div
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-                const item = selectData[virtualItem.index]
-                return (
-                  <div
-                    key={item.value}
-                    {...api.getItemProps({ item })}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: `${virtualItem.size}px`,
-                      transform: `translateY(${virtualItem.start}px)`,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    <span>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </div>
-                )
-              })}
+          <div {...api.getContentProps()}>
+            <div ref={listRef} {...api.getListProps()}>
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+                  const item = selectData[virtualItem.index]
+                  return (
+                    <div
+                      key={item.value}
+                      {...api.getItemProps({ item })}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: `${virtualItem.size}px`,
+                        transform: `translateY(${virtualItem.start}px)`,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      <span>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -462,6 +465,51 @@ function Demo() {
 
 When using select in a dialog, avoid rendering it in a `Portal` or `Teleport`
 outside the dialog focus scope.
+
+### Composing with other widgets
+
+The popup is split into two layers:
+
+- `content` — the dismissable popup wrapper (presentational by default, or
+  `role="dialog"` when `composite: false`).
+- `list` — the listbox role-bearer that contains items.
+
+This lets you render headers, search inputs, footers, or other widgets inside
+`content` without polluting the listbox's accessibility tree.
+
+```tsx
+<div {...api.getContentProps()}>
+  <input ref={inputRef} placeholder="Filter..." />
+  <div {...api.getListProps()}>
+    {items.map((item) => (
+      <div key={item.value} {...api.getItemProps({ item })}>
+        {item.label}
+      </div>
+    ))}
+  </div>
+  <div>{items.length} of {total}</div>
+</div>
+```
+
+Use `composite: false` when content is a complex composition (search input, tabs)
+to make `content` carry `role="dialog"` for assistive technology.
+
+### Redirecting initial focus
+
+By default, focus moves to the `list` element when the popup opens. To redirect
+focus to a different element (such as a search input or composed widget), pass
+`initialFocusEl`:
+
+```tsx
+const inputRef = useRef<HTMLInputElement>(null)
+
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  composite: false,
+  initialFocusEl: () => inputRef.current,
+})
+```
 
 ## Styling guide
 
@@ -479,6 +527,10 @@ attribute.
 
 [data-part="content"][data-state="open|closed"] {
   /* styles for open or closed state */
+}
+
+[data-part="list"] {
+  /* the listbox container — carries role=listbox */
 }
 ```
 
