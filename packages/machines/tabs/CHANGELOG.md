@@ -1,5 +1,19 @@
 # @zag-js/tabs
 
+## 1.40.1
+
+### Patch Changes
+
+- [`9e47788`](https://github.com/chakra-ui/zag/commit/9e47788752079720635b9f44255cbd99e913b97d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Observe the tab list with `ResizeObserver` so the indicator rect
+  updates when the list resizes without individual tab triggers changing size (e.g. responsive grid reflow).
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes

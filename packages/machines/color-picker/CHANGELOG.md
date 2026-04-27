@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 1.40.1
+
+### Patch Changes
+
+- [`d68e9c0`](https://github.com/chakra-ui/zag/commit/d68e9c0ee2ba9f5c560cc93782b95ba971e8baa4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Invoke `onValueChangeEnd` when the user picks a color with the
+  EyeDropper API, consistent with ending a drag on the area or channel sliders.
+
+- Updated dependencies [[`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1)]:
+  - @zag-js/dismissable@1.40.1
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/color-utils@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+  - @zag-js/popper@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes

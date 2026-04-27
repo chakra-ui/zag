@@ -1,5 +1,21 @@
 # @zag-js/date-input
 
+## 1.40.1
+
+### Patch Changes
+
+- [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the date input was not writable in locales whose
+  date format separator contains more than one character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`)
+- Updated dependencies [[`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4)]:
+  - @zag-js/date-utils@1.40.1
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+  - @zag-js/live-region@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes

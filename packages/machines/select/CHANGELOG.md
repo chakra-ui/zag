@@ -1,5 +1,20 @@
 # @zag-js/select
 
+## 1.40.1
+
+### Patch Changes
+
+- Updated dependencies [[`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1)]:
+  - @zag-js/dismissable@1.40.1
+  - @zag-js/anatomy@1.40.1
+  - @zag-js/core@1.40.1
+  - @zag-js/types@1.40.1
+  - @zag-js/collection@1.40.1
+  - @zag-js/utils@1.40.1
+  - @zag-js/dom-query@1.40.1
+  - @zag-js/focus-visible@1.40.1
+  - @zag-js/popper@1.40.1
+
 ## 1.40.0
 
 ### Patch Changes
