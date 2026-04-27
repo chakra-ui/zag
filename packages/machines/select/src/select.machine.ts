@@ -29,6 +29,7 @@ export const machine = createMachine<SelectSchema>({
     return {
       loopFocus: false,
       closeOnSelect: !props.multiple,
+      popupType: "listbox",
       defaultValue: [],
       ...props,
       collection: props.collection ?? collection.empty(),

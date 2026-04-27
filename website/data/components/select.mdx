@@ -471,7 +471,7 @@ outside the dialog focus scope.
 The popup is split into two layers:
 
 - `content` — the dismissable popup wrapper (presentational by default, or
-  `role="dialog"` when `composite: false`).
+  `role="dialog"` when `popupType="dialog"`).
 - `list` — the listbox role-bearer that contains items.
 
 This lets you render headers, search inputs, footers, or other widgets inside
@@ -491,8 +491,16 @@ This lets you render headers, search inputs, footers, or other widgets inside
 </div>
 ```
 
-Use `composite: false` when content is a complex composition (search input, tabs)
-to make `content` carry `role="dialog"` for assistive technology.
+Set `popupType: "dialog"` when content is a complex composition (search input,
+tabs) so the popup is announced as a dialog by assistive technology and
+`aria-haspopup="dialog"` is set on the trigger.
+
+```tsx
+const service = useMachine(select.machine, {
+  collection,
+  popupType: "dialog",
+})
+```
 
 ### Redirecting initial focus
 
@@ -506,7 +514,7 @@ const inputRef = useRef<HTMLInputElement>(null)
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
-  composite: false,
+  popupType: "dialog",
   initialFocusEl: () => inputRef.current,
 })
 ```

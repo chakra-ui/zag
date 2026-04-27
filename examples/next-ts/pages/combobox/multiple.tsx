@@ -79,16 +79,18 @@ export default function Page() {
           </div>
 
           <div {...api.getPositionerProps()}>
-            {options.length > 0 && (
-              <ul data-testid="combobox-content" {...api.getContentProps()}>
-                {options.map((item) => (
-                  <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
-                    <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                    <span>{item.label}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div data-testid="combobox-content" {...api.getContentProps()}>
+              {options.length > 0 && (
+                <div {...api.getListProps()}>
+                  {options.map((item) => (
+                    <div data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
+                      <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>

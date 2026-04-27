@@ -195,9 +195,18 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * tabbable element inside the content (typically the list).
    */
   initialFocusEl?: (() => HTMLElement | null) | undefined
+  /**
+   * The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and
+   * the `role` of the content element.
+   * - `"listbox"` (default) — content is a passthrough wrapper; the list bears `role="listbox"`.
+   * - `"dialog"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.
+   *
+   * @default "listbox"
+   */
+  popupType?: "listbox" | "dialog" | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupType" | "collection" | "translations"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
@@ -289,17 +298,6 @@ export interface ScrollArrowProps {
    * - `"bottom"`: the arrow shown at the bottom of the popup (scrolls content down)
    */
   placement: "top" | "bottom"
-}
-
-export interface ContentProps {
-  /**
-   * The ARIA role applied to the content element.
-   * - `"presentation"` (default) — content is a passthrough wrapper; the list bears `role="listbox"`.
-   * - `"dialog"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.
-   *
-   * @default "presentation"
-   */
-  role?: "presentation" | "dialog" | undefined
 }
 
 export interface SelectApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
@@ -409,7 +407,7 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   getClearTriggerProps: () => T["button"]
   getValueTextProps: () => T["element"]
   getPositionerProps: () => T["element"]
-  getContentProps: (props?: ContentProps) => T["element"]
+  getContentProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]

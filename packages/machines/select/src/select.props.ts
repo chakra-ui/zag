@@ -31,6 +31,7 @@ export const props = createProps<SelectProps>()([
   "onSelect",
   "onValueChange",
   "open",
+  "popupType",
   "positioning",
   "readOnly",
   "required",

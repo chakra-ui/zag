@@ -37,6 +37,7 @@ export default function Page() {
   const selectService = useMachine(select.machine, {
     collection,
     id: useId(),
+    popupType: "dialog",
     highlightedValue: highlighted,
     initialFocusEl: () => listRef.current,
     onHighlightChange({ highlightedValue }) {
@@ -84,7 +85,7 @@ export default function Page() {
 
         <Portal>
           <div {...selectApi.getPositionerProps()}>
-            <div {...selectApi.getContentProps({ role: "dialog" })}>
+            <div {...selectApi.getContentProps()}>
               <div {...tabApi.getRootProps()}>
                 <div
                   {...mergeProps(tabApi.getListProps(), {

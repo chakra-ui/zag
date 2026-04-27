@@ -47,12 +47,14 @@
   </div>
 </div>
 <div {...api.getPositionerProps()}>
-  {#if options.length > 0}
-  <ul {...api.getContentProps()}>
-    {#each options as item}
-    <li {...api.getItemProps({ item })}>{item.label}</li>
-    {/each}
-  </ul>
-  {/if}
+  <div {...api.getContentProps()}>
+    {#if options.length > 0}
+      <div {...api.getListProps()}>
+        {#each options as item}
+          <div {...api.getItemProps({ item })}>{item.label}</div>
+        {/each}
+      </div>
+    {/if}
+  </div>
 </div>
 ```

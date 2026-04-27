@@ -58,11 +58,13 @@ const api = computed(() => combobox.connect(service, normalizeProps))
       </div>
 
       <div v-bind="api.getPositionerProps()">
-        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.getContentProps()">
-          <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
-            {{ item.label }}
-          </li>
-        </ul>
+        <div data-testid="combobox-content" v-bind="api.getContentProps()">
+          <div v-if="options.length > 0" v-bind="api.getListProps()">
+            <div v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
+              {{ item.label }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>

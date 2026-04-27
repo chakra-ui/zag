@@ -33,8 +33,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
-  const composite = prop("composite")
   const highlightedValue = context.get("highlightedValue")
+  const popupType = prop("popupType")
+  const isDialogPopup = popupType === "dialog"
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -125,7 +126,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
-          if (composite) return
+          if (!isDialogPopup) return
           event.preventDefault()
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
@@ -173,7 +174,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         role: "combobox",
         defaultValue: context.get("inputValue"),
         "aria-autocomplete": computed("autoComplete") ? "both" : "list",
-        "aria-controls": dom.getContentId(scope),
+        "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "aria-activedescendant": highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined,
@@ -264,24 +265,25 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     },
 
     getTriggerProps(props = {}) {
+      const focusable = props.focusable ?? isDialogPopup
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope),
-        "aria-haspopup": composite ? "listbox" : "dialog",
+        "aria-haspopup": popupType,
         type: "button",
-        tabIndex: props.focusable ? undefined : -1,
+        tabIndex: focusable ? undefined : -1,
         "aria-label": translations.triggerLabel,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
-        "aria-controls": open ? dom.getContentId(scope) : undefined,
+        "aria-controls": open ? `${dom.getListId(scope)} ${dom.getContentId(scope)}` : undefined,
         disabled,
         "data-invalid": dataAttr(invalid),
-        "data-focusable": dataAttr(props.focusable),
+        "data-focusable": dataAttr(focusable),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         onFocus() {
-          if (!props.focusable) return
+          if (!focusable) return
           send({ type: "INPUT.FOCUS", src: "trigger" })
         },
         onClick(event) {
@@ -301,7 +303,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (composite) return
+          if (!focusable) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
@@ -328,13 +330,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role: !composite ? "dialog" : "listbox",
-        tabIndex: -1,
+        role: isDialogPopup ? "dialog" : "presentation",
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-placement": context.get("currentPlacement"),
-        "aria-labelledby": dom.getLabelId(scope),
-        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
+        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(collection.size === 0),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
@@ -347,10 +347,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getListProps() {
       return normalize.element({
         ...parts.list.attrs(scope.id),
-        role: !composite ? "listbox" : undefined,
+        id: dom.getListId(scope),
+        role: "listbox",
         "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
+        "aria-multiselectable": prop("multiple") ? true : undefined,
       })
     },
 

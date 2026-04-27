@@ -44,12 +44,14 @@ function Combobox(props: Omit<combobox.Props, "id" | "collection">) {
     <div {...comboApi.getRootProps()} style={{ width: "100%" }}>
       <input {...comboApi.getInputProps()} style={{ marginBottom: "12px" }} />
       <div {...comboApi.getContentProps()} style={{ minHeight: "120px" }}>
-        {items.length === 0 && <div>No results found</div>}
-        {items.map((item) => (
-          <div key={item.label} {...comboApi.getItemProps({ item, persistFocus: true })}>
-            {item.label}
-          </div>
-        ))}
+        <div {...comboApi.getListProps()}>
+          {items.length === 0 && <div>No results found</div>}
+          {items.map((item) => (
+            <div key={item.label} {...comboApi.getItemProps({ item, persistFocus: true })}>
+              {item.label}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

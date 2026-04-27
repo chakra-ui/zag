@@ -41,7 +41,7 @@ export const machine = createMachine({
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
       openOnChange: true,
-      composite: true,
+      popupType: "listbox",
       navigate({ node }) {
         clickIfLink(node)
       },
@@ -230,7 +230,7 @@ export const machine = createMachine({
       states: {
         idle: {
           tags: ["idle"],
-          entry: ["scrollContentToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue"],
           on: {
             "CONTROLLED.OPEN": {
               target: "open.interacting",
@@ -277,7 +277,7 @@ export const machine = createMachine({
 
         focused: {
           tags: ["focused"],
-          entry: ["scrollContentToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -527,7 +527,7 @@ export const machine = createMachine({
             "INPUT.ARROW_DOWN": [
               {
                 guard: and("autoComplete", "isLastItemHighlighted"),
-                actions: ["clearHighlightedValue", "scrollContentToTop"],
+                actions: ["clearHighlightedValue", "scrollToTop"],
               },
               {
                 actions: ["highlightNextItem"],
@@ -725,7 +725,7 @@ export const machine = createMachine({
           const highlightedValue = context.get("highlightedValue")
           if (!highlightedValue) return
 
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -740,7 +740,7 @@ export const machine = createMachine({
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
-            scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+            scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
           })
           cleanups.push(raf_cleanup)
         }
@@ -811,7 +811,7 @@ export const machine = createMachine({
           if (highlightedValue == null) return
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -824,7 +824,7 @@ export const machine = createMachine({
             return
           }
 
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
         })
       },
       selectItem(params) {
@@ -929,7 +929,7 @@ export const machine = createMachine({
           context.set("inputValue", inputValue)
         })
       },
-      scrollContentToTop({ prop, scope }) {
+      scrollToTop({ prop, scope }) {
         const scrollToIndexFn = prop("scrollToIndexFn")
         if (scrollToIndexFn) {
           const firstValue = prop("collection").firstValue
@@ -939,9 +939,9 @@ export const machine = createMachine({
             getElement: () => dom.getItemEl(scope, firstValue),
           })
         } else {
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-          contentEl.scrollTop = 0
+          const listEl = dom.getListEl(scope)
+          if (!listEl) return
+          listEl.scrollTop = 0
         }
       },
       invokeOnOpen({ prop, event, context }) {

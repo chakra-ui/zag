@@ -71,20 +71,22 @@ export default function Page() {
         )}
 
         <div {...api.getPositionerProps()}>
-          {api.collection.items.length > 0 && (
-            <ul data-testid="combobox-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
-              {api.collection.items.map((item) => (
-                <li
-                  key={item.name}
-                  data-testid={`item-${item.name}`}
-                  {...api.getItemProps({ item })}
-                  style={{ padding: "8px 12px", cursor: "pointer" }}
-                >
-                  {item.name}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div data-testid="combobox-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
+            {api.collection.items.length > 0 && (
+              <div {...api.getListProps()}>
+                {api.collection.items.map((item) => (
+                  <div
+                    key={item.name}
+                    data-testid={`item-${item.name}`}
+                    {...api.getItemProps({ item })}
+                    style={{ padding: "8px 12px", cursor: "pointer" }}
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>

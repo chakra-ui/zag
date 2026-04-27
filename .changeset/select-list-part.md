@@ -4,7 +4,7 @@
 
 Move `role="listbox"` and related ARIA semantics from the `content` part to the
 `list` part. The `content` part now acts as a presentational wrapper (or
-`role="dialog"` when `composite: false`), allowing consumers to render headers,
+`role="dialog"` when `popupType="dialog"`), allowing consumers to render headers,
 footers, search inputs, tabs, and other widgets inside the popup without
 polluting the listbox's accessibility tree.
 
@@ -46,5 +46,7 @@ Other changes:
   and always when focus is elsewhere (search input, composed widgets).
 - Scroll arrows now render inside content (siblings of list) instead of the
   positioner, matching base-ui's pattern.
-- Renamed `composite` semantics: `composite: false` makes `content` carry
-  `role="dialog"`; `list` always carries `role="listbox"` regardless.
+- Replaced `composite` with `popupType: "listbox" | "dialog"` (default
+  `"listbox"`). `popupType="dialog"` makes `content` carry `role="dialog"` and
+  `aria-haspopup="dialog"` on the trigger; the `list` always carries
+  `role="listbox"` regardless. Migrate `composite: false` → `popupType: "dialog"`.

@@ -62,7 +62,7 @@ export default function Page() {
   const service = useMachine(combobox.machine, {
     collection,
     id: useId(),
-    composite: false,
+    popupType: "dialog",
     openOnClick: true,
     inputBehavior: "autohighlight",
     positioning: {
@@ -124,7 +124,7 @@ export default function Page() {
         </div>
       </div>
       <div {...comboboxApi.getPositionerProps()}>
-        <ul {...comboboxApi.getContentProps()}>
+        <div {...comboboxApi.getContentProps()}>
           <div {...tabApi.getRootProps()} style={{ position: "relative" }}>
             <div {...tabApi.getListProps()} style={{ position: "sticky", top: "0", insetInline: "0" }}>
               {categories.map((category) => {
@@ -152,16 +152,16 @@ export default function Page() {
                 {selectedTab === category && (
                   <div {...comboboxApi.getListProps()}>
                     {items.map((item) => (
-                      <li key={item.value} {...comboboxApi.getItemProps({ item, persistFocus: true })}>
+                      <div key={item.value} {...comboboxApi.getItemProps({ item, persistFocus: true })}>
                         {item.label}
-                      </li>
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
             ))}
           </div>
-        </ul>
+        </div>
       </div>
     </main>
   )

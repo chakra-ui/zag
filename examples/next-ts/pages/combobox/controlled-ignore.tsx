@@ -73,7 +73,7 @@ export default function Page() {
         </div>
 
         <div {...api.getPositionerProps()}>
-          <ul
+          <div
             data-testid="combobox-content"
             {...api.getContentProps()}
             style={{
@@ -87,20 +87,22 @@ export default function Page() {
               overflow: "auto",
             }}
           >
-            {items.map((item) => (
-              <li
-                data-testid={item.value}
-                key={item.value}
-                {...api.getItemProps({ item })}
-                style={{
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
+            <div {...api.getListProps()}>
+              {items.map((item) => (
+                <div
+                  data-testid={item.value}
+                  key={item.value}
+                  {...api.getItemProps({ item })}
+                  style={{
+                    padding: "8px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </main>

@@ -60,15 +60,17 @@
       </div>
     </div>
     <div {...api.getPositionerProps()}>
-      {#if options.length > 0}
-        <ul data-testid="combobox-content" {...api.getContentProps()}>
-          {#each options as item}
-            <li data-testid={item.code} {...api.getItemProps({ item })}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
-      {/if}
+      <div data-testid="combobox-content" {...api.getContentProps()}>
+        {#if options.length > 0}
+          <div {...api.getListProps()}>
+            {#each options as item}
+              <div data-testid={item.code} {...api.getItemProps({ item })}>
+                {item.label}
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 </main>

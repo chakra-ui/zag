@@ -20,6 +20,7 @@ export default function Page() {
   const service = useMachine(select.machine as select.Machine<Item>, {
     id: useId(),
     collection,
+    popupType: "dialog",
     initialFocusEl: () => inputRef.current,
     onOpenChange(details) {
       if (!details.open) setSearch("")
@@ -41,7 +42,7 @@ export default function Page() {
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps({ role: "dialog" })}>
+            <div {...api.getContentProps()}>
               <input
                 ref={inputRef}
                 data-select-search=""

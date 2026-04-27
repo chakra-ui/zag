@@ -17,15 +17,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
-import type {
-  CollectionItem,
-  ContentProps,
-  ItemProps,
-  ItemState,
-  ScrollArrowProps,
-  SelectApi,
-  SelectSchema,
-} from "./select.types"
+import type { CollectionItem, ItemProps, ItemState, ScrollArrowProps, SelectApi, SelectSchema } from "./select.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<SelectSchema<V>>,
@@ -39,6 +31,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const required = !!prop("required")
   const readOnly = !!prop("readOnly")
   const collection = prop("collection")
+  const popupType = prop("popupType")
+  const isDialogPopup = popupType === "dialog"
 
   const open = state.hasTag("open")
   const focused = state.matches("focused")
@@ -185,7 +179,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         role: "combobox",
         "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
         "aria-expanded": open,
-        "aria-haspopup": "listbox",
+        "aria-haspopup": popupType,
         "data-state": open ? "open" : "closed",
         "aria-invalid": invalid,
         "aria-required": required,
@@ -440,19 +434,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
-    getContentProps(props: ContentProps = {}) {
-      const role = props.role ?? "presentation"
-      const isDialog = role === "dialog"
+    getContentProps() {
       return normalize.element({
         hidden: !open,
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role,
+        role: isDialogPopup ? "dialog" : "presentation",
         ...parts.content.attrs(scope.id),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         "data-align-with-trigger": dataAttr(aligned),
-        "aria-labelledby": isDialog ? dom.getLabelId(scope) : undefined,
+        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         onKeyDown(event) {
           if (!interactive) return
           if (event.defaultPrevented) return

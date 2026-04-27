@@ -5,14 +5,16 @@
 
 [data-combobox-content] {
   background-color: white;
-  list-style-type: none;
   margin: 0;
   border: 1px solid lightgray;
+  z-index: var(--layer-index);
+}
+
+[data-combobox-list] {
   overscroll-behavior: contain;
   max-height: 240px;
   overflow: auto;
   padding: 2px;
-  z-index: var(--layer-index);
 }
 
 [data-combobox-item] {

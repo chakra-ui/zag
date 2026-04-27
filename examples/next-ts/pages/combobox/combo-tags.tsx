@@ -121,15 +121,17 @@ export default function Page() {
       </div>
 
       <div {...comboboxApi.getPositionerProps()}>
-        {options.length > 0 && (
-          <div data-testid="combobox-content" {...comboboxApi.getContentProps()} ref={contentRef}>
-            {options.map((item) => (
-              <div data-testid={item.code} key={item.code} {...comboboxApi.getItemProps({ item })}>
-                {item.label}
-              </div>
-            ))}
-          </div>
-        )}
+        <div data-testid="combobox-content" {...comboboxApi.getContentProps()}>
+          {options.length > 0 && (
+            <div {...comboboxApi.getListProps()} ref={contentRef}>
+              {options.map((item) => (
+                <div data-testid={item.code} key={item.code} {...comboboxApi.getItemProps({ item })}>
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </main>
   )

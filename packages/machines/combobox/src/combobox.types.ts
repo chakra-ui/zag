@@ -86,6 +86,7 @@ export type ElementIds = Partial<{
   control: string
   input: string
   content: string
+  list: string
   trigger: string
   clearTrigger: string
   item: (id: string, index?: number) => string
@@ -270,11 +271,6 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * Whether the combobox is a composed with other composite widgets like tabs
-   * @default true
-   */
-  composite?: boolean | undefined
-  /**
    * Whether to disable registering this a dismissable layer
    */
   disableLayer?: boolean | undefined
@@ -282,13 +278,24 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Function to navigate to the selected item
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
+  /**
+   * The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the
+   * `role` of the content element, the trigger's keyboard handling, and the
+   * label's click target.
+   * - `"listbox"` (default) — input-driven combobox; popup is a passive listbox.
+   * - `"dialog"` — popover-style combobox; popup is announced as a dialog,
+   *   trigger is keyboard-active, label-click focuses the trigger.
+   *
+   * @default "listbox"
+   */
+  popupType?: "listbox" | "dialog" | undefined
 }
 
 type PropsWithDefault =
   | "openOnChange"
   | "openOnKeyPress"
-  | "composite"
   | "loopFocus"
+  | "popupType"
   | "positioning"
   | "openOnClick"
   | "openOnChange"

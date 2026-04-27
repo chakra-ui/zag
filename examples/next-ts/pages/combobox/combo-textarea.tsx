@@ -106,13 +106,15 @@ export default function Page() {
         </div>
 
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            {options.map((item) => (
-              <li key={item.code} {...api.getItemProps({ item })}>
-                {item.label}
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <div {...api.getListProps()}>
+              {options.map((item) => (
+                <div key={item.code} {...api.getItemProps({ item })}>
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </main>
 

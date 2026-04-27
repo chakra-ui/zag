@@ -14,9 +14,9 @@ export default function Page() {
   const service = useMachine(combobox.machine, {
     id: useId(),
     collection,
+    popupType: "dialog",
     selectionBehavior: "clear",
     inputBehavior: "autohighlight",
-    composite: false,
     onOpenChange() {
       setOptions(selectData)
     },
