@@ -251,6 +251,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/utilities/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -3639,6 +3642,16 @@ importers:
       mockdate:
         specifier: ^3.0.5
         version: 3.0.5
+
+  packages/utilities/infinite-scroll:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
 
   packages/utilities/interact-outside:
     dependencies:

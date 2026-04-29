@@ -567,6 +567,15 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "infinite-scroll",
+    label: "Infinite Scroll",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "with-async-list", title: "With Async List" },
+      { slug: "with-virtualizer", title: "With Virtualizer" },
+    ],
+  },
+  {
     slug: "virtualizer",
     label: "Virtualizer",
     examples: [
