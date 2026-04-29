@@ -2,6 +2,13 @@ import { getComputedStyle, isIos, setStyleProperty, setStyle } from "@zag-js/dom
 
 const LOCK_CLASSNAME = "data-scroll-lock"
 
+interface LockState {
+  count: number
+  cleanup: VoidFunction
+}
+
+const lockMap = new WeakMap<Document, LockState>()
+
 function getPaddingProperty(documentElement: HTMLElement) {
   // RTL <body> scrollbar
   const documentLeft = documentElement.getBoundingClientRect().left
@@ -15,14 +22,9 @@ function hasStableScrollbarGutter(element: HTMLElement): boolean {
   return scrollbarGutter === "stable" || scrollbarGutter?.startsWith("stable ") === true
 }
 
-export function preventBodyScroll(_document?: Document) {
-  const doc = _document ?? document
+function applyLock(doc: Document): VoidFunction {
   const win = doc.defaultView ?? window
-
   const { documentElement, body } = doc
-
-  const locked = body.hasAttribute(LOCK_CLASSNAME)
-  if (locked) return
 
   // Check if scrollbar-gutter: stable is set on html or body
   // If so, the browser already reserves space for the scrollbar
@@ -82,5 +84,31 @@ export function preventBodyScroll(_document?: Document) {
   return () => {
     cleanups.forEach((fn) => fn?.())
     body.removeAttribute(LOCK_CLASSNAME)
+  }
+}
+
+export function preventBodyScroll(_document?: Document): VoidFunction {
+  const doc = _document ?? document
+
+  // Ref-count locks per document so concurrent callers (nested dialogs, React Strict Mode
+  // remounts) each get a cleanup that releases their own claim. The DOM mutation only
+  // applies on the first lock and only reverts when the last lock releases.
+  let state = lockMap.get(doc)
+  if (!state) {
+    state = { count: 0, cleanup: applyLock(doc) }
+    lockMap.set(doc, state)
+  }
+  state.count++
+
+  const lockState = state
+  let released = false
+  return () => {
+    if (released) return
+    released = true
+    lockState.count--
+    if (lockState.count === 0) {
+      lockState.cleanup()
+      lockMap.delete(doc)
+    }
   }
 }

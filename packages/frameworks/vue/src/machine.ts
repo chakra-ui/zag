@@ -19,7 +19,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
@@ -213,13 +213,19 @@ export function useMachine<T extends MachineSchema>(
 
       entering.forEach((item) => {
         const cleanup = effect(item.state?.effects)
-        if (cleanup) effects.set(item.path, cleanup)
+        if (cleanup) {
+          const existing = effects.get(item.path)
+          effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+        }
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.set(INIT_STATE, cleanup)
+        if (cleanup) {
+          const existing = effects.get(INIT_STATE)
+          effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+        }
       }
 
       entering.forEach((item) => {

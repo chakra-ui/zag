@@ -26,7 +26,18 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import { compact, ensure, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
+import {
+  callAll,
+  compact,
+  ensure,
+  identity,
+  isEqual,
+  isFunction,
+  isString,
+  runIfFn,
+  toArray,
+  warn,
+} from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
@@ -171,13 +182,19 @@ export class VanillaMachine<T extends MachineSchema> {
 
         entering.forEach((item) => {
           const cleanup = this.effect(item.state?.effects)
-          if (cleanup) this.effects.set(item.path, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(item.path)
+            this.effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+          }
         })
 
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
           const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set(INIT_STATE, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(INIT_STATE)
+            this.effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+          }
         }
 
         entering.forEach((item) => {

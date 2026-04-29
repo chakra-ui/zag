@@ -21,7 +21,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
@@ -202,13 +202,19 @@ export function useMachine<T extends MachineSchema>(
 
       entering.forEach((item) => {
         const cleanup = effect(item.state?.effects)
-        if (cleanup) effects.current.set(item.path, cleanup)
+        if (cleanup) {
+          const existing = effects.current.get(item.path)
+          effects.current.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+        }
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.current.set(INIT_STATE, cleanup)
+        if (cleanup) {
+          const existing = effects.current.get(INIT_STATE)
+          effects.current.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+        }
       }
 
       entering.forEach((item) => {
