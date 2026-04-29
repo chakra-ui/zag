@@ -145,3 +145,46 @@ export function constrainValue<T extends DateValue>(date: T, minValue?: DateValu
   // Original was CalendarDate, return the constrained CalendarDate
   return constrainedDateOnly as T
 }
+
+// Clamp only the out-of-range date segments, preserving later segments when possible.
+export function constrainSegments<T extends DateValue>(date: T, minValue?: DateValue, maxValue?: DateValue): T {
+  const dateOnly = toCalendarDate(date)
+  const minOnly = minValue ? toCalendarDate(minValue) : undefined
+  const maxOnly = maxValue ? toCalendarDate(maxValue) : undefined
+
+  let result = dateOnly
+
+  if (minOnly && result.compare(minOnly) < 0) {
+    if (result.year < minOnly.year) {
+      result = result.set({ year: minOnly.year })
+    }
+    if (result.compare(minOnly) < 0 && result.month < minOnly.month) {
+      result = result.set({ month: minOnly.month })
+    }
+    if (result.compare(minOnly) < 0 && result.day < minOnly.day) {
+      result = result.set({ day: minOnly.day })
+    }
+  }
+
+  if (maxOnly && result.compare(maxOnly) > 0) {
+    if (result.year > maxOnly.year) {
+      result = result.set({ year: maxOnly.year })
+    }
+    if (result.compare(maxOnly) > 0 && result.month > maxOnly.month) {
+      result = result.set({ month: maxOnly.month })
+    }
+    if (result.compare(maxOnly) > 0 && result.day > maxOnly.day) {
+      result = result.set({ day: maxOnly.day })
+    }
+  }
+
+  if (result.compare(dateOnly) === 0) {
+    return date
+  }
+
+  if ("hour" in date) {
+    return date.set({ year: result.year, month: result.month, day: result.day }) as T
+  }
+
+  return result as T
+}

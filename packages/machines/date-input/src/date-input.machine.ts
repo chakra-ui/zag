@@ -1,6 +1,6 @@
 import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } from "@internationalized/date"
 import { createMachine, memo, type Params } from "@zag-js/core"
-import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
+import { constrainSegments, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
@@ -50,10 +50,10 @@ export const machine = createMachine<DateInputSchema>({
     }
 
     const defaultValue = props.defaultValue
-      ? props.defaultValue.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      ? props.defaultValue.map((date) => constrainSegments(toTargetCalendar(date), props.min, props.max))
       : undefined
     const value = props.value
-      ? props.value.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      ? props.value.map((date) => constrainSegments(toTargetCalendar(date), props.min, props.max))
       : undefined
 
     const placeholderValue = resolvePlaceholderValue(props, timeZone, granularity, value, defaultValue, calendar)
@@ -279,7 +279,7 @@ export const machine = createMachine<DateInputSchema>({
             actions: ["setPreviousActiveSegmentIndex", "clearEnteredKeys"],
           },
           {
-            actions: ["clearSegmentValue", "clearEnteredKeys", "announceSegmentValue"],
+            actions: ["clearSegmentValue", "announceSegmentValue"],
           },
         ],
         "SEGMENT.HOME": {
@@ -415,17 +415,14 @@ export const machine = createMachine<DateInputSchema>({
         const newValue = textToUse.slice(0, -1)
 
         if (newValue === "" || newValue === "0") {
+          context.set("enteredKeys", "")
           const cleared = dv.clear(type)
           setDisplayValue(params, index, cleared)
           if (cleared.isCleared(allSegmentTypes)) commitClear(params, index)
         } else {
+          context.set("enteredKeys", newValue)
           dv = dv.set(type, Number(newValue), placeholderValue)
           setDisplayValue(params, index, dv)
-          // Don't commit while the user is editing a partially-typed segment value.
-          // The value will be committed when the segment is finalized or on blur.
-          if (enteredKeys === "" && dv.isComplete(allSegmentTypes)) {
-            commitValue(params, index, dv)
-          }
         }
       },
 
@@ -498,7 +495,7 @@ export const machine = createMachine<DateInputSchema>({
 
       setDateValue({ context, event, prop }) {
         if (!Array.isArray(event.value)) return
-        const value = event.value.map((date: DateValue) => constrainValue(date, prop("min"), prop("max")))
+        const value = event.value.map((date: DateValue) => constrainSegments(date, prop("min"), prop("max")))
         context.set("value", value)
       },
 
@@ -509,7 +506,7 @@ export const machine = createMachine<DateInputSchema>({
       setPastedValue({ context, event, prop }) {
         try {
           const parsed = parse(event.value)
-          const constrained = constrainValue(parsed, prop("min"), prop("max"))
+          const constrained = constrainSegments(parsed, prop("min"), prop("max"))
           const index = context.get("activeIndex")
           const values = Array.from(context.get("value"))
           values[index] = constrained
@@ -578,6 +575,8 @@ export const machine = createMachine<DateInputSchema>({
         const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
         const dateCount = computed("groupCount")
         const placeholderValue = context.get("placeholderValue")
+        let values = Array.from(context.get("value"))
+        let shouldUpdateValue = false
 
         for (let i = 0; i < dateCount; i++) {
           const displayValue = context.get("displayValues")[i]
@@ -592,11 +591,24 @@ export const machine = createMachine<DateInputSchema>({
               placeholderValue,
             )
             setDisplayValue(params, i, filled)
-            commitValue(params, i, filled)
+            values[i] = filled.toValue(placeholderValue)
+            shouldUpdateValue = true
           } else if (displayValue.isComplete(allSegmentTypes)) {
             // Commit complete display values that were deferred during partial typing
-            commitValue(params, i, displayValue)
+            values[i] = displayValue.toValue(placeholderValue)
+            shouldUpdateValue = true
           }
+        }
+
+        const min = prop("min")
+        const max = prop("max")
+        if ((min || max) && values.length > 0) {
+          values = values.map((d) => constrainSegments(d, min, max))
+          shouldUpdateValue = true
+        }
+
+        if (shouldUpdateValue) {
+          context.set("value", values)
         }
       },
     },
@@ -606,9 +618,9 @@ export const machine = createMachine<DateInputSchema>({
 type ActionParams = Params<DateInputSchema>
 
 function commitValue(params: ActionParams, index: number, dv: IncompleteDate) {
-  const { context, prop } = params
+  const { context } = params
   const placeholderValue = context.get("placeholderValue")
-  const date = constrainValue(dv.toValue(placeholderValue), prop("min"), prop("max"))
+  const date = dv.toValue(placeholderValue)
   const values = Array.from(context.get("value"))
   values[index] = date
   context.set("value", values)

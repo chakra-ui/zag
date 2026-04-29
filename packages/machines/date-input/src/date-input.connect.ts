@@ -1,5 +1,6 @@
 import {
   ariaAttr,
+  contains,
   dataAttr,
   getEventKey,
   getNativeEvent,
@@ -208,7 +209,10 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             selection.collapse(target)
           }
         },
-        onBlur() {
+        onBlur(event) {
+          const next = event.relatedTarget as Node | null
+          const control = dom.getControlEl(scope)
+          if (contains(control, next)) return
           send({ type: "SEGMENT.BLUR", index: -1 })
         },
         onKeyDown(event) {
