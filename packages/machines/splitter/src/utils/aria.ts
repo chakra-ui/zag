@@ -4,7 +4,7 @@
  */
 
 import { ensure } from "@zag-js/utils"
-import type { PanelData } from "../splitter.types"
+import type { NormalizedPanelData } from "../splitter.types"
 
 export function calculateAriaValues({
   size,
@@ -12,7 +12,7 @@ export function calculateAriaValues({
   pivotIndices,
 }: {
   size: number[]
-  panels: PanelData[]
+  panels: NormalizedPanelData[]
   pivotIndices: number[]
 }) {
   let currentMinSize = 0
@@ -46,10 +46,21 @@ export function calculateAriaValues({
   }
 }
 
-export function getAriaValue(size: number[], panels: PanelData[], handleId: string) {
+export function getAriaValue(size: number[], panels: NormalizedPanelData[], handleId: string) {
   const [beforeId, afterId] = handleId.split(":")
   const beforeIndex = panels.findIndex((panel) => panel.id === beforeId)
   const afterIndex = panels.findIndex((panel) => panel.id === afterId)
+
+  if (beforeIndex === -1 || afterIndex === -1) {
+    return {
+      beforeId: beforeId || undefined,
+      afterId: afterId || undefined,
+      valueMax: undefined,
+      valueMin: undefined,
+      valueNow: undefined,
+    }
+  }
+
   const { valueMax, valueMin, valueNow } = calculateAriaValues({
     size,
     panels,

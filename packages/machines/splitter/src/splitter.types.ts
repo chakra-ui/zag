@@ -9,7 +9,9 @@ import type { SplitterRegistry } from "./utils/registry"
 export type ResizeEvent = PointerEvent | KeyboardEvent
 
 export type PanelId = string
-export type ResizeTriggerId = `${PanelId}:${PanelId}`
+export type ResizeTriggerId = `${PanelId}:${PanelId}` | `${PanelId}:` | `:${PanelId}`
+export type PanelSize = number | string
+export type PanelResizeBehavior = "preserve-relative-size" | "preserve-pixel-size"
 
 export interface PanelData {
   /**
@@ -23,18 +25,28 @@ export interface PanelData {
   /**
    * The minimum size of the panel.
    */
-  minSize?: number | undefined
+  minSize?: PanelSize | undefined
   /**
    * The maximum size of the panel.
    */
-  maxSize?: number | undefined
+  maxSize?: PanelSize | undefined
   /**
    * Whether the panel is collapsible.
    */
   collapsible?: boolean | undefined
   /**
+   * How the panel should behave when the parent group is resized.
+   */
+  resizeBehavior?: PanelResizeBehavior | undefined
+  /**
    * The size of the panel when collapsed.
    */
+  collapsedSize?: PanelSize | undefined
+}
+
+export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize"> & {
+  minSize?: number | undefined
+  maxSize?: number | undefined
   collapsedSize?: number | undefined
 }
 
@@ -80,12 +92,12 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
    * The controlled size data of the panels
    */
-  size?: number[] | undefined
+  size?: PanelSize[] | undefined
   /**
    * The initial size of the panels when rendered.
    * Use when you don't need to control the size of the panels.
    */
-  defaultSize?: number[] | undefined
+  defaultSize?: PanelSize[] | undefined
   /**
    * The size constraints of the panels.
    */
@@ -133,6 +145,7 @@ type PropsWithDefault = "orientation" | "panels"
 
 export interface DragState {
   resizeTriggerId: string
+  resolvedResizeTriggerId: `${PanelId}:${PanelId}`
   resizeTriggerRect: DOMRect
   initialCursorPosition: number
   initialSize: number[]
@@ -140,18 +153,25 @@ export interface DragState {
 
 export interface KeyboardState {
   resizeTriggerId: string
+  resolvedResizeTriggerId: `${PanelId}:${PanelId}` | null
 }
 
 interface Context {
   dragState: DragState | null
   keyboardState: KeyboardState | null
   size: number[]
+  panels: NormalizedPanelData[]
 }
 
 interface Refs {
   panelSizeBeforeCollapse: Map<string, number>
   panelIdToLastNotifiedSizeMap: Map<string, number>
   prevDelta: number
+  initialSize: number[] | null
+  prevInitialLayout: string | null
+  prevGroupSize: number | null
+  lastRequestedSize: number[] | null
+  suppressOnResize: boolean
 }
 
 export interface SplitterSchema {
@@ -220,7 +240,7 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the sizes of the panels.
    */
-  setSizes: (size: number[]) => void
+  setSizes: (size: PanelSize[]) => void
   /**
    * Returns the items of the splitter.
    */

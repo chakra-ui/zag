@@ -4,6 +4,9 @@ const ELEMENT_NODE: typeof Node.ELEMENT_NODE = 1
 const DOCUMENT_NODE: typeof Node.DOCUMENT_NODE = 9
 const DOCUMENT_FRAGMENT_NODE: typeof Node.DOCUMENT_FRAGMENT_NODE = 11
 
+export const isElement = (el: any): el is Element =>
+  isObject(el) && el.nodeType === ELEMENT_NODE && typeof el.nodeName === "string"
+
 export const isHTMLElement = (el: any): el is HTMLElement =>
   isObject(el) && el.nodeType === ELEMENT_NODE && typeof el.nodeName === "string"
 

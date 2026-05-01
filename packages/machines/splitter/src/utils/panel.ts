@@ -5,9 +5,10 @@
 
 import type { Style } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
-import type { DragState, PanelData } from "../splitter.types"
+import type { DragState, PanelData, PanelSize } from "../splitter.types"
+import { toCssPanelSize } from "./size"
 
-export function getPanelById(panels: PanelData[], id: string) {
+export function getPanelById<T extends PanelData>(panels: T[], id: string) {
   const panel = panels.find((panel) => panel.id === id)
   ensure(panel, () => `Panel data not found for id "${id}"`)
   return panel
@@ -21,7 +22,7 @@ export function findPanelIndex(panels: PanelData[], id: string) {
   return panels.findIndex((panel) => panel.id === id)
 }
 
-export function panelDataHelper(panels: PanelData[], panel: PanelData, sizes: number[]) {
+export function panelDataHelper<T extends PanelData>(panels: T[], panel: T, sizes: number[]) {
   const index = findPanelIndex(panels, panel.id)
   const pivotIndices = index === panels.length - 1 ? [index - 1, index] : [index, index + 1]
   const panelSize = sizes[index]
@@ -63,38 +64,67 @@ export function serializePanels(panels: PanelData[]) {
 
 // the % of the group's overall space this panel should occupy.
 export function getPanelFlexBoxStyle({
+  size,
   defaultSize,
   dragState,
-  sizes,
+  resolvedSizes,
   panels,
   panelIndex,
+  horizontal,
   precision = 3,
 }: {
-  defaultSize: number | undefined
-  sizes: number[]
+  size: PanelSize | undefined
+  defaultSize: PanelSize | undefined
+  resolvedSizes: number[]
   dragState: DragState | null
   panels: PanelData[]
   panelIndex: number
+  horizontal: boolean
   precision?: number | undefined
 }): Style {
-  const size = sizes[panelIndex]
+  const resolvedSize = resolvedSizes[panelIndex]
+  const layoutSize = size ?? defaultSize
+  const panel = panels[panelIndex]
 
   let flexGrow
-  if (size == null) {
+  let flexBasis: Style["flexBasis"]
+  let flexShrink: Style["flexShrink"] = 1
+  const constraintAxis = horizontal ? "Width" : "Height"
+  const minSize = panel ? toCssPanelSize(panel.minSize) : undefined
+  const maxSize = panel ? toCssPanelSize(panel.maxSize) : undefined
+  const layoutCssSize = toCssPanelSize(layoutSize)
+
+  if (resolvedSize == null) {
     // Initial render (before panels have registered themselves)
     // In order to support server rendering, fall back to default size if provided
-    flexGrow = defaultSize != undefined ? defaultSize.toPrecision(precision) : "1"
+    if (layoutCssSize != null) {
+      if (layoutCssSize.endsWith("%")) {
+        flexGrow = Number.parseFloat(layoutCssSize).toPrecision(precision)
+      } else {
+        flexBasis = getClampedFlexBasis({
+          basis: layoutCssSize,
+          minSize,
+          maxSize,
+        })
+        flexGrow = "0"
+        flexShrink = 0
+      }
+    } else {
+      flexGrow = "1"
+    }
   } else if (panels.length === 1) {
     // Special case: Single panel group should always fill full width/height
     flexGrow = "1"
   } else {
-    flexGrow = size.toPrecision(precision)
+    flexGrow = resolvedSize.toPrecision(precision)
   }
 
   return {
-    flexBasis: 0,
+    flexBasis: flexBasis ?? 0,
     flexGrow,
-    flexShrink: 1,
+    flexShrink,
+    ...(minSize ? { [`min${constraintAxis}`]: minSize } : {}),
+    ...(maxSize ? { [`max${constraintAxis}`]: maxSize } : {}),
 
     // Without this, Panel sizes may be unintentionally overridden by their content
     overflow: "hidden",
@@ -103,6 +133,18 @@ export function getPanelFlexBoxStyle({
     // This avoid edge cases like nested iframes
     pointerEvents: dragState !== null ? "none" : undefined,
   }
+}
+
+function getClampedFlexBasis({
+  basis,
+  minSize,
+  maxSize,
+}: {
+  basis: string
+  minSize: string | undefined
+  maxSize: string | undefined
+}) {
+  return `clamp(${minSize ?? "0%"}, ${basis}, ${maxSize ?? "100%"})`
 }
 
 export function getUnsafeDefaultSize({ panels, size: sizes }: { panels: PanelData[]; size: number[] }): number[] {

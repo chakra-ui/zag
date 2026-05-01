@@ -4,10 +4,10 @@
  */
 
 import { ensure } from "@zag-js/utils"
-import type { PanelData } from "../splitter.types"
+import type { NormalizedPanelData } from "../splitter.types"
 import { fuzzyCompareNumbers, PRECISION } from "./fuzzy"
 
-export function resizePanel({ panels, index, size }: { panels: PanelData[]; index: number; size: number }) {
+export function resizePanel({ panels, index, size }: { panels: NormalizedPanelData[]; index: number; size: number }) {
   const panel = panels[index]
   ensure(panel, () => `Panel data not found for index ${index}`)
 

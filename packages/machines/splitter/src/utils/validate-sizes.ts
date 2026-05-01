@@ -4,11 +4,11 @@
  */
 
 import { ensure } from "@zag-js/utils"
-import type { PanelData } from "../splitter.types"
+import type { NormalizedPanelData } from "../splitter.types"
 import { fuzzyNumbersEqual } from "./fuzzy"
 import { resizePanel } from "./resize-panel"
 
-export function validateSizes({ size: prevSize, panels }: { size: number[]; panels: PanelData[] }): number[] {
+export function validateSizes({ size: prevSize, panels }: { size: number[]; panels: NormalizedPanelData[] }): number[] {
   const nextSize = [...prevSize]
   const nextSizeTotalSize = nextSize.reduce((accumulated, current) => accumulated + current, 0)
 

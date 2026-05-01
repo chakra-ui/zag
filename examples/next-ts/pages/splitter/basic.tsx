@@ -20,7 +20,7 @@ export default function Page() {
   return (
     <>
       <main className="splitter">
-        <pre>{JSON.stringify(api.getSizes(), null, 2)}</pre>
+        <pre>{JSON.stringify(api.getSizes())}</pre>
         <div {...api.getRootProps()}>
           <div {...api.getPanelProps({ id: "a" })}>
             <p>Left</p>
