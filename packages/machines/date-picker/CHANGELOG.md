@@ -1,5 +1,33 @@
 # @zag-js/date-picker
 
+## 1.41.0
+
+### Patch Changes
+
+- [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the date input was not writable in locales whose
+  date format separator contains more than one character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`)
+
+- [`218b327`](https://github.com/chakra-ui/zag/commit/218b327d63cd27c1df3ac566dc8a34462ee12be0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Firefox where native month/year `<select>` is not
+  interactive when the picker is inside a modal dialog.
+
+- [`829f78c`](https://github.com/chakra-ui/zag/commit/829f78cd297cf256d26fab8b5b43a233b9af8c9b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix range selection with `outsideDaySelectable`: hovering
+  outside-month days no longer changes the visible month; hover preview for the end date still updates.
+- Updated dependencies [[`6dbc33a`](https://github.com/chakra-ui/zag/commit/6dbc33aceee09aba5cfe036a128b9efc76a442d0),
+  [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1)]:
+  - @zag-js/date-utils@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/core@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/live-region@1.41.0
+  - @zag-js/popper@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes

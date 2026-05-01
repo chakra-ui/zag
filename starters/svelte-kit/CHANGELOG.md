@@ -1,5 +1,13 @@
 # svelte-kit-starter
 
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies [[`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9)]:
+  - @zag-js/svelte@1.41.0
+  - @zag-js/switch@1.41.0
+
 ## 0.0.15
 
 ### Patch Changes
