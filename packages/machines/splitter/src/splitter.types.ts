@@ -44,6 +44,7 @@ export interface PanelData {
   collapsedSize?: PanelSize | undefined
 }
 
+// zag-ignore-export
 export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize"> & {
   minSize?: number | undefined
   maxSize?: number | undefined
