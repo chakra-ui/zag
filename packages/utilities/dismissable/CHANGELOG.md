@@ -1,5 +1,19 @@
 # @zag-js/dismissable
 
+## 1.41.0
+
+### Patch Changes
+
+- [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Deduplicate `layerStack.add()` by DOM node so the same element is
+  not registered twice (e.g. React Strict Mode). Fixes incorrect `data-has-nested`, `--layer-index`, and
+  `--nested-layer-count` on a single open dialog.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/interact-outside@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes

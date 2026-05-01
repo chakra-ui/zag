@@ -1,5 +1,29 @@
 # @zag-js/date-input
 
+## 1.41.0
+
+### Patch Changes
+
+- [`6dbc33a`](https://github.com/chakra-ui/zag/commit/6dbc33aceee09aba5cfe036a128b9efc76a442d0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix date input min/max handling to preserve entered segments while
+  editing. Values are now clamped segment-by-segment on blur, so `06/15/1999` with min `2000-01-01` becomes `06/15/2000`
+  instead of snapping to `01/01/2000`.
+
+  Add `constrainSegments` to `@zag-js/date-utils` for segment-wise min/max clamping.
+
+- [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the date input was not writable in locales whose
+  date format separator contains more than one character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`)
+- Updated dependencies [[`6dbc33a`](https://github.com/chakra-ui/zag/commit/6dbc33aceee09aba5cfe036a128b9efc76a442d0),
+  [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4)]:
+  - @zag-js/date-utils@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/core@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/live-region@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes

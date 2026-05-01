@@ -1,5 +1,15 @@
 # @zag-js/remove-scroll
 
+## 1.41.0
+
+### Patch Changes
+
+- [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix scroll lock leaking on `<body>` (`data-scroll-lock`,
+  `overflow: hidden`) when nested dialogs or React Strict Mode trigger overlapping locks.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
