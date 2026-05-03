@@ -1,6 +1,12 @@
 import { getComputedStyle, getDocumentElement, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { ListVirtualizer } from "./list-virtualizer"
-import type { CSSProperties, ListVirtualizerOptions, ScrollToIndexOptions, ScrollToIndexResult } from "./types"
+import type {
+  CSSProperties,
+  ListVirtualizerOptions,
+  ScrollByOptions,
+  ScrollToIndexOptions,
+  ScrollToIndexResult,
+} from "./types"
 
 type WindowType = Window & typeof globalThis
 
@@ -266,7 +272,10 @@ export class WindowVirtualizer extends ListVirtualizer {
     super.setViewportSize(size)
   }
 
-  override scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
+  override scrollToOffset(offset: number, options: ScrollByOptions = {}): ScrollToIndexResult {
+    if (options.smooth) return super.scrollToOffset(offset, options)
+
+    const targetOffset = Math.max(0, offset)
     const win = this.resolveWindow()
     const el = this.scrollElement
     const { horizontal } = this.options
@@ -279,14 +288,14 @@ export class WindowVirtualizer extends ListVirtualizer {
           const rect = el.getBoundingClientRect()
           if (horizontal) {
             const docOrigin = win.pageXOffset + rect.left
-            win.scrollTo(docOrigin + offset - windowOffset, win.pageYOffset)
+            win.scrollTo(docOrigin + targetOffset - windowOffset, win.pageYOffset)
           } else {
             const docOrigin = win.pageYOffset + rect.top
-            win.scrollTo(win.pageXOffset, docOrigin + offset - windowOffset)
+            win.scrollTo(win.pageXOffset, docOrigin + targetOffset - windowOffset)
           }
         }
       } else if (isHTMLElement(scrollTarget)) {
-        const delta = offset - this.scrollOffset
+        const delta = targetOffset - this.scrollOffset
         if (horizontal) {
           scrollTarget.scrollLeft += delta
         } else {
@@ -295,7 +304,7 @@ export class WindowVirtualizer extends ListVirtualizer {
       }
     }
 
-    return super.scrollTo(offset)
+    return super.scrollToOffset(targetOffset)
   }
 
   override scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
@@ -337,7 +346,7 @@ export class WindowVirtualizer extends ListVirtualizer {
       }
     }
 
-    return super.scrollTo(targetOffset)
+    return super.scrollToOffset(targetOffset)
   }
 
   override destroy(): void {

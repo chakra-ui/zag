@@ -4,6 +4,7 @@ import type {
   ItemMeasurement,
   ItemState,
   Range,
+  ScrollByOptions,
   ScrollAnchor,
   ScrollState,
   ScrollToIndexOptions,
@@ -20,6 +21,22 @@ const SCROLL_END_DELAY_MS = 150
 
 type ResolvedBaseOptions = Required<Omit<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange">> &
   Pick<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange">
+
+function defaultRangeExtractor(range: Range): number[] {
+  const indexes: number[] = []
+  for (let i = range.startIndex; i <= range.endIndex; i++) {
+    indexes.push(i)
+  }
+  return indexes
+}
+
+function areEqual(a: number[], b: number[]): boolean {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
+}
 
 /**
  * Shared logic for all virtualizer variants (list, grid, table, masonry).
@@ -48,6 +65,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected range: Range = { startIndex: 0, endIndex: -1 }
   private lastCalculatedOffset: number = -1
   private cachedVirtualItems: VirtualItem[] = []
+  private cachedVirtualIndexes: number[] = []
   private cachedRangeStart = -1
   private cachedRangeEnd = -2
   private virtualItemObjectCache: Map<number, VirtualItem> = new Map()
@@ -90,8 +108,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
+      scrollMargin: 0,
+      scrollPaddingStart: 0,
+      scrollPaddingEnd: 0,
       initialOffset: 0,
       overscan: 3,
+      rangeExtractor: defaultRangeExtractor,
       rootMargin: "50px",
       preserveScrollAnchor: true,
       observeScrollElementSize: false,
@@ -211,25 +233,31 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.calculateRange()
 
     const { startIndex, endIndex } = this.range
+    const indexes = this.getVirtualIndexes(this.range)
 
     // Integer comparison — no string allocation
-    if (startIndex === this.cachedRangeStart && endIndex === this.cachedRangeEnd) {
+    if (
+      startIndex === this.cachedRangeStart &&
+      endIndex === this.cachedRangeEnd &&
+      areEqual(indexes, this.cachedVirtualIndexes)
+    ) {
       return this.cachedVirtualItems
     }
 
     const newVirtualItems: VirtualItem[] = []
 
     // Lazy cleanup — only when cache grows too large
-    const visibleCount = endIndex - startIndex + 1
+    const visibleCount = indexes.length
     if (this.virtualItemObjectCache.size > visibleCount + 200) {
+      const visibleIndexes = new Set(indexes)
       for (const [index] of this.virtualItemObjectCache) {
-        if (index < startIndex - 100 || index > endIndex + 100) {
+        if (!visibleIndexes.has(index) && (index < startIndex - 100 || index > endIndex + 100)) {
           this.virtualItemObjectCache.delete(index)
         }
       }
     }
 
-    for (let i = startIndex; i <= endIndex; i++) {
+    for (const i of indexes) {
       const measurement = this.getMeasurement(i)
       const lane = this.getItemLane(i)
       const key = this.getItemKey(i)
@@ -271,6 +299,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
 
     this.cachedVirtualItems = newVirtualItems
+    this.cachedVirtualIndexes = indexes
     this.cachedRangeStart = startIndex
     this.cachedRangeEnd = endIndex
 
@@ -279,6 +308,19 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.measureCacheDirtyFrom = Infinity
 
     return newVirtualItems
+  }
+
+  private getVirtualIndexes(range: Range): number[] {
+    const indexes = this.options.rangeExtractor(range)
+    const uniqueIndexes = new Set<number>()
+
+    for (const index of indexes) {
+      if (!Number.isInteger(index)) continue
+      if (index < 0 || index >= this.options.count) continue
+      uniqueIndexes.add(index)
+    }
+
+    return Array.from(uniqueIndexes).sort((a, b) => a - b)
   }
 
   // ============================================
@@ -483,7 +525,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * When `false`, `scrollTo` only updates internal scroll state — the subclass scrolls the real container
+   * When `false`, `scrollToOffset` only updates internal scroll state — the subclass scrolls the real container
    * (e.g. `window` or an overflow parent). Default `true` applies offset to `scrollElement`.
    */
   protected shouldApplyScrollToScrollElement(): boolean {
@@ -491,18 +533,24 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /** Regular method (not a class field) so subclasses can override with `super`. */
-  scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
+  scrollToOffset(offset: number, options: ScrollByOptions = {}): ScrollToIndexResult {
+    const targetOffset = Math.max(0, offset)
+
+    if (options.smooth) {
+      return this.performSmoothScroll(targetOffset, options.smooth)
+    }
+
     const { horizontal } = this.options
     const existing = this.scrollElement ? getScrollPosition(this.scrollElement) : { scrollTop: 0, scrollLeft: 0 }
 
     if (this.scrollElement && this.shouldApplyScrollToScrollElement()) {
-      setScrollPosition(this.scrollElement, horizontal ? { scrollLeft: offset } : { scrollTop: offset })
+      setScrollPosition(this.scrollElement, horizontal ? { scrollLeft: targetOffset } : { scrollTop: targetOffset })
     }
 
     this.prevScrollOffset = this.scrollOffset
-    this.scrollOffset = offset
+    this.scrollOffset = targetOffset
 
-    const rawDirection = offset > this.prevScrollOffset ? "forward" : "backward"
+    const rawDirection = targetOffset > this.prevScrollOffset ? "forward" : "backward"
     if (this.options.horizontal && this.options.rtl) {
       this.scrollDirection = rawDirection === "forward" ? "backward" : "forward"
     } else {
@@ -513,8 +561,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.notifyScroll()
     this.notifyStore()
 
-    if (horizontal) return { scrollLeft: offset, scrollTop: existing.scrollTop }
-    return { scrollTop: offset, scrollLeft: existing.scrollLeft }
+    if (horizontal) return { scrollLeft: targetOffset, scrollTop: existing.scrollTop }
+    return { scrollTop: targetOffset, scrollLeft: existing.scrollLeft }
+  }
+
+  /** Regular method (not a class field) so subclasses can override with `super`. */
+  scrollBy(delta: number, options: ScrollByOptions = {}): ScrollToIndexResult {
+    return this.scrollToOffset(this.scrollOffset + delta, options)
   }
 
   /**
@@ -522,7 +575,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * Returns `null` when `align: "auto"` and the item is already visible.
    */
   protected resolveScrollToOffset(index: number, align: ScrollToIndexOptions["align"] = "start"): number | null {
-    const { count } = this.options
+    const { count, scrollMargin, scrollPaddingStart, scrollPaddingEnd } = this.options
     if (index < 0 || index >= count) return this.scrollOffset
 
     const measurement = this.getMeasurement(index)
@@ -530,21 +583,22 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (align === "auto") {
       const itemStart = measurement.start
       const itemEnd = measurement.end
-      const viewportStart = this.scrollOffset
-      const viewportEnd = this.scrollOffset + this.viewportSize
+      const viewportStart = this.scrollOffset + scrollMargin + scrollPaddingStart
+      const viewportEnd = this.scrollOffset + scrollMargin + this.viewportSize - scrollPaddingEnd
 
-      if (itemStart < viewportStart) return itemStart
-      if (itemEnd > viewportEnd) return itemEnd - this.viewportSize
+      if (itemStart < viewportStart) return itemStart - scrollMargin - scrollPaddingStart
+      if (itemEnd > viewportEnd) return itemEnd - scrollMargin - this.viewportSize + scrollPaddingEnd
       return null
     }
 
-    let offset = measurement.start
+    const effectiveViewportSize = Math.max(0, this.viewportSize - scrollPaddingStart - scrollPaddingEnd)
+    let offset = measurement.start - scrollMargin - scrollPaddingStart
     switch (align) {
       case "center":
-        offset -= (this.viewportSize - measurement.size) / 2
+        offset -= (effectiveViewportSize - measurement.size) / 2
         break
       case "end":
-        offset -= this.viewportSize - measurement.size
+        offset = measurement.end - scrollMargin - this.viewportSize + scrollPaddingEnd
         break
     }
     return Math.max(0, offset)
@@ -559,11 +613,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       return this.options.horizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
     }
 
-    if (smooth) {
-      return this.performSmoothScroll(targetOffset, smooth)
-    }
-
-    return this.scrollTo(targetOffset)
+    return this.scrollToOffset(targetOffset, { smooth })
   }
 
   private performSmoothScroll(
@@ -817,7 +867,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     const measurement = this.getMeasurement(index)
     const targetOffset = measurement.start + anchor.offset
-    return this.scrollTo(Math.max(0, targetOffset))
+    return this.scrollToOffset(targetOffset)
   }
 
   getRange(): Range {

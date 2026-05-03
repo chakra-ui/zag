@@ -33,12 +33,17 @@ const COLORS = [
   "#f5f5f4",
 ]
 
+const getGroupIndex = (index: number) => Math.floor(index / ITEMS_PER_GROUP)
+const getGroupLabel = (index: number) => `Group ${index + 1}`
+const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
+const getItemSize = (index: number) => ITEM_HEIGHT + (isGroupStart(index) ? HEADER_HEIGHT : 0)
+
 export default function Page() {
   const scrollOffsetRef = useRef(0)
 
   const { virtualizer, ref } = useListVirtualizer({
     count: TOTAL_ITEMS,
-    estimatedSize: () => ITEM_HEIGHT,
+    estimatedSize: getItemSize,
     groups,
     overscan: 5,
   })
@@ -64,16 +69,17 @@ export default function Page() {
               height: HEADER_HEIGHT,
               zIndex: 10,
               transform: `translateY(${headerState.translateY}px)`,
-              backgroundColor: COLORS[groups.indexOf(headerState.group)] || "#e2e8f0",
+              backgroundColor: COLORS[getGroupIndex(headerState.group.startIndex)] || "#e2e8f0",
               borderBottom: "2px solid #94a3b8",
               display: "flex",
               alignItems: "center",
               padding: "0 12px",
               fontWeight: 700,
               fontSize: 13,
+              boxSizing: "border-box",
             }}
           >
-            {headerState.group.id.replace("group-", "Group ")}
+            {getGroupLabel(getGroupIndex(headerState.group.startIndex))}
           </div>
         )}
 
@@ -83,28 +89,54 @@ export default function Page() {
             scrollOffsetRef.current = (e.target as HTMLDivElement).scrollTop
             virtualizer.handleScroll(e)
           }}
+          tabIndex={0}
+          aria-label="Virtualized list with sticky group headers"
           style={{ height: 400, overflow: "auto", border: "2px solid #cbd5e1", borderRadius: 8 }}
         >
           <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
             {virtualItems.map((vi) => {
               const item = items[vi.index]
+              const groupStart = isGroupStart(vi.index)
               return (
                 <div
                   key={vi.index}
                   style={{
                     ...virtualizer.getItemStyle(vi),
-                    height: ITEM_HEIGHT,
-                    padding: "0 12px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottom: "1px solid #cbd5e1",
+                    height: vi.size,
                     backgroundColor: COLORS[item.groupIndex],
                     fontSize: 13,
+                    boxSizing: "border-box",
                   }}
                 >
-                  <span>{item.label}</span>
-                  <span style={{ color: "#64748b", fontSize: 11 }}>{item.group}</span>
+                  {groupStart && (
+                    <div
+                      style={{
+                        height: HEADER_HEIGHT,
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontWeight: 700,
+                        borderBottom: "2px solid #94a3b8",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      {item.group}
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      height: ITEM_HEIGHT,
+                      padding: "0 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      borderBottom: "1px solid #cbd5e1",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <span style={{ color: "#64748b", fontSize: 11 }}>{item.group}</span>
+                  </div>
                 </div>
               )
             })}
@@ -114,7 +146,7 @@ export default function Page() {
 
       <p style={{ marginTop: 8, fontSize: 13, color: "#64748b" }}>
         Rendered: {virtualItems.length} of {TOTAL_ITEMS}
-        {headerState && ` · ${headerState.group.id.replace("group-", "Group ")}`}
+        {headerState && ` · ${getGroupLabel(getGroupIndex(headerState.group.startIndex))}`}
       </p>
     </main>
   )

@@ -64,7 +64,17 @@ export default function Page() {
       <div
         ref={ref}
         onScroll={virtualizer.handleScroll}
-        style={{ height: 400, overflow: "auto", border: "1px solid #e2e8f0", borderRadius: 8, marginTop: 16 }}
+        tabIndex={0}
+        aria-label="Virtualized list with padding"
+        style={{
+          height: 400,
+          width: "100%",
+          overflow: "auto",
+          border: "1px solid #e2e8f0",
+          borderRadius: 8,
+          marginTop: 16,
+          boxSizing: "border-box",
+        }}
       >
         <div
           style={{
@@ -84,6 +94,7 @@ export default function Page() {
                   height: 40,
                   padding: "0 16px",
                   borderBottom: "1px solid #cbd5e1",
+                  boxSizing: "border-box",
                   backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#e2e8f0",
                   display: "flex",
                   alignItems: "center",

@@ -67,10 +67,17 @@ export interface ScrollToIndexResult {
   scrollLeft?: number
 }
 
+export interface ScrollByOptions {
+  /** Enable smooth scrolling with custom options */
+  smooth?: ScrollToIndexOptions["smooth"]
+}
+
 export interface Range {
   startIndex: number
   endIndex: number
 }
+
+export type RangeExtractor = (range: Range) => number[]
 
 export interface VirtualizerOptions {
   /**
@@ -103,6 +110,12 @@ export interface VirtualizerOptions {
   /** Number of extra items to render outside the visible viewport (default: 3) */
   overscan?: number
 
+  /**
+   * Customize the final set of item indexes to render for the calculated range.
+   * The range passed to this function includes overscan.
+   */
+  rangeExtractor?: RangeExtractor
+
   /** Horizontal scrolling */
   horizontal?: boolean
 
@@ -114,6 +127,18 @@ export interface VirtualizerOptions {
 
   /** Scroll padding (end) */
   paddingEnd?: number
+
+  /**
+   * Offset where the virtual list starts relative to the scroll origin.
+   * Useful when a header or other content appears before the virtual items.
+   */
+  scrollMargin?: number
+
+  /** Offset to preserve before an item when scrolling to it */
+  scrollPaddingStart?: number
+
+  /** Offset to preserve after an item when scrolling to it */
+  scrollPaddingEnd?: number
 
   /** Initial scroll offset */
   initialOffset?: number

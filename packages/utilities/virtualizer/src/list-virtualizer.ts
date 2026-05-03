@@ -17,9 +17,9 @@ import { SizeTracker } from "./utils/size-tracker"
  * Uses incremental measurement with caching for dynamic item sizes.
  */
 export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
-  private sizeTracker!: SizeTracker
-  private groups: ListVirtualizerOptions["groups"] | null = null
-  private rangeCache!: CacheManager<string, Range>
+  declare private sizeTracker: SizeTracker
+  declare private groups: ListVirtualizerOptions["groups"] | null
+  declare private rangeCache: CacheManager<string, Range>
 
   constructor(options: ListVirtualizerOptions) {
     super(options)
@@ -198,13 +198,13 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemStyle(virtualItem: VirtualItem): CSSProperties {
-    const { horizontal, rtl, gap } = this.options
+    const { horizontal, rtl, gap, scrollMargin } = this.options
     const { start, lane } = virtualItem
 
     if (this.isGrid) {
       const laneSize = this.getLaneSize()
       let x = lane * (laneSize + gap)
-      const y = start
+      const y = start - scrollMargin
 
       // For RTL mode, reverse the lane positioning
       if (rtl) {
@@ -229,11 +229,12 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     }
 
     // List mode
+    const offset = start - scrollMargin
     let transform: string
     if (horizontal) {
-      transform = rtl ? `translate3d(-${start}px, 0, 0)` : `translate3d(${start}px, 0, 0)`
+      transform = rtl ? `translate3d(-${offset}px, 0, 0)` : `translate3d(${offset}px, 0, 0)`
     } else {
-      transform = `translate3d(0, ${start}px, 0)`
+      transform = `translate3d(0, ${offset}px, 0)`
     }
 
     return {
@@ -373,12 +374,8 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
    * Get ARIA attributes for the list container
    */
   getContainerAriaAttrs() {
-    const { count, horizontal } = this.options
     return {
       role: "list" as const,
-      "aria-orientation": horizontal ? ("horizontal" as const) : ("vertical" as const),
-      "aria-rowcount": horizontal ? undefined : count,
-      "aria-colcount": horizontal ? count : undefined,
     }
   }
 

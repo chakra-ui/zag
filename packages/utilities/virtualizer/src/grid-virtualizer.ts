@@ -95,8 +95,16 @@ export class GridVirtualizer {
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
+      scrollMargin: 0,
+      scrollPaddingStart: 0,
+      scrollPaddingEnd: 0,
       initialOffset: 0,
       overscan: 3,
+      rangeExtractor: (range) => {
+        const indexes: number[] = []
+        for (let i = range.startIndex; i <= range.endIndex; i++) indexes.push(i)
+        return indexes
+      },
       horizontal: false,
       rtl: false,
       rootMargin: "50px",
