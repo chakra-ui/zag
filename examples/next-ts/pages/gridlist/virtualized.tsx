@@ -59,6 +59,7 @@ export default function Page() {
             <div
               ref={ref}
               {...api.getContentProps()}
+              tabIndex={0}
               onScroll={virtualizer.handleScroll}
               style={{ height: 360, width: 480 }}
             >
@@ -70,8 +71,6 @@ export default function Page() {
                       key={item.id}
                       {...api.getItemProps({ item })}
                       data-index={vi.index}
-                      aria-setsize={items.length}
-                      aria-posinset={vi.index + 1}
                       style={{ ...virtualizer.getItemStyle(vi), overflowAnchor: "none" }}
                     >
                       <div {...api.getCellProps()}>

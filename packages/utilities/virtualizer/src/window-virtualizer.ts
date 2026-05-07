@@ -71,17 +71,12 @@ export class WindowVirtualizer extends ListVirtualizer {
   private scrollListenerTarget: EventTarget | null = null
   /** Cleanup for ResizeObserver on the scroll parent (when it is an HTMLElement, not `window`). */
   private scrollTargetResizeCleanup: VoidFunction | undefined
-  private getWindow: () => WindowType
 
   /**
-   * `ListVirtualizer` may call `setViewportSize` during `super()` when `initialSize` is set — before
-   * `this.getWindow` / `this.windowOptions` are assigned, so always resolve via `this.options` or global.
+   * `ListVirtualizer` may call `setViewportSize` during `super()` when `initialRect` is set — before
+   * `this.windowOptions` is assigned, so always resolve via `this.options` or global.
    */
   private resolveWindow(): WindowType | undefined {
-    const bound = (this as unknown as { getWindow?: () => WindowType }).getWindow
-    if (typeof bound === "function") {
-      return bound()
-    }
     return (
       (this.options as WindowVirtualizerOptions).getWindow?.() ?? (typeof window !== "undefined" ? window : undefined)
     )
@@ -90,7 +85,6 @@ export class WindowVirtualizer extends ListVirtualizer {
   constructor(options: WindowVirtualizerOptions) {
     super(options)
     this.windowOptions = options
-    this.getWindow = options.getWindow ?? (() => window)
     this.setupWindowScrolling()
   }
 

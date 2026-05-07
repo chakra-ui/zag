@@ -72,6 +72,8 @@ export default function Page() {
           ref={setScrollElementRef}
           onScroll={virtualizer.handleScroll}
           {...virtualizer.getContainerAriaAttrs()}
+          tabIndex={0}
+          aria-label="Virtualized list"
           style={{
             ...virtualizer.getContainerStyle(),
             height: "400px",

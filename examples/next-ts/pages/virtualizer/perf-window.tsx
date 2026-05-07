@@ -52,7 +52,10 @@ function ZagWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }
         count: ITEM_COUNT,
         estimatedSize: () => ITEM_HEIGHT,
         overscan: 5,
-        initialSize: typeof window !== "undefined" ? window.innerHeight : 800,
+        initialRect:
+          typeof window !== "undefined"
+            ? { width: window.innerWidth, height: window.innerHeight }
+            : { width: 0, height: 800 },
       }),
   )
 

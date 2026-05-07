@@ -5,6 +5,8 @@ export interface VirtualItem {
   end: number
   size: number
   lane: number
+  isVisible: boolean
+  isOverscan: "before" | "after" | false
   measureElement: (element: HTMLElement | null) => void
 }
 
@@ -60,6 +62,12 @@ export interface ScrollToIndexOptions {
         /** Custom scroll function */
         scrollFunction?: (position: { scrollTop?: number; scrollLeft?: number }) => void
       }
+  /**
+   * After the initial scroll, schedule a next-frame correction if the target
+   * offset shifted (because items measured smaller/larger than estimated).
+   * Defaults to true for non-smooth scrolls; ignored for smooth scrolls.
+   */
+  settle?: boolean
 }
 
 export interface ScrollToIndexResult {
@@ -132,7 +140,7 @@ export interface VirtualizerOptions {
    * Offset where the virtual list starts relative to the scroll origin.
    * Useful when a header or other content appears before the virtual items.
    */
-  scrollMargin?: number
+  scrollMargin?: number | (() => number)
 
   /** Offset to preserve before an item when scrolling to it */
   scrollPaddingStart?: number
@@ -143,11 +151,20 @@ export interface VirtualizerOptions {
   /** Initial scroll offset */
   initialOffset?: number
 
+  /** Skip applying `initialOffset` to the scroll container during init. */
+  disableScrollOnInit?: boolean
+
   /** Root margin for intersection observer */
   rootMargin?: string
 
   /** Enable scroll anchor preservation during updates */
   preserveScrollAnchor?: boolean
+
+  /**
+   * CSS `overflow-anchor` value for the virtualizer scroll container.
+   * Defaults to "none" because the virtualizer preserves scroll position itself.
+   */
+  overflowAnchor?: "auto" | "none"
 
   /** Observe the scroll element size and automatically update virtualizer measurements */
   observeScrollElementSize?: boolean
@@ -169,11 +186,8 @@ export interface ListVirtualizerOptions extends VirtualizerOptions {
   /** Optional grouping info for sticky headers */
   groups?: GroupMeta[]
 
-  /**
-   * The initial size of the viewport for server-side rendering.
-   * This should be the height for vertical lists or the width for horizontal lists.
-   */
-  initialSize?: number
+  /** The initial viewport rect for server-side rendering. */
+  initialRect?: { width: number; height: number }
 }
 
 export interface GroupMeta {
@@ -183,6 +197,8 @@ export interface GroupMeta {
   startIndex: number
   /** Optional header height */
   headerSize?: number
+  /** Whether this group participates in sticky header state. Defaults to true. */
+  sticky?: boolean
 }
 
 export interface GridVirtualizerOptions extends Omit<VirtualizerOptions, "count" | "estimatedSize"> {
@@ -198,6 +214,6 @@ export interface GridVirtualizerOptions extends Omit<VirtualizerOptions, "count"
   /** Estimated column width for each column */
   estimatedColumnSize: (columnIndex: number) => number
 
-  /** The initial size of the viewport for server-side rendering. */
-  initialSize?: { width: number; height: number }
+  /** The initial viewport rect for server-side rendering. */
+  initialRect?: { width: number; height: number }
 }

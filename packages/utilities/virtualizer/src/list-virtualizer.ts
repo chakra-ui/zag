@@ -5,6 +5,7 @@ import type {
   ItemState,
   ListVirtualizerOptions,
   Range,
+  ScrollAnchor,
   VirtualItem,
 } from "./types"
 import { Virtualizer } from "./virtualizer"
@@ -23,8 +24,10 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
   constructor(options: ListVirtualizerOptions) {
     super(options)
-    if (options.initialSize) {
-      this.setViewportSize(options.initialSize)
+    if (options.initialRect) {
+      const { width, height } = options.initialRect
+      super.setViewportSize(options.horizontal ? width : height)
+      super.setCrossAxisSize(options.horizontal ? height : width)
     }
   }
 
@@ -198,7 +201,8 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemStyle(virtualItem: VirtualItem): CSSProperties {
-    const { horizontal, rtl, gap, scrollMargin } = this.options
+    const { horizontal, rtl, gap } = this.options
+    const scrollMargin = this.getScrollMargin()
     const { start, lane } = virtualItem
 
     if (this.isGrid) {
@@ -350,13 +354,14 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const currentIndex = this.findIndexAtOffset(viewportOffset)
     const currentGroup = this.getGroupForIndex(currentIndex)
     if (!currentGroup) return null
+    if (currentGroup.sticky === false) return null
 
     const currentStart = this.getMeasurement(currentGroup.startIndex).start
     const currentHeaderSize = headerSizeOverride ?? currentGroup.headerSize ?? 0
 
     // Look ahead to next group to compute push-off distance
     const currentIdx = this.groups.indexOf(currentGroup)
-    const nextGroup = this.groups[currentIdx + 1]
+    const nextGroup = this.groups.slice(currentIdx + 1).find((group) => group.sticky !== false)
     const nextStart = nextGroup ? this.getMeasurement(nextGroup.startIndex).start : Infinity
 
     const distanceToNext = nextStart - viewportOffset - currentHeaderSize
@@ -368,6 +373,11 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       translateY,
       offset: viewportOffset - currentStart,
     }
+  }
+
+  getStickyGroupHeader(headerSizeOverride?: number) {
+    const offset = this.getScrollState().offset[this.options.horizontal ? "x" : "y"] + this.getScrollMargin()
+    return this.getGroupHeaderState(offset, headerSizeOverride)
   }
 
   /**
@@ -406,7 +416,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   prependItems(addedCount: number): void {
     if (addedCount <= 0) return
 
-    const anchor = this.getScrollAnchor()
+    const anchor = this.options.preserveScrollAnchor ? this.getPrependScrollAnchor(addedCount) : null
 
     // Update count (most callers prepend in data then call this once)
     this.options.count = this.options.count + addedCount
@@ -418,8 +428,10 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // Shift measured sizes forward (index re-mapping) and rebuild size tracker
     this.sizeTracker.reindex(addedCount, this.options.count)
+    this.reindexItemSizeCache(addedCount)
 
     // Item starts/ends have changed; drop all cached measurements/ranges
+    this.invalidateItemKeys()
     this.rangeCache?.clear()
     this.invalidateMeasurements(0)
     this.calculateRange()
@@ -430,5 +442,31 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     }
 
     this.notifyStore()
+  }
+
+  private getPrependScrollAnchor(addedCount: number): ScrollAnchor | null {
+    const anchor = this.getScrollAnchor()
+    if (!anchor) return null
+
+    const { count } = this.options
+    const scrollMargin = this.getScrollMargin()
+    const viewportStart = this.getScrollState().offset[this.options.horizontal ? "x" : "y"] + scrollMargin
+    const anchorIndex = Math.min(count - 1, Math.max(0, this.findIndexAtOffset(viewportStart)))
+    const shiftedIndex = anchorIndex + addedCount
+    const indexToKey = this.options.indexToKey
+    const key = indexToKey ? indexToKey(shiftedIndex) : shiftedIndex
+
+    return {
+      key,
+      offset: anchor.offset,
+    }
+  }
+
+  private reindexItemSizeCache(shift: number): void {
+    const nextCache = new Map<number, number>()
+    for (const [index, size] of this.itemSizeCache) {
+      nextCache.set(index + shift, size)
+    }
+    this.itemSizeCache = nextCache
   }
 }

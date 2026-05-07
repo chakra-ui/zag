@@ -102,6 +102,8 @@ export default function Page() {
           ref={setScrollElementRef}
           onScroll={virtualizer.handleScroll}
           {...virtualizer.getContainerAriaAttrs()}
+          tabIndex={0}
+          aria-label="Virtualized grid"
           style={{
             height: "500px",
             width: "100%",

@@ -128,7 +128,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   return (
     <div>
-      <h3 style={{ color: "#3b82f6" }}>@zag-js/virtualizer</h3>
+      <h2 style={{ color: "#3b82f6" }}>@zag-js/virtualizer</h2>
       <BenchmarkButtons
         onRun={(n) => {
           if (scrollRef.current) runScrollBenchmark(scrollRef.current, n, onMetrics)
@@ -137,6 +137,8 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       <div
         ref={setRef}
         onScroll={virtualizer.handleScroll}
+        tabIndex={0}
+        aria-label="Zag known-size performance list"
         style={{ height: 400, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 }}
       >
         <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
@@ -184,13 +186,18 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
 
   return (
     <div>
-      <h3 style={{ color: "#f97316" }}>@tanstack/react-virtual</h3>
+      <h2 style={{ color: "#f97316" }}>@tanstack/react-virtual</h2>
       <BenchmarkButtons
         onRun={(n) => {
           if (scrollRef.current) runScrollBenchmark(scrollRef.current, n, onMetrics)
         }}
       />
-      <div ref={scrollRef} style={{ height: 400, overflow: "auto", border: "2px solid #f97316", borderRadius: 8 }}>
+      <div
+        ref={scrollRef}
+        tabIndex={0}
+        aria-label="TanStack known-size performance list"
+        style={{ height: 400, overflow: "auto", border: "2px solid #f97316", borderRadius: 8 }}
+      >
         <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
           {virtualItems.map((vi) => {
             const item = items[vi.index]

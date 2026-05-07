@@ -1,13 +1,29 @@
-import { describe, expect, test } from "vitest"
+import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import { ListVirtualizer } from "../src/list-virtualizer"
+import {
+  type AnimationFrameMock,
+  createMeasuredElement,
+  createMockScrollContainer,
+  createResizeObserverEntry,
+  installAnimationFrameMock,
+} from "./test-utils"
+
+function initialRect(height: number) {
+  return { width: 0, height }
+}
 
 describe("ListVirtualizer", () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   test("renders the calculated range by default", () => {
     const virtualizer = new ListVirtualizer({
       count: 10,
       estimatedSize: () => 10,
       overscan: 0,
-      initialSize: 30,
+      initialRect: initialRect(30),
     })
 
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
@@ -19,7 +35,7 @@ describe("ListVirtualizer", () => {
       estimatedSize: () => 10,
       overscan: 0,
       initialOffset: 20,
-      initialSize: 20,
+      initialRect: initialRect(20),
       rangeExtractor: (range) => [range.startIndex - 1, range.startIndex, range.endIndex, 8],
     })
 
@@ -33,7 +49,7 @@ describe("ListVirtualizer", () => {
       estimatedSize: () => 10,
       overscan: 1,
       initialOffset: 20,
-      initialSize: 20,
+      initialRect: initialRect(20),
       rangeExtractor: (range) => {
         ranges.push(range)
         return [range.startIndex, range.endIndex]
@@ -44,12 +60,38 @@ describe("ListVirtualizer", () => {
     expect(ranges).toEqual([{ startIndex: 0, endIndex: 4 }])
   })
 
+  test("exposes visible and rendered range metadata", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 1,
+      initialOffset: 20,
+      initialRect: initialRect(20),
+    })
+
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 1, endIndex: 3 })
+    expect(virtualizer.getRenderedRange()).toEqual({ startIndex: 0, endIndex: 4 })
+    expect(
+      virtualizer.getVirtualItems().map((item) => ({
+        index: item.index,
+        isVisible: item.isVisible,
+        isOverscan: item.isOverscan,
+      })),
+    ).toEqual([
+      { index: 0, isVisible: false, isOverscan: "before" },
+      { index: 1, isVisible: true, isOverscan: false },
+      { index: 2, isVisible: true, isOverscan: false },
+      { index: 3, isVisible: true, isOverscan: false },
+      { index: 4, isVisible: false, isOverscan: "after" },
+    ])
+  })
+
   test("sanitizes rangeExtractor results", () => {
     const virtualizer = new ListVirtualizer({
       count: 10,
       estimatedSize: () => 10,
       overscan: 0,
-      initialSize: 30,
+      initialRect: initialRect(30),
       rangeExtractor: () => [2, 1, 1, -1, 10, 3.5, Number.NaN, 0],
     })
 
@@ -61,7 +103,7 @@ describe("ListVirtualizer", () => {
       count: 10,
       estimatedSize: () => 10,
       overscan: 0,
-      initialSize: 30,
+      initialRect: initialRect(30),
       scrollMargin: 8,
     })
 
@@ -69,11 +111,75 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getItemStyle(item).transform).toBe("translate3d(0, -8px, 0)")
   })
 
+  test("applies scrollMargin to visible and rendered range metadata", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 1,
+      initialOffset: 20,
+      initialRect: initialRect(20),
+      scrollMargin: 10,
+    })
+
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 2, endIndex: 4 })
+    expect(virtualizer.getRenderedRange()).toEqual({ startIndex: 1, endIndex: 5 })
+    expect(
+      virtualizer.getVirtualItems().map((item) => ({
+        index: item.index,
+        isVisible: item.isVisible,
+        isOverscan: item.isOverscan,
+      })),
+    ).toEqual([
+      { index: 1, isVisible: false, isOverscan: "before" },
+      { index: 2, isVisible: true, isOverscan: false },
+      { index: 3, isVisible: true, isOverscan: false },
+      { index: 4, isVisible: true, isOverscan: false },
+      { index: 5, isVisible: false, isOverscan: "after" },
+    ])
+  })
+
+  test("resolves function scrollMargin lazily", () => {
+    let scrollMargin = 8
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      scrollMargin: () => scrollMargin,
+    })
+
+    const [item] = virtualizer.getVirtualItems()
+    expect(virtualizer.getItemStyle(item).transform).toBe("translate3d(0, -8px, 0)")
+
+    scrollMargin = 12
+    expect(virtualizer.scrollToIndex(5, { align: "start" })).toEqual({ scrollTop: 38, scrollLeft: 0 })
+  })
+
+  test("recalculates visible range when function scrollMargin changes", () => {
+    let scrollMargin = 0
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      scrollMargin: () => scrollMargin,
+    })
+
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 0, endIndex: 2 })
+    expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
+
+    scrollMargin = 20
+
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 1, endIndex: 4 })
+    expect(virtualizer.getRenderedRange()).toEqual({ startIndex: 1, endIndex: 4 })
+    expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([1, 2, 3, 4])
+  })
+
   test("applies scrollMargin and scrollPaddingStart to start alignment", () => {
     const virtualizer = new ListVirtualizer({
       count: 10,
       estimatedSize: () => 10,
-      initialSize: 30,
+      initialRect: initialRect(30),
       scrollMargin: 8,
       scrollPaddingStart: 4,
     })
@@ -85,7 +191,7 @@ describe("ListVirtualizer", () => {
     const virtualizer = new ListVirtualizer({
       count: 10,
       estimatedSize: () => 10,
-      initialSize: 30,
+      initialRect: initialRect(30),
       scrollPaddingEnd: 6,
     })
 
@@ -98,7 +204,7 @@ describe("ListVirtualizer", () => {
         count: 10,
         estimatedSize: () => 10,
         initialOffset: 20,
-        initialSize: 30,
+        initialRect: initialRect(30),
         scrollPaddingStart: 6,
         scrollPaddingEnd: 4,
       })
@@ -113,11 +219,168 @@ describe("ListVirtualizer", () => {
       count: 10,
       estimatedSize: () => 10,
       initialOffset: 20,
-      initialSize: 30,
+      initialRect: initialRect(30),
     })
 
     expect(virtualizer.scrollBy(15)).toEqual({ scrollTop: 35, scrollLeft: 0 })
     expect(virtualizer.scrollBy(-50)).toEqual({ scrollTop: 0, scrollLeft: 0 })
+  })
+
+  test("applies initialOffset on init and retries once when clamped", () => {
+    const { rafQueue, flushNextRaf, restore } = installAnimationFrameMock()
+    const { element, getScrollToCount } = createMockScrollContainer({ firstScrollToTop: 100 })
+
+    try {
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 20,
+        initialRect: initialRect(200),
+        initialOffset: 500,
+      })
+
+      virtualizer.init(element)
+
+      expect(getScrollToCount()).toBe(1)
+      expect(element.scrollTop).toBe(100)
+      expect(rafQueue.length).toBe(1)
+
+      flushNextRaf()
+
+      expect(getScrollToCount()).toBe(2)
+      expect(element.scrollTop).toBe(500)
+      expect(virtualizer.getScrollState().offset.y).toBe(500)
+    } finally {
+      restore()
+    }
+  })
+
+  test("skips initialOffset DOM writes when disableScrollOnInit is true", () => {
+    const { element, getScrollToCount } = createMockScrollContainer()
+
+    const virtualizer = new ListVirtualizer({
+      count: 100,
+      estimatedSize: () => 20,
+      initialRect: initialRect(200),
+      initialOffset: 500,
+      disableScrollOnInit: true,
+    })
+
+    virtualizer.init(element)
+
+    expect(getScrollToCount()).toBe(0)
+    expect(virtualizer.getScrollState().offset.y).toBe(500)
+  })
+
+  test("disables native scroll anchoring on the scroll container by default", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      initialRect: initialRect(30),
+    })
+
+    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("none")
+
+    virtualizer.updateOptions({ overflowAnchor: "auto" })
+    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("auto")
+  })
+
+  test("preserves a keyed visible anchor when count updates after prepend", () => {
+    const initialItems = ["a", "b", "c", "d", "e", "f"]
+    const nextItems = ["x", "y", ...initialItems]
+
+    const virtualizer = new ListVirtualizer({
+      count: initialItems.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      indexToKey: (index) => initialItems[index]!,
+      keyToIndex: (key) => initialItems.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(25)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "c", offset: 5 })
+
+    virtualizer.updateOptions({
+      count: nextItems.length,
+      indexToKey: (index) => nextItems[index]!,
+      keyToIndex: (key) => nextItems.indexOf(key as string),
+    })
+
+    expect(virtualizer.getScrollState().offset.y).toBe(45)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "c", offset: 5 })
+  })
+
+  test("prependItems preserves a keyed visible anchor after data is prepended", () => {
+    const initialItems = ["a", "b", "c", "d", "e", "f"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(25)
+
+    items = ["x", "y", ...initialItems]
+    virtualizer.prependItems(2)
+
+    expect(virtualizer.getScrollState().offset.y).toBe(45)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "c", offset: 5 })
+  })
+
+  test("prependItems restores by stable key instead of shifted index", () => {
+    const initialItems = [
+      { id: 100, size: 10 },
+      { id: 101, size: 15 },
+      { id: 102, size: 20 },
+      { id: 103, size: 25 },
+    ]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: (index) => items[index]?.size ?? 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      indexToKey: (index) => items[index]!.id,
+      keyToIndex: (key) => items.findIndex((item) => item.id === key),
+    })
+
+    virtualizer.scrollToOffset(30)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: 102, offset: 5 })
+
+    items = [{ id: 200, size: 12 }, { id: 201, size: 18 }, ...initialItems]
+    virtualizer.prependItems(2)
+
+    expect(virtualizer.getScrollState().offset.y).toBe(60)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: 102, offset: 5 })
+  })
+
+  test("prependItems does not restore an anchor when preserveScrollAnchor is false", () => {
+    const initialItems = ["a", "b", "c", "d", "e", "f"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      preserveScrollAnchor: false,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(25)
+
+    items = ["x", "y", ...initialItems]
+    virtualizer.prependItems(2)
+
+    expect(virtualizer.getScrollState().offset.y).toBe(25)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "a", offset: 5 })
   })
 
   test("preserves groups initialized during construction", () => {
@@ -133,5 +396,288 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getGroupForIndex(0)?.id).toBe("group-0")
     expect(virtualizer.getGroupForIndex(75)?.id).toBe("group-1")
     expect(virtualizer.getGroupHeaderState(0, 32)?.group.id).toBe("group-0")
+  })
+
+  test("supports sticky group opt-out", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 100,
+      estimatedSize: () => 40,
+      initialRect: initialRect(120),
+      groups: [
+        { id: "group-0", startIndex: 0, headerSize: 32 },
+        { id: "group-1", startIndex: 10, headerSize: 32, sticky: false },
+        { id: "group-2", startIndex: 20, headerSize: 32 },
+      ],
+    })
+
+    virtualizer.scrollToOffset(450)
+    expect(virtualizer.getStickyGroupHeader()?.group.id).toBeUndefined()
+
+    virtualizer.scrollToOffset(850)
+    expect(virtualizer.getStickyGroupHeader()?.group.id).toBe("group-2")
+  })
+
+  test("forceUpdate remeasures tracked elements after resetting measurements", () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const virtualizer = new ListVirtualizer({
+      count: 3,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+    })
+
+    const [item] = virtualizer.getVirtualItems()
+    const element = createMeasuredElement(25)
+
+    item.measureElement(element)
+    expect(virtualizer.getTotalSize()).toBe(45)
+
+    virtualizer.forceUpdate()
+
+    expect(virtualizer.getTotalSize()).toBe(45)
+  })
+
+  test("batches ResizeObserver measurements into one animation frame", () => {
+    const listeners: Array<(entry: ResizeObserverEntry) => void> = []
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation((_element, listener) => {
+      listeners.push(listener)
+      return vi.fn()
+    })
+
+    const { rafQueue, flushNextRaf, restore } = installAnimationFrameMock()
+
+    try {
+      const virtualizer = new ListVirtualizer({
+        count: 3,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: initialRect(30),
+      })
+      let notifications = 0
+      virtualizer.subscribe(() => {
+        notifications++
+      })
+
+      const elements = [createMeasuredElement(10), createMeasuredElement(10), createMeasuredElement(10)]
+
+      virtualizer.getVirtualItems().forEach((item, index) => {
+        item.measureElement(elements[index]!)
+      })
+
+      listeners[0]?.(createResizeObserverEntry(elements[0]!, 20))
+      listeners[1]?.(createResizeObserverEntry(elements[1]!, 30))
+      listeners[2]?.(createResizeObserverEntry(elements[2]!, 40))
+
+      expect(rafQueue).toHaveLength(1)
+      expect(virtualizer.getTotalSize()).toBe(30)
+      expect(notifications).toBe(0)
+
+      flushNextRaf()
+
+      expect(virtualizer.getTotalSize()).toBe(90)
+      expect(notifications).toBe(1)
+    } finally {
+      restore()
+    }
+  })
+
+  test("destroy cancels pending ResizeObserver measurement flush", () => {
+    const listeners: Array<(entry: ResizeObserverEntry) => void> = []
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation((_element, listener) => {
+      listeners.push(listener)
+      return vi.fn()
+    })
+
+    const { rafQueue, cancelled, flushNextRaf, restore } = installAnimationFrameMock()
+
+    try {
+      const virtualizer = new ListVirtualizer({
+        count: 1,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: initialRect(10),
+      })
+      let notifications = 0
+      virtualizer.subscribe(() => {
+        notifications++
+      })
+
+      const [item] = virtualizer.getVirtualItems()
+      const element = createMeasuredElement(10)
+      item!.measureElement(element)
+
+      listeners[0]?.(createResizeObserverEntry(element, 40))
+
+      expect(rafQueue).toHaveLength(1)
+      virtualizer.destroy()
+      flushNextRaf()
+
+      expect(cancelled.size).toBe(1)
+      expect(virtualizer.getTotalSize()).toBe(10)
+      expect(notifications).toBe(0)
+    } finally {
+      restore()
+    }
+  })
+
+  test("destroy prevents queued sync measurement notification", async () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const virtualizer = new ListVirtualizer({
+      count: 1,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: { width: 100, height: 10 },
+    })
+    let notifications = 0
+    virtualizer.subscribe(() => {
+      notifications++
+    })
+
+    const [item] = virtualizer.getVirtualItems()
+    const element = createMeasuredElement(40)
+
+    item!.measureElement(element)
+    virtualizer.destroy()
+
+    await Promise.resolve()
+
+    expect(notifications).toBe(0)
+  })
+
+  describe("scrollToIndex convergence pass", () => {
+    let rafQueue: Array<() => void> = []
+    let flushNextRaf: () => void
+    let rafMock: AnimationFrameMock
+
+    beforeEach(() => {
+      rafMock = installAnimationFrameMock()
+      rafQueue = rafMock.rafQueue
+      flushNextRaf = rafMock.flushNextRaf
+    })
+
+    afterEach(() => {
+      rafMock.restore()
+    })
+
+    test("corrects scroll offset when measurements shift after the initial scroll", () => {
+      // preserveScrollAnchor: false so we exercise the convergence path, not
+      // the auto-anchor compensation path.
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+        preserveScrollAnchor: false,
+      })
+
+      const first = virtualizer.scrollToIndex(50, { align: "start" })
+      // All-estimated: 50 × 40 = 2000
+      expect(first).toEqual({ scrollTop: 2000, scrollLeft: 0 })
+
+      // Simulate item 5 being measured larger than estimated (80 vs 40, +40 delta)
+      // — shifts target offset for index 50 to 2040.
+      virtualizer.measureItem(5, 80)
+
+      // Drain the convergence RAF — should detect drift and re-scroll.
+      expect(rafQueue.length).toBe(1)
+      flushNextRaf()
+
+      expect(virtualizer.getScrollState().offset.y).toBe(2040)
+    })
+
+    test("skips convergence when settle is false", () => {
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+      })
+
+      virtualizer.scrollToIndex(50, { align: "start", settle: false })
+      expect(rafQueue.length).toBe(0)
+    })
+
+    test("treats smooth scroll as best-effort by default", () => {
+      const { element } = createMockScrollContainer({ omitScrollTo: true })
+
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+      })
+
+      ;(globalThis as any).requestAnimationFrame = undefined
+      ;(globalThis as any).cancelAnimationFrame = undefined
+
+      virtualizer.init(element)
+      virtualizer.scrollToIndex(50, { align: "start", smooth: true })
+
+      expect(rafQueue.length).toBe(0)
+    })
+
+    test("caps convergence attempts", () => {
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+        preserveScrollAnchor: false,
+      })
+
+      virtualizer.scrollToIndex(50, { align: "start" })
+
+      virtualizer.measureItem(5, 80)
+      flushNextRaf()
+      expect(virtualizer.getScrollState().offset.y).toBe(2040)
+
+      virtualizer.measureItem(6, 80)
+      flushNextRaf()
+      expect(virtualizer.getScrollState().offset.y).toBe(2080)
+
+      virtualizer.measureItem(7, 80)
+      expect(rafQueue.length).toBe(0)
+      expect(virtualizer.getScrollState().offset.y).toBe(2080)
+    })
+
+    test("does not apply stale convergence after a later scroll command", () => {
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+        preserveScrollAnchor: false,
+      })
+
+      virtualizer.scrollToIndex(50, { align: "start" })
+      virtualizer.measureItem(5, 80)
+
+      virtualizer.scrollBy(-1990)
+      expect(virtualizer.getScrollState().offset.y).toBe(10)
+
+      flushNextRaf()
+
+      expect(virtualizer.getScrollState().offset.y).toBe(10)
+    })
+
+    test("cancels convergence after destroy", () => {
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 40,
+        overscan: 0,
+        initialRect: initialRect(200),
+        preserveScrollAnchor: false,
+      })
+
+      virtualizer.scrollToIndex(50, { align: "start" })
+      virtualizer.measureItem(5, 80)
+
+      virtualizer.destroy()
+      flushNextRaf()
+
+      expect(virtualizer.getScrollState().offset.y).toBe(2000)
+    })
   })
 })

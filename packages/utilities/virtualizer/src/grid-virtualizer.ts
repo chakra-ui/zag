@@ -1,4 +1,4 @@
-import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { CSSProperties, GridVirtualizerOptions, Range, TimerId } from "./types"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
@@ -12,6 +12,7 @@ interface GridRange {
 }
 
 const SCROLL_END_DELAY_MS = 150
+const INITIAL_SCROLL_TOLERANCE = 1
 
 /** A virtual row containing its visible columns */
 export interface VirtualRow {
@@ -67,6 +68,7 @@ export class GridVirtualizer {
   private range: GridRange = { startRow: 0, endRow: -1, startColumn: 0, endColumn: -1 }
   private lastScrollTop = -1
   private lastScrollLeft = -1
+  private lastScrollMargin = -1
   private rangeCache!: CacheManager<string, GridRange>
 
   // Size tracking — separate Fenwick trees for rows and columns
@@ -76,6 +78,8 @@ export class GridVirtualizer {
   // Row element tracking for measurement
   private rowElementsByIndex = new Map<number, Element>()
   private rowResizeCleanups = new Map<Element, VoidFunction>()
+  private pendingRowSizeUpdates = new Map<number, { size: number; element: Element | undefined }>()
+  private rowSizeUpdateFrame = AnimationFrame.create()
 
   // Scroll element
   private scrollElement: Element | Window | null = null
@@ -86,9 +90,13 @@ export class GridVirtualizer {
   /** For useSyncExternalStore (React) — row/col/range/viewport updates. */
   private storeVersion = 0
   private storeListeners = new Set<VoidFunction>()
+  private pendingSyncNotify = false
 
   // Auto-sizing cleanup
   private scrollElementResizeCleanup?: VoidFunction
+  private pendingInitialOffsetRaf: number | null = null
+  private hasAppliedInitialOffset = false
+  private isDestroyed = false
 
   constructor(options: GridVirtualizerOptions) {
     this.options = {
@@ -99,6 +107,7 @@ export class GridVirtualizer {
       scrollPaddingStart: 0,
       scrollPaddingEnd: 0,
       initialOffset: 0,
+      disableScrollOnInit: false,
       overscan: 3,
       rangeExtractor: (range) => {
         const indexes: number[] = []
@@ -109,13 +118,16 @@ export class GridVirtualizer {
       rtl: false,
       rootMargin: "50px",
       preserveScrollAnchor: true,
+      overflowAnchor: "none",
       observeScrollElementSize: false,
       ...options,
     } as ResolvedOptions
 
-    if (options.initialSize) {
-      this.viewportWidth = options.initialSize.width
-      this.viewportHeight = options.initialSize.height
+    this.scrollTop = this.options.initialOffset
+
+    if (options.initialRect) {
+      this.viewportWidth = options.initialRect.width
+      this.viewportHeight = options.initialRect.height
     }
 
     this.initializeMeasurements()
@@ -129,6 +141,7 @@ export class GridVirtualizer {
     }
 
     this.measure()
+    this.applyInitialScrollOffset()
   }
 
   /** Class field — stable reference for `useSyncExternalStore(virtualizer.subscribe, …)`. */
@@ -149,6 +162,11 @@ export class GridVirtualizer {
     for (const listener of this.storeListeners) {
       listener()
     }
+  }
+
+  private getScrollMargin(): number {
+    const { scrollMargin } = this.options
+    return typeof scrollMargin === "function" ? scrollMargin() : scrollMargin
   }
 
   private observeScrollElementSize(element: HTMLElement): void {
@@ -203,6 +221,7 @@ export class GridVirtualizer {
     this.rowSizeTracker?.clearMeasurements()
     this.columnSizeTracker?.clearMeasurements()
     this.resetMeasurements()
+    this.remeasureTrackedRows()
   }
 
   private onRowMeasured(index: number, size: number): boolean {
@@ -292,7 +311,13 @@ export class GridVirtualizer {
   // ============================================
 
   private calculateRange(): void {
-    if (this.lastScrollTop === this.scrollTop && this.lastScrollLeft === this.scrollLeft) {
+    const scrollMargin = this.getScrollMargin()
+
+    if (
+      this.lastScrollTop === this.scrollTop &&
+      this.lastScrollLeft === this.scrollLeft &&
+      this.lastScrollMargin === scrollMargin
+    ) {
       return
     }
 
@@ -302,20 +327,23 @@ export class GridVirtualizer {
       this.range = { startRow: 0, endRow: -1, startColumn: 0, endColumn: -1 }
       this.lastScrollTop = this.scrollTop
       this.lastScrollLeft = this.scrollLeft
+      this.lastScrollMargin = scrollMargin
       return
     }
 
-    const cacheKey = `${this.scrollTop}:${this.scrollLeft}:${this.viewportHeight}:${this.viewportWidth}`
+    const viewportTop = this.scrollTop + scrollMargin
+    const cacheKey = `${viewportTop}:${this.scrollLeft}:${this.viewportHeight}:${this.viewportWidth}`
     const cached = this.rangeCache.get(cacheKey)
     if (cached) {
       this.range = cached
       this.lastScrollTop = this.scrollTop
       this.lastScrollLeft = this.scrollLeft
+      this.lastScrollMargin = scrollMargin
       return
     }
 
-    const startRow = this.findRowIndexAtOffset(this.scrollTop)
-    const endRow = this.findRowIndexAtOffset(this.scrollTop + this.viewportHeight)
+    const startRow = this.findRowIndexAtOffset(viewportTop)
+    const endRow = this.findRowIndexAtOffset(viewportTop + this.viewportHeight)
     const startColumn = this.findColumnIndexAtOffset(this.scrollLeft)
     const endColumn = this.findColumnIndexAtOffset(this.scrollLeft + this.viewportWidth)
 
@@ -338,6 +366,7 @@ export class GridVirtualizer {
 
     this.lastScrollTop = this.scrollTop
     this.lastScrollLeft = this.scrollLeft
+    this.lastScrollMargin = scrollMargin
     this.rangeCache.set(cacheKey, newRange)
   }
 
@@ -355,6 +384,7 @@ export class GridVirtualizer {
 
     const { startRow, endRow, startColumn, endColumn } = this.range
     const rows: VirtualRow[] = []
+    const scrollMargin = this.getScrollMargin()
 
     // Build column info once — shared across all rows
     const columns: VirtualColumn[] = []
@@ -367,7 +397,7 @@ export class GridVirtualizer {
     }
 
     for (let row = startRow; row <= endRow; row++) {
-      const y = this.getPrefixRowSize(row - 1) + this.options.paddingStart
+      const y = this.getPrefixRowSize(row - 1) + this.options.paddingStart - scrollMargin
       const height = this.getRowSize(row)
 
       rows.push({
@@ -435,7 +465,7 @@ export class GridVirtualizer {
         // Sync measurement
         const size = element.offsetHeight
         if (size > 0) {
-          this.onRowMeasured(rowIndex, size)
+          this.measureRowSync(rowIndex, size)
         }
 
         // ResizeObserver for future changes (skip during scroll)
@@ -448,6 +478,20 @@ export class GridVirtualizer {
     }
   }
 
+  private measureRowSync(rowIndex: number, size: number): void {
+    const changed = this.onRowMeasured(rowIndex, size)
+    if (!changed) return
+
+    if (!this.isScrolling && !this.pendingSyncNotify) {
+      this.pendingSyncNotify = true
+      queueMicrotask(() => {
+        this.pendingSyncNotify = false
+        if (this.isDestroyed) return
+        this.forceUpdate()
+      })
+    }
+  }
+
   private observeRowSize(element: Element, rowIndex: number): void {
     // Unobserve previous
     const prevCleanup = this.rowResizeCleanups.get(element)
@@ -457,18 +501,54 @@ export class GridVirtualizer {
     }
 
     const cleanup = resizeObserverBorderBox.observe(element, (entry) => {
+      if (this.rowElementsByIndex.get(rowIndex) !== entry.target) return
+
       const { borderBoxSize } = entry
       const box = borderBoxSize?.[0] || {
         inlineSize: entry.contentRect.width,
         blockSize: entry.contentRect.height,
       }
       const size = box.blockSize
-      if (this.onRowMeasured(rowIndex, size)) {
-        this.forceUpdate()
-      }
+      this.scheduleRowSizeUpdate(rowIndex, size, entry.target)
     })
 
     this.rowResizeCleanups.set(element, cleanup)
+  }
+
+  private scheduleRowSizeUpdate(rowIndex: number, size: number, element?: Element): void {
+    if (this.isDestroyed) return
+
+    this.pendingRowSizeUpdates.set(rowIndex, { size, element })
+
+    if (!this.rowSizeUpdateFrame.isActive()) {
+      this.rowSizeUpdateFrame.request(() => {
+        this.flushRowSizeUpdates()
+      })
+    }
+  }
+
+  private flushRowSizeUpdates(): void {
+    if (this.isDestroyed) {
+      this.pendingRowSizeUpdates.clear()
+      return
+    }
+
+    if (this.pendingRowSizeUpdates.size === 0) return
+
+    let changed = false
+
+    for (const [rowIndex, { size, element }] of this.pendingRowSizeUpdates) {
+      if (element && this.rowElementsByIndex.get(rowIndex) !== element) continue
+      if (this.onRowMeasured(rowIndex, size)) {
+        changed = true
+      }
+    }
+
+    this.pendingRowSizeUpdates.clear()
+
+    if (changed) {
+      this.forceUpdate()
+    }
   }
 
   private observeUnobservedRows(): void {
@@ -487,6 +567,7 @@ export class GridVirtualizer {
     return {
       position: "relative",
       overflow: "auto",
+      overflowAnchor: this.options.overflowAnchor,
       willChange: "scroll-position",
       WebkitOverflowScrolling: "touch",
     }
@@ -563,6 +644,7 @@ export class GridVirtualizer {
     this.viewportHeight = height
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
+    this.lastScrollMargin = -1
     this.calculateRange()
     this.notifyStore()
   }
@@ -571,6 +653,46 @@ export class GridVirtualizer {
     if (!this.scrollElement) return
     const rect = (this.scrollElement as Element).getBoundingClientRect()
     this.setViewportSize(rect.width, rect.height)
+
+    if (this.remeasureTrackedRows()) {
+      this.lastScrollTop = -1
+      this.lastScrollLeft = -1
+      this.calculateRange()
+      this.notifyStore()
+    }
+  }
+
+  private applyInitialScrollOffset(): void {
+    if (this.hasAppliedInitialOffset || this.options.disableScrollOnInit) return
+
+    this.hasAppliedInitialOffset = true
+
+    const targetOffset = this.options.initialOffset
+    if (targetOffset <= 0 || !this.scrollElement) return
+
+    this.writeInitialScrollOffset(targetOffset)
+
+    if (typeof requestAnimationFrame === "undefined") return
+    const appliedOffset = (this.scrollElement as HTMLElement).scrollTop
+    if (Math.abs(appliedOffset - targetOffset) < INITIAL_SCROLL_TOLERANCE) return
+
+    this.pendingInitialOffsetRaf = requestAnimationFrame(() => {
+      this.pendingInitialOffsetRaf = null
+      if (this.isDestroyed || this.options.disableScrollOnInit) return
+      this.writeInitialScrollOffset(targetOffset)
+    })
+  }
+
+  private writeInitialScrollOffset(targetOffset: number): void {
+    const element = this.scrollElement as HTMLElement | null
+    if (!element) return
+
+    if (typeof element.scrollTo === "function") {
+      element.scrollTo({ top: targetOffset, left: this.scrollLeft })
+    } else {
+      element.scrollTop = targetOffset
+      element.scrollLeft = this.scrollLeft
+    }
   }
 
   getTotalWidth(): number {
@@ -617,7 +739,10 @@ export class GridVirtualizer {
     options: { behavior?: ScrollBehavior } = {},
   ): { scrollTop: number; scrollLeft: number } {
     const { rowCount, columnCount } = this.options
-    const scrollTop = this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart
+    const scrollTop = Math.max(
+      0,
+      this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart - this.getScrollMargin(),
+    )
     const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
     const behavior = options.behavior ?? "auto"
 
@@ -637,7 +762,10 @@ export class GridVirtualizer {
 
   scrollToRow(row: number, options: { behavior?: ScrollBehavior } = {}): { scrollTop: number } {
     const { rowCount } = this.options
-    const scrollTop = this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart
+    const scrollTop = Math.max(
+      0,
+      this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart - this.getScrollMargin(),
+    )
     const behavior = options.behavior ?? "auto"
 
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
@@ -681,8 +809,24 @@ export class GridVirtualizer {
   forceUpdate(): void {
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
+    this.lastScrollMargin = -1
     this.calculateRange()
     this.notifyStore()
+  }
+
+  private remeasureTrackedRows(): boolean {
+    let changed = false
+
+    for (const [rowIndex, element] of this.rowElementsByIndex) {
+      if (rowIndex < 0 || rowIndex >= this.options.rowCount) continue
+
+      const size = (element as HTMLElement).offsetHeight
+      if (size > 0 && this.onRowMeasured(rowIndex, size)) {
+        changed = true
+      }
+    }
+
+    return changed
   }
 
   updateOptions(options: Partial<GridVirtualizerOptions>): void {
@@ -697,13 +841,21 @@ export class GridVirtualizer {
   }
 
   destroy(): void {
+    this.isDestroyed = true
+
     if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
+    if (this.pendingInitialOffsetRaf != null) {
+      cancelAnimationFrame(this.pendingInitialOffsetRaf)
+      this.pendingInitialOffsetRaf = null
+    }
+    this.rowSizeUpdateFrame.cancel()
     this.scrollElementResizeCleanup?.()
 
     for (const cleanup of this.rowResizeCleanups.values()) {
       cleanup()
     }
     this.rowResizeCleanups.clear()
+    this.pendingRowSizeUpdates.clear()
     this.rowElementsByIndex.clear()
     this.storeListeners.clear()
   }

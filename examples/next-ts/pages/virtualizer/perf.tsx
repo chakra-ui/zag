@@ -43,7 +43,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   return (
     <div>
-      <h3>@zag-js/virtualizer</h3>
+      <h2>@zag-js/virtualizer</h2>
       <BenchmarkButtons
         onRun={(scrollCount) => {
           const el = scrollRef.current
@@ -54,6 +54,8 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       <div
         ref={setRef}
         onScroll={virtualizer.handleScroll}
+        tabIndex={0}
+        aria-label="Zag virtualizer performance list"
         style={{
           height: 400,
           overflow: "auto",
@@ -106,7 +108,7 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
 
   return (
     <div>
-      <h3>@tanstack/react-virtual</h3>
+      <h2>@tanstack/react-virtual</h2>
       <BenchmarkButtons
         onRun={(scrollCount) => {
           const el = scrollRef.current
@@ -116,6 +118,8 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
       />
       <div
         ref={scrollRef}
+        tabIndex={0}
+        aria-label="TanStack virtualizer performance list"
         style={{
           height: 400,
           overflow: "auto",

@@ -18,7 +18,10 @@ function WindowDemo() {
     gap: 0,
     paddingStart: 0,
     paddingEnd: 0,
-    initialSize: typeof window !== "undefined" ? window.innerHeight : 800,
+    initialRect:
+      typeof window !== "undefined"
+        ? { width: window.innerWidth, height: window.innerHeight }
+        : { width: 0, height: 800 },
   })
 
   const virtualItems = virtualizer.getVirtualItems()
