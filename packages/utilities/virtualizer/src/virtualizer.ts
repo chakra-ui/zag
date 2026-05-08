@@ -1,6 +1,7 @@
 import { AnimationFrame, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
+  InitialMeasurements,
   ItemMeasurement,
   ItemState,
   Range,
@@ -10,6 +11,7 @@ import type {
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
+  ShouldAdjustScrollOnSizeChangeContext,
   TimerId,
   VirtualItem,
   VirtualizerOptions,
@@ -21,12 +23,14 @@ import { smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
 const SCROLL_END_DELAY_MS = 150
 const SCROLL_TO_INDEX_SETTLE_TOLERANCE = 1
 const SCROLL_TO_INDEX_SETTLE_MAX_ATTEMPTS = 2
+const SCALE_WARNING_EPSILON = 0.001
 
 const getTimestamp = () => globalThis.performance?.now?.() ?? Date.now()
 
 type RangeChangeReasonDetails = { reason: RangeChangeReason }
 type SmoothScrollOptions = Exclude<NonNullable<ScrollToIndexOptions["smooth"]>, boolean>
 type SmoothScrollFunction = NonNullable<SmoothScrollOptions["scrollFunction"]>
+type RtlScrollBehavior = "negative" | "positive-descending" | "positive-ascending"
 
 function easeOutCubic(t: number): number {
   const shiftedT = t - 1
@@ -78,6 +82,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected scrollVelocity = 0
   protected rangeExtractorDirection: "forward" | "backward" | null = null
   protected isScrolling = false
+  private rtlScrollBehavior: RtlScrollBehavior | null = null
   private scrollEndTimer: TimerId | null = null
   private lastScrollTimestamp: number | null = null
 
@@ -123,6 +128,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private pendingInitialOffsetRaf: number | null = null
   private hasAppliedInitialOffset = false
   private isDestroyed = false
+  private static hasWarnedScaledTransform = false
 
   // Scroll listener management
   protected scrollElement: HTMLElement | null = null
@@ -172,8 +178,16 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return this.options.dir === "rtl"
   }
 
+  protected get destroyed(): boolean {
+    return this.isDestroyed
+  }
+
   init(scrollElement: HTMLElement): void {
     this.scrollElement = scrollElement
+    this.rtlScrollBehavior = null
+    if (isHTMLElement(scrollElement)) {
+      this.warnOnScaledContainer(scrollElement)
+    }
 
     if (this.options.observeScrollElementSize) {
       this.observeScrollElementSize(scrollElement)
@@ -197,6 +211,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   protected notifyStore(): void {
+    if (this.isDestroyed) return
     this.storeVersion++
     for (const listener of this.storeListeners) {
       listener()
@@ -209,6 +224,59 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         rootMargin: this.options.rootMargin,
       })
     }
+  }
+
+  private warnOnScaledContainer(element: HTMLElement): void {
+    if (Virtualizer.hasWarnedScaledTransform) return
+    if (typeof process !== "undefined" && process.env?.NODE_ENV === "production") return
+    if (typeof globalThis.getComputedStyle !== "function") return
+
+    const transform = globalThis.getComputedStyle(element).transform
+    if (!this.hasNonIdentityScale(transform)) return
+
+    Virtualizer.hasWarnedScaledTransform = true
+    console.warn(
+      "[@zag-js/virtualizer] Scaled (`transform: scale(...)`) scroll containers are not supported. Measurements and scrolling offsets can drift.",
+    )
+  }
+
+  private hasNonIdentityScale(transform: string | null): boolean {
+    if (!transform || transform === "none") return false
+
+    const scaleMatch = transform.match(/scale(?:3d)?\(([^)]+)\)/i)
+    if (scaleMatch) {
+      const values = scaleMatch[1]
+        ?.split(",")
+        .map((part) => Number(part.trim()))
+        .filter((value) => Number.isFinite(value))
+      if (values && values.length > 0) {
+        return values.some((value) => Math.abs(value - 1) > SCALE_WARNING_EPSILON)
+      }
+    }
+
+    const matrixMatch = transform.match(/matrix\(([^)]+)\)/i)
+    if (matrixMatch) {
+      const values = matrixMatch[1]
+        ?.split(",")
+        .map((part) => Number(part.trim()))
+        .filter((value) => Number.isFinite(value))
+      if (values.length >= 4) {
+        return Math.abs(values[0]! - 1) > SCALE_WARNING_EPSILON || Math.abs(values[3]! - 1) > SCALE_WARNING_EPSILON
+      }
+    }
+
+    const matrix3dMatch = transform.match(/matrix3d\(([^)]+)\)/i)
+    if (matrix3dMatch) {
+      const values = matrix3dMatch[1]
+        ?.split(",")
+        .map((part) => Number(part.trim()))
+        .filter((value) => Number.isFinite(value))
+      if (values.length >= 6) {
+        return Math.abs(values[0]! - 1) > SCALE_WARNING_EPSILON || Math.abs(values[5]! - 1) > SCALE_WARNING_EPSILON
+      }
+    }
+
+    return false
   }
 
   private observeScrollElementSize(element: HTMLElement): void {
@@ -415,6 +483,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return undefined
   }
 
+  protected readMeasuredSizeFromElement(element: HTMLElement, index: number): number {
+    const measured = this.options.measureElement?.(element, {
+      index,
+      orientation: this.isHorizontal ? "horizontal" : "vertical",
+    })
+    if (typeof measured === "number" && Number.isFinite(measured) && measured > 0) {
+      return measured
+    }
+    return this.isHorizontal ? element.offsetWidth : element.offsetHeight
+  }
+
   protected getEstimatedSize(index: number, laneWidth?: number): number {
     return this.options.estimatedSize(index, laneWidth)
   }
@@ -458,11 +537,83 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.keyIndexCache.clear()
   }
 
+  protected applyInitialMeasurements(): void {
+    const seeds = this.options.initialMeasurements
+    if (!seeds) return
+
+    const keyedLookup = this.createInitialMeasurementLookup(seeds)
+    let minMeasuredIndex = Infinity
+
+    for (const [rawKey, rawSize] of this.getInitialMeasurementEntries(seeds)) {
+      const size = Number(rawSize)
+      if (!Number.isFinite(size) || size <= 0) continue
+
+      const index = this.resolveInitialMeasurementIndex(rawKey, keyedLookup)
+      if (index === undefined) continue
+
+      if (this.onItemMeasured(index, size) && index < minMeasuredIndex) {
+        minMeasuredIndex = index
+      }
+    }
+
+    if (minMeasuredIndex !== Infinity) {
+      this.invalidateMeasurements(minMeasuredIndex)
+    }
+  }
+
+  private getInitialMeasurementEntries(
+    seeds: InitialMeasurements,
+  ): IterableIterator<[string | number, number]> | Array<[string | number, number]> {
+    if (seeds instanceof Map) return seeds.entries()
+    return Object.entries(seeds)
+  }
+
+  private createInitialMeasurementLookup(seeds: InitialMeasurements): Map<string | number, number> | null {
+    if (typeof this.options.keyToIndex === "function") return null
+    if (!this.options.indexToKey) return null
+    if (seeds instanceof Map && seeds.size === 0) return null
+    if (!(seeds instanceof Map) && Object.keys(seeds).length === 0) return null
+
+    const lookup = new Map<string | number, number>()
+    for (let index = 0; index < this.options.count; index++) {
+      lookup.set(this.getItemKey(index), index)
+    }
+    return lookup
+  }
+
+  private resolveInitialMeasurementIndex(
+    key: string | number,
+    keyedLookup: Map<string | number, number> | null,
+  ): number | undefined {
+    if (keyedLookup?.has(key)) {
+      return keyedLookup.get(key)
+    }
+
+    const byUser = this.options.keyToIndex?.(key)
+    if (byUser !== undefined && byUser >= 0 && byUser < this.options.count) {
+      return byUser
+    }
+
+    if (typeof key === "number" && Number.isInteger(key) && key >= 0 && key < this.options.count) {
+      return key
+    }
+
+    if (typeof key === "string" && /^\d+$/.test(key)) {
+      const index = Number(key)
+      if (index >= 0 && index < this.options.count) {
+        return index
+      }
+    }
+
+    return undefined
+  }
+
   // ============================================
   // Range Calculation
   // ============================================
 
   protected calculateRange({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+    if (this.isDestroyed) return
     const scrollMargin = this.getScrollMargin()
 
     if (
@@ -518,9 +669,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
+    if (this.isDestroyed) return
     const horizontal = this.isHorizontal
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
-    const offset = horizontal ? scrollLeft : scrollTop
+    const eventTarget =
+      "currentTarget" in event && event.currentTarget && isHTMLElement(event.currentTarget) ? event.currentTarget : null
+    const offset = horizontal ? this.toLogicalHorizontalOffset(scrollLeft, eventTarget) : scrollTop
 
     if (offset === this.scrollOffset) return
 
@@ -596,6 +750,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private notifyScroll(): void {
+    if (this.isDestroyed) return
     this.options.onScroll?.(this.getCurrentScrollState())
   }
 
@@ -605,6 +760,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   /** Regular method (not a class field) so subclasses can override with `super`. */
   setViewportSize(size: number): void {
+    if (this.isDestroyed) return
     this.viewportSize = size
     this.lastCalculatedOffset = -1
     this.cachedRangeStart = -1
@@ -616,6 +772,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   setCrossAxisSize(size: number): void {
+    if (this.isDestroyed) return
     const sizeChanged = this.crossAxisSize !== size
     this.crossAxisSize = size
 
@@ -632,6 +789,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   measure(): void {
+    if (this.isDestroyed) return
     if (!this.scrollElement) return
 
     const rect = this.scrollElement.getBoundingClientRect()
@@ -656,6 +814,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   /** Regular method (not a class field) so subclasses can override with `super`. */
   scrollToOffset(offset: number, options: ScrollByOptions = {}): ScrollToIndexResult {
+    if (this.isDestroyed) {
+      return this.isHorizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
+    }
     if (!this.isApplyingConvergenceScroll) {
       this.cancelPendingConvergence()
     }
@@ -670,7 +831,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const existing = this.scrollElement ? getScrollPosition(this.scrollElement) : { scrollTop: 0, scrollLeft: 0 }
 
     if (this.scrollElement && this.shouldApplyScrollToScrollElement()) {
-      setScrollPosition(this.scrollElement, horizontal ? { scrollLeft: targetOffset } : { scrollTop: targetOffset })
+      setScrollPosition(
+        this.scrollElement,
+        horizontal
+          ? { scrollLeft: this.toRawHorizontalOffset(targetOffset, this.scrollElement) }
+          : { scrollTop: targetOffset },
+      )
     }
 
     this.updateScrollMotion(targetOffset)
@@ -705,7 +871,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (typeof requestAnimationFrame === "undefined") return
 
     const horizontal = this.isHorizontal
-    const appliedOffset = horizontal ? this.scrollElement.scrollLeft : this.scrollElement.scrollTop
+    const appliedOffset = horizontal
+      ? this.toLogicalHorizontalOffset(this.scrollElement.scrollLeft, this.scrollElement)
+      : this.scrollElement.scrollTop
     if (Math.abs(appliedOffset - targetOffset) < SCROLL_TO_INDEX_SETTLE_TOLERANCE) return
 
     this.pendingInitialOffsetRaf = requestAnimationFrame(() => {
@@ -752,6 +920,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   /** Regular method (not a class field) so subclasses can override with `super`. */
   scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
+    if (this.isDestroyed) {
+      return this.isHorizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
+    }
     const { align = "start", smooth, settle } = options
 
     this.cancelPendingConvergence()
@@ -836,12 +1007,19 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const customScrollFunction: SmoothScrollFunction =
       userScrollFn ||
       ((position: { scrollTop?: number; scrollLeft?: number }) => {
+        if (this.isDestroyed) return
         const newOffset = horizontal
-          ? (position.scrollLeft ?? this.scrollOffset)
+          ? this.toLogicalHorizontalOffset(
+              position.scrollLeft ?? this.toRawHorizontalOffset(this.scrollOffset, this.scrollElement),
+              this.scrollElement,
+            )
           : (position.scrollTop ?? this.scrollOffset)
 
         if (this.scrollElement) {
-          setScrollPosition(this.scrollElement, { scrollTop: position.scrollTop, scrollLeft: position.scrollLeft })
+          setScrollPosition(this.scrollElement, {
+            scrollTop: position.scrollTop,
+            scrollLeft: position.scrollLeft,
+          })
         }
 
         this.updateScrollMotion(newOffset)
@@ -853,7 +1031,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         this.notifyStore()
       })
 
-    const target = horizontal ? { x: targetOffset } : { y: targetOffset }
+    const target = horizontal
+      ? { x: this.toRawHorizontalOffset(targetOffset, this.scrollElement) }
+      : { y: targetOffset }
 
     if (!this.scrollElement) {
       throw new Error(
@@ -866,6 +1046,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       easing: easingFn,
       scrollFunction: customScrollFunction,
       onComplete: () => {
+        if (this.isDestroyed) return
         this.currentSmoothScroll = null
         this.isScrolling = false
         this.resetScrollMotionContext()
@@ -874,6 +1055,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         this.notifyStore()
       },
       onCancel: () => {
+        if (this.isDestroyed) return
         this.currentSmoothScroll = null
         this.isScrolling = false
         this.resetScrollMotionContext()
@@ -885,16 +1067,26 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   measureItem(index: number, size: number): void {
-    const changed = this.onItemMeasured(index, size)
+    if (this.isDestroyed) return
+    const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
+    const delta = size - previousSize
+    const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
+    let changed = false
+    const applyMeasurement = () => {
+      changed = this.onItemMeasured(index, size)
+      if (changed) {
+        this.invalidateMeasurements(index)
+      }
+    }
+
+    if (shouldAdjust) {
+      this.preserveScrollPosition(index, applyMeasurement)
+    } else {
+      applyMeasurement()
+    }
+
     if (!changed) return
 
-    if (this.options.preserveScrollAnchor && index <= this.range.startIndex) {
-      this.preserveScrollPosition(index, () => {
-        this.invalidateMeasurements(index)
-      })
-    } else {
-      this.invalidateMeasurements(index)
-    }
     this.calculateRange({ reason: "measurement" })
     this.notifyStore()
   }
@@ -908,16 +1100,24 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * so positions correct without waiting for a scroll event.
    */
   private measureElementSync(index: number, size: number): void {
-    const changed = this.onItemMeasured(index, size)
-    if (!changed) return
-
-    if (this.options.preserveScrollAnchor && index <= this.range.startIndex) {
-      this.preserveScrollPosition(index, () => {
+    const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
+    const delta = size - previousSize
+    const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
+    let changed = false
+    const applyMeasurement = () => {
+      changed = this.onItemMeasured(index, size)
+      if (changed) {
         this.invalidateMeasurements(index)
-      })
-    } else {
-      this.invalidateMeasurements(index)
+      }
     }
+
+    if (shouldAdjust) {
+      this.preserveScrollPosition(index, applyMeasurement)
+    } else {
+      applyMeasurement()
+    }
+
+    if (!changed) return
 
     // During scroll, the next handleScroll → calculateRange picks up the updated
     // Fenwick tree. No extra notification needed — avoids double flushSync per frame.
@@ -965,29 +1165,48 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     if (this.pendingSizeUpdates.size === 0) return
 
-    const prevRange = { ...this.range }
-    let anySizeChanged = false
-    let minIndex = Infinity
-
+    const updates: Array<{ index: number; size: number; shouldAdjust: boolean }> = []
     for (const [index, { size, element }] of this.pendingSizeUpdates) {
       if (element && this.elementsByIndex.get(index) !== element) continue
-      if (this.onItemMeasured(index, size)) {
-        anySizeChanged = true
-        if (index < minIndex) minIndex = index
-      }
+      const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
+      const delta = size - previousSize
+      updates.push({
+        index,
+        size,
+        shouldAdjust: this.shouldAdjustScrollOnSizeChange(index, delta),
+      })
     }
 
     this.pendingSizeUpdates.clear()
 
-    if (!anySizeChanged) return
+    const prevRange = { ...this.range }
+    let anySizeChanged = false
+    let minIndex = Infinity
+    const applyMeasurements = () => {
+      for (const update of updates) {
+        if (this.onItemMeasured(update.index, update.size)) {
+          anySizeChanged = true
+          if (update.index < minIndex) minIndex = update.index
+        }
+      }
 
-    if (this.options.preserveScrollAnchor && minIndex <= this.range.startIndex) {
-      this.preserveScrollPosition(minIndex, () => {
-        this.invalidateMeasurements(minIndex)
-      })
-    } else {
+      if (!anySizeChanged) return
+
       this.invalidateMeasurements(minIndex)
     }
+
+    const adjustCandidate = updates.reduce((min, update) => {
+      if (!update.shouldAdjust) return min
+      return update.index < min ? update.index : min
+    }, Infinity)
+
+    if (adjustCandidate !== Infinity) {
+      this.preserveScrollPosition(adjustCandidate, applyMeasurements)
+    } else {
+      applyMeasurements()
+    }
+
+    if (!anySizeChanged) return
 
     this.calculateRange({ reason: "measurement" })
 
@@ -1013,7 +1232,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       return
     }
 
-    const anchorIndex = this.range.startIndex
+    const anchor = this.getScrollAnchor()
+    if (!anchor) {
+      callback()
+      return
+    }
+
+    const anchorIndex = this.getIndexForKey(anchor.key)
+    if (anchorIndex === undefined) {
+      callback()
+      return
+    }
 
     // Items below the anchor don't affect anchor offset
     if (fromIndex > anchorIndex) {
@@ -1026,7 +1255,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     callback()
 
-    const newAnchorMeasurement = this.getMeasurement(anchorIndex)
+    const nextAnchorIndex = this.getIndexForKey(anchor.key)
+    if (nextAnchorIndex === undefined) return
+    const newAnchorMeasurement = this.getMeasurement(nextAnchorIndex)
     const deltaOffset = newAnchorMeasurement.start - anchorOffset
 
     if (deltaOffset !== 0) {
@@ -1034,12 +1265,108 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       // Also update the DOM scroll position to stay in sync
       if (this.scrollElement) {
         if (this.isHorizontal) {
-          this.scrollElement.scrollLeft += deltaOffset
+          this.scrollElement.scrollLeft = this.toRawHorizontalOffset(this.scrollOffset, this.scrollElement)
         } else {
           this.scrollElement.scrollTop += deltaOffset
         }
       }
     }
+  }
+
+  private shouldAdjustScrollOnSizeChange(index: number, delta: number): boolean {
+    if (!this.options.preserveScrollAnchor || this.range.startIndex < 0) return false
+    if (delta === 0) return false
+    if (!this.options.shouldAdjustScrollOnSizeChange) {
+      return index <= this.range.startIndex
+    }
+
+    const measurement = this.getMeasurement(index)
+    const viewportStart = this.scrollOffset + this.getScrollMargin()
+    const context: ShouldAdjustScrollOnSizeChangeContext = {
+      index,
+      key: this.getItemKey(index),
+      delta,
+      itemStart: measurement.start,
+      itemEnd: measurement.end,
+      viewportStart,
+      currentOffset: this.scrollOffset,
+      anchor: this.getScrollAnchor(),
+    }
+
+    const override = this.options.shouldAdjustScrollOnSizeChange?.(context)
+    if (override !== undefined) return override
+
+    return measurement.start < viewportStart
+  }
+
+  protected toLogicalHorizontalOffset(rawOffset: number, target: HTMLElement | null): number {
+    if (!this.isHorizontal || !this.isRtl) return rawOffset
+    const mode = this.resolveRtlScrollBehavior(target)
+    const maxOffset = this.getMaxHorizontalOffset(target)
+
+    switch (mode) {
+      case "negative":
+        return -rawOffset
+      case "positive-descending":
+        return maxOffset - rawOffset
+      default:
+        return rawOffset
+    }
+  }
+
+  protected toRawHorizontalOffset(logicalOffset: number, target: HTMLElement | null): number {
+    if (!this.isHorizontal || !this.isRtl) return logicalOffset
+    const mode = this.resolveRtlScrollBehavior(target)
+    const maxOffset = this.getMaxHorizontalOffset(target)
+
+    switch (mode) {
+      case "negative":
+        return -logicalOffset
+      case "positive-descending":
+        return maxOffset - logicalOffset
+      default:
+        return logicalOffset
+    }
+  }
+
+  private getMaxHorizontalOffset(target: HTMLElement | null): number {
+    if (!target) return 0
+    const scrollWidth = Number(target.scrollWidth) || 0
+    const clientWidth = Number(target.clientWidth) || 0
+    return Math.max(0, scrollWidth - clientWidth)
+  }
+
+  private resolveRtlScrollBehavior(target: HTMLElement | null): RtlScrollBehavior {
+    if (this.rtlScrollBehavior) return this.rtlScrollBehavior
+    if (!target) {
+      this.rtlScrollBehavior = "positive-ascending"
+      return this.rtlScrollBehavior
+    }
+
+    this.rtlScrollBehavior = this.detectRtlScrollBehavior(target)
+    return this.rtlScrollBehavior
+  }
+
+  private detectRtlScrollBehavior(target: HTMLElement): RtlScrollBehavior {
+    const maxOffset = this.getMaxHorizontalOffset(target)
+    const previous = target.scrollLeft
+    if (maxOffset > 0 && Math.abs(previous - maxOffset) <= 1) {
+      return "positive-descending"
+    }
+
+    target.scrollLeft = 0
+    const atZero = target.scrollLeft
+
+    if (atZero > 0) {
+      target.scrollLeft = previous
+      return "positive-descending"
+    }
+
+    target.scrollLeft = 1
+    const atOne = target.scrollLeft
+    target.scrollLeft = previous
+
+    return atOne === 0 ? "negative" : "positive-ascending"
   }
 
   getScrollState(): ScrollState {
@@ -1089,6 +1416,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+    if (this.isDestroyed) return
     this.lastCalculatedOffset = -1
     this.cachedRangeStart = -1
     this.cachedRangeEnd = -2
@@ -1104,14 +1432,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   private remeasureTrackedElements(): boolean {
     const { count } = this.options
-    const horizontal = this.isHorizontal
     let changed = false
     let minIndex = Infinity
 
     for (const [index, element] of this.elementsByIndex) {
       if (index < 0 || index >= count) continue
 
-      const size = horizontal ? (element as HTMLElement).offsetWidth : (element as HTMLElement).offsetHeight
+      const size = this.readMeasuredSizeFromElement(element as HTMLElement, index)
       if (size <= 0) continue
 
       if (this.onItemMeasured(index, size)) {
@@ -1147,8 +1474,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
         // Measure synchronously in the ref callback — updates Fenwick tree
         // immediately for correct positioning on the next render.
-        const horizontal = this.isHorizontal
-        const size = horizontal ? element.offsetWidth : element.offsetHeight
+        const size = this.readMeasuredSizeFromElement(element, index)
 
         if (size > 0) {
           const knownSize = this.getKnownItemSize(index)
@@ -1172,9 +1498,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   observeElementSize(element: Element, index: number): void {
+    if (this.isDestroyed) return
     this.unobserveElementResize(element)
 
     const cleanup = resizeObserverBorderBox.observe(element, (entry) => {
+      if (this.isDestroyed) return
       // Guard against queued RO callbacks firing for a stale element after the
       // ref slot has been reassigned to a different DOM node. Without this,
       // a removed element's final RO event can poison the surviving item's size.
@@ -1208,8 +1536,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   observeElementVisibility(element: Element, index: number): void {
+    if (this.isDestroyed) return
     if (!this.intersectionObserver) return
     this.intersectionObserver.observe(element, (isVisible) => {
+      if (this.isDestroyed) return
       this.options.onVisibilityChange?.(index, isVisible)
     })
   }
@@ -1257,6 +1587,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   updateOptions(nextOptions: Partial<O>): void {
+    if (this.isDestroyed) return
     const prev = { ...this.options }
     const preserveAnchor = nextOptions.preserveScrollAnchor ?? this.options.preserveScrollAnchor
     const shouldRestoreAnchor =
@@ -1264,6 +1595,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const anchor = shouldRestoreAnchor ? this.getScrollAnchor() : null
 
     Object.assign(this.options, nextOptions)
+    if (nextOptions.dir !== undefined) {
+      this.rtlScrollBehavior = null
+    }
 
     // Check if anything actually changed
     let changed = false
@@ -1296,8 +1630,15 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   destroy(): void {
     this.isDestroyed = true
     this.convergenceId++
+    this.pendingSyncNotify = false
+    this.scrollElement = null
+    this.rtlScrollBehavior = null
+    delete this.scrollHandler
 
-    if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
+    if (this.scrollEndTimer) {
+      clearTimeout(this.scrollEndTimer)
+      this.scrollEndTimer = null
+    }
     if (this.pendingConvergenceRaf != null) {
       cancelAnimationFrame(this.pendingConvergenceRaf)
       this.pendingConvergenceRaf = null
@@ -1314,12 +1655,20 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.scrollElementResizeCleanup?.()
     this.intersectionObserver?.disconnect()
+    delete this.scrollElementResizeCleanup
+    delete this.intersectionObserver
     this.cancelSmoothScroll()
     this.sizeUpdateFrame.cancel()
+    this.currentSmoothScroll = null
 
     this.measureCache.clear()
+    this.itemSizeCache.clear()
     this.pendingSizeUpdates.clear()
     this.elementsByIndex.clear()
+    this.virtualItemObjectCache.clear()
+    this.keyIndexCache.clear()
+    this.cachedVirtualItems = []
+    this.cachedVirtualIndexes = []
     this.storeListeners.clear()
   }
 }

@@ -13,6 +13,7 @@ interface GridRange {
 
 const SCROLL_END_DELAY_MS = 150
 const INITIAL_SCROLL_TOLERANCE = 1
+type RtlScrollBehavior = "negative" | "positive-descending" | "positive-ascending"
 
 type RangeChangeReasonDetails = { reason: RangeChangeReason }
 
@@ -64,6 +65,7 @@ export class GridVirtualizer {
   private scrollDirectionX: ScrollState["direction"]["x"] = "idle"
   private scrollDirectionY: ScrollState["direction"]["y"] = "idle"
   private isScrolling = false
+  private rtlScrollBehavior: RtlScrollBehavior | null = null
   private scrollEndTimer: TimerId | null = null
 
   // Viewport dimensions
@@ -138,10 +140,12 @@ export class GridVirtualizer {
     }
 
     this.initializeMeasurements()
+    this.applyInitialMeasurements()
   }
 
   init(scrollElement: HTMLElement): void {
     this.scrollElement = scrollElement
+    this.rtlScrollBehavior = null
 
     if (this.options.observeScrollElementSize) {
       this.observeScrollElementSize(scrollElement)
@@ -165,6 +169,7 @@ export class GridVirtualizer {
   }
 
   private notifyStore(): void {
+    if (this.isDestroyed) return
     this.storeVersion++
     for (const listener of this.storeListeners) {
       listener()
@@ -174,6 +179,76 @@ export class GridVirtualizer {
   private getScrollMargin(): number {
     const { scrollMargin } = this.options
     return typeof scrollMargin === "function" ? scrollMargin() : scrollMargin
+  }
+
+  private get isRtl(): boolean {
+    return this.options.dir === "rtl"
+  }
+
+  private getMaxHorizontalOffset(target: HTMLElement | null): number {
+    if (!target) return 0
+    const scrollWidth = Number(target.scrollWidth) || 0
+    const clientWidth = Number(target.clientWidth) || 0
+    return Math.max(0, scrollWidth - clientWidth)
+  }
+
+  private detectRtlScrollBehavior(target: HTMLElement): RtlScrollBehavior {
+    const maxOffset = this.getMaxHorizontalOffset(target)
+    const previous = target.scrollLeft
+    if (maxOffset > 0 && Math.abs(previous - maxOffset) <= 1) {
+      return "positive-descending"
+    }
+
+    target.scrollLeft = 0
+    const atZero = target.scrollLeft
+    if (atZero > 0) {
+      target.scrollLeft = previous
+      return "positive-descending"
+    }
+
+    target.scrollLeft = 1
+    const atOne = target.scrollLeft
+    target.scrollLeft = previous
+    return atOne === 0 ? "negative" : "positive-ascending"
+  }
+
+  private resolveRtlScrollBehavior(target: HTMLElement | null): RtlScrollBehavior {
+    if (this.rtlScrollBehavior) return this.rtlScrollBehavior
+    if (!target) {
+      this.rtlScrollBehavior = "positive-ascending"
+      return this.rtlScrollBehavior
+    }
+
+    this.rtlScrollBehavior = this.detectRtlScrollBehavior(target)
+    return this.rtlScrollBehavior
+  }
+
+  private toLogicalHorizontalOffset(rawOffset: number, target: HTMLElement | null): number {
+    if (!this.isRtl) return rawOffset
+    const mode = this.resolveRtlScrollBehavior(target)
+    const maxOffset = this.getMaxHorizontalOffset(target)
+    switch (mode) {
+      case "negative":
+        return -rawOffset
+      case "positive-descending":
+        return maxOffset - rawOffset
+      default:
+        return rawOffset
+    }
+  }
+
+  private toRawHorizontalOffset(logicalOffset: number, target: HTMLElement | null): number {
+    if (!this.isRtl) return logicalOffset
+    const mode = this.resolveRtlScrollBehavior(target)
+    const maxOffset = this.getMaxHorizontalOffset(target)
+    switch (mode) {
+      case "negative":
+        return -logicalOffset
+      case "positive-descending":
+        return maxOffset - logicalOffset
+      default:
+        return logicalOffset
+    }
   }
 
   private observeScrollElementSize(element: HTMLElement): void {
@@ -202,6 +277,63 @@ export class GridVirtualizer {
 
   private initializeMeasurements(): void {
     this.resetMeasurements()
+  }
+
+  private applyInitialMeasurements(): void {
+    const seeds = this.options.initialMeasurements
+    if (!seeds) return
+
+    let changed = false
+
+    const entries = seeds instanceof Map ? seeds.entries() : Object.entries(seeds)
+    for (const [rawKey, rawSize] of entries) {
+      const size = Number(rawSize)
+      if (!Number.isFinite(size) || size <= 0) continue
+
+      const rowIndex = this.resolveInitialMeasurementRow(rawKey)
+      if (rowIndex === undefined) continue
+
+      if (this.onRowMeasured(rowIndex, size)) {
+        changed = true
+      }
+    }
+
+    if (changed) {
+      this.rangeCache?.clear()
+      this.lastScrollTop = -1
+      this.lastScrollLeft = -1
+      this.lastScrollMargin = -1
+    }
+  }
+
+  private resolveInitialMeasurementRow(key: string | number): number | undefined {
+    const { rowCount } = this.options
+
+    const byUser = this.options.keyToIndex?.(key)
+    if (byUser !== undefined && byUser >= 0 && byUser < rowCount) {
+      return byUser
+    }
+
+    if (typeof key === "number" && Number.isInteger(key) && key >= 0 && key < rowCount) {
+      return key
+    }
+
+    if (typeof key === "string" && /^\d+$/.test(key)) {
+      const parsed = Number(key)
+      if (parsed >= 0 && parsed < rowCount) {
+        return parsed
+      }
+    }
+
+    if (typeof this.options.indexToKey === "function") {
+      for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+        if (this.options.indexToKey(rowIndex) === key) {
+          return rowIndex
+        }
+      }
+    }
+
+    return undefined
   }
 
   private resetMeasurements(): void {
@@ -254,6 +386,17 @@ export class GridVirtualizer {
     const changed = this.columnSizeTracker.setMeasuredSize(index, size)
     if (changed) this.rangeCache?.clear()
     return changed
+  }
+
+  private readMeasuredRowSize(element: HTMLElement, rowIndex: number): number {
+    const measured = this.options.measureElement?.(element, {
+      index: rowIndex,
+      orientation: "vertical",
+    })
+    if (typeof measured === "number" && Number.isFinite(measured) && measured > 0) {
+      return measured
+    }
+    return element.offsetHeight
   }
 
   // ============================================
@@ -319,6 +462,7 @@ export class GridVirtualizer {
   // ============================================
 
   private calculateRange({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+    if (this.isDestroyed) return
     const scrollMargin = this.getScrollMargin()
 
     if (
@@ -440,13 +584,14 @@ export class GridVirtualizer {
    * Cells are positioned absolutely within the row by their column x/width.
    */
   getCellStyleInRow(column: VirtualColumn): CSSProperties {
+    const x = this.isRtl ? -column.x : column.x
     return {
       position: "absolute",
       top: 0,
       left: 0,
       width: column.width,
       height: "100%",
-      transform: `translate3d(${column.x}px, 0, 0)`,
+      transform: `translate3d(${x}px, 0, 0)`,
     }
   }
 
@@ -471,7 +616,7 @@ export class GridVirtualizer {
         this.rowElementsByIndex.set(rowIndex, element)
 
         // Sync measurement
-        const size = element.offsetHeight
+        const size = this.readMeasuredRowSize(element, rowIndex)
         if (size > 0) {
           this.measureRowSync(rowIndex, size)
         }
@@ -604,15 +749,23 @@ export class GridVirtualizer {
   }
 
   private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
+    if (this.isDestroyed) return
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
+    const eventTarget =
+      "currentTarget" in event &&
+      event.currentTarget &&
+      typeof (event.currentTarget as { scrollLeft?: unknown }).scrollLeft === "number"
+        ? (event.currentTarget as HTMLElement)
+        : null
+    const nextLogicalLeft = this.toLogicalHorizontalOffset(scrollLeft, eventTarget)
 
-    if (scrollTop === this.scrollTop && scrollLeft === this.scrollLeft) return
+    if (scrollTop === this.scrollTop && nextLogicalLeft === this.scrollLeft) return
 
     this.scrollDirectionX =
-      scrollLeft > this.scrollLeft ? "forward" : scrollLeft < this.scrollLeft ? "backward" : "idle"
+      nextLogicalLeft > this.scrollLeft ? "forward" : nextLogicalLeft < this.scrollLeft ? "backward" : "idle"
     this.scrollDirectionY = scrollTop > this.scrollTop ? "forward" : scrollTop < this.scrollTop ? "backward" : "idle"
     this.scrollTop = scrollTop
-    this.scrollLeft = scrollLeft
+    this.scrollLeft = nextLogicalLeft
     this.isScrolling = true
 
     this.calculateRange({ reason: "scroll" })
@@ -640,6 +793,7 @@ export class GridVirtualizer {
   // ============================================
 
   setViewportSize(width: number, height: number): void {
+    if (this.isDestroyed) return
     this.viewportWidth = width
     this.viewportHeight = height
     this.lastScrollTop = -1
@@ -650,6 +804,7 @@ export class GridVirtualizer {
   }
 
   measure(): void {
+    if (this.isDestroyed) return
     if (!this.scrollElement) return
     const rect = (this.scrollElement as Element).getBoundingClientRect()
     this.setViewportSize(rect.width, rect.height)
@@ -687,11 +842,12 @@ export class GridVirtualizer {
     const element = this.scrollElement as HTMLElement | null
     if (!element) return
 
+    const rawScrollLeft = this.toRawHorizontalOffset(this.scrollLeft, element)
     if (typeof element.scrollTo === "function") {
-      element.scrollTo({ top: targetOffset, left: this.scrollLeft })
+      element.scrollTo({ top: targetOffset, left: rawScrollLeft })
     } else {
       element.scrollTop = targetOffset
-      element.scrollLeft = this.scrollLeft
+      element.scrollLeft = rawScrollLeft
     }
   }
 
@@ -744,10 +900,14 @@ export class GridVirtualizer {
       this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart - this.getScrollMargin(),
     )
     const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
+    const rawScrollLeft =
+      this.scrollElement && typeof (this.scrollElement as { scrollLeft?: unknown }).scrollLeft === "number"
+        ? this.toRawHorizontalOffset(scrollLeft, this.scrollElement as HTMLElement)
+        : scrollLeft
     const behavior = options.behavior ?? "auto"
 
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({ top: scrollTop, left: scrollLeft, behavior })
+      ;(this.scrollElement as any).scrollTo({ top: scrollTop, left: rawScrollLeft, behavior })
       if (behavior !== "smooth") {
         this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
       }
@@ -785,8 +945,12 @@ export class GridVirtualizer {
     const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
     const behavior = options.behavior ?? "auto"
 
+    const rawScrollLeft =
+      this.scrollElement && typeof (this.scrollElement as { scrollLeft?: unknown }).scrollLeft === "number"
+        ? this.toRawHorizontalOffset(scrollLeft, this.scrollElement as HTMLElement)
+        : scrollLeft
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({ left: scrollLeft, behavior })
+      ;(this.scrollElement as any).scrollTo({ left: rawScrollLeft, behavior })
       if (behavior !== "smooth") {
         this.handleScroll({ currentTarget: { scrollTop: this.scrollTop, scrollLeft } })
       }
@@ -807,6 +971,7 @@ export class GridVirtualizer {
   }
 
   forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+    if (this.isDestroyed) return
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
     this.lastScrollMargin = -1
@@ -829,7 +994,7 @@ export class GridVirtualizer {
     for (const [rowIndex, element] of this.rowElementsByIndex) {
       if (rowIndex < 0 || rowIndex >= this.options.rowCount) continue
 
-      const size = (element as HTMLElement).offsetHeight
+      const size = this.readMeasuredRowSize(element as HTMLElement, rowIndex)
       if (size > 0 && this.onRowMeasured(rowIndex, size)) {
         changed = true
       }
@@ -839,8 +1004,12 @@ export class GridVirtualizer {
   }
 
   updateOptions(options: Partial<GridVirtualizerOptions>): void {
+    if (this.isDestroyed) return
     const prevOptions = this.options
     this.options = { ...this.options, ...options } as ResolvedOptions
+    if (options.dir !== undefined) {
+      this.rtlScrollBehavior = null
+    }
 
     if (this.options.rowCount !== prevOptions.rowCount || this.options.columnCount !== prevOptions.columnCount) {
       this.onItemsChanged()
@@ -856,14 +1025,22 @@ export class GridVirtualizer {
 
   destroy(): void {
     this.isDestroyed = true
+    this.pendingSyncNotify = false
+    this.scrollElement = null
+    this.rtlScrollBehavior = null
+    delete this.scrollHandler
 
-    if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
+    if (this.scrollEndTimer) {
+      clearTimeout(this.scrollEndTimer)
+      this.scrollEndTimer = null
+    }
     if (this.pendingInitialOffsetRaf != null) {
       cancelAnimationFrame(this.pendingInitialOffsetRaf)
       this.pendingInitialOffsetRaf = null
     }
     this.rowSizeUpdateFrame.cancel()
     this.scrollElementResizeCleanup?.()
+    delete this.scrollElementResizeCleanup
 
     for (const cleanup of this.rowResizeCleanups.values()) {
       cleanup()
@@ -871,6 +1048,9 @@ export class GridVirtualizer {
     this.rowResizeCleanups.clear()
     this.pendingRowSizeUpdates.clear()
     this.rowElementsByIndex.clear()
+    this.rangeCache.clear()
+    this.rowSizeTracker.reset(0)
+    this.columnSizeTracker.reset(0)
     this.storeListeners.clear()
   }
 

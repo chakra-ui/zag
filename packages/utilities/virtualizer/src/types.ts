@@ -105,6 +105,32 @@ export type VirtualizerOrientation = "vertical" | "horizontal"
 
 export type VirtualizerDir = "ltr" | "rtl"
 
+export type InitialMeasurements = Map<string | number, number> | Record<string, number>
+
+export interface MeasureElementContext {
+  index: number
+  orientation: VirtualizerOrientation
+}
+
+export interface ShouldAdjustScrollOnSizeChangeContext {
+  /** Item index whose measured size changed. */
+  index: number
+  /** Stable item key when `indexToKey` is provided, else the index key. */
+  key: string | number
+  /** New size minus previous size. Positive means growth, negative means shrink. */
+  delta: number
+  /** Item start offset before applying the measurement update. */
+  itemStart: number
+  /** Item end offset before applying the measurement update. */
+  itemEnd: number
+  /** Viewport start offset in list coordinates. */
+  viewportStart: number
+  /** Current logical scroll offset (without scrollMargin). */
+  currentOffset: number
+  /** Current scroll anchor (if one can be resolved). */
+  anchor: ScrollAnchor | null
+}
+
 export interface VirtualizerOptions {
   /**
    * Get a stable key for an item at an index. This is critical for:
@@ -148,6 +174,11 @@ export interface VirtualizerOptions {
   /** Text direction. Defaults to "ltr"; affects positioning for horizontal virtualization. */
   dir?: VirtualizerDir
 
+  /**
+   * Note: `transform: scale(...)` on the scroll container is unsupported.
+   * Scale transforms change layout and measurement coordinate spaces differently.
+   */
+
   /** Scroll padding (start) */
   paddingStart?: number
 
@@ -169,6 +200,15 @@ export interface VirtualizerOptions {
   /** Initial scroll offset */
   initialOffset?: number
 
+  /**
+   * Seed known item sizes before first range/layout pass.
+   *
+   * Accepts either:
+   * - keyed sizes (`indexToKey` / `keyToIndex`)
+   * - numeric indexes (when stable keys are not used)
+   */
+  initialMeasurements?: InitialMeasurements
+
   /** Skip applying `initialOffset` to the scroll container during init. */
   disableScrollOnInit?: boolean
 
@@ -179,6 +219,15 @@ export interface VirtualizerOptions {
   preserveScrollAnchor?: boolean
 
   /**
+   * Control whether a measured size change should compensate the current scroll offset.
+   *
+   * Default behavior adjusts when the changed item starts above the current viewport.
+   * This is useful for prepend/chat flows where items above the viewport are still
+   * being measured after insertion.
+   */
+  shouldAdjustScrollOnSizeChange?: (context: ShouldAdjustScrollOnSizeChangeContext) => boolean
+
+  /**
    * CSS `overflow-anchor` value for the virtualizer scroll container.
    * Defaults to "none" because the virtualizer preserves scroll position itself.
    */
@@ -186,6 +235,12 @@ export interface VirtualizerOptions {
 
   /** Observe the scroll element size and automatically update virtualizer measurements */
   observeScrollElementSize?: boolean
+
+  /**
+   * Optional custom size measurer used by element-ref and eager remeasure paths.
+   * Useful in test environments where DOM layout APIs report zero sizes.
+   */
+  measureElement?: (element: HTMLElement, context: MeasureElementContext) => number
 
   /** Callback when scroll state changes */
   onScroll?: (state: ScrollState) => void
@@ -204,9 +259,6 @@ export interface VirtualizerOptions {
 }
 
 export interface ListVirtualizerOptions extends VirtualizerOptions {
-  /** Number of lanes (columns for vertical, rows for horizontal). Defaults to 1. */
-  lanes?: number
-
   /** Optional grouping info for sticky headers */
   groups?: GroupMeta[]
 
@@ -237,6 +289,57 @@ export interface GridVirtualizerOptions extends Omit<VirtualizerOptions, "count"
 
   /** Estimated column width for each column */
   estimatedColumnSize: (columnIndex: number) => number
+
+  /** The initial viewport rect for server-side rendering. */
+  initialRect?: { width: number; height: number }
+}
+
+export interface WaterfallColumnMetrics {
+  index: number
+  offset: number
+  width: number
+  height: number
+}
+
+export interface WaterfallLayoutState {
+  columnCount: number
+  columnWidth: number
+  columnGap: number
+  rowGap: number
+  totalSize: number
+  columns: WaterfallColumnMetrics[]
+}
+
+export type WaterfallLaneAssignment = "measured" | "preserve"
+
+export interface WaterfallVirtualizerOptions extends Omit<VirtualizerOptions, "orientation" | "dir"> {
+  /** Vertical-only in v1. */
+  orientation?: "vertical"
+
+  /** LTR-only in v1. */
+  dir?: "ltr"
+
+  /**
+   * Number of columns. Takes precedence over `minColumnWidth` when provided.
+   * Defaults to an auto-fit value based on `minColumnWidth`.
+   */
+  columnCount?: number
+
+  /** Minimum width used to auto-fit columns when `columnCount` is not provided. */
+  minColumnWidth?: number
+
+  /** Gap between columns. Falls back to `gap`. */
+  columnGap?: number
+
+  /** Gap between items in a column. Falls back to `gap`. */
+  rowGap?: number
+
+  /**
+   * Lane assignment strategy for masonry columns.
+   * - `measured` (default): assign to the shortest current column.
+   * - `preserve`: prefer a prior lane for already-laid-out items when still valid.
+   */
+  laneAssignment?: WaterfallLaneAssignment
 
   /** The initial viewport rect for server-side rendering. */
   initialRect?: { width: number; height: number }

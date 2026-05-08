@@ -17,6 +17,56 @@ function horizontalRect(width: number) {
   return { width, height: 0 }
 }
 
+type RtlScrollMode = "negative" | "positive-descending" | "positive-ascending"
+
+function createRtlHorizontalContainer(mode: RtlScrollMode, maxScroll = 200) {
+  let logicalOffset = 0
+  const clamp = (value: number) => Math.max(0, Math.min(maxScroll, value))
+  const toRaw = (logical: number) => {
+    switch (mode) {
+      case "negative":
+        return -logical
+      case "positive-descending":
+        return maxScroll - logical
+      default:
+        return logical
+    }
+  }
+  const fromRaw = (raw: number) => {
+    switch (mode) {
+      case "negative":
+        return -raw
+      case "positive-descending":
+        return maxScroll - raw
+      default:
+        return raw
+    }
+  }
+
+  const element = {
+    scrollTop: 0,
+    clientWidth: 100,
+    scrollWidth: maxScroll + 100,
+    get scrollLeft() {
+      return toRaw(logicalOffset)
+    },
+    set scrollLeft(value: number) {
+      logicalOffset = clamp(fromRaw(value))
+    },
+    getBoundingClientRect: () => ({ width: 100, height: 20 }),
+    scrollTo: ({ left }: ScrollToOptions) => {
+      if (typeof left === "number") {
+        element.scrollLeft = left
+      }
+    },
+  } as unknown as HTMLElement
+
+  return {
+    element,
+    getRawScrollLeft: () => element.scrollLeft,
+  }
+}
+
 describe("ListVirtualizer", () => {
   afterEach(() => {
     vi.restoreAllMocks()
@@ -31,6 +81,60 @@ describe("ListVirtualizer", () => {
     })
 
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
+  })
+
+  test("keeps list layout even when legacy lanes option is passed", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 6,
+      estimatedSize: () => 20,
+      overscan: 0,
+      initialRect: { width: 300, height: 60 },
+      ...({ lanes: 3 } as any),
+    } as any)
+
+    const items = virtualizer.getVirtualItems()
+
+    expect(items.map((item) => item.lane)).toEqual([0, 0, 0])
+    expect(virtualizer.getItemStyle(items[1]!).transform).toBe("translate3d(0, 20px, 0)")
+    expect(virtualizer.getTotalSize()).toBe(120)
+  })
+
+  test("applies initialMeasurements seeds before initial range calculation", () => {
+    const keys = ["item-0", "item-1", "item-2", "item-3", "item-4"]
+    const virtualizer = new ListVirtualizer({
+      count: keys.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(25),
+      indexToKey: (index) => keys[index]!,
+      initialMeasurements: new Map<string | number, number>([
+        ["item-0", 40],
+        ["item-1", 30],
+      ]),
+    })
+
+    expect(virtualizer.getTotalSize()).toBe(100)
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 0, endIndex: 0 })
+    expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0])
+  })
+
+  test("measureItem overrides seeded initialMeasurements", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 5,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(25),
+      initialMeasurements: { 0: 40, 1: 30 },
+    })
+
+    expect(virtualizer.getTotalSize()).toBe(100)
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 0, endIndex: 0 })
+
+    virtualizer.measureItem(0, 15)
+
+    expect(virtualizer.getTotalSize()).toBe(75)
+    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 0, endIndex: 1 })
+    expect(virtualizer.getVirtualItems()[0]?.size).toBe(15)
   })
 
   test("uses rangeExtractor to customize rendered indexes", () => {
@@ -148,6 +252,45 @@ describe("ListVirtualizer", () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  test.each([
+    ["negative", -60],
+    ["positive-descending", 140],
+    ["positive-ascending", 60],
+  ] as const)("normalizes RTL scroll writes for %s mode", (mode, expectedRawScrollLeft) => {
+    const virtualizer = new ListVirtualizer({
+      count: 20,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: horizontalRect(30),
+      orientation: "horizontal",
+      dir: "rtl",
+    })
+    const { element, getRawScrollLeft } = createRtlHorizontalContainer(mode)
+    virtualizer.init(element)
+
+    expect(virtualizer.scrollToOffset(60)).toEqual({ scrollLeft: 60, scrollTop: 0 })
+    expect(getRawScrollLeft()).toBe(expectedRawScrollLeft)
+  })
+
+  test("normalizes RTL negative-mode scroll events into logical offsets", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 20,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: horizontalRect(30),
+      orientation: "horizontal",
+      dir: "rtl",
+    })
+    const { element } = createRtlHorizontalContainer("negative")
+    virtualizer.init(element)
+
+    // Prime RTL mode detection from the attached scroll element.
+    virtualizer.scrollToOffset(1)
+    virtualizer.handleScroll({ currentTarget: { scrollTop: 0, scrollLeft: -40 } })
+
+    expect(virtualizer.getScrollState().offset.x).toBe(40)
   })
 
   test("resets rangeExtractor motion context after scroll end", () => {
@@ -618,6 +761,70 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getScrollAnchor()).toEqual({ key: 102, offset: 5 })
   })
 
+  test("keeps the visible anchor stable when prepended items are later measured", () => {
+    const initialItems = ["a", "b", "c", "d", "e", "f"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 20,
+      overscan: 0,
+      initialRect: initialRect(60),
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(70)
+
+    items = ["x", "y", ...initialItems]
+    virtualizer.prependItems(2)
+
+    expect(virtualizer.getScrollState().offset.y).toBe(110)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "d", offset: 10 })
+
+    virtualizer.measureItem(0, 30)
+    expect(virtualizer.getScrollState().offset.y).toBe(120)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "d", offset: 10 })
+
+    virtualizer.measureItem(1, 10)
+    expect(virtualizer.getScrollState().offset.y).toBe(110)
+    expect(virtualizer.getScrollAnchor()).toEqual({ key: "d", offset: 10 })
+  })
+
+  test("lets shouldAdjustScrollOnSizeChange disable and re-enable compensation", () => {
+    const initialItems = ["a", "b", "c", "d", "e", "f"]
+    let items = initialItems
+    let shouldAdjust = false
+    const adjustmentKeys: Array<string | number> = []
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 20,
+      overscan: 0,
+      initialRect: initialRect(60),
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+      shouldAdjustScrollOnSizeChange: ({ key }) => {
+        adjustmentKeys.push(key)
+        return shouldAdjust
+      },
+    })
+
+    virtualizer.scrollToOffset(70)
+    items = ["x", "y", ...initialItems]
+    virtualizer.prependItems(2)
+
+    expect(virtualizer.getScrollState().offset.y).toBe(110)
+
+    virtualizer.measureItem(0, 30)
+    expect(virtualizer.getScrollState().offset.y).toBe(110)
+
+    shouldAdjust = true
+    virtualizer.measureItem(1, 30)
+    expect(virtualizer.getScrollState().offset.y).toBe(120)
+    expect(adjustmentKeys).toEqual(["x", "y"])
+  })
+
   test("prependItems does not restore an anchor when preserveScrollAnchor is false", () => {
     const initialItems = ["a", "b", "c", "d", "e", "f"]
     let items = initialItems
@@ -802,6 +1009,55 @@ describe("ListVirtualizer", () => {
     await Promise.resolve()
 
     expect(notifications).toBe(0)
+  })
+
+  test("destroy prevents queued sync measurement onRangeChange callback", async () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const onRangeChange = vi.fn()
+    const virtualizer = new ListVirtualizer({
+      count: 1,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: { width: 100, height: 10 },
+      onRangeChange,
+    })
+
+    const [item] = virtualizer.getVirtualItems()
+    item!.measureElement(createMeasuredElement(40))
+    virtualizer.destroy()
+
+    await Promise.resolve()
+
+    expect(onRangeChange).not.toHaveBeenCalled()
+  })
+
+  test("uses measureElement override for zero-sized elements and eager remeasure", () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const contexts: Array<{ index: number; orientation: "vertical" | "horizontal" }> = []
+    const virtualizer = new ListVirtualizer({
+      count: 3,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      measureElement: (element, context) => {
+        contexts.push(context)
+        return Number((element as any).dataset.size)
+      },
+    })
+
+    const [item] = virtualizer.getVirtualItems()
+    const element = { offsetHeight: 0, offsetWidth: 0, dataset: { size: "40" } } as unknown as HTMLElement
+
+    item!.measureElement(element)
+    expect(virtualizer.getTotalSize()).toBe(60)
+
+    element.dataset.size = "55"
+    virtualizer.forceUpdate()
+    expect(virtualizer.getTotalSize()).toBe(75)
+
+    expect(contexts.some((context) => context.orientation === "vertical")).toBe(true)
   })
 
   describe("scrollToIndex convergence pass", () => {

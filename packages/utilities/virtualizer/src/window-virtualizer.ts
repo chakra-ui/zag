@@ -65,6 +65,7 @@ export interface WindowVirtualizerOptions extends ListVirtualizerOptions {
  */
 export class WindowVirtualizer extends ListVirtualizer {
   private windowOptions: WindowVirtualizerOptions
+  private hasSetupWindowScrolling = false
   private windowScrollHandler?: VoidFunction
   private windowResizeHandler?: VoidFunction
   /** Where we listen for scroll — `window` or a scrollable ancestor (e.g. `main` with overflow-y: auto). */
@@ -85,11 +86,14 @@ export class WindowVirtualizer extends ListVirtualizer {
   constructor(options: WindowVirtualizerOptions) {
     super(options)
     this.windowOptions = options
-    this.setupWindowScrolling()
   }
 
   private setupWindowScrolling(): void {
+    if (this.hasSetupWindowScrolling) return
+    this.hasSetupWindowScrolling = true
+
     this.windowScrollHandler = () => {
+      if (this.destroyed) return
       const offset = this.getWindowScrollOffset()
 
       // Create a mock event that matches the expected interface
@@ -104,6 +108,7 @@ export class WindowVirtualizer extends ListVirtualizer {
     }
 
     this.windowResizeHandler = () => {
+      if (this.destroyed) return
       if (this.scrollElement) {
         this.measure()
       }
@@ -175,10 +180,14 @@ export class WindowVirtualizer extends ListVirtualizer {
   }
 
   override init(scrollElement: HTMLElement): void {
+    this.setupWindowScrolling()
     this.attachScrollListener(scrollElement)
     super.init(scrollElement)
     // Sync scroll offset after layout so `scrollOffset` matches list-space coordinates (not raw `pageYOffset`).
-    queueMicrotask(() => this.windowScrollHandler?.())
+    queueMicrotask(() => {
+      if (this.destroyed) return
+      this.windowScrollHandler?.()
+    })
   }
 
   /**
@@ -209,7 +218,9 @@ export class WindowVirtualizer extends ListVirtualizer {
       this.windowOptions?.scrollingElement ?? (this.options as WindowVirtualizerOptions).scrollingElement ?? rootElement
 
     if (horizontal) {
-      return (scrollingElement.scrollLeft || win.pageXOffset || 0) - windowOffset
+      const raw = scrollingElement.scrollLeft || win.pageXOffset || 0
+      const target = isHTMLElement(scrollingElement) ? scrollingElement : null
+      return this.toLogicalHorizontalOffset(raw, target) - windowOffset
     }
     return (scrollingElement.scrollTop || win.pageYOffset || 0) - windowOffset
   }
@@ -289,10 +300,11 @@ export class WindowVirtualizer extends ListVirtualizer {
           }
         }
       } else if (isHTMLElement(scrollTarget)) {
-        const delta = targetOffset - this.scrollOffset
         if (horizontal) {
-          scrollTarget.scrollLeft += delta
+          const rawTarget = this.toRawHorizontalOffset(targetOffset, scrollTarget)
+          scrollTarget.scrollLeft = rawTarget
         } else {
+          const delta = targetOffset - this.scrollOffset
           scrollTarget.scrollTop += delta
         }
       }
@@ -319,10 +331,13 @@ export class WindowVirtualizer extends ListVirtualizer {
         const rect = el.getBoundingClientRect()
         const containerRect = scrollTarget.getBoundingClientRect()
         const relativeOffset = horizontal
-          ? rect.left - containerRect.left + scrollTarget.scrollLeft
+          ? rect.left - containerRect.left + this.toLogicalHorizontalOffset(scrollTarget.scrollLeft, scrollTarget)
           : rect.top - containerRect.top + scrollTarget.scrollTop
+        const nextLogical = relativeOffset + targetOffset
         scrollTarget.scrollTo({
-          [horizontal ? "left" : "top"]: relativeOffset + targetOffset,
+          [horizontal ? "left" : "top"]: horizontal
+            ? this.toRawHorizontalOffset(nextLogical, scrollTarget)
+            : relativeOffset + targetOffset,
           behavior: "smooth",
         })
       }
@@ -350,6 +365,9 @@ export class WindowVirtualizer extends ListVirtualizer {
     if (this.windowResizeHandler && typeof win !== "undefined") {
       win.removeEventListener("resize", this.windowResizeHandler)
     }
+    delete this.windowScrollHandler
+    delete this.windowResizeHandler
+    this.hasSetupWindowScrolling = false
 
     super.destroy()
   }

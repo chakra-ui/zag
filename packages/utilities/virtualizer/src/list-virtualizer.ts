@@ -14,7 +14,6 @@ import { SizeTracker } from "./utils/size-tracker"
 
 /**
  * Virtualizer for one-dimensional lists (vertical or horizontal).
- * Supports optional lanes for grid-like layouts.
  * Uses incremental measurement with caching for dynamic item sizes.
  */
 export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
@@ -30,14 +29,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       super.setViewportSize(horizontal ? width : height)
       super.setCrossAxisSize(horizontal ? height : width)
     }
-  }
-
-  private get lanes(): number {
-    return this.options.lanes ?? 1
-  }
-
-  private get isGrid(): boolean {
-    return this.lanes > 1
+    this.applyInitialMeasurements()
   }
 
   /**
@@ -98,20 +90,12 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       if (cached) return cached
     }
 
-    const { paddingStart, gap } = this.options
+    const { paddingStart } = this.options
     const size = this.getItemSize(index)
 
-    let start: number
-    if (this.isGrid) {
-      // For grid mode, calculate row-based positioning
-      const row = Math.floor(index / this.lanes)
-      const rowHeight = this.getEstimatedSize(0) + gap
-      start = paddingStart + row * rowHeight
-    } else {
-      // For list mode, use prefix sum
-      const prefix = this.getPrefixSize(index - 1)
-      start = paddingStart + prefix
-    }
+    // List mode: use prefix sum
+    const prefix = this.getPrefixSize(index - 1)
+    const start = paddingStart + prefix
 
     const measurement: ItemMeasurement = {
       start,
@@ -123,12 +107,12 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     return measurement
   }
 
-  protected getItemLane(index: number): number {
-    return this.isGrid ? index % this.lanes : 0
+  protected getItemLane(_index: number): number {
+    return 0
   }
 
   protected findVisibleRange(viewportStart: number, viewportEnd: number): Range {
-    const { count, paddingStart, gap } = this.options
+    const { count, paddingStart } = this.options
     if (count === 0) return { startIndex: 0, endIndex: -1 }
 
     // Initialize cache if needed
@@ -141,30 +125,15 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const cached = this.rangeCache.get(cacheKey)
     if (cached) return cached
 
-    let range: Range
-
-    if (this.isGrid) {
-      // Grid mode: calculate based on rows
-      const rowHeight = this.getEstimatedSize(0) + gap
-      const startRow = Math.max(0, Math.floor((viewportStart - paddingStart) / rowHeight))
-      const endRow = Math.ceil((viewportEnd - paddingStart) / rowHeight)
-
-      const startIndex = startRow * this.lanes
-      const endIndex = Math.min(endRow * this.lanes + this.lanes - 1, count - 1)
-
-      range = { startIndex, endIndex }
-    } else {
-      // List mode: use size tracker's optimized binary search
-      // Initialize size tracker if needed
-      if (!this.sizeTracker) {
-        this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
-      }
-
-      const startIndex = this.sizeTracker.findIndexAtOffset(viewportStart, paddingStart)
-      const endIndex = this.sizeTracker.findIndexAtOffset(viewportEnd, paddingStart)
-
-      range = { startIndex, endIndex }
+    // List mode: use size tracker's optimized binary search
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
+
+    const startIndex = this.sizeTracker.findIndexAtOffset(viewportStart, paddingStart)
+    const endIndex = this.sizeTracker.findIndexAtOffset(viewportEnd, paddingStart)
+    const range: Range = { startIndex, endIndex }
 
     // Cache the result (CacheManager handles LRU eviction automatically)
     this.rangeCache.set(cacheKey, range)
@@ -173,22 +142,8 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemState(virtualItem: VirtualItem): ItemState {
-    const { gap } = this.options
     const horizontal = this.isHorizontal
-    const { index, start, size, lane } = virtualItem
-
-    if (this.isGrid) {
-      const laneSize = this.getLaneSize()
-      const laneOffset = lane * (laneSize + gap)
-
-      return {
-        index,
-        key: virtualItem.key,
-        position: horizontal ? { x: start, y: laneOffset } : { x: laneOffset, y: start },
-        size: { width: laneSize, height: size },
-        isScrolling: this.isScrolling,
-      }
-    }
+    const { index, start, size } = virtualItem
 
     return {
       index,
@@ -203,38 +158,10 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemStyle(virtualItem: VirtualItem): CSSProperties {
-    const { gap } = this.options
     const horizontal = this.isHorizontal
     const isRtl = this.isRtl
     const scrollMargin = this.getScrollMargin()
-    const { start, lane } = virtualItem
-
-    if (this.isGrid) {
-      const laneSize = this.getLaneSize()
-      let x = lane * (laneSize + gap)
-      const y = start - scrollMargin
-
-      // For RTL mode, reverse the lane positioning
-      if (isRtl) {
-        x = (this.lanes - 1 - lane) * (laneSize + gap)
-      }
-
-      let transform: string
-      if (horizontal) {
-        transform = isRtl ? `translate3d(-${y}px, ${x}px, 0)` : `translate3d(${y}px, ${x}px, 0)`
-      } else {
-        transform = `translate3d(${x}px, ${y}px, 0)`
-      }
-
-      return {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: laneSize,
-        height: undefined,
-        transform,
-      }
-    }
+    const { start } = virtualItem
 
     // List mode
     const offset = start - scrollMargin
@@ -256,16 +183,9 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getTotalSize(): number {
-    const { count, paddingStart, paddingEnd, gap } = this.options
+    const { count, paddingStart, paddingEnd } = this.options
 
     if (count === 0) return paddingStart + paddingEnd
-
-    if (this.isGrid) {
-      // Grid mode: calculate based on rows
-      const rows = Math.ceil(count / this.lanes)
-      const rowHeight = this.getEstimatedSize(0)
-      return paddingStart + rows * rowHeight + (rows - 1) * gap + paddingEnd
-    }
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
@@ -274,19 +194,6 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // List mode: use size tracker's optimized total size calculation
     return this.sizeTracker.getTotalSize(paddingStart, paddingEnd)
-  }
-
-  private getLaneSize(): number {
-    const { gap } = this.options
-    if (this.crossAxisSize <= 0) return 200
-    return (this.crossAxisSize - (this.lanes - 1) * gap) / this.lanes
-  }
-
-  protected onCrossAxisSizeChange(): void {
-    // Grid measurement depends on scroll element cross-axis size for lane sizing
-    if (this.isGrid) {
-      this.measureCache.clear()
-    }
   }
 
   private getItemSize(index: number): number {
@@ -308,15 +215,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected findIndexAtOffset(offset: number): number {
-    const { paddingStart, gap } = this.options
-
-    if (this.isGrid) {
-      // Grid mode: calculate based on rows
-      const adjustedOffset = Math.max(0, offset - paddingStart)
-      const rowHeight = this.getEstimatedSize(0) + gap
-      const row = Math.floor(adjustedOffset / rowHeight)
-      return Math.min(row * this.lanes, this.options.count - 1)
-    }
+    const { paddingStart } = this.options
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
