@@ -21,6 +21,7 @@
   "@zag-js/date-picker": "../../packages/machines/date-picker/src",
   "@zag-js/date-utils": "../../packages/utilities/date-utils/src",
   "@zag-js/dialog": "../../packages/machines/dialog/src",
+  "@zag-js/dnd": "../../packages/machines/dnd/src",
   "@zag-js/dismissable": "../../packages/utilities/dismissable/src",
   "@zag-js/docs": "../../packages/docs/src",
   "@zag-js/dom-query": "../../packages/utilities/dom-query/src",
@@ -37,6 +38,7 @@
   "@zag-js/image-cropper": "../../packages/machines/image-cropper/src",
   "@zag-js/interact-outside": "../../packages/utilities/interact-outside/src",
   "@zag-js/json-tree-utils": "../../packages/utilities/json-tree-utils/src",
+  "@zag-js/gridlist": "../../packages/machines/gridlist/src",
   "@zag-js/listbox": "../../packages/machines/listbox/src",
   "@zag-js/live-region": "../../packages/utilities/live-region/src",
   "@zag-js/marquee": "../../packages/machines/marquee/src",
@@ -78,5 +80,6 @@
   "@zag-js/tour": "../../packages/machines/tour/src",
   "@zag-js/tree-view": "../../packages/machines/tree-view/src",
   "@zag-js/types": "../../packages/types/src",
-  "@zag-js/utils": "../../packages/utilities/core/src"
+  "@zag-js/utils": "../../packages/utilities/core/src",
+  "@zag-js/virtualizer": "../../packages/utilities/virtualizer/src"
 }

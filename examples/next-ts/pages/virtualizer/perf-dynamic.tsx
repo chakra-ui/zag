@@ -1,6 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
+import { useCallback, useRef, useState } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 100_000
 
@@ -102,27 +102,19 @@ function MetricsDisplay({ label, metrics }: { label: string; metrics: Metrics | 
 function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  const [virtualizer] = useState(
-    () =>
-      new ListVirtualizer({
-        count: ITEM_COUNT,
-        estimatedSize: (i) => getItemHeight(i),
-        overscan: 5,
-      }),
-  )
-
-  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+  const { virtualizer, ref } = useListVirtualizer({
+    count: ITEM_COUNT,
+    estimatedSize: (i) => getItemHeight(i),
+    overscan: 5,
+  })
 
   const setRef = useCallback(
     (el: HTMLDivElement | null) => {
-      if (!el) return
       scrollRef.current = el
-      virtualizer.init(el)
+      ref(el)
     },
-    [virtualizer],
+    [ref],
   )
-
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
 

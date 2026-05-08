@@ -1,6 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { WaterfallVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
 const DEFAULT_ITEM_COUNT = 5_000
 const OVERSCAN = 6
@@ -291,31 +291,31 @@ function ZagWaterfall({
   registerBenchmarkRunner: (runner: BenchmarkRunner | null) => void
 }) {
   const scrollRef = useRef<HTMLDivElement | null>(null)
-  const virtualizer = useMemo(
-    () =>
-      new WaterfallVirtualizer({
-        count: items.length,
-        columnCount,
-        columnGap: COLUMN_GAP,
-        rowGap: ROW_GAP,
-        overscan: OVERSCAN,
-        estimatedSize: () => ESTIMATED_CARD_HEIGHT,
-      }),
-    [columnCount, items.length],
-  )
+  const { virtualizer, ref } = useWaterfallVirtualizer({
+    count: items.length,
+    columnCount,
+    columnGap: COLUMN_GAP,
+    rowGap: ROW_GAP,
+    overscan: OVERSCAN,
+    estimatedSize: () => ESTIMATED_CARD_HEIGHT,
+  })
 
-  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+  virtualizer.updateOptions({
+    count: items.length,
+    columnCount,
+    columnGap: COLUMN_GAP,
+    rowGap: ROW_GAP,
+    overscan: OVERSCAN,
+    estimatedSize: () => ESTIMATED_CARD_HEIGHT,
+  })
 
   const setRef = useCallback(
     (element: HTMLDivElement | null) => {
-      if (!element) return
       scrollRef.current = element
-      virtualizer.init(element)
+      ref(element)
     },
-    [virtualizer],
+    [ref],
   )
-
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
   const layout = virtualizer.getWaterfallState()

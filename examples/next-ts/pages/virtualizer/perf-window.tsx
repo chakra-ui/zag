@@ -1,7 +1,7 @@
 import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "@tanstack/react-virtual"
-import { WindowVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { ClientOnly } from "../../components/client-only"
+import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 10_000
 const ITEM_HEIGHT = 80
@@ -46,30 +46,15 @@ function useWindowScrollOverride() {
 // =============================================
 
 function ZagWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
-  const [virtualizer] = useState(
-    () =>
-      new WindowVirtualizer({
-        count: ITEM_COUNT,
-        estimatedSize: () => ITEM_HEIGHT,
-        overscan: 5,
-        initialRect:
-          typeof window !== "undefined"
-            ? { width: window.innerWidth, height: window.innerHeight }
-            : { width: 0, height: 800 },
-      }),
-  )
-
-  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
-
-  const ref = useCallback(
-    (el: HTMLElement | null) => {
-      if (!el) return
-      virtualizer.init(el)
-    },
-    [virtualizer],
-  )
-
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
+  const { virtualizer, ref } = useWindowVirtualizer({
+    count: ITEM_COUNT,
+    estimatedSize: () => ITEM_HEIGHT,
+    overscan: 5,
+    initialRect:
+      typeof window !== "undefined"
+        ? { width: window.innerWidth, height: window.innerHeight }
+        : { width: 0, height: 800 },
+  })
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()

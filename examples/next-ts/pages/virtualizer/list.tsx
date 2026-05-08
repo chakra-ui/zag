@@ -1,5 +1,5 @@
-import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+import { useState } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
@@ -12,30 +12,14 @@ const items = generateItems(10000)
 
 export default function Page() {
   const [isSmooth, setIsSmooth] = useState(true)
-  const [virtualizer] = useState(
-    () =>
-      new ListVirtualizer({
-        count: items.length,
-        estimatedSize: () => 142,
-        overscan: 5,
-        gap: 0,
-        paddingStart: 0,
-        paddingEnd: 0,
-      }),
-  )
-
-  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
-
-  // Callback ref to measure when element mounts
-  const setScrollElementRef = useCallback(
-    (element: HTMLDivElement | null) => {
-      if (!element) return
-      virtualizer.init(element)
-    },
-    [virtualizer],
-  )
-
-  useEffect(() => () => virtualizer.destroy(), [virtualizer])
+  const { virtualizer, ref: setScrollElementRef } = useListVirtualizer({
+    count: items.length,
+    estimatedSize: () => 142,
+    overscan: 5,
+    gap: 0,
+    paddingStart: 0,
+    paddingEnd: 0,
+  })
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()
