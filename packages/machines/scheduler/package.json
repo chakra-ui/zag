@@ -1,17 +1,30 @@
 {
   "name": "@zag-js/scheduler",
-  "version": "1.40.0",
+  "version": "2.0.0-next.0",
   "description": "Core logic for the scheduler widget implemented as a state machine",
-  "keywords": ["js", "machine", "statechart", "component", "chakra-ui", "scheduler"],
+  "keywords": [
+    "js",
+    "machine",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "scheduler"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/scheduler",
   "sideEffects": false,
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
-  "bugs": { "url": "https://github.com/chakra-ui/zag/issues" },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",

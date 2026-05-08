@@ -1,5 +1,19 @@
 # @zag-js/vanilla
 
+## 2.0.0-next.0
+
+### Patch Changes
+
+- [#3063](https://github.com/chakra-ui/zag/pull/3063)
+  [`841296f`](https://github.com/chakra-ui/zag/commit/841296f7f0b64e33175d00ca877333ea5a345023) Thanks
+  [@kraus-milan](https://github.com/kraus-milan)! - Machine: Do not use `{}` instead of `undefined` and `null` computed
+  value (fixes `accept="[object Object]"` in File Upload with `accept: undefined`)
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/store@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.39.1
 
 ### Patch Changes

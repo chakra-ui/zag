@@ -1,5 +1,7 @@
 # @zag-js/anatomy-icons
 
+## 2.0.0-next.0
+
 ## 1.39.1
 
 ## 1.39.0

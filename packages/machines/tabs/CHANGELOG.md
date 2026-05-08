@@ -1,5 +1,49 @@
 # @zag-js/tabs
 
+## 2.0.0-next.0
+
+### Major Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`db9bf9e`](https://github.com/chakra-ui/zag/commit/db9bf9e3590fe64a88f7e74797aac294c1bea96f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Replace `composite` prop with
+  `virtualFocus` in Tabs.
+
+  The vague `composite` boolean has been replaced with `virtualFocus`, a well-known accessibility concept that is
+  self-documenting.
+  - `virtualFocus: false` (default) — roving tabindex, arrow keys move DOM focus. Standard standalone tabs.
+  - `virtualFocus: true` — all triggers are tabIndex -1, arrow keys update selected tab without moving DOM focus. Used
+    when tabs are embedded inside another composite widget (e.g. combobox/tabs pattern).
+
+  > Note: the boolean is inverted relative to `composite`.
+
+  ### Migration
+
+  ```diff
+  - tabs.machine({ composite: false })
+  + tabs.machine({ virtualFocus: true })
+  ```
+
+  ```diff
+  - tabs.machine({ composite: true })
+  + tabs.machine({ virtualFocus: false })
+    // or simply omit — false is the default
+  ```
+
+  ### Why
+  - `virtualFocus` is a well-known a11y concept (managing focus via state instead of DOM focus)
+  - Self-documenting — no one knows what `composite` means without reading docs
+  - Consistent with how `composite` was removed from select, menu, and combobox
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.39.1
 
 ### Patch Changes
