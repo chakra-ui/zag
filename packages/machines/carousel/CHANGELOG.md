@@ -1,5 +1,50 @@
 # @zag-js/carousel
 
+## 2.0.0-next.0
+
+### Major Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`000ec5b`](https://github.com/chakra-ui/zag/commit/000ec5b2cdacb37fe2e1c1e5396f040ca1194e5b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Rename props for consistency with other
+  machines.
+
+  ### Migration
+
+  **`slideCount` → `count`** — Aligns with `rating`, `pagination`, etc.
+
+  ```diff
+  - slideCount: items.length
+  + count: items.length
+  ```
+
+  **`autoplay` → `autoPlay`** — Consistent camelCase (matches HTML spec).
+
+  ```diff
+  - autoplay: true
+  + autoPlay: true
+
+  - autoplay: { delay: 2000 }
+  + autoPlay: { delay: 2000 }
+  ```
+
+  **`padding` → `itemSpacing`** — More descriptive name for the scroll padding around the viewport.
+
+  ```diff
+  - padding: "16px"
+  + itemSpacing: "16px"
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/scroll-snap@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.39.1
 
 ### Patch Changes

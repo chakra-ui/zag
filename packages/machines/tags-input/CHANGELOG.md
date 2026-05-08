@@ -1,5 +1,40 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.0
+
+### Major Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`bd8e235`](https://github.com/chakra-ui/zag/commit/bd8e235819bfce769874e52672a3471ea4c0b0fe) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** `editable` now defaults to `false`.
+
+  Inline editing of existing tags (via double-click or pressing `Enter` on a highlighted tag) is now opt-in. Tags are
+  add/remove only by default.
+
+  ```diff
+    tagsInput.machine({
+      id: "tags",
+  +   editable: true, // add this to preserve inline rename
+    })
+  ```
+
+  ### Why
+  - **Simpler default** — most usages only need add/remove, not inline rename
+  - **Less surprise** — double-click to edit is a power-user feature that should be opted into
+  - **Matches peers** — aligns with how other tag input libraries behave out of the box
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/auto-resize@2.0.0-next.0
+  - @zag-js/interact-outside@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+  - @zag-js/live-region@2.0.0-next.0
+
 ## 1.39.1
 
 ### Patch Changes

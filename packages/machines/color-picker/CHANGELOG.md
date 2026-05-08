@@ -1,5 +1,39 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.0
+
+### Minor Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`c83d417`](https://github.com/chakra-ui/zag/commit/c83d41797a888975b97599448cc080ea3ff22279) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add OKLab and OKLCH as color formats with `in oklab` /
+  `in oklch` area and slider gradients, plus an optional sRGB gamut overlay for wide-gamut picking.
+
+  **Color picker API:** Use `getGamutOverlay(props?)` (replaces the removed `gamutOverlay` property) with the same props
+  as `getAreaProps` / `getGamutOverlayProps`. Adds `isInSrgbGamut` and optional `pixelRatio` on overlay props for
+  DPR-aware boundary sampling. See
+  [OSS-2393](https://linear.app/chakra/issue/OSS-2393/color-picker-wide-gamut-color-support-oklaboklch-srgb-gamut-overlay).
+
+### Patch Changes
+
+- [`43e5a18`](https://github.com/chakra-ui/zag/commit/43e5a18be5910a6d1a2387782b8e6157b9d2500e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color value to respect the specified `format` when setting
+  values via props or `setValue`.
+
+  Previously, the internal color object could retain a mismatched format (e.g., RGB when `format` is `hsla`), causing
+  inconsistent `value` objects in `onValueChange` callbacks.
+
+- Updated dependencies [[`c83d417`](https://github.com/chakra-ui/zag/commit/c83d41797a888975b97599448cc080ea3ff22279),
+  [`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/color-utils@2.0.0-next.0
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/dismissable@2.0.0-next.0
+  - @zag-js/popper@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.39.1
 
 ### Patch Changes
