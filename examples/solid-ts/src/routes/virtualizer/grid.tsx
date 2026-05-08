@@ -1,4 +1,4 @@
-import { Index, createMemo } from "solid-js"
+import { Index } from "solid-js"
 import { useGridVirtualizer } from "../../hooks/use-virtualizer"
 
 const ROW_COUNT = 1_000
@@ -11,22 +11,13 @@ function getCellValue(row: number, column: number) {
 }
 
 export default function Page() {
-  const { virtualizer, ref, version } = useGridVirtualizer({
+  const { virtualizer, ref } = useGridVirtualizer({
     rowCount: ROW_COUNT,
     columnCount: COLUMN_COUNT,
     estimatedRowSize: () => CELL_HEIGHT,
     estimatedColumnSize: () => CELL_WIDTH,
     overscan: 3,
     observeScrollElementSize: true,
-  })
-
-  const layout = createMemo(() => {
-    version()
-    return {
-      virtualRows: virtualizer.getVirtualRows(),
-      totalHeight: virtualizer.getTotalHeight(),
-      totalWidth: virtualizer.getTotalWidth(),
-    }
   })
 
   return (
@@ -51,8 +42,14 @@ export default function Page() {
           "margin-top": "16px",
         }}
       >
-        <div style={{ height: `${layout().totalHeight}px`, width: `${layout().totalWidth}px`, position: "relative" }}>
-          <Index each={layout().virtualRows}>
+        <div
+          style={{
+            height: `${virtualizer.getTotalHeight()}px`,
+            width: `${virtualizer.getTotalWidth()}px`,
+            position: "relative",
+          }}
+        >
+          <Index each={virtualizer.getVirtualRows()}>
             {(virtualRow) => (
               <div style={virtualizer.getRowStyle(virtualRow())}>
                 <Index each={virtualRow().columns}>

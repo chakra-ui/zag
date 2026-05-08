@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "@zag-js/solid"
 import {
   GridVirtualizer,
   ListVirtualizer,
@@ -8,91 +9,59 @@ import {
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { onCleanup, onMount } from "solid-js"
 
-type VirtualizerWithStore<T> = T & {
+interface VirtualizerLike {
   subscribe: (listener: () => void) => () => void
-  destroy: () => void
   getSnapshot: () => number
+  destroy: () => void
+  init: (element: HTMLElement) => void
 }
 
-function useVirtualizerStore<T extends VirtualizerWithStore<object>>(createVirtualizer: () => T) {
-  const virtualizer = createVirtualizer()
-  const [version, setVersion] = createSignal(virtualizer.getSnapshot())
-  const unsubscribe = virtualizer.subscribe(() => setVersion(virtualizer.getSnapshot()))
+function useVirtualizerStore<T extends VirtualizerLike>(create: () => T) {
+  const inner = create()
+  const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
-  onCleanup(() => {
-    unsubscribe()
-    virtualizer.destroy()
+  let scrollElement: HTMLElement | null = null
+  let mounted = false
+
+  onMount(() => {
+    mounted = true
+    if (scrollElement) inner.init(scrollElement)
   })
 
-  return { virtualizer, version }
+  onCleanup(() => inner.destroy())
+
+  // Reading any property on the proxy registers a dep on `snapshot`,
+  // so JSX bindings like virtualizer.getVirtualItems() re-track on every notify.
+  const virtualizer = new Proxy(inner, {
+    get(target, prop, receiver) {
+      snapshot()
+      const value = Reflect.get(target, prop, receiver)
+      return typeof value === "function" ? value.bind(target) : value
+    },
+  }) as T
+
+  const ref = (el: HTMLElement | null) => {
+    scrollElement = el
+    if (mounted && el) inner.init(el)
+  }
+
+  return { virtualizer, ref }
 }
 
 export function useListVirtualizer(options: ListVirtualizerOptions) {
-  const { virtualizer, version } = useVirtualizerStore(() => new ListVirtualizer(options))
-  let scrollElement: HTMLElement | null = null
-  let mounted = false
-
-  onMount(() => {
-    mounted = true
-    if (scrollElement) virtualizer.init(scrollElement)
-  })
-
-  const ref = (el: HTMLElement | null) => {
-    scrollElement = el
-    if (mounted && el) virtualizer.init(el)
-  }
-  return { virtualizer, ref, version }
+  return useVirtualizerStore(() => new ListVirtualizer(options))
 }
 
 export function useGridVirtualizer(options: GridVirtualizerOptions) {
-  const { virtualizer, version } = useVirtualizerStore(() => new GridVirtualizer(options))
-  let scrollElement: HTMLElement | null = null
-  let mounted = false
-
-  onMount(() => {
-    mounted = true
-    if (scrollElement) virtualizer.init(scrollElement)
-  })
-
-  const ref = (el: HTMLElement | null) => {
-    scrollElement = el
-    if (mounted && el) virtualizer.init(el)
-  }
-  return { virtualizer, ref, version }
+  return useVirtualizerStore(() => new GridVirtualizer(options))
 }
 
 export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
-  const { virtualizer, version } = useVirtualizerStore(() => new WindowVirtualizer(options))
-  let scrollElement: HTMLElement | null = null
-  let mounted = false
-
-  onMount(() => {
-    mounted = true
-    if (scrollElement) virtualizer.init(scrollElement)
-  })
-
-  const ref = (el: HTMLElement | null) => {
-    scrollElement = el
-    if (mounted && el) virtualizer.init(el)
-  }
-  return { virtualizer, ref, version }
+  return useVirtualizerStore(() => new WindowVirtualizer(options))
 }
 
 export function useWaterfallVirtualizer(options: WaterfallVirtualizerOptions) {
-  const { virtualizer, version } = useVirtualizerStore(() => new WaterfallVirtualizer(options))
-  let scrollElement: HTMLElement | null = null
-  let mounted = false
-
-  onMount(() => {
-    mounted = true
-    if (scrollElement) virtualizer.init(scrollElement)
-  })
-
-  const ref = (el: HTMLElement | null) => {
-    scrollElement = el
-    if (mounted && el) virtualizer.init(el)
-  }
-  return { virtualizer, ref, version }
+  return useVirtualizerStore(() => new WaterfallVirtualizer(options))
 }

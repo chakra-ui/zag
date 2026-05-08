@@ -16,7 +16,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
   height: getItemHeight(index),
 }))
 
-const { virtualizer, version, init } = useWaterfallVirtualizer({
+const { virtualizer, init } = useWaterfallVirtualizer({
   count: ITEM_COUNT,
   columnCount: 3,
   columnGap: 12,
@@ -28,28 +28,13 @@ const { virtualizer, version, init } = useWaterfallVirtualizer({
 const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
   init(element as HTMLElement | null)
 }
-
-const virtualItems = computed(() => {
-  version.value
-  return virtualizer.getVirtualItems()
-})
-
-const totalSize = computed(() => {
-  version.value
-  return virtualizer.getTotalSize()
-})
-
-const waterfallState = computed(() => {
-  version.value
-  return virtualizer.getWaterfallState()
-})
 </script>
 
 <template>
   <main style="padding: 20px; width: 100%; max-width: 960px">
     <h1>Waterfall Virtualizer</h1>
     <p style="color: #64748b">
-      Masonry layout with {{ ITEM_COUNT.toLocaleString() }} variable-height cards across {{ waterfallState.columnCount }} columns.
+      Masonry layout with {{ ITEM_COUNT.toLocaleString() }} variable-height cards across {{ virtualizer.getWaterfallState().columnCount }} columns.
     </p>
 
     <div
@@ -66,9 +51,9 @@ const waterfallState = computed(() => {
         marginTop: '16px',
       }"
     >
-      <div :style="{ height: `${totalSize}px`, width: '100%', position: 'relative' }">
+      <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
         <div
-          v-for="virtualItem in virtualItems"
+          v-for="virtualItem in virtualizer.getVirtualItems()"
           :key="items[virtualItem.index]?.id"
           :data-index="virtualItem.index"
           :style="{

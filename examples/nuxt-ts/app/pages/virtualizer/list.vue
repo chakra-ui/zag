@@ -11,7 +11,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 
 const smoothScroll = ref(true)
 
-const { virtualizer, version, init } = useListVirtualizer({
+const { virtualizer, init } = useListVirtualizer({
   count: ITEM_COUNT,
   estimatedSize: () => 64,
   overscan: 6,
@@ -20,16 +20,6 @@ const { virtualizer, version, init } = useListVirtualizer({
 const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
   init(element as HTMLElement | null)
 }
-
-const virtualItems = computed(() => {
-  version.value
-  return virtualizer.getVirtualItems()
-})
-
-const totalSize = computed(() => {
-  version.value
-  return virtualizer.getTotalSize()
-})
 </script>
 
 <template>
@@ -58,9 +48,9 @@ const totalSize = computed(() => {
       @scroll="virtualizer.handleScroll"
       :style="{ ...virtualizer.getContainerStyle(), width: '100%', height: '420px', border: '1px solid #d1d5db', borderRadius: '8px', marginTop: '16px' }"
     >
-      <div :style="{ height: `${totalSize}px`, width: '100%', position: 'relative' }">
+      <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
         <div
-          v-for="virtualItem in virtualItems"
+          v-for="virtualItem in virtualizer.getVirtualItems()"
           :key="items[virtualItem.index]?.id"
           v-bind="virtualizer.getItemAriaAttrs(virtualItem.index)"
           :style="{

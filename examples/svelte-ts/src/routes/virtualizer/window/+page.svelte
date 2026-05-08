@@ -9,7 +9,7 @@
 
   let rootEl = $state<HTMLDivElement | null>(null)
 
-  const store = useWindowVirtualizer({
+  const { virtualizer, init } = useWindowVirtualizer({
     count: ITEM_COUNT,
     estimatedSize: () => 72,
     overscan: 8,
@@ -20,7 +20,7 @@
   })
 
   $effect(() => {
-    store.init(rootEl)
+    init(rootEl)
   })
 </script>
 
@@ -30,11 +30,11 @@
 
   <div
     bind:this={rootEl}
-    {...store.virtualizer.getContainerAriaAttrs()}
+    {...virtualizer.getContainerAriaAttrs()}
     style="width: 100%; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 16px; position: relative;"
   >
-    <div style={`height: ${store.totalSize}px; width: 100%; position: relative`}>
-      {#each store.items as virtualItem (items[virtualItem.index]?.id)}
+    <div style={`height: ${virtualizer.getTotalSize()}px; width: 100%; position: relative`}>
+      {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id)}
         <div
           style={`position: absolute; left: 0; width: 100%; transform: translateY(${virtualItem.start}px); height: ${virtualItem.size}px; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: ${virtualItem.index % 2 === 0 ? "#f8fafc" : "#fff"}; box-sizing: border-box;`}
         >

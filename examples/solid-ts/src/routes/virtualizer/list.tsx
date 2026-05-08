@@ -1,4 +1,4 @@
-import { Index, createMemo, createSignal } from "solid-js"
+import { Index, createSignal } from "solid-js"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 10_000
@@ -11,18 +11,10 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 
 export default function Page() {
   const [smoothScroll, setSmoothScroll] = createSignal(true)
-  const { virtualizer, ref, version } = useListVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
     estimatedSize: () => 64,
     overscan: 6,
-  })
-
-  const layout = createMemo(() => {
-    version()
-    return {
-      virtualItems: virtualizer.getVirtualItems(),
-      totalSize: virtualizer.getTotalSize(),
-    }
   })
 
   return (
@@ -73,8 +65,8 @@ export default function Page() {
           "margin-top": "16px",
         }}
       >
-        <div style={{ height: `${layout().totalSize}px`, width: "100%", position: "relative" }}>
-          <Index each={layout().virtualItems}>
+        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
+          <Index each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 data-index={virtualItem().index}

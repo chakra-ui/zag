@@ -11,14 +11,14 @@
   let smoothScroll = $state(true)
   let scrollEl = $state<HTMLDivElement | null>(null)
 
-  const store = useListVirtualizer({
+  const { virtualizer, init } = useListVirtualizer({
     count: ITEM_COUNT,
     estimatedSize: () => 64,
     overscan: 6,
   })
 
   $effect(() => {
-    store.init(scrollEl)
+    init(scrollEl)
   })
 </script>
 
@@ -32,26 +32,26 @@
   </label>
 
   <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
-    <button type="button" onclick={() => store.virtualizer.scrollToIndex(0, { smooth: smoothScroll })}>Scroll to top</button>
-    <button type="button" onclick={() => store.virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll })}>
+    <button type="button" onclick={() => virtualizer.scrollToIndex(0, { smooth: smoothScroll })}>Scroll to top</button>
+    <button type="button" onclick={() => virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll })}>
       Scroll to middle
     </button>
-    <button type="button" onclick={() => store.virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })}>Scroll to bottom</button>
+    <button type="button" onclick={() => virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })}>Scroll to bottom</button>
   </div>
 
   <div
     bind:this={scrollEl}
-    onscroll={store.virtualizer.handleScroll}
+    onscroll={virtualizer.handleScroll}
     role="listbox"
     tabindex="0"
     aria-label="Virtualized list"
     style="height: 420px; width: 100%; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 16px; position: relative;"
   >
-    <div style={`height: ${store.totalSize}px; width: 100%; position: relative`}>
-      {#each store.items as virtualItem (items[virtualItem.index]?.id)}
+    <div style={`height: ${virtualizer.getTotalSize()}px; width: 100%; position: relative`}>
+      {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id)}
         <div
           data-index={virtualItem.index}
-          {...store.virtualizer.getItemAriaAttrs(virtualItem.index)}
+          {...virtualizer.getItemAriaAttrs(virtualItem.index)}
           style={`position: absolute; left: 0; width: 100%; transform: translateY(${virtualItem.start}px); height: ${virtualItem.size}px; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: ${virtualItem.index % 2 === 0 ? "#f8fafc" : "#fff"}; box-sizing: border-box;`}
         >
           <strong>{items[virtualItem.index]?.name}</strong>

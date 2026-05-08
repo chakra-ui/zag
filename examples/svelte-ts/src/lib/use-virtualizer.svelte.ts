@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "@zag-js/svelte"
 import {
   GridVirtualizer,
   ListVirtualizer,
@@ -10,136 +11,49 @@ import {
 } from "@zag-js/virtualizer"
 import { onDestroy } from "svelte"
 
-export function useListVirtualizer(options: ListVirtualizerOptions) {
-  const virtualizer = new ListVirtualizer(options)
+interface VirtualizerLike {
+  subscribe: (listener: () => void) => () => void
+  getSnapshot: () => number
+  destroy: () => void
+  init: (element: HTMLElement) => void
+}
 
-  let items = $state(virtualizer.getVirtualItems())
-  let totalSize = $state(virtualizer.getTotalSize())
+function useVirtualizerStore<T extends VirtualizerLike>(create: () => T) {
+  const inner = create()
+  const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
-  const unsubscribe = virtualizer.subscribe(() => {
-    items = virtualizer.getVirtualItems()
-    totalSize = virtualizer.getTotalSize()
-  })
+  onDestroy(() => inner.destroy())
 
-  onDestroy(() => {
-    unsubscribe()
-    virtualizer.destroy()
-  })
-
-  return {
-    virtualizer,
-    init(element: HTMLElement | null) {
-      if (!element) return
-      virtualizer.init(element)
+  // Reading any property on the proxy registers a dep on `snapshot`,
+  // so template bindings like virtualizer.getVirtualItems() re-track on every notify.
+  const virtualizer = new Proxy(inner, {
+    get(target, prop, receiver) {
+      snapshot()
+      const value = Reflect.get(target, prop, receiver)
+      return typeof value === "function" ? value.bind(target) : value
     },
-    get items() {
-      return items
-    },
-    get totalSize() {
-      return totalSize
-    },
+  }) as T
+
+  const init = (element: HTMLElement | null) => {
+    if (!element) return
+    inner.init(element)
   }
+
+  return { virtualizer, init }
+}
+
+export function useListVirtualizer(options: ListVirtualizerOptions) {
+  return useVirtualizerStore(() => new ListVirtualizer(options))
 }
 
 export function useGridVirtualizer(options: GridVirtualizerOptions) {
-  const virtualizer = new GridVirtualizer(options)
-
-  let rows = $state(virtualizer.getVirtualRows())
-  let totalHeight = $state(virtualizer.getTotalHeight())
-  let totalWidth = $state(virtualizer.getTotalWidth())
-
-  const unsubscribe = virtualizer.subscribe(() => {
-    rows = virtualizer.getVirtualRows()
-    totalHeight = virtualizer.getTotalHeight()
-    totalWidth = virtualizer.getTotalWidth()
-  })
-
-  onDestroy(() => {
-    unsubscribe()
-    virtualizer.destroy()
-  })
-
-  return {
-    virtualizer,
-    init(element: HTMLElement | null) {
-      if (!element) return
-      virtualizer.init(element)
-    },
-    get rows() {
-      return rows
-    },
-    get totalHeight() {
-      return totalHeight
-    },
-    get totalWidth() {
-      return totalWidth
-    },
-  }
+  return useVirtualizerStore(() => new GridVirtualizer(options))
 }
 
 export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
-  const virtualizer = new WindowVirtualizer(options)
-
-  let items = $state(virtualizer.getVirtualItems())
-  let totalSize = $state(virtualizer.getTotalSize())
-
-  const unsubscribe = virtualizer.subscribe(() => {
-    items = virtualizer.getVirtualItems()
-    totalSize = virtualizer.getTotalSize()
-  })
-
-  onDestroy(() => {
-    unsubscribe()
-    virtualizer.destroy()
-  })
-
-  return {
-    virtualizer,
-    init(element: HTMLElement | null) {
-      if (!element) return
-      virtualizer.init(element)
-    },
-    get items() {
-      return items
-    },
-    get totalSize() {
-      return totalSize
-    },
-  }
+  return useVirtualizerStore(() => new WindowVirtualizer(options))
 }
 
 export function useWaterfallVirtualizer(options: WaterfallVirtualizerOptions) {
-  const virtualizer = new WaterfallVirtualizer(options)
-
-  let items = $state(virtualizer.getVirtualItems())
-  let totalSize = $state(virtualizer.getTotalSize())
-  let waterfallState = $state(virtualizer.getWaterfallState())
-
-  const unsubscribe = virtualizer.subscribe(() => {
-    items = virtualizer.getVirtualItems()
-    totalSize = virtualizer.getTotalSize()
-    waterfallState = virtualizer.getWaterfallState()
-  })
-
-  onDestroy(() => {
-    unsubscribe()
-    virtualizer.destroy()
-  })
-
-  return {
-    virtualizer,
-    init(element: HTMLElement | null) {
-      if (!element) return
-      virtualizer.init(element)
-    },
-    get items() {
-      return items
-    },
-    get totalSize() {
-      return totalSize
-    },
-    get waterfallState() {
-      return waterfallState
-    },
-  }
+  return useVirtualizerStore(() => new WaterfallVirtualizer(options))
 }

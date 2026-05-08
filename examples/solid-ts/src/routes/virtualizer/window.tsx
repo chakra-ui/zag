@@ -1,4 +1,4 @@
-import { Index, createMemo } from "solid-js"
+import { Index } from "solid-js"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 10_000
@@ -9,18 +9,10 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 }))
 
 export default function Page() {
-  const { virtualizer, ref, version } = useWindowVirtualizer({
+  const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
     estimatedSize: () => 72,
     overscan: 8,
-  })
-
-  const layout = createMemo(() => {
-    version()
-    return {
-      virtualItems: virtualizer.getVirtualItems(),
-      totalSize: virtualizer.getTotalSize(),
-    }
   })
 
   return (
@@ -39,8 +31,8 @@ export default function Page() {
           "margin-top": "16px",
         }}
       >
-        <div style={{ height: `${layout().totalSize}px`, width: "100%", position: "relative" }}>
-          <Index each={layout().virtualItems}>
+        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
+          <Index each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 data-index={virtualItem().index}

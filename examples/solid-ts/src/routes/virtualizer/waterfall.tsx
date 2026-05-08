@@ -1,4 +1,4 @@
-import { Index, createMemo } from "solid-js"
+import { Index } from "solid-js"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 1_000
@@ -16,7 +16,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 }))
 
 export default function Page() {
-  const { virtualizer, ref, version } = useWaterfallVirtualizer({
+  const { virtualizer, ref } = useWaterfallVirtualizer({
     count: ITEM_COUNT,
     columnCount: 3,
     columnGap: 12,
@@ -25,21 +25,12 @@ export default function Page() {
     estimatedSize: (index) => getItemHeight(index),
   })
 
-  const layout = createMemo(() => {
-    version()
-    return {
-      virtualItems: virtualizer.getVirtualItems(),
-      totalSize: virtualizer.getTotalSize(),
-      state: virtualizer.getWaterfallState(),
-    }
-  })
-
   return (
     <main style={{ padding: "20px", width: "100%", "max-width": "960px" }}>
       <h1>Waterfall Virtualizer</h1>
       <p style={{ color: "#64748b" }}>
-        Masonry layout with {ITEM_COUNT.toLocaleString()} variable-height cards across {layout().state.columnCount}{" "}
-        columns.
+        Masonry layout with {ITEM_COUNT.toLocaleString()} variable-height cards across{" "}
+        {virtualizer.getWaterfallState().columnCount} columns.
       </p>
 
       <div
@@ -56,8 +47,8 @@ export default function Page() {
           "margin-top": "16px",
         }}
       >
-        <div style={{ height: `${layout().totalSize}px`, width: "100%", position: "relative" }}>
-          <Index each={layout().virtualItems}>
+        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
+          <Index each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 data-index={virtualItem().index}

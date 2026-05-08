@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "@zag-js/vue"
 import {
   GridVirtualizer,
   ListVirtualizer,
@@ -9,30 +10,35 @@ import {
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
 
-type VirtualizerLike = {
+interface VirtualizerLike {
   subscribe: (listener: () => void) => () => void
+  getSnapshot: () => number
   destroy: () => void
   init: (element: HTMLElement) => void
 }
 
-function useVirtualizerStore<T extends VirtualizerLike>(createVirtualizer: () => T) {
-  const virtualizer = createVirtualizer()
-  const version = ref(0)
-  const unsubscribe = virtualizer.subscribe(() => {
-    version.value += 1
-  })
+function useVirtualizerStore<T extends VirtualizerLike>(create: () => T) {
+  const inner = create()
+  const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
-  onUnmounted(() => {
-    unsubscribe()
-    virtualizer.destroy()
-  })
+  onUnmounted(() => inner.destroy())
+
+  // Reading any property on the proxy registers a dep on `snapshot`,
+  // so template bindings like virtualizer.getVirtualItems() re-track on every notify.
+  const virtualizer = new Proxy(inner, {
+    get(target, prop, receiver) {
+      void snapshot.value
+      const value = Reflect.get(target, prop, receiver)
+      return typeof value === "function" ? value.bind(target) : value
+    },
+  }) as T
 
   const init = (element: HTMLElement | null) => {
     if (!element) return
-    virtualizer.init(element)
+    inner.init(element)
   }
 
-  return { virtualizer, version, init }
+  return { virtualizer, init }
 }
 
 export function useListVirtualizer(options: ListVirtualizerOptions) {

@@ -8,7 +8,7 @@
 
   let scrollEl = $state<HTMLDivElement | null>(null)
 
-  const store = useGridVirtualizer({
+  const { virtualizer, init } = useGridVirtualizer({
     rowCount: ROW_COUNT,
     columnCount: COLUMN_COUNT,
     estimatedRowSize: () => CELL_HEIGHT,
@@ -18,7 +18,7 @@
   })
 
   $effect(() => {
-    store.init(scrollEl)
+    init(scrollEl)
   })
 
   const getCellValue = (row: number, column: number) => `R${row + 1}C${column + 1}`
@@ -30,16 +30,16 @@
 
   <div
     bind:this={scrollEl}
-    onscroll={store.virtualizer.handleScroll}
+    onscroll={virtualizer.handleScroll}
     role="grid"
     tabindex="0"
     aria-label="Virtualized grid"
     style="height: 520px; width: 100%; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 16px; position: relative;"
   >
-    <div style={`height: ${store.totalHeight}px; width: ${store.totalWidth}px; position: relative`}>
-      {#each store.rows as virtualRow (`row-${virtualRow.row}`)}
+    <div style={`height: ${virtualizer.getTotalHeight()}px; width: ${virtualizer.getTotalWidth()}px; position: relative`}>
+      {#each virtualizer.getVirtualRows() as virtualRow (`row-${virtualRow.row}`)}
         <div
-          style={`position: absolute; top: ${virtualRow.y}px; left: 0; width: ${store.totalWidth}px; height: ${virtualRow.height}px;`}
+          style={`position: absolute; top: ${virtualRow.y}px; left: 0; width: ${virtualizer.getTotalWidth()}px; height: ${virtualRow.height}px;`}
         >
           {#each virtualRow.columns as column (`${virtualRow.row}-${column.column}`)}
             <div
