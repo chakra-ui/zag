@@ -582,6 +582,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "perf", title: "Perf: Fixed Height" },
       { slug: "perf-variable", title: "Perf: Variable (measureElement)" },
       { slug: "perf-dynamic", title: "Perf: Variable (Known Sizes)" },
+      { slug: "perf-waterfall", title: "Perf: Waterfall / Masonry" },
       { slug: "perf-window", title: "Perf: Window scroll" },
     ],
   },
