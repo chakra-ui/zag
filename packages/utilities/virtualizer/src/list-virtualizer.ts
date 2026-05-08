@@ -26,8 +26,9 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     super(options)
     if (options.initialRect) {
       const { width, height } = options.initialRect
-      super.setViewportSize(options.horizontal ? width : height)
-      super.setCrossAxisSize(options.horizontal ? height : width)
+      const horizontal = options.orientation === "horizontal"
+      super.setViewportSize(horizontal ? width : height)
+      super.setCrossAxisSize(horizontal ? height : width)
     }
   }
 
@@ -172,7 +173,8 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemState(virtualItem: VirtualItem): ItemState {
-    const { horizontal, gap } = this.options
+    const { gap } = this.options
+    const horizontal = this.isHorizontal
     const { index, start, size, lane } = virtualItem
 
     if (this.isGrid) {
@@ -201,7 +203,9 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getItemStyle(virtualItem: VirtualItem): CSSProperties {
-    const { horizontal, rtl, gap } = this.options
+    const { gap } = this.options
+    const horizontal = this.isHorizontal
+    const isRtl = this.isRtl
     const scrollMargin = this.getScrollMargin()
     const { start, lane } = virtualItem
 
@@ -211,13 +215,13 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       const y = start - scrollMargin
 
       // For RTL mode, reverse the lane positioning
-      if (rtl) {
+      if (isRtl) {
         x = (this.lanes - 1 - lane) * (laneSize + gap)
       }
 
       let transform: string
       if (horizontal) {
-        transform = rtl ? `translate3d(-${y}px, ${x}px, 0)` : `translate3d(${y}px, ${x}px, 0)`
+        transform = isRtl ? `translate3d(-${y}px, ${x}px, 0)` : `translate3d(${y}px, ${x}px, 0)`
       } else {
         transform = `translate3d(${x}px, ${y}px, 0)`
       }
@@ -236,7 +240,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const offset = start - scrollMargin
     let transform: string
     if (horizontal) {
-      transform = rtl ? `translate3d(-${offset}px, 0, 0)` : `translate3d(${offset}px, 0, 0)`
+      transform = isRtl ? `translate3d(-${offset}px, 0, 0)` : `translate3d(${offset}px, 0, 0)`
     } else {
       transform = `translate3d(0, ${offset}px, 0)`
     }
@@ -376,7 +380,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   getStickyGroupHeader(headerSizeOverride?: number) {
-    const offset = this.getScrollState().offset[this.options.horizontal ? "x" : "y"] + this.getScrollMargin()
+    const offset = this.getScrollState().offset[this.isHorizontal ? "x" : "y"] + this.getScrollMargin()
     return this.getGroupHeaderState(offset, headerSizeOverride)
   }
 
@@ -434,7 +438,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     this.invalidateItemKeys()
     this.rangeCache?.clear()
     this.invalidateMeasurements(0)
-    this.calculateRange()
+    this.calculateRange({ reason: "count" })
 
     // Restore anchor if possible (keyed)
     if (anchor) {
@@ -450,7 +454,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     const { count } = this.options
     const scrollMargin = this.getScrollMargin()
-    const viewportStart = this.getScrollState().offset[this.options.horizontal ? "x" : "y"] + scrollMargin
+    const viewportStart = this.getScrollState().offset[this.isHorizontal ? "x" : "y"] + scrollMargin
     const anchorIndex = Math.min(count - 1, Math.max(0, this.findIndexAtOffset(viewportStart)))
     const shiftedIndex = anchorIndex + addedCount
     const indexToKey = this.options.indexToKey

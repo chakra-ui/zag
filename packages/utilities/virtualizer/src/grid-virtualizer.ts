@@ -1,5 +1,5 @@
 import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
-import type { CSSProperties, GridVirtualizerOptions, Range, TimerId } from "./types"
+import type { CSSProperties, GridVirtualizerOptions, Range, RangeChangeReason, ScrollState, TimerId } from "./types"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
 import { SizeTracker } from "./utils/size-tracker"
@@ -13,6 +13,8 @@ interface GridRange {
 
 const SCROLL_END_DELAY_MS = 150
 const INITIAL_SCROLL_TOLERANCE = 1
+
+type RangeChangeReasonDetails = { reason: RangeChangeReason }
 
 /** A virtual row containing its visible columns */
 export interface VirtualRow {
@@ -38,8 +40,10 @@ export interface VirtualColumn {
   width: number
 }
 
-type ResolvedOptions = Required<Omit<GridVirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange">> &
-  Pick<GridVirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange">
+type ResolvedOptions = Required<
+  Omit<GridVirtualizerOptions, "onScroll" | "onScrollEnd" | "onRangeChange" | "onVisibilityChange">
+> &
+  Pick<GridVirtualizerOptions, "onScroll" | "onScrollEnd" | "onRangeChange" | "onVisibilityChange">
 
 /**
  * Row-first grid virtualizer.
@@ -57,6 +61,8 @@ export class GridVirtualizer {
   // Scroll state
   private scrollTop = 0
   private scrollLeft = 0
+  private scrollDirectionX: ScrollState["direction"]["x"] = "idle"
+  private scrollDirectionY: ScrollState["direction"]["y"] = "idle"
   private isScrolling = false
   private scrollEndTimer: TimerId | null = null
 
@@ -114,12 +120,13 @@ export class GridVirtualizer {
         for (let i = range.startIndex; i <= range.endIndex; i++) indexes.push(i)
         return indexes
       },
-      horizontal: false,
-      rtl: false,
+      orientation: "vertical",
+      dir: "ltr",
       rootMargin: "50px",
       preserveScrollAnchor: true,
       overflowAnchor: "none",
       observeScrollElementSize: false,
+      scrollEndDelay: SCROLL_END_DELAY_MS,
       ...options,
     } as ResolvedOptions
 
@@ -220,6 +227,7 @@ export class GridVirtualizer {
   private onItemsChanged(): void {
     this.rowSizeTracker?.clearMeasurements()
     this.columnSizeTracker?.clearMeasurements()
+    this.rangeCache?.clear()
     this.resetMeasurements()
     this.remeasureTrackedRows()
   }
@@ -310,7 +318,7 @@ export class GridVirtualizer {
   // Range calculation
   // ============================================
 
-  private calculateRange(): void {
+  private calculateRange({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
     const scrollMargin = this.getScrollMargin()
 
     if (
@@ -361,7 +369,7 @@ export class GridVirtualizer {
       this.range.endColumn !== newRange.endColumn
     ) {
       this.range = newRange
-      this.options.onRangeChange?.({ startIndex: newRange.startRow, endIndex: newRange.endRow })
+      this.options.onRangeChange?.({ range: { startIndex: newRange.startRow, endIndex: newRange.endRow }, reason })
     }
 
     this.lastScrollTop = this.scrollTop
@@ -487,7 +495,7 @@ export class GridVirtualizer {
       queueMicrotask(() => {
         this.pendingSyncNotify = false
         if (this.isDestroyed) return
-        this.forceUpdate()
+        this.forceUpdate({ reason: "measurement" })
       })
     }
   }
@@ -547,7 +555,7 @@ export class GridVirtualizer {
     this.pendingRowSizeUpdates.clear()
 
     if (changed) {
-      this.forceUpdate()
+      this.forceUpdate({ reason: "measurement" })
     }
   }
 
@@ -600,33 +608,25 @@ export class GridVirtualizer {
 
     if (scrollTop === this.scrollTop && scrollLeft === this.scrollLeft) return
 
+    this.scrollDirectionX =
+      scrollLeft > this.scrollLeft ? "forward" : scrollLeft < this.scrollLeft ? "backward" : "idle"
+    this.scrollDirectionY = scrollTop > this.scrollTop ? "forward" : scrollTop < this.scrollTop ? "backward" : "idle"
     this.scrollTop = scrollTop
     this.scrollLeft = scrollLeft
     this.isScrolling = true
 
-    this.calculateRange()
+    this.calculateRange({ reason: "scroll" })
 
     if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
     this.scrollEndTimer = setTimeout(() => {
+      if (this.isDestroyed) return
       this.scrollEndTimer = null
       this.isScrolling = false
       this.observeUnobservedRows()
-      this.options.onScroll?.({
-        offset: { x: this.scrollLeft, y: this.scrollTop },
-        direction: {
-          x:
-            this.scrollLeft > this.lastScrollLeft
-              ? "forward"
-              : this.scrollLeft < this.lastScrollLeft
-                ? "backward"
-                : "idle",
-          y:
-            this.scrollTop > this.lastScrollTop ? "forward" : this.scrollTop < this.lastScrollTop ? "backward" : "idle",
-        },
-        isScrolling: false,
-      })
+      this.options.onScroll?.(this.getScrollState())
+      this.options.onScrollEnd?.(this.getScrollState())
       this.notifyStore()
-    }, SCROLL_END_DELAY_MS)
+    }, this.options.scrollEndDelay)
 
     this.notifyStore()
   }
@@ -645,7 +645,7 @@ export class GridVirtualizer {
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
     this.lastScrollMargin = -1
-    this.calculateRange()
+    this.calculateRange({ reason: "resize" })
     this.notifyStore()
   }
 
@@ -657,7 +657,7 @@ export class GridVirtualizer {
     if (this.remeasureTrackedRows()) {
       this.lastScrollTop = -1
       this.lastScrollLeft = -1
-      this.calculateRange()
+      this.calculateRange({ reason: "measurement" })
       this.notifyStore()
     }
   }
@@ -754,7 +754,7 @@ export class GridVirtualizer {
     } else {
       this.scrollTop = scrollTop
       this.scrollLeft = scrollLeft
-      this.forceUpdate()
+      this.forceUpdate({ reason: "manual" })
     }
 
     return { scrollTop, scrollLeft }
@@ -775,7 +775,7 @@ export class GridVirtualizer {
       }
     } else {
       this.scrollTop = scrollTop
-      this.forceUpdate()
+      this.forceUpdate({ reason: "manual" })
     }
     return { scrollTop }
   }
@@ -792,7 +792,7 @@ export class GridVirtualizer {
       }
     } else {
       this.scrollLeft = scrollLeft
-      this.forceUpdate()
+      this.forceUpdate({ reason: "manual" })
     }
     return { scrollLeft }
   }
@@ -802,16 +802,25 @@ export class GridVirtualizer {
    */
   measureColumn(columnIndex: number, width: number): void {
     if (this.onColumnMeasured(columnIndex, width)) {
-      this.forceUpdate()
+      this.forceUpdate({ reason: "measurement" })
     }
   }
 
-  forceUpdate(): void {
+  forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
     this.lastScrollTop = -1
     this.lastScrollLeft = -1
     this.lastScrollMargin = -1
-    this.calculateRange()
+    this.rangeCache.clear()
+    this.calculateRange({ reason })
     this.notifyStore()
+  }
+
+  getScrollState(): ScrollState {
+    return {
+      offset: { x: this.scrollLeft, y: this.scrollTop },
+      direction: { x: this.scrollDirectionX, y: this.scrollDirectionY },
+      isScrolling: this.isScrolling,
+    }
   }
 
   private remeasureTrackedRows(): boolean {
@@ -837,7 +846,12 @@ export class GridVirtualizer {
       this.onItemsChanged()
     }
 
-    this.forceUpdate()
+    const reason: RangeChangeReason =
+      this.options.rowCount !== prevOptions.rowCount || this.options.columnCount !== prevOptions.columnCount
+        ? "count"
+        : "manual"
+
+    this.forceUpdate({ reason })
   }
 
   destroy(): void {

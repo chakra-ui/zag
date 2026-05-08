@@ -187,6 +187,88 @@ describe("GridVirtualizer", () => {
     expect(virtualizer.getTotalHeight()).toBe(95)
   })
 
+  test("reports range change reasons", () => {
+    const changes: Array<{ range: { startIndex: number; endIndex: number }; reason: string }> = []
+    const virtualizer = new GridVirtualizer({
+      rowCount: 10,
+      columnCount: 1,
+      estimatedRowSize: () => 10,
+      estimatedColumnSize: () => 50,
+      overscan: 0,
+      initialRect: { width: 50, height: 30 },
+      onRangeChange: ({ range, reason }) => {
+        changes.push({ range: { ...range }, reason })
+      },
+    })
+
+    virtualizer.setViewportSize(50, 30)
+    virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+    virtualizer.updateOptions({ rowCount: 3 })
+    virtualizer.updateOptions({ overscan: 1 })
+
+    expect(changes.map((change) => change.reason)).toEqual(["resize", "scroll", "count", "manual"])
+  })
+
+  test("fires onScrollEnd once after scrolling settles", () => {
+    vi.useFakeTimers()
+
+    try {
+      const onScrollEnd = vi.fn()
+      const virtualizer = new GridVirtualizer({
+        rowCount: 100,
+        columnCount: 1,
+        estimatedRowSize: () => 10,
+        estimatedColumnSize: () => 50,
+        initialRect: { width: 50, height: 30 },
+        scrollEndDelay: 100,
+        onScrollEnd,
+      })
+
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      vi.advanceTimersByTime(50)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 40, scrollLeft: 0 } })
+      vi.advanceTimersByTime(99)
+
+      expect(onScrollEnd).not.toHaveBeenCalled()
+
+      vi.advanceTimersByTime(1)
+
+      expect(onScrollEnd).toHaveBeenCalledTimes(1)
+      expect(onScrollEnd).toHaveBeenLastCalledWith({
+        offset: { x: 0, y: 40 },
+        direction: { x: "idle", y: "forward" },
+        isScrolling: false,
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("does not fire onScrollEnd after destroy", () => {
+    vi.useFakeTimers()
+
+    try {
+      const onScrollEnd = vi.fn()
+      const virtualizer = new GridVirtualizer({
+        rowCount: 100,
+        columnCount: 1,
+        estimatedRowSize: () => 10,
+        estimatedColumnSize: () => 50,
+        initialRect: { width: 50, height: 30 },
+        scrollEndDelay: 100,
+        onScrollEnd,
+      })
+
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      virtualizer.destroy()
+      vi.advanceTimersByTime(100)
+
+      expect(onScrollEnd).not.toHaveBeenCalled()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   test("disables native scroll anchoring on the scroll container by default", () => {
     const virtualizer = createVirtualizer()
 

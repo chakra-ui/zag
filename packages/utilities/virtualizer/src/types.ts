@@ -80,12 +80,30 @@ export interface ScrollByOptions {
   smooth?: ScrollToIndexOptions["smooth"]
 }
 
-export interface Range {
+export interface VirtualRange {
   startIndex: number
   endIndex: number
 }
 
-export type RangeExtractor = (range: Range) => number[]
+export type Range = VirtualRange
+
+export type RangeChangeReason = "scroll" | "resize" | "measurement" | "count" | "manual"
+
+export interface RangeChangeDetails {
+  range: VirtualRange
+  reason: RangeChangeReason
+}
+
+export interface RangeExtractorContext {
+  velocity: number
+  direction: "forward" | "backward" | null
+}
+
+export type RangeExtractor = (range: Range, context: RangeExtractorContext) => number[]
+
+export type VirtualizerOrientation = "vertical" | "horizontal"
+
+export type VirtualizerDir = "ltr" | "rtl"
 
 export interface VirtualizerOptions {
   /**
@@ -124,11 +142,11 @@ export interface VirtualizerOptions {
    */
   rangeExtractor?: RangeExtractor
 
-  /** Horizontal scrolling */
-  horizontal?: boolean
+  /** Scroll orientation. Defaults to "vertical". */
+  orientation?: VirtualizerOrientation
 
-  /** RTL (Right-to-Left) mode - affects positioning for horizontal virtualization */
-  rtl?: boolean
+  /** Text direction. Defaults to "ltr"; affects positioning for horizontal virtualization. */
+  dir?: VirtualizerDir
 
   /** Scroll padding (start) */
   paddingStart?: number
@@ -172,8 +190,14 @@ export interface VirtualizerOptions {
   /** Callback when scroll state changes */
   onScroll?: (state: ScrollState) => void
 
+  /** Callback after scrolling settles */
+  onScrollEnd?: (state: ScrollState) => void
+
+  /** Delay in milliseconds before scroll is considered settled (default: 150) */
+  scrollEndDelay?: number
+
   /** Callback when visible range changes */
-  onRangeChange?: (range: Range) => void
+  onRangeChange?: (details: RangeChangeDetails) => void
 
   /** Callback when item visibility changes */
   onVisibilityChange?: (index: number, isVisible: boolean) => void

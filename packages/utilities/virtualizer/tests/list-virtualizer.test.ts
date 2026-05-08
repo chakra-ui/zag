@@ -13,6 +13,10 @@ function initialRect(height: number) {
   return { width: 0, height }
 }
 
+function horizontalRect(width: number) {
+  return { width, height: 0 }
+}
+
 describe("ListVirtualizer", () => {
   afterEach(() => {
     vi.restoreAllMocks()
@@ -58,6 +62,260 @@ describe("ListVirtualizer", () => {
 
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 4])
     expect(ranges).toEqual([{ startIndex: 0, endIndex: 4 }])
+  })
+
+  test("passes scroll velocity and direction to rangeExtractor", () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+
+    try {
+      const contexts: Array<{ velocity: number; direction: "forward" | "backward" | null }> = []
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: initialRect(30),
+        rangeExtractor: (range, context) => {
+          contexts.push(context)
+          const extraAfter =
+            context.direction === "forward" && context.velocity > 2 ? [range.endIndex + 1, range.endIndex + 2] : []
+          return [range.startIndex, range.endIndex, ...extraAfter]
+        },
+      })
+
+      expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 2])
+      expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
+
+      vi.advanceTimersByTime(50)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 100, scrollLeft: 0 } })
+      vi.advanceTimersByTime(50)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 250, scrollLeft: 0 } })
+
+      expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([24, 27, 28, 29])
+      expect(contexts.at(-1)).toEqual({ velocity: 3, direction: "forward" })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("uses orientation for horizontal scrolling", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: horizontalRect(30),
+      orientation: "horizontal",
+    })
+
+    expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
+    expect(virtualizer.getContentStyle()).toMatchObject({ width: 100, height: "100%" })
+    expect(virtualizer.scrollToIndex(5, { align: "start" })).toEqual({ scrollLeft: 50, scrollTop: 0 })
+    expect(virtualizer.getScrollState()).toMatchObject({
+      offset: { x: 50, y: 0 },
+      direction: { x: "forward", y: "idle" },
+    })
+  })
+
+  test("uses dir for horizontal RTL positioning and rangeExtractor direction", () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+
+    try {
+      const contexts: Array<{ velocity: number; direction: "forward" | "backward" | null }> = []
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: horizontalRect(30),
+        orientation: "horizontal",
+        dir: "rtl",
+        rangeExtractor: (range, context) => {
+          contexts.push(context)
+          return [range.startIndex, range.endIndex]
+        },
+      })
+
+      const [, second] = virtualizer.getVirtualItems()
+      expect(virtualizer.getItemStyle(second!).transform).toBe("translate3d(-20px, 0, 0)")
+
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 0, scrollLeft: 10 } })
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 0, scrollLeft: 30 } })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 2, direction: "backward" })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("resets rangeExtractor motion context after scroll end", () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+
+    try {
+      const contexts: Array<{ velocity: number; direction: "forward" | "backward" | null }> = []
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: initialRect(30),
+        scrollEndDelay: 100,
+        rangeExtractor: (range, context) => {
+          contexts.push(context)
+          return [range.startIndex, range.endIndex]
+        },
+      })
+
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 100, scrollLeft: 0 } })
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 150, scrollLeft: 0 } })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 5, direction: "forward" })
+
+      vi.advanceTimersByTime(100)
+      virtualizer.updateOptions({ overscan: 1 })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("starts rangeExtractor motion context from a clean baseline after idle", () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+
+    try {
+      const contexts: Array<{ velocity: number; direction: "forward" | "backward" | null }> = []
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        overscan: 0,
+        initialRect: initialRect(30),
+        scrollEndDelay: 100,
+        rangeExtractor: (range, context) => {
+          contexts.push(context)
+          return [range.startIndex, range.endIndex]
+        },
+      })
+
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 100, scrollLeft: 0 } })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
+
+      vi.advanceTimersByTime(10)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 150, scrollLeft: 0 } })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 5, direction: "forward" })
+
+      vi.advanceTimersByTime(5100)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 170, scrollLeft: 0 } })
+      virtualizer.getVirtualItems()
+
+      expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("reports range change reasons", async () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const changes: Array<{ range: { startIndex: number; endIndex: number }; reason: string }> = []
+    const { element } = createMockScrollContainer({ viewport: { width: 100, height: 30 } })
+    const virtualizer = new ListVirtualizer({
+      count: 100,
+      estimatedSize: () => 10,
+      overscan: 0,
+      onRangeChange: ({ range, reason }) => {
+        changes.push({ range: { ...range }, reason })
+      },
+    })
+
+    virtualizer.init(element)
+    virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+    virtualizer.updateOptions({ count: 3 })
+    virtualizer.updateOptions({ overscan: 1 })
+
+    const measured = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      onRangeChange: ({ range, reason }) => {
+        changes.push({ range: { ...range }, reason })
+      },
+    })
+    measured.init(element)
+    measured.getVirtualItems()[0]!.measureElement(createMeasuredElement(50))
+    await Promise.resolve()
+
+    expect(changes.map((change) => change.reason)).toEqual(["resize", "scroll", "count", "manual", "measurement"])
+    expect(changes.at(-1)).toEqual({ range: { startIndex: 0, endIndex: 0 }, reason: "measurement" })
+  })
+
+  test("fires onScrollEnd once after scrolling settles", () => {
+    vi.useFakeTimers()
+
+    try {
+      const onScrollEnd = vi.fn()
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        initialRect: initialRect(30),
+        scrollEndDelay: 100,
+        onScrollEnd,
+      })
+
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      vi.advanceTimersByTime(50)
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 40, scrollLeft: 0 } })
+      vi.advanceTimersByTime(99)
+
+      expect(onScrollEnd).not.toHaveBeenCalled()
+
+      vi.advanceTimersByTime(1)
+
+      expect(onScrollEnd).toHaveBeenCalledTimes(1)
+      expect(onScrollEnd).toHaveBeenLastCalledWith({
+        offset: { x: 0, y: 40 },
+        direction: { x: "idle", y: "forward" },
+        isScrolling: false,
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test("does not fire onScrollEnd after destroy", () => {
+    vi.useFakeTimers()
+
+    try {
+      const onScrollEnd = vi.fn()
+      const virtualizer = new ListVirtualizer({
+        count: 100,
+        estimatedSize: () => 10,
+        initialRect: initialRect(30),
+        scrollEndDelay: 100,
+        onScrollEnd,
+      })
+
+      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      virtualizer.destroy()
+      vi.advanceTimersByTime(100)
+
+      expect(onScrollEnd).not.toHaveBeenCalled()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   test("exposes visible and rendered range metadata", () => {
