@@ -2,6 +2,7 @@
 
 import { ColorPicker } from "@/components/color-picker"
 import { useState } from "react"
+import "@styles/color-picker.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

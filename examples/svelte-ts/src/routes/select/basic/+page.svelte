@@ -6,6 +6,7 @@
   import { selectControls, selectData } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import serialize from "form-serialize"
+  import "@styles/select.css"
 
   const controls = useControls(selectControls)
 

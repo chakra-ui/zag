@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/pin-input.css"
 
 const value = ref(["", "", ""])
 

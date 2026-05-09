@@ -2,6 +2,7 @@
 
 import { HoverCard } from "@/components/hover-card"
 import { useState } from "react"
+import "@styles/hover-card.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

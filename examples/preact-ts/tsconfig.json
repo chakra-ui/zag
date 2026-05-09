@@ -14,6 +14,7 @@
     "paths": {
       "react": ["./node_modules/preact/compat/"],
       "react-dom": ["./node_modules/preact/compat/"],
+      "@styles/*": ["../styles/*"],
     },
   },
   "include": ["node_modules/vite/client.d.ts", "**/*"],

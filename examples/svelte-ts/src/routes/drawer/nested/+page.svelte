@@ -2,7 +2,7 @@
   import * as drawer from "@zag-js/drawer"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
-  import styles from "../../../../../shared/styles/drawer-nested.module.css"
+  import styles from "@styles/drawer-nested.module.css"
 
   const baseId = $props.id()
 

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/button"
 import { Select } from "@/components/select"
+import "@styles/select.css"
 
 /**
  * This page tests that clicking an item should not trigger element behind

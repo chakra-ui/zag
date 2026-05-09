@@ -6,6 +6,7 @@
   import { toastControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
+  import "@styles/toast.css"
 
   const controls = useControls(toastControls)
 

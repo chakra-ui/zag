@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Select, items } from "../../../components/select"
+import "@styles/select.css"
 
 /**
  * This page tests that using search params to control the select should work

@@ -28,7 +28,10 @@ const config = {
 
   kit: {
     adapter: adapter(),
-    alias: packageMap,
+    alias: {
+      ...packageMap,
+      "@styles/*": "../styles/*",
+    },
   },
 }
 

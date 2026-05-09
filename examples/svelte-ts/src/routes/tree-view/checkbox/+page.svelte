@@ -2,6 +2,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
   import { ChevronRightIcon } from "lucide-svelte"
+  import "@styles/tree-view.css"
 
   interface Node {
     id: string

@@ -6,6 +6,7 @@
   import { floatingPanelControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
+  import "@styles/floating-panel.css"
 
   const controls = useControls(floatingPanelControls)
 

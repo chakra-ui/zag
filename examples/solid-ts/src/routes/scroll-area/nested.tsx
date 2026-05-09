@@ -1,6 +1,7 @@
 import * as scrollArea from "@zag-js/scroll-area"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, type JSX } from "solid-js"
+import "@styles/scroll-area.css"
 
 function ScrollArea(props: { children: JSX.Element; style?: JSX.CSSProperties }) {
   const service = useMachine(scrollArea.machine, {

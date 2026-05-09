@@ -2,6 +2,7 @@
   import Presence from "$lib/components/presence.svelte"
   import * as popover from "@zag-js/popover"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/popover.css"
 
   interface Document {
     id: number

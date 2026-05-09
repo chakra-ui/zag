@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as toggle from "@zag-js/toggle"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/toggle.css"
 
 const service = useMachine(toggle.machine)
 

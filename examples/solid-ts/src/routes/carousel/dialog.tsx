@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
+import "@styles/carousel.css"
 
 const SLIDE_COUNT = 30
 

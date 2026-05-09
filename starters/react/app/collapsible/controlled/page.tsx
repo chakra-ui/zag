@@ -2,6 +2,7 @@
 
 import { Collapsible } from "@/components/collapsible"
 import { useState } from "react"
+import "@styles/collapsible.css"
 
 export default function Page() {
   const [open, setOpen] = useState(true)

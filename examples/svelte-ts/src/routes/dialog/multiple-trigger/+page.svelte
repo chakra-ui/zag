@@ -4,6 +4,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
   import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/dialog.css"
 
   interface User {
     id: number

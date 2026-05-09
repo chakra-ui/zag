@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/gridlist.css"
 
 interface Resource {
   id: string

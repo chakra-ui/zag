@@ -7,6 +7,7 @@ import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/select.css"
 
 export default function Page() {
   const controls = useControls(selectControls)

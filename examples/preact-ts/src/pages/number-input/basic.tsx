@@ -5,6 +5,7 @@ import { useId } from "react"
 import { useControls } from "../../hooks/use-controls"
 import { Toolbar } from "../../components/toolbar"
 import { StateVisualizer } from "../../components/state-visualizer"
+import "@styles/number-input.css"
 
 export default function NumberInput() {
   const controls = useControls(numberInputControls)

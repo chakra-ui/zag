@@ -5,6 +5,7 @@
   import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggle from "@zag-js/toggle-group"
+  import "@styles/toggle-group.css"
 
   const controls = useControls(toggleGroupControls)
 

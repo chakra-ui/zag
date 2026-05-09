@@ -5,6 +5,7 @@
   import * as progress from "@zag-js/progress"
   import { progressControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/progress.css"
 
   const controls = useControls(progressControls)
 

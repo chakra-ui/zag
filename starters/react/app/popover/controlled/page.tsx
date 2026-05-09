@@ -2,6 +2,7 @@
 
 import { Popover } from "@/components/popover"
 import { useState } from "react"
+import "@styles/popover.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

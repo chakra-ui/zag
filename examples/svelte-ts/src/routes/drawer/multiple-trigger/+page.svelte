@@ -4,7 +4,7 @@
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   interface User {
     id: number

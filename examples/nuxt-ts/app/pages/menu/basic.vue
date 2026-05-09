@@ -2,6 +2,7 @@
 import * as menu from "@zag-js/menu"
 import { menuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/menu.css"
 
 const controls = useControls(menuControls)
 

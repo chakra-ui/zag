@@ -3,7 +3,7 @@ import * as drawer from "@zag-js/drawer"
 import { drawerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 const controls = useControls(drawerControls)
 

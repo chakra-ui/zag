@@ -4,6 +4,7 @@ import { Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/dialog.css"
 
 export default function Page() {
   // dialog 1

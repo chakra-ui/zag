@@ -1,4 +1,5 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import "@styles/scroll-area.css"</script>
 
 <template>
   <main class="scroll-area">

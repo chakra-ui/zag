@@ -5,6 +5,7 @@
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"
   import { X } from "lucide-svelte"
+  import "@styles/tour.css"
 
   const controls = useControls(tourControls)
 

@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/hover-card.css"
 
 import { nanoid } from "nanoid"
 import { HoverCard } from "../src/hover-card"

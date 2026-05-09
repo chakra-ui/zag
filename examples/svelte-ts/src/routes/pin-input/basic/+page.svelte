@@ -6,6 +6,7 @@
   import { pinInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import serialize from "form-serialize"
+  import "@styles/pin-input.css"
 
   const controls = useControls(pinInputControls)
 

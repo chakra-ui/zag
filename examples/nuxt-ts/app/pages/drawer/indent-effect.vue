@@ -4,7 +4,7 @@ import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
 import { computed } from "vue"
 
-import styles from "../../../../shared/styles/drawer-indent-effect.module.css"
+import styles from "@styles/drawer-indent-effect.module.css"
 
 const stack = drawer.createStack()
 const snapshot = useSyncExternalStore(stack.subscribe, stack.getSnapshot)

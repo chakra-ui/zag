@@ -3,6 +3,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/menu.css"
 
   const id = $props.id()
   const service = useMachine(menu.machine, {

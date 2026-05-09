@@ -7,6 +7,7 @@ import { IFrame } from "~/components/iframe"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/tour.css"
 
 export default function Page() {
   const controls = useControls(tourControls)

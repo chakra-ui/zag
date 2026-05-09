@@ -1,6 +1,7 @@
 "use client"
 
 import { Accordion } from "@/components/accordion"
+import "@styles/accordion.css"
 
 export default function Page() {
   return (

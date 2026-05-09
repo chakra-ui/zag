@@ -6,6 +6,7 @@ import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string

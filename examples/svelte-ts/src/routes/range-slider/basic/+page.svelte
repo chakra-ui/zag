@@ -6,6 +6,7 @@
   import * as slider from "@zag-js/slider"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import serialize from "form-serialize"
+  import "@styles/slider.css"
 
   const controls = useControls(sliderControls)
 

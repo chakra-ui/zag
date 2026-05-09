@@ -6,6 +6,7 @@ import { Index, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/color-picker.css"
 
 const presets = ["#f47373", "#697689"]
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/popover.css"
 
 interface Document {
   id: number

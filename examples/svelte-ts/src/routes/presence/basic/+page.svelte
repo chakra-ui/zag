@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as presence from "@zag-js/presence"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/presence.css"
 
   let present = $state(false)
 

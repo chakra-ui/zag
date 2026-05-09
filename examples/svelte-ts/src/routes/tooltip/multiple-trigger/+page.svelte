@@ -4,6 +4,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"
+  import "@styles/tooltip.css"
 
   interface Product {
     id: number

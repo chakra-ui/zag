@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/accordion.css"
 
 export default function Accordion() {
   const controls = useControls(accordionControls)

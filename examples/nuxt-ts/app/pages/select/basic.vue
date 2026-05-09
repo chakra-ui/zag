@@ -3,6 +3,7 @@ import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/select.css"
 
 const controls = useControls(selectControls)
 

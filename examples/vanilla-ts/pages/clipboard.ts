@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/clipboard.css"
 
 import { nanoid } from "nanoid"
 import { Clipboard } from "../src/clipboard"

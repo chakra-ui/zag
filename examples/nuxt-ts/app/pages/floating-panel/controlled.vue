@@ -3,6 +3,7 @@ import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-vue-next"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
+import "@styles/floating-panel.css"
 
 const open = ref(false)
 const size = ref({ width: 360, height: 260 })

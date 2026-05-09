@@ -6,6 +6,7 @@
   import * as popover from "@zag-js/popover"
   import { popoverControls } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/popover.css"
 
   const controls = useControls(popoverControls)
 

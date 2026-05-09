@@ -4,6 +4,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { XIcon } from "lucide-vue-next"
+import "@styles/combobox.css"
 
 const controls = useControls(comboboxControls)
 const { contains } = createFilter({ sensitivity: "base" })

@@ -2,6 +2,7 @@
 import { splitterControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as splitter from "@zag-js/splitter"
+import "@styles/splitter.css"
 
 const controls = useControls(splitterControls)
 

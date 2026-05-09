@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/timer.css"
 
 import { nanoid } from "nanoid"
 import { Timer } from "../src/timer"

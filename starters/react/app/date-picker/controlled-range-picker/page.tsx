@@ -2,6 +2,7 @@
 
 import { DateRangePicker } from "@/components/date-range-picker"
 import { useState } from "react"
+import "@styles/date-picker.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

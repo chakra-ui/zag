@@ -3,6 +3,7 @@ import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { gridListControls, gridListData } from "@zag-js/shared"
 import { CheckIcon } from "lucide-vue-next"
+import "@styles/gridlist.css"
 
 interface Mailbox {
   id: string

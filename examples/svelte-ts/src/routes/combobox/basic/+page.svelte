@@ -7,6 +7,7 @@
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"
+  import "@styles/combobox.css"
 
   const controls = useControls(comboboxControls)
   const { contains } = createFilter({ sensitivity: "base" })

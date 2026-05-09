@@ -4,7 +4,7 @@ import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 interface User {
   id: number

@@ -3,6 +3,7 @@ import * as pinInput from "@zag-js/pin-input"
 import { pinInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
+import "@styles/pin-input.css"
 
 const controls = useControls(pinInputControls)
 

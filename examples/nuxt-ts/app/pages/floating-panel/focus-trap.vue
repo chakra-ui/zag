@@ -3,6 +3,7 @@ import * as floatingPanel from "@zag-js/floating-panel"
 import { trapFocus } from "@zag-js/focus-trap"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
+import "@styles/floating-panel.css"
 
 const service = useMachine(floatingPanel.machine, {
   id: useId(),

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/gridlist.css"
 
 interface Resource {
   id: string

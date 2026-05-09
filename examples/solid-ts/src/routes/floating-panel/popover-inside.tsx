@@ -6,6 +6,7 @@ import { For, createMemo, createUniqueId, ParentProps } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/floating-panel.css"
 
 export default function Page() {
   const service = useMachine(floatingPanel.machine, {

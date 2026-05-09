@@ -2,6 +2,7 @@
 import * as timer from "@zag-js/timer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, useId } from "vue"
+import "@styles/timer.css"
 
 const service = useMachine(timer.machine, {
   id: useId(),

@@ -7,6 +7,7 @@ import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/combobox.css"
 
 const { contains } = createFilter({ sensitivity: "base" })
 

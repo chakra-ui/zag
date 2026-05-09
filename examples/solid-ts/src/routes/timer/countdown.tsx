@@ -3,6 +3,7 @@ import * as timer from "@zag-js/timer"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/timer.css"
 
 export default function Page() {
   const service = useMachine(timer.machine, {

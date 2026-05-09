@@ -2,6 +2,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, onMounted, useId } from "vue"
+import "@styles/menu.css"
 
 const menuData = [
   [

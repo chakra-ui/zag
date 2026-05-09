@@ -3,7 +3,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
 import { computed, ref } from "vue"
-import styles from "../../../../shared/styles/drawer-nested.module.css"
+import styles from "@styles/drawer-nested.module.css"
 
 const baseId = useId()
 const firstOpen = ref(false)

@@ -2,6 +2,7 @@
 
 import { Dialog } from "@/components/dialog"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import "@styles/dialog.css"
 
 export default function Page() {
   const searchParams = useSearchParams()

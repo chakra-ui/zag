@@ -5,6 +5,7 @@
   import * as carousel from "@zag-js/carousel"
   import { carouselControls, carouselData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/carousel.css"
 
   const controls = useControls(carouselControls)
 

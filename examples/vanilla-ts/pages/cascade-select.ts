@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/cascade-select.css"
 
 import { nanoid } from "nanoid"
 import { CascadeSelect } from "../src/cascade-select"

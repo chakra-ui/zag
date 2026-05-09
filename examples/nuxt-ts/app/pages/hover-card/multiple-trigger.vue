@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/hover-card.css"
 
 interface User {
   id: number

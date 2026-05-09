@@ -4,6 +4,7 @@
   import * as avatar from "@zag-js/avatar"
   import { avatarData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/avatar.css"
 
   const images = avatarData.full
   const getRandomImage = () => images[Math.floor(Math.random() * images.length)]

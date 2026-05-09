@@ -2,6 +2,7 @@
   import Presence from "$lib/components/presence.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/menu.css"
 
   interface Document {
     id: number

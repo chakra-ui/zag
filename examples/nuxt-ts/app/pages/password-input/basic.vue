@@ -4,6 +4,7 @@ import { passwordInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { useId } from "vue"
 import { EyeIcon, EyeOffIcon } from "lucide-vue-next"
+import "@styles/password-input.css"
 
 const controls = useControls(passwordInputControls)
 

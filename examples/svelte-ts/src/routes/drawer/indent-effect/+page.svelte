@@ -2,7 +2,7 @@
   import * as drawer from "@zag-js/drawer"
   import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
-  import styles from "../../../../../shared/styles/drawer-indent-effect.module.css"
+  import styles from "@styles/drawer-indent-effect.module.css"
 
   const stack = drawer.createStack()
 

@@ -3,6 +3,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { normalizeProps, useMachine, portal } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"
+  import "@styles/tooltip.css"
 
   const id = "tip-1"
   const id2 = "tip-2"

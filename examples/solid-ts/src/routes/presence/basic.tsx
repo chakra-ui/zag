@@ -1,6 +1,7 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Accessor, Show, createMemo, createSignal } from "solid-js"
+import "@styles/presence.css"
 
 function usePresence(present: Accessor<boolean>) {
   const context = createMemo(() => ({ present: present() }))

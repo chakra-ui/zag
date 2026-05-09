@@ -6,6 +6,7 @@ import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/gridlist.css"
 
 interface Mailbox {
   id: string

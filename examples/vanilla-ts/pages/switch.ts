@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/switch.css"
 
 import { nanoid } from "nanoid"
 import { Switch } from "../src/switch"

@@ -2,6 +2,7 @@
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as pagination from "@zag-js/pagination"
+import "@styles/pagination.css"
 
 const controls = useControls(paginationControls)
 const details = ref({})

@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/qr-code.css"
 
 import { nanoid } from "nanoid"
 import { QrCode } from "../src/qr-code"

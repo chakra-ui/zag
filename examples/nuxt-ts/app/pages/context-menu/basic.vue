@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/menu.css"
 
 const service = useMachine(menu.machine, {
   id: useId(),

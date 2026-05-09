@@ -6,6 +6,7 @@ import { createMemo, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/pin-input.css"
 
 export default function Page() {
   const controls = useControls(pinInputControls)

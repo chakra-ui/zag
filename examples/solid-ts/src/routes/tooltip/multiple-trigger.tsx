@@ -5,6 +5,7 @@ import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/tooltip.css"
 
 interface Product {
   id: number

@@ -2,6 +2,7 @@
 import * as toggle from "@zag-js/toggle-group"
 import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/toggle-group.css"
 
 const controls = useControls(toggleGroupControls)
 

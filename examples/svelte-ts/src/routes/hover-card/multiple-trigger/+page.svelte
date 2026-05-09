@@ -2,6 +2,7 @@
   import Presence from "$lib/components/presence.svelte"
   import * as hoverCard from "@zag-js/hover-card"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/hover-card.css"
 
   interface User {
     id: number

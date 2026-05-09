@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/scroll-area.css"
 
 import { nanoid } from "nanoid"
 import { ScrollArea } from "../src/scroll-area"

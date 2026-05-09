@@ -6,6 +6,7 @@
   import { numberInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import MoveHorizontalIcon from "lucide-svelte/icons/move-horizontal"
+  import "@styles/number-input.css"
 
   const controls = useControls(numberInputControls)
 

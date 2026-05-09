@@ -3,6 +3,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { editableControls } from "@zag-js/shared"
   import { useControls } from "$lib/use-controls.svelte"
+  import "@styles/editable.css"
 
   const controls = useControls(editableControls)
 

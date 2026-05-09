@@ -5,6 +5,7 @@
   import * as pagination from "@zag-js/pagination"
   import { paginationControls, paginationData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/pagination.css"
 
   const controls = useControls(paginationControls)
   let details = $state<any>({})

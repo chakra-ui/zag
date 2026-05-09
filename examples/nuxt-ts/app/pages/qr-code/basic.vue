@@ -2,6 +2,7 @@
 import * as qrCode from "@zag-js/qr-code"
 import { qrCodeControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/qr-code.css"
 
 const controls = useControls(qrCodeControls)
 

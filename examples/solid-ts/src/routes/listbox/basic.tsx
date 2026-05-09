@@ -5,6 +5,7 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 import { createMemo, createUniqueId, For } from "solid-js"
+import "@styles/listbox.css"
 
 interface Item {
   label: string

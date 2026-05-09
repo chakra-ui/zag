@@ -2,6 +2,7 @@
 
 import { Tooltip } from "@/components/tooltip"
 import { useState } from "react"
+import "@styles/tooltip.css"
 
 const TooltipDemo = () => {
   const [open, setOpen] = useState(false)

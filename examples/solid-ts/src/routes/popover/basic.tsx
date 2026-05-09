@@ -7,6 +7,7 @@ import { Presence } from "~/components/presence"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/popover.css"
 
 function Wrapper(props: ParentProps<{ guard: boolean }>) {
   return <>{props.guard ? <Portal mount={document.body}>{props.children}</Portal> : props.children}</>

@@ -5,6 +5,7 @@
   import { menuOptionData, menuControls } from "@zag-js/shared"
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import "@styles/menu.css"
 
   const controls = useControls(menuControls)
 

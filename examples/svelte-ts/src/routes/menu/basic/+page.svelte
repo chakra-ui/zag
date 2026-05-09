@@ -5,6 +5,7 @@
   import * as menu from "@zag-js/menu"
   import { menuControls } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/menu.css"
 
   const controls = useControls(menuControls)
 

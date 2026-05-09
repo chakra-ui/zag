@@ -5,6 +5,7 @@
   import { useControls } from "$lib/use-controls.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import "@styles/rating-group.css"
 
   const controls = useControls(ratingControls)
 

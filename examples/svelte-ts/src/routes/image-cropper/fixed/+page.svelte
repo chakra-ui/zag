@@ -5,6 +5,7 @@
   import * as imageCropper from "@zag-js/image-cropper"
   import { imageCropperControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/image-cropper.css"
 
   const controls = useControls(imageCropperControls)
 

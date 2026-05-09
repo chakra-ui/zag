@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/radio-group.css"
 
 import { nanoid } from "nanoid"
 import { RadioGroup } from "../src/radio-group"

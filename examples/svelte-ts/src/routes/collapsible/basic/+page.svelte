@@ -6,6 +6,7 @@
   import { collapsibleControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ChevronDownIcon } from "lucide-svelte"
+  import "@styles/collapsible.css"
 
   const controls = useControls(collapsibleControls)
 

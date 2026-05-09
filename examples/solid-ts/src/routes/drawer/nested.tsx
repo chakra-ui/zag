@@ -3,7 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer-nested.module.css"
+import styles from "@styles/drawer-nested.module.css"
 
 export default function Page() {
   const baseId = createUniqueId()

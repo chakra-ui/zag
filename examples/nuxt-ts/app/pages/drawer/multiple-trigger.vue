@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 interface User {
   id: number

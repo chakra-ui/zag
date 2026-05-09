@@ -2,6 +2,7 @@
 import * as popover from "@zag-js/popover"
 import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/popover.css"
 
 const controls = useControls(popoverControls)
 

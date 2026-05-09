@@ -4,6 +4,7 @@
   import { GripVertical } from "lucide-svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import "@styles/dnd.css"
 
   const initialItems = [
     { id: "1", label: "Apple" },

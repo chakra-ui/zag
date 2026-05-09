@@ -3,6 +3,7 @@ import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronRight } from "lucide-vue-next"
+import "@styles/accordion.css"
 
 const controls = useControls(accordionControls)
 

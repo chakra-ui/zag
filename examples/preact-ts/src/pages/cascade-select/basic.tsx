@@ -5,6 +5,7 @@ import { JSX, useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/cascade-select.css"
 
 interface Node {
   label: string

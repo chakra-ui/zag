@@ -4,6 +4,7 @@ import { GripVertical } from "lucide-solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/dnd.css"
 
 const initialItems = [
   { id: "1", label: "Apple" },

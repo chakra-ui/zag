@@ -6,6 +6,7 @@
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ChevronRight } from "lucide-svelte"
+  import "@styles/accordion.css"
 
   const controls = useControls(accordionControls)
 

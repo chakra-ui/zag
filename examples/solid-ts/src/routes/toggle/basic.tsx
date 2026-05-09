@@ -3,6 +3,7 @@ import * as toggle from "@zag-js/toggle"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/toggle.css"
 
 export default function Page() {
   const service = useMachine(toggle.machine)

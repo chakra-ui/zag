@@ -5,6 +5,7 @@
   import * as radio from "@zag-js/radio-group"
   import { radioControls, radioData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/segmented-control.css"
 
   const controls = useControls(radioControls)
 

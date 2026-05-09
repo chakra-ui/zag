@@ -1,6 +1,7 @@
 "use client"
 
 import { Collapsible } from "@/components/collapsible"
+import "@styles/collapsible.css"
 
 export default function Page() {
   return (

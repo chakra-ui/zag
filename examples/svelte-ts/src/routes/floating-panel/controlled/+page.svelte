@@ -5,6 +5,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
   import { onDestroy, onMount } from "svelte"
+  import "@styles/floating-panel.css"
 
   const id = $props.id()
   let open = $state(false)

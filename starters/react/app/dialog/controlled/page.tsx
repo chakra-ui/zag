@@ -2,6 +2,7 @@
 
 import { Dialog } from "@/components/dialog"
 import { useState } from "react"
+import "@styles/dialog.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

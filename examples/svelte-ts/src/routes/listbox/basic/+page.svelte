@@ -5,6 +5,7 @@
   import { useControls } from "$lib/use-controls.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import "@styles/listbox.css"
 
   interface Item {
     label: string

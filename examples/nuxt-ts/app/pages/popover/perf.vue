@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/popover.css"
 
 const service = useMachine(popover.machine, {
   id: useId(),

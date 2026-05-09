@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, CheckSquareIcon, SquareIcon, MinusSquareIcon } from "lucide-solid"
 import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string

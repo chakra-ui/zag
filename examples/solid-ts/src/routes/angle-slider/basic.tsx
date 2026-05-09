@@ -5,6 +5,7 @@ import { angleSliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/angle-slider.css"
 
 export default function Page() {
   const controls = useControls(angleSliderControls)

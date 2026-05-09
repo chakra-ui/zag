@@ -2,7 +2,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer-indent-effect.module.css"
+import styles from "@styles/drawer-indent-effect.module.css"
 
 const stack = drawer.createStack()
 

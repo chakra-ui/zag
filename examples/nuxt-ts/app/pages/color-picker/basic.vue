@@ -3,6 +3,7 @@ import * as colorPicker from "@zag-js/color-picker"
 import { colorPickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
+import "@styles/color-picker.css"
 
 const controls = useControls(colorPickerControls)
 

@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/collapsible.css"
 
 import { nanoid } from "nanoid"
 import { Collapsible } from "../src/collapsible"

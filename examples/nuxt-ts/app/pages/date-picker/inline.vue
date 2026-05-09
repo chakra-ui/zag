@@ -3,6 +3,7 @@ import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed } from "vue"
+import "@styles/date-picker.css"
 
 const controls = useControls(datePickerControls)
 

@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/toggle-group.css"
 
 import { nanoid } from "nanoid"
 import { ToggleGroup } from "../src/toggle-group"

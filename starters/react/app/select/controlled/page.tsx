@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Select, items } from "@/components/select"
+import "@styles/select.css"
 
 /**
  * This page tests that controlling the select should work

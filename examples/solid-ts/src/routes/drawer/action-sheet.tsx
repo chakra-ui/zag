@@ -2,7 +2,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer-action-sheet.module.css"
+import styles from "@styles/drawer-action-sheet.module.css"
 
 export default function Page() {
   const service = useMachine(drawer.machine, () => ({

@@ -2,6 +2,7 @@
 
 import { Tooltip } from "@/components/tooltip"
 import { useState } from "react"
+import "@styles/tooltip.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)

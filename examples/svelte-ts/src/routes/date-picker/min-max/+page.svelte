@@ -3,6 +3,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as datePicker from "@zag-js/date-picker"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/date-picker.css"
 
   const id = $props.id()
   const service = useMachine(datePicker.machine, () => ({

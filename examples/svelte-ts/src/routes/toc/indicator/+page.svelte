@@ -5,6 +5,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import { useControls } from "$lib/use-controls.svelte"
+  import "@styles/toc.css"
 
   const controls = useControls(tocControls)
 

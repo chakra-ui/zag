@@ -2,6 +2,7 @@
 import * as tagsInput from "@zag-js/tags-input"
 import { tagsInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/tags-input.css"
 
 const controls = useControls(tagsInputControls)
 

@@ -3,7 +3,7 @@ import { A, Router, useLocation } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
 import { dataAttr } from "@zag-js/dom-query"
 import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
 import { For, Suspense } from "solid-js"
 
 export default function App() {

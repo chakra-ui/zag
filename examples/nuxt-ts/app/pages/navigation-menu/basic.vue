@@ -3,6 +3,7 @@ import * as navigationMenu from "@zag-js/navigation-menu"
 import { navigationMenuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronDown } from "lucide-vue-next"
+import "@styles/navigation-menu.css"
 
 const controls = useControls(navigationMenuControls)
 

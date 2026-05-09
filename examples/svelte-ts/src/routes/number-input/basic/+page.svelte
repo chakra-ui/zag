@@ -5,6 +5,7 @@
   import * as numberInput from "@zag-js/number-input"
   import { numberInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/number-input.css"
 
   const controls = useControls(numberInputControls)
 

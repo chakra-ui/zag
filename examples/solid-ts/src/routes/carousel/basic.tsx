@@ -5,6 +5,7 @@ import { Index, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/carousel.css"
 
 export default function Page() {
   const controls = useControls(carouselControls)

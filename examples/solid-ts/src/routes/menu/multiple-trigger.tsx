@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
+import "@styles/menu.css"
 
 interface Document {
   id: number

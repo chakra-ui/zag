@@ -6,6 +6,7 @@
   import { clipboardControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ClipboardCheckIcon, ClipboardCopyIcon } from "lucide-svelte"
+  import "@styles/clipboard.css"
 
   const controls = useControls(clipboardControls)
 

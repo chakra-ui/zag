@@ -4,6 +4,7 @@ import { createMemo, createSignal, createUniqueId } from "solid-js"
 import { avatarData } from "@zag-js/shared"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/avatar.css"
 
 const images = avatarData.full
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)]

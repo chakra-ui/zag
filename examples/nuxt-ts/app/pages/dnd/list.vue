@@ -2,6 +2,7 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import * as dnd from "@zag-js/dnd"
 import { GripVertical } from "lucide-vue-next"
+import "@styles/dnd.css"
 
 const initialItems = [
   { id: "1", label: "Apple" },
