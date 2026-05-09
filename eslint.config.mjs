@@ -15,7 +15,6 @@ export default defineConfig([
     "examples/next-ts",
     "examples/vue-ts",
     "plop-templates",
-    "starters",
     "website",
     "**/*.d.ts",
     "**/.output",

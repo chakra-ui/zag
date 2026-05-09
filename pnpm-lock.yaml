@@ -3752,257 +3752,6 @@ importers:
         specifier: workspace:*
         version: link:../packages/machines/tour
 
-  starters/react:
-    dependencies:
-      '@internationalized/date':
-        specifier: 3.12.0
-        version: 3.12.0
-      '@tanstack/react-virtual':
-        specifier: 3.13.23
-        version: 3.13.23(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@zag-js/accordion':
-        specifier: workspace:*
-        version: link:../../packages/machines/accordion
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../packages/anatomy
-      '@zag-js/anatomy-icons':
-        specifier: workspace:*
-        version: link:../../packages/anatomy-icons
-      '@zag-js/aria-hidden':
-        specifier: workspace:*
-        version: link:../../packages/utilities/aria-hidden
-      '@zag-js/auto-resize':
-        specifier: workspace:*
-        version: link:../../packages/utilities/auto-resize
-      '@zag-js/avatar':
-        specifier: workspace:*
-        version: link:../../packages/machines/avatar
-      '@zag-js/carousel':
-        specifier: workspace:*
-        version: link:../../packages/machines/carousel
-      '@zag-js/checkbox':
-        specifier: workspace:*
-        version: link:../../packages/machines/checkbox
-      '@zag-js/clipboard':
-        specifier: workspace:*
-        version: link:../../packages/machines/clipboard
-      '@zag-js/collapsible':
-        specifier: workspace:*
-        version: link:../../packages/machines/collapsible
-      '@zag-js/collection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/collection
-      '@zag-js/color-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
-      '@zag-js/combobox':
-        specifier: workspace:*
-        version: link:../../packages/machines/combobox
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@zag-js/date-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
-      '@zag-js/dialog':
-        specifier: workspace:*
-        version: link:../../packages/machines/dialog
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dismissable
-      '@zag-js/docs':
-        specifier: workspace:*
-        version: link:../../packages/docs
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-query
-      '@zag-js/editable':
-        specifier: workspace:*
-        version: link:../../packages/machines/editable
-      '@zag-js/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
-      '@zag-js/focus-visible':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-visible
-      '@zag-js/hover-card':
-        specifier: workspace:*
-        version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
-      '@zag-js/interact-outside':
-        specifier: workspace:*
-        version: link:../../packages/utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
-      '@zag-js/menu':
-        specifier: workspace:*
-        version: link:../../packages/machines/menu
-      '@zag-js/number-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/number-input
-      '@zag-js/pagination':
-        specifier: workspace:*
-        version: link:../../packages/machines/pagination
-      '@zag-js/pin-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/pin-input
-      '@zag-js/popover':
-        specifier: workspace:*
-        version: link:../../packages/machines/popover
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../packages/utilities/popper
-      '@zag-js/presence':
-        specifier: workspace:*
-        version: link:../../packages/machines/presence
-      '@zag-js/progress':
-        specifier: workspace:*
-        version: link:../../packages/machines/progress
-      '@zag-js/radio-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/radio-group
-      '@zag-js/rating-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/rating-group
-      '@zag-js/react':
-        specifier: workspace:*
-        version: link:../../packages/frameworks/react
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
-      '@zag-js/remove-scroll':
-        specifier: workspace:*
-        version: link:../../packages/utilities/remove-scroll
-      '@zag-js/select':
-        specifier: workspace:*
-        version: link:../../packages/machines/select
-      '@zag-js/shared':
-        specifier: workspace:*
-        version: link:../../shared
-      '@zag-js/signature-pad':
-        specifier: workspace:*
-        version: link:../../packages/machines/signature-pad
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
-      '@zag-js/splitter':
-        specifier: workspace:*
-        version: link:../../packages/machines/splitter
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
-      '@zag-js/switch':
-        specifier: workspace:*
-        version: link:../../packages/machines/switch
-      '@zag-js/tabs':
-        specifier: workspace:*
-        version: link:../../packages/machines/tabs
-      '@zag-js/tags-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/tags-input
-      '@zag-js/toast':
-        specifier: workspace:*
-        version: link:../../packages/machines/toast
-      '@zag-js/toggle-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/toggle-group
-      '@zag-js/tooltip':
-        specifier: workspace:*
-        version: link:../../packages/machines/tooltip
-      '@zag-js/tree-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/tree-view
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/core
-      '@zag-js/virtualizer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/virtualizer
-      form-serialize:
-        specifier: 0.7.2
-        version: 0.7.2
-      lucide-react:
-        specifier: 1.7.0
-        version: 1.7.0(react@19.2.4)
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
-      next:
-        specifier: 16.2.2
-        version: 16.2.2(@babel/core@7.29.0)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react:
-        specifier: 19.2.4
-        version: 19.2.4
-      react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
-      react-spinners:
-        specifier: 0.17.0
-        version: 0.17.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-    devDependencies:
-      '@next/eslint-plugin-next':
-        specifier: 16.2.2
-        version: 16.2.2
-      '@types/node':
-        specifier: 25.5.0
-        version: 25.5.0
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      eslint:
-        specifier: 10.1.0
-        version: 10.1.0(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.2.2
-        version: 16.2.2(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2)
-      typescript:
-        specifier: 6.0.2
-        version: 6.0.2
-
-  starters/svelte-kit:
-    dependencies:
-      '@zag-js/svelte':
-        specifier: workspace:*
-        version: link:../../packages/frameworks/svelte
-      '@zag-js/switch':
-        specifier: workspace:*
-        version: link:../../packages/machines/switch
-    devDependencies:
-      '@sveltejs/adapter-auto':
-        specifier: 7.0.1
-        version: 7.0.1(@sveltejs/kit@2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@5.9.3)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))
-      '@sveltejs/kit':
-        specifier: 2.55.0
-        version: 2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@5.9.3)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-      '@sveltejs/vite-plugin-svelte':
-        specifier: 7.0.0
-        version: 7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-      svelte:
-        specifier: 5.55.1
-        version: 5.55.1(@typescript-eslint/types@8.58.1)
-      vite:
-        specifier: 8.0.5
-        version: 8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
-
   website:
     dependencies:
       '@internationalized/date':
@@ -15810,10 +15559,6 @@ snapshots:
     dependencies:
       '@sveltejs/kit': 2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.3(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@6.0.2)(vite@8.0.3(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
-  '@sveltejs/adapter-auto@7.0.1(@sveltejs/kit@2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@5.9.3)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))':
-    dependencies:
-      '@sveltejs/kit': 2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@5.9.3)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-
   '@sveltejs/kit@2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.3(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@6.0.2)(vite@8.0.3(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
       '@standard-schema/spec': 1.1.0
@@ -15833,26 +15578,6 @@ snapshots:
       vite: 8.0.3(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
     optionalDependencies:
       typescript: 6.0.2
-
-  '@sveltejs/kit@2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)))(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@5.9.3)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      '@sveltejs/acorn-typescript': 1.0.9(acorn@8.16.0)
-      '@sveltejs/vite-plugin-svelte': 7.0.0(svelte@5.55.1(@typescript-eslint/types@8.58.1))(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-      '@types/cookie': 0.6.0
-      acorn: 8.16.0
-      cookie: 0.6.0
-      devalue: 5.7.1
-      esm-env: 1.2.2
-      kleur: 4.1.5
-      magic-string: 0.30.21
-      mrmime: 2.0.1
-      set-cookie-parser: 3.1.0
-      sirv: 3.0.2
-      svelte: 5.55.1(@typescript-eslint/types@8.58.1)
-      vite: 8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
-    optionalDependencies:
-      typescript: 5.9.3
 
   '@sveltejs/package@2.5.7(svelte@5.55.1(@typescript-eslint/types@8.58.1))(typescript@6.0.2)':
     dependencies:
@@ -18088,7 +17813,7 @@ snapshots:
       '@next/eslint-plugin-next': 16.2.2
       eslint: 10.1.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@10.1.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-typescript@3.10.1)(eslint@10.1.0(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@10.1.0(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@10.1.0(jiti@2.6.1))
@@ -18126,7 +17851,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@10.1.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -18141,14 +17866,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@10.1.0(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2)
       eslint: 10.1.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@10.1.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -18174,7 +17899,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 10.1.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@10.1.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1)))(eslint@10.1.0(jiti@2.6.1))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3

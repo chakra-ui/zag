@@ -180,6 +180,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Collapsible",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "uncontrolled", title: "Uncontrolled" },
       { slug: "nested", title: "Nested" },
     ],
   },
@@ -222,7 +224,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "presence",
     label: "Presence",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "animate", title: "Animate Presence" },
+    ],
   },
   {
     slug: "avatar",
@@ -234,6 +239,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Color Picker",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "inline", title: "Inline" },
       { slug: "in-dialog", title: "Dialog" },
       { slug: "oklch", title: "OKLCH + gamut overlay" },
@@ -276,6 +282,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "week-numbers", title: "Week Numbers" },
       { slug: "dynamic-max", title: "Dynamic Max" },
       { slug: "unavailable", title: "Unavailable" },
+      { slug: "controlled-range-picker", title: "Controlled Range Picker" },
     ],
   },
   {
@@ -293,13 +300,16 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "align-item-with-trigger", title: "Align Item With Trigger" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "async", title: "Async" },
       { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "Dialog" },
       { slug: "in-popover", title: "Popover" },
+      { slug: "mobile-touchend", title: "Mobile Touch End" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
+      { slug: "search-params", title: "Search Params" },
       { slug: "tabs", title: "Tabs" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "with-search", title: "With Search" },
@@ -309,7 +319,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "accordion",
     label: "Accordion",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "collapsible", title: "With Collapsible" },
+    ],
   },
   {
     slug: "checkbox",
@@ -357,6 +370,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
+      { slug: "search-params", title: "Search Params" },
     ],
   },
   {
@@ -364,6 +378,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
@@ -373,6 +388,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
       { slug: "nested", title: "Nested" },
       { slug: "options", title: "With options" },
@@ -531,6 +547,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "controlled-multiple", title: "Controlled Multiple" },
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
