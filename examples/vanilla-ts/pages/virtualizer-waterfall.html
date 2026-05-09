@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waterfall Virtualizer · Vanilla</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 20px;
+        max-width: 960px;
+        margin: 0;
+      }
+      #scroll-container {
+        height: 560px;
+        width: 100%;
+        overflow: auto;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin-top: 16px;
+        position: relative;
+        contain: strict;
+        will-change: scroll-position;
+      }
+      #inner {
+        position: relative;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Waterfall Virtualizer</h1>
+    <p style="color: #64748b" id="summary">Masonry layout with 1,000 variable-height cards.</p>
+
+    <div id="scroll-container" tabindex="0" aria-label="Virtualized waterfall">
+      <div id="inner"></div>
+    </div>
+
+    <script type="module" src="../src/virtualizer-waterfall.ts"></script>
+  </body>
+</html>
