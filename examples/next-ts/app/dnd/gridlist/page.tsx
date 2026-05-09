@@ -9,6 +9,7 @@ import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/dnd.css"
+import "@styles/gridlist.css"
 
 interface Mailbox {
   id: string

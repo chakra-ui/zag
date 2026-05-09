@@ -5,6 +5,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, type ReactNode } from "react"
 import "@styles/dialog.css"
+import "@styles/popover.css"
 
 function DialogWrapper({ trigger, children }: { trigger: ReactNode; children: ReactNode }) {
   const service = useMachine(dialog.machine, { id: useId() })

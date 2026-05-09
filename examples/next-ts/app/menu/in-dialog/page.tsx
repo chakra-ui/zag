@@ -7,6 +7,7 @@ import { menuData } from "@zag-js/shared"
 import { useId } from "react"
 import { useEffectOnce } from "@/hooks/use-effect-once"
 import "@styles/menu.css"
+import "@styles/dialog.css"
 
 function NestedMenu() {
   const service = useMachine(menu.machine, {

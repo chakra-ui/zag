@@ -5,6 +5,7 @@ import { createHotkeyStore } from "@zag-js/hotkeys"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useEffect, useRef, useState } from "react"
 import { Presence } from "@/components/presence"
+import "@styles/dialog.css"
 
 let openDialog: () => void = () => {}
 

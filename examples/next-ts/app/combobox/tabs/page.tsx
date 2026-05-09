@@ -7,6 +7,7 @@ import * as tabs from "@zag-js/tabs"
 import { useId, useMemo, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import "@styles/combobox.css"
+import "@styles/tabs.css"
 
 const pages = {
   Page: [

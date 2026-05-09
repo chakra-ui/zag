@@ -7,6 +7,8 @@ import { memo, useEffect, useId, useMemo, useRef, useState } from "react"
 import { experimental_VGrid as VGrid } from "virtua"
 import { EmojiData, EmojiLoader, SkinTone, validateSkinTone } from "@/lib/emoji-loader"
 import "@styles/combobox.css"
+import "@styles/listbox.css"
+import "@styles/popover.css"
 
 interface EmojiItem {
   label: string

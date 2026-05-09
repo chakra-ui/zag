@@ -7,6 +7,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { commandData } from "@zag-js/shared"
 import { useEffect, useId, useMemo, useState } from "react"
 import "@styles/combobox.css"
+import "@styles/dialog.css"
 
 const { allItems, commands, applications, suggestions } = commandData
 const { contains } = createFilter({ sensitivity: "base" })

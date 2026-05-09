@@ -604,6 +604,43 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "perf-window", title: "Perf: Window scroll" },
     ],
   },
+  {
+    slug: "anatomy",
+    label: "Anatomy",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "autoresize",
+    label: "Auto Resize",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+    ],
+  },
+  {
+    slug: "dismissable",
+    label: "Dismissable",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "focus-visible",
+    label: "Focus Visible",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "sandbox",
+    label: "Sandbox",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "composable", title: "Composable" },
+      { slug: "nested-states", title: "Nested States" },
+    ],
+  },
+  {
+    slug: "swap",
+    label: "Swap",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
 ]
 
 export const exampleRoutes: ExampleRoute[] = componentRoutes.flatMap((componentRoute) =>

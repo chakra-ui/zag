@@ -8,6 +8,7 @@ import { comboboxData } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId, useRef, useState } from "react"
 import "@styles/combobox.css"
+import "@styles/tags-input.css"
 
 const { contains: matchContains } = createFilter({ sensitivity: "base" })
 

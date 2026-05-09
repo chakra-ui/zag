@@ -1,11 +1,11 @@
 "use client"
 
+import "@styles/accordion.css"
+import "@styles/collapsible.css"
 import * as accordion from "@zag-js/accordion"
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
-import "@styles/accordion.css"
-import "@styles/collapsible.css"
 
 const items = [
   {
@@ -28,20 +28,17 @@ const items = [
   },
 ]
 
-interface ItemProps {
-  trigger: React.ReactNode
-  triggerProps: Record<string, unknown>
-  contentProps: Record<string, unknown>
+interface ItemProps extends React.ComponentProps<"div"> {
   open: boolean
   children: React.ReactNode
 }
 
-function AccordionItem(props: ItemProps) {
-  const { trigger, triggerProps, contentProps, open, children } = props
+function Collapsible(props: ItemProps) {
+  const { open, children, ...contentProps } = props
 
   const service = useMachine(collapsible.machine, {
     id: useId(),
-    ids: { content: contentProps.id as string },
+    ids: { content: contentProps.id },
     open,
   })
 
@@ -49,10 +46,7 @@ function AccordionItem(props: ItemProps) {
 
   return (
     <div {...api.getRootProps()}>
-      <button {...triggerProps}>{trigger}</button>
-      <div {...api.getContentProps()} {...contentProps}>
-        {children}
-      </div>
+      <div {...api.getContentProps()}>{children}</div>
     </div>
   )
 }
@@ -71,19 +65,14 @@ export default function Page() {
       <h1>Accordion / Collapsible</h1>
       <div {...api.getRootProps()}>
         {items.map((item) => {
-          const data = { value: item.value }
-          const itemState = api.getItemState(data)
-          const { hidden: _, ...contentProps } = api.getItemContentProps(data)
+          const itemState = api.getItemState({ value: item.value })
+          const { hidden: _, ...contentProps } = api.getItemContentProps({ value: item.value })
           return (
-            <div key={item.value} {...api.getItemProps(data)}>
-              <AccordionItem
-                trigger={item.title}
-                triggerProps={api.getItemTriggerProps(data)}
-                contentProps={contentProps}
-                open={itemState.expanded}
-              >
+            <div key={item.value} {...api.getItemProps({ value: item.value })}>
+              <button {...api.getItemTriggerProps({ value: item.value })}>{item.title}</button>
+              <Collapsible {...contentProps} open={itemState.expanded}>
                 {item.description}
-              </AccordionItem>
+              </Collapsible>
             </div>
           )
         })}

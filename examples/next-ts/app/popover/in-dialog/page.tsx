@@ -6,6 +6,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as React from "react"
 import { useId } from "react"
 import "@styles/popover.css"
+import "@styles/dialog.css"
 
 function NestedPopover() {
   const service1 = useMachine(popover.machine, {

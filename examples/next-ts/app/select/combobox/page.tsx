@@ -6,6 +6,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { selectData } from "@zag-js/shared"
 import { useId, useMemo, useState } from "react"
 import "@styles/select.css"
+import "@styles/combobox.css"
 
 const { contains } = createFilter({ sensitivity: "base" })
 

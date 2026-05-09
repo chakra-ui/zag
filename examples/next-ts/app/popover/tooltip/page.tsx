@@ -5,6 +5,7 @@ import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { useId } from "react"
 import "@styles/popover.css"
+import "@styles/tooltip.css"
 
 export default function Page() {
   const ids = { trigger: useId() }

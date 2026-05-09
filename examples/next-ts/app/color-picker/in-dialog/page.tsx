@@ -6,6 +6,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/color-picker.css"
+import "@styles/dialog.css"
 
 const ColorPicker = () => {
   const service = useMachine(colorPicker.machine, {

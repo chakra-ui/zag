@@ -6,6 +6,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/dialog.css"
+import "@styles/date-picker.css"
 
 const DatePicker = () => {
   const service = useMachine(datePicker.machine, {

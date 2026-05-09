@@ -5,6 +5,7 @@ import * as dialog from "@zag-js/dialog"
 import * as tooltip from "@zag-js/tooltip"
 import { useId } from "react"
 import "@styles/tooltip.css"
+import "@styles/dialog.css"
 
 const Tooltip = () => {
   const service = useMachine(tooltip.machine, { id: useId() })

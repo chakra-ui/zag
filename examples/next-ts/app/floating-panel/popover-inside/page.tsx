@@ -8,6 +8,7 @@ import { Fragment, useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/floating-panel.css"
+import "@styles/popover.css"
 
 export default function Page() {
   const service = useMachine(floating.machine, {

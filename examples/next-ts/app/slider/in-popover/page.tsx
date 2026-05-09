@@ -5,6 +5,7 @@ import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
 import { Fragment } from "react"
 import "@styles/slider.css"
+import "@styles/popover.css"
 
 function RangeSlider() {
   const service = useMachine(slider.machine, {

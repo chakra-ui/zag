@@ -10,6 +10,7 @@ import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
+import "@styles/popover.css"
 
 const TODAY = scheduler.getToday()
 

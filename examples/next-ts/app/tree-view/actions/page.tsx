@@ -7,6 +7,7 @@ import { ChevronRightIcon, FileIcon, FolderIcon, MoreVerticalIcon } from "lucide
 import { JSX, useId } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/tree-view.css"
+import "@styles/menu.css"
 
 interface Node {
   id: string

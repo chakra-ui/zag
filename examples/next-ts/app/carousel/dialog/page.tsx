@@ -6,6 +6,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/carousel.css"
+import "@styles/dialog.css"
 
 const SLIDE_COUNT = 30
 

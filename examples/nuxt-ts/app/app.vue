@@ -4,10 +4,7 @@ import "@styles/global.css"
 
 <template>
   <div class="page">
-    <aside class="nav">
-      <header>Zagjs</header>
-      <SideNav />
-    </aside>
+    <SideNav />
     <NuxtPage />
   </div>
 </template>

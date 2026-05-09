@@ -6,6 +6,7 @@ import * as slider from "@zag-js/slider"
 import { nan } from "@zag-js/utils"
 import { useId, useState } from "react"
 import "@styles/slider.css"
+import "@styles/number-input.css"
 
 interface Props {
   value: string

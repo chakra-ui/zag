@@ -6,6 +6,7 @@ import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { useId } from "react"
 import "@styles/select.css"
+import "@styles/dialog.css"
 
 function Select() {
   const service = useMachine(select.machine, {

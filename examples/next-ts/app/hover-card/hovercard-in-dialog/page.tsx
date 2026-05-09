@@ -5,6 +5,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useRef } from "react"
 import "@styles/hover-card.css"
+import "@styles/dialog.css"
 
 function HoverCard(props: { portalRef: React.RefObject<HTMLElement> }) {
   const service = useMachine(hoverCard.machine, { id: useId() })

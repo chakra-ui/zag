@@ -5,6 +5,7 @@ import * as slider from "@zag-js/slider"
 import * as tooltip from "@zag-js/tooltip"
 import { useId } from "react"
 import "@styles/slider.css"
+import "@styles/tooltip.css"
 
 export default function Page() {
   const sliderService = useMachine(slider.machine, {

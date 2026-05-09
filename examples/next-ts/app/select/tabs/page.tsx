@@ -6,6 +6,7 @@ import * as tabs from "@zag-js/tabs"
 import { GitBranchIcon, TagIcon } from "lucide-react"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import "@styles/select.css"
+import "@styles/tabs.css"
 
 const branchData = [
   { value: "master", label: "master" },
