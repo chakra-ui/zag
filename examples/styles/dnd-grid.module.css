@@ -1,0 +1,106 @@
+.main {
+  width: 100%;
+  max-width: 540px;
+}
+
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-indicator: #3b82f6;
+  --dnd-drop-on: #3b82f6;
+  --dnd-handle: #a1a1aa;
+
+  position: relative;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count, 3), 1fr);
+  gap: 8px;
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  height: auto;
+  background: transparent;
+  border: 2px solid var(--dnd-indicator, #3b82f6);
+  border-radius: 8px;
+  opacity: 0;
+  z-index: 1;
+  transform: none;
+  transition: opacity 0.1s;
+
+  &[data-placement="before"],
+  &[data-placement="after"] {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.dropTarget[data-drop-target] {
+  opacity: 0.2;
+}
+
+.item {
+  position: relative;
+}
+
+.draggable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  padding: 16px 12px;
+  border-radius: 8px;
+  background: var(--item-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+
+  &[data-dragging] {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  &[data-selected-dragging] {
+    opacity: 0.5;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.dragHandle {
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle, #a1a1aa);
+
+  &:hover {
+    color: #52525b;
+  }
+}
+
+.dragPreview {
+  padding: 8px 12px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: inherit;
+  white-space: nowrap;
+}

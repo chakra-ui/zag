@@ -6,7 +6,7 @@ import { GripVerticalIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import "@styles/dnd.css"
+import styles from "@styles/dnd-grid.module.css"
 
 const COLUMN_COUNT = 3
 
@@ -31,31 +31,33 @@ export default function Page() {
 
   return (
     <>
-      <main className="dnd">
-        <div {...api.getRootProps()}>
+      <main className={styles.main}>
+        <div {...api.getRootProps()} className={styles.root}>
           <h3>Grid Layout ({COLUMN_COUNT} columns)</h3>
-          <div className="dnd-grid">
+          <div className={styles.grid}>
             {items.map((item) => (
-              <div key={item.id} style={{ position: "relative" }}>
-                <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} />
+              <div key={item.id} className={styles.item}>
                 <div
-                  {...mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }))}
-                  style={{
-                    padding: "16px 12px",
-                    borderRadius: 8,
-                    background: item.color,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    border: "1px solid transparent",
-                  }}
+                  {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}
+                  className={styles.dropIndicator}
+                />
+                <div
+                  {...mergeProps(
+                    api.getDraggableProps({ value: item.id }),
+                    api.getDropTargetProps({ value: item.id }),
+                    { className: `${styles.draggable} ${styles.dropTarget}` },
+                  )}
+                  style={{ ["--item-color" as string]: item.color }}
                 >
-                  <span {...api.getDragHandleProps({ value: item.id })}>
+                  <span {...api.getDragHandleProps({ value: item.id })} className={styles.dragHandle}>
                     <GripVerticalIcon size={14} />
                   </span>
                   {item.label}
                 </div>
-                <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })} />
+                <div
+                  {...api.getDropIndicatorProps({ value: item.id, placement: "after" })}
+                  className={styles.dropIndicator}
+                />
               </div>
             ))}
           </div>

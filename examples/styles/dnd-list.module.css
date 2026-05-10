@@ -1,35 +1,37 @@
-.dnd {
+.main {
+  width: 100%;
+  max-width: 540px;
+}
+
+.root {
   --dnd-border: #d4d4d8;
   --dnd-item-bg: #ffffff;
-  --dnd-item-dragging: #f0f0f0;
   --dnd-indicator: #3b82f6;
   --dnd-drop-on: #3b82f6;
   --dnd-handle: #a1a1aa;
-  width: 100%;
-  max-width: 540px;
 
-  [data-dnd-draggable] {
-    position: relative;
-    padding: 8px 12px;
-    margin-bottom: 4px;
-    border: 1px solid var(--dnd-border, #d4d4d8);
-    border-radius: 4px;
-    background: var(--dnd-item-bg, #ffffff);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-}
-
-[data-dnd-root] {
   position: relative;
 }
 
-[data-dnd-draggable] {
+.draggable {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   cursor: grab;
+  position: relative;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &[data-selected] {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
 
   &[data-dragging] {
     opacity: 0.5;
@@ -47,7 +49,7 @@
   }
 }
 
-[data-dnd-drag-handle] {
+.dragHandle {
   touch-action: none;
   cursor: grab;
   display: flex;
@@ -59,7 +61,7 @@
   }
 }
 
-[data-dnd-drop-target] {
+.dropTarget {
   position: relative;
 
   &[data-drop-target][data-drop-placement="on"] {
@@ -69,7 +71,7 @@
   }
 }
 
-[data-dnd-drop-indicator] {
+.dropIndicator {
   pointer-events: none;
   position: absolute;
   left: 0;
@@ -95,7 +97,7 @@
   }
 }
 
-[data-dnd-drag-preview] {
+.dragPreview {
   padding: 8px 12px;
   border: 1px solid var(--dnd-border, #d4d4d8);
   border-radius: 4px;
@@ -105,43 +107,52 @@
   white-space: nowrap;
 }
 
-/* Grid layout */
-.dnd-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--column-count, 3), 1fr);
-  gap: 8px;
-
-  [data-dnd-drop-indicator] {
-    inset: 0;
-    height: auto;
-    background: transparent;
-    border: 2px solid var(--dnd-indicator, #3b82f6);
-    border-radius: 8px;
-    transform: none;
-
-    &[data-placement="before"],
-    &[data-placement="after"] {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      transform: none;
-    }
-  }
-
-  [data-dnd-drop-target][data-drop-target] {
-    opacity: 0.2;
-  }
+.items {
+  list-style: none;
+  padding: 0;
 }
 
-/* Tree DnD composition */
-.tree-view {
-  [data-dnd-drag-handle] {
-    opacity: 0.5;
-    display: flex;
-  }
+.item {
+  position: relative;
+}
 
-  [data-dnd-drop-indicator] {
-    left: calc(var(--depth, 0) * 24px);
-  }
+.helperText {
+  font-size: 13px;
+  color: #71717a;
+  margin-bottom: 8px;
+}
+
+.scrollList {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.transferLayout {
+  display: flex;
+  gap: 24px;
+}
+
+.transferColumn {
+  flex: 1;
+}
+
+.transferList {
+  list-style: none;
+  padding: 0;
+  min-height: 60px;
+}
+
+.virtualViewport {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.virtualSizer {
+  width: 100%;
+  position: relative;
+}
+
+.virtualRowInner {
+  position: relative;
+  height: 100%;
 }

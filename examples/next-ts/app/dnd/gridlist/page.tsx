@@ -8,7 +8,7 @@ import { GripVerticalIcon } from "lucide-react"
 import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import "@styles/dnd.css"
+import styles from "@styles/dnd-gridlist.module.css"
 import "@styles/gridlist.css"
 
 interface Mailbox {
@@ -52,17 +52,21 @@ export default function Page() {
         <div className="gridlist">
           <div {...gridApi.getRootProps()}>
             <label {...gridApi.getLabelProps()}>Sortable Mailboxes</label>
-            <div {...mergeProps(gridApi.getContentProps(), dndApi.getRootProps())}>
+            <div {...mergeProps(gridApi.getContentProps(), dndApi.getRootProps())} className={styles.root}>
               {items.map((item) => (
                 <div
                   key={item.id}
-                  {...mergeProps(gridApi.getItemProps({ item }), dndApi.getDropTargetProps({ value: item.id }))}
-                  style={{ position: "relative" }}
+                  {...mergeProps(gridApi.getItemProps({ item }), dndApi.getDropTargetProps({ value: item.id }), {
+                    className: `${styles.item} ${styles.dropTarget}`,
+                  })}
                 >
-                  <div {...dndApi.getDropIndicatorProps({ value: item.id, placement: "before" })} />
+                  <div
+                    {...dndApi.getDropIndicatorProps({ value: item.id, placement: "before" })}
+                    className={styles.dropIndicator}
+                  />
 
                   <div {...gridApi.getCellProps()}>
-                    <span {...dndApi.getDragHandleProps({ value: item.id })}>
+                    <span {...dndApi.getDragHandleProps({ value: item.id })} className={styles.dragHandle}>
                       <GripVerticalIcon size={14} />
                     </span>
                     <div className="gridlist-item-body">
@@ -74,14 +78,17 @@ export default function Page() {
                     <span className="gridlist-item-badge">{item.badge}</span>
                   </div>
 
-                  <div {...dndApi.getDropIndicatorProps({ value: item.id, placement: "after" })} />
+                  <div
+                    {...dndApi.getDropIndicatorProps({ value: item.id, placement: "after" })}
+                    className={styles.dropIndicator}
+                  />
                 </div>
               ))}
               <div {...gridApi.getEmptyProps()}>No items</div>
             </div>
           </div>
 
-          <p style={{ marginTop: "12px", fontSize: "13px", color: "#52525b" }}>
+          <p className={styles.selectionSummary}>
             Selected: <strong>{gridApi.valueAsString || "none"}</strong>
           </p>
         </div>

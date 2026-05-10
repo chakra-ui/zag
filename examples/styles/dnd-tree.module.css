@@ -1,0 +1,74 @@
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-indicator: #3b82f6;
+  --dnd-drop-on: #3b82f6;
+  --dnd-handle: #a1a1aa;
+
+  position: relative;
+}
+
+.dropTarget {
+  position: relative;
+
+  &[data-drop-target][data-drop-placement="on"] {
+    outline: 2px solid var(--dnd-drop-on, #3b82f6);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+}
+
+.dragHandle {
+  touch-action: none;
+  cursor: grab;
+  align-items: center;
+  color: var(--dnd-handle, #a1a1aa);
+  opacity: 0.5;
+  display: flex;
+
+  &:hover {
+    color: #52525b;
+  }
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  height: 2px;
+  background: var(--dnd-indicator, #3b82f6);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.1s;
+  left: calc(var(--depth, 0) * 24px);
+
+  &[data-placement="before"] {
+    top: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(-50%);
+  }
+
+  &[data-placement="after"] {
+    bottom: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(50%);
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.dragPreview {
+  padding: 8px 12px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

@@ -7,7 +7,7 @@ import { ChevronRightIcon, FileIcon, FolderIcon, GripVerticalIcon } from "lucide
 import { JSX, useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import "@styles/dnd.css"
+import styles from "@styles/dnd-tree.module.css"
 import "@styles/tree-view.css"
 
 interface Node {
@@ -72,14 +72,19 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 
   return (
     <div {...treeApi.getNodeGroupProps(nodeProps)}>
-      <div {...mergeProps(treeApi.getNodeProps(nodeProps), dndApi.getDropTargetProps({ value: node.id }))}>
+      <div
+        {...mergeProps(treeApi.getNodeProps(nodeProps), dndApi.getDropTargetProps({ value: node.id }), {
+          className: styles.dropTarget,
+        })}
+      >
         <div
           {...dndApi.getDropIndicatorProps({ value: node.id, placement: "before" })}
+          className={styles.dropIndicator}
           style={{ ["--depth" as string]: nodeState.depth }}
         />
 
-        <div {...treeApi.getCellProps(nodeProps)} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <span {...dndApi.getDragHandleProps({ value: node.id })}>
+        <div {...treeApi.getCellProps(nodeProps)} className={styles.cell}>
+          <span {...dndApi.getDragHandleProps({ value: node.id })} className={styles.dragHandle}>
             <GripVerticalIcon size={14} />
           </span>
           {nodeState.isBranch && (
@@ -93,6 +98,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 
         <div
           {...dndApi.getDropIndicatorProps({ value: node.id, placement: "after" })}
+          className={styles.dropIndicator}
           style={{ ["--depth" as string]: nodeState.depth }}
         />
       </div>
@@ -174,7 +180,7 @@ export default function Page() {
       <main className="tree-view">
         <div {...treeApi.getRootProps()}>
           <h3 {...treeApi.getLabelProps()}>File Explorer (Drag & Drop)</h3>
-          <div {...dndApi.getRootProps()}>
+          <div {...dndApi.getRootProps()} className={styles.root}>
             <div {...treeApi.getTreeProps()}>
               {collection.rootNode.children?.map((node, index) => (
                 <TreeNode key={node.id} node={node} indexPath={[index]} treeApi={treeApi} dndApi={dndApi} />

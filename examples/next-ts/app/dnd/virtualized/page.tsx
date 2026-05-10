@@ -7,7 +7,7 @@ import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import "@styles/dnd.css"
+import styles from "@styles/dnd-list.module.css"
 
 const initialItems = Array.from({ length: 500 }, (_, i) => ({
   id: String(i + 1),
@@ -38,29 +38,36 @@ export default function Page() {
 
   return (
     <>
-      <main className="dnd">
-        <div {...api.getRootProps()}>
+      <main className={styles.main}>
+        <div {...api.getRootProps()} className={styles.root}>
           <h3>Virtualized (500 items)</h3>
-          <div ref={ref} onScroll={virtualizer.handleScroll} style={{ maxHeight: 400, overflow: "auto" }}>
-            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+          <div ref={ref} onScroll={virtualizer.handleScroll} className={styles.virtualViewport}>
+            <div className={styles.virtualSizer} style={{ height: virtualizer.getTotalSize() }}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = items[vi.index]
                 return (
                   <div key={item.id} style={virtualizer.getItemStyle(vi)}>
-                    <div style={{ position: "relative", height: "100%" }}>
-                      <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} />
+                    <div className={styles.virtualRowInner}>
+                      <div
+                        {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}
+                        className={styles.dropIndicator}
+                      />
                       <div
                         {...mergeProps(
                           api.getDraggableProps({ value: item.id }),
                           api.getDropTargetProps({ value: item.id }),
+                          { className: `${styles.draggable} ${styles.dropTarget}` },
                         )}
                       >
-                        <span {...api.getDragHandleProps({ value: item.id })}>
+                        <span {...api.getDragHandleProps({ value: item.id })} className={styles.dragHandle}>
                           <GripVerticalIcon size={14} />
                         </span>
                         {item.label}
                       </div>
-                      <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })} />
+                      <div
+                        {...api.getDropIndicatorProps({ value: item.id, placement: "after" })}
+                        className={styles.dropIndicator}
+                      />
                     </div>
                   </div>
                 )

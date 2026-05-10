@@ -4,7 +4,7 @@
   import { GripVertical } from "lucide-svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
-  import "@styles/dnd.css"
+  import styles from "@styles/dnd-list.module.css"
 
   const initialItems = [
     { id: "1", label: "Apple" },
@@ -33,25 +33,30 @@
   const api = $derived(dnd.connect(service, normalizeProps))
 </script>
 
-<main class="dnd">
-  <div {...api.getRootProps()}>
+<main class={styles.main}>
+  <div {...api.getRootProps()} class={styles.root}>
     <h3>Sortable List</h3>
-    <ul style:list-style="none" style:padding="0">
+    <ul class={styles.items}>
       {#each items as item (item.id)}
-        <li style:position="relative">
-          <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} />
+        <li class={styles.item}>
           <div
-            {...mergeProps(
-              api.getDraggableProps({ value: item.id }),
-              api.getDropTargetProps({ value: item.id }),
-            )}
+            {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}
+            class={styles.dropIndicator}
+          ></div>
+          <div
+            {...mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }), {
+              class: `${styles.draggable} ${styles.dropTarget}`,
+            })}
           >
-            <span {...api.getDragHandleProps({ value: item.id })}>
+            <span {...api.getDragHandleProps({ value: item.id })} class={styles.dragHandle}>
               <GripVertical size={14} />
             </span>
             {item.label}
           </div>
-          <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })} />
+          <div
+            {...api.getDropIndicatorProps({ value: item.id, placement: "after" })}
+            class={styles.dropIndicator}
+          ></div>
         </li>
       {/each}
     </ul>

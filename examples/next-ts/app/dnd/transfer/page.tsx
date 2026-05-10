@@ -6,7 +6,7 @@ import { GripVerticalIcon } from "lucide-react"
 import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import "@styles/dnd.css"
+import styles from "@styles/dnd-list.module.css"
 
 const fruitsData = [
   { id: "apple", label: "Apple" },
@@ -82,31 +82,35 @@ export default function Page() {
   const api = dnd.connect(service, normalizeProps)
 
   const renderItem = (item: { id: string; label: string }) => (
-    <li key={item.id} style={{ position: "relative" }}>
-      <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} />
-      <div {...mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }))}>
-        <span {...api.getDragHandleProps({ value: item.id })}>
+    <li key={item.id} className={styles.item}>
+      <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })} className={styles.dropIndicator} />
+      <div
+        {...mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }), {
+          className: `${styles.draggable} ${styles.dropTarget}`,
+        })}
+      >
+        <span {...api.getDragHandleProps({ value: item.id })} className={styles.dragHandle}>
           <GripVerticalIcon size={14} />
         </span>
         {item.label}
       </div>
-      <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })} />
+      <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })} className={styles.dropIndicator} />
     </li>
   )
 
   return (
     <>
-      <main className="dnd">
-        <div {...api.getRootProps()}>
+      <main className={styles.main}>
+        <div {...api.getRootProps()} className={styles.root}>
           <h3>Multi-Container Transfer</h3>
-          <div style={{ display: "flex", gap: 24 }}>
-            <div style={{ flex: 1 }}>
+          <div className={styles.transferLayout}>
+            <div className={styles.transferColumn}>
               <h4>Fruits ({fruits.length})</h4>
-              <ul style={{ listStyle: "none", padding: 0, minHeight: 60 }}>{fruits.map(renderItem)}</ul>
+              <ul className={styles.transferList}>{fruits.map(renderItem)}</ul>
             </div>
-            <div style={{ flex: 1 }}>
+            <div className={styles.transferColumn}>
               <h4>Veggies ({veggies.length})</h4>
-              <ul style={{ listStyle: "none", padding: 0, minHeight: 60 }}>{veggies.map(renderItem)}</ul>
+              <ul className={styles.transferList}>{veggies.map(renderItem)}</ul>
             </div>
           </div>
         </div>
