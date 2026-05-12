@@ -1,0 +1,135 @@
+.main {
+  width: 100%;
+  max-width: 620px;
+}
+
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-item-muted: #f8fafc;
+  --dnd-indicator: #2563eb;
+  --dnd-drop-on: #2563eb;
+  --dnd-handle: #71717a;
+  --dnd-text-muted: #52525b;
+
+  position: relative;
+  display: grid;
+  gap: 10px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid var(--dnd-border);
+  border-radius: 4px;
+  background: var(--dnd-item-muted);
+  color: var(--dnd-text-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.viewport {
+  height: 400px;
+  overflow: auto;
+  border: 1px solid var(--dnd-border);
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.sizer {
+  position: relative;
+  width: 100%;
+}
+
+.row {
+  position: relative;
+  height: 100%;
+  padding: 3px 6px;
+}
+
+.draggable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  position: relative;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--dnd-border);
+  border-radius: 4px;
+  background: var(--dnd-item-bg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+
+  &[data-dragging] {
+    opacity: 0.4;
+    cursor: grabbing;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.dragHandle {
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle);
+
+  &:hover {
+    color: #18181b;
+  }
+}
+
+.dropTarget {
+  &[data-drop-target][data-drop-placement="on"] {
+    outline: 2px solid var(--dnd-drop-on);
+    outline-offset: -2px;
+  }
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: var(--dnd-indicator);
+  opacity: 0;
+  z-index: 1;
+
+  &[data-placement="before"] {
+    top: 3px;
+    transform: translateY(-50%);
+  }
+
+  &[data-placement="after"] {
+    bottom: 3px;
+    transform: translateY(50%);
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.dragPreview {
+  width: var(--drag-preview-width);
+  height: var(--drag-preview-height);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+  opacity: 1;
+}

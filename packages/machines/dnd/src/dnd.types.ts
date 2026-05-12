@@ -245,6 +245,8 @@ interface Refs {
   dragOverTimer: ReturnType<typeof setTimeout> | null
   activationTimer: ReturnType<typeof setTimeout> | null
   pendingValue: string | undefined
+  dragOffset: Point | null
+  dragRect: Rect | null
   didDrop: boolean
   autoScrollMove: ((x: number, y: number) => void) | null
   dropTargetSequence: string[]

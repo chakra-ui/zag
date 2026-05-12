@@ -2,13 +2,14 @@ import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
-import { distance as pointDistance } from "@zag-js/rect-utils"
+import { createRect, distance as pointDistance, getElementRect } from "@zag-js/rect-utils"
+import type { Rect } from "@zag-js/rect-utils"
 import { nextIndex, prevIndex } from "@zag-js/utils"
 import type { Point } from "@zag-js/types"
 import * as dom from "./dnd.dom"
 import type { DndSchema, DropPlacement, IntlTranslations } from "./dnd.types"
 import { createAutoScroll } from "./utils/auto-scroll"
-import { closestEdge } from "./utils/collision"
+import { closestEdge, closestGrid } from "./utils/collision"
 
 type ActionParams = Params<DndSchema>
 
@@ -67,6 +68,26 @@ function getLabel(params: ActionParams, value: string): string {
   return el?.textContent?.trim() ?? value
 }
 
+function getDragOffset(params: ActionParams, value: string, point: Point | null): Point | null {
+  if (!point) return null
+  const el = dom.getDraggableEl(params.scope, value)
+  if (!el) return null
+  const rect = el.getBoundingClientRect()
+  return { x: point.x - rect.left, y: point.y - rect.top }
+}
+
+function getDragRect(params: ActionParams, value: string): Rect | null {
+  const el = dom.getDraggableEl(params.scope, value)
+  if (!el) return null
+  return getElementRect(el)
+}
+
+function getProjectedRect(rect: Rect, origin: Point | null, point: Point): Rect {
+  const dx = point.x - (origin?.x ?? point.x)
+  const dy = point.y - (origin?.y ?? point.y)
+  return createRect({ x: rect.x + dx, y: rect.y + dy, width: rect.width, height: rect.height })
+}
+
 export const machine = createMachine<DndSchema>({
   props({ props }) {
     return {
@@ -103,6 +124,8 @@ export const machine = createMachine<DndSchema>({
       dragOverTimer: null,
       activationTimer: null,
       pendingValue: undefined,
+      dragOffset: null,
+      dragRect: null,
       didDrop: false,
       autoScrollMove: null,
       dropTargetSequence: [],
@@ -168,6 +191,9 @@ export const machine = createMachine<DndSchema>({
             "announceDropTargetDebounced",
             "invokeOnDragOverDebounced",
           ],
+        },
+        AUTO_SCROLL: {
+          actions: ["updateDropTargetFromPointer", "announceDropTargetDebounced", "invokeOnDragOverDebounced"],
         },
         "POINTER.UP": [
           {
@@ -285,14 +311,21 @@ export const machine = createMachine<DndSchema>({
         return () => clearTimeout(timer)
       },
 
-      setupAutoScroll({ scope, prop, refs }) {
+      setupAutoScroll({ scope, prop, refs, context, send }) {
         const scrollThreshold = prop("scrollThreshold")
         if (!scrollThreshold) return
 
         const rootEl = dom.getRootEl(scope)
         if (!rootEl) return
 
-        const autoScroll = createAutoScroll(rootEl, { threshold: scrollThreshold })
+        const autoScroll = createAutoScroll(rootEl, {
+          threshold: scrollThreshold,
+          onScroll() {
+            const point = context.get("pointerPosition")
+            if (!point) return
+            send({ type: "AUTO_SCROLL", point })
+          },
+        })
         if (!autoScroll) return
 
         refs.set("autoScrollMove", autoScroll.move)
@@ -338,8 +371,11 @@ export const machine = createMachine<DndSchema>({
         const { context, event, refs } = params
         // Use event.value if available (direct start), or pendingValue (from pending state)
         const value = event.value ?? refs.get("pendingValue")
+        const origin = refs.get("pointerOrigin") ?? event.point ?? null
         context.set("dragSource", value)
-        refs.set("pointerOrigin", event.point ?? refs.get("pointerOrigin"))
+        refs.set("pointerOrigin", origin)
+        refs.set("dragOffset", getDragOffset(params, value, origin))
+        refs.set("dragRect", getDragRect(params, value))
         refs.set("pendingValue", undefined)
 
         if (!refs.get("liveRegion")) {
@@ -354,6 +390,8 @@ export const machine = createMachine<DndSchema>({
         context.set("pointerPosition", null)
         refs.set("pointerOrigin", null)
         refs.set("pendingValue", undefined)
+        refs.set("dragOffset", null)
+        refs.set("dragRect", null)
         refs.set("dropTargetSequence", [])
         refs.set("dropTargetIndex", -1)
 
@@ -384,24 +422,35 @@ export const machine = createMachine<DndSchema>({
       },
 
       updateDropTargetFromPointer({ context, event, scope, prop, refs }) {
-        const collisionFn = prop("collisionStrategy") ?? closestEdge
         const source = context.get("dragSource")!
 
-        // Filter out all dragged items from collision candidates
+        const allEntries = dom.getDropEntries(scope)
         const selectedValues = prop("selectedValues")
         const dragValues = selectedValues?.includes(source) ? new Set(selectedValues) : new Set([source])
-        const entries = dom.getDropEntries(scope).filter((e) => !dragValues.has(e.value))
         const allowDropOn = prop("dropPlacements").includes("on")
 
-        // For grids, collision uses horizontal reading order for placement
         const isGrid = prop("columnCount") != null
-        const collisionOrientation = isGrid ? ("horizontal" as const) : prop("orientation")
+        const entries = allEntries.filter((e) => !dragValues.has(e.value))
 
-        const result = collisionFn(event.point, entries, {
-          edgeThreshold: prop("edgeThreshold"),
-          allowDropOn,
-          orientation: collisionOrientation,
-        })
+        const result =
+          isGrid && !prop("collisionStrategy")
+            ? (() => {
+                const dragRect = refs.get("dragRect")
+                if (!dragRect) return null
+                return closestGrid(event.point, allEntries, {
+                  edgeThreshold: prop("edgeThreshold"),
+                  allowDropOn,
+                  orientation: "horizontal",
+                  activeValue: source,
+                  dragValues,
+                  activeRect: getProjectedRect(dragRect, refs.get("pointerOrigin"), event.point),
+                })
+              })()
+            : (prop("collisionStrategy") ?? closestEdge)(event.point, entries, {
+                edgeThreshold: prop("edgeThreshold"),
+                allowDropOn,
+                orientation: prop("orientation"),
+              })
 
         if (result) {
           const canDrop = prop("canDrop")

@@ -1,7 +1,7 @@
 export { anatomy } from "./dnd.anatomy"
 export { connect } from "./dnd.connect"
 export { machine } from "./dnd.machine"
-export { closestEdge, closestCenter, pointerWithin } from "./utils/collision"
+export { closestEdge, closestCenter, closestGrid, pointerWithin } from "./utils/collision"
 export { move, reorder, getDestinationIndex } from "./utils/move"
 export * from "./dnd.props"
 export type {

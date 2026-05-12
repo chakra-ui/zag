@@ -83,6 +83,63 @@ export function closestCenter(pointer: Point, entries: DropEntry[], options: Col
 }
 
 /* -----------------------------------------------------------------------------
+ * closestGrid — for sortable grids
+ *
+ * Computes the nearest grid slot from all entries, including the active drag
+ * source, then maps that slot to an insertion point among non-dragged entries.
+ * This prevents the source item's original cell from collapsing into the nearest
+ * remaining item in another row.
+ * -----------------------------------------------------------------------------*/
+
+export interface GridCollisionOptions extends CollisionOptions {
+  activeValue: string
+  dragValues: Set<string>
+  activeRect: Rect
+}
+
+export function closestGrid(
+  _pointer: Point,
+  entries: DropEntry[],
+  options: GridCollisionOptions,
+): CollisionResult | null {
+  if (entries.length === 0) return null
+
+  const remaining = entries.filter((entry) => !options.dragValues.has(entry.value))
+  if (remaining.length === 0) return null
+
+  const activeIndex = entries.findIndex((entry) => entry.value === options.activeValue)
+  if (activeIndex === -1) return null
+
+  let overIndex = -1
+  let minDistance = Infinity
+
+  for (let index = 0; index < entries.length; index++) {
+    const entry = entries[index]
+    const dx = options.activeRect.center.x - entry.rect.center.x
+    const dy = options.activeRect.center.y - entry.rect.center.y
+    const distance = dx * dx + dy * dy
+    if (distance < minDistance) {
+      minDistance = distance
+      overIndex = index
+    }
+  }
+
+  if (overIndex === -1) return null
+
+  const insertIndex = Math.max(0, Math.min(overIndex, remaining.length))
+
+  if (insertIndex === 0) {
+    return { value: remaining[0].value, placement: "before" }
+  }
+
+  if (insertIndex === remaining.length) {
+    return { value: remaining[remaining.length - 1].value, placement: "after" }
+  }
+
+  return { value: remaining[insertIndex].value, placement: "before" }
+}
+
+/* -----------------------------------------------------------------------------
  * pointerWithin — for kanban columns and container-based drops
  *
  * Returns the entry whose rect contains the pointer. If multiple entries

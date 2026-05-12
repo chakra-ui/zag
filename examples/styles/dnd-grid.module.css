@@ -14,40 +14,10 @@
 }
 
 .grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(var(--column-count, 3), 1fr);
   gap: 8px;
-}
-
-.dropIndicator {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  height: auto;
-  background: transparent;
-  border: 2px solid var(--dnd-indicator, #3b82f6);
-  border-radius: 8px;
-  opacity: 0;
-  z-index: 1;
-  transform: none;
-  transition: opacity 0.1s;
-
-  &[data-placement="before"],
-  &[data-placement="after"] {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    transform: none;
-  }
-
-  &[data-active] {
-    opacity: 1;
-  }
-}
-
-.dropTarget[data-drop-target] {
-  opacity: 0.2;
 }
 
 .item {
@@ -66,6 +36,7 @@
   align-items: center;
   gap: 8px;
   border: 1px solid transparent;
+  min-height: 54px;
 
   &[data-dragging] {
     opacity: 0.5;
@@ -83,6 +54,16 @@
   }
 }
 
+.placeholder {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  border: 2px solid var(--dnd-indicator, #3b82f6);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dnd-indicator, #3b82f6) 12%, white);
+  box-sizing: border-box;
+}
+
 .dragHandle {
   touch-action: none;
   cursor: grab;
@@ -96,10 +77,16 @@
 }
 
 .dragPreview {
-  padding: 8px 12px;
-  border: 1px solid var(--dnd-border, #d4d4d8);
-  border-radius: 4px;
-  background: var(--dnd-item-bg, #ffffff);
+  display: inline-flex;
+  align-items: center;
+  width: var(--drag-preview-width);
+  height: var(--drag-preview-height);
+  max-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  padding: 16px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--item-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   font-size: inherit;
   white-space: nowrap;

@@ -1,11 +1,12 @@
 import { dataAttr, getEventKey, getEventPoint, isLeftClick, MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./dnd.anatomy"
 import * as dom from "./dnd.dom"
 import type { DndApi, DndService } from "./dnd.types"
 
 export function connect<T extends PropTypes>(service: DndService, normalize: NormalizeProps<T>): DndApi<T> {
-  const { state, send, prop, context, scope } = service
+  const { state, send, prop, context, scope, refs } = service
 
   const isDragging = state.matches("pointer:dragging", "keyboard:session")
   const isKeyboardDragging = state.matches("keyboard:session")
@@ -13,6 +14,8 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
   const dropTarget = context.get("dropTarget")
   const dropPlacement = context.get("dropPlacement")
   const pointerPosition = context.get("pointerPosition")
+  const dragOffset = refs.get("dragOffset")
+  const dragRect = refs.get("dragRect")
 
   const orientation = prop("orientation")
   const isVertical = orientation === "vertical"
@@ -253,12 +256,18 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "aria-hidden": true,
         hidden: !isDragging || !pointerPosition,
         style: {
+          "--drag-preview-width": toPx(dragRect?.width),
+          "--drag-preview-height": toPx(dragRect?.height),
           position: "fixed",
           top: "0",
           left: "0",
           pointerEvents: "none",
           zIndex: MAX_Z_INDEX,
-          transform: pointerPosition ? `translate3d(${pointerPosition.x}px, ${pointerPosition.y}px, 0)` : undefined,
+          transform: pointerPosition
+            ? `translate3d(${pointerPosition.x - (dragOffset?.x ?? 0)}px, ${
+                pointerPosition.y - (dragOffset?.y ?? 0)
+              }px, 0)`
+            : undefined,
           willChange: isDragging ? "transform" : undefined,
         },
       })

@@ -16,6 +16,10 @@ export interface AutoScrollOptions {
    * @default 4
    */
   maxSpeed?: number
+  /**
+   * Called after the scroll position changes.
+   */
+  onScroll?: VoidFunction
 }
 
 const SCROLLABLE_RE = /(auto|scroll)/
@@ -25,7 +29,7 @@ export class AutoScroll {
   private win: Window
   private canScrollX: boolean
   private canScrollY: boolean
-  private options: Required<AutoScrollOptions>
+  private options: Required<Pick<AutoScrollOptions, "threshold" | "maxSpeed">> & Pick<AutoScrollOptions, "onScroll">
   private dx = 0
   private dy = 0
   private frameId: number | null = null
@@ -45,8 +49,15 @@ export class AutoScroll {
   }
 
   private tick = () => {
+    const prevLeft = this.scrollableEl.scrollLeft
+    const prevTop = this.scrollableEl.scrollTop
+
     if (this.canScrollX) this.scrollableEl.scrollLeft += this.dx
     if (this.canScrollY) this.scrollableEl.scrollTop += this.dy
+
+    const didScroll = this.scrollableEl.scrollLeft !== prevLeft || this.scrollableEl.scrollTop !== prevTop
+    if (didScroll) this.options.onScroll?.()
+
     if (this.frameId != null) {
       this.frameId = this.win.requestAnimationFrame(this.tick)
     }
