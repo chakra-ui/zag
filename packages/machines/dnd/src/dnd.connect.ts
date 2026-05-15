@@ -139,6 +139,11 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "aria-roledescription": "draggable",
         "aria-description": canDrag ? instructions : undefined,
         "aria-grabbed": isDragging ? isPartOfDrag : undefined,
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: "none",
+        },
         onPointerDown(event) {
           if (!canDrag) return
           if (!isLeftClick(event)) return
@@ -184,6 +189,11 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "aria-description": canDrag ? instructions : undefined,
         "aria-grabbed": isDragging ? isPartOfDrag : undefined,
         tabIndex: canDrag ? 0 : undefined,
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: "none",
+        },
         onPointerDown(event) {
           if (!canDrag) return
           if (!isLeftClick(event)) return

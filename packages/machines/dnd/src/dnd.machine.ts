@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
-import { raf, trackPointerMove } from "@zag-js/dom-query"
+import { disableTextSelection, raf, trackPointerMove } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { createRect, distance as pointDistance, getElementRect } from "@zag-js/rect-utils"
 import type { Rect } from "@zag-js/rect-utils"
@@ -86,6 +86,11 @@ function getProjectedRect(rect: Rect, origin: Point | null, point: Point): Rect 
   const dx = point.x - (origin?.x ?? point.x)
   const dy = point.y - (origin?.y ?? point.y)
   return createRect({ x: rect.x + dx, y: rect.y + dy, width: rect.width, height: rect.height })
+}
+
+function clearDropTarget(context: ActionParams["context"]) {
+  context.set("dropTarget", null)
+  context.set("dropPlacement", null)
 }
 
 export const machine = createMachine<DndSchema>({
@@ -181,7 +186,7 @@ export const machine = createMachine<DndSchema>({
     },
 
     "pointer:dragging": {
-      effects: ["trackPointerMove", "setupAutoScroll", "trackEscapeKey"],
+      effects: ["trackPointerMove", "setupAutoScroll", "trackEscapeKey", "disableTextSelection"],
       on: {
         "POINTER.MOVE": {
           actions: [
@@ -336,6 +341,14 @@ export const machine = createMachine<DndSchema>({
         }
       },
 
+      disableTextSelection({ scope }) {
+        const doc = scope.getDoc()
+        return disableTextSelection({
+          doc,
+          target: doc.documentElement,
+        })
+      },
+
       ariaHideOutside({ scope, context, refs }) {
         const dragSourceValue = context.get("dragSource")
         if (!dragSourceValue) return
@@ -430,7 +443,8 @@ export const machine = createMachine<DndSchema>({
         const allowDropOn = prop("dropPlacements").includes("on")
 
         const isGrid = prop("columnCount") != null
-        const entries = allEntries.filter((e) => !dragValues.has(e.value))
+        const isMultiDrag = dragValues.size > 1
+        const entries = isMultiDrag ? allEntries.filter((e) => !dragValues.has(e.value)) : allEntries
 
         const result =
           isGrid && !prop("collisionStrategy")
@@ -453,6 +467,12 @@ export const machine = createMachine<DndSchema>({
               })
 
         if (result) {
+          if (dragValues.has(result.value) && (isMultiDrag || result.placement === "on")) return
+          if (!isMultiDrag && result.value === source) {
+            clearDropTarget(context)
+            return
+          }
+
           const canDrop = prop("canDrop")
           if (canDrop && !canDrop(source, result.value, result.placement)) return
 
@@ -468,7 +488,14 @@ export const machine = createMachine<DndSchema>({
           const prevTarget = context.get("dropTarget")
           const prevPlacement = context.get("dropPlacement")
 
-          if (prevTarget && prevPlacement && result.value !== prevTarget && result.placement !== "on") {
+          if (
+            prevTarget &&
+            prevPlacement &&
+            result.value !== prevTarget &&
+            result.placement !== "on" &&
+            !dragValues.has(result.value) &&
+            !dragValues.has(prevTarget)
+          ) {
             const prevIdx = entries.findIndex((e) => e.value === prevTarget)
             const nextIdx = entries.findIndex((e) => e.value === result.value)
             const isAdjacentFlip =

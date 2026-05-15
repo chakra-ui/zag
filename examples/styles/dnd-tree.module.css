@@ -19,8 +19,8 @@
 }
 
 .dragHandle {
-  touch-action: none;
   cursor: grab;
+  outline: 0;
   align-items: center;
   color: var(--dnd-handle, #a1a1aa);
   opacity: 0.5;
@@ -41,6 +41,20 @@
   z-index: 1;
   transition: opacity 0.1s;
   left: calc(var(--depth, 0) * 24px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--dnd-indicator, #3b82f6);
+    border-radius: 999px;
+    background: var(--dnd-item-bg, #ffffff);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
 
   &[data-placement="before"] {
     top: calc(-1 * var(--dnd-gap, 4px) / 2);

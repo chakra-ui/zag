@@ -55,9 +55,6 @@
 }
 
 .draggable {
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
   cursor: grab;
   position: relative;
   min-height: 38px;
@@ -84,8 +81,8 @@
 }
 
 .dragHandle {
-  touch-action: none;
   cursor: grab;
+  outline: 0;
   display: flex;
   align-items: center;
   color: var(--dnd-handle);
@@ -111,6 +108,20 @@
   background: var(--dnd-indicator);
   opacity: 0;
   z-index: 1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--dnd-indicator);
+    border-radius: 999px;
+    background: var(--dnd-item-bg);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
 
   &[data-placement="before"] {
     top: 3px;

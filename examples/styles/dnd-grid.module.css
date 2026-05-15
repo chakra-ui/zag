@@ -25,9 +25,6 @@
 }
 
 .draggable {
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
   cursor: grab;
   padding: 16px 12px;
   border-radius: 8px;
@@ -65,8 +62,8 @@
 }
 
 .dragHandle {
-  touch-action: none;
   cursor: grab;
+  outline: 0;
   display: flex;
   align-items: center;
   color: var(--dnd-handle, #a1a1aa);
