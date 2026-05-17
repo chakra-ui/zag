@@ -16,7 +16,7 @@
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.57.1",
     "@sveltejs/vite-plugin-svelte": "7.0.0",
-    "svelte": "5.55.1",
+    "svelte": "5.55.7",
     "vite": "8.0.5"
   }
 }
