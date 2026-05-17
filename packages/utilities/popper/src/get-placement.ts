@@ -115,33 +115,37 @@ function getSizeMiddleware(opts: Options) {
   let lastAvailableWidth: number | undefined
   let lastAvailableHeight: number | undefined
 
-  return size({
-    padding: opts.overflowPadding,
-    apply({ elements, rects, availableHeight, availableWidth }) {
-      const floating = elements.floating
+  return size(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      padding: opts.overflowPadding,
+      ...(boundary ? { boundary } : undefined),
+      apply({ elements, rects, availableHeight, availableWidth }) {
+        const floating = elements.floating
 
-      const referenceWidth = Math.round(rects.reference.width)
-      const referenceHeight = Math.round(rects.reference.height)
-      availableWidth = Math.floor(availableWidth)
-      availableHeight = Math.floor(availableHeight)
+        const referenceWidth = Math.round(rects.reference.width)
+        const referenceHeight = Math.round(rects.reference.height)
+        availableWidth = Math.floor(availableWidth)
+        availableHeight = Math.floor(availableHeight)
 
-      if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
-        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-        lastReferenceWidth = referenceWidth
-      }
-      if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
-        floating.style.setProperty("--reference-height", `${referenceHeight}px`)
-        lastReferenceHeight = referenceHeight
-      }
-      if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
-        floating.style.setProperty("--available-width", `${availableWidth}px`)
-        lastAvailableWidth = availableWidth
-      }
-      if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
-        floating.style.setProperty("--available-height", `${availableHeight}px`)
-        lastAvailableHeight = availableHeight
-      }
-    },
+        if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
+          floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+          lastReferenceWidth = referenceWidth
+        }
+        if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
+          floating.style.setProperty("--reference-height", `${referenceHeight}px`)
+          lastReferenceHeight = referenceHeight
+        }
+        if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
+          floating.style.setProperty("--available-width", `${availableWidth}px`)
+          lastAvailableWidth = availableWidth
+        }
+        if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
+          floating.style.setProperty("--available-height", `${availableHeight}px`)
+          lastAvailableHeight = availableHeight
+        }
+      },
+    }
   })
 }
 
