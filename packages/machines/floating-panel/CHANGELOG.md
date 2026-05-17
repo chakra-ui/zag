@@ -1,5 +1,21 @@
 # @zag-js/floating-panel
 
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7),
+  [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/popper@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/core@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/store@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+  - @zag-js/rect-utils@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
