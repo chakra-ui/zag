@@ -1,5 +1,19 @@
 # @zag-js/vanilla
 
+## 1.41.0
+
+### Patch Changes
+
+- [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dialog, drawer, and popover leaving `<body>` uninteractive
+  (`data-scroll-lock`, `data-inert`, `overflow: hidden`, `pointer-events: none`) after closing under React 19 Strict
+  Mode.
+- Updated dependencies []:
+  - @zag-js/core@1.41.0
+  - @zag-js/store@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
