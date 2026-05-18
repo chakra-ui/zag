@@ -241,7 +241,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               // Allow submission when alwaysSubmitOnEnter is true
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
 
-              if (open && !submittable && !alwaysSubmit && hasHighlight) {
+              if (open && !alwaysSubmit && (hasHighlight || !submittable)) {
                 event.preventDefault()
               }
 
