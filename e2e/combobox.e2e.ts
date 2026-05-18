@@ -378,6 +378,7 @@ test.describe("combobox / form", () => {
 
   test("[keyboard / no highlight] Enter submits form when no item is highlighted", async () => {
     await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
 
     await I.focusInput()
     await I.type("z")
