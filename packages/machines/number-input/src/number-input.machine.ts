@@ -181,7 +181,7 @@ export const machine = createMachine({
         },
         "INPUT.BLUR": [
           {
-            guard: and("clampValueOnBlur", not("isInRange")),
+            guard: and("clampValueOnBlur", not("isValueEmpty"), not("isInRange")),
             target: "idle",
             actions: ["setClampedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
