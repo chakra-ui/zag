@@ -25,7 +25,7 @@ export const getDescriptionEl = (ctx: Scope) => ctx.getById(getDescriptionId(ctx
 export const getCloseTriggerEl = (ctx: Scope) => ctx.getById(getCloseTriggerId(ctx))
 
 export const getTriggerEls = (ctx: Scope) =>
-  queryAll(ctx.getDoc(), `[data-scope="dialog"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll(ctx.getRootNode(), `[data-scope="dialog"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   return value == null ? getTriggerEls(ctx)[0] : ctx.getById(getTriggerId(ctx, value))

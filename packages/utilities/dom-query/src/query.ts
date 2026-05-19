@@ -1,4 +1,4 @@
-type Root = Document | Element | null | undefined
+type Root = Document | ShadowRoot | Element | null | undefined
 
 export function queryAll<T extends Element = HTMLElement>(root: Root, selector: string) {
   return Array.from(root?.querySelectorAll<T>(selector) ?? [])

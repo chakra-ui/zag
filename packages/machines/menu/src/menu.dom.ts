@@ -33,10 +33,10 @@ export const getArrowEl = (ctx: Scope) => ctx.getById(getArrowId(ctx))
 export const getContextTriggerEl = (ctx: Scope) => ctx.getById(getContextTriggerId(ctx))
 
 export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getContextTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="context-trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="context-trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   // When value is null, use ID-based lookup (works for submenus with trigger-item)

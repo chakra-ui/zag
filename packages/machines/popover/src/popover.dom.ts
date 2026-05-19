@@ -19,7 +19,7 @@ export const getCloseTriggerId = (scope: Scope) => scope.ids?.closeTrigger ?? `p
 export const getAnchorEl = (scope: Scope) => scope.getById(getAnchorId(scope))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(scope.getDoc(), `[data-scope="popover"][data-part="trigger"][data-ownedby="${scope.id}"]`)
+  queryAll<HTMLElement>(scope.getRootNode(), `[data-scope="popover"][data-part="trigger"][data-ownedby="${scope.id}"]`)
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
   return value == null ? getTriggerEls(scope)[0] : scope.getById(getTriggerId(scope, value))
