@@ -28,5 +28,8 @@ export const getTriggerEls = (ctx: Scope) =>
   queryAll(ctx.getDoc(), `[data-scope="dialog"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
-  return value == null ? getTriggerEls(ctx)[0] : ctx.getById(getTriggerId(ctx, value))
+  if (value == null) {
+    return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
+  }
+  return ctx.getById(getTriggerId(ctx, value))
 }

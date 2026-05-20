@@ -133,7 +133,7 @@ export const machine = createMachine<DialogSchema>({
           defer: true,
           pointerBlocking: prop("modal"),
           layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
-          exclude: dom.getTriggerEls(scope),
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (!prop("closeOnInteractOutside")) {

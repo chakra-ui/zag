@@ -26,5 +26,8 @@ export const getTriggerEls = (scope: Scope): HTMLElement[] =>
   queryAll<HTMLElement>(scope.getDoc(), `[data-scope="tooltip"][data-part="trigger"][data-ownedby="${scope.id}"]`)
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
-  return value == null ? getTriggerEls(scope)[0] : scope.getById(getTriggerId(scope, value))
+  if (value == null) {
+    return getTriggerEl(scope) ?? getTriggerEls(scope)[0]
+  }
+  return scope.getById(getTriggerId(scope, value))
 }
