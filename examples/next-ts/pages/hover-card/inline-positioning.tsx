@@ -35,7 +35,7 @@ export default function Page() {
       >
         <h1 style={{ fontSize: "20px", marginBottom: "16px" }}>Inline positioning</h1>
         <p style={{ lineHeight: 1.7, marginBottom: "16px" }}>
-          Hover the wrapped inline trigger in this sentence:{" "}
+          Hover either line of this wrapped inline trigger:{" "}
           <a
             href="https://zagjs.com"
             rel="noreferrer"
@@ -48,12 +48,15 @@ export default function Page() {
               textUnderlineOffset: "3px",
             }}
           >
-            Zag.js hover card inline positioning follows the exact wrapped line you enter
+            Zag.js inline preview
+            <br />
+            API
           </a>
           , which keeps the preview anchored to the visible text fragment.
         </p>
         <p style={{ color: "#64748b", fontSize: "14px", lineHeight: 1.6 }}>
-          The trigger is intentionally long enough to wrap across multiple lines inside this narrow container.
+          The trigger is intentionally split across two inline lines so you can compare how the card anchors to each
+          fragment.
         </p>
       </article>
 
