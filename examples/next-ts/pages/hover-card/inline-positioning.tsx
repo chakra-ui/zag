@@ -35,7 +35,7 @@ export default function Page() {
       >
         <h1 style={{ fontSize: "20px", marginBottom: "16px" }}>Inline positioning</h1>
         <p style={{ lineHeight: 1.7, marginBottom: "16px" }}>
-          Hover either line of this wrapped inline trigger:{" "}
+          Hover this:{" "}
           <a
             href="https://zagjs.com"
             rel="noreferrer"
