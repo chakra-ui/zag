@@ -13,7 +13,7 @@ export const getTriggerId = (ctx: Scope, value?: string) => {
 }
 
 export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="drawer"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="drawer"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   if (value == null) return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]

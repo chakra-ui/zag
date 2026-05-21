@@ -16,7 +16,10 @@ export const getContentEl = (scope: Scope) => scope.getById(getContentId(scope))
 export const getPositionerEl = (scope: Scope) => scope.getById(getPositionerId(scope))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(scope.getDoc(), `[data-scope="hover-card"][data-part="trigger"][data-ownedby="${scope.id}"]`)
+  queryAll<HTMLElement>(
+    scope.getRootNode(),
+    `[data-scope="hover-card"][data-part="trigger"][data-ownedby="${scope.id}"]`,
+  )
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
   return value == null ? getTriggerEls(scope)[0] : scope.getById(getTriggerId(scope, value))
