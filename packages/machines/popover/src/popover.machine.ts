@@ -169,7 +169,7 @@ export const machine = createMachine<PopoverSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           pointerBlocking: prop("modal"),
-          exclude: dom.getTriggerEls(scope),
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           defer: true,
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)

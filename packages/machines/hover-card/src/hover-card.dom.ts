@@ -22,5 +22,8 @@ export const getTriggerEls = (scope: Scope): HTMLElement[] =>
   )
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
-  return value == null ? getTriggerEls(scope)[0] : scope.getById(getTriggerId(scope, value))
+  if (value == null) {
+    return getTriggerEl(scope) ?? getTriggerEls(scope)[0]
+  }
+  return scope.getById(getTriggerId(scope, value))
 }
