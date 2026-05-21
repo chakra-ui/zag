@@ -1,5 +1,30 @@
 # @zag-js/toc
 
+## 1.41.0
+
+### Patch Changes
+
+- [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `api.scrollTo(value, details?)` for programmatically
+  scrolling to a heading. The optional `details.behavior` controls the scroll behavior; when omitted, the platform
+  default applies.
+
+  ```tsx
+  api.scrollTo("installation", { behavior: "smooth" })
+  ```
+
+  - Rename `getScrollEl` context prop to `scrollEl` for consistency with other machines (e.g. `initialFocusEl`,
+    `finalFocusEl`).
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
