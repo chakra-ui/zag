@@ -15,7 +15,7 @@ import {
   contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
@@ -41,6 +41,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const composite = prop("composite")
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const anchorPoint = context.get("anchorPoint")
   const highlightedValue = context.get("highlightedValue")
   const triggerValue = context.get("triggerValue")
@@ -213,7 +214,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         type: "button",
         dir: prop("dir"),
         id: triggerId,
@@ -351,6 +353,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           ? dom.getContextTriggerId(scope, triggerValue ?? undefined)
           : dom.getTriggerId(scope, triggerValue ?? undefined),
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
           send({ type: "MENU_POINTERENTER" })

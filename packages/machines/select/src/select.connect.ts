@@ -411,6 +411,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.content.attrs,
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
