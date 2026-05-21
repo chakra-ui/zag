@@ -66,10 +66,12 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
           const shouldSwitch = open && value != null && !current
+          const point = { x: event.clientX, y: event.clientY }
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_ENTER",
             src: "trigger",
             value,
+            point,
           })
         },
         onPointerLeave(event) {
