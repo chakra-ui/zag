@@ -43,7 +43,7 @@ export function ImageCropper(props: ImageCropperProps) {
       <div {...api.getRootProps()}>
         <div className={styles.Viewport} {...api.getViewportProps()}>
           <img
-            src="/static/image-cropper-demo.jpg"
+            src="/image-cropper-demo.jpg"
             alt="Dog to be cropped"
             width={500}
             height={280}
