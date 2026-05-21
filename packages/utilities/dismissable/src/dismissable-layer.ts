@@ -6,7 +6,7 @@ import {
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
 import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
-import { trackEscapeKeydown } from "./escape-keydown"
+import { markEscapeKeydownHandled, trackEscapeKeydown } from "./escape-keydown"
 import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
@@ -132,8 +132,13 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
   function onEscapeKeyDown(event: KeyboardEvent) {
     if (!layerStack.isTopMost(node!)) return
     options.onEscapeKeyDown?.(event)
+    if (event.defaultPrevented) {
+      markEscapeKeydownHandled(event)
+      return
+    }
     if (!event.defaultPrevented && onDismiss) {
       event.preventDefault()
+      markEscapeKeydownHandled(event)
       onDismiss()
     }
   }

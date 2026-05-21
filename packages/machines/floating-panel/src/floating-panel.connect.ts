@@ -121,7 +121,11 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (event.defaultPrevented) return
 
-          if (event.key === "Escape" && isTopmost) {
+          const isEscapeHandled = prop("closeOnEscape") || dragging || resizing
+
+          if (event.key === "Escape" && isTopmost && isEscapeHandled) {
+            event.preventDefault()
+            event.stopPropagation()
             send({ type: "ESCAPE" })
             return
           }
