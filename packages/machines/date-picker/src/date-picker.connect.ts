@@ -31,7 +31,7 @@ import {
   isValidCharacter,
 } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
@@ -91,6 +91,7 @@ export function connect<T extends PropTypes>(
   const isMaxSelected = isMultiPicker && maxSelectedDates != null && selectedValue.length >= maxSelectedDates
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
@@ -458,6 +459,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-inline": dataAttr(prop("inline")),
         id: dom.getContentId(scope),
         tabIndex: -1,
@@ -856,6 +858,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(scope),
         "aria-expanded": open,

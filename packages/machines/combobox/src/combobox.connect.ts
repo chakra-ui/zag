@@ -9,7 +9,7 @@ import {
   isLeftClick,
   isOpeningInNewTab,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
@@ -35,10 +35,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const focused = state.hasTag("focused")
   const composite = prop("composite")
   const highlightedValue = context.get("highlightedValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
+    placement: currentPlacement,
   })
 
   function getItemState(props: ItemProps): ItemState {
@@ -334,7 +336,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         hidden: !open,
         "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         "data-empty": dataAttr(collection.size === 0),

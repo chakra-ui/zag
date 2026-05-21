@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import * as dom from "./hover-card.dom"
@@ -10,10 +10,12 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
 
   const open = state.hasTag("open")
   const triggerValue = context.get("triggerValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
+    placement: currentPlacement,
   })
 
   return {
@@ -56,7 +58,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       return normalize.element({
         ...parts.trigger.attrs,
         dir: prop("dir"),
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         id: dom.getTriggerId(scope, value),
         "data-ownedby": scope.id,
         "data-value": value,
@@ -109,7 +112,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         hidden: !open,
         tabIndex: -1,
         "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
