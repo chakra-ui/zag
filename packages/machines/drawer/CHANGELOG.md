@@ -1,5 +1,34 @@
 # @zag-js/drawer
 
+## 1.41.0
+
+### Patch Changes
+
+- [`de7524c`](https://github.com/chakra-ui/zag/commit/de7524cfc27c2c183345ee019c547eefda2771f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix custom trigger elements (via `ids.trigger`) being ignored when
+  shared across components (e.g. wrapping a `Popover.Trigger` in a `Tooltip` with the same id), causing broken
+  positioning and a close-then-reopen cycle on trigger clicks.
+
+- [#3127](https://github.com/chakra-ui/zag/pull/3127)
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix trigger element lookups in shadow root.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/remove-scroll@1.41.0
+  - @zag-js/aria-hidden@1.41.0
+  - @zag-js/focus-trap@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
