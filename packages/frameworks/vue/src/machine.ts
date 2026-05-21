@@ -151,7 +151,9 @@ export function useMachine<T extends MachineSchema>(
   }
   const guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(getParams())
-    return machine.implementations?.guards?.[str](getParams())
+    const fn = machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(getParams())
   }
 
   const effect = (keys: EffectsOrFn<T> | undefined) => {

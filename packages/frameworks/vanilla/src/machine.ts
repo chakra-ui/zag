@@ -271,7 +271,9 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(this.getParams())
-    return this.machine.implementations?.guards?.[str](this.getParams())
+    const fn = this.machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(this.getParams())
   }
 
   private effect = (keys: EffectsOrFn<T> | undefined) => {
