@@ -7,7 +7,7 @@ export default function Page() {
     id: useId(),
     openDelay: 100,
     positioning: {
-      placement: "top",
+      placement: "right",
       inline: true,
       gutter: 8,
     },
