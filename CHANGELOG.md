@@ -4,6 +4,147 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.41.0](./#1.41.0) - 2026-05-21
+
+### Added
+
+- **Floating Components**: Add `data-side` to placement-aware parts based on the current placement.
+
+  > Affected Components: Cascade Select, Color Picker, Combobox, Date Picker, Hover Card, Menu, Popover, Select,
+  > Tooltip, Tour.
+
+- **Date Input**
+  - Add `hideTimeZone` prop. The `timeZoneName` segment now renders automatically when the value is a `ZonedDateTime`,
+    and can be hidden via `hideTimeZone: true`.
+  - Arrow navigation and auto-advance after typing now reach read-only focusable segments (e.g. `timeZoneName`). Typing
+    the final editable segment (e.g. "P" on `dayPeriod`) advances focus to the trailing read-only segment instead of
+    staying put.
+
+- **Splitter**
+  - Add CSS unit support for `defaultSize`, `minSize`, and `maxSize`. The splitter now accepts `px`, `em`, `rem`, `vh`,
+    and `vw` in addition to percentages, and resolves them to percentages after hydration.
+
+  ```tsx
+  const service = useMachine(splitter.machine, {
+    panels: [
+      { id: "nav", minSize: "240px", maxSize: "480px" },
+      { id: "main", minSize: 30 },
+    ],
+    defaultSize: ["240px", "60vw"],
+  })
+  ```
+
+  - Add `resizeBehavior` per panel. Set to `"preserve-pixel-size"` to keep a panel's pixel size constant when the parent
+    splitter group resizes. Leave at least one panel as `"preserve-relative-size"` (the default) so the layout can
+    absorb the change.
+
+  ```tsx
+  panels: [
+    { id: "nav", minSize: 20 },
+    {
+      id: "main",
+      minSize: "240px",
+      maxSize: "480px",
+      resizeBehavior: "preserve-pixel-size",
+    },
+    { id: "aside", minSize: 20 },
+  ]
+  ```
+
+  - Allow non-panel children inside the splitter root for fixed toolbars, rails, or status areas that should not be
+    managed as panels. Use partial trigger ids (`"left:"`, `":right"`) to bind handles around the fixed element.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <div {...api.getPanelProps({ id: "left" })}>Left</div>
+    <div {...api.getResizeTriggerProps({ id: "left:" })} />
+    <div style={{ flex: "0 0 180px" }}>Fixed sized element</div>
+    <div {...api.getResizeTriggerProps({ id: ":right" })} />
+    <div {...api.getPanelProps({ id: "right" })}>Right</div>
+  </div>
+  ```
+
+- **TOC**: Add `api.scrollTo(value, details?)` for programmatically scrolling to a heading. The optional
+  `details.behavior` controls the scroll behavior; when omitted, the platform default applies.
+
+  ```tsx
+  api.scrollTo("installation", { behavior: "smooth" })
+  ```
+
+### Fixed
+
+- **Accordion**: Remove redundant `aria-disabled` from accordion item triggers.
+
+- **Color Picker**: Invoke `onValueChangeEnd` when the user picks a color with the EyeDropper API, consistent with
+  ending a drag on the area or channel sliders.
+
+- **Combobox**: Fix `Enter` no longer submits the form when an item is highlighted (regardless of `allowCustomValue`),
+  or when the typed value will be rejected by `allowCustomValue: false`.
+
+- **Date Input**
+  - Fix min/max handling to preserve entered segments while editing. Values are now clamped segment-by-segment on blur,
+    so `06/15/1999` with min `2000-01-01` becomes `06/15/2000` instead of snapping to `01/01/2000`.
+  - Fix range mode keyboard navigation so `ArrowRight` moves from the last segment of the start date to the first
+    segment of the end date.
+  - Fix time-only formatters (no `year` segment) never firing `onValueChange` — `era` is now only required when `year`
+    is present.
+  - Fix `setSegmentValue` reading stale `displayValues`. `updateSegmentValue` returns the new `IncompleteDate` directly
+    so the commit check uses the fresh value.
+  - Fix `dayPeriod` (AM/PM) arrow up/down not updating the visible segment when `hourCycle` changes at runtime —
+    `displayValues` now re-sync to the new hour cycle while preserving in-progress edits.
+  - Fix typing "A" / "P" on the `dayPeriod` segment not updating the visible AM/PM. The typing path was writing `12` for
+    PM while every other code path uses `1`, so the display silently stayed on AM.
+
+- **Date Picker**
+  - Fix `VALUE.CLEAR` not resetting `activeIndex` and `hoveredValue` in range mode when `getInputProps` inputs are not
+    rendered.
+  - Fix issue where the date input was not writable in locales whose date format separator contains more than one
+    character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`).
+  - Fix issue in Firefox where native month/year `<select>` is not interactive when the picker is inside a modal dialog.
+  - Fix range selection with `outsideDaySelectable`: hovering outside-month days no longer changes the visible month;
+    hover preview for the end date still updates.
+
+- **Dialog, Drawer, Hover Card, Menu, Popover, Tooltip**
+  - Fix custom trigger elements (via `ids.trigger`) being ignored when shared across components (e.g. wrapping a
+    `Popover.Trigger` in a `Tooltip` with the same id), causing broken positioning and a close-then-reopen cycle on
+    trigger clicks.
+  - Fix trigger element lookups in shadow root.
+
+- **Dismissable**
+  - Deduplicate `layerStack.add()` by DOM node so the same element is not registered twice (e.g. React Strict Mode).
+    Fixes incorrect `data-has-nested`, `--layer-index`, and `--nested-layer-count` on a single open dialog.
+  - Fix crash (`Cannot read properties of null (reading 'style')`) when a pointer-blocking dialog or popover closes
+    during SPA route teardown.
+
+- **Frameworks**: Fix dialog, drawer, and popover leaving `<body>` uninteractive (`data-scroll-lock`, `data-inert`,
+  `overflow: hidden`, `pointer-events: none`) after closing under React 19 Strict Mode.
+
+- **Number Input**: Fix inconsistent blur behavior when the input is cleared and `min` is greater than `0`.
+
+- **Popper**
+  - Fix `flip`, `shift`, and `hide` middleware ignoring a late-mounted `boundary`. The boundary is now re-resolved on
+    every `computePosition` tick, so a function-form `boundary: () => element` picks up the element once it mounts.
+  - Forward `boundary` into the `size` middleware so available width/height match `flip`/`shift`, with per-tick
+    resolution for function boundaries.
+
+- **Preact**: Avoid bundling `@zag-js/utils` and remove unused `proxy-compare`.
+
+- **Remove Scroll**: Fix scroll lock leaking on `<body>` (`data-scroll-lock`, `overflow: hidden`) when nested dialogs or
+  React Strict Mode trigger overlapping locks.
+
+- **Splitter**
+  - Fix clicking a `ResizeTrigger` not moving focus to it, which prevented arrow keys from resizing the splitter until
+    it was tab-focused (notably on Safari).
+  - Fix `data-focus` being applied on hover by only setting it when the trigger is actually focused.
+
+- **Tabs**: Observe the tab list with `ResizeObserver` so the indicator rect updates when the list resizes without
+  individual tab triggers changing size (e.g. responsive grid reflow).
+
+### Changed
+
+- **TOC**: Rename `getScrollEl` context prop to `scrollEl` for consistency with other machines (e.g. `initialFocusEl`,
+  `finalFocusEl`).
+
 ## [1.40.0](./#1.40.0) - 2026-04-07
 
 ### Added
