@@ -176,6 +176,7 @@
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
     "ClearTrigger": {
@@ -374,6 +375,7 @@
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-state": "\"open\" | \"closed\"",
       "data-focus": "Present when focused"
     },
@@ -383,6 +385,7 @@
       "data-placement": "The placement of the content",
       "data-nested": "popover",
       "data-has-nested": "popover",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-state": "\"open\" | \"closed\""
     },
     "ValueText": {
@@ -517,6 +520,7 @@
       "data-nested": "listbox",
       "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-empty": "Present when the content is empty"
     },
     "List": {
@@ -627,6 +631,7 @@
       "data-nested": "popover",
       "data-has-nested": "popover",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-inline": "Present when the content is inline"
     },
     "Table": {
@@ -759,6 +764,7 @@
       "data-scope": "date-picker",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-state": "\"open\" | \"closed\"",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
@@ -1024,6 +1030,7 @@
       "data-scope": "hover-card",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
@@ -1034,7 +1041,8 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "popover",
       "data-has-nested": "popover",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "image-cropper": {
@@ -1155,21 +1163,21 @@
       "data-scope": "marquee",
       "data-part": "",
       "data-orientation": "The orientation of the viewport",
-      "data-side": ""
+      "data-side": "The side of the trigger that the viewport is positioned on"
     },
     "Content": {
       "data-scope": "marquee",
       "data-part": "",
       "data-index": "The index of the item",
       "data-orientation": "The orientation of the content",
-      "data-side": "",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-reverse": "",
       "data-clone": ""
     },
     "Edge": {
       "data-scope": "marquee",
       "data-part": "",
-      "data-side": "",
+      "data-side": "The side of the trigger that the edge is positioned on",
       "data-orientation": "The orientation of the edge"
     }
   },
@@ -1185,6 +1193,7 @@
       "data-scope": "menu",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-controls": "",
@@ -1201,7 +1210,8 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "menu",
       "data-has-nested": "menu",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     },
     "Item": {
       "data-scope": "menu",
@@ -1482,6 +1492,7 @@
       "data-scope": "popover",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
@@ -1498,7 +1509,8 @@
       "data-nested": "popover",
       "data-has-nested": "popover",
       "data-expanded": "Present when expanded",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "presence": {},
@@ -1678,6 +1690,7 @@
       "data-invalid": "Present when invalid",
       "data-readonly": "Present when read-only",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
     "Indicator": {
@@ -1725,6 +1738,7 @@
       "data-nested": "listbox",
       "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-activedescendant": "The id the active descendant of the content"
     }
   },
@@ -2083,7 +2097,7 @@
       "data-type": "The type of the item",
       "data-placement": "The placement of the toast",
       "data-align": "",
-      "data-side": "",
+      "data-side": "The side of the trigger that the toast is positioned on",
       "data-mounted": "Present when mounted",
       "data-paused": "Present when paused",
       "data-first": "",
@@ -2166,7 +2180,8 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-instant": "",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "tour": {
@@ -2180,7 +2195,8 @@
       "data-scope": "tour",
       "data-part": "positioner",
       "data-type": "The type of the item",
-      "data-placement": "The placement of the positioner"
+      "data-placement": "The placement of the positioner",
+      "data-side": "The side of the trigger that the positioner is positioned on"
     },
     "Content": {
       "data-scope": "tour",
@@ -2190,17 +2206,20 @@
       "data-has-nested": "popover",
       "data-type": "The type of the item",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-step": ""
     },
     "Title": {
       "data-scope": "tour",
       "data-part": "title",
-      "data-placement": "The placement of the title"
+      "data-placement": "The placement of the title",
+      "data-side": "The side of the trigger that the title is positioned on"
     },
     "Description": {
       "data-scope": "tour",
       "data-part": "description",
-      "data-placement": "The placement of the description"
+      "data-placement": "The placement of the description",
+      "data-side": "The side of the trigger that the description is positioned on"
     },
     "CloseTrigger": {
       "data-scope": "tour",

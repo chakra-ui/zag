@@ -20,7 +20,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item: (value: string) => string; itemContent: (value: string) => string; itemTrigger: (value: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "multiple": {
@@ -68,7 +68,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -94,7 +94,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb: string; hiddenInput: string; control: string; valueText: string; label: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the machine.\nUseful for composition."
       },
       "step": {
@@ -153,7 +153,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -193,7 +193,7 @@
         "description": "Whether there are more items to load."
       },
       "error": {
-        "type": "any",
+        "type": "any | undefined",
         "description": "The error instance returned by the last fetch."
       },
       "abort": {
@@ -227,7 +227,7 @@
         "description": "The function to call when the list is loaded"
       },
       "sort": {
-        "type": "((args: SortDetails<T>) => Promise<{ items: T[]; }> | { items: T[]; } | undefined) | undefined",
+        "type": "((args: SortDetails<T>) => Promise<{ items: T[] }> | { items: T[] } | undefined) | undefined",
         "description": "The function to call when the list is sorted"
       },
       "initialItems": {
@@ -251,11 +251,11 @@
         "description": "Whether to automatically reload the list when the dependencies change"
       },
       "onSuccess": {
-        "type": "((details: { items: T[]; }) => void | undefined) | undefined",
+        "type": "((details: { items: T[] }) => void | undefined) | undefined",
         "description": "The function to call when the list is loaded successfully"
       },
       "onError": {
-        "type": "((details: { error: Error; }) => void | undefined) | undefined",
+        "type": "((details: { error: Error }) => void | undefined) | undefined",
         "description": "The function to call when the list fails to load"
       }
     }
@@ -285,7 +285,7 @@
         "description": "Functional called when the image loading status changes."
       },
       "ids": {
-        "type": "Partial<{ root: string; image: string; fallback: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the avatar. Useful for composition."
       },
       "id": {
@@ -293,7 +293,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "dir": {
@@ -330,19 +330,19 @@
         "description": "Whether the carousel is can scroll to the previous view"
       },
       "scrollToIndex": {
-        "type": "(index: number, instant?: boolean | undefined) => void",
+        "type": "(index: number, instant?: boolean) => void",
         "description": "Function to scroll to a specific item index"
       },
       "scrollTo": {
-        "type": "(page: number, instant?: boolean | undefined) => void",
+        "type": "(page: number, instant?: boolean) => void",
         "description": "Function to scroll to a specific page"
       },
       "scrollNext": {
-        "type": "(instant?: boolean | undefined) => void",
+        "type": "(instant?: boolean) => void",
         "description": "Function to scroll to the next page"
       },
       "scrollPrev": {
-        "type": "(instant?: boolean | undefined) => void",
+        "type": "(instant?: boolean) => void",
         "description": "Function to scroll to the previous page"
       },
       "getProgress": {
@@ -372,7 +372,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item: (index: number) => string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator: (index: number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the carousel. Useful for composition."
       },
       "translations": {
@@ -395,7 +395,7 @@
         "defaultValue": "\"auto\""
       },
       "autoplay": {
-        "type": "boolean | { delay: number; } | undefined",
+        "type": "boolean | { delay: number } | undefined",
         "description": "Whether to scroll automatically. The default delay is 4000ms.",
         "defaultValue": "false"
       },
@@ -463,7 +463,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "orientation": {
@@ -562,11 +562,11 @@
     },
     "context": {
       "collection": {
-        "type": "any",
+        "type": "TreeCollection<T> | undefined",
         "description": "The tree collection data"
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; trigger: string; indicator: string; clearTrigger: string; positioner: string; content: string; hiddenInput: string; list(valuePath: string): string; item(valuePath: string): string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the cascade-select elements. Useful for composition."
       },
       "name": {
@@ -638,7 +638,7 @@
         "description": "Whether the cascade-select is invalid"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The positioning options for the cascade-select content"
       },
       "scrollToIndexFn": {
@@ -675,7 +675,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -725,7 +725,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the checkbox. Useful for composition."
       },
       "disabled": {
@@ -779,7 +779,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -809,7 +809,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "ids": {
-        "type": "Partial<{ root: string; input: string; label: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the clipboard. Useful for composition."
       },
       "value": {
@@ -838,7 +838,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -868,7 +868,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; content: string; trigger: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the collapsible. Useful for composition."
       },
       "open": {
@@ -892,11 +892,11 @@
         "description": "Whether the collapsible is disabled."
       },
       "collapsedHeight": {
-        "type": "string | number | undefined",
+        "type": "number | string | undefined",
         "description": "The height of the content when collapsed."
       },
       "collapsedWidth": {
-        "type": "string | number | undefined",
+        "type": "number | string | undefined",
         "description": "The width of the content when collapsed."
       },
       "id": {
@@ -904,7 +904,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "dir": {
@@ -937,7 +937,7 @@
         "description": "The current color value (as a Color object)"
       },
       "setValue": {
-        "type": "(value: any) => void",
+        "type": "(value: string | Color) => void",
         "description": "Function to set the color value"
       },
       "getChannelValue": {
@@ -975,15 +975,15 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; hiddenInput: string; content: string; area: string; areaGradient: string; positioner: string; formatSelect: string; areaThumb: string; channelInput: (id: string) => string; channelSliderTrack: (id: ColorChannel) => string; channelSliderThumb: (id: ColorChannel) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
       "value": {
-        "type": "any",
+        "type": "Color | undefined",
         "description": "The controlled color value of the color picker"
       },
       "defaultValue": {
-        "type": "any",
+        "type": "Color | undefined",
         "description": "The initial color value when rendered.\nUse when you don't need to control the color value of the color picker.",
         "defaultValue": "#000000"
       },
@@ -1020,7 +1020,7 @@
         "description": "The name for the form input"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
@@ -1036,11 +1036,11 @@
         "description": "The initial open state of the color picker when rendered.\nUse when you don't need to control the open state of the color picker."
       },
       "format": {
-        "type": "any",
+        "type": "ColorFormat | undefined",
         "description": "The controlled color format to use"
       },
       "defaultFormat": {
-        "type": "any",
+        "type": "ColorFormat | undefined",
         "description": "The initial color format when rendered.\nUse when you don't need to control the color format of the color picker.",
         "defaultValue": "\"rgba\""
       },
@@ -1067,7 +1067,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "dir": {
@@ -1148,7 +1148,7 @@
         "description": "Function to set the value of the combobox"
       },
       "clearValue": {
-        "type": "(value?: string | undefined) => void",
+        "type": "(value?: string) => void",
         "description": "Function to clear the value of the combobox"
       },
       "focus": {
@@ -1156,7 +1156,7 @@
         "description": "Function to focus on the combobox input"
       },
       "setInputValue": {
-        "type": "(value: string, reason?: InputValueChangeReason | undefined) => void",
+        "type": "(value: string, reason?: InputValueChangeReason) => void",
         "description": "Function to set the input value of the combobox"
       },
       "getItemState": {
@@ -1164,7 +1164,7 @@
         "description": "Returns the state of a combobox item"
       },
       "setOpen": {
-        "type": "(open: boolean, reason?: OpenChangeReason | undefined) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the combobox"
       },
       "collection": {
@@ -1172,7 +1172,7 @@
         "description": "Function to toggle the combobox"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options"
       },
       "multiple": {
@@ -1194,7 +1194,7 @@
         "description": "The initial open state of the combobox when rendered.\nUse when you don't need to control the open state of the combobox."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item: (id: string, index?: number | undefined) => string; positioner: string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the combobox. Useful for composition."
       },
       "inputValue": {
@@ -1290,7 +1290,7 @@
         "defaultValue": "true"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The positioning options to dynamically position the menu",
         "defaultValue": "{ placement: \"bottom-start\" }"
       },
@@ -1319,7 +1319,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "collection": {
-        "type": "any",
+        "type": "ListCollection<T> | undefined",
         "description": "The collection of items"
       },
       "multiple": {
@@ -1362,7 +1362,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -1449,7 +1449,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: (index: number) => string; control: string; segmentGroup: (index: number) => string; hiddenInput: (index: number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the date input. Useful for composition."
       },
       "name": {
@@ -1530,8 +1530,13 @@
         "type": "HourCycle | undefined",
         "description": "Whether to use 12-hour or 24-hour time format.\nBy default, this is determined by the locale."
       },
+      "hideTimeZone": {
+        "type": "boolean | undefined",
+        "description": "Whether to hide the time zone segment when the value is a `ZonedDateTime`.\nHas no effect for values without a time zone.",
+        "defaultValue": "false"
+      },
       "granularity": {
-        "type": "any",
+        "type": "DateGranularity | undefined",
         "description": "Determines the smallest unit that is displayed in the date input.",
         "defaultValue": "\"day\""
       },
@@ -1545,11 +1550,11 @@
         "description": "The date formatter to use."
       },
       "allSegments": {
-        "type": "Partial<{ [x: string]: boolean; }> | undefined",
+        "type": "Segments | undefined",
         "description": "The computed segments map for the formatter."
       },
       "format": {
-        "type": "((date: FormatDateDetails) => string) | undefined",
+        "type": "((date: DateValue, details: FormatDateDetails) => string) | undefined",
         "description": "The format function for converting a DateValue to a string."
       },
       "dir": {
@@ -1562,7 +1567,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -1622,7 +1627,7 @@
         "description": "Returns the ISO 8601 week number (1-53) for the given week (array of dates)."
       },
       "getDaysInWeek": {
-        "type": "(week: number, from?: any) => DateValue[]",
+        "type": "(week: number, from?: DateValue) => DateValue[]",
         "description": "Returns an array of days in the week index counted from the provided start date, or the first visible date if not given."
       },
       "getOffset": {
@@ -1634,7 +1639,7 @@
         "description": "Returns the range of dates based on the provided date range preset."
       },
       "getMonthWeeks": {
-        "type": "(from?: any) => DateValue[][]",
+        "type": "(from?: DateValue) => DateValue[][]",
         "description": "Returns the weeks of the month from the provided date. Represented as an array of arrays of dates."
       },
       "isUnavailable": {
@@ -1690,7 +1695,7 @@
         "description": "Sets the selected date to the given date."
       },
       "setTime": {
-        "type": "(time: Time, index?: number | undefined) => void",
+        "type": "(time: Time, index?: number) => void",
         "description": "Sets the time for a specific date value.\nConverts CalendarDate to CalendarDateTime if needed."
       },
       "setFocusedValue": {
@@ -1698,7 +1703,7 @@
         "description": "Sets the focused date to the given date."
       },
       "clearValue": {
-        "type": "(options?: { focus?: boolean | undefined; } | undefined) => void",
+        "type": "(options?: { focus?: boolean }) => void",
         "description": "Clears the selected date(s)."
       },
       "setOpen": {
@@ -1718,7 +1723,7 @@
         "description": "Returns the months of the year"
       },
       "getYearsGrid": {
-        "type": "(props?: YearGridProps | undefined) => YearGridValue",
+        "type": "(props?: YearGridProps) => YearGridValue",
         "description": "Returns the years of the decade based on the columns.\nRepresented as an array of arrays of years."
       },
       "getDecade": {
@@ -1726,15 +1731,15 @@
         "description": "Returns the start and end years of the decade."
       },
       "getMonths": {
-        "type": "(props?: MonthFormatOptions | undefined) => Cell[]",
+        "type": "(props?: MonthFormatOptions) => Cell[]",
         "description": "Returns the months of the year"
       },
       "getMonthsGrid": {
-        "type": "(props?: MonthGridProps | undefined) => MonthGridValue",
+        "type": "(props?: MonthGridProps) => MonthGridValue",
         "description": "Returns the months of the year based on the columns.\nRepresented as an array of arrays of months."
       },
       "format": {
-        "type": "(value: DateValue, opts?: Intl.DateTimeFormatOptions | undefined) => string",
+        "type": "(value: DateValue, opts?: Intl.DateTimeFormatOptions) => string",
         "description": "Formats the given date value based on the provided options."
       },
       "setView": {
@@ -1777,7 +1782,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: (index: number) => string; table: (id: string) => string; tableHeader: (id: string) => string; tableBody: (id: string) => string; tableRow: (id: string) => string; content: string; cellTrigger: (id: string) => string; prevTrigger: (view: DateView) => string; nextTrigger: (view: DateView) => string; viewTrigger: (view: DateView) => string; clearTrigger: string; control: string; input: (index: number) => string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -1811,11 +1816,11 @@
         "defaultValue": "false"
       },
       "min": {
-        "type": "any",
+        "type": "DateValue | undefined",
         "description": "The minimum date that can be selected."
       },
       "max": {
-        "type": "any",
+        "type": "DateValue | undefined",
         "description": "The maximum date that can be selected."
       },
       "closeOnSelect": {
@@ -1837,11 +1842,11 @@
         "description": "The initial selected date(s) when rendered.\nUse when you don't need to control the selected date(s) of the date picker."
       },
       "focusedValue": {
-        "type": "any",
+        "type": "DateValue | undefined",
         "description": "The controlled focused date."
       },
       "defaultFocusedValue": {
-        "type": "any",
+        "type": "DateValue | undefined",
         "description": "The initial focused date when rendered.\nUse when you don't need to control the focused date of the date picker."
       },
       "numOfMonths": {
@@ -1898,7 +1903,7 @@
         "description": "The format of the date to display in the input."
       },
       "parse": {
-        "type": "((value: string, details: LocaleDetails) => any) | undefined",
+        "type": "((value: string, details: LocaleDetails) => DateValue | undefined) | undefined",
         "description": "Function to parse the date from the input back to a DateValue."
       },
       "placeholder": {
@@ -1925,7 +1930,7 @@
         "defaultValue": "\"year\""
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The user provided options used to position the date picker content"
       },
       "open": {
@@ -1950,7 +1955,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -1976,7 +1981,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string | ((value?: string | undefined) => string); positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the dialog. Useful for composition."
       },
       "trapFocus": {
@@ -2060,7 +2065,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -2118,7 +2123,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ backdrop: string; positioner: string; content: string; title: string; description: string; header: string; trigger: string | ((value?: string | undefined) => string); grabber: string; grabberIndicator: string; closeTrigger: string; swipeArea: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the drawer. Useful for composition."
       },
       "trapFocus": {
@@ -2245,7 +2250,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -2291,7 +2296,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; area: string; label: string; preview: string; input: string; control: string; submitTrigger: string; cancelTrigger: string; editTrigger: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the editable. Useful for composition."
       },
       "invalid": {
@@ -2354,7 +2359,7 @@
         "description": "Whether the editable is required."
       },
       "placeholder": {
-        "type": "string | { edit: string; preview: string; } | undefined",
+        "type": "string | { edit: string; preview: string } | undefined",
         "description": "The placeholder text for the editable."
       },
       "translations": {
@@ -2395,7 +2400,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -2489,7 +2494,7 @@
         "description": "The name of the underlying file input"
       },
       "ids": {
-        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item: (id: string) => string; itemName: (id: string) => string; itemSizeText: (id: string) => string; itemPreview: (id: string) => string; itemDeleteTrigger: (id: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements. Useful for composition."
       },
       "translations": {
@@ -2497,7 +2502,7 @@
         "description": "The localized messages to use."
       },
       "accept": {
-        "type": "Record<string, string[]> | FileMimeType[] | undefined",
+        "type": "Record<string, string[]> | FileMimeType | FileMimeType[] | undefined",
         "description": "The accept file types"
       },
       "disabled": {
@@ -2592,7 +2597,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -2654,7 +2659,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; positioner: string; content: string; title: string; header: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the floating panel. Useful for composition."
       },
       "translations": {
@@ -2691,27 +2696,27 @@
         "defaultValue": "true"
       },
       "size": {
-        "type": "any",
+        "type": "Size | undefined",
         "description": "The size of the panel"
       },
       "defaultSize": {
-        "type": "any",
+        "type": "Size | undefined",
         "description": "The default size of the panel"
       },
       "minSize": {
-        "type": "any",
+        "type": "Size | undefined",
         "description": "The minimum size of the panel"
       },
       "maxSize": {
-        "type": "any",
+        "type": "Size | undefined",
         "description": "The maximum size of the panel"
       },
       "position": {
-        "type": "any",
+        "type": "Point | undefined",
         "description": "The controlled position of the panel"
       },
       "defaultPosition": {
-        "type": "any",
+        "type": "Point | undefined",
         "description": "The initial position of the panel when rendered.\nUse when you don't need to control the position of the panel."
       },
       "getAnchorPosition": {
@@ -2790,7 +2795,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -2814,13 +2819,13 @@
         "description": "Function to set the trigger value"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string | ((value?: string | undefined) => string); content: string; positioner: string; arrow: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the popover. Useful for composition."
       },
       "onOpenChange": {
@@ -2850,7 +2855,7 @@
         "description": "The initial open state of the hover card when rendered.\nUse when you don't need to control the open state of the hover card."
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The user provided options used to position the popover content"
       },
       "triggerValue": {
@@ -2875,7 +2880,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -2951,11 +2956,11 @@
         "description": "Function to set the flip state of the image."
       },
       "flipHorizontally": {
-        "type": "(value?: boolean | undefined) => void",
+        "type": "(value?: boolean) => void",
         "description": "Function to flip the image horizontally. Pass a boolean to set explicitly or omit to toggle."
       },
       "flipVertically": {
-        "type": "(value?: boolean | undefined) => void",
+        "type": "(value?: boolean) => void",
         "description": "Function to flip the image vertically. Pass a boolean to set explicitly or omit to toggle."
       },
       "resize": {
@@ -2967,7 +2972,7 @@
         "description": "Function to reset the cropper to its initial state."
       },
       "getCroppedImage": {
-        "type": "(options?: GetCroppedImageOptions | undefined) => Promise<string | Blob | null>",
+        "type": "(options?: GetCroppedImageOptions) => Promise<Blob | string | null>",
         "description": "Function to get the cropped image with all transformations applied.\nReturns a Promise that resolves to either a Blob or data URL."
       },
       "getCropData": {
@@ -2977,7 +2982,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; viewport: string; image: string; selection: string; handle: (position: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the image cropper elements"
       },
       "translations": {
@@ -3110,7 +3115,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -3182,11 +3187,11 @@
         "description": "Function to set the value of the select"
       },
       "clearValue": {
-        "type": "(value?: string | undefined) => void",
+        "type": "(value?: string) => void",
         "description": "Function to clear the value of the select.\nIf a value is provided, it will only clear that value, otherwise, it will clear all values."
       },
       "getItemState": {
-        "type": "(props: ItemProps<CollectionItem>) => ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a select item"
       },
       "collection": {
@@ -3205,11 +3210,11 @@
         "defaultValue": "\"vertical\""
       },
       "collection": {
-        "type": "any",
+        "type": "ListCollection<T> | GridCollection<T>",
         "description": "The item collection"
       },
       "ids": {
-        "type": "Partial<{ root: string; content: string; label: string; item: (id: string | number) => string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the listbox. Useful for composition."
       },
       "disabled": {
@@ -3251,7 +3256,7 @@
         "defaultValue": "false"
       },
       "selectionMode": {
-        "type": "any",
+        "type": "SelectionMode | undefined",
         "description": "How multiple selection should behave in the listbox.\n\n- `single`: The user can select a single item.\n- `multiple`: The user can select multiple items without using modifier keys.\n- `extended`: The user can select multiple items by using modifier keys.",
         "defaultValue": "\"single\""
       },
@@ -3285,7 +3290,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -3331,7 +3336,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; viewport: string; content: (index: number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the marquee. Useful for composition."
       },
       "translations": {
@@ -3409,7 +3414,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -3441,15 +3446,15 @@
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
-        "type": "(parent: Service<MenuSchema>) => void",
+        "type": "(parent: MenuService) => void",
         "description": "Function to register a parent menu. This is used for submenus"
       },
       "setChild": {
-        "type": "(child: Service<MenuSchema>) => void",
+        "type": "(child: MenuService) => void",
         "description": "Function to register a child menu. This is used for submenus"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       },
       "getOptionItemState": {
@@ -3467,7 +3472,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string | ((value?: string | undefined) => string); contextTrigger: string | ((value?: string | undefined) => string); content: string; groupLabel: (id: string) => string; group: (id: string) => string; positioner: string; arrow: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the menu. Useful for composition."
       },
       "defaultHighlightedValue": {
@@ -3487,7 +3492,7 @@
         "description": "Function called when a menu item is selected."
       },
       "anchorPoint": {
-        "type": "any",
+        "type": "Point | null | undefined",
         "description": "The positioning point for the menu. Can be set by the context menu trigger or the button trigger."
       },
       "loopFocus": {
@@ -3496,7 +3501,7 @@
         "defaultValue": "false"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The options used to dynamically position the menu"
       },
       "closeOnSelect": {
@@ -3556,7 +3561,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -3598,7 +3603,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "ids": {
-        "type": "Partial<{ root: string; list: string; item: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the machine."
       },
       "value": {
@@ -3645,7 +3650,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "orientation": {
@@ -3708,7 +3713,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; input: string; incrementTrigger: string; decrementTrigger: string; scrubber: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the number input. Useful for composition."
       },
       "name": {
@@ -3831,7 +3836,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -3901,7 +3906,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; ellipsis: (index: number) => string; firstTrigger: string; prevTrigger: string; nextTrigger: string; lastTrigger: string; item: (page: number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "translations": {
@@ -3967,7 +3972,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4013,7 +4018,7 @@
         "description": "Function called when the visibility changes."
       },
       "ids": {
-        "type": "Partial<{ input: string; visibilityTrigger: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the password input parts"
       },
       "disabled": {
@@ -4033,7 +4038,7 @@
         "description": "Whether the password input is required."
       },
       "translations": {
-        "type": "Partial<{ visibilityTrigger: ((visible: boolean) => string) | undefined; }> | undefined",
+        "type": "IntlTranslations | undefined",
         "description": "The localized messages to use."
       },
       "ignorePasswordManagers": {
@@ -4059,7 +4064,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4117,7 +4122,7 @@
         "description": "The regular expression that the user-entered input value is checked against."
       },
       "ids": {
-        "type": "Partial<{ root: string; hiddenInput: string; label: string; control: string; input: (id: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the pin input. Useful for composition."
       },
       "disabled": {
@@ -4212,7 +4217,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4240,7 +4245,7 @@
         "description": "Function to set the trigger value"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
@@ -4250,7 +4255,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "ids": {
-        "type": "Partial<{ anchor: string; trigger: string | ((value?: string | undefined) => string); content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the popover. Useful for composition."
       },
       "modal": {
@@ -4296,7 +4301,7 @@
         "description": "Function invoked when the popover opens or closes"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The user provided options used to position the popover content"
       },
       "open": {
@@ -4324,7 +4329,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "dir": {
@@ -4413,7 +4418,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; track: string; label: string; circle: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the progress bar. Useful for composition."
       },
       "value": {
@@ -4463,7 +4468,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "orientation": {
@@ -4484,7 +4489,7 @@
         "description": "Set the value to encode."
       },
       "getDataUrl": {
-        "type": "(type: DataUrlType, quality?: number | undefined) => Promise<string>",
+        "type": "(type: DataUrlType, quality?: number) => Promise<string>",
         "description": "Returns the data URL of the qr code."
       }
     },
@@ -4498,7 +4503,7 @@
         "description": "The initial value to encode when rendered.\nUse when you don't need to control the value of the qr code."
       },
       "ids": {
-        "type": "Partial<{ root: string; frame: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The element ids."
       },
       "encoding": {
@@ -4523,7 +4528,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4553,7 +4558,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; indicator: string; item: (value: string) => string; itemLabel: (value: string) => string; itemControl: (value: string) => string; itemHiddenInput: (value: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the radio. Useful for composition."
       },
       "value": {
@@ -4606,7 +4611,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4648,7 +4653,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; hiddenInput: string; control: string; item: (id: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the rating. Useful for composition."
       },
       "translations": {
@@ -4714,7 +4719,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4764,7 +4769,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; viewport: string; content: string; scrollbar: string; thumb: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the scroll area elements"
       },
       "dir": {
@@ -4777,7 +4782,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -4841,7 +4846,7 @@
         "description": "Function to set the value of the select"
       },
       "clearValue": {
-        "type": "(value?: string | undefined) => void",
+        "type": "(value?: string) => void",
         "description": "Function to clear the value of the select.\nIf a value is provided, it will only clear that value, otherwise, it will clear all values."
       },
       "focus": {
@@ -4849,7 +4854,7 @@
         "description": "Function to focus on the select input"
       },
       "getItemState": {
-        "type": "(props: ItemProps<CollectionItem>) => ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a select item"
       },
       "setOpen": {
@@ -4861,7 +4866,7 @@
         "description": "Function to toggle the select"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options of the select"
       },
       "multiple": {
@@ -4883,7 +4888,7 @@
         "description": "The item collection"
       },
       "ids": {
-        "type": "Partial<{ root: string; content: string; control: string; trigger: string; clearTrigger: string; label: string; hiddenSelect: string; positioner: string; item: (id: string | number) => string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the select. Useful for composition."
       },
       "name": {
@@ -4936,7 +4941,7 @@
         "description": "Function called when the popup is opened"
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The positioning options of the menu."
       },
       "value": {
@@ -4995,7 +5000,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -5031,7 +5036,7 @@
         "description": "The paths of the signature pad."
       },
       "getDataUrl": {
-        "type": "(type: DataUrlType, quality?: number | undefined) => Promise<string>",
+        "type": "(type: DataUrlType, quality?: number) => Promise<string>",
         "description": "Returns the data URL of the signature pad."
       },
       "clear": {
@@ -5041,7 +5046,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; control: string; hiddenInput: string; label: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the signature pad elements. Useful for composition."
       },
       "translations": {
@@ -5095,7 +5100,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5165,7 +5170,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb: (index: number) => string; hiddenInput: (index: number) => string; control: string; track: string; range: string; label: string; valueText: string; marker: (index: number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the slider. Useful for composition."
       },
       "aria-label": {
@@ -5251,12 +5256,12 @@
         "defaultValue": "\"start\""
       },
       "thumbAlignment": {
-        "type": "\"center\" | \"contain\" | undefined",
+        "type": "\"contain\" | \"center\" | undefined",
         "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track.",
         "defaultValue": "\"contain\""
       },
       "thumbSize": {
-        "type": "{ width: number; height: number; } | undefined",
+        "type": "{ width: number; height: number } | undefined",
         "description": "The slider thumbs dimensions"
       },
       "thumbCollisionBehavior": {
@@ -5274,7 +5279,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5306,31 +5311,31 @@
         "description": "Returns the panels of the splitter."
       },
       "getPanelById": {
-        "type": "(id: string) => PanelData",
+        "type": "(id: PanelId) => PanelData",
         "description": "Returns the panel with the specified id."
       },
       "getPanelSize": {
-        "type": "(id: string) => number",
+        "type": "(id: PanelId) => number",
         "description": "Returns the size of the specified panel."
       },
       "isPanelCollapsed": {
-        "type": "(id: string) => boolean",
+        "type": "(id: PanelId) => boolean",
         "description": "Returns whether the specified panel is collapsed."
       },
       "isPanelExpanded": {
-        "type": "(id: string) => boolean",
+        "type": "(id: PanelId) => boolean",
         "description": "Returns whether the specified panel is expanded."
       },
       "collapsePanel": {
-        "type": "(id: string) => void",
+        "type": "(id: PanelId) => void",
         "description": "Collapses the specified panel."
       },
       "expandPanel": {
-        "type": "(id: string, minSize?: number | undefined) => void",
+        "type": "(id: PanelId, minSize?: number) => void",
         "description": "Expands the specified panel."
       },
       "resizePanel": {
-        "type": "(id: string, unsafePanelSize: number) => void",
+        "type": "(id: PanelId, unsafePanelSize: number) => void",
         "description": "Resizes the specified panel."
       },
       "getLayout": {
@@ -5377,7 +5382,7 @@
         "description": "Function called when the splitter resize ends."
       },
       "ids": {
-        "type": "Partial<{ root: string; resizeTrigger: (id: string) => string; label: (id: string) => string; panel: (id: string | number) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the splitter. Useful for composition."
       },
       "keyboardResizeBy": {
@@ -5397,7 +5402,7 @@
         "description": "Function called when a panel is expanded."
       },
       "registry": {
-        "type": "any",
+        "type": "SplitterRegistry | undefined",
         "description": "The splitter registry to use for multi-drag support.\nWhen provided, enables dragging at the intersection of multiple splitters."
       },
       "dir": {
@@ -5410,7 +5415,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5528,7 +5533,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5558,7 +5563,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; thumb: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the switch. Useful for composition."
       },
       "label": {
@@ -5616,7 +5621,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5652,11 +5657,11 @@
         "description": "Set focus on the selected tab trigger"
       },
       "selectNext": {
-        "type": "(fromValue?: string | undefined) => void",
+        "type": "(fromValue?: string) => void",
         "description": "Selects the next tab"
       },
       "selectPrev": {
-        "type": "(fromValue?: string | undefined) => void",
+        "type": "(fromValue?: string) => void",
         "description": "Selects the previous tab"
       },
       "getTriggerState": {
@@ -5666,7 +5671,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: (value: string) => string; list: string; content: (value: string) => string; indicator: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {
@@ -5726,7 +5731,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -5762,7 +5767,7 @@
         "description": "Function to set the value of the tags."
       },
       "clearValue": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Function to clear the value of the tags."
       },
       "addValue": {
@@ -5792,7 +5797,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; input: string; hiddenInput: string; clearBtn: string; label: string; control: string; item: (opts: ItemProps) => string; itemDeleteTrigger: (opts: ItemProps) => string; itemInput: (opts: ItemProps) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the tags input. Useful for composition."
       },
       "translations": {
@@ -5919,7 +5924,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -5947,7 +5952,7 @@
         "description": "Whether the timer is paused."
       },
       "time": {
-        "type": "Time<number>",
+        "type": "Time",
         "description": "The formatted timer count value."
       },
       "formattedTime": {
@@ -5985,7 +5990,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "ids": {
-        "type": "Partial<{ root: string; area: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the timer parts"
       },
       "countdown": {
@@ -6022,7 +6027,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -6034,7 +6039,7 @@
         "description": "The total number of toasts"
       },
       "getToasts": {
-        "type": "() => ToastProps<any>[]",
+        "type": "() => ToastProps[]",
         "description": "The toasts"
       },
       "subscribe": {
@@ -6044,7 +6049,7 @@
     },
     "context": {
       "attrs": {
-        "type": "ToastStoreProps>",
+        "type": "Required<ToastStoreProps>",
         "description": "The attributes of the toast store"
       },
       "subscribe": {
@@ -6060,11 +6065,11 @@
         "description": "Update an existing toast with new properties"
       },
       "remove": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Remove a toast by its ID"
       },
       "dismiss": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Dismiss a toast by its ID. If no ID is provided, dismisses all toasts"
       },
       "error": {
@@ -6096,15 +6101,15 @@
         "description": "Get the total number of toasts"
       },
       "promise": {
-        "type": "<T>(promise: Promise<T> | (() => Promise<T>), options: Options<V>, \"type\"> | undefined) => { id: string | undefined; unwrap: () => Promise<T>; } | undefined",
+        "type": "<T>(\n    promise: Promise<T> | (() => Promise<T>),\n    options: PromiseOptions<T, V>,\n    shared?: Omit<Options<V>, \"type\">,\n  ) => { id: string | undefined; unwrap: () => Promise<T> } | undefined",
         "description": "Create a toast that tracks a promise's state"
       },
       "pause": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Pause a toast's auto-dismiss timer. If no ID is provided, pauses all toasts"
       },
       "resume": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Resume a toast's auto-dismiss timer. If no ID is provided, resumes all toasts"
       },
       "isVisible": {
@@ -6143,6 +6148,10 @@
         "type": "(value: string[]) => void",
         "description": "Manually set the active heading ids"
       },
+      "scrollTo": {
+        "type": "(value: string, details?: ScrollToDetails | undefined) => void",
+        "description": "Scrolls to the heading with the given id."
+      },
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a TOC item"
@@ -6150,7 +6159,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; title: string; list: string; item: (value: string) => string; link: (value: string) => string; indicator: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the TOC. Useful for composition."
       },
       "items": {
@@ -6167,7 +6176,7 @@
         "description": "The IntersectionObserver threshold. A value of `0` means the heading is\nactive as soon as even one pixel is visible within the root margin area.",
         "defaultValue": "0"
       },
-      "getScrollEl": {
+      "scrollEl": {
         "type": "(() => HTMLElement | null) | undefined",
         "description": "Function that returns the scroll container element to observe within.\nDefaults to the document/viewport."
       },
@@ -6178,7 +6187,7 @@
       },
       "scrollBehavior": {
         "type": "ScrollBehavior | undefined",
-        "description": "The scroll behavior for auto-scrolling the TOC container.",
+        "description": "The default scroll behavior used when auto-scrolling the TOC container\nand when scrolling to a heading (via link click or `api.scrollTo`).\nCan be overridden per-call by passing `behavior` to `api.scrollTo`.",
         "defaultValue": "\"smooth\""
       },
       "onActiveChange": {
@@ -6203,7 +6212,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -6267,7 +6276,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item: (value: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the toggle. Useful for composition."
       },
       "disabled": {
@@ -6320,7 +6329,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -6344,13 +6353,13 @@
         "description": "Function to set the trigger value"
       },
       "reposition": {
-        "type": "(options?: any) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string | ((value?: string | undefined) => string); content: string; arrow: string; positioner: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the tooltip. Useful for composition."
       },
       "openDelay": {
@@ -6397,7 +6406,7 @@
         "description": "Custom label for the tooltip."
       },
       "positioning": {
-        "type": "any",
+        "type": "PositioningOptions | undefined",
         "description": "The user provided options used to position the popover content"
       },
       "disabled": {
@@ -6434,7 +6443,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
@@ -6494,7 +6503,7 @@
         "description": "Set the current step of the tour"
       },
       "start": {
-        "type": "(id?: string | undefined) => void",
+        "type": "(id?: string) => void",
         "description": "Start the tour at a specific step (or the first step if not provided)"
       },
       "isValidStep": {
@@ -6524,7 +6533,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ content: string; title: string; description: string; positioner: string; backdrop: string; arrow: string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the elements in the tour. Useful for composition."
       },
       "steps": {
@@ -6568,7 +6577,7 @@
         "defaultValue": "false"
       },
       "spotlightOffset": {
-        "type": "any",
+        "type": "Point | undefined",
         "description": "The offsets to apply to the spotlight",
         "defaultValue": "\"{ x: 10, y: 10 }\""
       },
@@ -6591,7 +6600,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "onPointerDownOutside": {
@@ -6655,19 +6664,19 @@
         "description": "Returns the visible nodes as a flat array of nodes and their index path.\nUseful for rendering virtualized tree views."
       },
       "expand": {
-        "type": "(value?: string[] | undefined) => void",
+        "type": "(value?: string[]) => void",
         "description": "Function to expand nodes.\nIf no value is provided, all nodes will be expanded"
       },
       "collapse": {
-        "type": "(value?: string[] | undefined) => void",
+        "type": "(value?: string[]) => void",
         "description": "Function to collapse nodes\nIf no value is provided, all nodes will be collapsed"
       },
       "select": {
-        "type": "(value?: string[] | undefined) => void",
+        "type": "(value?: string[]) => void",
         "description": "Function to select nodes\nIf no value is provided, all nodes will be selected"
       },
       "deselect": {
-        "type": "(value?: string[] | undefined) => void",
+        "type": "(value?: string[]) => void",
         "description": "Function to deselect nodes\nIf no value is provided, all nodes will be deselected"
       },
       "focus": {
@@ -6701,11 +6710,11 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "collection": {
-        "type": "any",
+        "type": "TreeCollection<T> | undefined",
         "description": "The tree collection data"
       },
       "ids": {
-        "type": "Partial<{ root: string; tree: string; label: string; node: (value: string) => string; }> | undefined",
+        "type": "ElementIds | undefined",
         "description": "The ids of the tree elements. Useful for composition."
       },
       "expandedValue": {
@@ -6813,7 +6822,7 @@
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "(() => ShadowRoot | Node | Document) | undefined",
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
