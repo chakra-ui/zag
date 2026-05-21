@@ -376,7 +376,7 @@ test.describe("combobox / form", () => {
     await I.seeSubmitCount(0)
   })
 
-  test("[keyboard / no highlight] Enter submits form when no item is highlighted", async () => {
+  test("[no highlight / rejected value] Enter does not submit when typed value won't be accepted", async () => {
     await I.controls.select("inputBehavior", "none")
 
     await I.focusInput()
@@ -385,7 +385,7 @@ test.describe("combobox / form", () => {
     await I.dontSeeHighlightedItem()
 
     await I.pressKey("Enter")
-    await I.seeSubmitCount(1)
+    await I.seeSubmitCount(0)
   })
 
   test("[autoHighlight] Enter selects auto-highlighted item and does not submit", async () => {
@@ -400,7 +400,34 @@ test.describe("combobox / form", () => {
     await I.seeSubmitCount(0)
   })
 
-  test("[alwaysSubmitOnEnter] Enter selects highlighted item and submits form", async () => {
+  test("[allowCustomValue + highlight] Enter selects highlighted item and does not submit", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.type("z")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.seeSubmitCount(0)
+  })
+
+  test("[allowCustomValue] Enter submits custom value on first press", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.type("my custom country")
+    await I.dontSeeHighlightedItem()
+
+    await I.pressKey("Enter")
+    await I.seeSubmitCount(1)
+    await I.seeLastSubmit("my custom country")
+  })
+
+  test("[alwaysSubmitOnEnter / highlight] Enter selects highlighted item and submits form", async () => {
     await I.controls.select("inputBehavior", "none")
     await I.controls.bool("alwaysSubmitOnEnter", true)
 
@@ -414,8 +441,9 @@ test.describe("combobox / form", () => {
     await I.seeLastSubmit("Zambia")
   })
 
-  test("[allowCustomValue] Enter submits custom value on first press", async () => {
+  test("[alwaysSubmitOnEnter + allowCustomValue] Enter submits custom value with no highlight", async () => {
     await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("alwaysSubmitOnEnter", true)
     await I.controls.bool("allowCustomValue", true)
 
     await I.focusInput()
