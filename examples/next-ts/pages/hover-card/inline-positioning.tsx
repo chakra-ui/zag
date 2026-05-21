@@ -6,7 +6,6 @@ export default function Page() {
   const service = useMachine(hoverCard.machine, {
     id: useId(),
     openDelay: 100,
-    closeDelay: 100,
     positioning: {
       placement: "top",
       inline: true,
