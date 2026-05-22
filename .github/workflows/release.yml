@@ -44,6 +44,19 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      # changesets/action pushes per-package tags concurrently via Promise.all,
+      # which intermittently hits GitHub's commit_refs ref-update contention.
+      # This step batches any missing tags into a single push as a safety net.
+      - name: Push tags (fallback)
+        if: always() && steps.changesets.outcome != 'skipped'
+        run: |
+          for i in 1 2 3 4 5; do
+            git push origin --tags && exit 0
+            echo "tag push failed (attempt $i), retrying in $((i*5))s..."
+            sleep $((i*5))
+          done
+          exit 1
+
       - name: Slack notification
         if: steps.changesets.outputs.published == 'true'
         run: pnpm slack
