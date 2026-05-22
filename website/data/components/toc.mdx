@@ -85,12 +85,12 @@ const service = useMachine(toc.machine, {
 
 ### Custom scroll container
 
-By default, the machine observes the document viewport. Pass `getScrollEl` to
+By default, the machine observes the document viewport. Pass `scrollEl` to
 observe headings within a specific scrollable container.
 
 ```tsx {2}
 const service = useMachine(toc.machine, {
-  getScrollEl: () => document.getElementById("content"),
+  scrollEl: () => document.getElementById("content"),
 })
 ```
 

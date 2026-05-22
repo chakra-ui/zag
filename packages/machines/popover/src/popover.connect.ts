@@ -1,5 +1,5 @@
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
@@ -11,6 +11,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   const open = state.matches("open")
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const portalled = computed("currentPortalled")
   const rendered = context.get("renderedElements")
   const triggerValue = context.get("triggerValue")
@@ -69,6 +70,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-value": value,
         "data-current": dataAttr(current),
         "aria-haspopup": "dialog",
@@ -122,6 +124,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
       })
     },
 

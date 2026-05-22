@@ -11,5 +11,6 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  ScrollToDetails,
   TocItem,
 } from "./toc.types"

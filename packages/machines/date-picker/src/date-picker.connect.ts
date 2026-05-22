@@ -11,10 +11,12 @@ import {
 } from "@internationalized/date"
 import {
   constrainValue,
+  ensureValidCharacters,
   getDateRangePreset,
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
+  getLocaleSeparator,
   getMonthDays,
   getMonthFormatter,
   getMonthNames,
@@ -26,9 +28,10 @@ import {
   getYearsRange,
   isDateOutsideRange,
   isDateUnavailable,
+  isValidCharacter,
 } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
@@ -46,12 +49,9 @@ import type {
 import {
   adjustStartAndEndDate,
   defaultTranslations,
-  ensureValidCharacters,
   getInputPlaceholder,
-  getLocaleSeparator,
   getRoleDescription,
   isDateWithinRange,
-  isValidCharacter,
 } from "./date-picker.utils"
 
 export function connect<T extends PropTypes>(
@@ -91,6 +91,7 @@ export function connect<T extends PropTypes>(
   const isMaxSelected = isMultiPicker && maxSelectedDates != null && selectedValue.length >= maxSelectedDates
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
@@ -457,6 +458,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-inline": dataAttr(prop("inline")),
         id: dom.getContentId(scope),
         tabIndex: -1,
@@ -643,6 +645,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(!cellState.selectable),
         "aria-invalid": ariaAttr(cellState.invalid),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value.toString(),
         "data-view": "day",
@@ -668,7 +671,13 @@ export function connect<T extends PropTypes>(
               if (!cellState.selectable) return
               const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
-              send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
+              send({
+                type: "CELL.POINTER_MOVE",
+                cell: "day",
+                value,
+                focus,
+                outsideRange: cellState.outsideRange,
+              })
             }
           : undefined,
       })
@@ -703,6 +712,7 @@ export function connect<T extends PropTypes>(
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "month",
@@ -760,6 +770,7 @@ export function connect<T extends PropTypes>(
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "year",
@@ -845,8 +856,10 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(scope),
+        "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",

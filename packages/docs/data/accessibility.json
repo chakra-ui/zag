@@ -467,6 +467,14 @@
       }
     ]
   },
+  "toggle": {
+    "keyboard": [
+      {
+        "keys": ["Space", "Enter"],
+        "description": "Toggle the pressed state"
+      }
+    ]
+  },
   "toggle-group": {
     "keyboard": [
       {

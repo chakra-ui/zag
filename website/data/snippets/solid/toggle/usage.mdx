@@ -1,0 +1,17 @@
+```jsx
+import * as toggle from "@zag-js/toggle"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Toggle() {
+  const service = useMachine(toggle.machine, { id: createUniqueId() })
+  const api = createMemo(() => toggle.connect(service, normalizeProps))
+
+  return (
+    <button {...api().getRootProps()}>
+      <span {...api().getIndicatorProps()} />
+      Bold
+    </button>
+  )
+}
+```

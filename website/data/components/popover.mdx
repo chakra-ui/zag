@@ -256,6 +256,19 @@ When the popover is expanded, `data-placement` is added to trigger and content.
 }
 ```
 
+### Compensating for scrollbar width
+
+When `modal` is `true`, Zag applies `--scrollbar-width` on the root element. Use
+this CSS variable to keep fixed or sticky elements aligned when the popover
+opens and body scrolling is locked.
+
+```css
+.app-header {
+  position: fixed;
+  inset-inline-end: calc(1rem + var(--scrollbar-width, 0px));
+}
+```
+
 ### Arrow
 
 The arrow element requires specific css variables to be set for it to show

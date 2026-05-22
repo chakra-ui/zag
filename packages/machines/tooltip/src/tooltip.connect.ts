@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr, isLeftClick } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import * as dom from "./tooltip.dom"
@@ -18,6 +18,8 @@ export function connect<P extends PropTypes>(
 
   const open = state.matches("open", "closing")
   const triggerValue = context.get("triggerValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const contentId = dom.getContentId(scope)
 
@@ -25,7 +27,7 @@ export function connect<P extends PropTypes>(
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
+    placement: currentPlacement,
     positioned: context.get("positioned"),
   })
 
@@ -155,7 +157,8 @@ export function connect<P extends PropTypes>(
         "data-instant": dataAttr(instant),
         role: hasAriaLabel ? undefined : "tooltip",
         id: hasAriaLabel ? undefined : contentId,
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         onPointerEnter() {
           send({ type: "content.pointer.move" })
         },

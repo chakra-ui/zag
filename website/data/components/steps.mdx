@@ -47,7 +47,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
-## Setting the initial step
+### Setting the initial step
 
 Set the initial step by passing `defaultStep` to the machine context.
 
@@ -59,7 +59,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Controlled current step
+### Controlled current step
 
 Use `step` and `onStepChange` for controlled usage.
 
@@ -72,7 +72,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for step change
+### Listening for step change
 
 When the active step changes, the machine will invoke the `onStepChange` event
 
@@ -85,7 +85,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for steps completion
+### Listening for steps completion
 
 When all steps are completed, the machine will invoke the `onStepComplete` event
 
@@ -97,7 +97,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Enforcing linear steps
+### Enforcing linear steps
 
 To enforce linear steps, you can set the `linear` prop to `true` when creating
 the steps machine. This will prevent users from skipping steps.
@@ -108,7 +108,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Validating steps in linear mode
+### Validating steps in linear mode
 
 Use `isStepValid` to block forward navigation when a step is incomplete.
 
@@ -125,7 +125,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Skipping optional steps
+### Skipping optional steps
 
 Use `isStepSkippable` when some steps should be bypassed by next/prev
 navigation.
@@ -138,7 +138,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Changing the orientation
+### Changing the orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
@@ -150,7 +150,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Programmatic navigation
+### Programmatic navigation
 
 Use the API methods to move through the flow in code.
 

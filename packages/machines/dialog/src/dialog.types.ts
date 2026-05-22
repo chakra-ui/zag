@@ -137,7 +137,6 @@ export interface DialogSchema {
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
   action:
     | "checkRenderedElements"
-    | "syncZIndex"
     | "setInitialFocus"
     | "invokeOnClose"
     | "invokeOnOpen"

@@ -1,6 +1,6 @@
 import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
@@ -25,6 +25,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const lastStep = computed("isLastStep")
 
   const placement = context.get("currentPlacement")
+  const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
 
   const popperStyles = getPlacementStyles({
@@ -158,6 +159,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         dir: prop("dir"),
         "data-type": step?.type,
         "data-placement": placement,
+        "data-side": placementSide,
         style: {
           "--tour-layer": 2,
           ...(step?.type === "tooltip" && popperStyles.floating),
@@ -196,6 +198,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "data-state": open ? "open" : "closed",
         "data-type": step?.type,
         "data-placement": placement,
+        "data-side": placementSide,
         "data-step": step?.id,
         "aria-labelledby": dom.getTitleId(scope),
         "aria-describedby": dom.getDescriptionId(scope),
@@ -225,6 +228,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         "data-placement": hasTarget ? placement : "center",
+        "data-side": hasTarget ? placementSide : undefined,
       })
     },
 
@@ -233,6 +237,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
         "data-placement": hasTarget ? placement : "center",
+        "data-side": hasTarget ? placementSide : undefined,
       })
     },
 

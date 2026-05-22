@@ -78,7 +78,7 @@ export interface BindableFn {
 export interface Scope {
   id?: string | undefined
   ids?: Record<string, any> | undefined
-  getRootNode: () => ShadowRoot | Document | Node
+  getRootNode: () => ShadowRoot | Document | Element
   getById: <T extends Element = HTMLElement>(id: string) => T | null
   query: <T extends Element = HTMLElement>(selector: string) => T | null
   queryAll: <T extends Element = HTMLElement>(selector: string) => T[]

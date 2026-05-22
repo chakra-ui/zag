@@ -287,7 +287,13 @@ export const machine = createMachine<DatePickerSchema>({
       actions: ["setFocusedDate"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"],
+      actions: [
+        "clearDateValue",
+        "clearFocusedDate",
+        "setActiveIndexToStart",
+        "clearHoveredDate",
+        "focusFirstInputElement",
+      ],
     },
     "INPUT.CHANGE": [
       {
@@ -497,10 +503,16 @@ export const machine = createMachine<DatePickerSchema>({
           },
           // ===
         ],
-        "CELL.POINTER_MOVE": {
-          guard: and("isRangePicker", "isSelectingEndDate"),
-          actions: ["setHoveredDate", "setFocusedDate"],
-        },
+        "CELL.POINTER_MOVE": [
+          {
+            guard: and("isRangePicker", "isSelectingEndDate", "isDayPointerMoveOutsideVisibleMonth"),
+            actions: ["setHoveredDate"],
+          },
+          {
+            guard: and("isRangePicker", "isSelectingEndDate"),
+            actions: ["setHoveredDate", "setFocusedDate"],
+          },
+        ],
         "TABLE.POINTER_LEAVE": {
           guard: "isRangePicker",
           actions: ["clearHoveredDate"],
@@ -730,6 +742,7 @@ export const machine = createMachine<DatePickerSchema>({
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
+      isDayPointerMoveOutsideVisibleMonth: ({ event }) => event.cell === "day" && event.outsideRange === true,
     },
 
     effects: {
@@ -764,6 +777,7 @@ export const machine = createMachine<DatePickerSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
             context.set("restoreFocus", !event.detail.focusable)

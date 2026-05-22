@@ -1,5 +1,23 @@
 # @zag-js/date-input
 
+## 1.40.0
+
+### Patch Changes
+
+- [`5e4b4da`](https://github.com/chakra-ui/zag/commit/5e4b4da2bd3c00efdec076715c91c8e24efa135b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Defer min/max constraint until segment is fully typed or on blur
+  to prevent resetting other segments mid-keystroke.
+
+- Updated dependencies [[`00809cd`](https://github.com/chakra-ui/zag/commit/00809cd3adeb17d4c10efd5a91d87b903d13d05b),
+  [`8181b98`](https://github.com/chakra-ui/zag/commit/8181b98c75305a037958eedf42cd13c95a6b439c)]:
+  - @zag-js/date-utils@1.40.0
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/live-region@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

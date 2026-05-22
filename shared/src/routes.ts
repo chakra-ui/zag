@@ -81,6 +81,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
+      { slug: "column-reverse", title: "Column Reverse" },
     ],
   },
   {
@@ -266,6 +267,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "range", title: "Range" },
+      { slug: "range-calendar", title: "Range calendar" },
       { slug: "multi", title: "Multi" },
       { slug: "inline", title: "Inline" },
       { slug: "month-range", title: "Month + Range" },
@@ -290,6 +292,12 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "time-only", title: "Time Only" },
+      { slug: "time-only-controlled", title: "Time Only (Controlled)" },
+      { slug: "timezone", title: "Timezone" },
+      { slug: "hour-cycle", title: "Hour Cycle" },
+      { slug: "min-max", title: "Min Max" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
     ],
@@ -468,6 +476,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "selection", title: "Selection" },
       { slug: "single-tab-stop", title: "Single Tab Stop" },
       { slug: "responsive", title: "Responsive" },
+      { slug: "sibling-dialog", title: "Sibling Dialog" },
       { slug: "tooltip", title: "Tooltip" },
     ],
   },
@@ -543,6 +552,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "indicator", title: "Indicator" },
+      { slug: "scroll-element", title: "Scroll Element" },
     ],
   },
   {
@@ -569,8 +579,14 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "collapsible", title: "Collapsible" },
       { slug: "conditional", title: "Conditional" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "multiple", title: "Multiple" },
       { slug: "nested", title: "Nested" },
+      { slug: "fixed-size", title: "Fixed Size" },
+      { slug: "group-resize-behavior", title: "Group Resize Behavior" },
+      { slug: "persistent-layout", title: "Persistent Layout" },
+      { slug: "pixel-constraints", title: "Pixel Constraints" },
+      { slug: "relative-units", title: "Relative Units" },
     ],
   },
   {

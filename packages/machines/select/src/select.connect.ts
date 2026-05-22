@@ -12,7 +12,7 @@ import {
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
@@ -48,6 +48,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
   const aligned = context.get("aligned")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
@@ -190,6 +191,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-readonly": dataAttr(readOnly),
         "data-placement": currentPlacement,
         "data-align-with-trigger": dataAttr(aligned),
+        "data-side": currentPlacementSide,
         "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
         onClick(event) {
           if (!interactive) return
@@ -444,6 +446,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         "data-align-with-trigger": dataAttr(aligned),
+        "data-side": currentPlacementSide,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         onKeyDown(event) {
           if (!interactive) return

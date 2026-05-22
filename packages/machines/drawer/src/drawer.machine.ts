@@ -688,7 +688,8 @@ export const machine = createMachine<DrawerSchema>({
           type: "drawer",
           defer: true,
           pointerBlocking: prop("modal"),
-          exclude: [dom.getTriggerEl(scope)],
+          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (!prop("closeOnInteractOutside")) {

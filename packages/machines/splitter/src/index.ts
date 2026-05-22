@@ -15,6 +15,8 @@ export type {
   PanelId,
   PanelItem,
   PanelProps,
+  PanelResizeBehavior,
+  PanelSize,
   SplitterProps as Props,
   ResizeDetails,
   ResizeEndDetails,

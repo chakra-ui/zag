@@ -1,7 +1,7 @@
 import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/color-utils"
 import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import * as dom from "./color-picker.dom"
@@ -62,6 +62,7 @@ export function connect<T extends PropTypes>(
   }
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
@@ -175,6 +176,7 @@ export function connect<T extends PropTypes>(
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
@@ -209,6 +211,7 @@ export function connect<T extends PropTypes>(
         role: prop("inline") ? undefined : "dialog",
         tabIndex: -1,
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-state": open ? "open" : "closed",
         hidden: !open,
       })

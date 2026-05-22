@@ -7,12 +7,19 @@ export function needsTimeGranularity(granularity: DateGranularity): boolean {
   return granularity === "hour" || granularity === "minute" || granularity === "second"
 }
 
-export function getFormatterOptions(
-  granularity: DateGranularity,
-  digitStyle: "2-digit" | "numeric",
-  hourCycle: "h12" | "h23" | undefined,
-  timeZone: string,
-): Intl.DateTimeFormatOptions {
+export interface FormatterOptions {
+  granularity: DateGranularity
+  digitStyle: "2-digit" | "numeric"
+  hourCycle: "h12" | "h23" | undefined
+  timeZone: string
+  /** True when the value is a ZonedDateTime — adds the `timeZoneName` segment. */
+  hasTimeZone?: boolean | undefined
+  /** Hides the `timeZoneName` segment even when `hasTimeZone` is true. */
+  hideTimeZone?: boolean | undefined
+}
+
+export function getFormatterOptions(opts: FormatterOptions): Intl.DateTimeFormatOptions {
+  const { granularity, digitStyle, hourCycle, timeZone, hasTimeZone, hideTimeZone } = opts
   const options: Intl.DateTimeFormatOptions = {
     timeZone,
     day: digitStyle,
@@ -23,6 +30,7 @@ export function getFormatterOptions(
   if (needsTimeGranularity(granularity)) options.hour = digitStyle
   if (granularity === "minute" || granularity === "second") options.minute = "2-digit"
   if (granularity === "second") options.second = "2-digit"
+  if (hasTimeZone && !hideTimeZone) options.timeZoneName = "short"
   return options
 }
 
@@ -35,7 +43,7 @@ export function resolveAllSegments(formatter: DateFormatter): Segments {
       p[key] = true
       return p
     }, {})
-  segs.era = true
+  if (segs.year) segs.era = true
   return segs
 }
 

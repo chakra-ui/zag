@@ -1,5 +1,31 @@
 # @zag-js/popover
 
+## 1.40.0
+
+### Minor Changes
+
+- [`a951d16`](https://github.com/chakra-ui/zag/commit/a951d16d466fbd764bb3796d434d1fbc886243b5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `finalFocusEl` and `restoreFocus` props to control focus
+  behavior when the popover closes.
+  - `finalFocusEl`: specify an element to receive focus instead of the trigger
+  - `restoreFocus`: set to `false` to prevent focus from returning to the trigger (default `true`)
+
+  Both work in modal and non-modal modes.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/aria-hidden@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/focus-trap@1.40.0
+  - @zag-js/popper@1.40.0
+  - @zag-js/remove-scroll@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

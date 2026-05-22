@@ -194,9 +194,9 @@ return (
 )
 ```
 
-When the dialog is open and a different trigger is activated, it switches without
-closing. `aria-expanded` is scoped to the active trigger, and focus returns to
-the correct trigger on close.
+When the dialog is open and a different trigger is activated, it switches
+without closing. `aria-expanded` is scoped to the active trigger, and focus
+returns to the correct trigger on close.
 
 You can also read or set the active trigger programmatically:
 
@@ -264,6 +264,19 @@ attribute to style the dialog or trigger based on its state.
 
 [data-part="trigger"][data-state="open|closed"] {
   /* styles for the open state */
+}
+```
+
+### Compensating for scrollbar width
+
+When `preventScroll` is enabled, Zag applies `--scrollbar-width` on the root
+element. Use this CSS variable to keep fixed or sticky elements aligned when the
+dialog opens and body scrolling is locked.
+
+```css
+.app-header {
+  position: fixed;
+  inset-inline-end: calc(1rem + var(--scrollbar-width, 0px));
 }
 ```
 

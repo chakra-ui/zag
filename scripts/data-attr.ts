@@ -14,6 +14,7 @@ const docsMap = {
   "data-readonly": "Present when read-only",
   "data-required": "Present when required",
   "data-placement": "The placement of the {{widget}}",
+  "data-side": "The side of the trigger that the {{widget}} is positioned on",
   "data-invalid": "Present when invalid",
   "data-current": "Present when current",
   "data-copied": "Present when copied state is true",

@@ -63,6 +63,8 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
+  allowCustomValue: { type: "boolean", defaultValue: false },
+  alwaysSubmitOnEnter: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({
@@ -259,7 +261,7 @@ export const datePickerControls = defineControls({
   openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
 })
@@ -271,13 +273,19 @@ export const dateInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
   granularity: {
     type: "select",
     options: ["day", "hour", "minute", "second"] as const,
     defaultValue: "day",
+  },
+  hourCycle: {
+    type: "select",
+    options: ["12", "24"] as const,
+    defaultValue: "",
+    transformValue: (value) => (value === "" ? undefined : (Number(value) as 12 | 24)),
   },
   placeholderValue: {
     type: "date",

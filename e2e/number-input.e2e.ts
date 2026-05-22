@@ -33,6 +33,14 @@ test.describe("number input", () => {
     await I.seeInputHasValue("")
   })
 
+  test("should not clamp empty value on blur when min is greater than 0", async () => {
+    await I.controls.num("min", "1")
+    await I.type("5")
+    await I.pressKey("Backspace")
+    await I.clickOutside()
+    await I.seeInputHasValue("")
+  })
+
   test("should increment with arrow up", async () => {
     await I.type("5")
     await I.pressKey("ArrowUp")

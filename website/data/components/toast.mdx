@@ -60,7 +60,7 @@ To use toast effectively, understand these key parts:
 - `toast.machine` - State machine logic for a single toast.
 - `toast.connect` - Maps toast state to JSX props and controls.
 
-## Creating a toast
+### Creating a toast
 
 Common toast types are `info`, `success`, `warning`, `loading`, and `error`. You
 can also pass a custom type string.
@@ -95,7 +95,7 @@ The options you can pass in are:
 - `priority` — Queue priority (1–8, lower is higher). Auto-assigned based on
   `type` and `action` when omitted.
 
-## Changing the placement
+### Changing the placement
 
 Placement is configured on the toast store and applies to the whole toast group.
 
@@ -105,7 +105,7 @@ const toaster = toast.createStore({
 })
 ```
 
-## Overlapping toasts
+### Overlapping toasts
 
 When multiple toasts are created, they are rendered in a stack. To make the
 toasts overlap, set the `overlap` property to `true`.
@@ -119,7 +119,7 @@ const toaster = toast.createStore({
 > Be sure to set up the [required styles](#requirement) to make overlap work
 > correctly.
 
-## Changing the duration
+### Changing the duration
 
 Every toast has a default visible duration depending on the `type` set. Here's
 the following toast types and matching default durations:
@@ -151,7 +151,7 @@ toaster.create({
 Use `toaster.create(...)` for new toasts and `toaster.update(id, ...)` to modify
 an existing one.
 
-## Using portals
+### Using portals
 
 Using a portal is helpful to ensure that the toast is rendered outside the DOM
 hierarchy of the parent component. To render the toast in a portal, wrap the
@@ -159,7 +159,7 @@ rendered toasts in the `ToastProvider` within your framework-specific portal.
 
 <CodeSnippet id="toast/using-portal.mdx" />
 
-## Programmatic control
+### Programmatic control
 
 To update a toast programmatically, you need access to the unique identifier of
 the toast.
@@ -202,7 +202,7 @@ toaster.remove(id)
 toaster.dismiss(id)
 ```
 
-### Pause and resume all toasts
+#### Pause and resume all toasts
 
 Call `pause()`/`resume()` without an `id` to affect all active toasts.
 
@@ -211,7 +211,7 @@ toaster.pause()
 toaster.resume()
 ```
 
-## Handling promises
+### Handling promises
 
 The toast group API exposes a `toaster.promise()` function to allow you update
 the toast when it resolves or rejects.
@@ -246,7 +246,7 @@ const result = toaster.promise(fetchData(), {
 await result?.unwrap()
 ```
 
-## Pausing the toasts
+### Pausing the toasts
 
 There are three scenarios that pause toast timeout:
 
@@ -266,7 +266,7 @@ const toaster = toast.createStore({
 toaster.pause(id)
 ```
 
-## Limiting the number of toasts
+### Limiting the number of toasts
 
 Toasts are great but displaying too many of them can sometimes hamper the user
 experience. To limit visible toasts, set `max` on the store.
@@ -277,7 +277,7 @@ const toaster = toast.createStore({
 })
 ```
 
-## Toast priority
+### Toast priority
 
 When the max number of visible toasts is reached, queued toasts are sorted by
 priority before being displayed. Priority ranges from `1` (highest) to `8`
@@ -304,7 +304,7 @@ toaster.create({
 })
 ```
 
-## Focus Hotkey for toasts
+### Focus Hotkey for toasts
 
 When a toast is created, you can focus the toast region by pressing the
 `alt + T`. This is useful for screen readers and keyboard navigation.
@@ -317,7 +317,7 @@ const service = useMachine(toast.group.machine, {
 })
 ```
 
-## Listening for toast lifecycle
+### Listening for toast lifecycle
 
 When a toast is created, you can listen for the status changes across its
 lifecycle using the `onStatusChange` callback when you call
@@ -341,7 +341,7 @@ toaster.info({
 })
 ```
 
-## Changing the gap between toasts
+### Changing the gap between toasts
 
 When multiple toasts are rendered, a gap of `16px` is applied between each
 toast. To change this value, set `gap` on the store.
@@ -352,7 +352,7 @@ const toaster = toast.createStore({
 })
 ```
 
-## Changing the offset
+### Changing the offset
 
 The toast region has a default `1rem` offset from the viewport. Use the
 `offsets` store option to change this offset.

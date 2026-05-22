@@ -50,6 +50,12 @@ export interface ToggleApi<T extends PropTypes = PropTypes> {
    */
   setPressed: (pressed: boolean) => void
 
+  /**
+   * Props for the root `button` element.
+   */
   getRootProps: () => T["element"]
+  /**
+   * Props for the optional visual indicator (e.g. icon) element.
+   */
   getIndicatorProps: () => T["element"]
 }

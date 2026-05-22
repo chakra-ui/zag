@@ -15,8 +15,19 @@
       color: var(--colors-text-primary-bold);
     }
 
-    &[data-outside-range] {
+    &[data-outside-range][data-disabled] {
       visibility: hidden;
+    }
+
+    &[data-outside-range][data-selectable] {
+      visibility: visible;
+      color: var(--colors-fg-muted, #64748b);
+      font-weight: 400;
+
+      &:hover {
+        background: rgba(126, 126, 126, 0.171);
+        color: var(--colors-text-primary, inherit);
+      }
     }
 
     &[data-selected] {

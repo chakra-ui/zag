@@ -164,6 +164,12 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   hourCycle?: HourCycle | undefined
   /**
+   * Whether to hide the time zone segment when the value is a `ZonedDateTime`.
+   * Has no effect for values without a time zone.
+   * @default false
+   */
+  hideTimeZone?: boolean | undefined
+  /**
    * Determines the smallest unit that is displayed in the date input.
    * @default "day"
    */
