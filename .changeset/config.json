@@ -16,11 +16,9 @@
   },
   "ignore": [
     "@zag-js/shared",
-    "next-app",
     "next-ts",
     "nuxt-ts",
     "solid-ts",
-    "nuxt-ts",
     "preact-ts",
     "svelte-ts",
     "vanilla-ts",

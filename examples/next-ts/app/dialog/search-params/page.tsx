@@ -3,10 +3,10 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useId } from "react"
+import { Suspense, useId } from "react"
 import "@styles/dialog.css"
 
-export default function Page() {
+function PageContent() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
@@ -49,5 +49,13 @@ export default function Page() {
         </Portal>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <PageContent />
+    </Suspense>
   )
 }

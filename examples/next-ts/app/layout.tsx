@@ -1,5 +1,6 @@
 import "@styles/global.css"
 
+import { Suspense } from "react"
 import { Sidebar } from "@/components/sidebar"
 
 export const metadata = {
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <div className="page">
-          <Sidebar />
+          <Suspense>
+            <Sidebar />
+          </Suspense>
           {children}
         </div>
       </body>

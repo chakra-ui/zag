@@ -4,7 +4,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useId } from "react"
+import { Suspense, useId } from "react"
 import "@styles/select.css"
 
 const collection = select.collection({
@@ -13,7 +13,7 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-export default function Page() {
+function PageContent() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
@@ -65,5 +65,13 @@ export default function Page() {
         </Portal>
       </div>
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <PageContent />
+    </Suspense>
   )
 }
