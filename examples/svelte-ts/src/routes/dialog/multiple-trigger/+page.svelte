@@ -1,9 +1,10 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
-  import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   interface User {
     id: number
@@ -61,64 +62,65 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active User:</strong>
       {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
     </div>
   </section>
 
   {#if api.open}
-    <div use:portal {...api.getBackdropProps()}></div>
-    <div use:portal {...api.getPositionerProps()}>
-      <Presence {...api.getContentProps()}>
-        {#if activeUser}
-          <h2 {...api.getTitleProps()}>Edit User</h2>
-          <p {...api.getDescriptionProps()}>Update information for {activeUser.name}</p>
-          <div style="margin-bottom: 20px;">
-            <div style="margin-bottom: 12px;">
-              <label>Name</label>
-              <input type="text" value={activeUser.name} style="display: block; width: 100%;" />
+    <Portal>
+      <Presence {...api.getBackdropProps()}></Presence>
+      <div {...api.getPositionerProps()}>
+        <Presence {...api.getContentProps()}>
+          {#if activeUser}
+            <h2 {...api.getTitleProps()}>Edit User</h2>
+            <p {...api.getDescriptionProps()}>Update information for {activeUser.name}</p>
+            <div style="margin-bottom: 20px;">
+              <div style="margin-bottom: 12px;">
+                <label for="name">Name</label>
+                <input id="name" type="text" value={activeUser.name} style="display: block; width: 100%;" />
+              </div>
+              <div style="margin-bottom: 12px;">
+                <label for="email">Email</label>
+                <input id="email" type="email" value={activeUser.email} style="display: block; width: 100%;" />
+              </div>
+              <div style="margin-bottom: 12px;">
+                <label for="role">Role</label>
+                <select id="role" value={activeUser.role} style="display: block; width: 100%;">
+                  <option value="Admin">Admin</option>
+                  <option value="Editor">Editor</option>
+                  <option value="Viewer">Viewer</option>
+                </select>
+              </div>
             </div>
-            <div style="margin-bottom: 12px;">
-              <label>Email</label>
-              <input type="email" value={activeUser.email} style="display: block; width: 100%;" />
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button {...api.getCloseTriggerProps()}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+              <button>Save Changes</button>
             </div>
-            <div style="margin-bottom: 12px;">
-              <label>Role</label>
-              <select value={activeUser.role} style="display: block; width: 100%;">
-                <option value="Admin">Admin</option>
-                <option value="Editor">Editor</option>
-                <option value="Viewer">Viewer</option>
-              </select>
-            </div>
-          </div>
-          <div style="display: flex; gap: 10px; justify-content: flex-end;">
-            <button {...api.getCloseTriggerProps()}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </svg>
-            </button>
-            <button>Save Changes</button>
-          </div>
-        {:else}
-          <div>No user selected</div>
-        {/if}
-      </Presence>
-    </div>
+          {:else}
+            <div>No user selected</div>
+          {/if}
+        </Presence>
+      </div>
+    </Portal>
   {/if}
 </main>
 

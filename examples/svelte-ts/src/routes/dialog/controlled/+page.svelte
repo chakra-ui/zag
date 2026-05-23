@@ -1,17 +1,27 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
   import Presence from "$lib/components/presence.svelte"
+  import Portal from "$lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const id = $props.id()
-  const service = useMachine(dialog.machine, { id, onOpenChange: console.log })
+  let open = $state(false)
+
+  const service = useMachine(dialog.machine, () => ({
+    id: "1",
+    open,
+    onOpenChange(details) {
+      open = details.open
+    },
+  }))
 
   const api = $derived(dialog.connect(service, normalizeProps))
 </script>
 
 <main>
-  <button {...api.getTriggerProps()}> Click me</button>
+  <button onclick={() => (open = !open)}>Open Dialog</button>
+  <p>state - isOpen: {String(open)}</p>
+  <p>machine - isOpen: {String(api.open)}</p>
+
   <Portal>
     <Presence {...api.getBackdropProps()}></Presence>
     <div {...api.getPositionerProps()}>
