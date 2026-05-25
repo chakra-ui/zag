@@ -11,6 +11,7 @@ export const machine = createMachine<AccordionSchema>({
       collapsible: false,
       multiple: false,
       orientation: "vertical",
+      loopFocus: true,
       defaultValue: [],
       ...props,
     }
@@ -111,16 +112,16 @@ export const machine = createMachine<AccordionSchema>({
       focusLastTrigger({ scope }) {
         dom.getLastTriggerEl(scope)?.focus()
       },
-      focusNextTrigger({ context, scope }) {
+      focusNextTrigger({ context, prop, scope }) {
         const focusedValue = context.get("focusedValue")
         if (!focusedValue) return
-        const triggerEl = dom.getNextTriggerEl(scope, focusedValue)
+        const triggerEl = dom.getNextTriggerEl(scope, focusedValue, prop("loopFocus"))
         triggerEl?.focus()
       },
-      focusPrevTrigger({ context, scope }) {
+      focusPrevTrigger({ context, prop, scope }) {
         const focusedValue = context.get("focusedValue")
         if (!focusedValue) return
-        const triggerEl = dom.getPrevTriggerEl(scope, focusedValue)
+        const triggerEl = dom.getPrevTriggerEl(scope, focusedValue, prop("loopFocus"))
         triggerEl?.focus()
       },
       setFocusedValue({ context, event }) {

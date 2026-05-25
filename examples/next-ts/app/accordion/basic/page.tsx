@@ -26,7 +26,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>
-              <h3>
+              <h3 {...api.getItemHeaderProps({ value: item.id })}>
                 <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
                   <div {...api.getItemIndicatorProps({ value: item.id })}>

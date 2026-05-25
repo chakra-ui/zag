@@ -38,6 +38,32 @@ test.describe("accordion", () => {
       await I.pressKey("End")
       await I.seeTriggerIsFocused("contact")
     })
+
+    test("[loopFocus=true] arrow down on last trigger, wraps to first", async () => {
+      await I.focusTrigger("contact")
+      await I.pressKey("ArrowDown")
+      await I.seeTriggerIsFocused("home")
+    })
+
+    test("[loopFocus=true] arrow up on first trigger, wraps to last", async () => {
+      await I.focusTrigger("home")
+      await I.pressKey("ArrowUp")
+      await I.seeTriggerIsFocused("contact")
+    })
+
+    test("[loopFocus=false] arrow down on last trigger, stays on last", async () => {
+      await I.controls.bool("loopFocus", false)
+      await I.focusTrigger("contact")
+      await I.pressKey("ArrowDown")
+      await I.seeTriggerIsFocused("contact")
+    })
+
+    test("[loopFocus=false] arrow up on first trigger, stays on first", async () => {
+      await I.controls.bool("loopFocus", false)
+      await I.focusTrigger("home")
+      await I.pressKey("ArrowUp")
+      await I.seeTriggerIsFocused("home")
+    })
   })
 
   test.describe("single / pointer", () => {

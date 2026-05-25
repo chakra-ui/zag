@@ -19,5 +19,7 @@ export const getTriggerEls = (ctx: Scope) => {
 
 export const getFirstTriggerEl = (ctx: Scope) => first(getTriggerEls(ctx))
 export const getLastTriggerEl = (ctx: Scope) => last(getTriggerEls(ctx))
-export const getNextTriggerEl = (ctx: Scope, id: string) => nextById(getTriggerEls(ctx), getItemTriggerId(ctx, id))
-export const getPrevTriggerEl = (ctx: Scope, id: string) => prevById(getTriggerEls(ctx), getItemTriggerId(ctx, id))
+export const getNextTriggerEl = (ctx: Scope, id: string, loopFocus: boolean) =>
+  nextById(getTriggerEls(ctx), getItemTriggerId(ctx, id), loopFocus)
+export const getPrevTriggerEl = (ctx: Scope, id: string, loopFocus: boolean) =>
+  prevById(getTriggerEls(ctx), getItemTriggerId(ctx, id), loopFocus)
