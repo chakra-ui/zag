@@ -135,7 +135,14 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "angle-slider",
     label: "Angle Slider",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "circular-thumb", title: "Circular Thumb" },
+      { slug: "larger-step", title: "Larger Step (Snap Points)" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "color-wheel", title: "Color Wheel (Hue)" },
+      { slug: "rtl", title: "RTL" },
+    ],
   },
   {
     slug: "steps",
