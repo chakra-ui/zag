@@ -1,5 +1,13 @@
 # @zag-js/async-list
 
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/utils@1.41.0
+
 ## 1.40.0
 
 ### Patch Changes
