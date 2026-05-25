@@ -240,7 +240,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "avatar",
     label: "Avatar",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "with-menu", title: "With Menu" },
+      { slug: "with-tooltip", title: "With Tooltip" },
+    ],
   },
   {
     slug: "color-picker",
