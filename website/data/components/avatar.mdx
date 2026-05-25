@@ -47,21 +47,27 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="avatar/usage.mdx" />
 
-### Listening for loading status changes
+### Loading status
 
-When the image loads or fails, `onStatusChange` is invoked.
+The image loading status is `loading`, `loaded`, or `error`. Read the current
+value from `api.status`, or react to changes with `onStatusChange`.
 
 ```tsx {2}
 const service = useMachine(avatar.machine, {
   onStatusChange(details) {
-    // details => { status: "error" | "loaded" }
+    // details => { status: "loading" | "error" | "loaded" }
   },
 })
 ```
 
-### Updating the image source programmatically
+### Updating the image source
 
-Use `api.setSrc` when the image source changes after mount.
+In framework adapters, update the image `src` through your own state. The
+machine watches the rendered image and reacts automatically, resetting to
+`loading` and then to `loaded` or `error`.
+
+For imperative usage like vanilla JS, `api.setSrc` sets the source on the
+machine's image element directly.
 
 ```tsx
 api.setSrc(nextSrc)

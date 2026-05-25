@@ -5,7 +5,7 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type LoadStatus = "error" | "loaded"
+export type LoadStatus = "loading" | "error" | "loaded"
 
 export interface StatusChangeDetails {
   status: LoadStatus
@@ -55,6 +55,10 @@ export type AvatarMachine = Machine<AvatarSchema>
  * -----------------------------------------------------------------------------*/
 
 export interface AvatarApi<T extends PropTypes = PropTypes> {
+  /**
+   * The current image loading status.
+   */
+  status: LoadStatus
   /**
    * Whether the image is loaded.
    */
