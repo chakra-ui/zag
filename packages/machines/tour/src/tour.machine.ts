@@ -235,7 +235,6 @@ export const machine = createMachine<TourSchema>({
         scrolling: {
           tags: ["open"],
           entry: ["scrollToTarget"],
-          exit: ["clearPositioned"],
           effects: [
             "waitForScrollEnd",
             "trapFocus",
@@ -257,7 +256,6 @@ export const machine = createMachine<TourSchema>({
 
         active: {
           tags: ["open"],
-          exit: ["clearPositioned"],
           effects: [
             "trapFocus",
             "trackPlacement",
@@ -280,9 +278,6 @@ export const machine = createMachine<TourSchema>({
     },
 
     actions: {
-      clearPositioned({ context }) {
-        context.set("positioned", false)
-      },
       scrollToTarget({ context }) {
         const node = context.get("resolvedTarget")
         node?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })

@@ -167,7 +167,6 @@ export const machine = createMachine<TooltipSchema>({
     open: {
       effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
       entry: ["setGlobalId"],
-      exit: ["clearPositioned"],
       on: {
         "controlled.close": {
           target: "closed",
@@ -362,10 +361,6 @@ export const machine = createMachine<TooltipSchema>({
         queueMicrotask(() => {
           send({ type: "reopen" })
         })
-      },
-
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
     },
     effects: {

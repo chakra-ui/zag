@@ -299,7 +299,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearHighlightedValue", "scrollContentToTop", "clearPositioned"],
+      exit: ["clearHighlightedValue", "scrollContentToTop"],
       effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -1010,9 +1010,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       dispatchChangeEvent({ scope, context }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: context.hash("value") })
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       scrollContentToTop({ scope, prop }) {
         const scrollToIndexFn = prop("scrollToIndexFn")

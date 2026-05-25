@@ -395,7 +395,6 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      exit: ["clearPositioned"],
       effects: [
         "trackFocusVisible",
         "scrollToHighlightedItem",
@@ -1063,9 +1062,6 @@ export const machine = createMachine({
         if (!optionText) return
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

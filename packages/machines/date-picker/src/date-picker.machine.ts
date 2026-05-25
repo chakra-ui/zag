@@ -421,7 +421,7 @@ export const machine = createMachine<DatePickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearHoveredDate", "resetView", "clearPositioned"],
+      exit: ["clearHoveredDate", "resetView"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -918,9 +918,6 @@ export const machine = createMachine<DatePickerSchema>({
       },
       clearHoveredDate({ context }) {
         context.set("hoveredValue", null)
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       selectFocusedDate({ context, computed }) {
         const values = Array.from(context.get("value"))

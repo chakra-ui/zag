@@ -213,7 +213,6 @@ export const machine = createMachine<ColorPickerSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearPositioned"],
       effects: ["trackPositioning", "trackDismissableElement"],
       initial: "idle",
       on: {
@@ -442,9 +441,6 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
-      clearPositioned({ context }) {
-        context.set("positioned", false)
-      },
       openEyeDropper({ scope, context, prop }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win

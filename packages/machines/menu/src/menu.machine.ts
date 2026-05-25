@@ -412,7 +412,6 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "unlockParentOnOpen"],
-      exit: ["clearPositioned"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -938,9 +937,6 @@ export const machine = createMachine<MenuSchema>({
       releaseParentRoutingLock({ refs, context }) {
         if (!context.get("isSubmenu")) return
         unlockParentOnSubmenuClose(refs.get("parent"))
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       toggleVisibility({ prop, event, send }) {
         send({

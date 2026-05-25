@@ -113,7 +113,6 @@ export const machine = createMachine<PopoverSchema>({
         "trackPositioning",
         "proxyTabFocus",
       ],
-      exit: ["clearPositioned"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -328,10 +327,6 @@ export const machine = createMachine<PopoverSchema>({
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
-      },
-
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
     },
   },

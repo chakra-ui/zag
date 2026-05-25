@@ -155,7 +155,6 @@ export const machine = createMachine<HoverCardSchema>({
     open: {
       tags: ["open"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearPositioned"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -322,10 +321,6 @@ export const machine = createMachine<HoverCardSchema>({
         queueMicrotask(() => {
           send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
         })
-      },
-
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
     },
   },

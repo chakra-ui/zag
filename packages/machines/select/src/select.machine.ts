@@ -812,7 +812,6 @@ export const machine = createMachine<SelectSchema>({
 
       clearPlacementState({ context }) {
         context.set("currentPlacement", undefined)
-        context.set("positioned", false)
         context.set("aligned", false)
       },
 
