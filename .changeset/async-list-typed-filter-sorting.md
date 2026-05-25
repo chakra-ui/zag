@@ -98,3 +98,11 @@ convention.
 api.setFilter((prev) => ({ ...prev, status: "active" }))
 api.setSorting((prev) => toggleColumn(prev, "name"))
 ```
+
+**`items` in `load` details** — The `load` function now receives the current `items` (empty on reload unless
+`keepPreviousItems` is set, the existing items when loading more), useful for custom merge logic. `api.error` is now
+typed as `Error` instead of `any`.
+
+```ts
+async load({ items, cursor, signal }) { ... }
+```

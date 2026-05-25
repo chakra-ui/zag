@@ -181,6 +181,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         const loadFn = prop("load")
         loadFn({
           signal: abort?.signal,
+          items: context.get("items"),
           cursor: isLoadMore ? context.get("cursor") : null,
           filter: event.filter ?? context.get("filter"),
           sorting: event.sorting ?? context.get("sorting"),
@@ -192,7 +193,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
           .catch((error) => {
             if (seq !== refs.get("seq")) return
             if (isAbortError(error)) return
-            send({ type: "ERROR", error })
+            send({ type: "ERROR", error: toError(error) })
           })
       },
 
@@ -219,7 +220,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
           })
           .catch((e) => {
             if (seq !== refs.get("seq")) return
-            send({ type: "ERROR", error: e as Error })
+            send({ type: "ERROR", error: toError(e) })
           })
       },
 
@@ -270,6 +271,10 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
 
 function isAbortError(err: unknown): err is DOMException {
   return err instanceof Error && err.name === "AbortError"
+}
+
+function toError(err: unknown): Error {
+  return err instanceof Error ? err : new Error(String(err))
 }
 
 function hashDeps(deps: LoadDependency[] = []) {

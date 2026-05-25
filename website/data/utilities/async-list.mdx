@@ -47,7 +47,10 @@ The async list machine will automatically return the `error` and `loading`
 properties in the `api` when the `load` function returns an error or is loading.
 
 - `api.error` — The error instance returned by the last fetch.
-- `api.loading` — Whether the list is loading.
+- `api.isLoading` — Whether the list is loading (initial load, reload, filter,
+  or sort).
+- `api.isLoadingMore` — Whether more items are being loaded via pagination.
+- `api.isEmpty` — Whether the list has no items.
 - `api.items` — The items in the list after the last fetch.
 
 ### Pagination
@@ -92,14 +95,14 @@ api.reload()
 
 The async list machine supports both client-side and server-side sorting. You
 can implement sorting by providing a `sort` function for client-side operations,
-or by handling the `sortDescriptor` parameter in your `load` function for
-server-side sorting.
+or by handling the `sorting` parameter in your `load` function for server-side
+sorting.
 
 Regardless of the sorting implementation, the way to trigger the sorting is by
-calling the `api.sort` method with the descriptor.
+calling the `api.setSorting` method with the descriptor.
 
 ```tsx
-api.sort({ column: "name", direction: "ascending" })
+api.setSorting({ column: "name", direction: "ascending" })
 ```
 
 #### Client-side sorting
@@ -111,16 +114,16 @@ const service = useMachine(asyncList.machine, {
   async load({ signal }) {
     // ...
   },
-  sort({ items, sortDescriptor }) {
+  sort({ items, sorting }) {
     return {
       items: items.sort((a, b) => {
         // Compare the items by the sorted column
-        const aColumn = a[sortDescriptor.column]
-        const bColumn = b[sortDescriptor.column]
+        const aColumn = a[sorting.column]
+        const bColumn = b[sorting.column]
         let direction = aColumn.localeCompare(bColumn)
 
         // Flip the direction if descending order is specified.
-        if (sortDescriptor.direction === "descending") {
+        if (sorting.direction === "descending") {
           direction *= -1
         }
 
@@ -133,16 +136,16 @@ const service = useMachine(asyncList.machine, {
 
 #### Server-side sorting
 
-For server-side sorting, use the `sortDescriptor` parameter in the `load`
-function to pass sorting parameters to your API.
+For server-side sorting, use the `sorting` parameter in the `load` function to
+pass sorting parameters to your API.
 
 ```tsx
 const service = useMachine(asyncList.machine, {
-  async load({ signal, sortDescriptor }) {
+  async load({ signal, sorting }) {
     let url = new URL("http://example.com/api")
-    if (sortDescriptor) {
-      url.searchParams.append("sort_key", sortDescriptor.column)
-      url.searchParams.append("sort_direction", sortDescriptor.direction)
+    if (sorting) {
+      url.searchParams.append("sort_key", sorting.column)
+      url.searchParams.append("sort_direction", sorting.direction)
     }
 
     let res = await fetch(url, { signal })
@@ -157,25 +160,25 @@ const service = useMachine(asyncList.machine, {
 ### Filtering
 
 Filtering your data list is often necessary, such as for user searches or query
-lookups. For server-side filtering, use the `filterText` parameter in the `load`
+lookups. For server-side filtering, use the `filter` parameter in the `load`
 function.
 
-The way to trigger the filtering is by calling the `api.setFilterText` method
-with the filter text.
+The way to trigger the filtering is by calling the `api.setFilter` method with
+the filter value.
 
 ```tsx
-api.setFilterText("filter text")
+api.setFilter("filter text")
 ```
 
-The `api.setFilterText` method modifies the `filterText` and calls the `load`
-function to refresh the data with the updated filter.
+The `api.setFilter` method modifies the `filter` and calls the `load` function
+to refresh the data with the updated filter.
 
 ```tsx
 const service = useMachine(asyncList.machine, {
-  async load({ signal, filterText }) {
+  async load({ signal, filter }) {
     let url = new URL("http://example.com/api")
-    if (filterText) {
-      url.searchParams.append("filter", filterText)
+    if (filter) {
+      url.searchParams.append("filter", filter)
     }
 
     let res = await fetch(url, { signal })
@@ -215,11 +218,77 @@ dependency is a primitive value (no objects, arrays, maps, sets, etc.).
 
 ```tsx
 const service = useMachine(asyncList.machine, {
-  dependencies: ["user"],
-  async load({ signal, deps }) {
-    // ...
+  dependencies: [userId],
+  async load({ signal }) {
+    // read the external dependency directly from your scope
+    const res = await fetch(`/api/users/${userId}/items`, { signal })
+    return { items: await res.json() }
   },
 })
+```
+
+## Composing with a collection
+
+Async list is a data loader. It handles fetching, pagination, sorting, and
+filtering, but it doesn't own the list structure. To render items in a
+`combobox`, `select`, or `listbox`, pair it with a collection. Async list owns
+the server data, and the collection owns the UI structure and any client-side
+manipulation.
+
+```tsx
+import * as asyncList from "@zag-js/async-list"
+import * as combobox from "@zag-js/combobox"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useMemo } from "react"
+
+function ComboboxWithAsyncData() {
+  // 1. Load server data with async list (filtering happens on the server)
+  const list = useMachine(asyncList.machine, {
+    async load({ signal, filter }) {
+      const res = await fetch(`/api/items?q=${filter ?? ""}`, { signal })
+      return { items: await res.json() }
+    },
+  })
+  const listApi = asyncList.connect(list)
+
+  // 2. Build a collection from the loaded items for the combobox to render
+  const collection = useMemo(
+    () => combobox.collection({ items: listApi.items }),
+    [listApi.items],
+  )
+
+  // 3. Drive server-side filtering from the combobox input
+  const cb = useMachine(combobox.machine, {
+    collection,
+    onInputValueChange({ inputValue }) {
+      listApi.setFilter(inputValue)
+    },
+  })
+
+  // ...render the combobox
+}
+```
+
+### Mutating items
+
+Collection mutation methods (`insert`, `append`, `prepend`, `remove`, `move`,
+`update`, `reorder`) are immutable and return a new collection. Keep the
+collection in state, seed it from the loaded items, and apply optimistic updates
+without refetching.
+
+```tsx
+const [collection, setCollection] = useState(() =>
+  combobox.collection({ items: [] }),
+)
+
+// keep the collection in sync with freshly loaded data
+useEffect(() => {
+  setCollection(combobox.collection({ items: listApi.items }))
+}, [listApi.items])
+
+// optimistic mutations
+const removeItem = (value: string) => setCollection((c) => c.remove(value))
+const appendItem = (item: Item) => setCollection((c) => c.append(item))
 ```
 
 ## Methods and Properties

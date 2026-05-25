@@ -1,6 +1,6 @@
 ```jsx
 import * as asyncList from "@zag-js/async-list"
-import { useMachine, normalizeProps } from "@zag-js/solid"
+import { useMachine } from "@zag-js/solid"
 import { createMemo, Show } from "solid-js"
 
 function AsyncList() {
@@ -15,28 +15,21 @@ function AsyncList() {
     },
   })
 
-  const api = createMemo(() => asyncList.connect(service, normalizeProps))
+  const api = createMemo(() => asyncList.connect(service))
 
   return (
     <div>
       <div>
         <pre>{JSON.stringify(api().items, null, 2)}</pre>
-        <input
-          type="text"
-          onInput={(e) => api().setFilterText(e.target.value)}
-        />
+        <input type="text" onInput={(e) => api().setFilter(e.target.value)} />
       </div>
       <div>
-        <Show when={api().loading}>
+        <Show when={api().isLoading}>
           <p>Loading...</p>
         </Show>
         <button onClick={() => api().reload()}>Reload</button>
         <button onClick={() => api().loadMore()}>Load More</button>
-        <button
-          onClick={() => api().sort({ column: "name", direction: "ascending" })}
-        >
-          Sort by name
-        </button>
+        <button onClick={() => api().setSorting({ column: "name", direction: "ascending" })}>Sort by name</button>
       </div>
     </div>
   )
