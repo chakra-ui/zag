@@ -1,9 +1,10 @@
-import { isSameDay } from "@internationalized/date"
+import { isSameDay, toCalendarDateTime } from "@internationalized/date"
 import type { DateAvailableFn, DateValue } from "./types"
 
 export function isDateEqual(dateA: DateValue | null | undefined, dateB?: DateValue | null) {
   if (dateA == null || dateB == null) return dateA === dateB
-  return isSameDay(dateA, dateB)
+  if (!("hour" in dateA) && !("hour" in dateB)) return isSameDay(dateA, dateB)
+  return toCalendarDateTime(dateA).compare(toCalendarDateTime(dateB)) === 0
 }
 
 export function isDateUnavailable(

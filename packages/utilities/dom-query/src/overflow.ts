@@ -47,30 +47,3 @@ export function isOverflowElement(el: HTMLElement): boolean {
   const { overflow, overflowX, overflowY, display } = win.getComputedStyle(el)
   return OVERFLOW_RE.test(overflow + overflowY + overflowX) && !nonOverflowValues.has(display)
 }
-
-export interface ScrollOptions extends ScrollIntoViewOptions {
-  rootEl: HTMLElement | null
-}
-
-function isScrollable(el: HTMLElement): boolean {
-  return el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
-}
-
-export function scrollIntoView(el: HTMLElement | null | undefined, options?: ScrollOptions): void {
-  const { rootEl, ...scrollOptions } = options || {}
-  if (!el || !rootEl) return
-  if (!isOverflowElement(rootEl) || !isScrollable(rootEl)) return
-  el.scrollIntoView(scrollOptions)
-}
-
-export interface ScrollPosition {
-  scrollLeft: number
-  scrollTop: number
-}
-
-export function getScrollPosition(element: HTMLElement | Window): ScrollPosition {
-  if (isHTMLElement(element)) {
-    return { scrollLeft: element.scrollLeft, scrollTop: element.scrollTop }
-  }
-  return { scrollLeft: element.scrollX, scrollTop: element.scrollY }
-}

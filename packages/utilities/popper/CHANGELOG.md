@@ -1,5 +1,87 @@
 # @zag-js/popper
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `flip`, `shift`, and `hide` middleware ignoring a late-mounted
+  `boundary`. The boundary is now re-resolved on every `computePosition` tick, so a function-form
+  `boundary: () => element` picks up the element once it mounts.
+
+- [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Forward `boundary` into the `size` middleware so available
+  width/height match `flip`/`shift`, with per-tick resolution for function boundaries.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- [`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix incorrect positioning when the anchor or floating element
+  changes while the popover is still open (e.g. switching between multiple triggers without closing first).
+- Updated dependencies []:
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix step navigation events (`next`, `prev`, `setStep`) firing
+  when the tour is inactive, bypassing the `start` flow
+  - Fix popper styles not being cleaned up when transitioning from a tooltip step to a dialog/non-tooltip step
+  - Rename `cleanupStyles` option to `restoreStyles` in the popper package
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

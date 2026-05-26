@@ -4,7 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function Checkbox() {
-  const service = useMachine(zagSwitch.machine, { id: "1" })
+  const service = useMachine(zagSwitch.machine, { id: createUniqueId() })
 
   const api = createMemo(() => zagSwitch.connect(service, normalizeProps))
 

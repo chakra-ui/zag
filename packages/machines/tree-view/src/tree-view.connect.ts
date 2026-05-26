@@ -291,6 +291,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-renaming": dataAttr(nodeState.renaming),
+        "data-checked": dataAttr(nodeState.checked === true),
+        "data-indeterminate": dataAttr(nodeState.checked === "indeterminate"),
         "aria-level": nodeState.depth,
         "data-depth": nodeState.depth,
         style: {
@@ -410,6 +412,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
         "data-renaming": dataAttr(nodeState.renaming),
+        "data-checked": dataAttr(nodeState.checked === true),
+        "data-indeterminate": dataAttr(nodeState.checked === "indeterminate"),
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
         "data-loading": dataAttr(nodeState.loading),

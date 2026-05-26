@@ -1,5 +1,103 @@
 # @zag-js/accordion
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [`fe49533`](https://github.com/chakra-ui/zag/commit/fe49533a11fd93f9ddb47188df79b4f16fdfcccc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove redundant `aria-disabled` from accordion item triggers.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- [#3059](https://github.com/chakra-ui/zag/pull/3059)
+  [`2a90590`](https://github.com/chakra-ui/zag/commit/2a90590f0e5cf7f8c4e149894fef76f78be795ec) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix missing `data-focus` attribute on
+  `getItemTriggerProps`. This makes the trigger consistent with the other accordion parts (`getItemProps`,
+  `getItemContentProps`, `getItemIndicatorProps`) which already expose `data-focus`.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

@@ -42,8 +42,17 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "snap-points", title: "Snap Points" },
-      { slug: "default-active-snap-point", title: "Active Snap Point" },
-      { slug: "indent-background", title: "Indent Background" },
+      { slug: "active-snap-point", title: "Active Snap Point" },
+      { slug: "indent-effect", title: "Indent Effect" },
+      { slug: "swipe-area", title: "Swipe Area" },
+      { slug: "cross-axis-scroll", title: "Cross-Axis Scroll" },
+      { slug: "range-input", title: "Range Input" },
+      { slug: "action-sheet", title: "Action Sheet" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "mobile-nav", title: "Mobile Nav" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "nested", title: "Nested" },
+      { slug: "non-modal", title: "Non-Modal" },
     ],
   },
   {
@@ -52,6 +61,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
+      { slug: "column-reverse", title: "Column Reverse" },
     ],
   },
   {
@@ -119,6 +129,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "focus-trap", title: "Focus Trap" },
+      { slug: "popover-inside", title: "Popover Inside" },
     ],
   },
   {
@@ -126,7 +138,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tour",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "with-input-event", title: "Input Event" },
+      { slug: "wait-step", title: "Wait Step" },
+      { slug: "wait-for-input-event", title: "Wait for Input" },
+      { slug: "step-types", title: "Step Types" },
+      { slug: "conditional", title: "Conditional" },
     ],
   },
   {
@@ -164,6 +179,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "File Upload",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "with-rejections", title: "Multiple + Rejections" },
       { slug: "cover", title: "Cover" },
       { slug: "react-hook-form", title: "Hook Form" },
       { slug: "transform", title: "Transform" },
@@ -208,6 +224,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "range", title: "Range" },
+      { slug: "range-calendar", title: "Range calendar" },
       { slug: "multi", title: "Multi" },
       { slug: "inline", title: "Inline" },
       { slug: "month-range", title: "Month + Range" },
@@ -231,6 +248,12 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "time-only", title: "Time Only" },
+      { slug: "time-only-controlled", title: "Time Only (Controlled)" },
+      { slug: "timezone", title: "Timezone" },
+      { slug: "hour-cycle", title: "Hour Cycle" },
+      { slug: "min-max", title: "Min Max" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
     ],
@@ -245,6 +268,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "async", title: "Async" },
       { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "Dialog" },
+      { slug: "in-popover", title: "Popover" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "tabs", title: "Tabs" },
       { slug: "virtualized", title: "Virtualized" },
@@ -297,6 +321,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "datepicker", title: "With Date Picker" },
       { slug: "delayed-close", title: "Delayed Close" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
     ],
@@ -307,6 +333,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
@@ -323,12 +350,16 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
     slug: "context-menu",
     label: "Context Menu",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+    ],
   },
   {
     slug: "number-input",
@@ -346,7 +377,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "pin-input",
     label: "Pin Input",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "transform-paste", title: "Transform Paste" },
+    ],
   },
   {
     slug: "popper",
@@ -361,8 +396,12 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "nested", title: "Nested" },
       { slug: "selection", title: "Selection" },
+      { slug: "single-tab-stop", title: "Single Tab Stop" },
       { slug: "responsive", title: "Responsive" },
+      { slug: "sibling-dialog", title: "Sibling Dialog" },
       { slug: "tooltip", title: "Tooltip" },
     ],
   },
@@ -437,6 +476,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "indicator", title: "Indicator" },
+      { slug: "scroll-element", title: "Scroll Element" },
     ],
   },
   {
@@ -446,6 +486,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
+      { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
   {
@@ -456,12 +497,35 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "splitter",
     label: "Splitter",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "collapsible", title: "Collapsible" },
+      { slug: "conditional", title: "Conditional" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "multiple", title: "Multiple" },
+      { slug: "nested", title: "Nested" },
+      { slug: "fixed-size", title: "Fixed Size" },
+      { slug: "group-resize-behavior", title: "Group Resize Behavior" },
+      { slug: "persistent-layout", title: "Persistent Layout" },
+      { slug: "pixel-constraints", title: "Pixel Constraints" },
+      { slug: "relative-units", title: "Relative Units" },
+    ],
   },
   {
     slug: "json-tree",
     label: "JSON Tree",
     examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "hotkeys",
+    label: "Hotkeys",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sequences", title: "Sequences" },
+      { slug: "scopes", title: "Scopes" },
+      { slug: "command-dialog", title: "Command Dialog" },
+      { slug: "key-recorder", title: "Key Recorder" },
+    ],
   },
 ]
 

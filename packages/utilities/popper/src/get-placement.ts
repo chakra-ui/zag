@@ -1,6 +1,6 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
-import { getComputedStyle, getWindow, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
 import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
@@ -11,6 +11,7 @@ const defaultOptions: PositioningOptions = {
   strategy: "absolute",
   placement: "bottom",
   listeners: true,
+  restoreStyles: false,
   gutter: 8,
   flip: true,
   slide: true,
@@ -81,23 +82,27 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
 
 function getFlipMiddleware(opts: Options) {
   if (!opts.flip) return
-  const boundary = resolveBoundaryOption(opts.boundary)
-  return flip({
-    ...(boundary ? { boundary } : undefined),
-    padding: opts.overflowPadding,
-    fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
+  return flip(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      ...(boundary ? { boundary } : undefined),
+      padding: opts.overflowPadding,
+      fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
+    }
   })
 }
 
 function getShiftMiddleware(opts: Options) {
   if (!opts.slide && !opts.overlap) return
-  const boundary = resolveBoundaryOption(opts.boundary)
-  return shift({
-    ...(boundary ? { boundary } : undefined),
-    mainAxis: opts.slide,
-    crossAxis: opts.overlap,
-    padding: opts.overflowPadding,
-    limiter: limitShift(),
+  return shift(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      ...(boundary ? { boundary } : undefined),
+      mainAxis: opts.slide,
+      crossAxis: opts.overlap,
+      padding: opts.overflowPadding,
+      limiter: limitShift(),
+    }
   })
 }
 
@@ -110,39 +115,46 @@ function getSizeMiddleware(opts: Options) {
   let lastAvailableWidth: number | undefined
   let lastAvailableHeight: number | undefined
 
-  return size({
-    padding: opts.overflowPadding,
-    apply({ elements, rects, availableHeight, availableWidth }) {
-      const floating = elements.floating
+  return size(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      padding: opts.overflowPadding,
+      ...(boundary ? { boundary } : undefined),
+      apply({ elements, rects, availableHeight, availableWidth }) {
+        const floating = elements.floating
 
-      const referenceWidth = Math.round(rects.reference.width)
-      const referenceHeight = Math.round(rects.reference.height)
-      availableWidth = Math.floor(availableWidth)
-      availableHeight = Math.floor(availableHeight)
+        const referenceWidth = Math.round(rects.reference.width)
+        const referenceHeight = Math.round(rects.reference.height)
+        availableWidth = Math.floor(availableWidth)
+        availableHeight = Math.floor(availableHeight)
 
-      if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
-        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-        lastReferenceWidth = referenceWidth
-      }
-      if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
-        floating.style.setProperty("--reference-height", `${referenceHeight}px`)
-        lastReferenceHeight = referenceHeight
-      }
-      if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
-        floating.style.setProperty("--available-width", `${availableWidth}px`)
-        lastAvailableWidth = availableWidth
-      }
-      if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
-        floating.style.setProperty("--available-height", `${availableHeight}px`)
-        lastAvailableHeight = availableHeight
-      }
-    },
+        if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
+          floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+          lastReferenceWidth = referenceWidth
+        }
+        if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
+          floating.style.setProperty("--reference-height", `${referenceHeight}px`)
+          lastReferenceHeight = referenceHeight
+        }
+        if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
+          floating.style.setProperty("--available-width", `${availableWidth}px`)
+          lastAvailableWidth = availableWidth
+        }
+        if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
+          floating.style.setProperty("--available-height", `${availableHeight}px`)
+          lastAvailableHeight = availableHeight
+        }
+      },
+    }
   })
 }
 
 function hideWhenDetachedMiddleware(opts: Options) {
   if (!opts.hideWhenDetached) return
-  return hide({ strategy: "referenceHidden", boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors" })
+  return hide(() => ({
+    strategy: "referenceHidden",
+    boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors",
+  }))
 }
 
 function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
@@ -153,32 +165,104 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
   return opts
 }
 
-function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
-  const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
-  const reference = getAnchorElement(anchor, opts.getAnchorRect)
-  if (!floating || !reference) return
+const floatingStyleProps = [
+  "transform",
+  "visibility",
+  "pointer-events",
+  "--x",
+  "--y",
+  "--z-index",
+  "--reference-width",
+  "--reference-height",
+  "--available-width",
+  "--available-height",
+  "--transform-origin",
+]
+
+const arrowStyleProps = ["top", "right", "bottom", "left"]
+
+function createStyleCleanup(el: HTMLElement | null, props: string[]) {
+  if (!el) return noop
+
+  const prev = new Map(props.map((prop) => [prop, el.style.getPropertyValue(prop)]))
+
+  return () => {
+    prev.forEach((value, prop) => {
+      if (value) el.style.setProperty(prop, value)
+      else el.style.removeProperty(prop)
+    })
+
+    if (el.style.length === 0) {
+      el.removeAttribute("style")
+    }
+  }
+}
+
+function anchorIdentity(anchor: MaybeRectElement | null | undefined): unknown {
+  if (anchor == null) return null
+  if (isHTMLElement(anchor)) return anchor
+  if (typeof anchor === "object" && anchor && "contextElement" in anchor && anchor.contextElement) {
+    return anchor.contextElement as HTMLElement
+  }
+  return anchor
+}
+
+function getPlacementImpl(
+  referenceOrVirtual: MaybeFn<MaybeRectElement>,
+  floatingOrVirtual: MaybeFn<MaybeElement>,
+  opts: PositioningOptions = {},
+) {
+  const resolveFloating = () => {
+    const raw = typeof floatingOrVirtual === "function" ? floatingOrVirtual() : floatingOrVirtual
+    return raw ?? null
+  }
+
+  const resolveAnchor = () => {
+    const raw = typeof referenceOrVirtual === "function" ? referenceOrVirtual() : referenceOrVirtual
+    return opts.getAnchorElement?.() ?? raw
+  }
+
+  const resolveReference = () => {
+    const anchor = resolveAnchor()
+    if (!anchor && !opts.getAnchorRect) return null
+    return getAnchorElement(anchor, opts.getAnchorRect)
+  }
+
   const options = Object.assign({}, defaultOptions, opts) as Options
 
   /* -----------------------------------------------------------------------------
-   * The middleware stack
+   * The middleware stack (rebuilt when the floating element is a new node)
    * -----------------------------------------------------------------------------*/
 
-  const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
+  let middleware: (Middleware | undefined)[] = []
+  let cachedMiddlewareFloating: HTMLElement | null = null
+  let restoreFloatingStyles: VoidFunction | undefined
+  let restoreArrowStyles: VoidFunction | undefined
 
-  const middleware: (Middleware | undefined)[] = [
-    getOffsetMiddleware(arrowEl, options),
-    getFlipMiddleware(options),
-    getShiftMiddleware(options),
-    getArrowMiddleware(arrowEl, floating.ownerDocument, options),
-    shiftArrowMiddleware(arrowEl),
-    createTransformOriginMiddleware(
-      { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
-      arrowEl,
-    ),
-    getSizeMiddleware(options),
-    hideWhenDetachedMiddleware(options),
-    rectMiddleware,
-  ]
+  function rebuildMiddlewareForFloating(floating: HTMLElement) {
+    restoreFloatingStyles?.()
+    restoreArrowStyles?.()
+
+    cachedMiddlewareFloating = floating
+    restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
+    const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
+    restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
+
+    middleware = [
+      getOffsetMiddleware(arrowEl, options),
+      getFlipMiddleware(options),
+      getShiftMiddleware(options),
+      getArrowMiddleware(arrowEl, floating.ownerDocument, options),
+      shiftArrowMiddleware(arrowEl),
+      createTransformOriginMiddleware(
+        { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
+        arrowEl,
+      ),
+      getSizeMiddleware(options),
+      hideWhenDetachedMiddleware(options),
+      rectMiddleware,
+    ]
+  }
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function
@@ -190,8 +274,41 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   let lastY: number | undefined
   let zIndexComputed = false
 
-  const updatePosition = async () => {
+  let lastAnchorForObserve: MaybeRectElement | null | undefined = undefined
+  let lastFloatingForObserve: MaybeElement | undefined = undefined
+  let cancelAutoUpdate: VoidFunction = noop
+  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
+
+  function syncAutoUpdateObservers() {
+    if (!options.listeners) return
+    const anchor = resolveAnchor()
+    const reference = resolveReference()
+    const floating = resolveFloating()
     if (!reference || !floating) return
+
+    const anchorChanged = anchorIdentity(anchor) !== anchorIdentity(lastAnchorForObserve)
+    const floatingChanged = floating !== lastFloatingForObserve
+    if (anchorChanged || floatingChanged) {
+      cancelAutoUpdate()
+      lastAnchorForObserve = anchor
+      lastFloatingForObserve = floating
+      cancelAutoUpdate = autoUpdate(reference, floating, runUpdate, autoUpdateOptions)
+    }
+  }
+
+  async function updatePosition() {
+    syncAutoUpdateObservers()
+
+    const floating = resolveFloating()
+    if (!floating) return
+
+    if (floating !== cachedMiddlewareFloating) {
+      rebuildMiddlewareForFloating(floating)
+      zIndexComputed = false
+    }
+
+    const reference = resolveReference()
+    if (!reference) return
 
     const pos = await computePosition(reference, floating, {
       placement,
@@ -205,10 +322,6 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
 
-    // apply transform directly to avoid expensive CSS variable cascade
-    floating.style.transform = `translate3d(${x}px, ${y}px, 0)`
-
-    // still set --x/--y for backward compat, but only when changed
     if (!isApproximatelyEqual(lastX, x)) {
       floating.style.setProperty("--x", `${x}px`)
       lastX = x
@@ -239,22 +352,21 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     }
   }
 
-  const update = async () => {
+  async function runUpdate() {
     if (opts.updatePosition) {
-      await opts.updatePosition({ updatePosition, floatingElement: floating })
+      await opts.updatePosition({ updatePosition, floatingElement: resolveFloating() })
       onPositioned?.({ placed: true })
     } else {
       await updatePosition()
     }
   }
 
-  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
-  const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, autoUpdateOptions) : noop
-
-  update()
+  runUpdate()
 
   return () => {
-    cancelAutoUpdate?.()
+    cancelAutoUpdate()
+    restoreArrowStyles?.()
+    restoreFloatingStyles?.()
     onPositioned?.({ placed: false })
   }
 }
@@ -269,9 +381,7 @@ export function getPlacement(
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
     func(() => {
-      const reference = typeof referenceOrFn === "function" ? referenceOrFn() : referenceOrFn
-      const floating = typeof floatingOrFn === "function" ? floatingOrFn() : floatingOrFn
-      cleanups.push(getPlacementImpl(reference, floating, options))
+      cleanups.push(getPlacementImpl(referenceOrFn, floatingOrFn, options))
     }),
   )
   return () => {

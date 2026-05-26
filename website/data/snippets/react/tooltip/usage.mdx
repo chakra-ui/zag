@@ -1,9 +1,10 @@
-```jsx
+```tsx
 import * as tooltip from "@zag-js/tooltip"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export function Tooltip() {
-  const service = useMachine(tooltip.machine, { id: "1" })
+  const service = useMachine(tooltip.machine, { id: useId() })
 
   const api = tooltip.connect(service, normalizeProps)
 

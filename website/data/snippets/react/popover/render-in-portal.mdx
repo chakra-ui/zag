@@ -1,10 +1,10 @@
-```jsx
+```tsx
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
-import * as React from "react"
+import { useId } from "react"
 
 export function Popover() {
-  const service = useMachine(popover.machine, { id: "1" })
+  const service = useMachine(popover.machine, { id: useId() })
 
   const api = popover.connect(service, normalizeProps)
 

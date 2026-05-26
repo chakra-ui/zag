@@ -1,5 +1,204 @@
 # @zag-js/popover
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies [[`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f)]:
+  - @zag-js/dismissable@1.41.1
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/aria-hidden@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/focus-trap@1.41.1
+  - @zag-js/popper@1.41.1
+  - @zag-js/remove-scroll@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [`de7524c`](https://github.com/chakra-ui/zag/commit/de7524cfc27c2c183345ee019c547eefda2771f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix custom trigger elements (via `ids.trigger`) being ignored when
+  shared across components (e.g. wrapping a `Popover.Trigger` in a `Tooltip` with the same id), causing broken
+  positioning and a close-then-reopen cycle on trigger clicks.
+
+- [#3127](https://github.com/chakra-ui/zag/pull/3127)
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix trigger element lookups in shadow root.
+
+- [#3130](https://github.com/chakra-ui/zag/pull/3130)
+  [`005e8fa`](https://github.com/chakra-ui/zag/commit/005e8fafdcb1226fd2a3a07617a47cc76c2d823f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-side` to placement-aware parts based on the current
+  placement.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7),
+  [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73),
+  [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/popper@1.41.0
+  - @zag-js/remove-scroll@1.41.0
+  - @zag-js/aria-hidden@1.41.0
+  - @zag-js/focus-trap@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Minor Changes
+
+- [`a951d16`](https://github.com/chakra-ui/zag/commit/a951d16d466fbd764bb3796d434d1fbc886243b5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `finalFocusEl` and `restoreFocus` props to control focus
+  behavior when the popover closes.
+  - `finalFocusEl`: specify an element to receive focus instead of the trigger
+  - `restoreFocus`: set to `false` to prevent focus from returning to the trigger (default `true`)
+
+  Both work in modal and non-modal modes.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/aria-hidden@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/focus-trap@1.40.0
+  - @zag-js/popper@1.40.0
+  - @zag-js/remove-scroll@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [[`44367ff`](https://github.com/chakra-ui/zag/commit/44367ffcf11d76953cae1eb4be5ebbaaf9439b82)]:
+  - @zag-js/popper@1.39.1
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/aria-hidden@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dismissable@1.39.1
+  - @zag-js/dom-query@1.39.1
+  - @zag-js/focus-trap@1.39.1
+  - @zag-js/remove-scroll@1.39.1
+
+## 1.39.0
+
+### Minor Changes
+
+- [#2929](https://github.com/chakra-ui/zag/pull/2929)
+  [`024dc75`](https://github.com/chakra-ui/zag/commit/024dc75fdcc377ac74f7a36f8667ac064574fa0d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for multiple triggers in Dialog, Hover Card, Menu,
+  Popover, and Tooltip.
+
+  A single component instance can now be shared across multiple trigger elements. Each trigger is identified by a
+  `value` passed to `getTriggerProps`:
+
+  ```jsx
+  const users = [{ id: 1, name: "Alice Johnson" }]
+
+  const Demo = () => {
+    // One dialog, many triggers
+    const service = useMachine(dialog.machine, {
+      id: useId(),
+      // Track the active trigger change
+      onTriggerValueChange({ value }) {
+        const user = users.find((u) => u.id === value) ?? null
+        setActiveUser(user)
+      },
+    })
+
+    const api = dialog.connect(service, normalizeProps)
+
+    return (
+      <>
+        {users.map((user) => (
+          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+        ))}
+      </>
+    )
+  }
+  ```
+
+  When the component is open and a different trigger is activated, it switches and repositions without closing.
+  `aria-expanded` is scoped to the active trigger, and focus returns to the correct trigger on close.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/aria-hidden@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dismissable@1.39.0
+  - @zag-js/dom-query@1.39.0
+  - @zag-js/focus-trap@1.39.0
+  - @zag-js/popper@1.39.0
+  - @zag-js/remove-scroll@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/aria-hidden@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/focus-trap@1.38.2
+  - @zag-js/popper@1.38.2
+  - @zag-js/remove-scroll@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6),
+  [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/popper@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/aria-hidden@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/focus-trap@1.38.1
+  - @zag-js/remove-scroll@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/focus-trap@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/aria-hidden@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/popper@1.38.0
+  - @zag-js/remove-scroll@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

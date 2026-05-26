@@ -1,5 +1,120 @@
 # @zag-js/toast
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies [[`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f)]:
+  - @zag-js/dismissable@1.41.1
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dismissable@1.39.1
+  - @zag-js/dom-query@1.39.1
+
+## 1.39.0
+
+### Minor Changes
+
+- [#2628](https://github.com/chakra-ui/zag/pull/2628)
+  [`afd8047`](https://github.com/chakra-ui/zag/commit/afd80476226114eb5ee68ee644b30ef841732fdb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add priority-based queue system for toasts. When the max number of
+  toasts is reached, queued toasts are sorted by priority (1-8, lower is higher priority) before being displayed.
+  Priorities are automatically assigned based on toast type and whether it has an action. Custom priorities can be set
+  via the `priority` option.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dismissable@1.39.0
+  - @zag-js/dom-query@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dismissable@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- [`2981232`](https://github.com/chakra-ui/zag/commit/29812320badb8066208b2ef5337eec80f71e96b7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Restore `role="region"` on the toast group element.
+  - The role was previously removed to reduce screen reader landmark noise, but this caused an axe
+    `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div` without a valid role.
+  - The region landmark also enables keyboard navigation to the toast area (e.g. via F6).
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

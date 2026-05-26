@@ -4,6 +4,7 @@ import type { PinInputProps } from "./pin-input.types"
 
 export const props = createProps<PinInputProps>()([
   "autoFocus",
+  "autoSubmit",
   "blurOnComplete",
   "count",
   "defaultValue",
@@ -20,6 +21,7 @@ export const props = createProps<PinInputProps>()([
   "onValueComplete",
   "onValueInvalid",
   "otp",
+  "sanitizeValue",
   "pattern",
   "placeholder",
   "readOnly",

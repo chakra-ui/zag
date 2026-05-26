@@ -20,7 +20,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync, onDestroy, onMount } from "svelte"
 import { bindable } from "./bindable.svelte"
 import { useRefs } from "./refs.svelte"
@@ -145,7 +145,9 @@ export function useMachine<T extends MachineSchema>(
 
   const guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(getParams())
-    return machine.implementations?.guards?.[str](getParams())
+    const fn = machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(getParams())
   }
 
   const effect = (keys: EffectsOrFn<T> | undefined) => {
@@ -205,13 +207,19 @@ export function useMachine<T extends MachineSchema>(
 
       entering.forEach((item) => {
         const cleanup = effect(item.state?.effects)
-        if (cleanup) effects.set(item.path, cleanup)
+        if (cleanup) {
+          const existing = effects.get(item.path)
+          effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+        }
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.set(INIT_STATE, cleanup)
+        if (cleanup) {
+          const existing = effects.get(INIT_STATE)
+          effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+        }
       }
 
       entering.forEach((item) => {

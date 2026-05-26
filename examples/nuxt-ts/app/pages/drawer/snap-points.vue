@@ -9,9 +9,9 @@ const controls = useControls(drawerControls)
 
 const service = useMachine(
   drawer.machine,
-  controls.mergeProps<drawer.Props>({
+  controls.mergeProps({
     id: useId(),
-    snapPoints: [0.25, "250px", 1],
+    snapPoints: ["20rem", 1],
   }),
 )
 

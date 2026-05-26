@@ -1,14 +1,23 @@
-import { setup } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
-import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
-import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
-import { getPlacement } from "@zag-js/popper"
 import {
   createSelectedItemMap,
   deriveSelectionState,
   resolveSelectedItems,
   type CollectionItem,
 } from "@zag-js/collection"
+import { setup } from "@zag-js/core"
+import { trackDismissableElement } from "@zag-js/dismissable"
+import {
+  clickIfLink,
+  isApple,
+  nextTick,
+  observeAttributes,
+  raf,
+  scrollIntoView,
+  setCaretToEnd,
+} from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { createLiveRegion } from "@zag-js/live-region"
+import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
@@ -169,7 +178,7 @@ export const machine = createMachine({
       action(["syncInputValue"])
     })
     track([() => context.get("highlightedValue")], () => {
-      action(["syncHighlightedItem", "autofillInputValue"])
+      action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
     })
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
@@ -385,7 +394,13 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      effects: ["trackFocusVisible", "scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
+      effects: [
+        "trackFocusVisible",
+        "scrollToHighlightedItem",
+        "trackDismissableLayer",
+        "trackPlacement",
+        "trackLiveRegion",
+      ],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -672,6 +687,14 @@ export const machine = createMachine({
             send({ type: "LAYER.INTERACT_OUTSIDE", src: "interact-outside", restoreFocus: false })
           },
         })
+      },
+      trackLiveRegion({ refs, scope }) {
+        const liveRegion = createLiveRegion({
+          level: "assertive",
+          document: scope.getDoc(),
+        })
+        refs.set("liveRegion", liveRegion)
+        return () => liveRegion.destroy()
       },
       trackPlacement({ context, prop, scope }) {
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
@@ -1029,6 +1052,14 @@ export const machine = createMachine({
       syncHighlightedItem({ context, prop }) {
         const item = prop("collection").find(context.get("highlightedValue"))
         context.set("highlightedItem", item)
+      },
+      announceHighlightedItem({ context, prop, refs }) {
+        if (!isApple()) return
+        const value = context.get("highlightedValue")
+        const optionText = value ? prop("collection").stringifyItem(prop("collection").find(value)) : null
+        if (!optionText) return
+        const isSelected = value ? context.get("value").includes(value) : false
+        refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

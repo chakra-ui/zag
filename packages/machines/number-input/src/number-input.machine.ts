@@ -181,7 +181,7 @@ export const machine = createMachine({
         },
         "INPUT.BLUR": [
           {
-            guard: and("clampValueOnBlur", not("isInRange")),
+            guard: and("clampValueOnBlur", not("isValueEmpty"), not("isInRange")),
             target: "idle",
             actions: ["setClampedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
@@ -268,6 +268,7 @@ export const machine = createMachine({
       clampValueOnBlur: ({ prop }) => prop("clampValueOnBlur"),
       spinOnPress: ({ prop }) => !!prop("spinOnPress"),
       isInRange: ({ computed }) => !computed("isOutOfRange"),
+      isValueEmpty: ({ computed }) => computed("isValueEmpty"),
       isDecrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "decrement",
       isIncrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "increment",
       isTouchPointer: ({ event }) => event.pointerType === "touch",

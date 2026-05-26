@@ -82,7 +82,7 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
   disablePointerLeaveClose?: boolean | undefined
 }
 
-type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation" | "translations"
+type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation"
 
 export interface NavigationMenuSchema {
   props: RequiredBy<NavigationMenuProps, PropsWithDefault>

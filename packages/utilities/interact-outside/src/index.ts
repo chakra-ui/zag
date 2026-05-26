@@ -164,7 +164,15 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   const isInShadowRoot = isShadowRoot(node?.getRootNode())
 
+  let isPointerDown = false
+
   function onPointerDown(event: PointerEvent) {
+    isPointerDown = true
+    const onPointerUp = () => {
+      isPointerDown = false
+    }
+    doc.addEventListener("pointerup", onPointerUp, { once: true })
+    win.addEventListener("pointerup", onPointerUp, { once: true })
     //
     function handler(clickEvent?: MouseEvent) {
       const func = defer && !isTouchDevice() ? raf : (v: any) => v()
@@ -212,7 +220,10 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   }, 0)
 
   function onFocusin(event: FocusEvent) {
-    //
+    // Skip focusin events during pointer interactions.
+    // Safari doesn't focus buttons on pointerdown, which can cause
+    // focusin-based dismissal to race with pointer-based interactions.
+    if (isPointerDown) return
     const func = defer ? raf : (v: any) => v()
     func(() => {
       const composedPath = event?.composedPath?.() ?? [event?.target]

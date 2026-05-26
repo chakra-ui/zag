@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { DrawerProps } from "./drawer.types"
 
 export const props = createProps<DrawerProps>()([
+  "defaultTriggerValue",
   "id",
   "ids",
   "dir",
@@ -24,6 +25,7 @@ export const props = createProps<DrawerProps>()([
   "onFocusOutside",
   "onInteractOutside",
   "onOpenChange",
+  "onTriggerValueChange",
   "onPointerDownOutside",
   "onRequestDismiss",
   "preventScroll",
@@ -34,6 +36,7 @@ export const props = createProps<DrawerProps>()([
   "snapPoint",
   "onSnapPointChange",
   "stack",
+  "triggerValue",
 ])
 
 export const splitProps = createSplitProps<Partial<DrawerProps>>(props)

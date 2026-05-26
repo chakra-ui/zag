@@ -25,7 +25,7 @@ Install the collapsible package:
 
 Import the collapsible package:
 
-```jsx
+```tsx
 import * as collapsible from "@zag-js/collapsible"
 ```
 
@@ -44,7 +44,7 @@ Then use the framework integration helpers:
 
 Set `defaultOpen` to control the initial open state.
 
-```jsx
+```tsx
 const service = useMachine(collapsible.machine, {
   defaultOpen: true,
 })
@@ -60,7 +60,7 @@ Use `open` and `onOpenChange` to control the open state externally.
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(collapsible.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -73,7 +73,7 @@ const service = useMachine(collapsible.machine, {
 
 Set `disabled` to `true` to disable interaction.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(collapsible.machine, {
   disabled: true,
 })
@@ -85,7 +85,7 @@ Use `collapsedHeight` or `collapsedWidth` to create a "partially collapsed"
 state. When collapsed, the content keeps the specified minimum size instead of
 collapsing to `0px`.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(collapsible.machine, {
   // Content shows 100px height when collapsed
   collapsedHeight: "100px",
@@ -99,7 +99,7 @@ where a portion of the content shows even when collapsed.
 
 Use `onExitComplete` to run code when the close animation finishes.
 
-```jsx
+```tsx
 const service = useMachine(collapsible.machine, {
   onExitComplete() {
     console.log("Collapsible is fully closed")

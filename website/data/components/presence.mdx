@@ -26,7 +26,7 @@ Install the presence package:
 
 Import the presence package:
 
-```jsx
+```tsx
 import * as presence from "@zag-js/presence"
 ```
 
@@ -43,7 +43,7 @@ Then use the framework integration helpers:
 
 Use `onExitComplete` to run logic after the exit animation finishes.
 
-```jsx
+```tsx
 const service = useMachine(presence.machine, {
   present: open,
   onExitComplete() {
@@ -57,7 +57,7 @@ const service = useMachine(presence.machine, {
 Set `immediate` to `true` to skip deferring present-state changes to the next
 frame.
 
-```jsx
+```tsx
 const service = useMachine(presence.machine, {
   present: open,
   immediate: true,
@@ -100,7 +100,7 @@ animations.
 
 You can then use the `Presence` component in your project.
 
-```jsx
+```tsx
 function Example() {
   const [open, setOpen] = React.useState(true)
   return (

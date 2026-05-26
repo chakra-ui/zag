@@ -1,5 +1,88 @@
 # @zag-js/preact
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.41.1
+  - @zag-js/store@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dialog, drawer, and popover leaving `<body>` uninteractive
+  (`data-scroll-lock`, `data-inert`, `overflow: hidden`, `pointer-events: none`) after closing under React 19 Strict
+  Mode.
+
+- [#3094](https://github.com/chakra-ui/zag/pull/3094)
+  [`ad426d3`](https://github.com/chakra-ui/zag/commit/ad426d3efdfb11d7d8e457c6aac3708116ad7b1c) Thanks
+  [@aleclarson](https://github.com/aleclarson)! - Avoid bundling @zag-js/utils and remove unused proxy-compare
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/store@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.40.0
+  - @zag-js/store@1.40.0
+  - @zag-js/types@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.39.1
+  - @zag-js/store@1.39.1
+  - @zag-js/types@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.39.0
+  - @zag-js/store@1.39.0
+  - @zag-js/types@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.38.2
+  - @zag-js/store@1.38.2
+  - @zag-js/types@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/store@1.38.1
+  - @zag-js/types@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.38.0
+  - @zag-js/store@1.38.0
+  - @zag-js/types@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

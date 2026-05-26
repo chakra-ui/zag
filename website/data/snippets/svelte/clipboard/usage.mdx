@@ -1,9 +1,8 @@
 ```svelte
 <script lang="ts">
   import * as clipboard from "@zag-js/clipboard"
-  import { useMachine, normalizeProps } from "@zag-js/react"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
   import { ClipboardCheck, ClipboardCopyIcon } from "lucide-svelte"
-  import { useId } from "react"
 
   const id = $props.id()
   const service = useMachine(
@@ -21,7 +20,11 @@
   <div {...api.getControlProps()}>
     <input {...api.getInputProps()} />
     <button {...api.getTriggerProps()}>
-      {api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+      {#if api.copied}
+        <ClipboardCheck />
+      {:else}
+        <ClipboardCopyIcon />
+      {/if}
     </button>
   </div>
 </div>

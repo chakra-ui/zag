@@ -28,7 +28,7 @@ Check the clipboard anatomy and part names.
 
 Import the clipboard package:
 
-```jsx
+```tsx
 import * as clipboard from "@zag-js/clipboard"
 ```
 
@@ -47,7 +47,7 @@ Then use the framework integration helpers:
 
 Set `value` to control what gets copied.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(clipboard.machine, {
   value: "Hello, world!",
 })
@@ -57,7 +57,7 @@ const service = useMachine(clipboard.machine, {
 
 Use `defaultValue` for uncontrolled initial value.
 
-```jsx
+```tsx
 const service = useMachine(clipboard.machine, {
   defaultValue: "Hello, world!",
 })
@@ -67,7 +67,7 @@ const service = useMachine(clipboard.machine, {
 
 Use `onValueChange` to react when the clipboard value changes.
 
-```jsx
+```tsx
 const service = useMachine(clipboard.machine, {
   onValueChange(details) {
     console.log("Value changed to", details.value)
@@ -79,7 +79,7 @@ const service = useMachine(clipboard.machine, {
 
 When the value is copied, `onStatusChange` is fired.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(clipboard.machine, {
   onStatusChange: (details) => {
     console.log("Copy status changed to", details.copied)
@@ -91,7 +91,7 @@ const service = useMachine(clipboard.machine, {
 
 Use `api.copied` to check if the value was copied.
 
-```jsx {2}
+```tsx {2}
 const api = clipboard.connect(service)
 
 if (api.copied) {
@@ -104,7 +104,7 @@ if (api.copied) {
 By default, the copied feedback resets after `3000ms`. Set `timeout` to change
 this delay.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(clipboard.machine, {
   timeout: 5000,
 })

@@ -168,7 +168,7 @@ export const machine = createMachine({
           threshold: prop("threshold"),
         }
 
-        const scrollEl = prop("getScrollEl")?.()
+        const scrollEl = prop("scrollEl")?.()
         if (scrollEl) {
           observerOptions.root = scrollEl
         }

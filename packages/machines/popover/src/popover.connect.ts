@@ -1,9 +1,9 @@
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
-import type { PopoverApi, PopoverService } from "./popover.types"
+import type { PopoverApi, PopoverService, TriggerProps } from "./popover.types"
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
   const { state, context, send, computed, prop, scope } = service
@@ -11,8 +11,10 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   const open = state.matches("open")
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const portalled = computed("currentPortalled")
   const rendered = context.get("renderedElements")
+  const triggerValue = context.get("triggerValue")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -26,6 +28,10 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       const open = state.matches("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
+    },
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "TRIGGER_VALUE.SET", value })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -56,15 +62,22 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       })
     },
 
-    getTriggerProps() {
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : triggerValue === value
+
       return normalize.button({
         ...parts.trigger.attrs,
         dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
-        id: dom.getTriggerId(scope),
+        "data-side": currentPlacementSide,
+        id: dom.getTriggerId(scope, value),
+        "data-ownedby": scope.id,
+        "data-value": value,
+        "data-current": dataAttr(current),
         "aria-haspopup": "dialog",
-        "aria-expanded": open,
+        "aria-expanded": value == null ? open : open && current,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         onPointerDown(event) {
@@ -75,7 +88,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         },
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "TOGGLE" })
+          const shouldSwitch = open && value != null && !current
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
         },
         onBlur(event) {
           send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
@@ -114,6 +128,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
       })
     },
 

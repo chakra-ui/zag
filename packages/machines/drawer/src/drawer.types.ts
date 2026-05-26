@@ -1,13 +1,27 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
-import type { DragManager } from "./utils/drag-manager"
+import type { DrawerSwipeSession } from "./utils/drawer-session"
+import type { PhysicalSwipeDirection } from "./utils/session"
 
-export type SwipeDirection = "up" | "down" | "left" | "right"
+export type SwipeDirection = "up" | "down" | "start" | "end"
 export type SnapPoint = number | string
 
 export interface OpenChangeDetails {
   open: boolean
+}
+
+export interface TriggerValueChangeDetails {
+  value: string | null
+  triggerElement: HTMLElement | null
+}
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
 }
 
 export interface ResolvedSnapPoint {
@@ -47,11 +61,13 @@ export type ElementIds = Partial<{
   positioner: string
   content: string
   title: string
+  description: string
   header: string
-  trigger: string
+  trigger: string | ((value?: string) => string)
   grabber: string
   grabberIndicator: string
   closeTrigger: string
+  swipeArea: string
 }>
 
 export interface DrawerProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
@@ -92,6 +108,18 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
    * @default "dialog"
    */
   role?: "dialog" | "alertdialog" | undefined
+  /**
+   * The value of the trigger that currently controls the drawer.
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The default trigger value (uncontrolled).
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Callback when the active trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
   /**
    * Whether the drawer is open.
    */
@@ -184,9 +212,10 @@ type PropsWithDefault =
 
 export interface DrawerSchema {
   props: RequiredBy<DrawerProps, PropsWithDefault>
-  state: "open" | "closed" | "closing"
+  state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
   tag: "open" | "closed"
   context: {
+    triggerValue: string | null
     dragOffset: number | null
     snapPoint: SnapPoint | null
     resolvedActiveSnapPoint: ResolvedSnapPoint | null
@@ -194,11 +223,15 @@ export interface DrawerSchema {
     viewportSize: number
     rootFontSize: number
     swipeStrength: number
+    rendered: { title: boolean; description: boolean }
   }
   refs: {
-    dragManager: DragManager
+    swipeSession: DrawerSwipeSession
+    snapBackFrame: AnimationFrame
   }
   computed: {
+    drawerId: string
+    physicalSwipeDirection: PhysicalSwipeDirection
     resolvedSnapPoints: ResolvedSnapPoint[]
   }
   event: EventObject
@@ -220,6 +253,19 @@ export interface ContentProps {
   draggable?: boolean | undefined
 }
 
+export interface SwipeAreaProps {
+  /**
+   * Whether the swipe area is disabled.
+   * @default false
+   */
+  disabled?: boolean | undefined
+  /**
+   * The swipe direction that opens the drawer.
+   * Defaults to the opposite of the drawer's `swipeDirection`.
+   */
+  swipeDirection?: SwipeDirection | undefined
+}
+
 export interface DrawerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the drawer is open.
@@ -229,6 +275,14 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
    * Whether the drawer is currently being dragged.
    */
   dragging: boolean
+  /**
+   * The value of the active trigger.
+   */
+  triggerValue: string | null
+  /**
+   * Set the active trigger value.
+   */
+  setTriggerValue: (value: string | null) => void
   /**
    * Function to open or close the menu.
    */
@@ -270,9 +324,11 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
   getPositionerProps: () => T["element"]
   getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]
-  getTriggerProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getTriggerProps: (props?: TriggerProps) => T["element"]
   getBackdropProps: () => T["element"]
   getGrabberProps: () => T["element"]
   getGrabberIndicatorProps: () => T["element"]
   getCloseTriggerProps: () => T["element"]
+  getSwipeAreaProps: (props?: SwipeAreaProps) => T["element"]
 }

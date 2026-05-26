@@ -113,12 +113,17 @@ export function connect<T extends PropTypes>(
     getInputProps(props) {
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
+      const valueLength = computed("valueLength")
+      const tabbableIndex =
+        focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
         disabled,
+        tabIndex: index === tabbableIndex ? 0 : -1,
         "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
+        "data-filled": dataAttr(context.get("value")[index] !== ""),
         id: dom.getInputId(scope, index.toString()),
         "data-index": index,
         "data-ownedby": dom.getRootId(scope),
@@ -126,6 +131,7 @@ export function connect<T extends PropTypes>(
         inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
+        enterKeyHint: index === valueLength - 1 ? "done" : "next",
         type: prop("mask") ? "password" : inputType,
         defaultValue: context.get("value")[index] || "",
         readOnly,
@@ -133,8 +139,11 @@ export function connect<T extends PropTypes>(
         autoComplete: prop("otp") ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : prop("placeholder"),
         onPaste(event) {
-          const pastedValue = event.clipboardData?.getData("text/plain")
+          let pastedValue = event.clipboardData?.getData("text/plain")
           if (!pastedValue) return
+
+          const transformer = prop("sanitizeValue")
+          if (transformer) pastedValue = transformer(pastedValue)
 
           const isValid = isValidValue(pastedValue, prop("type"), prop("pattern"))
           if (!isValid) {
@@ -186,6 +195,10 @@ export function connect<T extends PropTypes>(
             send({ type: "INPUT.BACKSPACE" })
             return
           }
+          if (evt.inputType === "deleteByCut") {
+            send({ type: "INPUT.DELETE" })
+            return
+          }
           if (value === computed("focusedValue")) return
 
           send({ type: "INPUT.CHANGE", value, index })
@@ -195,6 +208,13 @@ export function connect<T extends PropTypes>(
 
           if (isComposingEvent(event)) return
           if (isModifierKey(event)) return
+
+          // Same key already in slot: advance focus without changing value
+          if (event.key.length === 1 && computed("focusedValue") === event.key) {
+            event.preventDefault()
+            send({ type: "INPUT.ADVANCE" })
+            return
+          }
 
           const keyMap: EventKeyMap = {
             Backspace() {
@@ -211,6 +231,12 @@ export function connect<T extends PropTypes>(
             },
             Enter() {
               send({ type: "INPUT.ENTER" })
+            },
+            Home() {
+              send({ type: "INPUT.HOME" })
+            },
+            End() {
+              send({ type: "INPUT.END" })
             },
           }
 

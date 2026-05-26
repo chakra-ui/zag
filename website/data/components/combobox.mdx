@@ -38,7 +38,7 @@ Check the combobox anatomy and part names.
 
 Import the combobox package:
 
-```jsx
+```tsx
 import * as combobox from "@zag-js/combobox"
 ```
 
@@ -57,7 +57,7 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial combobox value.
 
-```jsx {13}
+```tsx {13}
 const collection = combobox.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -84,7 +84,7 @@ Use `value` and `onValueChange` to control the value programmatically.
 
 Use `defaultInputValue` to prefill the input on first render.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -97,7 +97,7 @@ const service = useMachine(combobox.machine, {
 Use `inputValue` and `onInputValueChange` when you want to filter options as you
 type.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -113,7 +113,7 @@ const service = useMachine(combobox.machine, {
 
 Set `multiple` to `true` to allow selecting multiple values.
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -132,7 +132,7 @@ By default, the combobox collection expects an array of items with `label` and
 - `itemToValue` — A function that returns the unique value of an item.
 - `itemToDisabled` — A function that returns the disabled state of an item.
 
-```jsx
+```tsx
 const collection = combobox.collection({
   // custom object format
   items: [
@@ -174,7 +174,7 @@ To do that:
 - Set the `multiple` property to `true` to allow selecting multiple values.
 - Render the selected values outside the combobox.
 
-```jsx {4-6}
+```tsx {4-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -187,7 +187,7 @@ const service = useMachine(combobox.machine, {
 
 Set `disabled` to `true` to disable the combobox.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(combobox.machine, {
   disabled: true,
 })
@@ -197,7 +197,7 @@ const service = useMachine(combobox.machine, {
 
 Pass `isItemDisabled` to disable specific options.
 
-```jsx {6-8}
+```tsx {6-8}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection: combobox.collection({
@@ -214,7 +214,7 @@ const service = useMachine(combobox.machine, {
 By default, the menu closes when an option is selected with pointer or enter
 key. Set `closeOnSelect` to `false` to keep it open.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(combobox.machine, {
   closeOnSelect: false,
 })
@@ -225,7 +225,7 @@ const service = useMachine(combobox.machine, {
 Use `open` and `onOpenChange` for controlled popup state, or `defaultOpen` for
 an uncontrolled initial state.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -237,7 +237,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -255,7 +255,7 @@ Use these props to fine-tune when the popup opens:
 - `inputBehavior` to set how typing and keyboard navigation affect
   highlight/input
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -270,7 +270,7 @@ const service = useMachine(combobox.machine, {
 
 Use `positioning` to control how the popup is placed.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -283,7 +283,7 @@ const service = useMachine(combobox.machine, {
 Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even
 while the popup is open.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -295,7 +295,7 @@ const service = useMachine(combobox.machine, {
 
 Set `readOnly` to `true` to make the combobox read-only.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(combobox.machine, {
   readOnly: true,
 })
@@ -305,7 +305,7 @@ const service = useMachine(combobox.machine, {
 
 Set `required` and `invalid` for form validation and UI state.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -318,7 +318,7 @@ const service = useMachine(combobox.machine, {
 
 Use `onHighlightChange` to listen for highlighted option changes.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
   onHighlightChange(details) {
@@ -333,7 +333,7 @@ const service = useMachine(combobox.machine, {
 Use `defaultHighlightedValue` to set which option is highlighted when the popup
 opens.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -345,7 +345,7 @@ const service = useMachine(combobox.machine, {
 
 Use `onSelect` to react to each selected item.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -360,7 +360,7 @@ const service = useMachine(combobox.machine, {
 
 Use `onValueChange` to listen for selected value changes.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(combobox.machine, {
   onValueChange(details) {
     // details => { value: string[]; items: CollectionItem[] }
@@ -377,7 +377,7 @@ The combobox works in forms when you:
 
 Set `name` to enable form submission support.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(combobox.machine, {
   name: "countries",
 })
@@ -385,7 +385,7 @@ const service = useMachine(combobox.machine, {
 
 If the input belongs to a different form element, also set `form`.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -399,7 +399,7 @@ const service = useMachine(combobox.machine, {
 By default, the combobox only allows values from the collection. Set
 `allowCustomValue` to `true` to allow custom values.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(combobox.machine, {
   allowCustomValue: true,
 })
@@ -409,7 +409,7 @@ const service = useMachine(combobox.machine, {
 
 Use `translations` to customize the trigger and clear button labels.
 
-```jsx
+```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,

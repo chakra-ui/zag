@@ -1,5 +1,81 @@
 # @zag-js/dom-query
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [#3127](https://github.com/chakra-ui/zag/pull/3127)
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Accept ShadowRoot as argument for query and queryAll.
+
+- [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `api.scrollTo(value, details?)` for programmatically
+  scrolling to a heading. The optional `details.behavior` controls the scroll behavior; when omitted, the platform
+  default applies.
+
+  ```tsx
+  api.scrollTo("installation", { behavior: "smooth" })
+  ```
+
+  - Rename `getScrollEl` context prop to `scrollEl` for consistency with other machines (e.g. `initialFocusEl`,
+    `finalFocusEl`).
+
+- Updated dependencies []:
+  - @zag-js/types@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- [`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus trapping when the content has a single effective tab
+  stop, such as a native radio group.
+  - Handle disconnected `initialFocus` nodes more safely.
+- Updated dependencies []:
+  - @zag-js/types@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

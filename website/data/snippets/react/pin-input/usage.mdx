@@ -1,9 +1,10 @@
-```jsx
+```tsx
 import * as pinInput from "@zag-js/pin-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export function PinInput() {
-  const service = useMachine(pinInput.machine, { id: "1" })
+  const service = useMachine(pinInput.machine, { id: useId() })
 
   const api = pinInput.connect(service, normalizeProps)
 

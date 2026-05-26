@@ -1,0 +1,623 @@
+---
+title: Hotkeys
+description: Using the hotkeys utility in your project.
+package: "@zag-js/hotkeys"
+---
+
+A framework-agnostic utility for managing keyboard shortcuts with zero
+dependencies. Supports modifier combinations, key sequences, scopes, recording,
+validation, and platform-adaptive keys.
+
+<Resources pkg="@zag-js/hotkeys" />
+
+## Installation
+
+```bash
+npm install @zag-js/hotkeys
+```
+
+## Quick start
+
+Create a store, register commands, and attach to the DOM.
+
+```tsx
+import { createHotkeyStore } from "@zag-js/hotkeys"
+
+const store = createHotkeyStore()
+
+store.register([
+  {
+    id: "save",
+    hotkey: "mod+S",
+    action: () => save(),
+    options: { preventDefault: true },
+  },
+  { id: "undo", hotkey: "mod+Z", action: () => undo() },
+])
+
+// Attach to the DOM (typically in a lifecycle hook)
+store.init({ target: document })
+
+// Cleanup when done
+store.destroy()
+```
+
+The `mod` modifier resolves to **Cmd on macOS** and **Ctrl on Windows/Linux**,
+so your shortcuts work across platforms without extra logic.
+
+### Usage with React
+
+```tsx
+import { createHotkeyStore } from "@zag-js/hotkeys"
+import { useEffect } from "react"
+
+const store = createHotkeyStore()
+
+function App() {
+  useEffect(() => {
+    store.register([
+      {
+        id: "save",
+        hotkey: "mod+S",
+        action: () => save(),
+        options: { preventDefault: true },
+      },
+      { id: "undo", hotkey: "mod+Z", action: () => undo() },
+    ])
+    store.init({ target: document })
+    return () => store.destroy()
+  }, [])
+
+  return <div>Press Cmd+S to save</div>
+}
+```
+
+## Hotkey syntax
+
+### Modifier keys
+
+Use `+` to combine modifiers with a key.
+
+```tsx
+store.register({ id: "copy", hotkey: "Control+C", action: handleCopy })
+store.register({ id: "bold", hotkey: "Alt+Shift+B", action: handleBold })
+```
+
+Supported modifier names and aliases:
+
+| Modifier | Aliases                         |
+| -------- | ------------------------------- |
+| Control  | `ctrl`, `control`               |
+| Shift    | `shift`                         |
+| Alt      | `alt`, `option`                 |
+| Meta     | `meta`, `cmd`, `command`, `win` |
+
+### Cross-platform modifier
+
+Use `mod` or `ControlOrMeta` to map to **Cmd on macOS** and **Ctrl on
+Windows/Linux**.
+
+```tsx
+store.register({ id: "save", hotkey: "mod+S", action: handleSave })
+```
+
+### Key sequences
+
+Use `>` to define multi-step sequences (vim-style). Keys must be pressed in
+order within a timeout window (default 1000ms).
+
+```tsx
+store.register({
+  id: "go-home",
+  hotkey: "G > H",
+  action: () => navigateTo("/"),
+})
+store.register({
+  id: "go-issues",
+  hotkey: "G > I",
+  action: () => navigateTo("/issues"),
+})
+```
+
+Sequences support modifiers on individual steps:
+
+```tsx
+store.register({ id: "debug", hotkey: "Ctrl+K > D", action: toggleDebug })
+```
+
+### Special keys
+
+```tsx
+store.register({ id: "help", hotkey: "F1", action: showHelp })
+store.register({ id: "close", hotkey: "Escape", action: closeModal })
+store.register({ id: "confirm", hotkey: "Enter", action: confirm })
+store.register({ id: "up", hotkey: "ArrowUp", action: moveUp })
+```
+
+Aliases are supported: `esc` → `Escape`, `space` → `Space`, `up` → `ArrowUp`,
+`enter` → `Enter`, `del` → `Delete`, etc.
+
+### Plus key
+
+The `+` character is handled by context. The last segment after modifiers is
+always treated as the key.
+
+```tsx
+store.register({ id: "plus", hotkey: "+", action: handlePlus })
+store.register({ id: "zoom-in", hotkey: "mod++", action: zoomIn })
+```
+
+## Scopes
+
+Scopes let you activate or deactivate groups of hotkeys. Commands only fire when
+at least one of their scopes is active. The default scope is `"*"` (always
+active).
+
+This is useful for modal dialogs, multi-panel layouts, or any UI where different
+areas have different shortcuts.
+
+```tsx
+const store = createHotkeyStore({
+  activeScopes: ["editor"],
+  conflictBehavior: "allow",
+})
+
+// Same hotkey, different scopes — only the active scope fires
+store.register({
+  id: "editor-run",
+  hotkey: "mod+Enter",
+  action: () => runCode(),
+  scopes: ["editor"],
+})
+
+store.register({
+  id: "terminal-run",
+  hotkey: "mod+Enter",
+  action: () => executeCommand(),
+  scopes: ["terminal"],
+})
+
+// Switch active scope
+store.setScope("terminal")
+
+// Or manage scopes incrementally
+store.addScope("editor")
+store.removeScope("editor")
+store.toggleScope("editor")
+
+// Check active scopes
+store.getActiveScopes() // ["terminal"]
+```
+
+## Conditional commands
+
+Use `enabled` to conditionally enable a command. Accepts a boolean or a function
+that's evaluated on each keypress.
+
+```tsx
+let isAdmin = false
+
+store.register({
+  id: "admin-panel",
+  hotkey: "mod+Shift+A",
+  action: openAdminPanel,
+  enabled: () => isAdmin,
+})
+
+// Or toggle imperatively
+store.enable("admin-panel")
+store.disable("admin-panel")
+store.setEnabled("admin-panel", () => isAdmin)
+```
+
+## Smart input handling
+
+By default, hotkeys with modifiers (Ctrl, Cmd, Alt) **work inside form
+elements** — just like browser shortcuts. Bare keys without modifiers are
+**blocked** in form elements to prevent interference with typing.
+
+You can override this per command:
+
+```tsx
+// Explicitly disable in form elements (even with modifiers)
+store.register({
+  id: "custom",
+  hotkey: "mod+K",
+  action: doSomething,
+  options: { enableOnFormTags: false },
+})
+
+// Enable only on specific form elements
+store.register({
+  id: "input-action",
+  hotkey: "Control+I",
+  action: doSomething,
+  options: { enableOnFormTags: ["input"] },
+})
+
+// Enable on content-editable elements
+store.register({
+  id: "format",
+  hotkey: "mod+B",
+  action: toggleBold,
+  options: { enableOnContentEditable: true },
+})
+```
+
+## Event options
+
+### preventDefault and stopPropagation
+
+```tsx
+store.register({
+  id: "save",
+  hotkey: "mod+S",
+  action: handleSave,
+  options: {
+    preventDefault: true, // Prevent browser default (default: true)
+    stopPropagation: false, // Stop event bubbling (default: false)
+  },
+})
+```
+
+### Event type
+
+Fire on keydown (default) or keyup:
+
+```tsx
+store.register({
+  id: "push-to-talk",
+  hotkey: "Space",
+  action: stopTalking,
+  options: { eventType: "keyup" },
+})
+```
+
+### Require reset
+
+Prevent repeated firing when holding a key. The key must be released before the
+command fires again.
+
+```tsx
+store.register({
+  id: "toggle",
+  hotkey: "mod+D",
+  action: toggleSidebar,
+  options: { requireReset: true },
+})
+```
+
+### Capture phase
+
+By default, hotkeys listen in the capture phase. Set `capture: false` to use the
+bubble phase instead:
+
+```tsx
+store.register({
+  id: "late",
+  hotkey: "Escape",
+  action: handleEscape,
+  options: { capture: false },
+})
+```
+
+### Default options
+
+Set defaults for all commands:
+
+```tsx
+const store = createHotkeyStore({
+  defaultOptions: {
+    preventDefault: true,
+    capture: true,
+  },
+})
+```
+
+## Conflict behavior
+
+Control what happens when two commands register the same hotkey:
+
+```tsx
+const store = createHotkeyStore({
+  conflictBehavior: "warn", // default — log a warning, allow both
+})
+```
+
+| Value       | Behavior                                 |
+| ----------- | ---------------------------------------- |
+| `"warn"`    | Log a warning, allow both (default)      |
+| `"error"`   | Throw an error, prevent registration     |
+| `"replace"` | Silently unregister the existing command |
+| `"allow"`   | No checks, silently allow duplicates     |
+
+## Priority
+
+When multiple commands match the same event, the most specific one wins:
+
+- Sequences have highest priority
+- More modifiers = higher priority
+- Ties broken by registration order (earlier wins)
+
+## Command metadata
+
+Commands can include metadata for building command palettes or help screens.
+
+```tsx
+store.register({
+  id: "save",
+  hotkey: "mod+S",
+  label: "Save Document",
+  description: "Save the current document to disk",
+  category: "file",
+  keywords: ["save", "persist", "write"],
+  action: handleSave,
+})
+
+// Access all registered commands
+const commands = store.getState().commands // Map<string, HotkeyCommand>
+```
+
+## Key state tracking
+
+```tsx
+// Check if a hotkey combo is currently held
+store.isPressed("mod+S") // boolean
+
+// Get all currently pressed keys
+store.getCurrentlyPressed() // ["Meta", "S"]
+
+// Get physical key codes currently pressed
+store.getPressedCodes() // ["MetaLeft", "KeyS"]
+```
+
+## Subscriptions
+
+Use `subscribe` with a selector for reactive updates:
+
+```tsx
+const unsubscribe = store.subscribe(
+  (state) => state.pressedKeys.size,
+  (count) => console.log(`${count} keys held`),
+)
+
+// Cleanup
+unsubscribe()
+```
+
+> Selectors should return primitives for reliable change detection.
+
+## Managing commands
+
+```tsx
+// Register multiple commands at once
+store.register([command1, command2, command3])
+
+// Remove a command
+store.unregister("save")
+
+// Clear all commands
+store.clear()
+```
+
+## Standalone matching
+
+Use `isHotKey` to check if a keyboard event matches a hotkey string without a
+store:
+
+```tsx
+import { isHotKey } from "@zag-js/hotkeys"
+
+document.addEventListener("keydown", (event) => {
+  if (isHotKey("mod+S", event)) {
+    event.preventDefault()
+    handleSave()
+  }
+
+  // Match against multiple hotkeys
+  if (isHotKey(["mod+S", "Ctrl+Shift+S"], event)) {
+    handleSave()
+  }
+})
+```
+
+## Comparing hotkeys
+
+Use `isHotkeyEqual` to check if two hotkey strings are semantically equal. This
+resolves aliases like `mod` → `Meta`/`Control` and compares sequence steps.
+
+```tsx
+import { isHotkeyEqual } from "@zag-js/hotkeys"
+
+isHotkeyEqual("mod+S", "Meta+S") // true on Mac
+isHotkeyEqual("ctrl+z", "Control+Z") // true
+isHotkeyEqual("G > H", "G > H") // true
+isHotkeyEqual("Ctrl+G > H", "G > Ctrl+H") // false (different step modifiers)
+```
+
+## Validation
+
+Validate hotkey strings at development time:
+
+```tsx
+import { validateHotkey, assertValidHotkey } from "@zag-js/hotkeys"
+
+const result = validateHotkey("mod+S")
+// { valid: true, errors: [], warnings: [] }
+
+const result2 = validateHotkey("Foo+S")
+// { valid: false, errors: ['"Foo" is not a recognized modifier'], warnings: [] }
+
+// Throws on invalid — useful in dev
+assertValidHotkey("mod+S") // ok
+assertValidHotkey("Foo+S") // throws Error
+```
+
+## Formatting for display
+
+Use `formatHotkey` to render hotkey strings with platform-specific symbols:
+
+```tsx
+import { formatHotkey } from "@zag-js/hotkeys"
+
+formatHotkey("mod+S", { platform: "mac" })
+// "⌘ S"
+
+formatHotkey("mod+S", { platform: "windows" })
+// "Ctrl S"
+
+formatHotkey("Alt+Shift+F", { platform: "mac", style: "symbols" })
+// "⌥ ⇧ F"
+
+formatHotkey("G > H", { sequenceSeparator: " then " })
+// "G then H"
+```
+
+| Option              | Type                                      | Default    | Description                        |
+| ------------------- | ----------------------------------------- | ---------- | ---------------------------------- |
+| `platform`          | `"mac" \| "windows" \| "linux" \| "auto"` | `"auto"`   | Target platform for modifier names |
+| `style`             | `"symbols" \| "text" \| "mixed"`          | `"mixed"`  | Display style for keys             |
+| `separator`         | `string`                                  | `" "`      | Separator between modifier and key |
+| `sequenceSeparator` | `string`                                  | `" then "` | Separator for key sequences        |
+| `useShortNames`     | `boolean`                                 | `true`     | Abbreviate modifier names          |
+
+## Recording hotkeys
+
+Use `createHotkeyRecorder` to let users record custom key combinations.
+Automatically handles both single chords and multi-step sequences.
+
+```tsx
+import { createHotkeyRecorder } from "@zag-js/hotkeys"
+
+const recorder = createHotkeyRecorder({ target: document })
+
+recorder.setOptions({
+  onRecord(hotkey) {
+    console.log("Recorded:", hotkey.value, hotkey.display)
+  },
+  onCancel() {
+    console.log("Cancelled")
+  },
+})
+
+// Start listening for key input
+recorder.start()
+
+// User presses Shift+K → records "Shift+K"
+// User presses G then H → records "G > H" (auto-detected sequence)
+
+// Cancel or clear
+recorder.cancel() // stops, invokes onCancel
+recorder.clear() // stops, clears value, invokes onClear
+
+// Stop and finalize (accepts whatever has been captured so far)
+recorder.stop()
+
+// Read state
+recorder.getState() // { recording: boolean, value: RecordedHotkey | null }
+
+// Subscribe to state changes
+const unsub = recorder.subscribe((state) => {
+  console.log(state.recording, state.value?.display)
+})
+
+// Cleanup
+recorder.destroy()
+```
+
+### Special keys during recording
+
+- **Escape** cancels recording and invokes `onCancel`
+- **Backspace / Delete** clears the recorded value and invokes `onClear`
+- **Modifier-only presses** (Shift, Ctrl, etc.) are ignored — waits for a
+  non-modifier key
+- **Dead keys** are skipped
+
+### Sequence detection
+
+After capturing a chord, the recorder waits for the next key within a timeout
+window (default 1000ms). If another key is pressed, it's appended as a sequence
+step. If the timeout expires, the recording finalizes.
+
+```tsx
+const recorder = createHotkeyRecorder({
+  target: document,
+  sequenceTimeoutMs: 800, // customize timeout
+})
+```
+
+### Updating options
+
+Use `setOptions` to update callbacks without recreating the recorder. This
+avoids stale closure issues in React:
+
+```tsx
+// In a React component — call on every render
+recorder.setOptions({
+  onRecord(hotkey) {
+    // Always has access to current state, no refs needed
+    saveBinding(editingId, hotkey.value)
+  },
+})
+```
+
+## Lifecycle
+
+```tsx
+// Create store
+const store = createHotkeyStore()
+
+// Register commands (can be done before or after init)
+store.register([...])
+
+// Attach to DOM — starts listening for keyboard events
+store.init({ target: document })
+
+// Detach and clean up
+store.destroy()
+```
+
+The store can also be initialized inline:
+
+```tsx
+const store = createHotkeyStore({ target: document })
+```
+
+The `target` accepts `Document`, `ShadowRoot`, or any `Element` — useful for
+scoping hotkeys to a specific panel or widget.
+
+## Caveats
+
+### Symbol keys on non-US keyboard layouts
+
+When using **Cmd/Ctrl + symbol key** hotkeys (like `mod+/`, `mod+[`, `mod+]`),
+users on non-US keyboard layouts may experience issues. For example, on a German
+keyboard, `/` requires pressing Shift+7 — but some browsers report `event.key`
+incorrectly when Cmd/Ctrl is also held.
+
+This is a known browser limitation that affects all JavaScript keyboard shortcut
+libraries. To work around it:
+
+- **Prefer letter or digit keys** for Cmd/Ctrl combinations (`mod+K`, `mod+S`).
+  These work reliably on every layout.
+- **Use bare symbol keys** without Cmd/Ctrl for navigation shortcuts (`/` for
+  search, `?` for help) — just like GitHub and Gmail do.
+- **Register multiple commands** if you must use Cmd/Ctrl + symbol:
+
+```tsx
+store.register([
+  { id: "search", hotkey: "mod+/", action: openSearch },
+  { id: "search-alt", hotkey: "/", action: openSearch },
+])
+```
+
+### Dead keys on international layouts
+
+Accent/compose keys on international layouts produce `event.key = "Dead"` and
+are automatically ignored. This prevents false matches during text composition.
+
+### macOS Option key in Firefox
+
+On macOS, pressing Option (Alt) + a key produces composed characters (e.g.,
+Option+/ → ÷). The library handles this by falling back to physical key code
+matching when a modifier has transformed the character output.

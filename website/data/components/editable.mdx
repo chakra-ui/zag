@@ -38,7 +38,7 @@ Check the editable anatomy and part names.
 
 Import the editable package:
 
-```jsx
+```tsx
 import * as editable from "@zag-js/editable"
 ```
 
@@ -57,7 +57,7 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(editable.machine, {
   defaultValue: "Hello World",
 })
@@ -67,7 +67,7 @@ const service = useMachine(editable.machine, {
 
 Use `value` and `onValueChange` to control the value externally.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   value,
   onValueChange(details) {
@@ -80,7 +80,7 @@ const service = useMachine(editable.machine, {
 
 Use `edit` and `onEditChange` to control whether the field is in edit mode.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   edit,
   onEditChange(details) {
@@ -96,7 +96,7 @@ Editable supports two ways of listening for value changes:
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(editable.machine, {
   onValueChange(details) {
     console.log("Value changed", details.value)
@@ -111,7 +111,7 @@ const service = useMachine(editable.machine, {
 
 Use `onValueRevert` to react when a user cancels editing.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   onValueRevert(details) {
     console.log("Value reverted", details.value)
@@ -131,7 +131,7 @@ the component.
 
 Set `autoResize` to `true` to auto-grow the editable as content changes.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(editable.machine, {
   autoResize: true,
 })
@@ -145,7 +145,7 @@ since it's shared by the input and preview elements.
 
 It is common to set a max width when auto-resizing.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(editable.machine, {
   autoResize: true,
   maxWidth: "320px",
@@ -164,7 +164,7 @@ The editable supports two modes of activating the "edit" state:
 
 Set `activationMode` to `"dblclick"` to only enter edit mode on double click.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(editable.machine, {
   activationMode: "dblclick",
 })
@@ -174,7 +174,7 @@ const service = useMachine(editable.machine, {
 
 Use `submitMode` to control when edits are committed.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   submitMode: "enter", // "enter" | "blur" | "both" | "none"
 })
@@ -199,7 +199,7 @@ textarea is used, the editable will commit the value on `Cmd + Enter` or
 
 Set `placeholder` as a string or per-mode object.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   placeholder: {
     preview: "Click to edit",
@@ -212,7 +212,7 @@ const service = useMachine(editable.machine, {
 
 Use `translations` to customize control labels.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   translations: {
     edit: "Edit value",
@@ -228,7 +228,7 @@ const service = useMachine(editable.machine, {
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
 
-```jsx
+```tsx
 const service = useMachine(editable.machine, {
   name: "value",
   form: "checkout-form",

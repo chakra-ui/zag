@@ -21,6 +21,7 @@ export const machine = createMachine<TagsInputSchema>({
       defaultValue: [],
       defaultInputValue: "",
       max: Infinity,
+      sanitizeValue: (value: string) => value.trim(),
       ...props,
       translations: {
         clearTriggerLabel: "Clear all tags",
@@ -88,7 +89,7 @@ export const machine = createMachine<TagsInputSchema>({
   computed: {
     count: ({ context }) => context.get("value").length,
     valueAsString: ({ context }) => context.hash("value"),
-    trimmedInputValue: ({ context }) => context.get("inputValue").trim(),
+    sanitizedInputValue: ({ context, prop }) => prop("sanitizeValue")(context.get("inputValue")),
     isDisabled: ({ prop }) => !!prop("disabled"),
     isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),
     isAtMax: ({ context, prop }) => context.get("value").length === prop("max"),
@@ -356,14 +357,14 @@ export const machine = createMachine<TagsInputSchema>({
         const firstItemId = dom.getItemId(scope, { value: value[0], index: 0 })
         return firstItemId === context.get("highlightedTagId")
       },
-      isEditedTagEmpty: ({ context }) => context.get("editedTagValue").trim() === "",
+      isEditedTagEmpty: ({ context, prop }) => prop("sanitizeValue")(context.get("editedTagValue")) === "",
       isLastTagHighlighted: ({ context, scope }) => {
         const value = context.get("value")
         const lastIndex = value.length - 1
         const lastItemId = dom.getItemId(scope, { value: value[lastIndex], index: lastIndex })
         return lastItemId === context.get("highlightedTagId")
       },
-      isInputValueEmpty: ({ context }) => context.get("inputValue").trim().length === 0,
+      isInputValueEmpty: ({ context, prop }) => prop("sanitizeValue")(context.get("inputValue")).length === 0,
       hasTags: ({ context }) => context.get("value").length > 0,
       allowOverflow: ({ prop }) => !!prop("allowOverflow"),
       autoFocus: ({ prop }) => !!prop("autoFocus"),
@@ -618,7 +619,7 @@ export const machine = createMachine<TagsInputSchema>({
       },
 
       addTag({ context, event, computed, prop, refs }) {
-        const inputValue = event.value ?? computed("trimmedInputValue")
+        const inputValue = event.value ?? computed("sanitizedInputValue")
         const value = context.get("value")
         const guard = prop("validate")?.({ inputValue: inputValue, value: Array.from(value) })
         if (guard) {
@@ -637,8 +638,9 @@ export const machine = createMachine<TagsInputSchema>({
 
       addTagFromPaste({ context, computed, prop, refs }) {
         raf(() => {
-          const inputValue = computed("trimmedInputValue")
+          const inputValue = computed("sanitizedInputValue")
           const value = context.get("value")
+          const sanitize = prop("sanitizeValue")
 
           const guard = prop("validate")?.({
             inputValue: inputValue,
@@ -647,17 +649,17 @@ export const machine = createMachine<TagsInputSchema>({
 
           if (guard) {
             const delimiter = prop("delimiter")
-            const trimmedValue = delimiter ? inputValue.split(delimiter).map((v) => v.trim()) : [inputValue]
+            const sanitizedValues = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
 
             const nextValue = prop("allowDuplicates")
-              ? value.concat(...trimmedValue)
-              : uniq(value.concat(...trimmedValue))
+              ? value.concat(...sanitizedValues)
+              : uniq(value.concat(...sanitizedValues))
             context.set("value", nextValue)
             // log
             const prevLog = refs.get("log")
             refs.set("log", {
               prev: prevLog.current,
-              current: { type: "paste", values: trimmedValue },
+              current: { type: "paste", values: sanitizedValues },
             })
             //
           } else {

@@ -9,7 +9,7 @@ import {
   isLeftClick,
   isOpeningInNewTab,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
@@ -35,10 +35,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const focused = state.hasTag("focused")
   const composite = prop("composite")
   const highlightedValue = context.get("highlightedValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
+    placement: currentPlacement,
   })
 
   function getItemState(props: ItemProps): ItemState {
@@ -234,14 +236,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             Enter(event) {
               send({ type: "INPUT.ENTER", keypress, src: "item-select" })
 
-              // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
-              const submittable = computed("isCustomValue") && prop("allowCustomValue")
-              // Also allow submission when there's no highlighted item (bug fix)
               const hasHighlight = highlightedValue != null
-              // Allow submission when alwaysSubmitOnEnter is true
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
+              const willBeRejected = computed("isCustomValue") && !prop("allowCustomValue")
 
-              if (open && !submittable && !alwaysSubmit && hasHighlight) {
+              if (open && !alwaysSubmit && (hasHighlight || willBeRejected)) {
                 event.preventDefault()
               }
 
@@ -334,7 +333,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         hidden: !open,
         "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         "data-empty": dataAttr(collection.size === 0),

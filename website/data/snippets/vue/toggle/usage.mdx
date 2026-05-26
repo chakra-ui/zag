@@ -1,0 +1,17 @@
+```html
+<script setup>
+  import * as toggle from "@zag-js/toggle"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(toggle.machine, { id: "1" })
+  const api = computed(() => toggle.connect(service, normalizeProps))
+</script>
+
+<template>
+  <button v-bind="api.getRootProps()">
+    <span v-bind="api.getIndicatorProps()" />
+    Bold
+  </button>
+</template>
+```

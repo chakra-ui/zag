@@ -162,6 +162,13 @@
       "--offset": "The offset position of the element"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -169,13 +176,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "scroll-area": {
@@ -209,6 +209,17 @@
   "timer": {
     "Item": {
       "--value": "The current value"
+    }
+  },
+  "toc": {
+    "Root": {
+      "--top": "The top position value",
+      "--left": "The left position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
+    },
+    "Item": {
+      "--depth": "The depth value for the Item"
     }
   },
   "tour": {

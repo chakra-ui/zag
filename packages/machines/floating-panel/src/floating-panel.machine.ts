@@ -599,15 +599,18 @@ export const machine = createMachine<FloatingPanelSchema>({
         prop("onSizeChangeEnd")?.({ size: context.get("size") })
       },
 
-      setFinalFocus({ scope }) {
+      setFinalFocus({ scope, prop }) {
+        if (prop("restoreFocus") === false) return
         raf(() => {
-          dom.getTriggerEl(scope)?.focus()
+          const element = prop("finalFocusEl")?.() ?? dom.getTriggerEl(scope)
+          element?.focus({ preventScroll: true })
         })
       },
 
-      setInitialFocus({ scope }) {
+      setInitialFocus({ scope, prop }) {
         raf(() => {
-          dom.getContentEl(scope)?.focus()
+          const element = prop("initialFocusEl")?.() ?? dom.getContentEl(scope)
+          element?.focus({ preventScroll: true })
         })
       },
 

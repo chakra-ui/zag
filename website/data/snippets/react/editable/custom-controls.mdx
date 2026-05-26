@@ -1,11 +1,12 @@
-```jsx
+```tsx
 import * as editable from "@zag-js/editable"
-import { useMachine } from "@zag-js/react"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export default function Editable() {
-  const service = useMachine(editable.machine, { id: "1" })
+  const service = useMachine(editable.machine, { id: useId() })
 
-  const api = editable.connect(service)
+  const api = editable.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

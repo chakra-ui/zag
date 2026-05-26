@@ -1,5 +1,114 @@
 # @zag-js/pin-input
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Minor Changes
+
+- [`d636365`](https://github.com/chakra-ui/zag/commit/d6363653cc4379c7d17b7bf1a927231784bd013b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Major UX overhaul for Pin Input, making it feel polished and
+  predictable for OTP and verification code flows.
+  - **No more holes**: Delete and Backspace now splice values left instead of leaving empty gaps. Deleting "2" from
+    `[1, 2, 3]` yields `[1, 3, ""]` — not `[1, "", 3]`. Cut (`Ctrl+X`) behaves the same way.
+  - **Smarter focus management**
+    - Backspace always moves back: previously it stayed in place on filled slots
+    - Click and ArrowRight are clamped to the insertion point: no more accidentally focusing empty slots
+    - Same-key skip: retyping the same character advances focus instead of getting stuck
+    - Roving tabIndex: Tab/Shift+Tab treats the entire pin input as a single tab stop
+  - **New keyboard shortcuts**
+    - Home / End: jump to the first slot or last filled slot
+    - `enterKeyHint`: mobile keyboards show "next" on intermediate slots and "done" on the last
+  - **New props**
+    - `autoSubmit`: automatically submits the owning form when all inputs are filled
+    - `sanitizeValue`: sanitize pasted values before validation (e.g. strip dashes from "1-2-3")
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

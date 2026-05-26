@@ -12,7 +12,7 @@ import {
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
@@ -40,6 +40,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const highlightedItem = context.get("highlightedItem")
   const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
@@ -181,6 +182,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
         onClick(event) {
           if (!interactive) return
@@ -409,6 +411,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.content.attrs,
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,

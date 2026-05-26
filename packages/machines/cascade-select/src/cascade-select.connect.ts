@@ -1,5 +1,5 @@
 import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { isEqual } from "@zag-js/utils"
@@ -20,6 +20,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const highlightedIndexPath = context.get("highlightedIndexPath")
   const highlightedValue = context.get("highlightedValue")
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const interactive = computed("isInteractive")
   const valueAsString = computed("valueAsString")
@@ -170,6 +171,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-invalid": dataAttr(prop("invalid")),
         "data-focus": dataAttr(focused),
         "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-placeholder-shown": dataAttr(!hasSelectedItems),
         disabled,
         onClick(event) {

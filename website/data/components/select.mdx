@@ -35,7 +35,7 @@ Check the select anatomy and part names.
 
 Import the select package:
 
-```jsx
+```tsx
 import * as select from "@zag-js/select"
 ```
 
@@ -57,7 +57,7 @@ Use the `defaultValue` property to set the initial value of the select.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {13}
+```tsx {13}
 const collection = select.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -78,7 +78,7 @@ const service = useMachine(select.machine, {
 
 Set `multiple` to `true` to allow selecting multiple values.
 
-```jsx {5}
+```tsx {5}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -90,7 +90,7 @@ const service = useMachine(select.machine, {
 
 Use `value` and `onValueChange` for controlled selection.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -114,7 +114,7 @@ By default, the select collection expects an array of items with `label` and
 - `groupBy` — A function that returns the group of an item.
 - `groupSort` — An array or function to sort the groups.
 
-```jsx
+```tsx
 const collection = select.collection({
   // custom object format
   items: [
@@ -159,7 +159,7 @@ To use select in a form, set `name` and render `api.getHiddenSelectProps()`.
 To support browser autofill for form fields like state or province, set
 `autoComplete` on the machine.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -172,7 +172,7 @@ const service = useMachine(select.machine, {
 
 To disable a select item, use `itemToDisabled` in the collection.
 
-```jsx {3-4}
+```tsx {3-4}
 const collection = select.collection({
   items: countries,
   itemToDisabled(item) {
@@ -191,7 +191,7 @@ const service = useMachine(select.machine, {
 By default, the menu closes when you select an item with pointer, space, or
 enter. Set `closeOnSelect` to `false` to keep it open.
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -203,7 +203,7 @@ const service = useMachine(select.machine, {
 
 Use the API for imperative updates.
 
-```jsx
+```tsx
 api.selectValue("ng")
 api.setValue(["ng", "ke"])
 api.clearValue() // or api.clearValue("ng")
@@ -214,7 +214,7 @@ api.clearValue() // or api.clearValue("ng")
 Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for
 uncontrolled initial state.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -226,7 +226,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -238,7 +238,7 @@ const service = useMachine(select.machine, {
 
 Use `highlightedValue` and `onHighlightChange` to manage item highlight.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -254,7 +254,7 @@ const service = useMachine(select.machine, {
 
 Use `positioning` to control popup placement and behavior.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -267,7 +267,7 @@ const service = useMachine(select.machine, {
 By default, arrow key navigation stops at the first and last options. Set
 `loopFocus: true` to loop back around.
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -279,7 +279,7 @@ const service = useMachine(select.machine, {
 
 Set `deselectable` to allow clicking the selected item again to clear the value.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -291,7 +291,7 @@ const service = useMachine(select.machine, {
 
 Use `onHighlightChange` to listen for highlighted item changes.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -306,7 +306,7 @@ const service = useMachine(select.machine, {
 
 Use `onValueChange` to listen for selected item changes.
 
-```jsx {4-6}
+```tsx {4-6}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -321,7 +321,7 @@ const service = useMachine(select.machine, {
 
 Use `onSelect` when you need the selected item value immediately.
 
-```jsx
+```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -336,7 +336,7 @@ const service = useMachine(select.machine, {
 
 Use `onOpenChange` to listen for open and close events.
 
-```jsx {4-7}
+```tsx {4-7}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -388,7 +388,7 @@ For large lists, combine select with a virtualization library like
 
 Example with `@tanstack/react-virtual`:
 
-```jsx
+```tsx
 function Demo() {
   const selectData = []
 

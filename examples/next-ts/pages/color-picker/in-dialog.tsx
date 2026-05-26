@@ -26,29 +26,31 @@ const ColorPicker = () => {
         </button>
       </div>
 
-      <Portal>
-        <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
-            <div className="content__inner">
-              <div {...api.getAreaProps()}>
-                <div {...api.getAreaBackgroundProps()} />
-                <div {...api.getAreaThumbProps()} />
-              </div>
+      {api.open && (
+        <Portal>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div className="content__inner">
+                <div {...api.getAreaProps()}>
+                  <div {...api.getAreaBackgroundProps()} />
+                  <div {...api.getAreaThumbProps()} />
+                </div>
 
-              <div {...api.getChannelSliderProps({ channel: "hue" })}>
-                <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
-                <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
-              </div>
+                <div {...api.getChannelSliderProps({ channel: "hue" })}>
+                  <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
+                  <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
+                </div>
 
-              <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-                <div {...api.getTransparencyGridProps({ size: "12px" })} />
-                <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
-                <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+                <div {...api.getChannelSliderProps({ channel: "alpha" })}>
+                  <div {...api.getTransparencyGridProps({ size: "12px" })} />
+                  <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
+                  <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Portal>
+        </Portal>
+      )}
     </div>
   )
 }
@@ -106,21 +108,6 @@ export default function Page() {
         <Dialog title="Primary Color Selection">
           <div style={{ marginBottom: "16px" }}>
             <ColorPicker />
-          </div>
-        </Dialog>
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
-        <Dialog title="Nested Dialog Test">
-          <div style={{ marginBottom: "16px" }}>
-            <p>First color picker:</p>
-            <ColorPicker />
-          </div>
-
-          <div style={{ marginTop: "16px" }}>
-            <Dialog title="Nested Color Picker">
-              <ColorPicker />
-            </Dialog>
           </div>
         </Dialog>
       </div>

@@ -1,5 +1,91 @@
 # @zag-js/dismissable
 
+## 1.41.1
+
+### Patch Changes
+
+- [`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix layer `pointer-events` being wiped by frameworks (Svelte, Vue)
+  whose spread updates rewrite the entire `style` attribute.
+- Updated dependencies []:
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/interact-outside@1.41.1
+
+## 1.41.0
+
+### Patch Changes
+
+- [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Deduplicate `layerStack.add()` by DOM node so the same element is
+  not registered twice (e.g. React Strict Mode). Fixes incorrect `data-has-nested`, `--layer-index`, and
+  `--nested-layer-count` on a single open dialog.
+
+- [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix crash (`Cannot read properties of null (reading 'style')`)
+  when a pointer-blocking dialog or popover closes during SPA route teardown.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/interact-outside@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/interact-outside@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+  - @zag-js/interact-outside@1.39.1
+
+## 1.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+  - @zag-js/interact-outside@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+  - @zag-js/interact-outside@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/interact-outside@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c),
+  [`3007b2a`](https://github.com/chakra-ui/zag/commit/3007b2a7b37f56359a664f37724507dc240d80e0)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/interact-outside@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

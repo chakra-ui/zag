@@ -1,9 +1,17 @@
-import { ariaAttr, dataAttr, getEventKey, getNativeEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  contains,
+  dataAttr,
+  getEventKey,
+  getNativeEvent,
+  isComposingEvent,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-input.anatomy"
 import * as dom from "./date-input.dom"
 import type { DateInputApi, DateInputService, SegmentProps, SegmentState } from "./date-input.types"
-import { getLocaleSeparator, isValidCharacter } from "./utils/locale"
+import { getLocaleSeparator, isValidCharacter } from "@zag-js/date-utils"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 import { getGroupOffset } from "./utils/validity"
 
@@ -201,7 +209,10 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             selection.collapse(target)
           }
         },
-        onBlur() {
+        onBlur(event) {
+          const next = event.relatedTarget as Node | null
+          const control = dom.getControlEl(scope)
+          if (contains(control, next)) return
           send({ type: "SEGMENT.BLUR", index: -1 })
         },
         onKeyDown(event) {
@@ -212,7 +223,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             event.shiftKey ||
             event.altKey ||
             readOnly ||
-            event.nativeEvent.isComposing
+            isComposingEvent(event)
           ) {
             return
           }

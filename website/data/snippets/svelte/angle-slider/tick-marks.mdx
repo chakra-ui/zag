@@ -6,9 +6,9 @@
   <div {...api.getControlProps()}>
     <div {...api.getThumbProps()}></div>
     <div {...api.getMarkerGroupProps()}>
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((value) => (
-        <div key={value} {...api.getMarkerProps({ value })}></div>
-      ))}
+      {#each [0, 45, 90, 135, 180, 225, 270, 315] as value}
+        <div {...api.getMarkerProps({ value })}></div>
+      {/each}
     </div>
   </div>
   <div {...api.getValueTextProps()}>{api.value} degrees</div>

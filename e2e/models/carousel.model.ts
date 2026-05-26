@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, part, swipe, type SwipeDirection } from "../_utils"
+import { a11y, mouseSwipe, part, type SwipeDirection } from "../_utils"
 import { Model } from "./model"
 
 export class CarouselModel extends Model {
@@ -60,7 +60,7 @@ export class CarouselModel extends Model {
   }
 
   async swipeCarousel(direction: SwipeDirection, distance: number = 100, duration: number = 500, release = true) {
-    await swipe(this.page, this.carousel, direction, distance, duration, release)
+    await mouseSwipe(this.page, this.carousel, direction, distance, duration, release)
   }
 
   async holdDrag(ms: number) {

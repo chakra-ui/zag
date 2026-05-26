@@ -31,6 +31,7 @@ export const props = createProps<TagsInputProps>()([
   "placeholder",
   "required",
   "readOnly",
+  "sanitizeValue",
   "translations",
   "validate",
   "value",

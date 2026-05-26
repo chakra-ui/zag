@@ -1,5 +1,69 @@
 # svelte-kit-starter
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.41.1
+  - @zag-js/switch@1.41.1
+
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies [[`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9)]:
+  - @zag-js/svelte@1.41.0
+  - @zag-js/switch@1.41.0
+
+## 0.0.15
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.40.0
+  - @zag-js/switch@1.40.0
+
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.39.1
+  - @zag-js/switch@1.39.1
+
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.39.0
+  - @zag-js/switch@1.39.0
+
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.38.2
+  - @zag-js/switch@1.38.2
+
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.38.1
+  - @zag-js/switch@1.38.1
+
+## 0.0.10
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/switch@1.38.0
+  - @zag-js/svelte@1.38.0
+
 ## 0.0.9
 
 ### Patch Changes

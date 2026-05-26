@@ -35,7 +35,7 @@ Check the timer anatomy and part names.
 
 Import the timer package:
 
-```jsx
+```tsx
 import * as timer from "@zag-js/timer"
 ```
 
@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   startMs: 1000 * 60 * 60, // 1 hour
 })
@@ -63,7 +63,7 @@ const service = useMachine(timer.machine, {
 Alternatively, you can also use the `timer.parse` function to convert a date
 time string or object into milliseconds
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   startMs: timer.parse("2021-01-01T12:00:00Z"),
   // startMs: timer.parse({ hours: 12, minutes: 0, seconds: 0 }),
@@ -75,7 +75,7 @@ const service = useMachine(timer.machine, {
 Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   autoStart: true,
 })
@@ -86,7 +86,7 @@ const service = useMachine(timer.machine, {
 To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
 })
@@ -101,7 +101,7 @@ is reached.
 When `targetMs` is set and `countdown=true`, the timer ticks down to zero from
 the specified target time.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
   targetMs: 1000 * 60 * 60, // 1 hour
@@ -111,7 +111,7 @@ const service = useMachine(timer.machine, {
 When `targetMs` is set and `countdown=false|undefined`, the timer ticks up to
 the specified target time.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   targetMs: 1000 * 60 * 60, // 1 hour
 })
@@ -122,7 +122,7 @@ const service = useMachine(timer.machine, {
 Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   interval: 1000, // 1 second
 })
@@ -133,7 +133,7 @@ const service = useMachine(timer.machine, {
 When the timer ticks, the `onTick` callback is invoked. You can listen to this
 event and update your UI accordingly.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   onTick(details) {
     // details => { value: number, time, formattedTime }
@@ -146,7 +146,7 @@ const service = useMachine(timer.machine, {
 
 When the timer reaches the target time, the `onComplete` callback is invoked.
 
-```jsx
+```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
   targetMs: 1000 * 60 * 60, // 1 hour
@@ -160,7 +160,7 @@ const service = useMachine(timer.machine, {
 
 Use the connected API for timer actions.
 
-```jsx
+```tsx
 api.start()
 api.pause()
 api.resume()

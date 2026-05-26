@@ -258,9 +258,9 @@ interface Refs {
    */
   _effectCleanup?: StepEffectCleanup | undefined
   /**
-   * Flag to indicate that an effect is currently running
+   * Flag to skip the watch when stepId is changed internally
    */
-  _runningEffect?: boolean | undefined
+  _internalChange?: boolean | undefined
   /**
    * The previous target element to detect changes
    */

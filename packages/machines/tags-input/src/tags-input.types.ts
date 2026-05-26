@@ -177,6 +177,13 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    */
   allowOverflow?: boolean | undefined
   /**
+   * Function to sanitize the tag value before adding.
+   * Useful for trimming whitespace, normalizing case, or stripping special characters.
+   * @default (value) => value.trim()
+   * @example (value) => value.toLowerCase().trim()
+   */
+  sanitizeValue?: ((value: string) => string) | undefined
+  /**
    * The name attribute for the input. Useful for form submissions
    */
   name?: string | undefined
@@ -200,10 +207,11 @@ type PropsWithDefault =
   | "defaultValue"
   | "translations"
   | "max"
+  | "sanitizeValue"
 
 type ComputedContext = Readonly<{
   valueAsString: string
-  trimmedInputValue: string
+  sanitizedInputValue: string
   isInteractive: boolean
   isAtMax: boolean
   count: number

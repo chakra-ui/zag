@@ -77,7 +77,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Angle Slider", id: "angle-slider" },
         { type: "doc", label: "Avatar", id: "avatar" },
-        // { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Carousel", id: "carousel" },
         {
           type: "doc",
@@ -93,6 +92,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Date Input", id: "date-input", beta: true },
         { type: "doc", label: "Date Picker", id: "date-picker" },
         { type: "doc", label: "Dialog", id: "dialog" },
+        { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },
         { type: "doc", label: "Floating Panel", id: "floating-panel" },
@@ -142,6 +142,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Tags Input", id: "tags-input" },
         { type: "doc", label: "Timer", id: "timer" },
         { type: "doc", label: "Toast", id: "toast" },
+        { type: "doc", label: "Toggle", id: "toggle" },
         { type: "doc", label: "Toggle Group", id: "toggle-group" },
         { type: "doc", label: "Tooltip", id: "tooltip" },
         { type: "doc", label: "Tour", id: "tour" },

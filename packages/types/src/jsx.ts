@@ -141,7 +141,7 @@ export namespace JSX {
 
   export interface AbstractView {
     document: Document
-    styleMedia: StyleMedia
+    styleMedia: any
   }
 
   export interface UIEvent<T = Element, E = NativeUIEvent> extends SyntheticEvent<T, E> {

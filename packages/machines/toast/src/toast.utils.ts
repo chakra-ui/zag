@@ -8,6 +8,7 @@ export const defaultTimeouts: Record<Type, number> = {
   error: 5000,
   success: 2000,
   loading: Infinity,
+  warning: 5000,
   DEFAULT: 5000,
 }
 

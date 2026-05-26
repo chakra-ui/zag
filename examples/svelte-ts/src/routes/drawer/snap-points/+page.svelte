@@ -15,7 +15,7 @@
     drawer.machine,
     controls.mergeProps<drawer.Props>({
       id,
-      snapPoints: [0.25, "250px", 1],
+      snapPoints: ["20rem", 1],
     }),
   )
 

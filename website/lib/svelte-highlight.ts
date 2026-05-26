@@ -1,10 +1,10 @@
 // @ts-nocheck
-import clike from "refractor/lang/clike.js"
-import css from "refractor/lang/css.js"
-import javascript from "refractor/lang/javascript.js"
-import markdown from "refractor/lang/markdown.js"
-import markup from "refractor/lang/markup.js"
-import { refractor } from "refractor/lib/all.js"
+import clike from "refractor/clike"
+import css from "refractor/css"
+import javascript from "refractor/javascript"
+import markdown from "refractor/markdown"
+import markup from "refractor/markup"
+import { refractor } from "refractor/all"
 import rehypePrismGenerator from "rehype-prism-plus/generator"
 
 svelte.displayName = "svelte"

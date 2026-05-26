@@ -2,6 +2,7 @@
 import * as select from "@zag-js/select"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
 
 const selectData = [
   { label: "Nigeria", value: "NG" },
@@ -10,15 +11,13 @@ const selectData = [
 ]
 
 export function SelectWithForm() {
-  const service = useMachine(
-    select.machine, ({
-      collection: select.collection({
-        items: selectData,
-      }),
-      id: createUniqueId(),
-      name: "country",
+  const service = useMachine(select.machine, {
+    collection: select.collection({
+      items: selectData,
     }),
-  )Ø
+    id: createUniqueId(),
+    name: "country",
+  })
 
   const api = createMemo(() => select.connect(service, normalizeProps))
 

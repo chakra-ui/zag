@@ -39,7 +39,7 @@ Check the navigation menu anatomy and part names.
 
 Import the navigation menu package:
 
-```jsx
+```tsx
 import * as navigationMenu from "@zag-js/navigation-menu"
 ```
 
@@ -90,7 +90,7 @@ properties to the machine.
 
 Use `defaultValue` to start with a specific item open.
 
-```jsx
+```tsx
 const service = useMachine(navigationMenu.machine, {
   defaultValue: "products",
 })
@@ -101,7 +101,7 @@ const service = useMachine(navigationMenu.machine, {
 When the open item changes, the `onValueChange` callback is invoked with the new
 value.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(navigationMenu.machine, {
   id: "nav",
   onValueChange(details) {
@@ -125,7 +125,7 @@ and size using CSS variables.
 
 You can customize the delay before opening and closing on hover:
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(navigationMenu.machine, {
   openDelay: 300, // Delay before opening on hover (default: 200ms)
   closeDelay: 400, // Delay before closing on pointer leave (default: 300ms)
@@ -139,7 +139,7 @@ less responsive.
 
 You can disable hover or click triggers independently:
 
-```jsx {2-6}
+```tsx {2-6}
 const service = useMachine(navigationMenu.machine, {
   disableHoverTrigger: true, // Only open on click
   // OR
@@ -157,7 +157,7 @@ const service = useMachine(navigationMenu.machine, {
 
 The default orientation is horizontal. To create a vertical navigation menu:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   orientation: "vertical",
 })
@@ -169,7 +169,7 @@ This affects keyboard navigation (arrow keys) and indicator positioning.
 
 To disable a navigation item, pass `disabled: true` to the item props:
 
-```jsx
+```tsx
 <div {...api.getItemProps({ value: "products", disabled: true })}>
   <button {...api.getTriggerProps({ value: "products", disabled: true })}>
     Products
@@ -183,7 +183,7 @@ Disabled items cannot be opened and are skipped during keyboard navigation.
 
 To highlight the current page link, use the `current` prop:
 
-```jsx
+```tsx
 <a {...api.getLinkProps({ value: "products", current: true })}>Products</a>
 ```
 
@@ -193,7 +193,7 @@ This adds `data-current` attribute and `aria-current="page"` for accessibility.
 
 Use `closeOnClick` in `getLinkProps` to keep content open after link click.
 
-```jsx
+```tsx
 <a
   {...api.getLinkProps({
     value: "products",
@@ -209,7 +209,7 @@ Use `closeOnClick` in `getLinkProps` to keep content open after link click.
 When using the viewport pattern, set `align` on `getViewportProps` or
 `getViewportPositionerProps`.
 
-```jsx
+```tsx
 <div
   {...api.getViewportProps({
     align: "start",
@@ -222,7 +222,7 @@ When using the viewport pattern, set `align` on `getViewportProps` or
 The navigation menu supports right-to-left languages. Set the `dir` property to
 `rtl`:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   dir: "rtl",
 })

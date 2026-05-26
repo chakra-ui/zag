@@ -35,7 +35,7 @@ Check the segmented control anatomy and part names.
 
 Import the radio group package:
 
-```jsx
+```tsx
 import * as radio from "@zag-js/radio-group"
 ```
 
@@ -52,7 +52,7 @@ Then use the framework integration helpers:
 
 Use the `defaultValue` property to set the segmented control's initial value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   defaultValue: "apple",
 })
@@ -62,7 +62,7 @@ const service = useMachine(radio.machine, {
 
 Use `value` and `onValueChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   value,
   onValueChange(details) {
@@ -75,7 +75,7 @@ const service = useMachine(radio.machine, {
 
 Use the connected API when you need imperative updates.
 
-```jsx
+```tsx
 api.setValue("orange")
 api.clearValue()
 ```
@@ -84,7 +84,7 @@ api.clearValue()
 
 Use `api.focus()` to move focus to the selected item (or first enabled item).
 
-```jsx
+```tsx
 api.focus()
 ```
 
@@ -93,7 +93,7 @@ api.focus()
 When the segmented control value changes, the `onValueChange` callback is
 invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(radio.machine, {
   onValueChange(details) {
     // details => { value: string | null }
@@ -107,7 +107,7 @@ const service = useMachine(radio.machine, {
 To use segmented control in forms, set `name` and render
 `api.getItemHiddenInputProps({ value })` for each item.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   name: "fruits",
 })
@@ -117,7 +117,7 @@ const service = useMachine(radio.machine, {
 
 Set `orientation` when you need a vertical layout.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   orientation: "vertical",
 })

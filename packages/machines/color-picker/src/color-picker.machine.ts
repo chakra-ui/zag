@@ -53,8 +53,8 @@ export const machine = createMachine<ColorPickerSchema>({
   context({ prop, bindable, getContext }) {
     return {
       value: bindable<Color>(() => ({
-        defaultValue: prop("defaultValue"),
-        value: prop("value"),
+        defaultValue: prop("defaultValue").toFormat(prop("format") ?? prop("defaultFormat")),
+        value: prop("value")?.toFormat(prop("format") ?? prop("defaultFormat")),
         isEqual(a, b) {
           return b != null && a.isEqual(b)
         },
@@ -437,7 +437,7 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
-      openEyeDropper({ scope, context }) {
+      openEyeDropper({ scope, context, prop }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win
         if (!isSupported) return
@@ -448,6 +448,13 @@ export const machine = createMachine<ColorPickerSchema>({
             const format = context.get("value").getFormat()
             const color = parseColor(sRGBHex).toFormat(format) as Color
             context.set("value", color)
+            return color
+          })
+          .then((value) => {
+            prop("onValueChangeEnd")?.({
+              value,
+              valueAsString: value.toString(context.get("format")),
+            })
           })
           .catch(() => void 0)
       },
@@ -489,7 +496,8 @@ export const machine = createMachine<ColorPickerSchema>({
         context.set("value", color)
       },
       setValue({ context, event }) {
-        context.set("value", event.value)
+        const format = context.get("format")
+        context.set("value", event.value.toFormat(format))
       },
       setFormat({ context, event }) {
         context.set("format", event.format)

@@ -4,6 +4,9 @@ const ELEMENT_NODE: typeof Node.ELEMENT_NODE = 1
 const DOCUMENT_NODE: typeof Node.DOCUMENT_NODE = 9
 const DOCUMENT_FRAGMENT_NODE: typeof Node.DOCUMENT_FRAGMENT_NODE = 11
 
+export const isElement = (el: any): el is Element =>
+  isObject(el) && el.nodeType === ELEMENT_NODE && typeof el.nodeName === "string"
+
 export const isHTMLElement = (el: any): el is HTMLElement =>
   isObject(el) && el.nodeType === ELEMENT_NODE && typeof el.nodeName === "string"
 
@@ -63,17 +66,33 @@ export function isEditableElement(el: HTMLElement | EventTarget | null) {
 
 type Target = HTMLElement | EventTarget | null | undefined
 
+/** Whether `parent` contains `child` in the light tree, or `child` is inside a shadow tree hosted under `parent`. */
+export function getParentElement(node: Element): Element | null {
+  const parentNode = node.parentNode
+  if (isShadowRoot(parentNode)) return parentNode.host
+  return parentNode as Element | null
+}
+
+export function getAncestorElements(node: Element | null): Element[] {
+  const ancestors: Element[] = []
+  while (node) {
+    ancestors.push(node)
+    node = getParentElement(node)
+  }
+  return ancestors
+}
+
 export function contains(parent: Target, child: Target) {
   if (!parent || !child) return false
-  if (!isHTMLElement(parent) || !isHTMLElement(child)) return false
-  const rootNode = child.getRootNode?.()
-  if (parent === child) return true
+  if (!isHTMLElement(parent) || !isNode(child)) return false
+  if (isHTMLElement(child) && parent === child) return true
   if (parent.contains(child)) return true
+  const rootNode = child.getRootNode?.()
   if (rootNode && isShadowRoot(rootNode)) {
-    let next = child
+    let next: Node | null = child
     while (next) {
       if (parent === next) return true
-      // @ts-ignore
+      // @ts-ignore ShadowRoot has host
       next = next.parentNode || next.host
     }
   }

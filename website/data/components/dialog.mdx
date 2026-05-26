@@ -18,6 +18,7 @@ interact with it.
 - Focus is trapped and scrolling is blocked in the modal mode
 - Provides screen reader announcements via rendered title and description
 - Pressing `Esc` closes the dialog
+- Supports multiple triggers sharing a single dialog instance
 
 ## Installation
 
@@ -38,7 +39,7 @@ how we name its parts.
 
 Import the dialog package:
 
-```jsx
+```tsx
 import * as dialog from "@zag-js/dialog"
 ```
 
@@ -68,7 +69,7 @@ To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
 Set `modal` to `false` to allow interaction with content behind the dialog.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   modal: false,
 })
@@ -79,7 +80,7 @@ const service = useMachine(dialog.machine, {
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   closeOnInteractOutside: false,
 })
@@ -88,7 +89,7 @@ const service = useMachine(dialog.machine, {
 You can also customize the behavior by passing a function to the
 `onInteractOutside` callback and calling `event.preventDefault()`.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onInteractOutside(event) {
     const target = event.target
@@ -103,7 +104,7 @@ const service = useMachine(dialog.machine, {
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -116,7 +117,7 @@ const service = useMachine(dialog.machine, {
 
 Set `closeOnEscape` to `false` if the dialog should not close on `Esc`.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   closeOnEscape: false,
 })
@@ -134,7 +135,7 @@ properties.
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set `preventScroll` to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   preventScroll: false,
 })
@@ -147,7 +148,7 @@ default. Set `role` to `alertdialog` for urgent actions.
 
 That's it! Now you have an alert dialog.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   role: "alertdialog",
 })
@@ -156,11 +157,62 @@ const service = useMachine(dialog.machine, {
 > By definition, an alert dialog will contain two or more action buttons. We
 > recommend setting focus to the least destructive action via `initialFocusEl`.
 
+### Multiple triggers
+
+A single dialog instance can be shared across multiple trigger elements. Pass a
+`value` to `getTriggerProps` to identify each trigger.
+
+```tsx
+const users = [
+  { id: "1", name: "Alice Johnson" },
+  { id: "2", name: "Bob Smith" },
+]
+
+const service = useMachine(dialog.machine, {
+  onTriggerValueChange({ value }) {
+    // value is the id of the trigger that activated the dialog
+    const user = users.find((u) => u.id === value) ?? null
+    setActiveUser(user)
+  },
+})
+
+const api = dialog.connect(service, normalizeProps)
+
+return (
+  <>
+    {users.map((user) => (
+      <button {...api.getTriggerProps({ value: user.id })}>
+        Edit {user.name}
+      </button>
+    ))}
+    {/* single shared dialog */}
+    <div {...api.getBackdropProps()} />
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>{/* ... */}</div>
+    </div>
+  </>
+)
+```
+
+When the dialog is open and a different trigger is activated, it switches
+without closing. `aria-expanded` is scoped to the active trigger, and focus
+returns to the correct trigger on close.
+
+You can also read or set the active trigger programmatically:
+
+```tsx
+// Read the active trigger value
+api.triggerValue // => string | null
+
+// Set the active trigger value
+api.setTriggerValue("2")
+```
+
 ### Labeling without a visible title
 
 If you do not render a title element, provide `aria-label`.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   "aria-label": "Delete project",
 })
@@ -212,6 +264,19 @@ attribute to style the dialog or trigger based on its state.
 
 [data-part="trigger"][data-state="open|closed"] {
   /* styles for the open state */
+}
+```
+
+### Compensating for scrollbar width
+
+When `preventScroll` is enabled, Zag applies `--scrollbar-width` on the root
+element. Use this CSS variable to keep fixed or sticky elements aligned when the
+dialog opens and body scrolling is locked.
+
+```css
+.app-header {
+  position: fixed;
+  inset-inline-end: calc(1rem + var(--scrollbar-width, 0px));
 }
 ```
 

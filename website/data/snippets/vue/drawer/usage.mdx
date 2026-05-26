@@ -1,7 +1,7 @@
 ```html
 <script setup>
   import * as drawer from "@zag-js/drawer"
-  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
   import { useId, computed } from "vue"
 
   const service = useMachine(drawer.machine, { id: useId() })

@@ -38,7 +38,7 @@ Check the QR code anatomy and part names.
 
 Import the QR code package:
 
-```jsx
+```tsx
 import * as qrCode from "@zag-js/qr-code"
 ```
 
@@ -55,7 +55,7 @@ Then use the framework integration helpers:
 
 Set `value` to control the encoded content.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(qrCode.machine, {
   // ...
   value: "https://example.com",
@@ -66,7 +66,7 @@ const service = useMachine(qrCode.machine, {
 
 Use `defaultValue` for an uncontrolled initial value.
 
-```jsx
+```tsx
 const service = useMachine(qrCode.machine, {
   defaultValue: "https://example.com",
 })
@@ -76,7 +76,7 @@ const service = useMachine(qrCode.machine, {
 
 Use `onValueChange` to react when the encoded value changes.
 
-```jsx
+```tsx
 const service = useMachine(qrCode.machine, {
   onValueChange(details) {
     // details => { value: string }
@@ -89,7 +89,7 @@ const service = useMachine(qrCode.machine, {
 
 Use `pixelSize` to control QR code density.
 
-```jsx
+```tsx
 const service = useMachine(qrCode.machine, {
   value: "https://example.com",
   pixelSize: 8,
@@ -112,7 +112,7 @@ The QR code machine accepts the following error correction levels:
 To set the error correction level, pass the `encoding.ecc` or
 `encoding.boostEcc` context property.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(qrCode.machine, {
   value: "...",
   encoding: { ecc: "H" },
@@ -127,7 +127,7 @@ const service = useMachine(qrCode.machine, {
 To add a logo overlay to the QR code, render the image part. The logo will be
 automatically centered within the QR code.
 
-```jsx {3}
+```tsx {3}
 <div {...api.getRootProps()}>
   <svg {...api.getFrameProps()}>{/** ... */}</svg>
   <div {...api.getOverlayProps()}>
@@ -166,7 +166,7 @@ api.getDataUrl("image/png").then((url) => {
 
 You can also use `api.getDownloadTriggerProps` to create a download button.
 
-```jsx
+```tsx
 <button
   {...api.getDownloadTriggerProps({
     mimeType: "image/png",

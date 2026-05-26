@@ -34,7 +34,7 @@ Check the steps anatomy and part names.
 
 Import the steps package:
 
-```jsx
+```tsx
 import * as steps from "@zag-js/steps"
 ```
 
@@ -47,23 +47,23 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
-## Setting the initial step
+### Setting the initial step
 
 Set the initial step by passing `defaultStep` to the machine context.
 
 > The value of the `step` property is zero-based index.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(steps.machine, {
   defaultStep: 1,
 })
 ```
 
-## Controlled current step
+### Controlled current step
 
 Use `step` and `onStepChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(steps.machine, {
   step,
   onStepChange(details) {
@@ -72,11 +72,11 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for step change
+### Listening for step change
 
 When the active step changes, the machine will invoke the `onStepChange` event
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(steps.machine, {
   onStepChange(details) {
     // details => { step: number }
@@ -85,11 +85,11 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for steps completion
+### Listening for steps completion
 
 When all steps are completed, the machine will invoke the `onStepComplete` event
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(steps.machine, {
   onStepComplete() {
     console.log("All steps are complete")
@@ -97,22 +97,22 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Enforcing linear steps
+### Enforcing linear steps
 
 To enforce linear steps, you can set the `linear` prop to `true` when creating
 the steps machine. This will prevent users from skipping steps.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(steps.machine, {
   linear: true,
 })
 ```
 
-## Validating steps in linear mode
+### Validating steps in linear mode
 
 Use `isStepValid` to block forward navigation when a step is incomplete.
 
-```jsx
+```tsx
 const service = useMachine(steps.machine, {
   linear: true,
   isStepValid(index) {
@@ -125,12 +125,12 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Skipping optional steps
+### Skipping optional steps
 
 Use `isStepSkippable` when some steps should be bypassed by next/prev
 navigation.
 
-```jsx
+```tsx
 const service = useMachine(steps.machine, {
   isStepSkippable(index) {
     return index === 2
@@ -138,23 +138,23 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Changing the orientation
+### Changing the orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
 orientation of the steps.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(steps.machine, {
   orientation: "vertical",
 })
 ```
 
-## Programmatic navigation
+### Programmatic navigation
 
 Use the API methods to move through the flow in code.
 
-```jsx
+```tsx
 api.setStep(2)
 api.goToNextStep()
 api.goToPrevStep()

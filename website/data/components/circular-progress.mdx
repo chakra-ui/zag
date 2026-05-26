@@ -35,7 +35,7 @@ Check the progress anatomy and part names.
 
 Import the progress package:
 
-```jsx
+```tsx
 import * as progress from "@zag-js/progress"
 ```
 
@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(progress.machine, {
   defaultValue: 50,
 })
@@ -63,7 +63,7 @@ const service = useMachine(progress.machine, {
 Subsequently, you can use the `api.setValue` method to set the value of the
 progress bar.
 
-```jsx
+```tsx
 api.setValue(50)
 ```
 
@@ -71,7 +71,7 @@ api.setValue(50)
 
 Use `onValueChange` to react to progress updates.
 
-```jsx
+```tsx
 const service = useMachine(progress.machine, {
   onValueChange(details) {
     // details => { value: number | null }
@@ -86,7 +86,7 @@ By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
 machine.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(progress.machine, {
   min: 0,
   max: 1000,
@@ -101,7 +101,7 @@ The progress component is determinate by default, with the value and max set to
 Set `value` to `null` to indicate an indeterminate value for operations whose
 progress can't be determined (e.g., attempting to reconnect to a server).
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(progress.machine, {
   defaultValue: null,
 })
@@ -113,7 +113,7 @@ Progress bars can only be interpreted by sighted users. To include a text
 description to support assistive technologies like screen readers, use the
 `valueText` part.
 
-```jsx
+```tsx
 const service = useMachine(progress.machine, {
   translations: {
     value: ({ value, max }) =>
@@ -144,7 +144,7 @@ Use the `--thickness` CSS variable to set the size of the progress bar.
 
 Then you need to render the `valueText` part in your component.
 
-```jsx
+```tsx
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
@@ -152,7 +152,7 @@ Then you need to render the `valueText` part in your component.
 
 Use `locale` and `formatOptions` to customize number formatting.
 
-```jsx
+```tsx
 const service = useMachine(progress.machine, {
   locale: "fr-FR",
   formatOptions: { style: "percent", maximumFractionDigits: 1 },

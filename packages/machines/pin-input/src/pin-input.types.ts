@@ -109,6 +109,10 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    */
   mask?: boolean | undefined
   /**
+   * Whether to auto-submit the owning form when all inputs are filled.
+   */
+  autoSubmit?: boolean | undefined
+  /**
    * Whether to blur the input when the value is complete
    */
   blurOnComplete?: boolean | undefined
@@ -116,6 +120,12 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    * Whether to select input value when input is focused
    */
   selectOnFocus?: boolean | undefined
+  /**
+   * Function to sanitize pasted values before validation.
+   * Useful for stripping dashes, spaces, or other formatting.
+   * @example (value) => value.replace(/-/g, "")
+   */
+  sanitizeValue?: ((value: string) => string) | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */

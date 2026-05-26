@@ -31,6 +31,7 @@ export function groupConnect<T extends PropTypes, O = any>(
         ...parts.group.attrs,
         dir: prop("dir"),
         tabIndex: -1,
+        role: "region",
         "aria-label": `${label}, ${placement} (${hotkeyLabel})`,
         id: dom.getRegionId(placement),
         "data-placement": placement,

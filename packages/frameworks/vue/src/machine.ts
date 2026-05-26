@@ -19,7 +19,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
@@ -151,7 +151,9 @@ export function useMachine<T extends MachineSchema>(
   }
   const guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(getParams())
-    return machine.implementations?.guards?.[str](getParams())
+    const fn = machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(getParams())
   }
 
   const effect = (keys: EffectsOrFn<T> | undefined) => {
@@ -213,13 +215,19 @@ export function useMachine<T extends MachineSchema>(
 
       entering.forEach((item) => {
         const cleanup = effect(item.state?.effects)
-        if (cleanup) effects.set(item.path, cleanup)
+        if (cleanup) {
+          const existing = effects.get(item.path)
+          effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+        }
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.set(INIT_STATE, cleanup)
+        if (cleanup) {
+          const existing = effects.get(INIT_STATE)
+          effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+        }
       }
 
       entering.forEach((item) => {
@@ -229,16 +237,25 @@ export function useMachine<T extends MachineSchema>(
   }))
 
   let status = MachineStatus.NotStarted
+  let pendingEvents: T["event"][] = []
 
   onMounted(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
     debug(started ? "rehydrating..." : "initializing...")
     state.invoke(state.initial!, INIT_STATE)
+
+    // Replay events buffered before machine started (child mounts before parent in Vue)
+    const events = pendingEvents
+    pendingEvents = []
+    for (const event of events) {
+      send(event)
+    }
   })
 
   onBeforeUnmount(() => {
     status = MachineStatus.Stopped
+    pendingEvents = []
     debug("unmounting...")
 
     const fns = effects.values()
@@ -248,7 +265,10 @@ export function useMachine<T extends MachineSchema>(
   })
 
   const send = (event: any) => {
-    if (status !== MachineStatus.Started) return
+    if (status !== MachineStatus.Started) {
+      pendingEvents.push(event)
+      return
+    }
 
     previousEventRef.current = eventRef.current
     eventRef.current = event

@@ -120,14 +120,16 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
+
+          if (event.key === "Escape" && isTopmost) {
+            send({ type: "ESCAPE" })
+            return
+          }
+
           if (event.currentTarget !== getEventTarget(event)) return
 
           const step = getEventStep(event) * prop("gridSize")
           const keyMap: EventKeyMap = {
-            Escape() {
-              if (!isTopmost) return
-              send({ type: "ESCAPE" })
-            },
             ArrowLeft() {
               send({ type: "MOVE", direction: "left", step })
             },

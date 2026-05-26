@@ -1,7 +1,7 @@
 ```html
 <script setup>
   import * as scrollArea from "@zag-js/scroll-area"
-  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed, useId } from "vue"
 
   const service = useMachine(scrollArea.machine, { id: useId() })

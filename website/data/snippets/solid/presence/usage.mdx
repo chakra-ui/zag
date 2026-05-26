@@ -1,7 +1,7 @@
 ```tsx
 import * as presence from "@zag-js/presence"
 import { useMachine, normalizeProps } from "@zag-js/solid"
-import { createMemo, createUniqueId, JSX } from "solid-js"
+import { createMemo, createUniqueId, splitProps, Show, JSX } from "solid-js"
 
 interface PresenceProps {
   present: boolean

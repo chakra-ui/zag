@@ -1,21 +1,23 @@
 ```svelte {3,5-10}
 <script lang="ts">
-  import { writable } from "svelte/store"
-
-  const value = writable("")
+  let value = $state("")
 
   const service = useMachine(navigationMenu.machine, {
     id: "nav",
-    value: $value,
-    onValueChange: (details) => value.set(details.value),
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
   })
 
   const api = $derived(navigationMenu.connect(service, normalizeProps))
 </script>
 
 <div>
-  <button on:click={() => value.set("products")}>Open Products</button>
-  <button on:click={() => value.set("")}>Close All</button>
+  <button onclick={() => value = "products"}>Open Products</button>
+  <button onclick={() => value = ""}>Close All</button>
 
   <nav {...api.getRootProps()}>
     <!-- ... navigation items ... -->

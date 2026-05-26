@@ -3,6 +3,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { LiveRegion } from "@zag-js/live-region"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -311,6 +312,9 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
+  }
+  refs: {
+    liveRegion: LiveRegion | null
   }
   computed: {
     isCustomValue: boolean

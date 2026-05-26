@@ -2,4 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: "2025-01-07",
+  vite: {
+    optimizeDeps: {
+      include: ["@internationalized/date"],
+    },
+  },
 })

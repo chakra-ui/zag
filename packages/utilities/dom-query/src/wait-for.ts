@@ -21,7 +21,7 @@ export function waitForPromise<T>(
 
     signal.addEventListener("abort", () => {
       clearTimeout(timeoutId)
-      reject(new Error("Promise aborted"))
+      reject(new DOMException("Promise aborted", "AbortError"))
     })
 
     promise

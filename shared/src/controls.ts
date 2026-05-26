@@ -54,6 +54,8 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
+  allowCustomValue: { type: "boolean", defaultValue: false },
+  alwaysSubmitOnEnter: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({
@@ -109,6 +111,7 @@ export const numberInputControls = defineControls({
 })
 
 export const pinInputControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
@@ -213,7 +216,7 @@ export const datePickerControls = defineControls({
   openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
 })
@@ -225,13 +228,19 @@ export const dateInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
   granularity: {
     type: "select",
     options: ["day", "hour", "minute", "second"] as const,
     defaultValue: "day",
+  },
+  hourCycle: {
+    type: "select",
+    options: ["12", "24"] as const,
+    defaultValue: "",
+    transformValue: (value) => (value === "" ? undefined : (Number(value) as 12 | 24)),
   },
   placeholderValue: {
     type: "date",
@@ -358,10 +367,10 @@ export const passwordInputControls = defineControls({
 })
 
 export const drawerControls = defineControls({
-  swipeVelocityThreshold: { type: "number", defaultValue: 700 },
-  closeThreshold: { type: "number", defaultValue: 0.25 },
+  swipeVelocityThreshold: { type: "number", defaultValue: 500 },
+  closeThreshold: { type: "number", defaultValue: 0.5 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
-  swipeDirection: { type: "select", options: ["down", "up", "left", "right"] as const, defaultValue: "down" },
+  swipeDirection: { type: "select", options: ["down", "up", "start", "end"] as const, defaultValue: "down" },
   snapToSequentialPoints: { type: "boolean", defaultValue: false },
 })
 

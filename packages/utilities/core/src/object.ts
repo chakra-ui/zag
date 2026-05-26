@@ -15,6 +15,8 @@ export function compact<T extends Record<string, unknown> | undefined>(obj: T): 
 
 export const json = (v: any) => JSON.parse(JSON.stringify(v))
 
+export const keys = <T extends Record<string, any>>(obj: T) => Object.keys(obj) as (keyof T)[]
+
 export function pick<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
   const filtered: Partial<T> = {}
 

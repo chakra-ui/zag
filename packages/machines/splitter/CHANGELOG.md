@@ -1,5 +1,161 @@
 # @zag-js/splitter
 
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+
+## 1.41.0
+
+### Minor Changes
+
+- [`68d3d5b`](https://github.com/chakra-ui/zag/commit/68d3d5b84e7b12d3fbff0cfad7de35ac9541fca4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add CSS unit support for `defaultSize`, `minSize`, and
+  `maxSize`. The splitter now accepts `px`, `em`, `rem`, `vh`, and `vw` in addition to percentages, and resolves them to
+  percentages after hydration.
+
+  ```tsx
+  const service = useMachine(splitter.machine, {
+    panels: [
+      { id: "nav", minSize: "240px", maxSize: "480px" },
+      { id: "main", minSize: 30 },
+    ],
+    defaultSize: ["240px", "60vw"],
+  })
+  ```
+
+  - Add `resizeBehavior` per panel. Set to `"preserve-pixel-size"` to keep a panel's pixel size constant when the parent
+    splitter group resizes. Leave at least one panel as `"preserve-relative-size"` (the default) so the layout can
+    absorb the change.
+
+  ```tsx
+  panels: [
+    { id: "nav", minSize: 20 },
+    {
+      id: "main",
+      minSize: "240px",
+      maxSize: "480px",
+      resizeBehavior: "preserve-pixel-size",
+    },
+    { id: "aside", minSize: 20 },
+  ]
+  ```
+
+  - Allow non-panel children inside the splitter root for fixed toolbars, rails, or status areas that should not be
+    managed as panels. Use partial trigger ids (`"left:"`, `":right"`) to bind handles around the fixed element.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <div {...api.getPanelProps({ id: "left" })}>Left</div>
+    <div {...api.getResizeTriggerProps({ id: "left:" })} />
+    <div style={{ flex: "0 0 180px" }}>Fixed sized element</div>
+    <div {...api.getResizeTriggerProps({ id: ":right" })} />
+    <div {...api.getPanelProps({ id: "right" })}>Right</div>
+  </div>
+  ```
+
+### Patch Changes
+
+- [`53871f5`](https://github.com/chakra-ui/zag/commit/53871f5e51c0cab203dfd8693fcb5d2e7236c8f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicking a `ResizeTrigger` not moving focus to it, which
+  prevented arrow keys from resizing the splitter until it was tab-focused (notably on Safari).
+  - Fix `data-focus` being applied on hover by only setting it when the trigger is actually focused.
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
+## 1.39.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.1
+  - @zag-js/core@1.39.1
+  - @zag-js/types@1.39.1
+  - @zag-js/utils@1.39.1
+  - @zag-js/dom-query@1.39.1
+
+## 1.39.0
+
+### Minor Changes
+
+- [#2853](https://github.com/chakra-ui/zag/pull/2853)
+  [`48725fe`](https://github.com/chakra-ui/zag/commit/48725fe639db39661d122e649ef28197be6fb104) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add multi-drag support for splitter intersections via a shared
+  registry. When nested splitters share a registry, users can drag at handle intersections to resize both directions
+  simultaneously.
+  - Add `registry` prop and `splitter.registry()` factory for coordinating multiple splitter instances
+  - Fix cursor behavior during intersection dragging — registry manages cursor globally
+  - Fix `onResizeStart` and `onResizeEnd` callbacks to fire for programmatic resizes
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.39.0
+  - @zag-js/core@1.39.0
+  - @zag-js/types@1.39.0
+  - @zag-js/utils@1.39.0
+  - @zag-js/dom-query@1.39.0
+
+## 1.38.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.38.2
+  - @zag-js/core@1.38.2
+  - @zag-js/types@1.38.2
+  - @zag-js/utils@1.38.2
+  - @zag-js/dom-query@1.38.2
+
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
+## 1.38.0
+
+### Patch Changes
+
+- [#3045](https://github.com/chakra-ui/zag/pull/3045)
+  [`c8bfb8f`](https://github.com/chakra-ui/zag/commit/c8bfb8ff46185c30013296e3c5621f5543fddbd8) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix global cursor styles when splitter is used in a shadow root
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

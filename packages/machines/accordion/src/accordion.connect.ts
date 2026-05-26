@@ -102,8 +102,8 @@ export function connect<T extends PropTypes>(
         "aria-expanded": itemState.expanded,
         disabled: itemState.disabled,
         "data-orientation": prop("orientation"),
-        "aria-disabled": itemState.disabled,
         "data-state": itemState.expanded ? "open" : "closed",
+        "data-focus": dataAttr(itemState.focused),
         "data-ownedby": dom.getRootId(scope),
         onFocus() {
           if (itemState.disabled) return

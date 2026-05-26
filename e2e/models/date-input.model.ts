@@ -90,6 +90,10 @@ export class DateInputModel extends Model {
     return expect(this.getSegment(type)).toHaveText(text)
   }
 
+  seeSegmentHasCount(type: string, count: number) {
+    return expect(this.getSegment(type)).toHaveCount(count)
+  }
+
   seeSegmentIsPlaceholder(type: string) {
     return expect(this.getSegment(type)).toHaveAttribute("data-placeholder-shown", "")
   }

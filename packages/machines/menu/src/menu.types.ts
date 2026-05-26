@@ -16,6 +16,17 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface TriggerValueChangeDetails {
+  /**
+   * The value of the trigger
+   */
+  value: string | null
+  /**
+   * The trigger element
+   */
+  triggerElement: HTMLElement | null
+}
+
 export interface SelectionDetails {
   /**
    * The value of the selected menu item
@@ -37,8 +48,8 @@ export interface NavigateDetails {
 }
 
 export type ElementIds = Partial<{
-  trigger: string
-  contextTrigger: string
+  trigger: string | ((value?: string) => string)
+  contextTrigger: string | ((value?: string) => string)
   content: string
   groupLabel: (id: string) => string
   group: (id: string) => string
@@ -121,6 +132,19 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * Function to navigate to the selected item if it's an anchor element
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
+  /**
+   * The controlled trigger value
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Function called when the trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
@@ -133,8 +157,9 @@ export interface MenuSchema {
     currentPlacement: Placement | undefined
     intentPolygon: Point[] | null
     anchorPoint: Point | null
-    suspendPointer: boolean
     isSubmenu: boolean
+    triggerValue: string | null
+    pointerRoutingMode: "interactive" | "locked"
   }
   computed: {
     isRtl: boolean
@@ -142,8 +167,9 @@ export interface MenuSchema {
     highlightedId: string | null
   }
   refs: {
-    parent: ParentMenuService | null
-    children: Record<string, ChildMenuService>
+    parent: MenuService | null
+    children: Record<string, MenuService>
+    pointerRoutingLocked: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
   }
@@ -162,16 +188,22 @@ export type MenuService = Service<MenuSchema>
 
 export type MenuMachine = Machine<MenuSchema>
 
-/**
- * Minimal interface required for child menu relationship.
- */
 // zag-ignore-export
-export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope" | "context">
-/**
- * Minimal interface required for parent menu relationship.
- */
+export type ChildMenuService = MenuService
+
 // zag-ignore-export
-export type ParentMenuService = Pick<MenuService, "prop" | "send" | "refs" | "context">
+export type ParentMenuService = MenuService
+
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -286,6 +318,14 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
+   * The trigger value
+   */
+  triggerValue: string | null
+  /**
+   * Function to set the trigger value
+   */
+  setTriggerValue: (value: string | null) => void
+  /**
    * The id of the currently highlighted menuitem
    */
   highlightedValue: string | null
@@ -296,11 +336,11 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to register a parent menu. This is used for submenus
    */
-  setParent: (parent: ParentMenuService) => void
+  setParent: (parent: MenuService) => void
   /**
    * Function to register a child menu. This is used for submenus
    */
-  setChild: (child: ChildMenuService) => void
+  setChild: (child: MenuService) => void
   /**
    * Function to reposition the popover
    */
@@ -318,9 +358,9 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   addItemListener: (props: ItemListenerProps) => VoidFunction | undefined
 
-  getContextTriggerProps: () => T["element"]
+  getContextTriggerProps: (props?: TriggerProps) => T["element"]
   getTriggerItemProps: <A extends Api>(childApi: A) => T["element"]
-  getTriggerProps: () => T["button"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
   getIndicatorProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getArrowProps: () => T["element"]

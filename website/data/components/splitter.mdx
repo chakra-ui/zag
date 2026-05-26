@@ -21,6 +21,7 @@ A splitter creates resizable layouts with horizontal or vertical panels.
 - Implements the
   [Window Splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
   for accessibility and keyboard controls
+- Supports multi-drag at handle intersections via a shared registry
 
 ## Installation
 
@@ -40,7 +41,7 @@ Check the splitter anatomy and part names.
 
 Import the splitter package:
 
-```jsx
+```tsx
 import * as splitter from "@zag-js/splitter"
 ```
 
@@ -60,7 +61,7 @@ Ensure the `defaultSize` totals to `100`.
 
 > Note: The splitter only supports setting percentage values.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(splitter.machine, {
   // ...
   defaultSize: [40, 60],
@@ -71,7 +72,7 @@ const service = useMachine(splitter.machine, {
 
 Use `size` and `onResize` for controlled layouts.
 
-```jsx
+```tsx
 const service = useMachine(splitter.machine, {
   panels,
   size,
@@ -86,7 +87,7 @@ const service = useMachine(splitter.machine, {
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
 `onResizeEnd` callbacks are invoked.
 
-```jsx {3-10}
+```tsx {3-10}
 const service = useMachine(splitter.machine, {
   // ...
   onResize(detail) {
@@ -107,19 +108,19 @@ By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
 `vertical`.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(splitter.machine, {
   // ...
   orientation: "vertical",
 })
 ```
 
-## Specifying constraints
+### Specifying constraints
 
 Use the `panels` property to specify constraints like `minSize` and `maxSize`
 for the splitter panels.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(splitter.machine, {
   // ...
   panels: [
@@ -133,7 +134,7 @@ const service = useMachine(splitter.machine, {
 
 Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
 
-```jsx
+```tsx
 const service = useMachine(splitter.machine, {
   panels,
   keyboardResizeBy: 16,
@@ -147,7 +148,7 @@ size of the panel.
 
 > For best results, ensure you also set the `minSize` of the panel
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(splitter.machine, {
   // ...
   panels: [
@@ -165,7 +166,7 @@ This allows the user to drag the splitter to collapse the panel to the
 When the splitter panel is collapsed, the `onCollapse` callback is invoked.
 Alternatively, the `onExpand` callback is invoked when the panel is expanded.
 
-```jsx {3-8}
+```tsx {3-8}
 const service = useMachine(splitter.machine, {
   // ...
   onCollapse(detail) {
@@ -181,12 +182,61 @@ const service = useMachine(splitter.machine, {
 
 Use the connected API to resize, collapse, or expand panels from code.
 
-```jsx
+```tsx
 api.setSizes([30, 70])
 api.resizePanel("a", 40)
 api.collapsePanel("a")
 api.expandPanel("a")
 api.resetSizes()
+```
+
+### Multi-drag with registry
+
+When you have nested splitters (e.g. horizontal and vertical), users can drag at
+handle intersections to resize both directions simultaneously. Use
+`splitter.registry()` to coordinate multiple splitter instances.
+
+```tsx
+import * as splitter from "@zag-js/splitter"
+
+// Create a shared registry (once, at the layout level)
+const registry = splitter.registry()
+```
+
+Pass the `registry` to each splitter machine that should participate in
+multi-drag:
+
+```tsx
+const horizontalService = useMachine(splitter.machine, {
+  panels: [{ id: "left" }, { id: "right" }],
+  registry,
+})
+
+const verticalService = useMachine(splitter.machine, {
+  orientation: "vertical",
+  panels: [{ id: "top" }, { id: "bottom" }],
+  registry,
+})
+```
+
+When a user drags near the intersection of two resize handles, the registry
+detects both handles and resizes them together. The registry also manages the
+cursor globally during intersection dragging.
+
+### Registry options
+
+The `splitter.registry()` function accepts optional configuration:
+
+```tsx
+const registry = splitter.registry({
+  // Nonce for injected cursor stylesheet (CSP compliance)
+  nonce: "abc123",
+  // Hit area margins for intersection detection
+  hitAreaMargins: {
+    coarse: 20, // touch devices (default: 15)
+    fine: 10, // pointer devices (default: 5)
+  },
+})
 ```
 
 ## Styling guide

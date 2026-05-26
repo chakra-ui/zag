@@ -26,7 +26,18 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import { compact, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
+import {
+  callAll,
+  compact,
+  ensure,
+  identity,
+  isEqual,
+  isFunction,
+  isString,
+  runIfFn,
+  toArray,
+  warn,
+} from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
@@ -136,16 +147,15 @@ export class VanillaMachine<T extends MachineSchema> {
     this.context = ctx
 
     const computed: ComputedFn<T> = (key) => {
-      return (
-        machine.computed?.[key]({
-          context: ctx as any,
-          event: this.getEvent(),
-          prop,
-          refs: this.refs,
-          scope: this.scope,
-          computed: computed as any,
-        }) ?? ({} as any)
-      )
+      ensure(machine.computed, () => `[zag-js] No computed object found on machine`)
+      return machine.computed[key]({
+        context: ctx as any,
+        event: this.getEvent(),
+        prop,
+        refs: this.refs,
+        scope: this.scope,
+        computed: computed as any,
+      })
     }
     this.computed = computed
 
@@ -172,13 +182,19 @@ export class VanillaMachine<T extends MachineSchema> {
 
         entering.forEach((item) => {
           const cleanup = this.effect(item.state?.effects)
-          if (cleanup) this.effects.set(item.path, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(item.path)
+            this.effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+          }
         })
 
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
           const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set(INIT_STATE, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(INIT_STATE)
+            this.effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+          }
         }
 
         entering.forEach((item) => {
@@ -255,7 +271,9 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(this.getParams())
-    return this.machine.implementations?.guards?.[str](this.getParams())
+    const fn = this.machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(this.getParams())
   }
 
   private effect = (keys: EffectsOrFn<T> | undefined) => {

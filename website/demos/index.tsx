@@ -65,6 +65,7 @@ import { Marquee } from "./marquee"
 import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
+import { Toggle } from "./toggle"
 import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
@@ -450,6 +451,15 @@ const components = {
   ),
 
   Toast: () => <Playground name="toast" component={ToastGroup} />,
+  Toggle: () => (
+    <Playground
+      name="toggle"
+      component={Toggle}
+      defaultProps={{
+        disabled: false,
+      }}
+    />
+  ),
   ToggleGroup: () => (
     <Playground
       name="toggle-group"

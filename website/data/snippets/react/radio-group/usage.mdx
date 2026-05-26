@@ -1,6 +1,7 @@
-```jsx
+```tsx
 import * as radio from "@zag-js/radio-group"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 const items = [
   { id: "apple", label: "Apples" },
@@ -10,7 +11,7 @@ const items = [
 ]
 
 function Radio() {
-  const service = useMachine(radio.machine, { id: "1" })
+  const service = useMachine(radio.machine, { id: useId() })
 
   const api = radio.connect(service, normalizeProps)
 

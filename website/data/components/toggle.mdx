@@ -1,0 +1,170 @@
+---
+title: Toggle
+description: Using the toggle machine in your project.
+package: "@zag-js/toggle"
+---
+
+A toggle is a two-state button that can be on or off. Use it for a single independent option (for multiple related
+options, see [Toggle Group](/components/toggle-group)).
+
+<Resources pkg="@zag-js/toggle" />
+
+<Showcase id="Toggle" />
+
+**Features**
+
+- Controlled and uncontrolled pressed state
+- Optional indicator part for icons or labels
+- `aria-pressed` for assistive technology
+
+## Installation
+
+Install the toggle package:
+
+<CodeSnippet id="toggle/installation.mdx" />
+
+## Anatomy
+
+To set up the toggle correctly, you'll need to understand its anatomy and how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="toggle" />
+
+## Usage
+
+Import the toggle package:
+
+```tsx
+import * as toggle from "@zag-js/toggle"
+```
+
+The toggle package exports two key functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="toggle/usage.mdx" />
+
+### Default pressed state
+
+Use `defaultPressed` to start in the pressed (on) state when uncontrolled.
+
+```tsx {2}
+const service = useMachine(toggle.machine, {
+  defaultPressed: true,
+})
+```
+
+### Controlled pressed state
+
+Use `pressed` and `onPressedChange` for controlled usage.
+
+```tsx
+const service = useMachine(toggle.machine, {
+  pressed,
+  onPressedChange(nextPressed) {
+    setPressed(nextPressed)
+  },
+})
+```
+
+### Listening for changes
+
+When the pressed state changes, `onPressedChange` is called with the next boolean value.
+
+```tsx {2-4}
+const service = useMachine(toggle.machine, {
+  onPressedChange(pressed) {
+    console.log(pressed ? "on" : "off")
+  },
+})
+```
+
+### Disabling the toggle
+
+Set `disabled` to `true` to prevent interaction.
+
+```tsx {2}
+const service = useMachine(toggle.machine, {
+  disabled: true,
+})
+```
+
+### Programmatic control
+
+Use the API to set pressed state imperatively.
+
+```tsx
+api.setPressed(true)
+```
+
+### Indicator part
+
+Render an optional element with `getIndicatorProps()` for icons or secondary visuals. The root remains the interactive
+`button`.
+
+```tsx
+<button {...api.getRootProps()}>
+  <span {...api.getIndicatorProps()}>
+    <BoldIcon />
+  </span>
+</button>
+```
+
+## Styling guide
+
+Each part includes a `data-part` attribute you can target in CSS.
+
+### Pressed state
+
+When pressed, `data-state` is `on` or `off` on the root and indicator.
+
+```css
+[data-part="root"][data-state="on"] {
+  /* pressed */
+}
+
+[data-part="indicator"][data-state="on"] {
+  /* pressed indicator */
+}
+```
+
+### Disabled state
+
+When disabled, `data-disabled` is set on the root and indicator.
+
+```css
+[data-part="root"][data-disabled] {
+  /* disabled */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The toggle machine exposes the following context properties:
+
+<ContextTable name="toggle" />
+
+### Machine API
+
+The toggle `api` exposes the following methods:
+
+<ApiTable name="toggle" />
+
+### Data Attributes
+
+<DataAttrTable name="toggle" />
+
+## Accessibility
+
+Implements a [button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) with `aria-pressed` reflecting the pressed
+state.
+
+### Keyboard Interactions
+
+<KeyboardTable name="toggle" />

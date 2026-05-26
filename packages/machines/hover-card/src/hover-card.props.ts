@@ -4,19 +4,22 @@ import type { HoverCardProps } from "./hover-card.types"
 
 export const props = createProps<HoverCardProps>()([
   "closeDelay",
+  "defaultOpen",
+  "defaultTriggerValue",
   "dir",
+  "disabled",
   "getRootNode",
   "id",
   "ids",
-  "disabled",
+  "onFocusOutside",
+  "onInteractOutside",
   "onOpenChange",
-  "defaultOpen",
+  "onPointerDownOutside",
+  "onTriggerValueChange",
   "open",
   "openDelay",
   "positioning",
-  "onInteractOutside",
-  "onPointerDownOutside",
-  "onFocusOutside",
+  "triggerValue",
 ])
 
 export const splitProps = createSplitProps<Partial<HoverCardProps>>(props)
