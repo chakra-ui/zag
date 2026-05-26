@@ -1,7 +1,14 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent, getComputedStyle, getInitialFocus, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  addDomEvent,
+  getComputedStyle,
+  getInitialFocus,
+  raf,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./drawer.dom"
@@ -102,6 +109,7 @@ export const machine = createMachine<DrawerSchema>({
       swipeSession: new DrawerSwipeSession({
         preventDragOnScroll: () => prop("preventDragOnScroll"),
       }),
+      snapBackFrame: AnimationFrame.create(),
     }
   },
 
@@ -217,10 +225,10 @@ export const machine = createMachine<DrawerSchema>({
         },
         "CONTROLLED.CLOSE": {
           target: "closing",
-          actions: ["clearSwipeOpenAnimation", "resetSwipeStrength"],
+          actions: ["clearSwipeOpenAnimation", "cancelSnapBack"],
         },
         POINTER_DOWN: {
-          actions: ["setPointerStart"],
+          actions: ["setPointerStart", "cancelSnapBack"],
         },
         POINTER_MOVE: [
           {
@@ -232,6 +240,10 @@ export const machine = createMachine<DrawerSchema>({
             actions: ["setRegistrySwiping", "setDragOffset"],
           },
         ],
+        SNAP_BACK: {
+          guard: "isDragging",
+          actions: ["deferClearDragOffset", "resetSwipeStrength"],
+        },
         POINTER_UP: [
           {
             guard: and("shouldCloseOnSwipe", "isOpenControlled"),
@@ -239,8 +251,9 @@ export const machine = createMachine<DrawerSchema>({
               "clearSwipeOpenAnimation",
               "clearRegistrySwiping",
               "clearPointerStart",
-              "clearDragOffset",
+              "setDismissSwipeStrength",
               "invokeOnClose",
+              "scheduleSnapBack",
             ],
           },
           {
@@ -287,7 +300,8 @@ export const machine = createMachine<DrawerSchema>({
     },
 
     closing: {
-      effects: ["trackExitAnimation", "trackDrawerStack"],
+      entry: ["cancelSnapBack"],
+      effects: ["trackExitAnimation"],
       on: {
         OPEN: [
           {
@@ -620,6 +634,16 @@ export const machine = createMachine<DrawerSchema>({
 
       resetSwipeStrength({ context }) {
         context.set("swipeStrength", 1)
+      },
+
+      scheduleSnapBack({ refs, send }) {
+        refs.get("snapBackFrame").request(() => {
+          send({ type: "SNAP_BACK" })
+        })
+      },
+
+      cancelSnapBack({ refs }) {
+        refs.get("snapBackFrame").cancel()
       },
 
       setRegistrySwiping({ computed }) {

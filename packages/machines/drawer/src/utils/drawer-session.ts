@@ -527,7 +527,7 @@ export function resolveSwipeProgress(
 ): number {
   if (!contentSize || contentSize <= 0) return 0
   const currentOffset = dragOffset ?? snapPointOffset
-  return clampValue(1 - currentOffset / contentSize, 0, 1)
+  return clampValue(currentOffset / contentSize, 0, 1)
 }
 
 export function hasOpeningSwipeIntent(start: Point, current: Point, direction: PhysicalSwipeDirection): boolean {
