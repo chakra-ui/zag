@@ -1,5 +1,29 @@
 # @zag-js/drawer
 
+## 1.41.1
+
+### Patch Changes
+
+- [`f61de29`](https://github.com/chakra-ui/zag/commit/f61de29cdc4c04209e825fa24ebe1e1ac09513a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix controlled drawers snapping back to open before the close
+  animation when dismissed via swipe.
+  - Fix indent and indent-background snapping back into place after the close animation instead of transitioning in
+    sync.
+  - Fix `--drawer-swipe-progress` jumping to `1` at the start of a dismiss swipe; it now goes smoothly from `0` (at
+    rest) to `1` (fully dismissed).
+  - Fix drawer freezing mid-drag on release when its content mounts lazily which left snap points unmeasured.
+
+- Updated dependencies [[`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f)]:
+  - @zag-js/dismissable@1.41.1
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/aria-hidden@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/focus-trap@1.41.1
+  - @zag-js/remove-scroll@1.41.1
+
 ## 1.41.0
 
 ### Patch Changes

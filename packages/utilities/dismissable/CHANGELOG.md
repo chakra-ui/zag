@@ -1,5 +1,17 @@
 # @zag-js/dismissable
 
+## 1.41.1
+
+### Patch Changes
+
+- [`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix layer `pointer-events` being wiped by frameworks (Svelte, Vue)
+  whose spread updates rewrite the entire `style` attribute.
+- Updated dependencies []:
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/interact-outside@1.41.1
+
 ## 1.41.0
 
 ### Patch Changes
