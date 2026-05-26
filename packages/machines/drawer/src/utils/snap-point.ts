@@ -71,7 +71,8 @@ export function dedupeSnapPoints(points: ResolvedSnapPoint[]): ResolvedSnapPoint
   return deduped
 }
 
-export function findClosestSnapPoint(offset: number, snapPoints: ResolvedSnapPoint[]): ResolvedSnapPoint {
+export function findClosestSnapPoint(offset: number, snapPoints: ResolvedSnapPoint[]): ResolvedSnapPoint | null {
+  if (snapPoints.length === 0) return null
   return snapPoints.reduce((acc, curr) => {
     const closestDiff = Math.abs(offset - acc.offset)
     const currentDiff = Math.abs(offset - curr.offset)

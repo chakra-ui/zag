@@ -338,7 +338,7 @@ export class DrawerSwipeSession {
       targetOffset = Math.max(0, targetOffset)
     }
 
-    return findClosestSnapPoint(targetOffset, snapPoints).value
+    return findClosestSnapPoint(targetOffset, snapPoints)?.value ?? null
   }
 
   shouldOpenOnRelease(contentSize: number | null, swipeVelocityThreshold: number, openThreshold: number): boolean {
@@ -379,8 +379,10 @@ export class DrawerSwipeSession {
       targetOffset = Math.max(0, targetOffset)
     }
 
-    const closeDistance = Math.abs(targetOffset - contentSize)
     const closest = findClosestSnapPoint(targetOffset, snapPoints)
+    if (!closest) return false
+
+    const closeDistance = Math.abs(targetOffset - contentSize)
     const snapDistance = Math.abs(targetOffset - closest.offset)
 
     return closeDistance < snapDistance
