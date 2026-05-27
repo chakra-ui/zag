@@ -16,7 +16,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="drawer" x-drawer="{id: $id('drawer'), snapPoints: [0.25, '250px', 1], ...context}">
+        <div class="page" x-data="drawer" x-drawer="{id: $id('drawer'), snapPoints: ['20rem', 1], ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
