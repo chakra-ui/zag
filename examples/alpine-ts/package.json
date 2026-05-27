@@ -9,7 +9,7 @@
     "@types/alpinejs": "^3.13.11",
     "@types/form-serialize": "0.7.4",
     "nitro": "latest",
-    "vite": "^8.0.0"
+    "vite": "^8.0.14"
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
@@ -68,9 +68,9 @@
     "@zag-js/tour": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "alpinejs": "^3.15.8",
+    "alpinejs": "^3.15.12",
     "form-serialize": "0.7.2",
-    "lucide-static": "^0.577.0",
-    "mono-jsx": "0.9.5"
+    "lucide-static": "^1.16.0",
+    "mono-jsx": "0.9.14"
   }
 }
