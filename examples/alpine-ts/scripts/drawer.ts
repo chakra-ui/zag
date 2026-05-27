@@ -5,7 +5,7 @@ import Alpine from "alpinejs"
 import { useControls, usePlugin } from "../lib"
 import { normalizeProps } from "../lib/normalize-props"
 import "../../shared/styles/drawer.module.css"
-import "../../shared/styles/drawer-indent.module.css"
+import "../../shared/styles/drawer-indent-effect.module.css"
 
 Alpine.plugin(usePlugin("presence", presence))
 Alpine.magic("stack", () => drawer.createStack())
