@@ -8,7 +8,7 @@ export default defineHandler((event) => {
   return (
     <html>
       <Head>
-        <script type="module" src="/scripts/drawer.ts"></script>
+        <script type="module" src="/scripts/drawer-indent.ts"></script>
       </Head>
 
       <body>
