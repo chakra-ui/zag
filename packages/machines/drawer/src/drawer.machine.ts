@@ -255,7 +255,6 @@ export const machine = createMachine<DrawerSchema>({
               "clearPointerStart",
               "setDismissSwipeStrength",
               "invokeOnClose",
-              "scheduleSnapBack",
             ],
           },
           {
@@ -305,6 +304,12 @@ export const machine = createMachine<DrawerSchema>({
       entry: ["cancelSnapBack"],
       effects: ["trackExitAnimation"],
       on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
+        "CONTROLLED.CLOSE": {
+          // Already closing, ignore duplicate close
+        },
         OPEN: [
           {
             guard: "isOpenControlled",
