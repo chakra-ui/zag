@@ -121,18 +121,30 @@ export function connect<T extends PropTypes>(
     },
 
     getCropData() {
-      // Calculate scale factor from viewport to natural image coordinates
-      const scale = naturalSize.width / viewportRect.width
+      // Account for object-fit: contain scaling (display size ≠ natural size)
+      const displayScale = Math.min(viewportRect.width / naturalSize.width, viewportRect.height / naturalSize.height)
+      const effectiveZoom = zoom * displayScale
 
-      // Transform viewport crop coordinates to natural image pixel coordinates
-      const naturalX = (crop.x - offset.x) * scale
-      const naturalY = (crop.y - offset.y) * scale
-      const naturalWidth = crop.width * scale
-      const naturalHeight = crop.height * scale
+      // Use center-based approach to handle letterboxing correctly
+      const viewportCenterX = viewportRect.width / 2
+      const viewportCenterY = viewportRect.height / 2
+      const cropCenterX = crop.x + crop.width / 2
+      const cropCenterY = crop.y + crop.height / 2
+
+      const deltaX = cropCenterX - viewportCenterX
+      const deltaY = cropCenterY - viewportCenterY
+
+      const imageCenterX = naturalSize.width / 2
+      const imageCenterY = naturalSize.height / 2
+
+      const naturalWidth = crop.width / effectiveZoom
+      const naturalHeight = crop.height / effectiveZoom
+      const naturalCenterX = imageCenterX + (deltaX - offset.x) / effectiveZoom
+      const naturalCenterY = imageCenterY + (deltaY - offset.y) / effectiveZoom
 
       return {
-        x: Math.round(naturalX),
-        y: Math.round(naturalY),
+        x: Math.round(naturalCenterX - naturalWidth / 2),
+        y: Math.round(naturalCenterY - naturalHeight / 2),
         width: Math.round(naturalWidth),
         height: Math.round(naturalHeight),
         rotate: rotation,

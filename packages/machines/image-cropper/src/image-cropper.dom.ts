@@ -58,10 +58,14 @@ export function drawCroppedImageToCanvas(params: ImageCropperService): HTMLCanva
   const imageCenterX = naturalSize.width / 2
   const imageCenterY = naturalSize.height / 2
 
-  const sourceX = imageCenterX + (deltaX - offset.x) / zoom
-  const sourceY = imageCenterY + (deltaY - offset.y) / zoom
-  const sourceWidth = crop.width / zoom
-  const sourceHeight = crop.height / zoom
+  // Account for object-fit: contain scaling (display size ≠ natural size)
+  const displayScale = Math.min(viewportRect.width / naturalSize.width, viewportRect.height / naturalSize.height)
+  const effectiveZoom = zoom * displayScale
+
+  const sourceX = imageCenterX + (deltaX - offset.x) / effectiveZoom
+  const sourceY = imageCenterY + (deltaY - offset.y) / effectiveZoom
+  const sourceWidth = crop.width / effectiveZoom
+  const sourceHeight = crop.height / effectiveZoom
 
   ctx.drawImage(
     imageEl,
