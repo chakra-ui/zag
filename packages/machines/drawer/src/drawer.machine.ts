@@ -305,6 +305,9 @@ export const machine = createMachine<DrawerSchema>({
       entry: ["cancelSnapBack"],
       effects: ["trackExitAnimation"],
       on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
         OPEN: [
           {
             guard: "isOpenControlled",
@@ -638,7 +641,10 @@ export const machine = createMachine<DrawerSchema>({
         context.set("swipeStrength", 1)
       },
 
-      scheduleSnapBack({ refs, send }) {
+      scheduleSnapBack({ refs, send, prop }) {
+        // Skip when an `onOpenChange` handler can drive the close; wait for `CONTROLLED.CLOSE`
+        // instead so an async `open` setter doesn't get flicker from a racing snap-back.
+        if (prop("onOpenChange") != null) return
         refs.get("snapBackFrame").request(() => {
           send({ type: "SNAP_BACK" })
         })
