@@ -2,82 +2,85 @@ import type { IntlTranslations } from "../date-input.types"
 
 // Locale-aware placeholders for date segments
 // Adapted from reka-ui / melt-ui (MIT license)
-const LOCALE_PLACEHOLDERS: Record<string, { year: string; month: string; day: string }> = {
-  ach: { year: "mwaka", month: "dwe", day: "nino" },
-  af: { year: "jjjj", month: "mm", day: "dd" },
-  am: { year: "ዓዓዓዓ", month: "ሚሜ", day: "ቀቀ" },
-  an: { year: "aaaa", month: "mm", day: "dd" },
-  ar: { year: "سنة", month: "شهر", day: "يوم" },
-  ast: { year: "aaaa", month: "mm", day: "dd" },
-  az: { year: "iiii", month: "aa", day: "gg" },
-  be: { year: "гггг", month: "мм", day: "дд" },
-  bg: { year: "гггг", month: "мм", day: "дд" },
-  bn: { year: "yyyy", month: "মিমি", day: "dd" },
-  br: { year: "bbbb", month: "mm", day: "dd" },
-  bs: { year: "gggg", month: "mm", day: "dd" },
-  ca: { year: "aaaa", month: "mm", day: "dd" },
-  cak: { year: "jjjj", month: "ii", day: "q'q'" },
-  ckb: { year: "ساڵ", month: "مانگ", day: "ڕۆژ" },
-  cs: { year: "rrrr", month: "mm", day: "dd" },
-  cy: { year: "bbbb", month: "mm", day: "dd" },
-  da: { year: "åååå", month: "mm", day: "dd" },
-  de: { year: "jjjj", month: "mm", day: "tt" },
-  dsb: { year: "llll", month: "mm", day: "źź" },
-  el: { year: "εεεε", month: "μμ", day: "ηη" },
-  en: { year: "yyyy", month: "mm", day: "dd" },
-  eo: { year: "jjjj", month: "mm", day: "tt" },
-  es: { year: "aaaa", month: "mm", day: "dd" },
-  et: { year: "aaaa", month: "kk", day: "pp" },
-  eu: { year: "uuuu", month: "hh", day: "ee" },
-  fa: { year: "سال", month: "ماه", day: "روز" },
-  ff: { year: "hhhh", month: "ll", day: "ññ" },
-  fi: { year: "vvvv", month: "kk", day: "pp" },
-  fr: { year: "aaaa", month: "mm", day: "jj" },
-  fy: { year: "jjjj", month: "mm", day: "dd" },
-  ga: { year: "bbbb", month: "mm", day: "ll" },
-  gd: { year: "bbbb", month: "mm", day: "ll" },
-  gl: { year: "aaaa", month: "mm", day: "dd" },
-  he: { year: "שנה", month: "חודש", day: "יום" },
-  hr: { year: "gggg", month: "mm", day: "dd" },
-  hsb: { year: "llll", month: "mm", day: "dd" },
-  hu: { year: "éééé", month: "hh", day: "nn" },
-  ia: { year: "aaaa", month: "mm", day: "dd" },
-  id: { year: "tttt", month: "bb", day: "hh" },
-  it: { year: "aaaa", month: "mm", day: "gg" },
-  ja: { year: "年", month: "月", day: "日" },
-  ka: { year: "წწწწ", month: "თთ", day: "რრ" },
-  kk: { year: "жжжж", month: "аа", day: "кк" },
-  kn: { year: "ವವವವ", month: "ಮಿಮೀ", day: "ದಿದಿ" },
-  ko: { year: "연도", month: "월", day: "일" },
-  lb: { year: "jjjj", month: "mm", day: "dd" },
-  lo: { year: "ປປປປ", month: "ດດ", day: "ວວ" },
-  lt: { year: "mmmm", month: "mm", day: "dd" },
-  lv: { year: "gggg", month: "mm", day: "dd" },
-  meh: { year: "aaaa", month: "mm", day: "dd" },
-  ml: { year: "വർഷം", month: "മാസം", day: "തീയതി" },
-  ms: { year: "tttt", month: "mm", day: "hh" },
-  nl: { year: "jjjj", month: "mm", day: "dd" },
-  nn: { year: "åååå", month: "mm", day: "dd" },
-  no: { year: "åååå", month: "mm", day: "dd" },
-  oc: { year: "aaaa", month: "mm", day: "jj" },
-  pl: { year: "rrrr", month: "mm", day: "dd" },
-  pt: { year: "aaaa", month: "mm", day: "dd" },
-  rm: { year: "oooo", month: "mm", day: "dd" },
-  ro: { year: "aaaa", month: "ll", day: "zz" },
-  ru: { year: "гггг", month: "мм", day: "дд" },
-  sc: { year: "aaaa", month: "mm", day: "dd" },
-  scn: { year: "aaaa", month: "mm", day: "jj" },
-  sk: { year: "rrrr", month: "mm", day: "dd" },
-  sl: { year: "llll", month: "mm", day: "dd" },
-  sr: { year: "гггг", month: "мм", day: "дд" },
-  sv: { year: "åååå", month: "mm", day: "dd" },
-  szl: { year: "rrrr", month: "mm", day: "dd" },
-  tg: { year: "сссс", month: "мм", day: "рр" },
-  th: { year: "ปปปป", month: "ดด", day: "วว" },
-  tr: { year: "yyyy", month: "aa", day: "gg" },
-  uk: { year: "рррр", month: "мм", day: "дд" },
-  "zh-CN": { year: "年", month: "月", day: "日" },
-  "zh-TW": { year: "年", month: "月", day: "日" },
+type LocalePlaceholder = readonly [year: string, month: string, day: string]
+
+const LOCALE_PLACEHOLDERS: Record<string, LocalePlaceholder> = {
+  ach: ["mwaka", "dwe", "nino"],
+  af: ["jjjj", "mm", "dd"],
+  am: ["ዓዓዓዓ", "ሚሜ", "ቀቀ"],
+  an: ["aaaa", "mm", "dd"],
+  ar: ["سنة", "شهر", "يوم"],
+  ast: ["aaaa", "mm", "dd"],
+  az: ["iiii", "aa", "gg"],
+  be: ["гггг", "мм", "дд"],
+  bg: ["гггг", "мм", "дд"],
+  bn: ["yyyy", "মিমি", "dd"],
+  br: ["bbbb", "mm", "dd"],
+  bs: ["gggg", "mm", "dd"],
+  ca: ["aaaa", "mm", "dd"],
+  cak: ["jjjj", "ii", "q'q'"],
+  ckb: ["ساڵ", "مانگ", "ڕۆژ"],
+  cs: ["rrrr", "mm", "dd"],
+  cy: ["bbbb", "mm", "dd"],
+  da: ["åååå", "mm", "dd"],
+  de: ["jjjj", "mm", "tt"],
+  dsb: ["llll", "mm", "źź"],
+  el: ["εεεε", "μμ", "ηη"],
+  en: ["yyyy", "mm", "dd"],
+  eo: ["jjjj", "mm", "tt"],
+  es: ["aaaa", "mm", "dd"],
+  et: ["aaaa", "kk", "pp"],
+  eu: ["uuuu", "hh", "ee"],
+  fa: ["سال", "ماه", "روز"],
+  ff: ["hhhh", "ll", "ññ"],
+  fi: ["vvvv", "kk", "pp"],
+  fr: ["aaaa", "mm", "jj"],
+  fy: ["jjjj", "mm", "dd"],
+  ga: ["bbbb", "mm", "ll"],
+  gd: ["bbbb", "mm", "ll"],
+  gl: ["aaaa", "mm", "dd"],
+  he: ["שנה", "חודש", "יום"],
+  hr: ["gggg", "mm", "dd"],
+  hsb: ["llll", "mm", "dd"],
+  hu: ["éééé", "hh", "nn"],
+  ia: ["aaaa", "mm", "dd"],
+  id: ["tttt", "bb", "hh"],
+  it: ["aaaa", "mm", "gg"],
+  ja: ["年", "月", "日"],
+  ka: ["წწწწ", "თთ", "რრ"],
+  kk: ["жжжж", "аа", "кк"],
+  kn: ["ವವವವ", "ಮಿಮೀ", "ದಿದಿ"],
+  ko: ["연도", "월", "일"],
+  lb: ["jjjj", "mm", "dd"],
+  lo: ["ປປປປ", "ດດ", "ວວ"],
+  lt: ["mmmm", "mm", "dd"],
+  lv: ["gggg", "mm", "dd"],
+  meh: ["aaaa", "mm", "dd"],
+  ml: ["വർഷം", "മാസം", "തീയതി"],
+  ms: ["tttt", "mm", "hh"],
+  nl: ["jjjj", "mm", "dd"],
+  nn: ["åååå", "mm", "dd"],
+  no: ["åååå", "mm", "dd"],
+  oc: ["aaaa", "mm", "jj"],
+  pl: ["rrrr", "mm", "dd"],
+  pt: ["aaaa", "mm", "dd"],
+  rm: ["oooo", "mm", "dd"],
+  ro: ["aaaa", "ll", "zz"],
+  ru: ["гггг", "мм", "дд"],
+  sc: ["aaaa", "mm", "dd"],
+  scn: ["aaaa", "mm", "jj"],
+  sk: ["rrrr", "mm", "dd"],
+  sl: ["llll", "mm", "dd"],
+  sr: ["гггг", "мм", "дд"],
+  sv: ["åååå", "mm", "dd"],
+  szl: ["rrrr", "mm", "dd"],
+  tg: ["сссс", "мм", "рр"],
+  th: ["ปปปป", "ดด", "วว"],
+  tr: ["yyyy", "aa", "gg"],
+  uk: ["рррр", "мм", "дд"],
+  "sr-Latn": ["gggg", "mm", "dd"],
+  "zh-CN": ["年", "月", "日"],
+  "zh-TW": ["年", "月", "日"],
 }
 
 function getLocaleLanguage(locale: string): string {
@@ -87,24 +90,40 @@ function getLocaleLanguage(locale: string): string {
   return locale.split("-")[0]
 }
 
-function getLocalePlaceholders(locale: string): { year: string; month: string; day: string } {
-  if (locale in LOCALE_PLACEHOLDERS) {
-    return LOCALE_PLACEHOLDERS[locale]
+function getLocaleScript(locale: string): string | undefined {
+  if (typeof Intl !== "undefined" && Intl.Locale) {
+    return new Intl.Locale(locale).script || undefined
   }
+
+  const script = locale.split("-").find((part) => part.length === 4)
+  if (!script) return undefined
+
+  return script.charAt(0).toUpperCase() + script.slice(1).toLowerCase()
+}
+
+function getLocalePlaceholders(locale: string): LocalePlaceholder {
+  const exact = LOCALE_PLACEHOLDERS[locale]
+  if (exact) return exact
+
   const lang = getLocaleLanguage(locale)
-  if (lang in LOCALE_PLACEHOLDERS) {
-    return LOCALE_PLACEHOLDERS[lang]
+
+  const script = getLocaleScript(locale)
+  if (script) {
+    const langScript = `${lang}-${script}`
+    const langScriptPlaceholder = LOCALE_PLACEHOLDERS[langScript]
+    if (langScriptPlaceholder) return langScriptPlaceholder
   }
-  return LOCALE_PLACEHOLDERS.en
+
+  return LOCALE_PLACEHOLDERS[lang] || LOCALE_PLACEHOLDERS.en
 }
 
 export const defaultTranslations: IntlTranslations = {
   placeholder(locale) {
-    const localized = getLocalePlaceholders(locale)
+    const [year, month, day] = getLocalePlaceholders(locale)
     return {
-      day: localized.day,
-      month: localized.month,
-      year: localized.year,
+      day,
+      month,
+      year,
       hour: "––",
       minute: "––",
       second: "––",
