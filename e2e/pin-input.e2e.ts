@@ -9,6 +9,12 @@ test.describe("pin input", () => {
     await I.goto()
   })
 
+  test("data-filled: should not be set on empty inputs on first render", async () => {
+    await I.dontSeeInputHasAttribute(1, "data-filled")
+    await I.dontSeeInputHasAttribute(2, "data-filled")
+    await I.dontSeeInputHasAttribute(3, "data-filled")
+  })
+
   test("on type: should move focus to the next input", async () => {
     await I.fillInput(1, "1")
     await I.seeInputIsFocused(2)
@@ -404,6 +410,12 @@ test.describe("pin input / controlled", () => {
   test.beforeEach(async ({ page }) => {
     I = new PinInputModel(page)
     await I.goto("/pin-input/controlled")
+  })
+
+  test("data-filled: should not be set on empty inputs on first render", async () => {
+    await I.dontSeeInputHasAttribute(1, "data-filled")
+    await I.dontSeeInputHasAttribute(2, "data-filled")
+    await I.dontSeeInputHasAttribute(3, "data-filled")
   })
 
   test("should update inputs when value is set externally", async () => {

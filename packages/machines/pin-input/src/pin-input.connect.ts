@@ -113,6 +113,7 @@ export function connect<T extends PropTypes>(
     getInputProps(props) {
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
+      const value = computed("_value")
       const valueLength = computed("valueLength")
       const tabbableIndex =
         focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
@@ -123,7 +124,7 @@ export function connect<T extends PropTypes>(
         tabIndex: index === tabbableIndex ? 0 : -1,
         "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
-        "data-filled": dataAttr(context.get("value")[index] !== ""),
+        "data-filled": dataAttr(value[index] !== ""),
         id: dom.getInputId(scope, index.toString()),
         "data-index": index,
         "data-ownedby": dom.getRootId(scope),
@@ -133,7 +134,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         enterKeyHint: index === valueLength - 1 ? "done" : "next",
         type: prop("mask") ? "password" : inputType,
-        defaultValue: context.get("value")[index] || "",
+        defaultValue: value[index] || "",
         readOnly,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
