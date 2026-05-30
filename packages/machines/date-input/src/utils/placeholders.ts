@@ -76,6 +76,7 @@ const LOCALE_PLACEHOLDERS: Record<string, { year: string; month: string; day: st
   th: { year: "ปปปป", month: "ดด", day: "วว" },
   tr: { year: "yyyy", month: "aa", day: "gg" },
   uk: { year: "рррр", month: "мм", day: "дд" },
+  "sr-Latn": { year: "gggg", month: "mm", day: "dd" },
   "zh-CN": { year: "年", month: "月", day: "日" },
   "zh-TW": { year: "年", month: "月", day: "日" },
 }
@@ -87,11 +88,32 @@ function getLocaleLanguage(locale: string): string {
   return locale.split("-")[0]
 }
 
+function getLocaleScript(locale: string): string | undefined {
+  if (typeof Intl !== "undefined" && Intl.Locale) {
+    return new Intl.Locale(locale).script || undefined
+  }
+
+  const script = locale.split("-").find((part) => part.length === 4)
+  if (!script) return undefined
+
+  return script.charAt(0).toUpperCase() + script.slice(1).toLowerCase()
+}
+
 function getLocalePlaceholders(locale: string): { year: string; month: string; day: string } {
   if (locale in LOCALE_PLACEHOLDERS) {
     return LOCALE_PLACEHOLDERS[locale]
   }
+
   const lang = getLocaleLanguage(locale)
+
+  const script = getLocaleScript(locale)
+  if (script) {
+    const langScript = `${lang}-${script}`
+    if (langScript in LOCALE_PLACEHOLDERS) {
+      return LOCALE_PLACEHOLDERS[langScript]
+    }
+  }
+
   if (lang in LOCALE_PLACEHOLDERS) {
     return LOCALE_PLACEHOLDERS[lang]
   }
