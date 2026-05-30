@@ -35,6 +35,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
   const snapPointOffset = resolvedActiveSnapPoint?.offset ?? 0
 
+  const nestedMetrics = context.get("nestedMetrics")
+
   const swipeOpenOffset = getSwipeOpenOffset(swipingOpen, dragOffset, contentSize)
   const currentOffset = swipeOpenOffset ?? dragOffset ?? snapPointOffset
   const signedSnapPointOffset = isNegativeSwipeDirection(physicalDirection) ? -snapPointOffset : snapPointOffset
@@ -144,6 +146,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": physicalDirection,
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         "data-dragging": dragging ? "" : undefined,
+        "data-nested-drawer-open": nestedMetrics.open ? "" : undefined,
+        "data-nested-drawer-swiping": nestedMetrics.swiping ? "" : undefined,
         style: compact<JSX.CSSProperties>({
           pointerEvents: prop("modal") ? undefined : "auto",
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
@@ -161,6 +165,10 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-swipe-movement-x": toPx(movementX),
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
+          "--nested-drawers": `${nestedMetrics.count}`,
+          "--drawer-height": nestedMetrics.height > 0 ? toPx(nestedMetrics.height) : undefined,
+          "--drawer-frontmost-height":
+            nestedMetrics.frontmostHeight > 0 ? toPx(nestedMetrics.frontmostHeight) : undefined,
           willChange: "transform",
         }),
         onPointerDown(event) {
