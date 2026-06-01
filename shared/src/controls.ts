@@ -325,6 +325,7 @@ export const floatingPanelControls = defineControls({
 })
 
 export const signaturePadControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   "drawing.size": { type: "number", defaultValue: 2 },
