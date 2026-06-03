@@ -503,6 +503,28 @@ export class FocusTrap {
     }
   }
 
+  private getInitialTabbableNode = () => {
+    const firstGroup = this.state.tabbableGroups[0]
+    const skipSelector = this.config.initialFocusSkip
+    if (!firstGroup) return undefined
+    if (!skipSelector) return firstGroup.firstTabbableNode
+
+    for (const group of this.state.tabbableGroups) {
+      for (const node of group.tabbableNodes) {
+        let matches: boolean
+        try {
+          matches = node.matches(skipSelector)
+        } catch (err: any) {
+          throw new Error(`\`initialFocusSkip\` appears to be an invalid selector; error="${err.message}"`)
+        }
+        if (!matches) return node
+      }
+    }
+
+    // every tabbable node matched the skip selector — fall back to the first tabbable
+    return firstGroup.firstTabbableNode
+  }
+
   private getInitialFocusNode = () => {
     let node = this.getNodeForOption("initialFocus", { hasFallback: true })
 
@@ -517,8 +539,7 @@ export class FocusTrap {
       if (activeElement && this.findContainerIndex(activeElement) >= 0) {
         node = activeElement
       } else {
-        const firstTabbableGroup = this.state.tabbableGroups[0]
-        const firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode
+        const firstTabbableNode = this.getInitialTabbableNode()
 
         // NOTE: `fallbackFocus` option function cannot return `false` (not supported)
         node = firstTabbableNode || this.getNodeForOption("fallbackFocus")

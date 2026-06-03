@@ -114,6 +114,16 @@ export interface FocusTrapOptions {
    */
   initialFocus?: FocusTargetOrFalse | undefined | VoidFunction
   /**
+   * A CSS selector identifying elements that should be skipped when picking
+   * the initial focus target. When the trap activates and no explicit
+   * `initialFocus` is provided (or it does not resolve), the first tabbable
+   * element that does not match this selector receives focus instead.
+   *
+   * This only affects initial focus selection; skipped elements remain
+   * focusable in normal tab order once the trap is active.
+   */
+  initialFocusSkip?: string | undefined
+  /**
    * By default, an error will be thrown if the focus trap contains no
    * elements in its tab order. With this option you can specify a
    * fallback element to programmatically receive focus if no other
