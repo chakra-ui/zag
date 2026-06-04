@@ -1,5 +1,25 @@
 # @zag-js/drawer
 
+## 1.41.2
+
+### Patch Changes
+
+- [`d5afd14`](https://github.com/chakra-ui/zag/commit/d5afd142e6ec43488109687df4dccb4bdad8fad4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix controlled drawer flickering when swiped or backdrop-closed
+  while the `open` setter is asynchronous (e.g. history API or a delayed state update).
+  - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/aria-hidden@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dismissable@1.41.2
+  - @zag-js/dom-query@1.41.2
+  - @zag-js/focus-trap@1.41.2
+  - @zag-js/remove-scroll@1.41.2
+
 ## 1.41.1
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/image-cropper
 
+## 1.41.2
+
+### Patch Changes
+
+- [`5e602cb`](https://github.com/chakra-ui/zag/commit/5e602cb9cb4a05532f8cdb2da3d3706c114916b8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `getCroppedImage` and `getCropData` returning the wrong region
+  when the image is displayed at a size different from its natural resolution (e.g. `width/height: 100%`)
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+
 ## 1.41.1
 
 ### Patch Changes
