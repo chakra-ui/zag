@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/virtualizer",
-  "version": "0.0.0",
+  "version": "2.0.0-next.0",
   "description": "Framework agnostic, high-perf virtualization library",
   "keywords": [
     "js",

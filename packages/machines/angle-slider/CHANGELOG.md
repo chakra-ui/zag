@@ -1,5 +1,23 @@
 # @zag-js/angle-slider
 
+## 2.0.0-next.0
+
+### Patch Changes
+
+- [`ed7393b`](https://github.com/chakra-ui/zag/commit/ed7393b006c510345abdfdb503c8782e71579c66) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix pointer drag snapping. The angle now snaps to the **nearest**
+  step (previously it always rounded up) and wraps within `[0, 360)`, so dragging is precise and crossing 0°/360° wraps
+  instead of sticking. This also avoids an out-of-range `360` value that could occur with non-divisor steps (e.g.
+  `step: 5`).
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73),
+  [`2d8aae2`](https://github.com/chakra-ui/zag/commit/2d8aae2f1588b5fdcfb6d7037b1d5f9994222dd7)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/rect-utils@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.41.0
 
 ### Patch Changes

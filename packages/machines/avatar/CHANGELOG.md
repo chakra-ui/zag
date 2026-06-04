@@ -1,5 +1,22 @@
 # @zag-js/avatar
 
+## 2.0.0-next.0
+
+### Minor Changes
+
+- [`772046f`](https://github.com/chakra-ui/zag/commit/772046ffe214037838d4e55f306286fdc62041d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose the image loading status. Adds `api.status`
+  (`loading | loaded | error`) and emits `loading` from `onStatusChange`, so you can render a distinct loading state.
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
 ## 1.41.0
 
 ### Patch Changes
