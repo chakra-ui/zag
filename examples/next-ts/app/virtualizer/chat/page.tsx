@@ -10,6 +10,7 @@ type ChatMessage = {
 }
 
 const HISTORY_PAGE_SIZE = 12
+const SCROLL_END_THRESHOLD = 120
 
 function makeMessage(index: number): ChatMessage {
   const author = index % 4 === 0 ? "You" : "Assistant"
@@ -57,7 +58,7 @@ export default function Page() {
     keyToIndex,
     anchorTo: "end",
     followOnAppend: true,
-    scrollEndThreshold: 80,
+    scrollEndThreshold: SCROLL_END_THRESHOLD,
     overscan: 6,
   })
 
@@ -100,7 +101,7 @@ export default function Page() {
       keyToIndex,
       anchorTo: "end",
       followOnAppend: true,
-      scrollEndThreshold: 80,
+      scrollEndThreshold: SCROLL_END_THRESHOLD,
     })
   }, [estimatedSize, indexToKey, keyToIndex, messages.length, virtualizer])
 
