@@ -2,9 +2,9 @@
 
 import * as floating from "@zag-js/floating-panel"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
-import { Fragment, useId } from "react"
+import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/floating-panel.css"
@@ -68,24 +68,20 @@ export default function Page() {
 function Popover() {
   const service = useMachine(popover.machine, {
     id: useId(),
-    portalled: false,
   })
 
   const api = popover.connect(service, normalizeProps)
-  const Wrapper = api.portalled ? Portal : Fragment
 
   return (
     <div>
       <button {...api.getTriggerProps()}>Open Popover</button>
-      <Wrapper>
-        <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
-            <div {...api.getTitleProps()}>Nested Popover</div>
-            <div {...api.getDescriptionProps()}>Press Escape to close this popover without closing the panel.</div>
-            <button {...api.getCloseTriggerProps()}>Close Popover</button>
-          </div>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          <div {...api.getTitleProps()}>Nested Popover</div>
+          <div {...api.getDescriptionProps()}>Press Escape to close this popover without closing the panel.</div>
+          <button {...api.getCloseTriggerProps()}>Close Popover</button>
         </div>
-      </Wrapper>
+      </div>
     </div>
   )
 }

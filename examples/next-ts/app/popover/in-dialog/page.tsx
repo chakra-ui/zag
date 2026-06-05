@@ -3,7 +3,6 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import * as React from "react"
 import { useId } from "react"
 import "@styles/popover.css"
 import "@styles/dialog.css"
@@ -11,27 +10,21 @@ import "@styles/dialog.css"
 function NestedPopover() {
   const service1 = useMachine(popover.machine, {
     id: useId(),
-    portalled: true,
     modal: false,
   })
   const api1 = popover.connect(service1, normalizeProps)
-  const Wrapper1 = api1.portalled ? Portal : React.Fragment
 
   const service2 = useMachine(popover.machine, {
     id: useId(),
-    portalled: true,
     modal: false,
   })
   const api2 = popover.connect(service2, normalizeProps)
-  const Wrapper2 = api2.portalled ? Portal : React.Fragment
 
   const service3 = useMachine(popover.machine, {
     id: useId(),
-    portalled: true,
     modal: false,
   })
   const api3 = popover.connect(service3, normalizeProps)
-  const Wrapper3 = api3.portalled ? Portal : React.Fragment
 
   return (
     <div>
@@ -39,7 +32,7 @@ function NestedPopover() {
         Open First Popover
       </button>
 
-      <Wrapper1>
+      <Portal>
         <div {...api1.getPositionerProps()}>
           <div data-testid="popover-content-1" className="popover-content" {...api1.getContentProps()}>
             <div {...api1.getArrowProps()}>
@@ -59,9 +52,9 @@ function NestedPopover() {
             </div>
           </div>
         </div>
-      </Wrapper1>
+      </Portal>
 
-      <Wrapper2>
+      <Portal>
         <div {...api2.getPositionerProps()}>
           <div data-testid="popover-content-2" className="popover-content" {...api2.getContentProps()}>
             <div {...api2.getArrowProps()}>
@@ -82,9 +75,9 @@ function NestedPopover() {
             </div>
           </div>
         </div>
-      </Wrapper2>
+      </Portal>
 
-      <Wrapper3>
+      <Portal>
         <div {...api3.getPositionerProps()}>
           <div data-testid="popover-content-3" className="popover-content" {...api3.getContentProps()}>
             <div {...api3.getArrowProps()}>
@@ -104,7 +97,7 @@ function NestedPopover() {
             </div>
           </div>
         </div>
-      </Wrapper3>
+      </Portal>
     </div>
   )
 }

@@ -6,13 +6,12 @@ import * as dom from "./popover.dom"
 import type { PopoverApi, PopoverService, TriggerProps } from "./popover.types"
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
-  const { state, context, send, computed, prop, scope } = service
+  const { state, context, send, prop, scope } = service
   const translations = prop("translations")
   const open = state.matches("open")
 
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
-  const portalled = computed("currentPortalled")
   const rendered = context.get("renderedElements")
   const triggerValue = context.get("triggerValue")
 
@@ -22,7 +21,6 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   })
 
   return {
-    portalled,
     open: open,
     setOpen(nextOpen) {
       const open = state.matches("open")

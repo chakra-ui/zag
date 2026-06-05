@@ -2,17 +2,14 @@
 
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import * as React from "react"
 import "@styles/popover.css"
 
 function Popover({ children, nested, id }: any) {
   const service = useMachine(popover.machine, {
     id,
-    portalled: true,
     modal: false,
   })
   const api = popover.connect(service, normalizeProps)
-  const Wrapper = api.portalled ? Portal : React.Fragment
 
   return (
     <>
@@ -25,7 +22,7 @@ function Popover({ children, nested, id }: any) {
 
         {!nested && <div {...api.getAnchorProps()}>anchor</div>}
 
-        <Wrapper>
+        <Portal>
           <div {...api.getPositionerProps()}>
             <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
               <div {...api.getArrowProps()}>
@@ -47,7 +44,7 @@ function Popover({ children, nested, id }: any) {
               </div>
             </div>
           </div>
-        </Wrapper>
+        </Portal>
         {!nested && <span data-testid="plain-text">I am just text</span>}
         {!nested && <button data-testid="button-after">Button :after</button>}
       </div>

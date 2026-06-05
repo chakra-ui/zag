@@ -18,7 +18,6 @@
 
   const popoverService = useMachine(popover.machine, () => ({
     id: `${id}-popover`,
-    portalled: false,
   }))
 
   const popoverApi = $derived(popover.connect(popoverService, normalizeProps))

@@ -24,7 +24,6 @@ export const props = createProps<PopoverProps>()([
   "onRequestDismiss",
   "open",
   "persistentElements",
-  "portalled",
   "restoreFocus",
   "positioning",
   "translations",

@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useId, useState } from "react"
+import { useId, useState } from "react"
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import "@styles/popover.css"
@@ -24,12 +24,10 @@ export function Popover() {
 
   const api = popover.connect(service, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : Fragment
-
   return (
     <main>
       <button {...api.getTriggerProps()}>Click me</button>
-      <Wrapper>
+      <Portal>
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>
             <div {...api.getTitleProps()}>Presenters</div>
@@ -38,7 +36,7 @@ export function Popover() {
             <button {...api.getCloseTriggerProps()}>X</button>
           </div>
         </div>
-      </Wrapper>
+      </Portal>
     </main>
   )
 }

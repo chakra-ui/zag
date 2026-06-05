@@ -16,8 +16,7 @@ clickable trigger element.
 
 - Focus is managed and can be customized
 - Supports modal and non-modal modes
-- Ensures correct DOM order after tabbing out of the popover, whether it's
-  portalled or not
+- Ensures correct DOM order after tabbing out of the popover
 - Supports multiple triggers sharing a single popover instance
 
 ## Installation
@@ -53,16 +52,9 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="popover/usage.mdx" />
 
-### Rendering the popover in a portal
-
-By default, the popover is rendered in the same DOM hierarchy as the trigger. To
-render the popover within a portal, pass `portalled: true` property to the
-machine's context.
-
-> Note: This requires that you render the component within a `Portal` based on
-> the framework you use.
-
-<CodeSnippet id="popover/render-in-portal.mdx" />
+The positioner is rendered in a `Portal` (or `Teleport`/`use:portal` depending
+on your framework). Zag automatically preserves the correct tab order after the
+trigger, even though the content lives elsewhere in the DOM.
 
 ### Managing focus within popover
 
@@ -90,9 +82,7 @@ it'll:
 - hide content behind the popover from screen readers
 
 To make the popover modal, set the `modal: true` property in the machine's
-context. When `modal: true`, we set the `portalled` attribute to `true` as well.
-
-> **Note**: This requires that you render the component within a `Portal`.
+context.
 
 ```tsx {2}
 const service = useMachine(popover.machine, {

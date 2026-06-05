@@ -323,7 +323,6 @@ const components = {
       component={Popover}
       defaultProps={{
         modal: false,
-        portalled: false,
         autoFocus: true,
         closeOnInteractOutside: true,
         closeOnEscape: true,

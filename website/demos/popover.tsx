@@ -1,6 +1,5 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import * as React from "react"
 import { HiX } from "react-icons/hi"
 import { useId } from "react"
 import styles from "../styles/machines/popover.module.css"
@@ -15,14 +14,12 @@ export function Popover(props: PopoverProps) {
 
   const api = popover.connect(service, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : React.Fragment
-
   return (
     <>
       <button className={styles.Trigger} {...api.getTriggerProps()}>
         Click me
       </button>
-      <Wrapper>
+      <Portal>
         <div {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <div className={styles.Arrow} {...api.getArrowProps()}>
@@ -47,7 +44,7 @@ export function Popover(props: PopoverProps) {
             </button>
           </div>
         </div>
-      </Wrapper>
+      </Portal>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { contains, getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
@@ -15,7 +15,6 @@ export const machine = createMachine<PopoverSchema>({
       closeOnEscape: true,
       autoFocus: true,
       modal: false,
-      portalled: true,
       restoreFocus: true,
       ...props,
       translations: {
@@ -53,10 +52,6 @@ export const machine = createMachine<PopoverSchema>({
         },
       })),
     }
-  },
-
-  computed: {
-    currentPortalled: ({ prop }) => !!prop("modal") || !!prop("portalled"),
   },
 
   watch({ track, prop, action }) {
@@ -195,16 +190,26 @@ export const machine = createMachine<PopoverSchema>({
       },
 
       proxyTabFocus({ prop, scope, context }) {
-        if (prop("modal") || !prop("portalled")) return
+        if (prop("modal")) return
         const getContentEl = () => dom.getContentEl(scope)
-        return proxyTabFocus(getContentEl, {
-          triggerElement: dom.getActiveTriggerEl(scope, context.get("triggerValue")),
-          defer: true,
-          getShadowRoot: true,
-          onFocus(el) {
-            el.focus({ preventScroll: true })
-          },
+        let cleanup: VoidFunction | undefined
+        const rafCleanup = raf(() => {
+          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+          const contentEl = getContentEl()
+          // only proxy when content is portalled out of the trigger's subtree (else it traps focus)
+          if (!triggerEl || !contentEl || contains(triggerEl.parentElement, contentEl)) return
+          cleanup = proxyTabFocus(getContentEl, {
+            triggerElement: triggerEl,
+            getShadowRoot: true,
+            onFocus(el) {
+              el.focus({ preventScroll: true })
+            },
+          })
         })
+        return () => {
+          rafCleanup()
+          cleanup?.()
+        }
       },
 
       hideContentBelow({ prop, scope, context }) {

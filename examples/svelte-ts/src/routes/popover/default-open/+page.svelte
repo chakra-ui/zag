@@ -19,7 +19,7 @@
       <div {...api.getIndicatorProps()}>{">"}</div>
     </button>
 
-    <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()}>
+    <div use:portal {...api.getPositionerProps()}>
       <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()}>
         <div {...api.getArrowProps()}>
           <div {...api.getArrowTipProps()}></div>

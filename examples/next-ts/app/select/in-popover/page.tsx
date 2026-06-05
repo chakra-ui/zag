@@ -54,7 +54,6 @@ function Select() {
 export default function Page() {
   const service = useMachine(popover.machine, {
     id: useId(),
-    portalled: true,
     modal: false,
   })
   const api = popover.connect(service, normalizeProps)

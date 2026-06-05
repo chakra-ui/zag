@@ -15,7 +15,6 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
 
 const popoverService = useMachine(popover.machine, {
   id: useId(),
-  portalled: false,
 })
 
 const popoverApi = computed(() => popover.connect(popoverService, normalizeProps))

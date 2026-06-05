@@ -8,12 +8,10 @@ export function Popover() {
 
   const api = popover.connect(service, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : React.Fragment
-
   return (
     <div>
       <button {...api.getTriggerProps()}>Click me</button>
-      <Wrapper>
+      <Portal>
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>
             <div {...api.getTitleProps()}>Presenters</div>
@@ -22,7 +20,7 @@ export function Popover() {
             <button {...api.getCloseTriggerProps()}>X</button>
           </div>
         </div>
-      </Wrapper>
+      </Portal>
     </div>
   )
 }

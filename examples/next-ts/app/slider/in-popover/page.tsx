@@ -3,7 +3,6 @@
 import * as popover from "@zag-js/popover"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
-import { Fragment } from "react"
 import "@styles/slider.css"
 import "@styles/popover.css"
 
@@ -48,8 +47,6 @@ export default function Page() {
 
   const api = popover.connect(service, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : Fragment
-
   return (
     <main className="popover">
       <div data-part="root">
@@ -62,13 +59,13 @@ export default function Page() {
 
         <div {...api.getAnchorProps()}>anchor</div>
 
-        <Wrapper>
+        <Portal>
           <div {...api.getPositionerProps()}>
             <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
               <RangeSlider />
             </div>
           </div>
-        </Wrapper>
+        </Portal>
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
       </div>

@@ -62,13 +62,6 @@ export interface PopoverProps
    */
   modal?: boolean | undefined
   /**
-   * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
-   * of the popover content.
-   *
-   * @default true
-   */
-  portalled?: boolean | undefined
-  /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
    *
@@ -135,18 +128,10 @@ type PropsWithDefault =
   | "closeOnInteractOutside"
   | "closeOnEscape"
   | "modal"
-  | "portalled"
   | "autoFocus"
   | "restoreFocus"
   | "positioning"
   | "translations"
-
-type ComputedContext = Readonly<{
-  /**
-   * The computed value of `portalled`
-   */
-  currentPortalled: boolean
-}>
 
 interface PrivateContext {
   /**
@@ -170,7 +155,7 @@ export interface PopoverSchema {
   props: RequiredBy<PopoverProps, PropsWithDefault>
   state: "open" | "closed"
   context: PrivateContext
-  computed: ComputedContext
+  computed: {}
   event: EventObject
   action: string
   effect: string
@@ -197,10 +182,6 @@ export interface TriggerProps {
  * -----------------------------------------------------------------------------*/
 
 export interface PopoverApi<T extends PropTypes = PropTypes> {
-  /**
-   * Whether the popover is portalled.
-   */
-  portalled: boolean
   /**
    * Whether the popover is open
    */

@@ -139,7 +139,6 @@ export const pinInputControls = defineControls({
 
 export const popoverControls = defineControls({
   modal: { type: "boolean", defaultValue: false },
-  portalled: { type: "boolean", defaultValue: true },
   autoFocus: { type: "boolean", defaultValue: true },
   closeOnEsc: { type: "boolean", defaultValue: true },
 })
