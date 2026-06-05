@@ -81,9 +81,10 @@ export default function Page() {
 
   useEffect(() => {
     if (didInitialScrollRef.current) return
-    didInitialScrollRef.current = true
 
     const frame = requestAnimationFrame(() => {
+      if (didInitialScrollRef.current) return
+      didInitialScrollRef.current = true
       virtualizer.scrollToEnd()
     })
 
