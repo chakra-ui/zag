@@ -102,16 +102,60 @@ test.describe("virtualizer examples", () => {
 
     await transcript.evaluate((el) => {
       const element = el as HTMLElement
-      element.scrollTop = 0
+      element.scrollTop = 240
       element.dispatchEvent(new Event("scroll", { bubbles: true }))
     })
-    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeLessThan(2)
+    const readingHistoryOffset = await transcript.evaluate((el) => (el as HTMLElement).scrollTop)
+    expect(readingHistoryOffset).toBeGreaterThan(100)
 
     await page.getByRole("button", { name: "Append message" }).click()
     await page.waitForTimeout(100)
-    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeLessThan(2)
+    await expect
+      .poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop))
+      .toBeLessThanOrEqual(readingHistoryOffset + 2)
 
     await page.getByRole("button", { name: "Jump to latest" }).click()
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+  })
+
+  test("chat example auto-loads older messages without losing the visible item", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+
+    await transcript.evaluate((el) => {
+      const element = el as HTMLElement
+      element.scrollTop = 0
+      element.dispatchEvent(new Event("scroll", { bubbles: true }))
+    })
+
+    await expect(page.getByText("Loading...")).toBeVisible()
+    await expect(page.getByText("Messages: 48")).toBeVisible({ timeout: 5000 })
+    await expect(transcript.getByText(/message 0\./)).toBeVisible()
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(100)
+  })
+
+  test("chat example keeps streamed output pinned when at latest", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Stream reply" }).click()
+    await expect(page.getByRole("button", { name: "Streaming..." })).toBeDisabled()
+    await expect(page.getByText(/viewport remains pinned only when you are already at the latest message/)).toBeVisible(
+      {
+        timeout: 5000,
+      },
+    )
     await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
   })
 })

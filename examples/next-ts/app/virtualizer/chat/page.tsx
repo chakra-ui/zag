@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { type UIEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
 type ChatMessage = {
@@ -11,6 +11,7 @@ type ChatMessage = {
 
 const HISTORY_PAGE_SIZE = 12
 const SCROLL_END_THRESHOLD = 120
+const HISTORY_LOAD_THRESHOLD = 120
 
 function makeMessage(index: number): ChatMessage {
   const author = index % 4 === 0 ? "You" : "Assistant"
@@ -31,6 +32,7 @@ const initialMessages = Array.from({ length: 36 }, (_, index) => makeMessage(ind
 export default function Page() {
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const didInitialScrollRef = useRef(false)
+  const autoHistoryEnabledRef = useRef(false)
   const loadingHistoryRef = useRef(false)
   const streamTimerRef = useRef<number | null>(null)
   const firstMessageIndexRef = useRef(0)
@@ -108,6 +110,40 @@ export default function Page() {
     scroll()
   }, [scrollToLatest])
 
+  const prependHistory = useCallback(() => {
+    if (loadingHistoryRef.current) return
+
+    loadingHistoryRef.current = true
+    setIsLoadingHistory(true)
+
+    window.setTimeout(() => {
+      const nextFirstIndex = firstMessageIndexRef.current - HISTORY_PAGE_SIZE
+      firstMessageIndexRef.current = nextFirstIndex
+
+      setMessages((current) => [
+        ...Array.from({ length: HISTORY_PAGE_SIZE }, (_, offset) => makeMessage(nextFirstIndex + offset)),
+        ...current,
+      ])
+
+      loadingHistoryRef.current = false
+      setIsLoadingHistory(false)
+    }, 200)
+  }, [])
+
+  const handleTranscriptScroll = useCallback(
+    (event: UIEvent<HTMLDivElement>) => {
+      virtualizer.handleScroll(event)
+
+      if (!autoHistoryEnabledRef.current) return
+      if (loadingHistoryRef.current) return
+      if (virtualizer.isAtEnd()) return
+      if (event.currentTarget.scrollTop > HISTORY_LOAD_THRESHOLD) return
+
+      prependHistory()
+    },
+    [prependHistory, virtualizer],
+  )
+
   useEffect(() => {
     virtualizer.updateOptions({
       count: messages.length,
@@ -139,6 +175,7 @@ export default function Page() {
 
       if (didInitialScrollRef.current) return
       didInitialScrollRef.current = true
+      autoHistoryEnabledRef.current = true
     }
 
     frame = requestAnimationFrame(scroll)
@@ -155,26 +192,6 @@ export default function Page() {
         window.clearInterval(streamTimerRef.current)
       }
     }
-  }, [])
-
-  const prependHistory = useCallback(() => {
-    if (loadingHistoryRef.current) return
-
-    loadingHistoryRef.current = true
-    setIsLoadingHistory(true)
-
-    window.setTimeout(() => {
-      const nextFirstIndex = firstMessageIndexRef.current - HISTORY_PAGE_SIZE
-      firstMessageIndexRef.current = nextFirstIndex
-
-      setMessages((current) => [
-        ...Array.from({ length: HISTORY_PAGE_SIZE }, (_, offset) => makeMessage(nextFirstIndex + offset)),
-        ...current,
-      ])
-
-      loadingHistoryRef.current = false
-      setIsLoadingHistory(false)
-    }, 200)
   }, [])
 
   const appendMessage = useCallback(() => {
@@ -224,7 +241,7 @@ export default function Page() {
       <h1>Chat Virtualizer</h1>
       <p style={{ color: "#64748b", fontSize: 14 }}>
         End anchoring keeps prepended history stable, follows appended messages only when already pinned, and preserves
-        the latest message while streamed content grows.
+        the latest message while streamed content grows. Scroll near the top to load older messages automatically.
       </p>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
@@ -244,7 +261,7 @@ export default function Page() {
 
       <div
         ref={setScrollElementRef}
-        onScroll={virtualizer.handleScroll}
+        onScroll={handleTranscriptScroll}
         {...virtualizer.getContainerAriaAttrs()}
         tabIndex={0}
         aria-label="Chat transcript"
