@@ -886,8 +886,19 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   scrollToEnd(options: ScrollToEndOptions = {}): ScrollToIndexResult {
-    const targetOffset = Math.max(0, this.getTotalSize() - this.getScrollMargin() - this.viewportSize)
-    return this.scrollToOffset(targetOffset, options)
+    return this.scrollToOffset(this.getEndOffset(), options)
+  }
+
+  private getEndOffset(): number {
+    if (this.scrollElement && this.shouldApplyScrollToScrollElement()) {
+      if (this.isHorizontal) {
+        return this.getMaxHorizontalOffset(this.scrollElement)
+      }
+
+      return Math.max(0, this.scrollElement.scrollHeight - this.scrollElement.clientHeight)
+    }
+
+    return Math.max(0, this.getTotalSize() - this.getScrollMargin() - this.viewportSize)
   }
 
   private applyInitialScrollOffset(): void {

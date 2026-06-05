@@ -887,6 +887,8 @@ describe("ListVirtualizer", () => {
 
     expect(virtualizer.getDistanceFromEnd()).toBe(10)
     expect(virtualizer.isAtEnd()).toBe(true)
+    expect(virtualizer.scrollToEnd()).toEqual({ scrollTop: 70, scrollLeft: 0 })
+    expect(element.scrollTop).toBe(70)
   })
 
   test("follows appended items when end anchored and already at the end", () => {
