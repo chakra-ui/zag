@@ -93,6 +93,21 @@ export default function Page() {
     [virtualizer],
   )
 
+  const scrollToLatestSettled = useCallback(() => {
+    let attempts = 0
+
+    const scroll = () => {
+      scrollToLatest()
+      attempts += 1
+
+      if (attempts < 4) {
+        requestAnimationFrame(scroll)
+      }
+    }
+
+    scroll()
+  }, [scrollToLatest])
+
   useEffect(() => {
     virtualizer.updateOptions({
       count: messages.length,
@@ -222,7 +237,7 @@ export default function Page() {
         <button type="button" onClick={streamReply} disabled={isStreaming}>
           {isStreaming ? "Streaming..." : "Stream reply"}
         </button>
-        <button type="button" onClick={() => scrollToLatest()} disabled={isAtEnd}>
+        <button type="button" onClick={scrollToLatestSettled} disabled={isAtEnd}>
           Jump to latest
         </button>
       </div>
