@@ -43,7 +43,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   function getItemState(props: ItemProps): ItemState {

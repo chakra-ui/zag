@@ -231,10 +231,6 @@ interface PrivateContext {
    */
   currentPlacement?: StepPlacement | undefined
   /**
-   * Whether the tour is positioned
-   */
-  positioned: boolean
-  /**
    * The size of the boundary element (default to the window size)
    */
   boundarySize: Size

@@ -164,10 +164,6 @@ interface PrivateContext {
    * The trigger value
    */
   triggerValue: string | null
-  /**
-   * Whether the popover has been positioned
-   */
-  positioned: boolean
 }
 
 export interface PopoverSchema {

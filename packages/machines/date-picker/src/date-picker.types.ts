@@ -348,10 +348,6 @@ interface PrivateContext {
    */
   restoreFocus?: boolean | undefined
   /**
-   * Whether the popover has been positioned at least once.
-   */
-  positioned: boolean
-  /**
    * The selected date(s).
    */
   value: DateValue[]

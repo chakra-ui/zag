@@ -214,7 +214,6 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -759,7 +758,6 @@ export const machine = createMachine<DatePickerSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },

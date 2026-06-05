@@ -94,7 +94,6 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingMode: bindable<"interactive" | "locked">(() => ({
         defaultValue: "interactive",
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -600,7 +599,6 @@ export const machine = createMachine<MenuSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
@@ -731,7 +729,6 @@ export const machine = createMachine<MenuSchema>({
           listeners: false,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },

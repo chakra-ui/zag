@@ -160,7 +160,6 @@ export interface MenuSchema {
     isSubmenu: boolean
     triggerValue: string | null
     pointerRoutingMode: "interactive" | "locked"
-    positioned: boolean
   }
   computed: {
     isRtl: boolean

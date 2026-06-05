@@ -77,7 +77,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
       fieldsetDisabled: bindable<boolean>(() => ({
         defaultValue: false,
       })),
@@ -619,14 +618,15 @@ export const machine = createMachine<CascadeSelectSchema>({
         })
       },
       computePlacement({ context, prop, scope }) {
+        context.set("currentPlacement", prop("positioning")?.placement)
         const triggerEl = () => dom.getTriggerEl(scope)
         const positionerEl = () => dom.getPositionerEl(scope)
 
         return getPlacement(triggerEl, positionerEl, {
           ...prop("positioning"),
+          defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },

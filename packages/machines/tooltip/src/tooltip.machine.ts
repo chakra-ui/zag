@@ -52,7 +52,6 @@ export const machine = createMachine<TooltipSchema>({
         onTriggerValueChange({ value, triggerElement })
       },
     })),
-    positioned: bindable(() => ({ defaultValue: false })),
   }),
 
   watch({ track, action, prop }) {
@@ -380,7 +379,6 @@ export const machine = createMachine<TooltipSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },

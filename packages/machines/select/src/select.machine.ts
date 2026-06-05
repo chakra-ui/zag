@@ -111,9 +111,6 @@ export const machine = createMachine<SelectSchema>({
       scrollArrowVisibility: bindable<"none" | "top" | "bottom" | "both">(() => ({
         defaultValue: "none",
       })),
-      positioned: bindable(() => ({
-        defaultValue: false,
-      })),
       aligned: bindable(() => ({
         defaultValue: false,
       })),
@@ -519,12 +516,8 @@ export const machine = createMachine<SelectSchema>({
       computePlacement({ context, prop, scope, refs }) {
         const positioning = prop("positioning")
         context.set("currentPlacement", positioning.placement)
-        const markPositioned = () => {
-          context.set("positioned", true)
-        }
         const onPlacementChange = (placement: Placement) => {
           context.set("currentPlacement", placement)
-          markPositioned()
         }
 
         if (!prop("alignItemWithTrigger") || refs.get("openMethod") === "touch") {
@@ -540,7 +533,6 @@ export const machine = createMachine<SelectSchema>({
           positioning,
           onPlacementChange,
           onAligned() {
-            markPositioned()
             context.set("aligned", true)
           },
         })

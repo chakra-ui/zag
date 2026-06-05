@@ -1,0 +1,77 @@
+import * as select from "@zag-js/select"
+import { selectControls, selectData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import serialize from "form-serialize"
+import { Index, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
+import { StateVisualizer } from "~/components/state-visualizer"
+import { Toolbar } from "~/components/toolbar"
+import { useControls } from "~/hooks/use-controls"
+import "@styles/select.css"
+
+export default function Page() {
+  const controls = useControls(selectControls)
+
+  const service = useMachine(
+    select.machine,
+    controls.mergeProps<select.Props>(() => ({
+      collection: select.collection({ items: selectData }),
+      id: createUniqueId(),
+      defaultOpen: true,
+    })),
+  )
+
+  const api = createMemo(() => select.connect(service, normalizeProps))
+
+  return (
+    <>
+      <main class="select">
+        <div {...api().getRootProps()}>
+          {/* control */}
+          <div {...api().getControlProps()}>
+            <label {...api().getLabelProps()}>Label</label>
+            <button {...api().getTriggerProps()}>
+              {api().valueAsString || "Select option"}
+              <span {...api().getIndicatorProps()}>▼</span>
+            </button>
+          </div>
+
+          <form
+            onInput={(e) => {
+              const form = e.currentTarget as HTMLFormElement
+              const formData = serialize(form, { hash: true })
+              console.log(formData)
+            }}
+          >
+            {/* Hidden select */}
+            <select {...api().getHiddenSelectProps()}>
+              <Index each={selectData}>{(option) => <option value={option().value}>{option().label}</option>}</Index>
+            </select>
+          </form>
+
+          {/* UI select */}
+          <Portal>
+            <div {...api().getPositionerProps()}>
+              <div {...api().getContentProps()}>
+                <div {...api().getListProps()}>
+                  <Index each={selectData}>
+                    {(item) => (
+                      <div {...api().getItemProps({ item: item() })}>
+                        <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
+                        <span {...api().getItemIndicatorProps({ item: item() })}>✓</span>
+                      </div>
+                    )}
+                  </Index>
+                </div>
+              </div>
+            </div>
+          </Portal>
+        </div>
+      </main>
+
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
+      </Toolbar>
+    </>
+  )
+}

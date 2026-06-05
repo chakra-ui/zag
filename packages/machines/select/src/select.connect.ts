@@ -70,7 +70,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   return {

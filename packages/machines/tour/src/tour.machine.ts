@@ -78,7 +78,6 @@ export const machine = createMachine<TourSchema>({
       currentPlacement: bindable<StepPlacement | undefined>(() => ({
         defaultValue: undefined,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -556,7 +555,6 @@ export const machine = createMachine<TourSchema>({
             const { rects } = data.middlewareData
             context.set("currentPlacement", data.placement)
             context.set("targetRect", rects.reference)
-            context.set("positioned", true)
           },
         })
       },

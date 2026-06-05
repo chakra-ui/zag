@@ -49,7 +49,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: anchorPoint ? "bottom" : currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   function getItemState(props: ItemProps): ItemState {

@@ -16,7 +16,6 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   return {

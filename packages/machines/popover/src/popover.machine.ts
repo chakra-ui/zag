@@ -52,7 +52,6 @@ export const machine = createMachine<PopoverSchema>({
           onTriggerValueChange({ value, triggerElement })
         },
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -160,7 +159,6 @@ export const machine = createMachine<PopoverSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },

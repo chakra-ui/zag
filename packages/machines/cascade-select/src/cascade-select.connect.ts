@@ -31,7 +31,6 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   const getItemState = (props: ItemProps<V>): ItemState => {

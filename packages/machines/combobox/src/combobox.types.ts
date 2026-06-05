@@ -319,7 +319,6 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
-    positioned: boolean
   }
   refs: {
     liveRegion: LiveRegion | null

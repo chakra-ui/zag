@@ -40,7 +40,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "cascade-select",
     label: "Cascade Select",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
+    ],
   },
   {
     slug: "marquee",
@@ -251,6 +255,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Color Picker",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "inline", title: "Inline" },
       { slug: "in-dialog", title: "Dialog" },
@@ -277,6 +282,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Picker",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "range", title: "Range" },
       { slug: "range-calendar", title: "Range calendar" },
       { slug: "multi", title: "Multi" },
@@ -318,6 +325,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Select",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "align-item-with-trigger", title: "Align Item With Trigger" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
@@ -353,6 +361,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Combobox",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "async", title: "Async" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
@@ -397,6 +407,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
@@ -407,6 +418,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
       { slug: "nested", title: "Nested" },
@@ -479,6 +491,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Popover",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
@@ -571,6 +584,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-multiple", title: "Controlled Multiple" },
       { slug: "dialog", title: "With Dialog" },

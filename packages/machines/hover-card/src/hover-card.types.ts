@@ -103,10 +103,6 @@ interface PrivateContext {
    * The trigger value
    */
   triggerValue: string | null
-  /**
-   * Whether the hover card has been positioned
-   */
-  positioned: boolean
 }
 
 export interface HoverCardSchema {

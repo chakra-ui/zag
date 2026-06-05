@@ -19,7 +19,6 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   return {
