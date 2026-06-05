@@ -9,6 +9,7 @@ const virtualizerRoutes = [
   "/virtualizer/scroll-padding",
   "/virtualizer/sticky",
   "/virtualizer/infinite-scroll",
+  "/virtualizer/chat",
   "/virtualizer/window",
 ] as const
 
@@ -82,4 +83,37 @@ test.describe("virtualizer examples", () => {
       await I.checkAccessibility("main")
     })
   }
+
+  test("chat example follows appended messages only when pinned", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    const pinnedScrollTop = await transcript.evaluate((el) => (el as HTMLElement).scrollTop)
+    await page.getByRole("button", { name: "Append message" }).click()
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(pinnedScrollTop)
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await transcript.evaluate((el) => {
+      const element = el as HTMLElement
+      element.scrollTop = 0
+      element.dispatchEvent(new Event("scroll", { bubbles: true }))
+    })
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Append message" }).click()
+    await page.waitForTimeout(100)
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Jump to latest" }).click()
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+  })
 })

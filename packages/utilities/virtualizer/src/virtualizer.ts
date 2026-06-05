@@ -9,6 +9,7 @@ import type {
   ScrollByOptions,
   ScrollAnchor,
   ScrollState,
+  ScrollToEndOptions,
   ScrollToIndexOptions,
   ScrollToIndexResult,
   ShouldAdjustScrollOnSizeChangeContext,
@@ -31,6 +32,13 @@ type RangeChangeReasonDetails = { reason: RangeChangeReason }
 type SmoothScrollOptions = Exclude<NonNullable<ScrollToIndexOptions["smooth"]>, boolean>
 type SmoothScrollFunction = NonNullable<SmoothScrollOptions["scrollFunction"]>
 type RtlScrollBehavior = "negative" | "positive-descending" | "positive-ascending"
+type AnchorSnapshot = ScrollAnchor & { align: "start" | "end" }
+type CountChangeSnapshot = {
+  previousCount: number
+  nextCount: number
+  previousLastKey: string | number | undefined
+  wasAtEnd: boolean
+}
 
 function easeOutCubic(t: number): number {
   const shiftedT = t - 1
@@ -159,6 +167,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       rangeExtractor: defaultRangeExtractor,
       rootMargin: "50px",
       preserveScrollAnchor: true,
+      anchorTo: "start",
+      followOnAppend: false,
+      scrollEndThreshold: 0,
       overflowAnchor: "none",
       observeScrollElementSize: false,
       scrollEndDelay: SCROLL_END_DELAY_MS,
@@ -854,6 +865,20 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return this.scrollToOffset(this.scrollOffset + delta, options)
   }
 
+  getDistanceFromEnd(): number {
+    const viewportEnd = this.scrollOffset + this.getScrollMargin() + this.viewportSize
+    return Math.max(0, this.getTotalSize() - viewportEnd)
+  }
+
+  isAtEnd(threshold = this.options.scrollEndThreshold): boolean {
+    return this.getDistanceFromEnd() <= threshold
+  }
+
+  scrollToEnd(options: ScrollToEndOptions = {}): ScrollToIndexResult {
+    const targetOffset = Math.max(0, this.getTotalSize() - this.getScrollMargin() - this.viewportSize)
+    return this.scrollToOffset(targetOffset, options)
+  }
+
   private applyInitialScrollOffset(): void {
     if (this.hasAppliedInitialOffset || this.options.disableScrollOnInit) return
 
@@ -1071,6 +1096,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
     const delta = size - previousSize
     const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
+    const shouldPreserveEnd = this.shouldPreserveEndOnSizeChange(delta)
     let changed = false
     const applyMeasurement = () => {
       changed = this.onItemMeasured(index, size)
@@ -1079,7 +1105,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       }
     }
 
-    if (shouldAdjust) {
+    if (shouldPreserveEnd) {
+      applyMeasurement()
+      if (changed) {
+        this.scrollToEnd()
+      }
+    } else if (shouldAdjust) {
       this.preserveScrollPosition(index, applyMeasurement)
     } else {
       applyMeasurement()
@@ -1103,6 +1134,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
     const delta = size - previousSize
     const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
+    const shouldPreserveEnd = this.shouldPreserveEndOnSizeChange(delta)
     let changed = false
     const applyMeasurement = () => {
       changed = this.onItemMeasured(index, size)
@@ -1111,7 +1143,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       }
     }
 
-    if (shouldAdjust) {
+    if (shouldPreserveEnd) {
+      applyMeasurement()
+      if (changed) {
+        this.scrollToEnd()
+      }
+    } else if (shouldAdjust) {
       this.preserveScrollPosition(index, applyMeasurement)
     } else {
       applyMeasurement()
@@ -1165,7 +1202,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     if (this.pendingSizeUpdates.size === 0) return
 
-    const updates: Array<{ index: number; size: number; shouldAdjust: boolean }> = []
+    const updates: Array<{ index: number; size: number; shouldAdjust: boolean; shouldPreserveEnd: boolean }> = []
     for (const [index, { size, element }] of this.pendingSizeUpdates) {
       if (element && this.elementsByIndex.get(index) !== element) continue
       const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
@@ -1174,6 +1211,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         index,
         size,
         shouldAdjust: this.shouldAdjustScrollOnSizeChange(index, delta),
+        shouldPreserveEnd: this.shouldPreserveEndOnSizeChange(delta),
       })
     }
 
@@ -1195,12 +1233,18 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.invalidateMeasurements(minIndex)
     }
 
+    const shouldPreserveEnd = updates.some((update) => update.shouldPreserveEnd)
     const adjustCandidate = updates.reduce((min, update) => {
       if (!update.shouldAdjust) return min
       return update.index < min ? update.index : min
     }, Infinity)
 
-    if (adjustCandidate !== Infinity) {
+    if (shouldPreserveEnd) {
+      applyMeasurements()
+      if (anySizeChanged) {
+        this.scrollToEnd()
+      }
+    } else if (adjustCandidate !== Infinity) {
       this.preserveScrollPosition(adjustCandidate, applyMeasurements)
     } else {
       applyMeasurements()
@@ -1299,6 +1343,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return measurement.start < viewportStart
   }
 
+  private shouldPreserveEndOnSizeChange(delta: number): boolean {
+    if (!this.options.preserveScrollAnchor) return false
+    if (this.options.anchorTo !== "end") return false
+    if (delta === 0) return false
+    return this.isAtEnd()
+  }
+
   protected toLogicalHorizontalOffset(rawOffset: number, target: HTMLElement | null): number {
     if (!this.isHorizontal || !this.isRtl) return rawOffset
     const mode = this.resolveRtlScrollBehavior(target)
@@ -1374,25 +1425,43 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   getScrollAnchor(): ScrollAnchor | null {
+    const anchor = this.getAnchorSnapshot("start")
+    return anchor ? { key: anchor.key, offset: anchor.offset } : null
+  }
+
+  private getAnchorSnapshot(align: "start" | "end" = this.options.anchorTo): AnchorSnapshot | null {
     this.calculateRange()
     if (this.range.startIndex < 0 || this.range.endIndex < 0) return null
 
     const { count } = this.options
     const scrollMargin = this.getScrollMargin()
     const viewportStart = this.scrollOffset + scrollMargin
-    const anchorIndex = Math.min(count - 1, Math.max(0, this.findIndexAtOffset(viewportStart)))
+    const viewportEnd = viewportStart + this.viewportSize
+    const anchorOffset = align === "end" ? Math.max(viewportStart, viewportEnd - 1) : viewportStart
+    const anchorIndex = Math.min(count - 1, Math.max(0, this.findIndexAtOffset(anchorOffset)))
     const measurement = this.getMeasurement(anchorIndex)
     const key = this.getItemKey(anchorIndex)
 
-    return { key, offset: viewportStart - measurement.start }
+    return {
+      key,
+      offset: align === "end" ? measurement.end - viewportEnd : viewportStart - measurement.start,
+      align,
+    }
   }
 
   restoreScrollAnchor(anchor: ScrollAnchor): ScrollToIndexResult | null {
+    return this.restoreAnchorSnapshot({ ...anchor, align: "start" })
+  }
+
+  private restoreAnchorSnapshot(anchor: AnchorSnapshot): ScrollToIndexResult | null {
     const index = this.getIndexForKey(anchor.key)
     if (index === undefined) return null
 
     const measurement = this.getMeasurement(index)
-    const targetOffset = measurement.start + anchor.offset - this.getScrollMargin()
+    const targetOffset =
+      anchor.align === "end"
+        ? measurement.end - anchor.offset - this.viewportSize - this.getScrollMargin()
+        : measurement.start + anchor.offset - this.getScrollMargin()
     return this.scrollToOffset(targetOffset)
   }
 
@@ -1589,10 +1658,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   updateOptions(nextOptions: Partial<O>): void {
     if (this.isDestroyed) return
     const prev = { ...this.options }
+    const countChanged = nextOptions.count !== undefined && nextOptions.count !== this.options.count
     const preserveAnchor = nextOptions.preserveScrollAnchor ?? this.options.preserveScrollAnchor
-    const shouldRestoreAnchor =
-      preserveAnchor && nextOptions.count !== undefined && nextOptions.count !== this.options.count
-    const anchor = shouldRestoreAnchor ? this.getScrollAnchor() : null
+    const nextAnchorTo = nextOptions.anchorTo ?? this.options.anchorTo
+    const shouldRestoreAnchor = preserveAnchor && countChanged
+    const anchor = shouldRestoreAnchor ? this.getAnchorSnapshot(nextAnchorTo) : null
+    const countSnapshot = countChanged ? this.getCountChangeSnapshot(nextOptions.count!) : null
 
     Object.assign(this.options, nextOptions)
     if (nextOptions.dir !== undefined) {
@@ -1621,9 +1692,38 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.forceUpdate({ reason })
 
-    if (anchor) {
-      this.restoreScrollAnchor(anchor)
+    if (countSnapshot && this.shouldFollowOnAppend(countSnapshot)) {
+      this.followAppendedItems()
+    } else if (anchor) {
+      this.restoreAnchorSnapshot(anchor)
     }
+  }
+
+  private getCountChangeSnapshot(nextCount: number): CountChangeSnapshot {
+    const nextScrollEndThreshold = this.options.scrollEndThreshold
+    return {
+      previousCount: this.options.count,
+      nextCount,
+      previousLastKey: this.options.count > 0 ? this.getItemKey(this.options.count - 1) : undefined,
+      wasAtEnd: this.getDistanceFromEnd() <= nextScrollEndThreshold,
+    }
+  }
+
+  private shouldFollowOnAppend(snapshot: CountChangeSnapshot): boolean {
+    if (this.options.anchorTo !== "end") return false
+    if (this.options.followOnAppend === false) return false
+    if (!snapshot.wasAtEnd) return false
+    if (snapshot.nextCount <= snapshot.previousCount) return false
+    if (snapshot.previousCount === 0) return true
+    if (snapshot.previousLastKey === undefined) return false
+
+    return this.getIndexForKey(snapshot.previousLastKey) === snapshot.previousCount - 1
+  }
+
+  private followAppendedItems(): void {
+    const followOnAppend = this.options.followOnAppend
+    const smooth = followOnAppend === "smooth" && this.scrollElement ? true : undefined
+    this.scrollToEnd({ smooth })
   }
 
   /** Regular method (not a class field) so subclasses can override with `super`. */

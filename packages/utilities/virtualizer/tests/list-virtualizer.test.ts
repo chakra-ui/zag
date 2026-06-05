@@ -848,6 +848,147 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getScrollAnchor()).toEqual({ key: "a", offset: 5 })
   })
 
+  test("exposes end distance helpers and scrollToEnd", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      initialOffset: 20,
+      scrollEndThreshold: 5,
+    })
+
+    expect(virtualizer.getDistanceFromEnd()).toBe(50)
+    expect(virtualizer.isAtEnd()).toBe(false)
+    expect(virtualizer.scrollToEnd()).toEqual({ scrollTop: 70, scrollLeft: 0 })
+    expect(virtualizer.getDistanceFromEnd()).toBe(0)
+    expect(virtualizer.isAtEnd()).toBe(true)
+  })
+
+  test("follows appended items when end anchored and already at the end", () => {
+    const initialItems = ["a", "b", "c", "d", "e"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      anchorTo: "end",
+      followOnAppend: true,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToEnd()
+    expect(virtualizer.getScrollState().offset.y).toBe(20)
+
+    items = [...initialItems, "f"]
+    virtualizer.updateOptions({
+      count: items.length,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    expect(virtualizer.getScrollState().offset.y).toBe(30)
+    expect(virtualizer.isAtEnd()).toBe(true)
+  })
+
+  test("does not follow appended items when the user is reading history", () => {
+    const initialItems = ["a", "b", "c", "d", "e"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      anchorTo: "end",
+      followOnAppend: true,
+      scrollEndThreshold: 5,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(10)
+    expect(virtualizer.getDistanceFromEnd()).toBe(10)
+
+    items = [...initialItems, "f"]
+    virtualizer.updateOptions({
+      count: items.length,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    expect(virtualizer.getScrollState().offset.y).toBe(10)
+    expect(virtualizer.getDistanceFromEnd()).toBe(20)
+  })
+
+  test("uses scrollEndThreshold to decide whether appended items should follow", () => {
+    const initialItems = ["a", "b", "c", "d", "e"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      anchorTo: "end",
+      followOnAppend: "instant",
+      scrollEndThreshold: 6,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    virtualizer.scrollToOffset(15)
+    expect(virtualizer.getDistanceFromEnd()).toBe(5)
+
+    items = [...initialItems, "f"]
+    virtualizer.updateOptions({
+      count: items.length,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    expect(virtualizer.getScrollState().offset.y).toBe(30)
+  })
+
+  test("keeps an end anchored viewport pinned when the last item grows", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 5,
+      estimatedSize: () => 20,
+      overscan: 0,
+      initialRect: initialRect(60),
+      anchorTo: "end",
+    })
+
+    virtualizer.scrollToEnd()
+    expect(virtualizer.getScrollState().offset.y).toBe(40)
+
+    virtualizer.measureItem(4, 40)
+
+    expect(virtualizer.getTotalSize()).toBe(120)
+    expect(virtualizer.getScrollState().offset.y).toBe(60)
+    expect(virtualizer.isAtEnd()).toBe(true)
+  })
+
+  test("does not pin last item growth when the viewport is away from the end", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 5,
+      estimatedSize: () => 20,
+      overscan: 0,
+      initialRect: initialRect(60),
+      anchorTo: "end",
+    })
+
+    virtualizer.scrollToOffset(20)
+    virtualizer.measureItem(4, 40)
+
+    expect(virtualizer.getTotalSize()).toBe(120)
+    expect(virtualizer.getScrollState().offset.y).toBe(20)
+    expect(virtualizer.isAtEnd()).toBe(false)
+  })
+
   test("preserves groups initialized during construction", () => {
     const virtualizer = new ListVirtualizer({
       count: 100,
