@@ -122,6 +122,7 @@ export default function Page() {
   const prependHistory = useCallback(() => {
     if (loadingHistoryRef.current) return
 
+    const shouldFollow = virtualizer.isAtEnd()
     loadingHistoryRef.current = true
     setIsLoadingHistory(true)
 
@@ -137,11 +138,14 @@ export default function Page() {
       messageIndexByIdRef.current = getMessageIndexById(nextMessages)
       virtualizer.prependItems(HISTORY_PAGE_SIZE)
       setMessageSnapshot(nextMessages)
+      if (shouldFollow) {
+        requestAnimationFrame(scrollToLatestSettled)
+      }
 
       loadingHistoryRef.current = false
       setIsLoadingHistory(false)
     }, 200)
-  }, [virtualizer])
+  }, [scrollToLatestSettled, virtualizer])
 
   const handleTranscriptScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {

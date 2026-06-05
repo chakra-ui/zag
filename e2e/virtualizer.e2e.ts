@@ -141,16 +141,37 @@ test.describe("virtualizer examples", () => {
     await page.waitForSelector("main", { state: "visible" })
 
     const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+    const visibleMessages = () =>
+      transcript.evaluate((el) => {
+        const container = el as HTMLElement
+        const containerRect = container.getBoundingClientRect()
+        return Array.from(container.querySelectorAll<HTMLElement>("[data-index]"))
+          .filter((item) => {
+            const rect = item.getBoundingClientRect()
+            return rect.bottom > containerRect.top && rect.top < containerRect.bottom
+          })
+          .map((item) => item.textContent?.trim() ?? "")
+      })
+
     await expect
       .poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop), { timeout: 5000 })
       .toBeGreaterThan(0)
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
 
-    const beforeText = await transcript.locator("[data-index]").first().textContent()
     await page.getByRole("button", { name: "Load older messages" }).click()
 
     await expect(page.getByText("Messages: 48")).toBeVisible({ timeout: 5000 })
-    await expect(transcript.locator("[data-index]").first()).toContainText(beforeText?.trim() || /message/)
-    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(100)
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+    await expect
+      .poll(visibleMessages)
+      .toContainEqual(
+        "AssistantAssistant message 35. This message is intentionally longer so the example exercises dynamic row measurement and anchor correction.",
+      )
   })
 
   test("chat example keeps streamed output pinned when at latest", async ({ page }) => {
