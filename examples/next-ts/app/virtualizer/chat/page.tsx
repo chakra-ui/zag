@@ -61,16 +61,6 @@ export default function Page() {
     overscan: 6,
   })
 
-  virtualizer.updateOptions({
-    count: messages.length,
-    estimatedSize,
-    indexToKey,
-    keyToIndex,
-    anchorTo: "end",
-    followOnAppend: true,
-    scrollEndThreshold: 80,
-  })
-
   const setScrollElementRef = useCallback(
     (element: HTMLDivElement | null) => {
       scrollRef.current = element
@@ -101,6 +91,18 @@ export default function Page() {
     },
     [virtualizer],
   )
+
+  useEffect(() => {
+    virtualizer.updateOptions({
+      count: messages.length,
+      estimatedSize,
+      indexToKey,
+      keyToIndex,
+      anchorTo: "end",
+      followOnAppend: true,
+      scrollEndThreshold: 80,
+    })
+  }, [estimatedSize, indexToKey, keyToIndex, messages.length, virtualizer])
 
   useEffect(() => {
     if (didInitialScrollRef.current) return

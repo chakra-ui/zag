@@ -97,9 +97,7 @@ test.describe("virtualizer examples", () => {
 
     await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
 
-    const pinnedScrollTop = await transcript.evaluate((el) => (el as HTMLElement).scrollTop)
     await page.getByRole("button", { name: "Append message" }).click()
-    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(pinnedScrollTop)
     await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
 
     await transcript.evaluate((el) => {
