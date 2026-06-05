@@ -79,17 +79,57 @@ export default function Page() {
     [ref],
   )
 
+  const scrollToLatest = useCallback(
+    (options: { smooth?: boolean } = {}) => {
+      if (options.smooth) {
+        virtualizer.scrollToEnd({ smooth: true })
+        return
+      }
+
+      virtualizer.scrollToEnd()
+
+      const element = scrollRef.current
+      if (!element) return
+
+      element.scrollTop = Math.max(0, element.scrollHeight - element.clientHeight)
+      virtualizer.handleScroll({
+        currentTarget: {
+          scrollTop: element.scrollTop,
+          scrollLeft: element.scrollLeft,
+        },
+      })
+    },
+    [virtualizer],
+  )
+
   useEffect(() => {
     if (didInitialScrollRef.current) return
 
-    const frame = requestAnimationFrame(() => {
+    let frame = 0
+    let attempts = 0
+    let cancelled = false
+
+    const scroll = () => {
+      if (cancelled || didInitialScrollRef.current) return
+      scrollToLatest()
+      attempts += 1
+
+      if (attempts < 4) {
+        frame = requestAnimationFrame(scroll)
+        return
+      }
+
       if (didInitialScrollRef.current) return
       didInitialScrollRef.current = true
-      virtualizer.scrollToEnd()
-    })
+    }
 
-    return () => cancelAnimationFrame(frame)
-  }, [virtualizer])
+    frame = requestAnimationFrame(scroll)
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame)
+    }
+  }, [scrollToLatest])
 
   useEffect(() => {
     return () => {
@@ -179,7 +219,7 @@ export default function Page() {
         <button type="button" onClick={streamReply} disabled={isStreaming}>
           {isStreaming ? "Streaming..." : "Stream reply"}
         </button>
-        <button type="button" onClick={() => virtualizer.scrollToEnd({ smooth: true })} disabled={isAtEnd}>
+        <button type="button" onClick={() => scrollToLatest({ smooth: true })} disabled={isAtEnd}>
           Jump to latest
         </button>
       </div>
