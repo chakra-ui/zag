@@ -196,10 +196,14 @@ export default function Page() {
   }, [])
 
   const appendMessage = useCallback(() => {
+    const shouldFollow = virtualizer.isAtEnd()
     const nextIndex = nextMessageIndexRef.current
     nextMessageIndexRef.current += 1
     setMessages((current) => [...current, makeMessage(nextIndex)])
-  }, [])
+    if (shouldFollow) {
+      requestAnimationFrame(scrollToLatestSettled)
+    }
+  }, [scrollToLatestSettled, virtualizer])
 
   const streamReply = useCallback(() => {
     if (streamTimerRef.current != null) return
@@ -276,6 +280,7 @@ export default function Page() {
         style={{
           ...virtualizer.getContainerStyle(),
           height: 460,
+          width: "100%",
           border: "1px solid #cbd5e1",
           borderRadius: 12,
           marginTop: 16,
