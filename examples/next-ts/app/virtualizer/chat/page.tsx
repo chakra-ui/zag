@@ -33,6 +33,7 @@ export default function Page() {
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const didInitialScrollRef = useRef(false)
   const autoHistoryEnabledRef = useRef(false)
+  const shouldFollowStreamRef = useRef(false)
   const loadingHistoryRef = useRef(false)
   const streamTimerRef = useRef<number | null>(null)
   const firstMessageIndexRef = useRef(0)
@@ -203,6 +204,7 @@ export default function Page() {
   const streamReply = useCallback(() => {
     if (streamTimerRef.current != null) return
 
+    shouldFollowStreamRef.current = virtualizer.isAtEnd()
     const id = `stream-${Date.now()}`
     const chunks = [
       "Assistant is composing a streamed response.",
@@ -213,6 +215,9 @@ export default function Page() {
 
     setIsStreaming(true)
     setMessages((current) => [...current, { id, author: "Assistant", text: chunks[0]! }])
+    if (shouldFollowStreamRef.current) {
+      requestAnimationFrame(scrollToLatestSettled)
+    }
 
     streamTimerRef.current = window.setInterval(() => {
       chunkIndex += 1
@@ -229,8 +234,11 @@ export default function Page() {
       setMessages((current) =>
         current.map((message) => (message.id === id ? { ...message, text: chunks[chunkIndex]! } : message)),
       )
+      if (shouldFollowStreamRef.current) {
+        requestAnimationFrame(scrollToLatestSettled)
+      }
     }, 450)
-  }, [])
+  }, [scrollToLatestSettled, virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()
