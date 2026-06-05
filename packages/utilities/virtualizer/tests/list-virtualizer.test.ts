@@ -865,6 +865,30 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.isAtEnd()).toBe(true)
   })
 
+  test("uses the attached scroll element for distance from end", () => {
+    const { element } = createMockScrollContainer({
+      viewport: { width: 100, height: 30 },
+      scrollTop: 60,
+    })
+    Object.assign(element, {
+      clientHeight: 30,
+      scrollHeight: 100,
+    })
+
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+      scrollEndThreshold: 10,
+    })
+
+    virtualizer.init(element)
+
+    expect(virtualizer.getDistanceFromEnd()).toBe(10)
+    expect(virtualizer.isAtEnd()).toBe(true)
+  })
+
   test("follows appended items when end anchored and already at the end", () => {
     const initialItems = ["a", "b", "c", "d", "e"]
     let items = initialItems

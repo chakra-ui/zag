@@ -866,6 +866,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   getDistanceFromEnd(): number {
+    if (this.scrollElement && this.shouldApplyScrollToScrollElement()) {
+      if (this.isHorizontal) {
+        const maxOffset = this.getMaxHorizontalOffset(this.scrollElement)
+        const currentOffset = this.toLogicalHorizontalOffset(this.scrollElement.scrollLeft, this.scrollElement)
+        return Math.max(0, maxOffset - currentOffset)
+      }
+
+      const maxOffset = Math.max(0, this.scrollElement.scrollHeight - this.scrollElement.clientHeight)
+      return Math.max(0, maxOffset - this.scrollElement.scrollTop)
+    }
+
     const viewportEnd = this.scrollOffset + this.getScrollMargin() + this.viewportSize
     return Math.max(0, this.getTotalSize() - viewportEnd)
   }
