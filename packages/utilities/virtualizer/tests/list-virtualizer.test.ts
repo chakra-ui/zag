@@ -950,6 +950,36 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getDistanceFromEnd()).toBe(20)
   })
 
+  test("does not restore an end anchor for appends when the user is reading history", () => {
+    const initialItems = ["a", "b", "c", "d", "e"]
+    let items = initialItems
+
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 100,
+      overscan: 0,
+      initialRect: initialRect(200),
+      anchorTo: "end",
+      followOnAppend: true,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    for (let index = 0; index < items.length; index++) {
+      virtualizer.measureItem(index, 50)
+    }
+    virtualizer.scrollToOffset(0)
+
+    items = [...initialItems, "f"]
+    virtualizer.updateOptions({
+      count: items.length,
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    expect(virtualizer.getScrollState().offset.y).toBe(0)
+  })
+
   test("uses scrollEndThreshold to decide whether appended items should follow", () => {
     const initialItems = ["a", "b", "c", "d", "e"]
     let items = initialItems

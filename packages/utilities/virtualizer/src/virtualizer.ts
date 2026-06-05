@@ -1714,9 +1714,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.forceUpdate({ reason })
 
+    const didAppend = countSnapshot ? this.isAppendChange(countSnapshot) : false
+
     if (countSnapshot && this.shouldFollowOnAppend(countSnapshot)) {
       this.followAppendedItems()
-    } else if (anchor) {
+    } else if (anchor && !didAppend) {
       this.restoreAnchorSnapshot(anchor)
     }
   }
@@ -1735,6 +1737,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.options.anchorTo !== "end") return false
     if (this.options.followOnAppend === false) return false
     if (!snapshot.wasAtEnd) return false
+    return this.isAppendChange(snapshot)
+  }
+
+  private isAppendChange(snapshot: CountChangeSnapshot): boolean {
     if (snapshot.nextCount <= snapshot.previousCount) return false
     if (snapshot.previousCount === 0) return true
     if (snapshot.previousLastKey === undefined) return false
