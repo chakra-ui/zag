@@ -1,5 +1,20 @@
 # @zag-js/pin-input
 
+## 1.41.2
+
+### Patch Changes
+
+- [`b4d75ed`](https://github.com/chakra-ui/zag/commit/b4d75ed219f68d53ab288bf734fad3f2ea0eec71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-filled` was incorrectly set on every input
+  on first render.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+
 ## 1.41.1
 
 ### Patch Changes

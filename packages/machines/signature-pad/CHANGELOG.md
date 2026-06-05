@@ -1,5 +1,20 @@
 # @zag-js/signature-pad
 
+## 1.41.2
+
+### Patch Changes
+
+- [`a83c537`](https://github.com/chakra-ui/zag/commit/a83c537405797c12fe679fac5e1db080ef078d25) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the `dir` prop was accepted but never forwarded to
+  the DOM.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+
 ## 1.41.1
 
 ### Patch Changes
