@@ -1,6 +1,6 @@
 "use client"
 
-import { type UIEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { type UIEvent, useCallback, useEffect, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
 type ChatMessage = {
@@ -29,6 +29,10 @@ function makeMessage(index: number): ChatMessage {
 
 const initialMessages = Array.from({ length: 36 }, (_, index) => makeMessage(index))
 
+function getMessageIndexById(messages: ChatMessage[]) {
+  return new Map(messages.map((message, index) => [message.id, index]))
+}
+
 export default function Page() {
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const didInitialScrollRef = useRef(false)
@@ -38,20 +42,18 @@ export default function Page() {
   const streamTimerRef = useRef<number | null>(null)
   const firstMessageIndexRef = useRef(0)
   const nextMessageIndexRef = useRef(initialMessages.length)
+  const messagesRef = useRef(initialMessages)
+  const messageIndexByIdRef = useRef(getMessageIndexById(initialMessages))
 
   const [messages, setMessages] = useState(initialMessages)
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const [isStreaming, setIsStreaming] = useState(false)
 
-  const keyToIndexMap = useMemo(() => {
-    return new Map(messages.map((message, index) => [message.id, index]))
-  }, [messages])
-
-  const indexToKey = useCallback((index: number) => messages[index]!.id, [messages])
-  const keyToIndex = useCallback((key: string | number) => keyToIndexMap.get(String(key)) ?? -1, [keyToIndexMap])
+  const indexToKey = useCallback((index: number) => messagesRef.current[index]!.id, [])
+  const keyToIndex = useCallback((key: string | number) => messageIndexByIdRef.current.get(String(key)) ?? -1, [])
   const estimatedSize = useCallback(
-    (index: number) => ((messages[index]?.text.length ?? 0) > 110 ? 112 : 78),
-    [messages],
+    (index: number) => ((messagesRef.current[index]?.text.length ?? 0) > 110 ? 112 : 78),
+    [],
   )
 
   const { virtualizer, ref } = useListVirtualizer({
@@ -111,6 +113,12 @@ export default function Page() {
     scroll()
   }, [scrollToLatest])
 
+  const syncMessages = useCallback((nextMessages: ChatMessage[]) => {
+    messagesRef.current = nextMessages
+    messageIndexByIdRef.current = getMessageIndexById(nextMessages)
+    setMessages(nextMessages)
+  }, [])
+
   const prependHistory = useCallback(() => {
     if (loadingHistoryRef.current) return
 
@@ -120,16 +128,20 @@ export default function Page() {
     window.setTimeout(() => {
       const nextFirstIndex = firstMessageIndexRef.current - HISTORY_PAGE_SIZE
       firstMessageIndexRef.current = nextFirstIndex
+      const olderMessages = Array.from({ length: HISTORY_PAGE_SIZE }, (_, offset) =>
+        makeMessage(nextFirstIndex + offset),
+      )
+      const nextMessages = [...olderMessages, ...messagesRef.current]
 
-      setMessages((current) => [
-        ...Array.from({ length: HISTORY_PAGE_SIZE }, (_, offset) => makeMessage(nextFirstIndex + offset)),
-        ...current,
-      ])
+      messagesRef.current = nextMessages
+      messageIndexByIdRef.current = getMessageIndexById(nextMessages)
+      virtualizer.prependItems(HISTORY_PAGE_SIZE)
+      setMessages(nextMessages)
 
       loadingHistoryRef.current = false
       setIsLoadingHistory(false)
     }, 200)
-  }, [])
+  }, [virtualizer])
 
   const handleTranscriptScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
@@ -144,18 +156,6 @@ export default function Page() {
     },
     [prependHistory, virtualizer],
   )
-
-  useEffect(() => {
-    virtualizer.updateOptions({
-      count: messages.length,
-      estimatedSize,
-      indexToKey,
-      keyToIndex,
-      anchorTo: "end",
-      followOnAppend: true,
-      scrollEndThreshold: SCROLL_END_THRESHOLD,
-    })
-  }, [estimatedSize, indexToKey, keyToIndex, messages.length, virtualizer])
 
   useEffect(() => {
     if (didInitialScrollRef.current) return
@@ -199,11 +199,13 @@ export default function Page() {
     const shouldFollow = virtualizer.isAtEnd()
     const nextIndex = nextMessageIndexRef.current
     nextMessageIndexRef.current += 1
-    setMessages((current) => [...current, makeMessage(nextIndex)])
+    const nextMessages = [...messagesRef.current, makeMessage(nextIndex)]
+    syncMessages(nextMessages)
+    virtualizer.updateOptions({ count: nextMessages.length })
     if (shouldFollow) {
       requestAnimationFrame(scrollToLatestSettled)
     }
-  }, [scrollToLatestSettled, virtualizer])
+  }, [scrollToLatestSettled, syncMessages, virtualizer])
 
   const streamReply = useCallback(() => {
     if (streamTimerRef.current != null) return
@@ -218,7 +220,9 @@ export default function Page() {
     let chunkIndex = 0
 
     setIsStreaming(true)
-    setMessages((current) => [...current, { id, author: "Assistant", text: chunks[0]! }])
+    const nextMessages = [...messagesRef.current, { id, author: "Assistant" as const, text: chunks[0]! }]
+    syncMessages(nextMessages)
+    virtualizer.updateOptions({ count: nextMessages.length })
     if (shouldFollowStreamRef.current) {
       requestAnimationFrame(scrollToLatestSettled)
     }
@@ -235,14 +239,14 @@ export default function Page() {
         return
       }
 
-      setMessages((current) =>
-        current.map((message) => (message.id === id ? { ...message, text: chunks[chunkIndex]! } : message)),
+      syncMessages(
+        messagesRef.current.map((message) => (message.id === id ? { ...message, text: chunks[chunkIndex]! } : message)),
       )
       if (shouldFollowStreamRef.current) {
         requestAnimationFrame(scrollToLatestSettled)
       }
     }, 450)
-  }, [scrollToLatestSettled, virtualizer])
+  }, [scrollToLatestSettled, syncMessages, virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()

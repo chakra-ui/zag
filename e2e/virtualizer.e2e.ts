@@ -136,6 +136,23 @@ test.describe("virtualizer examples", () => {
     await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(100)
   })
 
+  test("chat example load older button preserves a valid virtual window", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    await expect
+      .poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop), { timeout: 5000 })
+      .toBeGreaterThan(0)
+
+    const beforeText = await transcript.locator("[data-index]").first().textContent()
+    await page.getByRole("button", { name: "Load older messages" }).click()
+
+    await expect(page.getByText("Messages: 48")).toBeVisible({ timeout: 5000 })
+    await expect(transcript.locator("[data-index]").first()).toContainText(beforeText?.trim() || /message/)
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(100)
+  })
+
   test("chat example keeps streamed output pinned when at latest", async ({ page }) => {
     await page.goto("/virtualizer/chat")
     await page.waitForSelector("main", { state: "visible" })
