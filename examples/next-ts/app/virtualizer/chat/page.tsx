@@ -222,7 +222,7 @@ export default function Page() {
         <button type="button" onClick={streamReply} disabled={isStreaming}>
           {isStreaming ? "Streaming..." : "Stream reply"}
         </button>
-        <button type="button" onClick={() => scrollToLatest({ smooth: true })} disabled={isAtEnd}>
+        <button type="button" onClick={() => scrollToLatest()} disabled={isAtEnd}>
           Jump to latest
         </button>
       </div>
