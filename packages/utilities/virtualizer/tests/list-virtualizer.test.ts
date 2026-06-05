@@ -848,6 +848,20 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getScrollAnchor()).toEqual({ key: "a", offset: 5 })
   })
 
+  test("treats negative keyToIndex results as missing keys", () => {
+    const items = ["a", "b", "c"]
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(20),
+      indexToKey: (index) => items[index]!,
+      keyToIndex: (key) => items.indexOf(key as string),
+    })
+
+    expect(virtualizer.restoreScrollAnchor({ key: "missing", offset: 0 })).toBeNull()
+  })
+
   test("exposes end distance helpers and scrollToEnd", () => {
     const virtualizer = new ListVirtualizer({
       count: 10,

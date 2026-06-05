@@ -533,10 +533,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   protected getIndexForKey(key: string | number): number | undefined {
     const byUser = this.options.keyToIndex?.(key)
-    if (byUser !== undefined) return byUser
+    if (byUser !== undefined) {
+      return Number.isInteger(byUser) && byUser >= 0 && byUser < this.options.count ? byUser : undefined
+    }
 
     const cached = this.keyIndexCache.get(key)
-    if (cached !== undefined) return cached
+    if (cached !== undefined) {
+      return cached >= 0 && cached < this.options.count ? cached : undefined
+    }
 
     for (let i = 0; i < this.options.count; i++) {
       if (this.getItemKey(i) === key) return i

@@ -45,7 +45,7 @@ export default function Page() {
   const messagesRef = useRef(initialMessages)
   const messageIndexByIdRef = useRef(getMessageIndexById(initialMessages))
 
-  const [messages, setMessages] = useState(initialMessages)
+  const [, setMessageSnapshot] = useState(initialMessages)
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const [isStreaming, setIsStreaming] = useState(false)
 
@@ -57,7 +57,7 @@ export default function Page() {
   )
 
   const { virtualizer, ref } = useListVirtualizer({
-    count: messages.length,
+    count: messagesRef.current.length,
     estimatedSize,
     indexToKey,
     keyToIndex,
@@ -116,7 +116,7 @@ export default function Page() {
   const syncMessages = useCallback((nextMessages: ChatMessage[]) => {
     messagesRef.current = nextMessages
     messageIndexByIdRef.current = getMessageIndexById(nextMessages)
-    setMessages(nextMessages)
+    setMessageSnapshot(nextMessages)
   }, [])
 
   const prependHistory = useCallback(() => {
@@ -136,7 +136,7 @@ export default function Page() {
       messagesRef.current = nextMessages
       messageIndexByIdRef.current = getMessageIndexById(nextMessages)
       virtualizer.prependItems(HISTORY_PAGE_SIZE)
-      setMessages(nextMessages)
+      setMessageSnapshot(nextMessages)
 
       loadingHistoryRef.current = false
       setIsLoadingHistory(false)
@@ -251,6 +251,7 @@ export default function Page() {
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()
   const isAtEnd = virtualizer.isAtEnd()
+  const currentMessages = messagesRef.current
 
   return (
     <main style={{ padding: 20, maxWidth: 760, width: "100%", margin: "0 auto" }}>
@@ -293,7 +294,7 @@ export default function Page() {
       >
         <div style={{ height: totalSize, width: "100%", position: "relative" }}>
           {virtualItems.map((virtualItem) => {
-            const message = messages[virtualItem.index]
+            const message = currentMessages[virtualItem.index]
             if (!message) return null
 
             const isOwnMessage = message.author === "You"
@@ -331,7 +332,7 @@ export default function Page() {
       </div>
 
       <div style={{ display: "flex", gap: 16, marginTop: 12, color: "#64748b", fontSize: 13 }}>
-        <span>Messages: {messages.length}</span>
+        <span>Messages: {currentMessages.length}</span>
         <span>Rendered: {virtualItems.length}</span>
         <span>Distance from end: {Math.round(virtualizer.getDistanceFromEnd())}px</span>
       </div>
