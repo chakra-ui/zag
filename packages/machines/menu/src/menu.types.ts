@@ -145,6 +145,28 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * Function called when the trigger value changes.
    */
   onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
+  /**
+   * Config provided by a parent menubar. When set, this menu acts as a menubar menu:
+   * its trigger becomes a `menuitem` and it coordinates open/close/focus with sibling menus.
+   * Adapters typically populate this from a menubar context. Omit it for submenus.
+   */
+  menubar?: MenubarContext | undefined
+}
+
+export interface MenubarContext {
+  /**
+   * The resolved id of the menubar root element. Used to scope the coordination events.
+   */
+  rootId: string
+  /**
+   * Whether the menubar (and therefore this menu's trigger) is disabled.
+   */
+  disabled?: boolean | undefined
+  /**
+   * The orientation of the menubar.
+   * @default "horizontal"
+   */
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
@@ -165,6 +187,8 @@ export interface MenuSchema {
     isRtl: boolean
     isTypingAhead: boolean
     highlightedId: string | null
+    isInMenubar: boolean
+    menubarDisabled: boolean
   }
   refs: {
     parent: MenuService | null
@@ -172,6 +196,7 @@ export interface MenuSchema {
     pointerRoutingLocked: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
+    menubarCloseReason: string | null
   }
 
   action: string

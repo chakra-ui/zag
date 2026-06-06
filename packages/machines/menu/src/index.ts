@@ -14,6 +14,7 @@ export type {
   ItemProps,
   ItemState,
   MenuMachine as Machine,
+  MenubarContext,
   NavigateDetails,
   OpenChangeDetails,
   OptionItemProps,

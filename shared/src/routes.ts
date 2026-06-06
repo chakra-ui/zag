@@ -433,6 +433,15 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "menubar",
+    label: "Menubar",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "nested", title: "Nested" },
+      { slug: "vertical", title: "Vertical" },
+    ],
+  },
+  {
     slug: "context-menu",
     label: "Context Menu",
     examples: [

@@ -260,6 +260,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/menubar':
+        specifier: workspace:*
+        version: link:../../packages/machines/menubar
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../../packages/machines/navigation-menu
@@ -576,6 +579,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/menubar':
+        specifier: workspace:*
+        version: link:../../packages/machines/menubar
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../../packages/machines/navigation-menu
@@ -1139,6 +1145,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/menubar':
+        specifier: workspace:*
+        version: link:../../packages/machines/menubar
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../../packages/machines/navigation-menu
@@ -1410,6 +1419,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/menubar':
+        specifier: workspace:*
+        version: link:../../packages/machines/menubar
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../../packages/machines/navigation-menu
@@ -2763,6 +2775,28 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/machines/menubar:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/machines/navigation-menu:
     dependencies:
       '@zag-js/anatomy':
@@ -3826,6 +3860,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../packages/machines/menu
+      '@zag-js/menubar':
+        specifier: workspace:*
+        version: link:../packages/machines/menubar
       '@zag-js/navigation-menu':
         specifier: workspace:*
         version: link:../packages/machines/navigation-menu

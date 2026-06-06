@@ -17,6 +17,7 @@ const docsMap = {
   "data-side": "The side of the trigger that the {{widget}} is positioned on",
   "data-invalid": "Present when invalid",
   "data-current": "Present when current",
+  "data-has-open-menu": "Present when a menu in the menubar is open",
   "data-copied": "Present when copied state is true",
   "data-channel": "The color channel of the {{widget}}",
   "data-highlighted": "Present when highlighted",

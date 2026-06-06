@@ -54,6 +54,7 @@
     "@zag-js/live-region": "workspace:*",
     "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
+    "@zag-js/menubar": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",

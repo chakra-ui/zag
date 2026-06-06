@@ -2020,5 +2020,13 @@
       "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\"",
       "data-disabled": "Present when disabled"
     }
+  },
+  "menubar": {
+    "Root": {
+      "data-menubar-root": "<uid>",
+      "data-orientation": "The orientation of the menubar",
+      "data-disabled": "Present when disabled",
+      "data-has-open-menu": "Present when a menu in the menubar is open"
+    }
   }
 }

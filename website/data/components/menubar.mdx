@@ -1,0 +1,207 @@
+---
+title: Menubar
+description: Using the menubar machine in your project.
+package: "@zag-js/menubar"
+---
+
+A menubar groups several menus — like the File / Edit / View bar in a desktop app
+— into a single widget. Each menu is a regular Zag.js menu; the menubar
+coordinates focus and open state between them.
+
+<Resources pkg="@zag-js/menubar" />
+
+<Showcase id="Menubar" />
+
+**Features**
+
+- Acts as a single tab stop, with arrow keys moving focus between menus.
+- Once a menu is open, hovering or arrowing to a sibling switches to it without a
+  click.
+- Typeahead to jump to a menu by typing its label.
+- Works with nested submenus.
+- Horizontal or vertical orientation.
+
+## Installation
+
+Install the menubar package. You'll use it alongside `@zag-js/menu`.
+
+<CodeSnippet id="menubar/installation.mdx" />
+
+## Usage
+
+A menubar is made of two machines: one `menubar` machine for the bar, and one
+`menu` machine for each top-level menu.
+
+```tsx
+import * as menu from "@zag-js/menu"
+import * as menubar from "@zag-js/menubar"
+```
+
+The menubar gives each menu a small config object through `api.getMenuContext()`.
+Pass it to the menu's `menubar` prop — that's what makes the menu behave as part
+of the bar instead of a standalone dropdown. A context is the easiest way to
+thread it down:
+
+```tsx
+const MenubarContext = createContext<menu.MenubarContext | undefined>(undefined)
+
+function Menu(props: { id: string; label: string; items: string[] }) {
+  const menubarContext = useContext(MenubarContext)
+  const service = useMachine(menu.machine, { id: props.id, menubar: menubarContext })
+  const api = menu.connect(service, normalizeProps)
+
+  return (
+    <>
+      <button {...api.getTriggerProps()}>{props.label}</button>
+      {api.open && (
+        <Portal>
+          <div {...api.getPositionerProps()}>
+            <ul {...api.getContentProps()}>
+              {props.items.map((item) => (
+                <li key={item} {...api.getItemProps({ value: item })}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Portal>
+      )}
+    </>
+  )
+}
+
+function Menubar() {
+  const service = useMachine(menubar.machine, { id: useId() })
+  const api = menubar.connect(service, normalizeProps)
+
+  return (
+    <MenubarContext.Provider value={api.getMenuContext()}>
+      <div {...api.getRootProps()}>
+        <Menu id="file" label="File" items={["New", "Open", "Save"]} />
+        <Menu id="edit" label="Edit" items={["Undo", "Redo"]} />
+        <Menu id="view" label="View" items={["Zoom In", "Zoom Out"]} />
+      </div>
+    </MenubarContext.Provider>
+  )
+}
+```
+
+The config carries the menubar's `rootId`, `disabled`, and `orientation`, so a
+menu always reflects the bar it belongs to.
+
+### Nested submenus
+
+A submenu inside a menubar menu works like any nested menu — link it to its
+parent with `setChild` / `setParent` and render its trigger with
+`getTriggerItemProps`.
+
+```tsx
+const parent = useMachine(menu.machine, { id: "edit", menubar: menubarContext })
+const sub = useMachine(menu.machine, { id: "find" })
+
+useEffect(() => {
+  parentApi.setChild(sub)
+  subApi.setParent(parent)
+}, [])
+```
+
+Only the top-level menu gets the `menubar` prop. The submenu doesn't — it's a
+child of the menu, not of the bar.
+
+With the keyboard, `ArrowRight` on a submenu trigger opens the submenu, while
+`ArrowRight` on a regular item moves to the next menu in the bar.
+
+### Vertical orientation
+
+Set `orientation` to `"vertical"` to stack the triggers. Use `positioning` so the
+menus open to the side instead of below.
+
+```tsx
+const service = useMachine(menubar.machine, {
+  id: useId(),
+  orientation: "vertical",
+})
+
+// each menu
+const service = useMachine(menu.machine, {
+  id,
+  menubar: menubarContext,
+  positioning: { placement: "right-start" },
+})
+```
+
+In a vertical menubar, `Up` / `Down` move between triggers, `ArrowRight` opens a
+menu, and `ArrowLeft` closes it back to its trigger.
+
+### Disabling the menubar
+
+Set `disabled` on the menubar to disable every trigger at once.
+
+```tsx
+const service = useMachine(menubar.machine, {
+  id: useId(),
+  disabled: true,
+})
+```
+
+### Looping focus
+
+By default, arrowing past the first or last trigger wraps around. Set
+`loopFocus` to `false` to stop at the ends.
+
+```tsx
+const service = useMachine(menubar.machine, {
+  id: useId(),
+  loopFocus: false,
+})
+```
+
+## Styling guide
+
+The menubar root exposes a few attributes you can target in CSS.
+
+```css
+[data-part="root"][data-orientation="horizontal|vertical"] {
+  /* styles per orientation */
+}
+
+[data-part="root"][data-disabled] {
+  /* styles when the whole bar is disabled */
+}
+
+/* present while any menu in the bar is open */
+[data-part="root"][data-has-open-menu="true"] {
+  /* ... */
+}
+```
+
+Triggers are owned by the menu, so style them with the menu's `trigger` part. See
+the [menu styling guide](/components/menu#styling-guide).
+
+## Methods and Properties
+
+### Machine Context
+
+The menubar machine exposes the following context properties:
+
+<ContextTable name="menubar" />
+
+### Machine API
+
+The menubar `api` exposes the following methods:
+
+<ApiTable name="menubar" />
+
+### Data Attributes
+
+<DataAttrTable name="menubar" />
+
+## Accessibility
+
+Follows the
+[WAI-ARIA Menubar pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/) —
+the bar is a single tab stop and arrow keys move focus between menus.
+
+### Keyboard Interactions
+
+<KeyboardTable name="menubar" />

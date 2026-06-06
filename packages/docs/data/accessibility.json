@@ -870,5 +870,29 @@
         "description": "<span>When focus is on trigger, moves focus to the last trigger.<br />When focus is on content, moves focus to the last link.</span>"
       }
     ]
+  },
+  "menubar": {
+    "keyboard": [
+      {
+        "keys": ["ArrowRight", "ArrowLeft"],
+        "description": "In a horizontal menubar, moves focus to the next/previous menu. If a menu is open, opens the sibling menu."
+      },
+      {
+        "keys": ["ArrowDown", "ArrowUp"],
+        "description": "In a vertical menubar, moves focus to the next/previous menu. In a horizontal menubar, opens the focused menu."
+      },
+      {
+        "keys": ["Enter", "Space"],
+        "description": "Opens the focused menu and highlights its first item."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "Moves focus to the first/last menu."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Closes the open menu and returns focus to its trigger."
+      }
+    ]
   }
 }

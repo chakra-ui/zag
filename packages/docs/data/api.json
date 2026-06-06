@@ -6898,5 +6898,59 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
+  },
+  "menubar": {
+    "api": {
+      "hasOpenMenu": {
+        "type": "boolean",
+        "description": "Whether any menu within the menubar is open."
+      },
+      "orientation": {
+        "type": "Orientation",
+        "description": "The orientation of the menubar."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the menubar is disabled."
+      },
+      "getMenuContext": {
+        "type": "() => MenubarMenuContext",
+        "description": "Returns the config to pass to each top-level menu's `menubar` prop. Adapters\nusually expose this via a context so nested `<Menu>`s can read it."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements in the menubar. Useful for composition."
+      },
+      "orientation": {
+        "type": "Orientation | undefined",
+        "description": "The orientation of the menubar.",
+        "defaultValue": "\"horizontal\""
+      },
+      "loopFocus": {
+        "type": "boolean | undefined",
+        "description": "Whether to loop the keyboard navigation across the triggers.",
+        "defaultValue": "true"
+      },
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether the menubar (and all its menu triggers) is disabled.",
+        "defaultValue": "false"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
   }
 }

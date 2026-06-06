@@ -104,6 +104,7 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingLocked: false,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
+      menubarCloseReason: null,
     }
   },
 
@@ -112,7 +113,11 @@ export const machine = createMachine<MenuSchema>({
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
     highlightedId: ({ context, scope, refs }) =>
       resolveItemId(refs.get("children"), context.get("highlightedValue"), scope),
+    isInMenubar: ({ prop }) => prop("menubar") != null,
+    menubarDisabled: ({ prop }) => prop("menubar")?.disabled ?? false,
   },
+
+  effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
     track([() => context.get("isSubmenu")], () => {
@@ -338,7 +343,7 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint"],
+      entry: ["clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint", "dispatchMenubarClose"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -409,8 +414,14 @@ export const machine = createMachine<MenuSchema>({
 
     open: {
       tags: ["open"],
-      effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
-      entry: ["focusMenu", "unlockParentOnOpen"],
+      effects: [
+        "trackInteractOutside",
+        "trackFocusVisible",
+        "trackPositioning",
+        "scrollToHighlightedItem",
+        "trackMenubarSiblings",
+      ],
+      entry: ["focusMenu", "unlockParentOnOpen", "dispatchMenubarOpen"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -562,6 +573,27 @@ export const machine = createMachine<MenuSchema>({
     },
 
     effects: {
+      // Open this menu when the menubar requests it (keyboard switch to a sibling menu).
+      trackMenubarOpenRequest({ scope, prop, send }) {
+        const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
+        if (!menubarEl) return
+        const triggerId = dom.getTriggerId(scope)
+        return addDomEvent(menubarEl, "menubar:open-request", (event: any) => {
+          if (event.detail?.triggerId === triggerId) send({ type: "OPEN" })
+        })
+      },
+      // When coordinated by a menubar, close this menu if a sibling menu opens.
+      trackMenubarSiblings({ scope, prop, send, refs }) {
+        const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
+        if (!menubarEl) return
+        return addDomEvent(menubarEl, "menu:open", (event: any) => {
+          if (event.detail?.menuId === scope.id) return
+          refs.set("menubarCloseReason", "sibling-open")
+          // Don't restore focus to this trigger — the sibling menu takes focus. Restoring
+          // here would refocus this trigger and reset the menubar's active value.
+          send({ type: "CLOSE", src: "menubar-sibling-open", restoreFocus: false })
+        })
+      },
       waitForOpenDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.OPEN" })
@@ -698,6 +730,19 @@ export const machine = createMachine<MenuSchema>({
     },
 
     actions: {
+      dispatchMenubarOpen({ scope, prop }) {
+        const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
+        if (!menubarEl) return
+        const detail = { menuId: scope.id, triggerId: dom.getTriggerEl(scope)?.id }
+        dom.dispatchMenubarEvent(menubarEl, "menu:open", detail)
+      },
+      dispatchMenubarClose({ scope, prop, refs }) {
+        const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
+        if (!menubarEl) return
+        const reason = refs.get("menubarCloseReason") ?? "close"
+        refs.set("menubarCloseReason", null)
+        dom.dispatchMenubarEvent(menubarEl, "menu:close", { menuId: scope.id, reason })
+      },
       setAnchorPoint({ context, event }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
       },

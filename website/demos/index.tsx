@@ -20,6 +20,7 @@ import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { Menubar } from "./menubar"
 import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
@@ -256,6 +257,18 @@ const components = {
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
+  Menubar: () => (
+    <Playground
+      name="menubar"
+      component={Menubar}
+      defaultProps={{
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
+      }}
+    />
+  ),
   ContextMenu: () => <Playground name="context-menu" component={ContextMenu} />,
   NestedMenu: () => <Playground name="nested-menu" component={NestedMenu} />,
   NumberInput: () => (

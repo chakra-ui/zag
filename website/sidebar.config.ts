@@ -103,6 +103,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Marquee", id: "marquee" },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Menu (Nested)", id: "nested-menu" },
+        { type: "doc", label: "Menubar", id: "menubar" },
         { type: "doc", label: "Context Menu", id: "context-menu" },
         { type: "doc", label: "Navigation Menu", id: "navigation-menu" },
         { type: "doc", label: "Number Input", id: "number-input" },
