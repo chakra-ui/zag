@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.41.2](./#1.41.2) - 2026-06-05
+
+### Fixed
+
+- **Date Input**: Fix date segment placeholders for locales with explicit script subtags.
+
+- **Drawer**
+  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g. history
+    API or a delayed state update).
+  - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
+
+- **Image Cropper**: Fix `getCroppedImage` and `getCropData` returning the wrong region when the image is displayed at a
+  size different from its natural resolution (e.g. `width/height: 100%`).
+
+- **Pin Input**: Fix issue where `data-filled` was incorrectly set on every input on first render.
+
+- **Signature Pad**: Fix issue where the `dir` prop was accepted but never forwarded to the DOM.
+
+## [1.41.1](./#1.41.1) - 2026-05-26
+
+### Fixed
+
+- **Dismissable**: Fix layer `pointer-events` being wiped by frameworks (Svelte, Vue) whose spread updates rewrite the
+  entire `style` attribute.
+
+- **Drawer**
+  - Fix controlled drawers snapping back to open before the close animation when dismissed via swipe.
+  - Fix indent and indent-background snapping back into place after the close animation instead of transitioning in
+    sync.
+  - Fix `--drawer-swipe-progress` jumping to `1` at the start of a dismiss swipe; it now goes smoothly from `0` (at
+    rest) to `1` (fully dismissed).
+  - Fix drawer freezing mid-drag on release when its content mounts lazily which left snap points unmeasured.
+
 ## [1.41.0](./#1.41.0) - 2026-05-22
 
 ### Added

@@ -35,6 +35,7 @@ export function connect<T extends PropTypes>(
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs(scope.id),
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-required": dataAttr(required),
         htmlFor: dom.getHiddenInputId(scope),
@@ -50,6 +51,7 @@ export function connect<T extends PropTypes>(
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs(scope.id),
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
       })
     },
@@ -57,6 +59,7 @@ export function connect<T extends PropTypes>(
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs(scope.id),
+        dir: prop("dir"),
         tabIndex: disabled ? undefined : 0,
         role: "application",
         "aria-roledescription": "signature pad",
@@ -120,6 +123,7 @@ export function connect<T extends PropTypes>(
     getGuideProps() {
       return normalize.element({
         ...parts.guide.attrs(scope.id),
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
       })
     },
@@ -127,6 +131,7 @@ export function connect<T extends PropTypes>(
     getClearTriggerProps() {
       return normalize.button({
         ...parts.clearTrigger.attrs(scope.id),
+        dir: prop("dir"),
         type: "button",
         "aria-label": translations.clearTrigger,
         hidden: !context.get("paths").length || drawing,

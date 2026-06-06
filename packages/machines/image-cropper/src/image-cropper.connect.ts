@@ -6,7 +6,7 @@ import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import { isEqualFlip, normalizeFlipState } from "./image-cropper.utils"
+import { getCropSourceRect, isEqualFlip, normalizeFlipState } from "./image-cropper.utils"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -113,20 +113,19 @@ export function connect<T extends PropTypes>(
     },
 
     getCropData() {
-      // Calculate scale factor from viewport to natural image coordinates
-      const scale = naturalSize.width / viewportRect.width
-
-      // Transform viewport crop coordinates to natural image pixel coordinates
-      const naturalX = (crop.x - offset.x) * scale
-      const naturalY = (crop.y - offset.y) * scale
-      const naturalWidth = crop.width * scale
-      const naturalHeight = crop.height * scale
+      const sourceRect = getCropSourceRect({
+        crop,
+        zoom,
+        offset,
+        viewportSize: viewportRect,
+        naturalSize,
+      })
 
       return {
-        x: Math.round(naturalX),
-        y: Math.round(naturalY),
-        width: Math.round(naturalWidth),
-        height: Math.round(naturalHeight),
+        x: Math.round(sourceRect.x),
+        y: Math.round(sourceRect.y),
+        width: Math.round(sourceRect.width),
+        height: Math.round(sourceRect.height),
         rotate: rotation,
         flipX: flip.horizontal,
         flipY: flip.vertical,

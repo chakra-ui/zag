@@ -1,12 +1,21 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent, getComputedStyle, getInitialFocus, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  addDomEvent,
+  getComputedStyle,
+  getInitialFocus,
+  raf,
+  resizeObserverBorderBox,
+  waitForElement,
+} from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
+import { isEqual, noop } from "@zag-js/utils"
 import * as dom from "./drawer.dom"
 import { drawerRegistry } from "./drawer.registry"
-import type { DrawerSchema, ResolvedSnapPoint } from "./drawer.types"
+import type { DrawerSchema, NestedDrawerMetrics, ResolvedSnapPoint } from "./drawer.types"
 import {
   DrawerSwipeSession,
   getSwipeDirectionSize,
@@ -94,6 +103,10 @@ export const machine = createMachine<DrawerSchema>({
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
       })),
+      nestedMetrics: bindable<NestedDrawerMetrics>(() => ({
+        defaultValue: { count: 0, height: 0, frontmostHeight: 0, open: false, swiping: false },
+        isEqual,
+      })),
     }
   },
 
@@ -102,6 +115,7 @@ export const machine = createMachine<DrawerSchema>({
       swipeSession: new DrawerSwipeSession({
         preventDragOnScroll: () => prop("preventDragOnScroll"),
       }),
+      snapBackFrame: AnimationFrame.create(),
     }
   },
 
@@ -217,10 +231,10 @@ export const machine = createMachine<DrawerSchema>({
         },
         "CONTROLLED.CLOSE": {
           target: "closing",
-          actions: ["clearSwipeOpenAnimation", "resetSwipeStrength"],
+          actions: ["clearSwipeOpenAnimation", "cancelSnapBack"],
         },
         POINTER_DOWN: {
-          actions: ["setPointerStart"],
+          actions: ["setPointerStart", "cancelSnapBack"],
         },
         POINTER_MOVE: [
           {
@@ -232,6 +246,10 @@ export const machine = createMachine<DrawerSchema>({
             actions: ["setRegistrySwiping", "setDragOffset"],
           },
         ],
+        SNAP_BACK: {
+          guard: "isDragging",
+          actions: ["deferClearDragOffset", "resetSwipeStrength"],
+        },
         POINTER_UP: [
           {
             guard: and("shouldCloseOnSwipe", "isOpenControlled"),
@@ -239,8 +257,9 @@ export const machine = createMachine<DrawerSchema>({
               "clearSwipeOpenAnimation",
               "clearRegistrySwiping",
               "clearPointerStart",
-              "clearDragOffset",
+              "setDismissSwipeStrength",
               "invokeOnClose",
+              "scheduleSnapBack",
             ],
           },
           {
@@ -287,8 +306,12 @@ export const machine = createMachine<DrawerSchema>({
     },
 
     closing: {
-      effects: ["trackExitAnimation", "trackDrawerStack"],
+      entry: ["cancelSnapBack"],
+      effects: ["trackExitAnimation"],
       on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
         OPEN: [
           {
             guard: "isOpenControlled",
@@ -622,6 +645,19 @@ export const machine = createMachine<DrawerSchema>({
         context.set("swipeStrength", 1)
       },
 
+      scheduleSnapBack({ refs, send, prop }) {
+        // Skip when an `onOpenChange` handler can drive the close; wait for `CONTROLLED.CLOSE`
+        // instead so an async `open` setter doesn't get flicker from a racing snap-back.
+        if (prop("onOpenChange") != null) return
+        refs.get("snapBackFrame").request(() => {
+          send({ type: "SNAP_BACK" })
+        })
+      },
+
+      cancelSnapBack({ refs }) {
+        refs.get("snapBackFrame").cancel()
+      },
+
       setRegistrySwiping({ computed }) {
         drawerRegistry.setSwiping(computed("drawerId"), true)
       },
@@ -767,85 +803,74 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       trackSizeMeasurements({ context, scope, computed, prop }) {
-        const contentEl = dom.getContentEl(scope)
-        if (!contentEl) return
-
         const doc = scope.getDoc()
         const html = doc.documentElement
         const shouldMeasureRootFontSize = hasRemSnapPoints(prop("snapPoints"))
 
-        const updateSize = () => {
-          const direction = computed("physicalSwipeDirection")
-          const rect = contentEl.getBoundingClientRect()
-          const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
+        return waitForContentEl(scope, (contentEl) => {
+          const updateSize = () => {
+            const direction = computed("physicalSwipeDirection")
+            const rect = contentEl.getBoundingClientRect()
+            const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
 
-          context.set("contentSize", getSwipeDirectionSize(rect, direction))
-          context.set("viewportSize", viewportSize)
-          if (shouldMeasureRootFontSize) {
-            const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
-            if (Number.isFinite(rootFontSize)) {
-              context.set("rootFontSize", rootFontSize)
+            context.set("contentSize", getSwipeDirectionSize(rect, direction))
+            context.set("viewportSize", viewportSize)
+            if (shouldMeasureRootFontSize) {
+              const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
+              if (Number.isFinite(rootFontSize)) {
+                context.set("rootFontSize", rootFontSize)
+              }
             }
           }
-        }
 
-        updateSize()
+          updateSize()
 
-        const cleanups = [
-          resizeObserverBorderBox.observe(contentEl, updateSize),
-          addDomEvent(scope.getWin(), "resize", updateSize),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup?.())
-        }
+          const cleanups = [
+            resizeObserverBorderBox.observe(contentEl, updateSize),
+            addDomEvent(scope.getWin(), "resize", updateSize),
+          ]
+          return () => cleanups.forEach((cleanup) => cleanup?.())
+        })
       },
 
-      trackNestedDrawerMetrics({ scope, computed }) {
-        const contentEl = dom.getContentEl(scope)
-        if (!contentEl) return
+      trackNestedDrawerMetrics({ scope, computed, context }) {
+        return waitForContentEl(scope, (contentEl) => {
+          const id = computed("drawerId")
 
-        const id = computed("drawerId")
+          drawerRegistry.register(id, contentEl)
 
-        drawerRegistry.register(id, contentEl)
+          const sync = () => {
+            const entries = [...drawerRegistry.getEntries().entries()]
+            const myIndex = entries.findIndex(([entryId]) => entryId === id)
+            if (myIndex === -1) return
 
-        const sync = () => {
-          const entries = [...drawerRegistry.getEntries().entries()]
-          const myIndex = entries.findIndex(([entryId]) => entryId === id)
-          if (myIndex === -1) return
+            const count = entries.length - 1 - myIndex
+            const frontmostEl = entries[entries.length - 1]?.[1]
+            const frontmostHeight = frontmostEl?.getBoundingClientRect().height ?? 0
+            const height = contentEl.getBoundingClientRect().height
 
-          const nestedCount = entries.length - 1 - myIndex
-          const frontmostEl = entries[entries.length - 1]?.[1]
-          const frontmostHeight = frontmostEl?.getBoundingClientRect().height ?? 0
-          const myHeight = contentEl.getBoundingClientRect().height
+            context.set("nestedMetrics", {
+              count,
+              height,
+              frontmostHeight,
+              open: count > 0 && frontmostHeight > 0,
+              swiping: drawerRegistry.hasSwipingAfter(id),
+            })
+          }
 
-          contentEl.style.setProperty("--nested-drawers", `${nestedCount}`)
-          contentEl.style.setProperty("--drawer-height", `${myHeight}px`)
-          contentEl.style.setProperty("--drawer-frontmost-height", `${frontmostHeight}px`)
+          sync()
 
-          if (nestedCount > 0 && frontmostHeight > 0) contentEl.setAttribute("data-nested-drawer-open", "")
-          else if (nestedCount === 0) contentEl.removeAttribute("data-nested-drawer-open")
+          const cleanups = [
+            drawerRegistry.subscribe(sync),
+            resizeObserverBorderBox.observe(contentEl, () => drawerRegistry.notify()),
+            addDomEvent(scope.getWin(), "resize", () => drawerRegistry.notify()),
+          ]
 
-          if (drawerRegistry.hasSwipingAfter(id)) contentEl.setAttribute("data-nested-drawer-swiping", "")
-          else contentEl.removeAttribute("data-nested-drawer-swiping")
-        }
-
-        sync()
-
-        const cleanups = [
-          drawerRegistry.subscribe(sync),
-          resizeObserverBorderBox.observe(contentEl, () => drawerRegistry.notify()),
-          addDomEvent(scope.getWin(), "resize", () => drawerRegistry.notify()),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup?.())
-          contentEl.removeAttribute("data-nested-drawer-open")
-          contentEl.removeAttribute("data-nested-drawer-swiping")
-          contentEl.style.setProperty("--nested-drawers", "0")
-          contentEl.style.removeProperty("--drawer-frontmost-height")
-          drawerRegistry.unregister(id)
-        }
+          return () => {
+            cleanups.forEach((cleanup) => cleanup?.())
+            drawerRegistry.unregister(id)
+          }
+        })
       },
 
       trackSwipeOpenPointerMove({ scope, send, refs, computed }) {
@@ -876,3 +901,26 @@ export const machine = createMachine<DrawerSchema>({
     },
   },
 })
+
+function waitForContentEl(
+  scope: Params<DrawerSchema>["scope"],
+  setup: (contentEl: HTMLElement) => VoidFunction | undefined,
+): VoidFunction {
+  const contentEl = dom.getContentEl(scope)
+  let cleanup = contentEl ? setup(contentEl) : undefined
+  let abort: VoidFunction | undefined
+
+  if (!cleanup) {
+    const [promise, cancel] = waitForElement(() => dom.getContentEl(scope), {
+      timeout: 1000,
+      rootNode: scope.getDoc(),
+    })
+    abort = cancel
+    promise.then((el) => (cleanup = setup(el))).catch(noop)
+  }
+
+  return () => {
+    abort?.()
+    cleanup?.()
+  }
+}

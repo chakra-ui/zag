@@ -1,6 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import { parts } from "./image-cropper.anatomy"
 import type { ImageCropperService } from "./image-cropper.types"
+import { getCropSourceRect } from "./image-cropper.utils"
 
 // ID generators — only for parts referenced by ARIA attributes
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
@@ -50,29 +51,20 @@ export function drawCroppedImageToCanvas(params: ImageCropperService): HTMLCanva
   const scaleY = flip.vertical ? -1 : 1
   ctx.scale(scaleX, scaleY)
 
-  const viewportCenterX = viewportRect.width / 2
-  const viewportCenterY = viewportRect.height / 2
-
-  const cropCenterX = crop.x + crop.width / 2
-  const cropCenterY = crop.y + crop.height / 2
-
-  const deltaX = cropCenterX - viewportCenterX
-  const deltaY = cropCenterY - viewportCenterY
-
-  const imageCenterX = naturalSize.width / 2
-  const imageCenterY = naturalSize.height / 2
-
-  const sourceX = imageCenterX + (deltaX - offset.x) / zoom
-  const sourceY = imageCenterY + (deltaY - offset.y) / zoom
-  const sourceWidth = crop.width / zoom
-  const sourceHeight = crop.height / zoom
+  const sourceRect = getCropSourceRect({
+    crop,
+    zoom,
+    offset,
+    viewportSize: viewportRect,
+    naturalSize,
+  })
 
   ctx.drawImage(
     imageEl,
-    sourceX - sourceWidth / 2,
-    sourceY - sourceHeight / 2,
-    sourceWidth,
-    sourceHeight,
+    sourceRect.x,
+    sourceRect.y,
+    sourceRect.width,
+    sourceRect.height,
     -canvas.width / 2,
     -canvas.height / 2,
     canvas.width,

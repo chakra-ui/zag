@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 import type { DrawerSwipeSession } from "./utils/drawer-session"
 import type { PhysicalSwipeDirection } from "./utils/session"
@@ -31,6 +32,30 @@ export interface ResolvedSnapPoint {
 
 export interface SnapPointChangeDetails {
   snapPoint: SnapPoint | null
+}
+
+// zag-ignore-export
+export interface NestedDrawerMetrics {
+  /**
+   * Number of drawers stacked in front of this one.
+   */
+  count: number
+  /**
+   * The measured height of this drawer's content.
+   */
+  height: number
+  /**
+   * The measured height of the frontmost drawer's content.
+   */
+  frontmostHeight: number
+  /**
+   * Whether a nested drawer is currently open in front of this one.
+   */
+  open: boolean
+  /**
+   * Whether a drawer in front of this one is currently being swiped.
+   */
+  swiping: boolean
 }
 
 export interface DrawerStackSnapshot {
@@ -223,9 +248,11 @@ export interface DrawerSchema {
     rootFontSize: number
     swipeStrength: number
     rendered: { title: boolean; description: boolean }
+    nestedMetrics: NestedDrawerMetrics
   }
   refs: {
     swipeSession: DrawerSwipeSession
+    snapBackFrame: AnimationFrame
   }
   computed: {
     drawerId: string
