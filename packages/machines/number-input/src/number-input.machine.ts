@@ -382,7 +382,7 @@ export const machine = createMachine({
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setRawValue({ context, event, prop, computed }) {
-        let nextValue = parseValue(event.value, { computed, prop })
+        let nextValue = typeof event.value === "number" ? event.value : parseValue(event.value, { computed, prop })
         if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
