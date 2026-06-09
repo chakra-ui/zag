@@ -1,5 +1,15 @@
 # @zag-js/vanilla
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/store@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/auto-resize@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Major Changes
