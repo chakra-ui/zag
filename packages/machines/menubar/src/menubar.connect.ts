@@ -8,6 +8,7 @@ export function connect<T extends PropTypes>(service: MenubarService, normalize:
   const { context, send, prop, scope } = service
 
   const hasOpenMenu = context.get("hasOpenMenu")
+  const activeId = context.get("activeId")
   const orientation = prop("orientation")
   const isHorizontal = orientation === "horizontal"
   const disabled = !!prop("disabled")
@@ -18,7 +19,7 @@ export function connect<T extends PropTypes>(service: MenubarService, normalize:
     disabled,
 
     getMenuContext() {
-      return { rootId: dom.getRootId(scope), disabled, orientation }
+      return { rootId: dom.getRootId(scope), disabled, orientation, activeId }
     },
 
     getRootProps() {

@@ -39,6 +39,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const isSubmenu = context.get("isSubmenu")
   const isInMenubar = computed("isInMenubar")
   const menubarDisabled = computed("menubarDisabled")
+  const menubarActiveId = prop("menubar")?.activeId
   const menubarRootId = prop("menubar")?.rootId
   // In a vertical menubar, triggers stack and menus fly out sideways, so the cross-axis
   // keys change: the menu opens on ArrowRight and closes (not switches) on ArrowLeft.
@@ -218,9 +219,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs(scope.id) : parts.trigger.attrs(scope.id)),
-        // Inside a menubar, the trigger is a menubar item with roving tabindex managed
-        // imperatively by the menubar — so it omits its own tabIndex.
+        // Inside a menubar, the trigger owns its tabIndex from the menubar's active id.
         role: isInMenubar ? "menuitem" : undefined,
+        tabIndex: isInMenubar ? (menubarActiveId === triggerId ? 0 : -1) : undefined,
         disabled: menubarDisabled || undefined,
         "aria-disabled": menubarDisabled || undefined,
         "data-disabled": menubarDisabled ? "" : undefined,

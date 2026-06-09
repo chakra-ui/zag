@@ -63,7 +63,7 @@ interface MenubarContext {
   /**
    * The id of the currently focused/tabbable trigger (roving tabindex).
    */
-  value: string | null
+  activeId: string | null
   /**
    * Whether any menu within the menubar is currently open.
    */
@@ -99,6 +99,7 @@ export interface MenubarMenuContext {
   rootId: string
   disabled: boolean
   orientation: Orientation
+  activeId: string | null
 }
 
 export interface MenubarApi<T extends PropTypes = PropTypes> {

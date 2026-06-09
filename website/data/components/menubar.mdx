@@ -4,8 +4,8 @@ description: Using the menubar machine in your project.
 package: "@zag-js/menubar"
 ---
 
-A menubar groups several menus — like the File / Edit / View bar in a desktop app
-— into a single widget. Each menu is a regular Zag.js menu; the menubar
+A menubar groups several menus — like the File / Edit / View bar in a desktop
+app — into a single widget. Each menu is a regular Zag.js menu; the menubar
 coordinates focus and open state between them.
 
 <Resources pkg="@zag-js/menubar" />
@@ -15,8 +15,8 @@ coordinates focus and open state between them.
 **Features**
 
 - Acts as a single tab stop, with arrow keys moving focus between menus.
-- Once a menu is open, hovering or arrowing to a sibling switches to it without a
-  click.
+- Once a menu is open, hovering or arrowing to a sibling switches to it without
+  a click.
 - Typeahead to jump to a menu by typing its label.
 - Works with nested submenus.
 - Horizontal or vertical orientation.
@@ -37,17 +37,20 @@ import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 ```
 
-The menubar gives each menu a small config object through `api.getMenuContext()`.
-Pass it to the menu's `menubar` prop — that's what makes the menu behave as part
-of the bar instead of a standalone dropdown. A context is the easiest way to
-thread it down:
+The menubar gives each menu a small config object through
+`api.getMenuContext()`. Pass it to the menu's `menubar` prop — that's what makes
+the menu behave as part of the bar instead of a standalone dropdown. A context
+is the easiest way to thread it down:
 
 ```tsx
 const MenubarContext = createContext<menu.MenubarContext | undefined>(undefined)
 
 function Menu(props: { id: string; label: string; items: string[] }) {
   const menubarContext = useContext(MenubarContext)
-  const service = useMachine(menu.machine, { id: props.id, menubar: menubarContext })
+  const service = useMachine(menu.machine, {
+    id: props.id,
+    menubar: menubarContext,
+  })
   const api = menu.connect(service, normalizeProps)
 
   return (
@@ -86,8 +89,8 @@ function Menubar() {
 }
 ```
 
-The config carries the menubar's `rootId`, `disabled`, and `orientation`, so a
-menu always reflects the bar it belongs to.
+The config carries the menubar's `rootId`, `activeId`, `disabled`, and
+`orientation`, so a menu always reflects the bar it belongs to.
 
 ### Nested submenus
 
@@ -113,8 +116,8 @@ With the keyboard, `ArrowRight` on a submenu trigger opens the submenu, while
 
 ### Vertical orientation
 
-Set `orientation` to `"vertical"` to stack the triggers. Use `positioning` so the
-menus open to the side instead of below.
+Set `orientation` to `"vertical"` to stack the triggers. Use `positioning` so
+the menus open to the side instead of below.
 
 ```tsx
 const service = useMachine(menubar.machine, {
@@ -175,8 +178,8 @@ The menubar root exposes a few attributes you can target in CSS.
 }
 ```
 
-Triggers are owned by the menu, so style them with the menu's `trigger` part. See
-the [menu styling guide](/components/menu#styling-guide).
+Triggers are owned by the menu, so style them with the menu's `trigger` part.
+See the [menu styling guide](/components/menu#styling-guide).
 
 ## Methods and Properties
 

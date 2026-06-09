@@ -29,14 +29,10 @@ export const getLastTriggerEl = (ctx: Scope) => last(getTriggerEls(ctx))
 export const getNextTriggerEl = (ctx: Scope, id: string, loop: boolean) => nextById(getTriggerEls(ctx), id, loop)
 export const getPrevTriggerEl = (ctx: Scope, id: string, loop: boolean) => prevById(getTriggerEls(ctx), id, loop)
 
-// The menubar owns roving tabindex imperatively (triggers are rendered by separate menus).
-export const syncTabIndex = (ctx: Scope, value: string | null) => {
+export const getValidActiveId = (ctx: Scope, activeId: string | null) => {
   const triggers = getTriggerEls(ctx)
-  if (!triggers.length) return
-  const activeId = value ?? triggers[0].id
-  triggers.forEach((el) => {
-    el.tabIndex = el.id === activeId ? 0 : -1
-  })
+  if (!triggers.length) return null
+  return triggers.some((el) => el.id === activeId) ? activeId : triggers[0].id
 }
 
 // Ask the menu owning a trigger to open (arrow-switching between open menus).

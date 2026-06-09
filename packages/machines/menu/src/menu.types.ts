@@ -159,6 +159,10 @@ export interface MenubarContext {
    */
   rootId: string
   /**
+   * The id of the currently tabbable menubar trigger.
+   */
+  activeId: string | null
+  /**
    * Whether the menubar (and therefore this menu's trigger) is disabled.
    */
   disabled?: boolean | undefined

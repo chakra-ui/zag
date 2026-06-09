@@ -19,7 +19,7 @@ export const machine = createMachine<MenubarSchema>({
 
   context({ bindable }) {
     return {
-      value: bindable<string | null>(() => ({ defaultValue: null })),
+      activeId: bindable<string | null>(() => ({ defaultValue: null })),
       hasOpenMenu: bindable<boolean>(() => ({ defaultValue: false })),
     }
   },
@@ -30,13 +30,13 @@ export const machine = createMachine<MenubarSchema>({
     }
   },
 
-  // Always-on: keep roving tabindex in sync as triggers mount/change, and listen for the
+  // Always-on: keep the active trigger valid as triggers mount/change, and listen for the
   // menu coordination events dispatched on the root element.
   effects: ["trackTriggers", "trackMenuEvents"],
 
   on: {
     "TRIGGER.FOCUS": {
-      actions: ["setValue", "syncTabIndex"],
+      actions: ["setActiveId"],
     },
     TYPEAHEAD: {
       actions: ["focusMatchingTrigger"],
@@ -48,7 +48,7 @@ export const machine = createMachine<MenubarSchema>({
       on: {
         "TRIGGER.FOCUS_IN": {
           target: "focused",
-          actions: ["setValue", "syncTabIndex"],
+          actions: ["setActiveId"],
         },
         "MENU.OPEN": {
           target: "open",
@@ -117,14 +117,14 @@ export const machine = createMachine<MenubarSchema>({
     },
 
     effects: {
-      // Re-sync roving tabindex as triggers mount/unmount. Triggers render `role=menuitem`
+      // Reconcile activeId as triggers mount/unmount. Triggers render `role=menuitem`
       // synchronously (the menu is told it's in a menubar via props), so childList is enough.
       trackTriggers({ scope, context }) {
         const rootEl = dom.getRootEl(scope)
         if (!rootEl) return
-        const sync = () => dom.syncTabIndex(scope, context.get("value"))
-        raf(sync)
-        return observeChildren(rootEl, { callback: sync })
+        const reconcile = () => reconcileActiveId(context, scope)
+        raf(reconcile)
+        return observeChildren(rootEl, { callback: reconcile })
       },
       trackMenuEvents({ scope, send }) {
         const rootEl = dom.getRootEl(scope)
@@ -134,7 +134,7 @@ export const machine = createMachine<MenubarSchema>({
           const target = event.target
           if (!dom.isTriggerEl(target)) return
           // `TRIGGER.FOCUS_IN` drives the idle -> focused transition; `TRIGGER.FOCUS`
-          // (global) keeps value + tabindex in sync in every state.
+          // (global) keeps activeId in sync in every state.
           send({ type: "TRIGGER.FOCUS_IN", id: target.id })
           send({ type: "TRIGGER.FOCUS", id: target.id })
         }
@@ -164,38 +164,36 @@ export const machine = createMachine<MenubarSchema>({
     },
 
     actions: {
-      syncTabIndex({ context, scope }) {
-        dom.syncTabIndex(scope, context.get("value"))
-      },
-      setValue({ context, event }) {
+      setActiveId({ context, event }) {
         if (event.id == null) return
-        context.set("value", event.id)
+        context.set("activeId", event.id)
       },
-      setHasOpenMenu({ context, scope, event }) {
+      setHasOpenMenu({ context, event }) {
         context.set("hasOpenMenu", true)
         if (event.triggerId) {
-          context.set("value", event.triggerId)
-          dom.syncTabIndex(scope, event.triggerId)
+          context.set("activeId", event.triggerId)
         }
       },
       clearHasOpenMenu({ context }) {
         context.set("hasOpenMenu", false)
       },
       focusNextTrigger({ context, scope, prop }) {
-        const value = context.get("value")
-        const nextEl = value ? dom.getNextTriggerEl(scope, value, prop("loopFocus")) : dom.getFirstTriggerEl(scope)
+        const activeId = context.get("activeId")
+        const nextEl = activeId
+          ? dom.getNextTriggerEl(scope, activeId, prop("loopFocus"))
+          : dom.getFirstTriggerEl(scope)
         focusTrigger(context, scope, nextEl)
       },
       focusPrevTrigger({ context, scope, prop }) {
-        const value = context.get("value")
-        const prevEl = value ? dom.getPrevTriggerEl(scope, value, prop("loopFocus")) : dom.getLastTriggerEl(scope)
+        const activeId = context.get("activeId")
+        const prevEl = activeId ? dom.getPrevTriggerEl(scope, activeId, prop("loopFocus")) : dom.getLastTriggerEl(scope)
         focusTrigger(context, scope, prevEl)
       },
       focusMatchingTrigger({ context, scope, event, refs }) {
         const matched = getByTypeahead(dom.getTriggerEls(scope), {
           state: refs.get("typeaheadState"),
           key: event.key,
-          activeId: context.get("value"),
+          activeId: context.get("activeId"),
         })
         focusTrigger(context, scope, matched)
       },
@@ -206,32 +204,37 @@ export const machine = createMachine<MenubarSchema>({
         focusTrigger(context, scope, dom.getLastTriggerEl(scope))
       },
       switchToNextMenu({ context, scope, prop }) {
-        const value = context.get("value")
-        const nextEl = value ? dom.getNextTriggerEl(scope, value, prop("loopFocus")) : dom.getFirstTriggerEl(scope)
+        const activeId = context.get("activeId")
+        const nextEl = activeId
+          ? dom.getNextTriggerEl(scope, activeId, prop("loopFocus"))
+          : dom.getFirstTriggerEl(scope)
         if (!nextEl) return
-        setActiveTrigger(context, scope, nextEl.id)
+        setActiveTrigger(context, nextEl.id)
         dom.requestOpenMenu(scope, nextEl.id)
       },
       switchToPrevMenu({ context, scope, prop }) {
-        const value = context.get("value")
-        const prevEl = value ? dom.getPrevTriggerEl(scope, value, prop("loopFocus")) : dom.getLastTriggerEl(scope)
+        const activeId = context.get("activeId")
+        const prevEl = activeId ? dom.getPrevTriggerEl(scope, activeId, prop("loopFocus")) : dom.getLastTriggerEl(scope)
         if (!prevEl) return
-        setActiveTrigger(context, scope, prevEl.id)
+        setActiveTrigger(context, prevEl.id)
         dom.requestOpenMenu(scope, prevEl.id)
       },
     },
   },
 })
 
-// Commit `value` + tabindex synchronously (so it doesn't race the focusin handler, and so
-// the `trackTriggers` observer re-syncs against the right active id after a React re-render).
-function setActiveTrigger(context: Params<MenubarSchema>["context"], scope: Scope, id: string) {
-  context.set("value", id)
-  dom.syncTabIndex(scope, id)
+function reconcileActiveId(context: Params<MenubarSchema>["context"], scope: Scope) {
+  const activeId = context.get("activeId")
+  const nextActiveId = dom.getValidActiveId(scope, activeId)
+  if (nextActiveId !== activeId) context.set("activeId", nextActiveId)
+}
+
+function setActiveTrigger(context: Params<MenubarSchema>["context"], id: string) {
+  context.set("activeId", id)
 }
 
 function focusTrigger(context: Params<MenubarSchema>["context"], scope: Scope, el: HTMLElement | null | undefined) {
   if (!el) return
-  setActiveTrigger(context, scope, el.id)
+  setActiveTrigger(context, el.id)
   raf(() => el.focus())
 }
