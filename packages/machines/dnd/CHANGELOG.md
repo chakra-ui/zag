@@ -1,5 +1,19 @@
 # @zag-js/dnd
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/aria-hidden@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+  - @zag-js/rect-utils@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Patch Changes

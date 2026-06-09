@@ -1,5 +1,7 @@
 # @zag-js/json-tree-utils
 
+## 2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ## 1.41.0
