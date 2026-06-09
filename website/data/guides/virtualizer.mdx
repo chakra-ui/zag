@@ -68,6 +68,9 @@ const virtualizer = new ListVirtualizer({
   dir: "ltr",
   indexToKey: (index) => messages[index].id,
   keyToIndex: (key) => messageIndexById.get(key) ?? -1,
+  anchorTo: "end",
+  followOnAppend: true,
+  scrollEndThreshold: 80,
   onRangeChange: ({ range, reason }) => {
     // reason: "scroll" | "resize" | "measurement" | "count" | "manual"
     updateVisibleWindow(range, reason)
@@ -181,15 +184,29 @@ const virtualizer = new ListVirtualizer({
   estimatedSize: () => 20,
   indexToKey: (index) => items[index].id,
   keyToIndex: (key) => keyToIndexMap.get(key) ?? -1,
+  anchorTo: "end",
+  followOnAppend: true,
+  scrollEndThreshold: 80,
   shouldAdjustScrollOnSizeChange: ({ key, delta, viewportStart }) => {
     return isPrependedKey(key) && delta !== 0 && viewportStart > 0
   },
 })
 ```
 
+Chat-specific APIs:
+
+- `anchorTo: "end"` treats the end of the list as the stable edge. This is
+  useful for chat, logs, and reverse feeds.
+- `followOnAppend` scrolls to the end after appended items only when the
+  viewport was already within `scrollEndThreshold` of the end.
+- `scrollToEnd()`, `getDistanceFromEnd()`, and `isAtEnd()` power "Jump to
+  latest" controls with the same end-distance logic as `followOnAppend`.
+
 Practical pattern:
 
 1. Keep stable `indexToKey` / `keyToIndex`.
 2. Prepend data and update `count`.
 3. Re-measure prepended rows.
-4. Use `shouldAdjustScrollOnSizeChange` to decide when compensation applies.
+4. Use `anchorTo: "end"` and `followOnAppend` for latest-message behavior.
+5. Use `shouldAdjustScrollOnSizeChange` for custom compensation rules when
+   prepended or streamed rows resize.

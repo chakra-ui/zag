@@ -47,6 +47,8 @@ export interface ScrollAnchor {
 }
 
 type ScrollAlignment = "start" | "center" | "end" | "auto"
+export type VirtualizerAnchor = "start" | "end"
+export type FollowOnAppend = boolean | "auto" | "smooth" | "instant"
 export type ScrollEasing = (t: number) => number
 
 export interface ScrollToIndexOptions {
@@ -79,6 +81,8 @@ export interface ScrollByOptions {
   /** Enable smooth scrolling with custom options */
   smooth?: ScrollToIndexOptions["smooth"]
 }
+
+export interface ScrollToEndOptions extends ScrollByOptions {}
 
 export interface VirtualRange {
   startIndex: number
@@ -217,6 +221,26 @@ export interface VirtualizerOptions {
 
   /** Enable scroll anchor preservation during updates */
   preserveScrollAnchor?: boolean
+
+  /**
+   * Controls which side of the scrollable content is treated as the stable anchor.
+   *
+   * Use "end" for chat, logs, and reverse feeds where the latest item appears at
+   * the end and the viewport should stay pinned while streaming output grows.
+   */
+  anchorTo?: VirtualizerAnchor
+
+  /**
+   * When used with `anchorTo: "end"`, follow appended items only if the viewport
+   * was already at the end before the append. `true` is equivalent to "auto".
+   */
+  followOnAppend?: FollowOnAppend
+
+  /**
+   * Distance in pixels from the end that still counts as being at the end.
+   * Used by `followOnAppend` and `isAtEnd()`.
+   */
+  scrollEndThreshold?: number
 
   /**
    * Control whether a measured size change should compensate the current scroll offset.

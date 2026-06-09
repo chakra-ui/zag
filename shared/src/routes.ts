@@ -650,6 +650,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "scroll-padding", title: "Scroll Padding" },
       { slug: "sticky", title: "Sticky Headers" },
       { slug: "infinite-scroll", title: "Infinite Scroll" },
+      { slug: "chat", title: "Chat" },
       { slug: "window", title: "Window scroll" },
       { slug: "perf", title: "Perf: Fixed Height" },
       { slug: "perf-variable", title: "Perf: Variable (measureElement)" },

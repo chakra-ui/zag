@@ -9,6 +9,7 @@ const virtualizerRoutes = [
   "/virtualizer/scroll-padding",
   "/virtualizer/sticky",
   "/virtualizer/infinite-scroll",
+  "/virtualizer/chat",
   "/virtualizer/window",
 ] as const
 
@@ -82,4 +83,117 @@ test.describe("virtualizer examples", () => {
       await I.checkAccessibility("main")
     })
   }
+
+  test("chat example follows appended messages only when pinned", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Append message" }).click()
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await transcript.evaluate((el) => {
+      const element = el as HTMLElement
+      element.scrollTop = 240
+      element.dispatchEvent(new Event("scroll", { bubbles: true }))
+    })
+    const readingHistoryOffset = await transcript.evaluate((el) => (el as HTMLElement).scrollTop)
+    expect(readingHistoryOffset).toBeGreaterThan(100)
+
+    await page.getByRole("button", { name: "Append message" }).click()
+    await page.waitForTimeout(100)
+    await expect
+      .poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop))
+      .toBeLessThanOrEqual(readingHistoryOffset + 2)
+
+    await page.getByRole("button", { name: "Jump to latest" }).click()
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+  })
+
+  test("chat example auto-loads older messages without losing the visible item", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+
+    await transcript.evaluate((el) => {
+      const element = el as HTMLElement
+      element.scrollTop = 0
+      element.dispatchEvent(new Event("scroll", { bubbles: true }))
+    })
+
+    await expect(page.getByText("Loading...")).toBeVisible()
+    await expect(page.getByText("Messages: 48")).toBeVisible({ timeout: 5000 })
+    await expect(transcript.getByText(/message 0\./)).toBeVisible()
+    await expect.poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop)).toBeGreaterThan(100)
+  })
+
+  test("chat example load older button preserves a valid virtual window", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+    const visibleMessages = () =>
+      transcript.evaluate((el) => {
+        const container = el as HTMLElement
+        const containerRect = container.getBoundingClientRect()
+        return Array.from(container.querySelectorAll<HTMLElement>("[data-index]"))
+          .filter((item) => {
+            const rect = item.getBoundingClientRect()
+            return rect.bottom > containerRect.top && rect.top < containerRect.bottom
+          })
+          .map((item) => item.textContent?.trim() ?? "")
+      })
+
+    await expect
+      .poll(() => transcript.evaluate((el) => (el as HTMLElement).scrollTop), { timeout: 5000 })
+      .toBeGreaterThan(0)
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Load older messages" }).click()
+
+    await expect(page.getByText("Messages: 48")).toBeVisible({ timeout: 5000 })
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+    await expect
+      .poll(visibleMessages)
+      .toContainEqual(
+        "AssistantAssistant message 35. This message is intentionally longer so the example exercises dynamic row measurement and anchor correction.",
+      )
+  })
+
+  test("chat example keeps streamed output pinned when at latest", async ({ page }) => {
+    await page.goto("/virtualizer/chat")
+    await page.waitForSelector("main", { state: "visible" })
+
+    const transcript = page.getByLabel("Chat transcript")
+    const distanceFromEnd = () =>
+      transcript.evaluate((el) => {
+        const element = el as HTMLElement
+        return element.scrollHeight - element.clientHeight - element.scrollTop
+      })
+
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+
+    await page.getByRole("button", { name: "Stream reply" }).click()
+    await expect(page.getByRole("button", { name: "Streaming..." })).toBeDisabled()
+    await expect(page.getByText(/viewport remains pinned only when you are already at the latest message/)).toBeVisible(
+      {
+        timeout: 5000,
+      },
+    )
+    await expect.poll(distanceFromEnd, { timeout: 5000 }).toBeLessThan(2)
+  })
 })
