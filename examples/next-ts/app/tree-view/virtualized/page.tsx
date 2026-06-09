@@ -54,7 +54,7 @@ const TreeNode = (props: TreeNodeProps) => {
       {...api.getNodeProps(nodeProps)}
       style={{ paddingLeft: indent, height: ROW_HEIGHT, display: "flex", alignItems: "center", gap: "4px" }}
     >
-      <div {...api.getCellProps(nodeProps)}>
+      <div {...api.getNodeCellProps(nodeProps)}>
         {nodeState.isBranch && (
           <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
             <ChevronRightIcon

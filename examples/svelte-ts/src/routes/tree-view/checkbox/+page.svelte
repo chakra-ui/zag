@@ -62,7 +62,7 @@
 
   <div {...api.getNodeGroupProps({ indexPath, node })}>
     <div {...api.getNodeProps({ indexPath, node })}>
-      <div {...api.getCellProps({ indexPath, node })}>
+      <div {...api.getNodeCellProps({ indexPath, node })}>
         <span {...api.getNodeCheckboxProps({ indexPath, node })}>
           {#if checked === true}
             ☑
@@ -73,7 +73,7 @@
           {/if}
         </span>
       </div>
-      <div {...api.getCellProps({ indexPath, node })}>
+      <div {...api.getNodeCellProps({ indexPath, node })}>
         <span {...api.getNodeTextProps({ indexPath, node })}>{node.name}</span>
         {#if nodeState.isBranch}
           <span {...api.getNodeIndicatorProps({ indexPath, node, type: "expanded" })}>

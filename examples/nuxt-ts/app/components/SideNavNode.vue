@@ -34,7 +34,7 @@ function childHref(_child: SidebarNode) {
 <template>
   <div v-bind="api.getNodeGroupProps(nodeProps)">
     <NuxtLink :to="href" v-bind="api.getNodeProps(nodeProps)">
-      <div v-bind="api.getCellProps(nodeProps)">
+      <div v-bind="api.getNodeCellProps(nodeProps)">
         <span
           v-if="nodeState.isBranch"
           v-bind="api.getNodeIndicatorProps({ ...nodeProps, type: 'expanded' })"

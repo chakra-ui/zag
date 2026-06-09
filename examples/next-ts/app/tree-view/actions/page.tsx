@@ -70,7 +70,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...treeApi.getNodeGroupProps(nodeProps)}>
       <div {...treeApi.getNodeProps(nodeProps)}>
-        <div {...treeApi.getCellProps(nodeProps)}>
+        <div {...treeApi.getNodeCellProps(nodeProps)}>
           {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
           <span {...treeApi.getNodeTextProps(nodeProps)}>{node.name}</span>
           {nodeState.isBranch && (
@@ -79,7 +79,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
             </span>
           )}
         </div>
-        <div {...treeApi.getCellProps(nodeProps)}>
+        <div {...treeApi.getNodeCellProps(nodeProps)}>
           <button
             {...menuApi.getTriggerProps({ value: nodeState.value })}
             style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}

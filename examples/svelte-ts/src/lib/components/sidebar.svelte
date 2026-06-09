@@ -117,7 +117,7 @@
 
   <div {...api.getNodeGroupProps(nodeProps)}>
     <a {href} {...api.getNodeProps(nodeProps)}>
-      <div {...api.getCellProps(nodeProps)}>
+      <div {...api.getNodeCellProps(nodeProps)}>
         {#if nodeState.isBranch}
           <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })} class={styles.chevron}>
             <ChevronRightIcon size={14} />

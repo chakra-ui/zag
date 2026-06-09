@@ -579,7 +579,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       })
     },
 
-    getCellProps(props) {
+    getNodeCellProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.cell.attrs(scope.id),

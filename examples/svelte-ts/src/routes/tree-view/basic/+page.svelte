@@ -76,7 +76,7 @@
 
   <div {...api.getNodeGroupProps({ indexPath, node })}>
     <div {...api.getNodeProps({ indexPath, node })}>
-      <div {...api.getCellProps({ indexPath, node })}>
+      <div {...api.getNodeCellProps({ indexPath, node })}>
         {#if nodeState.isBranch}
           <FolderIcon />
         {:else}

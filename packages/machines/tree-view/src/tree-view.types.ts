@@ -502,7 +502,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
   getIndentGuideProps: (props: NodeProps) => T["element"]
   getNodeCheckboxProps: (props: NodeProps) => T["element"]
   getNodeRenameInputProps: (props: NodeProps) => T["input"]
-  getCellProps: (props: NodeProps) => T["element"]
+  getNodeCellProps: (props: NodeProps) => T["element"]
 }
 
 export type { TreeNode } from "@zag-js/collection"

@@ -83,7 +83,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           style={{ ["--depth" as string]: nodeState.depth }}
         />
 
-        <div {...treeApi.getCellProps(nodeProps)} className={styles.cell}>
+        <div {...treeApi.getNodeCellProps(nodeProps)} className={styles.cell}>
           <span {...dndApi.getDragHandleProps({ value: node.id })} className={styles.dragHandle}>
             <GripVerticalIcon size={14} />
           </span>

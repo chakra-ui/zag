@@ -71,7 +71,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div {...api.getNodeProps(nodeProps)}>
-        <div {...api.getCellProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
           {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
           <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
           {nodeState.isBranch && (

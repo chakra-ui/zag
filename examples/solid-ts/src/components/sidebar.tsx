@@ -132,7 +132,7 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
   return (
     <div {...props.api().getNodeGroupProps(nodeProps())}>
       <A href={href()} {...props.api().getNodeProps(nodeProps())}>
-        <div {...props.api().getCellProps(nodeProps())}>
+        <div {...props.api().getNodeCellProps(nodeProps())}>
           <Show when={nodeState().isBranch}>
             <span {...props.api().getNodeIndicatorProps({ ...nodeProps(), type: "expanded" })} class={styles.chevron}>
               <ChevronRightIcon size={14} />

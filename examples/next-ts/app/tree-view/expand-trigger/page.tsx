@@ -67,13 +67,13 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div {...api.getNodeProps(nodeProps)}>
         {nodeState.isBranch && (
-          <div {...api.getCellProps(nodeProps)}>
+          <div {...api.getNodeCellProps(nodeProps)}>
             <button {...api.getNodeExpandTriggerProps(nodeProps)}>
               <ChevronRightIcon />
             </button>
           </div>
         )}
-        <div {...api.getCellProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
           {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
           <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
         </div>
