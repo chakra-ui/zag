@@ -89,7 +89,7 @@ export interface AsyncListSchema<Item, Filter, Sorting, Cursor> {
     cursor?: Cursor | undefined
     sorting?: Sorting | undefined
     error?: Error | undefined
-    isLoadMore: boolean
+    isLoadingMore: boolean
   }
   refs: {
     abort: AbortController | null

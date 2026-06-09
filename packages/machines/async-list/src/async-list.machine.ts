@@ -25,7 +25,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
       error: bindable<any>(() => ({
         defaultValue: undefined,
       })),
-      isLoadMore: bindable<boolean>(() => ({
+      isLoadingMore: bindable<boolean>(() => ({
         defaultValue: false,
       })),
     }
@@ -52,7 +52,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
     RELOAD: {
       target: "loading",
       reenter: true,
-      actions: ["clearItems", "clearIsLoadMore"],
+      actions: ["clearItems", "clearIsLoadingMore"],
     },
   },
 
@@ -64,22 +64,22 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         LOAD_MORE: {
           guard: "hasCursor",
           target: "loading",
-          actions: ["setIsLoadMore"],
+          actions: ["setIsLoadingMore"],
         },
         SORT: [
           {
             guard: "hasSortFn",
             target: "sorting",
-            actions: ["setSorting", "clearCursor", "clearIsLoadMore", "performSort"],
+            actions: ["setSorting", "clearCursor", "clearIsLoadingMore", "performSort"],
           },
           {
             target: "loading",
-            actions: ["setSorting", "clearCursor", "clearIsLoadMore"],
+            actions: ["setSorting", "clearCursor", "clearIsLoadingMore"],
           },
         ],
         FILTER: {
           target: "loading",
-          actions: ["setFilter", "clearCursor", "clearIsLoadMore"],
+          actions: ["setFilter", "clearCursor", "clearIsLoadingMore"],
         },
       },
     },
@@ -102,7 +102,7 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         FILTER: {
           reenter: true,
           target: "loading",
-          actions: ["setFilter", "clearCursor", "clearIsLoadMore"],
+          actions: ["setFilter", "clearCursor", "clearIsLoadingMore"],
         },
       },
     },
@@ -122,22 +122,22 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         },
         FILTER: {
           target: "loading",
-          actions: ["setFilter", "clearCursor", "cancelSort", "clearIsLoadMore"],
+          actions: ["setFilter", "clearCursor", "cancelSort", "clearIsLoadingMore"],
         },
         RELOAD: {
           target: "loading",
-          actions: ["clearItems", "cancelSort", "clearIsLoadMore"],
+          actions: ["clearItems", "cancelSort", "clearIsLoadingMore"],
         },
         SORT: [
           {
             guard: "hasSortFn",
             target: "sorting",
             reenter: true,
-            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadMore", "performSort"],
+            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadingMore", "performSort"],
           },
           {
             target: "loading",
-            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadMore"],
+            actions: ["setSorting", "clearCursor", "cancelSort", "clearIsLoadingMore"],
           },
         ],
       },
@@ -160,12 +160,12 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         send({ type: "RELOAD" })
       },
 
-      setIsLoadMore({ context }) {
-        context.set("isLoadMore", true)
+      setIsLoadingMore({ context }) {
+        context.set("isLoadingMore", true)
       },
 
-      clearIsLoadMore({ context }) {
-        context.set("isLoadMore", false)
+      clearIsLoadingMore({ context }) {
+        context.set("isLoadingMore", false)
       },
 
       performFetch({ context, prop, refs, send, event }) {
@@ -176,19 +176,19 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         const seq = refs.get("seq") + 1
         refs.set("seq", seq)
 
-        const isLoadMore = context.get("isLoadMore")
+        const isLoadingMore = context.get("isLoadingMore")
 
         const loadFn = prop("load")
         loadFn({
           signal: abort?.signal,
           items: context.get("items"),
-          cursor: isLoadMore ? context.get("cursor") : null,
+          cursor: isLoadingMore ? context.get("cursor") : null,
           filter: event.filter ?? context.get("filter"),
           sorting: event.sorting ?? context.get("sorting"),
         })
           .then(({ items, cursor }) => {
             if (seq !== refs.get("seq")) return
-            send({ type: "SUCCESS", items, cursor, append: isLoadMore })
+            send({ type: "SUCCESS", items, cursor, append: isLoadingMore })
           })
           .catch((error) => {
             if (seq !== refs.get("seq")) return

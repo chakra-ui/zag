@@ -6,7 +6,7 @@ export function connect<Item, Filter, Sorting, Cursor>(
   const { state, context, send, prop } = service
 
   const isLoading = state.matches("loading", "sorting")
-  const isLoadingMore = state.matches("loading") && context.get("isLoadMore")
+  const isLoadingMore = state.matches("loading") && context.get("isLoadingMore")
   const isSorting = state.matches("sorting")
 
   const items = context.get("items")
