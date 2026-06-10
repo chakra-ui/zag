@@ -74,6 +74,9 @@
       "--drawer-swipe-movement-x": "The drawer swipe movement x value for the Content",
       "--drawer-swipe-movement-y": "The drawer swipe movement y value for the Content",
       "--drawer-swipe-strength": "The drawer swipe strength value for the Content",
+      "--nested-drawers": "The nested drawers value for the Content",
+      "--drawer-height": "The height of the Content",
+      "--drawer-frontmost-height": "The height of the Content",
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested drawers"
     },

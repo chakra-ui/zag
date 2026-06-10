@@ -827,7 +827,9 @@
       "data-expanded": "Present when expanded",
       "data-swipe-direction": "",
       "data-swiping": "",
-      "data-dragging": "Present when in the dragging state"
+      "data-dragging": "Present when in the dragging state",
+      "data-nested-drawer-open": "",
+      "data-nested-drawer-swiping": ""
     },
     "Trigger": {
       "data-scope": "drawer",

@@ -15,6 +15,7 @@ pnpm start-react        # Next.js example (React)
 pnpm start-vue          # Nuxt.js example (Vue)
 pnpm start-solid        # Solid.js example
 pnpm start-svelte       # Svelte example
+pnpm start-preact       # Preact example
 pnpm start-website      # Documentation website
 ```
 

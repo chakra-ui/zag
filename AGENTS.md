@@ -19,6 +19,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
 | Unit tests (React) | `pnpm test-react --run` |
 | Unit tests (all) | `pnpm test` |
 | Start React dev server | `pnpm start-react` (port 3000) |
+| Start Preact dev server | `pnpm start-preact` (port 5173) |
 | E2E tests (React) | `pnpm e2e-react` |
 | Typecheck | `pnpm typecheck` |
 
