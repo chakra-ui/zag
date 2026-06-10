@@ -70,7 +70,6 @@ export default function Page() {
   useEffect(() => {
     if (!selectApi.open) return
     selectApi.highlightValue(collection.firstValue!)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collection])
 
   return (
