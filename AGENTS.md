@@ -21,6 +21,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
 | Start React dev server | `pnpm start-react` (port 3000) |
 | Start Preact dev server | `pnpm start-preact` (port 5173) |
 | E2E tests (React) | `pnpm e2e-react` |
+| E2E tests (Preact) | `pnpm e2e-preact` |
 | Typecheck | `pnpm typecheck` |
 
 ### Non-obvious caveats

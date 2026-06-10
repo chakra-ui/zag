@@ -36,6 +36,7 @@ pnpm test-svelte        # Run Svelte-specific tests
 pnpm e2e-react          # E2E tests for React
 pnpm e2e-vue            # E2E tests for Vue
 pnpm e2e-solid          # E2E tests for Solid
+pnpm e2e-preact         # E2E tests for Preact
 pnpm pw-report          # View Playwright test reports
 ```
 
