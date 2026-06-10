@@ -216,3 +216,26 @@ export function getGhostAfterStyle(): Style {
     width: "100%",
   }
 }
+
+export function measureUntransformedHeight(rootEl: HTMLElement) {
+  const { height, scale, transform, translate, boxSizing, transition } = rootEl.style
+  // to reset all the styles that are affecting the height measurement
+  rootEl.style.transition = "none"
+  rootEl.style.boxSizing = "border-box"
+  rootEl.style.height = "auto"
+  rootEl.style.scale = "1"
+  rootEl.style.transform = "none"
+  rootEl.style.translate = "none"
+
+  // to get the height
+  const measuredHeight = rootEl.getBoundingClientRect().height
+
+  // to restore the styles
+  rootEl.style.height = height
+  rootEl.style.scale = scale
+  rootEl.style.transform = transform
+  rootEl.style.translate = translate
+  rootEl.style.boxSizing = boxSizing
+  rootEl.style.transition = transition
+  return measuredHeight
+}

@@ -3,7 +3,7 @@ import { raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
-import { getToastDuration } from "./toast.utils"
+import { getToastDuration, measureUntransformedHeight } from "./toast.utils"
 
 const { not } = createGuards<ToastSchema>()
 
@@ -234,10 +234,7 @@ export const machine = createMachine<ToastSchema>({
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
-          const originalHeight = rootEl.style.height
-          rootEl.style.height = "auto"
-          const height = rootEl.getBoundingClientRect().height
-          rootEl.style.height = originalHeight
+          const height = measureUntransformedHeight(rootEl)
           context.set("initialHeight", height)
 
           const item = { id: prop("id"), height }
