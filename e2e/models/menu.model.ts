@@ -108,4 +108,31 @@ export class MenuModel extends Model {
     await expect(positioner).toHaveCSS("--x", /\d+px/)
     await expect(positioner).toHaveCSS("--y", /\d+px/)
   }
+
+  getContextTriggerPoint = async (): Promise<{ x: number; y: number }> => {
+    const box = await this.contextTrigger.boundingBox()
+    if (!box) throw new Error("context trigger not found")
+    return { x: Math.round(box.x + box.width / 2), y: Math.round(box.y + box.height / 2) }
+  }
+
+  longPressContextTrigger = async (point: { x: number; y: number }) => {
+    await this.contextTrigger.dispatchEvent("pointerdown", {
+      pointerType: "touch",
+      pointerId: 2,
+      isPrimary: true,
+      bubbles: true,
+      clientX: point.x,
+      clientY: point.y,
+    })
+  }
+
+  seeMenuIsPositionedNear = async (point: { x: number; y: number }, tolerance = 24) => {
+    const positioner = this.page.locator("[data-scope=menu][data-part=positioner]")
+    await expect(async () => {
+      const box = await positioner.boundingBox()
+      expect(box).not.toBeNull()
+      expect(Math.abs(box!.x - point.x)).toBeLessThanOrEqual(tolerance)
+      expect(Math.abs(box!.y - point.y)).toBeLessThanOrEqual(tolerance)
+    }).toPass({ timeout: 2000 })
+  }
 }

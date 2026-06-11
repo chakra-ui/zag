@@ -227,7 +227,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["closed"],
       effects: ["waitForLongPress"],
       on: {
-        "CONTROLLED.OPEN": { target: "open" },
+        "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
         "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
         CONTEXT_MENU_CANCEL: [
           {
@@ -246,7 +246,7 @@ export const machine = createMachine<MenuSchema>({
           },
           {
             target: "open",
-            actions: ["setTriggerValue", "invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen", "reposition"],
           },
         ],
       },
