@@ -39,6 +39,12 @@ export function getWebServer(): WebServer {
       url: `http://localhost:${sveltePort}`,
       reuseExistingServer: !CI,
     },
+    alpine: {
+      cwd: "./examples/alpine-ts",
+      command: "pnpm vite --port 3005",
+      url: "http://localhost:3005",
+      reuseExistingServer: !CI,
+    },
   }
 
   return frameworks[framework]
