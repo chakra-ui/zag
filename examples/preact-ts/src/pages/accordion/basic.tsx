@@ -5,8 +5,9 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import { ArrowRight } from "lucide-preact"
 
-export default function Accordion() {
+export default function Page() {
   const controls = useControls(accordionControls)
 
   const service = useMachine(accordion.machine, {
@@ -25,7 +26,9 @@ export default function Accordion() {
               <h3>
                 <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
-                  <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
+                  <div {...api.getItemIndicatorProps({ value: item.id })}>
+                    <ArrowRight />
+                  </div>
                 </button>
               </h3>
               <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>

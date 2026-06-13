@@ -1,24 +1,31 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
 import { render } from "preact"
 import { LocationProvider, Route, Router, useLocation } from "preact-iso"
-import "../../../shared/src/style.css"
+import "@zag-js/shared/src/style.css"
 import { NotFound } from "./pages/_404.jsx"
 import { routes } from "./routes"
 
 export function App() {
   const location = useLocation()
+  const pathname = location.path.split("?")[0] || "/"
+  const pathnameComponent = pathname.split("/").filter(Boolean)[0] ?? ""
+  const currentComponent =
+    getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
+
   return (
     <div className="page">
       <aside class="nav">
         <header>Zagjs</header>
-        {routesData
-          .sort((a, b) => a.label.localeCompare(b.label))
-          .map((route) => (
-            <a data-active={dataAttr(location.path === route.path)} href={route.path}>
-              {route.label}
-            </a>
-          ))}
+        {componentRoutesData.map((component) => (
+          <a
+            key={component.slug}
+            data-active={dataAttr(currentComponent === component.slug)}
+            href={`/${component.slug}`}
+          >
+            {component.label}
+          </a>
+        ))}
       </aside>
       <Router>
         {(routes as any).map((route, index) => (

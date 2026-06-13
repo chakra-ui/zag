@@ -1,10 +1,8 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { forwardRef, Ref } from "preact/compat"
-import { useEffect, useRef, useState } from "preact/hooks"
-import { JSX } from "preact"
+import { forwardRef, useEffect, useState } from "react"
 
-interface PresenceProps extends JSX.HTMLAttributes<HTMLDivElement> {
+interface PresenceProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Whether to enable lazy mounting.
    */
@@ -32,29 +30,13 @@ export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Prese
     if (api.present) setWasEverPresent(true)
   }, [api.present])
 
-  const internalRef = useRef<HTMLDivElement>(null)
-  const mergedRef: Ref<HTMLDivElement> = (node) => {
-    internalRef.current = node
-    if (typeof ref === "function") {
-      ref(node)
-    } else if (ref) {
-      ref.current = node
-    }
-  }
-
-  useEffect(() => {
-    if (internalRef.current) {
-      api.setNode(internalRef.current)
-    }
-  }, [])
-
   const unmounted = (!api.present && !wasEverPresent && lazyMount) || (unmountOnExit && !api.present && wasEverPresent)
 
   if (unmounted) return null
 
   return (
     <div
-      ref={mergedRef}
+      ref={mergeRefs(ref, (node) => api.setNode(node))}
       data-scope="presence"
       data-state={api.skip && skipAnimationOnMount ? undefined : present ? "open" : "closed"}
       hidden={!api.present}
@@ -62,3 +44,15 @@ export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Prese
     />
   )
 })
+
+function mergeRefs<T>(...refs: (React.RefObject<T> | React.Ref<T>)[]) {
+  return (node: T) => {
+    refs.forEach((ref) => {
+      if (typeof ref === "function") {
+        ref(node)
+      } else if (ref != null) {
+        ref.current = node
+      }
+    })
+  }
+}
