@@ -96,6 +96,10 @@ interface PrivateContext {
    */
   isPointer: boolean
   /**
+   * The last pointer position used to select an inline trigger rect.
+   */
+  pointerPoint: { x: number; y: number } | null
+  /**
    * Whether the hover card is open
    */
   open: boolean
