@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf, setStyle } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -274,9 +274,12 @@ export const machine = createMachine<ToastSchema>({
 })
 
 function measureLayoutHeight(el: HTMLElement): number {
-  const restore = setStyle(el, { transition: "none", scale: "1", translate: "none", height: "auto" })
-  const height = el.getBoundingClientRect().height
-  restore()
+  // `offsetHeight` reports the layout height and ignores the `scale` transform applied
+  // to sibling toasts in overlap mode (unlike `getBoundingClientRect().height`).
+  const prevHeight = el.style.height
+  el.style.height = "auto"
+  const height = el.offsetHeight
+  el.style.height = prevHeight
   return height
 }
 
