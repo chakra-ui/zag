@@ -131,6 +131,96 @@ describe("FocusTrap", () => {
     expect(document.activeElement).toBe(trigger)
   })
 
+  it("skips elements matching initialFocusSkip on activation", () => {
+    const container = createContainer()
+    const close = createButton("Close")
+    close.setAttribute("data-skip", "")
+    const submit = createButton("Submit")
+    container.append(close, submit)
+
+    const trap = track(
+      new FocusTrap(container, {
+        document,
+        delayInitialFocus: false,
+        initialFocusSkip: "[data-skip]",
+        fallbackFocus: container,
+      }),
+    )
+    trap.activate()
+
+    expect(document.activeElement).toBe(submit)
+  })
+
+  it("keeps initialFocusSkip elements focusable during tab navigation", () => {
+    const container = createContainer()
+    const close = createButton("Close")
+    close.setAttribute("data-skip", "")
+    const submit = createButton("Submit")
+    container.append(close, submit)
+
+    const trap = track(
+      new FocusTrap(container, {
+        document,
+        delayInitialFocus: false,
+        initialFocusSkip: "[data-skip]",
+        fallbackFocus: container,
+      }),
+    )
+    trap.activate()
+
+    const event = dispatchTab(submit)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(close)
+  })
+
+  it("cycles tab from the last element back to an initialFocusSkip element", () => {
+    const container = createContainer()
+    const skipped = createButton("Skipped")
+    skipped.setAttribute("data-skip", "")
+    const middle = createButton("Middle")
+    const last = createButton("Last")
+    container.append(skipped, middle, last)
+
+    const trap = track(
+      new FocusTrap(container, {
+        document,
+        delayInitialFocus: false,
+        initialFocusSkip: "[data-skip]",
+        fallbackFocus: container,
+      }),
+    )
+    trap.activate()
+    expect(document.activeElement).toBe(middle)
+
+    last.focus()
+    const event = dispatchTab(last)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(skipped)
+  })
+
+  it("falls back to the first tabbable when every node matches initialFocusSkip", () => {
+    const container = createContainer()
+    const first = createButton("First")
+    first.setAttribute("data-skip", "")
+    const second = createButton("Second")
+    second.setAttribute("data-skip", "")
+    container.append(first, second)
+
+    const trap = track(
+      new FocusTrap(container, {
+        document,
+        delayInitialFocus: false,
+        initialFocusSkip: "[data-skip]",
+        fallbackFocus: container,
+      }),
+    )
+    trap.activate()
+
+    expect(document.activeElement).toBe(first)
+  })
+
   it("uses fallbackFocus when there are no tabbables", () => {
     const container = createContainer()
 
