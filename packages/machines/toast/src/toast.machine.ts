@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { raf, setStyle } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -192,11 +192,7 @@ export const machine = createMachine<ToastSchema>({
           if (!rootEl) return
 
           const syncHeight = () => {
-            const originalHeight = rootEl.style.height
-            rootEl.style.height = "auto"
-            const height = rootEl.getBoundingClientRect().height
-            rootEl.style.height = originalHeight
-
+            const height = measureLayoutHeight(rootEl)
             const item = { id: prop("id"), height }
             setHeight(prop("parent"), item)
           }
@@ -234,10 +230,7 @@ export const machine = createMachine<ToastSchema>({
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
-          const originalHeight = rootEl.style.height
-          rootEl.style.height = "auto"
-          const height = rootEl.getBoundingClientRect().height
-          rootEl.style.height = originalHeight
+          const height = measureLayoutHeight(rootEl)
           context.set("initialHeight", height)
 
           const item = { id: prop("id"), height }
@@ -279,6 +272,13 @@ export const machine = createMachine<ToastSchema>({
     },
   },
 })
+
+function measureLayoutHeight(el: HTMLElement): number {
+  const restore = setStyle(el, { transition: "none", scale: "1", translate: "none", height: "auto" })
+  const height = el.getBoundingClientRect().height
+  restore()
+  return height
+}
 
 function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
   const { id, height } = item
