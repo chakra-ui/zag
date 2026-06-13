@@ -1,5 +1,18 @@
 # @zag-js/date-input
 
+## 1.41.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.3
+  - @zag-js/core@1.41.3
+  - @zag-js/types@1.41.3
+  - @zag-js/utils@1.41.3
+  - @zag-js/date-utils@1.41.3
+  - @zag-js/dom-query@1.41.3
+  - @zag-js/live-region@1.41.3
+
 ## 1.41.2
 
 ### Patch Changes

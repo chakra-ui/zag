@@ -1,5 +1,21 @@
 # @zag-js/number-input
 
+## 1.41.3
+
+### Patch Changes
+
+- [#3170](https://github.com/chakra-ui/zag/pull/3170)
+  [`da88564`](https://github.com/chakra-ui/zag/commit/da885645da7c138ef9800f3ca0e3db1d7b507ba2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `api.setValue` with a number throws when
+  `formatOptions` is defined.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.3
+  - @zag-js/core@1.41.3
+  - @zag-js/types@1.41.3
+  - @zag-js/utils@1.41.3
+  - @zag-js/dom-query@1.41.3
+
 ## 1.41.2
 
 ### Patch Changes
