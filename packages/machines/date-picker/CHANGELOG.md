@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 1.41.3
+
+### Patch Changes
+
+- [#3175](https://github.com/chakra-ui/zag/pull/3175)
+  [`8710898`](https://github.com/chakra-ui/zag/commit/8710898ca6abaede20332c68033abf0581b16dd7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` returning a stale value when multiple date
+  pickers with different `selectionMode` (or `timeZone`) share the same visible range. The internal memo key now
+  includes `selectionMode` and `timeZone`, preventing a `range`-formatted label (e.g. `June 2026 - June 2026`) from
+  leaking into a `single`/`multiple` picker that should show `June 2026`. This previously surfaced as SSR hydration
+  mismatches.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.3
+  - @zag-js/core@1.41.3
+  - @zag-js/types@1.41.3
+  - @zag-js/utils@1.41.3
+  - @zag-js/date-utils@1.41.3
+  - @zag-js/dismissable@1.41.3
+  - @zag-js/dom-query@1.41.3
+  - @zag-js/live-region@1.41.3
+  - @zag-js/popper@1.41.3
+
 ## 1.41.2
 
 ### Patch Changes
