@@ -213,6 +213,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "filtering", title: "Filtering" },
       { slug: "links", title: "Links" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "json-tree", title: "JSON Tree" },
       { slug: "expand-trigger", title: "Expand Trigger" },
       { slug: "actions", title: "Actions" },
       { slug: "in-dialog", title: "Dialog" },
