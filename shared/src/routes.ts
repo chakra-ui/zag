@@ -211,6 +211,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "checkbox", title: "Checkbox" },
       { slug: "rename", title: "Rename" },
       { slug: "filtering", title: "Filtering" },
+      { slug: "combobox-filter", title: "Combobox Filter" },
       { slug: "links", title: "Links" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "json-tree", title: "JSON Tree" },
