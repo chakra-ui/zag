@@ -100,6 +100,7 @@ export const machine = createMachine<DndSchema>({
       dropPlacements: ["before", "after"],
       edgeThreshold: 5,
       scrollThreshold: 20,
+      scrollMaxSpeed: 4,
       stickyDelay: 150,
       dragOverDelay: 500,
       ...props,
@@ -325,6 +326,7 @@ export const machine = createMachine<DndSchema>({
 
         const autoScroll = createAutoScroll(rootEl, {
           threshold: scrollThreshold,
+          maxSpeed: prop("scrollMaxSpeed"),
           onScroll() {
             const point = context.get("pointerPosition")
             if (!point) return

@@ -1,0 +1,259 @@
+.root {
+  width: 100%;
+  max-width: 560px;
+  --tree-border: #e4e4e7;
+  --tree-bg: #ffffff;
+  --tree-muted: #fafafa;
+  --tree-text: #18181b;
+  --tree-text-muted: #71717a;
+  --tree-accent: #2563eb;
+  --tree-hover: #f4f4f5;
+  --tree-selected: #e4e4e7;
+  --tree-indent: 16px;
+
+  position: relative;
+  display: grid;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+
+  & h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  & p {
+    margin: 4px 0 0;
+    color: var(--tree-text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+.searchInput {
+  width: 220px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--tree-border);
+  border-radius: 6px;
+  background: var(--tree-bg);
+  font: inherit;
+}
+
+.stats,
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stats span {
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid var(--tree-border);
+  border-radius: 4px;
+  background: var(--tree-muted);
+  color: var(--tree-text-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.viewport {
+  width: 100%;
+  height: 460px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  border: 1px solid var(--tree-border);
+  border-radius: 8px;
+  background: var(--tree-bg);
+}
+
+.sizer {
+  position: relative;
+  min-width: 0;
+  padding-inline: 8px;
+}
+
+.row {
+  position: relative;
+  height: 100%;
+  overflow: visible;
+}
+
+.node {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: 8px;
+  padding-inline-start: calc(8px + var(--depth, 0) * var(--tree-indent));
+  color: var(--tree-text);
+  outline: 0;
+  cursor: grab;
+  user-select: none;
+
+  &:hover {
+    background: var(--tree-hover);
+  }
+
+  &[data-selected] {
+    background: var(--tree-selected);
+  }
+
+  &[data-focus] {
+    outline: 1px solid #a1a1aa;
+    outline-offset: -1px;
+  }
+
+  &[data-dragging] {
+    opacity: 0.4;
+    cursor: grabbing;
+  }
+
+  &[data-drop-target][data-drop-placement="on"] {
+    background: color-mix(in srgb, var(--tree-accent) 12%, var(--tree-bg));
+    box-shadow: inset 0 0 0 1px var(--tree-accent);
+  }
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+
+  & svg {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    color: var(--tree-text-muted);
+  }
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s ease;
+
+  &[data-state="open"] {
+    transform: rotate(90deg);
+  }
+}
+
+.chevronSpacer {
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.nodeText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  left: calc(var(--depth, 0) * var(--tree-indent));
+  right: 0;
+  height: 2px;
+  background: var(--tree-accent);
+  opacity: 0;
+  z-index: 1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--tree-accent);
+    border-radius: 999px;
+    background: var(--tree-bg);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
+
+  &[data-placement="before"] {
+    top: 0;
+    transform: translateY(-50%);
+  }
+
+  &[data-placement="after"] {
+    bottom: 0;
+    transform: translateY(50%);
+  }
+
+  &[data-active] {
+    opacity: 1;
+    z-index: 10;
+  }
+}
+
+.actions button {
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--tree-border);
+  border-radius: 4px;
+  background: var(--tree-bg);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--tree-muted);
+  }
+}
+
+.dragPreview {
+  width: auto;
+  height: auto;
+  max-width: 240px;
+  pointer-events: none;
+}
+
+.previewNode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--tree-border) 70%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tree-bg) 88%, transparent);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  backdrop-filter: blur(4px);
+
+  & svg {
+    flex-shrink: 0;
+    width: 13px;
+    height: 13px;
+    color: var(--tree-text-muted);
+  }
+
+  & .nodeText {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  & .previewCount {
+    color: var(--tree-text-muted);
+    font-size: 11px;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+
+  & .chevron,
+  & .chevronSpacer {
+    display: none;
+  }
+}

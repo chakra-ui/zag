@@ -164,6 +164,11 @@ export interface DndProps extends DirectionProperty, CommonProperties {
    */
   scrollThreshold?: number | undefined
   /**
+   * Maximum auto-scroll speed in pixels per animation frame.
+   * @default 4
+   */
+  scrollMaxSpeed?: number | undefined
+  /**
    * Number of columns in a grid layout. When set, enables grid-mode collision
    * detection and 4-directional keyboard navigation.
    */
@@ -224,6 +229,7 @@ type PropsWithDefault =
   | "stickyDelay"
   | "dragOverDelay"
   | "scrollThreshold"
+  | "scrollMaxSpeed"
 
 /* -----------------------------------------------------------------------------
  * Schema

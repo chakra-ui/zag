@@ -215,7 +215,8 @@ export class TreeCollection<T = TreeNode> {
 
   contains = (parentIndexPath: IndexPath, valueIndexPath: IndexPath) => {
     if (!parentIndexPath || !valueIndexPath) return false
-    return valueIndexPath.slice(0, parentIndexPath.length).every((_, i) => parentIndexPath[i] === valueIndexPath[i])
+    if (valueIndexPath.length < parentIndexPath.length) return false
+    return parentIndexPath.every((segment, index) => valueIndexPath[index] === segment)
   }
 
   getNextNode = (value: string, opts: TreeSkipOptions<T> = {}): T | undefined => {

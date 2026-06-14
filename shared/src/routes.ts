@@ -466,6 +466,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "auto-scroll", title: "Auto Scroll" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "virtualized-list", title: "Virtualized List" },
+      { slug: "virtualized-tree", title: "Virtualized Tree" },
     ],
   },
   {

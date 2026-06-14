@@ -21,6 +21,7 @@ export const props = createProps<DndProps>()([
   "onDrop",
   "orientation",
   "scrollThreshold",
+  "scrollMaxSpeed",
   "selectedValues",
   "stickyDelay",
   "getValueText",
