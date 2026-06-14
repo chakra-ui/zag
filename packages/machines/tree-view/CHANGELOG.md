@@ -1,5 +1,31 @@
 # @zag-js/tree-view
 
+## 2.0.0-next.1
+
+### Major Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`253a586`](https://github.com/chakra-ui/zag/commit/253a586896da8a0d009abfe20f15de9c0c146256) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Rename `getCellProps` to `getNodeCellProps`
+  for consistency with the other node-scoped tree-view APIs.
+
+  ### Migration
+
+  ```diff
+  - api.getCellProps(nodeProps)
+  + api.getNodeCellProps(nodeProps)
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`1b6233d`](https://github.com/chakra-ui/zag/commit/1b6233d09bd8f0076f2b282bd8f5a58d8c65260b)]:
+  - @zag-js/collection@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Patch Changes
