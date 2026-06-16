@@ -1,5 +1,34 @@
 # @zag-js/cascade-select
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`1b6233d`](https://github.com/chakra-ui/zag/commit/1b6233d09bd8f0076f2b282bd8f5a58d8c65260b),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/collection@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-visible@2.0.0-next.1
+  - @zag-js/rect-utils@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Patch Changes
