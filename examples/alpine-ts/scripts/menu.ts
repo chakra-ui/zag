@@ -1,4 +1,5 @@
 import * as menu from "@zag-js/menu"
+import * as presence from "@zag-js/presence"
 import { menuControls, menuData, menuOptionData } from "@zag-js/shared"
 import Alpine from "alpinejs"
 import { useControls, usePlugin } from "../lib"
@@ -49,6 +50,16 @@ const files = [
 ]
 Alpine.magic("files", () => files)
 
+const documents = [
+  { id: 1, name: "Project Proposal.pdf", type: "PDF", size: "2.4 MB", modified: "2024-01-15" },
+  { id: 2, name: "Budget 2024.xlsx", type: "Excel", size: "856 KB", modified: "2024-01-14" },
+  { id: 3, name: "Meeting Notes.docx", type: "Word", size: "124 KB", modified: "2024-01-13" },
+  { id: 4, name: "Design Mockups.fig", type: "Figma", size: "4.2 MB", modified: "2024-01-12" },
+  { id: 5, name: "Code Review.md", type: "Markdown", size: "45 KB", modified: "2024-01-11" },
+]
+Alpine.magic("documents", () => documents)
+
+Alpine.plugin(usePlugin("presence", presence))
 Alpine.data("menu", useControls(menuControls))
 Alpine.plugin(usePlugin("menu", menu))
 Alpine.start()
