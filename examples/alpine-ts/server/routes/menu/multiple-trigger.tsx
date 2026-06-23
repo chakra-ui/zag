@@ -17,7 +17,7 @@ export default defineHandler((event) => {
           x-data="{activeDocument: null}"
           x-menu="{
             id: $id('menu'),
-            onTriggerValueChage({ value }) {
+            onTriggerValueChange({ value }) {
               const doc = $documents.find((d) => `${d.id}` === value) ?? null;
               activeDocument = doc;
             },
