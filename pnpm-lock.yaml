@@ -706,6 +706,12 @@ importers:
       '@internationalized/date':
         specifier: 3.12.1
         version: 3.12.1
+      '@tanstack/react-virtual':
+        specifier: 3.13.25
+        version: 3.13.25(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@types/textarea-caret':
+        specifier: 3.0.4
+        version: 3.0.4
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -760,6 +766,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@zag-js/date-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-input
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
@@ -946,6 +955,12 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      form-serialize:
+        specifier: 0.7.2
+        version: 0.7.2
+      image-conversion:
+        specifier: 2.1.1
+        version: 2.1.1
       lucide-preact:
         specifier: 1.7.0
         version: 1.7.0(preact@10.29.2)
@@ -958,6 +973,18 @@ importers:
       preact-render-to-string:
         specifier: 6.6.7
         version: 6.6.7(preact@10.29.2)
+      react-hook-form:
+        specifier: 7.72.0
+        version: 7.72.0(react@19.2.6)
+      react-spinners:
+        specifier: 0.17.0
+        version: 0.17.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      textarea-caret:
+        specifier: ^3.1.0
+        version: 3.1.0
+      virtua:
+        specifier: ^0.49.0
+        version: 0.49.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(solid-js@1.9.13)(svelte@5.55.9(@typescript-eslint/types@8.59.4))(vue@3.5.34(typescript@6.0.3))
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.10.5

@@ -167,6 +167,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "rename", title: "Rename" },
       { slug: "filtering", title: "Filtering" },
       { slug: "links", title: "Links" },
+      { slug: "in-dialog", title: "Dialog" },
     ],
   },
   {
@@ -358,6 +359,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Context Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },

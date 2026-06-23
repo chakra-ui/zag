@@ -21,7 +21,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { callAll, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
@@ -41,7 +41,7 @@ export function useMachine<T extends MachineSchema>(
     if (machine.debug) console.log(...args)
   }
 
-  const props: any = machine.props?.({ props: userProps, scope }) ?? userProps
+  const props: any = machine.props?.({ props: compact(userProps), scope }) ?? userProps
   const prop = useProp(props)
 
   const context = machine.context?.({

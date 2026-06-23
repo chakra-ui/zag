@@ -12,10 +12,10 @@ import {
 } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { noop } from "@zag-js/utils"
+import { isEqual, noop } from "@zag-js/utils"
 import * as dom from "./drawer.dom"
 import { drawerRegistry } from "./drawer.registry"
-import type { DrawerSchema, ResolvedSnapPoint } from "./drawer.types"
+import type { DrawerSchema, NestedDrawerMetrics, ResolvedSnapPoint } from "./drawer.types"
 import {
   DrawerSwipeSession,
   getSwipeDirectionSize,
@@ -102,6 +102,10 @@ export const machine = createMachine<DrawerSchema>({
       })),
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
+      })),
+      nestedMetrics: bindable<NestedDrawerMetrics>(() => ({
+        defaultValue: { count: 0, height: 0, frontmostHeight: 0, open: false, swiping: false },
+        isEqual,
       })),
     }
   },
@@ -305,6 +309,9 @@ export const machine = createMachine<DrawerSchema>({
       entry: ["cancelSnapBack"],
       effects: ["trackExitAnimation"],
       on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
         OPEN: [
           {
             guard: "isOpenControlled",
@@ -638,7 +645,10 @@ export const machine = createMachine<DrawerSchema>({
         context.set("swipeStrength", 1)
       },
 
-      scheduleSnapBack({ refs, send }) {
+      scheduleSnapBack({ refs, send, prop }) {
+        // Skip when an `onOpenChange` handler can drive the close; wait for `CONTROLLED.CLOSE`
+        // instead so an async `open` setter doesn't get flicker from a racing snap-back.
+        if (prop("onOpenChange") != null) return
         refs.get("snapBackFrame").request(() => {
           send({ type: "SNAP_BACK" })
         })
@@ -823,7 +833,7 @@ export const machine = createMachine<DrawerSchema>({
         })
       },
 
-      trackNestedDrawerMetrics({ scope, computed }) {
+      trackNestedDrawerMetrics({ scope, computed, context }) {
         return waitForContentEl(scope, (contentEl) => {
           const id = computed("drawerId")
 
@@ -834,20 +844,18 @@ export const machine = createMachine<DrawerSchema>({
             const myIndex = entries.findIndex(([entryId]) => entryId === id)
             if (myIndex === -1) return
 
-            const nestedCount = entries.length - 1 - myIndex
+            const count = entries.length - 1 - myIndex
             const frontmostEl = entries[entries.length - 1]?.[1]
             const frontmostHeight = frontmostEl?.getBoundingClientRect().height ?? 0
-            const myHeight = contentEl.getBoundingClientRect().height
+            const height = contentEl.getBoundingClientRect().height
 
-            contentEl.style.setProperty("--nested-drawers", `${nestedCount}`)
-            contentEl.style.setProperty("--drawer-height", `${myHeight}px`)
-            contentEl.style.setProperty("--drawer-frontmost-height", `${frontmostHeight}px`)
-
-            if (nestedCount > 0 && frontmostHeight > 0) contentEl.setAttribute("data-nested-drawer-open", "")
-            else if (nestedCount === 0) contentEl.removeAttribute("data-nested-drawer-open")
-
-            if (drawerRegistry.hasSwipingAfter(id)) contentEl.setAttribute("data-nested-drawer-swiping", "")
-            else contentEl.removeAttribute("data-nested-drawer-swiping")
+            context.set("nestedMetrics", {
+              count,
+              height,
+              frontmostHeight,
+              open: count > 0 && frontmostHeight > 0,
+              swiping: drawerRegistry.hasSwipingAfter(id),
+            })
           }
 
           sync()
@@ -860,10 +868,6 @@ export const machine = createMachine<DrawerSchema>({
 
           return () => {
             cleanups.forEach((cleanup) => cleanup?.())
-            contentEl.removeAttribute("data-nested-drawer-open")
-            contentEl.removeAttribute("data-nested-drawer-swiping")
-            contentEl.style.setProperty("--nested-drawers", "0")
-            contentEl.style.removeProperty("--drawer-frontmost-height")
             drawerRegistry.unregister(id)
           }
         })

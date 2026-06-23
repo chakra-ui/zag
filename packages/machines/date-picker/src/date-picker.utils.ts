@@ -156,7 +156,14 @@ interface VisibleRangeTextOptions {
 }
 
 export const getVisibleRangeText = memo(
-  (opts: VisibleRangeTextOptions) => [opts.view, opts.startValue.toString(), opts.endValue.toString(), opts.locale],
+  (opts: VisibleRangeTextOptions) => [
+    opts.view,
+    opts.startValue.toString(),
+    opts.endValue.toString(),
+    opts.locale,
+    opts.timeZone,
+    opts.selectionMode,
+  ],
   ([view], opts): VisibleRangeText => {
     const { startValue, endValue, locale, timeZone, selectionMode } = opts
 

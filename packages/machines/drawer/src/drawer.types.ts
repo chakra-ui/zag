@@ -34,6 +34,30 @@ export interface SnapPointChangeDetails {
   snapPoint: SnapPoint | null
 }
 
+// zag-ignore-export
+export interface NestedDrawerMetrics {
+  /**
+   * Number of drawers stacked in front of this one.
+   */
+  count: number
+  /**
+   * The measured height of this drawer's content.
+   */
+  height: number
+  /**
+   * The measured height of the frontmost drawer's content.
+   */
+  frontmostHeight: number
+  /**
+   * Whether a nested drawer is currently open in front of this one.
+   */
+  open: boolean
+  /**
+   * Whether a drawer in front of this one is currently being swiped.
+   */
+  swiping: boolean
+}
+
 export interface DrawerStackSnapshot {
   active: boolean
   openCount: number
@@ -224,6 +248,7 @@ export interface DrawerSchema {
     rootFontSize: number
     swipeStrength: number
     rendered: { title: boolean; description: boolean }
+    nestedMetrics: NestedDrawerMetrics
   }
   refs: {
     swipeSession: DrawerSwipeSession

@@ -1,5 +1,23 @@
 # @zag-js/date-input
 
+## 1.41.2
+
+### Patch Changes
+
+- [#3155](https://github.com/chakra-ui/zag/pull/3155)
+  [`206dfa7`](https://github.com/chakra-ui/zag/commit/206dfa78bb549c5b9bdf3be4ad4af26d07bf9ae7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix date segment placeholders for locales with explicit script
+  subtags.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/date-utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+  - @zag-js/live-region@1.41.2
+
 ## 1.41.1
 
 ### Patch Changes

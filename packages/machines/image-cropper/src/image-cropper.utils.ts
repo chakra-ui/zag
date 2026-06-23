@@ -482,6 +482,53 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
 }
 
 /* -----------------------------------------------------------------------------
+ * Source Rect Utilities
+ * ---------------------------------------------------------------------------*/
+
+interface SourceRectParams {
+  crop: Rect
+  zoom: number
+  offset: Point
+  viewportSize: Size
+  naturalSize: Size
+}
+
+/**
+ * Maps the crop rect (viewport coordinates) to the source rect in natural
+ * image pixels. The viewport -> natural scale is `naturalSize / viewportSize`.
+ */
+export function getCropSourceRect(params: SourceRectParams): Rect {
+  const { crop, zoom, offset, viewportSize, naturalSize } = params
+
+  const scaleX = viewportSize.width > 0 ? naturalSize.width / viewportSize.width : 1
+  const scaleY = viewportSize.height > 0 ? naturalSize.height / viewportSize.height : 1
+
+  const safeZoom = zoom > 0 ? zoom : 1
+
+  const viewportCenterX = viewportSize.width / 2
+  const viewportCenterY = viewportSize.height / 2
+
+  const imageCenterX = naturalSize.width / 2
+  const imageCenterY = naturalSize.height / 2
+
+  const cropCenterX = crop.x + crop.width / 2
+  const cropCenterY = crop.y + crop.height / 2
+
+  const sourceCenterX = imageCenterX + ((cropCenterX - viewportCenterX - offset.x) / safeZoom) * scaleX
+  const sourceCenterY = imageCenterY + ((cropCenterY - viewportCenterY - offset.y) / safeZoom) * scaleY
+
+  const sourceWidth = (crop.width / safeZoom) * scaleX
+  const sourceHeight = (crop.height / safeZoom) * scaleY
+
+  return {
+    x: sourceCenterX - sourceWidth / 2,
+    y: sourceCenterY - sourceHeight / 2,
+    width: sourceWidth,
+    height: sourceHeight,
+  }
+}
+
+/* -----------------------------------------------------------------------------
  * Crop Movement Utilities
  * ---------------------------------------------------------------------------*/
 

@@ -13,6 +13,7 @@ export function getWebServer(): WebServer {
   const vuePort = process.env.PORT ?? "3001"
   const solidPort = process.env.PORT ?? "3002"
   const sveltePort = process.env.PORT ?? "3003"
+  const preactPort = process.env.PORT ?? "3004"
 
   const frameworks: Record<string, WebServer> = {
     react: {
@@ -39,6 +40,10 @@ export function getWebServer(): WebServer {
       url: `http://localhost:${sveltePort}`,
       reuseExistingServer: !CI,
     },
+    preact: {
+      cwd: "./examples/preact-ts",
+      command: `pnpm vite --port ${preactPort}`,
+      url: `http://localhost:${preactPort}`,
     alpine: {
       cwd: "./examples/alpine-ts",
       command: "pnpm vite --port 3005",
