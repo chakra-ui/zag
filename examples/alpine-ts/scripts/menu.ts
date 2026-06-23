@@ -39,6 +39,16 @@ Alpine.data("checkboxes", () => ({
   },
 }))
 
+const files = [
+  { id: 1, name: "Documents", type: "folder", icon: "📁" },
+  { id: 2, name: "Photos", type: "folder", icon: "📁" },
+  { id: 3, name: "report.pdf", type: "file", icon: "📄" },
+  { id: 4, name: "presentation.pptx", type: "file", icon: "📊" },
+  { id: 5, name: "notes.txt", type: "file", icon: "📝" },
+  { id: 6, name: "Downloads", type: "folder", icon: "📁" },
+]
+Alpine.magic("files", () => files)
+
 Alpine.data("menu", useControls(menuControls))
 Alpine.plugin(usePlugin("menu", menu))
 Alpine.start()
