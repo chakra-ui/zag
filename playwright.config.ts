@@ -44,6 +44,10 @@ export function getWebServer(): WebServer {
       cwd: "./examples/preact-ts",
       command: `pnpm vite --port ${preactPort}`,
       url: `http://localhost:${preactPort}`,
+    alpine: {
+      cwd: "./examples/alpine-ts",
+      command: "pnpm vite --port 3005",
+      url: "http://localhost:3005",
       reuseExistingServer: !CI,
     },
   }
