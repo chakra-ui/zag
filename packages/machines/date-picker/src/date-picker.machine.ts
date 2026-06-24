@@ -419,8 +419,9 @@ export const machine = createMachine<DatePickerSchema>({
 
     open: {
       tags: ["open"],
+      entry: ["resetView"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearHoveredDate", "resetView"],
+      exit: ["clearHoveredDate"],
       on: {
         "CONTROLLED.CLOSE": [
           {
