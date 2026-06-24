@@ -91,16 +91,15 @@ export function usePlugin<T extends MachineSchema>(
 
         Alpine.bind(
           el,
-          Object.keys(propsRef).reduce((acc: Record<string, any>, prop) => {
-            const { key, value } =
-              prop === "x-html"
-                ? { key: "x-html", value: () => propsRef[prop] }
-                : prop.startsWith("on")
-                  ? { key: "@" + prop.substring(2), value: (...args: any[]) => propsRef[prop]?.(...args) }
-                  : { key: ":" + prop, value: () => propsRef[prop] }
-            acc[key] = value
-            return acc
-          }, {}),
+          Object.fromEntries(
+            Object.keys(propsRef).map((key) =>
+              key === "x-html"
+                ? ["x-html", () => propsRef["x-html"]]
+                : key.startsWith("on")
+                  ? ["@" + key.substring(2), (...args: any[]) => propsRef[key]?.(...args)]
+                  : [":" + key, () => propsRef[key]],
+            ),
+          ),
         )
         effect(() => {
           Object.assign(
