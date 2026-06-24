@@ -54,10 +54,11 @@ export function resolvePlaceholderValue(
 }
 
 export function createFormatFn(formatter: DateFormatter) {
-  return (date: DateValue, { timeZone }: { timeZone: string }) => {
-    const jsd = date.toDate(timeZone)
+  const formatterTimeZone = formatter.resolvedOptions().timeZone
+  return (date: DateValue, _details?: { locale?: string; timeZone?: string }) => {
     const isBC = date.calendar?.identifier === "gregory" && date.era === "BC"
     if (isBC) {
+      const jsd = date.toDate("UTC")
       const prolYear = jsd.getUTCFullYear()
       const safeDate = new Date(Date.UTC(2000, jsd.getUTCMonth(), jsd.getUTCDate()))
       return formatter
@@ -65,6 +66,6 @@ export function createFormatFn(formatter: DateFormatter) {
         .map((p) => (p.type === "year" ? String(prolYear) : p.value))
         .join("")
     }
-    return formatter.format(jsd)
+    return formatter.format(date.toDate(formatterTimeZone))
   }
 }

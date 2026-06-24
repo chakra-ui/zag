@@ -178,7 +178,6 @@ export const machine = createMachine<DateInputSchema>({
         const placeholderValue = context.get("placeholderValue")
         const displayValues = context.get("displayValues")
         const allSegments = prop("allSegments")
-        const timeZone = prop("timeZone")
         const translations = prop("translations") || defaultTranslations
         const granularity = prop("granularity")
         const formatter = prop("formatter")
@@ -205,7 +204,7 @@ export const machine = createMachine<DateInputSchema>({
             : formatter
 
           return processSegments({
-            dateValue: displayDate.toDate(timeZone),
+            dateValue: displayDate.toDate(segmentFormatter.resolvedOptions().timeZone),
             displayValue: displayValue,
             formatter: segmentFormatter,
             locale,
