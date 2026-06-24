@@ -362,7 +362,7 @@ export const machine = createMachine<DatePickerSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["focusFirstSelectedDate", "focusActiveCell"],
+          actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell"],
         },
         "TRIGGER.CLICK": [
           {
@@ -371,7 +371,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
         OPEN: [
@@ -381,7 +381,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
       },
@@ -392,7 +392,7 @@ export const machine = createMachine<DatePickerSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["focusFirstSelectedDate", "focusActiveCell"],
+          actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell"],
         },
         "TRIGGER.CLICK": [
           {
@@ -401,7 +401,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
         OPEN: [
@@ -411,7 +411,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
       },
@@ -420,7 +420,7 @@ export const machine = createMachine<DatePickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearHoveredDate", "resetView"],
+      exit: ["clearHoveredDate"],
       on: {
         "CONTROLLED.CLOSE": [
           {
