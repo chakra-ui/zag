@@ -50,7 +50,7 @@ export default defineHandler((event) => {
               <button
                 class="toast-button"
                 x-on:click="() => {
-                  const promise = new Promise<{ name: string }>((resolve) => {
+                  const promise = new Promise((resolve) => {
                     setTimeout(() => {
                       resolve({ name: 'Chakra' })
                     }, 3000)
