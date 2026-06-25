@@ -153,7 +153,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar viz>
-            <Controls config={datePickerControls} />
+            <Controls config={datePickerControls} slot="controls" />
             <StateVisualizer label="date-picker" omit={["weeks"]} />
           </Toolbar>
         </div>
