@@ -7,9 +7,9 @@ export function ToastItem(props: any) {
       <div data-scope="toast" data-part="progressbar" />
       <div
         x-toast-item:title
-        x-text="`${$toastItem().type === 'loading' && '<...>'} ${$toastItem().title} ${$toastItem().type}`"
+        x-html="`${$toastItem().type === 'loading' ? '<...>' : ''} ${$toastItem().title} ${$toastItem().type}`"
       />
-      <div x-toast-item:description x-text="$toastItem().description" />
+      <div x-toast-item:description x-html="$toastItem().description" />
       <button x-toast-item:close-trigger>{html(X)}</button>
       <span x-toast-item:ghost-after />
     </div>
