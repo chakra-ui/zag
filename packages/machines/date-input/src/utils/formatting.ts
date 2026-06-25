@@ -5,6 +5,10 @@ import type { DateGranularity } from "@zag-js/date-utils"
 import type { DateInputSchema, DateValue } from "../date-input.types"
 import { needsTimeGranularity } from "./segments"
 
+export function toFormatterDate(date: DateValue, formatter: DateFormatter): Date {
+  return date.toDate(formatter.resolvedOptions().timeZone)
+}
+
 export function getValueAsString(value: DateValue[], prop: PropFn<DateInputSchema>) {
   return value.map((date) => {
     if (date == null) return ""
@@ -54,8 +58,7 @@ export function resolvePlaceholderValue(
 }
 
 export function createFormatFn(formatter: DateFormatter) {
-  const formatterTimeZone = formatter.resolvedOptions().timeZone
-  return (date: DateValue, _details?: { locale?: string; timeZone?: string }) => {
+  return (date: DateValue): string => {
     const isBC = date.calendar?.identifier === "gregory" && date.era === "BC"
     if (isBC) {
       const jsd = date.toDate("UTC")
@@ -66,6 +69,6 @@ export function createFormatFn(formatter: DateFormatter) {
         .map((p) => (p.type === "year" ? String(prolYear) : p.value))
         .join("")
     }
-    return formatter.format(date.toDate(formatterTimeZone))
+    return formatter.format(toFormatterDate(date, formatter))
   }
 }
