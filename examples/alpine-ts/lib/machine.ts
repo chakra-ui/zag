@@ -144,20 +144,20 @@ export class AlpineMachine<T extends MachineSchema> {
           this.action(item.state?.exit)
         })
 
-        this.action(this.transition?.actions)
-
-        entering.forEach((item) => {
-          const cleanup = this.effect(item.state?.effects)
-          if (cleanup) this.effects.set(item.path, cleanup)
-        })
-
-        if (prevState === INIT_STATE) {
-          this.action(machine.entry)
-          const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set(INIT_STATE, cleanup)
-        }
-
         queueMicrotask(() => {
+          this.action(this.transition?.actions)
+
+          entering.forEach((item) => {
+            const cleanup = this.effect(item.state?.effects)
+            if (cleanup) this.effects.set(item.path, cleanup)
+          })
+
+          if (prevState === INIT_STATE) {
+            this.action(machine.entry)
+            const cleanup = this.effect(machine.effects)
+            if (cleanup) this.effects.set(INIT_STATE, cleanup)
+          }
+
           entering.forEach((item) => {
             this.action(item.state.entry)
           })
