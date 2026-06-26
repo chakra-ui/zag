@@ -2,7 +2,8 @@ import * as colorPicker from "@zag-js/color-picker"
 import { colorPickerControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 Alpine.magic("serialize", () => serialize)
 Alpine.magic("parse", () => colorPicker.parse)

@@ -2,7 +2,8 @@ import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import serialize from "form-serialize"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 const items = [
   { label: "React", value: "react" },

@@ -2,7 +2,8 @@ import * as dialog from "@zag-js/dialog"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 const toasterOverlap = toast.createStore({
   overlap: true,

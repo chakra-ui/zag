@@ -2,7 +2,8 @@ import { CalendarDate, parseZonedDateTime } from "@internationalized/date"
 import * as dateInput from "@zag-js/date-input"
 import { dateInputControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 Alpine.magic("CalendarDate", () => CalendarDate)
 Alpine.magic("parseZonedDateTime", () => parseZonedDateTime)

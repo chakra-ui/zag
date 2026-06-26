@@ -1,7 +1,8 @@
 import * as tagsInput from "@zag-js/tags-input"
 import { tagsInputControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 Alpine.magic("toDashCase", () => {
   return (str: string) => str.replace(/\s+/g, "-").toLowerCase()

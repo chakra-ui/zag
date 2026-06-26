@@ -2,7 +2,8 @@ import * as menu from "@zag-js/menu"
 import * as presence from "@zag-js/presence"
 import { menuControls, menuData, menuOptionData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 const [level1, level2, level3] = menuData
 Alpine.magic("level1", () => level1)

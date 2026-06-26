@@ -2,7 +2,8 @@ import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 import { useAsyncList } from "./use-async-list"
 
 const items = [

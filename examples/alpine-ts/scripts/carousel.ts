@@ -1,7 +1,8 @@
 import * as carousel from "@zag-js/carousel"
 import { carouselControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 // Sample data with variable width content (content-driven sizing)
 const variableWidthData = [

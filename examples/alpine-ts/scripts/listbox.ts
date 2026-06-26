@@ -1,7 +1,8 @@
 import * as listbox from "@zag-js/listbox"
 import { listboxControls, selectData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 const items = [
   { label: "React", value: "react" },

@@ -1,7 +1,8 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { imageCropperControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 Alpine.data("imageCropper", useControls(imageCropperControls))
 Alpine.plugin(usePlugin("image-cropper", imageCropper))

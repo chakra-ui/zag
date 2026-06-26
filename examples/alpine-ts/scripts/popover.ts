@@ -2,7 +2,8 @@ import * as popover from "@zag-js/popover"
 import * as presence from "@zag-js/presence"
 import { popoverControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useControls, usePlugin } from "../lib"
+import { useControls } from "./use-controls"
+import { usePlugin } from "../lib"
 
 const documents = [
   { id: 1, name: "Project Proposal.pdf", type: "PDF", size: "2.4 MB", modified: "2024-01-15" },
