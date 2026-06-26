@@ -313,3 +313,30 @@ test.describe("tags-input", () => {
     await I.seeInputIsFocused()
   })
 })
+
+test.describe("tags-input / form", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/form")
+  })
+
+  test("native submit reflects tags added after mount", async () => {
+    await I.addTag("Svelte")
+    await I.clickButton("Submit")
+    await I.seeTextValue("[data-testid=last-submit]", "React, Vue, Svelte")
+  })
+
+  test("native submit reflects tags removed after mount", async () => {
+    await I.clickTagClose("Vue")
+    await I.dontSeeTag("Vue")
+    await I.clickButton("Submit")
+    await I.seeTextValue("[data-testid=last-submit]", "React")
+  })
+
+  test("native submit reflects cleared tags", async () => {
+    await I.clickClearTrigger()
+    await I.seeNoTags()
+    await I.clickButton("Submit")
+    await I.seeTextValue("[data-testid=last-submit]", "")
+  })
+})

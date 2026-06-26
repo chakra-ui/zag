@@ -42,10 +42,6 @@ export class TreeViewModel extends Model {
     return this.branchTrigger(name).click(options)
   }
 
-  clickButton(name: string, options?: ClickOptions) {
-    return this.button(name).click(options)
-  }
-
   focusItem(name: string) {
     return this.item(name).focus()
   }
