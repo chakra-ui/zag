@@ -5,8 +5,10 @@ import { usePlugin } from "../lib"
 import { normalizeProps } from "../lib/normalize-props"
 import "../../shared/styles/drawer-indent-effect.module.css"
 
+const stack = drawer.createStack()
+
 Alpine.plugin(usePlugin("presence", presence))
-Alpine.magic("stack", () => drawer.createStack())
+Alpine.magic("stack", () => stack)
 Alpine.magic(
   "connectStack",
   () => (snapshot: drawer.DrawerStackSnapshot) => drawer.connectStack(snapshot, normalizeProps),

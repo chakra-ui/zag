@@ -14,24 +14,14 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data="drawer"
-          x-data:stack="{
-            _isFirstRun: true,
-            _snapshot: {},
-            stack: $stack,
-            get snapshot() {
-              if (this._isFirstRun) {
-                this._snapshot = this.stack.getSnapshot();
-                this._isFirstRun = false;
-              }
-              return this._snapshot;
-            },
+          x-data="{
+            snapshot: $stack.getSnapshot(),
             get stackApi() {
               return $connectStack(this.snapshot)
             },
           }"
-          x-init="() => {stack.subscribe(() => {_snapshot = stack.getSnapshot()})}"
-          x-drawer="{id: $id('drawer'), stack}"
+          x-init="() => {$stack.subscribe(() => {snapshot = $stack.getSnapshot()})}"
+          x-drawer="{id: $id('drawer'), stack: $stack, modal: false}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -40,7 +30,7 @@ export default defineHandler((event) => {
               <div
                 x-data="{get props() {return stackApi.getIndentBackgroundProps()}}"
                 x-bind="Object.fromEntries(Object.keys(props)
-                .map((key) => [':' + key, () => props[key]]))"
+                  .map((key) => [':' + key, () => props[key]]))"
                 class={styles.indentBackground}
                 data-testid="drawer-indent-background"
               />
@@ -48,7 +38,7 @@ export default defineHandler((event) => {
               <div
                 x-data="{get props() {return stackApi.getIndentProps()}}"
                 x-bind="Object.fromEntries(Object.keys(props)
-                .map((key) => [':' + key, () => props[key]]))"
+                  .map((key) => [':' + key, () => props[key]]))"
                 class={styles.indent}
                 data-testid="drawer-indent"
               >
