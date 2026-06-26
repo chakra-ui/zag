@@ -4,14 +4,6 @@ import type { Alpine } from "alpinejs"
 import { AlpineMachine } from "./machine"
 import { normalizeProps } from "./normalize-props"
 
-function useEvaluator<T>(evaluator: (callback: (value: T) => void) => void) {
-  return <R>(fn: (value: T) => R) => {
-    let result
-    evaluator((value) => (result = fn(value)))
-    return result as R
-  }
-}
-
 export function usePlugin<T extends MachineSchema>(
   name: string,
   component: {
@@ -84,31 +76,26 @@ export function usePlugin<T extends MachineSchema>(
           .map((v) => v.at(0)?.toUpperCase() + v.substring(1).toLowerCase())
           .join("")}Props`
 
-        const usePartProps = useEvaluator(evaluateLater(expression || "{}"))
-        const propsRef = Alpine.reactive(
-          usePartProps((props) => (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)),
-        ) as Record<string, any>
+        const evaluateProps = evaluateLater(expression || "{}")
+        const propsRef = Alpine.reactive({ value: {} as Record<string, any> })
+        effect(() =>
+          evaluateProps((props) =>
+            Object.assign(propsRef.value, (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)),
+          ),
+        )
 
         Alpine.bind(
           el,
           Object.fromEntries(
-            Object.keys(propsRef).map((key) =>
+            Object.keys(propsRef.value).map((key) =>
               key === "x-html"
-                ? ["x-html", () => propsRef["x-html"]]
+                ? ["x-html", () => propsRef.value["x-html"]]
                 : key.startsWith("on")
-                  ? ["@" + key.substring(2), (...args: any[]) => propsRef[key]?.(...args)]
-                  : [":" + key, () => propsRef[key]],
+                  ? ["@" + key.substring(2), (...args: any[]) => propsRef.value[key]?.(...args)]
+                  : [":" + key, () => propsRef.value[key]],
             ),
           ),
         )
-        effect(() => {
-          Object.assign(
-            propsRef,
-            usePartProps((props) =>
-              (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props),
-            ) as Record<string, any>,
-          )
-        })
       }
     }).before("bind")
     Alpine.magic(
