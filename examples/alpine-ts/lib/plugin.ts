@@ -25,10 +25,10 @@ export function usePlugin<T extends MachineSchema>(
           evaluateProps((props) => (userPropsRef.value = props))
         })
         const machine = new AlpineMachine(component.machine, userPropsRef)
-        Alpine.magic(_x_snake_case + _modifier + "_service", () => machine.service)
         Alpine.bind(el, {
           "x-data"() {
             return {
+              [_x_snake_case + _modifier + "_service"]: machine.service,
               [_x_snake_case + _modifier]: component.connect(machine.service, normalizeProps),
               init() {
                 machine.init()
@@ -104,7 +104,12 @@ export function usePlugin<T extends MachineSchema>(
         .map((str, i) => (i === 0 ? str : str.at(0)?.toUpperCase() + str.substring(1).toLowerCase()))
         .join(""),
       (el) => {
-        return (modifier?: string) => (Alpine.$data(el) as any)[_x_snake_case + (modifier ? "_" + modifier : "")]
+        const $data = Alpine.$data(el) as any
+        return (modifier?: string) => {
+          const api = $data[_x_snake_case + (modifier ? "_" + modifier : "")]
+          const service = $data[_x_snake_case + (modifier ? "_" + modifier : "") + "_service"]
+          return { service, ...api }
+        }
       },
     )
   }

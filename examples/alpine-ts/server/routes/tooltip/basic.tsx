@@ -48,8 +48,8 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar controls={false}>
-            <StateVisualizer label="tooltip-1" />
-            <StateVisualizer label="tooltip-2" />
+            <StateVisualizer label="tooltip" modifier="1" />
+            <StateVisualizer label="tooltip" modifier="2" />
           </Toolbar>
         </div>
       </body>

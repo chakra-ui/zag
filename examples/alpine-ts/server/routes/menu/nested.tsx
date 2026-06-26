@@ -21,10 +21,10 @@ export default defineHandler((event) => {
             "x-menu.sub2": "{id: $id('menu-sub2')}",
           }}
           x-init="
-            _x_menu_root.setChild($_x_menu_sub_service);
-            _x_menu_sub.setParent($_x_menu_root_service);
-            _x_menu_sub.setChild($_x_menu_sub2_service);
-            _x_menu_sub2.setParent($_x_menu_sub_service);
+            $menu('root').setChild($menu('sub').service);
+            $menu('sub').setParent($menu('root').service);
+            $menu('sub').setChild($menu('sub2').service);
+            $menu('sub2').setParent($menu('sub').service);
           "
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -44,8 +44,8 @@ export default defineHandler((event) => {
                         x-data="{
                           get props() {
                             return item.trigger
-                              ? _x_menu_root.getTriggerItemProps(_x_menu_sub)
-                              : _x_menu_root.getItemProps({value: item.value})
+                              ? $menu('root').getTriggerItemProps($menu('sub'))
+                              : $menu('root').getItemProps({value: item.value})
                           },
                           get binding() {
                             return Object.keys(this.props).reduce((acc, prop) => {
@@ -77,8 +77,8 @@ export default defineHandler((event) => {
                         x-data="{
                           get props() {
                             return item.trigger
-                              ? _x_menu_sub.getTriggerItemProps(_x_menu_sub2)
-                              : _x_menu_sub.getItemProps({value: item.value})
+                              ? $menu('sub').getTriggerItemProps($menu('sub2'))
+                              : $menu('sub').getItemProps({value: item.value})
                           },
                           get binding() {
                             return Object.keys(this.props).reduce((acc, prop) => {
@@ -118,9 +118,9 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar controls={false}>
-            <StateVisualizer label="menu-root" />
-            <StateVisualizer label="menu-sub" />
-            <StateVisualizer label="menu-sub2" />
+            <StateVisualizer label="menu" modifier="root" />
+            <StateVisualizer label="menu" modifier="sub" />
+            <StateVisualizer label="menu" modifier="sub2" />
           </Toolbar>
         </div>
       </body>

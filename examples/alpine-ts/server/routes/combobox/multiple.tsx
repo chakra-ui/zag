@@ -57,7 +57,7 @@ export default defineHandler((event) => {
 
           <main class="combobox">
             <div>
-              <b x-text="$_x_combobox_service.state.get()"></b>
+              <b x-text="$combobox().service.state.get()"></b>
               <b x-text="' / ' + ($combobox().highlightedValue || '-')"></b>
               <pre data-testid="value-text" x-text="$combobox().valueAsString"></pre>
               <div x-combobox:root>

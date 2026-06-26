@@ -14,8 +14,8 @@ export default defineHandler((event) => {
           class="page"
           x-data
           {...{ "x-menu.root": "{id: 'root'}", "x-menu.sub": "{id: 'sub'}" }}
-          x-init="$menu('root').setChild($_x_menu_sub_service)
-            $menu('sub').setParent($_x_menu_root_service)"
+          x-init="$menu('root').setChild($menu('sub').service)
+            $menu('sub').setParent($menu('root').service)"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
