@@ -25,10 +25,10 @@ export function usePlugin<T extends MachineSchema>(
           evaluateProps((props) => (userPropsRef.value = props))
         })
         const machine = new AlpineMachine(component.machine, userPropsRef)
+        Alpine.magic(_x_snake_case + _modifier + "_service", () => machine.service)
         Alpine.bind(el, {
           "x-data"() {
             return {
-              [_x_snake_case + _modifier + "_service"]: machine.service, // dev only, for state visualization
               [_x_snake_case + _modifier]: component.connect(machine.service, normalizeProps),
               init() {
                 machine.init()
