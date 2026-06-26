@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { editableControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="editable"
-          x-id="['editable']"
-          x-editable="{id: $id('editable'), defaultValue: 'Hello World', ...context}"
-        >
+        <div class="page" x-data="editable" x-editable="{id: $id('editable'), defaultValue: 'Hello World', ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="editable">

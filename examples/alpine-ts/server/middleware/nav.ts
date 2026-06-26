@@ -1,5 +1,5 @@
 import { getComponentByPath, isKnownComponent } from "@zag-js/shared"
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 
 export default defineHandler((event) => {
   const { pathname } = event.url

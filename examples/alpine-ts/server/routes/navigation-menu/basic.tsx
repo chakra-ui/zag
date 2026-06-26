@@ -1,6 +1,6 @@
 import { navigationMenuControls } from "@zag-js/shared"
 import { ChevronDown } from "lucide-static"
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -11,7 +11,7 @@ import { Toolbar } from "../../components/toolbar"
 export default defineHandler((event) => {
   const renderLinks = (opts: { value: string; items: string[] }) => {
     const { value, items } = opts
-    return items.map((item, index) => (
+    return items.map((item) => (
       <a href="#" x-navigation-menu:link={`{value: '${value}'}`}>
         {item}
       </a>

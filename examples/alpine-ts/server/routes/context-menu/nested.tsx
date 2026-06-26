@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 
@@ -14,8 +14,8 @@ export default defineHandler((event) => {
           class="page"
           x-data
           {...{ "x-menu.root": "{id: 'root'}", "x-menu.sub": "{id: 'sub'}" }}
-          x-init="$menu('root').setChild($menu('sub').service)
-            $menu('sub').setParent($menu('root').service)"
+          x-init="$menu('root').setChild($menu('sub').service);
+            $menu('sub').setParent($menu('root').service);"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 

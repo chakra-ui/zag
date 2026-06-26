@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -15,7 +15,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data
-          x-id="['timer']"
           x-timer="{
             id: $id('timer'),
             countdown: true,

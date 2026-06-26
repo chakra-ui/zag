@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { fileUploadControls, getControlDefaults } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -18,7 +18,7 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="fileUpload"
           x-file-upload="{id: $id('file-upload'), maxFiles: 2, onFileReject() { alert('rejected') }}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -69,7 +69,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={fileUploadControls} state={state} slot="controls" />
+            <Controls config={fileUploadControls} slot="controls" />
             <StateVisualizer label="file-upload" />
           </Toolbar>
         </div>

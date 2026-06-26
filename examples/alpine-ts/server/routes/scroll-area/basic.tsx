@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults, scrollAreaControls } from "@zag-js/shared"
+import { scrollAreaControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(scrollAreaControls)
-
   return (
     <html>
       <Head>
@@ -16,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['scroll-area']"
-          x-scroll-area={`{id: $id('scroll-area'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="scrollArea" x-scroll-area="{id: $id('scroll-area'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="scroll-area">
@@ -48,7 +41,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={scrollAreaControls} state={state} slot="controls" />
+            <Controls config={scrollAreaControls} slot="controls" />
             <StateVisualizer label="scroll-area" />
           </Toolbar>
         </div>

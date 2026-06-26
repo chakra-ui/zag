@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { getControlDefaults, listboxControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -18,9 +18,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="listbox"
           x-listbox:grid-collection="{items: $selectData, columnCount: 3}"
-          x-listbox={`{collection, id: $id('listbox'), ${Object.keys(state)}}`}
+          x-listbox="{collection, id: $id('listbox'), ...context}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -39,7 +39,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar viz>
-            <Controls config={listboxControls} state={state} slot="controls" />
+            <Controls config={listboxControls} slot="controls" />
             <StateVisualizer label="listbox" context={["highlightedValue"]} />
           </Toolbar>
         </div>

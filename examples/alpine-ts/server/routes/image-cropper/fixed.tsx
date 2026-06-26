@@ -1,5 +1,5 @@
 import { imageCropperControls } from "@zag-js/shared"
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -16,7 +16,8 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data="{...imageCropper(), zoom: 1, rotation: 0}"
+          x-data:controls="imageCropper"
+          x-data="{zoom: 1, rotation: 0}"
           x-image-cropper="{
             id: $id('image-cropper'),
             zoom,

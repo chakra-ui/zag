@@ -1,8 +1,8 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
-import { Toolbar } from "../../components/toolbar"
 import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
   return (

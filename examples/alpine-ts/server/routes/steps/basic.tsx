@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults, stepsControls, stepsData } from "@zag-js/shared"
+import { stepsControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(stepsControls)
-
   return (
     <html>
       <Head>
@@ -16,35 +14,28 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['steps']"
-          x-steps={`{id: $id('steps'), count: ${stepsData.length}, ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="steps" x-steps="{id: $id('steps'), count: $stepsData.length, ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="steps">
             <div x-steps:root>
               <div x-steps:list>
-                {stepsData.map((step, index) => (
-                  <div x-steps:item={`{index: ${index}}`}>
-                    <button x-steps:trigger={`{index: ${index}}`}>
-                      <div x-steps:indicator={`{index: ${index}}`}>{index + 1}</div>
-                      <span>{step.title}</span>
+                <template x-for="(step, index) in $stepsData" x-bind:key="index">
+                  <div x-steps:item="{ index }">
+                    <button x-steps:trigger="{ index }">
+                      <div x-steps:indicator="{ index }" x-text="index + 1"></div>
+                      <span x-text="step.title"></span>
                     </button>
-                    <div x-steps:separator={`{index: ${index}}`} />
+                    <div x-steps:separator="{ index }" />
                   </div>
-                ))}
+                </template>
               </div>
 
-              {stepsData.map((step, index) => (
-                <div x-steps:content={`{index: ${index}}`}>
-                  {step.title} - {step.description}
-                </div>
-              ))}
+              <template x-for="(step, index) in $stepsData" x-bind:key="index">
+                <div x-steps:content="{ index }" x-text="step.title + ' - ' + step.description"></div>
+              </template>
 
-              <div x-steps:content={`{index: ${stepsData.length}}`}>
+              <div x-steps:content="{index: $stepData.length}">
                 Steps Complete - Thank you for filling out the form!
               </div>
 
@@ -56,7 +47,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={stepsControls} state={state} slot="controls" />
+            <Controls config={stepsControls} slot="controls" />
             <StateVisualizer label="steps" />
           </Toolbar>
         </div>

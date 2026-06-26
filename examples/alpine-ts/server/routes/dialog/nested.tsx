@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -70,8 +70,8 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar controls={false}>
-            <StateVisualizer label="dialog-parent" />
-            <StateVisualizer label="dialog-child" />
+            <StateVisualizer label="dialog" modifier="parent" />
+            <StateVisualizer label="dialog" modifier="child" />
           </Toolbar>
         </div>
       </body>

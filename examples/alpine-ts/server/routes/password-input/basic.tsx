@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { passwordInputControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="passwordInput"
-          x-id="['password-input']"
-          x-password-input={`{id: $id('password-input'), ...context}`}
-        >
+        <div class="page" x-data="passwordInput" x-password-input={`{id: $id('password-input'), ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="password-input">

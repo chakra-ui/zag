@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults, sliderControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
+import { sliderControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(sliderControls)
-
   return (
     <html>
       <Head>
@@ -18,13 +16,12 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['slider']"
+          x-data="slider"
           x-slider={`{
             id: $id('slider'),
             name: 'quantity',
             defaultValue: [10, 60],
-            ${Object.keys(state)},
+            ...context,
           }`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -33,8 +30,8 @@ export default defineHandler((event) => {
             <form
               // ensure we can read the value within forms
               x-on:change="(e) => {
-                const formData = $serialize(e.currentTarget, { hash: true })
-                console.log(formData)
+                const formData = $serialize(e.currentTarget, { hash: true });
+                console.log(formData);
               }"
             >
               <div x-slider:root>
@@ -65,7 +62,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={sliderControls} state={state} slot="controls" />
+            <Controls config={sliderControls} slot="controls" />
             <StateVisualizer label="slider" />
           </Toolbar>
         </div>

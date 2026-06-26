@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { ratingControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -44,12 +44,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="rating"
-          x-id="['rating']"
-          x-rating={`{id: $id('rating'), defaultValue: 2.5, ...context}`}
-        >
+        <div class="page" x-data="rating" x-rating={`{id: $id('rating'), defaultValue: 2.5, ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="rating">

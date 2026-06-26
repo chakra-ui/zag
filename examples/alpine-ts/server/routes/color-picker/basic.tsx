@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { colorPickerControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -33,7 +33,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="colorPicker"
-          x-id="['color-picker']"
           x-color-picker="{
             id: $id('color-picker'),
             name: 'color',

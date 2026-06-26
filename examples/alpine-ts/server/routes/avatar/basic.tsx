@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -12,12 +12,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="{src: $getRandomImage(), showImage: true}"
-          x-id="['avatar']"
-          x-avatar="{id: $id('avatar')}"
-        >
+        <div class="page" x-data="{src: $getRandomImage(), showImage: true}" x-avatar="{id: $id('avatar')}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="avatar">

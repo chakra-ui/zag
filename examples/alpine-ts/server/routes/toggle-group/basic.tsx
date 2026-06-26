@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,7 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="toggle" x-id="['toggle']" x-toggle={`{id: $id('toggle'), ...context}`}>
+        <div class="page" x-data="toggle" x-toggle="{id: $id('toggle'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="toggle-group">

@@ -1,5 +1,5 @@
 import { datePickerControls } from "@zag-js/shared"
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -18,13 +18,13 @@ export default defineHandler((event) => {
           class="page"
           x-data="datePicker"
           x-date-picker="{
-                  id: $id('date-picker'),
-                  name: 'date[]',
-                  locale: 'en',
-                  numOfMonths: 2,
-                  selectionMode: 'range',
-                  ...context
-                }"
+            id: $id('date-picker'),
+            name: 'date[]',
+            locale: 'en',
+            numOfMonths: 2,
+            selectionMode: 'range',
+            ...context
+          }"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 

@@ -1,14 +1,12 @@
-import { defineHandler } from "nitro/deps/h3"
 import { getControlDefaults, marqueeControls, marqueeData } from "@zag-js/shared"
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(marqueeControls)
-
   return (
     <html>
       <Head>
@@ -16,11 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-marquee={`{id: $id('marquee'), spacing: '2rem', ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="marquee" x-marquee="{id: $id('marquee'), spacing: '2rem', ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="marquee">
@@ -52,7 +46,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={marqueeControls} state={state} slot="controls" />
+            <Controls config={marqueeControls} slot="controls" />
             <StateVisualizer label="marquee" />
           </Toolbar>
         </div>

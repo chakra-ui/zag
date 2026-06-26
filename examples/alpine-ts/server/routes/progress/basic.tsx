@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults, progressControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
+import { progressControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(progressControls)
-
   return (
     <html>
       <Head>
@@ -16,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['progress']"
-          x-progress={`{id: $id('progress'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="progress" x-progress="{id: $id('progress'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="progress">
@@ -48,7 +41,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={progressControls} state={state} slot="controls" />
+            <Controls config={progressControls} slot="controls" />
             <StateVisualizer label="progress" />
           </Toolbar>
         </div>

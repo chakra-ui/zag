@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 
@@ -10,7 +10,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data x-id="['dialog']" x-dialog={`{id: $id('dialog')}`}>
+        <div class="page" x-data x-dialog={`{id: $id('dialog')}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>

@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { tagsInputControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -17,8 +17,7 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="tagsInput"
-          x-id="['tags-input']"
-          x-tags-input={`{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ...context}`}
+          x-tags-input="{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ...context}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 

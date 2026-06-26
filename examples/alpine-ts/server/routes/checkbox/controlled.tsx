@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/deps/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 
@@ -13,7 +13,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="{checked: false}"
-          x-id="['checkbox']"
           x-checkbox="{
             id: $id('checkbox'),
             name: 'checkbox',

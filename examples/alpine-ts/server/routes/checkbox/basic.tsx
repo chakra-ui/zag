@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { checkboxControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,19 +14,14 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="checkbox"
-          x-id="['checkbox']"
-          x-checkbox="{id: $id('checkbox'), name: 'checkbox', ...context}"
-        >
+        <div class="page" x-data="checkbox" x-checkbox="{id: $id('checkbox'), name: 'checkbox', ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="checkbox">
             <form
               x-on:change="(e) => {
-                const result = $serialize(e.currentTarget, { hash: true })
-                console.log(result)
+                const result = $serialize(e.currentTarget, { hash: true });
+                console.log(result);
               }"
             >
               <fieldset>

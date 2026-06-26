@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { clipboardControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
@@ -17,7 +17,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="clipboard"
-          x-id="['clipboard']"
           x-clipboard="{id: $id('clipboard'), value: 'https://github.com/chakra-ui/zag', ...context}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />

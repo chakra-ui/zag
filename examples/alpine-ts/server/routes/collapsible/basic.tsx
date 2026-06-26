@@ -1,6 +1,6 @@
-import { defineHandler } from "nitro/h3"
 import { collapsibleControls } from "@zag-js/shared"
 import { ChevronDown } from "lucide-static"
+import { defineHandler } from "nitro"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { Head } from "../../components/head"

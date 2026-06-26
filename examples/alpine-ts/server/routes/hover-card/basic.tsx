@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { hoverCardControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Nav } from "../../components/nav"
 import { Head } from "../../components/head"
@@ -14,7 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="hoverCard" x-id="['hover-card']" x-hover-card="{id: $id('hover-card'), ...context}">
+        <div class="page" x-data="hoverCard" x-hover-card="{id: $id('hover-card'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="hover-card">

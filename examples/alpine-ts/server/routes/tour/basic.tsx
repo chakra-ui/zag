@@ -1,6 +1,6 @@
 import { tourControls } from "@zag-js/shared"
 import { X } from "lucide-static"
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { IFrame } from "../../components/iframe"

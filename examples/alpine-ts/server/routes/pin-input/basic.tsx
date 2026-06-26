@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { pinInputControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data="pinInput"
-          x-id="['pin-input']"
-          x-pin-input={`{name: 'test', id: $id('pin-input'), count: 3, ...context}`}
-        >
+        <div class="page" x-data="pinInput" x-pin-input={`{name: 'test', id: $id('pin-input'), count: 3, ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="pin-input">

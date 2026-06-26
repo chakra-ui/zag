@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/h3"
+import { defineHandler } from "nitro"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 
@@ -13,7 +13,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="{url: '', image: ''}"
-          x-id="['qr-code']"
           x-qr-code="{id: $id('qr-code'), encoding: {ecc: 'H'}, value: url}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -21,10 +20,10 @@ export default defineHandler((event) => {
           <main class="qr-code">
             <form
               x-on:submit="(e) => {
-                e.preventDefault()
-                const formData = new FormData(e.currentTarget)
-                const u = formData.get('url')?.toString()
-                if (u) url = u
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const u = formData.get('url')?.toString();
+                if (u) url = u;
               }"
             >
               <input type="text" name="url" />

@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { paginationControls } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -17,7 +17,6 @@ export default defineHandler((event) => {
         <div
           class="page"
           x-data="{...pagination(), details: {}}"
-          x-id="['pagination']"
           x-pagination={`{
             id: $id('pagination'),
             count: $paginationData.length,

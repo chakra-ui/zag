@@ -1,14 +1,12 @@
-import { defineHandler } from "nitro/h3"
 import { getControlDefaults, qrCodeControls } from "@zag-js/shared"
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
+import { defineHandler } from "nitro"
+import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
-import { Controls } from "../../components/controls"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(qrCodeControls)
-
   return (
     <html>
       <Head>
@@ -16,13 +14,9 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['qr-code']"
-          x-qr-code={`{id: $id('qr-code'), encoding: {ecc: 'H'}, ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="qrCode" x-qr-code="{id: $id('qr-code'), encoding: {ecc: 'H'}, ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
+
           <main class="qr-code">
             <div x-qr-code:root>
               <svg x-qr-code:frame>
@@ -35,7 +29,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={qrCodeControls} state={state} slot="controls" />
+            <Controls config={qrCodeControls} slot="controls" />
             <StateVisualizer label="qr-code" omit={["encoded"]} />
           </Toolbar>
         </div>

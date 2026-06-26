@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
 import { tabsControls, tabsData } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,7 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="tabs" x-id="['tabs']" x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ...context}`}>
+        <div class="page" x-data="tabs" x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="tabs">

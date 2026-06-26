@@ -1,5 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults, radioControls, radioData } from "@zag-js/shared"
+import { radioControls, radioData } from "@zag-js/shared"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(radioControls)
-
   return (
     <html>
       <Head>
@@ -18,13 +16,13 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
-          x-radio={`{
+          x-data="radio"
+          x-radio="{
             id: $id('radio'),
             name: 'fruit',
             orientation: 'horizontal',
-            ${Object.keys(state)},
-          }`}
+            ...context,
+          }"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -44,7 +42,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={radioControls} state={state} slot="controls" />
+            <Controls config={radioControls} slot="controls" />
             <StateVisualizer label="radio" />
           </Toolbar>
         </div>
