@@ -292,4 +292,19 @@ test.describe("datepicker [range]", () => {
     // Should not crash and the new value should be set
     await I.seeInputHasValue("06/15/2025", 1)
   })
+
+  test("normalizes reversed range dates entered via input on blur", async () => {
+    // Regression test for issue #3186
+    await I.focusInput(0)
+    await I.type("06/20/2024", 0)
+    await I.clickOutsideToBlur()
+
+    await I.focusInput(1)
+    await I.type("06/10/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // dates entered in reverse order should be swapped, matching the Enter/click path
+    await I.seeInputHasValue("06/10/2024", 0)
+    await I.seeInputHasValue("06/20/2024", 1)
+  })
 })
