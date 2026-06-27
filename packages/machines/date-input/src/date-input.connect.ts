@@ -313,7 +313,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
           // For dayPeriod and era segments, accept letter input (a/p for AM/PM, etc.)
           const isTextSegment = segment.type === "dayPeriod" || segment.type === "era"
 
-          if (data && (isTextSegment || isValidCharacter(data, separator))) {
+          if (data && (isTextSegment || isValidCharacter(data, separator, locale))) {
             event.preventDefault()
             send({ type: "SEGMENT.INPUT", segment, input: data })
           } else {
