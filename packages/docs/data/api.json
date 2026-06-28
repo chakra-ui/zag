@@ -3768,6 +3768,16 @@
         "description": "The amount to increment or decrement the value by",
         "defaultValue": "1"
       },
+      "largeStep": {
+        "type": "number | undefined",
+        "description": "The amount to increment or decrement the value by when the `Shift` key is held.",
+        "defaultValue": "10 * step"
+      },
+      "smallStep": {
+        "type": "number | undefined",
+        "description": "The amount to increment or decrement the value by when the `Alt` key is held.",
+        "defaultValue": "step / 10"
+      },
       "allowMouseWheel": {
         "type": "boolean | undefined",
         "description": "Whether to allow mouse wheel to change the value"
@@ -5239,6 +5249,11 @@
         "type": "number | undefined",
         "description": "The step value of the slider",
         "defaultValue": "1"
+      },
+      "largeStep": {
+        "type": "number | undefined",
+        "description": "The step value of the slider when the `Shift` key is held, or the\n`PageUp`/`PageDown` keys are used.",
+        "defaultValue": "10 * step"
       },
       "minStepsBetweenThumbs": {
         "type": "number | undefined",

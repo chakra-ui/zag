@@ -112,6 +112,16 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    */
   step?: number | undefined
   /**
+   * The amount to increment or decrement the value by when the `Shift` key is held.
+   * @default 10 * step
+   */
+  largeStep?: number | undefined
+  /**
+   * The amount to increment or decrement the value by when the `Alt` key is held.
+   * @default step / 10
+   */
+  smallStep?: number | undefined
+  /**
    * Whether to allow mouse wheel to change the value
    */
   allowMouseWheel?: boolean | undefined
@@ -177,11 +187,11 @@ type PropsWithDefault =
   | "pattern"
   | "translations"
   | "step"
+  | "largeStep"
+  | "smallStep"
   | "spinOnPress"
   | "min"
   | "max"
-  | "step"
-  | "translations"
 
 type ComputedContext = Readonly<{
   /**
