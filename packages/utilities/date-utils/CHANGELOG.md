@@ -1,5 +1,13 @@
 # @zag-js/date-utils
 
+## 1.42.0
+
+### Patch Changes
+
+- [`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow typing dates using the locale's native numerals (e.g.
+  Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to ASCII digits. Latin-locale behavior is unchanged.
+
 ## 1.41.2
 
 ## 1.41.1

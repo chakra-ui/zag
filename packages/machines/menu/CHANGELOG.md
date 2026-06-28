@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 1.42.0
+
+### Patch Changes
+
+- [`a0bf451`](https://github.com/chakra-ui/zag/commit/a0bf45188ad0a0c89d9823c20c71d2b771c14fdb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where context menu briefly flashes at the top-left
+  corner before positioning, and where a long-press (touch) context menu opens stuck at `(0,0)` without ever
+  repositioning to the touch point.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-visible@1.42.0
+  - @zag-js/popper@1.42.0
+  - @zag-js/rect-utils@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes
