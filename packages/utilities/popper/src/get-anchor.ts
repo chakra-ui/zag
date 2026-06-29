@@ -29,15 +29,25 @@ export function getAnchorElement(
   anchorElement: MaybeRectElement,
   getAnchorRect?: (anchor: MaybeRectElement) => AnchorRect | null,
 ): VirtualElement {
+  const getRect = () => {
+    const anchor = anchorElement
+    const anchorRect = getAnchorRect?.(anchor)
+    if (anchorRect || !anchor) {
+      return getDOMRect(anchorRect)
+    }
+    return anchor.getBoundingClientRect()
+  }
+
   return {
     contextElement: isHTMLElement(anchorElement) ? anchorElement : anchorElement?.contextElement,
-    getBoundingClientRect: () => {
+    getBoundingClientRect: getRect,
+    getClientRects: () => {
       const anchor = anchorElement
       const anchorRect = getAnchorRect?.(anchor)
       if (anchorRect || !anchor) {
-        return getDOMRect(anchorRect)
+        return [getDOMRect(anchorRect)]
       }
-      return anchor.getBoundingClientRect()
+      return "getClientRects" in anchor ? Array.from(anchor.getClientRects()) : [anchor.getBoundingClientRect()]
     },
   } as VirtualElement
 }

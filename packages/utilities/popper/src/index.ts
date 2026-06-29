@@ -6,6 +6,7 @@ export type {
   AutoUpdateOptions,
   Boundary,
   ComputePositionReturn,
+  InlineOptions,
   Placement,
   PlacementAlign,
   PlacementSide,

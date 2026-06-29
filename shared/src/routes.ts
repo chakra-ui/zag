@@ -334,6 +334,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
+      { slug: "inline-positioning", title: "Inline Positioning" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },

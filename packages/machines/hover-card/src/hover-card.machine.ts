@@ -1,10 +1,18 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getPlacement } from "@zag-js/popper"
+import { getPlacement, type PositioningOptions } from "@zag-js/popper"
 import * as dom from "./hover-card.dom"
 import type { HoverCardSchema, Placement } from "./hover-card.types"
 
+type Point = { x: number; y: number }
+
 const { not, and } = createGuards<HoverCardSchema>()
+
+function getPositioningOptions(positioning: PositioningOptions, point: Point | null): PositioningOptions {
+  if (!positioning.inline || point == null) return positioning
+  if (positioning.inline === true) return { ...positioning, inline: point }
+  return { ...positioning, inline: { ...point, ...positioning.inline } }
+}
 
 export const machine = createMachine<HoverCardSchema>({
   props({ props }) {
@@ -15,6 +23,7 @@ export const machine = createMachine<HoverCardSchema>({
       ...props,
       positioning: {
         placement: "bottom",
+        inline: false,
         ...props.positioning,
       },
     }
@@ -36,6 +45,9 @@ export const machine = createMachine<HoverCardSchema>({
       })),
       isPointer: bindable<boolean>(() => ({
         defaultValue: false,
+      })),
+      pointerPoint: bindable<Point | null>(() => ({
+        defaultValue: null,
       })),
       triggerValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultTriggerValue") ?? null,
@@ -63,29 +75,29 @@ export const machine = createMachine<HoverCardSchema>({
 
   on: {
     "TRIGGER_VALUE.SET": {
-      actions: ["setTriggerValue", "reposition"],
+      actions: ["setPointerPoint", "setTriggerValue", "reposition"],
     },
   },
 
   states: {
     closed: {
       tags: ["closed"],
-      entry: ["clearIsPointer"],
+      entry: ["clearIsPointer", "clearPointerPoint"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
         },
         POINTER_ENTER: {
           target: "opening",
-          actions: ["setIsPointer", "setTriggerValue"],
+          actions: ["setIsPointer", "setPointerPoint", "setTriggerValue"],
         },
         TRIGGER_FOCUS: {
           target: "opening",
-          actions: ["setTriggerValue"],
+          actions: ["clearPointerPoint", "setTriggerValue"],
         },
         OPEN: {
           target: "opening",
-          actions: ["setTriggerValue"],
+          actions: ["clearPointerPoint", "setTriggerValue"],
         },
       },
     },
@@ -146,7 +158,7 @@ export const machine = createMachine<HoverCardSchema>({
         ],
         "TRIGGER_VALUE.SET": {
           // Stay in opening state but update trigger value (will reposition when opened)
-          actions: ["setTriggerValue"],
+          actions: ["setPointerPoint", "setTriggerValue"],
         },
       },
     },
@@ -159,7 +171,7 @@ export const machine = createMachine<HoverCardSchema>({
           target: "closed",
         },
         POINTER_ENTER: {
-          actions: ["setIsPointer"],
+          actions: ["setIsPointer", "setPointerPoint"],
         },
         POINTER_LEAVE: {
           target: "closing",
@@ -214,15 +226,15 @@ export const machine = createMachine<HoverCardSchema>({
         POINTER_ENTER: {
           target: "open",
           // no need to invokeOnOpen here because it's still open (but about to close)
-          actions: ["setIsPointer"],
+          actions: ["setIsPointer", "setPointerPoint"],
         },
         TRIGGER_FOCUS: {
           target: "open",
-          actions: ["setTriggerValue"],
+          actions: ["clearPointerPoint", "setTriggerValue"],
         },
         "TRIGGER_VALUE.SET": {
           target: "open",
-          actions: ["setTriggerValue", "reposition"],
+          actions: ["setPointerPoint", "setTriggerValue", "reposition"],
         },
       },
     },
@@ -257,8 +269,9 @@ export const machine = createMachine<HoverCardSchema>({
         }
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const positioning = getPositioningOptions(prop("positioning"), context.get("pointerPoint"))
         return getPlacement(getTriggerEl, getPositionerEl, {
-          ...prop("positioning"),
+          ...positioning,
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -298,12 +311,22 @@ export const machine = createMachine<HoverCardSchema>({
       clearIsPointer({ context }) {
         context.set("isPointer", false)
       },
+      setPointerPoint({ context, event }) {
+        if (!event.point) return
+        context.set("pointerPoint", event.point)
+      },
+      clearPointerPoint({ context }) {
+        context.set("pointerPoint", null)
+      },
       reposition({ context, prop, scope, event }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const positioning = getPositioningOptions(
+          { ...prop("positioning"), ...event.options },
+          context.get("pointerPoint"),
+        )
         getPlacement(getTriggerEl, getPositionerEl, {
-          ...prop("positioning"),
-          ...event.options,
+          ...positioning,
           defer: true,
           listeners: false,
           onComplete(data) {

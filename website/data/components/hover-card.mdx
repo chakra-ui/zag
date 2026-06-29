@@ -98,6 +98,19 @@ const service = useMachine(hoverCard.machine, {
 })
 ```
 
+Use `positioning.inline` when the trigger is inline text that can wrap across
+multiple lines. The hover card will choose the trigger rect closest to the
+pointer that opened it.
+
+```tsx
+const service = useMachine(hoverCard.machine, {
+  positioning: {
+    placement: "top",
+    inline: true,
+  },
+})
+```
+
 ### Multiple triggers
 
 A single hover card instance can be shared across multiple trigger elements.
