@@ -461,6 +461,11 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "meter",
+    label: "Meter",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
     slug: "toast",
     label: "Toast",
     examples: [
