@@ -44,6 +44,8 @@ export const machine = createMachine({
       max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,
       ...props,
+      largeStep: props.largeStep ?? 10 * step,
+      smallStep: props.smallStep ?? step / 10,
       translations: {
         incrementLabel: "increment value",
         decrementLabel: "decrease value",

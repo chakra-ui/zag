@@ -58,6 +58,7 @@ export const machine = createMachine<SliderSchema>({
       thumbCollisionBehavior: "none",
       minStepsBetweenThumbs,
       ...props,
+      largeStep: props.largeStep ?? 10 * step,
       defaultValue: normalize(defaultValue, min, max, step, minStepsBetweenThumbs),
       value: props.value ? normalize(props.value, min, max, step, minStepsBetweenThumbs) : undefined,
       max,

@@ -54,6 +54,37 @@ test.describe("slider", () => {
     await I.seeValueText("0")
   })
 
+  test("[keyboard] should stay on the step grid regardless of modifier keys", async () => {
+    await I.focusThumb()
+
+    // meta/ctrl/alt + arrow should move by `step`, never a fraction of it
+    await I.pressKey("Meta+ArrowRight")
+    await I.seeValueText("1")
+
+    await I.pressKey("Control+ArrowRight")
+    await I.seeValueText("2")
+
+    await I.pressKey("Alt+ArrowRight")
+    await I.seeValueText("3")
+
+    await I.pressKey("Alt+ArrowLeft")
+    await I.seeValueText("2")
+  })
+
+  test("[keyboard] should respect a custom largeStep", async () => {
+    await I.controls.num("largeStep", "5")
+    await I.focusThumb()
+
+    await I.pressKey("Shift+ArrowRight")
+    await I.seeValueText("5")
+
+    await I.pressKey("PageUp")
+    await I.seeValueText("10")
+
+    await I.pressKey("PageDown")
+    await I.seeValueText("5")
+  })
+
   test("[pointer] should set value on click track", async () => {
     await I.mousedownAt({ x: 0.8 })
     await I.seeThumbIsFocused()

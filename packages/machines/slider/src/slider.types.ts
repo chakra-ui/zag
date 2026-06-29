@@ -113,6 +113,12 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   step?: number | undefined
   /**
+   * The step value of the slider when the `Shift` key is held, or the
+   * `PageUp`/`PageDown` keys are used.
+   * @default 10 * step
+   */
+  largeStep?: number | undefined
+  /**
    * The minimum permitted steps between multiple thumbs.
    *
    * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
@@ -166,6 +172,7 @@ type PropsWithDefault =
   | "min"
   | "max"
   | "step"
+  | "largeStep"
   | "orientation"
   | "defaultValue"
   | "origin"
