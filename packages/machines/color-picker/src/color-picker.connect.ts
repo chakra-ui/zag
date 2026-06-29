@@ -1,5 +1,5 @@
 import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
-import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
+import { getEventKey, getEventPoint, getEventStep, isComposingEvent, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
@@ -583,6 +583,7 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
+          if (isComposingEvent(event)) return
           if (event.key === "Enter") {
             const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
