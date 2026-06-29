@@ -1,5 +1,24 @@
 # @zag-js/color-picker
 
+## 1.42.1
+
+### Patch Changes
+
+- [#3198](https://github.com/chakra-ui/zag/pull/3198)
+  [`e4e0b2d`](https://github.com/chakra-ui/zag/commit/e4e0b2d04a9e6d909db36d8ed0c9ad54790190a6) Thanks
+  [@greymoth-jp](https://github.com/greymoth-jp)! - Fix the color channel input committing a partial value when `Enter`
+  is pressed to confirm an IME composition.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.1
+  - @zag-js/core@1.42.1
+  - @zag-js/types@1.42.1
+  - @zag-js/color-utils@1.42.1
+  - @zag-js/utils@1.42.1
+  - @zag-js/dismissable@1.42.1
+  - @zag-js/dom-query@1.42.1
+  - @zag-js/popper@1.42.1
+
 ## 1.42.0
 
 ### Patch Changes
