@@ -2,7 +2,7 @@ import {
   ariaAttr,
   dataAttr,
   getEventPoint,
-  getEventStep,
+  getEventStepValue,
   getWindow,
   isComposingEvent,
   isLeftClick,
@@ -177,7 +177,11 @@ export function connect<T extends PropTypes>(
           if (readOnly) return
           if (isComposingEvent(event)) return
 
-          const step = getEventStep(event) * prop("step")
+          const step = getEventStepValue(event, {
+            step: prop("step"),
+            largeStep: prop("largeStep"),
+            smallStep: prop("smallStep"),
+          })
 
           const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {

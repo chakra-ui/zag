@@ -933,7 +933,7 @@ export function connect<T extends PropTypes>(
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
-          if (!isValidCharacter(data, separator)) {
+          if (!isValidCharacter(data, separator, locale)) {
             event.preventDefault()
           }
         },
@@ -971,7 +971,7 @@ export function connect<T extends PropTypes>(
         },
         onInput(event) {
           const value = event.currentTarget.value
-          send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
+          send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator, locale), index })
         },
       })
     },

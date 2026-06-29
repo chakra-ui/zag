@@ -298,17 +298,18 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearHighlightedValue", "scrollContentToTop"],
+      exit: ["scrollContentToTop"],
       effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
           {
             guard: "restoreFocus",
             target: "focused",
-            actions: ["focusTriggerEl"],
+            actions: ["focusTriggerEl", "clearHighlightedValue"],
           },
           {
             target: "idle",
+            actions: ["clearHighlightedValue"],
           },
         ],
         CLOSE: [
@@ -319,11 +320,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: "restoreFocus",
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             target: "idle",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearHighlightedValue"],
           },
         ],
         "TRIGGER.CLICK": [
@@ -333,7 +334,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
         ],
         "ITEM.CLICK": [
@@ -344,7 +345,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("canSelectItem", and("shouldCloseOnSelect", not("multiple"))),
             target: "focused",
-            actions: ["selectItem", "invokeOnClose", "focusTriggerEl"],
+            actions: ["selectItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "canSelectItem",
@@ -423,12 +424,12 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("isAtRootLevel", "restoreFocus"),
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "isAtRootLevel",
             target: "idle",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearHighlightedValue"],
           },
           {
             guard: "canNavigateToParent",
@@ -447,7 +448,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("canSelectHighlightedItem", and("shouldCloseOnSelectHighlighted", not("multiple"))),
             target: "focused",
-            actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl"],
+            actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "canSelectHighlightedItem",

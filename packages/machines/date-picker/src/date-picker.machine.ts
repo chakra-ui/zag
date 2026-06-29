@@ -1203,13 +1203,14 @@ export const machine = createMachine<DatePickerSchema>({
         date = constrainValue(date, prop("min"), prop("max"))
 
         const values = Array.from(context.get("value"))
-        values[event.index] = date
+        values[event.index] = preserveTime(values[event.index], date)
+        const adjustedValues = adjustStartAndEndDate(values)
 
-        context.set("value", values)
+        context.set("value", adjustedValues)
 
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
-        const valueAsString = getValueAsString(values, prop)
+        const valueAsString = getValueAsString(adjustedValues, prop)
         context.set("inputValue", valueAsString[event.index])
       },
 
