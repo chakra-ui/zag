@@ -4,6 +4,53 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.42.0](./#1.42.0) - 2026-06-29
+
+### Added
+
+- **Number Input**: Add `largeStep` (defaults to `10 * step`, applied on `Shift`) and `smallStep` (defaults to
+  `step / 10`, applied on `Alt`) props for configurable keyboard stepping. The defaults preserve the previous stepping
+  magnitudes.
+
+- **Slider**: Add `largeStep` prop (defaults to `10 * step`), applied on `Shift` or `PageUp`/`PageDown`. The default
+  preserves the previous stepping magnitude.
+
+### Fixed
+
+- **Cascade Select**: Fix issue where pressing `Enter` on a highlighted leaf node did not select it in non-React
+  frameworks.
+
+- **Date Input**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits. Latin-locale behavior is unchanged.
+  - Fix timezone-naive values (`CalendarDate`/`CalendarDateTime`) being shifted by the viewer's local UTC offset when a
+    custom `formatter` without an explicit `timeZone` is provided. The instant fed to the formatter is now built using
+    the formatter's own resolved time zone, so a wall-clock value round-trips unshifted.
+
+- **Date Picker**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits.
+  - Add date reordering on blur for range selection to match other selection paths.
+  - Fix day view briefly flashing when closing the date picker from the month or year view.
+  - Fix `visibleRangeText` returning a stale value when multiple date pickers with different `selectionMode` (or
+    `timeZone`) share the same visible range. This previously surfaced as SSR hydration mismatches.
+
+- **Menu**: Fix issue where the context menu briefly flashes at the top-left corner before positioning, and where a
+  long-press (touch) context menu opens stuck at `(0,0)` without ever repositioning to the touch point.
+
+- **Number Input**
+  - Fix issue where calling `api.setValue` with a number throws when `formatOptions` is defined.
+  - Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when `step: 1`).
+
+- **Slider**: Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when
+  `step: 1`).
+
+- **Tags Input**: Fix native form submit so `FormData` reflects the current tags. The hidden input previously kept its
+  initial value after tags were added, removed, or cleared.
+
+- **Toast**: Fix toast height measurement including the `scale` transform in overlap mode, causing a height flicker when
+  expanding the stack. Height is now measured from the untransformed element.
+
 ## [1.41.2](./#1.41.2) - 2026-06-05
 
 ### Fixed
@@ -11,8 +58,8 @@ All notable changes to this project will be documented in this file.
 - **Date Input**: Fix date segment placeholders for locales with explicit script subtags.
 
 - **Drawer**
-  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g. history
-    API or a delayed state update).
+  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g.
+    history API or a delayed state update).
   - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
 
 - **Image Cropper**: Fix `getCroppedImage` and `getCropData` returning the wrong region when the image is displayed at a
