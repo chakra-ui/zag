@@ -514,7 +514,10 @@ export const machine = createMachine<DrawerSchema>({
         backdropEl.style.setProperty("animation", "none", "important")
       },
 
-      clearSwipeOpenAnimation({ scope }) {
+      clearSwipeOpenAnimation({ scope, event, prop }) {
+        // Skip when an `onOpenChange` handler can drive the close. It prevents
+        // running animations before the drawer actually starts to close.
+        if (prop("onOpenChange") != null && event.type != "CONTROLLED.CLOSE") return
         const contentEl = dom.getContentEl(scope)
         const backdropEl = dom.getBackdropEl(scope)
         if (contentEl) contentEl.style.removeProperty("animation")
