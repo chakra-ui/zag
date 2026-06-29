@@ -1,5 +1,33 @@
 # @zag-js/date-input
 
+## 1.42.0
+
+### Patch Changes
+
+- [`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow typing dates using the locale's native numerals (e.g.
+  Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to ASCII digits. Latin-locale behavior is unchanged.
+
+- [#3190](https://github.com/chakra-ui/zag/pull/3190)
+  [`808c5ef`](https://github.com/chakra-ui/zag/commit/808c5ef0e5ff273f786a1d48f054699cf3b67d80) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Fix timezone-naive values (`CalendarDate`/`CalendarDateTime`)
+  being shifted by the viewer's local UTC offset when a custom `formatter` without an explicit `timeZone` is provided.
+  Typing `0` into the hour segment of a time-only input previously committed/displayed `02` at UTC+2 or `09` at UTC+9
+  instead of `0`.
+
+  The instant fed to the formatter is now built using the formatter's own resolved time zone, so a wall-clock value
+  round-trips unshifted regardless of the viewer's locale. `ZonedDateTime` values (which carry an absolute instant) are
+  unaffected.
+
+- Updated dependencies [[`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5)]:
+  - @zag-js/date-utils@1.42.0
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/live-region@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

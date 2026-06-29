@@ -1,5 +1,41 @@
 # @zag-js/date-picker
 
+## 1.42.0
+
+### Patch Changes
+
+- [`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow typing dates using the locale's native numerals (e.g.
+  Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to ASCII digits. Latin-locale behavior is unchanged.
+
+- [#3189](https://github.com/chakra-ui/zag/pull/3189)
+  [`fa37b7e`](https://github.com/chakra-ui/zag/commit/fa37b7e1537b8963a22db356d7b077bb160430ef) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Adds date reordering on blur for range selection to match other selection
+  paths.
+
+- [#3191](https://github.com/chakra-ui/zag/pull/3191)
+  [`0062c9b`](https://github.com/chakra-ui/zag/commit/0062c9b408bbc13f1d2fa91d2d0d769b444ed49b) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix day view briefly flashing when closing the date picker from the month or
+  year view.
+
+- [#3175](https://github.com/chakra-ui/zag/pull/3175)
+  [`8710898`](https://github.com/chakra-ui/zag/commit/8710898ca6abaede20332c68033abf0581b16dd7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` returning a stale value when multiple date
+  pickers with different `selectionMode` (or `timeZone`) share the same visible range. The internal memo key now
+  includes `selectionMode` and `timeZone`, preventing a `range`-formatted label (e.g. `June 2026 - June 2026`) from
+  leaking into a `single`/`multiple` picker that should show `June 2026`. This previously surfaced as SSR hydration
+  mismatches.
+- Updated dependencies [[`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5)]:
+  - @zag-js/date-utils@1.42.0
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/live-region@1.42.0
+  - @zag-js/popper@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes
