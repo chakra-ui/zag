@@ -105,16 +105,15 @@ export const machine = createMachine<DatePickerSchema>({
     focusedValue = constrainValue(toTargetCalendar(focusedValue), props.min, props.max)
 
     // get the initial view
-    const minView: DateView = "day"
-    const maxView: DateView = "year"
-    const defaultView = clampView(props.view || minView, minView, maxView)
+    const minView: DateView = props.minView || "day"
+    const maxView: DateView = props.maxView || "year"
+    const defaultView = clampView(props.defaultView || props.view || minView, minView, maxView)
 
     return {
       locale,
       numOfMonths,
       timeZone,
       selectionMode,
-      defaultView,
       minView,
       maxView,
       outsideDaySelectable: false,
@@ -137,6 +136,7 @@ export const machine = createMachine<DatePickerSchema>({
       defaultFocusedValue: focusedValue,
       value,
       defaultValue: defaultValue ?? [],
+      defaultView,
       positioning: {
         placement: "bottom",
         ...props.positioning,
@@ -145,7 +145,7 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen") || prop("inline")
+    const open = prop("inline") || (prop("open") ?? prop("defaultOpen"))
     return open ? "open" : "idle"
   },
 
@@ -723,11 +723,13 @@ export const machine = createMachine<DatePickerSchema>({
       isRangePicker: ({ prop }) => prop("selectionMode") === "range",
       hasSelectedRange: ({ context }) => context.get("value").length === 2,
       isMultiPicker: ({ prop }) => prop("selectionMode") === "multiple",
-      canSelectDate: ({ context, prop, event }) => {
+      canSelectDate: (params) => {
+        const { context, prop, event } = params
         const maxSelectedDates = prop("maxSelectedDates")
         if (maxSelectedDates == null) return true
         const existingValues = context.get("value")
-        const currentValue = event.value ?? context.get("focusedValue")
+        // Normalize month/year cells numeric valueto a DateValue
+        const currentValue = normalizeValue(params, event.value ?? context.get("focusedValue"))
         // Allow if deselecting (date already selected)
         const isDeselecting = existingValues.some((date) => isDateEqual(date, currentValue))
         if (isDeselecting) return true
