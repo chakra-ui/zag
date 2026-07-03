@@ -9,6 +9,8 @@ export type ThumbCollisionBehavior = "none" | "push" | "swap"
 
 export type ThumbAlignment = "contain" | "center"
 
+export type SliderOrigin = "start" | "center" | "end" | number
+
 export interface ValueChangeDetails {
   value: number[]
 }
@@ -135,15 +137,14 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   orientation?: "vertical" | "horizontal" | undefined
   /**
-   * The origin of the slider range. The track is filled from the origin
-   * to the thumb for single values.
-   * - "start": Useful when the value represents an absolute value
-   * - "center": Useful when the value represents an offset (relative)
-   * - "end": Useful when the value represents an offset from the end
+   * The origin of the slider range. The track is filled from the origin to the thumb.
+   * - `"start"` / `"end"`: fill from `min` / `max`
+   * - `"center"`: fill from the midpoint of `min`/`max`
+   * - a `number`: fill from that value instead, for when the neutral point isn't the midpoint
    *
    * @default "start"
    */
-  origin?: "start" | "center" | "end" | undefined
+  origin?: SliderOrigin | undefined
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.

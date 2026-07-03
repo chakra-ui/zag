@@ -98,4 +98,46 @@ test.describe("slider", () => {
     await I.mouseup()
     await I.seeValueText("90")
   })
+
+  test("[origin] 'start' (default): fills from the left edge up to the value", async () => {
+    await I.mousedownAt({ x: 0.75 })
+    await I.seeValueText("75")
+    await I.seeFillPercent({ start: 0, end: 25 })
+  })
+
+  test("[origin] 'end': fills from the value up to the right edge", async () => {
+    await I.controls.select("origin", "end")
+    await I.mousedownAt({ x: 0.25 })
+    await I.seeValueText("25")
+    await I.seeFillPercent({ start: 25, end: 0 })
+  })
+
+  test("[origin] 'center': fills toward whichever side the value is on", async () => {
+    await I.controls.select("origin", "center")
+
+    await I.mousedownAt({ x: 0.3 })
+    await I.seeValueText("30")
+    await I.seeFillPercent({ start: 30, end: 50 })
+    await I.mouseup()
+
+    await I.mousedownAt({ x: 0.7 })
+    await I.seeValueText("70")
+    await I.seeFillPercent({ start: 50, end: 30 })
+  })
+
+  test("[origin] 'center' composes correctly with rtl", async () => {
+    // dir is deliberately exercised with Home/End (not pointer/arrow clicks), since RTL
+    // also reverses which physical side a click or arrow key maps to -- unrelated to origin
+    await I.controls.select("origin", "center")
+    await I.controls.select("dir", "rtl")
+    await I.focusThumb()
+
+    await I.pressKey("Home")
+    await I.seeValueText("0")
+    await I.seeFillPercent({ start: 0, end: 50 })
+
+    await I.pressKey("End")
+    await I.seeValueText("100")
+    await I.seeFillPercent({ start: 50, end: 0 })
+  })
 })

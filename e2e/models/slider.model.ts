@@ -31,12 +31,34 @@ export class SliderModel extends Model {
     return this.page.locator("[data-slider-value-text]")
   }
 
+  get range() {
+    return this.page.locator("[data-slider-range]")
+  }
+
   focusThumb(index?: number) {
     return this.getThumb(index).focus()
   }
 
   seeValueText(value: string) {
     return expect(this.output).toHaveText(value)
+  }
+
+  /** The filled range's inset from the control's start/end edges, as a percent of its width. */
+  private async getFillPercent() {
+    const controlBbox = await rect(this.control)
+    const rangeBbox = await rect(this.range)
+    const isRtl = (await this.control.getAttribute("dir")) === "rtl"
+
+    const insetFromLeft = ((rangeBbox.x - controlBbox.x) / controlBbox.width) * 100
+    const insetFromRight = ((controlBbox.maxX - rangeBbox.maxX) / controlBbox.width) * 100
+
+    return isRtl ? { start: insetFromRight, end: insetFromLeft } : { start: insetFromLeft, end: insetFromRight }
+  }
+
+  async seeFillPercent(expected: { start: number; end: number }, tolerance = 1.5) {
+    const actual = await this.getFillPercent()
+    expect(Math.abs(actual.start - expected.start), "fill start inset").toBeLessThanOrEqual(tolerance)
+    expect(Math.abs(actual.end - expected.end), "fill end inset").toBeLessThanOrEqual(tolerance)
   }
 
   /**

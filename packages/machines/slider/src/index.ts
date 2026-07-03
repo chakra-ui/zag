@@ -16,4 +16,5 @@ export type {
   ValueTextDetails,
   ThumbAlignment,
   ThumbCollisionBehavior,
+  SliderOrigin,
 } from "./slider.types"
