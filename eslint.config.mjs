@@ -13,6 +13,7 @@ export default defineConfig([
     "**/.vercel",
     "build",
     "examples/next-ts",
+    "examples/preact-ts",
     "examples/vue-ts",
     "plop-templates",
     "website",

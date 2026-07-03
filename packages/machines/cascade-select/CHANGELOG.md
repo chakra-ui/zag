@@ -1,6 +1,27 @@
 # @zag-js/cascade-select
 
 ## 2.0.0-next.0
+## 1.42.0
+
+### Patch Changes
+
+- [`aef8880`](https://github.com/chakra-ui/zag/commit/aef8880b8a1b471dfa2966d5da8b06c1677086d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing `Enter` on a highlighted leaf node did
+  not select it in non-React frameworks.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/collection@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-visible@1.42.0
+  - @zag-js/popper@1.42.0
+  - @zag-js/rect-utils@1.42.0
+
+## 1.41.2
 
 ### Patch Changes
 

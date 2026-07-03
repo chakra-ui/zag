@@ -100,7 +100,20 @@ test.describe("number input", () => {
     await I.seeInputHasValue("0")
   })
 
-  test("alt+arrowup: should change for smallStep (0.1x)", async () => {
+  test("alt+arrowup: should change by smallStep", async () => {
+    await I.type("0")
+
+    await I.pressKey("Alt+ArrowUp")
+    await I.seeInputHasValue("0.1")
+
+    await I.pressKey("Alt+ArrowUp")
+    await I.seeInputHasValue("0.2")
+
+    await I.pressKey("Alt+ArrowDown")
+    await I.seeInputHasValue("0.1")
+  })
+
+  test("alt+arrowup: should scale smallStep with a custom step", async () => {
     await I.controls.num("step", "0.1")
 
     await I.type("0.10", { delay: 20 })
@@ -109,9 +122,22 @@ test.describe("number input", () => {
 
     await I.pressKey("Alt+ArrowDown")
     await I.seeInputHasValue("0.1")
+  })
 
-    await I.pressKey("ArrowDown")
-    await I.seeInputHasValue("0")
+  test("should respect custom smallStep and largeStep", async () => {
+    await I.controls.num("largeStep", "5")
+    await I.controls.num("smallStep", "0.25")
+
+    await I.type("0")
+
+    await I.pressKey("Shift+ArrowUp")
+    await I.seeInputHasValue("5")
+
+    await I.pressKey("Alt+ArrowUp")
+    await I.seeInputHasValue("5.25")
+
+    await I.pressKey("Alt+ArrowDown")
+    await I.seeInputHasValue("5")
   })
 
   test("inc click: should increment value", async () => {

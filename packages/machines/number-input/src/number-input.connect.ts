@@ -2,7 +2,7 @@ import {
   ariaAttr,
   dataAttr,
   getEventPoint,
-  getEventStep,
+  getEventStepValue,
   getWindow,
   MAX_Z_INDEX,
   isComposingEvent,
@@ -178,7 +178,7 @@ export function connect<T extends PropTypes>(
           if (readOnly) return
           if (isComposingEvent(event)) return
 
-          const step = getEventStep(event, {
+          const step = getEventStepValue(event, {
             step: prop("step"),
             largeStep: prop("largeStep"),
             smallStep: prop("smallStep"),

@@ -130,6 +130,14 @@ export class Model {
     return this.page.getByText(text).click()
   }
 
+  clickButton(name: string, options?: { modifiers?: Array<"Alt" | "Control" | "Meta" | "Shift"> }) {
+    return this.page.getByRole("button", { name }).first().click(options)
+  }
+
+  seeTextValue(selector: string, value: string) {
+    return expect(this.page.locator(selector)).toHaveText(value)
+  }
+
   see(text: string, context?: string) {
     const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
     return expect(locator).toBeVisible()

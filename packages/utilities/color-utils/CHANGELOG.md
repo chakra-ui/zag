@@ -13,6 +13,14 @@
   as `getAreaProps` / `getGamutOverlayProps`. Adds `isInSrgbGamut` and optional `pixelRatio` on overlay props for
   DPR-aware boundary sampling. See
   [OSS-2393](https://linear.app/chakra/issue/OSS-2393/color-picker-wide-gamut-color-support-oklaboklch-srgb-gamut-overlay).
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.42.0
+
+## 1.41.2
 
 ### Patch Changes
 

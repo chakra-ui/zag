@@ -1,6 +1,8 @@
-import * as cascadeSelect from "@zag-js/cascade-select"
-import { normalizeProps, useMachine } from "@zag-js/preact"
+import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
+import * as cascadeSelect from "@zag-js/cascade-select"
+import { ChevronRightIcon, XIcon } from "lucide-preact"
+import serialize from "form-serialize"
 import { JSX, useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -53,7 +55,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
             <li key={item.label} {...api.getItemProps(itemProps)}>
               <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
               <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
-              {itemState.hasChildren && <span>{">"}</span>}
+              {itemState.hasChildren && (
+                <span>
+                  <ChevronRightIcon size={16} />
+                </span>
+              )}
             </li>
           )
         })}
@@ -77,6 +83,17 @@ export default function Page() {
     id: useId(),
     collection,
     name: "location",
+    // value: [["asia", "india", "haryana:HR"]],
+    // highlightedValue: ["asia", "india", "haryana:HR"],
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
+    },
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
     ...controls.context,
   })
 
@@ -94,18 +111,29 @@ export default function Page() {
               <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
               <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>X</button>
+            <button {...api.getClearTriggerProps()}>
+              <XIcon size={16} />
+            </button>
           </div>
 
-          {/* Hidden input */}
-          <input {...api.getHiddenInputProps()} />
+          <form
+            onChange={(e) => {
+              const formData = serialize(e.currentTarget, { hash: true })
+              console.log(formData)
+            }}
+          >
+            {/* Hidden input */}
+            <input {...api.getHiddenInputProps()} />
+          </form>
 
           {/* UI select */}
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              <TreeNode node={collection.rootNode} api={api} />
+          <Portal>
+            <div {...api.getPositionerProps()}>
+              <div {...api.getContentProps()}>
+                <TreeNode node={collection.rootNode} api={api} />
+              </div>
             </div>
-          </div>
+          </Portal>
         </div>
 
         <div style={{ marginTop: "350px" }}>

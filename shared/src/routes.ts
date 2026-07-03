@@ -449,6 +449,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Context Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -557,6 +558,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "editable", title: "Editable" },
+      { slug: "form", title: "Form" },
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },

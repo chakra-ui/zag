@@ -48,6 +48,22 @@
   - Replaced `composite` with `popupType: "listbox" | "dialog"` (default `"listbox"`). `popupType="dialog"` makes
     `content` carry `role="dialog"` and `aria-haspopup="dialog"` on the trigger; the `list` always carries
     `role="listbox"` regardless. Migrate `composite: false` → `popupType: "dialog"`.
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/collection@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-visible@1.42.0
+  - @zag-js/popper@1.42.0
+
+## 1.41.2
 
 ### Patch Changes
 

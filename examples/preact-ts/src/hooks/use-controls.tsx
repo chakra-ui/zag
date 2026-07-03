@@ -1,5 +1,5 @@
 import { ControlRecord, deepGet, deepSet, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
-import { useMemo, useState } from "preact/hooks"
+import { useMemo, useState } from "react"
 
 export function useControls<T extends ControlRecord>(config: T) {
   const [state, __setState] = useState(getControlDefaults(config))
@@ -30,7 +30,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                     type="checkbox"
                     defaultChecked={value}
                     onChange={(e) => {
-                      setState(key, e.currentTarget.checked)
+                      setState(key, e.target.checked)
                     }}
                   />
                   <label htmlFor={label}>{label}</label>
@@ -64,7 +64,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                     id={label}
                     defaultValue={value}
                     onChange={(e) => {
-                      setState(key, e.currentTarget.value)
+                      setState(key, e.target.value)
                     }}
                   >
                     <option>-----</option>
@@ -98,6 +98,26 @@ export function useControls<T extends ControlRecord>(config: T) {
                   />
                 </div>
               )
+            case "date":
+              return (
+                <div key={key} className="text">
+                  <label htmlFor={label} style={{ marginRight: "10px" }}>
+                    {label}
+                  </label>
+                  <input
+                    data-testid={key}
+                    id={label}
+                    type="date"
+                    placeholder={placeholder}
+                    defaultValue={value}
+                    onChange={(e) => {
+                      setState(key, e.currentTarget.value)
+                    }}
+                  />
+                </div>
+              )
+            default:
+              return null
           }
         })}
       </div>

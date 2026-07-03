@@ -159,6 +159,7 @@ export const sliderControls = defineControls({
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
   step: { type: "number", defaultValue: 1 },
+  largeStep: { type: "number" },
 })
 
 export const tabsControls = defineControls({

@@ -22,6 +22,29 @@
   - **Simpler default** — most usages only need add/remove, not inline rename
   - **Less surprise** — double-click to edit is a power-user feature that should be opted into
   - **Matches peers** — aligns with how other tag input libraries behave out of the box
+## 1.42.0
+
+### Patch Changes
+
+- [#3194](https://github.com/chakra-ui/zag/pull/3194)
+  [`81eb2e0`](https://github.com/chakra-ui/zag/commit/81eb2e00beb874a56fee1500beb904d3b0512d6d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix native form submit so `FormData` reflects the current tags
+  ([#3193](https://github.com/chakra-ui/zag/issues/3193)).
+
+  The hidden input kept its initial value after tags were added, removed, or cleared. With `defaultValue={["a"]}`,
+  adding `"b"` and submitting sent `"a"` instead of `"a, b"`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/auto-resize@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/interact-outside@1.42.0
+  - @zag-js/live-region@1.42.0
+
+## 1.41.2
 
 ### Patch Changes
 

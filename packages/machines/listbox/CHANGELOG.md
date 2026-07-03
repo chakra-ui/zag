@@ -39,6 +39,20 @@
   - `aria-controls` on the input now points to the list id, not the content id.
   - `scrollIntoView` retargets to the list element. Virtualized listboxes should attach the scroll ref to the list.
   - New `list` part added to anatomy. New `getListId` / `getListEl` DOM helpers.
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/collection@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-visible@1.42.0
+
+## 1.41.2
 
 ### Patch Changes
 

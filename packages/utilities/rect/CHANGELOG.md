@@ -1,6 +1,9 @@
 # @zag-js/rect-utils
 
 ## 2.0.0-next.0
+## 1.42.0
+
+## 1.41.2
 
 ### Minor Changes
 

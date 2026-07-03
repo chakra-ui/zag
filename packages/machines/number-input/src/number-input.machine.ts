@@ -51,6 +51,8 @@ export const machine = createMachine({
       scrubberDirection: "horizontal",
       snapOnStep: false,
       ...props,
+      largeStep: props.largeStep ?? 10 * step,
+      smallStep: props.smallStep ?? step / 10,
       translations: {
         incrementLabel: "increment value",
         decrementLabel: "decrease value",
@@ -409,7 +411,7 @@ export const machine = createMachine({
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setRawValue({ context, event, prop, computed }) {
-        let nextValue = parseValue(event.value, { computed, prop })
+        let nextValue = typeof event.value === "number" ? event.value : parseValue(event.value, { computed, prop })
         if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
