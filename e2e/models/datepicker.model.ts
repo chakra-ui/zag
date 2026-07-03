@@ -89,6 +89,18 @@ export class DatePickerModel extends Model {
     return this.page.locator("[data-scope=date-picker][data-part=table]")
   }
 
+  tableForView(view: "day" | "month" | "year") {
+    return this.page.locator(`[data-scope=date-picker][data-part=table][data-view=${view}]`)
+  }
+
+  get clearTrigger() {
+    return this.page.locator("[data-scope=date-picker][data-part=clear-trigger]")
+  }
+
+  clickClearTrigger() {
+    return this.clearTrigger.click()
+  }
+
   get todayCell() {
     return this.page.locator("[data-scope=date-picker][data-part=table-cell-trigger][data-today]")
   }
@@ -101,6 +113,12 @@ export class DatePickerModel extends Model {
   get lastDayCell() {
     const end = endOfMonth(this.today())
     return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`)
+  }
+
+  get notTodayCell() {
+    const t = this.today()
+    const other = t.day === 1 ? t.add({ days: 1 }) : t.subtract({ days: 1 })
+    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${other.toString()}"]`)
   }
 
   private getViewCell(view: "day" | "month" | "year", value: string | number) {

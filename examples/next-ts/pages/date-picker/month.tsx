@@ -27,7 +27,6 @@ export default function Page() {
   const service = useMachine(datePicker.machine, {
     id: useId(),
     locale: "en",
-    view: "month",
     minView: "month",
     placeholder: "mm/yyyy",
     format,
