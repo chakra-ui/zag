@@ -42,8 +42,6 @@ export const machine = createMachine({
       pattern: "-?[0-9]*(.[0-9]+)?",
       defaultValue: "",
       step,
-      largeStep: props.largeStep ?? step * 10,
-      smallStep: props.smallStep ?? step * 0.1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,
