@@ -14,5 +14,6 @@ export const getElements = (ctx: Scope) => {
 }
 export const getFirstEl = (ctx: Scope) => first(getElements(ctx))
 export const getLastEl = (ctx: Scope) => last(getElements(ctx))
+export const hasFocusableItem = (ctx: Scope) => getElements(ctx).some((el) => el.tabIndex === 0)
 export const getNextEl = (ctx: Scope, id: string, loopFocus: boolean) => nextById(getElements(ctx), id, loopFocus)
 export const getPrevEl = (ctx: Scope, id: string, loopFocus: boolean) => prevById(getElements(ctx), id, loopFocus)

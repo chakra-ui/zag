@@ -29,7 +29,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} context={["focusedId"]} />
+        <StateVisualizer state={service} context={["focusedValue"]} />
       </Toolbar>
     </>
   )

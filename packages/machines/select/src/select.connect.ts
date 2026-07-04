@@ -19,6 +19,9 @@ import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
 import type { CollectionItem, ItemProps, ItemState, ScrollArrowProps, SelectApi, SelectSchema } from "./select.types"
 
+// ArrowLeft/Right/Home/End cycle the closed select's value; ArrowUp/Down open it instead.
+const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
+
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
@@ -208,6 +211,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
+
+          // Nested in a toolbar: defer to its own roving-tabindex nav instead of cycling.
+          if (
+            !open &&
+            !event.altKey &&
+            CYCLE_KEYS.has(getEventKey(event, { dir: prop("dir"), orientation: "vertical" }))
+          ) {
+            const trigger = event.currentTarget as HTMLElement | null
+            if (trigger?.closest("[role=toolbar]")) return
+          }
+
           refs.set("openMethod", "keyboard")
 
           const keyMap: EventKeyMap = {

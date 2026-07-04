@@ -76,17 +76,19 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * Whether the user is tabbing backward.
-   */
-  isTabbingBackward: boolean
-  /**
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
   /**
-   * The value of the toggle that was focused.
+   * The value of the toggle that currently holds the roving tabindex.
+   * Persists across blur, so tabbing away and back resumes at the same toggle.
    */
-  focusedId: string | null
+  focusedValue: string | null
+  /**
+   * Whether the root has ever redirected focus to a toggle. Once true, the root
+   * permanently cedes its own tabindex to whichever toggle is tracked.
+   */
+  hasInteracted: boolean
   /**
    * Whether the toggle group is within a toolbar.
    * This is used to determine whether to use roving tab index.

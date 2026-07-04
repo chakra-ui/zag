@@ -1,0 +1,130 @@
+[data-toolbar-root] {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #d9d9e3;
+  background: #f7f7fa;
+  width: max-content;
+  outline: none;
+
+  &[data-orientation="vertical"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
+}
+
+[data-toolbar-group] {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  [data-toolbar-root][data-orientation="vertical"] & {
+    flex-direction: column;
+  }
+}
+
+[data-toolbar-separator] {
+  background: #d9d9e3;
+  margin: 4px;
+
+  &[data-orientation="vertical"] {
+    width: 1px;
+    align-self: stretch;
+  }
+
+  &[data-orientation="horizontal"] {
+    height: 1px;
+    align-self: stretch;
+  }
+}
+
+[data-toolbar-item] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #1a1a2e;
+  font-size: 13px;
+  line-height: 1;
+  cursor: default;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover:not([data-disabled]) {
+    background: #ebebf1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #6e56cf;
+    outline-offset: -1px;
+  }
+
+  &[data-state="on"] {
+    background: #6e56cf;
+    color: white;
+  }
+
+  &[data-disabled] {
+    color: #a8a8b3;
+  }
+
+  &[data-disabled]:not([data-focusable-when-disabled]) {
+    cursor: not-allowed;
+  }
+
+  & svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+}
+
+input[data-toolbar-item] {
+  width: 64px;
+  padding: 0 8px;
+  text-align: left;
+  background: white;
+  border-color: #d9d9e3;
+  cursor: text;
+}
+
+/* rich-text-editor example */
+
+.toolbar-editor {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toolbar-editor-preview {
+  min-height: 140px;
+  width: 420px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #d9d9e3;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.toolbar-number-input[data-toolbar-item] {
+  width: 44px;
+  text-align: center;
+}
+
+.toolbar-icon-only[data-toolbar-item] {
+  padding: 0;
+  width: 32px;
+}

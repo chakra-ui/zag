@@ -188,20 +188,24 @@ export function connect<T extends PropTypes>(
             ArrowUp() {
               send({ type: "INPUT.ARROW_UP", step })
               event.preventDefault()
+              event.stopPropagation()
             },
             ArrowDown() {
               send({ type: "INPUT.ARROW_DOWN", step })
               event.preventDefault()
+              event.stopPropagation()
             },
             Home() {
               if (isModifierKey(event)) return
               send({ type: "INPUT.HOME" })
               event.preventDefault()
+              event.stopPropagation()
             },
             End() {
               if (isModifierKey(event)) return
               send({ type: "INPUT.END" })
               event.preventDefault()
+              event.stopPropagation()
             },
             Enter(event) {
               const selection = recordCursor(event.currentTarget, scope)

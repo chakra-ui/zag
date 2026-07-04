@@ -147,6 +147,12 @@ export const toggleGroupData = [
   { value: "underline", label: "U" },
 ]
 
+export const toolbarData = [
+  { id: "cut", label: "Cut" },
+  { id: "copy", label: "Copy" },
+  { id: "paste", label: "Paste" },
+]
+
 export const gridListGroupedData = [
   { id: "fav-zag", name: "Zag.js", url: "https://zagjs.com", category: "Favorites" },
   { id: "fav-panda", name: "Panda CSS", url: "https://panda-css.com", category: "Favorites" },

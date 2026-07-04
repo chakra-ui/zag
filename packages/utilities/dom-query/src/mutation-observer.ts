@@ -37,17 +37,17 @@ export function observeAttributes(nodeOrFn: MaybeElementOrFn, options: ObserveAt
   }
 }
 
-export interface ObserveChildrenOptions {
+export interface ObserveChildrenOptions extends MutationObserverInit {
   callback: MutationCallback
   defer?: boolean | undefined
 }
 
 function observeChildrenImpl(node: MaybeElement, options: ObserveChildrenOptions) {
-  const { callback: fn } = options
+  const { callback: fn, defer: _defer, ...observerInit } = options
   if (!node) return
   const win = node.ownerDocument.defaultView || window
   const obs = new win.MutationObserver(fn)
-  obs.observe(node, { childList: true, subtree: true })
+  obs.observe(node, { childList: true, subtree: true, ...observerInit })
   return () => obs.disconnect()
 }
 

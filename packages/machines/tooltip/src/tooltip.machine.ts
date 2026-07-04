@@ -280,10 +280,10 @@ export const machine = createMachine<TooltipSchema>({
     },
 
     actions: {
-      setGlobalId: ({ prop }) => {
+      setGlobalId: ({ prop, event }) => {
         const prevId = store.get("id")
-        const isInstant = prevId !== null && prevId !== prop("id")
-        store.update({ id: prop("id"), prevId: isInstant ? prevId : null, instant: isInstant })
+        const isInstant = event.src === "trigger.focus" || (prevId !== null && prevId !== prop("id"))
+        store.update({ id: prop("id"), prevId: isInstant && prevId !== null ? prevId : null, instant: isInstant })
       },
 
       clearGlobalId: ({ prop }) => {
@@ -417,7 +417,8 @@ export const machine = createMachine<TooltipSchema>({
         let cleanup: VoidFunction | undefined
         queueMicrotask(() => {
           cleanup = store.subscribe(() => {
-            if (store.get("id") !== prop("id")) {
+            const id = store.get("id")
+            if (id !== null && id !== prop("id")) {
               send({ type: "close", src: "id.change" })
             }
           })

@@ -179,16 +179,17 @@ button with `on` or `off` values.
 
 ### Focused State
 
-When a toggle button is focused, the `data-focus` is applied to the root and
-matching toggle button.
+Use native focus selectors to style the focused toggle button. Use
+`:focus-visible` for keyboard focus rings and `:focus-within` if the root should
+be styled while a toggle button is focused.
 
 ```css
-[data-part="root"][data-focus] {
-  /* styles for the root */
+[data-part="root"]:focus-within {
+  /* styles for the focused root */
 }
 
-[data-part="item"][data-focus] {
-  /* styles for the toggle */
+[data-part="item"]:focus-visible {
+  /* styles for the focused toggle */
 }
 ```
 

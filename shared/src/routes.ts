@@ -586,6 +586,22 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "toolbar",
+    label: "Toolbar",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "orientation", title: "Orientation" },
+      { slug: "disabled-items", title: "Disabled Items" },
+      { slug: "rich-text-editor", title: "Rich Text Editor" },
+      { slug: "with-menu", title: "With Menu" },
+      { slug: "with-number-input", title: "With Number Input" },
+      { slug: "with-tooltip", title: "With Tooltip" },
+      { slug: "with-checkbox", title: "With Checkbox" },
+      { slug: "conditional-items", title: "Conditional Items" },
+      { slug: "rtl", title: "RTL" },
+    ],
+  },
+  {
     slug: "toc",
     label: "TOC",
     examples: [
