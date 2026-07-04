@@ -45,7 +45,7 @@ Other changes:
   highlighted option label, gated on Apple platforms when the list is focused
   and always when focus is elsewhere (search input, composed widgets).
 - Scroll arrows now render inside content (siblings of list) instead of the
-  positioner, matching base-ui's pattern.
+  positioner.
 - Replaced `composite` with `popupType: "listbox" | "dialog"` (default
   `"listbox"`). `popupType="dialog"` makes `content` carry `role="dialog"` and
   `aria-haspopup="dialog"` on the trigger; the `list` always carries
