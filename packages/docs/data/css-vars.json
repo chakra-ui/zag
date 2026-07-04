@@ -64,6 +64,12 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "dnd": {
+    "DragPreview": {
+      "--drag-preview-width": "The width of the DragPreview",
+      "--drag-preview-height": "The height of the DragPreview"
+    }
+  },
   "drawer": {
     "Content": {
       "--drawer-translate": "The drawer translate value for the Content",
@@ -119,8 +125,8 @@
     }
   },
   "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
+    "List": {
+      "--column-count": "The column count value for the List"
     }
   },
   "marquee": {
@@ -130,6 +136,13 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
+    }
+  },
+  "number-input": {
+    "Scrubber": {
+      "--scrubber-x": "The scrubber x value for the Scrubber",
+      "--scrubber-y": "The scrubber y value for the Scrubber",
+      "--scrubber-scale": "The scrubber scale value for the Scrubber"
     }
   },
   "navigation-menu": {
@@ -179,6 +192,19 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
+    }
+  },
+  "scheduler": {
+    "DragPreview": {
+      "--event-color": "The color of the DragPreview"
+    },
+    "DragOrigin": {
+      "--event-color": "The color of the DragOrigin"
+    },
+    "Root": {
+      "--scheduler-visible-days": "The scheduler visible days value for the Root",
+      "--scheduler-day-count": "The scheduler day count value for the Root",
+      "--scheduler-hour-count": "The scheduler hour count value for the Root"
     }
   },
   "scroll-area": {
@@ -256,11 +282,11 @@
     }
   },
   "tree-view": {
-    "Item": {
-      "--depth": "The depth value for the Item"
+    "NodeGroup": {
+      "--depth": "The depth value for the NodeGroup"
     },
-    "Branch": {
-      "--depth": "The depth value for the Branch"
+    "Node": {
+      "--depth": "The depth value for the Node"
     }
   },
   "slider": {

@@ -9,12 +9,16 @@ export class ToggleGroupModel extends Model {
     super(page)
   }
 
-  private __item(item: Item) {
+  getItem(item: Item) {
     return this.page.locator(part("toggle-group", "item")).nth(["bold", "italic", "underline"].indexOf(item))
   }
 
+  get root() {
+    return this.page.locator(part("toggle-group", "root"))
+  }
+
   clickItem(item: Item) {
-    return this.__item(item).click()
+    return this.getItem(item).click()
   }
 
   private get outsideButton() {
@@ -31,26 +35,34 @@ export class ToggleGroupModel extends Model {
   }
 
   seeItemIsFocused(item: Item) {
-    return expect(this.__item(item)).toBeFocused()
+    return expect(this.getItem(item)).toBeFocused()
   }
 
   seeItemIsNotFocused(item: Item) {
-    return expect(this.__item(item)).not.toBeFocused()
+    return expect(this.getItem(item)).not.toBeFocused()
   }
 
-  private __notSelected(item: Item) {
-    return expect(this.__item(item)).toHaveAttribute("data-state", "off")
+  private __notPressed(item: Item) {
+    const itemEl = this.getItem(item)
+    return Promise.all([
+      expect(itemEl).not.toHaveAttribute("data-pressed"),
+      expect(itemEl).toHaveAttribute("aria-pressed", "false"),
+    ])
   }
 
-  private __selected(item: Item) {
-    return expect(this.__item(item)).toHaveAttribute("data-state", "on")
+  private __pressed(item: Item) {
+    const itemEl = this.getItem(item)
+    return Promise.all([
+      expect(itemEl).toHaveAttribute("data-pressed", ""),
+      expect(itemEl).toHaveAttribute("aria-pressed", "true"),
+    ])
   }
 
-  async seeItemIsSelected(items: Item[]) {
-    await Promise.all(items.map((item) => this.__selected(item)))
+  async seeItemIsPressed(items: Item[]) {
+    await Promise.all(items.map((item) => this.__pressed(item)))
   }
 
-  async seeItemIsNotSelected(items: Item[]) {
-    await Promise.all(items.map((item) => this.__notSelected(item)))
+  async seeItemIsNotPressed(items: Item[]) {
+    await Promise.all(items.map((item) => this.__notPressed(item)))
   }
 }

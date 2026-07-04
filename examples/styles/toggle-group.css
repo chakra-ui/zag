@@ -9,7 +9,7 @@
   height: 40px;
 }
 
-[data-toggle-group-item][data-state="on"] {
+[data-toggle-group-item][data-pressed] {
   background-color: blue;
   color: white;
 }

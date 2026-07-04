@@ -25,8 +25,12 @@ export const controls = (page: Page) => {
     },
     bool: async (id: string, value = true) => {
       const el = page.locator(testid(id))
-      if (value) await el.check()
-      else await el.uncheck()
+      await el.evaluate((node, checked) => {
+        const input = node as HTMLInputElement
+        input.checked = checked
+        input.dispatchEvent(new Event("input", { bubbles: true }))
+        input.dispatchEvent(new Event("change", { bubbles: true }))
+      }, value)
     },
     select: async (id: string, value: string) => {
       const el = page.locator(testid(id))

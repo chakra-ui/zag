@@ -71,7 +71,7 @@
     outline-offset: -1px;
   }
 
-  &[data-state="on"] {
+  &[data-pressed] {
     background: #6e56cf;
     color: white;
   }

@@ -12,7 +12,7 @@ export function connect<T extends PropTypes>(
 
   const value = context.get("value")
   const disabled = prop("disabled")
-  const isSingle = !prop("multiple")
+  const multiple = prop("multiple")
   const rovingFocus = prop("rovingFocus")
   const isHorizontal = prop("orientation") === "horizontal"
   const isWithinToolbar = context.get("isWithinToolbar")
@@ -36,10 +36,11 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        role: isSingle ? "radiogroup" : "group",
+        role: "group",
         // Omit when nested in a toolbar so it doesn't add its own extra tab stop.
         tabIndex: isWithinToolbar ? undefined : context.get("hasInteracted") ? -1 : 0,
         "data-disabled": dataAttr(disabled),
+        "data-multiple": dataAttr(multiple),
         "data-orientation": prop("orientation"),
         style: { outline: "none" },
         onMouseDown() {
@@ -73,15 +74,11 @@ export function connect<T extends PropTypes>(
         type: "button",
         disabled: itemState.disabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,
-        // radio
-        role: isSingle ? "radio" : undefined,
-        "aria-checked": isSingle ? itemState.pressed : undefined,
-        "aria-pressed": isSingle ? undefined : itemState.pressed,
-        //
+        "aria-pressed": itemState.pressed,
+        "data-pressed": dataAttr(itemState.pressed),
         "data-disabled": dataAttr(itemState.disabled),
         "data-orientation": prop("orientation"),
         dir: prop("dir"),
-        "data-state": itemState.pressed ? "on" : "off",
         onFocus() {
           if (itemState.disabled) return
           send({ type: "TOGGLE.FOCUS", value: props.value })

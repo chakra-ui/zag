@@ -25,6 +25,13 @@
       "data-focus": "Present when focused",
       "data-orientation": "The orientation of the item"
     },
+    "ItemHeader": {
+      "data-accordion-item-header": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-orientation": "The orientation of the item"
+    },
     "ItemTrigger": {
       "data-accordion-item-trigger": "<uid>",
       "data-controls": "",
@@ -151,6 +158,7 @@
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
     "ClearTrigger": {
@@ -332,6 +340,7 @@
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-state": "\"open\" | \"closed\"",
       "data-focus": "Present when focused"
     },
@@ -340,6 +349,7 @@
       "data-placement": "The placement of the content",
       "data-nested": "popover",
       "data-has-nested": "popover",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-state": "\"open\" | \"closed\""
     },
     "ValueText": {
@@ -358,6 +368,10 @@
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only"
+    },
+    "GamutOverlay": {
+      "data-color-picker-gamut-overlay": "<uid>",
+      "data-state": "\"visible\" | \"hidden\""
     },
     "AreaThumb": {
       "data-color-picker-area-thumb": "<uid>",
@@ -455,6 +469,7 @@
       "data-nested": "listbox",
       "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-empty": "Present when the content is empty"
     },
     "List": {
@@ -550,6 +565,7 @@
       "data-nested": "popover",
       "data-has-nested": "popover",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-inline": "Present when the content is inline"
     },
     "Table": {
@@ -597,6 +613,7 @@
     "DayTableCellTrigger": {
       "data-date-picker-day-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
+      "data-selectable": "",
       "data-selected": "Present when selected",
       "data-value": "The value of the item",
       "data-view": "The view of the daytablecelltrigger",
@@ -620,6 +637,7 @@
     "MonthTableCellTrigger": {
       "data-date-picker-month-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
+      "data-selectable": "",
       "data-selected": "Present when selected",
       "data-value": "The value of the item",
       "data-view": "The view of the monthtablecelltrigger",
@@ -640,6 +658,7 @@
     "YearTableCellTrigger": {
       "data-date-picker-year-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
+      "data-selectable": "",
       "data-selected": "Present when selected",
       "data-value": "The value of the item",
       "data-view": "The view of the yeartablecelltrigger",
@@ -663,6 +682,7 @@
     "Trigger": {
       "data-date-picker-trigger": "<uid>",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-state": "\"open\" | \"closed\"",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
@@ -702,6 +722,42 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "dialog",
       "data-has-nested": "dialog"
+    }
+  },
+  "dnd": {
+    "Root": {
+      "data-dnd-root": "<uid>",
+      "data-dragging": "Present when in the dragging state",
+      "data-orientation": "The orientation of the dnd"
+    },
+    "Draggable": {
+      "data-dnd-draggable": "<uid>",
+      "data-value": "The value of the item",
+      "data-dragging": "Present when in the dragging state",
+      "data-selected-dragging": "",
+      "data-disabled": "Present when disabled"
+    },
+    "DragHandle": {
+      "data-dnd-drag-handle": "<uid>",
+      "data-value": "The value of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "DropTarget": {
+      "data-dnd-drop-target": "<uid>",
+      "data-value": "The value of the item",
+      "data-disabled": "Present when disabled",
+      "data-drop-target": "",
+      "data-drop-placement": ""
+    },
+    "DropIndicator": {
+      "data-dnd-drop-indicator": "<uid>",
+      "data-value": "The value of the item",
+      "data-placement": "The placement of the dropindicator",
+      "data-active": "Present when active or pressed"
+    },
+    "DragPreview": {
+      "data-dnd-drag-preview": "<uid>",
+      "data-dragging": "Present when in the dragging state"
     }
   },
   "drawer": {
@@ -889,10 +945,73 @@
       "data-staged": "Present when not in default stage"
     }
   },
+  "gridlist": {
+    "Root": {
+      "data-gridlist-root": "<uid>",
+      "data-disabled": "Present when disabled"
+    },
+    "Label": {
+      "data-gridlist-label": "<uid>",
+      "data-disabled": "Present when disabled"
+    },
+    "Content": {
+      "data-gridlist-content": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-empty": "Present when the content is empty",
+      "data-layout": "",
+      "data-focusedvalue": ""
+    },
+    "ItemGroup": {
+      "data-gridlist-item-group": "<uid>",
+      "data-disabled": "Present when disabled"
+    },
+    "ItemGroupLabel": {
+      "data-gridlist-item-group-label": "<uid>",
+      "data-disabled": "Present when disabled"
+    },
+    "Item": {
+      "data-gridlist-item": "<uid>",
+      "data-value": "The value of the item",
+      "data-layout": "",
+      "data-href": "",
+      "data-column": "",
+      "data-row": "",
+      "data-selected": "Present when selected",
+      "data-disabled": "Present when disabled",
+      "data-focused": "",
+      "data-focus-visible": "Present when focused with keyboard",
+      "data-link": "",
+      "data-ownedby": ""
+    },
+    "Cell": {
+      "data-gridlist-cell": "<uid>",
+      "data-layout": ""
+    },
+    "ItemCheckbox": {
+      "data-gridlist-item-checkbox": "<uid>",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-disabled": "Present when disabled"
+    },
+    "ItemText": {
+      "data-gridlist-item-text": "<uid>",
+      "data-selected": "Present when selected",
+      "data-disabled": "Present when disabled",
+      "data-focused": ""
+    },
+    "ItemIndicator": {
+      "data-gridlist-item-indicator": "<uid>",
+      "data-selected": "Present when selected"
+    },
+    "Empty": {
+      "data-gridlist-empty": "<uid>",
+      "data-empty": "Present when the content is empty"
+    }
+  },
   "hover-card": {
     "Trigger": {
       "data-hover-card-trigger": "<uid>",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
@@ -902,7 +1021,8 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "popover",
       "data-has-nested": "popover",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "image-cropper": {
@@ -990,8 +1110,14 @@
     },
     "Content": {
       "data-listbox-content": "<uid>",
-      "data-activedescendant": "The id the active descendant of the content",
       "data-orientation": "The orientation of the content",
+      "data-layout": "",
+      "data-empty": "Present when the content is empty"
+    },
+    "List": {
+      "data-listbox-list": "<uid>",
+      "data-activedescendant": "The id the active descendant of the list",
+      "data-orientation": "The orientation of the list",
       "data-layout": "",
       "data-empty": "Present when the content is empty"
     }
@@ -1006,19 +1132,19 @@
     "Viewport": {
       "data-marquee-viewport": "<uid>",
       "data-orientation": "The orientation of the viewport",
-      "data-side": ""
+      "data-side": "The side of the trigger that the viewport is positioned on"
     },
     "Content": {
       "data-marquee-content": "<uid>",
       "data-index": "The index of the item",
       "data-orientation": "The orientation of the content",
-      "data-side": "",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-reverse": "",
       "data-clone": ""
     },
     "Edge": {
       "data-marquee-edge": "<uid>",
-      "data-side": "",
+      "data-side": "The side of the trigger that the edge is positioned on",
       "data-orientation": "The orientation of the edge"
     }
   },
@@ -1031,7 +1157,9 @@
     },
     "Trigger": {
       "data-menu-trigger": "<uid>",
+      "data-disabled": "Present when disabled",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-controls": "",
@@ -1046,7 +1174,8 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "menu",
       "data-has-nested": "menu",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     },
     "Item": {
       "data-menu-item": "<uid>",
@@ -1075,6 +1204,14 @@
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
       "data-state": "\"checked\""
+    }
+  },
+  "menubar": {
+    "Root": {
+      "data-menubar-root": "<uid>",
+      "data-orientation": "The orientation of the menubar",
+      "data-disabled": "Present when disabled",
+      "data-has-open-menu": "Present when a menu in the menubar is open"
     }
   },
   "navigation-menu": {
@@ -1292,6 +1429,7 @@
     "Trigger": {
       "data-popover-trigger": "<uid>",
       "data-placement": "The placement of the trigger",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-value": "The value of the item",
       "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
@@ -1306,7 +1444,8 @@
       "data-nested": "popover",
       "data-has-nested": "popover",
       "data-expanded": "Present when expanded",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "presence": {},
@@ -1386,6 +1525,96 @@
       "data-half": ""
     }
   },
+  "scheduler": {
+    "SelectedSlot": {
+      "data-scheduler-selected-slot": "<uid>",
+      "data-active": "Present when active or pressed",
+      "data-pending": ""
+    },
+    "Root": {
+      "data-scheduler-root": "<uid>",
+      "data-view": "The view of the scheduler",
+      "data-dragging": "Present when in the dragging state",
+      "data-resizing": "",
+      "data-selecting-slot": ""
+    },
+    "ViewItem": {
+      "data-scheduler-view-item": "<uid>",
+      "data-active": "Present when active or pressed",
+      "data-view": "The view of the viewitem"
+    },
+    "ColumnHeader": {
+      "data-scheduler-column-header": "<uid>",
+      "data-date": "",
+      "data-today": "Present when the date represents today",
+      "data-weekend": "Present when is a weekend day"
+    },
+    "Grid": {
+      "data-scheduler-grid": "<uid>",
+      "data-view": "The view of the grid"
+    },
+    "HourLabel": {
+      "data-scheduler-hour-label": "<uid>",
+      "data-hour": ""
+    },
+    "HourLine": {
+      "data-scheduler-hour-line": "<uid>",
+      "data-hour": ""
+    },
+    "DayColumn": {
+      "data-scheduler-day-column": "<uid>",
+      "data-date": "",
+      "data-drop-target": ""
+    },
+    "DayCell": {
+      "data-scheduler-day-cell": "<uid>",
+      "data-date": "",
+      "data-today": "Present when the date represents today",
+      "data-outside": "",
+      "data-weekend": "Present when is a weekend day",
+      "data-selected": "Present when selected",
+      "data-all-day": ""
+    },
+    "DayCellTrigger": {
+      "data-scheduler-day-cell-trigger": "<uid>",
+      "data-date": "",
+      "data-focus": "Present when focused",
+      "data-in-month": ""
+    },
+    "Event": {
+      "data-scheduler-event": "<uid>",
+      "data-event-id": "",
+      "data-layout": "",
+      "data-dragging": "Present when in the dragging state",
+      "data-resizing": "",
+      "data-focused": "",
+      "data-selected": "Present when selected",
+      "data-conflict": "",
+      "data-disabled": "Present when disabled",
+      "data-all-day": ""
+    },
+    "EventResizeHandle": {
+      "data-scheduler-event-resize-handle": "<uid>",
+      "data-edge": ""
+    },
+    "CurrentTimeIndicator": {
+      "data-scheduler-current-time-indicator": "<uid>",
+      "data-hidden": ""
+    },
+    "MoreEvents": {
+      "data-scheduler-more-events": "<uid>",
+      "data-date": "",
+      "data-count": ""
+    },
+    "AgendaGroup": {
+      "data-scheduler-agenda-group": "<uid>",
+      "data-date": ""
+    },
+    "AgendaGroupTitle": {
+      "data-scheduler-agenda-group-title": "<uid>",
+      "data-date": ""
+    }
+  },
   "scroll-area": {
     "Root": {
       "data-scroll-area-root": "<uid>",
@@ -1462,6 +1691,8 @@
       "data-invalid": "Present when invalid",
       "data-readonly": "Present when read-only",
       "data-placement": "The placement of the trigger",
+      "data-align-with-trigger": "",
+      "data-side": "The side of the trigger that the trigger is positioned on",
       "data-placeholder-shown": "Present when placeholder is shown"
     },
     "Indicator": {
@@ -1496,13 +1727,23 @@
       "data-select-clear-trigger": "<uid>",
       "data-invalid": "Present when invalid"
     },
+    "ScrollArrow": {
+      "data-select-scroll-arrow": "<uid>",
+      "data-placement": "The placement of the scrollarrow",
+      "data-state": "\"visible\" | \"hidden\""
+    },
     "Content": {
       "data-select-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "listbox",
       "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
-      "data-activedescendant": "The id the active descendant of the content"
+      "data-align-with-trigger": "",
+      "data-side": "The side of the trigger that the content is positioned on"
+    },
+    "List": {
+      "data-select-list": "<uid>",
+      "data-activedescendant": "The id the active descendant of the list"
     }
   },
   "signature-pad": {
@@ -1821,7 +2062,7 @@
       "data-type": "The type of the item",
       "data-placement": "The placement of the toast",
       "data-align": "",
-      "data-side": "",
+      "data-side": "The side of the trigger that the toast is positioned on",
       "data-mounted": "Present when mounted",
       "data-paused": "Present when paused",
       "data-first": "",
@@ -1856,30 +2097,59 @@
   "toggle": {
     "Root": {
       "data-toggle-root": "<uid>",
-      "data-state": "\"on\" | \"off\"",
       "data-pressed": "Present when pressed",
       "data-disabled": "Present when disabled"
     },
     "Indicator": {
       "data-toggle-indicator": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-pressed": "Present when pressed",
-      "data-state": "\"on\" | \"off\""
+      "data-pressed": "Present when pressed"
     }
   },
   "toggle-group": {
     "Root": {
       "data-toggle-group-root": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-orientation": "The orientation of the toggle-group",
-      "data-focus": "Present when focused"
+      "data-multiple": "",
+      "data-orientation": "The orientation of the toggle-group"
     },
     "Item": {
       "data-toggle-group-item": "<uid>",
-      "data-focus": "Present when focused",
+      "data-pressed": "Present when pressed",
       "data-disabled": "Present when disabled",
-      "data-orientation": "The orientation of the item",
-      "data-state": "\"on\" | \"off\""
+      "data-orientation": "The orientation of the item"
+    }
+  },
+  "toolbar": {
+    "Root": {
+      "data-toolbar-root": "<uid>",
+      "data-orientation": "The orientation of the toolbar",
+      "data-disabled": "Present when disabled"
+    },
+    "Group": {
+      "data-toolbar-group": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-orientation": "The orientation of the group"
+    },
+    "Separator": {
+      "data-toolbar-separator": "<uid>",
+      "data-orientation": "The orientation of the separator"
+    },
+    "Item": {
+      "data-toolbar-item": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-focusable-when-disabled": "",
+      "data-orientation": "The orientation of the item"
+    },
+    "Link": {
+      "data-toolbar-link": "<uid>",
+      "data-orientation": "The orientation of the link"
+    },
+    "Input": {
+      "data-toolbar-input": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-focusable-when-disabled": "",
+      "data-orientation": "The orientation of the input"
     }
   },
   "tooltip": {
@@ -1894,7 +2164,8 @@
       "data-tooltip-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-instant": "",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on"
     }
   },
   "tour": {
@@ -1906,7 +2177,8 @@
     "Positioner": {
       "data-tour-positioner": "<uid>",
       "data-type": "The type of the item",
-      "data-placement": "The placement of the positioner"
+      "data-placement": "The placement of the positioner",
+      "data-side": "The side of the trigger that the positioner is positioned on"
     },
     "Content": {
       "data-tour-content": "<uid>",
@@ -1915,15 +2187,18 @@
       "data-has-nested": "popover",
       "data-type": "The type of the item",
       "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
       "data-step": ""
     },
     "Title": {
       "data-tour-title": "<uid>",
-      "data-placement": "The placement of the title"
+      "data-placement": "The placement of the title",
+      "data-side": "The side of the trigger that the title is positioned on"
     },
     "Description": {
       "data-tour-description": "<uid>",
-      "data-placement": "The placement of the description"
+      "data-placement": "The placement of the description",
+      "data-side": "The side of the trigger that the description is positioned on"
     },
     "CloseTrigger": {
       "data-tour-close-trigger": "<uid>",
@@ -1936,99 +2211,77 @@
     }
   },
   "tree-view": {
-    "Item": {
-      "data-tree-view-item": "<uid>",
+    "Tree": {
+      "data-tree-view-tree": "<uid>",
+      "data-branch": ""
+    },
+    "NodeGroup": {
+      "data-tree-view-node-group": "<uid>",
+      "data-depth": "The depth of the item",
+      "data-value": "The value of the item",
+      "data-path": "The path of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled",
+      "data-loading": "Present when loading"
+    },
+    "Node": {
+      "data-tree-view-node": "<uid>",
       "data-path": "The path of the item",
       "data-value": "The value of the item",
       "data-focus": "Present when focused",
       "data-selected": "Present when selected",
+      "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-renaming": "",
       "data-checked": "Present when checked",
       "data-indeterminate": "",
-      "data-depth": "The depth of the item"
-    },
-    "ItemText": {
-      "data-tree-view-item-text": "<uid>",
-      "data-disabled": "Present when disabled",
-      "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
-    },
-    "ItemIndicator": {
-      "data-tree-view-item-indicator": "<uid>",
-      "data-disabled": "Present when disabled",
-      "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
-    },
-    "Branch": {
-      "data-tree-view-branch": "<uid>",
       "data-depth": "The depth of the item",
-      "data-branch": "",
-      "data-value": "The value of the item",
-      "data-path": "The path of the item",
-      "data-selected": "Present when selected",
-      "data-state": "\"open\" | \"closed\"",
+      "data-loading": "Present when loading",
+      "data-branch": ""
+    },
+    "NodeExpandTrigger": {
+      "data-tree-view-node-expand-trigger": "<uid>",
       "data-disabled": "Present when disabled",
+      "data-state": "\"open\" | \"closed\"",
+      "data-value": "The value of the item",
       "data-loading": "Present when loading"
     },
-    "BranchIndicator": {
-      "data-tree-view-branch-indicator": "<uid>",
+    "NodeText": {
+      "data-tree-view-node-text": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-selected": "Present when selected",
+      "data-focus": "Present when focused",
       "data-state": "\"open\" | \"closed\"",
+      "data-loading": "Present when loading"
+    },
+    "NodeIndicator": {
+      "data-tree-view-node-indicator": "<uid>",
+      "data-type": "The type of the item",
+      "data-state": "\"expanded\" | \"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-loading": "Present when loading"
     },
-    "BranchTrigger": {
-      "data-tree-view-branch-trigger": "<uid>",
-      "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\"",
-      "data-value": "The value of the item",
-      "data-loading": "Present when loading"
-    },
-    "BranchControl": {
-      "data-tree-view-branch-control": "<uid>",
-      "data-path": "The path of the item",
-      "data-state": "\"open\" | \"closed\"",
-      "data-disabled": "Present when disabled",
-      "data-selected": "Present when selected",
-      "data-focus": "Present when focused",
-      "data-renaming": "",
-      "data-checked": "Present when checked",
-      "data-indeterminate": "",
-      "data-value": "The value of the item",
-      "data-depth": "The depth of the item",
-      "data-loading": "Present when loading"
-    },
-    "BranchText": {
-      "data-tree-view-branch-text": "<uid>",
-      "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\"",
-      "data-loading": "Present when loading"
-    },
-    "BranchContent": {
-      "data-tree-view-branch-content": "<uid>",
+    "NodeGroupContent": {
+      "data-tree-view-node-group-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-depth": "The depth of the item",
       "data-path": "The path of the item",
       "data-value": "The value of the item"
     },
-    "BranchIndentGuide": {
-      "data-tree-view-branch-indent-guide": "<uid>",
+    "IndentGuide": {
+      "data-tree-view-indent-guide": "<uid>",
       "data-depth": "The depth of the item"
     },
     "NodeCheckbox": {
       "data-tree-view-node-checkbox": "<uid>",
       "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\"",
       "data-disabled": "Present when disabled"
-    }
-  },
-  "menubar": {
-    "Root": {
-      "data-menubar-root": "<uid>",
-      "data-orientation": "The orientation of the menubar",
-      "data-disabled": "Present when disabled",
-      "data-has-open-menu": "Present when a menu in the menubar is open"
+    },
+    "NodeCell": {
+      "data-tree-view-node-cell": "<uid>",
+      "data-value": "The value of the item"
     }
   }
 }

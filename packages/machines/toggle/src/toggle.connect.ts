@@ -19,7 +19,6 @@ export function connect<T extends PropTypes>(service: ToggleService, normalize: 
         ...parts.root.attrs(scope.id),
         disabled: prop("disabled"),
         "aria-pressed": pressed,
-        "data-state": pressed ? "on" : "off",
         "data-pressed": dataAttr(pressed),
         "data-disabled": dataAttr(prop("disabled")),
         onClick(event) {
@@ -35,7 +34,6 @@ export function connect<T extends PropTypes>(service: ToggleService, normalize: 
         ...parts.indicator.attrs(scope.id),
         "data-disabled": dataAttr(prop("disabled")),
         "data-pressed": dataAttr(pressed),
-        "data-state": pressed ? "on" : "off",
       })
     },
   }
