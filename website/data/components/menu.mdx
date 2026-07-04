@@ -29,7 +29,8 @@ Install the menu package:
 
 Check the menu anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="menu" />
 
@@ -228,7 +229,7 @@ const service = useMachine(menu.machine, {
 
 ## Styling guide
 
-Each menu part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -236,11 +237,11 @@ When the menu is open or closed, the content and trigger parts will have the
 `data-state` attribute.
 
 ```css
-[data-part="content"][data-state="open|closed"] {
+[data-menu-content][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 
-[data-part="trigger"][data-state="open|closed"] {
+[data-menu-trigger][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 ```
@@ -251,11 +252,11 @@ When an item is highlighted, via keyboard navigation or pointer, it is given a
 `data-highlighted` attribute.
 
 ```css
-[data-part="item"][data-highlighted] {
+[data-menu-item][data-highlighted] {
   /* styles for highlighted state */
 }
 
-[data-part="item"][data-type="radio|checkbox"][data-highlighted] {
+[data-menu-item][data-type="radio|checkbox"][data-highlighted] {
   /* styles for highlighted state */
 }
 ```
@@ -266,11 +267,11 @@ When an item or an option item is disabled, it is given a `data-disabled`
 attribute.
 
 ```css
-[data-part="item"][data-disabled] {
+[data-menu-item][data-disabled] {
   /* styles for disabled state */
 }
 
-[data-part="item"][data-type="radio|checkbox"][data-disabled] {
+[data-menu-item][data-type="radio|checkbox"][data-disabled] {
   /* styles for disabled state */
 }
 ```
@@ -280,7 +281,7 @@ attribute.
 When using arrows within the menu, you can style it using CSS variables.
 
 ```css
-[data-part="arrow"] {
+[data-menu-arrow] {
   --arrow-size: 20px;
   --arrow-background: red;
 }
@@ -291,7 +292,7 @@ When using arrows within the menu, you can style it using CSS variables.
 When an option item is checked, it is given a `data-state` attribute.
 
 ```css
-[data-part="item"][data-type="radio|checkbox"][data-state="checked"] {
+[data-menu-item][data-type="radio|checkbox"][data-state="checked"] {
   /* styles for checked state */
 }
 ```

@@ -32,7 +32,8 @@ Install the listbox package:
 
 Check the listbox anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="listbox" />
 
@@ -213,30 +214,30 @@ const service = useMachine(listbox.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="listbox"][data-part="root"] {
+[data-listbox-root] {
   /* styles for the root part */
 }
 
-[data-scope="listbox"][data-part="label"] {
+[data-listbox-label] {
   /* styles for the label part */
 }
 
-[data-scope="listbox"][data-part="content"] {
+[data-listbox-content] {
   /* styles for the content part */
 }
 
-[data-scope="listbox"][data-part="list"] {
+[data-listbox-list] {
   /* styles for the list part (carries role=listbox) */
 }
 
-[data-scope="listbox"][data-part="item"] {
+[data-listbox-item] {
   /* styles for the item part */
 }
 
-[data-scope="listbox"][data-part="itemGroup"] {
+[data-listbox-item-group] {
   /* styles for the item group part */
 }
 ```
@@ -246,7 +247,7 @@ Each part includes a `data-part` attribute you can target in CSS.
 The focused state is applied to the item that is currently focused.
 
 ```css
-[data-scope="listbox"][data-part="item"][data-focused] {
+[data-listbox-item][data-focused] {
   /* styles for the focused item part */
 }
 ```
@@ -256,7 +257,7 @@ The focused state is applied to the item that is currently focused.
 The selected state is applied to the item that is currently selected.
 
 ```css
-[data-scope="listbox"][data-part="item"][data-selected] {
+[data-listbox-item][data-selected] {
   /* styles for the selected item part */
 }
 ```
@@ -266,7 +267,7 @@ The selected state is applied to the item that is currently selected.
 The disabled state is applied to the item that is currently disabled.
 
 ```css
-[data-scope="listbox"][data-part="item"][data-disabled] {
+[data-listbox-item][data-disabled] {
   /* styles for the disabled item part */
 }
 ```

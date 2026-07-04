@@ -27,7 +27,8 @@ Install the select package:
 
 Check the select anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="select" />
 
@@ -487,7 +488,9 @@ This lets you render headers, search inputs, footers, or other widgets inside
       </div>
     ))}
   </div>
-  <div>{items.length} of {total}</div>
+  <div>
+    {items.length} of {total}
+  </div>
 </div>
 ```
 
@@ -521,7 +524,7 @@ const service = useMachine(select.machine, {
 
 ## Styling guide
 
-Each select part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -529,15 +532,15 @@ When the select is open, the trigger and content is given a `data-state`
 attribute.
 
 ```css
-[data-part="trigger"][data-state="open|closed"] {
+[data-select-trigger][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-select-content][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 
-[data-part="list"] {
+[data-select-list] {
   /* the listbox container — carries role=listbox */
 }
 ```
@@ -547,7 +550,7 @@ attribute.
 Items are given a `data-state` attribute, indicating whether they are selected.
 
 ```css
-[data-part="item"][data-state="checked|unchecked"] {
+[data-select-item][data-state="checked|unchecked"] {
   /* styles for selected or unselected state */
 }
 ```
@@ -558,7 +561,7 @@ When an item is highlighted, via keyboard navigation or pointer, it is given a
 `data-highlighted` attribute.
 
 ```css
-[data-part="item"][data-highlighted] {
+[data-select-item][data-highlighted] {
   /* styles for highlighted state */
 }
 ```
@@ -569,11 +572,11 @@ When the select is invalid, the label and trigger is given a `data-invalid`
 attribute.
 
 ```css
-[data-part="label"][data-invalid] {
+[data-select-label][data-invalid] {
   /* styles for invalid state */
 }
 
-[data-part="trigger"][data-invalid] {
+[data-select-trigger][data-invalid] {
   /* styles for invalid state */
 }
 ```
@@ -584,15 +587,15 @@ When the select is disabled, the trigger and label is given a `data-disabled`
 attribute.
 
 ```css
-[data-part="trigger"][data-disabled] {
+[data-select-trigger][data-disabled] {
   /* styles for disabled select state */
 }
 
-[data-part="label"][data-disabled] {
+[data-select-label][data-disabled] {
   /* styles for disabled label state */
 }
 
-[data-part="item"][data-disabled] {
+[data-select-item][data-disabled] {
   /* styles for disabled option state */
 }
 ```
@@ -605,7 +608,7 @@ When no option is selected, the trigger is given a `data-placeholder-shown`
 attribute.
 
 ```css
-[data-part="trigger"][data-placeholder-shown] {
+[data-select-trigger][data-placeholder-shown] {
   /* styles for empty select state */
 }
 ```

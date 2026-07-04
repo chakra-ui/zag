@@ -4,8 +4,9 @@ description: Using the toggle machine in your project.
 package: "@zag-js/toggle"
 ---
 
-A toggle is a two-state button that can be on or off. Use it for a single independent option (for multiple related
-options, see [Toggle Group](/components/toggle-group)).
+A toggle is a two-state button that can be on or off. Use it for a single
+independent option (for multiple related options, see
+[Toggle Group](/components/toggle-group)).
 
 <Resources pkg="@zag-js/toggle" />
 
@@ -25,9 +26,11 @@ Install the toggle package:
 
 ## Anatomy
 
-To set up the toggle correctly, you'll need to understand its anatomy and how we name its parts.
+To set up the toggle correctly, you'll need to understand its anatomy and how we
+name its parts.
 
-> Each part includes a component-specific data attribute to help identify it in the DOM.
+> Each part includes a component-specific data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="toggle" />
 
@@ -73,7 +76,8 @@ const service = useMachine(toggle.machine, {
 
 ### Listening for changes
 
-When the pressed state changes, `onPressedChange` is called with the next boolean value.
+When the pressed state changes, `onPressedChange` is called with the next
+boolean value.
 
 ```tsx {2-4}
 const service = useMachine(toggle.machine, {
@@ -103,8 +107,8 @@ api.setPressed(true)
 
 ### Indicator part
 
-Render an optional element with `getIndicatorProps()` for icons or secondary visuals. The root remains the interactive
-`button`.
+Render an optional element with `getIndicatorProps()` for icons or secondary
+visuals. The root remains the interactive `button`.
 
 ```tsx
 <button {...api.getRootProps()}>
@@ -162,8 +166,8 @@ The toggle `api` exposes the following methods:
 
 ## Accessibility
 
-Implements a [button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) with `aria-pressed` reflecting the pressed
-state.
+Implements a [button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) with
+`aria-pressed` reflecting the pressed state.
 
 ### Keyboard Interactions
 

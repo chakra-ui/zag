@@ -28,7 +28,8 @@ Install the scroll area package:
 To set up the scroll area correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="scroll-area" />
 
@@ -137,7 +138,7 @@ const verticalState = api.getScrollbarState({ orientation: "vertical" })
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Required styles
 
@@ -145,7 +146,7 @@ The scroll area requires the following styles on the viewport element to hide
 the native scrollbar:
 
 ```css
-[data-scope="scroll-area"][data-part="viewport"] {
+[data-scroll-area-viewport] {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
@@ -159,11 +160,11 @@ When the user is actively scrolling, a `data-scrolling` attribute is set on the
 scrollbar elements:
 
 ```css
-[data-part="scrollbar"][data-scrolling] {
+[data-scroll-area-scrollbar][data-scrolling] {
   /* styles when actively scrolling */
 }
 
-[data-part="thumb"][data-scrolling] {
+[data-scroll-area-thumb][data-scrolling] {
   /* styles for thumb when scrolling */
 }
 ```
@@ -174,11 +175,11 @@ When hovering over the scroll area or scrollbar, a `data-hover` attribute is
 applied:
 
 ```css
-[data-part="root"][data-hover] {
+[data-scroll-area-root][data-hover] {
   /* styles when hovering over scroll area */
 }
 
-[data-part="scrollbar"][data-hover] {
+[data-scroll-area-scrollbar][data-hover] {
   /* styles when hovering over scrollbar */
 }
 ```
@@ -188,7 +189,7 @@ applied:
 Scrollbars can be automatically hidden when not needed:
 
 ```css
-[data-part="scrollbar"][data-hidden] {
+[data-scroll-area-scrollbar][data-hidden] {
   /* styles for hidden scrollbar */
   opacity: 0;
   pointer-events: none;
@@ -200,11 +201,11 @@ Scrollbars can be automatically hidden when not needed:
 Different styles can be applied based on scrollbar orientation:
 
 ```css
-[data-part="scrollbar"][data-orientation="vertical"] {
+[data-scroll-area-scrollbar][data-orientation="vertical"] {
   /* vertical scrollbar styles */
 }
 
-[data-part="scrollbar"][data-orientation="horizontal"] {
+[data-scroll-area-scrollbar][data-orientation="horizontal"] {
   /* horizontal scrollbar styles */
 }
 ```

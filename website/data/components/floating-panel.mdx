@@ -35,7 +35,8 @@ Install the floating panel package:
 
 Check the floating panel anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="floating-panel" />
 
@@ -316,47 +317,47 @@ const service = useMachine(floatingPanel.machine, {
 ## Styling guide
 
 The floating panel component uses data attributes to style its various parts.
-Each part has a `data-scope="floating-panel"` and `data-part` attribute that you
-can use to target specific elements.
+Each part includes a component-scoped data attribute that you can use to target
+specific elements.
 
 ```css
-[data-scope="floating-panel"][data-part="content"] {
+[data-floating-panel-content] {
   /* Add styles for the main panel container */
 }
 
-[data-scope="floating-panel"][data-part="body"] {
+[data-floating-panel-body] {
   /* Add styles for the panel's content area */
 }
 
-[data-scope="floating-panel"][data-part="header"] {
+[data-floating-panel-header] {
   /* Add styles for the panel's header */
 }
 
-[data-scope="floating-panel"][data-part="stage-trigger"] {
+[data-floating-panel-stage-trigger] {
   /* Add styles for state buttons in the header */
 }
 
-[data-scope="floating-panel"][data-part="resize-trigger"] {
+[data-floating-panel-resize-trigger] {
   /* Add styles for resize handles */
 }
 
 /* North and south resize handles */
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="n"],
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="s"] {
+[data-floating-panel-resize-trigger][data-placement="n"],
+[data-floating-panel-resize-trigger][data-placement="s"] {
   /* Add styles for north and south resize handles */
 }
 
 /* East and west resize handles */
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="e"],
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="w"] {
+[data-floating-panel-resize-trigger][data-placement="e"],
+[data-floating-panel-resize-trigger][data-placement="w"] {
   /* Add styles for east and west resize handles */
 }
 
 /* Corner resize handles */
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="ne"],
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="nw"],
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="se"],
-[data-scope="floating-panel"][data-part="resize-trigger"][data-placement="sw"] {
+[data-floating-panel-resize-trigger][data-placement="ne"],
+[data-floating-panel-resize-trigger][data-placement="nw"],
+[data-floating-panel-resize-trigger][data-placement="se"],
+[data-floating-panel-resize-trigger][data-placement="sw"] {
   /* Add styles for corner resize handles */
 }
 ```
@@ -367,7 +368,7 @@ When dragging the panel, the `[data-dragging]` attribute is applied to the
 panel.
 
 ```css
-[data-scope="floating-panel"][data-part="content"][data-dragging] {
+[data-floating-panel-content][data-dragging] {
   /* Add styles for dragging state */
 }
 ```
@@ -379,12 +380,12 @@ attributes:
 
 ```css
 /* When the panel is the topmost element */
-[data-scope="floating-panel"][data-part="content"][data-topmost] {
+[data-floating-panel-content][data-topmost] {
   /* Add styles for topmost state */
 }
 
 /* When the panel is behind another panel */
-[data-scope="floating-panel"][data-part="content"][data-behind] {
+[data-floating-panel-content][data-behind] {
   /* Add styles for behind state */
 }
 ```

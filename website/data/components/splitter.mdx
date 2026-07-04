@@ -33,7 +33,8 @@ Install the splitter package:
 
 Check the splitter anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="splitter" />
 
@@ -241,7 +242,7 @@ const registry = splitter.registry({
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Resize trigger
 
@@ -249,27 +250,27 @@ When a resize trigger is horizontal or vertical, a `data-orientation` attribute
 is set on the trigger element.
 
 ```css
-[data-scope="splitter"][data-part="resize-trigger"] {
+[data-splitter-resize-trigger] {
   /* styles for the item */
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-orientation="horizontal"] {
+[data-splitter-resize-trigger][data-orientation="horizontal"] {
   /* styles for the item is horizontal state */
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-orientation="vertical"] {
+[data-splitter-resize-trigger][data-orientation="vertical"] {
   /* styles for the item is horizontal state */
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-focus] {
+[data-splitter-resize-trigger][data-focus] {
   /* styles for the item is focus state */
 }
 
-[data-scope="splitter"][data-part="resize-trigger"]:active {
+[data-splitter-resize-trigger]:active {
   /* styles for the item is active state */
 }
 
-[data-scope="splitter"][data-part="resize-trigger"][data-disabled] {
+[data-splitter-resize-trigger][data-disabled] {
   /* styles for the item is disabled state */
 }
 ```

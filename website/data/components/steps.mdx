@@ -26,7 +26,8 @@ Install the steps package:
 
 Check the steps anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="steps" />
 
@@ -163,30 +164,30 @@ api.resetStep()
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="steps"][data-part="root"] {
+[data-steps-root] {
   /* styles for the root part */
 }
 
-[data-scope="steps"][data-part="root"][data-orientation="horizontal|vertical"] {
+[data-steps-root][data-orientation="horizontal|vertical"] {
   /* styles for the root part based on orientation */
 }
 
-[data-scope="steps"][data-part="list"] {
+[data-steps-list] {
   /* styles for the list part */
 }
 
-[data-scope="steps"][data-part="list"][data-orientation="horizontal|vertical"] {
+[data-steps-list][data-orientation="horizontal|vertical"] {
   /* styles for the list part based on orientation */
 }
 
-[data-scope="steps"][data-part="separator"] {
+[data-steps-separator] {
   /* styles for the separator part */
 }
 
-[data-scope="steps"][data-part="separator"][data-orientation="horizontal|vertical"] {
+[data-steps-separator][data-orientation="horizontal|vertical"] {
   /* styles for the separator part based on orientation */
 }
 ```
@@ -196,11 +197,11 @@ Each part includes a `data-part` attribute you can target in CSS.
 To style the current step, you can use the `data-current` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-current] {
+[data-steps-item][data-current] {
   /* item styles for the current step */
 }
 
-[data-scope="steps"][data-part="separator"][data-current] {
+[data-steps-separator][data-current] {
   /* separator styles for the current step */
 }
 ```
@@ -210,11 +211,11 @@ To style the current step, you can use the `data-current` attribute.
 To style the completed step, you can use the `data-complete` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-complete] {
+[data-steps-item][data-complete] {
   /* item styles for the completed step */
 }
 
-[data-scope="steps"][data-part="separator"][data-complete] {
+[data-steps-separator][data-complete] {
   /* separator styles for the completed step */
 }
 ```
@@ -224,11 +225,11 @@ To style the completed step, you can use the `data-complete` attribute.
 To style the incomplete step, you can use the `data-incomplete` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-incomplete] {
+[data-steps-item][data-incomplete] {
   /* item styles for the incomplete step */
 }
 
-[data-scope="steps"][data-part="separator"][data-incomplete] {
+[data-steps-separator][data-incomplete] {
   /* separator styles for the incomplete step */
 }
 ```

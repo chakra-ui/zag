@@ -28,7 +28,8 @@ Install the marquee package:
 
 Check the marquee anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="marquee" />
 
@@ -276,12 +277,12 @@ method:
 Style the edge gradients using CSS:
 
 ```css
-[data-part="edge"][data-side="start"] {
+[data-marquee-edge][data-side="start"] {
   width: 100px;
   background: linear-gradient(to right, white, transparent);
 }
 
-[data-part="edge"][data-side="end"] {
+[data-marquee-edge][data-side="end"] {
   width: 100px;
   background: linear-gradient(to left, white, transparent);
 }
@@ -323,29 +324,29 @@ enables seamless looping when combined with the cloned content.
 To apply the animations, add these base styles to your content elements:
 
 ```css
-[data-scope="marquee"][data-part="content"] {
+[data-marquee-content] {
   animation-timing-function: linear;
   animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
   animation-iteration-count: var(--marquee-loop-count);
 }
 
-[data-part="content"][data-side="start"],
-[data-part="content"][data-side="end"] {
+[data-marquee-content][data-side="start"],
+[data-marquee-content][data-side="end"] {
   animation-name: marqueeX;
 }
 
-[data-part="content"][data-side="top"],
-[data-part="content"][data-side="bottom"] {
+[data-marquee-content][data-side="top"],
+[data-marquee-content][data-side="bottom"] {
   animation-name: marqueeY;
 }
 
-[data-part="content"][data-reverse] {
+[data-marquee-content][data-reverse] {
   animation-direction: reverse;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-part="content"] {
+  [data-marquee-content] {
     animation: none !important;
   }
 }
@@ -368,26 +369,26 @@ The machine automatically sets these CSS variables:
 
 ### Styling parts
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="marquee"][data-part="root"] {
+[data-marquee-root] {
   /* styles for the root container */
 }
 
-[data-scope="marquee"][data-part="viewport"] {
+[data-marquee-viewport] {
   /* styles for the viewport */
 }
 
-[data-scope="marquee"][data-part="content"] {
+[data-marquee-content] {
   /* styles for each content container */
 }
 
-[data-scope="marquee"][data-part="item"] {
+[data-marquee-item] {
   /* styles for individual marquee items */
 }
 
-[data-scope="marquee"][data-part="edge"] {
+[data-marquee-edge] {
   /* styles for fade edge gradients */
 }
 ```
@@ -398,11 +399,11 @@ The marquee adds a `data-orientation` attribute for orientation-specific
 styling:
 
 ```css
-[data-part="root"][data-orientation="horizontal"] {
+[data-marquee-root][data-orientation="horizontal"] {
   /* styles for horizontal marquee */
 }
 
-[data-part="root"][data-orientation="vertical"] {
+[data-marquee-root][data-orientation="vertical"] {
   /* styles for vertical marquee */
 }
 ```
@@ -412,7 +413,7 @@ styling:
 When the marquee is paused, a `data-paused` attribute is set on the root:
 
 ```css
-[data-part="root"][data-paused] {
+[data-marquee-root][data-paused] {
   /* styles for paused state */
 }
 ```
@@ -423,7 +424,7 @@ Cloned content elements have a `data-clone` attribute for styling duplicates
 differently:
 
 ```css
-[data-part="content"][data-clone] {
+[data-marquee-content][data-clone] {
   /* styles for cloned content */
 }
 ```
@@ -434,19 +435,19 @@ Each content element has a `data-side` attribute indicating the scroll
 direction:
 
 ```css
-[data-part="content"][data-side="start"] {
+[data-marquee-content][data-side="start"] {
   /* styles for content scrolling to inline-end */
 }
 
-[data-part="content"][data-side="end"] {
+[data-marquee-content][data-side="end"] {
   /* styles for content scrolling to inline-start */
 }
 
-[data-part="content"][data-side="top"] {
+[data-marquee-content][data-side="top"] {
   /* styles for content scrolling up */
 }
 
-[data-part="content"][data-side="bottom"] {
+[data-marquee-content][data-side="bottom"] {
   /* styles for content scrolling down */
 }
 ```

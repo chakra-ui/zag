@@ -406,23 +406,23 @@ const service = useMachine(tree.machine, {
 
 ### Checked state
 
-When using checkbox selection (`onCheckedChange`), item and branch control
+When using checkbox selection (`onCheckedChange`), node and node checkbox
 elements expose `data-checked` and `data-indeterminate` attributes for styling.
 
 ```css
-[data-part="item"][data-checked] {
+[data-tree-view-node][data-checked] {
   /* styles for fully checked items */
 }
 
-[data-part="item"][data-indeterminate] {
+[data-tree-view-node][data-indeterminate] {
   /* styles for partially checked items (some children selected) */
 }
 
-[data-part="branch-control"][data-checked] {
+[data-tree-view-node-checkbox][data-checked] {
   /* styles for fully checked branches */
 }
 
-[data-part="branch-control"][data-indeterminate] {
+[data-tree-view-node-checkbox][data-indeterminate] {
   /* styles for partially checked branches */
 }
 ```

@@ -24,7 +24,8 @@ Install the avatar package:
 
 Check the avatar anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="avatar" />
 
@@ -75,18 +76,18 @@ api.setSrc(nextSrc)
 
 ## Styling guide
 
-Each avatar part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="avatar"][data-part="root"] {
+[data-avatar-root] {
   /* Styles for the root part */
 }
 
-[data-scope="avatar"][data-part="image"] {
+[data-avatar-image] {
   /* Styles for the image part */
 }
 
-[data-scope="avatar"][data-part="fallback"] {
+[data-avatar-fallback] {
   /* Styles for the fallback part */
 }
 ```

@@ -30,7 +30,8 @@ Install the tour package:
 
 Check the tour anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="tour" />
 
@@ -353,39 +354,39 @@ body {
 
 ### Overview
 
-Each tour part has a `data-part` attribute that can be used to style them in the
-DOM.
+Each part includes a component-scoped data attribute that can be used to style
+it in the DOM.
 
 ```css
-[data-scope="tour"][data-part="content"] {
+[data-tour-content] {
   /* styles for the content part */
 }
 
-[data-scope="tour"][data-part="positioner"] {
+[data-tour-positioner] {
   /* styles for the positioner part */
 }
 
-[data-scope="tour"][data-part="arrow"] {
+[data-tour-arrow] {
   /* styles for the arrow part */
 }
 
-[data-scope="tour"][data-part="title"] {
+[data-tour-title] {
   /* styles for the title part */
 }
 
-[data-scope="tour"][data-part="description"] {
+[data-tour-description] {
   /* styles for the description part */
 }
 
-[data-scope="tour"][data-part="progress-text"] {
+[data-tour-progress-text] {
   /* styles for the progress text part */
 }
 
-[data-scope="tour"][data-part="action-trigger"] {
+[data-tour-action-trigger] {
   /* styles for the action trigger part */
 }
 
-[data-scope="tour"][data-part="backdrop"] {
+[data-tour-backdrop] {
   /* styles for the backdrop part */
 }
 ```
@@ -396,23 +397,23 @@ The tour component can render `tooltip`, `dialog`, or `floating` content. You
 can apply specific styles based on the rendered type:
 
 ```css
-[data-scope="tour"][data-part="content"][data-type="dialog"] {
+[data-tour-content][data-type="dialog"] {
   /* styles for content when step is dialog type */
 }
 
-[data-scope="tour"][data-part="content"][data-type="floating"] {
+[data-tour-content][data-type="floating"] {
   /* styles for content when step is floating type */
 }
 
-[data-scope="tour"][data-part="content"][data-type="tooltip"] {
+[data-tour-content][data-type="tooltip"] {
   /* styles for content when step is tooltip type */
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="dialog"] {
+[data-tour-positioner][data-type="dialog"] {
   /* styles for positioner when step is dialog type */
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"] {
+[data-tour-positioner][data-type="floating"] {
   /* styles for positioner when step is floating type */
 }
 ```
@@ -423,19 +424,19 @@ For floating type tours, you can style based on the placement using the
 `data-placement` attribute:
 
 ```css
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="bottom"] {
+[data-tour-positioner][data-type="floating"][data-placement*="bottom"] {
   /* styles for bottom placement */
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="top"] {
+[data-tour-positioner][data-type="floating"][data-placement*="top"] {
   /* styles for top placement */
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="start"] {
+[data-tour-positioner][data-type="floating"][data-placement*="start"] {
   /* styles for start placement */
 }
 
-[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="end"] {
+[data-tour-positioner][data-type="floating"][data-placement*="end"] {
   /* styles for end placement */
 }
 ```

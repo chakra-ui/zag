@@ -31,7 +31,8 @@ Install the navigation menu package:
 
 Check the navigation menu anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="navigation-menu" />
 
@@ -230,22 +231,22 @@ const service = useMachine(navigationMenu.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed states
 
 When content is open or closed, it receives a `data-state` attribute:
 
 ```css
-[data-part="content"][data-state="open|closed"] {
+[data-navigation-menu-content][data-state="open|closed"] {
   /* Styles for open or closed content */
 }
 
-[data-part="trigger"][data-state="open|closed"] {
+[data-navigation-menu-trigger][data-state="open|closed"] {
   /* Styles for open or closed trigger */
 }
 
-[data-part="viewport"][data-state="open|closed"] {
+[data-navigation-menu-viewport][data-state="open|closed"] {
   /* Styles for viewport open/closed state */
 }
 ```
@@ -255,7 +256,7 @@ When content is open or closed, it receives a `data-state` attribute:
 When an item is selected (open), it receives `data-state="open"`:
 
 ```css
-[data-part="item"][data-state="open"] {
+[data-navigation-menu-item][data-state="open"] {
   /* Styles for open item */
 }
 ```
@@ -265,11 +266,11 @@ When an item is selected (open), it receives `data-state="open"`:
 Disabled items have a `data-disabled` attribute:
 
 ```css
-[data-part="item"][data-disabled] {
+[data-navigation-menu-item][data-disabled] {
   /* Styles for disabled items */
 }
 
-[data-part="trigger"][data-disabled] {
+[data-navigation-menu-trigger][data-disabled] {
   /* Styles for disabled triggers */
 }
 ```
@@ -279,16 +280,16 @@ Disabled items have a `data-disabled` attribute:
 All parts have a `data-orientation` attribute:
 
 ```css
-[data-part="root"][data-orientation="horizontal|vertical"] {
+[data-navigation-menu-root][data-orientation="horizontal|vertical"] {
   /* Orientation-specific styles */
 }
 
-[data-part="list"][data-orientation="horizontal"] {
+[data-navigation-menu-list][data-orientation="horizontal"] {
   display: flex;
   flex-direction: row;
 }
 
-[data-part="list"][data-orientation="vertical"] {
+[data-navigation-menu-list][data-orientation="vertical"] {
   display: flex;
   flex-direction: column;
 }
@@ -299,7 +300,7 @@ All parts have a `data-orientation` attribute:
 Links marked as current have a `data-current` attribute:
 
 ```css
-[data-part="link"][data-current] {
+[data-navigation-menu-link][data-current] {
   /* Styles for current page link */
 }
 ```
@@ -309,7 +310,7 @@ Links marked as current have a `data-current` attribute:
 The indicator uses CSS variables for positioning and sizing:
 
 ```css
-[data-part="indicator"] {
+[data-navigation-menu-indicator] {
   position: absolute;
   transition:
     translate 250ms ease,
@@ -317,13 +318,13 @@ The indicator uses CSS variables for positioning and sizing:
     height 250ms ease;
 }
 
-[data-part="indicator"][data-orientation="horizontal"] {
+[data-navigation-menu-indicator][data-orientation="horizontal"] {
   left: 0;
   translate: var(--trigger-x) 0;
   width: var(--trigger-width);
 }
 
-[data-part="indicator"][data-orientation="vertical"] {
+[data-navigation-menu-indicator][data-orientation="vertical"] {
   top: 0;
   translate: 0 var(--trigger-y);
   height: var(--trigger-height);
@@ -335,7 +336,7 @@ The indicator uses CSS variables for positioning and sizing:
 The viewport uses CSS variables for positioning and sizing:
 
 ```css
-[data-part="viewport"] {
+[data-navigation-menu-viewport] {
   position: absolute;
   width: var(--viewport-width);
   height: var(--viewport-height);
@@ -350,11 +351,11 @@ The viewport uses CSS variables for positioning and sizing:
 The arrow can be styled using CSS variables:
 
 ```css
-[data-part="root"] {
+[data-navigation-menu-root] {
   --arrow-size: 20px;
 }
 
-[data-part="arrow"] {
+[data-navigation-menu-arrow] {
   width: var(--arrow-size);
   height: var(--arrow-size);
   background: white;
@@ -368,19 +369,19 @@ When using the viewport pattern, content elements receive `data-motion`
 attributes for directional animations:
 
 ```css
-[data-part="content"][data-motion="from-start"] {
+[data-navigation-menu-content][data-motion="from-start"] {
   animation: slideFromStart 250ms ease;
 }
 
-[data-part="content"][data-motion="from-end"] {
+[data-navigation-menu-content][data-motion="from-end"] {
   animation: slideFromEnd 250ms ease;
 }
 
-[data-part="content"][data-motion="to-start"] {
+[data-navigation-menu-content][data-motion="to-start"] {
   animation: slideToStart 250ms ease;
 }
 
-[data-part="content"][data-motion="to-end"] {
+[data-navigation-menu-content][data-motion="to-end"] {
   animation: slideToEnd 250ms ease;
 }
 ```

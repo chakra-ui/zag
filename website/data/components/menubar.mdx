@@ -164,16 +164,16 @@ const service = useMachine(menubar.machine, {
 The menubar root exposes a few attributes you can target in CSS.
 
 ```css
-[data-part="root"][data-orientation="horizontal|vertical"] {
+[data-menubar-root][data-orientation="horizontal|vertical"] {
   /* styles per orientation */
 }
 
-[data-part="root"][data-disabled] {
+[data-menubar-root][data-disabled] {
   /* styles when the whole bar is disabled */
 }
 
 /* present while any menu in the bar is open */
-[data-part="root"][data-has-open-menu="true"] {
+[data-menubar-root][data-has-open-menu="true"] {
   /* ... */
 }
 ```

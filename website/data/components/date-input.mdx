@@ -5,8 +5,8 @@ package: "@zag-js/date-input"
 status: beta
 ---
 
-A date input lets you enter a date by typing into segmented input fields (month, day,
-year, etc.) with validation and keyboard navigation.
+A date input lets you enter a date by typing into segmented input fields (month,
+day, year, etc.) with validation and keyboard navigation.
 
 > **Good to know**: The date input is built on top of the
 > [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
@@ -18,7 +18,8 @@ year, etc.) with validation and keyboard navigation.
 
 **Features**
 
-- Segmented input fields for each date part (month, day, year, hour, minute, second)
+- Segmented input fields for each date part (month, day, year, hour, minute,
+  second)
 - Supports `single` and `range` selection modes
 - Keyboard navigation and auto-advance between segments
 - Placeholder management with visual distinction
@@ -38,7 +39,8 @@ Install the date-input package:
 
 Check the date-input anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="date-input" />
 
@@ -147,7 +149,8 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
-When typing values outside the range, invalid segments will be marked as invalid.
+When typing values outside the range, invalid segments will be marked as
+invalid.
 
 ### Disabling the date input
 
@@ -190,8 +193,8 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
-The available granularities are: `"month"`, `"day"`, `"year"`, `"hour"`, `"minute"`, and
-`"second"`.
+The available granularities are: `"month"`, `"day"`, `"year"`, `"hour"`,
+`"minute"`, and `"second"`.
 
 ### Forcing leading zeros
 
@@ -281,9 +284,9 @@ Use `api.getSegments()` to access the individual date segments.
 const segments = api.getSegments()
 
 segments.forEach((segment) => {
-  console.log(segment.type)      // "month", "day", "year", etc.
-  console.log(segment.text)      // displayed text
-  console.log(segment.value)     // numeric value
+  console.log(segment.type) // "month", "day", "year", etc.
+  console.log(segment.text) // displayed text
+  console.log(segment.value) // numeric value
   console.log(segment.isEditable) // whether user can edit
 })
 ```
@@ -327,7 +330,8 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
-Multiple date inputs (range mode) can use a `name` prop on `getHiddenInputProps`:
+Multiple date inputs (range mode) can use a `name` prop on
+`getHiddenInputProps`:
 
 ```tsx
 <input {...api.getHiddenInputProps({ index: 0, name: "startDate" })} />
@@ -446,30 +450,30 @@ const service = useMachine(dateInput.machine, {
 
 ## Styling guide
 
-Each date-input part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="date-input"][data-part="root"] {
+[data-date-input-root] {
   /* styles for the root container */
 }
 
-[data-scope="date-input"][data-part="label"] {
+[data-date-input-label] {
   /* styles for the label */
 }
 
-[data-scope="date-input"][data-part="control"] {
+[data-date-input-control] {
   /* styles for the control container */
 }
 
-[data-scope="date-input"][data-part="segment-group"] {
+[data-date-input-segment-group] {
   /* styles for the segment group */
 }
 
-[data-scope="date-input"][data-part="segment"] {
+[data-date-input-segment] {
   /* styles for each segment */
 }
 
-[data-scope="date-input"][data-part="hidden-input"] {
+[data-date-input-hidden-input] {
   /* styles for the hidden input */
 }
 ```
@@ -477,7 +481,7 @@ Each date-input part includes a `data-part` attribute you can target in CSS.
 ### State attributes
 
 ```css
-[data-scope="date-input"][data-part="root"] {
+[data-date-input-root] {
   &[data-disabled] {
     /* styles for disabled state */
   }
@@ -495,7 +499,7 @@ Each date-input part includes a `data-part` attribute you can target in CSS.
 ### Segment states
 
 ```css
-[data-scope="date-input"][data-part="segment"] {
+[data-date-input-segment] {
   &[data-placeholder-shown] {
     /* styles for placeholder segments */
   }

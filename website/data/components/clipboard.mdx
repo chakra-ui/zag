@@ -20,7 +20,8 @@ Install the clipboard package:
 
 Check the clipboard anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="clipboard" />
 
@@ -112,10 +113,10 @@ const service = useMachine(clipboard.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="clipboard"][data-part="root"] {
+[data-clipboard-root] {
   /* styles for the root part */
 }
 ```

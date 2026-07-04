@@ -33,7 +33,8 @@ Install the number input package:
 To set up the number input correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="number-input" />
 
@@ -270,7 +271,7 @@ const service = useMachine(numberInput.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Disabled state
 
@@ -281,23 +282,23 @@ The increment and decrement spin buttons are disabled when the number input is
 disabled and the min/max is reached.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-number-input-root][data-disabled] {
   /* disabled styles for the input */
 }
 
-[data-part="input"][data-disabled] {
+[data-number-input-input][data-disabled] {
   /* disabled styles for the input */
 }
 
-[data-part="label"][data-disabled] {
+[data-number-input-label][data-disabled] {
   /* disabled styles for the label */
 }
 
-[data-part="increment-trigger"][data-disabled] {
+[data-number-input-increment-trigger][data-disabled] {
   /* disabled styles for the increment button */
 }
 
-[data-part="decrement-trigger"][data-disabled] {
+[data-number-input-decrement-trigger][data-disabled] {
   /* disabled styles for the decrement button */
 }
 ```
@@ -309,15 +310,15 @@ exceeds the max and `allowOverflow: true` is passed. When this happens, the
 root, label and input parts will have `data-invalid` attribute added to them.
 
 ```css
-[data-part="root"][data-invalid] {
+[data-number-input-root][data-invalid] {
   /* disabled styles for the input */
 }
 
-[data-part="input"][data-invalid] {
+[data-number-input-input][data-invalid] {
   /* invalid styles for the input */
 }
 
-[data-part="label"][data-invalid] {
+[data-number-input-label][data-invalid] {
   /* invalid styles for the label */
 }
 ```
@@ -328,22 +329,22 @@ When the number input is readonly, the input part will have `data-readonly`
 added.
 
 ```css
-[data-part="input"][data-readonly] {
+[data-number-input-input][data-readonly] {
   /* readonly styles for the input */
 }
 ```
 
 ### Increment and decrement spin buttons
 
-The spin buttons can be styled individually with their respective `data-part`
-attribute.
+The spin buttons can be styled individually with their respective
+component-scoped data attributes.
 
 ```css
-[data-part="increment-trigger"] {
+[data-number-input-increment-trigger] {
   /* styles for the increment trigger element */
 }
 
-[data-part="decrement-trigger"] {
+[data-number-input-decrement-trigger] {
   /* styles for the decrement trigger element */
 }
 ```

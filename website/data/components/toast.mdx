@@ -29,7 +29,8 @@ Install the toast package:
 
 Check the toast anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="toast" />
 
@@ -371,7 +372,7 @@ The toast machine injects a bunch of css variables that are required for it to
 work. You need to connect these variables in your styles.
 
 ```css
-[data-part="root"] {
+[data-toast-root] {
   translate: var(--x) var(--y);
   scale: var(--scale);
   z-index: var(--z-index);
@@ -384,7 +385,7 @@ work. You need to connect these variables in your styles.
 To make transitions smooth, include `transition` properties.
 
 ```css
-[data-part="root"] {
+[data-toast-root] {
   transition:
     translate 400ms,
     scale 400ms,
@@ -392,7 +393,7 @@ To make transitions smooth, include `transition` properties.
   transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
 }
 
-[data-part="root"][data-state="closed"] {
+[data-toast-root][data-state="closed"] {
   transition:
     translate 400ms,
     scale 400ms,
@@ -410,19 +411,19 @@ creation.
 You can use this property to style the toast.
 
 ```css
-[data-part="root"][data-type="info"] {
+[data-toast-root][data-type="info"] {
   /* Styles for the specific toast type */
 }
 
-[data-part="root"][data-type="error"] {
+[data-toast-root][data-type="error"] {
   /* Styles for the error toast type */
 }
 
-[data-part="root"][data-type="success"] {
+[data-toast-root][data-type="success"] {
   /* Styles for the success toast type */
 }
 
-[data-part="root"][data-type="loading"] {
+[data-toast-root][data-type="loading"] {
   /* Styles for the loading toast type */
 }
 ```

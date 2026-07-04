@@ -29,7 +29,8 @@ Install the popover package:
 
 Check the popover anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="popover" />
 
@@ -211,7 +212,7 @@ and the popover will be rendered outside the dialog.
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -219,15 +220,15 @@ When the popover is expanded, we add a `data-state` and `data-placement`
 attribute to the trigger.
 
 ```css
-[data-part="trigger"][data-state="open|closed"] {
+[data-popover-trigger][data-state="open|closed"] {
   /* styles for the expanded state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-popover-content][data-state="open|closed"] {
   /* styles for the expanded state */
 }
 
-[data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 ```
@@ -237,11 +238,11 @@ attribute to the trigger.
 When the popover is expanded, `data-placement` is added to trigger and content.
 
 ```css
-[data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 
-[data-part="content"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-content][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 ```
@@ -265,7 +266,7 @@ The arrow element requires specific css variables to be set for it to show
 correctly.
 
 ```css
-[data-part="arrow"] {
+[data-popover-arrow] {
   --arrow-background: white;
   --arrow-size: 16px;
 }
@@ -276,7 +277,7 @@ A common technique for adding a shadow to the arrow is to use
 the `--arrow-shadow-color` variable.
 
 ```css
-[data-part="arrow"] {
+[data-popover-arrow] {
   --arrow-shadow-color: gray;
 }
 ```
