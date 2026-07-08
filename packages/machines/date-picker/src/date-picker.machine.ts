@@ -539,7 +539,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: and("isRangePicker", "hasSelectedRange"),
-            actions: ["setActiveIndexToStart", "clearDateValue", "setSelectedDate", "setActiveIndexToEnd"],
+            actions: ["setActiveIndexToStart", "resetSelection", "setActiveIndexToEnd", "focusNextDay"],
           },
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
@@ -1109,12 +1109,10 @@ export const machine = createMachine<DatePickerSchema>({
         })
       },
       setHoveredValueIfKeyboard({ context, event, prop }) {
-        if (
-          !event.type.startsWith("TABLE.ARROW") ||
-          prop("selectionMode") !== "range" ||
-          context.get("activeIndex") === 0
-        )
-          return
+        const isKeyboardNavigation =
+          event.type.startsWith("TABLE.ARROW") ||
+          ["TABLE.ENTER", "TABLE.HOME", "TABLE.END", "TABLE.PAGE_UP", "TABLE.PAGE_DOWN"].includes(event.type)
+        if (!isKeyboardNavigation || prop("selectionMode") !== "range" || context.get("activeIndex") === 0) return
         context.set("hoveredValue", context.get("focusedValue").copy())
       },
       focusTriggerElement({ scope }) {
