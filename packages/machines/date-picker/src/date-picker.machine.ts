@@ -419,6 +419,7 @@ export const machine = createMachine<DatePickerSchema>({
 
     open: {
       tags: ["open"],
+      entry: ["resumeRangeSelection"],
       effects: ["trackDismissableElement", "trackPositioning"],
       exit: ["clearHoveredDate"],
       on: {
@@ -1093,6 +1094,11 @@ export const machine = createMachine<DatePickerSchema>({
       },
       setActiveIndexToStart({ context }) {
         context.set("activeIndex", 0)
+      },
+      resumeRangeSelection({ context, prop }) {
+        if (prop("selectionMode") === "range" && context.get("value").length === 1) {
+          context.set("activeIndex", 1)
+        }
       },
       focusActiveCell({ scope, context, event }) {
         if (event.src === "input.click") return

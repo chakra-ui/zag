@@ -343,6 +343,26 @@ test.describe("datepicker [range]", () => {
     await expect(I.todayCell).toHaveAttribute("data-range-start", "")
     await expect(I.getNextDayCell()).toHaveAttribute("data-in-hover-range", "")
   })
+
+  test("reopening with only a start date resumes range selection", async () => {
+    const start = I.getDate({ day: 10 })
+    const end = I.getDate({ day: 20 })
+
+    // commit only a start date, then click outside
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(10)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue("", 1)
+
+    // reopening and picking another date should complete the range
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(20)
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue(end.formatted, 1)
+  })
 })
 
 test.describe("datepicker [locale numerals]", () => {
