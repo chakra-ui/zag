@@ -109,6 +109,10 @@ export const layerStack = {
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
+        const { zIndex } = getComputedStyle(target)
+        if (zIndex && zIndex !== "auto") {
+          target.style.setProperty("z-index", zIndex)
+        }
         clearLayerStyleMirror(target)
       }
     })
@@ -142,6 +146,7 @@ export const layerStack = {
       layer.styleTargets?.forEach((getTarget) => {
         const target = getTarget()
         if (!target || target === layer.node) return
+        target.style.removeProperty("z-index")
         applyLayerStackMetadata(layer, index, target)
         const { zIndex } = getComputedStyle(layer.node)
         target.style.setProperty("--z-index", zIndex)
