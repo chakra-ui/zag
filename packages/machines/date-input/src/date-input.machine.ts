@@ -266,7 +266,7 @@ export const machine = createMachine<DateInputSchema>({
     focused: {
       on: {
         "SEGMENT.FOCUS": {
-          actions: ["setActiveSegmentIndex", "clearEnteredKeys"],
+          actions: ["commitDeferredSegmentValue", "setActiveSegmentIndex", "clearEnteredKeys"],
         },
         "SEGMENT.BLUR": {
           target: "idle",
@@ -279,10 +279,10 @@ export const machine = createMachine<DateInputSchema>({
           actions: ["invokeOnSegmentAdjust", "clearEnteredKeys", "announceSegmentValue"],
         },
         "SEGMENT.ARROW_LEFT": {
-          actions: ["setPreviousActiveSegmentIndex", "clearEnteredKeys"],
+          actions: ["commitDeferredSegmentValue", "setPreviousActiveSegmentIndex", "clearEnteredKeys"],
         },
         "SEGMENT.ARROW_RIGHT": {
-          actions: ["setNextActiveSegmentIndex", "clearEnteredKeys"],
+          actions: ["commitDeferredSegmentValue", "setNextActiveSegmentIndex", "clearEnteredKeys"],
         },
         "SEGMENT.BACKSPACE": [
           {
@@ -565,6 +565,20 @@ export const machine = createMachine<DateInputSchema>({
 
         const valueText = segment.isPlaceholder ? "Empty" : segment.text
         announcer.announce(`${getSegmentLabel(segment.type)}, ${valueText}`)
+      },
+
+      // A partial entry (e.g. day "3" that could still become "30") defers the commit while
+      // enteredKeys is pending. Leaving the segment finalizes the entry — commit it, otherwise
+      // the segments keep rendering the stale committed value until the control blurs.
+      commitDeferredSegmentValue(params) {
+        const { context, prop } = params
+        if (context.get("enteredKeys") === "") return
+        const index = context.get("activeIndex")
+        const displayValue = context.get("displayValues")[index]
+        if (!displayValue) return
+        const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
+        if (!displayValue.isComplete(allSegmentTypes)) return
+        commitValue(params, index, displayValue)
       },
 
       // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value.

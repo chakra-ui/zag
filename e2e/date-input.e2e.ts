@@ -464,6 +464,39 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentIsNotPlaceholder("day")
   })
 
+  test("[editingValue] re-typing over a committed date shows the new digits before blur", async () => {
+    // Commit 6/2/2000: "6" completes the month (auto-advance), "2" is a partial day entry,
+    // Tab moves to year, "2000" completes the date.
+    await I.focusSegment("month")
+    await I.type("6")
+    await I.seeSegmentFocused("day")
+    await I.type("2")
+    await I.pressKey("Tab")
+    await I.seeSegmentFocused("year")
+    await I.type("2000")
+    await I.clickOutsideToBlur()
+    await I.seeSelectedValue("6/2/2000")
+    await I.seeSegmentText("day", "2")
+
+    // Re-type 6/3 over the committed value, then Tab to the year segment
+    await I.focusSegment("month")
+    await I.type("6")
+    await I.seeSegmentFocused("day")
+    await I.type("3")
+    await I.pressKey("Tab")
+    await I.seeSegmentFocused("year")
+
+    // Segments must reflect the in-progress edit (6/3/2000), not the stale committed value (6/2/2000)
+    await I.seeSegmentText("month", "6")
+    await I.seeSegmentText("day", "3")
+    await I.seeSegmentText("year", "2000")
+
+    // Blur commits the edit
+    await I.clickOutsideToBlur()
+    await I.seeSelectedValue("6/3/2000")
+    await I.seeSegmentText("day", "3")
+  })
+
   test("[placeholderValue] ArrowUp after clearing a previously typed year starts from placeholder year", async () => {
     // Regression: before the editingValue fix, clearing year after a full commit left
     // a stale edited year in the context, causing ArrowUp to start from year 1 instead
