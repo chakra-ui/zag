@@ -545,10 +545,17 @@ const componentsMap = new Map(
   componentRoutes.map((component) => [component.slug, { slug: component.slug, label: component.label }]),
 )
 
-export const componentRoutesData = Array.from(componentsMap.values()).sort((a, b) => a.label.localeCompare(b.label))
+// Pin the collation locale: the sort runs on the server (OS locale) and in the browser, and the
+// two must agree — e.g. Czech collation orders "Ch" after "H", which flips Checkbox/Clipboard
+// and causes a hydration mismatch in the examples nav.
+export const componentRoutesData = Array.from(componentsMap.values()).sort((a, b) =>
+  a.label.localeCompare(b.label, "en-US"),
+)
 
 export function getComponentExamples(component: string): ExampleRoute[] {
-  return exampleRoutes.filter((route) => route.component === component).sort((a, b) => a.title.localeCompare(b.title))
+  return exampleRoutes
+    .filter((route) => route.component === component)
+    .sort((a, b) => a.title.localeCompare(b.title, "en-US"))
 }
 
 const componentByPath = new Map<string, string>()
