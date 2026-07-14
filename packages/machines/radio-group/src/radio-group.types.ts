@@ -188,6 +188,29 @@ export interface ItemState {
   active: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the radio group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the radio group is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the radio group is required
+   */
+  required: boolean
+  /**
+   * Whether the radio group is read-only
+   */
+  readOnly: boolean
+  /**
+   * The orientation of the radio group
+   */
+  orientation: "horizontal" | "vertical" | undefined
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -213,6 +236,10 @@ export interface RadioGroupApi<T extends PropTypes = PropTypes> {
    * Returns the state details of a radio input
    */
   getItemState: (props: ItemProps) => ItemState
+  /**
+   * Returns the state of the radio group
+   */
+  getRootState: () => RootState
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]

@@ -257,6 +257,29 @@ export interface ItemProps {
   disabled?: boolean | undefined
 }
 
+export interface RootState {
+  /**
+   * Whether the tags input is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the tags input is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the tags input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the tags input is focused
+   */
+  focused: boolean
+  /**
+   * Whether the tags input has no tags
+   */
+  empty: boolean
+}
+
 export interface ItemState {
   /**
    * The underlying id of the item
@@ -334,6 +357,10 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
    */
   getItemState: (props: ItemProps) => ItemState
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]

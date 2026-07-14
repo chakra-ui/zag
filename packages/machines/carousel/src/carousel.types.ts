@@ -220,6 +220,32 @@ export interface IndicatorProps {
   readOnly?: boolean | undefined
 }
 
+export interface ItemState {
+  /**
+   * The index of the item
+   */
+  index: number
+  /**
+   * Whether the item is in view
+   */
+  inView: boolean
+}
+
+export interface IndicatorState {
+  /**
+   * The index of the indicator
+   */
+  index: number
+  /**
+   * Whether the indicator represents the current page
+   */
+  current: boolean
+  /**
+   * Whether the indicator is read only
+   */
+  readOnly: boolean
+}
+
 export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
@@ -290,11 +316,19 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getControlProps: () => T["element"]
   getItemGroupProps: () => T["element"]
+  /**
+   * Returns the state of a carousel item
+   */
+  getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getPrevTriggerProps: () => T["button"]
   getNextTriggerProps: () => T["button"]
   getAutoplayTriggerProps: () => T["button"]
   getIndicatorGroupProps: () => T["element"]
+  /**
+   * Returns the state of a carousel indicator
+   */
+  getIndicatorState: (props: IndicatorProps) => IndicatorState
   getIndicatorProps: (props: IndicatorProps) => T["button"]
   getProgressTextProps: () => T["element"]
 }

@@ -19,7 +19,15 @@ import {
   getRootStyle,
   getThumbStyle,
 } from "./slider.style"
-import type { SliderApi, SliderService } from "./slider.types"
+import type {
+  MarkerProps,
+  MarkerState,
+  RootState,
+  SliderApi,
+  SliderService,
+  ThumbProps,
+  ThumbState,
+} from "./slider.types"
 import { getRangeAtIndex } from "./slider.utils"
 
 export function connect<T extends PropTypes>(service: SliderService, normalize: NormalizeProps<T>): SliderApi<T> {
@@ -35,7 +43,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
   const dragging = state.matches("dragging")
 
   const disabled = computed("isDisabled")
-  const invalid = prop("invalid")
+  const invalid = !!prop("invalid")
   const interactive = computed("isInteractive")
 
   const isHorizontal = prop("orientation") === "horizontal"
@@ -48,6 +56,44 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
   function getPercentValueFn(percent: number) {
     return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, invalid, dragging, focused, orientation: prop("orientation") }
+  }
+
+  function getThumbState(props: ThumbProps): ThumbState {
+    const { index } = props
+    return {
+      index,
+      value: sliderValue[index],
+      disabled,
+      focused: focused && focusedIndex === index,
+      dragging: dragging && focusedIndex === index,
+    }
+  }
+
+  function getMarkerState(props: MarkerProps): MarkerState {
+    const { value } = props
+    let markerState: MarkerState["state"]
+
+    if (value < first(sliderValue)!) {
+      markerState = "under-value"
+    } else if (value > last(sliderValue)!) {
+      markerState = "over-value"
+    } else {
+      markerState = "at-value"
+    }
+
+    return { value, disabled, state: markerState }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     value: sliderValue,
@@ -88,15 +134,18 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       send({ type: "FOCUS", index: 0 })
     },
 
+    getRootState,
+
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-orientation": prop("orientation"),
-        "data-invalid": dataAttr(invalid),
-        "data-dragging": dataAttr(dragging),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-orientation": rootState.orientation,
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-focus": dataAttr(rootState.focused),
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope, 0),
         onClick(event) {
@@ -112,48 +161,52 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     },
 
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-orientation": prop("orientation"),
-        "data-dragging": dataAttr(dragging),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-orientation": rootState.orientation,
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
         dir: prop("dir"),
         style: getRootStyle(service),
       })
     },
 
     getValueTextProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-orientation": prop("orientation"),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-orientation": rootState.orientation,
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
       })
     },
 
     getTrackProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.track.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-dragging": dataAttr(dragging),
-        "data-orientation": prop("orientation"),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-orientation": rootState.orientation,
+        "data-focus": dataAttr(rootState.focused),
         style: { position: "relative" },
       })
     },
 
+    getThumbState,
     getThumbProps(props) {
       const { index = 0, name } = props
+      const thumbState = getThumbState({ index, name })
 
-      const value = sliderValue[index]
       const range = getRangeAtIndex(service, index)
-      const valueText = prop("getAriaValueText")?.({ value, index })
+      const valueText = prop("getAriaValueText")?.({ value: thumbState.value, index })
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
@@ -162,21 +215,21 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         dir: prop("dir"),
         "data-index": index,
         "data-name": name,
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": dataAttr(thumbState.disabled),
         "data-orientation": prop("orientation"),
-        "data-focus": dataAttr(focused && focusedIndex === index),
-        "data-dragging": dataAttr(dragging && focusedIndex === index),
+        "data-focus": dataAttr(thumbState.focused),
+        "data-dragging": dataAttr(thumbState.dragging),
         draggable: false,
-        "aria-disabled": ariaAttr(disabled),
+        "aria-disabled": ariaAttr(thumbState.disabled),
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(scope),
         "aria-orientation": prop("orientation"),
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
-        "aria-valuenow": sliderValue[index],
+        "aria-valuenow": thumbState.value,
         "aria-valuetext": valueText,
         role: "slider",
-        tabIndex: disabled ? undefined : 0,
+        tabIndex: thumbState.disabled ? undefined : 0,
         style: getThumbStyle(service, index),
         onPointerDown(event) {
           if (!interactive) return
@@ -259,38 +312,41 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getHiddenInputProps(props) {
       const { index = 0, name } = props
+      const thumbState = getThumbState({ index, name })
       return normalize.input({
         name: name ?? (prop("name") ? prop("name") + (sliderValue.length > 1 ? "[]" : "") : undefined),
         form: prop("form"),
         type: "text",
         hidden: true,
-        defaultValue: sliderValue[index],
+        defaultValue: thumbState.value,
         id: dom.getHiddenInputId(scope, index),
       })
     },
 
     getRangeProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.range.attrs(scope.id),
         dir: prop("dir"),
-        "data-dragging": dataAttr(dragging),
-        "data-focus": dataAttr(focused),
-        "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(disabled),
-        "data-orientation": prop("orientation"),
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-focus": dataAttr(rootState.focused),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-orientation": rootState.orientation,
         style: getRangeStyle(service),
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-dragging": dataAttr(dragging),
-        "data-disabled": dataAttr(disabled),
-        "data-orientation": prop("orientation"),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-orientation": rootState.orientation,
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
         style: getControlStyle(),
         onPointerDown(event) {
           if (!interactive) return
@@ -317,40 +373,33 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       })
     },
 
+    getMarkerState,
     getMarkerProps(props) {
       const style = getMarkerStyle(service, props.value)
-      let markerState: "over-value" | "under-value" | "at-value"
-
-      if (props.value < first(sliderValue)!) {
-        markerState = "under-value"
-      } else if (props.value > last(sliderValue)!) {
-        markerState = "over-value"
-      } else {
-        markerState = "at-value"
-      }
+      const markerState = getMarkerState(props)
 
       return normalize.element({
         ...parts.marker.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
-        "data-value": props.value,
-        "data-disabled": dataAttr(disabled),
-        "data-state": markerState,
+        "data-value": markerState.value,
+        "data-disabled": dataAttr(markerState.disabled),
+        "data-state": markerState.state,
         style,
       })
     },
 
     getDraggingIndicatorProps(props) {
       const { index = 0 } = props
-      const isDragging = index === focusedIndex && dragging
+      const thumbState = getThumbState({ index })
       return normalize.element({
         ...parts.draggingIndicator.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
-        hidden: !isDragging,
+        hidden: !thumbState.dragging,
         "data-orientation": prop("orientation"),
-        "data-state": isDragging ? "open" : "closed",
+        "data-state": thumbState.dragging ? "open" : "closed",
         style: getThumbStyle(service, index),
       })
     },

@@ -130,6 +130,45 @@ export type SwitchMachine = Machine<SwitchSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface RootState {
+  /**
+   * Whether the switch is checked
+   */
+  checked: boolean
+  /**
+   * Whether the switch is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the switch is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the switch is required
+   */
+  required: boolean
+  /**
+   * Whether the switch is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the switch is focused
+   */
+  focused: boolean
+  /**
+   * Whether the switch is focused and the focus is visible
+   */
+  focusVisible: boolean
+  /**
+   * Whether the switch is hovered
+   */
+  hovered: boolean
+  /**
+   * Whether the switch is active or pressed
+   */
+  active: boolean
+}
+
 export interface SwitchApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the switch is checked
@@ -152,6 +191,10 @@ export interface SwitchApi<T extends PropTypes = PropTypes> {
    */
   toggleChecked: VoidFunction
 
+  /**
+   * Returns the state of the switch
+   */
+  getRootState: () => RootState
   getRootProps: () => T["label"]
   getLabelProps: () => T["element"]
   getThumbProps: () => T["element"]

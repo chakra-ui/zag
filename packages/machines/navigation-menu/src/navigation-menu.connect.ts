@@ -12,7 +12,15 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
-import type { ItemProps, ItemState, NavigationMenuApi, NavigationMenuService } from "./navigation-menu.types"
+import type {
+  ContentProps,
+  ContentState,
+  ItemProps,
+  ItemState,
+  NavigationMenuApi,
+  NavigationMenuService,
+  TriggerState,
+} from "./navigation-menu.types"
 
 export function connect<T extends PropTypes>(
   service: NavigationMenuService,
@@ -48,6 +56,32 @@ export function connect<T extends PropTypes>(
       disabled: !!props.disabled,
     }
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: ItemProps): TriggerState {
+    const itemState = getItemState(props)
+    return { value: props.value, disabled: itemState.disabled, open: itemState.selected }
+  }
+
+  function getContentState(props: ContentProps): ContentState {
+    const itemState = getItemState(props)
+    const currentValue = context.get("value") || context.get("previousValue")
+    const selected = isViewportRendered ? currentValue === props.value : itemState.selected
+    const contentLayer = !isViewportRendered && selected ? layer : null
+    return {
+      value: props.value,
+      open: selected,
+      nested: !!contentLayer?.nested,
+      hasNested: !!contentLayer?.hasNested,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open,
@@ -146,19 +180,21 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps(props) {
       const itemState = getItemState(props)
+      const triggerState = getTriggerState(props)
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
-        disabled: itemState.disabled,
+        disabled: triggerState.disabled,
         "data-value": props.value,
-        "data-state": itemState.selected ? "open" : "closed",
-        "data-disabled": dataAttr(itemState.disabled),
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-disabled": dataAttr(triggerState.disabled),
         "aria-controls": itemState.contentId,
-        "aria-expanded": itemState.selected,
+        "aria-expanded": triggerState.open,
         onPointerEnter(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
@@ -303,20 +339,20 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps(props) {
       const itemState = getItemState(props)
+      const contentState = getContentState(props)
 
-      const currentValue = context.get("value") || context.get("previousValue")
-      const selected = isViewportRendered ? currentValue === props.value : itemState.selected
-      const contentLayer = !isViewportRendered && selected ? layer : null
+      const contentLayer = !isViewportRendered && contentState.open ? layer : null
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: itemState.contentId,
         dir: prop("dir"),
-        hidden: !selected,
+        hidden: !contentState.open,
         "aria-labelledby": itemState.triggerId,
-        "data-state": selected ? "open" : "closed",
+        "data-state": contentState.open ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
         ...getDismissableLayerAttrs(contentLayer),

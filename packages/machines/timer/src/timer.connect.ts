@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { match } from "@zag-js/utils"
 import { parts } from "./timer.anatomy"
 import * as dom from "./timer.dom"
-import type { TimerApi, TimerSchema } from "./timer.types"
+import type { ActionTriggerProps, ActionTriggerState, TimerApi, TimerSchema } from "./timer.types"
 
 const validActions = new Set(["start", "pause", "resume", "reset", "restart"])
 
@@ -17,6 +17,29 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
   const time = computed("time")
   const formattedTime = computed("formattedTime")
   const progressPercent = computed("progressPercent")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getActionTriggerState(props: ActionTriggerProps): ActionTriggerState {
+    const { action } = props
+    if (!validActions.has(action)) {
+      throw new Error(`[zag-js] Invalid action: ${action}. Must be one of: ${Array.from(validActions).join(", ")}`)
+    }
+    const hidden = match(action, {
+      start: () => running || paused,
+      pause: () => !running,
+      reset: () => !running && !paused,
+      resume: () => !paused,
+      restart: () => false,
+    })
+    return { action, visible: !hidden }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     running,
@@ -94,22 +117,13 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
       })
     },
 
+    getActionTriggerState,
     getActionTriggerProps(props) {
-      if (!validActions.has(props.action)) {
-        throw new Error(
-          `[zag-js] Invalid action: ${props.action}. Must be one of: ${Array.from(validActions).join(", ")}`,
-        )
-      }
+      const actionTriggerState = getActionTriggerState(props)
 
       return normalize.button({
         ...parts.actionTrigger.attrs(scope.id),
-        hidden: match(props.action, {
-          start: () => running || paused,
-          pause: () => !running,
-          reset: () => !running && !paused,
-          resume: () => !paused,
-          restart: () => false,
-        }),
+        hidden: !actionTriggerState.visible,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return

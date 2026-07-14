@@ -11,6 +11,7 @@ export type {
   ComboboxService as Service,
   CollectionItem,
   CollectionOptions,
+  ContentState,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
@@ -25,8 +26,10 @@ export type {
   OpenChangeReason,
   Placement,
   PositioningOptions,
+  RootState,
   ScrollToIndexDetails,
   TriggerProps,
+  TriggerState,
   ValueChangeDetails,
   SelectionDetails,
 } from "./combobox.types"

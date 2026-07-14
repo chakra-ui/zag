@@ -143,6 +143,21 @@ export interface ItemState {
   focused: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the toggle group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the toggle group allows multiple pressed items
+   */
+  multiple: boolean
+  /**
+   * The orientation of the toggle group
+   */
+  orientation: Orientation
+}
+
 export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the toggle group.
@@ -156,6 +171,10 @@ export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
    * Returns the state of the toggle item.
    */
   getItemState: (props: ItemProps) => ItemState
+  /**
+   * Returns the state of the toggle group
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["button"]
 }

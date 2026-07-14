@@ -18,7 +18,17 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, ScrollArrowProps, SelectApi, SelectSchema } from "./select.types"
+import type {
+  CollectionItem,
+  ContentState,
+  ItemProps,
+  ItemState,
+  RootState,
+  ScrollArrowProps,
+  SelectApi,
+  SelectSchema,
+  TriggerState,
+} from "./select.types"
 
 // ArrowLeft/Right/Home/End cycle the closed select's value; ArrowUp/Down open it instead.
 const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
@@ -60,6 +70,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(props: ItemProps): ItemState {
     const _disabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
@@ -71,6 +85,36 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       selected: context.get("value").includes(value),
     }
   }
+
+  function getRootState(): RootState {
+    return { invalid, readOnly }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      focused,
+      disabled: !!disabled,
+      invalid,
+      required,
+      readOnly,
+      placeholderShown: !computed("hasSelectedItems"),
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -127,12 +171,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getItemState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -175,28 +221,30 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         id: dom.getTriggerId(scope),
-        disabled: disabled,
+        disabled: triggerState.disabled,
         dir: prop("dir"),
         type: "button",
         role: "combobox",
         "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
-        "aria-expanded": open,
+        "aria-expanded": triggerState.open,
         "aria-haspopup": popupType,
-        "data-state": open ? "open" : "closed",
-        "aria-invalid": invalid,
-        "aria-required": required,
+        "data-state": triggerState.open ? "open" : "closed",
+        "aria-invalid": triggerState.invalid,
+        "aria-required": triggerState.required,
         "aria-labelledby": dom.getLabelId(scope),
         ...parts.trigger.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-readonly": dataAttr(triggerState.readOnly),
         "data-placement": currentPlacement,
         "data-align-with-trigger": dataAttr(aligned),
         "data-side": currentPlacementSide,
-        "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
+        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
         onClick(event) {
           if (!interactive) return
           if (event.defaultPrevented) return
@@ -456,17 +504,19 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
-        hidden: !open,
+        hidden: !contentState.open,
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: isDialogPopup ? "dialog" : "presentation",
         ...parts.content.attrs(scope.id),
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
         "data-align-with-trigger": dataAttr(aligned),
-        "data-side": currentPlacementSide,
+        "data-side": contentState.side,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),

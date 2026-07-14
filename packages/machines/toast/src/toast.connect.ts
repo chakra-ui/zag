@@ -3,7 +3,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import * as dom from "./toast.dom"
-import type { ToastApi, ToastSchema } from "./toast.types"
+import type { RootState, ToastApi, ToastSchema } from "./toast.types"
 import { getGhostAfterStyle, getGhostBeforeStyle, getPlacementStyle } from "./toast.utils"
 
 export function connect<T extends PropTypes, O>(
@@ -28,6 +28,18 @@ export function connect<T extends PropTypes, O>(
 
   const [side, align = "center"] = placement.split("-")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { visible, paused, mounted, frontmost, stacked: !!stacked, type, placement, side, align }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     type,
     title,
@@ -48,22 +60,24 @@ export function connect<T extends PropTypes, O>(
       send({ type: "DISMISS", src: "programmatic" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": visible ? "open" : "closed",
-        "data-type": type,
-        "data-placement": placement,
-        "data-align": align,
-        "data-side": side,
-        "data-mounted": dataAttr(mounted),
-        "data-paused": dataAttr(paused),
+        "data-state": rootState.visible ? "open" : "closed",
+        "data-type": rootState.type,
+        "data-placement": rootState.placement,
+        "data-align": rootState.align,
+        "data-side": rootState.side,
+        "data-mounted": dataAttr(rootState.mounted),
+        "data-paused": dataAttr(rootState.paused),
 
-        "data-first": dataAttr(frontmost),
-        "data-sibling": dataAttr(!frontmost),
-        "data-stack": dataAttr(stacked),
-        "data-overlap": dataAttr(!stacked),
+        "data-first": dataAttr(rootState.frontmost),
+        "data-sibling": dataAttr(!rootState.frontmost),
+        "data-stack": dataAttr(rootState.stacked),
+        "data-overlap": dataAttr(!rootState.stacked),
 
         role: "status",
         "aria-atomic": "true",

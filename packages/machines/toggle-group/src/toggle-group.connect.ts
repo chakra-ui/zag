@@ -2,7 +2,7 @@ import { contains, dataAttr, getEventKey, getEventTarget, isSafari } from "@zag-
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import * as dom from "./toggle-group.dom"
-import type { ItemProps, ItemState, ToggleGroupApi, ToggleGroupService } from "./toggle-group.types"
+import type { ItemProps, ItemState, RootState, ToggleGroupApi, ToggleGroupService } from "./toggle-group.types"
 
 export function connect<T extends PropTypes>(
   service: ToggleGroupService,
@@ -11,11 +11,19 @@ export function connect<T extends PropTypes>(
   const { context, send, prop, scope } = service
 
   const value = context.get("value")
-  const disabled = prop("disabled")
-  const multiple = prop("multiple")
+  const disabled = !!prop("disabled")
+  const multiple = !!prop("multiple")
   const rovingFocus = prop("rovingFocus")
   const isHorizontal = prop("orientation") === "horizontal"
   const isWithinToolbar = context.get("isWithinToolbar")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, multiple, orientation: prop("orientation") }
+  }
 
   function getItemState(props: ItemProps): ItemState {
     return {
@@ -26,22 +34,28 @@ export function connect<T extends PropTypes>(
     }
   }
 
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     value,
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         role: "group",
         // Omit when nested in a toolbar so it doesn't add its own extra tab stop.
         tabIndex: isWithinToolbar ? undefined : context.get("hasInteracted") ? -1 : 0,
-        "data-disabled": dataAttr(disabled),
-        "data-multiple": dataAttr(multiple),
-        "data-orientation": prop("orientation"),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-multiple": dataAttr(rootState.multiple),
+        "data-orientation": rootState.orientation,
         style: { outline: "none" },
         onMouseDown() {
           if (disabled) return

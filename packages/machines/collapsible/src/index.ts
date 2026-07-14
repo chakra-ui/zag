@@ -7,6 +7,8 @@ export type {
   CollapsibleMachine as Machine,
   CollapsibleProps as Props,
   CollapsibleService as Service,
+  ContentState,
   ElementIds,
   OpenChangeDetails,
+  TriggerState,
 } from "./collapsible.types"

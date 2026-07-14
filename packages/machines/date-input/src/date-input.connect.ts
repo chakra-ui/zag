@@ -10,7 +10,16 @@ import {
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-input.anatomy"
 import * as dom from "./date-input.dom"
-import type { DateInputApi, DateInputService, SegmentProps, SegmentState } from "./date-input.types"
+import type {
+  ControlState,
+  DateInputApi,
+  DateInputService,
+  RootState,
+  SegmentGroupProps,
+  SegmentGroupState,
+  SegmentProps,
+  SegmentState,
+} from "./date-input.types"
 import { getLocaleSeparator, isValidCharacter } from "@zag-js/date-utils"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 import { getGroupOffset } from "./utils/validity"
@@ -45,6 +54,28 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       readonly: !segment.isEditable || readOnly,
     }
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, readOnly, invalid }
+  }
+
+  function getControlState(): ControlState {
+    return { disabled, readOnly, invalid, focused }
+  }
+
+  function getSegmentGroupState(props: SegmentGroupProps = {}): SegmentGroupState {
+    const { index = 0 } = props
+    const activeIndex = context.get("activeIndex")
+    return { disabled, readOnly, invalid, focused: focused && activeIndex === index }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     focused,
@@ -89,13 +120,15 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
     getSegmentState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
@@ -116,20 +149,23 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       })
     },
 
+    getControlState,
     getControlProps() {
+      const controlState = getControlState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(controlState.disabled),
+        "data-readonly": dataAttr(controlState.readOnly),
+        "data-invalid": dataAttr(controlState.invalid),
+        "data-focus": dataAttr(controlState.focused),
       })
     },
 
+    getSegmentGroupState,
     getSegmentGroupProps(props = {}) {
       const { index = 0 } = props
-      const activeIndex = context.get("activeIndex")
+      const segmentGroupState = getSegmentGroupState(props)
 
       return normalize.element({
         ...parts.segmentGroup.attrs(scope.id),
@@ -137,10 +173,10 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         dir: prop("dir"),
         role: "group",
         "aria-labelledby": dom.getLabelId(scope, index),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused && activeIndex === index),
+        "data-disabled": dataAttr(segmentGroupState.disabled),
+        "data-readonly": dataAttr(segmentGroupState.readOnly),
+        "data-invalid": dataAttr(segmentGroupState.invalid),
+        "data-focus": dataAttr(segmentGroupState.focused),
         style: {
           unicodeBidi: "isolate",
         },

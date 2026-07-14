@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./progress.anatomy"
 import * as dom from "./progress.dom"
-import type { ProgressApi, ProgressService, ProgressState } from "./progress.types"
+import type { ProgressApi, ProgressService, ProgressState, ViewProps, ViewState } from "./progress.types"
 
 export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
   const { context, computed, prop, send, scope } = service
@@ -31,6 +31,18 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
   }
 
   const circleProps = getCircleProps(service)
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getViewState(props: ViewProps): ViewState {
+    return { state: props.state, visible: props.state === progressState }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     value,
@@ -128,12 +140,14 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       })
     },
 
+    getViewState,
     getViewProps(props) {
+      const viewState = getViewState(props)
       return normalize.element({
         dir: prop("dir"),
         ...parts.view.attrs(scope.id),
-        "data-state": props.state,
-        hidden: props.state !== progressState,
+        "data-state": viewState.state,
+        hidden: !viewState.visible,
       })
     },
   }

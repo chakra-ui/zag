@@ -356,6 +356,59 @@ export interface LabelProps {
   index?: number | undefined
 }
 
+export interface RootState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+}
+
+export interface ControlState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the date input is focused.
+   */
+  focused: boolean
+}
+
+export interface SegmentGroupState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether this segment group is focused.
+   */
+  focused: boolean
+}
+
 export interface HiddenInputProps {
   index?: number | undefined
   name?: string | undefined
@@ -416,9 +469,21 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   getSegmentState: (props: SegmentProps) => SegmentState
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
+  /**
+   * Returns the state of the control.
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of a given segment group.
+   */
+  getSegmentGroupState: (props?: SegmentGroupProps | undefined) => SegmentGroupState
   getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
   getSegmentProps: (props: SegmentProps) => T["element"]
   getHiddenInputProps: (props?: HiddenInputProps | undefined) => T["input"]

@@ -34,6 +34,7 @@ export type {
   MoreEventsProps,
   RecurrenceExpander,
   Recurrence,
+  RootState,
   TimeSlotProps,
   ViewItemProps,
   ViewType,

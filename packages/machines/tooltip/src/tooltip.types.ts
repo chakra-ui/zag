@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -155,6 +155,40 @@ export interface TriggerProps {
   value?: string
 }
 
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the tooltip
+   */
+  current: boolean
+  /**
+   * Whether the tooltip is open
+   */
+  open: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the tooltip is open
+   */
+  open: boolean
+  /**
+   * Whether the tooltip should skip its enter animation, following a rapid switch between triggers
+   */
+  instant: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -181,10 +215,18 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
    */
   reposition: (options?: Partial<PositioningOptions>) => void
 
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
 }
 

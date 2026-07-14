@@ -178,6 +178,17 @@ export interface ContentProps {
   index: number
 }
 
+export interface ContentState {
+  /**
+   * The index of the content instance
+   */
+  index: number
+  /**
+   * Whether this content instance is a clone (duplicate)
+   */
+  clone: boolean
+}
+
 export interface EdgeProps {
   /**
    * The side where the edge gradient should appear.
@@ -233,6 +244,10 @@ export interface MarqueeApi<T extends PropTypes = PropTypes> {
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
+  /**
+   * Returns the state of a content instance
+   */
+  getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getEdgeProps: (props: EdgeProps) => T["element"]
   getItemProps: () => T["element"]

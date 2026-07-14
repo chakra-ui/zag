@@ -25,6 +25,7 @@ import { parts } from "./scheduler.anatomy"
 import * as dom from "./scheduler.dom"
 import type {
   DayColumnProps,
+  RootState,
   SchedulerApi,
   SchedulerPayload,
   SchedulerSchema,
@@ -165,6 +166,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const selectedSlot = context.get("selectedSlot")
   const liveSlot = context.get("liveSlot")
   const activeSlot = liveSlot ?? selectedSlot
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { view, dragging: isDragging, resizing: isResizing, selectingSlot: isSelectingSlot }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     view,
@@ -353,16 +366,18 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       return scope.query(`${scope.selector(parts.slotHighlight)}[data-active]`)
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         id: dom.getRootId(scope),
         tabIndex: 0,
         dir,
-        "data-view": view,
-        "data-dragging": dataAttr(isDragging),
-        "data-resizing": dataAttr(isResizing),
-        "data-selecting-slot": dataAttr(isSelectingSlot),
+        "data-view": rootState.view,
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-resizing": dataAttr(rootState.resizing),
+        "data-selecting-slot": dataAttr(rootState.selectingSlot),
         style: {
           "--scheduler-visible-days": visibleDays.length,
           "--scheduler-day-count": visibleDays.length,

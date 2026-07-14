@@ -15,6 +15,7 @@ export type {
   DragEndDetails,
   DragHandleProps,
   DragOverDetails,
+  DragPreviewState,
   DragStartDetails,
   DraggableProps,
   DropDetails,

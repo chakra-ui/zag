@@ -257,6 +257,29 @@ export interface ItemProps<T extends CollectionItem = CollectionItem> {
   focusOnHover?: boolean | undefined
 }
 
+export interface ContentState {
+  /**
+   * Whether the gridlist is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the gridlist has no items
+   */
+  empty: boolean
+  /**
+   * The layout of the gridlist content
+   */
+  layout: "stack" | "grid"
+  /**
+   * The number of columns in the gridlist content (grid layout only)
+   */
+  columnCount: number
+  /**
+   * Whether the gridlist allows multiple selection
+   */
+  multiple: boolean
+}
+
 export interface ItemState {
   /**
    * The underlying value of the item
@@ -378,6 +401,10 @@ export interface GridListApi<T extends PropTypes = PropTypes, V extends Collecti
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getItemGroupProps: (props: ItemGroupProps) => T["element"]
   getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]

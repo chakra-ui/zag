@@ -161,6 +161,17 @@ export interface ItemState {
   checked: boolean
 }
 
+export interface ControlState {
+  /**
+   * Whether the rating group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the rating group is read-only
+   */
+  readOnly: boolean
+}
+
 export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the rating group
@@ -198,6 +209,10 @@ export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getHiddenInputProps: () => T["input"]
   getLabelProps: () => T["element"]
+  /**
+   * Returns the state of the control
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
 }

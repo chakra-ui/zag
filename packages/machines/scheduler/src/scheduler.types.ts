@@ -408,6 +408,25 @@ export type SchedulerMachine<T extends SchedulerPayload = SchedulerPayload> = Ma
  * Connect API types
  * -----------------------------------------------------------------------------*/
 
+export interface RootState {
+  /**
+   * The current view
+   */
+  view: ViewType
+  /**
+   * Whether the user is currently dragging an event
+   */
+  dragging: boolean
+  /**
+   * Whether the user is currently resizing an event
+   */
+  resizing: boolean
+  /**
+   * Whether the user is currently selecting a slot
+   */
+  selectingSlot: boolean
+}
+
 export interface EventPosition {
   /**
    * 0–1 fraction of the day column. Multiply by 100 for %, or by container height for px.
@@ -832,6 +851,10 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    */
   getSelectedSlotEl: () => HTMLElement | null
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getHeaderProps: () => T["element"]
   getHeaderTitleProps: () => T["element"]

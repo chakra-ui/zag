@@ -11,5 +11,6 @@ export type {
   ItemProps,
   ItemState,
   Orientation,
+  RootState,
   ValueChangeDetails,
 } from "./toggle-group.types"

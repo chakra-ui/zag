@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./marquee.anatomy"
 import { dom } from "./marquee.dom"
-import type { MarqueeApi, MarqueeService } from "./marquee.types"
+import type { ContentProps, ContentState, MarqueeApi, MarqueeService } from "./marquee.types"
 import { getEdgePositionStyles, getMarqueeTranslate } from "./marquee.utils"
 
 export function connect<T extends PropTypes>(service: MarqueeService, normalize: NormalizeProps<T>): MarqueeApi<T> {
@@ -16,6 +16,19 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
   const orientation = computed("orientation")
   const multiplier = computed("multiplier")
   const isVertical = computed("isVertical")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getContentState(props: ContentProps): ContentState {
+    const { index } = props
+    return { index, clone: index > 0 }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     paused,
@@ -121,9 +134,10 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
       })
     },
 
+    getContentState,
     getContentProps(props) {
-      const { index } = props
-      const clone = index > 0
+      const contentState = getContentState(props)
+      const { index, clone } = contentState
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope, index),

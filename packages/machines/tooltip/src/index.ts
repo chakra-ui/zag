@@ -4,6 +4,7 @@ export { machine } from "./tooltip.machine"
 export * from "./tooltip.props"
 export type {
   TooltipApi as Api,
+  ContentState,
   ElementIds,
   TooltipMachine as Machine,
   OpenChangeDetails,
@@ -12,5 +13,6 @@ export type {
   TooltipProps as Props,
   TooltipService as Service,
   TriggerProps,
+  TriggerState,
   TriggerValueChangeDetails,
 } from "./tooltip.types"

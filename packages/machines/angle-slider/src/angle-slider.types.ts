@@ -114,6 +114,36 @@ export interface MarkerProps {
   value: number
 }
 
+export interface MarkerState {
+  /**
+   * The value of the marker
+   */
+  value: number
+  /**
+   * Whether the marker is disabled
+   */
+  disabled: boolean
+  /**
+   * The state of the marker relative to the slider value
+   */
+  state: "under-value" | "over-value" | "at-value"
+}
+
+export interface RootState {
+  /**
+   * Whether the angle slider is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the angle slider is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the angle slider is read-only
+   */
+  readOnly: boolean
+}
+
 export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the angle slider
@@ -132,6 +162,10 @@ export interface AngleSliderApi<T extends PropTypes = PropTypes> {
    */
   dragging: boolean
 
+  /**
+   * Returns the state of the angle slider
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getHiddenInputProps: () => T["element"]
@@ -139,5 +173,9 @@ export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   getThumbProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getMarkerGroupProps: () => T["element"]
+  /**
+   * Returns the state of a specific marker
+   */
+  getMarkerState: (props: MarkerProps) => MarkerState
   getMarkerProps: (props: MarkerProps) => T["element"]
 }

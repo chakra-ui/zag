@@ -38,13 +38,17 @@ import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {
+  ContentState,
   DatePickerApi,
   DatePickerService,
   DayTableCellProps,
   DayTableCellState,
+  InputState,
+  RootState,
   TableCellProps,
   TableCellState,
   TableProps,
+  TriggerState,
   WeekNumberCellProps,
 } from "./date-picker.types"
 import {
@@ -140,6 +144,10 @@ export function connect<T extends PropTypes>(
     const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
@@ -282,6 +290,39 @@ export function connect<T extends PropTypes>(
     return [view, id].filter(Boolean).join(" ")
   }
 
+  function getRootState(): RootState {
+    return { open, disabled, readOnly, empty }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      disabled,
+      placeholderShown: empty,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      inline: !!prop("inline"),
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getInputState(): InputState {
+    return { open, disabled, readOnly, invalid, placeholderShown: empty }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     focused,
     open,
@@ -411,14 +452,16 @@ export function connect<T extends PropTypes>(
       send({ type: "GOTO.PREV", view: context.get("view") })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-empty": dataAttr(empty),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-empty": dataAttr(rootState.empty),
       })
     },
 
@@ -452,15 +495,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
-        hidden: !open,
+        hidden: !contentState.open,
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
-        "data-inline": dataAttr(prop("inline")),
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-inline": dataAttr(contentState.inline),
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "application",
@@ -852,21 +897,23 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
-        "aria-label": translations.trigger(open),
+        "data-placement": triggerState.placement,
+        "data-side": triggerState.side,
+        "aria-label": translations.trigger(triggerState.open),
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": open,
-        "data-state": open ? "open" : "closed",
-        "data-placeholder-shown": dataAttr(empty),
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
         "aria-haspopup": "grid",
-        disabled,
+        disabled: triggerState.disabled,
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -911,8 +958,10 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps(props = {}) {
       const { index = 0, fixOnBlur = true } = props
+      const inputState = getInputState()
 
       return normalize.input({
         ...parts.input.attrs(scope.id),
@@ -923,13 +972,13 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         name: prop("name"),
         "data-index": index,
-        "data-state": open ? "open" : "closed",
-        "data-placeholder-shown": dataAttr(empty),
-        readOnly,
-        disabled,
+        "data-state": inputState.open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(inputState.placeholderShown),
+        readOnly: inputState.readOnly,
+        disabled: inputState.disabled,
         required: prop("required"),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
         placeholder: prop("placeholder") || getInputPlaceholder(locale),
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {

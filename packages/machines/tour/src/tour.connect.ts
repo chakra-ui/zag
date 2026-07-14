@@ -5,7 +5,15 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
-import type { StepActionMap, TourApi, TourService } from "./tour.types"
+import type {
+  BackdropState,
+  ContentState,
+  PositionerState,
+  SpotlightState,
+  StepActionMap,
+  TourApi,
+  TourService,
+} from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
 import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
@@ -27,6 +35,30 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getBackdropState(): BackdropState {
+    return { open, type: step?.type }
+  }
+
+  function getSpotlightState(): SpotlightState {
+    return { open, hasTarget: !!step?.target?.() }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { type: step?.type, placement, side: placementSide }
+  }
+
+  function getContentState(): ContentState {
+    return { open, type: step?.type, placement, side: placementSide, stepId: step?.id ?? null }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
@@ -112,13 +144,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return prop("translations").progressText?.(details) ?? ""
     },
 
+    getBackdropState,
     getBackdropProps() {
+      const backdropState = getBackdropState()
       return normalize.element({
         ...parts.backdrop.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-type": step?.type,
+        hidden: !backdropState.open,
+        "data-state": backdropState.open ? "open" : "closed",
+        "data-type": backdropState.type,
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
@@ -129,10 +163,12 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getSpotlightState,
     getSpotlightProps() {
+      const spotlightState = getSpotlightState()
       return normalize.element({
         ...parts.spotlight.attrs(scope.id),
-        hidden: !open || !step?.target?.(),
+        hidden: !spotlightState.open || !spotlightState.hasTarget,
         style: {
           "--tour-layer": 1,
           position: "absolute",
@@ -152,16 +188,18 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-type": step?.type,
-        "data-placement": placement,
-        "data-side": placementSide,
+        "data-type": positionerState.type,
+        "data-placement": positionerState.placement,
+        "data-side": positionerState.side,
         style: {
           "--tour-layer": 2,
-          ...(step?.type === "tooltip" && popperStyles.floating),
+          ...(positionerState.type === "tooltip" && popperStyles.floating),
         },
       })
     },
@@ -184,7 +222,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
@@ -193,12 +233,12 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-type": step?.type,
-        "data-placement": placement,
-        "data-side": placementSide,
-        "data-step": step?.id,
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-type": contentState.type,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-step": contentState.stepId,
         "aria-labelledby": dom.getTitleId(scope),
         "aria-describedby": dom.getDescriptionId(scope),
         tabIndex: -1,

@@ -248,6 +248,67 @@ export type ImageCropperService = Service<ImageCropperSchema>
 
 export type ImageCropperMachine = Machine<ImageCropperSchema>
 
+export interface RootState {
+  /**
+   * Whether the crop area is fixed in size and position
+   */
+  fixed: boolean
+  /**
+   * The shape of the crop area
+   */
+  shape: "rectangle" | "circle"
+  /**
+   * Whether a pinch gesture is active
+   */
+  pinch: boolean
+  /**
+   * Whether the crop area is currently being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the image is currently being panned
+   */
+  panning: boolean
+}
+
+export interface ImageState {
+  /**
+   * Whether the image has loaded and is ready to display
+   */
+  ready: boolean
+  /**
+   * Whether the image is flipped horizontally
+   */
+  flipHorizontal: boolean
+  /**
+   * Whether the image is flipped vertically
+   */
+  flipVertical: boolean
+}
+
+export interface SelectionState {
+  /**
+   * Whether the crop area is fixed in size and position
+   */
+  disabled: boolean
+  /**
+   * The shape of the crop area
+   */
+  shape: "rectangle" | "circle"
+  /**
+   * Whether the selection has been measured and is ready to display
+   */
+  measured: boolean
+  /**
+   * Whether the crop area is currently being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the image is currently being panned
+   */
+  panning: boolean
+}
+
 export interface HandleProps {
   /**
    * The placement of the handle
@@ -401,9 +462,21 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    */
   getCropData: () => CropData
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
+  /**
+   * Returns the state of the image
+   */
+  getImageState: () => ImageState
   getImageProps: () => T["element"]
+  /**
+   * Returns the state of the selection
+   */
+  getSelectionState: () => SelectionState
   getSelectionProps: () => T["element"]
   getHandleProps: (props: HandleProps) => T["element"]
   getGridProps: (props: GridProps) => T["element"]

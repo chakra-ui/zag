@@ -36,6 +36,17 @@ export type ToggleService = Service<ToggleSchema>
 
 export type ToggleMachine = Machine<ToggleSchema>
 
+export interface RootState {
+  /**
+   * Whether the toggle is pressed
+   */
+  pressed: boolean
+  /**
+   * Whether the toggle is disabled
+   */
+  disabled: boolean
+}
+
 export interface ToggleApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the toggle is pressed.
@@ -50,6 +61,10 @@ export interface ToggleApi<T extends PropTypes = PropTypes> {
    */
   setPressed: (pressed: boolean) => void
 
+  /**
+   * Returns the state of the toggle
+   */
+  getRootState: () => RootState
   /**
    * Props for the root `button` element.
    */

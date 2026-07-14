@@ -6,7 +6,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { TooltipApi, TooltipSchema, TriggerProps } from "./tooltip.types"
+import type { ContentState, TooltipApi, TooltipSchema, TriggerProps, TriggerState } from "./tooltip.types"
 
 export function connect<P extends PropTypes>(
   service: Service<TooltipSchema>,
@@ -30,6 +30,27 @@ export function connect<P extends PropTypes>(
     placement: currentPlacement,
   })
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getContentState(): ContentState {
+    const isCurrentTooltip = store.get("id") === id
+    const isPrevTooltip = store.get("prevId") === id
+    const instant = !!store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+    return { open, instant, placement: currentPlacement, side: currentPlacementSide }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     open: open,
     setOpen(nextOpen) {
@@ -47,9 +68,10 @@ export function connect<P extends PropTypes>(
       send({ type: "positioning.set", options })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const { current } = getTriggerState(props)
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
@@ -143,21 +165,20 @@ export function connect<P extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
-      const isCurrentTooltip = store.get("id") === id
-      const isPrevTooltip = store.get("prevId") === id
-      const instant = store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+      const contentState = getContentState()
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-instant": dataAttr(instant),
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-instant": dataAttr(contentState.instant),
         role: hasAriaLabel ? undefined : "tooltip",
         id: hasAriaLabel ? undefined : contentId,
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         onPointerEnter() {
           send({ type: "content.pointer.move" })
         },

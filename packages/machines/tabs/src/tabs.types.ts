@@ -169,6 +169,13 @@ export interface ContentProps {
   value: string
 }
 
+export interface ContentState {
+  /**
+   * Whether the tab content is selected
+   */
+  selected: boolean
+}
+
 export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
@@ -215,6 +222,10 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getTriggerProps: (props: TriggerProps) => T["button"]
+  /**
+   * Returns the state of the content with the given props
+   */
+  getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getIndicatorProps: () => T["element"]
 }

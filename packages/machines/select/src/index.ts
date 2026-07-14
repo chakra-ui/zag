@@ -11,6 +11,7 @@ export type {
   SelectService as Service,
   CollectionItem,
   CollectionOptions,
+  ContentState,
   ElementIds,
   HighlightChangeDetails,
   IntlTranslations,
@@ -20,7 +21,9 @@ export type {
   ItemState,
   OpenChangeDetails,
   PositioningOptions,
+  RootState,
   ScrollToIndexDetails,
+  TriggerState,
   ValueChangeDetails,
   SelectionDetails,
 } from "./select.types"

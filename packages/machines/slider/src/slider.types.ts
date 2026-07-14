@@ -280,13 +280,74 @@ export interface MarkerProps {
   value: number
 }
 
+export interface MarkerState {
+  /**
+   * The value of the marker
+   */
+  value: number
+  /**
+   * Whether the marker is disabled
+   */
+  disabled: boolean
+  /**
+   * The state of the marker relative to the slider value
+   */
+  state: "under-value" | "over-value" | "at-value"
+}
+
 export interface ThumbProps {
   index: number
   name?: string | undefined
 }
 
+export interface ThumbState {
+  /**
+   * The index of the thumb
+   */
+  index: number
+  /**
+   * The value of the thumb
+   */
+  value: number
+  /**
+   * Whether the thumb is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the thumb is focused
+   */
+  focused: boolean
+  /**
+   * Whether the thumb is being dragged
+   */
+  dragging: boolean
+}
+
 export interface DraggingIndicatorProps {
   index: number
+}
+
+export interface RootState {
+  /**
+   * Whether the slider is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the slider is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the slider is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the slider is focused
+   */
+  focused: boolean
+  /**
+   * The orientation of the slider
+   */
+  orientation: "vertical" | "horizontal"
 }
 
 export interface SliderApi<T extends PropTypes = PropTypes> {
@@ -351,15 +412,27 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
 
+  /**
+   * Returns the state of the slider
+   */
+  getRootState: () => RootState
   getLabelProps: () => T["label"]
   getRootProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getTrackProps: () => T["element"]
+  /**
+   * Returns the state of a specific thumb
+   */
+  getThumbState: (props: ThumbProps) => ThumbState
   getThumbProps: (props: ThumbProps) => T["element"]
   getHiddenInputProps: (props: ThumbProps) => T["input"]
   getRangeProps: () => T["element"]
   getControlProps: () => T["element"]
   getMarkerGroupProps: () => T["element"]
+  /**
+   * Returns the state of a specific marker
+   */
+  getMarkerState: (props: MarkerProps) => MarkerState
   getMarkerProps: (props: MarkerProps) => T["element"]
   getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
 }

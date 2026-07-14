@@ -15,7 +15,17 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
-import type { CollectionItem, ComboboxApi, ComboboxService, ItemProps, ItemState } from "./combobox.types"
+import type {
+  CollectionItem,
+  ComboboxApi,
+  ComboboxService,
+  ContentState,
+  ItemProps,
+  ItemState,
+  RootState,
+  TriggerProps,
+  TriggerState,
+} from "./combobox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -47,6 +57,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     placement: currentPlacement,
   })
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
@@ -58,6 +72,35 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       selected: context.get("value").includes(value),
     }
   }
+
+  function getRootState(): RootState {
+    return { invalid, readOnly }
+  }
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    return {
+      open,
+      disabled,
+      invalid,
+      readOnly,
+      focusable: props.focusable ?? isDialogPopup,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+      empty: collection.size === 0,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     focused,
@@ -109,12 +152,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -269,8 +314,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getTriggerState,
     getTriggerProps(props = {}) {
-      const focusable = props.focusable ?? isDialogPopup
+      const triggerState = getTriggerState(props)
+      const { focusable } = triggerState
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
@@ -279,14 +326,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         type: "button",
         tabIndex: focusable ? undefined : -1,
         "aria-label": translations.triggerLabel,
-        "aria-expanded": open,
-        "data-state": open ? "open" : "closed",
-        "aria-controls": open ? `${dom.getListId(scope)} ${dom.getContentId(scope)}` : undefined,
-        disabled,
-        "data-invalid": dataAttr(invalid),
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "aria-controls": triggerState.open ? `${dom.getListId(scope)} ${dom.getContentId(scope)}` : undefined,
+        disabled: triggerState.disabled,
+        "data-invalid": dataAttr(triggerState.invalid),
         "data-focusable": dataAttr(focusable),
-        "data-readonly": dataAttr(readOnly),
-        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-disabled": dataAttr(triggerState.disabled),
         onFocus() {
           if (!focusable) return
           send({ type: "INPUT.FOCUS", src: "trigger" })
@@ -330,18 +377,20 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: isDialogPopup ? "dialog" : "presentation",
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
-        "data-empty": dataAttr(collection.size === 0),
+        "data-empty": dataAttr(contentState.empty),
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {

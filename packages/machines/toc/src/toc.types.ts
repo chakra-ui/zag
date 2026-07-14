@@ -162,6 +162,13 @@ export interface ItemState {
   depth: number
 }
 
+export interface IndicatorState {
+  /**
+   * Whether the indicator has a target rect to point to
+   */
+  visible: boolean
+}
+
 export interface TocApi<T extends PropTypes = PropTypes> {
   /**
    * All currently active (visible) heading ids
@@ -193,5 +200,9 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getLinkProps(props: ItemProps): T["element"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState(): IndicatorState
   getIndicatorProps(): T["element"]
 }

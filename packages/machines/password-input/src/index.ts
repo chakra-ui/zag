@@ -8,6 +8,9 @@ export type {
   PasswordInputProps as Props,
   PasswordInputService as Service,
   ElementIds,
+  InputState,
   IntlTranslations,
+  RootState,
   VisibilityChangeDetails,
+  VisibilityTriggerState,
 } from "./password-input.types"

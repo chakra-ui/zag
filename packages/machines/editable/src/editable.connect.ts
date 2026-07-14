@@ -3,7 +3,7 @@ import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import * as dom from "./editable.dom"
-import type { EditableApi, EditableSchema } from "./editable.types"
+import type { AreaState, EditableApi, EditableSchema, InputState, LabelState, PreviewState } from "./editable.types"
 
 export function connect<T extends PropTypes>(
   service: Service<EditableSchema>,
@@ -28,6 +28,30 @@ export function connect<T extends PropTypes>(
   const empty = value.trim() === ""
 
   const valueText = empty ? (placeholder?.preview ?? "") : value
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getAreaState(): AreaState {
+    return { editing, disabled, empty }
+  }
+
+  function getLabelState(): LabelState {
+    return { editing, invalid, required }
+  }
+
+  function getInputState(): InputState {
+    return { editing, disabled, readOnly, invalid, autoResize }
+  }
+
+  function getPreviewState(): PreviewState {
+    return { editing, disabled, readOnly, invalid, autoResize, empty }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     editing,
@@ -60,26 +84,30 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getAreaState,
     getAreaProps() {
+      const areaState = getAreaState()
       return normalize.element({
         ...parts.area.attrs(scope.id),
         dir: prop("dir"),
         style: autoResize ? { display: "inline-grid" } : undefined,
-        "data-focus": dataAttr(editing),
-        "data-disabled": dataAttr(disabled),
-        "data-placeholder-shown": dataAttr(empty),
+        "data-focus": dataAttr(areaState.editing),
+        "data-disabled": dataAttr(areaState.disabled),
+        "data-placeholder-shown": dataAttr(areaState.empty),
       })
     },
 
+    getLabelState,
     getLabelProps() {
+      const labelState = getLabelState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
-        "data-focus": dataAttr(editing),
-        "data-invalid": dataAttr(invalid),
-        "data-required": dataAttr(required),
+        "data-focus": dataAttr(labelState.editing),
+        "data-invalid": dataAttr(labelState.invalid),
+        "data-required": dataAttr(labelState.required),
         onClick() {
           if (editing) return
           const previewEl = dom.getPreviewEl(scope)
@@ -88,7 +116,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps() {
+      const inputState = getInputState()
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
@@ -96,17 +126,17 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         form: prop("form"),
         id: dom.getInputId(scope),
-        hidden: autoResize ? undefined : !editing,
+        hidden: autoResize ? undefined : !inputState.editing,
         placeholder: placeholder?.edit,
         maxLength: prop("maxLength"),
         required: prop("required"),
-        disabled: disabled,
-        "data-disabled": dataAttr(disabled),
-        readOnly: readOnly,
-        "data-readonly": dataAttr(readOnly),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
-        "data-autoresize": dataAttr(autoResize),
+        disabled: inputState.disabled,
+        "data-disabled": dataAttr(inputState.disabled),
+        readOnly: inputState.readOnly,
+        "data-readonly": dataAttr(inputState.readOnly),
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
+        "data-autoresize": dataAttr(inputState.autoResize),
         defaultValue: value,
         size: autoResize ? 1 : undefined,
         onChange(event) {
@@ -154,28 +184,30 @@ export function connect<T extends PropTypes>(
         style: autoResize
           ? {
               gridArea: "1 / 1 / auto / auto",
-              visibility: !editing ? "hidden" : undefined,
+              visibility: !inputState.editing ? "hidden" : undefined,
             }
           : undefined,
       })
     },
 
+    getPreviewState,
     getPreviewProps() {
+      const previewState = getPreviewState()
       return normalize.element({
         id: dom.getPreviewId(scope),
         ...parts.preview.attrs(scope.id),
         dir: prop("dir"),
-        "data-placeholder-shown": dataAttr(empty),
-        "aria-readonly": ariaAttr(readOnly),
-        "data-readonly": dataAttr(disabled),
-        "data-disabled": dataAttr(disabled),
-        "aria-disabled": ariaAttr(disabled),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
+        "data-placeholder-shown": dataAttr(previewState.empty),
+        "aria-readonly": ariaAttr(previewState.readOnly),
+        "data-readonly": dataAttr(previewState.disabled),
+        "data-disabled": dataAttr(previewState.disabled),
+        "aria-disabled": ariaAttr(previewState.disabled),
+        "aria-invalid": ariaAttr(previewState.invalid),
+        "data-invalid": dataAttr(previewState.invalid),
         "aria-label": translations?.edit,
-        "data-autoresize": dataAttr(autoResize),
+        "data-autoresize": dataAttr(previewState.autoResize),
         children: valueText,
-        hidden: autoResize ? undefined : editing,
+        hidden: autoResize ? undefined : previewState.editing,
         tabIndex: interactive ? 0 : undefined,
         onClick() {
           if (!interactive) return
@@ -197,7 +229,7 @@ export function connect<T extends PropTypes>(
           ? {
               whiteSpace: "pre",
               gridArea: "1 / 1 / auto / auto",
-              visibility: editing ? "hidden" : undefined,
+              visibility: previewState.editing ? "hidden" : undefined,
               // in event the preview overflow's the parent element
               overflow: "hidden",
               textOverflow: "ellipsis",

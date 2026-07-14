@@ -7,6 +7,7 @@ export type {
   ScrollAreaMachine as Machine,
   ScrollAreaProps as Props,
   ScrollAreaService as Service,
+  CornerState,
   ElementIds,
   ScrollbarProps,
   ScrollbarState,

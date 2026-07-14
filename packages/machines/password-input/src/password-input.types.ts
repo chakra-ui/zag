@@ -85,6 +85,55 @@ export type PasswordInputService = Service<PasswordInputSchema>
 
 export type PasswordInputMachine = Machine<PasswordInputSchema>
 
+export interface RootState {
+  /**
+   * Whether the password input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the password input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the password input is read only.
+   */
+  readOnly: boolean
+}
+
+export interface InputState {
+  /**
+   * Whether the password input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the password input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the password input is read only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the password input value is visible.
+   */
+  visible: boolean
+}
+
+export interface VisibilityTriggerState {
+  /**
+   * Whether the visibility trigger is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the password input is read only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the password input value is visible.
+   */
+  visible: boolean
+}
+
 export interface PasswordInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the password input is visible.
@@ -111,9 +160,21 @@ export interface PasswordInputApi<T extends PropTypes = PropTypes> {
    */
   toggleVisible: VoidFunction
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
+  /**
+   * Returns the state of the input.
+   */
+  getInputState: () => InputState
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the visibility trigger.
+   */
+  getVisibilityTriggerState: () => VisibilityTriggerState
   getVisibilityTriggerProps: () => T["button"]
   getIndicatorProps: () => T["element"]
   getControlProps: () => T["element"]

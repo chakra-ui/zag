@@ -36,6 +36,45 @@ export interface ToastHeight {
   height: number
 }
 
+export interface RootState {
+  /**
+   * Whether the toast is visible
+   */
+  visible: boolean
+  /**
+   * Whether the toast is paused
+   */
+  paused: boolean
+  /**
+   * Whether the toast has mounted into the DOM
+   */
+  mounted: boolean
+  /**
+   * Whether the toast is the frontmost (topmost) toast in the group
+   */
+  frontmost: boolean
+  /**
+   * Whether the toasts in the group are stacked instead of overlapping
+   */
+  stacked: boolean
+  /**
+   * The type of the toast
+   */
+  type: Type
+  /**
+   * The placement of the toast
+   */
+  placement: Placement
+  /**
+   * The side of the toast placement
+   */
+  side: string
+  /**
+   * The horizontal alignment of the toast placement
+   */
+  align: string
+}
+
 export interface ActionOptions {
   /**
    * The label of the action
@@ -388,6 +427,21 @@ export interface GroupProps {
   label?: string | undefined
 }
 
+export interface GroupState {
+  /**
+   * The placement of the toast group
+   */
+  placement: Placement
+  /**
+   * The side of the toast group placement
+   */
+  side: string
+  /**
+   * The horizontal alignment of the toast group placement
+   */
+  align: string
+}
+
 export interface ToastGroupApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * The total number of toasts
@@ -402,6 +456,10 @@ export interface ToastGroupApi<T extends PropTypes = PropTypes, O = any> {
    */
   subscribe: (callback: (toasts: Options<O>[]) => void) => VoidFunction
 
+  /**
+   * Returns the state of the group
+   */
+  getGroupState: () => GroupState
   getGroupProps: (options?: GroupProps) => T["element"]
 }
 
@@ -447,6 +505,10 @@ export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
    */
   dismiss: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getTitleProps: () => T["element"]
   getGhostBeforeProps: () => T["element"]

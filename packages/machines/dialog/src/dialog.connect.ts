@@ -4,7 +4,15 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./dialog.anatomy"
 import * as dom from "./dialog.dom"
-import type { DialogApi, DialogSchema } from "./dialog.types"
+import type {
+  BackdropState,
+  ContentState,
+  DialogApi,
+  DialogSchema,
+  PositionerState,
+  TriggerProps,
+  TriggerState,
+} from "./dialog.types"
 
 export function connect<T extends PropTypes>(
   service: Service<DialogSchema>,
@@ -15,6 +23,32 @@ export function connect<T extends PropTypes>(
   const open = state.matches("open")
   const triggerValue = context.get("triggerValue")
   const layer = context.get("layer")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getBackdropState(): BackdropState {
+    return { open, nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return { open, modal: prop("modal"), nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open,
@@ -29,9 +63,11 @@ export function connect<T extends PropTypes>(
       send({ type: "TRIGGER_VALUE.SET", value })
     },
 
+    getTriggerState,
     getTriggerProps(props = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
@@ -39,7 +75,7 @@ export function connect<T extends PropTypes>(
         "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
-        "aria-expanded": value == null ? open : open && current,
+        "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         "data-current": dataAttr(current),
@@ -51,17 +87,20 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getBackdropState,
     getBackdropProps() {
+      const backdropState = getBackdropState()
       return normalize.element({
         ...parts.backdrop.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
+        hidden: !backdropState.open,
+        "data-state": backdropState.open ? "open" : "closed",
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { zIndex: true }),
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
@@ -74,17 +113,19 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
       const rendered = context.get("rendered")
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         role: prop("role"),
-        hidden: !open,
+        hidden: !contentState.open,
         id: dom.getContentId(scope),
         tabIndex: -1,
-        "data-state": open ? "open" : "closed",
-        "aria-modal": prop("modal"),
+        "data-state": contentState.open ? "open" : "closed",
+        "aria-modal": contentState.modal,
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(scope),
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,

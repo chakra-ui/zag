@@ -16,7 +16,14 @@ import { roundToDpr, toPx } from "@zag-js/utils"
 import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
-import type { NumberInputApi, NumberInputService } from "./number-input.types"
+import type {
+  DecrementTriggerState,
+  IncrementTriggerState,
+  InputState,
+  NumberInputApi,
+  NumberInputService,
+  RootState,
+} from "./number-input.types"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -37,6 +44,30 @@ export function connect<T extends PropTypes>(
   const isDecrementDisabled = disabled || !computed("canDecrement") || readOnly
 
   const translations = prop("translations")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, focused, invalid, scrubbing }
+  }
+
+  function getInputState(): InputState {
+    return { disabled, invalid, readOnly, scrubbing }
+  }
+
+  function getIncrementTriggerState(): IncrementTriggerState {
+    return { disabled: isIncrementDisabled }
+  }
+
+  function getDecrementTriggerState(): DecrementTriggerState {
+    return { disabled: isDecrementDisabled }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     focused: focused,
@@ -67,14 +98,16 @@ export function connect<T extends PropTypes>(
       dom.getInputEl(scope)?.focus()
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-focus": dataAttr(focused),
-        "data-invalid": dataAttr(invalid),
-        "data-scrubbing": dataAttr(scrubbing),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-focus": dataAttr(rootState.focused),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-scrubbing": dataAttr(rootState.scrubbing),
       })
     },
 
@@ -122,7 +155,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps() {
+      const inputState = getInputState()
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
@@ -133,11 +168,11 @@ export function connect<T extends PropTypes>(
         defaultValue: computed("formattedValue"),
         pattern: prop("formatOptions") ? undefined : prop("pattern"),
         inputMode: prop("inputMode"),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
-        disabled,
-        "data-disabled": dataAttr(disabled),
-        readOnly,
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
+        disabled: inputState.disabled,
+        "data-disabled": dataAttr(inputState.disabled),
+        readOnly: inputState.readOnly,
         required: prop("required"),
         autoComplete: "off",
         autoCorrect: "off",
@@ -148,7 +183,7 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": prop("max"),
         "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
         "aria-valuetext": computed("valueText"),
-        "data-scrubbing": dataAttr(scrubbing),
+        "data-scrubbing": dataAttr(inputState.scrubbing),
         onFocus() {
           send({ type: "INPUT.FOCUS" })
         },
@@ -219,19 +254,21 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getDecrementTriggerState,
     getDecrementTriggerProps() {
+      const decrementTriggerState = getDecrementTriggerState()
       return normalize.button({
         ...parts.decrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        disabled: isDecrementDisabled,
-        "data-disabled": dataAttr(isDecrementDisabled),
+        disabled: decrementTriggerState.disabled,
+        "data-disabled": dataAttr(decrementTriggerState.disabled),
         "aria-label": translations.decrementLabel,
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
-          if (isDecrementDisabled) return
+          if (decrementTriggerState.disabled) return
           if (!isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
           if (event.pointerType === "mouse") {
@@ -245,25 +282,27 @@ export function connect<T extends PropTypes>(
           send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType })
         },
         onPointerLeave() {
-          if (isDecrementDisabled) return
+          if (decrementTriggerState.disabled) return
           send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
         },
       })
     },
 
+    getIncrementTriggerState,
     getIncrementTriggerProps() {
+      const incrementTriggerState = getIncrementTriggerState()
       return normalize.button({
         ...parts.incrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        disabled: isIncrementDisabled,
-        "data-disabled": dataAttr(isIncrementDisabled),
+        disabled: incrementTriggerState.disabled,
+        "data-disabled": dataAttr(incrementTriggerState.disabled),
         "aria-label": translations.incrementLabel,
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
-          if (isIncrementDisabled || !isLeftClick(event)) return
+          if (incrementTriggerState.disabled || !isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
           if (event.pointerType === "mouse") {
             event.preventDefault()

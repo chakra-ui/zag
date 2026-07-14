@@ -122,6 +122,17 @@ export interface ViewProps {
   state: ProgressState
 }
 
+export interface ViewState {
+  /**
+   * The progress state this view represents
+   */
+  state: ProgressState
+  /**
+   * Whether this view matches the current progress state
+   */
+  visible: boolean
+}
+
 export interface ProgressApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the progress bar.
@@ -169,6 +180,10 @@ export interface ProgressApi<T extends PropTypes = PropTypes> {
   getTrackProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getRangeProps: () => T["element"]
+  /**
+   * Returns the state of a view
+   */
+  getViewState: (props: ViewProps) => ViewState
   getViewProps: (props: ViewProps) => T["element"]
   getCircleProps: () => T["svg"]
   getCircleTrackProps: () => T["circle"]

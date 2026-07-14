@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { Placement } from "@zag-js/popper"
+import type { Placement, PlacementSide } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { Point, Rect, Size } from "./utils/rect"
 
@@ -323,6 +323,66 @@ export interface StepActionTriggerProps {
   action: StepAction
 }
 
+export interface BackdropState {
+  /**
+   * Whether the tour is open
+   */
+  open: boolean
+  /**
+   * The type of the current step
+   */
+  type: StepType | undefined
+}
+
+export interface SpotlightState {
+  /**
+   * Whether the tour is open
+   */
+  open: boolean
+  /**
+   * Whether the current step has a target element
+   */
+  hasTarget: boolean
+}
+
+export interface PositionerState {
+  /**
+   * The type of the current step
+   */
+  type: StepType | undefined
+  /**
+   * The placement of the current step
+   */
+  placement: StepPlacement | undefined
+  /**
+   * The side of the target the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
+export interface ContentState {
+  /**
+   * Whether the tour is open
+   */
+  open: boolean
+  /**
+   * The type of the current step
+   */
+  type: StepType | undefined
+  /**
+   * The placement of the current step
+   */
+  placement: StepPlacement | undefined
+  /**
+   * The side of the target the content is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * The id of the current step
+   */
+  stepId: string | null
+}
+
 export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tour is open
@@ -405,13 +465,29 @@ export interface TourApi<T extends PropTypes = PropTypes> {
    */
   getProgressPercent: () => number
 
+  /**
+   * Returns the state of the backdrop
+   */
+  getBackdropState: () => BackdropState
   getBackdropProps: () => T["element"]
+  /**
+   * Returns the state of the spotlight
+   */
+  getSpotlightState: () => SpotlightState
   getSpotlightProps: () => T["element"]
   getProgressTextProps: () => T["element"]
 
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
 
   getTitleProps: () => T["element"]

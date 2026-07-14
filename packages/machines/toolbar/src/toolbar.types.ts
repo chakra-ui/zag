@@ -105,6 +105,10 @@ export interface ItemState {
    * Whether the item is the current roving tabindex target.
    */
   focused: boolean
+  /**
+   * The orientation of the toolbar this item belongs to.
+   */
+  orientation: Orientation
 }
 
 export interface LinkProps {

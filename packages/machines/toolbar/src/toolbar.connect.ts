@@ -25,6 +25,7 @@ export function connect<T extends PropTypes>(service: ToolbarService, normalize:
       disabled: Boolean(props.disabled || rootDisabled),
       focusableWhenDisabled: props.focusableWhenDisabled ?? true,
       focused: context.get("focusedValue") === props.value,
+      orientation,
     }
   }
 
@@ -150,14 +151,13 @@ export function connect<T extends PropTypes>(service: ToolbarService, normalize:
     },
 
     getLinkProps(props) {
-      const id = dom.getItemId(scope, props.value)
-      const focused = context.get("focusedValue") === props.value
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs(scope.id),
-        id,
+        id: itemState.id,
         dir: prop("dir"),
-        "data-orientation": orientation,
-        tabIndex: focused ? 0 : -1,
+        "data-orientation": itemState.orientation,
+        tabIndex: itemState.focused ? 0 : -1,
         onFocus() {
           send({ type: "ITEM.FOCUS", value: props.value })
         },

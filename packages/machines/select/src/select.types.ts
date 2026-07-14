@@ -3,7 +3,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { AutoScrollHandlers } from "./select.dom"
 
@@ -286,6 +286,71 @@ export interface ItemState {
   highlighted: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the select is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the select is open
+   */
+  open: boolean
+  /**
+   * Whether the select is focused
+   */
+  focused: boolean
+  /**
+   * Whether the select is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the select is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the select is required
+   */
+  required: boolean
+  /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the trigger is showing the placeholder (no selected items)
+   */
+  placeholderShown: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the select is open
+   */
+  open: boolean
+  /**
+   * Whether the select is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the select has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
 export interface ItemGroupProps {
   id: string
 }
@@ -402,14 +467,26 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
    */
   disabled: boolean
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getIndicatorProps: () => T["element"]
   getClearTriggerProps: () => T["button"]
   getValueTextProps: () => T["element"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]

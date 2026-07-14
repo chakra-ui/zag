@@ -83,6 +83,17 @@ export interface IndicatorProps {
   copied: boolean
 }
 
+export interface IndicatorState {
+  /**
+   * The copied state this indicator represents
+   */
+  copied: boolean
+  /**
+   * Whether the indicator matches the current copied state
+   */
+  visible: boolean
+}
+
 export interface ClipboardApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the value has been copied to the clipboard
@@ -106,5 +117,9 @@ export interface ClipboardApi<T extends PropTypes = PropTypes> {
   getControlProps: () => T["element"]
   getTriggerProps: () => T["button"]
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState: (props: IndicatorProps) => IndicatorState
   getIndicatorProps: (props: IndicatorProps) => T["element"]
 }

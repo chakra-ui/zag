@@ -18,9 +18,12 @@ import type {
   ColorFormat,
   ColorPickerService,
   ColorPickerApi,
+  ContentState,
   GamutOverlayProps,
+  RootState,
   SwatchTriggerProps,
   SwatchTriggerState,
+  TriggerState,
 } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
@@ -77,6 +80,10 @@ export function connect<T extends PropTypes>(
     placement: currentPlacement,
   })
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
     const color = normalizeColor(props.value).toFormat(context.get("format"))
     return {
@@ -86,6 +93,36 @@ export function connect<T extends PropTypes>(
       disabled: props.disabled || !interactive,
     }
   }
+
+  function getRootState(): RootState {
+    return { disabled, readOnly, invalid }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      focused,
+      disabled,
+      invalid,
+      readOnly,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     dragging,
@@ -126,13 +163,15 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
         style: {
           "--value": value.toString("css"),
         },
@@ -170,24 +209,26 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
-        disabled: disabled,
+        disabled: triggerState.disabled,
         "aria-label": `select color. current color is ${valueAsString}`,
         "aria-controls": dom.getContentId(scope),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-haspopup": prop("inline") ? undefined : "dialog",
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
-        "aria-expanded": open,
-        "data-state": open ? "open" : "closed",
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-placement": triggerState.placement,
+        "data-side": triggerState.side,
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-focus": dataAttr(triggerState.focused),
         type: "button",
         onClick() {
           if (!interactive) return
@@ -215,17 +256,19 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         dir: prop("dir"),
         role: prop("inline") ? undefined : "dialog",
         tabIndex: -1,
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
-        "data-state": open ? "open" : "closed",
-        hidden: !open,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-state": contentState.open ? "open" : "closed",
+        hidden: !contentState.open,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })

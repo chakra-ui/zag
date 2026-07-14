@@ -152,6 +152,25 @@ export interface HiddenInputProps {
   value: string
 }
 
+export interface RootState {
+  /**
+   * Whether the signature pad is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the signature pad is required
+   */
+  required: boolean
+  /**
+   * Whether the user is currently drawing
+   */
+  drawing: boolean
+  /**
+   * Whether the signature pad is empty
+   */
+  empty: boolean
+}
+
 export interface SignaturePadApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the signature pad is empty.
@@ -178,6 +197,10 @@ export interface SignaturePadApi<T extends PropTypes = PropTypes> {
    */
   clear: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getLabelProps: () => T["element"]
   getRootProps: () => T["element"]
   getControlProps: () => T["element"]

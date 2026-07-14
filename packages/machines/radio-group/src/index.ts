@@ -10,5 +10,6 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  RootState,
   ValueChangeDetails,
 } from "./radio-group.types"

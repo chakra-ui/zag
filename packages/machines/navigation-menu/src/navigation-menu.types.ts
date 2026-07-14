@@ -219,6 +219,40 @@ export interface ViewportProps {
   align?: "start" | "center" | "end"
 }
 
+export interface TriggerState {
+  /**
+   * The value of the item
+   */
+  value: string
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the trigger's content is open
+   */
+  open: boolean
+}
+
+export interface ContentState {
+  /**
+   * The value of the item this content belongs to
+   */
+  value: string
+  /**
+   * Whether the content is open
+   */
+  open: boolean
+  /**
+   * Whether the content is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the content has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the menu
@@ -256,11 +290,19 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getItemIndicatorProps: (props: ItemProps) => T["element"]
   getArrowProps: (props?: ArrowProps) => T["element"]
 
+  /**
+   * Returns the state of a specific trigger
+   */
+  getTriggerState: (props: ItemProps) => TriggerState
   getTriggerProps: (props: ItemProps) => T["button"]
   getTriggerProxyProps: (props: ItemProps) => T["element"]
   getViewportProxyProps: (props: ItemProps) => T["element"]
 
   getLinkProps: (props: LinkProps) => T["element"]
+  /**
+   * Returns the state of a specific content
+   */
+  getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getViewportPositionerProps: (props?: ViewportProps) => T["element"]
   getViewportProps: (props?: ViewportProps) => T["element"]

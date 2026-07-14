@@ -216,6 +216,40 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
+export interface ContentState {
+  /**
+   * The orientation of the listbox
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The layout of the listbox content
+   */
+  layout: "list" | "grid"
+  /**
+   * Whether the listbox has no items
+   */
+  empty: boolean
+}
+
+export interface ListState {
+  /**
+   * The orientation of the listbox
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The layout of the listbox content
+   */
+  layout: "list" | "grid"
+  /**
+   * Whether the listbox has no items
+   */
+  empty: boolean
+  /**
+   * Whether the listbox allows multiple selection
+   */
+  multiple: boolean
+}
+
 export interface InputProps {
   /**
    * Whether to automatically highlight the item when typing
@@ -321,7 +355,15 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getValueTextProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
+  /**
+   * Returns the state of the list
+   */
+  getListState: () => ListState
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]

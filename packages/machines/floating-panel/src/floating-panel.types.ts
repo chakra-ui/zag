@@ -259,6 +259,93 @@ export interface StageTriggerProps {
   stage: Stage
 }
 
+export interface TriggerState {
+  /**
+   * Whether the panel is open
+   */
+  open: boolean
+  /**
+   * Whether the panel is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the panel is open
+   */
+  open: boolean
+  /**
+   * Whether the panel is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the panel is topmost in the panel stack
+   */
+  topmost: boolean
+  /**
+   * Whether the panel is minimized
+   */
+  minimized: boolean
+  /**
+   * Whether the panel is maximized
+   */
+  maximized: boolean
+  /**
+   * Whether the panel is minimized or maximized
+   */
+  staged: boolean
+}
+
+export interface ControlState {
+  /**
+   * Whether the control is disabled
+   */
+  disabled: boolean
+  /**
+   * The stage of the panel
+   */
+  stage: Stage
+  /**
+   * Whether the panel is minimized
+   */
+  minimized: boolean
+  /**
+   * Whether the panel is maximized
+   */
+  maximized: boolean
+  /**
+   * Whether the panel is minimized or maximized
+   */
+  staged: boolean
+}
+
+export interface ResizeTriggerState {
+  /**
+   * The placement of the resize handle
+   */
+  placement: HandlePosition
+  /**
+   * Whether the resize trigger is disabled
+   */
+  disabled: boolean
+}
+
+export interface StageTriggerState {
+  /**
+   * The stage that this trigger switches the panel to
+   */
+  stage: Stage
+  /**
+   * Whether the trigger is hidden because the panel is already in this stage
+   */
+  hidden: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -318,14 +405,34 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   draggable: boolean
 
   getDragTriggerProps: () => T["element"]
+  /**
+   * Returns the state of a specific resize trigger
+   */
+  getResizeTriggerState: (props: ResizeTriggerProps) => ResizeTriggerState
   getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
   getHeaderProps: () => T["element"]
   getBodyProps: () => T["element"]
   getCloseTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the control
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of a specific stage trigger
+   */
+  getStageTriggerState: (props: StageTriggerProps) => StageTriggerState
   getStageTriggerProps: (props: StageTriggerProps) => T["button"]
 }

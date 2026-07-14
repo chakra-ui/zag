@@ -9,6 +9,7 @@ export type {
   TocService as Service,
   ActiveChangeDetails,
   ElementIds,
+  IndicatorState,
   ItemProps,
   ItemState,
   ScrollToDetails,

@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-area.anatomy"
 import * as dom from "./scroll-area.dom"
-import type { ScrollAreaApi, ScrollAreaService } from "./scroll-area.types"
+import type { CornerState, ScrollAreaApi, ScrollAreaService, ScrollbarProps, ScrollbarState } from "./scroll-area.types"
 import { getScrollProgress } from "./utils/scroll-progress"
 import { scrollTo } from "./utils/scroll-to"
 import { scrollToEdge } from "./utils/scroll-to-edge"
@@ -22,6 +22,28 @@ export function connect<T extends PropTypes>(
   const hiddenState = context.get("hiddenState")
   const atSides = context.get("atSides")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getScrollbarState(props: ScrollbarProps): ScrollbarState {
+    const horizontal = props.orientation === "horizontal"
+    return {
+      hovering,
+      dragging,
+      scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
+      hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
+    }
+  }
+
+  function getCornerState(): CornerState {
+    return { hovering, hidden: hiddenState.cornerHidden }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     isAtTop: atSides.top,
     isAtBottom: atSides.bottom,
@@ -39,15 +61,7 @@ export function connect<T extends PropTypes>(
     scrollTo(details) {
       return scrollTo(dom.getViewportEl(scope), details)
     },
-    getScrollbarState(props) {
-      const horizontal = props.orientation === "horizontal"
-      return {
-        hovering,
-        dragging,
-        scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
-        hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
-      }
-    },
+    getScrollbarState,
 
     getRootProps() {
       return normalize.element({
@@ -125,12 +139,13 @@ export function connect<T extends PropTypes>(
 
     getScrollbarProps(props = {}) {
       const { orientation = "vertical" } = props
+      const scrollbarState = getScrollbarState(props)
       return normalize.element({
         ...parts.scrollbar.attrs(scope.id),
         "data-orientation": orientation,
-        "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
-        "data-hover": dataAttr(hovering),
-        "data-dragging": dataAttr(dragging),
+        "data-scrolling": dataAttr(scrollbarState.scrolling),
+        "data-hover": dataAttr(scrollbarState.hovering),
+        "data-dragging": dataAttr(scrollbarState.dragging),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
@@ -168,11 +183,12 @@ export function connect<T extends PropTypes>(
 
     getThumbProps(props = {}) {
       const { orientation = "vertical" } = props
+      const scrollbarState = getScrollbarState(props)
       return normalize.element({
         ...parts.thumb.attrs(scope.id),
         "data-orientation": orientation,
-        "data-hover": dataAttr(hovering),
-        "data-dragging": dataAttr(dragging),
+        "data-hover": dataAttr(scrollbarState.hovering),
+        "data-dragging": dataAttr(scrollbarState.dragging),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
@@ -189,11 +205,13 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getCornerState,
     getCornerProps() {
+      const cornerState = getCornerState()
       return normalize.element({
         ...parts.corner.attrs(scope.id),
-        "data-hover": dataAttr(hovering),
-        "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
+        "data-hover": dataAttr(cornerState.hovering),
+        "data-state": cornerState.hidden ? "hidden" : "visible",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         style: {

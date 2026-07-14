@@ -4,7 +4,14 @@ import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import * as dom from "./hover-card.dom"
-import type { HoverCardApi, HoverCardService, TriggerProps } from "./hover-card.types"
+import type {
+  ContentState,
+  HoverCardApi,
+  HoverCardService,
+  PositionerState,
+  TriggerProps,
+  TriggerState,
+} from "./hover-card.types"
 
 export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
   const { state, send, prop, context, scope } = service
@@ -19,6 +26,34 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
     ...prop("positioning"),
     placement: currentPlacement,
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open: open,
@@ -52,9 +87,11 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
 
       return normalize.element({
         ...parts.trigger.attrs(scope.id),
@@ -94,6 +131,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
@@ -106,16 +144,18 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        hidden: !open,
+        hidden: !contentState.open,
         tabIndex: -1,
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerEnter(event) {

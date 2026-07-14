@@ -120,6 +120,17 @@ export interface ItemState {
   isDisabled: boolean
 }
 
+export interface DragPreviewState {
+  /**
+   * Whether a drag is in progress
+   */
+  dragging: boolean
+  /**
+   * Whether the drag preview should be rendered
+   */
+  visible: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine props
  * -----------------------------------------------------------------------------*/
@@ -327,5 +338,9 @@ export interface DndApi<T extends PropTypes = PropTypes> {
   getDragHandleProps(props: DragHandleProps): T["element"]
   getDropTargetProps(props: DropTargetProps): T["element"]
   getDropIndicatorProps(props: DropIndicatorProps): T["element"]
+  /**
+   * Returns the state of the drag preview
+   */
+  getDragPreviewState(): DragPreviewState
   getDragPreviewProps(): T["element"]
 }

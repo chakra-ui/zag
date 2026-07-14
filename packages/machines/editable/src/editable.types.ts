@@ -180,6 +180,86 @@ export type EditableMachine = Machine<EditableSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface AreaState {
+  /**
+   * Whether the editable is in edit mode
+   */
+  editing: boolean
+  /**
+   * Whether the editable is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the editable value is empty
+   */
+  empty: boolean
+}
+
+export interface InputState {
+  /**
+   * Whether the editable is in edit mode
+   */
+  editing: boolean
+  /**
+   * Whether the editable is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the editable is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the editable value is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the editable auto-resizes to fit the content
+   */
+  autoResize: boolean
+}
+
+export interface PreviewState {
+  /**
+   * Whether the editable is in edit mode
+   */
+  editing: boolean
+  /**
+   * Whether the editable is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the editable is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the editable value is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the editable auto-resizes to fit the content
+   */
+  autoResize: boolean
+  /**
+   * Whether the editable value is empty
+   */
+  empty: boolean
+}
+
+export interface LabelState {
+  /**
+   * Whether the editable is in edit mode
+   */
+  editing: boolean
+  /**
+   * Whether the editable value is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the editable is required
+   */
+  required: boolean
+}
+
 export interface EditableApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the editable is in edit mode
@@ -219,9 +299,25 @@ export interface EditableApi<T extends PropTypes = PropTypes> {
   submit: VoidFunction
 
   getRootProps: () => T["element"]
+  /**
+   * Returns the state of the area
+   */
+  getAreaState: () => AreaState
   getAreaProps: () => T["element"]
+  /**
+   * Returns the state of the label
+   */
+  getLabelState: () => LabelState
   getLabelProps: () => T["label"]
+  /**
+   * Returns the state of the input
+   */
+  getInputState: () => InputState
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the preview
+   */
+  getPreviewState: () => PreviewState
   getPreviewProps: () => T["element"]
   getEditTriggerProps: () => T["button"]
   getControlProps: () => T["element"]

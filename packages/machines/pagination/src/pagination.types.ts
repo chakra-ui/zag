@@ -171,6 +171,17 @@ export interface ItemProps {
   value: number
 }
 
+export interface ItemState {
+  /**
+   * The page number of the item
+   */
+  value: number
+  /**
+   * Whether the item is the current page
+   */
+  current: boolean
+}
+
 export interface EllipsisProps {
   index: number
 }
@@ -246,6 +257,10 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
 
   getRootProps: () => T["element"]
   getEllipsisProps: (props: EllipsisProps) => T["element"]
+  /**
+   * Returns the state of a pagination item
+   */
+  getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getFirstTriggerProps: () => T["element"]
   getPrevTriggerProps: () => T["element"]

@@ -14,4 +14,5 @@ export type {
   ValueChangeDetails,
   ValueTranslationDetails,
   ViewProps,
+  ViewState,
 } from "./progress.types"

@@ -1,13 +1,25 @@
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./clipboard.anatomy"
-import type { ClipboardService, ClipboardApi } from "./clipboard.types"
+import type { ClipboardService, ClipboardApi, IndicatorProps, IndicatorState } from "./clipboard.types"
 import * as dom from "./clipboard.dom"
 
 export function connect<T extends PropTypes>(service: ClipboardService, normalize: NormalizeProps<T>): ClipboardApi<T> {
   const { state, send, context, scope, prop } = service
   const copied = state.matches("copied")
   const translations = prop("translations")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getIndicatorState(props: IndicatorProps): IndicatorState {
+    return { copied: props.copied, visible: props.copied === copied }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     copied,
@@ -71,10 +83,12 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
       })
     },
 
+    getIndicatorState,
     getIndicatorProps(props) {
+      const indicatorState = getIndicatorState(props)
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
-        hidden: props.copied !== copied,
+        hidden: !indicatorState.visible,
       })
     },
   }

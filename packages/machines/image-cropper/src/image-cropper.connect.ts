@@ -5,7 +5,7 @@ import { toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { ImageCropperApi, ImageCropperService, ImageState, RootState, SelectionState } from "./image-cropper.types"
 import { getCropSourceRect, isEqualFlip, normalizeFlipState } from "./image-cropper.utils"
 
 export function connect<T extends PropTypes>(
@@ -39,6 +39,38 @@ export function connect<T extends PropTypes>(
     const pinchActive = context.get("pinchDistance") != null
     return isSecondaryTouch || pinchActive
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return {
+      fixed: !!fixedCropArea,
+      shape: cropShape,
+      pinch: context.get("pinchDistance") != null,
+      dragging,
+      panning,
+    }
+  }
+
+  function getImageState(): ImageState {
+    return { ready: isImageReady, flipHorizontal: flip.horizontal, flipVertical: flip.vertical }
+  }
+
+  function getSelectionState(): SelectionState {
+    return {
+      disabled: !!fixedCropArea,
+      shape: cropShape,
+      measured: isMeasured,
+      dragging,
+      panning,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     zoom,
@@ -154,7 +186,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
@@ -171,11 +205,11 @@ export function connect<T extends PropTypes>(
         "aria-live": "polite",
         "aria-controls": `${dom.getViewportId(scope)} ${dom.getSelectionId(scope)}`,
         "aria-busy": isImageReady ? undefined : "true",
-        "data-fixed": dataAttr(fixedCropArea),
-        "data-shape": cropShape,
-        "data-pinch": dataAttr(context.get("pinchDistance") != null),
-        "data-dragging": dataAttr(dragging),
-        "data-panning": dataAttr(panning),
+        "data-fixed": dataAttr(rootState.fixed),
+        "data-shape": rootState.shape,
+        "data-pinch": dataAttr(rootState.pinch),
+        "data-dragging": dataAttr(rootState.dragging),
+        "data-panning": dataAttr(rootState.panning),
         style: {
           "--crop-width": toPx(crop.width),
           "--crop-height": toPx(crop.height),
@@ -224,14 +258,14 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getImageState,
     getImageProps() {
-      const flipHorizontal = flip.horizontal
-      const flipVertical = flip.vertical
+      const imageState = getImageState()
 
       const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
       const rotate = `rotate(${rotation}deg)`
-      const scaleX = zoom * (flipHorizontal ? -1 : 1)
-      const scaleY = zoom * (flipVertical ? -1 : 1)
+      const scaleX = zoom * (imageState.flipHorizontal ? -1 : 1)
+      const scaleY = zoom * (imageState.flipVertical ? -1 : 1)
       const scale = `scale(${scaleX}, ${scaleY})`
 
       return normalize.element({
@@ -240,9 +274,9 @@ export function connect<T extends PropTypes>(
         role: "presentation",
         alt: "",
         "aria-hidden": true,
-        "data-ready": dataAttr(isImageReady),
-        "data-flip-horizontal": dataAttr(flipHorizontal),
-        "data-flip-vertical": dataAttr(flipVertical),
+        "data-ready": dataAttr(imageState.ready),
+        "data-flip-horizontal": dataAttr(imageState.flipHorizontal),
+        "data-flip-vertical": dataAttr(imageState.flipVertical),
         onLoad(event) {
           const imageEl = event.currentTarget as HTMLImageElement
           if (!imageEl?.complete) return
@@ -258,16 +292,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getSelectionState,
     getSelectionProps() {
-      const disabled = !!fixedCropArea
+      const selectionState = getSelectionState()
       return normalize.element({
         ...parts.selection.attrs(scope.id),
         id: dom.getSelectionId(scope),
-        tabIndex: disabled ? undefined : 0,
+        tabIndex: selectionState.disabled ? undefined : 0,
         role: "slider",
         "aria-label": translations.selectionLabel({ shape: cropShape }),
         "aria-roledescription": translations.selectionRoleDescription,
-        "aria-disabled": disabled ? "true" : undefined,
+        "aria-disabled": selectionState.disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": isVisibleSize(viewportRect)
           ? Math.max(0, Math.round(viewportRect.width - crop.width))
@@ -275,11 +310,11 @@ export function connect<T extends PropTypes>(
         "aria-valuenow": roundedCrop.x,
         "aria-valuetext": translations.selectionValueText({ shape: cropShape, ...roundedCrop }),
         "aria-description": translations.selectionInstructions,
-        "data-disabled": dataAttr(disabled),
-        "data-shape": cropShape,
-        "data-measured": dataAttr(isMeasured),
-        "data-dragging": dataAttr(dragging),
-        "data-panning": dataAttr(panning),
+        "data-disabled": dataAttr(selectionState.disabled),
+        "data-shape": selectionState.shape,
+        "data-measured": dataAttr(selectionState.measured),
+        "data-dragging": dataAttr(selectionState.dragging),
+        "data-panning": dataAttr(selectionState.panning),
         style: {
           position: "absolute",
           top: "var(--crop-y)",
@@ -287,10 +322,10 @@ export function connect<T extends PropTypes>(
           width: "var(--crop-width)",
           height: "var(--crop-height)",
           touchAction: "none",
-          visibility: isMeasured ? undefined : "hidden",
+          visibility: selectionState.measured ? undefined : "hidden",
         },
         onPointerDown(event) {
-          if (disabled) {
+          if (selectionState.disabled) {
             event.preventDefault()
             return
           }
@@ -299,7 +334,7 @@ export function connect<T extends PropTypes>(
           send({ type: "POINTER_DOWN", point })
         },
         onKeyDown(event) {
-          if (disabled) {
+          if (selectionState.disabled) {
             event.preventDefault()
             return
           }

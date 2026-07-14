@@ -14,7 +14,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
 import * as dom from "./pin-input.dom"
-import type { PinInputApi, PinInputSchema } from "./pin-input.types"
+import type { InputProps, InputState, LabelState, PinInputApi, PinInputSchema, RootState } from "./pin-input.types"
 import { isValidValue } from "./pin-input.utils"
 
 export function connect<T extends PropTypes>(
@@ -34,6 +34,38 @@ export function connect<T extends PropTypes>(
   function focus() {
     dom.getFirstInputEl(scope)?.focus()
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getInputState(props: InputProps): InputState {
+    const { index } = props
+    const valueLength = computed("valueLength")
+    const tabbableIndex = focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
+    return {
+      index,
+      disabled,
+      readOnly,
+      invalid,
+      complete,
+      filled: computed("_value")[index] !== "",
+      focused: focusedIndex === index,
+      tabbable: index === tabbableIndex,
+    }
+  }
+
+  function getRootState(): RootState {
+    return { invalid, disabled, complete, readOnly }
+  }
+
+  function getLabelState(): LabelState {
+    return { invalid, disabled, complete, required, readOnly }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     focus,
@@ -55,28 +87,32 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value, index })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         ...parts.root.attrs(scope.id),
-        "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(disabled),
-        "data-complete": dataAttr(complete),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-complete": dataAttr(rootState.complete),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
+    getLabelState,
     getLabelProps() {
+      const labelState = getLabelState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
         id: dom.getLabelId(scope),
-        "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(disabled),
-        "data-complete": dataAttr(complete),
-        "data-required": dataAttr(required),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(labelState.invalid),
+        "data-disabled": dataAttr(labelState.disabled),
+        "data-complete": dataAttr(labelState.complete),
+        "data-required": dataAttr(labelState.required),
+        "data-readonly": dataAttr(labelState.readOnly),
         onClick(event) {
           event.preventDefault()
           focus()
@@ -108,33 +144,33 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps(props) {
       const { index } = props
+      const inputState = getInputState(props)
       const inputType = prop("type") === "numeric" ? "tel" : "text"
       const valueLength = computed("valueLength")
-      const tabbableIndex =
-        focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
-        disabled,
-        tabIndex: index === tabbableIndex ? 0 : -1,
-        "data-disabled": dataAttr(disabled),
-        "data-complete": dataAttr(complete),
-        "data-filled": dataAttr(computed("_value")[index] !== ""),
+        disabled: inputState.disabled,
+        tabIndex: inputState.tabbable ? 0 : -1,
+        "data-disabled": dataAttr(inputState.disabled),
+        "data-complete": dataAttr(inputState.complete),
+        "data-filled": dataAttr(inputState.filled),
         id: dom.getInputId(scope, index.toString()),
         "data-index": index,
         "aria-label": translations?.inputLabel?.(index, computed("valueLength")),
         inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
         enterKeyHint: index === valueLength - 1 ? "done" : "next",
         type: prop("mask") ? "password" : inputType,
         defaultValue: computed("_value")[index] || "",
-        readOnly,
+        readOnly: inputState.readOnly,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
-        placeholder: focusedIndex === index ? "" : prop("placeholder"),
+        placeholder: inputState.focused ? "" : prop("placeholder"),
         onPaste(event) {
           let pastedValue = event.clipboardData?.getData("text/plain")
           if (!pastedValue) return

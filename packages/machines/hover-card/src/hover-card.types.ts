@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -135,6 +135,55 @@ export interface TriggerProps {
   value?: string
 }
 
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the hover card
+   */
+  current: boolean
+  /**
+   * Whether the hover card is open
+   */
+  open: boolean
+}
+
+export interface PositionerState {
+  /**
+   * Whether the hover card is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the hover card has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the hover card is open
+   */
+  open: boolean
+  /**
+   * Whether the hover card is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the hover card has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -163,8 +212,20 @@ export interface HoverCardApi<T extends PropTypes = PropTypes> {
 
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["element"]
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
 }
 

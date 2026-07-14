@@ -326,6 +326,58 @@ export type NumberInputMachine = Machine<NumberInputSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface RootState {
+  /**
+   * Whether the number input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the number input is focused.
+   */
+  focused: boolean
+  /**
+   * Whether the number input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the number input is being scrubbed.
+   */
+  scrubbing: boolean
+}
+
+export interface InputState {
+  /**
+   * Whether the input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the input is being scrubbed.
+   */
+  scrubbing: boolean
+}
+
+export interface IncrementTriggerState {
+  /**
+   * Whether the increment trigger is disabled.
+   */
+  disabled: boolean
+}
+
+export interface DecrementTriggerState {
+  /**
+   * Whether the decrement trigger is disabled.
+   */
+  disabled: boolean
+}
+
 export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
@@ -380,12 +432,28 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
   getValueTextProps: () => T["element"]
+  /**
+   * Returns the state of the input.
+   */
+  getInputState: () => InputState
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the decrement trigger.
+   */
+  getDecrementTriggerState: () => DecrementTriggerState
   getDecrementTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the increment trigger.
+   */
+  getIncrementTriggerState: () => IncrementTriggerState
   getIncrementTriggerProps: () => T["button"]
   getScrubberProps: () => T["element"]
   getScrubberCursorProps: () => T["element"]

@@ -1,7 +1,7 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
 
@@ -388,6 +388,67 @@ export interface ItemState {
   highlighted: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the combobox is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the combobox is read-only
+   */
+  readOnly: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the combobox is open
+   */
+  open: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the combobox is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the combobox is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the trigger is focusable
+   */
+  focusable: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the combobox is open
+   */
+  open: boolean
+  /**
+   * Whether the combobox is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the combobox has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * Whether the combobox has no items to show
+   */
+  empty: boolean
+}
+
 export interface ItemGroupProps {
   id: string
 }
@@ -491,12 +552,24 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   disabled: boolean
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getClearTriggerProps: () => T["button"]
   getListProps: () => T["element"]

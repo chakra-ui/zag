@@ -222,6 +222,81 @@ export interface ItemPreviewImageProps extends ItemProps {
 
 export interface ItemGroupProps extends ItemTypeProps {}
 
+export interface RootState {
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
+   * Whether the user is dragging something over the root element
+   */
+  dragging: boolean
+}
+
+export interface DropzoneState {
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
+   * Whether the user is dragging something over the dropzone element
+   */
+  dragging: boolean
+  /**
+   * Whether the file input is invalid
+   */
+  invalid: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
+   * Whether the file input is invalid
+   */
+  invalid: boolean
+}
+
+export interface ItemGroupState {
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
+   * The type of items in the group
+   */
+  type: ItemType
+}
+
+export interface ItemState {
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
+   * The type of the item
+   */
+  type: ItemType
+}
+
 export interface DropzoneProps {
   /**
    * Whether to disable the click event on the dropzone
@@ -302,11 +377,31 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
   setClipboardFiles: (dt: DataTransfer | null) => boolean
 
   getLabelProps: () => T["label"]
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
+  /**
+   * Returns the state of the dropzone
+   */
+  getDropzoneState: () => DropzoneState
   getDropzoneProps: (props?: DropzoneProps) => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getHiddenInputProps: () => T["input"]
+  /**
+   * Returns the state of the item group
+   */
+  getItemGroupState: (props: ItemGroupProps) => ItemGroupState
   getItemGroupProps: (props?: ItemGroupProps) => T["element"]
+  /**
+   * Returns the state of the item
+   */
+  getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getItemNameProps: (props: ItemProps) => T["element"]
   getItemPreviewProps: (props: ItemProps) => T["element"]

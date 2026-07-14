@@ -127,6 +127,17 @@ export interface ActionTriggerProps {
   action: TimerAction
 }
 
+export interface ActionTriggerState {
+  /**
+   * The action this trigger represents
+   */
+  action: TimerAction
+  /**
+   * Whether the action trigger is visible for the current timer state
+   */
+  visible: boolean
+}
+
 export interface TimerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the timer is running.
@@ -176,5 +187,9 @@ export interface TimerApi<T extends PropTypes = PropTypes> {
   getItemValueProps: (props: ItemProps) => T["element"]
   getItemLabelProps: (props: ItemProps) => T["element"]
   getSeparatorProps: () => T["element"]
+  /**
+   * Returns the state of an action trigger
+   */
+  getActionTriggerState: (props: ActionTriggerProps) => ActionTriggerState
   getActionTriggerProps: (props: ActionTriggerProps) => T["button"]
 }

@@ -23,13 +23,16 @@ import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import { getTreeMenubar, setParentRoutingLock } from "./menu.utils"
 import type {
+  ContentState,
   ItemProps,
   ItemState,
   MenuApi,
   MenuSchema,
   OptionItemProps,
   OptionItemState,
+  PositionerState,
   TriggerProps,
+  TriggerState,
 } from "./menu.types"
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
@@ -60,6 +63,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     placement: currentPlacement,
   })
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(props: ItemProps): ItemState {
     return {
       id: dom.getItemId(scope, props.value),
@@ -67,6 +74,35 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       highlighted: highlightedValue === props.value,
     }
   }
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return {
+      value,
+      current,
+      open: value == null ? open : open && current,
+      disabled: !!menubarDisabled,
+    }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   function getOptionItemProps(props: OptionItemProps) {
     const valueText = props.valueText ?? props.value
@@ -215,18 +251,20 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs(scope.id) : parts.trigger.attrs(scope.id)),
         // Inside a menubar, the trigger owns its tabIndex from the menubar's active id.
         role: isInMenubar ? "menuitem" : undefined,
         tabIndex: isInMenubar ? (menubarActiveId === triggerId ? 0 : -1) : undefined,
-        disabled: menubarDisabled || undefined,
-        "aria-disabled": menubarDisabled || undefined,
-        "data-disabled": menubarDisabled ? "" : undefined,
+        disabled: triggerState.disabled || undefined,
+        "aria-disabled": triggerState.disabled || undefined,
+        "data-disabled": triggerState.disabled ? "" : undefined,
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
         type: "button",
@@ -240,7 +278,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
-        "aria-expanded": value == null ? open : open && current,
+        "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
           if (event.pointerType !== "mouse") return
@@ -335,6 +373,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
@@ -363,13 +402,15 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "aria-label": prop("aria-label"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
         role: composite ? "menu" : "dialog",
         tabIndex: 0,
         dir: prop("dir"),
@@ -377,8 +418,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-labelledby": anchorPoint
           ? dom.getContextTriggerId(scope, triggerValue ?? undefined)
           : dom.getTriggerId(scope, triggerValue ?? undefined),
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         ...getDismissableLayerAttrs(layer),
         style: {
           ...getDismissableLayerStyle(layer, { pointerEvents: true }),

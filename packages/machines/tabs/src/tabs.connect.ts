@@ -12,7 +12,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types
 import { toPx } from "@zag-js/utils"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
-import type { TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
+import type { ContentProps, ContentState, TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
 
 export function connect<T extends PropTypes>(service: Service<TabsSchema>, normalize: NormalizeProps<T>): TabsApi<T> {
   const { state, send, context, prop, scope } = service
@@ -24,6 +24,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const isHorizontal = prop("orientation") === "horizontal"
   const virtualFocus = prop("virtualFocus")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
       selected: context.get("value") === props.value,
@@ -31,6 +35,14 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       disabled: !!props.disabled,
     }
   }
+
+  function getContentState(props: ContentProps): ContentState {
+    return { selected: context.get("value") === props.value }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     value: context.get("value"),
@@ -170,9 +182,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       })
     },
 
+    getContentState,
     getContentProps(props) {
       const { value } = props
-      const selected = context.get("value") === value
+      const contentState = getContentState(props)
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
@@ -180,9 +193,9 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         tabIndex: !virtualFocus ? 0 : -1,
         "aria-labelledby": dom.getTriggerId(scope, value),
         role: "tabpanel",
-        "data-selected": dataAttr(selected),
+        "data-selected": dataAttr(contentState.selected),
         "data-orientation": prop("orientation"),
-        hidden: !selected,
+        hidden: !contentState.selected,
       })
     },
 

@@ -4,7 +4,14 @@ import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
-import type { PopoverApi, PopoverService, TriggerProps } from "./popover.types"
+import type {
+  ContentState,
+  PopoverApi,
+  PopoverService,
+  PositionerState,
+  TriggerProps,
+  TriggerState,
+} from "./popover.types"
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
   const { state, context, send, prop, scope } = service
@@ -21,6 +28,35 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
     ...prop("positioning"),
     placement: currentPlacement,
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      modal: !!prop("modal"),
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open: open,
@@ -60,9 +96,11 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
 
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
@@ -73,7 +111,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "data-value": value,
         "data-current": dataAttr(current),
         "aria-haspopup": "dialog",
-        "aria-expanded": value == null ? open : open && current,
+        "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         onPointerDown(event) {
@@ -101,6 +139,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
@@ -113,21 +152,23 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "dialog",
-        "aria-modal": ariaAttr(prop("modal")),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-expanded": dataAttr(open),
+        "aria-modal": ariaAttr(contentState.modal),
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-expanded": dataAttr(contentState.open),
         "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
-        "data-placement": currentPlacement,
-        "data-side": currentPlacementSide,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })

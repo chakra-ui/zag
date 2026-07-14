@@ -12,6 +12,7 @@ export type {
   IntlTranslations,
   ItemLabelDetails,
   ItemProps,
+  ItemState,
   PageChangeDetails,
   PageSizeChangeDetails,
   PageUrlDetails,

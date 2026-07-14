@@ -18,6 +18,7 @@ import { parts } from "./gridlist.anatomy"
 import * as dom from "./gridlist.dom"
 import type {
   CellProps,
+  ContentState,
   GridListApi,
   GridListSchema,
   ItemCheckboxProps,
@@ -53,6 +54,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const layout: "stack" | "grid" = isGrid ? "grid" : "stack"
   const columnCount = isGrid ? collection.columnCount : 1
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
     const v = collection.getItemValue(props.item)
@@ -66,6 +71,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       selected: value.includes(v),
     }
   }
+
+  function getContentState(): ContentState {
+    return { disabled: !!disabled, empty: isEmpty, layout, columnCount, multiple }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   function invokeNavigate(rowValue: string, href: string, node: HTMLElement): boolean {
     let defaultPrevented = false
@@ -135,21 +148,23 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
         role: "grid",
-        "data-disabled": dataAttr(disabled),
-        "data-empty": dataAttr(isEmpty),
-        "data-layout": layout,
+        "data-disabled": dataAttr(contentState.disabled),
+        "data-empty": dataAttr(contentState.empty),
+        "data-layout": contentState.layout,
         "data-focusedvalue": focusedValue ?? undefined,
-        "aria-multiselectable": multiple ? true : undefined,
+        "aria-multiselectable": contentState.multiple ? true : undefined,
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-colcount": isGrid ? columnCount : undefined,
-        tabIndex: isEmpty ? 0 : undefined,
-        style: isGrid ? { "--column-count": columnCount } : undefined,
+        "aria-colcount": isGrid ? contentState.columnCount : undefined,
+        tabIndex: contentState.empty ? 0 : undefined,
+        style: isGrid ? { "--column-count": contentState.columnCount } : undefined,
         onKeyDown(event) {
           if (!interactive) return
           if (!contains(event.currentTarget, getEventTarget(event))) return

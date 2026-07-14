@@ -10,4 +10,5 @@ export type {
   CheckedChangeDetails,
   CheckedState,
   ElementIds,
+  RootState,
 } from "./checkbox.types"
