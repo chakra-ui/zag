@@ -26,7 +26,7 @@ import {
   parseDateString,
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { disableTextSelection, raf, restoreTextSelection, setElementValue } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -157,6 +157,9 @@ export const machine = createMachine<DatePickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       focusedValue: bindable<DateValue>(() => ({
         defaultValue: prop("defaultFocusedValue"),
         value: prop("focusedValue"),
@@ -775,7 +778,9 @@ export const machine = createMachine<DatePickerSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           defer: true,
-          layerStyleTargets: [() => dom.getPositionerEl(scope)],
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
             context.set("restoreFocus", !event.detail.focusable)

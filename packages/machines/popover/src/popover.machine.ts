@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { contains, getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
@@ -35,6 +35,9 @@ export const machine = createMachine<PopoverSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -158,12 +161,15 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      trackDismissableElement({ send, prop, scope }) {
+      trackDismissableElement({ send, prop, scope, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
           type: "popover",
           pointerBlocking: prop("modal"),
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: dom.getTriggerEls(scope),
           defer: true,
           onEscapeKeyDown(event) {

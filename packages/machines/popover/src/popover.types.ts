@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -134,6 +134,10 @@ type PropsWithDefault =
   | "translations"
 
 interface PrivateContext {
+  /**
+   * The computed layer stack state used for declarative styles and attributes.
+   */
+  layer: LayerSnapshot | null
   /**
    * The elements that are rendered on mount
    */

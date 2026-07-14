@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -7,6 +8,7 @@ import type { PopoverApi, PopoverService, TriggerProps } from "./popover.types"
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
   const { state, context, send, prop, scope } = service
+  const layer = context.get("layer")
   const translations = prop("translations")
   const open = state.matches("open")
 
@@ -103,7 +105,11 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -122,6 +128,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 

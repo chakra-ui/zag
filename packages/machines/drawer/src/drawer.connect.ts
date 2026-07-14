@@ -1,6 +1,7 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, compact, toPx } from "@zag-js/utils"
+import { clampValue, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
@@ -36,6 +37,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const snapPointOffset = resolvedActiveSnapPoint?.offset ?? 0
 
   const nestedMetrics = context.get("nestedMetrics")
+  const layer = context.get("layer")
 
   const swipeOpenOffset = getSwipeOpenOffset(swipingOpen, dragOffset, contentSize)
   const currentOffset = swipeOpenOffset ?? dragOffset ?? snapPointOffset
@@ -119,9 +121,11 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         hidden: closed,
         "data-state": open ? "open" : "closed",
         "data-swipe-direction": physicalDirection,
-        style: compact<JSX.CSSProperties>({
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
           pointerEvents: closing || !prop("modal") ? "none" : undefined,
-        }),
+        },
       })
     },
 
@@ -147,8 +151,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-dragging": dragging ? "" : undefined,
         "data-nested-drawer-open": nestedMetrics.open ? "" : undefined,
         "data-nested-drawer-swiping": nestedMetrics.swiping ? "" : undefined,
-        style: compact<JSX.CSSProperties>({
-          pointerEvents: prop("modal") ? undefined : "auto",
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
           transitionDuration: dragging || swipingOpen ? "0s" : undefined,
@@ -169,7 +174,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-frontmost-height":
             nestedMetrics.frontmostHeight > 0 ? toPx(nestedMetrics.frontmostHeight) : undefined,
           willChange: "transform",
-        }),
+        },
         onPointerDown(event) {
           if (!props.draggable) return
           onContentPointerDown(event)
@@ -226,7 +231,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         hidden: !open || (swipingOpen && dragOffset === null),
         "data-state": open ? "open" : "closed",
         "data-swiping": dragging || swipingOpen ? "" : undefined,
+        ...getDismissableLayerAttrs(layer),
         style: {
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
           willChange: "opacity",
           pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,

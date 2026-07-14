@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -87,6 +87,10 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
 type PropsWithDefault = "openDelay" | "closeDelay" | "positioning"
 
 interface PrivateContext {
+  /**
+   * The computed layer stack state used for declarative styles and attributes.
+   */
+  layer: LayerSnapshot | null
   /**
    * The computed placement of the tooltip.
    */

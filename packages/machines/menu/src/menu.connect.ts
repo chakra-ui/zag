@@ -1,5 +1,6 @@
 import type { Service } from "@zag-js/core"
 import { mergeProps } from "@zag-js/core"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   dataAttr,
@@ -33,6 +34,7 @@ import type {
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
   const { context, send, state, computed, prop, scope } = service
+  const layer = context.get("layer")
 
   const open = state.hasTag("open")
 
@@ -337,7 +339,11 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -373,6 +379,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           : dom.getTriggerId(scope, triggerValue ?? undefined),
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+        },
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
           send({ type: "MENU_POINTERENTER" })

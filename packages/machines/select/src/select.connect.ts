@@ -1,4 +1,5 @@
 import type { Service } from "@zag-js/core"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   contains,
@@ -27,6 +28,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send, refs } = service
+  const layer = context.get("layer")
   const translations = prop("translations")
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
@@ -445,7 +447,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          transform: aligned ? "none" : popperStyles.floating.transform,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -461,6 +468,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-align-with-trigger": dataAttr(aligned),
         "data-side": currentPlacementSide,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onKeyDown(event) {
           if (!interactive) return
           if (event.defaultPrevented) return

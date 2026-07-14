@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   dataAttr,
@@ -21,6 +22,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   normalize: NormalizeProps<T>,
 ): ComboboxApi<T, V> {
   const { context, prop, state, send, scope, computed, event } = service
+  const layer = context.get("layer")
 
   const translations = prop("translations")
   const collection = prop("collection")
@@ -150,7 +152,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -336,6 +342,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-side": currentPlacementSide,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(collection.size === 0),
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           // prevent options or elements within listbox from taking focus

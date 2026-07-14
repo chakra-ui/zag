@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
 import * as dom from "./hover-card.dom"
 import type { HoverCardSchema, Placement } from "./hover-card.types"
@@ -27,6 +27,9 @@ export const machine = createMachine<HoverCardSchema>({
 
   context({ prop, bindable, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       open: bindable<boolean>(() => ({
         defaultValue: prop("defaultOpen"),
         value: prop("open"),
@@ -266,10 +269,13 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
 
-      trackDismissableElement({ send, scope, prop }) {
+      trackDismissableElement({ send, scope, prop, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "popover",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onDismiss() {

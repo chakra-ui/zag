@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
@@ -12,6 +13,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   normalize: NormalizeProps<T>,
 ): CascadeSelectApi<T, V> {
   const { send, context, prop, scope, computed, state } = service
+  const layer = context.get("layer")
 
   const collection = prop("collection")
   const value = context.get("value")
@@ -239,7 +241,11 @@ export function connect<T extends PropTypes, V = TreeNode>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -260,6 +266,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
         hidden: !open,
         tabIndex: 0,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onKeyDown(event) {
           if (!interactive) return
           if (!isSelfTarget(event)) return

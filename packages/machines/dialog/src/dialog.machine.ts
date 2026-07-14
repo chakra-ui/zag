@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { getInitialFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
@@ -32,6 +32,9 @@ export const machine = createMachine<DialogSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
       })),
@@ -126,13 +129,15 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
-          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)

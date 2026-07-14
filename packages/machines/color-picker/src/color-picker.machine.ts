@@ -1,6 +1,6 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
 import { createGuards, createMachine, type Scope } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   disableTextSelection,
   dispatchInputValueEvent,
@@ -53,6 +53,9 @@ export const machine = createMachine<ColorPickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       value: bindable<Color>(() => ({
         defaultValue: prop("defaultValue").toFormat(prop("format") ?? prop("defaultFormat")),
         value: prop("value")?.toFormat(prop("format") ?? prop("defaultFormat")),
@@ -394,6 +397,9 @@ export const machine = createMachine<ColorPickerSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "popover",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: dom.getTriggerEl(scope),
           defer: true,
           onInteractOutside(event) {

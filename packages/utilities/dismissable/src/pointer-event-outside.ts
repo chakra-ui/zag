@@ -1,48 +1,7 @@
-import { getDocument, getWindow, isHTMLElement, setStyle, waitForElement } from "@zag-js/dom-query"
+import { getDocument, isHTMLElement, setStyle, waitForElement } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
 const originalBodyPointerEvents = new WeakMap<HTMLElement, string>()
-
-const layerObservers = new WeakMap<HTMLElement, MutationObserver>()
-
-function getDesiredPointerEvents(node: HTMLElement): "auto" | "none" {
-  return layerStack.isBelowPointerBlockingLayer(node) ? "none" : "auto"
-}
-
-function applyPointerEvents(node: HTMLElement) {
-  const desired = getDesiredPointerEvents(node)
-  if (node.style.pointerEvents !== desired) {
-    node.style.pointerEvents = desired
-  }
-}
-
-function ensurePointerEventsObserver(node: HTMLElement) {
-  if (layerObservers.has(node)) return
-  const win = getWindow(node)
-  if (typeof win.MutationObserver === "undefined") return
-  const observer = new win.MutationObserver(() => {
-    if (!layerObservers.has(node)) return
-    applyPointerEvents(node)
-  })
-  observer.observe(node, { attributes: true, attributeFilter: ["style"] })
-  layerObservers.set(node, observer)
-}
-
-export function assignPointerEventToLayers() {
-  layerStack.layers.forEach(({ node }) => {
-    applyPointerEvents(node)
-    ensurePointerEventsObserver(node)
-  })
-}
-
-export function clearPointerEvent(node: HTMLElement) {
-  const observer = layerObservers.get(node)
-  if (observer) {
-    observer.disconnect()
-    layerObservers.delete(node)
-  }
-  node.style.pointerEvents = ""
-}
 
 export function disablePointerEventsOutside(node: HTMLElement, persistentElements?: Array<() => Element | null>) {
   const doc = getDocument(node)

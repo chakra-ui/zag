@@ -1,6 +1,6 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -313,6 +313,10 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     value: string[]
     inputValue: string
     highlightedValue: string | null

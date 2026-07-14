@@ -9,6 +9,7 @@ import type {
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
 import type { DateRangePreset, DateValue } from "@zag-js/date-utils"
+import type { LayerSnapshot } from "@zag-js/dismissable"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -318,6 +319,10 @@ type PropsWithDefault =
   | "outsideDaySelectable"
 
 interface PrivateContext {
+  /**
+   * The computed layer stack state used for declarative styles and attributes.
+   */
+  layer: LayerSnapshot | null
   /**
    * The active input value (based on the active index)
    */

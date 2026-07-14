@@ -3,7 +3,7 @@ import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -168,6 +168,10 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
   props: RequiredBy<CascadeSelectProps<T>, PropsWithDefault>
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     value: string[][]
     highlightedValue: string[]
     currentPlacement: Placement | undefined

@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   addDomEvent,
@@ -65,6 +65,9 @@ export const machine = createMachine<DrawerSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       triggerValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
@@ -718,13 +721,15 @@ export const machine = createMachine<DrawerSchema>({
         }
       },
 
-      trackDismissableElement({ scope, prop, send }) {
+      trackDismissableElement({ scope, prop, send, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "drawer",
           defer: true,
           pointerBlocking: prop("modal"),
-          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)

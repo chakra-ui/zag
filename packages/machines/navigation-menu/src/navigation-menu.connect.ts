@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   contains,
   dataAttr,
@@ -18,6 +19,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
   const { context, send, prop, scope } = service
+  const layer = context.get("layer")
   const translations = prop("translations")
 
   const triggerRect = context.get("triggerRect")
@@ -306,6 +308,7 @@ export function connect<T extends PropTypes>(
 
       const currentValue = context.get("value") || context.get("previousValue")
       const selected = isViewportRendered ? currentValue === props.value : itemState.selected
+      const contentLayer = !isViewportRendered && selected ? layer : null
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
@@ -316,6 +319,8 @@ export function connect<T extends PropTypes>(
         "data-state": selected ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
+        ...getDismissableLayerAttrs(contentLayer),
+        style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
           send({ type: "CONTENT.POINTERENTER", value: props.value })
@@ -384,6 +389,7 @@ export function connect<T extends PropTypes>(
     getViewportProps(props = {}) {
       const { align = "center" } = props
       const open = Boolean(value)
+      const viewportLayer = isViewportRendered ? layer : null
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
         dir: prop("dir"),
@@ -391,13 +397,15 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-align": align,
+        ...getDismissableLayerAttrs(viewportLayer),
         style: {
+          ...getDismissableLayerStyle(viewportLayer),
           transition: preventTransition ? "none" : undefined,
-          pointerEvents: !open ? "none" : undefined,
           "--viewport-width": toPx(viewportSize?.width),
           "--viewport-height": toPx(viewportSize?.height),
           "--viewport-x": toPx(viewportPosition?.x),
           "--viewport-y": toPx(viewportPosition?.y),
+          pointerEvents: !open ? "none" : viewportLayer?.active ? (viewportLayer.blocked ? "none" : "auto") : undefined,
         },
         onPointerEnter() {
           send({ type: "CONTENT.POINTERENTER" })

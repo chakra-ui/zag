@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -130,6 +130,10 @@ export interface DialogSchema {
   props: RequiredBy<DialogProps, PropsWithDefault>
   state: "open" | "closed"
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     rendered: { title: boolean; description: boolean }
     triggerValue: string | null
   }

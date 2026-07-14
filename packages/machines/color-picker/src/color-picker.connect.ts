@@ -1,4 +1,5 @@
 import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/color-utils"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   getEventKey,
   getEventPoint,
@@ -26,11 +27,18 @@ import { getChannelRange, getChannelValue } from "./utils/get-channel-input-valu
 import { getGamutOverlayData } from "./utils/get-gamut-overlay-path"
 import { getSliderBackground } from "./utils/get-slider-background"
 
+function getDefaultDevicePixelRatio(): number {
+  if (typeof globalThis === "undefined") return 1
+  const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
+  return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
+}
+
 export function connect<T extends PropTypes>(
   service: ColorPickerService,
   normalize: NormalizeProps<T>,
 ): ColorPickerApi<T> {
   const { context, send, prop, computed, state, scope } = service
+  const layer = context.get("layer")
 
   const value = context.get("value")
   const format = context.get("format")
@@ -55,12 +63,6 @@ export function connect<T extends PropTypes>(
       xChannel: props.xChannel ?? channels[1],
       yChannel: props.yChannel ?? channels[2],
     }
-  }
-
-  function getDefaultDevicePixelRatio(): number {
-    if (typeof globalThis === "undefined") return 1
-    const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
-    return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
   }
 
   function resolveGamutOverlay(props: GamutOverlayProps = {}) {
@@ -205,7 +207,11 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -220,6 +226,8 @@ export function connect<T extends PropTypes>(
         "data-side": currentPlacementSide,
         "data-state": open ? "open" : "closed",
         hidden: !open,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 

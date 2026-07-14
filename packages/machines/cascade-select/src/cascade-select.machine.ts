@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   raf,
   trackFormControl,
@@ -42,6 +42,9 @@ export const machine = createMachine<CascadeSelectSchema>({
 
   context({ prop, bindable }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       value: bindable<string[][]>(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
@@ -601,10 +604,13 @@ export const machine = createMachine<CascadeSelectSchema>({
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),

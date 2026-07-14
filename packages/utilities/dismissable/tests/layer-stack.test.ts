@@ -2,7 +2,7 @@
 
 import { compact, noop } from "@zag-js/utils"
 import { afterEach, describe, expect, test, vi } from "vitest"
-import type { Layer, LayerDismissEvent, LayerStyleTarget, LayerType } from "../src/layer-stack"
+import type { Layer, LayerDismissEvent, LayerSnapshot, LayerType } from "../src/layer-stack"
 import { layerStack } from "../src/layer-stack"
 
 function createLayer(
@@ -12,18 +12,22 @@ function createLayer(
     pointerBlocking?: boolean
     dismiss?: VoidFunction
     requestDismiss?: (event: LayerDismissEvent) => void
-    styleTargets?: LayerStyleTarget[]
+    onLayerChange?: (snapshot: LayerSnapshot) => void
   } = {},
 ): Layer {
-  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets } = options
+  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, onLayerChange } = options
   return compact({
     type,
     node,
     pointerBlocking,
     dismiss,
     requestDismiss,
-    styleTargets,
+    onLayerChange,
   })
+}
+
+function getLastSnapshot(spy: ReturnType<typeof vi.fn>): LayerSnapshot {
+  return spy.mock.lastCall?.[0] as LayerSnapshot
 }
 
 /** Drain the double-rAF used by `nextTick` in `layerStack.remove` */
@@ -60,15 +64,14 @@ describe("layerStack", () => {
     test("does not duplicate the same DOM node (Strict Mode / double-register)", () => {
       const node = document.createElement("div")
       document.body.append(node)
+      const onLayerChange = vi.fn()
 
       layerStack.add(createLayer(node))
-      layerStack.add(createLayer(node))
+      layerStack.add(createLayer(node, { onLayerChange }))
 
       expect(layerStack.count()).toBe(1)
       expect(layerStack.countNestedLayersOfType(node, "dialog")).toBe(0)
-      expect(node.hasAttribute("data-has-nested")).toBe(false)
-      expect(node.style.getPropertyValue("--layer-index")).toBe("0")
-      expect(node.style.getPropertyValue("--nested-layer-count")).toBe("0")
+      expect(getLastSnapshot(onLayerChange)).toMatchObject({ index: 0, nestedCount: 0, active: true })
     })
 
     test("re-adding the same node keeps the latest layer object at the top", () => {
@@ -88,55 +91,37 @@ describe("layerStack", () => {
     })
   })
 
-  describe("styleTargets", () => {
-    test("mirrors stack metadata to extra elements", () => {
-      const primary = document.createElement("div")
-      const backdrop = document.createElement("div")
-      document.body.append(primary, backdrop)
-
-      layerStack.add(
-        createLayer(primary, {
-          styleTargets: [() => backdrop],
-        }),
-      )
-
-      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
-      expect(backdrop.style.getPropertyValue("--nested-layer-count")).toBe("0")
-      expect(backdrop.style.getPropertyValue("--z-index")).toBe(getComputedStyle(primary).zIndex)
-      expect(backdrop.hasAttribute("data-nested")).toBe(false)
-      expect(backdrop.hasAttribute("data-has-nested")).toBe(false)
-    })
-
-    test("clears mirrored styles when the layer is removed", () => {
-      const primary = document.createElement("div")
-      const backdrop = document.createElement("div")
-      document.body.append(primary, backdrop)
-
-      layerStack.add(
-        createLayer(primary, {
-          styleTargets: [() => backdrop],
-        }),
-      )
-
-      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
-
-      layerStack.remove(primary)
-
-      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
-      expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
-    })
-
-    test("skips mirroring when target is the same node as the layer", () => {
+  describe("snapshots", () => {
+    test("publishes metadata without mutating the layer element", () => {
       const node = document.createElement("div")
       document.body.append(node)
+      const onLayerChange = vi.fn()
 
-      layerStack.add(
-        createLayer(node, {
-          styleTargets: [() => node],
-        }),
-      )
+      layerStack.add(createLayer(node, { onLayerChange }))
 
-      expect(node.style.getPropertyValue("--layer-index")).toBe("0")
+      expect(getLastSnapshot(onLayerChange)).toEqual({
+        active: true,
+        type: "dialog",
+        index: 0,
+        nested: false,
+        hasNested: false,
+        nestedCount: 0,
+        blocked: false,
+      })
+      expect(node.getAttribute("style")).toBeNull()
+      expect(node.hasAttribute("data-nested")).toBe(false)
+      expect(node.hasAttribute("data-has-nested")).toBe(false)
+    })
+
+    test("publishes a final inactive snapshot on removal", () => {
+      const node = document.createElement("div")
+      document.body.append(node)
+      const onLayerChange = vi.fn()
+
+      layerStack.add(createLayer(node, { onLayerChange }))
+      layerStack.remove(node)
+
+      expect(getLastSnapshot(onLayerChange)).toMatchObject({ active: false, blocked: false, index: 0 })
     })
   })
 
@@ -145,19 +130,24 @@ describe("layerStack", () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
       document.body.append(parent, child)
+      const onParentChange = vi.fn()
+      const onChildChange = vi.fn()
 
-      layerStack.add(createLayer(parent))
-      layerStack.add(createLayer(child))
+      layerStack.add(createLayer(parent, { onLayerChange: onParentChange }))
+      layerStack.add(createLayer(child, { onLayerChange: onChildChange }))
 
-      expect(parent.style.getPropertyValue("--layer-index")).toBe("0")
-      expect(parent.style.getPropertyValue("--nested-layer-count")).toBe("1")
-      expect(parent.getAttribute("data-has-nested")).toBe("dialog")
-      expect(parent.hasAttribute("data-nested")).toBe(false)
-
-      expect(child.style.getPropertyValue("--layer-index")).toBe("1")
-      expect(child.style.getPropertyValue("--nested-layer-count")).toBe("0")
-      expect(child.getAttribute("data-nested")).toBe("dialog")
-      expect(child.hasAttribute("data-has-nested")).toBe(false)
+      expect(getLastSnapshot(onParentChange)).toMatchObject({
+        index: 0,
+        nestedCount: 1,
+        hasNested: true,
+        nested: false,
+      })
+      expect(getLastSnapshot(onChildChange)).toMatchObject({
+        index: 1,
+        nestedCount: 0,
+        hasNested: false,
+        nested: true,
+      })
     })
   })
 
@@ -213,9 +203,11 @@ describe("layerStack", () => {
       const bottom = document.createElement("div")
       const child = document.createElement("div")
       document.body.append(bottom, child)
+      const onBottomChange = vi.fn()
+      const onChildChange = vi.fn()
 
-      layerStack.add(createLayer(bottom, { pointerBlocking: false }))
-      layerStack.add(createLayer(child, { pointerBlocking: true }))
+      layerStack.add(createLayer(bottom, { pointerBlocking: false, onLayerChange: onBottomChange }))
+      layerStack.add(createLayer(child, { pointerBlocking: true, onLayerChange: onChildChange }))
 
       expect(layerStack.hasPointerBlockingLayer()).toBe(true)
       expect(layerStack.pointerBlockingLayers()).toHaveLength(1)
@@ -226,6 +218,8 @@ describe("layerStack", () => {
 
       expect(layerStack.isTopMost(child)).toBe(true)
       expect(layerStack.isTopMost(bottom)).toBe(false)
+      expect(getLastSnapshot(onBottomChange).blocked).toBe(true)
+      expect(getLastSnapshot(onChildChange).blocked).toBe(false)
     })
   })
 

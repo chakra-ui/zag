@@ -1,4 +1,5 @@
-import { contains, nextTick, getComputedStyle } from "@zag-js/dom-query"
+import { contains, nextTick } from "@zag-js/dom-query"
+import { isEqual } from "@zag-js/utils"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 
@@ -11,7 +12,15 @@ export type LayerDismissEventDetail = {
 
 export type LayerDismissEvent = CustomEvent<LayerDismissEventDetail>
 
-export type LayerStyleTarget = () => HTMLElement | null
+export interface LayerSnapshot {
+  active: boolean
+  type: LayerType
+  index: number
+  nested: boolean
+  hasNested: boolean
+  nestedCount: number
+  blocked: boolean
+}
 
 export interface Layer {
   dismiss: VoidFunction
@@ -19,7 +28,8 @@ export interface Layer {
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
-  styleTargets?: LayerStyleTarget[] | undefined
+  onLayerChange?: ((snapshot: LayerSnapshot) => void) | undefined
+  snapshot?: LayerSnapshot | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
@@ -106,12 +116,9 @@ export const layerStack = {
     if (index < 0) return
 
     const layer = this.layers[index]
-    layer.styleTargets?.forEach((getTarget) => {
-      const target = getTarget()
-      if (target) {
-        clearLayerStyleMirror(target)
-      }
-    })
+    if (layer.snapshot) {
+      publishSnapshot(layer, { ...layer.snapshot, active: false, blocked: false })
+    }
 
     // Track this node as recently removed to handle focus race conditions
     // during layer cleanup. This prevents parent layers from incorrectly
@@ -138,14 +145,21 @@ export const layerStack = {
   },
   syncLayers() {
     this.layers.forEach((layer, index) => {
-      applyLayerStackMetadata(layer, index, layer.node)
-      layer.styleTargets?.forEach((getTarget) => {
-        const target = getTarget()
-        if (!target || target === layer.node) return
-        applyLayerStackMetadata(layer, index, target)
-        const { zIndex } = getComputedStyle(layer.node)
-        target.style.setProperty("--z-index", zIndex)
-      })
+      const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
+      const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+      const snapshot: LayerSnapshot = {
+        active: true,
+        type: layer.type,
+        index,
+        nested: parentOfSameType != null,
+        hasNested: nestedCount > 0,
+        nestedCount,
+        blocked: layerStack.isBelowPointerBlockingLayer(layer.node),
+      }
+
+      if (!isEqual(layer.snapshot, snapshot)) {
+        publishSnapshot(layer, snapshot)
+      }
     })
   },
   indexOf(node: HTMLElement | undefined) {
@@ -179,31 +193,9 @@ export const layerStack = {
   },
 }
 
-function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {
-  el.style.setProperty("--layer-index", `${index}`)
-
-  el.removeAttribute("data-nested")
-  el.removeAttribute("data-has-nested")
-
-  const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
-  if (parentOfSameType) {
-    el.setAttribute("data-nested", layer.type)
-  }
-
-  const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
-  if (nestedCount > 0) {
-    el.setAttribute("data-has-nested", layer.type)
-  }
-
-  el.style.setProperty("--nested-layer-count", `${nestedCount}`)
-}
-
-function clearLayerStyleMirror(el: HTMLElement) {
-  el.style.removeProperty("--layer-index")
-  el.style.removeProperty("--nested-layer-count")
-  el.style.removeProperty("--z-index")
-  el.removeAttribute("data-nested")
-  el.removeAttribute("data-has-nested")
+function publishSnapshot(layer: Layer, snapshot: LayerSnapshot) {
+  layer.snapshot = snapshot
+  layer.onLayerChange?.(snapshot)
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, detail?: LayerDismissEventDetail) {

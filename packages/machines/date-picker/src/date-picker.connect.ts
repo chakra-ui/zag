@@ -30,6 +30,7 @@ import {
   isDateUnavailable,
   isValidCharacter,
 } from "@zag-js/date-utils"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
@@ -59,6 +60,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): DatePickerApi<T> {
   const { state, context, prop, send, computed, scope } = service
+  const layer = context.get("layer")
 
   const startValue = context.get("startValue")
   const endValue = computed("endValue")
@@ -464,6 +466,8 @@ export function connect<T extends PropTypes>(
         role: "application",
         "aria-roledescription": "datepicker",
         "aria-label": translations.content,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 
@@ -1005,7 +1009,11 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 

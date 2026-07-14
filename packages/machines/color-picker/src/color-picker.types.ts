@@ -1,7 +1,7 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
 import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -168,6 +168,10 @@ export type ColorPickerSchema = {
     areaValue: Color
   }
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     format: ColorFormat
     value: Color
     activeId: string | null

@@ -1,12 +1,11 @@
 import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
   isApple,
   markAsInternalChangeEvent,
-  nextTick,
   observeAttributes,
   raf,
   resizeObserverContentBox,
@@ -50,6 +49,9 @@ export const machine = createMachine<SelectSchema>({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
@@ -494,11 +496,14 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
           type: "listbox",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -604,10 +609,7 @@ export const machine = createMachine<SelectSchema>({
           scrollIntoView(itemEl, { rootEl: listEl, block: immediate ? "center" : "nearest" })
         }
 
-        // nextTick (double raf) so this runs after the align utility's initial
-        // pass. In aligned mode the align utility manages scroll — skip.
-        // In fallback mode, scroll the selected item into view.
-        nextTick(() => {
+        raf(() => {
           if (context.get("aligned")) return
           setInteractionModality("virtual")
           exec(true)

@@ -7,8 +7,8 @@ import {
 } from "@zag-js/interact-outside"
 import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
-import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
+import { layerStack, type Layer, type LayerDismissEvent, type LayerSnapshot, type LayerType } from "./layer-stack"
+import { disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
 type Container = MaybeElement | Array<MaybeElement>
@@ -36,11 +36,9 @@ export interface PersistentElementOptions {
 
 export interface DismissableElementOptions extends DismissableElementHandlers, PersistentElementOptions {
   /**
-   * Extra elements that receive the same layer stack CSS vars, `data-*`, and `--z-index`
-   * (from the primary node's computed `z-index`) as the dismissable node
-   * (e.g. dialog backdrop + positioner when the node is content).
+   * Function called when the layer's position or nesting state changes.
    */
-  layerStyleTargets?: LayerStyleTarget[] | undefined
+  onLayerChange: (snapshot: LayerSnapshot) => void
   /**
    * Whether to log debug information
    */
@@ -90,7 +88,7 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     exclude: excludeContainers,
     debug,
     type = "dialog",
-    layerStyleTargets,
+    onLayerChange,
   } = options
 
   const layer: Layer = {
@@ -99,11 +97,10 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     type,
     pointerBlocking,
     requestDismiss: onRequestDismiss,
-    styleTargets: layerStyleTargets,
+    onLayerChange,
   }
 
   layerStack.add(layer)
-  assignPointerEventToLayers()
 
   function onPointerDownOutside(event: PointerDownOutsideEvent) {
     const target = getEventTarget(event.detail.originalEvent)
@@ -155,10 +152,6 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
 
   return () => {
     layerStack.remove(node!)
-    // re-assign pointer event to remaining layers
-    assignPointerEventToLayers()
-    // remove pointer event from removed layer
-    clearPointerEvent(node!)
     cleanups.forEach((fn) => fn?.())
   }
 }

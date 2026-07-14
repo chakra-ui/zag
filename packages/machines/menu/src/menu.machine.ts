@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
   clickIfLink,
@@ -56,6 +56,9 @@ export const machine = createMachine<MenuSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       highlightedValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
@@ -645,6 +648,9 @@ export const machine = createMachine<MenuSchema>({
 
         return trackDismissableElement(getContentEl, {
           type: "menu",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),

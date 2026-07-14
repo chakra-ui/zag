@@ -1,10 +1,10 @@
 import type { Service } from "@zag-js/core"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr } from "@zag-js/dom-query"
-import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { compact } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./dialog.anatomy"
 import * as dom from "./dialog.dom"
-import type { DialogApi, DialogSchema, TriggerProps } from "./dialog.types"
+import type { DialogApi, DialogSchema } from "./dialog.types"
 
 export function connect<T extends PropTypes>(
   service: Service<DialogSchema>,
@@ -14,6 +14,7 @@ export function connect<T extends PropTypes>(
   const ariaLabel = prop("aria-label")
   const open = state.matches("open")
   const triggerValue = context.get("triggerValue")
+  const layer = context.get("layer")
 
   return {
     open,
@@ -28,7 +29,7 @@ export function connect<T extends PropTypes>(
       send({ type: "TRIGGER_VALUE.SET", value })
     },
 
-    getTriggerProps(props: TriggerProps = {}) {
+    getTriggerProps(props = {}) {
       const { value } = props
       const current = value == null ? false : triggerValue === value
       return normalize.button({
@@ -56,6 +57,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { zIndex: true }),
       })
     },
 
@@ -63,9 +66,11 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: compact<JSX.CSSProperties>({
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
           pointerEvents: !open || !prop("modal") ? "none" : undefined,
-        }),
+        },
       })
     },
 
@@ -83,9 +88,8 @@ export function connect<T extends PropTypes>(
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(scope),
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
-        style: compact<JSX.CSSProperties>({
-          pointerEvents: prop("modal") ? undefined : "auto",
-        }),
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 

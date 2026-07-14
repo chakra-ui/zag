@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -7,6 +8,7 @@ import type { HoverCardApi, HoverCardService, TriggerProps } from "./hover-card.
 
 export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
   const { state, send, prop, context, scope } = service
+  const layer = context.get("layer")
 
   const open = state.hasTag("open")
   const triggerValue = context.get("triggerValue")
@@ -96,7 +98,11 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -110,6 +116,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return

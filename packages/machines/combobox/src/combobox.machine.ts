@@ -5,7 +5,7 @@ import {
   type CollectionItem,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   clickIfLink,
   isApple,
@@ -70,6 +70,9 @@ export const machine = createMachine({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -668,11 +671,14 @@ export const machine = createMachine({
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
-      trackDismissableLayer({ send, prop, scope }) {
+      trackDismissableLayer({ send, prop, scope, context }) {
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
           type: "listbox",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),

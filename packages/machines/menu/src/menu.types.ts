@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
@@ -178,6 +178,10 @@ type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioni
 export interface MenuSchema {
   props: RequiredBy<MenuProps, PropsWithDefault>
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     highlightedValue: string | null
     lastHighlightedValue: string | null
     currentPlacement: Placement | undefined

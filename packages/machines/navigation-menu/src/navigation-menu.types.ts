@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { LayerSnapshot } from "@zag-js/dismissable"
 import type {
   CommonProperties,
   DirectionProperty,
@@ -101,6 +102,10 @@ export interface NavigationMenuSchema {
     openTimeoutIds: Record<string, number>
   }
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     value: string
     previousValue: string
 
