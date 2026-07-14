@@ -400,6 +400,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "delayed-close", title: "Delayed Close" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
+      { slug: "non-modal", title: "Non-Modal" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
       { slug: "search-params", title: "Search Params" },
