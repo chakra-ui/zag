@@ -1,6 +1,19 @@
 # @zag-js/collection
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`1b6233d`](https://github.com/chakra-ui/zag/commit/1b6233d09bd8f0076f2b282bd8f5a58d8c65260b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Allow `nodeToChildren` to return `undefined`/`null` for
+  leaf nodes. The runtime already treats a missing result as "no children", but the type required `any[]`, forcing a
+  `?? []` workaround for trees with leaves (e.g. cascade-select).
+- Updated dependencies []:
+  - @zag-js/utils@2.0.0-next.1
+
 ## 2.0.0-next.0
+
 ## 1.42.0
 
 ### Patch Changes

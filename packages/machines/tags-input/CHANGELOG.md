@@ -1,5 +1,30 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/auto-resize@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Major Changes
@@ -22,6 +47,7 @@
   - **Simpler default** — most usages only need add/remove, not inline rename
   - **Less surprise** — double-click to edit is a power-user feature that should be opted into
   - **Matches peers** — aligns with how other tag input libraries behave out of the box
+
 ## 1.42.0
 
 ### Patch Changes

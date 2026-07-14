@@ -1,5 +1,18 @@
 # @zag-js/async-list
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`b2f17f4`](https://github.com/chakra-ui/zag/commit/b2f17f4391d5e3022e5be65aefb73fde1ddb095f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Rename the internal load-more state flag to
+  `isLoadingMore` for consistency with the public API.
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Major Changes
@@ -110,6 +123,7 @@
   ```ts
   async load({ items, cursor, signal }) { ... }
   ```
+
 ## 1.42.0
 
 ### Patch Changes
