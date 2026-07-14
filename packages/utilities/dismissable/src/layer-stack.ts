@@ -24,6 +24,12 @@ export interface Layer {
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
 
+/**
+ * we use a WeakMap to record the target's PRIOR inline z-index (may be an empty string) so that
+ * syncLayers() can precisely restore it and never stomps consumer-provided inline z-index.
+ */
+const frozenZMap = new WeakMap<HTMLElement, string>()
+
 export const layerStack = {
   layers: [] as Layer[],
   branches: [] as HTMLElement[],
@@ -111,6 +117,7 @@ export const layerStack = {
       if (target) {
         const { zIndex } = getComputedStyle(target)
         if (zIndex && zIndex !== "auto") {
+          frozenZMap.set(target, zIndex)
           target.style.setProperty("z-index", zIndex)
         }
         clearLayerStyleMirror(target)
@@ -146,7 +153,15 @@ export const layerStack = {
       layer.styleTargets?.forEach((getTarget) => {
         const target = getTarget()
         if (!target || target === layer.node) return
-        target.style.removeProperty("z-index")
+        if (frozenZMap.has(target)) {
+          const prior = frozenZMap.get(target)
+          if (prior) {
+            target.style.setProperty("z-index", prior)
+          } else {
+            target.style.removeProperty("z-index")
+          }
+          frozenZMap.delete(target)
+        }
         applyLayerStackMetadata(layer, index, target)
         const { zIndex } = getComputedStyle(layer.node)
         target.style.setProperty("--z-index", zIndex)
