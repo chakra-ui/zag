@@ -1,6 +1,77 @@
 # @zag-js/menu
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`9d7159a`](https://github.com/chakra-ui/zag/commit/9d7159aca1104d9ec443b6d41f9e8359d526a201) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add the new `@zag-js/menubar` machine for building
+  WAI-ARIA menubars.
+
+  Each top-level item is a standalone `menu` machine. Pass `menubarApi.getMenuContext()` to each menu's `menubar` prop
+  so its trigger behaves as a menubar item.
+
+  The menubar coordinates:
+
+  - Roving focus across menu triggers
+  - Open/close state and sibling menu switching
+  - Nested submenu keyboard behavior
+  - Horizontal and vertical orientation
+  - Looping focus and disabled state
+
+  ```tsx
+  import * as menu from "@zag-js/menu"
+  import * as menubar from "@zag-js/menubar"
+
+  const menubarApi = menubar.connect(menubarService, normalizeProps)
+  const menuService = useMachine(menu.machine, { id: "file", menubar: menubarApi.getMenuContext() })
+  ```
+
+- [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Move layer stack styles and attributes into machine connect props
+  so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-visible@2.0.0-next.1
+  - @zag-js/rect-utils@2.0.0-next.1
+
 ## 2.0.0-next.0
+
 ## 1.42.0
 
 ### Patch Changes

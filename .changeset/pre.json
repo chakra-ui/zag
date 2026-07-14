@@ -95,24 +95,37 @@
     "@zag-js/stringify-state": "1.41.0",
     "@zag-js/virtualizer": "0.0.0",
     "@zag-js/shared": "0.0.4",
-    "website": "0.0.0"
+    "website": "0.0.0",
+    "@zag-js/menubar": "2.0.0-next.0",
+    "@zag-js/toolbar": "2.0.0-next.0"
   },
   "changesets": [
     "accordion-item-header-part",
     "angle-slider-pointer-snap",
+    "async-list-loading-more-context",
     "async-list-typed-filter-sorting",
     "avatar-loading-status",
     "carousel-rename-props-consistency",
+    "collection-node-to-children-optional",
     "color-picker-wide-gamut",
     "combobox-list-part",
+    "dismissable-declarative-layer-metadata",
     "gridlist-initial",
     "listbox-list-part",
+    "menubar-machine",
     "merged-data-attributes",
     "number-input-scrubber-improvements",
+    "part-state-getters",
     "pin-input-require-count",
+    "popover-remove-portalled",
+    "popper-first-open-positioning",
+    "quiet-pillows-cross",
     "select-list-part",
     "shared-rect-engine",
+    "slider-numeric-origin",
     "tabs-virtual-focus",
-    "tags-input-editable-default"
+    "tags-input-editable-default",
+    "toolbar-toggle-group-focus-selectors",
+    "tree-view-node-cell-props"
   ]
 }

@@ -1,6 +1,78 @@
 # @zag-js/popover
 
+## 2.0.0-next.1
+
+### Major Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`cb2ca19`](https://github.com/chakra-ui/zag/commit/cb2ca191c85d66e95aae2e3f2d77da27e4b8fbb0) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Remove the `portalled` prop and the
+  `api.portalled` value.
+
+  The popover now auto-detects whether its content is portalled (rendered outside the trigger's DOM subtree) and proxies
+  tab order accordingly — so forgetting to set `portalled` can no longer break keyboard accessibility. Decide portalling
+  purely by where you render the content:
+
+  ```diff
+  - const service = useMachine(popover.machine, { id, portalled: true })
+  - const api = popover.connect(service, normalizeProps)
+  - const Wrapper = api.portalled ? Portal : Fragment
+  - <Wrapper>
+  + <Portal>
+      <div {...api.getPositionerProps()}>...</div>
+  - </Wrapper>
+  + </Portal>
+  ```
+
+  To render inline, drop the `Portal` wrapper (previously `portalled: false`); tab order is still handled automatically.
+
+### Minor Changes
+
+- [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Move layer stack styles and attributes into machine connect props
+  so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/aria-hidden@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-trap@2.0.0-next.1
+  - @zag-js/remove-scroll@2.0.0-next.1
+
 ## 2.0.0-next.0
+
 ## 1.42.0
 
 ### Patch Changes
