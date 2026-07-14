@@ -3,6 +3,7 @@ export { ListVirtualizer } from "./list-virtualizer"
 export { WaterfallVirtualizer } from "./waterfall-virtualizer"
 export type {
   CSSProperties,
+  FollowOnAppend,
   GridVirtualizerOptions,
   GroupMeta,
   InitialMeasurements,
@@ -18,11 +19,13 @@ export type {
   ScrollAnchor,
   ScrollByOptions,
   ScrollState,
+  ScrollToEndOptions,
   ScrollToIndexOptions,
   ScrollToIndexResult,
   ShouldAdjustScrollOnSizeChangeContext,
   TimerId,
   VirtualizerDir,
+  VirtualizerAnchor,
   VirtualItem,
   VirtualizerOrientation,
   VirtualRange,
