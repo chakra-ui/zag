@@ -11,6 +11,7 @@ export const routes: RouteDefinition[] = [
     path: "/",
     component: lazy(() => import("./pages/home")),
   },
+  { path: "/dismissable/basic", component: lazy(() => import("./pages/dismissable/basic")) },
   { path: "/cascade-select/basic", component: lazy(() => import("./pages/cascade-select/basic")) },
   { path: "/marquee/basic", component: lazy(() => import("./pages/marquee/basic")) },
   { path: "/image-cropper/basic", component: lazy(() => import("./pages/image-cropper/basic")) },

@@ -1,14 +1,30 @@
 "use client"
 
-import { trackDismissableElement } from "@zag-js/dismissable"
+import {
+  getDismissableLayerAttrs,
+  getDismissableLayerStyle,
+  trackDismissableElement,
+  type LayerSnapshot,
+} from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
 import { Portal } from "@zag-js/react"
 import { useEffect, useRef, useState } from "react"
 
-function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: string; inert?: boolean }) {
+interface PopoverProps {
+  children?: React.ReactNode
+  bg: string
+  id: string
+  inert?: boolean
+}
+
+function Popover(props: PopoverProps) {
+  const { children, bg, id, inert } = props
+
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>()
-  const buttonRef = useRef<HTMLButtonElement>()
+  const [layer, setLayer] = useState<LayerSnapshot | null>(null)
+
+  const ref = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -18,6 +34,7 @@ function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: stri
       }),
       trackDismissableElement(ref.current, {
         pointerBlocking: inert,
+        onLayerChange: setLayer,
         onDismiss: () => setOpen(false),
         exclude: [buttonRef.current],
       }),
@@ -29,11 +46,30 @@ function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: stri
 
   return (
     <div style={{ padding: 40 }}>
-      <button ref={buttonRef} onClick={() => setOpen((v) => !v)}>
+      <button ref={buttonRef} data-testid={`trigger-${id}`} onClick={() => setOpen((v) => !v)}>
         Dismiss
       </button>
       <Portal>
-        <div hidden={!open} ref={ref} style={{ background: bg, padding: 10 }}>
+        <div
+          hidden={!open}
+          ref={ref}
+          data-testid={`layer-${id}`}
+          {...getDismissableLayerAttrs(layer)}
+          style={
+            {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              transform: "translate3d(var(--x, 0px), var(--y, -100vh), 0)",
+              // getPlacement() also writes to --z-index (copying the content's own
+              // computed z-index), so use --layer-index directly to avoid the clash.
+              zIndex: "var(--layer-index)",
+              background: bg,
+              padding: 10,
+              ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+            } as React.CSSProperties
+          }
+        >
           <h1>Sandbox</h1>
           <p>This is a sandbox page.</p>
           {children}
@@ -47,13 +83,13 @@ export default function Page() {
   return (
     <div>
       <iframe title="sdfdsfs" src="https://motion.dev/" />
-      <Popover bg="pink" inert>
+      <Popover id="1" bg="pink" inert>
         <p>This is a popover.</p>
         <input placeholder="Initial...." />
-        <Popover bg="green">
+        <Popover id="2" bg="green">
           <p>This is a nested popover.</p>
           <input placeholder="Nested 1...." />
-          <Popover bg="teal" inert>
+          <Popover id="3" bg="teal" inert>
             <p>This is a nested popover.</p>
             <input placeholder="Nested 2...." />
           </Popover>
