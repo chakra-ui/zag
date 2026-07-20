@@ -35,10 +35,7 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
   el.addEventListener("input", resize)
   el.form?.addEventListener("reset", resize)
 
-  // Frameworks (e.g. React) may already wrap `value` with an own property that keeps
-  // their internal state tracker in sync. Wrap that descriptor when present (falling
-  // back to the prototype's) so programmatic writes keep flowing through it, instead
-  // of re-dispatching an `input` event, which breaks controlled inputs.
+  // Prefer the framework's own value tracker when present.
   const ownDescriptor = Object.getOwnPropertyDescriptor(el, "value")
   const descriptor = ownDescriptor?.set
     ? ownDescriptor

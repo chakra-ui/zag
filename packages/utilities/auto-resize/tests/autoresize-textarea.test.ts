@@ -16,11 +16,7 @@ beforeAll(() => {
 
 const nativeValueDescriptor = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!
 
-/**
- * Mimics how React tracks controlled inputs (`inputValueTracking`): it wraps `value`
- * with an own property so programmatic writes update its last-known value, then
- * ignores `input` events whose value matches the last-known value.
- */
+/** Emulates React's controlled-input value tracker. */
 function trackValue(el: HTMLTextAreaElement) {
   let currentValue = el.value
 
@@ -47,10 +43,7 @@ function trackValue(el: HTMLTextAreaElement) {
   }
 }
 
-/**
- * Simulates user typing: the browser updates the internal value directly
- * (bypassing any own `value` property) and fires a trusted `input` event.
- */
+/** Native value write + trusted `input` event (bypasses own `value` setters). */
 function typeIntoTextarea(el: HTMLTextAreaElement, text: string) {
   nativeValueDescriptor.set!.call(el, text)
   el.dispatchEvent(new InputEvent("input", { bubbles: true }))
@@ -108,14 +101,12 @@ test("controlled textarea that rejects input fires onChange once per keystroke",
 
   let state = ""
   const onChange = vi.fn((value: string) => {
-    // reject digits (canonical controlled-input pattern)
     if (!/\d/.test(value)) state = value
   })
 
   el.addEventListener("input", () => {
     if (!tracker.updateValueIfChanged()) return
     onChange(el.value)
-    // controlled re-render: restore the DOM value when state rejects the input
     if (el.value !== state) el.value = state
   })
 
@@ -149,12 +140,10 @@ test("clearing a controlled textarea programmatically keeps change detection wor
   await flushMicrotasks()
   expect(onChange).toHaveBeenNthCalledWith(1, "a")
 
-  // clear button: state resets and the framework writes the value back
   state = ""
   el.value = ""
   await flushMicrotasks()
 
-  // typing the same character again must not be swallowed by the tracker
   typeIntoTextarea(el, "a")
   await flushMicrotasks()
 
