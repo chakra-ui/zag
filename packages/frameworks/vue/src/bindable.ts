@@ -3,7 +3,7 @@ import { isFunction } from "@zag-js/utils"
 import { computed as __computed, onUnmounted, shallowRef } from "vue"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
-  const initial = props().defaultValue ?? props().value
+  const initial = props().value ?? props().defaultValue
   const eq = props().isEqual ?? Object.is
 
   const v = shallowRef(initial)
