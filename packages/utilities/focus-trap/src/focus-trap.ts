@@ -238,7 +238,7 @@ export class FocusTrap {
 
   private listenerCleanups: VoidFunction[] = []
 
-  private addListeners() {
+  private addListeners(isUnpausing = false) {
     if (!this.state.active) return
 
     // There can be only one listening focus trap at a time
@@ -246,9 +246,9 @@ export class FocusTrap {
 
     this.state.delayInitialFocusTimer = this.config.delayInitialFocus
       ? delay(() => {
-          this.tryFocus(this.getInitialFocusNode())
+          this.tryFocus(this.getInitialFocusNode(isUnpausing))
         })
-      : this.tryFocus(this.getInitialFocusNode())
+      : this.tryFocus(this.getInitialFocusNode(isUnpausing))
 
     this.listenerCleanups.push(
       addDomEvent(this.doc, "focusin", this.handleFocus, true),
@@ -503,7 +503,7 @@ export class FocusTrap {
     }
   }
 
-  private getInitialFocusNode = () => {
+  private getInitialFocusNode = (isUnpausing = false) => {
     let node = this.getNodeForOption("initialFocus", { hasFallback: true })
 
     // false explicitly indicates we want no initialFocus at all
@@ -529,7 +529,13 @@ export class FocusTrap {
       node = this.getNodeForOption("fallbackFocus")
     }
 
+    // `isUnpausing` means this call came from `unpause()`'s own automatic re-focus
+    // housekeeping (e.g. a nested trap just deactivated), not from an explicit
+    // `activate()` call. Unlike a real "no focusable element" misconfiguration, this
+    // can transiently happen while the trap is still legitimately active, so treat it
+    // like `initialFocus: false` (don't focus) instead of throwing.
     if (!node) {
+      if (isUnpausing) return false
       throw new Error("Your focus-trap needs to have at least one focusable element")
     }
 
@@ -538,6 +544,7 @@ export class FocusTrap {
     }
 
     if (!node || !node.isConnected) {
+      if (isUnpausing) return false
       throw new Error("Your focus-trap needs to have at least one focusable element")
     }
 
@@ -678,7 +685,7 @@ export class FocusTrap {
     onUnpause?.()
 
     this.updateTabbableNodes()
-    this.addListeners()
+    this.addListeners(true)
     this.updateObservedNodes()
 
     onPostUnpause?.()

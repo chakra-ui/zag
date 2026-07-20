@@ -349,4 +349,42 @@ describe("FocusTrap", () => {
 
     expect(trap.active).toBe(false)
   })
+
+  it("does not throw when deactivating a nested trap auto-unpauses an outer trap whose fallback focus target is gone", () => {
+    // Simulates a Dialog (outer trap) containing a Popover (inner trap). Deactivating
+    // the Popover makes `deactivateTrap()` call `unpause()` on the Dialog trap as pure
+    // internal housekeeping, even though the Dialog itself stays open the whole time.
+    const dialogContainer = createContainer()
+    const dialogTrigger = createButton("Dialog trigger")
+    dialogContainer.append(dialogTrigger)
+
+    const popoverContainer = createContainer()
+    popoverContainer.append(createButton("Popover button"))
+
+    const dialogTrap = track(
+      new FocusTrap(dialogContainer, {
+        document,
+        delayInitialFocus: false,
+        fallbackFocus: () => dialogTrigger,
+      }),
+    )
+    dialogTrap.activate()
+
+    const popoverTrap = track(
+      new FocusTrap(popoverContainer, {
+        document,
+        delayInitialFocus: false,
+        fallbackFocus: popoverContainer,
+      }),
+    )
+    popoverTrap.activate() // pauses dialogTrap via the shared trap stack
+
+    // The dialog's only tabbable/fallback element is removed while the popover is
+    // still open (e.g. mid re-render), so at the moment of automatic re-focus the
+    // dialog trap has zero connected focusable elements.
+    dialogTrigger.remove()
+
+    expect(() => popoverTrap.deactivate({ returnFocus: false })).not.toThrow()
+    expect(dialogTrap.active).toBe(true)
+  })
 })
