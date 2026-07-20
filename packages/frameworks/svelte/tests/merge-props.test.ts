@@ -38,6 +38,12 @@ describe("mergeProps for Svelte", () => {
     expect(clsx(props.class)).toBe("primary hover focus")
   })
 
+  it("combines data-ownedby tokens", () => {
+    const props = mergeProps({ "data-ownedby": "toggle-group tooltip" }, { "data-ownedby": "tooltip popover" })
+
+    expect(props["data-ownedby"]).toBe("toggle-group tooltip popover")
+  })
+
   it("combines styles", () => {
     const apiStyles =
       'margin:24px;padding:2;background-image:url("http://example.com/image.png");border:1px solid #123456;--x:123;'

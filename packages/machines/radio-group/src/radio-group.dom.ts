@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, queryAll } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `radio-group:${ctx.id}`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `radio-group:${ctx.id}:label`
@@ -23,8 +23,7 @@ export const getFirstEnabledAndCheckedInputEl = (ctx: Scope) =>
   getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled):checked")
 
 export const getInputEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `input[type=radio][data-ownedby='${ownerId}']:not([disabled])`
+  const selector = `input[type=radio]${getByOwnerId(getRootId(ctx))}:not([disabled])`
   return queryAll<HTMLInputElement>(getRootEl(ctx), selector)
 }
 

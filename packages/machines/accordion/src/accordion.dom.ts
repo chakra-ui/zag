@@ -1,4 +1,4 @@
-import { nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { Scope } from "@zag-js/core"
 
@@ -11,8 +11,7 @@ export const getItemTriggerId = (ctx: Scope, value: string) =>
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getTriggerEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `[data-controls][data-ownedby='${ownerId}']:not([disabled])`
+  const selector = `[data-controls]${getByOwnerId(getRootId(ctx))}:not([disabled])`
   return queryAll(getRootEl(ctx), selector)
 }
 

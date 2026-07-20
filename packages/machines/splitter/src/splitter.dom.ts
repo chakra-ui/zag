@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { isHTMLElement, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, isHTMLElement, queryAll } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
 import type { CursorState, ResizeTriggerId } from "./splitter.types"
 
@@ -8,8 +8,7 @@ export const getResizeTriggerId = (ctx: Scope, id: string) =>
   ctx.ids?.resizeTrigger?.(id) ?? `splitter:${ctx.id}:splitter:${id}`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `splitter:${ctx.id}:label`
 export const getPanelId = (ctx: Scope, id: string | number) => ctx.ids?.panel?.(id) ?? `splitter:${ctx.id}:panel:${id}`
-export const getPanelEls = (ctx: Scope) =>
-  queryAll(getRootEl(ctx), `[data-part=panel][data-ownedby='${CSS.escape(getRootId(ctx))}']`)
+export const getPanelEls = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=panel]${getByOwnerId(getRootId(ctx))}`)
 export const getGlobalCursorId = (ctx: Scope) => `splitter:${ctx.id}:global-cursor`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
@@ -58,7 +57,7 @@ export const getCursor = (state: CursorState, x: boolean) => {
 }
 
 export const getResizeTriggerEls = (ctx: Scope) => {
-  return queryAll(getRootEl(ctx), `[role=separator][data-ownedby='${CSS.escape(getRootId(ctx))}']`)
+  return queryAll(getRootEl(ctx), `[role=separator]${getByOwnerId(getRootId(ctx))}`)
 }
 
 export const getGlobalCursorEl = (ctx: Scope) => {

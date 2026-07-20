@@ -10,6 +10,15 @@ const clsx = (...args: (string | undefined)[]) =>
     .filter(Boolean)
     .join(" ")
 
+const ownedBy = (...args: (string | undefined)[]) =>
+  Array.from(
+    new Set(
+      clsx(...args)
+        .split(/\s+/)
+        .filter(Boolean),
+    ),
+  ).join(" ")
+
 const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([^;]*)/g
 
 const serialize = (style: string): Record<string, string> => {
@@ -58,6 +67,11 @@ export function mergeProps<T extends Props>(...args: Array<T | undefined>): Unio
 
       if (key === "style") {
         result[key] = css(result[key], props[key])
+        continue
+      }
+
+      if (key === "data-ownedby") {
+        result[key] = ownedBy(result[key], props[key])
         continue
       }
 

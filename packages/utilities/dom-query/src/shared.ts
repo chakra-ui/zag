@@ -21,6 +21,16 @@ export const dataAttr = (guard: boolean | undefined) => (guard ? "" : undefined)
 
 export const ariaAttr = (guard: boolean | undefined) => (guard ? "true" : undefined)
 
+const BACKSLASH_RE = /\\/g
+const DOUBLE_QUOTE_RE = /"/g
+
+const cssesc = (value: string) =>
+  globalThis.CSS?.escape?.(value) ?? value.replace(BACKSLASH_RE, "\\\\").replace(DOUBLE_QUOTE_RE, '\\"')
+
+export const getByOwnerId = (id: string | undefined) => `[data-ownedby~="${cssesc(String(id))}"]`
+
+export const isOwnedBy = (el: Element | null | undefined, id: string | undefined) => !!el?.matches(getByOwnerId(id))
+
 export const sanitize = (str: string) =>
   str
     .split("")

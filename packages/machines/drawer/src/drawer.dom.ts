@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { isHTMLElement, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, isHTMLElement, queryAll } from "@zag-js/dom-query"
 import { isFunction } from "@zag-js/utils"
 
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `drawer:${ctx.id}:content`
@@ -13,7 +13,7 @@ export const getTriggerId = (ctx: Scope, value?: string) => {
 }
 
 export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="drawer"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="drawer"][data-part="trigger"]${getByOwnerId(ctx.id)}`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   if (value == null) return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]

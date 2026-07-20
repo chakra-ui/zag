@@ -1,5 +1,13 @@
 import type { Scope } from "@zag-js/core"
-import { contains, getByTypeahead, getWindow, isHTMLElement, queryAll, type TypeaheadState } from "@zag-js/dom-query"
+import {
+  contains,
+  getByOwnerId,
+  getByTypeahead,
+  getWindow,
+  isHTMLElement,
+  queryAll,
+  type TypeaheadState,
+} from "@zag-js/dom-query"
 import { first, isFunction, last, next, prev } from "@zag-js/utils"
 import type { MenuService } from "./menu.types"
 
@@ -33,10 +41,10 @@ export const getArrowEl = (ctx: Scope) => ctx.getById(getArrowId(ctx))
 export const getContextTriggerEl = (ctx: Scope) => ctx.getById(getContextTriggerId(ctx))
 
 export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="trigger"]${getByOwnerId(ctx.id)}`)
 
 export const getContextTriggerEls = (ctx: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="context-trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll<HTMLElement>(ctx.getRootNode(), `[data-scope="menu"][data-part="context-trigger"]${getByOwnerId(ctx.id)}`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   // When value is null, use ID-based lookup (works for submenus with trigger-item)
@@ -48,8 +56,7 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
 }
 
 export const getElements = (ctx: Scope) => {
-  const ownerId = CSS.escape(getContentId(ctx))
-  const selector = `[role^="menuitem"][data-ownedby=${ownerId}]:not([data-disabled])`
+  const selector = `[role^="menuitem"]${getByOwnerId(getContentId(ctx))}:not([data-disabled])`
   return queryAll(getContentEl(ctx), selector)
 }
 

@@ -6,8 +6,8 @@ import {
   getEventKey,
   getNativeEvent,
   isComposingEvent,
-  isHTMLElement,
   isModifierKey,
+  isOwnedBy,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
@@ -258,7 +258,7 @@ export function connect<T extends PropTypes>(
         },
         onBlur(event) {
           const target = event.relatedTarget as HTMLElement
-          if (isHTMLElement(target) && target.dataset.ownedby === dom.getRootId(scope)) return
+          if (isOwnedBy(target, dom.getRootId(scope))) return
           send({ type: "INPUT.BLUR", index })
         },
       })

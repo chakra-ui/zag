@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, queryAll } from "@zag-js/dom-query"
 import { isFunction } from "@zag-js/utils"
 
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `dialog:${ctx.id}:positioner`
@@ -25,7 +25,7 @@ export const getDescriptionEl = (ctx: Scope) => ctx.getById(getDescriptionId(ctx
 export const getCloseTriggerEl = (ctx: Scope) => ctx.getById(getCloseTriggerId(ctx))
 
 export const getTriggerEls = (ctx: Scope) =>
-  queryAll(ctx.getRootNode(), `[data-scope="dialog"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+  queryAll(ctx.getRootNode(), `[data-scope="dialog"][data-part="trigger"]${getByOwnerId(ctx.id)}`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
   if (value == null) {

@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toggle-group:${ctx.id}`
@@ -7,8 +7,7 @@ export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getElements = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `[data-ownedby='${ownerId}']:not([data-disabled])`
+  const selector = `${getByOwnerId(getRootId(ctx))}:not([data-disabled])`
   return queryAll(getRootEl(ctx), selector)
 }
 export const getFirstEl = (ctx: Scope) => first(getElements(ctx))

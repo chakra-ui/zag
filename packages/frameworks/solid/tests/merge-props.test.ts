@@ -51,6 +51,16 @@ describe("mergeProps", () => {
     })
   })
 
+  it("combines data-ownedby tokens", () => {
+    createRoot((dispose) => {
+      const props = mergeProps({ "data-ownedby": "toggle-group tooltip" }, { "data-ownedby": "tooltip popover" })
+
+      expect(props["data-ownedby"]).toBe("toggle-group tooltip popover")
+
+      dispose()
+    })
+  })
+
   it("combines styles", () =>
     createRoot((dispose) => {
       const stringStyles = `

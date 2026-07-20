@@ -1,4 +1,4 @@
-import { queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, queryAll } from "@zag-js/dom-query"
 import type { Scope } from "@zag-js/core"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `pin-input:${ctx.id}`
@@ -9,8 +9,7 @@ export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `pin-input:${ctx
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getInputEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `input[data-ownedby=${ownerId}]`
+  const selector = `input${getByOwnerId(getRootId(ctx))}`
   return queryAll<HTMLInputElement>(getRootEl(ctx), selector)
 }
 export const getInputEl = (ctx: Scope, id: string) => ctx.getById<HTMLInputElement>(getInputId(ctx, id))
