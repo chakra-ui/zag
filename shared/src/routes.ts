@@ -192,6 +192,14 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "autoresize",
+    label: "Autoresize",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+    ],
+  },
+  {
     slug: "avatar",
     label: "Avatar",
     examples: [{ slug: "basic", title: "Basic" }],
