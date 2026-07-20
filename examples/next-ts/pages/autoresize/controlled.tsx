@@ -58,6 +58,7 @@ export default function AutoresizeControlled() {
       <div style={{ marginTop: 20 }}>
         <strong>Value from state:</strong>
         <pre
+          data-testid="value"
           style={{
             background: "#f5f5f5",
             padding: 12,
