@@ -16,10 +16,10 @@
     "intro"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "homepage": "https://zagjs.com/components/tour",
   "license": "MIT",
   "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/tour",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/tour",
   "sideEffects": false,
   "files": [
     "dist"
