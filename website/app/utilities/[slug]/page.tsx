@@ -1,4 +1,5 @@
 import { getUtilityDoc, getUtilityPaths } from "lib/contentlayer-utils"
+import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
 import UtilityPageClient from "./client"
 
@@ -12,10 +13,13 @@ export async function generateMetadata({
   const { slug } = await params
   const doc = getUtilityDoc(slug)
 
-  return {
+  if (!doc) return {}
+
+  return createPageMetadata({
     title: doc.title,
     description: doc.description,
-  }
+    path: `/utilities/${slug}`,
+  })
 }
 
 export async function generateStaticParams() {

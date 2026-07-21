@@ -18,13 +18,14 @@ function toParams(str: string | string[]) {
 }
 
 export function extractParams(slug: string[]) {
-  const [first] = slug
+  const parts = [...slug]
+  const [first] = parts
   let result: Framework = "react"
   if (isFramework(first)) {
     result = first
-    slug.shift()
+    parts.shift()
   }
-  return { framework: result, slug: slug.join("/") }
+  return { framework: result, slug: parts.join("/") }
 }
 
 /* -----------------------------------------------------------------------------

@@ -2,16 +2,17 @@ import { Footer } from "components/footer"
 import { TopNav } from "components/nav/top-nav"
 import { Section } from "components/ui/section"
 import { showcaseItems, type ShowcaseItem } from "lib/showcase"
-import type { Metadata } from "next"
+import { createPageMetadata } from "lib/seo"
 import Image from "next/image"
 import { css } from "styled-system/css"
 import { Box, Grid, Stack, styled } from "styled-system/jsx"
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Showcase",
   description:
     "Discover projects and design systems built with Zag.js state machines",
-}
+  path: "/showcase",
+})
 
 function ShowcaseCard({ item }: { item: ShowcaseItem }) {
   return (

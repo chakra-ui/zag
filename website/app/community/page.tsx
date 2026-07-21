@@ -7,7 +7,7 @@ import {
   recordings,
   teamMembers,
 } from "lib/community"
-import type { Metadata } from "next"
+import { createPageMetadata } from "lib/seo"
 import { FaGithub, FaNpm } from "react-icons/fa6"
 import { Box, Flex, Grid, Stack, styled } from "styled-system/jsx"
 import { CommunityLink } from "./community-link"
@@ -16,11 +16,12 @@ import { ProfileItem } from "./profile-item"
 import { RecordingItem } from "./recording-item"
 import { getCommunityStats } from "./stats"
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Community",
   description:
     "Connect with the Zag.js community, meet the team, watch recordings, and discover ecosystem projects.",
-}
+  path: "/community",
+})
 
 function SectionHeading(props: { title: string; description: string }) {
   return (
