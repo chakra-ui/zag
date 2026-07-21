@@ -1,6 +1,6 @@
 ---
 title: Tour
-description: Used for creating product tours and onboarding.
+description: Headless product tour and onboarding component for React, Vue, Solid, and Svelte. Step-by-step overlays with tooltip, dialog, and floating steps.
 package: "@zag-js/tour"
 ---
 
@@ -318,6 +318,27 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+### Exit animations (Presence)
+
+After the tour closes, `api.step` still references the last step so exit
+animations can keep rendering content. Drive visibility with `api.open` (or
+Presence), and read content from `api.step`.
+
+```tsx
+{
+  api.step && (
+    <Presence present={api.open} unmountOnExit>
+      <div {...api.getContentProps()}>
+        <p {...api.getTitleProps()}>{api.step.title}</p>
+      </div>
+    </Presence>
+  )
+}
+```
+
+> Don't treat `api.step === null` as "tour closed". Use `api.open` or
+> `onStatusChange` for that.
+
 ### Customizing progress text
 
 Use `translations.progressText` to customize the progress message.
@@ -416,6 +437,42 @@ can apply specific styles based on the rendered type:
   /* styles for positioner when step is floating type */
 }
 ```
+
+### Z-Index
+
+The machine sets `--tour-layer` on the layered parts (`0` backdrop, `1`
+spotlight, `2` positioner). Apply it in CSS so content stacks above the
+backdrop:
+
+```css
+:root {
+  --tour-z-index: 100;
+}
+
+[data-scope="tour"][data-part="backdrop"],
+[data-scope="tour"][data-part="spotlight"],
+[data-scope="tour"][data-part="positioner"],
+[data-scope="tour"][data-part="content"] {
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+}
+```
+
+### Spotlight
+
+The spotlight exposes CSS variables you can transition between steps:
+
+```css
+[data-scope="tour"][data-part="spotlight"] {
+  transition:
+    left 0.2s ease,
+    top 0.2s ease,
+    width 0.2s ease,
+    height 0.2s ease;
+}
+```
+
+Variables: `--spotlight-x`, `--spotlight-y`, `--spotlight-width`,
+`--spotlight-height`.
 
 ### Placement Styles
 
