@@ -95,6 +95,28 @@ test.describe("popover", () => {
     await I.seeContent()
   })
 
+  test("[keyboard / non-modal] when trigger is last tabbable: tab out should not loop into content", async ({
+    page,
+  }) => {
+    await page.goto("/popover/trigger-last")
+
+    const trigger = page.getByTestId("popover-trigger")
+    const link = page.getByTestId("focusable-link")
+    const close = page.getByTestId("popover-close-button")
+
+    await trigger.focus()
+    await page.keyboard.press("Enter")
+    await expect(link).toBeFocused()
+
+    await page.keyboard.press("Tab")
+    await page.keyboard.press("Tab")
+    await expect(close).toBeFocused()
+
+    await page.keyboard.press("Tab")
+    await expect(link).not.toBeFocused()
+    await expect(close).not.toBeFocused()
+  })
+
   test("[pointer] close the popover on click close button", async () => {
     await I.clickTrigger()
     await I.seeContent()
