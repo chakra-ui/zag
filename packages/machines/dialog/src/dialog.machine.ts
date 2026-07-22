@@ -167,7 +167,11 @@ export const machine = createMachine<DialogSchema>({
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: prop("initialFocusEl"),
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              getInitialEl: prop("initialFocusEl"),
+            }),
           setReturnFocus: (el) => {
             // If finalFocusEl is provided, use it
             const finalFocusEl = prop("finalFocusEl")?.()

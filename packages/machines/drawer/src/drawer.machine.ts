@@ -758,7 +758,11 @@ export const machine = createMachine<DrawerSchema>({
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: prop("initialFocusEl"),
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              getInitialEl: prop("initialFocusEl"),
+            }),
           setReturnFocus: (el) => {
             const finalFocusEl = prop("finalFocusEl")?.()
             if (finalFocusEl) return finalFocusEl
