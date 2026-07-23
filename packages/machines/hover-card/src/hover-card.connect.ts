@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
@@ -78,7 +78,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_LEAVE", src: "trigger" })
+          send({ type: "POINTER_LEAVE", src: "trigger", point: getEventPoint(event) })
         },
         onFocus() {
           if (prop("disabled")) return
@@ -122,7 +122,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_LEAVE", src: "content" })
+          send({ type: "POINTER_LEAVE", src: "content", point: getEventPoint(event) })
         },
       })
     },

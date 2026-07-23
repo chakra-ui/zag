@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -105,9 +106,18 @@ interface PrivateContext {
   triggerValue: string | null
 }
 
+interface Refs {
+  /**
+   * The polygon area between the trigger and the content, used to keep the
+   * hover card open while the pointer travels across the gap between them
+   */
+  graceArea: Point[] | null
+}
+
 export interface HoverCardSchema {
   props: RequiredBy<HoverCardProps, PropsWithDefault>
   context: PrivateContext
+  refs: Refs
   state: "opening" | "open" | "closing" | "closed"
   tag: "open" | "closed"
   action: string
