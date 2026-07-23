@@ -1,5 +1,27 @@
 # @zag-js/focus-trap
 
+## 1.43.0
+
+### Patch Changes
+
+- [`2b19978`](https://github.com/chakra-ui/zag/commit/2b199781b1a8d9b8a57b03dff443cf5dbf55c912) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where returning focus on deactivate could silently
+  steal focus back from an element the app legitimately focused in the meantime (e.g. opening a follow-up dialog right
+  after closing the current one, or a parent trap reclaiming its own initial focus after being unpaused).
+
+  - Fixed issue where deactivating a nested trap (e.g. a popover inside a dialog) could throw an uncaught error if the
+    outer trap's container had no connected focusable element at that exact instant, even though the outer trap was
+    still fully active.
+  - Pass `focusVisible: true` when returning focus after a keyboard-driven deactivation (e.g. `Escape`), so the focus
+    ring reliably shows on the returned-to element.
+  - Added a `persistentElements` option so portalled content that isn't discoverable via `aria-controls`/`aria-expanded`
+    can be declared as part of the trap, matching the option of the same name in `@zag-js/dismissable`.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+
 ## 1.42.0
 
 ### Patch Changes

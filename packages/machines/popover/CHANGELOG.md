@@ -1,5 +1,33 @@
 # @zag-js/popover
 
+## 1.43.0
+
+### Patch Changes
+
+- [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `proxyTabFocus` so tabbing out of portalled content moves to
+  the next tabbable after the trigger, instead of looping back into the content when the trigger is last on the page.
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- Updated dependencies [[`2b19978`](https://github.com/chakra-ui/zag/commit/2b199781b1a8d9b8a57b03dff443cf5dbf55c912),
+  [`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/focus-trap@1.43.0
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/popper@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/aria-hidden@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/remove-scroll@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
 ## 1.42.0
 
 ### Patch Changes
