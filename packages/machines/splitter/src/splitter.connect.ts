@@ -77,6 +77,16 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     }
   }
 
+  const isPanelCollapsed = (id: string): boolean => {
+    const panels = context.get("panels")
+    const size = getResolvedSizes()
+    const panelData = getPanelById(panels, id)
+
+    const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
+    ensure(panelSize != null, () => `Panel size not found for panel "${panelData.id}"`)
+    return collapsible === true && fuzzyNumbersEqual(panelSize, collapsedSize)
+  }
+
   return {
     dragging,
     orientation,
@@ -126,15 +136,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
       return panelSize
     },
-    isPanelCollapsed(id) {
-      const panels = context.get("panels")
-      const size = getResolvedSizes()
-      const panelData = getPanelById(panels, id)
-
-      const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize != null, () => `Panel size not found for panel "${panelData.id}"`)
-      return collapsible === true && fuzzyNumbersEqual(panelSize, collapsedSize)
-    },
+    isPanelCollapsed,
     isPanelExpanded(id) {
       const panels = context.get("panels")
       const size = getResolvedSizes()
@@ -172,6 +174,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         ...parts.panel.attrs,
         "data-orientation": orientation,
         "data-dragging": dataAttr(dragging),
+        "data-collapsed": dataAttr(isPanelCollapsed(id)),
         dir: prop("dir"),
         "data-id": id,
         "data-index": findPanelIndex(prop("panels"), id),
