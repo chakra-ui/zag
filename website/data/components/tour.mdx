@@ -119,6 +119,18 @@ const steps: tour.StepDetails[] = [
 Every step supports a list of actions that are rendered in the step footer. Use
 the `actions` property to define each action.
 
+The `action` property accepts one of the following built-in types, or a custom
+function:
+
+- `next`: Move to the next step.
+- `prev`: Move to the previous step.
+- `dismiss`: End the tour. Use this when the user is unlikely to want to see
+  the tour again.
+- `skip`: End the tour, similar to `dismiss`, but semantically intended for
+  cases where the user might want to resume or restart the tour later.
+- A custom function `(actionMap) => void`, which receives the same
+  `next`/`prev`/`dismiss`/`skip`/`goto` methods to compose your own behavior.
+
 ```tsx
 const steps: tour.StepDetails[] = [
   {
@@ -126,10 +138,19 @@ const steps: tour.StepDetails[] = [
     type: "dialog",
     title: "Dialog Step",
     description: "This is a dialog step",
-    actions: [{ label: "Show me a tour!", action: "next" }],
+    actions: [
+      { label: "Skip", action: "skip" },
+      { label: "Show me a tour!", action: "next" },
+    ],
   },
 ]
 ```
+
+**Dismiss vs Skip**
+
+Both `dismiss` and `skip` end the tour and trigger `onStatusChange`, but with a
+different `status` (`"dismissed"` vs `"skipped"`) so you can distinguish user
+intent, for example, to decide whether to show the tour again later.
 
 ### Changing tooltip placement
 
