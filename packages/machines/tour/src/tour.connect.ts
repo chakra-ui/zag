@@ -300,6 +300,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
           }
           break
 
+        case "skip":
+          actionProps = {
+            "data-type": "skip",
+            "aria-label": prop("translations").skip,
+            onClick: actionMap.skip,
+          }
+          break
+
         default:
           actionProps = {
             "data-type": "custom",
