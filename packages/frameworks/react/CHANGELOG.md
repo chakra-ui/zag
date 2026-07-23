@@ -1,5 +1,19 @@
 # @zag-js/react
 
+## 1.43.0
+
+### Patch Changes
+
+- [`d966d15`](https://github.com/chakra-ui/zag/commit/d966d1530110aaa498ce56cda1f16ab3cd730b9d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Keep `useMachine` command APIs referentially stable across
+  re-renders (`send`, `prop`, `context`, `computed`, `refs`, `getStatus`) so they are safe in effect dependency arrays.
+
+- Updated dependencies [[`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/core@1.43.0
+  - @zag-js/store@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
 ## 1.42.0
 
 ### Patch Changes
