@@ -238,6 +238,12 @@ export interface FocusTrapOptions {
    * ```
    */
   getShadowRoot?: boolean | ((node: FocusableElement) => ShadowRoot | boolean | undefined) | undefined
+
+  /**
+   * Additional elements to treat as part of the trap, for portalled content
+   * not discoverable via `aria-controls`/`aria-expanded` (see `followControlledElements`).
+   */
+  persistentElements?: Array<() => Element | null> | undefined
 }
 
 interface ContainerGroup {
