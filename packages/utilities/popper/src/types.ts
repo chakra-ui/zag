@@ -1,4 +1,11 @@
-import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
+import type {
+  AutoUpdateOptions,
+  Boundary,
+  ComputePositionReturn,
+  InlineOptions,
+  Placement,
+  VirtualElement,
+} from "@floating-ui/dom"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
@@ -65,6 +72,10 @@ export interface PositioningOptions {
    */
   flip?: boolean | Placement[] | undefined
   /**
+   * Whether to use the inline middleware to improve positioning for inline reference elements that span multiple lines.
+   */
+  inline?: boolean | InlineOptions | undefined
+  /**
    * Whether the popover should slide when it overflows.
    */
   slide?: boolean | undefined
@@ -127,4 +138,4 @@ export interface PositioningOptions {
     | undefined
 }
 
-export type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement }
+export type { AutoUpdateOptions, Boundary, ComputePositionReturn, InlineOptions, Placement }

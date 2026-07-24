@@ -1,5 +1,16 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
-import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
+import {
+  arrow,
+  autoUpdate,
+  computePosition,
+  flip,
+  hide,
+  inline,
+  limitShift,
+  offset,
+  shift,
+  size,
+} from "@floating-ui/dom"
 import { getComputedStyle, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
@@ -15,6 +26,7 @@ const defaultOptions: PositioningOptions = {
   applyStyles: true,
   gutter: 8,
   flip: true,
+  inline: false,
   slide: true,
   overlap: false,
   sameWidth: false,
@@ -33,6 +45,7 @@ interface Options extends RequiredBy<
   | "listeners"
   | "gutter"
   | "flip"
+  | "inline"
   | "slide"
   | "overlap"
   | "sameWidth"
@@ -91,6 +104,11 @@ function getFlipMiddleware(opts: Options) {
       fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
     }
   })
+}
+
+function getInlineMiddleware(opts: Options) {
+  if (!opts.inline) return
+  return inline(opts.inline === true ? undefined : opts.inline)
 }
 
 function getShiftMiddleware(opts: Options) {
@@ -250,6 +268,7 @@ function getPlacementImpl(
     restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
     middleware = [
+      getInlineMiddleware(options),
       getOffsetMiddleware(arrowEl, options),
       getFlipMiddleware(options),
       getShiftMiddleware(options),
