@@ -6,6 +6,7 @@
 import type { Style } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import type { DragState, PanelData, PanelSize } from "../splitter.types"
+import { fuzzyNumbersEqual } from "./fuzzy"
 import { toCssPanelSize } from "./size"
 
 export function getPanelById<T extends PanelData>(panels: T[], id: string) {
@@ -90,8 +91,9 @@ export function getPanelFlexBoxStyle({
   let flexBasis: Style["flexBasis"]
   let flexShrink: Style["flexShrink"] = 1
   const constraintAxis = horizontal ? "Width" : "Height"
-  const minSize = panel ? toCssPanelSize(panel.minSize) : undefined
+  const minSizeCss = panel ? toCssPanelSize(panel.minSize) : undefined
   const maxSize = panel ? toCssPanelSize(panel.maxSize) : undefined
+  const minSize = isPanelCollapsed(panel, resolvedSize) ? toCssPanelSize(panel?.collapsedSize ?? 0) : minSizeCss
   const layoutCssSize = toCssPanelSize(layoutSize)
 
   if (resolvedSize == null) {
@@ -103,7 +105,7 @@ export function getPanelFlexBoxStyle({
       } else {
         flexBasis = getClampedFlexBasis({
           basis: layoutCssSize,
-          minSize,
+          minSize: minSizeCss,
           maxSize,
         })
         flexGrow = "0"
@@ -133,6 +135,17 @@ export function getPanelFlexBoxStyle({
     // This avoid edge cases like nested iframes
     pointerEvents: dragState !== null ? "none" : undefined,
   }
+}
+
+function isPanelCollapsed(panel: PanelData | undefined, resolvedSize: number | undefined) {
+  if (!panel?.collapsible || resolvedSize == null) return false
+  return fuzzyNumbersEqual(resolvedSize, getPercentPanelSize(panel.collapsedSize ?? 0))
+}
+
+function getPercentPanelSize(size: PanelSize) {
+  if (typeof size === "number") return size
+  const match = size.trim().match(/^(-?\d*\.?\d+)%?$/)
+  return match ? Number.parseFloat(match[1]!) : 0
 }
 
 function getClampedFlexBasis({

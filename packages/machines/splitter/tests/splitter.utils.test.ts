@@ -43,6 +43,48 @@ describe("@zag-js/splitter utils", () => {
     })
   })
 
+  test("uses collapsedSize for min constraint when panel is collapsed", () => {
+    expect(
+      getPanelFlexBoxStyle({
+        size: undefined,
+        defaultSize: 15,
+        dragState: null,
+        resolvedSizes: [5, 95],
+        panels: [
+          { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 20 },
+          { id: "b", minSize: 50 },
+        ],
+        panelIndex: 0,
+        horizontal: true,
+      }),
+    ).toMatchObject({
+      flexGrow: "5.00",
+      minWidth: "5%",
+      maxWidth: "20%",
+    })
+  })
+
+  test("uses minSize for min constraint when panel is expanded", () => {
+    expect(
+      getPanelFlexBoxStyle({
+        size: undefined,
+        defaultSize: 15,
+        dragState: null,
+        resolvedSizes: [15, 85],
+        panels: [
+          { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 20 },
+          { id: "b", minSize: 50 },
+        ],
+        panelIndex: 0,
+        horizontal: true,
+      }),
+    ).toMatchObject({
+      flexGrow: "15.0",
+      minWidth: "10%",
+      maxWidth: "20%",
+    })
+  })
+
   test("resolves missing server sizes to remaining percentages", () => {
     expect(
       resolvePanelSizes({
