@@ -106,9 +106,11 @@ export const layerStack = {
     if (index < 0) return
 
     const layer = this.layers[index]
+    unobserveLayerStyleMirror(node)
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
+        unobserveLayerStyleMirror(target)
         clearLayerStyleMirror(target)
       }
     })
@@ -139,12 +141,14 @@ export const layerStack = {
   syncLayers() {
     this.layers.forEach((layer, index) => {
       applyLayerStackMetadata(layer, index, layer.node)
+      observeLayerStyleMirror(layer, layer.node)
       layer.styleTargets?.forEach((getTarget) => {
         const target = getTarget()
         if (!target || target === layer.node) return
         applyLayerStackMetadata(layer, index, target)
         const { zIndex } = getComputedStyle(layer.node)
         target.style.setProperty("--z-index", zIndex)
+        observeLayerStyleMirror(layer, target)
       })
     })
   },
@@ -204,6 +208,46 @@ function clearLayerStyleMirror(el: HTMLElement) {
   el.style.removeProperty("--z-index")
   el.removeAttribute("data-nested")
   el.removeAttribute("data-has-nested")
+}
+
+interface LayerStyleMirror {
+  layer: Layer
+  observer: MutationObserver
+}
+
+const layerStyleMirrors = new WeakMap<HTMLElement, LayerStyleMirror>()
+
+// Framework re-renders can replace an element's inline style wholesale (e.g. a
+// drawer updating `--drawer-swipe-progress` on its backdrop while dragging),
+// wiping the metadata mirrored above. Watch the style attribute and re-apply
+// when the metadata disappears while the layer is still in the stack.
+function observeLayerStyleMirror(layer: Layer, target: HTMLElement) {
+  const existing = layerStyleMirrors.get(target)
+  if (existing) {
+    existing.layer = layer
+    return
+  }
+
+  const mirror: LayerStyleMirror = { layer, observer: null as unknown as MutationObserver }
+  const win = target.ownerDocument.defaultView || window
+  mirror.observer = new win.MutationObserver(() => {
+    if (target.style.getPropertyValue("--layer-index") !== "") return
+    const index = layerStack.indexOf(mirror.layer.node)
+    if (index === -1) return
+    applyLayerStackMetadata(mirror.layer, index, target)
+    if (target !== mirror.layer.node) {
+      const { zIndex } = getComputedStyle(mirror.layer.node)
+      target.style.setProperty("--z-index", zIndex)
+    }
+  })
+
+  mirror.observer.observe(target, { attributes: true, attributeFilter: ["style"] })
+  layerStyleMirrors.set(target, mirror)
+}
+
+function unobserveLayerStyleMirror(target: HTMLElement) {
+  layerStyleMirrors.get(target)?.observer.disconnect()
+  layerStyleMirrors.delete(target)
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, detail?: LayerDismissEventDetail) {
