@@ -38,10 +38,10 @@
   "devDependencies": {
     "@types/react": "^19",
     "clean-package": "2.2.0",
-    "react": "19.2.7"
+    "react": "19.2.8"
   },
   "dependencies": {
-    "color2k": "2.0.3",
+    "color2k": "2.0.4",
     "@svgr/core": "8.1.0",
     "@svgr/plugin-jsx": "8.1.0"
   },
