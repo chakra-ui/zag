@@ -242,6 +242,8 @@ export function useMachine<T extends MachineSchema>(
   })
 
   onCleanup(() => {
+    if (status !== MachineStatus.Started) return
+
     debug("unmounting...")
     status = MachineStatus.Stopped
 
