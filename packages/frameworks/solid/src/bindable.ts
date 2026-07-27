@@ -8,7 +8,7 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
   const eq = props().isEqual ?? Object.is
 
   const [value, setValue] = createSignal(initial as T)
-  const controlled = createMemo(() => props().value != undefined)
+  const controlled = createMemo(() => props().value !== undefined)
 
   const valueRef = { current: value() }
   const prevValue: Record<"current", T | undefined> = { current: undefined }
