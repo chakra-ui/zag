@@ -1,4 +1,4 @@
-import { getComputedStyle, isIos, setStyleProperty, setStyle } from "@zag-js/dom-query"
+import { getComputedStyle, isIos, isOverflowElement, setStyleProperty, setStyle } from "@zag-js/dom-query"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
 
@@ -22,9 +22,17 @@ function hasStableScrollbarGutter(element: HTMLElement): boolean {
   return scrollbarGutter === "stable" || scrollbarGutter?.startsWith("stable ") === true
 }
 
+// html scrolls when it overflows, body otherwise (e.g. app-shell layouts where body is
+// permanently hidden and an inner region scrolls instead).
+function getScrollContainer(doc: Document): HTMLElement {
+  const { documentElement, body } = doc
+  return isOverflowElement(documentElement) ? documentElement : body
+}
+
 function applyLock(doc: Document): VoidFunction {
   const win = doc.defaultView ?? window
   const { documentElement, body } = doc
+  const scroller = getScrollContainer(doc)
 
   // Check if scrollbar-gutter: stable is set on html or body
   // If so, the browser already reserves space for the scrollbar
@@ -37,7 +45,7 @@ function applyLock(doc: Document): VoidFunction {
   const setScrollbarWidthProperty = () => setStyleProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
   const paddingProperty = getPaddingProperty(documentElement)
 
-  const setBodyStyle = () => {
+  const setScrollerStyle = () => {
     // Only add padding if scrollbar-gutter: stable is not set
     const styles: Record<string, string> = {
       overflow: "hidden",
@@ -47,7 +55,7 @@ function applyLock(doc: Document): VoidFunction {
       styles[paddingProperty] = `${scrollbarWidth}px`
     }
 
-    return setStyle(body, styles)
+    return setStyle(scroller, styles)
   }
 
   // Only iOS doesn't respect `overflow: hidden` on document.body
@@ -79,7 +87,7 @@ function applyLock(doc: Document): VoidFunction {
     }
   }
 
-  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setBodyStyle()]
+  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setScrollerStyle()]
 
   return () => {
     cleanups.forEach((fn) => fn?.())
