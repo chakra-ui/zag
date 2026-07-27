@@ -253,4 +253,12 @@ export class DatePickerModel extends Model {
   seeFocusedValue(value: string) {
     return expect(this.page.locator(".date-output")).toContainText(`Focused: ${value}`)
   }
+
+  getDayCellByValue(value: string) {
+    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${value}"]`)
+  }
+
+  seeDayCellIsFocused(value: string) {
+    return expect(this.getDayCellByValue(value)).toBeFocused()
+  }
 }
