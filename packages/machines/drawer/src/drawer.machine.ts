@@ -254,7 +254,6 @@ export const machine = createMachine<DrawerSchema>({
           {
             guard: and("shouldCloseOnSwipe", "isOpenControlled"),
             actions: [
-              "clearSwipeOpenAnimation",
               "clearRegistrySwiping",
               "clearPointerStart",
               "setDismissSwipeStrength",
@@ -295,7 +294,7 @@ export const machine = createMachine<DrawerSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
-            actions: ["clearSwipeOpenAnimation", "invokeOnClose"],
+            actions: ["invokeOnClose"],
           },
           {
             target: "closing",
