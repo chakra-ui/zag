@@ -1095,7 +1095,9 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("activeIndex", 0)
       },
       focusActiveCell({ scope, context, event }) {
-        if (event.src === "input.click") return
+        // when `open` is controlled, `toggleVisibility` re-dispatches the originating event
+        // as `previousEvent`, so read the origin through it
+        if ((event.previousEvent || event).src === "input.click") return
         raf(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })

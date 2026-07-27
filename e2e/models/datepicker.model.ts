@@ -158,6 +158,10 @@ export class DatePickerModel extends Model {
     return this.trigger.click()
   }
 
+  clickInput(index = 0) {
+    return this.getInput(index).click()
+  }
+
   type(value: string, index = 0) {
     return this.getInput(index).pressSequentially(value)
   }
