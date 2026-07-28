@@ -50,6 +50,7 @@ export const routes: RouteDefinition[] = [
   { path: "/qr-code/basic", component: lazy(() => import("./pages/qr-code/basic")) },
   { path: "/qr-code/download", component: lazy(() => import("./pages/qr-code/download")) },
   { path: "/signature-pad/basic", component: lazy(() => import("./pages/signature-pad/basic")) },
+  { path: "/signature-pad/controlled", component: lazy(() => import("./pages/signature-pad/controlled")) },
   { path: "/floating-panel/basic", component: lazy(() => import("./pages/floating-panel/basic")) },
   { path: "/floating-panel/controlled", component: lazy(() => import("./pages/floating-panel/controlled")) },
   { path: "/floating-panel/focus-trap", component: lazy(() => import("./pages/floating-panel/focus-trap")) },
