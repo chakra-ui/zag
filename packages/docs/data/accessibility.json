@@ -335,19 +335,19 @@
       },
       {
         "keys": ["PageUp"],
-        "description": "<span>Increases the value by a larger step</span>"
+        "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["PageDown"],
-        "description": "<span>Decreases the value by a larger step</span>"
+        "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Shift + ArrowUp"],
-        "description": "<span>Increases the value by a larger step</span>"
+        "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Shift + ArrowDown"],
-        "description": "<span>Decreases the value by a larger step</span>"
+        "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Home"],
@@ -710,12 +710,20 @@
         "description": "Decrements the value of the number input by a predefined step."
       },
       {
-        "keys": ["PageUp"],
-        "description": "Increments the value of the number input by a larger predefined step."
+        "keys": ["Shift + ArrowUp"],
+        "description": "Increments the value of the number input by the `largeStep` amount."
       },
       {
-        "keys": ["PageDown"],
-        "description": "Decrements the value of the number input by a larger predefined step."
+        "keys": ["Shift + ArrowDown"],
+        "description": "Decrements the value of the number input by the `largeStep` amount."
+      },
+      {
+        "keys": ["Alt + ArrowUp"],
+        "description": "Increments the value of the number input by the `smallStep` amount."
+      },
+      {
+        "keys": ["Alt + ArrowDown"],
+        "description": "Decrements the value of the number input by the `smallStep` amount."
       },
       {
         "keys": ["Home"],

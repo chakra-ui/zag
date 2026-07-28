@@ -239,6 +239,11 @@ interface PrivateContext {
    */
   resolvedTarget: HTMLElement | null
   /**
+   * The computed floating position for tooltip steps.
+   * Kept after close so Presence exit animations stay anchored.
+   */
+  floatingOffset: Point | null
+  /**
    * The id of the current step
    */
   stepId: string | null

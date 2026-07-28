@@ -35,6 +35,53 @@ describe("isValidCharacter", () => {
   test("accepts multi-char data (paste/IME passthrough)", () => {
     expect(isValidCharacter("20.10.2000", ". ")).toBe(true)
   })
+
+  describe("locale-aware numerals", () => {
+    test("accepts ASCII digits in any locale", () => {
+      expect(isValidCharacter("5", "/", "en-US")).toBe(true)
+      expect(isValidCharacter("5", "/", "ar-EG")).toBe(true)
+      expect(isValidCharacter("5", "/", "hi-IN-u-nu-deva")).toBe(true)
+    })
+
+    test("accepts Arabic-Indic numerals in ar locale", () => {
+      expect(isValidCharacter("٥", "/", "ar-EG")).toBe(true) // U+0665
+      expect(isValidCharacter("٠", "/", "ar-EG")).toBe(true) // U+0660
+    })
+
+    test("accepts Devanagari numerals in hi deva locale", () => {
+      expect(isValidCharacter("५", "/", "hi-IN-u-nu-deva")).toBe(true) // U+096B
+      expect(isValidCharacter("०", "/", "hi-IN-u-nu-deva")).toBe(true) // U+0966
+    })
+
+    test("accepts Bengali numerals in bn beng locale", () => {
+      expect(isValidCharacter("৫", "/", "bn-IN-u-nu-beng")).toBe(true) // U+09EB
+    })
+
+    test("rejects non-locale numerals when locale is provided", () => {
+      expect(isValidCharacter("५", "/", "en-US")).toBe(false) // Devanagari in en-US
+      expect(isValidCharacter("٥", "/", "hi-IN-u-nu-deva")).toBe(false) // Arabic-Indic in Devanagari
+    })
+
+    test("still rejects letters and symbols when locale is provided", () => {
+      expect(isValidCharacter("a", "/", "ar-EG")).toBe(false)
+      expect(isValidCharacter("!", "/", "hi-IN-u-nu-deva")).toBe(false)
+    })
+
+    test("falls back to ASCII-only when no locale is given", () => {
+      expect(isValidCharacter("5", "/")).toBe(true)
+      expect(isValidCharacter("٥", "/")).toBe(false)
+    })
+  })
+})
+
+describe("ensureValidCharacters (locale-aware)", () => {
+  test("preserves Arabic-Indic numerals in ar locale", () => {
+    expect(ensureValidCharacters("٢٠/١٠/٢٠٠٠", "/", "ar-EG")).toBe("٢٠/١٠/٢٠٠٠")
+  })
+
+  test("strips foreign numerals not in the locale's numbering system", () => {
+    expect(ensureValidCharacters("0५1", "/", "en-US")).toBe("01") // Devanagari stripped, ASCII kept
+  })
 })
 
 describe("ensureValidCharacters", () => {

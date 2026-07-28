@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { DatePickerModel } from "./models/datepicker.model"
 
 let I: DatePickerModel
@@ -291,5 +291,203 @@ test.describe("datepicker [range]", () => {
 
     // Should not crash and the new value should be set
     await I.seeInputHasValue("06/15/2025", 1)
+  })
+
+  test("normalizes reversed range dates entered via input on blur", async () => {
+    // Regression test for issue #3186
+    await I.focusInput(0)
+    await I.type("06/20/2024", 0)
+    await I.clickOutsideToBlur()
+
+    await I.focusInput(1)
+    await I.type("06/10/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // dates entered in reverse order should be swapped, matching the Enter/click path
+    await I.seeInputHasValue("06/10/2024", 0)
+    await I.seeInputHasValue("06/20/2024", 1)
+  })
+
+  test("Enter on a completed range starts a new range instead of keeping the old end", async () => {
+    // create initial range
+    await I.focusInput(0)
+    await I.type("06/10/2024", 0)
+    await I.clickOutsideToBlur()
+    await I.focusInput(1)
+    await I.type("06/20/2024", 1)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue("06/10/2024", 0)
+    await I.seeInputHasValue("06/20/2024", 1)
+
+    // reopen and pick a new date with the keyboard
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeDayCellIsFocused("2024-06-10")
+    await I.pressKey("ArrowRight")
+    await I.seeDayCellIsFocused("2024-06-11")
+    await I.pressKey("Enter")
+
+    // should reset to a single new start, stay open and move to the next day
+    await I.seeInputHasValue("06/11/2024", 0)
+    await I.seeInputHasValue("", 1)
+    await I.seeContent()
+    await I.seeDayCellIsFocused("2024-06-12")
+  })
+
+  test("selecting a range start with Enter previews the range band", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
+    await I.pressKey("Enter")
+    // the start is selected and the band previews to the next focused day, without moving first
+    await expect(I.todayCell).toHaveAttribute("data-range-start", "")
+    await expect(I.getNextDayCell()).toHaveAttribute("data-in-hover-range", "")
+  })
+
+  test("reopening with only a start date resumes range selection", async () => {
+    const start = I.getDate({ day: 10 })
+    const end = I.getDate({ day: 20 })
+
+    // commit only a start date, then click outside
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(10)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue("", 1)
+
+    // reopening and picking another date should complete the range
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(20)
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue(end.formatted, 1)
+  })
+})
+
+test.describe("datepicker [locale numerals]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    // custom-calendar example uses locale "fa-IR" (Persian numerals)
+    await I.goto("/date-picker/custom-calendar")
+  })
+
+  test("accepts the locale's native numerals typed into the input", async () => {
+    // Regression test for issue #3165 (non-ASCII numbering systems were rejected)
+    await I.focusInput()
+    await I.type("۱۴۰۳") // Persian digits
+    await expect(I.getInput()).toHaveValue(/[۰-۹]/)
+  })
+})
+
+test.describe("datepicker [disabled]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/inline")
+    await I.clickControls()
+    await I.controls.bool("disabled", true)
+  })
+
+  test("calendar cells are removed from the tab order", async () => {
+    await expect(I.todayCell).toHaveAttribute("tabindex", "-1")
+  })
+
+  test("clicking a day does not change the value", async () => {
+    // force past the aria-disabled grid (Playwright blocks clicks otherwise)
+    await I.notTodayCell.click({ force: true })
+    await I.seeSelectedValue(I.getDate({}).formatted)
+  })
+})
+
+test.describe("datepicker [readonly]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/inline")
+    await I.clickControls()
+    await I.controls.bool("readOnly", true)
+  })
+
+  test("arrow keys still move focus (calendar stays navigable)", async () => {
+    await I.todayCell.focus()
+    await I.pressKey("ArrowRight")
+    await I.seeNextDayCellIsFocused()
+  })
+
+  test("Enter does not select the focused date", async () => {
+    await I.todayCell.focus()
+    await I.pressKey("ArrowRight")
+    await I.pressKey("Enter")
+    // value stays on today (the default), not the navigated-to next day
+    await I.seeSelectedValue(I.getDate({}).formatted)
+  })
+
+  test("clicking a day does not change the value", async () => {
+    await I.notTodayCell.click()
+    await I.seeSelectedValue(I.getDate({}).formatted)
+  })
+})
+
+test.describe("datepicker [readonly clear]", () => {
+  const year = new Date().getFullYear()
+
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/basic")
+  })
+
+  test("clear trigger does not clear the value when readOnly", async () => {
+    await I.type(`02/15/${year}`)
+    await I.pressKey("Enter")
+    await I.seeInputHasValue(`02/15/${year}`)
+
+    await I.clickControls()
+    await I.controls.bool("readOnly", true)
+    await I.clickClearTrigger()
+
+    await I.seeInputHasValue(`02/15/${year}`)
+  })
+})
+
+test.describe("datepicker [controlled open]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/open-control")
+  })
+
+  test("controlled open={false} wins over defaultOpen", async () => {
+    await I.dontSeeContent()
+  })
+})
+
+test.describe("datepicker [min-view]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/month")
+  })
+
+  test("defaults to the month view when minView is month", async () => {
+    await I.clickTrigger()
+    await expect(I.tableForView("month")).toBeVisible()
+  })
+})
+
+test.describe("datepicker [multiple month + maxSelectedDates]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/multi-month")
+  })
+
+  test("selecting beyond the max does not crash", async () => {
+    await I.clickTrigger()
+
+    await I.getMonthCell("Jan").click()
+    await I.getMonthCell("Feb").click()
+    await expect(I.getMonthCell("Jan")).toHaveAttribute("data-selected", "")
+    await expect(I.getMonthCell("Feb")).toHaveAttribute("data-selected", "")
+
+    // third selection must be rejected without throwing
+    await I.getMonthCell("Mar").click()
+    await expect(I.getMonthCell("Mar")).not.toHaveAttribute("data-selected", "")
+    await expect(I.getMonthCell("Jan")).toHaveAttribute("data-selected", "")
   })
 })

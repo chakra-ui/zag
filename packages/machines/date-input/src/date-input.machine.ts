@@ -5,7 +5,13 @@ import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
-import { createFormatFn, getValueAsString, resolveHourCycleProp, resolvePlaceholderValue } from "./utils/formatting"
+import {
+  createFormatFn,
+  getValueAsString,
+  resolveHourCycleProp,
+  resolvePlaceholderValue,
+  toFormatterDate,
+} from "./utils/formatting"
 import {
   IncompleteDate,
   incompleteDateEqual,
@@ -178,7 +184,6 @@ export const machine = createMachine<DateInputSchema>({
         const placeholderValue = context.get("placeholderValue")
         const displayValues = context.get("displayValues")
         const allSegments = prop("allSegments")
-        const timeZone = prop("timeZone")
         const translations = prop("translations") || defaultTranslations
         const granularity = prop("granularity")
         const formatter = prop("formatter")
@@ -188,11 +193,12 @@ export const machine = createMachine<DateInputSchema>({
         return Array.from({ length: computed("groupCount") }, (_, i) => {
           const displayValue =
             displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
-          // When all segments are filled, use the committed value for display; otherwise
-          // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
+          // Use displayValues when complete so deferred edits stay in sync with segment text.
           const committedValue = value?.[i]
-          const isFullyCommitted = committedValue && displayValue.isComplete(allSegmentTypes)
-          const displayDate = isFullyCommitted ? committedValue : displayValue.toValue(placeholderValue)
+          const displayDate =
+            committedValue && displayValue.isComplete(allSegmentTypes)
+              ? displayValue.toValue(committedValue)
+              : displayValue.toValue(placeholderValue)
 
           // Show the era segment when the display value is in BC era (Gregorian calendar).
           // Create the era formatter inline — no dedicated prop needed.
@@ -205,7 +211,7 @@ export const machine = createMachine<DateInputSchema>({
             : formatter
 
           return processSegments({
-            dateValue: displayDate.toDate(timeZone),
+            dateValue: toFormatterDate(displayDate, segmentFormatter),
             displayValue: displayValue,
             formatter: segmentFormatter,
             locale,

@@ -3,6 +3,7 @@ import {
   getComponentDoc,
   getComponentPaths,
 } from "lib/contentlayer-utils"
+import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
 import ComponentPageClient from "./client"
 
@@ -17,10 +18,13 @@ export async function generateMetadata({
   const { slug: componentSlug } = extractParams(slug)
   const doc = getComponentDoc(componentSlug)
 
-  return {
+  if (!doc) return {}
+
+  return createPageMetadata({
     title: doc.title,
     description: doc.description,
-  }
+    path: `/components/${componentSlug}`,
+  })
 }
 
 export async function generateStaticParams() {

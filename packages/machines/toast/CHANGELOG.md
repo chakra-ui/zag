@@ -1,5 +1,22 @@
 # @zag-js/toast
 
+## 1.42.0
+
+### Patch Changes
+
+- [#3178](https://github.com/chakra-ui/zag/pull/3178)
+  [`9e3a74f`](https://github.com/chakra-ui/zag/commit/9e3a74fc1ec500a103d5d47f291dbef14a6f59c2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix toast height measurement including the `scale` transform in
+  overlap mode, causing a height flicker when expanding the stack. Height is now measured from the untransformed
+  element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

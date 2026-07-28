@@ -509,7 +509,7 @@ const components = {
         invalid: false,
         granularity: {
           default: "day",
-          options: ["day", "month", "year", "hour", "minute", "second"],
+          options: ["day", "hour", "minute", "second"],
         },
         selectionMode: { default: "single", options: ["single", "range"] },
         shouldForceLeadingZeros: false,

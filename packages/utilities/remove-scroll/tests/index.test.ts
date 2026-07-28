@@ -13,6 +13,8 @@ function resetBody() {
   document.body.removeAttribute(LOCK_ATTR)
   document.body.removeAttribute("style")
   document.documentElement.style.removeProperty("--scrollbar-width")
+  document.documentElement.style.removeProperty("overflow")
+  document.documentElement.style.removeProperty("overflow-y")
 }
 
 describe("preventBodyScroll", () => {
@@ -147,5 +149,24 @@ describe("preventBodyScroll", () => {
     release()
     expect(spy).toHaveBeenCalledWith(LOCK_ATTR)
     spy.mockRestore()
+  })
+
+  describe("viewport scroller targeting", () => {
+    test("locks body by default", () => {
+      const release = preventBodyScroll(document)
+      expect(document.body.style.overflow).toBe("hidden")
+      expect(document.documentElement.style.overflow).not.toBe("hidden")
+      release()
+    })
+
+    test("locks html instead when it establishes its own scroll container (app-shell layout)", () => {
+      document.documentElement.style.overflowY = "auto"
+
+      const release = preventBodyScroll(document)
+      expect(document.documentElement.style.overflow).toBe("hidden")
+      expect(document.body.style.overflow).not.toBe("hidden")
+
+      release()
+    })
   })
 })

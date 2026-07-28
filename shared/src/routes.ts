@@ -65,6 +65,11 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "scroll-lock",
+    label: "Scroll Lock",
+    examples: [{ slug: "html-scroller", title: "HTML Scroll Container" }],
+  },
+  {
     slug: "async-list",
     label: "Async List",
     examples: [{ slug: "basic", title: "Basic" }],
@@ -190,6 +195,14 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "presence",
     label: "Presence",
     examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "autoresize",
+    label: "Autoresize",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+    ],
   },
   {
     slug: "avatar",
@@ -446,6 +459,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tags Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "form", title: "Form" },
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },

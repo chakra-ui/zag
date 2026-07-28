@@ -120,14 +120,39 @@ export function getNativeEvent<E>(event: E): NativeEvent<E> {
 const pageKeys = new Set(["PageUp", "PageDown"])
 const arrowKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
 
-export function getEventStep(event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "key" | "shiftKey">) {
-  if (event.ctrlKey || event.metaKey) {
-    return 0.1
-  } else {
-    const isPageKey = pageKeys.has(event.key)
-    const isSkipKey = isPageKey || (event.shiftKey && arrowKeys.has(event.key))
-    return isSkipKey ? 10 : 1
+export function getEventStep(event: Pick<KeyboardEvent, "key" | "shiftKey">) {
+  const isPageKey = pageKeys.has(event.key)
+  const isSkipKey = isPageKey || (event.shiftKey && arrowKeys.has(event.key))
+  return isSkipKey ? 10 : 1
+}
+
+interface EventStepOptions {
+  /**
+   * The default step amount (no modifier key pressed)
+   */
+  step: number
+  /**
+   * The step amount when `Shift` or `PageUp`/`PageDown` is used
+   */
+  largeStep: number
+  /**
+   * The step amount when `Alt` is used. When omitted, the `Alt` key
+   * has no effect and the default `step` is used.
+   */
+  smallStep?: number | undefined
+}
+
+export function getEventStepValue(
+  event: Pick<KeyboardEvent, "key" | "shiftKey" | "altKey">,
+  options: EventStepOptions,
+): number {
+  const { step, largeStep, smallStep } = options
+  const isArrowKey = arrowKeys.has(event.key)
+  if (smallStep != null && event.altKey && isArrowKey) {
+    return smallStep
   }
+  const isLargeStep = pageKeys.has(event.key) || (event.shiftKey && isArrowKey)
+  return isLargeStep ? largeStep : step
 }
 
 export function getEventPoint(event: any, type: "page" | "client" = "client"): { x: number; y: number } {

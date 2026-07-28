@@ -1,5 +1,31 @@
 # @zag-js/slider
 
+## 1.42.0
+
+### Minor Changes
+
+- [`f71bd89`](https://github.com/chakra-ui/zag/commit/f71bd89852dcb8988b4f081e13a32a68ad1031e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where `Cmd`/`Ctrl` + arrow keys produced values off
+  the `step` grid (e.g. non-integer values when `step: 1`). Stepping with modifier keys now stays aligned to `step`.
+
+  Replaced the implicit modifier-based stepping with explicit, configurable props:
+
+  - **Slider**: added `largeStep` (defaults to `10 * step`) used when `Shift` or `PageUp`/`PageDown` is pressed.
+  - **Number Input**: added `largeStep` (defaults to `10 * step`, on `Shift`) and `smallStep` (defaults to `step / 10`,
+    on `Alt`).
+
+  The defaults preserve the previous stepping magnitudes, so existing behavior is unchanged unless the new props are
+  set.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

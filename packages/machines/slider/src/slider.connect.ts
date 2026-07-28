@@ -3,7 +3,7 @@ import {
   dataAttr,
   getEventKey,
   getEventPoint,
-  getEventStep,
+  getEventStepValue,
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
@@ -213,7 +213,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event) * prop("step")
+          const step = getEventStepValue(event, { step: prop("step"), largeStep: prop("largeStep") })
 
           const keyMap: EventKeyMap = {
             ArrowUp() {

@@ -91,6 +91,8 @@ export const numberInputControls = defineControls({
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
   step: { type: "number", defaultValue: 1 },
+  largeStep: { type: "number" },
+  smallStep: { type: "number" },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
   locale: {
@@ -141,6 +143,7 @@ export const sliderControls = defineControls({
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
   step: { type: "number", defaultValue: 1 },
+  largeStep: { type: "number" },
 })
 
 export const tabsControls = defineControls({
