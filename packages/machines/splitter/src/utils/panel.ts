@@ -71,6 +71,7 @@ export function getPanelFlexBoxStyle({
   panels,
   panelIndex,
   horizontal,
+  collapsed = false,
   precision = 3,
 }: {
   size: PanelSize | undefined
@@ -80,6 +81,7 @@ export function getPanelFlexBoxStyle({
   panels: PanelData[]
   panelIndex: number
   horizontal: boolean
+  collapsed?: boolean | undefined
   precision?: number | undefined
 }): Style {
   const resolvedSize = resolvedSizes[panelIndex]
@@ -90,8 +92,9 @@ export function getPanelFlexBoxStyle({
   let flexBasis: Style["flexBasis"]
   let flexShrink: Style["flexShrink"] = 1
   const constraintAxis = horizontal ? "Width" : "Height"
-  const minSize = panel ? toCssPanelSize(panel.minSize) : undefined
+  const minSizeCss = panel ? toCssPanelSize(panel.minSize) : undefined
   const maxSize = panel ? toCssPanelSize(panel.maxSize) : undefined
+  const minSize = collapsed ? toCssPanelSize(panel?.collapsedSize ?? 0) : minSizeCss
   const layoutCssSize = toCssPanelSize(layoutSize)
 
   if (resolvedSize == null) {
@@ -103,7 +106,7 @@ export function getPanelFlexBoxStyle({
       } else {
         flexBasis = getClampedFlexBasis({
           basis: layoutCssSize,
-          minSize,
+          minSize: minSizeCss,
           maxSize,
         })
         flexGrow = "0"
