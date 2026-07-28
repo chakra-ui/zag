@@ -56,11 +56,34 @@ describe("@zag-js/splitter utils", () => {
         ],
         panelIndex: 0,
         horizontal: true,
+        collapsed: true,
       }),
     ).toMatchObject({
       flexGrow: "5.00",
       minWidth: "5%",
       maxWidth: "20%",
+    })
+  })
+
+  test("uses collapsedSize CSS units for min constraint when collapsed", () => {
+    expect(
+      getPanelFlexBoxStyle({
+        size: undefined,
+        defaultSize: "240px",
+        dragState: null,
+        resolvedSizes: [8, 92],
+        panels: [
+          { id: "a", collapsible: true, collapsedSize: "40px", minSize: "200px", maxSize: "360px" },
+          { id: "b", minSize: 50 },
+        ],
+        panelIndex: 0,
+        horizontal: true,
+        collapsed: true,
+      }),
+    ).toMatchObject({
+      flexGrow: "8.00",
+      minWidth: "40px",
+      maxWidth: "360px",
     })
   })
 
@@ -77,6 +100,7 @@ describe("@zag-js/splitter utils", () => {
         ],
         panelIndex: 0,
         horizontal: true,
+        collapsed: false,
       }),
     ).toMatchObject({
       flexGrow: "15.0",
