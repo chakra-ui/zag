@@ -8,6 +8,7 @@ export type {
   MenubarProps as Props,
   MenubarService as Service,
   MenubarEventMap,
+  MenubarMenuContext,
   MenuCloseReason,
   ElementIds,
   Orientation,

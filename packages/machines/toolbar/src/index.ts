@@ -7,4 +7,10 @@ export type {
   ToolbarMachine as Machine,
   ToolbarProps as Props,
   ToolbarService as Service,
+  ElementIds,
+  GroupProps,
+  ItemProps,
+  ItemState,
+  LinkProps,
+  Orientation,
 } from "./toolbar.types"
