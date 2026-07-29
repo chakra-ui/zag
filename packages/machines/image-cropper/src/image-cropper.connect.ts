@@ -128,6 +128,7 @@ export function connect<T extends PropTypes>(
         offset,
         viewportSize: viewportRect,
         naturalSize,
+        flip,
       })
 
       return {

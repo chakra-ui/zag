@@ -491,19 +491,28 @@ interface SourceRectParams {
   offset: Point
   viewportSize: Size
   naturalSize: Size
+  flip?: FlipState | undefined
 }
 
 /**
  * Maps the crop rect (viewport coordinates) to the source rect in natural
  * image pixels. The viewport -> natural scale is `naturalSize / viewportSize`.
+ *
+ * The preview image is transformed with `translate() scale(zoom * flipSign)`,
+ * so a horizontal/vertical flip mirrors the sampled region across the image
+ * center. The offset (pan) is applied in viewport space and is unaffected by
+ * the flip.
  */
 export function getCropSourceRect(params: SourceRectParams): Rect {
-  const { crop, zoom, offset, viewportSize, naturalSize } = params
+  const { crop, zoom, offset, viewportSize, naturalSize, flip } = params
 
   const scaleX = viewportSize.width > 0 ? naturalSize.width / viewportSize.width : 1
   const scaleY = viewportSize.height > 0 ? naturalSize.height / viewportSize.height : 1
 
   const safeZoom = zoom > 0 ? zoom : 1
+
+  const flipX = flip?.horizontal ? -1 : 1
+  const flipY = flip?.vertical ? -1 : 1
 
   const viewportCenterX = viewportSize.width / 2
   const viewportCenterY = viewportSize.height / 2
@@ -514,8 +523,8 @@ export function getCropSourceRect(params: SourceRectParams): Rect {
   const cropCenterX = crop.x + crop.width / 2
   const cropCenterY = crop.y + crop.height / 2
 
-  const sourceCenterX = imageCenterX + ((cropCenterX - viewportCenterX - offset.x) / safeZoom) * scaleX
-  const sourceCenterY = imageCenterY + ((cropCenterY - viewportCenterY - offset.y) / safeZoom) * scaleY
+  const sourceCenterX = imageCenterX + flipX * ((cropCenterX - viewportCenterX - offset.x) / safeZoom) * scaleX
+  const sourceCenterY = imageCenterY + flipY * ((cropCenterY - viewportCenterY - offset.y) / safeZoom) * scaleY
 
   const sourceWidth = (crop.width / safeZoom) * scaleX
   const sourceHeight = (crop.height / safeZoom) * scaleY

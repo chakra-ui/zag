@@ -145,3 +145,89 @@ describe("@zag-js/image-cropper getCropSourceRect", () => {
     expect(result).toEqual({ x: 0, y: 0, width: 100, height: 100 })
   })
 })
+
+describe("@zag-js/image-cropper getCropSourceRect flip", () => {
+  test("horizontal flip mirrors the sampled region across the image center", () => {
+    const shared = {
+      crop: { x: 250, y: 150, width: 100, height: 100 },
+      viewportSize: { width: 400, height: 400 },
+      naturalSize: { width: 400, height: 400 },
+    }
+    const base = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared })
+    const flipped = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared, flip: { horizontal: true, vertical: false } })
+
+    // Only x mirrors across the image center (200); y and size are unchanged.
+    expect(base).toEqual({ x: 250, y: 150, width: 100, height: 100 })
+    expect(flipped).toEqual({ x: 50, y: 150, width: 100, height: 100 })
+  })
+
+  test("vertical flip mirrors the sampled region across the image center", () => {
+    const shared = {
+      crop: { x: 150, y: 250, width: 100, height: 100 },
+      viewportSize: { width: 400, height: 400 },
+      naturalSize: { width: 400, height: 400 },
+    }
+    const base = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared })
+    const flipped = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared, flip: { horizontal: false, vertical: true } })
+
+    expect(base).toEqual({ x: 150, y: 250, width: 100, height: 100 })
+    expect(flipped).toEqual({ x: 150, y: 50, width: 100, height: 100 })
+  })
+
+  test("flipping both axes mirrors the region on both axes", () => {
+    const flipped = getCropSourceRect({
+      crop: { x: 250, y: 250, width: 100, height: 100 },
+      zoom: 1,
+      offset: ZERO,
+      viewportSize: { width: 400, height: 400 },
+      naturalSize: { width: 400, height: 400 },
+      flip: { horizontal: true, vertical: true },
+    })
+
+    expect(flipped).toEqual({ x: 50, y: 50, width: 100, height: 100 })
+  })
+
+  test("a centered crop is unaffected by flipping", () => {
+    const shared = {
+      crop: { x: 150, y: 150, width: 100, height: 100 },
+      viewportSize: { width: 400, height: 400 },
+      naturalSize: { width: 400, height: 400 },
+    }
+    const base = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared })
+    const flipped = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared, flip: { horizontal: true, vertical: true } })
+
+    expect(flipped).toEqual(base)
+  })
+
+  test("horizontal flip samples the mirror-opposite region (reported bug)", () => {
+    // Reporter's setup: 1200x800 image in a 600x400 viewport (2x scale), crop
+    // over the top-right of the screen. Without flip the crop samples the right
+    // half of the source; a horizontal flip must sample the mirror-opposite
+    // left half, not the same right-half region.
+    const shared = {
+      crop: { x: 400, y: 50, width: 150, height: 150 },
+      viewportSize: { width: 600, height: 400 },
+      naturalSize: { width: 1200, height: 800 },
+    }
+    const base = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared })
+    const flipped = getCropSourceRect({ zoom: 1, offset: ZERO, ...shared, flip: { horizontal: true, vertical: false } })
+
+    expect(base).toEqual({ x: 800, y: 100, width: 300, height: 300 })
+    expect(flipped).toEqual({ x: 100, y: 100, width: 300, height: 300 })
+  })
+
+  test("flip mirrors the region while the pan offset stays in viewport space", () => {
+    const flipped = getCropSourceRect({
+      crop: { x: 250, y: 150, width: 100, height: 100 },
+      zoom: 1,
+      offset: { x: 50, y: 0 },
+      viewportSize: { width: 400, height: 400 },
+      naturalSize: { width: 400, height: 400 },
+      flip: { horizontal: true, vertical: false },
+    })
+
+    // (cropCenterX - viewportCenterX - offset.x) = 300 - 200 - 50 = 50, mirrored -> -50
+    // sourceCenterX = 200 - 50 = 150 -> x = 150 - width/2 = 100
+    expect(flipped).toEqual({ x: 100, y: 150, width: 100, height: 100 })
+  })
+})

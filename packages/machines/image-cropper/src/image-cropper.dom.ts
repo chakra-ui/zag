@@ -53,6 +53,7 @@ export function drawCroppedImageToCanvas(params: ImageCropperService): HTMLCanva
     offset,
     viewportSize: viewportRect,
     naturalSize,
+    flip,
   })
 
   ctx.drawImage(
