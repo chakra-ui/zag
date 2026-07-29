@@ -12,6 +12,7 @@ const defaultOptions: PositioningOptions = {
   placement: "bottom",
   listeners: true,
   restoreStyles: false,
+  applyStyles: true,
   gutter: 8,
   flip: true,
   slide: true,
@@ -316,11 +317,12 @@ function getPlacementImpl(
       strategy,
     })
 
-    onComplete?.(pos)
-
     const win = getWindow(floating)
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
+    onComplete?.({ ...pos, x, y })
+
+    if (options.applyStyles === false) return
 
     if (!isApproximatelyEqual(lastX, x)) {
       floating.style.setProperty("--x", `${x}px`)

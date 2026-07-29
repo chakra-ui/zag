@@ -35,6 +35,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
+  const floatingOffset = context.get("floatingOffset")
+  const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -62,7 +64,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
-    placement: isTooltipPlacement(placement) ? placement : undefined,
+    placement: tooltipPositioned && isTooltipPlacement(placement) ? placement : undefined,
   })
 
   const clipPath = getClipPath({
@@ -171,11 +173,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         hidden: !spotlightState.open || !spotlightState.hasTarget,
         style: {
           "--tour-layer": 1,
+          "--spotlight-x": toPx(targetRect.x),
+          "--spotlight-y": toPx(targetRect.y),
+          "--spotlight-width": toPx(targetRect.width),
+          "--spotlight-height": toPx(targetRect.height),
           position: "absolute",
-          width: toPx(targetRect.width),
-          height: toPx(targetRect.height),
-          left: toPx(targetRect.x),
-          top: toPx(targetRect.y),
+          width: "var(--spotlight-width)",
+          height: "var(--spotlight-height)",
+          left: "var(--spotlight-x)",
+          top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
         },
@@ -199,7 +205,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "data-side": positionerState.side,
         style: {
           "--tour-layer": 2,
-          ...(positionerState.type === "tooltip" && popperStyles.floating),
+          ...(positionerState.type === "tooltip" && {
+            ...popperStyles.floating,
+            ...(floatingOffset && {
+              "--x": toPx(floatingOffset.x),
+              "--y": toPx(floatingOffset.y),
+            }),
+            "--z-index": "calc(var(--tour-layer) + var(--tour-z-index))",
+          }),
+          ...(!open && { pointerEvents: "none" }),
         },
       })
     },
@@ -208,8 +222,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
-        hidden: step?.type !== "tooltip",
-        style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
+        hidden: !tooltipPositioned,
+        style: tooltipPositioned ? popperStyles.arrow : undefined,
         opacity: hasTarget ? undefined : 0,
       })
     },
@@ -320,6 +334,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "close",
             "aria-label": prop("translations").close,
             onClick: actionMap.dismiss,
+          }
+          break
+
+        case "skip":
+          actionProps = {
+            "data-type": "skip",
+            "aria-label": prop("translations").skip,
+            onClick: actionMap.skip,
           }
           break
 

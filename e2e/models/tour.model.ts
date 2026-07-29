@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { rect, textSelection } from "../_utils"
+import { approximatelyEqual, rect, textSelection } from "../_utils"
 import { Model } from "./model"
 
 export class TourModel extends Model {
@@ -43,13 +43,15 @@ export class TourModel extends Model {
     return rect(this.spotlight)
   }
 
-  private isContentCentered() {
-    return this.content.evaluate((el) => {
-      const rect = el.getBoundingClientRect()
-      const centeredX = rect.left + rect.width / 2 === window.innerWidth / 2
-      const centeredY = rect.top + rect.height / 2 === window.innerHeight / 2
-      return centeredX && centeredY
-    })
+  private async isContentCentered() {
+    const contentRect = await rect(this.content)
+    const viewport = this.page.viewportSize()
+    if (!viewport) return false
+
+    return (
+      approximatelyEqual(contentRect.midX, viewport.width / 2) &&
+      approximatelyEqual(contentRect.midY, viewport.height / 2)
+    )
   }
 
   clickStart() {

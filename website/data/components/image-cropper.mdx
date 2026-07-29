@@ -156,9 +156,9 @@ Positive `delta` grows outward, negative shrinks inward.
 
 ```tsx
 // Grow the selection by 8px from the right edge
-api.resize("right", 8)
+api.resize("e", 8)
 // Shrink from top-left corner by 4px in both axes
-api.resize("top-left", -4)
+api.resize("nw", -4)
 ```
 
 ### Getting the cropped image
@@ -175,6 +175,7 @@ const dataUrl = await api.getCroppedImage({
   output: "dataUrl",
   type: "image/jpeg",
   quality: 0.85,
+  maxSize: { width: 2048, height: 2048 },
 })
 
 // Example usage
@@ -183,6 +184,11 @@ if (blob) {
   previewImg.src = url
 }
 ```
+
+Exports use the crop's natural resolution by default. Large images can exceed
+browser canvas limits, so use `maxSize` to constrain output dimensions when
+needed. Exports are never upscaled beyond natural resolution. The method
+resolves to `null` if the browser cannot create or encode the canvas.
 
 ### Understanding coordinate systems
 
@@ -206,7 +212,8 @@ console.log(api.crop)
 
 #### 2. Natural Image Coordinates (`api.getCropData()`)
 
-These are the absolute pixel coordinates in the original image:
+These are the absolute pixel bounds in the original image after inverting pan,
+zoom, flip, and rotation:
 
 ```tsx
 const cropData = api.getCropData()
@@ -216,6 +223,13 @@ console.log(cropData)
 //   y: 150,
 //   width: 1000,
 //   height: 750,
+//   corners: {
+//     topLeft: { x: 250, y: 150 },
+//     topRight: { x: 1250, y: 150 },
+//     bottomRight: { x: 1250, y: 900 },
+//     bottomLeft: { x: 250, y: 900 },
+//   },
+//   outputSize: { width: 1000, height: 750 },
 //   rotate: 0,
 //   flipX: false,
 //   flipY: false
@@ -225,9 +239,11 @@ console.log(cropData)
 **Characteristics:**
 
 - Relative to the original image dimensions
-- Independent of zoom/pan/viewport size
-- Essential for server-side cropping
-- Perfect for state persistence and undo/redo
+- Accounts for the rendered image size and inverts zoom, pan, flip, and rotation
+- Under rotation, `x/y/width/height` is an axis-aligned bounding box of the
+  oriented crop
+- `corners` preserves the exact source quad as fractional coordinates
+- `outputSize` is the crop size at natural resolution before export limits
 
 #### When to use each
 
@@ -240,8 +256,6 @@ console.log(cropData)
 **Use natural coordinates (`api.getCropData()`)** when:
 
 - Sending crop data to your backend for server-side processing
-- Persisting state (localStorage, database)
-- Implementing undo/redo functionality
 - Exporting crop configuration to external tools
 
 #### Example: Server-side cropping
@@ -259,9 +273,9 @@ await fetch("/api/crop-image", {
   }),
 })
 
-// Backend: Crop the original image file
-// Use cropData.x, cropData.y, cropData.width, cropData.height
-// to crop the actual image file at full resolution
+// Backend:
+// - Without rotation, crop with x/y/width/height, then apply flipX/flipY.
+// - With rotation, map corners to outputSize with an affine transform.
 ```
 
 #### Transformation example
@@ -279,9 +293,8 @@ api.crop
 
 // Natural coordinates (original image)
 api.getCropData()
-// { x: 500, y: 400, width: 1000, height: 750, ... }
-// Scale factor: 3000 / 600 = 5x
-// So 100px in viewport = 500px in original image
+// { x: 1000, y: 700, width: 500, height: 375, ... }
+// Effective scale: (3000 / 600) / 2 = 2.5x
 ```
 
 ### Touch and wheel gestures

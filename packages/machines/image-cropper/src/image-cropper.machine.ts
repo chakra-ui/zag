@@ -36,7 +36,7 @@ import {
   normalizeFlipState,
   getNudgeStep,
   resolveCropAspectRatio,
-} from "./image-cropper.utils"
+} from "./utils/crop"
 
 const toRectBoundary = (vr: Size): RectInit => ({ x: 0, y: 0, width: vr.width, height: vr.height })
 

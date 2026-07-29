@@ -79,6 +79,13 @@ export class ImageCropperModel extends Model {
     })
   }
 
+  async getNaturalImageScale() {
+    return this.image.evaluate((image: HTMLImageElement) => ({
+      x: image.naturalWidth / image.offsetWidth,
+      y: image.naturalHeight / image.offsetHeight,
+    }))
+  }
+
   async getRotationFromMatrix(transform: string) {
     if (!transform || transform === "none") return 0
 

@@ -89,21 +89,42 @@ export class DatePickerModel extends Model {
     return this.page.locator("[data-date-picker-table]")
   }
 
+  tableForView(view: "day" | "month" | "year") {
+    return this.page.locator(`[data-date-picker-table][data-view=${view}]`)
+  }
+
+  get clearTrigger() {
+    return this.page.locator("[data-date-picker-clear-trigger]")
+  }
+
+  clickClearTrigger() {
+    return this.clearTrigger.click()
+  }
+
   get todayCell() {
-    return this.page.locator("[data-date-picker-table-cell-trigger][data-today]")
+    // Multi-month calendars can render "today" twice (current month + outside-range spillover).
+    return this.page.locator("[data-date-picker-table-cell-trigger][data-today]:not([data-outside-range])")
   }
 
   get firstDayCell() {
     const start = startOfMonth(this.today())
     return this.page.locator(
-      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]`,
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]:not([data-outside-range])`,
     )
   }
 
   get lastDayCell() {
     const end = endOfMonth(this.today())
     return this.page.locator(
-      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`,
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]:not([data-outside-range])`,
+    )
+  }
+
+  get notTodayCell() {
+    const t = this.today()
+    const other = t.day === 1 ? t.add({ days: 1 }) : t.subtract({ days: 1 })
+    return this.page.locator(
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${other.toString()}"]:not([data-outside-range])`,
     )
   }
 
@@ -119,7 +140,7 @@ export class DatePickerModel extends Model {
     const now = current ? parseDate(current) : this.today()
     const next = now.add({ days: step })
     return this.page.locator(
-      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]`,
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]:not([data-outside-range])`,
     )
   }
 
@@ -128,7 +149,7 @@ export class DatePickerModel extends Model {
     const now = current ? parseDate(current) : this.today()
     const prev = now.add({ days: -1 * step })
     return this.page.locator(
-      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]`,
+      `${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]:not([data-outside-range])`,
     )
   }
 
@@ -240,5 +261,13 @@ export class DatePickerModel extends Model {
 
   seeFocusedValue(value: string) {
     return expect(this.page.locator(".date-output")).toContainText(`Focused: ${value}`)
+  }
+
+  getDayCellByValue(value: string) {
+    return this.page.locator(`${part("date-picker", "table-cell-trigger")}[data-view=day][data-value="${value}"]`)
+  }
+
+  seeDayCellIsFocused(value: string) {
+    return expect(this.getDayCellByValue(value)).toBeFocused()
   }
 }

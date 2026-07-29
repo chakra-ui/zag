@@ -175,6 +175,7 @@ temp/
 e2e/report
 e2e/junit.xml
 e2e/results
+.playwright-mcp
 
 public/sitemap.xml
 public/feed.xml

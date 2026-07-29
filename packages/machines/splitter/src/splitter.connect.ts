@@ -36,14 +36,21 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     const size = prop("size")?.[panelIndex]
     const defaultSize = prop("defaultSize")?.[panelIndex]
     const dragState = context.get("dragState")
+    const resolvedSizes = context.get("size")
+    const panelData = panels[panelIndex]
+    const panelSize = resolvedSizes[panelIndex]
+    const collapsed =
+      !!panelData?.collapsible && panelSize != null && fuzzyNumbersEqual(panelSize, panelData.collapsedSize ?? 0)
+
     return getPanelFlexBoxStyle({
       size,
       defaultSize,
       dragState,
-      resolvedSizes: context.get("size"),
+      resolvedSizes,
       panels: rawPanels,
       panelIndex,
       horizontal,
+      collapsed,
     })
   }
 

@@ -89,6 +89,11 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "scroll-lock",
+    label: "Scroll Lock",
+    examples: [{ slug: "html-scroller", title: "HTML Scroll Container" }],
+  },
+  {
     slug: "async-list",
     label: "Async List",
     examples: [{ slug: "basic", title: "Basic" }],
@@ -242,6 +247,14 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "animate", title: "Animate Presence" },
+    ],
+  },
+  {
+    slug: "autoresize",
+    label: "Autoresize",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
     ],
   },
   {

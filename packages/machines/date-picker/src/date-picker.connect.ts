@@ -533,9 +533,12 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
+          // readOnly still allows roving-focus navigation
+          if (disabled) return
 
           const keyMap: EventKeyMap = {
             Enter() {
+              if (!interactive) return
               if (view === "day" && isUnavailable(focusedValue)) return
               if (view === "month") {
                 const cellState = getMonthTableCellState({ value: focusedValue.month })
@@ -688,7 +691,7 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": translations.dayCell(cellState),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "aria-invalid": ariaAttr(cellState.invalid),
@@ -710,6 +713,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
@@ -756,7 +760,7 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
@@ -774,6 +778,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
@@ -814,7 +819,7 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
@@ -832,6 +837,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
         },
@@ -892,6 +898,7 @@ export function connect<T extends PropTypes>(
         hidden: !selectedValue.length,
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "VALUE.CLEAR" })
         },
       })
@@ -1075,6 +1082,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "PRESET.CLICK", value })
         },
       })

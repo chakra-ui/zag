@@ -28,7 +28,13 @@ export function mergeProps(...sources: any[]) {
           enumerable: true,
           get() {
             let e = {}
-            if (key === "style" || key === "class" || key === "className" || key.startsWith("on")) {
+            if (
+              key === "style" ||
+              key === "class" ||
+              key === "className" ||
+              key === "data-ownedby" ||
+              key.startsWith("on")
+            ) {
               for (let i = 0; i < sources.length; i++) {
                 let s = sources[i]
                 if (typeof s === "function") s = s()
