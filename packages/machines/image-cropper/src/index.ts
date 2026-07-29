@@ -15,6 +15,7 @@ export type {
   FlipChangeDetails,
   FlipState,
   CropData,
+  CropSourcePoints,
   BoundingRect,
   RotationChangeDetails,
   ZoomChangeDetails,
