@@ -250,14 +250,6 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
-    slug: "autoresize",
-    label: "Autoresize",
-    examples: [
-      { slug: "basic", title: "Basic" },
-      { slug: "controlled", title: "Controlled" },
-    ],
-  },
-  {
     slug: "avatar",
     label: "Avatar",
     examples: [
