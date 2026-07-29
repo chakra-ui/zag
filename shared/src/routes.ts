@@ -73,6 +73,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "range-input", title: "Range Input" },
       { slug: "action-sheet", title: "Action Sheet" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "controlled-async", title: "Controlled Async" },
       { slug: "mobile-nav", title: "Mobile Nav" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "nested", title: "Nested" },

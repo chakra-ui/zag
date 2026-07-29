@@ -1,8 +1,12 @@
+"use client"
+
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import { CheckSquare, ChevronRightIcon, MinusSquare, Square, XIcon } from "lucide-react"
 import { JSX, useId, useRef, useState } from "react"
+import "@styles/dialog.css"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string

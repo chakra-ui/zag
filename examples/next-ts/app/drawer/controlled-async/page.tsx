@@ -1,3 +1,5 @@
+"use client"
+
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
