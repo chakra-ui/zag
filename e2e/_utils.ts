@@ -25,11 +25,10 @@ export const controls = (page: Page) => {
     },
     bool: async (id: string, value = true) => {
       const el = page.locator(testid(id))
+      // React tracks checkbox changes via `click`, so assigning `checked` directly is not observed.
       await el.evaluate((node, checked) => {
         const input = node as HTMLInputElement
-        input.checked = checked
-        input.dispatchEvent(new Event("input", { bubbles: true }))
-        input.dispatchEvent(new Event("change", { bubbles: true }))
+        if (input.checked !== checked) input.click()
       }, value)
     },
     select: async (id: string, value: string) => {
