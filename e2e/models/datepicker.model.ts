@@ -231,6 +231,14 @@ export class DatePickerModel extends Model {
     return expect(this.todayCell).toBeFocused()
   }
 
+  seeTriggerIsFocused() {
+    return expect(this.trigger).toBeFocused()
+  }
+
+  dontSeeTriggerIsFocused() {
+    return expect(this.trigger).not.toBeFocused()
+  }
+
   seePrevDayCellIsFocused(opts?: DayCellOptions) {
     return expect(this.getPrevDayCell(opts)).toBeFocused()
   }
