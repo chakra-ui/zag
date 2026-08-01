@@ -10,6 +10,8 @@ const VIEWPORT_HEIGHT = 460
 const COLUMN_GAP = 12
 const ROW_GAP = 12
 const ESTIMATED_CARD_HEIGHT = 210
+// stable identity — updateOptions compares by reference, so an inline closure would re-render forever
+const estimateCardSize = () => ESTIMATED_CARD_HEIGHT
 
 const ITEM_COUNT_OPTIONS = [2_000, 5_000, 10_000] as const
 const COLUMN_COUNT_OPTIONS = [2, 3, 4, 5] as const
@@ -299,7 +301,7 @@ function ZagWaterfall({
     columnGap: COLUMN_GAP,
     rowGap: ROW_GAP,
     overscan: OVERSCAN,
-    estimatedSize: () => ESTIMATED_CARD_HEIGHT,
+    estimatedSize: estimateCardSize,
   })
 
   virtualizer.updateOptions({
@@ -308,7 +310,7 @@ function ZagWaterfall({
     columnGap: COLUMN_GAP,
     rowGap: ROW_GAP,
     overscan: OVERSCAN,
-    estimatedSize: () => ESTIMATED_CARD_HEIGHT,
+    estimatedSize: estimateCardSize,
   })
 
   const setRef = useCallback(
