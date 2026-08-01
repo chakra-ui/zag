@@ -5,6 +5,7 @@ import {
   getByTypeahead,
   getInitialFocus,
   isApple,
+  isScrollable,
   markAsInternalChangeEvent,
   observeAttributes,
   raf,
@@ -22,6 +23,8 @@ import * as dom from "./select.dom"
 import type { CollectionItem, SelectSchema } from "./select.types"
 
 const { and, not, or } = createGuards<SelectSchema>()
+
+const MAX_SCROLL_ATTEMPTS = 10
 
 export const machine = createMachine<SelectSchema>({
   props({ props }) {
@@ -609,20 +612,35 @@ export const machine = createMachine<SelectSchema>({
           scrollIntoView(itemEl, { rootEl: listEl, block: immediate ? "center" : "nearest" })
         }
 
-        raf(() => {
+        // The positioner's max-height lands a frame or two after the content mounts. Until it does the
+        // list isn't scrollable yet and the scroll would be silently dropped, so wait for it.
+        let attempts = 0
+        let cleanupRaf: VoidFunction | undefined
+        const scrollWhenScrollable = () => {
           if (context.get("aligned")) return
+          const el = dom.getListEl(scope)
+          if (el && !isScrollable(el) && attempts++ < MAX_SCROLL_ATTEMPTS) {
+            cleanupRaf = raf(scrollWhenScrollable)
+            return
+          }
           setInteractionModality("virtual")
           exec(true)
-        })
+        }
+        cleanupRaf = raf(scrollWhenScrollable)
 
         const listEl = () => dom.getListEl(scope)
-        return observeAttributes(listEl, {
+        const cleanupObserver = observeAttributes(listEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {
             exec(false)
           },
         })
+
+        return () => {
+          cleanupRaf?.()
+          cleanupObserver?.()
+        }
       },
     },
 
