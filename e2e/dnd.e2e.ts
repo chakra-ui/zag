@@ -109,23 +109,23 @@ test.describe("dnd / grid", () => {
 
     await expect(I.getRoot()).toHaveAttribute("data-dragging", "")
 
-    // Left side of Item 5 = "before" in grid (horizontal collision)
     await page.mouse.move(tb!.x + 10, tb!.y + tb!.height / 2, { steps: 5 })
     await page.mouse.up()
 
     await expect(I.getRoot()).not.toHaveAttribute("data-dragging")
-    await I.seeOrder(["Item 2", "Item 3", "Item 4", "Item 1", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"])
+    // Grid sorting moves the item into the hovered slot, so Item 1 takes Item 5's place.
+    await I.seeOrder(["Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 6", "Item 7", "Item 8", "Item 9"])
   })
 
   test("keyboard grid navigation: arrow down jumps rows", async () => {
     await I.focusHandle("1")
     await I.pressKey("Enter")
     await I.pressKey("ArrowRight") // → Item 2
-    await I.seeIndicator("2", "before")
+    await I.seeDropTarget("2", "before")
     await I.pressKey("ArrowDown") // → Item 5 (jump 3 columns)
-    await I.seeIndicator("5", "before")
+    await I.seeDropTarget("5", "before")
     await I.pressKey("ArrowUp") // → Item 2 (jump back)
-    await I.seeIndicator("2", "before")
+    await I.seeDropTarget("2", "before")
     await I.pressKey("Escape")
   })
 })

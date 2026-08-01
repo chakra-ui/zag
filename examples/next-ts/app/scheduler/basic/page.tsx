@@ -34,6 +34,14 @@ const INITIAL: scheduler.SchedulerEvent[] = [
     end: TODAY.add({ days: 2 }).set({ hour: 13, minute: 0 }),
     color: "#f59e0b",
   },
+  // overlaps "Team standup" so both render side-by-side
+  {
+    id: "4",
+    title: "Pairing",
+    start: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 15 }),
+    end: TODAY.subtract({ days: 2 }).set({ hour: 9, minute: 45 }),
+    color: "#a855f7",
+  },
 ]
 
 export default function Page() {
@@ -44,10 +52,15 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) =>
-      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
-    onEventResize: (d) =>
-      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventClick: (d) => console.log("event clicked", d),
+    onEventDrop: (d) => {
+      console.log("event dropped", d)
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e)))
+    },
+    onEventResize: (d) => {
+      console.log("event resized", d)
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e)))
+    },
   })
 
   const api = scheduler.connect(service, normalizeProps)

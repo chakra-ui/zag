@@ -18,8 +18,9 @@ export class TreeViewModel extends Model {
     return this.page.getByRole("row", { name })
   }
 
+  // scoped to `main` — the examples sidebar is itself a tree-view and would otherwise match
   private get tree() {
-    return this.page.locator('[role="treegrid"]')
+    return this.page.locator('main [role="treegrid"]')
   }
 
   private nodeGroup(value: string) {

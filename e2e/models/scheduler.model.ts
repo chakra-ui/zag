@@ -12,35 +12,39 @@ export class SchedulerModel extends Model {
   }
 
   checkAccessibility() {
-    return a11y(this.page, "[data-part=root]")
+    return a11y(this.page, "[data-scheduler-root]")
   }
 
   get root() {
-    return this.page.locator("[data-scope='scheduler'][data-part='root']")
+    return this.page.locator("[data-scheduler-root]")
   }
 
   get grid() {
-    return this.page.locator("[data-scope='scheduler'][data-part='grid']")
+    return this.page.locator("[data-scheduler-grid]")
+  }
+
+  getDayColumnOf(id: string) {
+    return this.page.locator(`[data-scheduler-day-column]:has([data-scheduler-event][data-event-id='${id}'])`)
   }
 
   get prevTrigger() {
-    return this.page.locator("[data-scope='scheduler'][data-part='prev-trigger']")
+    return this.page.locator("[data-scheduler-prev-trigger]")
   }
 
   get nextTrigger() {
-    return this.page.locator("[data-scope='scheduler'][data-part='next-trigger']")
+    return this.page.locator("[data-scheduler-next-trigger]")
   }
 
   get todayTrigger() {
-    return this.page.locator("[data-scope='scheduler'][data-part='today-trigger']")
+    return this.page.locator("[data-scheduler-today-trigger]")
   }
 
   get headerTitle() {
-    return this.page.locator("[data-scope='scheduler'][data-part='header-title']")
+    return this.page.locator("[data-scheduler-header-title]")
   }
 
   getEvent(id: string) {
-    return this.page.locator(`[data-scope='scheduler'][data-part='event'][data-event-id='${id}']`)
+    return this.page.locator(`[data-scheduler-event][data-event-id='${id}']`)
   }
 
   clickPrev() {
@@ -59,23 +63,31 @@ export class SchedulerModel extends Model {
     return this.getEvent(id).click()
   }
 
-  async dragEvent(id: string, deltaX: number, deltaY: number) {
-    const el = this.getEvent(id)
-    const box = await el.boundingBox()
+  // Short events are barely taller than the resize handle, so the centre would land on it and resize instead of drag.
+  async getEventGrabPoint(id: string) {
+    const box = await this.getEvent(id).boundingBox()
     if (!box) throw new Error(`Event ${id} not found`)
-    const startX = box.x + box.width / 2
-    const startY = box.y + box.height / 2
+    const handleBox = await this.getResizeHandle(id).boundingBox()
+    const bodyEnd = handleBox ? handleBox.y : box.y + box.height
+    return { x: box.x + box.width / 2, y: (box.y + bodyEnd) / 2 }
+  }
+
+  async dragEvent(id: string, deltaX: number, deltaY: number) {
+    const { x: startX, y: startY } = await this.getEventGrabPoint(id)
     await this.page.mouse.move(startX, startY)
     await this.page.mouse.down()
     await this.page.mouse.move(startX + deltaX, startY + deltaY, { steps: 10 })
     await this.page.mouse.up()
   }
 
-  async dragResizeHandle(id: string, deltaY: number) {
-    const handle = this.page.locator(
-      `[data-scope='scheduler'][data-part='event'][data-event-id='${id}'] [data-part='event-resize-handle'][data-edge='end']`,
+  getResizeHandle(id: string) {
+    return this.page.locator(
+      `[data-scheduler-event][data-event-id='${id}'] [data-scheduler-event-resize-handle][data-edge='end']`,
     )
-    const box = await handle.boundingBox()
+  }
+
+  async dragResizeHandle(id: string, deltaY: number) {
+    const box = await this.getResizeHandle(id).boundingBox()
     if (!box) throw new Error(`Resize handle for ${id} not found`)
     const startX = box.x + box.width / 2
     const startY = box.y + box.height / 2
@@ -86,7 +98,7 @@ export class SchedulerModel extends Model {
   }
 
   seeView(view: string) {
-    return expect(this.page.locator(`[data-scope='scheduler'][data-part='root'][data-view='${view}']`)).toBeVisible()
+    return expect(this.page.locator(`[data-scheduler-root][data-view='${view}']`)).toBeVisible()
   }
 
   seeEvent(id: string) {

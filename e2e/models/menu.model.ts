@@ -127,7 +127,7 @@ export class MenuModel extends Model {
   }
 
   seeMenuIsPositionedNear = async (point: { x: number; y: number }, tolerance = 24) => {
-    const positioner = this.page.locator("[data-scope=menu][data-part=positioner]")
+    const positioner = this.page.locator("[data-menu-positioner]")
     await expect(async () => {
       const box = await positioner.boundingBox()
       expect(box).not.toBeNull()
