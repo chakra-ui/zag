@@ -1,5 +1,63 @@
 # @zag-js/select
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- [`ffbd5b5`](https://github.com/chakra-ui/zag/commit/ffbd5b57073da108b8e49921de1ba947b5ef4a99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where the selected item was not scrolled into view
+  when the content falls back to standard positioning (`alignItemWithTrigger` enabled but not enough space to align).
+
+  - The list only becomes scrollable once the positioner applies its `max-height`, which lands a frame or two after the
+    content mounts. The initial scroll ran before that and was silently dropped, leaving the list at the top with the
+    selected item out of view.
+
+- Updated dependencies [[`1b6233d`](https://github.com/chakra-ui/zag/commit/1b6233d09bd8f0076f2b282bd8f5a58d8c65260b),
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/collection@2.0.0-next.1
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-visible@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ### Major Changes
