@@ -1,5 +1,24 @@
 # @zag-js/dismissable
 
+## 2.0.0-next.1
+
+### Major Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+
 ## 2.0.0-next.0
 
 ## 1.43.0
