@@ -74,6 +74,10 @@ function FontPicker(props: { api: toolbar.Api }) {
 
   return (
     <>
+      {/* the trigger points aria-labelledby at this, so it has to be rendered even though the toolbar shows no label */}
+      <label {...fontApi.getLabelProps()} className="sr-only">
+        Font
+      </label>
       <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
         <span>{fontApi.valueAsString || "Font"}</span>
         <span aria-hidden>▾</span>
