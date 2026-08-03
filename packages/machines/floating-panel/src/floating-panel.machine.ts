@@ -14,7 +14,6 @@ import {
   type Point,
   type Size,
 } from "@zag-js/rect-utils"
-import { subscribe } from "@zag-js/store"
 import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
@@ -95,6 +94,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       isTopmost: bindable<boolean | undefined>(() => ({
         defaultValue: undefined,
       })),
+      stackIndex: bindable<number>(() => ({
+        defaultValue: -1,
+      })),
     }
   },
 
@@ -138,9 +140,6 @@ export const machine = createMachine<FloatingPanelSchema>({
   states: {
     closed: {
       tags: ["closed"],
-      // Leaving the stack on close (not only on destroy) promotes the next
-      // panel to topmost; reopening re-adds via the open state's entry (#3243).
-      entry: ["removeFromPanelStack"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
@@ -162,6 +161,7 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
+      exit: ["removeFromPanelStack"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": {
@@ -315,17 +315,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       trackPanelStack({ context, scope }) {
-        const unsub = subscribe(panelStack, () => {
+        const unsub = panelStack.subscribe(() => {
           context.set("isTopmost", panelStack.isTopmost(scope.id!))
-
-          const index = panelStack.indexOf(scope.id!)
-          if (index === -1) return
-
-          // Each positioner creates a sibling stacking context, so the stack
-          // index must be applied there for panels to reorder relative to each
-          // other. The content mirror is kept for userland styling.
-          dom.getPositionerEl(scope)?.style.setProperty("--z-index", `${index + 1}`)
-          dom.getContentEl(scope)?.style.setProperty("--z-index", `${index + 1}`)
+          context.set("stackIndex", panelStack.indexOf(scope.id!))
         })
 
         return () => {

@@ -2534,15 +2534,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../utilities/popper
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
