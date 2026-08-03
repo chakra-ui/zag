@@ -138,6 +138,9 @@ export const machine = createMachine<FloatingPanelSchema>({
   states: {
     closed: {
       tags: ["closed"],
+      // Leaving the stack on close (not only on destroy) promotes the next
+      // panel to topmost; reopening re-adds via the open state's entry (#3243).
+      entry: ["removeFromPanelStack"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
@@ -314,13 +317,15 @@ export const machine = createMachine<FloatingPanelSchema>({
       trackPanelStack({ context, scope }) {
         const unsub = subscribe(panelStack, () => {
           context.set("isTopmost", panelStack.isTopmost(scope.id!))
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
 
           const index = panelStack.indexOf(scope.id!)
           if (index === -1) return
 
-          contentEl.style.setProperty("--z-index", `${index + 1}`)
+          // Each positioner creates a sibling stacking context, so the stack
+          // index must be applied there for panels to reorder relative to each
+          // other. The content mirror is kept for userland styling.
+          dom.getPositionerEl(scope)?.style.setProperty("--z-index", `${index + 1}`)
+          dom.getContentEl(scope)?.style.setProperty("--z-index", `${index + 1}`)
         })
 
         return () => {
@@ -585,6 +590,9 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       bringToFrontOfPanelStack({ prop }) {
         panelStack.bringToFront(prop("id"))
+      },
+      removeFromPanelStack({ prop }) {
+        panelStack.remove(prop("id"))
       },
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })

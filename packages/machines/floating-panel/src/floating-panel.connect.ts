@@ -90,6 +90,7 @@ export function connect<T extends PropTypes>(
           position: prop("strategy"),
           top: "var(--y)",
           left: "var(--x)",
+          zIndex: "var(--z-index)",
         },
       })
     },
