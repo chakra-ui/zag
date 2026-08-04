@@ -207,6 +207,10 @@ interface PrivateContext {
    */
   isTopmost?: boolean | undefined
   /**
+   * The index of the panel in the panel stack, or `-1` when not stacked
+   */
+  stackIndex: number
+  /**
    * The size of the panel
    */
   size: Size

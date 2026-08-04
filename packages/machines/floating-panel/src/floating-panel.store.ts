@@ -1,27 +1,35 @@
-import { proxy } from "@zag-js/store"
+import { createStore } from "@zag-js/utils"
 
-export const panelStack = proxy({
-  stack: [] as string[],
+const store = createStore<{ stack: string[] }>({ stack: [] })
+
+export const panelStack = {
+  subscribe: store.subscribe,
   count() {
-    return this.stack.length
+    return store.get("stack").length
   },
   add(panelId: string) {
-    if (this.stack.includes(panelId)) return
-    this.stack.push(panelId)
+    const stack = store.get("stack")
+    if (stack.includes(panelId)) return
+    store.set("stack", [...stack, panelId])
   },
   remove(panelId: string) {
-    const index = this.stack.indexOf(panelId)
-    if (index < 0) return
-    this.stack.splice(index, 1)
+    const stack = store.get("stack")
+    if (!stack.includes(panelId)) return
+    store.set(
+      "stack",
+      stack.filter((id) => id !== panelId),
+    )
   },
-  bringToFront(id: string) {
-    this.remove(id)
-    this.add(id)
+  bringToFront(panelId: string) {
+    const stack = store.get("stack")
+    if (stack[stack.length - 1] === panelId) return
+    store.set("stack", [...stack.filter((id) => id !== panelId), panelId])
   },
-  isTopmost(id: string) {
-    return this.stack[this.stack.length - 1] === id
+  isTopmost(panelId: string) {
+    const stack = store.get("stack")
+    return stack[stack.length - 1] === panelId
   },
-  indexOf(id: string) {
-    return this.stack.indexOf(id)
+  indexOf(panelId: string) {
+    return store.get("stack").indexOf(panelId)
   },
-})
+}
