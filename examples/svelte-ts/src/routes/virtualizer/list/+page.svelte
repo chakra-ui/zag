@@ -33,10 +33,15 @@
 
   <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
     <button type="button" onclick={() => virtualizer.scrollToIndex(0, { smooth: smoothScroll })}>Scroll to top</button>
-    <button type="button" onclick={() => virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll })}>
+    <button
+      type="button"
+      onclick={() => virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll })}
+    >
       Scroll to middle
     </button>
-    <button type="button" onclick={() => virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })}>Scroll to bottom</button>
+    <button type="button" onclick={() => virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })}
+      >Scroll to bottom</button
+    >
   </div>
 
   <div

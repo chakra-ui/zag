@@ -106,7 +106,7 @@ Before finalizing:
 
 - Re-check the edited MDX against source types.
 - Ensure examples are copy-paste friendly.
-- Run Prettier on touched docs.
+- Run oxfmt on touched docs.
 
 ## What “Good” Looks Like
 
@@ -163,7 +163,7 @@ For each touched component docs file, verify:
 
 5. Final hygiene
 
-- Prettier run on touched files.
+- oxfmt run on touched files.
 - No broken code fences.
 - No stale references.
 

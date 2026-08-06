@@ -48,7 +48,8 @@
 "@zag-js/tour": minor
 ---
 
-Add `get<Part>State()` getters (e.g. `getTriggerState`, `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+Add `get<Part>State()` getters (e.g. `getTriggerState`, `getContentState`, `getRootState`), extending the existing
+`getItemState` convention to every part with derived state.
 
 ```ts
 const triggerState = dialog.getTriggerState({ value: "confirm" })

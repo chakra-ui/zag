@@ -21,11 +21,16 @@
       :key="collection.getNodeValue(item)"
       v-bind="api.getItemProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })"
     >
-      <span v-bind="api.getItemTextProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })">
+      <span
+        v-bind="api.getItemTextProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })"
+      >
         {{ item.label }}
       </span>
       <span>›</span>
-      <span v-bind="api.getItemIndicatorProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })">✓</span>
+      <span
+        v-bind="api.getItemIndicatorProps({ indexPath: [...indexPath, index], value: [...value, collection.getNodeValue(item)], item })"
+        >✓</span
+      >
     </li>
   </ul>
   <CascadeSelectNode

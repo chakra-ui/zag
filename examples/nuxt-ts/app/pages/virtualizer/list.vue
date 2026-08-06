@@ -34,10 +34,15 @@ const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
       <button type="button" @click="virtualizer.scrollToIndex(0, { smooth: smoothScroll })">Scroll to top</button>
-      <button type="button" @click="virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: 'center', smooth: smoothScroll })">
+      <button
+        type="button"
+        @click="virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: 'center', smooth: smoothScroll })"
+      >
         Scroll to middle
       </button>
-      <button type="button" @click="virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })">Scroll to bottom</button>
+      <button type="button" @click="virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll })">
+        Scroll to bottom
+      </button>
     </div>
 
     <div
@@ -46,7 +51,14 @@ const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
       tabindex="0"
       aria-label="Virtualized list"
       @scroll="virtualizer.handleScroll"
-      :style="{ ...virtualizer.getContainerStyle(), width: '100%', height: '420px', border: '1px solid #d1d5db', borderRadius: '8px', marginTop: '16px' }"
+      :style="{
+        ...virtualizer.getContainerStyle(),
+        width: '100%',
+        height: '420px',
+        border: '1px solid #d1d5db',
+        borderRadius: '8px',
+        marginTop: '16px',
+      }"
     >
       <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
         <div

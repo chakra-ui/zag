@@ -10,18 +10,15 @@ import "@styles/date-picker.css"
 export default function Page() {
   const controls = useControls(datePickerControls)
   const [open, setOpen] = createSignal(false)
-  const service = useMachine(
-    datePicker.machine,
-    (): datePicker.Props => ({
-      id: createUniqueId(),
-      locale: "en",
-      selectionMode: "single",
-      open: open(),
-      onOpenChange(details) {
-        setOpen(details.open)
-      },
-    }),
-  )
+  const service = useMachine(datePicker.machine, (): datePicker.Props => ({
+    id: createUniqueId(),
+    locale: "en",
+    selectionMode: "single",
+    open: open(),
+    onOpenChange(details) {
+      setOpen(details.open)
+    },
+  }))
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 

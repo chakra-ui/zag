@@ -15,7 +15,13 @@
   }
 
   const products: Product[] = [
-    { id: 1, name: "Laptop", price: 999, stock: 15, description: "High-performance laptop with 16GB RAM and 512GB SSD" },
+    {
+      id: 1,
+      name: "Laptop",
+      price: 999,
+      stock: 15,
+      description: "High-performance laptop with 16GB RAM and 512GB SSD",
+    },
     { id: 2, name: "Mouse", price: 29, stock: 50, description: "Ergonomic wireless mouse with precision tracking" },
     { id: 3, name: "Keyboard", price: 79, stock: 30, description: "Mechanical keyboard with RGB backlight" },
     { id: 4, name: "Monitor", price: 299, stock: 20, description: "27-inch 4K display with HDR support" },
@@ -80,10 +86,9 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active Product:</strong>
       {activeProduct ? `${activeProduct.name} ($${activeProduct.price})` : "-"}
     </div>

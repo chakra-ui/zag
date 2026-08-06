@@ -23,10 +23,7 @@ const api = computed(() => drawer.connect(service, normalizeProps))
           Try scrolling the image carousel horizontally. It should scroll without triggering the drawer drag.
         </p>
 
-        <div
-          data-testid="horizontal-scroll"
-          style="display: flex; gap: 12px; overflow-x: auto; padding: 16px"
-        >
+        <div data-testid="horizontal-scroll" style="display: flex; gap: 12px; overflow-x: auto; padding: 16px">
           <div
             v-for="i in 10"
             :key="i"

@@ -31,7 +31,13 @@ const setRootRef = (element: Element | ComponentPublicInstance | null) => {
     <div
       :ref="setRootRef"
       v-bind="virtualizer.getContainerAriaAttrs()"
-      :style="{ ...virtualizer.getContainerStyle(), width: '100%', border: '1px solid #d1d5db', borderRadius: '8px', marginTop: '16px' }"
+      :style="{
+        ...virtualizer.getContainerStyle(),
+        width: '100%',
+        border: '1px solid #d1d5db',
+        borderRadius: '8px',
+        marginTop: '16px',
+      }"
     >
       <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
         <div

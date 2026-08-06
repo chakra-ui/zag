@@ -71,8 +71,7 @@
   <h2 style="margin-bottom: 24px;">Team Members - Hover Card with Multiple Triggers</h2>
 
   <p style="margin-bottom: 24px; color: #666;">
-    Hover over any team member to see their profile card. The card will reposition to the hovered
-    member.
+    Hover over any team member to see their profile card. The card will reposition to the hovered member.
   </p>
 
   <div style="display: flex; gap: 24px; flex-wrap: wrap;">
@@ -83,11 +82,7 @@
         {...api.getTriggerProps({ value: `${user.id}` })}
         style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; border: 1px solid #e5e7eb; text-decoration: none; color: inherit; transition: box-shadow 0.2s;"
       >
-        <img
-          src={user.avatar}
-          alt={user.name}
-          style="width: 40px; height: 40px; border-radius: 50%;"
-        />
+        <img src={user.avatar} alt={user.name} style="width: 40px; height: 40px; border-radius: 50%;" />
         <div>
           <div style="font-weight: bold;">{user.name}</div>
           <div style="color: #666; font-size: 14px;">{user.username}</div>
@@ -96,10 +91,9 @@
     {/each}
   </div>
 
-  <div
-    style="margin-top: 24px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-  >
-    <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+  <div style="margin-top: 24px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+    <strong>Active Trigger:</strong>
+    {api.triggerValue || "-"} <br />
     <strong>Active User:</strong>
     {activeUser ? `${activeUser.name} (${activeUser.username})` : "-"}
   </div>
@@ -112,11 +106,7 @@
       >
         {#if activeUser}
           <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-            <img
-              src={activeUser.avatar}
-              alt={activeUser.name}
-              style="width: 64px; height: 64px; border-radius: 50%;"
-            />
+            <img src={activeUser.avatar} alt={activeUser.name} style="width: 64px; height: 64px; border-radius: 50%;" />
             <div>
               <div style="font-weight: bold; font-size: 18px;">{activeUser.name}</div>
               <div style="color: #666;">{activeUser.username}</div>

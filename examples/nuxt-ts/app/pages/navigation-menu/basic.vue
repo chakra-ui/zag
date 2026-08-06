@@ -15,7 +15,6 @@ const service = useMachine(
 )
 
 const api = computed(() => navigationMenu.connect(service, normalizeProps))
-
 </script>
 
 <template>
@@ -59,12 +58,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               <div v-bind="api.getArrowProps()" />
             </Presence>
             <a
-              v-for="(item, index) in [
-                'About Us',
-                'Leadership Team',
-                'Careers',
-                'Press Releases',
-              ]"
+              v-for="(item, index) in ['About Us', 'Leadership Team', 'Careers', 'Press Releases']"
               :key="`company-${item}-${index}`"
               href="#"
               v-bind="api.getLinkProps({ value: 'company' })"
@@ -84,11 +78,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               <div v-bind="api.getArrowProps()" />
             </Presence>
             <a
-              v-for="(item, index) in [
-                'Investors',
-                'Partners',
-                'Corporate Responsibility',
-              ]"
+              v-for="(item, index) in ['Investors', 'Partners', 'Corporate Responsibility']"
               :key="`developers-${item}-${index}`"
               href="#"
               v-bind="api.getLinkProps({ value: 'developers' })"
@@ -99,9 +89,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
         </div>
 
         <div v-bind="api.getItemProps({ value: 'pricing' })">
-          <a href="#" v-bind="api.getLinkProps({ value: 'pricing' })">
-            Pricing
-          </a>
+          <a href="#" v-bind="api.getLinkProps({ value: 'pricing' })"> Pricing </a>
         </div>
       </div>
     </div>

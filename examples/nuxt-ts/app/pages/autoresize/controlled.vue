@@ -41,7 +41,9 @@ function onInput(e: Event) {
 
     <div style="margin-top: 20px">
       <strong>Value from state:</strong>
-      <pre data-testid="value" style="background: #f5f5f5; padding: 12px; border-radius: 4px; min-height: 40px">{{ JSON.stringify(value) }}</pre>
+      <pre data-testid="value" style="background: #f5f5f5; padding: 12px; border-radius: 4px; min-height: 40px">{{
+        JSON.stringify(value)
+      }}</pre>
     </div>
   </main>
 </template>

@@ -79,10 +79,9 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active Document:</strong>
       {activeDocument ? `${activeDocument.name} (${activeDocument.type})` : "-"}
     </div>
@@ -98,14 +97,10 @@
           {activeDocument?.name}
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <button
-            style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;"
-          >
+          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;">
             Open
           </button>
-          <button
-            style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;"
-          >
+          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;">
             Rename
           </button>
           <button

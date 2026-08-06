@@ -181,20 +181,34 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0))); }
-  to { opacity: 0; }
+  from {
+    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(calc(100% + 1rem + 2px)); }
-  to { transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0); }
+  from {
+    transform: translateY(calc(100% + 1rem + 2px));
+  }
+  to {
+    transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0);
+  }
 }
 
 @keyframes slideDown {
-  from { transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0); }
-  to { transform: translateY(calc(100% + 1rem + 2px)); }
+  from {
+    transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0);
+  }
+  to {
+    transform: translateY(calc(100% + 1rem + 2px));
+  }
 }

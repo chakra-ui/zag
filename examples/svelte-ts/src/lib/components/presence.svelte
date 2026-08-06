@@ -19,8 +19,15 @@
     children?: Snippet
     [key: string]: any
   }
-  let { hidden = false, lazyMount = false, skipAnimationOnMount = false, unmountOnExit = false, children, ...rest }: Props = $props()
-  let present = $derived(!Boolean(hidden))
+  let {
+    hidden = false,
+    lazyMount = false,
+    skipAnimationOnMount = false,
+    unmountOnExit = false,
+    children,
+    ...rest
+  }: Props = $props()
+  let present = $derived(!hidden)
   let service = useMachine(presence.machine, () => ({
     present,
   }))
@@ -35,19 +42,18 @@
   })
 
   let unmounted = $derived(
-    (!api.present && !wasEverPresent && lazyMount) ||
-    (unmountOnExit && !api.present && wasEverPresent)
+    (!api.present && !wasEverPresent && lazyMount) || (unmountOnExit && !api.present && wasEverPresent),
   )
 </script>
 
 {#if !unmounted}
-<div
-  {@attach setNode}
-  data-scope="presence"
-  {...rest}
-  data-state={api.skip && skipAnimationOnMount ? undefined : present ? "open" : "closed"}
-  hidden={!api.present}
->
-  {@render children?.()}
-</div>
+  <div
+    {@attach setNode}
+    data-scope="presence"
+    {...rest}
+    data-state={api.skip && skipAnimationOnMount ? undefined : present ? "open" : "closed"}
+    hidden={!api.present}
+  >
+    {@render children?.()}
+  </div>
 {/if}

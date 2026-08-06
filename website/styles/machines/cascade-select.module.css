@@ -111,11 +111,12 @@
       background: color-mix(in srgb, currentColor 8%, transparent);
     }
 
-    &[data-highlighted], &[data-state="checked"] {
+    &[data-highlighted],
+    &[data-state="checked"] {
       background: var(--colors-bg-primary-bold);
       color: #ffffff;
     }
-    
+
     &[data-disabled] {
       opacity: 0.4;
       cursor: not-allowed;

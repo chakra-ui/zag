@@ -22,4 +22,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

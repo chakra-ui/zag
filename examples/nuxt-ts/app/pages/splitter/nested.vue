@@ -59,8 +59,6 @@ const registry = splitter.registry({
       </template>
     </Splitter>
 
-    <p style="margin-top: 20px">
-      Drag at the intersection of resize handles to resize both directions simultaneously.
-    </p>
+    <p style="margin-top: 20px">Drag at the intersection of resize handles to resize both directions simultaneously.</p>
   </main>
 </template>

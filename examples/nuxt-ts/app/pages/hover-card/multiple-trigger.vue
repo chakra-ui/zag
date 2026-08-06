@@ -130,8 +130,12 @@ const api = computed(() => hoverCard.connect(service, normalizeProps))
             </div>
             <p style="margin-bottom: 16px; color: #444">{{ activeUser.bio }}</p>
             <div style="display: flex; gap: 24px; color: #666; font-size: 14px">
-              <div><strong style="color: #000">{{ activeUser.followers.toLocaleString() }}</strong> Followers</div>
-              <div><strong style="color: #000">{{ activeUser.following.toLocaleString() }}</strong> Following</div>
+              <div>
+                <strong style="color: #000">{{ activeUser.followers.toLocaleString() }}</strong> Followers
+              </div>
+              <div>
+                <strong style="color: #000">{{ activeUser.following.toLocaleString() }}</strong> Following
+              </div>
             </div>
           </template>
         </Presence>

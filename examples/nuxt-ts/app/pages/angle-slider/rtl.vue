@@ -4,7 +4,10 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/angle-slider.css"
 
 const id = useId()
-const service = useMachine(angleSlider.machine, computed(() => ({ id, dir: "rtl" as const })))
+const service = useMachine(
+  angleSlider.machine,
+  computed(() => ({ id, dir: "rtl" as const })),
+)
 const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
 

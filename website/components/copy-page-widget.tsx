@@ -32,7 +32,6 @@ const buttonStyles = cva({
 
 interface CopyPageWidgetProps {
   slug: string
-  content: string
   title?: string
 }
 
@@ -202,11 +201,7 @@ const itemStyles = css({
   },
 })
 
-export const CopyPageWidget = ({
-  slug,
-  content,
-  title,
-}: CopyPageWidgetProps) => {
+export const CopyPageWidget = ({ slug, title }: CopyPageWidgetProps) => {
   return (
     <HStack
       gap="0"

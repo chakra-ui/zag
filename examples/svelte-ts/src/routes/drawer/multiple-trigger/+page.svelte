@@ -61,7 +61,8 @@
   </table>
 
   <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-    <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <strong>Active Trigger:</strong>
+    {api.triggerValue || "-"} <br />
     <strong>Active User:</strong>
     {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
   </div>

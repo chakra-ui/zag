@@ -34,7 +34,8 @@ const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
   <main style="padding: 20px; width: 100%; max-width: 960px">
     <h1>Waterfall Virtualizer</h1>
     <p style="color: #64748b">
-      Masonry layout with {{ ITEM_COUNT.toLocaleString() }} variable-height cards across {{ virtualizer.getWaterfallState().columnCount }} columns.
+      Masonry layout with {{ ITEM_COUNT.toLocaleString() }} variable-height cards across
+      {{ virtualizer.getWaterfallState().columnCount }} columns.
     </p>
 
     <div

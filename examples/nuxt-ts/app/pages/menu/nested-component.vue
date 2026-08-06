@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import "@styles/menu.css"</script>
+import "@styles/menu.css"
+</script>
 
 <template>
   <main>

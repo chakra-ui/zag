@@ -47,7 +47,9 @@ const api = computed(() => gridlist.connect(service, normalizeProps))
           <div
             v-for="item in resources"
             :key="item.id"
-            v-bind="api.getItemProps({ item, href: item.href, target: '_blank', rel: 'noreferrer', focusOnHover: true })"
+            v-bind="
+              api.getItemProps({ item, href: item.href, target: '_blank', rel: 'noreferrer', focusOnHover: true })
+            "
           >
             <div v-bind="api.getCellProps()">
               <div class="gridlist-item-body">

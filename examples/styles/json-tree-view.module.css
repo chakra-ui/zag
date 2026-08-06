@@ -67,7 +67,9 @@
   font: inherit;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     background: var(--row-hover);
@@ -173,7 +175,9 @@
   margin-inline-end: 2px;
   flex-shrink: 0;
   color: var(--text-muted);
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
 
   & svg {
     width: 14px;

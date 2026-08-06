@@ -4,12 +4,12 @@
 
 **Breaking:** Replace `composite` prop with `virtualFocus` in Tabs.
 
-The vague `composite` boolean has been replaced with `virtualFocus`, a well-known accessibility concept that
-is self-documenting.
+The vague `composite` boolean has been replaced with `virtualFocus`, a well-known accessibility concept that is
+self-documenting.
 
 - `virtualFocus: false` (default) — roving tabindex, arrow keys move DOM focus. Standard standalone tabs.
-- `virtualFocus: true` — all triggers are tabIndex -1, arrow keys update selected tab without moving DOM focus.
-  Used when tabs are embedded inside another composite widget (e.g. combobox/tabs pattern).
+- `virtualFocus: true` — all triggers are tabIndex -1, arrow keys update selected tab without moving DOM focus. Used
+  when tabs are embedded inside another composite widget (e.g. combobox/tabs pattern).
 
 > Note: the boolean is inverted relative to `composite`.
 

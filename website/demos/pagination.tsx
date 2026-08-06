@@ -18,7 +18,7 @@ export function Pagination(props: PaginationProps) {
     <>
       {api.totalPages > 1 && (
         <nav {...api.getRootProps()}>
-          <ul className={styles.List} role="pagination">
+          <ul className={styles.List}>
             <li>
               <a
                 className={styles.PrevTrigger}

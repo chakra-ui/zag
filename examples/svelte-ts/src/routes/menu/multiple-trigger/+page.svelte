@@ -79,10 +79,9 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active Document:</strong>
       {activeDocument ? `${activeDocument.name} (${activeDocument.type})` : "-"}
     </div>

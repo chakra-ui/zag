@@ -29,7 +29,10 @@
     <div {...api.getSeparatorProps()}></div>
     <div {...numberApi.getControlProps()}>
       <button {...numberApi.getDecrementTriggerProps()} aria-label="Zoom out">-</button>
-      <input class="toolbar-number-input" {...mergeProps(numberApi.getInputProps(), api.getInputProps({ value: "zoom" }))} />
+      <input
+        class="toolbar-number-input"
+        {...mergeProps(numberApi.getInputProps(), api.getInputProps({ value: "zoom" }))}
+      />
       <button {...numberApi.getIncrementTriggerProps()} aria-label="Zoom in">+</button>
     </div>
   </div>
@@ -38,4 +41,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

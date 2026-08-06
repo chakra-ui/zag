@@ -46,4 +46,3 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

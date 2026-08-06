@@ -28,7 +28,10 @@ const checkboxApi = computed(() => checkbox.connect(checkboxService, normalizePr
       <div v-bind="api.getSeparatorProps()" />
       <label v-bind="checkboxApi.getRootProps()" class="toolbar-item">
         <div v-bind="checkboxApi.getControlProps()" />
-        <input v-bind="mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: 'track-changes' }))" type="checkbox" />
+        <input
+          v-bind="mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: 'track-changes' }))"
+          type="checkbox"
+        />
         <span v-bind="checkboxApi.getLabelProps()">Track changes</span>
       </label>
     </div>
@@ -38,4 +41,3 @@ const checkboxApi = computed(() => checkbox.connect(checkboxService, normalizePr
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

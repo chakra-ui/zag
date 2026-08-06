@@ -4,10 +4,13 @@ import { getExamplePackages, getWorkspacePackages } from "./get-packages"
 function sortObject(obj: Record<string, any>) {
   return Object.keys(obj)
     .sort()
-    .reduce((acc, key) => {
-      acc[key] = obj[key]
-      return acc
-    }, {} as Record<string, any>)
+    .reduce(
+      (acc, key) => {
+        acc[key] = obj[key]
+        return acc
+      },
+      {} as Record<string, any>,
+    )
 }
 
 async function main() {

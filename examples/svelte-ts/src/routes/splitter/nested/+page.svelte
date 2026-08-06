@@ -23,11 +23,7 @@
     </div>
     <div {...api().getResizeTriggerProps({ id: "left:center" })}></div>
     <div {...api().getPanelProps({ id: "center" })}>
-      <Splitter
-        orientation="vertical"
-        panels={[{ id: "top" }, { id: "middle" }, { id: "bottom" }]}
-        {registry}
-      >
+      <Splitter orientation="vertical" panels={[{ id: "top" }, { id: "middle" }, { id: "bottom" }]} {registry}>
         {@const vApi = getSplitterApi()}
         <div {...vApi().getPanelProps({ id: "top" })}>
           <div style="background: #fff0f5; padding: 20px; width: 100%; height: 100%">
@@ -56,7 +52,5 @@
     </div>
   </Splitter>
 
-  <p style="margin-top: 20px">
-    Drag at the intersection of resize handles to resize both directions simultaneously.
-  </p>
+  <p style="margin-top: 20px">Drag at the intersection of resize handles to resize both directions simultaneously.</p>
 </main>

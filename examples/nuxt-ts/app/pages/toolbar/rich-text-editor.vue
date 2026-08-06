@@ -100,7 +100,10 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
 
         <div v-bind="sizeApi.getControlProps()">
           <button v-bind="sizeApi.getDecrementTriggerProps()" aria-label="Decrease font size">-</button>
-          <input class="toolbar-number-input" v-bind="mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: 'font-size' }))" />
+          <input
+            class="toolbar-number-input"
+            v-bind="mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: 'font-size' }))"
+          />
           <button v-bind="sizeApi.getIncrementTriggerProps()" aria-label="Increase font size">+</button>
         </div>
 
@@ -132,4 +135,3 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

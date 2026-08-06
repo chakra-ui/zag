@@ -77,14 +77,15 @@ export default function RootLayout({
       className={wixMadeforText.variable}
     >
       <head>
-        {process.env.NODE_ENV === "production" && siteConfig.analyticsDomain && (
-          <script
-            async
-            defer
-            data-domain={siteConfig.analyticsDomain}
-            src="https://plausible.io/js/plausible.js"
-          />
-        )}
+        {process.env.NODE_ENV === "production" &&
+          siteConfig.analyticsDomain && (
+            <script
+              async
+              defer
+              data-domain={siteConfig.analyticsDomain}
+              src="https://plausible.io/js/plausible.js"
+            />
+          )}
       </head>
       <body suppressHydrationWarning>
         <ThemeProvider

@@ -16,7 +16,10 @@ function activate(label: string) {
   <main class="toolbar">
     <div v-bind="api.getRootProps()">
       <button v-bind="api.getItemProps({ value: 'cut' })" @click="activate('Cut')">Cut</button>
-      <button v-bind="api.getItemProps({ value: 'copy', disabled: true, focusableWhenDisabled: false })" @click="activate('Copy')">
+      <button
+        v-bind="api.getItemProps({ value: 'copy', disabled: true, focusableWhenDisabled: false })"
+        @click="activate('Copy')"
+      >
         Copy (disabled, skipped by arrow keys)
       </button>
       <button
@@ -34,4 +37,3 @@ function activate(label: string) {
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

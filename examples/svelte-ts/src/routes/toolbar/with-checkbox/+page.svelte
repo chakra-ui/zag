@@ -26,7 +26,10 @@
     <div {...api.getSeparatorProps()}></div>
     <label {...checkboxApi.getRootProps()} class="toolbar-item">
       <div {...checkboxApi.getControlProps()}></div>
-      <input {...mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: "track-changes" }))} type="checkbox" />
+      <input
+        {...mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: "track-changes" }))}
+        type="checkbox"
+      />
       <span {...checkboxApi.getLabelProps()}>Track changes</span>
     </label>
   </div>
@@ -35,4 +38,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

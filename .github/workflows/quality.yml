@@ -61,8 +61,8 @@ jobs:
         env:
           FRAMEWORK: react
 
-  eslint:
-    name: ESLint
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -71,10 +71,8 @@ jobs:
       - name: Install
         uses: ./.github/composite-actions/install
 
-      - name: Run ESLint
+      - name: Run oxlint
         run: pnpm lint
-        env:
-          NODE_OPTIONS: "--max-old-space-size=4096"
 
   types:
     name: TypeScript

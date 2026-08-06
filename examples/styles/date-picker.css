@@ -51,7 +51,7 @@
 
   &[data-selected] {
     background: purple !important;
-    color: white !important ;
+    color: white !important;
   }
 
   &[data-in-range]:not([data-selected]) {

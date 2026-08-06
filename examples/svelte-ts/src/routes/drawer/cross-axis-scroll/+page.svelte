@@ -26,10 +26,7 @@
         Try scrolling the image carousel horizontally. It should scroll without triggering the drawer drag.
       </p>
 
-      <div
-        data-testid="horizontal-scroll"
-        style="display: flex; gap: 12px; overflow-x: auto; padding: 16px"
-      >
+      <div data-testid="horizontal-scroll" style="display: flex; gap: 12px; overflow-x: auto; padding: 16px">
         {#each Array.from({ length: 10 }) as _, i}
           <div
             style="width: 200px; height: 120px; border-radius: 12px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #6b7280"

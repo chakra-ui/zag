@@ -37,7 +37,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore",

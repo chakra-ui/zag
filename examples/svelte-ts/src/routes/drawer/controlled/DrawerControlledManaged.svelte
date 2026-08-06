@@ -38,9 +38,7 @@
         <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
       </div>
       <div {...api.getTitleProps()}>Controlled Drawer</div>
-      <p {...api.getDescriptionProps()}>
-        This drawer is fully controlled. Swipe, escape, and outside click all work.
-      </p>
+      <p {...api.getDescriptionProps()}>This drawer is fully controlled. Swipe, escape, and outside click all work.</p>
       <p style="font-size: 14px">
         Open: <strong>{String(open)}</strong>
       </p>

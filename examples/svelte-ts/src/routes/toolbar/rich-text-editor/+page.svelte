@@ -90,7 +90,10 @@
 
       <div {...sizeApi.getControlProps()}>
         <button {...sizeApi.getDecrementTriggerProps()} aria-label="Decrease font size">-</button>
-        <input class="toolbar-number-input" {...mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: "font-size" }))} />
+        <input
+          class="toolbar-number-input"
+          {...mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: "font-size" }))}
+        />
         <button {...sizeApi.getIncrementTriggerProps()} aria-label="Increase font size">+</button>
       </div>
 
@@ -119,4 +122,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

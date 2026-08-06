@@ -31,7 +31,10 @@ const numberApi = computed(() => numberInput.connect(numberService, normalizePro
       <div v-bind="api.getSeparatorProps()" />
       <div v-bind="numberApi.getControlProps()">
         <button v-bind="numberApi.getDecrementTriggerProps()" aria-label="Zoom out">-</button>
-        <input class="toolbar-number-input" v-bind="mergeProps(numberApi.getInputProps(), api.getInputProps({ value: 'zoom' }))" />
+        <input
+          class="toolbar-number-input"
+          v-bind="mergeProps(numberApi.getInputProps(), api.getInputProps({ value: 'zoom' }))"
+        />
         <button v-bind="numberApi.getIncrementTriggerProps()" aria-label="Zoom in">+</button>
       </div>
     </div>
@@ -41,4 +44,3 @@ const numberApi = computed(() => numberInput.connect(numberService, normalizePro
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

@@ -182,10 +182,7 @@
   --stack-scale: calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress)));
   --stack-shrink: calc(1 - var(--stack-scale));
   --stack-height: max(0px, var(--drawer-frontmost-height, var(--drawer-height, 0px)));
-  --translate-y: calc(
-    0px - var(--stack-peek-offset) -
-      (var(--stack-shrink) * var(--stack-height))
-  );
+  --translate-y: calc(0px - var(--stack-peek-offset) - (var(--stack-shrink) * var(--stack-height)));
   box-sizing: border-box;
   position: relative;
   width: 100%;

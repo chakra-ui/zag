@@ -42,11 +42,7 @@ const api = computed(() => gridlist.connect(service, normalizeProps))
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">Mailboxes</label>
         <div v-bind="api.getContentProps()">
-          <div
-            v-for="item in gridListData"
-            :key="item.id"
-            v-bind="api.getItemProps({ item, focusOnHover: true })"
-          >
+          <div v-for="item in gridListData" :key="item.id" v-bind="api.getItemProps({ item, focusOnHover: true })">
             <div v-bind="api.getCellProps()">
               <button v-if="api.hasCheckbox" v-bind="api.getItemCheckboxProps({ item })">
                 <CheckIcon v-bind="api.getItemIndicatorProps({ item })" />

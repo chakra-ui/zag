@@ -32,4 +32,3 @@ const items = [
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

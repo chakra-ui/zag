@@ -18,7 +18,10 @@
 <main class="toolbar">
   <div {...api.getRootProps()}>
     <button {...api.getItemProps({ value: "cut" })} onclick={() => activate("Cut")}>Cut</button>
-    <button {...api.getItemProps({ value: "copy", disabled: true, focusableWhenDisabled: false })} onclick={() => activate("Copy")}>
+    <button
+      {...api.getItemProps({ value: "copy", disabled: true, focusableWhenDisabled: false })}
+      onclick={() => activate("Copy")}
+    >
       Copy (disabled, skipped by arrow keys)
     </button>
     <button
@@ -38,4 +41,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

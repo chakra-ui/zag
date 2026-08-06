@@ -44,8 +44,8 @@ pnpm pw-report          # View Playwright test reports
 
 ```bash
 pnpm lint               # Lint all packages
-pnpm prettier           # Check formatting
-pnpm prettier-fix       # Fix formatting
+pnpm format-check       # Check formatting
+pnpm format             # Fix formatting
 pnpm typecheck          # TypeScript type checking
 ```
 

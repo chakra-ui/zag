@@ -49,7 +49,7 @@
           <Presence {...api.getIndicatorProps()}>
             <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks( { value: "products", items: ["Analytics Platform", "Customer Engagement", "Marketing Automation", "Data Integration", "Enterprise Solutions", "API Documentation"] }, ) as { item, index, value }}
+          {#each renderLinks( { value: "products", items: ["Analytics Platform", "Customer Engagement", "Marketing Automation", "Data Integration", "Enterprise Solutions", "API Documentation"] } ) as { item, index, value }}
             <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>
@@ -77,7 +77,7 @@
           <Presence {...api.getIndicatorProps()}>
             <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks( { value: "company", items: ["About Us", "Leadership Team", "Careers", "Press Releases"] }, ) as { item, index, value }}
+          {#each renderLinks( { value: "company", items: ["About Us", "Leadership Team", "Careers", "Press Releases"] } ) as { item, index, value }}
             <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>
@@ -105,7 +105,7 @@
           <Presence {...api.getIndicatorProps()}>
             <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks( { value: "developers", items: ["Investors", "Partners", "Corporate Responsibility"] }, ) as { item, index, value }}
+          {#each renderLinks( { value: "developers", items: ["Investors", "Partners", "Corporate Responsibility"] } ) as { item, index, value }}
             <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>

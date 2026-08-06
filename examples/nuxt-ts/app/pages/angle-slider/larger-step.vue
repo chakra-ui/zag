@@ -5,7 +5,10 @@ import "@styles/angle-slider.css"
 
 const STEP = 45
 const id = useId()
-const service = useMachine(angleSlider.machine, computed(() => ({ id, step: STEP })))
+const service = useMachine(
+  angleSlider.machine,
+  computed(() => ({ id, step: STEP })),
+)
 const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
 

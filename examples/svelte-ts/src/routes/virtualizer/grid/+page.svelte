@@ -36,7 +36,9 @@
     aria-label="Virtualized grid"
     style="height: 520px; width: 100%; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 16px; position: relative;"
   >
-    <div style={`height: ${virtualizer.getTotalHeight()}px; width: ${virtualizer.getTotalWidth()}px; position: relative`}>
+    <div
+      style={`height: ${virtualizer.getTotalHeight()}px; width: ${virtualizer.getTotalWidth()}px; position: relative`}
+    >
       {#each virtualizer.getVirtualRows() as virtualRow (`row-${virtualRow.row}`)}
         <div
           style={`position: absolute; top: ${virtualRow.y}px; left: 0; width: ${virtualizer.getTotalWidth()}px; height: ${virtualRow.height}px;`}

@@ -29,7 +29,9 @@
       <strong>B</strong>
     </button>
     <button class="toolbar-icon-only" {...api.getItemProps({ value: "italic" })} aria-label="Italic"><em>I</em></button>
-    <button class="toolbar-icon-only" {...api.getItemProps({ value: "underline" })} aria-label="Underline"><u>U</u></button>
+    <button class="toolbar-icon-only" {...api.getItemProps({ value: "underline" })} aria-label="Underline"
+      ><u>U</u></button
+    >
     {#if tooltipApi.open}
       <div use:portal {...tooltipApi.getPositionerProps()}>
         <div {...tooltipApi.getContentProps()}>Bold</div>
@@ -41,4 +43,3 @@
 <Toolbar>
   <StateVisualizer state={service} />
 </Toolbar>
-

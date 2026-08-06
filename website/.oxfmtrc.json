@@ -1,0 +1,20 @@
+{
+  "bracketSpacing": true,
+  "jsxSingleQuote": false,
+  "printWidth": 80,
+  "proseWrap": "always",
+  "semi": false,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    ".next",
+    "build",
+    "*.hbs",
+    "next-env.d.ts"
+  ]
+}

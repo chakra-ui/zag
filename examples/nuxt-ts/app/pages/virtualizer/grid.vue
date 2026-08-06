@@ -33,10 +33,27 @@ const getCellValue = (row: number, column: number) => `R${row + 1}C${column + 1}
       tabindex="0"
       aria-label="Virtualized grid"
       @scroll="virtualizer.handleScroll"
-      :style="{ ...virtualizer.getContainerStyle(), width: '100%', height: '520px', border: '1px solid #d1d5db', borderRadius: '8px', marginTop: '16px' }"
+      :style="{
+        ...virtualizer.getContainerStyle(),
+        width: '100%',
+        height: '520px',
+        border: '1px solid #d1d5db',
+        borderRadius: '8px',
+        marginTop: '16px',
+      }"
     >
-      <div :style="{ height: `${virtualizer.getTotalHeight()}px`, width: `${virtualizer.getTotalWidth()}px`, position: 'relative' }">
-        <div v-for="virtualRow in virtualizer.getVirtualRows()" :key="virtualRow.row" :style="virtualizer.getRowStyle(virtualRow)">
+      <div
+        :style="{
+          height: `${virtualizer.getTotalHeight()}px`,
+          width: `${virtualizer.getTotalWidth()}px`,
+          position: 'relative',
+        }"
+      >
+        <div
+          v-for="virtualRow in virtualizer.getVirtualRows()"
+          :key="virtualRow.row"
+          :style="virtualizer.getRowStyle(virtualRow)"
+        >
           <div
             v-for="column in virtualRow.columns"
             :key="`${virtualRow.row}-${column.column}`"

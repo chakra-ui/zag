@@ -114,13 +114,10 @@
     "virtua": "^0.49.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.2.6",
     "@types/form-serialize": "0.7.4",
     "@types/node": "25.9.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "7.0.1",
     "typescript": "6.0.3"
   },
   "license": "MIT"

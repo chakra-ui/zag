@@ -30,8 +30,12 @@ const tooltipApi = computed(() => tooltip.connect(tooltipService, normalizeProps
       >
         <strong>B</strong>
       </button>
-      <button class="toolbar-icon-only" v-bind="api.getItemProps({ value: 'italic' })" aria-label="Italic"><em>I</em></button>
-      <button class="toolbar-icon-only" v-bind="api.getItemProps({ value: 'underline' })" aria-label="Underline"><u>U</u></button>
+      <button class="toolbar-icon-only" v-bind="api.getItemProps({ value: 'italic' })" aria-label="Italic">
+        <em>I</em>
+      </button>
+      <button class="toolbar-icon-only" v-bind="api.getItemProps({ value: 'underline' })" aria-label="Underline">
+        <u>U</u>
+      </button>
       <Teleport to="#teleports">
         <div v-if="tooltipApi.open" v-bind="tooltipApi.getPositionerProps()">
           <div v-bind="tooltipApi.getContentProps()">Bold</div>
@@ -44,4 +48,3 @@ const tooltipApi = computed(() => tooltip.connect(tooltipService, normalizeProps
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

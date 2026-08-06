@@ -6,6 +6,6 @@
     "**/.xstate": true
   },
   "biome.enabled": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true
 }

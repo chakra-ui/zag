@@ -21,4 +21,3 @@ const api = computed(() => toolbar.connect(service, normalizeProps))
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>
-

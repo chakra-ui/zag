@@ -158,13 +158,18 @@ the same id. That's how to compose machines together.
 
 #### Always use the `ids` context option
 
-When customizing element IDs, always use the `ids` option in the machine context.
-Never manually set the `id` attribute on elements using the prop functions.
+When customizing element IDs, always use the `ids` option in the machine
+context. Never manually set the `id` attribute on elements using the prop
+functions.
 
 ```tsx
 // ❌ Wrong: Manually setting id on the element
 const api = checkbox.connect(service, normalizeProps)
-return <label {...api.getLabelProps()} id="my-custom-id">Label</label>
+return (
+  <label {...api.getLabelProps()} id="my-custom-id">
+    Label
+  </label>
+)
 
 // ✓ Correct: Use the ids option in machine context
 const service = useMachine(checkbox.machine, {
