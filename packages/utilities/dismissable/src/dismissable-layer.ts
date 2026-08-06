@@ -165,14 +165,25 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
 
 export function trackDismissableElement(nodeOrFn: NodeOrFn, options: DismissableElementOptions) {
   const { defer } = options
-  const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []
-  cleanups.push(
-    func(() => {
-      const node = isFunction(nodeOrFn) ? nodeOrFn() : nodeOrFn
-      cleanups.push(trackDismissableElementImpl(node, options))
-    }),
-  )
+
+  // Resolve the node eagerly so the layer (and its escape keydown handler) is registered
+  // synchronously whenever possible. `defer` only needs to gate node resolution; the
+  // interact-outside logic applies its own deferral internally (via `options.defer`),
+  // so registering early cannot cause the opening click to dismiss the layer.
+  const node = isFunction(nodeOrFn) ? nodeOrFn() : nodeOrFn
+
+  if (!defer || node) {
+    cleanups.push(trackDismissableElementImpl(node, options))
+  } else {
+    cleanups.push(
+      raf(() => {
+        const deferredNode = isFunction(nodeOrFn) ? nodeOrFn() : nodeOrFn
+        cleanups.push(trackDismissableElementImpl(deferredNode, options))
+      }),
+    )
+  }
+
   return () => {
     cleanups.forEach((fn) => fn?.())
   }
