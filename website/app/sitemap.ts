@@ -8,6 +8,8 @@ import type { MetadataRoute } from "next"
 import siteConfig from "site.config"
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  if (siteConfig.noindex) return []
+
   const lastModified = new Date()
 
   const staticRoutes = ["", "/community", "/showcase"].map((path) => ({

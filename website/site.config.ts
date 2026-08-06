@@ -1,9 +1,13 @@
 const baseConfig = {
   repo: "https://github.com/chakra-ui/zag",
+  branch: "v2",
   title: "Zag - Rapidly build UI components without sweating over the logic.",
   description:
     "State machines for accessible, interactive and performant UI components",
-  url: "https://zagjs.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://zagjs.com",
+  // empty disables the Plausible script entirely
+  analyticsDomain: process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN ?? "zagjs.com",
+  noindex: process.env.NEXT_PUBLIC_NOINDEX === "1",
 }
 
 const siteConfig = {
@@ -23,11 +27,12 @@ const siteConfig = {
   },
   repo: {
     url: "https://github.com/chakra-ui/zag",
-    editUrl: `${baseConfig.repo}/edit/main/website/data`,
-    blobUrl: `${baseConfig.repo}/blob/main`,
+    editUrl: `${baseConfig.repo}/edit/${baseConfig.branch}/website/data`,
+    blobUrl: `${baseConfig.repo}/blob/${baseConfig.branch}`,
+    treeUrl: `${baseConfig.repo}/tree/${baseConfig.branch}`,
   },
   discord: {
-    url: "https://zagjs.com/discord",
+    url: `${baseConfig.url}/discord`,
   },
   seo: {
     title: baseConfig.title,

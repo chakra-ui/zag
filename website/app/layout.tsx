@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   metadataBase: new URL(siteConfig.url),
+  ...(siteConfig.noindex && { robots: { index: false, follow: false } }),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -76,11 +77,11 @@ export default function RootLayout({
       className={wixMadeforText.variable}
     >
       <head>
-        {process.env.NODE_ENV === "production" && (
+        {process.env.NODE_ENV === "production" && siteConfig.analyticsDomain && (
           <script
             async
             defer
-            data-domain="zagjs.com"
+            data-domain={siteConfig.analyticsDomain}
             src="https://plausible.io/js/plausible.js"
           />
         )}

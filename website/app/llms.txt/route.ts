@@ -1,10 +1,11 @@
 import { frameworks } from "lib/framework-utils"
 import { formatUrl } from "lib/pagination-utils"
+import siteConfig from "site.config"
 import sidebar from "../../sidebar.config"
 
 function formatDocItem(categoryId: string, docItem: any, framework?: string) {
   const href = formatUrl(categoryId, docItem.id, framework)
-  return `- [${docItem.label}](https://zagjs.com${href})`
+  return `- [${docItem.label}](${siteConfig.url}${href})`
 }
 
 function formatCategory(category: any) {

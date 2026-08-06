@@ -1,6 +1,7 @@
 import { AiOutlineCompass, AiOutlineBook, AiOutlineTool } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
 import { IconType } from "react-icons/lib"
+import siteConfig from "site.config"
 
 interface CategoryItem {
   type: "category"
@@ -45,7 +46,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           type: "doc",
           label: "Changelog",
           id: "changelogs",
-          href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
+          href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
         },
         { type: "doc", label: "LLMs.txt", id: "llms-txt" },
       ],
