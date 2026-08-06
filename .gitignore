@@ -189,3 +189,4 @@ styled-system
 styled-system-studio
 .worktrees/
 .playwright-mcp
+.env*

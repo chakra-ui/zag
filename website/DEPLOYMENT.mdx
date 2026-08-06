@@ -39,12 +39,65 @@ things that matter if you ever touch them:
 `zag-website-v2` carries an Ignored Build Step so it only builds its own branch:
 
 ```bash
-bash -c '[ "$VERCEL_GIT_COMMIT_REF" = "v2" ] && exit 1 || exit 0'
+[ "$VERCEL_GIT_COMMIT_REF" = "v2" ] && exit 1 || exit 0
 ```
 
-Exit 1 means build, exit 0 means skip. This has to be a per-project dashboard
-setting — a `vercel.json` `ignoreCommand` committed under `website/` would apply
-to `zag-website` too and break the live site.
+Exit 1 means build, exit 0 means skip. It has to be a **project-level** setting.
+A `vercel.json` `ignoreCommand` under `website/` does not work here: it is read
+from the branch being built, so a `main` build would find no file and build
+anyway — and once `v2` merges, the file would land on `main` and start applying
+to `zag-website` as well.
+
+## Recreating the project
+
+Everything is reachable from the CLI — nothing here needs the dashboard.
+
+```bash
+export SCOPE="--scope chakra-ui"
+export TEAM="team_KrM4oUpO36KPkA0WWixqURnU"
+
+vercel project add zag-website-v2 $SCOPE
+vercel project update zag-website-v2 --root-directory website --framework nextjs $SCOPE
+
+for e in production preview; do
+  vercel env add NEXT_PUBLIC_SITE_URL $e --value "https://v2.zagjs.com" --no-sensitive --yes --project zag-website-v2 $SCOPE
+  vercel env add NEXT_PUBLIC_NOINDEX $e --value "1" --no-sensitive --yes --project zag-website-v2 $SCOPE
+  vercel env add NEXT_PUBLIC_ANALYTICS_DOMAIN $e --value "" --no-sensitive --yes --project zag-website-v2 $SCOPE
+done
+
+# run from a v2 checkout — see the note below
+vercel link --yes --project zag-website-v2 --team chakra-ui
+vercel git connect git@github.com:chakra-ui/zag.git --yes
+
+# the only setting with no CLI flag; vercel api handles auth itself
+echo '{"commandForIgnoringBuildStep": "[ \"$VERCEL_GIT_COMMIT_REF\" = \"v2\" ] && exit 1 || exit 0"}' \
+  | vercel api "/v9/projects/zag-website-v2?teamId=$TEAM" -X PATCH --input - --raw
+
+vercel domains add v2.zagjs.com zag-website-v2 $SCOPE
+```
+
+Three things that are easy to get wrong:
+
+- **`vercel git connect` sets the production branch from the branch you run it
+  on.** Run it from a `main` checkout and the project deploys `main`. There is
+  no CLI flag for it — verify with the `vercel api` GET below and PATCH
+  `link.productionBranch` if it is wrong.
+- **`vercel env add` defaults to Sensitive**, which makes values unreadable in
+  the dashboard. Pass `--no-sensitive`.
+- **`vercel api` prints a beta banner on stderr.** Use `2>/dev/null` before
+  piping to `jq`, not `2>&1`.
+
+To read back the full configuration:
+
+```bash
+vercel api "/v9/projects/zag-website-v2?teamId=$TEAM" --raw 2>/dev/null \
+  | jq '{rootDirectory, framework, nodeVersion, commandForIgnoringBuildStep,
+         link: (.link | {org, repo, productionBranch})}'
+```
+
+`vercel link` also writes a root `.env.local` holding a `VERCEL_OIDC_TOKEN` and
+appends `.env*` to `.gitignore`. Keep the ignore rule; the token file is
+regenerable and safe to delete.
 
 ## Environment variables
 
