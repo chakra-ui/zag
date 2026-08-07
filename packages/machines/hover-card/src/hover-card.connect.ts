@@ -163,11 +163,6 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (prop("disabled")) return
           send({ type: "POINTER_ENTER", src: "content" })
         },
-        onPointerLeave(event) {
-          if (event.pointerType === "touch") return
-          if (prop("disabled")) return
-          send({ type: "POINTER_LEAVE", src: "content" })
-        },
       })
     },
   }

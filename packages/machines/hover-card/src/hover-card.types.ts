@@ -112,7 +112,7 @@ interface PrivateContext {
 export interface HoverCardSchema {
   props: RequiredBy<HoverCardProps, PropsWithDefault>
   context: PrivateContext
-  state: "opening" | "open" | "closing" | "closed"
+  state: "closed" | "opening" | "open" | "open.idle" | "open.closing"
   tag: "open" | "closed"
   action: string
   event: EventObject

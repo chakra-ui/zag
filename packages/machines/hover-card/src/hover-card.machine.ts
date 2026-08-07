@@ -1,6 +1,7 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
+import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
 import type { HoverCardSchema, Placement } from "./hover-card.types"
 
@@ -154,18 +155,15 @@ export const machine = createMachine<HoverCardSchema>({
       },
     },
 
+    // Effects live on the parent so they survive the hop between `idle` and `closing` —
+    // rebuilding the safe area tracker there would lose the pointer's position.
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement", "trackPositioning"],
+      initial: "idle",
+      effects: ["trackDismissableElement", "trackPositioning", "trackSafeArea"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
-        },
-        POINTER_ENTER: {
-          actions: ["setIsPointer"],
-        },
-        POINTER_LEAVE: {
-          target: "closing",
         },
         CLOSE: [
           {
@@ -192,40 +190,51 @@ export const machine = createMachine<HoverCardSchema>({
           actions: ["reposition"],
         },
       },
-    },
+      states: {
+        idle: {
+          on: {
+            POINTER_ENTER: {
+              actions: ["setIsPointer"],
+            },
+            "SAFE_AREA.EXIT": {
+              target: "closing",
+            },
+          },
+        },
 
-    closing: {
-      tags: ["open"],
-      effects: ["trackPositioning", "waitForCloseDelay"],
-      on: {
-        CLOSE_DELAY: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+        closing: {
+          effects: ["waitForCloseDelay"],
+          on: {
+            CLOSE_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "CONTROLLED.OPEN": {
+              target: "idle",
+            },
+            "SAFE_AREA.ENTER": {
+              target: "idle",
+            },
+            POINTER_ENTER: {
+              target: "idle",
+              // no need to invokeOnOpen here because it's still open (but about to close)
+              actions: ["setIsPointer"],
+            },
+            TRIGGER_FOCUS: {
+              target: "idle",
+              actions: ["setTriggerValue"],
+            },
+            "TRIGGER_VALUE.SET": {
+              target: "idle",
+              actions: ["setTriggerValue", "reposition"],
+            },
           },
-          {
-            target: "closed",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-        },
-        "CONTROLLED.OPEN": {
-          target: "open",
-        },
-        POINTER_ENTER: {
-          target: "open",
-          // no need to invokeOnOpen here because it's still open (but about to close)
-          actions: ["setIsPointer"],
-        },
-        TRIGGER_FOCUS: {
-          target: "open",
-          actions: ["setTriggerValue"],
-        },
-        "TRIGGER_VALUE.SET": {
-          target: "open",
-          actions: ["setTriggerValue", "reposition"],
         },
       },
     },
@@ -252,6 +261,21 @@ export const machine = createMachine<HoverCardSchema>({
         }, prop("closeDelay"))
 
         return () => clearTimeout(id)
+      },
+
+      trackSafeArea({ send, scope, context }) {
+        return trackSafeArea({
+          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+          getContentEl: () => dom.getContentEl(scope),
+          openedByPointer: () => context.get("isPointer"),
+          defer: true,
+          onLeave() {
+            send({ type: "SAFE_AREA.EXIT" })
+          },
+          onEnter() {
+            send({ type: "SAFE_AREA.ENTER" })
+          },
+        })
       },
 
       trackPositioning({ context, prop, scope }) {
