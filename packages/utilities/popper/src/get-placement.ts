@@ -250,6 +250,7 @@ function getPlacementImpl(
     restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
     middleware = [
+      ...(options.middleware ?? []),
       getOffsetMiddleware(arrowEl, options),
       getFlipMiddleware(options),
       getShiftMiddleware(options),

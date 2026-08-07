@@ -1,6 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { getPlacement } from "@zag-js/popper"
+import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
 import type { HoverCardSchema, Placement } from "./hover-card.types"
@@ -24,6 +24,13 @@ export const machine = createMachine<HoverCardSchema>({
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
     return open ? "open" : "closed"
+  },
+
+  refs() {
+    return {
+      inlineCoords: undefined,
+      inlineLines: undefined,
+    }
   },
 
   context({ prop, bindable, scope }) {
@@ -63,11 +70,15 @@ export const machine = createMachine<HoverCardSchema>({
     track([() => context.get("open")], () => {
       action(["toggleVisibility"])
     })
+    // `context.set` commits asynchronously, so acting on the event resolves the previous trigger.
+    track([() => context.get("triggerValue")], () => {
+      action(["reposition"])
+    })
   },
 
   on: {
     "TRIGGER_VALUE.SET": {
-      actions: ["setTriggerValue", "reposition"],
+      actions: ["setTriggerValue"],
     },
   },
 
@@ -232,7 +243,7 @@ export const machine = createMachine<HoverCardSchema>({
             },
             "TRIGGER_VALUE.SET": {
               target: "idle",
-              actions: ["setTriggerValue", "reposition"],
+              actions: ["setTriggerValue"],
             },
           },
         },
@@ -278,14 +289,17 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
 
-      trackPositioning({ context, prop, scope }) {
+      trackPositioning({ context, prop, refs, scope }) {
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning").placement)
         }
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const positioning = prop("positioning")
         return getPlacement(getTriggerEl, getPositionerEl, {
-          ...prop("positioning"),
+          ...positioning,
+          // Triggers are links in prose, which wrap.
+          middleware: [inline({ getCoords: () => refs.get("inlineCoords") }), ...(positioning.middleware ?? [])],
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -328,12 +342,13 @@ export const machine = createMachine<HoverCardSchema>({
       clearIsPointer({ context }) {
         context.set("isPointer", false)
       },
-      reposition({ context, prop, scope, event }) {
+      reposition({ context, prop, refs, scope, event }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const positioning = { ...prop("positioning"), ...event.options }
         getPlacement(getTriggerEl, getPositionerEl, {
-          ...prop("positioning"),
-          ...event.options,
+          ...positioning,
+          middleware: [inline({ getCoords: () => refs.get("inlineCoords") }), ...(positioning.middleware ?? [])],
           defer: true,
           listeners: false,
           onComplete(data) {

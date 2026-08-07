@@ -1,6 +1,6 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
+import { getInlineRectCoords, getLineRects, getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import * as dom from "./hover-card.dom"
@@ -14,7 +14,7 @@ import type {
 } from "./hover-card.types"
 
 export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
-  const { state, send, prop, context, scope } = service
+  const { state, send, prop, context, refs, scope } = service
   const layer = context.get("layer")
 
   const open = state.hasTag("open")
@@ -26,6 +26,16 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
     ...prop("positioning"),
     placement: currentPlacement,
   })
+
+  // Frozen once open, and measured once per hover so the moves in between cost no layout.
+  const captureInlineCoords = (event: { currentTarget: unknown; clientX: number; clientY: number }) => {
+    if (open) return
+    const element = event.currentTarget as Element
+    const cached = refs.get("inlineLines")
+    const lines = cached?.element === element ? cached.lines : getLineRects(element.getClientRects()).lines
+    refs.set("inlineLines", { element, lines })
+    refs.set("inlineCoords", getInlineRectCoords({ element, x: event.clientX, y: event.clientY, lines }))
+  }
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -104,6 +114,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
+          captureInlineCoords(event)
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_ENTER",
@@ -111,13 +122,21 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
             value,
           })
         },
+        onPointerMove(event) {
+          if (event.pointerType === "touch") return
+          if (prop("disabled")) return
+          captureInlineCoords(event)
+        },
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
+          refs.set("inlineLines", undefined)
           send({ type: "POINTER_LEAVE", src: "trigger" })
         },
         onFocus() {
           if (prop("disabled")) return
+          // Focus has no line to prefer.
+          refs.set("inlineCoords", undefined)
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_FOCUS",

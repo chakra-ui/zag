@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { part } from "./_utils"
 import { HoverCardModel, OPEN_DELAY } from "./models/hover-card.model"
 
@@ -120,6 +120,56 @@ test.describe("hover card", () => {
 
       await I.waitOutCloseDelay()
       await I.seeContent()
+    })
+
+    test("should anchor to the line the pointer is on, not the union of every line", async () => {
+      await I.goto("/hover-card/inline")
+
+      const lines = await I.triggerLines()
+      expect(lines.length).toBeGreaterThan(2)
+
+      const first = await I.hoverLine(0)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(first)
+
+      await I.moveClearOfParagraph()
+      await I.waitOutCloseDelay()
+      await I.dontSeeContent()
+
+      const last = await I.hoverLine(lines.length - 1)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(last)
+    })
+
+    test("should track the pointer across lines while warming up", async () => {
+      await I.goto("/hover-card/inline")
+
+      const lines = await I.triggerLines()
+      const first = lines[0]
+      const last = lines[lines.length - 1]
+
+      await I.page.mouse.move(first.x + first.width / 2, first.y + first.height / 2, { steps: 4 })
+      await I.page.mouse.move(last.x + last.width / 2, last.y + last.height / 2, { steps: 4 })
+      await I.advance(OPEN_DELAY)
+
+      await I.seeContent()
+      await I.seeCardAnchoredTo(last)
+    })
+
+    test("should not carry one trigger's line over to another", async () => {
+      await I.goto("/hover-card/inline")
+
+      const first = await I.hoverLine(0)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(first)
+
+      // Switched by button, so the pointer never reaches B.
+      const otherLines = await I.otherTriggerLines()
+      await I.switchTrigger()
+
+      await I.seeContent()
+      await I.seeCardAnchoredTo(otherLines[otherLines.length - 1])
+      await I.dontSeeCardAnchoredTo(otherLines[0])
     })
 
     test("should not close a default-open card until the pointer engages with it", async () => {

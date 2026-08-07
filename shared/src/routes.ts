@@ -421,6 +421,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "inline", title: "Inline" },
     ],
   },
   {

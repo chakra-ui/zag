@@ -16,6 +16,21 @@ test.describe("hover-card / multiple triggers", () => {
     await expect(page.locator(content)).toContainText("Alice Johnson")
   })
 
+  test("should reposition onto each trigger it switches to", async ({ page }) => {
+    // Content alone misses this: the right user can render over the wrong trigger.
+    for (const id of [1, 2, 3, 2, 1]) {
+      await page.hover(trigger(id))
+      await expect(page.locator(content)).toBeVisible()
+      await expect
+        .poll(async () => {
+          const t = (await page.locator(trigger(id)).boundingBox())!
+          const p = (await page.locator(positioner).boundingBox())!
+          return Math.round(Math.abs(p.x + p.width / 2 - (t.x + t.width / 2)))
+        })
+        .toBeLessThan(30)
+    }
+  })
+
   test("should switch triggers on hover", async ({ page }) => {
     // Hover first trigger
     await page.hover(trigger(1))

@@ -143,4 +143,65 @@ export class HoverCardModel extends Model {
     await this.advance(CLOSE_DELAY * 2)
     await this.advance(EXIT_ANIMATION)
   }
+
+  // ---------------------------------------------------------------------------
+  // Inline anchoring, for a trigger that wraps across lines
+  // ---------------------------------------------------------------------------
+
+  get wrappedTrigger() {
+    return this.page.locator(testid("wrapped-trigger"))
+  }
+
+  get positioner() {
+    return this.page.locator(part("hover-card", "positioner"))
+  }
+
+  triggerLines = async () => {
+    return this.wrappedTrigger.evaluate((el) =>
+      Array.from(el.getClientRects()).map((r) => ({ x: r.x, y: r.y, width: r.width, height: r.height })),
+    )
+  }
+
+  hoverLine = async (index: number) => {
+    const lines = await this.triggerLines()
+    const line = lines[index]
+    if (!line) throw new Error(`trigger has no line ${index}`)
+    await this.page.mouse.move(line.x + line.width / 2, line.y + line.height / 2, { steps: 8 })
+    await this.advance(OPEN_DELAY)
+    return line
+  }
+
+  /** Below every line, so leaving crosses nothing. */
+  moveClearOfParagraph = async () => {
+    await this.page.mouse.move(5, 600, { steps: 4 })
+    await this.advance(FRAME)
+  }
+
+  otherTriggerLines = async () => {
+    return this.page
+      .locator(testid("wrapped-trigger-2"))
+      .evaluate((el) =>
+        Array.from(el.getClientRects()).map((r) => ({ x: r.x, y: r.y, width: r.width, height: r.height })),
+      )
+  }
+
+  switchTrigger = async () => {
+    await this.page.locator(testid("switch-trigger")).click()
+    await this.advance(FRAME)
+  }
+
+  dontSeeCardAnchoredTo = async (line: { x: number; y: number; width: number; height: number }) => {
+    const box = await this.positioner.boundingBox()
+    if (!box) throw new Error("hover card is not open")
+    expect(Math.abs(box.y - (line.y + line.height))).toBeGreaterThan(40)
+  }
+
+  seeCardAnchoredTo = async (line: { x: number; y: number; width: number; height: number }) => {
+    const box = await this.positioner.boundingBox()
+    if (!box) throw new Error("hover card is not open")
+    // Centred on the hovered line, not on the union.
+    expect(box.y).toBeGreaterThanOrEqual(line.y + line.height)
+    expect(box.y).toBeLessThan(line.y + line.height + 40)
+    expect(Math.abs(box.x + box.width / 2 - (line.x + line.width / 2))).toBeLessThan(40)
+  }
 }

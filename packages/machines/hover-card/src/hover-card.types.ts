@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
-import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { InlineRectCoords, Placement, PlacementSide, PositioningOptions, RectLike } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -109,9 +109,21 @@ interface PrivateContext {
   triggerValue: string | null
 }
 
+export interface PrivateRefs {
+  /**
+   * The line of a wrapping trigger the pointer was on when the card was warmed up.
+   */
+  inlineCoords: InlineRectCoords | undefined
+  /**
+   * The trigger's line rects, cached for the duration of a hover.
+   */
+  inlineLines: { element: Element; lines: RectLike[] } | undefined
+}
+
 export interface HoverCardSchema {
   props: RequiredBy<HoverCardProps, PropsWithDefault>
   context: PrivateContext
+  refs: PrivateRefs
   state: "closed" | "opening" | "open" | "open.idle" | "open.closing"
   tag: "open" | "closed"
   action: string

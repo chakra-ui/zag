@@ -1,4 +1,11 @@
-import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
+import type {
+  AutoUpdateOptions,
+  Boundary,
+  ComputePositionReturn,
+  Middleware,
+  Placement,
+  VirtualElement,
+} from "@floating-ui/dom"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
@@ -96,6 +103,10 @@ export interface PositioningOptions {
    * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
    */
   boundary?: (() => Boundary) | Boundary | "clipping-ancestors" | undefined
+  /**
+   * Extra Floating UI middleware, prepended to the built-in stack so it runs before `offset`.
+   */
+  middleware?: Middleware[] | undefined
   /**
    * Options to activate auto-update listeners
    */
