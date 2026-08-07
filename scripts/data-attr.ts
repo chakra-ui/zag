@@ -1,4 +1,4 @@
-import { ModuleResolutionKind, Node, Project, StringLiteral, SyntaxKind, type ObjectLiteralElementLike } from "ts-morph"
+import { ModuleResolutionKind, Node, Project, SyntaxKind, type StringLiteral } from "ts-morph"
 import * as fg from "fast-glob"
 import { join, sep } from "path"
 import { writeFileSync, readFileSync } from "fs"
@@ -134,32 +134,72 @@ function getTenaryValues(literal: StringLiteral) {
 }
 
 /* -----------------------------------------------------------------------------
- * ProcessObjectLiteral
+ * Reference resolution
+ *
+ * Prop getters frequently delegate their data attrs to a helper — `...getDataAttrs(state)`,
+ * `...dataAttrs`, or a bare `getItemProps` reference — instead of writing them inline. The
+ * helper can live anywhere in the file: nested inside `connect`, or a sibling top-level
+ * function. Rather than pattern-matching those shapes by name, we follow the real binding
+ * with ts-morph's symbol/declaration APIs, the same way a "Go to Definition" would.
  * -----------------------------------------------------------------------------*/
 
-interface ProcessLiteralOptions {
-  widget: string
-  cb({ part, name, desc }: { part: string; name: string; desc: string }): void
-  skipIf?(name: string): boolean
-  eval?({ part, name }: { part: string; name: string }): void
-}
-
-function processObjectLiteral(node: ObjectLiteralElementLike, opts: ProcessLiteralOptions) {
-  const { cb, skipIf, widget, eval: _eval } = opts
-
-  if (Node.isShorthandPropertyAssignment(node)) {
-    const name = node.getName()
-    const part = formatName(name)
-    _eval?.({ part, name })
-    return
+/** Follows an identifier/call/function expression to the node whose contents should be scanned. */
+function resolveReferenceTarget(node: Node): Node {
+  if (Node.isArrowFunction(node) || Node.isFunctionExpression(node)) {
+    return node.getBody() ?? node
   }
 
-  if (!Node.isPropertyAssignment(node) && !Node.isMethodDeclaration(node)) return
+  if (Node.isCallExpression(node)) {
+    const callee = node.getExpression()
+    return Node.isIdentifier(callee) ? resolveReferenceTarget(callee) : node
+  }
 
-  const name = node.getName()
-  if (skipIf?.(name)) return
+  if (Node.isIdentifier(node)) {
+    // `getDefinitionNodes()` is what powers "Go to Definition": unlike `getSymbol()`, it
+    // resolves a shorthand property's name (`{ getItemProps }`) to the function it references
+    // instead of the shorthand assignment itself.
+    const definitions = node.getDefinitionNodes()
 
-  const part = formatName(name)
+    for (const definition of definitions) {
+      if (Node.isFunctionDeclaration(definition) || Node.isMethodDeclaration(definition)) {
+        return definition.getBody() ?? definition
+      }
+      if (Node.isVariableDeclaration(definition)) {
+        const initializer = definition.getInitializer()
+        if (initializer) return resolveReferenceTarget(initializer)
+      }
+    }
+
+    // Unresolvable (e.g. imported from another package, like `getDismissableLayerAttrs`).
+    // Those are handled separately via `widgetLayerTypes`, so resolving to nothing is correct.
+    return node
+  }
+
+  return node
+}
+
+/* -----------------------------------------------------------------------------
+ * Data attr extraction
+ * -----------------------------------------------------------------------------*/
+
+interface ExtractOptions {
+  widget: string
+  part: string
+  visit(attr: { name: string; desc: string }): void
+  /** Scoped per top-level part, so the same helper is re-scanned for every part that uses it. */
+  seen: Set<Node>
+}
+
+/**
+ * Scans `node`'s whole subtree for `data-*` attrs, however deeply they're nested (a helper
+ * wrapped in `normalize.element(...)`, itself wrapped in another helper, etc.), and follows
+ * every spread to its real declaration so delegated attrs aren't missed.
+ */
+function extractDataAttrs(node: Node, opts: ExtractOptions) {
+  if (opts.seen.has(node)) return
+  opts.seen.add(node)
+
+  const { widget, part, visit } = opts
 
   node.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach((literal) => {
     const name = literal.getLiteralValue()
@@ -173,20 +213,12 @@ function processObjectLiteral(node: ObjectLiteralElementLike, opts: ProcessLiter
       desc = `${tenaryValues.map((x) => JSON.stringify(x)).join(" | ")}`
     }
 
-    cb({ part, name, desc })
+    visit({ name, desc })
   })
 
-  // get all spread properties whose name is dataAttrs
   node.getDescendantsOfKind(SyntaxKind.SpreadAssignment).forEach((spread) => {
-    spread.getChildrenOfKind(SyntaxKind.Identifier).forEach((identifier) => {
-      _eval?.({ part, name: identifier.getText() })
-    })
-
-    spread.getChildrenOfKind(SyntaxKind.CallExpression).forEach((expr) => {
-      expr.getChildrenOfKind(SyntaxKind.Identifier).forEach((identifier) => {
-        _eval?.({ part, name: identifier.getText() })
-      })
-    })
+    const target = resolveReferenceTarget(spread.getExpression())
+    if (target !== spread.getExpression()) extractDataAttrs(target, opts)
   })
 }
 
@@ -209,107 +241,61 @@ async function main() {
 
   files.forEach((file) => {
     const widget = file.split(sep)[2]
-    project.addSourceFileAtPath(file)
+    const sourceFile = project.addSourceFileAtPath(file)
 
     const hasDismissable = hasDismissableDependency(widget)
     const layerType = widgetLayerTypes[widget]
 
-    const sourceFile = project.getSourceFile(file)
-    if (!sourceFile) return
-
     const result: Record<string, DataAttrMap> = {}
 
-    sourceFile.getDescendantsOfKind(SyntaxKind.FunctionDeclaration).forEach((node) => {
-      node.getChildrenOfKind(SyntaxKind.Block).forEach((block) => {
-        const dataAttrs: Record<string, string> = {}
-        const functions: Map<string, DataAttrMap> = new Map()
+    const connectFn = sourceFile.getFunction("connect")
+    const connectBody = connectFn?.getBody()
+    if (!connectBody || !Node.isBlock(connectBody)) return
 
-        // check that the variable name is `dataAttrs`
-        block.getChildrenOfKind(SyntaxKind.VariableStatement).forEach((variable) => {
-          const [declaration] = variable.getDeclarations()
-          const name = declaration.getName()
-          if (name !== "dataAttrs") return
-          declaration.getChildrenOfKind(SyntaxKind.ObjectLiteralExpression).forEach((obj) => {
-            obj.getProperties().forEach((property) => {
-              processObjectLiteral(property, {
-                widget,
-                cb({ name, desc }) {
-                  dataAttrs[name] = desc
-                },
-              })
-            })
+    connectBody.getChildrenOfKind(SyntaxKind.ReturnStatement).forEach((returnStatement) => {
+      returnStatement.getChildrenOfKind(SyntaxKind.ObjectLiteralExpression).forEach((obj) => {
+        obj.getProperties().forEach((property) => {
+          if (
+            !Node.isMethodDeclaration(property) &&
+            !Node.isPropertyAssignment(property) &&
+            !Node.isShorthandPropertyAssignment(property)
+          ) {
+            return
+          }
+
+          const name = property.getName()
+          if (!name.endsWith("Props")) return
+
+          const part = formatName(name)
+          const attrs: DataAttrMap = {}
+
+          // Whatever `name: ...` ultimately points to — its own body, or (via a bare
+          // reference/spread) a helper declared elsewhere in the file — gets scanned.
+          const target = Node.isMethodDeclaration(property)
+            ? (property.getBody() ?? property)
+            : Node.isShorthandPropertyAssignment(property)
+              ? resolveReferenceTarget(property.getNameNode())
+              : resolveReferenceTarget(property.getInitializerOrThrow())
+
+          extractDataAttrs(target, {
+            widget,
+            part,
+            visit: ({ name, desc }) => {
+              attrs[name] = desc
+            },
+            seen: new Set(),
           })
-        })
 
-        block.getChildrenOfKind(SyntaxKind.FunctionDeclaration).forEach((fn) => {
-          const fnName = fn.getNameOrThrow()
+          if (Object.keys(attrs).length === 0) return
 
-          if (!fnName.endsWith("Props")) return
-          functions.set(fnName, {})
+          const partAttr = `data-${widget}-${dashCase(part)}`
+          result[part] = { [partAttr]: "<uid>", ...attrs }
 
-          fn.getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression).forEach((obj) => {
-            obj.getProperties().forEach((property) => {
-              processObjectLiteral(property, {
-                widget,
-                cb({ name, desc }) {
-                  functions.get(fnName)![name] = desc
-                },
-              })
-            })
-          })
-        })
-
-        block.getChildrenOfKind(SyntaxKind.ReturnStatement).forEach((returnStatement) => {
-          returnStatement.getChildrenOfKind(SyntaxKind.ObjectLiteralExpression).forEach((obj) => {
-            obj.getProperties().forEach((property) => {
-              processObjectLiteral(property, {
-                widget,
-                skipIf(name) {
-                  return !name.endsWith("Props")
-                },
-                cb({ part, name, desc }) {
-                  if (!result[part]) {
-                    const partAttr = `data-${widget}-${dashCase(part)}`
-                    result[part] = { [partAttr]: "<uid>" }
-                  }
-                  result[part][name] = desc
-
-                  // Add layer attributes for content part if widget uses dismissable
-                  if (hasDismissable && part === "Content" && layerType) {
-                    result[part]["data-nested"] = layerType
-                    result[part]["data-has-nested"] = layerType
-                  }
-                },
-                eval({ part, name }) {
-                  const partAttr = `data-${widget}-${dashCase(part)}`
-
-                  if (name === "dataAttrs") {
-                    if (!result[part]) result[part] = { [partAttr]: "<uid>" }
-                    Object.assign(result[part], dataAttrs)
-
-                    // Add layer attributes for content part if widget uses dismissable
-                    if (hasDismissable && part === "Content" && layerType) {
-                      result[part]["data-nested"] = layerType
-                      result[part]["data-has-nested"] = layerType
-                    }
-                    return
-                  }
-
-                  if (functions.has(name)) {
-                    if (!result[part]) result[part] = { [partAttr]: "<uid>" }
-                    Object.assign(result[part], functions.get(name))
-
-                    // Add layer attributes for content part if widget uses dismissable
-                    if (hasDismissable && part === "Content" && layerType) {
-                      result[part]["data-nested"] = layerType
-                      result[part]["data-has-nested"] = layerType
-                    }
-                    return
-                  }
-                },
-              })
-            })
-          })
+          // Add layer attributes for content part if widget uses dismissable
+          if (hasDismissable && part === "Content" && layerType) {
+            result[part]["data-nested"] = layerType
+            result[part]["data-has-nested"] = layerType
+          }
         })
       })
     })

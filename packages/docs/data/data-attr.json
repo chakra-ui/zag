@@ -347,10 +347,10 @@
     "Content": {
       "data-color-picker-content": "<uid>",
       "data-placement": "The placement of the content",
-      "data-nested": "popover",
-      "data-has-nested": "popover",
       "data-side": "The side of the trigger that the content is positioned on",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-nested": "popover",
+      "data-has-nested": "popover"
     },
     "ValueText": {
       "data-color-picker-value-text": "<uid>",
@@ -466,11 +466,11 @@
     "Content": {
       "data-combobox-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "listbox",
-      "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
-      "data-empty": "Present when the content is empty"
+      "data-empty": "Present when the content is empty",
+      "data-nested": "listbox",
+      "data-has-nested": "listbox"
     },
     "List": {
       "data-combobox-list": "<uid>",
@@ -562,11 +562,11 @@
     "Content": {
       "data-date-picker-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "popover",
-      "data-has-nested": "popover",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
-      "data-inline": "Present when the content is inline"
+      "data-inline": "Present when the content is inline",
+      "data-nested": "popover",
+      "data-has-nested": "popover"
     },
     "Table": {
       "data-date-picker-table": "<uid>",
@@ -1019,10 +1019,10 @@
     "Content": {
       "data-hover-card-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "popover",
-      "data-has-nested": "popover",
       "data-placement": "The placement of the content",
-      "data-side": "The side of the trigger that the content is positioned on"
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-nested": "popover",
+      "data-has-nested": "popover"
     }
   },
   "image-cropper": {
@@ -1172,10 +1172,10 @@
     "Content": {
       "data-menu-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "menu",
-      "data-has-nested": "menu",
       "data-placement": "The placement of the content",
-      "data-side": "The side of the trigger that the content is positioned on"
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-nested": "menu",
+      "data-has-nested": "menu"
     },
     "Item": {
       "data-menu-item": "<uid>",
@@ -1441,11 +1441,11 @@
     "Content": {
       "data-popover-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "popover",
-      "data-has-nested": "popover",
       "data-expanded": "Present when expanded",
       "data-placement": "The placement of the content",
-      "data-side": "The side of the trigger that the content is positioned on"
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-nested": "popover",
+      "data-has-nested": "popover"
     }
   },
   "presence": {},
@@ -1461,9 +1461,21 @@
       "data-progress-label": "<uid>",
       "data-orientation": "The orientation of the label"
     },
+    "Track": {
+      "data-progress-track": "<uid>",
+      "data-max": "",
+      "data-orientation": "The orientation of the track",
+      "data-state": ""
+    },
     "Range": {
       "data-progress-range": "<uid>",
       "data-orientation": "The orientation of the range",
+      "data-state": ""
+    },
+    "Circle": {
+      "data-progress-circle": "<uid>",
+      "data-max": "",
+      "data-orientation": "The orientation of the circle",
       "data-state": ""
     },
     "CircleTrack": {
@@ -1495,9 +1507,42 @@
       "data-invalid": "Present when invalid",
       "data-required": "Present when required"
     },
+    "Item": {
+      "data-radio-group-item": "<uid>",
+      "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-hover": "Present when hovered",
+      "data-invalid": "Present when invalid",
+      "data-orientation": "The orientation of the item",
+      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+    },
+    "ItemText": {
+      "data-radio-group-item-text": "<uid>",
+      "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-hover": "Present when hovered",
+      "data-invalid": "Present when invalid",
+      "data-orientation": "The orientation of the item",
+      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+    },
     "ItemControl": {
       "data-radio-group-item-control": "<uid>",
-      "data-active": "Present when active or pressed"
+      "data-active": "Present when active or pressed",
+      "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-hover": "Present when hovered",
+      "data-invalid": "Present when invalid",
+      "data-orientation": "The orientation of the item",
+      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
     },
     "Indicator": {
       "data-radio-group-indicator": "<uid>",
@@ -1735,11 +1780,11 @@
     "Content": {
       "data-select-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "listbox",
-      "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
       "data-align-with-trigger": "",
-      "data-side": "The side of the trigger that the content is positioned on"
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-nested": "listbox",
+      "data-has-nested": "listbox"
     },
     "List": {
       "data-select-list": "<uid>",
@@ -2183,12 +2228,12 @@
     "Content": {
       "data-tour-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-nested": "popover",
-      "data-has-nested": "popover",
       "data-type": "The type of the item",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
-      "data-step": ""
+      "data-step": "",
+      "data-nested": "popover",
+      "data-has-nested": "popover"
     },
     "Title": {
       "data-tour-title": "<uid>",
