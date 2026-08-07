@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
@@ -20,6 +21,8 @@ export const machine = createMachine<HoverCardSchema>({
       },
     }
   },
+
+  effects: ["trackFocusVisible"],
 
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
@@ -254,6 +257,10 @@ export const machine = createMachine<HoverCardSchema>({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
+
       waitForOpenDelay({ send, prop, event }) {
         const id = setTimeout(() => {
           // Forward the event that started the warmup, so `onOpenChange` reports what caused it.

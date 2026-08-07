@@ -1,5 +1,6 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import { getInlineRectCoords, getLineRects, getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
@@ -135,6 +136,9 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         },
         onFocus() {
           if (prop("disabled")) return
+          // Only keyboard/virtual focus opens. Focus arriving after a pointer interaction, such as
+          // a dialog restoring it, carries no intent to preview.
+          if (!isFocusVisible()) return
           // Focus has no line to prefer.
           refs.set("inlineCoords", undefined)
           const shouldSwitch = open && value != null && !current

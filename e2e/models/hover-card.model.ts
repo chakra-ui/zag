@@ -80,6 +80,14 @@ export class HoverCardModel extends Model {
     await this.page.locator("main").click()
   }
 
+  /** A pointer press well clear of the trigger, to establish pointer modality. */
+  pressAway = async () => {
+    await this.page.mouse.move(600, 600)
+    await this.page.mouse.down()
+    await this.page.mouse.up()
+    await this.advance(FRAME)
+  }
+
   seeContent = async () => {
     await expect(this.content).toBeVisible()
   }

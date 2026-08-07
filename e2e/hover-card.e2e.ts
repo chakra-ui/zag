@@ -34,6 +34,14 @@ test.describe("hover card", () => {
     await I.seeContent()
   })
 
+  test("should not open when focus follows a pointer interaction", async () => {
+    // e.g. a dialog restoring focus to the trigger. The pointer never touches it, and nothing
+    // about the interaction says the user wants a preview.
+    await I.pressAway()
+    await I.focusTrigger()
+    await I.dontSeeContent()
+  })
+
   test("should close on blur", async () => {
     await I.focusTrigger()
     await I.seeContent()
@@ -86,6 +94,21 @@ test.describe("hover card", () => {
 
     await I.hoverTrigger()
     await I.seeContent()
+  })
+
+  test.describe("inside a dialog", () => {
+    test("should open on hover, and not on the dialog's own focus", async () => {
+      await I.goto("/hover-card/hovercard-in-dialog")
+      await I.page.locator('[data-testid="trigger-1"]').click()
+      await I.advance(OPEN_DELAY)
+
+      // The dialog traps focus onto the trigger, but the dialog was opened by pointer, so that
+      // focus carries no intent to preview.
+      await I.dontSeeContent()
+
+      await I.hoverTrigger()
+      await I.seeContent()
+    })
   })
 
   test.describe("open change reason", () => {
