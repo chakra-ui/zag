@@ -190,3 +190,6 @@ styled-system-studio
 .worktrees/
 .playwright-mcp
 .env*
+
+# Next.js — generated on every dev/build, contents vary by version
+next-env.d.ts
