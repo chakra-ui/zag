@@ -2736,6 +2736,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/safe-area':
+        specifier: workspace:*
+        version: link:../../utilities/safe-area
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3552,6 +3555,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/safe-area':
+        specifier: workspace:*
+        version: link:../../utilities/safe-area
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3826,6 +3832,16 @@ importers:
         version: 2.2.0
 
   packages/utilities/remove-scroll:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/safe-area:
     dependencies:
       '@zag-js/dom-query':
         specifier: workspace:*
