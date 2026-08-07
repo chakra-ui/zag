@@ -15,7 +15,9 @@ A hover card lets sighted users preview content behind a link.
 - Customize side, alignment, offsets
 - Optionally render a pointing arrow
 - Supports custom open and close delays
-- Opens on hover only
+- Opens on hover or keyboard focus
+- Stays open while the pointer travels from the trigger to the content
+- Anchors to the hovered line when the trigger wraps across lines
 - Ignored by screen readers
 - Supports multiple triggers sharing a single hover card instance
 
@@ -225,7 +227,20 @@ The hover card `api` exposes the following methods:
 
 ## Accessibility
 
+The hover card is a progressive enhancement for sighted users. Its content is
+not reachable by keyboard or exposed to screen readers, so treat it as a preview
+of something the user can already get to another way.
+
+> Keep the content non-essential and non-interactive. Anything the user must be
+> able to read or act on belongs on the page the trigger links to, not only in
+> the card.
+
 ### Keyboard Interactions
 
-The hover card is intended for mouse users only so will not respond to keyboard
-navigation.
+The trigger is a normal focusable element. Focusing it opens the card so
+keyboard users see the same preview, but focus never enters the content.
+
+<KeyboardTable name="hover-card" />
+
+If you need content the user can tab into, use a [popover](/components/popover)
+instead.

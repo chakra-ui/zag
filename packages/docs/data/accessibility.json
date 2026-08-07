@@ -227,6 +227,18 @@
       }
     ]
   },
+  "hover-card": {
+    "keyboard": [
+      {
+        "keys": ["Tab"],
+        "description": "Opens the hover card once focus reaches the trigger, after the open delay. Closes it when focus leaves."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "If open, closes the hover card."
+      }
+    ]
+  },
   "tooltip": {
     "keyboard": [
       {
