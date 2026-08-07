@@ -56,16 +56,16 @@ export function connect<P extends PropTypes>(
     setOpen(nextOpen) {
       const open = state.matches("open", "closing")
       if (open === nextOpen) return
-      send({ type: nextOpen ? "open" : "close" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
     triggerValue,
     setTriggerValue(value) {
-      send({ type: "triggerValue.set", value: value ?? undefined })
+      send({ type: "TRIGGER_VALUE.SET", value: value ?? undefined })
     },
 
     reposition(options = {}) {
-      send({ type: "positioning.set", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
     getTriggerState,
@@ -87,14 +87,14 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!prop("closeOnClick")) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CLOSE", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (!isFocusVisible()) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "OPEN", src: "trigger.focus", value, triggerId })
         },
         onBlur(event) {
           if (event.defaultPrevented) return
@@ -105,7 +105,7 @@ export function connect<P extends PropTypes>(
           const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
           const focusedAnotherTrigger = activeEl?.closest(`[${parts.trigger.attr}="${scope.id}"]`) != null
           if (!focusedAnotherTrigger) {
-            send({ type: "close", src: "trigger.blur", value, triggerId })
+            send({ type: "CLOSE", src: "trigger.blur", value, triggerId })
           }
         },
         onPointerDown(event) {
@@ -114,7 +114,7 @@ export function connect<P extends PropTypes>(
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
           if (id === store.get("id")) {
-            send({ type: "close", src: "trigger.pointerdown", value, triggerId })
+            send({ type: "CLOSE", src: "trigger.pointerdown", value, triggerId })
           }
         },
         onPointerMove(event) {
@@ -122,21 +122,21 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (event.pointerType === "touch") return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "pointer.move", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_MOVE", value, triggerId })
         },
         onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "pointer.move", value, triggerId })
+          send({ type: "POINTER_MOVE", value, triggerId })
         },
         onPointerLeave() {
           if (disabled) return
-          send({ type: "pointer.leave" })
+          send({ type: "POINTER_LEAVE" })
         },
         onPointerCancel() {
           if (disabled) return
-          send({ type: "pointer.leave" })
+          send({ type: "POINTER_LEAVE" })
         },
       })
     },
@@ -180,10 +180,7 @@ export function connect<P extends PropTypes>(
         "data-placement": contentState.placement,
         "data-side": contentState.side,
         onPointerEnter() {
-          send({ type: "content.pointer.move" })
-        },
-        onPointerLeave() {
-          send({ type: "content.pointer.leave" })
+          send({ type: "CONTENT_POINTER_MOVE" })
         },
         style: {
           pointerEvents: prop("interactive") ? "auto" : "none",

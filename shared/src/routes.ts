@@ -627,6 +627,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled-multiple", title: "Controlled Multiple" },
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
+      { slug: "interactive", title: "Interactive" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
