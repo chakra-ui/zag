@@ -133,7 +133,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    * Element to receive focus when the panel is opened.
    * By default, the first focusable element in the content is focused.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * Element to receive focus when the panel is closed.
    * By default, the trigger element is focused.

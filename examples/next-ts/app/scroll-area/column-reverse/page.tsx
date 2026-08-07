@@ -1,6 +1,6 @@
 "use client"
 
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as scrollArea from "@zag-js/scroll-area"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -19,7 +19,9 @@ export default function Page() {
       <main className="scroll-area">
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <div {...api.getContentProps()} style={{ display: "flex", flexDirection: "column-reverse" }}>
+            <div
+              {...mergeProps(api.getContentProps(), { style: { display: "flex", flexDirection: "column-reverse" } })}
+            >
               {Array.from({ length: 100 }).map((_, index) => (
                 <div key={index}>Item {index}</div>
               ))}

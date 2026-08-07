@@ -117,7 +117,7 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
   /**
    * Element to receive focus when the sheet is opened.
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement) | null | undefined
   /**
    * Element to receive focus when the sheet is closed.
    */
@@ -225,7 +225,6 @@ type PropsWithDefault =
   | "trapFocus"
   | "restoreFocus"
   | "preventScroll"
-  | "initialFocusEl"
   | "snapPoints"
   | "swipeDirection"
   | "snapToSequentialPoints"

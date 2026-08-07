@@ -2,12 +2,12 @@
 
 import * as hoverCard from "@zag-js/hover-card"
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useRef } from "react"
 import "@styles/hover-card.css"
 import "@styles/dialog.css"
 
-function HoverCard(props: { portalRef: React.RefObject<HTMLElement> }) {
+function HoverCard(props: { portalRef: React.RefObject<HTMLElement | null> }) {
   const service = useMachine(hoverCard.machine, { id: useId() })
   const api = hoverCard.connect(service, normalizeProps)
   return (
@@ -18,7 +18,7 @@ function HoverCard(props: { portalRef: React.RefObject<HTMLElement> }) {
       {api.open && (
         <Portal container={props.portalRef}>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()} style={{ width: "200px", height: "200px" }}>
+            <div {...mergeProps(api.getContentProps(), { style: { width: "200px", height: "200px" } })}>
               <div {...api.getArrowProps()}>
                 <div {...api.getArrowTipProps()} />
               </div>
@@ -47,7 +47,10 @@ export default function Page() {
         <Portal>
           <div {...api.getBackdropProps()} />
           <div data-testid="positioner-1" {...api.getPositionerProps()}>
-            <div ref={contentRef} {...api.getContentProps()} style={{ width: "400px", height: "400px" }}>
+            <div
+              ref={contentRef}
+              {...mergeProps(api.getContentProps(), { style: { width: "400px", height: "400px" } })}
+            >
               <HoverCard portalRef={contentRef} />
             </div>
           </div>

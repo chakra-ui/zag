@@ -59,7 +59,7 @@ export interface DialogProps
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement) | null | undefined
   /**
    * Element to receive focus when the dialog is closed
    */
@@ -124,7 +124,6 @@ type PropsWithDefault =
   | "trapFocus"
   | "restoreFocus"
   | "preventScroll"
-  | "initialFocusEl"
 
 export interface DialogSchema {
   props: RequiredBy<DialogProps, PropsWithDefault>

@@ -1,7 +1,7 @@
 "use client"
 
 import type { DateValue } from "@internationalized/date"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerControls } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -69,7 +69,7 @@ export default function Page() {
   return (
     <>
       <main className="scheduler">
-        <div {...api.getRootProps()} style={{ maxWidth: 420 }}>
+        <div {...mergeProps(api.getRootProps(), { style: { maxWidth: 420 } })}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>
               <ChevronLeft />

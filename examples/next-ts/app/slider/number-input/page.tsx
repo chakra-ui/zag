@@ -1,7 +1,7 @@
 "use client"
 
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
 import { nan } from "@zag-js/utils"
 import { useId, useState } from "react"
@@ -31,7 +31,7 @@ function NumberInput(props: Props) {
 
   return (
     <div {...api.getRootProps()}>
-      <div {...api.getControlProps()} style={{ display: "flex" }}>
+      <div {...mergeProps(api.getControlProps(), { style: { display: "flex" } })}>
         <span
           style={{
             fontSize: "12px",

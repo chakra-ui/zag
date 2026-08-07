@@ -10,7 +10,7 @@ import type { DialogSchema } from "./dialog.types"
 export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
-    const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const initialFocusEl = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
     const modal = typeof props.modal === "boolean" ? props.modal : true
     return {
       role: "dialog",

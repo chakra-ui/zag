@@ -1,7 +1,7 @@
 "use client"
 
 import * as select from "@zag-js/select"
-import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 import "@styles/select.css"
 
@@ -48,8 +48,11 @@ export default function Page() {
 
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select framework</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px 12px", flex: 1 }}>
+          <div {...mergeProps(api.getControlProps(), { style: { display: "flex", marginTop: "4px" } })}>
+            <button
+              data-testid="trigger"
+              {...mergeProps(api.getTriggerProps(), { style: { padding: "8px 12px", flex: 1 } })}
+            >
               <span>{api.valueAsString || "Select option"}</span>
               <span style={{ marginLeft: "8px" }}>▼</span>
             </button>
@@ -57,7 +60,7 @@ export default function Page() {
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <div data-testid="select-content" {...api.getContentProps()} style={{ padding: "4px" }}>
+              <div data-testid="select-content" {...mergeProps(api.getContentProps(), { style: { padding: "4px" } })}>
                 <div {...api.getListProps()}>
                   {options.map((item) => (
                     <div

@@ -114,7 +114,7 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * The controlled open state of the color picker
    */

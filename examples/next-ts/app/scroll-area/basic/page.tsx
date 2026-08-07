@@ -1,6 +1,6 @@
 "use client"
 
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as scrollArea from "@zag-js/scroll-area"
 import { scrollAreaControls } from "@zag-js/shared"
 import { useId } from "react"
@@ -25,7 +25,7 @@ export default function Page() {
         <button onClick={() => api.scrollToEdge({ edge: "bottom" })}>Scroll to bottom</button>
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <div {...api.getContentProps()} style={{ minWidth: "800px" }}>
+            <div {...mergeProps(api.getContentProps(), { style: { minWidth: "800px" } })}>
               {Array.from({ length: 100 }).map((_, index) => (
                 <div key={index}>{index}</div>
               ))}

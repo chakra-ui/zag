@@ -194,7 +194,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * Element to receive focus when the select is opened. Defaults to the first
    * tabbable element inside the content (typically the list).
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and
    * the `role` of the content element.

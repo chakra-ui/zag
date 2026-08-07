@@ -3,7 +3,7 @@ import { getTabbableEdges, getTabbables } from "./tabbable"
 
 export interface InitialFocusOptions {
   root: HTMLElement | null
-  getInitialEl?: (() => HTMLElement | null) | undefined
+  getInitialEl?: (() => HTMLElement | null) | null | undefined
   enabled?: boolean | undefined
   filter?: ((el: HTMLElement) => boolean) | undefined
 }

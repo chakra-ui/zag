@@ -1,7 +1,7 @@
 "use client"
 
 import * as listbox from "@zag-js/listbox"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
 import "@styles/listbox.css"
 
@@ -21,10 +21,10 @@ function ListBox({ label, collection, ...props }: { label?: React.ReactNode } & 
   const api = listbox.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()} style={{ flex: "1" }}>
+    <div {...mergeProps(api.getRootProps(), { style: { flex: "1" } })}>
       {label && <label {...api.getLabelProps()}>{label}</label>}
-      <div {...api.getContentProps()} style={{ width: "100%", height: "100%" }}>
-        <ul {...api.getListProps()} style={{ width: "100%", height: "100%" }}>
+      <div {...mergeProps(api.getContentProps(), { style: { width: "100%", height: "100%" } })}>
+        <ul {...mergeProps(api.getListProps(), { style: { width: "100%", height: "100%" } })}>
           {collection.items.map((item) => (
             <li key={item.value} {...api.getItemProps({ item })}>
               <span {...api.getItemTextProps({ item })}>{item.label}</span>

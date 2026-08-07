@@ -1,7 +1,7 @@
 "use client"
 
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 import { useAsyncList } from "@/hooks/use-async-list"
 import "@styles/combobox.css"
@@ -59,9 +59,12 @@ export default function Page() {
 
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Search Star Wars characters</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <input data-testid="input" {...api.getInputProps()} style={{ flex: 1, padding: "8px 12px" }} />
-            <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px" }}>
+          <div {...mergeProps(api.getControlProps(), { style: { display: "flex", marginTop: "4px" } })}>
+            <input
+              data-testid="input"
+              {...mergeProps(api.getInputProps(), { style: { flex: 1, padding: "8px 12px" } })}
+            />
+            <button data-testid="trigger" {...mergeProps(api.getTriggerProps(), { style: { padding: "8px" } })}>
               ▼
             </button>
           </div>
@@ -74,7 +77,10 @@ export default function Page() {
         )}
 
         <div {...api.getPositionerProps()}>
-          <div data-testid="combobox-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
+          <div
+            data-testid="combobox-content"
+            {...mergeProps(api.getContentProps(), { style: { listStyle: "none", padding: "4px" } })}
+          >
             {api.collection.items.length > 0 && (
               <div {...api.getListProps()}>
                 {api.collection.items.map((item) => (

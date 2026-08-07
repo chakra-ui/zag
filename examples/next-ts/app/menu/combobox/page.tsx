@@ -3,7 +3,7 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import * as menu from "@zag-js/menu"
-import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { useId, useMemo, useState } from "react"
 import "@styles/menu.css"
@@ -45,9 +45,9 @@ function Combobox(props: Omit<combobox.Props, "id" | "collection">) {
   const comboApi = combobox.connect(comboService, normalizeProps)
 
   return (
-    <div {...comboApi.getRootProps()} style={{ width: "100%" }}>
-      <input {...comboApi.getInputProps()} style={{ marginBottom: "12px" }} />
-      <div {...comboApi.getContentProps()} style={{ minHeight: "120px" }}>
+    <div {...mergeProps(comboApi.getRootProps(), { style: { width: "100%" } })}>
+      <input {...mergeProps(comboApi.getInputProps(), { style: { marginBottom: "12px" } })} />
+      <div {...mergeProps(comboApi.getContentProps(), { style: { minHeight: "120px" } })}>
         <div {...comboApi.getListProps()}>
           {items.length === 0 && <div>No results found</div>}
           {items.map((item) => (

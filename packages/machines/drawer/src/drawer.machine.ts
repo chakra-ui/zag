@@ -39,7 +39,7 @@ const DEFAULT_SNAP_POINTS = [1]
 export const machine = createMachine<DrawerSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
-    const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const initialFocusEl = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
     const modal = typeof props.modal === "boolean" ? props.modal : true
     const snapPoints = props.snapPoints ?? DEFAULT_SNAP_POINTS
 

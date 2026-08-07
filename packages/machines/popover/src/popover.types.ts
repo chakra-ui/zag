@@ -71,7 +71,7 @@ export interface PopoverProps
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * Element to receive focus when the popover is closed.
    */
