@@ -10,6 +10,12 @@ import { usePathname, useSearchParams } from "next/navigation"
 import { JSX, useEffect, useId, useMemo, useState } from "react"
 import styles from "@styles/sidebar.module.css"
 
+// `useSearchParams` opts the sidebar out of prerendering, so it is absent on first paint.
+// Without this the main content starts at x=0 and jumps 240px once the sidebar arrives.
+export function SidebarFallback() {
+  return <aside className={styles.sidebar} />
+}
+
 export function Sidebar() {
   const pathname = usePathname() || "/"
   const searchParams = useSearchParams()
