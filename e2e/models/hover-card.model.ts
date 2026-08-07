@@ -50,9 +50,10 @@ export class HoverCardModel extends Model {
     return this.page.locator(testid("test-text"))
   }
 
-  hoverTrigger = async () => {
+  hoverTrigger = async (opts: { wait?: boolean } = {}) => {
+    const { wait = true } = opts
     await this.trigger.hover()
-    await this.advance(OPEN_DELAY)
+    await this.advance(wait ? OPEN_DELAY : FRAME)
   }
 
   hoverContent = async () => {
@@ -142,6 +143,21 @@ export class HoverCardModel extends Model {
   waitOutCloseDelay = async () => {
     await this.advance(CLOSE_DELAY * 2)
     await this.advance(EXIT_ANIMATION)
+  }
+
+  // ---------------------------------------------------------------------------
+  // Open-change reasons, recorded by the controlled example
+  // ---------------------------------------------------------------------------
+
+  seeOpenChangeLog = async (expected: string) => {
+    await expect(this.page.locator(testid("reason-log"))).toHaveText(expected)
+  }
+
+  pressOutside = async () => {
+    await this.page.mouse.move(400, 30)
+    await this.page.mouse.down()
+    await this.page.mouse.up()
+    await this.advance(FRAME)
   }
 
   // ---------------------------------------------------------------------------

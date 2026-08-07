@@ -156,8 +156,31 @@ invoked.
 ```tsx {2-5}
 const service = useMachine(hoverCard.machine, {
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, reason?: OpenChangeReason }
     console.log("hovercard is:", details.open ? "opened" : "closed")
+  },
+})
+```
+
+`details.reason` says what caused the change, so you can treat a deliberate
+dismissal differently from the pointer wandering off.
+
+| Reason             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `trigger-hover`    | The pointer entered the trigger or content  |
+| `trigger-focus`    | The trigger received focus                  |
+| `trigger-blur`     | Focus left the trigger                      |
+| `pointer-leave`    | The pointer left the trigger and content    |
+| `interact-outside` | The user pressed outside the hover card     |
+| `escape-key`       | The user pressed `Esc`                      |
+| `script`           | Changed programmatically, such as `setOpen` |
+
+```tsx {3}
+const service = useMachine(hoverCard.machine, {
+  onOpenChange(details) {
+    if (!details.open && details.reason === "escape-key") {
+      // the user dismissed it, so don't reopen on the next hover
+    }
   },
 })
 ```

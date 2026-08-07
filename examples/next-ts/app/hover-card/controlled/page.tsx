@@ -7,11 +7,15 @@ import "@styles/hover-card.css"
 
 export default function Page() {
   const [open, setOpen] = useState(false)
+  const [log, setLog] = useState<string[]>([])
 
   const service = useMachine(hoverCard.machine, {
     id: useId(),
     open,
-    onOpenChange: (details) => setOpen(details.open),
+    onOpenChange: (details) => {
+      setOpen(details.open)
+      setLog((prev) => [...prev, `${details.open ? "open" : "close"}:${details.reason ?? "-"}`])
+    },
   })
 
   const api = hoverCard.connect(service, normalizeProps)
@@ -20,6 +24,10 @@ export default function Page() {
     <div style={{ padding: "40px", height: "200vh" }}>
       <h1>HoverCard Controlled</h1>
       <h1>{String(open)}</h1>
+      <div data-testid="reason-log">{log.join(" ")}</div>
+      <button type="button" data-testid="clear-log" onClick={() => setLog([])}>
+        Clear log
+      </button>
 
       <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
         <button type="button" onClick={() => setOpen(true)}>

@@ -7,8 +7,21 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * The reason for the hover card open/close state change
+ */
+export type OpenChangeReason =
+  | "trigger-hover" // Pointer entered the trigger or content
+  | "trigger-focus" // Trigger received focus
+  | "trigger-blur" // Focus left the trigger
+  | "pointer-leave" // Pointer left the trigger and content
+  | "interact-outside" // User pressed outside
+  | "escape-key" // User pressed escape
+  | "script" // Programmatically changed
+
 export interface OpenChangeDetails {
   open: boolean
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -208,7 +221,7 @@ export interface HoverCardApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the hover card
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The trigger value
    */

@@ -3,7 +3,7 @@ import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable
 import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
-import type { HoverCardSchema, Placement } from "./hover-card.types"
+import type { HoverCardSchema, OpenChangeReason, Placement } from "./hover-card.types"
 
 const { not, and } = createGuards<HoverCardSchema>()
 
@@ -64,7 +64,7 @@ export const machine = createMachine<HoverCardSchema>({
   watch({ track, context, action, prop, send }) {
     track([() => prop("disabled")], () => {
       if (prop("disabled")) {
-        send({ type: "CLOSE", src: "disabled.change" })
+        send({ type: "CLOSE", src: "script" })
       }
     })
     track([() => context.get("open")], () => {
@@ -105,6 +105,8 @@ export const machine = createMachine<HoverCardSchema>({
       },
     },
 
+    // Nothing here reports a close: the card never opened, so there is no open state to close.
+    // `toggleVisibility` drives the controlled exit, since `ctx.open` has not changed at this point.
     opening: {
       tags: ["closed"],
       effects: ["waitForOpenDelay"],
@@ -128,35 +130,29 @@ export const machine = createMachine<HoverCardSchema>({
         POINTER_LEAVE: [
           {
             guard: "isOpenControlled",
-            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["invokeOnClose", "toggleVisibility"],
+            actions: ["toggleVisibility"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
           },
         ],
         TRIGGER_BLUR: [
           {
             guard: and("isOpenControlled", not("isPointer")),
-            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["invokeOnClose", "toggleVisibility"],
+            actions: ["toggleVisibility"],
           },
           {
             guard: not("isPointer"),
             target: "closed",
-            actions: ["invokeOnClose"],
           },
         ],
         CLOSE: [
           {
             guard: "isOpenControlled",
-            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["invokeOnClose", "toggleVisibility"],
+            actions: ["toggleVisibility"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
           },
         ],
         "TRIGGER_VALUE.SET": {
@@ -258,17 +254,18 @@ export const machine = createMachine<HoverCardSchema>({
     },
 
     effects: {
-      waitForOpenDelay({ send, prop }) {
+      waitForOpenDelay({ send, prop, event }) {
         const id = setTimeout(() => {
-          send({ type: "OPEN_DELAY" })
+          // Forward the event that started the warmup, so `onOpenChange` reports what caused it.
+          send({ type: "OPEN_DELAY", previousEvent: event })
         }, prop("openDelay"))
 
         return () => clearTimeout(id)
       },
 
-      waitForCloseDelay({ send, prop }) {
+      waitForCloseDelay({ send, prop, event }) {
         const id = setTimeout(() => {
-          send({ type: "CLOSE_DELAY" })
+          send({ type: "CLOSE_DELAY", previousEvent: event })
         }, prop("closeDelay"))
 
         return () => clearTimeout(id)
@@ -281,7 +278,7 @@ export const machine = createMachine<HoverCardSchema>({
           openedByPointer: () => context.get("isPointer"),
           defer: true,
           onLeave() {
-            send({ type: "SAFE_AREA.EXIT" })
+            send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
           },
           onEnter() {
             send({ type: "SAFE_AREA.ENTER" })
@@ -316,6 +313,11 @@ export const machine = createMachine<HoverCardSchema>({
           },
           defer: true,
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
+          onEscapeKeyDown(event) {
+            // Claim the event so the layer's own dismiss does not also fire.
+            event.preventDefault()
+            send({ type: "CLOSE", src: "escape-key" })
+          },
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside" })
           },
@@ -330,11 +332,11 @@ export const machine = createMachine<HoverCardSchema>({
     },
 
     actions: {
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
       setIsPointer({ context }) {
         context.set("isPointer", true)
@@ -368,3 +370,9 @@ export const machine = createMachine<HoverCardSchema>({
     },
   },
 })
+
+// The delay events (`OPEN_DELAY`, `CLOSE_DELAY`) are what open and close, so the cause is the
+// user event before them.
+function getOpenChangeReason(event: HoverCardSchema["event"]): OpenChangeReason | undefined {
+  return (event.previousEvent || event).src
+}

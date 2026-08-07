@@ -67,11 +67,11 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
 
   return {
     open: open,
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       if (prop("disabled")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
     triggerValue,
     setTriggerValue(value) {
@@ -118,7 +118,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_ENTER",
-            src: "trigger",
+            src: "trigger-hover",
             value,
           })
         },
@@ -131,7 +131,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
           refs.set("inlineLines", undefined)
-          send({ type: "POINTER_LEAVE", src: "trigger" })
+          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
         },
         onFocus() {
           if (prop("disabled")) return
@@ -140,12 +140,13 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_FOCUS",
+            src: "trigger-focus",
             value,
           })
         },
         onBlur() {
           if (prop("disabled")) return
-          send({ type: "TRIGGER_BLUR" })
+          send({ type: "TRIGGER_BLUR", src: "trigger-blur" })
         },
       })
     },
@@ -180,7 +181,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_ENTER", src: "content" })
+          send({ type: "POINTER_ENTER", src: "trigger-hover" })
         },
       })
     },

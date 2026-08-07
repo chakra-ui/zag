@@ -88,6 +88,49 @@ test.describe("hover card", () => {
     await I.seeContent()
   })
 
+  test.describe("open change reason", () => {
+    // The controlled example records every `onOpenChange` it receives.
+    test.beforeEach(async () => {
+      await I.goto("/hover-card/controlled")
+    })
+
+    test("should report the pointer opening and leaving", async () => {
+      await I.hoverTrigger()
+      await I.moveClearOfCard()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-hover close:pointer-leave")
+    })
+
+    test("should report an outside press", async () => {
+      await I.hoverTrigger()
+      await I.pressOutside()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-hover close:interact-outside")
+    })
+
+    test("should report focus and blur", async () => {
+      await I.focusTrigger()
+      await I.blurTrigger()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-focus close:trigger-blur")
+    })
+
+    test("should tell escape apart from an outside press", async () => {
+      await I.focusTrigger()
+      await I.pressKey("Escape")
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-focus close:escape-key")
+    })
+
+    test("should stay silent when the warmup is cancelled", async () => {
+      // The card never opened, so there is no close to report.
+      await I.hoverTrigger({ wait: false })
+      await I.moveClearOfCard()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("")
+    })
+  })
+
   test.describe("safe area", () => {
     test("should stay open while the pointer travels diagonally to the content", async () => {
       await I.hoverTrigger()
