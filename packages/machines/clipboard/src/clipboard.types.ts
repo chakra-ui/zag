@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -62,7 +62,8 @@ export interface ClipboardProps extends CommonProperties {
 
 export interface ClipboardSchema {
   state: "idle" | "copied"
-  props: RequiredBy<ClipboardProps, "timeout" | "translations">
+  props: ClipboardProps
+  defaultPropKey: "timeout" | "translations"
   context: {
     value: string
   }

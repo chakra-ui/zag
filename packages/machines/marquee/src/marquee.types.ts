@@ -153,7 +153,8 @@ export type MarqueeService = Service<MarqueeSchema>
 export type MarqueeMachine = Machine<MarqueeSchema>
 
 export interface MarqueeSchema {
-  props: UserDefinedContext
+  props: MarqueeProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: {

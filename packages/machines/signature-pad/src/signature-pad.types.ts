@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
 /* -----------------------------------------------------------------------------
@@ -135,7 +135,8 @@ type ComputedContext = Readonly<{
 
 export interface SignaturePadSchema {
   state: "idle" | "drawing"
-  props: RequiredBy<SignaturePadProps, PropsWithDefault>
+  props: SignaturePadProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   action: string

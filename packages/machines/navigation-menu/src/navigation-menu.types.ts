@@ -8,7 +8,6 @@ import type {
   Point,
   PropTypes,
   Rect,
-  RequiredBy,
   Size,
 } from "@zag-js/types"
 
@@ -86,7 +85,8 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
 type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation"
 
 export interface NavigationMenuSchema {
-  props: RequiredBy<NavigationMenuProps, PropsWithDefault>
+  props: NavigationMenuProps
+  defaultPropKey: PropsWithDefault
   state: "idle"
   computed: {
     open: boolean

@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -222,7 +222,8 @@ type ComputedContext = Readonly<{
 export interface TagsInputSchema {
   state: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
   tag: "focused" | "editing"
-  props: RequiredBy<TagsInputProps, PropsWithDefault>
+  props: TagsInputProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     inputValue: string

@@ -4,7 +4,7 @@ import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { AutoScrollHandlers } from "./select.dom"
 
 /* -----------------------------------------------------------------------------
@@ -210,7 +210,8 @@ type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupTy
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
-  props: RequiredBy<SelectProps<T>, PropsWithDefault>
+  props: SelectProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     /**
      * The computed layer stack state used for declarative styles and attributes.

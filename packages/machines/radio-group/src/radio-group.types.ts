@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null
@@ -129,7 +129,8 @@ interface Refs {
 
 export interface RadioGroupSchema {
   state: "idle"
-  props: RequiredBy<RadioGroupProps, PropsWithDefault>
+  props: RadioGroupProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs

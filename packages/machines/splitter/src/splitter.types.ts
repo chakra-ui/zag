@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { SplitterRegistry } from "./utils/registry"
 
 /* -----------------------------------------------------------------------------
@@ -178,7 +178,8 @@ interface Refs {
 export interface SplitterSchema {
   state: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tag: "focus"
-  props: RequiredBy<SplitterProps, PropsWithDefault>
+  props: SplitterProps
+  defaultPropKey: PropsWithDefault
   context: Context
   computed: {
     horizontal: boolean

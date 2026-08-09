@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { RequiredBy } from "@zag-js/types"
+
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -179,7 +179,8 @@ export type CarouselService = Service<CarouselSchema>
 export type CarouselMachine = Machine<CarouselSchema>
 
 export interface CarouselSchema {
-  props: RequiredBy<CarouselProps, PropsWithDefault>
+  props: CarouselProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: {

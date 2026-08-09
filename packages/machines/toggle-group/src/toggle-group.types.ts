@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -101,7 +101,8 @@ interface PrivateContext {
 }
 
 export interface ToggleGroupSchema {
-  props: RequiredBy<ToggleGroupProps, PropsWithDefault>
+  props: ToggleGroupProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   state: "idle" | "focused"

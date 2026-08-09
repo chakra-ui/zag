@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -189,7 +189,8 @@ type Computed = {
 
 export interface FileUploadSchema {
   state: "idle" | "focused" | "dragging"
-  props: RequiredBy<FileUploadProps, PropsWithDefault>
+  props: FileUploadProps
+  defaultPropKey: PropsWithDefault
   context: Context
   computed: Computed
   event: EventObject

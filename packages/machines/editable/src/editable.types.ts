@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -155,7 +155,8 @@ export interface EditableProps extends DirectionProperty, CommonProperties, Inte
 type PropsWithDefault = "activationMode" | "submitMode" | "selectOnFocus" | "translations"
 
 export interface EditableSchema {
-  props: RequiredBy<EditableProps, PropsWithDefault>
+  props: EditableProps
+  defaultPropKey: PropsWithDefault
   state: "edit" | "preview"
   context: {
     value: string

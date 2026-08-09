@@ -1,5 +1,5 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, RequiredBy, Size } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, Size } from "@zag-js/types"
 
 export type HandlePosition = "n" | "e" | "s" | "w" | "ne" | "se" | "sw" | "nw"
 
@@ -217,7 +217,8 @@ type PropsWithDefault =
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
-  props: RequiredBy<ImageCropperProps, PropsWithDefault>
+  props: ImageCropperProps
+  defaultPropKey: PropsWithDefault
   context: {
     naturalSize: Size
     crop: Rect

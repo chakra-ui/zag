@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -140,7 +140,8 @@ type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue" | "count
 
 export interface PinInputSchema {
   state: "idle" | "focused"
-  props: RequiredBy<PinInputProps, PropsWithDefault>
+  props: PinInputProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     focusedIndex: number

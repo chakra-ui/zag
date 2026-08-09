@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Coordination types
@@ -71,7 +71,8 @@ interface MenubarContext {
 }
 
 export interface MenubarSchema {
-  props: RequiredBy<MenubarProps, PropsWithDefault>
+  props: MenubarProps
+  defaultPropKey: PropsWithDefault
   context: MenubarContext
   refs: {
     typeaheadState: TypeaheadState

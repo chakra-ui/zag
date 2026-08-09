@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { InlineRectCoords, Placement, PlacementSide, PositioningOptions, RectLike } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -134,7 +134,8 @@ export interface PrivateRefs {
 }
 
 export interface HoverCardSchema {
-  props: RequiredBy<HoverCardProps, PropsWithDefault>
+  props: HoverCardProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   refs: PrivateRefs
   state: "closed" | "opening" | "open" | "open.idle" | "open.closing"

@@ -1,6 +1,6 @@
 import type { Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -126,7 +126,8 @@ type PropsWithDefault =
   | "preventScroll"
 
 export interface DialogSchema {
-  props: RequiredBy<DialogProps, PropsWithDefault>
+  props: DialogProps
+  defaultPropKey: PropsWithDefault
   state: "open" | "closed"
   context: {
     /**

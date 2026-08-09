@@ -7,6 +7,7 @@ import type {
   GuardFn,
   Machine,
   MachineSchema,
+  InputProps,
   Service,
 } from "@zag-js/core"
 import {
@@ -29,7 +30,7 @@ type MaybeRef<T> = T | Ref<T> | ComputedRef<T>
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
-  userProps: MaybeRef<Partial<T["props"]>> = {},
+  userProps: MaybeRef<InputProps<T>> = {} as InputProps<T>,
 ): Service<T> {
   const scope = __computed(() => {
     const { id, ids, getRootNode } = toValue(userProps) as any

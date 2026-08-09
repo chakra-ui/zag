@@ -2,7 +2,7 @@ import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { IndexPath, ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -279,7 +279,8 @@ export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
 
 export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "renaming"
-  props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
+  props: TreeViewProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     expandedValue: string[]
     selectedValue: string[]

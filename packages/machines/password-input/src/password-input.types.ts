@@ -72,6 +72,7 @@ export interface PasswordInputProps extends DirectionProperty, CommonProperties 
 export interface PasswordInputSchema {
   state: "idle"
   props: PasswordInputProps
+  defaultPropKey: never
   context: {
     visible: boolean
   }

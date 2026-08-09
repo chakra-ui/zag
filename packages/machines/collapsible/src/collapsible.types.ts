@@ -58,6 +58,7 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
 export interface CollapsibleSchema {
   state: "open" | "closed" | "closing"
   props: CollapsibleProps
+  defaultPropKey: never
   context: {
     size: { width: number; height: number }
     initial: boolean

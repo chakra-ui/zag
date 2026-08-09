@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -110,7 +110,8 @@ type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehav
 
 export interface TocSchema {
   state: "idle"
-  props: RequiredBy<TocProps, PropsWithDefault>
+  props: TocProps
+  defaultPropKey: PropsWithDefault
   context: {
     activeIds: string[]
     indicatorRect: Rect | null

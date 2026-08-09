@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -53,7 +53,8 @@ interface PrivateContext {
 }
 
 export interface ToolbarSchema {
-  props: RequiredBy<ToolbarProps, PropsWithDefault>
+  props: ToolbarProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   state: "idle" | "focused"
   event: EventObject

@@ -8,6 +8,7 @@ import type {
   Machine,
   MachineSchema,
   Params,
+  InputProps,
   Service,
 } from "@zag-js/core"
 import {
@@ -33,7 +34,7 @@ function access<T>(userProps: T | (() => T)): T {
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
-  userProps: Partial<T["props"]> | (() => Partial<T["props"]>),
+  userProps: InputProps<T> | (() => InputProps<T>),
 ): Service<T> {
   const scope = $derived.by(() => {
     const { id, ids, getRootNode } = access(userProps) as any

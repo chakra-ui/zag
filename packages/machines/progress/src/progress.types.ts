@@ -1,12 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type {
-  CommonProperties,
-  DirectionProperty,
-  Orientation,
-  OrientationProperty,
-  PropTypes,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -98,7 +91,8 @@ type Computed = Readonly<{
 }>
 
 export interface ProgressSchema {
-  props: RequiredBy<ProgressProps, PropsWithDefault>
+  props: ProgressProps
+  defaultPropKey: PropsWithDefault
   computed: Computed
   context: {
     value: number | null

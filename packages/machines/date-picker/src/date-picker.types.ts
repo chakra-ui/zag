@@ -12,7 +12,7 @@ import type { DateRangePreset, DateValue } from "@zag-js/date-utils"
 import type { LayerSnapshot } from "@zag-js/dismissable"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -411,7 +411,8 @@ type Refs = {
 export interface DatePickerSchema {
   state: "idle" | "focused" | "open"
   tag: "open" | "closed"
-  props: RequiredBy<DatePickerProps, PropsWithDefault>
+  props: DatePickerProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs

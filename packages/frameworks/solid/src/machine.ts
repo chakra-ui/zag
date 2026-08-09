@@ -1,14 +1,15 @@
 import type {
   ActionsOrFn,
-  GuardFn,
-  Machine,
-  MachineSchema,
-  Service,
+  BindableContext,
   ChooseFn,
   ComputedFn,
   EffectsOrFn,
-  BindableContext,
+  GuardFn,
+  Machine,
+  MachineSchema,
   Params,
+  InputProps,
+  Service,
 } from "@zag-js/core"
 import {
   createScope,
@@ -28,7 +29,7 @@ import { createTrack } from "./track"
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
-  userProps: Partial<T["props"]> | Accessor<Partial<T["props"]>> = {},
+  userProps: InputProps<T> | Accessor<InputProps<T>> = {} as InputProps<T>,
 ): Service<T> {
   const scope = createMemo(() => {
     const { id, ids, getRootNode } = access(userProps) as any

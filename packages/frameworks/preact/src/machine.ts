@@ -9,6 +9,7 @@ import type {
   Machine,
   MachineSchema,
   Params,
+  InputProps,
   Service,
 } from "@zag-js/core"
 import {
@@ -30,7 +31,7 @@ import { useTrack } from "./track"
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
-  userProps: Partial<T["props"]> = {},
+  userProps: InputProps<T> = {} as InputProps<T>,
 ): Service<T> {
   const scope = useMemo(() => {
     const { id, ids, getRootNode } = userProps as any

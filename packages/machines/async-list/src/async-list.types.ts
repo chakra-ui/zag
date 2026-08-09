@@ -83,6 +83,7 @@ export interface AsyncListProps<Item, Filter = string, Sorting = SortDescriptor<
 export interface AsyncListSchema<Item, Filter, Sorting, Cursor> {
   state: "idle" | "loading" | "sorting"
   props: AsyncListProps<Item, Filter, Sorting, Cursor>
+  defaultPropKey: never
   context: {
     items: Item[]
     filter: Filter

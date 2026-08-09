@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -112,7 +112,8 @@ interface PrivateContext {
 }
 
 export interface SwitchSchema {
-  props: RequiredBy<SwitchProps, PropsWithDefault>
+  props: SwitchProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   state: "ready"
   computed: ComputedContext

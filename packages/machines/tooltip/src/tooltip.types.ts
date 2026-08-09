@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -128,7 +128,8 @@ type PropsWithDefault =
 
 export interface TooltipSchema {
   state: "open" | "closed" | "opening" | "closing"
-  props: RequiredBy<TooltipProps, PropsWithDefault>
+  props: TooltipProps
+  defaultPropKey: PropsWithDefault
   context: {
     currentPlacement: Placement | undefined
     hasPointerMoveOpened: string | null

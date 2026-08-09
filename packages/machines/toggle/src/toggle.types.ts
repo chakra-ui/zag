@@ -23,6 +23,7 @@ export interface ToggleProps {
 export interface ToggleSchema {
   state: "idle"
   props: ToggleProps
+  defaultPropKey: never
   context: {
     pressed: boolean
   }

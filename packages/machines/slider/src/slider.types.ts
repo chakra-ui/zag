@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -242,7 +242,8 @@ interface Context {
 
 export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
-  props: RequiredBy<SliderProps, PropsWithDefault>
+  props: SliderProps
+  defaultPropKey: PropsWithDefault
   context: Context
   refs: {
     /**

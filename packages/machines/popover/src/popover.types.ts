@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -156,7 +156,8 @@ interface PrivateContext {
 }
 
 export interface PopoverSchema {
-  props: RequiredBy<PopoverProps, PropsWithDefault>
+  props: PopoverProps
+  defaultPropKey: PropsWithDefault
   state: "open" | "closed"
   context: PrivateContext
   computed: {}

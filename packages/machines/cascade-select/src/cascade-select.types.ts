@@ -1,7 +1,7 @@
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 
@@ -166,7 +166,8 @@ type PropsWithDefault = "collection" | "closeOnSelect" | "loopFocus" | "highligh
 
 export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
-  props: RequiredBy<CascadeSelectProps<T>, PropsWithDefault>
+  props: CascadeSelectProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     /**
      * The computed layer stack state used for declarative styles and attributes.

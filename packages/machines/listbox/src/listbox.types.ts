@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -133,7 +133,8 @@ type PropsWithDefault = "collection" | "selectionMode"
 
 export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"
-  props: RequiredBy<ListboxProps<T>, PropsWithDefault>
+  props: ListboxProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     highlightedValue: string | null

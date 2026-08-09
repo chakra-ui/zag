@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
 
 export interface Time<T = number> {
   days: T
@@ -102,7 +102,8 @@ interface Computed {
 
 export interface TimerSchema {
   state: "idle" | "running" | "paused" | "running:temp"
-  props: RequiredBy<TimerProps, PropsWithDefault>
+  props: TimerProps
+  defaultPropKey: PropsWithDefault
   context: Context
   computed: Computed
   event: EventObject

@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PlacementSide } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { Point, Rect, Size } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
@@ -306,7 +306,8 @@ type ComputedContext = Readonly<{
 export interface TourSchema {
   tag: "open" | "closed"
   state: "tourInactive" | "running.resolving" | "running.scrolling" | "running.waiting" | "running.active"
-  props: RequiredBy<TourProps, PropsWithDefault>
+  props: TourProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   refs: Refs
   computed: ComputedContext

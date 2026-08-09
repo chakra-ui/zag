@@ -1,6 +1,6 @@
 import type { NumberParser } from "@internationalized/number"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -309,7 +309,8 @@ interface PrivateContext {
 export interface NumberInputSchema {
   state: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
   tag: "focus"
-  props: RequiredBy<NumberInputProps, PropsWithDefault>
+  props: NumberInputProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   action: string

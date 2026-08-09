@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -125,7 +125,8 @@ interface PrivateContext {
 export interface RatingGroupSchema {
   state: "idle" | "hover" | "focus"
   context: PrivateContext
-  props: RequiredBy<RatingGroupProps, PropsWithDefault>
+  props: RatingGroupProps
+  defaultPropKey: PropsWithDefault
   computed: ComputedContext
   private: PrivateContext
   action: string

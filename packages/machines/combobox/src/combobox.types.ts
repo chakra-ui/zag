@@ -2,7 +2,7 @@ import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
 
 /* -----------------------------------------------------------------------------
@@ -309,7 +309,8 @@ type PropsWithDefault =
   | "defaultInputValue"
 
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
-  props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
+  props: ComboboxProps<T>
+  defaultPropKey: PropsWithDefault
   state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {

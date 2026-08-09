@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { DateValue } from "@internationalized/date"
 
 /* -----------------------------------------------------------------------------
@@ -387,7 +387,8 @@ type Computed = Readonly<{
 
 export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> {
   state: "idle" | "slot-selecting" | "event-dragging" | "event-resizing"
-  props: RequiredBy<SchedulerProps<T>, PropsWithDefault>
+  props: SchedulerProps<T>
+  defaultPropKey: PropsWithDefault
   context: SchedulerContext
   refs: {
     dragOrigin: { x: number; y: number } | null

@@ -68,6 +68,7 @@ export interface ScrollAreaRefs {
 export interface ScrollAreaSchema {
   state: "idle" | "dragging"
   props: ScrollAreaProps
+  defaultPropKey: never
   context: ScrollAreaContext
   event: EventObject
   action: string

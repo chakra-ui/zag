@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -76,7 +76,8 @@ type PropsWithDefault = "value"
 
 export interface CheckboxSchema {
   state: "ready"
-  props: RequiredBy<CheckboxProps, PropsWithDefault>
+  props: CheckboxProps
+  defaultPropKey: PropsWithDefault
   context: {
     checked: CheckedState
     active: boolean

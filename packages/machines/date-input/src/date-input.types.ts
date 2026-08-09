@@ -10,7 +10,7 @@ import type {
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"
 
@@ -261,7 +261,8 @@ type Refs = {
 
 export interface DateInputSchema {
   state: "idle" | "focused"
-  props: RequiredBy<DateInputProps, PropsWithDefault>
+  props: DateInputProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs

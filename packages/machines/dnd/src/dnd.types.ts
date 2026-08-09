@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Point, Rect } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Drop placement
@@ -272,7 +272,8 @@ interface Refs {
 
 export interface DndSchema {
   state: "idle" | "pointer:pending" | "pointer:dragging" | "keyboard:session"
-  props: RequiredBy<DndProps, PropsWithDefault>
+  props: DndProps
+  defaultPropKey: PropsWithDefault
   context: Context
   refs: Refs
   action: string

@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { HandlePosition, Point, Size } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -226,7 +226,8 @@ type ComputedContext = Readonly<{
 }>
 
 export interface FloatingPanelSchema {
-  props: RequiredBy<FloatingPanelProps, PropsWithDefault>
+  props: FloatingPanelProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   tag: "open" | "closed"

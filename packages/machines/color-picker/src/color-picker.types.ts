@@ -3,7 +3,7 @@ import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
@@ -159,7 +159,8 @@ type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "di
 export type ColorPickerSchema = {
   tag: "open" | "closed" | "dragging" | "focused"
   state: "idle" | "focused" | "open" | "open.idle" | "open.dragging"
-  props: RequiredBy<ColorPickerProps, PropsWithDefault>
+  props: ColorPickerProps
+  defaultPropKey: PropsWithDefault
   computed: {
     disabled: boolean
     rtl: boolean

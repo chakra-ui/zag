@@ -3,7 +3,7 @@ import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissa
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -176,7 +176,8 @@ export interface MenubarContext {
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
-  props: RequiredBy<MenuProps, PropsWithDefault>
+  props: MenuProps
+  defaultPropKey: PropsWithDefault
   context: {
     /**
      * The computed layer stack state used for declarative styles and attributes.

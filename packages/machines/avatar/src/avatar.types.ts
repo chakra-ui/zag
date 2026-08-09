@@ -34,6 +34,7 @@ export interface AvatarProps extends CommonProperties, DirectionProperty {
 
 export interface AvatarSchema {
   props: AvatarProps
+  defaultPropKey: never
   context: any
   initial: "loading"
   effect: "trackImageRemoval" | "trackSrcChange"
