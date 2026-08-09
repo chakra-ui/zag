@@ -1,7 +1,6 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./avatar.anatomy"
-import * as dom from "./avatar.dom"
 import type { AvatarApi, AvatarSchema, AvatarService, LoadStatus } from "./avatar.types"
 
 export function connect<T extends PropTypes>(
@@ -14,10 +13,6 @@ export function connect<T extends PropTypes>(
   return {
     status,
     loaded,
-    setSrc(src) {
-      const img = dom.getImageEl(scope)
-      img?.setAttribute("src", src)
-    },
     setLoaded() {
       send({ type: "img.loaded", src: "api" })
     },

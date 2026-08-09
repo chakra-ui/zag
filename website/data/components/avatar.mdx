@@ -63,16 +63,28 @@ const service = useMachine(avatar.machine, {
 
 ### Updating the image source
 
-In framework adapters, update the image `src` through your own state. The
-machine watches the rendered image and reacts automatically, resetting to
-`loading` and then to `loaded` or `error`.
+You own the image `src`; the machine observes the rendered image and owns its
+loading lifecycle. Update `src` however you normally would and the machine
+reacts, resetting to `loading` and then to `loaded` or `error`.
 
-For imperative usage like vanilla JS, `api.setSrc` sets the source on the
-machine's image element directly.
+This holds for `srcSet` and `<picture>` too, since the machine watches the
+element rather than a value you hand it.
 
 ```tsx
-api.setSrc(nextSrc)
+const [src, setSrc] = useState(initialSrc)
+
+<img alt="" src={src} {...api.getImageProps()} />
 ```
+
+Two cases the machine already covers, so you don't have to:
+
+- An image served from cache can finish loading before the `load` handler is
+  attached. The machine checks whether the image is already complete.
+- Setting `src` to a URL that previously failed retries it, rather than staying
+  in the error state.
+
+If the image is loaded by something that doesn't fire `load` and `error` on the
+element itself, drive the lifecycle with `api.setLoaded()` and `api.setError()`.
 
 ## Styling guide
 

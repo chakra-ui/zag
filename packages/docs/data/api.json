@@ -288,10 +288,6 @@
         "type": "boolean",
         "description": "Whether the image is loaded."
       },
-      "setSrc": {
-        "type": "(src: string) => void",
-        "description": "Function to set new src."
-      },
       "setLoaded": {
         "type": "VoidFunction",
         "description": "Function to set loaded state."

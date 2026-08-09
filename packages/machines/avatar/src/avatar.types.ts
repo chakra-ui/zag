@@ -65,10 +65,6 @@ export interface AvatarApi<T extends PropTypes = PropTypes> {
    */
   loaded: boolean
   /**
-   * Function to set new src.
-   */
-  setSrc: (src: string) => void
-  /**
    * Function to set loaded state.
    */
   setLoaded: VoidFunction
