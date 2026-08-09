@@ -1,4 +1,11 @@
 {
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
+    }
+  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",
@@ -7,13 +14,6 @@
     "Marker": {
       "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
       "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
-    }
-  },
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -112,18 +112,6 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
-  "image-cropper": {
-    "Root": {
-      "--crop-width": "The width of the Root",
-      "--crop-height": "The height of the Root",
-      "--crop-x": "The crop x value for the Root",
-      "--crop-y": "The crop y value for the Root",
-      "--image-zoom": "The image zoom value for the Root",
-      "--image-rotation": "The image rotation value for the Root",
-      "--image-offset-x": "The offset position for image",
-      "--image-offset-y": "The offset position for image"
-    }
-  },
   "listbox": {
     "List": {
       "--column-count": "The column count value for the List"
@@ -138,11 +126,16 @@
       "--marquee-translate": "The marquee translate value for the Root"
     }
   },
-  "number-input": {
-    "Scrubber": {
-      "--scrubber-x": "The scrubber x value for the Scrubber",
-      "--scrubber-y": "The scrubber y value for the Scrubber",
-      "--scrubber-scale": "The scrubber scale value for the Scrubber"
+  "image-cropper": {
+    "Root": {
+      "--crop-width": "The width of the Root",
+      "--crop-height": "The height of the Root",
+      "--crop-x": "The crop x value for the Root",
+      "--crop-y": "The crop y value for the Root",
+      "--image-zoom": "The image zoom value for the Root",
+      "--image-rotation": "The image rotation value for the Root",
+      "--image-offset-x": "The offset position for image",
+      "--image-offset-y": "The offset position for image"
     }
   },
   "navigation-menu": {
@@ -170,19 +163,19 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "number-input": {
+    "Scrubber": {
+      "--scrubber-x": "The scrubber x value for the Scrubber",
+      "--scrubber-y": "The scrubber y value for the Scrubber",
+      "--scrubber-scale": "The scrubber scale value for the Scrubber"
+    }
+  },
   "progress": {
     "Root": {
       "--percent": "The percent value for the root",
       "--radius": "The border radius value",
       "--circumference": "The circumference value for the root",
       "--offset": "The offset position of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "radio-group": {
@@ -192,6 +185,13 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
     }
   },
   "scheduler": {
@@ -257,7 +257,11 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     },
     "Spotlight": {
-      "--tour-layer": "The tour layer value for the Spotlight"
+      "--tour-layer": "The tour layer value for the Spotlight",
+      "--spotlight-x": "The spotlight x value for the Spotlight",
+      "--spotlight-y": "The spotlight y value for the Spotlight",
+      "--spotlight-width": "The width of the Spotlight",
+      "--spotlight-height": "The height of the Spotlight"
     },
     "Positioner": {
       "--tour-layer": "The tour layer value for the Positioner",

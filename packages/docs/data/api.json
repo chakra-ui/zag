@@ -99,6 +99,14 @@
       "dragging": {
         "type": "boolean",
         "description": "Whether the slider is being dragged."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the angle slider"
+      },
+      "getMarkerState": {
+        "type": "(props: MarkerProps) => MarkerState",
+        "description": "Returns the state of a specific marker"
       }
     },
     "context": {
@@ -386,6 +394,14 @@
       "refresh": {
         "type": "VoidFunction",
         "description": "Function to re-compute the snap points\nand clamp the page"
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of a carousel item"
+      },
+      "getIndicatorState": {
+        "type": "(props: IndicatorProps) => IndicatorState",
+        "description": "Returns the state of a carousel indicator"
       }
     },
     "context": {
@@ -576,6 +592,18 @@
       "getItemState": {
         "type": "(props: ItemProps<V>) => ItemState<V>",
         "description": "Returns the state of a cascade-select item"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -739,6 +767,10 @@
       "toggleChecked": {
         "type": "VoidFunction",
         "description": "Function to toggle the checked state of the checkbox"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the checkbox"
       }
     },
     "context": {
@@ -819,6 +851,10 @@
       "copy": {
         "type": "VoidFunction",
         "description": "Copy the value to the clipboard"
+      },
+      "getIndicatorState": {
+        "type": "(props: IndicatorProps) => IndicatorState",
+        "description": "Returns the state of the indicator"
       }
     },
     "context": {
@@ -882,6 +918,14 @@
       "measureSize": {
         "type": "VoidFunction",
         "description": "Function to measure the size of the content."
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -994,6 +1038,18 @@
         "type": "(open: boolean) => void",
         "description": "Function to open or close the color picker"
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
+      },
       "getGamutOverlay": {
         "type": "(props?: GamutOverlayProps) => GamutOverlayData | null",
         "description": "SVG path + label position for the sRGB gamut boundary (oklch/oklab + HSB area only); `null` when not shown.\nUse the **same** `props` as "
@@ -1054,7 +1110,7 @@
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
+        "type": "(() => HTMLElement | null) | null | undefined",
         "description": "The initial focus element when the color picker is opened."
       },
       "open": {
@@ -1212,6 +1268,18 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the combobox is disabled"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of the trigger"
       }
     },
     "context": {
@@ -1462,6 +1530,18 @@
       "getSegmentState": {
         "type": "(props: SegmentProps) => SegmentState",
         "description": "Returns the state details for a given segment."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getControlState": {
+        "type": "() => ControlState",
+        "description": "Returns the state of the control."
+      },
+      "getSegmentGroupState": {
+        "type": "(props?: SegmentGroupProps | undefined) => SegmentGroupState",
+        "description": "Returns the state of a given segment group."
       }
     },
     "context": {
@@ -1795,6 +1875,22 @@
       "getYearTableCellState": {
         "type": "(props: TableCellProps) => TableCellState",
         "description": "Returns the state details for a given year cell."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content."
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger."
+      },
+      "getInputState": {
+        "type": "() => InputState",
+        "description": "Returns the state of the input."
       }
     },
     "context": {
@@ -2007,6 +2103,22 @@
       "setTriggerValue": {
         "type": "(value: string | null) => void",
         "description": "Function to set the active trigger value"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getBackdropState": {
+        "type": "() => BackdropState",
+        "description": "Returns the state of the backdrop"
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -2030,7 +2142,7 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => MaybeElement) | undefined",
+        "type": "(() => MaybeElement) | null | undefined",
         "description": "Element to receive focus when the dialog is opened"
       },
       "finalFocusEl": {
@@ -2141,6 +2253,10 @@
       "instructions": {
         "type": "string",
         "description": "Keyboard instructions text for screen readers.\nAutomatically set as `aria-description` on draggable and drag handle elements."
+      },
+      "getDragPreviewState": {
+        "type": "() => DragPreviewState",
+        "description": "Returns the state of the drag preview"
       }
     },
     "context": {
@@ -2296,6 +2412,26 @@
       "getContentSize": {
         "type": "() => number | null",
         "description": "Get the current main-axis size of the drawer content."
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getBackdropState": {
+        "type": "() => BackdropState",
+        "description": "Returns the state of the backdrop"
+      },
+      "getSwipeAreaState": {
+        "type": "(props?: SwipeAreaProps) => SwipeAreaState",
+        "description": "Returns the state of the swipe area"
       }
     },
     "context": {
@@ -2319,7 +2455,7 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => MaybeElement) | undefined",
+        "type": "(() => MaybeElement) | null | undefined",
         "description": "Element to receive focus when the sheet is opened."
       },
       "finalFocusEl": {
@@ -2469,6 +2605,22 @@
       "submit": {
         "type": "VoidFunction",
         "description": "Function to exit edit mode, and submit any changes"
+      },
+      "getAreaState": {
+        "type": "() => AreaState",
+        "description": "Returns the state of the area"
+      },
+      "getLabelState": {
+        "type": "() => LabelState",
+        "description": "Returns the state of the label"
+      },
+      "getInputState": {
+        "type": "() => InputState",
+        "description": "Returns the state of the input"
+      },
+      "getPreviewState": {
+        "type": "() => PreviewState",
+        "description": "Returns the state of the preview"
       }
     },
     "context": {
@@ -2663,6 +2815,26 @@
       "setClipboardFiles": {
         "type": "(dt: DataTransfer | null) => boolean",
         "description": "Sets the clipboard files\nReturns `true` if the clipboard data contains files, `false` otherwise."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getDropzoneState": {
+        "type": "() => DropzoneState",
+        "description": "Returns the state of the dropzone"
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getItemGroupState": {
+        "type": "(props: ItemGroupProps) => ItemGroupState",
+        "description": "Returns the state of the item group"
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of the item"
       }
     },
     "context": {
@@ -2832,6 +3004,26 @@
       "draggable": {
         "type": "boolean",
         "description": "Whether the panel is draggable"
+      },
+      "getResizeTriggerState": {
+        "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
+        "description": "Returns the state of a specific resize trigger"
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
+      },
+      "getControlState": {
+        "type": "() => ControlState",
+        "description": "Returns the state of the control"
+      },
+      "getStageTriggerState": {
+        "type": "(props: StageTriggerProps) => StageTriggerState",
+        "description": "Returns the state of a specific stage trigger"
       }
     },
     "context": {
@@ -2913,7 +3105,7 @@
         "description": "The boundary of the panel. Useful for recalculating the boundary rect when\nthe it is resized."
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
+        "type": "(() => HTMLElement | null) | null | undefined",
         "description": "Element to receive focus when the panel is opened.\nBy default, the first focusable element in the content is focused."
       },
       "finalFocusEl": {
@@ -2988,7 +3180,7 @@
         "description": "Whether the hover card is open"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open the hover card"
       },
       "triggerValue": {
@@ -3002,6 +3194,18 @@
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -3158,7 +3362,19 @@
       },
       "getCropData": {
         "type": "() => CropData",
-        "description": "Function to get the crop data in natural image pixel coordinates.\nThese coordinates are relative to the original image dimensions,\naccounting for zoom, rotation, and flip transformations.\nUse this for server-side cropping or state persistence."
+        "description": "Function to get the crop geometry in natural image pixels.\nThe rect is axis-aligned; `corners` preserves the exact source quad."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getImageState": {
+        "type": "() => ImageState",
+        "description": "Returns the state of the image"
+      },
+      "getSelectionState": {
+        "type": "() => SelectionState",
+        "description": "Returns the state of the selection"
       }
     },
     "context": {
@@ -3382,6 +3598,14 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the select is disabled"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
+      },
+      "getListState": {
+        "type": "() => ListState",
+        "description": "Returns the state of the list"
       }
     },
     "context": {
@@ -3513,6 +3737,10 @@
       "restart": {
         "type": "VoidFunction",
         "description": "Restart the marquee animation from the beginning."
+      },
+      "getContentState": {
+        "type": "(props: ContentProps) => ContentState",
+        "description": "Returns the state of a content instance"
       }
     },
     "context": {
@@ -3649,6 +3877,18 @@
       "addItemListener": {
         "type": "(props: ItemListenerProps) => VoidFunction | undefined",
         "description": "Setup the custom event listener for item selection event"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -3834,6 +4074,14 @@
       "reposition": {
         "type": "VoidFunction",
         "description": "Function to reposition the viewport"
+      },
+      "getTriggerState": {
+        "type": "(props: ItemProps) => TriggerState",
+        "description": "Returns the state of a specific trigger"
+      },
+      "getContentState": {
+        "type": "(props: ContentProps) => ContentState",
+        "description": "Returns the state of a specific content"
       }
     },
     "context": {
@@ -3952,6 +4200,22 @@
       "focus": {
         "type": "VoidFunction",
         "description": "Function to focus the input."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getInputState": {
+        "type": "() => InputState",
+        "description": "Returns the state of the input."
+      },
+      "getDecrementTriggerState": {
+        "type": "() => DecrementTriggerState",
+        "description": "Returns the state of the decrement trigger."
+      },
+      "getIncrementTriggerState": {
+        "type": "() => IncrementTriggerState",
+        "description": "Returns the state of the increment trigger."
       }
     },
     "context": {
@@ -4174,6 +4438,10 @@
       "goToLastPage": {
         "type": "VoidFunction",
         "description": "Function to go to the last page."
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of a pagination item"
       }
     },
     "context": {
@@ -4274,6 +4542,18 @@
       "toggleVisible": {
         "type": "VoidFunction",
         "description": "Toggle the visibility of the password input."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getInputState": {
+        "type": "() => InputState",
+        "description": "Returns the state of the input."
+      },
+      "getVisibilityTriggerState": {
+        "type": "() => VisibilityTriggerState",
+        "description": "Returns the state of the visibility trigger."
       }
     },
     "context": {
@@ -4378,6 +4658,18 @@
       "focus": {
         "type": "VoidFunction",
         "description": "Function to focus the pin-input. This will focus the first input."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getLabelState": {
+        "type": "() => LabelState",
+        "description": "Returns the state of the label."
+      },
+      "getInputState": {
+        "type": "(props: InputProps) => InputState",
+        "description": "Returns the state of a given input."
       }
     },
     "context": {
@@ -4515,6 +4807,18 @@
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -4537,7 +4841,7 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
+        "type": "(() => HTMLElement | null) | null | undefined",
         "description": "The element to focus on when the popover is opened."
       },
       "finalFocusEl": {
@@ -4677,6 +4981,10 @@
       "indeterminate": {
         "type": "boolean",
         "description": "Whether the progress bar is indeterminate."
+      },
+      "getViewState": {
+        "type": "(props: ViewProps) => ViewState",
+        "description": "Returns the state of a view"
       }
     },
     "context": {
@@ -4817,6 +5125,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state details of a radio input"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the radio group"
       }
     },
     "context": {
@@ -4912,6 +5224,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a rating item"
+      },
+      "getControlState": {
+        "type": "() => ControlState",
+        "description": "Returns the state of the control"
       }
     },
     "context": {
@@ -5161,6 +5477,10 @@
       "getSelectedSlotEl": {
         "type": "() => HTMLElement | null",
         "description": "The DOM element rendered by `getSelectedSlotProps` for the active\n`selectedSlot` day. Useful for anchoring a popover to the selection\n(e.g. click-to-create). Returns `null` when nothing is selected."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       }
     },
     "context": {
@@ -5350,6 +5670,10 @@
       "getScrollbarState": {
         "type": "(props: ScrollbarProps) => ScrollbarState",
         "description": "Returns the state of the scrollbar"
+      },
+      "getCornerState": {
+        "type": "() => CornerState",
+        "description": "Returns the state of the corner"
       }
     },
     "context": {
@@ -5465,6 +5789,18 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the select is disabled"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getTriggerState": {
+        "type": "() => TriggerState",
+        "description": "Returns the state of the trigger"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -5580,7 +5916,7 @@
         "defaultValue": "false"
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
+        "type": "(() => HTMLElement | null) | null | undefined",
         "description": "Element to receive focus when the select is opened. Defaults to the first\ntabbable element inside the content (typically the list)."
       },
       "popupType": {
@@ -5640,6 +5976,10 @@
       "clear": {
         "type": "VoidFunction",
         "description": "Clears the signature pad."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       }
     },
     "context": {
@@ -5653,7 +5993,7 @@
       },
       "onDraw": {
         "type": "((details: DrawDetails) => void) | undefined",
-        "description": "Callback when the signature pad is drawing."
+        "description": "Callback when the signature pad is drawing or the committed paths change.\n`paths` contains only committed strokes; use `currentPath` for the in-progress stroke."
       },
       "onDrawEnd": {
         "type": "((details: DrawEndDetails) => void) | undefined",
@@ -5764,6 +6104,18 @@
       "focus": {
         "type": "VoidFunction",
         "description": "Function to focus the slider. This focuses the first thumb."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the slider"
+      },
+      "getThumbState": {
+        "type": "(props: ThumbProps) => ThumbState",
+        "description": "Returns the state of a specific thumb"
+      },
+      "getMarkerState": {
+        "type": "(props: MarkerProps) => MarkerState",
+        "description": "Returns the state of a specific marker"
       }
     },
     "context": {
@@ -6162,6 +6514,10 @@
       "toggleChecked": {
         "type": "VoidFunction",
         "description": "Toggles the checked state of the switch."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the switch"
       }
     },
     "context": {
@@ -6270,6 +6626,10 @@
       "getTriggerState": {
         "type": "(props: TriggerProps) => TriggerState",
         "description": "Returns the state of the trigger with the given props"
+      },
+      "getContentState": {
+        "type": "(props: ContentProps) => ContentState",
+        "description": "Returns the state of the content with the given props"
       }
     },
     "context": {
@@ -6397,6 +6757,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a tag"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       }
     },
     "context": {
@@ -6586,6 +6950,10 @@
       "progressPercent": {
         "type": "number",
         "description": "The progress percentage of the timer."
+      },
+      "getActionTriggerState": {
+        "type": "(props: ActionTriggerProps) => ActionTriggerState",
+        "description": "Returns the state of an action trigger"
       }
     },
     "context": {
@@ -6649,6 +7017,10 @@
       "subscribe": {
         "type": "(callback: (toasts: Options<O>[]) => void) => VoidFunction",
         "description": "Subscribe to the toast group"
+      },
+      "getGroupState": {
+        "type": "() => GroupState",
+        "description": "Returns the state of the group"
       }
     },
     "context": {
@@ -6759,6 +7131,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a TOC item"
+      },
+      "getIndicatorState": {
+        "type": "() => IndicatorState",
+        "description": "Returns the state of the indicator"
       }
     },
     "context": {
@@ -6835,6 +7211,10 @@
         "type": "(pressed: boolean) => void",
         "description": "Sets the pressed state of the toggle."
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the toggle"
+      },
       "getRootProps": {
         "type": "() => T[\"element\"]",
         "description": "Props for the root `button` element."
@@ -6876,6 +7256,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of the toggle item."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the toggle group"
       }
     },
     "context": {
@@ -7016,6 +7400,14 @@
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
+      },
+      "getTriggerState": {
+        "type": "(props?: TriggerProps) => TriggerState",
+        "description": "Returns the state of a specific trigger, including whether it's the currently active one"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
@@ -7190,6 +7582,22 @@
       "getProgressPercent": {
         "type": "() => number",
         "description": "Returns the progress percent"
+      },
+      "getBackdropState": {
+        "type": "() => BackdropState",
+        "description": "Returns the state of the backdrop"
+      },
+      "getSpotlightState": {
+        "type": "() => SpotlightState",
+        "description": "Returns the state of the spotlight"
+      },
+      "getPositionerState": {
+        "type": "() => PositionerState",
+        "description": "Returns the state of the positioner"
+      },
+      "getContentState": {
+        "type": "() => ContentState",
+        "description": "Returns the state of the content"
       }
     },
     "context": {
