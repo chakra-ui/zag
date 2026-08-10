@@ -100,6 +100,7 @@ export const numberInputControls = defineControls({
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
+  focusInputOnChange: { type: "boolean", defaultValue: true },
   snapOnStep: { type: "boolean", defaultValue: false },
   step: { type: "number", defaultValue: 1 },
   largeStep: { type: "number" },

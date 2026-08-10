@@ -77,22 +77,22 @@ export function connect<T extends PropTypes>(
     value: computed("formattedValue"),
     valueAsNumber: computed("valueAsNumber"),
     setValue(value) {
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "script" })
     },
     clearValue() {
-      send({ type: "VALUE.CLEAR" })
+      send({ type: "VALUE.CLEAR", src: "script" })
     },
     increment() {
-      send({ type: "VALUE.INCREMENT" })
+      send({ type: "VALUE.INCREMENT", src: "script" })
     },
     decrement() {
-      send({ type: "VALUE.DECREMENT" })
+      send({ type: "VALUE.DECREMENT", src: "script" })
     },
     setToMax() {
-      send({ type: "VALUE.SET", value: prop("max") })
+      send({ type: "VALUE.SET", value: prop("max"), src: "script" })
     },
     setToMin() {
-      send({ type: "VALUE.SET", value: prop("min") })
+      send({ type: "VALUE.SET", value: prop("min"), src: "script" })
     },
     focus() {
       dom.getInputEl(scope)?.focus()
@@ -188,11 +188,11 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.FOCUS" })
         },
         onBlur() {
-          send({ type: "INPUT.BLUR" })
+          send({ type: "INPUT.BLUR", src: "input-blur" })
         },
         onInput(event) {
           const selection = recordCursor(event.currentTarget, scope)
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection, src: "input-change" })
         },
         onBeforeInput(event) {
           try {
@@ -221,30 +221,40 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
-              send({ type: "INPUT.ARROW_UP", step })
+              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
             },
             ArrowDown() {
-              send({ type: "INPUT.ARROW_DOWN", step })
+              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
+              event.preventDefault()
+              event.stopPropagation()
+            },
+            PageUp() {
+              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
+              event.preventDefault()
+              event.stopPropagation()
+            },
+            PageDown() {
+              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
             },
             Home() {
               if (isModifierKey(event)) return
-              send({ type: "INPUT.HOME" })
+              send({ type: "INPUT.HOME", src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
             },
             End() {
               if (isModifierKey(event)) return
-              send({ type: "INPUT.END" })
+              send({ type: "INPUT.END", src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
             },
             Enter(event) {
               const selection = recordCursor(event.currentTarget, scope)
-              send({ type: "INPUT.ENTER", selection })
+              send({ type: "INPUT.ENTER", selection, src: "keyboard" })
             },
           }
 
@@ -270,7 +280,12 @@ export function connect<T extends PropTypes>(
         onPointerDown(event) {
           if (decrementTriggerState.disabled) return
           if (!isLeftClick(event)) return
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
+          send({
+            type: "TRIGGER.PRESS_DOWN",
+            hint: "decrement",
+            pointerType: event.pointerType,
+            src: "decrement-press",
+          })
           if (event.pointerType === "mouse") {
             event.preventDefault()
           }
@@ -279,11 +294,14 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
         },
         onPointerLeave() {
           if (decrementTriggerState.disabled) return
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", src: "decrement-press" })
+        },
+        onPointerCancel(event) {
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
         },
       })
     },
@@ -303,7 +321,12 @@ export function connect<T extends PropTypes>(
         "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
           if (incrementTriggerState.disabled || !isLeftClick(event)) return
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
+          send({
+            type: "TRIGGER.PRESS_DOWN",
+            hint: "increment",
+            pointerType: event.pointerType,
+            src: "increment-press",
+          })
           if (event.pointerType === "mouse") {
             event.preventDefault()
           }
@@ -312,10 +335,13 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
         },
         onPointerLeave(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
+        },
+        onPointerCancel(event) {
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
         },
       })
     },

@@ -22,7 +22,7 @@ import {
 } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
-import type { HintValue, NumberInputSchema } from "./number-input.types"
+import type { HintValue, NumberInputSchema, ValueChangeReason } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
 
 const { choose, guards, createMachine } = setup<NumberInputSchema>()
@@ -63,7 +63,7 @@ export const machine = createMachine({
     return "idle"
   },
 
-  context({ prop, bindable, getComputed }) {
+  context({ prop, bindable, getComputed, getEvent }) {
     return {
       value: bindable<string>(() => ({
         defaultValue: prop("defaultValue"),
@@ -71,7 +71,7 @@ export const machine = createMachine({
         onChange(value) {
           const computed = getComputed()
           const valueAsNumber = parseValue(value, { computed, prop })
-          prop("onValueChange")?.({ value, valueAsNumber })
+          prop("onValueChange")?.({ value, valueAsNumber, reason: getEvent().src as ValueChangeReason })
         },
       })),
       hint: bindable<HintValue | null>(() => ({ defaultValue: null })),
@@ -99,7 +99,14 @@ export const machine = createMachine({
     isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
     canIncrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMax"),
     canDecrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMin"),
-    valueText: ({ prop, context }) => prop("translations").valueText?.(context.get("value")),
+    // Only useful when the display differs from `aria-valuenow`, as with currency or percent.
+    valueText: ({ prop, context, computed }) => {
+      const custom = prop("translations").valueText?.(context.get("value"))
+      if (custom) return custom
+      if (computed("isValueEmpty")) return undefined
+      const formatted = computed("formattedValue")
+      return formatted === String(computed("valueAsNumber")) ? undefined : formatted
+    },
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => createFormatter(locale, formatOptions),
@@ -116,6 +123,7 @@ export const machine = createMachine({
     })
 
     track([() => computed("isOutOfRange")], () => {
+      if (!computed("isOutOfRange")) return
       action(["invokeOnInvalid"])
     })
 
@@ -127,17 +135,20 @@ export const machine = createMachine({
   effects: ["trackFormControl", "detectPointerLock"],
 
   on: {
+    "INPUT.FOCUS": {
+      actions: ["invokeOnFocus"],
+    },
     "VALUE.SET": {
-      actions: ["setRawValue"],
+      actions: ["setRawValue", "invokeOnValueCommit"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearValue"],
+      actions: ["clearValue", "invokeOnValueCommit"],
     },
     "VALUE.INCREMENT": {
-      actions: ["increment"],
+      actions: ["increment", "invokeOnValueCommit"],
     },
     "VALUE.DECREMENT": {
-      actions: ["decrement"],
+      actions: ["decrement", "invokeOnValueCommit"],
     },
   },
 
@@ -145,15 +156,15 @@ export const machine = createMachine({
     idle: {
       on: {
         "TRIGGER.PRESS_DOWN": [
-          { guard: "isTouchPointer", target: "before:spin", actions: ["setHint"] },
+          { guard: "isTouchPointer", target: "pressed", actions: ["setHint"] },
           {
-            target: "before:spin",
-            actions: ["focusInput", "invokeOnFocus", "setHint"],
+            target: "pressed",
+            actions: ["focusInput", "setHint"],
           },
         ],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
-          actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"],
+          actions: ["focusInput", "setHint", "setCursorPoint"],
         },
         "INPUT.FOCUS": {
           target: "focused",
@@ -167,24 +178,24 @@ export const machine = createMachine({
       effects: ["attachWheelListener"],
       on: {
         "TRIGGER.PRESS_DOWN": [
-          { guard: "isTouchPointer", target: "before:spin", actions: ["setHint"] },
-          { target: "before:spin", actions: ["focusInput", "setHint"] },
+          { guard: "isTouchPointer", target: "pressed", actions: ["setHint"] },
+          { target: "pressed", actions: ["focusInput", "setHint"] },
         ],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
           actions: ["focusInput", "setHint", "setCursorPoint"],
         },
         "INPUT.ARROW_UP": {
-          actions: ["increment"],
+          actions: ["increment", "invokeOnValueCommit"],
         },
         "INPUT.ARROW_DOWN": {
-          actions: ["decrement"],
+          actions: ["decrement", "invokeOnValueCommit"],
         },
         "INPUT.HOME": {
-          actions: ["decrementToMin"],
+          actions: ["decrementToMin", "invokeOnValueCommit"],
         },
         "INPUT.END": {
-          actions: ["incrementToMax"],
+          actions: ["incrementToMax", "invokeOnValueCommit"],
         },
         "INPUT.CHANGE": {
           actions: ["setValue", "setHint"],
@@ -198,55 +209,59 @@ export const machine = createMachine({
           {
             guard: not("isInRange"),
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid", "invokeOnValueCommit"],
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
           {
             target: "idle",
             actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
         ],
+        // No target, so the input stays focused. It must not report a blur.
         "INPUT.ENTER": {
-          actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
+          actions: ["setFormattedValue", "clearHint", "invokeOnValueCommit"],
         },
       },
     },
 
-    "before:spin": {
+    pressed: {
       tags: ["focus"],
-      effects: ["trackButtonDisabled", "waitForChangeDelay"],
-      entry: choose([
-        { guard: "isIncrementHint", actions: ["increment"] },
-        { guard: "isDecrementHint", actions: ["decrement"] },
-      ]),
+      initial: "waiting",
+      effects: ["trackButtonDisabled", "preventContextMenu"],
       on: {
-        CHANGE_DELAY: {
-          target: "spinning",
-          guard: and("isInRange", "spinOnPress"),
-        },
         "TRIGGER.PRESS_UP": [
-          { guard: "isTouchPointer", target: "focused", actions: ["clearHint"] },
-          { target: "focused", actions: ["focusInput", "clearHint"] },
+          { guard: "isTouchPointer", target: "focused", actions: ["clearHint", "invokeOnValueCommit"] },
+          { target: "focused", actions: ["focusInput", "clearHint", "invokeOnValueCommit"] },
         ],
       },
-    },
+      states: {
+        waiting: {
+          effects: ["waitForChangeDelay"],
+          entry: choose([
+            { guard: "isIncrementHint", actions: ["increment"] },
+            { guard: "isDecrementHint", actions: ["decrement"] },
+          ]),
+          on: {
+            CHANGE_DELAY: {
+              target: "repeating",
+              guard: and("isInRange", "spinOnPress"),
+            },
+          },
+        },
 
-    spinning: {
-      tags: ["focus"],
-      effects: ["trackButtonDisabled", "spinValue"],
-      on: {
-        SPIN: [
-          {
-            guard: "isIncrementHint",
-            actions: ["increment"],
+        repeating: {
+          effects: ["spinValue"],
+          on: {
+            SPIN: [
+              {
+                guard: "isIncrementHint",
+                actions: ["increment"],
+              },
+              {
+                guard: "isDecrementHint",
+                actions: ["decrement"],
+              },
+            ],
           },
-          {
-            guard: "isDecrementHint",
-            actions: ["decrement"],
-          },
-        ],
-        "TRIGGER.PRESS_UP": {
-          target: "focused",
-          actions: ["focusInput", "clearHint"],
         },
       },
     },
@@ -256,9 +271,19 @@ export const machine = createMachine({
       effects: ["activatePointerLock", "trackMousemove", "preventTextSelection", "trackVisualViewport"],
       entry: ["clearCumulativeDelta"],
       on: {
+        "SCRUBBER.STEP": [
+          {
+            guard: "isIncrementHint",
+            actions: ["increment"],
+          },
+          {
+            guard: "isDecrementHint",
+            actions: ["decrement"],
+          },
+        ],
         "SCRUBBER.POINTER_UP": {
           target: "focused",
-          actions: ["focusInput", "clearCursorPoint", "clearCumulativeDelta"],
+          actions: ["focusInput", "clearCursorPoint", "clearCumulativeDelta", "invokeOnValueCommit"],
         },
         "SCRUBBER.POINTER_MOVE": {
           actions: ["accumulateDelta", "setCursorPoint"],
@@ -286,9 +311,15 @@ export const machine = createMachine({
         return () => clearTimeout(id)
       },
 
-      spinValue({ send }) {
+      preventContextMenu({ scope }) {
+        // A touch can drift outside the button mid-hold and raise the context menu.
+        return addDomEvent(scope.getWin(), "contextmenu", (event) => event.preventDefault())
+      },
+
+      spinValue({ send, context }) {
         const id = setInterval(() => {
-          send({ type: "SPIN" })
+          const src = context.get("hint") === "increment" ? "increment-press" : "decrement-press"
+          send({ type: "SPIN", src })
         }, 50)
         return () => clearInterval(id)
       },
@@ -316,7 +347,8 @@ export const machine = createMachine({
         return observeAttributes(btn, {
           attributes: ["disabled"],
           callback() {
-            send({ type: "TRIGGER.PRESS_UP", src: "attr" })
+            const src = hint === "increment" ? "increment-press" : "decrement-press"
+            send({ type: "TRIGGER.PRESS_UP", src })
           },
         })
       },
@@ -328,9 +360,9 @@ export const machine = createMachine({
           event.preventDefault()
           const dir = Math.sign(event.deltaY) * -1
           if (dir === 1) {
-            send({ type: "VALUE.INCREMENT" })
+            send({ type: "VALUE.INCREMENT", src: "wheel" })
           } else if (dir === -1) {
-            send({ type: "VALUE.DECREMENT" })
+            send({ type: "VALUE.DECREMENT", src: "wheel" })
           }
         }
 
@@ -376,7 +408,7 @@ export const machine = createMachine({
         }
 
         function onMouseup() {
-          send({ type: "SCRUBBER.POINTER_UP" })
+          send({ type: "SCRUBBER.POINTER_UP", src: "scrub" })
         }
 
         return callAll(addDomEvent(doc, "mousemove", onMousemove, false), addDomEvent(doc, "mouseup", onMouseup, false))
@@ -448,8 +480,7 @@ export const machine = createMachine({
           valueAsNumber: computed("valueAsNumber"),
         })
       },
-      invokeOnInvalid({ computed, prop, event }) {
-        if (event.type === "INPUT.CHANGE") return
+      invokeOnInvalid({ computed, prop }) {
         const reason = computed("valueAsNumber") > prop("max") ? "rangeOverflow" : "rangeUnderflow"
         prop("onValueInvalid")?.({
           reason,
@@ -457,10 +488,11 @@ export const machine = createMachine({
           valueAsNumber: computed("valueAsNumber"),
         })
       },
-      invokeOnValueCommit({ computed, prop }) {
+      invokeOnValueCommit({ computed, prop, event }) {
         prop("onValueCommit")?.({
           value: computed("formattedValue"),
           valueAsNumber: computed("valueAsNumber"),
+          reason: event.src as ValueChangeReason,
         })
       },
       syncInputElement({ context, event, computed, scope }) {
@@ -500,10 +532,8 @@ export const machine = createMachine({
           // Determine step based on modifier keys
           const step = prop("step")
           const hint = event.hint
-          if (hint === "increment") {
-            send({ type: "VALUE.INCREMENT", step })
-          } else if (hint === "decrement") {
-            send({ type: "VALUE.DECREMENT", step })
+          if (hint === "increment" || hint === "decrement") {
+            send({ type: "SCRUBBER.STEP", step, hint, src: "scrub" })
           }
           // Reset the accumulator (keep remainder for sub-pixel accuracy)
           context.set("cumulativeDelta", newDelta % sensitivity)

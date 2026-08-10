@@ -9,16 +9,38 @@ export default function Page() {
   const [value, setValue] = useState("")
   const [formatOptions, setFormatOptions] = useState<Intl.NumberFormatOptions | undefined>(undefined)
   const [maxFractionDigits, setMaxFractionDigits] = useState<number | undefined>(undefined)
+  const [reason, setReason] = useState("-")
+  const [commits, setCommits] = useState(0)
+  const [commitReason, setCommitReason] = useState("-")
+  const [focusReports, setFocusReports] = useState<string[]>([])
+  const [invalids, setInvalids] = useState(0)
+  const [invalidReport, setInvalidReport] = useState("-")
+  const [focusInputOnChange, setFocusInputOnChange] = useState(true)
+  const [clampValueOnBlur, setClampValueOnBlur] = useState(true)
 
   const service = useMachine(numberInput.machine, {
     id: useId(),
     value: value,
     max: 1000,
     min: 0,
+    focusInputOnChange,
+    clampValueOnBlur,
     formatOptions:
       maxFractionDigits !== undefined ? { ...formatOptions, maximumFractionDigits: maxFractionDigits } : formatOptions,
     onValueChange(details) {
       setValue(details.value)
+      setReason(details.reason ?? "-")
+    },
+    onFocusChange(details) {
+      setFocusReports((prev) => [...prev, details.focused ? "focus" : "blur"].slice(-4))
+    },
+    onValueInvalid(details) {
+      setInvalids((c) => c + 1)
+      setInvalidReport(`${details.reason}:${details.value}`)
+    },
+    onValueCommit(details) {
+      setCommits((c) => c + 1)
+      setCommitReason(details.reason ?? "-")
     },
   })
 
@@ -42,6 +64,15 @@ export default function Page() {
           </button>
           <button data-testid="clear-value" onClick={() => setValue("")}>
             Clear (Uncontrolled)
+          </button>
+          <button data-testid="api-set-value" onClick={() => api.setValue(42)}>
+            api.setValue(42)
+          </button>
+          <button data-testid="toggle-focus-on-change" onClick={() => setFocusInputOnChange((v) => !v)}>
+            focusInputOnChange: {String(focusInputOnChange)}
+          </button>
+          <button data-testid="toggle-clamp-on-blur" onClick={() => setClampValueOnBlur((v) => !v)}>
+            clampValueOnBlur: {String(clampValueOnBlur)}
           </button>
         </div>
 
@@ -104,6 +135,16 @@ export default function Page() {
         {/* Status display */}
         <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "#f5f5f5", borderRadius: "4px" }}>
           <div>
+            <strong>Change Reason:</strong> <span data-testid="reason">{reason}</span>
+            <br />
+            <strong>Focus reports:</strong> <span data-testid="focus-reports">{focusReports.join(",") || "-"}</span>
+            <br />
+            <strong>Invalids:</strong> <span data-testid="invalids">{invalids}</span>{" "}
+            <span data-testid="invalid-report">{invalidReport}</span>
+            <br />
+            <strong>Commits:</strong> <span data-testid="commits">{commits}</span>{" "}
+            <span data-testid="commit-reason">{commitReason}</span>
+            <br />
             <strong>Controlled Value:</strong> "{value}"
           </div>
           <div>

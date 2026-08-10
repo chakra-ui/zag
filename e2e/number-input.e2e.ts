@@ -47,6 +47,14 @@ test.describe("number input", () => {
     await I.seeInputHasValue("6")
   })
 
+  test("should step by largeStep with page keys", async () => {
+    await I.type("10")
+    await I.pressKey("PageUp")
+    await I.seeInputHasValue("20")
+    await I.pressKey("PageDown")
+    await I.seeInputHasValue("10")
+  })
+
   test("clicking increment", async () => {
     await I.clickInc()
     await I.seeInputHasValue("1")
@@ -579,6 +587,168 @@ test.describe("number input", () => {
 
       await I.pressKey("Backspace")
       await I.seeInputHasValue("")
+    })
+  })
+
+  test.describe("formatted value", () => {
+    test("should expose the formatted value as aria-valuetext", async () => {
+      await I.goto("/number-input/controlled")
+
+      await I.fillInput("500")
+      await I.blurInput()
+      await I.dontSeeValueText()
+
+      await I.clickCurrencyFormat()
+      await I.seeInputHasValue("$500.00")
+      await I.seeValueText("$500.00")
+      await I.seeValueNow("500")
+    })
+  })
+
+  test.describe("change and commit reasons", () => {
+    test.beforeEach(async () => {
+      await I.goto("/number-input/controlled")
+    })
+
+    test("should report why the value changed", async () => {
+      await I.fillInput("5")
+      await I.seeChangeReason("input-change")
+
+      await I.focusInput()
+      await I.pressKey("ArrowUp")
+      await I.seeChangeReason("keyboard")
+
+      await I.clickInc()
+      await I.seeChangeReason("increment-press")
+
+      // blur only reports a reason when it actually changes the value (max is 1000)
+      await I.fillInput("5000")
+      await I.blurInput()
+      await I.seeChangeReason("input-blur")
+    })
+
+    test("should end the press when the pointer is cancelled", async () => {
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.seeCommitCount(1)
+
+      // Without a pointercancel handler the interval keeps climbing on its own.
+      await I.pressIncThenCancelPointer()
+      await I.seeCommitCount(2)
+      const settled = await I.getInputValue()
+      await I.wait(600)
+      await I.seeInputHasValue(settled)
+    })
+
+    // Touch takes its own PRESS_UP branch, so the mouse tests above say nothing about it.
+    test("should commit once when a touch press ends", async () => {
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.seeCommitCount(1)
+
+      await I.pressIncWithTouch()
+      await I.releaseIncWithTouch()
+      await I.seeCommitCount(2)
+      await I.seeCommitReason("increment-press")
+    })
+
+    test("should suppress the context menu only while a stepper is held", async () => {
+      await I.dontSeeContextMenuIsSuppressed()
+
+      await I.pressIncWithTouch()
+      await I.seeContextMenuIsSuppressed()
+
+      await I.releaseIncWithTouch()
+      await I.dontSeeContextMenuIsSuppressed()
+    })
+
+    test("should report focus and blur as they happen", async () => {
+      await I.focusInput()
+      await I.seeFocusReports("focus")
+
+      await I.blurInput()
+      await I.seeFocusReports("focus,blur")
+    })
+
+    test("should report focus once when a stepper is pressed", async () => {
+      await I.clickInc()
+      await I.seeFocusReports("focus")
+    })
+
+    test("should not report focus when focusInputOnChange is off", async () => {
+      await I.toggleFocusInputOnChange()
+      await I.clickInc()
+      await I.seeFocusReports("-")
+    })
+
+    test("should report the offending value when it goes out of range", async () => {
+      await I.focusInput()
+      await I.fillInput("5000")
+
+      // max is 1000, so this reports as soon as the value crosses it
+      await I.seeInvalidCount(1)
+      await I.seeInvalidReport("rangeOverflow:5000")
+    })
+
+    test("should not report again when clamping brings the value back in range", async () => {
+      await I.focusInput()
+      await I.fillInput("5000")
+      await I.seeInvalidCount(1)
+
+      // blur clamps to 1000, which is valid, so nothing further is reported
+      await I.blurInput()
+      await I.seeInputHasValue("1000")
+      await I.seeInvalidCount(1)
+      await I.seeInvalidReport("rangeOverflow:5000")
+    })
+
+    test("should report once when an out-of-range value is left unclamped", async () => {
+      await I.toggleClampValueOnBlur()
+
+      await I.focusInput()
+      await I.fillInput("5000")
+      await I.seeInvalidCount(1)
+
+      // without clamping the value stays out of range, but it is the same violation
+      await I.blurInput()
+      await I.seeInputHasValue("5000")
+      await I.seeInvalidCount(1)
+    })
+
+    test("should not report a blur when Enter is pressed", async () => {
+      await I.focusInput()
+      await I.fillInput("5")
+      await I.seeFocusReports("focus")
+
+      await I.pressKey("Enter")
+      await I.seeInputIsFocused()
+      // the input never lost focus, so no blur should have been reported
+      await I.seeFocusReports("focus")
+    })
+
+    test("should commit a programmatic value change", async () => {
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.seeCommitCount(1)
+
+      await I.clickApiSetValue()
+      await I.seeCommitCount(2)
+    })
+
+    test("should commit once per settled interaction", async () => {
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.seeCommitCount(1)
+      await I.seeCommitReason("input-blur")
+
+      // a scrub streams many steps but settles once, on release
+      await I.scrubRelease()
+      await I.seeCommitCount(2)
+      await I.seeCommitReason("scrub")
+
+      await I.clickInc()
+      await I.seeCommitCount(3)
+      await I.seeCommitReason("increment-press")
     })
   })
 })
