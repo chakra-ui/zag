@@ -138,6 +138,15 @@ export class Model {
     return expect(this.page.locator(selector)).toHaveText(value)
   }
 
+  /** Protected so testids stay inside models and tests keep naming behavior. */
+  protected testId(id: string) {
+    return this.page.getByTestId(id)
+  }
+
+  protected seeTestIdText(id: string, text: string) {
+    return expect(this.testId(id)).toHaveText(text)
+  }
+
   see(text: string, context?: string) {
     const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
     return expect(locator).toBeVisible()
