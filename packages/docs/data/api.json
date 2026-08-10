@@ -4321,7 +4321,7 @@
       },
       "onValueCommit": {
         "type": "((details: ValueChangeDetails) => void) | undefined",
-        "description": "Function invoked when the value is committed (when the input is blurred or the Enter key is pressed)"
+        "description": "Function invoked when the value settles: the input is blurred or `Enter` is pressed, a stepper\nor scrub gesture ends, or a key or wheel step completes."
       },
       "spinOnPress": {
         "type": "boolean | undefined",

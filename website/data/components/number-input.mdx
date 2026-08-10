@@ -151,21 +151,40 @@ When the value changes, the `onValueChange` callback is invoked.
 ```tsx {2-7}
 const service = useMachine(numberInput.machine, {
   onValueChange(details) {
-    // details => { value: string, valueAsNumber: number }
+    // details => { value: string, valueAsNumber: number, reason?: ValueChangeReason }
     console.log("value is:", details.value)
   },
 })
 ```
 
+`details.reason` says what caused the change, so you can tell a deliberate entry
+from a drag.
+
+| Reason            | Meaning                                      |
+| ----------------- | -------------------------------------------- |
+| `input-change`    | The user typed in the input                  |
+| `input-blur`      | The value was clamped or formatted on blur   |
+| `keyboard`        | Arrow, page, home or end key                 |
+| `increment-press` | The increment trigger was pressed            |
+| `decrement-press` | The decrement trigger was pressed            |
+| `wheel`           | The mouse wheel was scrolled over the input  |
+| `scrub`           | The scrubber was dragged                     |
+| `script`          | Changed programmatically, such as `setValue` |
+
 ### Listening for value commit
 
-Use `onValueCommit` to react when the value is committed (blur or Enter).
+`onValueChange` fires for every step of a drag. Use `onValueCommit` to react
+only when the value settles, which is the better place for saving or validating.
+
+It fires when the input is blurred or `Enter` is pressed, when a stepper press
+or scrub gesture ends, and alongside each key or wheel step. A scrub that
+streams a hundred steps commits once.
 
 ```tsx
 const service = useMachine(numberInput.machine, {
   onValueCommit(details) {
-    // details => { value: string, valueAsNumber: number }
-    console.log("committed:", details.value)
+    // details => { value: string, valueAsNumber: number, reason?: ValueChangeReason }
+    console.log("committed:", details.value, "via", details.reason)
   },
 })
 ```
