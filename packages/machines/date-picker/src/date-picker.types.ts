@@ -118,7 +118,7 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The localized messages to use.
    */
-  translations?: IntlTranslations | undefined
+  translations?: Partial<IntlTranslations> | undefined
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */
