@@ -224,7 +224,7 @@ export const machine = createMachine<SplitterSchema>({
           },
           {
             target: "idle",
-            actions: ["invokeOnResizeEnd", "clearGlobalCursor"],
+            actions: ["invokeOnResizeEnd", "clearGlobalCursor", "blurResizeTrigger"],
           },
         ],
       },
@@ -707,6 +707,14 @@ export const machine = createMachine<SplitterSchema>({
 
       clearGlobalCursor({ scope }) {
         dom.removeGlobalCursor(scope)
+      },
+
+      blurResizeTrigger({ context, scope }) {
+        const dragState = context.get("dragState")
+        const resizeTriggerEl = dom.getResizeTriggerEl(scope, dragState?.resizeTriggerId)
+        if (scope.isActiveElement(resizeTriggerEl)) {
+          resizeTriggerEl?.blur()
+        }
       },
 
       focusNextResizeTrigger({ event, scope }) {
