@@ -1,7 +1,7 @@
 import { renderHook } from "@solidjs/testing-library"
 import { createGuards, createMachine } from "@zag-js/core"
 import type { Machine } from "@zag-js/core"
-import { createSignal } from "solid-js"
+import { createRoot, createSignal } from "solid-js"
 import { useMachine } from "../src"
 import { renderMachine } from "./render"
 
@@ -932,6 +932,31 @@ describe("uniform coverage", () => {
     cleanup()
     expect(rootExit).toHaveBeenCalledOnce()
     expect(rootCleanup).toHaveBeenCalledOnce()
+  })
+
+  test("does not run root exit before the machine starts", () => {
+    const rootExit = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      exit: ["rootExit"],
+      states: {
+        idle: {},
+      },
+      implementations: {
+        actions: {
+          rootExit,
+        },
+      },
+    })
+
+    createRoot((dispose) => {
+      useMachine(machine)
+      dispose()
+    })
+
+    expect(rootExit).not.toHaveBeenCalled()
   })
 
   test("internal transition without target runs actions without reentry", async () => {

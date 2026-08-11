@@ -14,7 +14,6 @@ import {
   type Point,
   type Size,
 } from "@zag-js/rect-utils"
-import { subscribe } from "@zag-js/store"
 import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
@@ -95,6 +94,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       isTopmost: bindable<boolean | undefined>(() => ({
         defaultValue: undefined,
       })),
+      stackIndex: bindable<number>(() => ({
+        defaultValue: -1,
+      })),
     }
   },
 
@@ -159,6 +161,7 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
+      exit: ["removeFromPanelStack"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": {
@@ -312,15 +315,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       trackPanelStack({ context, scope }) {
-        const unsub = subscribe(panelStack, () => {
+        const unsub = panelStack.subscribe(() => {
           context.set("isTopmost", panelStack.isTopmost(scope.id!))
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-
-          const index = panelStack.indexOf(scope.id!)
-          if (index === -1) return
-
-          contentEl.style.setProperty("--z-index", `${index + 1}`)
+          context.set("stackIndex", panelStack.indexOf(scope.id!))
         })
 
         return () => {
@@ -585,6 +582,9 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       bringToFrontOfPanelStack({ prop }) {
         panelStack.bringToFront(prop("id"))
+      },
+      removeFromPanelStack({ prop }) {
+        panelStack.remove(prop("id"))
       },
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })

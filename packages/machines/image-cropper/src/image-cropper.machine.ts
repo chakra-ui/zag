@@ -33,7 +33,7 @@ import {
   scaleSize,
   subtractPoints,
   ZERO_POINT,
-} from "./image-cropper.utils"
+} from "./utils/crop"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {

@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { itemById, nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, itemById, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `tabs:${ctx.id}`
@@ -17,8 +17,7 @@ export const getTriggerEl = (ctx: Scope, value: string | null) =>
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
 
 export const getElements = (ctx: Scope) => {
-  const ownerId = CSS.escape(getListId(ctx))
-  const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
+  const selector = `[role=tab]${getByOwnerId(getListId(ctx))}:not([disabled])`
   return queryAll(getListEl(ctx), selector)
 }
 

@@ -1,5 +1,19 @@
 # @zag-js/popper
 
+## 1.43.0
+
+### Patch Changes
+
+- [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added an `applyStyles` option to control whether computed
+  position styles are written directly to the DOM.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/utils@1.43.0
+
 ## 1.42.0
 
 ### Patch Changes

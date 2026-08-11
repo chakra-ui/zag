@@ -262,33 +262,50 @@ export interface GridProps {
   axis: "horizontal" | "vertical"
 }
 
+export interface CropSourcePoints {
+  topLeft: Point
+  topRight: Point
+  bottomRight: Point
+  bottomLeft: Point
+}
+
 export interface CropData {
   /**
-   * The x coordinate of the crop area in natural image pixels
+   * Axis-aligned bounds of the crop in natural image pixels, after inverting
+   * pan, zoom, flip, and rotation. Under rotation this is a bounding box of the
+   * oriented crop quad — use `getCroppedImage()` for pixel-exact output.
    */
   x: number
   /**
-   * The y coordinate of the crop area in natural image pixels
+   * The y coordinate of the crop bounds in natural image pixels
    */
   y: number
   /**
-   * The width of the crop area in natural image pixels
+   * The width of the crop bounds in natural image pixels
    */
   width: number
   /**
-   * The height of the crop area in natural image pixels
+   * The height of the crop bounds in natural image pixels
    */
   height: number
   /**
-   * The rotation of the image in degrees
+   * Natural image points corresponding to each corner of the crop.
+   */
+  corners: CropSourcePoints
+  /**
+   * Output size at the image's natural resolution before export limits.
+   */
+  outputSize: Size
+  /**
+   * The rotation of the preview image in degrees when the crop was taken
    */
   rotate: number
   /**
-   * Whether the image is flipped horizontally
+   * Whether the preview image was flipped horizontally when the crop was taken
    */
   flipX: boolean
   /**
-   * Whether the image is flipped vertically
+   * Whether the preview image was flipped vertically when the crop was taken
    */
   flipY: boolean
 }
@@ -304,6 +321,11 @@ export interface GetCroppedImageOptions {
    * @default 1
    */
   quality?: number
+  /**
+   * Maximum output dimensions. The image is scaled down proportionally.
+   * When omitted, the crop is exported at natural resolution.
+   */
+  maxSize?: Size
   /**
    * Whether to return a Blob or a data URL.
    * @default "blob"
@@ -394,10 +416,8 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    */
   getCroppedImage: (options?: GetCroppedImageOptions) => Promise<Blob | string | null>
   /**
-   * Function to get the crop data in natural image pixel coordinates.
-   * These coordinates are relative to the original image dimensions,
-   * accounting for zoom, rotation, and flip transformations.
-   * Use this for server-side cropping or state persistence.
+   * Function to get the crop geometry in natural image pixels.
+   * The rect is axis-aligned; `corners` preserves the exact source quad.
    */
   getCropData: () => CropData
 

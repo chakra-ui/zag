@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tour",
-  "version": "1.42.0",
+  "version": "1.43.0",
   "description": "Core logic for the tour widget implemented as a state machine",
   "keywords": [
     "js",
@@ -16,10 +16,10 @@
     "intro"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "homepage": "https://zagjs.com/components/tour",
   "license": "MIT",
   "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/tour",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/tour",
   "sideEffects": false,
   "files": [
     "dist"

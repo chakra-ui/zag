@@ -1,5 +1,15 @@
 # @zag-js/preact
 
+## 1.43.0
+
+### Patch Changes
+
+- Updated dependencies [[`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/core@1.43.0
+  - @zag-js/store@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
 ## 1.42.0
 
 ### Patch Changes

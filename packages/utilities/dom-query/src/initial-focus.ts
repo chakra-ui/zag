@@ -13,16 +13,19 @@ export function getInitialFocus(options: InitialFocusOptions): HTMLElement | und
 
   if (!enabled) return
 
-  let node: HTMLElement | null | undefined = null
+  // 1. explicit override (e.g. alertdialog → close button)
+  let node: HTMLElement | null | undefined = typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
 
-  node ||= typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
+  // 2. opt-in wins over skip
   node ||= root?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")
 
+  // 3. first tabbable that isn't opted out of autofocus
   if (!node) {
-    const tabbables = getTabbables(root)
-    node = filter ? tabbables.filter(filter)[0] : tabbables[0]
+    const tabbables = getTabbables(root).filter((el) => (filter ? filter(el) : true))
+    node = tabbables.find((el) => !el.hasAttribute("data-no-autofocus"))
   }
 
+  // 4. content root fallback (e.g. all chrome controls opted out)
   return node || root || undefined
 }
 

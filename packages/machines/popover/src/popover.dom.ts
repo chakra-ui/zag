@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getFocusables, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, getFocusables, queryAll } from "@zag-js/dom-query"
 import { isFunction } from "@zag-js/utils"
 
 export const getAnchorId = (scope: Scope) => scope.ids?.anchor ?? `popover:${scope.id}:anchor`
@@ -21,7 +21,7 @@ export const getAnchorEl = (scope: Scope) => scope.getById(getAnchorId(scope))
 export const getTriggerEl = (scope: Scope) => scope.getById(getTriggerId(scope))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(scope.getRootNode(), `[data-scope="popover"][data-part="trigger"][data-ownedby="${scope.id}"]`)
+  queryAll<HTMLElement>(scope.getRootNode(), `[data-scope="popover"][data-part="trigger"]${getByOwnerId(scope.id)}`)
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
   if (value == null) {

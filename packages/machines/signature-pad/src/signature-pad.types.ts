@@ -13,7 +13,14 @@ export interface Point {
 }
 
 export interface DrawDetails {
+  /**
+   * The committed paths of the signature pad.
+   */
   paths: string[]
+  /**
+   * The path currently being drawn, if any.
+   */
+  currentPath: string | null
 }
 
 export interface DrawingOptions extends StrokeOptions {
@@ -64,7 +71,8 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
    */
   translations?: IntlTranslations | undefined
   /**
-   * Callback when the signature pad is drawing.
+   * Callback when the signature pad is drawing or the committed paths change.
+   * `paths` contains only committed strokes; use `currentPath` for the in-progress stroke.
    */
   onDraw?: ((details: DrawDetails) => void) | undefined
   /**

@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getComputedStyle, raf } from "@zag-js/dom-query"
+import { getComputedStyle, raf, setStyleProperty } from "@zag-js/dom-query"
 
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `tour-positioner-${ctx.id}`
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `tour-content-${ctx.id}`
@@ -12,22 +12,26 @@ export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
 export const getBackdropEl = (ctx: Scope) => ctx.getById(getBackdropId(ctx))
 
 export function syncZIndex(scope: Scope) {
-  return raf(() => {
-    // sync z-index of positioner with content
+  const restores: VoidFunction[] = []
+
+  const cancel = raf(() => {
     const contentEl = getContentEl(scope)
     if (!contentEl) return
 
-    const styles = getComputedStyle(contentEl)
+    const zIndex = getComputedStyle(contentEl).zIndex
+    if (!zIndex || zIndex === "auto") return
+
     const positionerEl = getPositionerEl(scope)
-    const backdropEl = getBackdropEl(scope)
+    if (!positionerEl) return
 
-    if (positionerEl) {
-      positionerEl.style.setProperty("--z-index", styles.zIndex)
-      positionerEl.style.setProperty("z-index", "var(--z-index)")
-    }
-
-    if (backdropEl) {
-      backdropEl.style.setProperty("--z-index", styles.zIndex)
-    }
+    restores.push(
+      setStyleProperty(positionerEl, "--z-index", zIndex),
+      setStyleProperty(positionerEl, "z-index", "var(--z-index)"),
+    )
   })
+
+  return () => {
+    cancel()
+    restores.forEach((restore) => restore())
+  }
 }
