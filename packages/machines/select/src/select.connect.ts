@@ -12,6 +12,7 @@ import {
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -280,6 +281,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-disabled": ariaAttr(itemState.disabled),
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
+          // keyboard-driven scroll fires pointermove on the item that slid under the cursor
+          if (getInteractionModality() !== "pointer") return
           if (itemState.value === highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
@@ -293,8 +296,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
 
-          const pointerMoved = service.event.previous()?.type.includes("POINTER")
-          if (!pointerMoved) return
+          // keyboard-driven scroll fires pointerleave without any pointer input
+          if (getInteractionModality() !== "pointer") return
 
           send({ type: "ITEM.POINTER_LEAVE" })
         },
