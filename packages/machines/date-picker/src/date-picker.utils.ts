@@ -56,18 +56,16 @@ export const defaultTranslations: IntlTranslations = {
     if (state.unavailable) return `Not available. ${state.valueText}`
     if (state.firstInRange) return `Starting range from ${state.valueText}`
     if (state.lastInRange) return `Range ending at ${state.valueText}`
+    if (state.inRange) return `In range. ${state.valueText}`
     if (state.selected) return `Selected date. ${state.valueText}`
     return `Choose ${state.valueText}`
   },
   trigger(open) {
     return open ? "Close calendar" : "Open calendar"
   },
-  viewTrigger(view) {
-    return match(view, {
-      year: "Switch to month view",
-      month: "Switch to day view",
-      day: "Switch to year view",
-    })
+  viewTrigger(view, nextView) {
+    if (!nextView) return `${view} view`
+    return `Switch to ${nextView} view`
   },
   presetTrigger(value) {
     const [start = "", end = ""] = value
