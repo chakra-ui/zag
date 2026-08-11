@@ -81,7 +81,7 @@
     "@internationalized/date": "3.12.2",
     "@playwright/test": "1.61.1",
     "@swc/core": "1.15.41",
-    "@types/jsdom": "^28.0.1",
+    "@types/jsdom": "^30.0.0",
     "@types/node": "25.9.4",
     "@types/signale": "1.4.7",
     "commitlint": "21.0.2",
