@@ -474,7 +474,7 @@ export const machine = createMachine<MenuSchema>({
         ],
         ITEM_POINTERMOVE: [
           {
-            guard: not("isPointerRoutingLocked"),
+            guard: and(not("isPointerRoutingLocked"), not("isTypingAhead")),
             actions: ["setHighlightedItem", "focusMenu", "closeSiblingMenus"],
           },
           {
@@ -482,7 +482,7 @@ export const machine = createMachine<MenuSchema>({
           },
         ],
         ITEM_POINTERLEAVE: {
-          guard: and(not("isPointerRoutingLocked"), not("isTriggerItem")),
+          guard: and(not("isPointerRoutingLocked"), not("isTypingAhead"), not("isTriggerItem")),
           actions: ["clearHighlightedItem"],
         },
         ITEM_CLICK: [
@@ -551,6 +551,7 @@ export const machine = createMachine<MenuSchema>({
       },
       isSubmenu: ({ context }) => context.get("isSubmenu"),
       isPointerRoutingLocked: ({ refs }) => refs.get("pointerRoutingLocked"),
+      isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
       isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
