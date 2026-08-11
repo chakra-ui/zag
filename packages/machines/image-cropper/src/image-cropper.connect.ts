@@ -1,5 +1,5 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
@@ -270,11 +270,10 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
-        tabIndex: disabled ? undefined : 0,
+        tabIndex: 0,
         role: "slider",
         "aria-label": translations.selectionLabel({ shape: cropShape }),
         "aria-roledescription": translations.selectionRoleDescription,
-        "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": isVisibleRect(viewportRect)
           ? Math.max(0, Math.round(viewportRect.width - crop.width))
@@ -306,10 +305,6 @@ export function connect<T extends PropTypes>(
           send({ type: "POINTER_DOWN", point })
         },
         onKeyDown(event) {
-          if (disabled) {
-            event.preventDefault()
-            return
-          }
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
@@ -325,7 +320,19 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (altKey && (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")) {
+          const isArrowKey = key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight"
+          if (!isArrowKey) return
+
+          // In fixed crop mode there's nothing to resize or move, plain arrow keys pan the image instead.
+          // Alt+Arrow keeps meaning "resize", which doesn't apply here, so it's a no-op.
+          if (disabled) {
+            if (altKey) return
+            send({ type: "NUDGE_PAN", key, src, shiftKey, ctrlKey, metaKey })
+            event.preventDefault()
+            return
+          }
+
+          if (altKey) {
             const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
             send({
               type: "NUDGE_RESIZE_CROP",
@@ -340,26 +347,8 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowDown() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowLeft() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowRight() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
-            },
-          }
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          send({ type: "NUDGE_MOVE_CROP", key, src, shiftKey, ctrlKey, metaKey })
+          event.preventDefault()
         },
       })
     },

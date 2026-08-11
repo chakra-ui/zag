@@ -441,6 +441,57 @@ test.describe("image-cropper / fixedCropArea", () => {
 
     await I.seeSelectionPosition(initialRect.x, initialRect.y)
   })
+
+  test("[keyboard] should remain focusable and pan the image with arrow keys", async () => {
+    await I.focusSelection()
+    await expect(I.selection).toBeFocused()
+
+    const initialSelectionRect = await I.getSelectionRect()
+
+    // zoom in first so there's slack to pan in both directions regardless of image aspect ratio
+    await I.pressKey("+", 3)
+
+    const initialTransform = await I.getImageTransform()
+    const { translateX: initialX, translateY: initialY } = await I.getTranslateFromMatrix(initialTransform)
+
+    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowDown")
+
+    const newTransform = await I.getImageTransform()
+    const { translateX: newX, translateY: newY } = await I.getTranslateFromMatrix(newTransform)
+
+    expect(newX).toBe(initialX + 1)
+    expect(newY).toBe(initialY + 1)
+
+    // the crop selection itself never moves in fixed mode
+    const newSelectionRect = await I.getSelectionRect()
+    expect(newSelectionRect.x).toBe(initialSelectionRect.x)
+    expect(newSelectionRect.y).toBe(initialSelectionRect.y)
+  })
+
+  test("[keyboard] should zoom with +/- keys", async () => {
+    await I.focusSelection()
+
+    await I.pressKey("+")
+    const transform = await I.getImageTransform()
+    const { scaleX } = await I.getScaleFromMatrix(transform)
+
+    expect(scaleX).toBeGreaterThan(1)
+  })
+
+  test("[keyboard] should not resize the crop with Alt+Arrow keys", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowRight", { alt: true })
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
 })
 
 test.describe("image-cropper / resize API", () => {
