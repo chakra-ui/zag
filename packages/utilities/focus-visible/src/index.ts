@@ -62,7 +62,16 @@ interface GlobalListenerData {
 
 export let listenerMap = new Map<Window, GlobalListenerData>()
 
-let hasEventBeforeFocus = false
+/**
+ * Counter of pending keyboard/pointer events that haven't been matched by a focus event yet.
+ * A counter (not a boolean) is used because focus-trap / dismissable-layer can insert
+ * intermediate programmatic focus events (e.g. on the overlay content container) between
+ * the pointer event and the target element's focus. Each intermediate focus decrements
+ * the counter by one, so the final focus on the real target still sees an outstanding
+ * event and correctly keeps the "pointer" or "keyboard" modality — avoiding a spurious
+ * switch to "virtual" that would paint a focus-visible ring on a mouse click.
+ */
+let pendingFocusEvents = 0
 let hasBlurredWindowRecently = false
 
 /**
@@ -84,7 +93,7 @@ function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
 }
 
 function handleKeyboardEvent(e: KeyboardEvent) {
-  hasEventBeforeFocus = true
+  pendingFocusEvents++
   if (isValidKey(e)) {
     currentModality = "keyboard"
     triggerChangeHandlers("keyboard", e)
@@ -94,14 +103,14 @@ function handleKeyboardEvent(e: KeyboardEvent) {
 function handlePointerEvent(e: PointerEvent | MouseEvent) {
   currentModality = "pointer"
   if (e.type === "mousedown" || e.type === "pointerdown") {
-    hasEventBeforeFocus = true
+    pendingFocusEvents++
     triggerChangeHandlers("pointer", e)
   }
 }
 
 function handleClickEvent(e: MouseEvent) {
   if (isVirtualClick(e)) {
-    hasEventBeforeFocus = true
+    pendingFocusEvents++
     currentModality = "virtual"
   }
 }
@@ -123,12 +132,12 @@ function handleFocusEvent(e: FocusEvent) {
 
   // If a focus event occurs without a preceding keyboard or pointer event, switch to virtual modality.
   // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
-  if (!hasEventBeforeFocus && !hasBlurredWindowRecently) {
+  if (pendingFocusEvents <= 0 && !hasBlurredWindowRecently) {
     currentModality = "virtual"
     triggerChangeHandlers("virtual", e)
   }
 
-  hasEventBeforeFocus = false
+  pendingFocusEvents = Math.max(0, pendingFocusEvents - 1)
   hasBlurredWindowRecently = false
 }
 
@@ -137,7 +146,7 @@ function handleWindowBlur() {
 
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
-  hasEventBeforeFocus = false
+  pendingFocusEvents = 0
   hasBlurredWindowRecently = true
 }
 
@@ -154,12 +163,12 @@ function setupGlobalFocusEvents(root?: RootNode) {
 
   let focus = win.HTMLElement.prototype.focus
   function patchedFocus(this: HTMLElement) {
-    // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
+    // For programmatic focus, we increment pendingFocusEvents so the subsequent focus event
     // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
     // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
     // When `options.focusVisible` is supported in most browsers, we can remove this.
     // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
-    hasEventBeforeFocus = true
+    pendingFocusEvents++
     focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
   }
 
