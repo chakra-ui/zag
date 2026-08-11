@@ -238,6 +238,8 @@ export function useMachine<T extends MachineSchema>(
   })
 
   onDestroy(() => {
+    if (status !== MachineStatus.Started) return
+
     debug("unmounting...")
     status = MachineStatus.Stopped
 

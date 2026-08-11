@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "predev": "pnpm generate-map",
-    "dev": "vite dev --port 3000",
+    "dev": "vite dev",
     "prebuild": "pnpm generate-map",
     "build": "vite build",
     "preview": "vite preview",

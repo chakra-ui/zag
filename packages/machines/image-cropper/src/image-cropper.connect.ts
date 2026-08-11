@@ -14,8 +14,8 @@ import {
   isRightHandle,
   isTopHandle,
   isBottomHandle,
-  getCropSourceRect,
-} from "./image-cropper.utils"
+} from "./utils/crop"
+import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -122,19 +122,16 @@ export function connect<T extends PropTypes>(
     },
 
     getCropData() {
-      const sourceRect = getCropSourceRect({
-        crop,
-        zoom,
-        offset,
-        viewportSize: viewportRect,
-        naturalSize,
-      })
+      const exportParams = dom.getCropExportParams(service)
+      const sourceRect = getCropSourceRect(exportParams)
 
       return {
         x: Math.round(sourceRect.x),
         y: Math.round(sourceRect.y),
         width: Math.round(sourceRect.width),
         height: Math.round(sourceRect.height),
+        corners: getCropSourcePoints(exportParams),
+        outputSize: getNaturalCropSize(exportParams),
         rotate: rotation,
         flipX: flip.horizontal,
         flipY: flip.vertical,
@@ -145,22 +142,21 @@ export function connect<T extends PropTypes>(
       const { type = "image/png", quality = 1, output = "blob" } = options
       if (!isVisibleRect(naturalSize)) return null
 
-      const canvas = dom.drawCroppedImageToCanvas(service)
+      const canvas = dom.drawCroppedImageToCanvas(service, options)
       if (!canvas) return null
 
-      if (output === "dataUrl") {
-        return canvas.toDataURL(type, quality)
-      }
+      try {
+        if (output === "dataUrl") {
+          const dataUrl = canvas.toDataURL(type, quality)
+          return dataUrl === "data:," ? null : dataUrl
+        }
 
-      return new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            resolve(blob)
-          },
-          type,
-          quality,
-        )
-      })
+        return await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob(resolve, type, quality)
+        })
+      } catch {
+        return null
+      }
     },
 
     getRootProps() {
@@ -239,11 +235,7 @@ export function connect<T extends PropTypes>(
       const flipHorizontal = flip.horizontal
       const flipVertical = flip.vertical
 
-      const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
-      const rotate = `rotate(${rotation}deg)`
-      const scaleX = zoom * (flipHorizontal ? -1 : 1)
-      const scaleY = zoom * (flipVertical ? -1 : 1)
-      const scale = `scale(${scaleX}, ${scaleY})`
+      const transform = getImageTransformCss({ zoom, offset, rotation, flip })
 
       return normalize.element({
         ...parts.image.attrs,
@@ -265,7 +257,9 @@ export function connect<T extends PropTypes>(
         style: {
           pointerEvents: "none",
           userSelect: "none",
-          transform: `${translate} ${rotate} ${scale}`,
+          objectFit: "fill",
+          transform,
+          transformOrigin: "center center",
           willChange: "transform",
         },
       })

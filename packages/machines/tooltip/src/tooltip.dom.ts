@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, queryAll } from "@zag-js/dom-query"
 import { isFunction } from "@zag-js/utils"
 
 export const getTriggerId = (scope: Scope, value?: string) => {
@@ -23,7 +23,7 @@ export const getPositionerEl = (scope: Scope) => scope.getById(getPositionerId(s
 export const getArrowEl = (scope: Scope) => scope.getById(getArrowId(scope))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] =>
-  queryAll<HTMLElement>(scope.getRootNode(), `[data-scope="tooltip"][data-part="trigger"][data-ownedby="${scope.id}"]`)
+  queryAll<HTMLElement>(scope.getRootNode(), `[data-scope="tooltip"][data-part="trigger"]${getByOwnerId(scope.id)}`)
 
 export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
   if (value == null) {

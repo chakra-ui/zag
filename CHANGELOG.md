@@ -4,6 +4,111 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.0](./#1.43.0) - 2026-07-28
+
+### Added
+
+- **Dialog, Drawer**: Add `data-autofocus` and `data-no-autofocus` to control which element gets focus on open. Mark
+  chrome controls like the close button with `data-no-autofocus` to skip them, or mark the real target with
+  `data-autofocus`.
+
+  ```jsx
+  <div {...api.getContentProps()}>
+    {/* skipped on open, still in tab order */}
+    <button {...api.getCloseTriggerProps()} data-no-autofocus>
+      Close
+    </button>
+    <button data-no-autofocus aria-label="Help">
+      ?
+    </button>
+
+    {/* receives initial focus */}
+    <input data-autofocus />
+    <button>Save</button>
+  </div>
+  ```
+
+  Priority: `initialFocusEl` → `[data-autofocus]` → first tabbable without `[data-no-autofocus]` → content root.
+
+- **Focus Trap**: Add a `persistentElements` option to declare portalled content as part of the trap when it isn't
+  reachable via `aria-controls`/`aria-expanded`.
+
+- **Image Cropper**: Add exact natural-image `corners` and `outputSize` to `getCropData()`, plus a `maxSize` option to
+  limit `getCroppedImage()` output dimensions.
+
+- **Popper**: Add an `applyStyles` option to control whether computed position styles are written directly to the DOM.
+
+### Fixed
+
+- **Auto Resize**: Fix issue where writing to a controlled textarea's `value` programmatically dispatched a synthetic
+  `input` event, feeding the value back into the framework and breaking controlled state.
+
+- **Color Picker**: Fix issue where the channel input committed a partial value when `Enter` was pressed to confirm an
+  IME composition.
+
+- **Date Input**
+  - Fix issue where segment text lagged behind in-progress edits when typing over a committed date.
+  - Fix in-progress edits being discarded while focus catches up after auto-advance. Fast typing and
+    `ArrowUp`/`ArrowDown`/`Home`/`End` now apply to the active segment.
+
+- **Date Picker**
+  - Fix issue where disabled and read-only pickers still responded to cell clicks, the clear trigger, and presets.
+    Read-only pickers keep roving-focus navigation. Disabled pickers are out of the tab order.
+  - Fix issue where the `minView`, `maxView`, and `defaultView` props were ignored when resolving the initial view,
+    which was hardcoded to `day` through `year`.
+  - Fix issue where `defaultOpen` took precedence over `open`, so a controlled picker could open against its own prop.
+  - Fix issue where `maxSelectedDates` was not enforced on month and year cells in `multiple` selection mode.
+  - Fix issue where keyboard range selection diverged from pointer behavior. Selecting a third date now restarts the
+    range, and the hover preview updates for `Enter`, `Home`, `End`, and `PageUp`/`PageDown`.
+  - Fix issue where reopening the calendar with only a start date restarted the range instead of resuming it.
+
+- **Drawer**: Fix issue where the backdrop flickered on a controlled close with an async `open` setter.
+
+- **Focus Trap**
+  - Fix issue where returning focus on deactivate could steal focus back from an element the app had legitimately
+    focused in the meantime, such as a follow-up dialog opened right after closing the current one.
+  - Fix issue where deactivating a nested trap, like a popover inside a dialog, could throw if the outer trap's
+    container had no connected focusable element at that moment.
+  - Fix issue where the focus ring did not show on the returned-to element after a keyboard-driven deactivation such as
+    `Escape`. Focus now returns with `focusVisible: true`.
+
+- **Frameworks**
+  - Fix issue where `bindable` in Vue and Svelte resolved `defaultValue` before `value`, unlike React and Solid.
+  - Fix issue where machine exit actions ran in Solid and Svelte when a component was disposed before the machine
+    started.
+
+- **Image Cropper**: Fix `getCroppedImage()` and `getCropData()` returning a different region from the visible crop
+  after rotating or flipping the image.
+
+- **Marquee**: Fix issue where scrolling speed depended on the content width. The duration is now derived from the
+  content size, the actual translation distance, instead of the root size. The configured `speed` matches the real pixel
+  speed even when the content is smaller than the viewport.
+
+- **Popover**: Fix issue where tabbing out of portalled content looped back into the content when the trigger was the
+  last tabbable on the page. Focus now moves to the next tabbable after the trigger.
+
+- **React**: Fix issue where `useMachine` returned new `send`, `prop`, `context`, `computed`, `refs`, and `getStatus`
+  references on every render, so they were unsafe in effect dependency arrays.
+
+- **Remove Scroll**: Fix issue where the scroll lock applied to `<body>` on layouts where `<html>` is the actual scroll
+  container, so nothing was locked.
+
+- **Signature Pad**: Fix issue where controlled `paths` went out of sync because the in-progress stroke was appended to
+  `paths`. It stays in `onDraw.currentPath` until the stroke ends.
+
+- **Solid**: Fix issue where a `value` of `null` was read as uncontrolled, so controlled components fell back to
+  internal state.
+
+- **Splitter**
+  - Fix issue where collapsed panels sized to `minSize` instead of `collapsedSize`.
+  - Fix issue where keyboard resizing stopped working when a resize trigger received focus while hovered.
+
+- **Tour**
+  - Fix issue where dismissing a tour from a step's `effect` skipped cleanup and could miss firing the `completed`
+    status.
+  - Fix issue where a tooltip step's position could reset unexpectedly when the tour closed.
+  - Fix issue where a step action with `action: "skip"` did nothing when clicked.
+
 ## [1.42.0](./#1.42.0) - 2026-06-29
 
 ### Added

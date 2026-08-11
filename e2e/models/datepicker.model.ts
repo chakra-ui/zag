@@ -102,23 +102,32 @@ export class DatePickerModel extends Model {
   }
 
   get todayCell() {
-    return this.page.locator("[data-scope=date-picker][data-part=table-cell-trigger][data-today]")
+    // Multi-month calendars can render "today" twice (current month + outside-range spillover).
+    return this.page.locator(
+      "[data-scope=date-picker][data-part=table-cell-trigger][data-today]:not([data-outside-range])",
+    )
   }
 
   get firstDayCell() {
     const start = startOfMonth(this.today())
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]`)
+    return this.page.locator(
+      `${part("table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]:not([data-outside-range])`,
+    )
   }
 
   get lastDayCell() {
     const end = endOfMonth(this.today())
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`)
+    return this.page.locator(
+      `${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]:not([data-outside-range])`,
+    )
   }
 
   get notTodayCell() {
     const t = this.today()
     const other = t.day === 1 ? t.add({ days: 1 }) : t.subtract({ days: 1 })
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${other.toString()}"]`)
+    return this.page.locator(
+      `${part("table-cell-trigger")}[data-view=day][data-value="${other.toString()}"]:not([data-outside-range])`,
+    )
   }
 
   private getViewCell(view: "day" | "month" | "year", value: string | number) {
@@ -132,14 +141,18 @@ export class DatePickerModel extends Model {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : this.today()
     const next = now.add({ days: step })
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]`)
+    return this.page.locator(
+      `${part("table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]:not([data-outside-range])`,
+    )
   }
 
   getPrevDayCell(opts: DayCellOptions = {}) {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : this.today()
     const prev = now.add({ days: -1 * step })
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]`)
+    return this.page.locator(
+      `${part("table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]:not([data-outside-range])`,
+    )
   }
 
   getDayCell(value: string | number) {
@@ -252,5 +265,13 @@ export class DatePickerModel extends Model {
 
   seeFocusedValue(value: string) {
     return expect(this.page.locator(".date-output")).toContainText(`Focused: ${value}`)
+  }
+
+  getDayCellByValue(value: string) {
+    return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${value}"]`)
+  }
+
+  seeDayCellIsFocused(value: string) {
+    return expect(this.getDayCellByValue(value)).toBeFocused()
   }
 }

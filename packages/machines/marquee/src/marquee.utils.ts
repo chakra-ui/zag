@@ -51,3 +51,25 @@ export const getMarqueeTranslate = (options: PositionOptions): string => {
   const shouldBeNegative = (side === "start" && dir === "ltr") || (side === "end" && dir === "rtl")
   return shouldBeNegative ? "-100%" : "100%"
 }
+
+interface DurationOptions {
+  rootSize: number
+  contentSize: number
+  speed: number
+  multiplier: number
+  autoFill: boolean
+}
+
+export function calculateDuration(options: DurationOptions): number {
+  const { contentSize, speed, multiplier, autoFill } = options
+
+  if (autoFill) {
+    return (contentSize * multiplier) / speed
+  }
+
+  // Each content element is translated by 100% of its own size, so the animation distance is
+  // always the content size, regardless of the viewport size. Using the root size here made
+  // the effective speed scale with the content/viewport ratio when the content was smaller
+  // than the viewport.
+  return contentSize / speed
+}

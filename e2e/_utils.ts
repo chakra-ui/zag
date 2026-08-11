@@ -94,6 +94,8 @@ export const rect = async (el: Locator) => {
   }
 }
 
+export const approximatelyEqual = (a: number, b: number, tolerance = 1) => Math.abs(a - b) <= tolerance
+
 export async function isInViewport(viewport: Locator, el: Locator) {
   const bbox = await rect(el)
   const viewportBbox = await rect(viewport)

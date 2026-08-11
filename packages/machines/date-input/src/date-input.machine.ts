@@ -193,11 +193,12 @@ export const machine = createMachine<DateInputSchema>({
         return Array.from({ length: computed("groupCount") }, (_, i) => {
           const displayValue =
             displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
-          // When all segments are filled, use the committed value for display; otherwise
-          // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
+          // Use displayValues when complete so deferred edits stay in sync with segment text.
           const committedValue = value?.[i]
-          const isFullyCommitted = committedValue && displayValue.isComplete(allSegmentTypes)
-          const displayDate = isFullyCommitted ? committedValue : displayValue.toValue(placeholderValue)
+          const displayDate =
+            committedValue && displayValue.isComplete(allSegmentTypes)
+              ? displayValue.toValue(committedValue)
+              : displayValue.toValue(placeholderValue)
 
           // Show the era segment when the display value is in BC era (Gregorian calendar).
           // Create the era formatter inline — no dedicated prop needed.
@@ -265,9 +266,16 @@ export const machine = createMachine<DateInputSchema>({
 
     focused: {
       on: {
-        "SEGMENT.FOCUS": {
-          actions: ["setActiveSegmentIndex", "clearEnteredKeys"],
-        },
+        "SEGMENT.FOCUS": [
+          {
+            // DOM focus catching up to an auto-advance must not discard keys already typed into it
+            guard: "isActiveSegmentFocus",
+            actions: ["setActiveSegmentIndex"],
+          },
+          {
+            actions: ["setActiveSegmentIndex", "clearEnteredKeys"],
+          },
+        ],
         "SEGMENT.BLUR": {
           target: "idle",
           actions: ["confirmPlaceholder", "clearEnteredKeys", "invokeOnBlur"],
@@ -319,6 +327,10 @@ export const machine = createMachine<DateInputSchema>({
     },
 
     guards: {
+      isActiveSegmentFocus: ({ context, event }) => {
+        const sameGroup = event.dateIndex == null || event.dateIndex === context.get("activeIndex")
+        return sameGroup && event.segmentIndex === context.get("activeSegmentIndex")
+      },
       isActiveSegmentPlaceholder: (ctx) => {
         const hasEnteredKeys = ctx.context.get("enteredKeys") !== ""
         if (hasEnteredKeys) return false
@@ -420,7 +432,9 @@ export const machine = createMachine<DateInputSchema>({
 
       invokeOnSegmentAdjust(params) {
         const { context, prop, event } = params
-        const { segment, amount } = event
+        const { amount } = event
+        // Prefer the active segment: focus moves in a raf, so ArrowUp/Down can land on the previous segment's element
+        const segment = getActiveSegment(params) ?? event.segment
         const type = segment.type as DateSegment["type"]
         const index = context.get("activeIndex")
         const allSegments = prop("allSegments")
@@ -439,7 +453,9 @@ export const machine = createMachine<DateInputSchema>({
 
       setSegmentValue(params) {
         const { event, context, refs } = params
-        const { segment, input } = event
+        const { input } = event
+        // Prefer the active segment: focus moves in a raf, so fast typing can land on the previous segment's element
+        const segment = getActiveSegment(params) ?? event.segment
         // Save segment index before updateSegmentValue may advance (announce the updated segment, not the one we move to)
         refs.set("segmentToAnnounceIndex", context.get("activeSegmentIndex"))
         // Capture the active group index BEFORE updateSegmentValue, which may advance to the next group
@@ -454,7 +470,8 @@ export const machine = createMachine<DateInputSchema>({
 
       setSegmentToLowestValue(params) {
         const { event, context, prop } = params
-        const { segment } = event
+        // Prefer the active segment: focus moves in a raf, so Home can land on the previous segment's element
+        const segment = getActiveSegment(params) ?? event.segment
         const index = context.get("activeIndex")
         const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
         const placeholderValue = context.get("placeholderValue")
@@ -470,7 +487,8 @@ export const machine = createMachine<DateInputSchema>({
 
       setSegmentToHighestValue(params) {
         const { event, context, prop } = params
-        const { segment } = event
+        // Prefer the active segment: focus moves in a raf, so End can land on the previous segment's element
+        const segment = getActiveSegment(params) ?? event.segment
         const index = context.get("activeIndex")
         const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
         const placeholderValue = context.get("placeholderValue")

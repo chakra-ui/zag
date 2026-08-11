@@ -35,23 +35,18 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
   el.addEventListener("input", resize)
   el.form?.addEventListener("reset", resize)
 
-  const elementPrototype = Object.getPrototypeOf(el)
-  const descriptor = Object.getOwnPropertyDescriptor(elementPrototype, "value")
+  // Prefer the framework's own value tracker when present.
+  const ownDescriptor = Object.getOwnPropertyDescriptor(el, "value")
+  const descriptor = ownDescriptor?.set
+    ? ownDescriptor
+    : Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), "value")
 
-  if (descriptor) {
+  if (descriptor?.set) {
     Object.defineProperty(el, "value", {
       ...descriptor,
       set(newValue: string) {
-        const prevValue = descriptor.get?.call(this)
         descriptor.set?.call(this, newValue)
         resize()
-
-        // Dispatch input event asynchronously to sync framework state trackers
-        if (prevValue !== newValue) {
-          queueMicrotask(() => {
-            el.dispatchEvent(new win.InputEvent("input", { bubbles: true }))
-          })
-        }
       },
     })
   }

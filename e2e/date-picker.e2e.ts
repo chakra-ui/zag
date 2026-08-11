@@ -307,6 +307,62 @@ test.describe("datepicker [range]", () => {
     await I.seeInputHasValue("06/10/2024", 0)
     await I.seeInputHasValue("06/20/2024", 1)
   })
+
+  test("Enter on a completed range starts a new range instead of keeping the old end", async () => {
+    // create initial range
+    await I.focusInput(0)
+    await I.type("06/10/2024", 0)
+    await I.clickOutsideToBlur()
+    await I.focusInput(1)
+    await I.type("06/20/2024", 1)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue("06/10/2024", 0)
+    await I.seeInputHasValue("06/20/2024", 1)
+
+    // reopen and pick a new date with the keyboard
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeDayCellIsFocused("2024-06-10")
+    await I.pressKey("ArrowRight")
+    await I.seeDayCellIsFocused("2024-06-11")
+    await I.pressKey("Enter")
+
+    // should reset to a single new start, stay open and move to the next day
+    await I.seeInputHasValue("06/11/2024", 0)
+    await I.seeInputHasValue("", 1)
+    await I.seeContent()
+    await I.seeDayCellIsFocused("2024-06-12")
+  })
+
+  test("selecting a range start with Enter previews the range band", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
+    await I.pressKey("Enter")
+    // the start is selected and the band previews to the next focused day, without moving first
+    await expect(I.todayCell).toHaveAttribute("data-range-start", "")
+    await expect(I.getNextDayCell()).toHaveAttribute("data-in-hover-range", "")
+  })
+
+  test("reopening with only a start date resumes range selection", async () => {
+    const start = I.getDate({ day: 10 })
+    const end = I.getDate({ day: 20 })
+
+    // commit only a start date, then click outside
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(10)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue("", 1)
+
+    // reopening and picking another date should complete the range
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(20)
+    await I.seeInputHasValue(start.formatted, 0)
+    await I.seeInputHasValue(end.formatted, 1)
+  })
 })
 
 test.describe("datepicker [locale numerals]", () => {

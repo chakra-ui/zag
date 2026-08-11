@@ -28,6 +28,27 @@ test.describe("splitter", () => {
     expect(page.locator(part("resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "36")
   })
 
+  test("should resize with keyboard when focused after hover", async ({ page }) => {
+    const trigger = page.locator(part("resize-trigger")).first()
+
+    await page.locator("main").evaluate((main) => {
+      const button = document.createElement("button")
+      button.textContent = "Before splitter"
+      main.prepend(button)
+      button.focus()
+    })
+
+    await trigger.hover()
+    await page.keyboard.press("Tab")
+
+    await expect(trigger).toBeFocused()
+    const value = Number(await trigger.getAttribute("aria-valuenow"))
+
+    await page.keyboard.press("ArrowRight")
+
+    await expect(trigger).toHaveAttribute("aria-valuenow", String(value + 1))
+  })
+
   test("should decrease panel when arrow left pressed", async ({ page }) => {
     await page.click("main")
 

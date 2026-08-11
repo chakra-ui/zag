@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/floating-panel",
-  "version": "1.42.0",
+  "version": "1.43.0",
   "description": "Core logic for the floating-panel widget implemented as a state machine",
   "keywords": [
     "js",
@@ -36,11 +36,9 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/store": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
-    "@zag-js/popper": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
