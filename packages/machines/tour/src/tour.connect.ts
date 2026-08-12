@@ -258,8 +258,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     },
 
     getCloseTriggerProps() {
-      return normalize.element({
+      return normalize.button({
         ...parts.closeTrigger.attrs,
+        type: "button",
         "data-type": step?.type,
         "aria-label": prop("translations").close,
         onClick: actionMap.dismiss,
