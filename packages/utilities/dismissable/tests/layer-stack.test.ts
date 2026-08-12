@@ -126,6 +126,28 @@ describe("layerStack", () => {
       expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
     })
 
+    test("clears mirrored styles on the layer node itself when removed", () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      document.body.append(parent, child)
+
+      layerStack.add(createLayer(parent))
+      layerStack.add(createLayer(child))
+
+      expect(child.style.getPropertyValue("--layer-index")).toBe("1")
+      expect(child.getAttribute("data-nested")).toBe("dialog")
+      expect(parent.getAttribute("data-has-nested")).toBe("dialog")
+
+      layerStack.remove(child)
+
+      expect(child.style.getPropertyValue("--layer-index")).toBe("")
+      expect(child.style.getPropertyValue("--nested-layer-count")).toBe("")
+      expect(child.hasAttribute("data-nested")).toBe(false)
+      // The remaining layer is re-synced, so only the removed node goes stale.
+      expect(parent.style.getPropertyValue("--layer-index")).toBe("0")
+      expect(parent.hasAttribute("data-has-nested")).toBe(false)
+    })
+
     test("skips mirroring when target is the same node as the layer", () => {
       const node = document.createElement("div")
       document.body.append(node)

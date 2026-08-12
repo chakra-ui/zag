@@ -106,6 +106,9 @@ export const layerStack = {
     if (index < 0) return
 
     const layer = this.layers[index]
+    // `syncLayers` stamps the metadata on the layer node as well as its style targets,
+    // so removal has to clear both or the node keeps its last stamp for good.
+    clearLayerStyleMirror(layer.node)
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
