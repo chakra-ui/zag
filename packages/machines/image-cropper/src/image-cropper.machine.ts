@@ -239,6 +239,10 @@ export const machine = createMachine<ImageCropperSchema>({
           guard: "hasViewportRect",
           actions: ["nudgeMoveCrop"],
         },
+        NUDGE_PAN: {
+          guard: "hasViewportRect",
+          actions: ["nudgePan"],
+        },
       },
     },
 
@@ -733,6 +737,27 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextCrop = computeMoveCrop(crop, delta, viewportRect)
 
         context.set("crop", nextCrop)
+      },
+
+      nudgePan({ context, event, prop }) {
+        const { key, shiftKey, ctrlKey, metaKey } = event
+        const zoom = context.get("zoom")
+        const rotation = context.get("rotation")
+        const viewportRect = context.get("viewportRect")
+
+        const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
+        const delta = getKeyboardMoveDelta(key, step)
+
+        const nextOffset = clampOffset({
+          zoom,
+          rotation,
+          viewportSize: viewportRect,
+          offset: addPoints(context.get("offset"), delta),
+          fixedCropArea: prop("fixedCropArea"),
+          crop: context.get("crop"),
+        })
+
+        context.set("offset", nextOffset)
       },
 
       resizeViewport({ context, prop, scope, send }) {

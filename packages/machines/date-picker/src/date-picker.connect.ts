@@ -50,6 +50,7 @@ import {
   adjustStartAndEndDate,
   defaultTranslations,
   getInputPlaceholder,
+  getNextView,
   getRoleDescription,
   isDateWithinRange,
 } from "./date-picker.utils"
@@ -892,14 +893,18 @@ export function connect<T extends PropTypes>(
 
     getViewTriggerProps(props = {}) {
       const { view = "day" } = props
+      const nextView = getNextView(view, prop("minView"), prop("maxView"))
+      const hasNextView = nextView !== view
+      const isDisabled = disabled || !hasNextView
       return normalize.button({
         ...parts.viewTrigger.attrs,
         "data-view": view,
         dir: prop("dir"),
         id: dom.getViewTriggerId(scope, view),
         type: "button",
-        disabled,
-        "aria-label": translations.viewTrigger(view),
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
+        "aria-label": translations.viewTrigger(view, hasNextView ? nextView : undefined),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return

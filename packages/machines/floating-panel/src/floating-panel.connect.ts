@@ -20,6 +20,7 @@ export function connect<T extends PropTypes>(
   const resizing = state.matches("open.resizing")
 
   const isTopmost = context.get("isTopmost")
+  const stackIndex = context.get("stackIndex")
   const size = context.get("size")
   const position = context.get("position")
 
@@ -87,9 +88,12 @@ export function connect<T extends PropTypes>(
           "--height": toPx(size?.height),
           "--x": toPx(position?.x),
           "--y": toPx(position?.y),
+          "--z-index": stackIndex > -1 ? stackIndex + 1 : undefined,
           position: prop("strategy"),
+          isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
+          zIndex: "var(--z-index)",
         },
       })
     },

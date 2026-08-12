@@ -67,7 +67,7 @@ export interface IntlTranslations {
   nextTrigger: (view: DateView) => string
   monthSelect: string
   yearSelect: string
-  viewTrigger: (view: DateView) => string
+  viewTrigger: (view: DateView, nextView: DateView | undefined) => string
   prevTrigger: (view: DateView) => string
   presetTrigger: (value: string[]) => string
   clearTrigger: string
@@ -118,7 +118,7 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The localized messages to use.
    */
-  translations?: IntlTranslations | undefined
+  translations?: Partial<IntlTranslations> | undefined
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */

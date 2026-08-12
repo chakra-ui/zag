@@ -75,3 +75,36 @@ test.describe("menu", () => {
     await I.seeDropdown()
   })
 })
+
+test.describe("menu / overflow", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/overflow")
+  })
+
+  test("on typeahead, keep highlight when scroll moves content under the cursor", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Item 5")
+    await I.seeItemIsHighlighted("Item 5")
+    await I.type("Z")
+    await I.seeItemIsHighlighted("Zebra")
+    await I.seeItemInViewport("Zebra")
+  })
+
+  test("on end key, keep highlight when scroll moves content under the cursor", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Item 5")
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Item 39")
+    await I.seeItemInViewport("Item 39")
+  })
+
+  test("after keyboard scroll, hover still moves the highlight", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Item 5")
+    await I.type("Z")
+    await I.seeItemIsHighlighted("Zebra")
+    await I.hoverItem("Item 23")
+    await I.seeItemIsHighlighted("Item 23")
+  })
+})
