@@ -49,6 +49,25 @@ test.describe("splitter", () => {
     await expect(trigger).toHaveAttribute("aria-valuenow", String(value + 1))
   })
 
+  test("should keep pointer focus without showing keyboard focus styles", async ({ page }) => {
+    const trigger = page.locator(part("resize-trigger")).first()
+    const box = await trigger.boundingBox()
+    if (!box) throw new Error("Resize trigger is not visible")
+
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(box.x + box.width / 2 + 20, box.y + box.height / 2)
+    await page.mouse.up()
+
+    await expect(trigger).toBeFocused()
+    expect(await trigger.evaluate((element) => element.matches(":focus-visible"))).toBe(false)
+
+    const value = Number(await trigger.getAttribute("aria-valuenow"))
+    await page.keyboard.press("ArrowRight")
+
+    await expect(trigger).toHaveAttribute("aria-valuenow", String(value + 1))
+  })
+
   test("should decrease panel when arrow left pressed", async ({ page }) => {
     await page.click("main")
 

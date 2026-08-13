@@ -250,7 +250,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
           // Safari doesn't move focus to non-form elements on pointer down,
           // so focus explicitly to enable keyboard resizing after clicking.
-          event.currentTarget.focus({ preventScroll: true })
+          event.currentTarget.focus({ preventScroll: true, focusVisible: false })
 
           // If registry is enabled, it handles pointer events
           if (registry) {
