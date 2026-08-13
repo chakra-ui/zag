@@ -1,5 +1,17 @@
 # @zag-js/tree-view
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/collection@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Major Changes
@@ -315,6 +327,7 @@
 - [`57478b8`](https://github.com/chakra-ui/zag/commit/57478b87d44e82b3553e131a090d3bc80faacd7c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Added `scrollToIndexFn` prop to enable keyboard navigation in
   virtualized trees
+
   - **[Breaking]:** `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index
     path perhaps the most useful use of this function, hence the change.
 
@@ -322,12 +335,12 @@
 
   ```tsx
   // Before
-  const nodes = api.getVisibleNodes()
-  nodes.forEach((node) => console.log(node.id))
+  const nodes = api.getVisibleNodes();
+  nodes.forEach((node) => console.log(node.id));
 
   // After
-  const visibleNodes = api.getVisibleNodes()
-  visibleNodes.forEach(({ node }) => console.log(node.id))
+  const visibleNodes = api.getVisibleNodes();
+  visibleNodes.forEach(({ node }) => console.log(node.id));
   ```
 
 ### Patch Changes
@@ -497,6 +510,7 @@
   ## Key Features
 
   ### Basic Renaming
+
   - Press `F2` on any node to enter rename mode
   - Input is automatically focused and synced with current label
   - Press `Enter` to submit or `Escape` to cancel
@@ -504,6 +518,7 @@
   - IME composition events are properly handled for international input
 
   ### Validation & Control
+
   - **`canRename`** - Control which nodes are renameable based on node type or custom logic
   - **`onRenameStart`** - Called when rename mode starts (useful for analytics, showing hints)
   - **`onBeforeRename`** - Validate rename before accepting (e.g., prevent duplicates, empty names)
@@ -512,13 +527,14 @@
   - **`onRenameComplete`** - Handle the rename and update your collection
 
   ### Styling & Visual State
+
   - **`data-renaming`** attribute - Added to both item and branch elements when in rename mode for easy styling
   - **`nodeState.renaming`** - Boolean property to check if a node is currently being renamed
 
   ## API
 
   ```tsx
-  const [collection, setCollection] = useState(initialCollection)
+  const [collection, setCollection] = useState(initialCollection);
 
   useMachine(tree.machine, {
     collection,
@@ -526,13 +542,13 @@
     // Control which nodes can be renamed
     canRename: (node, indexPath) => {
       // Only allow renaming leaf nodes (files), not branches (folders)
-      return !node.children
+      return !node.children;
     },
 
     // Called when rename mode starts
     onRenameStart: (details) => {
       // details contains: { value, node, indexPath }
-      console.log("Started renaming:", details.node.name)
+      console.log("Started renaming:", details.node.name);
       // Track analytics, show hints, etc.
     },
 
@@ -541,36 +557,40 @@
       // Note: details.label is already trimmed by the machine
 
       // Prevent empty names
-      if (!details.label) return false
+      if (!details.label) return false;
 
       // Prevent duplicate names at the same level
-      const parentPath = details.indexPath.slice(0, -1)
-      const parent = parentPath.length > 0 ? collection.at(parentPath) : collection.rootNode
-      const siblings = parent?.children || []
+      const parentPath = details.indexPath.slice(0, -1);
+      const parent =
+        parentPath.length > 0 ? collection.at(parentPath) : collection.rootNode;
+      const siblings = parent?.children || [];
 
-      const hasDuplicate = siblings.some((sibling) => sibling.name === details.label && sibling.id !== details.value)
+      const hasDuplicate = siblings.some(
+        (sibling) =>
+          sibling.name === details.label && sibling.id !== details.value
+      );
 
-      return !hasDuplicate
+      return !hasDuplicate;
     },
 
     // Handle successful rename
     onRenameComplete: (details) => {
       // details contains: { value, label (trimmed), indexPath }
-      const node = collection.at(details.indexPath)
+      const node = collection.at(details.indexPath);
       const updatedCollection = collection.replace(details.indexPath, {
         ...node,
         name: details.label,
-      })
-      setCollection(updatedCollection)
+      });
+      setCollection(updatedCollection);
     },
-  })
+  });
   ```
 
   ## Component Integration
 
   ```tsx
   const TreeNode = ({ node, indexPath, api }) => {
-    const nodeState = api.getNodeState({ node, indexPath })
+    const nodeState = api.getNodeState({ node, indexPath });
 
     return (
       <div {...api.getItemProps({ node, indexPath })}>
@@ -587,21 +607,21 @@
         {/* Show input when renaming */}
         <input {...api.getNodeRenameInputProps({ node, indexPath })} />
       </div>
-    )
-  }
+    );
+  };
   ```
 
   ## Programmatic API
 
   ```tsx
   // Start renaming a node
-  api.startRenaming(nodeValue)
+  api.startRenaming(nodeValue);
 
   // Submit rename with new label
-  api.submitRenaming(nodeValue, newLabel)
+  api.submitRenaming(nodeValue, newLabel);
 
   // Cancel renaming
-  api.cancelRenaming()
+  api.cancelRenaming();
   ```
 
   ## Node State & Styling
@@ -609,7 +629,7 @@
   The `nodeState` now includes a `renaming` property to track rename mode:
 
   ```tsx
-  const nodeState = api.getNodeState({ node, indexPath })
+  const nodeState = api.getNodeState({ node, indexPath });
   // nodeState.renaming -> boolean
   ```
 
@@ -628,6 +648,7 @@
   ```
 
   ## Use Cases Unlocked
+
   1. **File Explorers** - Allow users to rename files and folders with validation
   2. **Content Management** - Edit page titles, categories, or navigation items in-place
   3. **Folder Organization** - Rename folders with duplicate prevention
@@ -642,11 +663,11 @@
 
     canRename: (node, indexPath) => {
       // Prevent renaming system files
-      if (node.system) return false
+      if (node.system) return false;
       // Prevent renaming locked files
-      if (node.locked) return false
+      if (node.locked) return false;
       // Only allow renaming files, not folders
-      return !node.children
+      return !node.children;
     },
 
     onBeforeRename: (details) => {
@@ -654,33 +675,33 @@
 
       // Check file extension rules
       if (!details.label.includes(".")) {
-        console.error("File must have an extension")
-        return false
+        console.error("File must have an extension");
+        return false;
       }
 
       // Validate file name characters
       if (/[<>:"/\\|?*]/.test(details.label)) {
-        console.error("Invalid characters in filename")
-        return false
+        console.error("Invalid characters in filename");
+        return false;
       }
 
-      return true
+      return true;
     },
 
     onRenameComplete: (details) => {
       // Update collection and sync to backend
-      const node = collection.at(details.indexPath)
+      const node = collection.at(details.indexPath);
       const updatedCollection = collection.replace(details.indexPath, {
         ...node,
         name: details.label,
         lastModified: new Date(),
-      })
-      setCollection(updatedCollection)
+      });
+      setCollection(updatedCollection);
 
       // Sync to server
-      api.renameFile(details.value, details.label)
+      api.renameFile(details.value, details.label);
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -1111,6 +1132,7 @@
 - [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for checkbox state for checkbox trees via
   `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+
   - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
   - Add `api.getCheckedMap` method to get the checked state of all nodes
 
@@ -1643,14 +1665,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2445,6 +2467,7 @@
 
 - [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
+
   - `id` -> `value`
   - `expandedIds` -> `expandedValue`
   - `selectedIds` -> `selectedValue`

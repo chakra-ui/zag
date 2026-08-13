@@ -1,5 +1,16 @@
 # @zag-js/tabs
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +21,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -34,6 +45,7 @@
 
   The vague `composite` boolean has been replaced with `virtualFocus`, a well-known accessibility concept that is
   self-documenting.
+
   - `virtualFocus: false` (default) — roving tabindex, arrow keys move DOM focus. Standard standalone tabs.
   - `virtualFocus: true` — all triggers are tabIndex -1, arrow keys update selected tab without moving DOM focus. Used
     when tabs are embedded inside another composite widget (e.g. combobox/tabs pattern).
@@ -54,6 +66,7 @@
   ```
 
   ### Why
+
   - `virtualFocus` is a well-known a11y concept (managing focus via state instead of DOM focus)
   - Self-documenting — no one knows what `composite` means without reading docs
   - Consistent with how `composite` was removed from select, menu, and combobox
@@ -1347,14 +1360,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -1454,10 +1467,10 @@
       value: "nils",
       // use router.push to navigate to the selected tab
       navigate(details) {
-        router.push(`#${details.value}`)
+        router.push(`#${details.value}`);
       },
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes

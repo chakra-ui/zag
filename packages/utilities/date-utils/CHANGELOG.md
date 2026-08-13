@@ -1,5 +1,7 @@
 # @zag-js/date-utils
 
+## 2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 2.0.0-next.0
@@ -90,6 +92,7 @@
 
 - [`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - **DatePicker**
+
   - Fix `api.selectToday()` sending incorrect value format to state machine
   - Add `focus` option to `api.clearValue({ focus?: boolean })`
   - Add `api.setTime(time, index?)` for date-time picker support
@@ -99,6 +102,7 @@
   - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
 
   **Date utils**
+
   - Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
 
 - [`8a02d5c`](https://github.com/chakra-ui/zag/commit/8a02d5c2785a4c1359204c092de3d63445257203) Thanks
@@ -193,6 +197,7 @@
 
   This change resolves critical issues with date comparison operations when different date types (`CalendarDate`,
   `CalendarDateTime`, `ZonedDateTime`) are mixed, particularly in scenarios involving time components.
+
   - Convert `now(timeZone)` result to `CalendarDate` to ensure consistent date types without time components across all
     date range preset operations
   - Update `constrainValue` function to normalize all input dates to `CalendarDate` before comparison, preventing

@@ -1,5 +1,22 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`, despite it being handled at runtime. On `dialog` and `drawer` it
+  was listed as a prop with a default, which stripped `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)` returns.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/color-utils@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +27,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -376,6 +393,7 @@
 - [`9038836`](https://github.com/chakra-ui/zag/commit/9038836103dbdb695036ddbfbcaafd7251b0a909) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix color not updating in controlled mode when selecting black
   shades.
+
   - Fixed equality check to compare actual channel values instead of CSS string output
   - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
 
@@ -1691,14 +1709,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3769,6 +3787,7 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
+
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:

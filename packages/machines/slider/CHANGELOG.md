@@ -1,5 +1,16 @@
 # @zag-js/slider
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +21,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -276,6 +287,7 @@
   `thumbAlignment="contain"` mode.
 
   The value calculation now correctly accounts for thumb inset, ensuring consistent behavior when:
+
   - Clicking on the track to set a value
   - Dragging the thumb from any position (center, left edge, or right edge)
 
@@ -395,6 +407,7 @@
 - [`48243a4`](https://github.com/chakra-ui/zag/commit/48243a4ce2f1c515e9845e00a46644e1861f99d9) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where programmatic value changes do not trigger the
   `onValueChangeEnd` callback. This affects the following API methods:
+
   - `slider.setThumbValue(index, value)`
   - `slider.setValue(value)`
   - `slider.increment(index)`
@@ -1370,14 +1383,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2896,6 +2909,7 @@
   duplication.
 
   Some notable changes:
+
   - `value` and `onValueChange` type has been updated to be `number[]`
   - Update `api.getThumbProps(index)` to `api.getThumbProps({ index })`
 
@@ -3071,6 +3085,7 @@
 - [`a1a585d6`](https://github.com/chakra-ui/zag/commit/a1a585d6d2dbac5836a847a39faf7d68db354188) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where slider marks are not aligned to the thumb
   position in "contain" alignment mode.
+
   - Add support for passing the `thumbSize` in the machine context to avoid first-render flicker due to DOM measurement.
 
 - [#789](https://github.com/chakra-ui/zag/pull/789)
@@ -3141,6 +3156,7 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
+
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
@@ -3852,6 +3868,7 @@
 * [`49b666ad`](https://github.com/chakra-ui/zag/commit/49b666ad40b3a91057a9f8935c34a7edc5cc6b59) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Add support for changing the slider thumb alignment via the
   `thumbAlignment` context property. The value can be set to either `center` or `contain`.
+
   - `center`: the thumb will extend beyond the bounds of the slider track.
   - `contain`: the thumb will be contained within the bounds of the track.
 

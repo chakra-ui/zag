@@ -1,5 +1,7 @@
 # @zag-js/anatomy
 
+## 2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 2.0.0-next.0
@@ -20,12 +22,16 @@
   ### Before
 
   ```html
-  <button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">Open</button>
+  <button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">
+    Open
+  </button>
   <div data-scope="dialog" data-part="content" data-ownedby="dialog:1">...</div>
   ```
 
   ```css
-  [data-scope="dialog"][data-part="trigger"] { ... }
+  [data-scope="dialog"][data-part="trigger"] {
+    ...;
+  }
   ```
 
   ### After
@@ -36,10 +42,13 @@
   ```
 
   ```css
-  [data-dialog-trigger] { ... }
+  [data-dialog-trigger] {
+    ...;
+  }
   ```
 
   ### Motivation
+
   - **Seamless composition** - an element can participate in multiple machines via separate attributes (e.g.
     `data-popover-trigger` + `data-tooltip-trigger` on the same button)
   - **Simpler selectors** - `[data-dialog-trigger]` instead of `[data-scope="dialog"][data-part="trigger"]`

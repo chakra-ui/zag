@@ -1,5 +1,15 @@
 # @zag-js/dom-query
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`, despite it being handled at runtime. On `dialog` and `drawer` it
+  was listed as a prop with a default, which stripped `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)` returns.
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/types@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -76,7 +86,7 @@
   default applies.
 
   ```tsx
-  api.scrollTo("installation", { behavior: "smooth" })
+  api.scrollTo("installation", { behavior: "smooth" });
   ```
 
   - Rename `getScrollEl` context prop to `scrollEl` for consistency with other machines (e.g. `initialFocusEl`,
@@ -144,6 +154,7 @@
 
 - [`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled carousel inside dialog jumping or skipping pages.
+
   - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
   - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
 
@@ -936,10 +947,10 @@
       value: "nils",
       // use router.push to navigate to the selected tab
       navigate(details) {
-        router.push(`#${details.value}`)
+        router.push(`#${details.value}`);
       },
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes

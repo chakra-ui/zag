@@ -1,5 +1,12 @@
 # @zag-js/focus-trap
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05)]:
+  - @zag-js/dom-query@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -893,6 +900,7 @@
 - [`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where dialog or popover closes when the focused
   element is removed from the DOM.
+
   - Improve touch device outside interaction detection.
 
 - [`5bfca99`](https://github.com/chakra-ui/zag/commit/5bfca9934030eac6b25dd1fd78db2371a74c3b33) Thanks

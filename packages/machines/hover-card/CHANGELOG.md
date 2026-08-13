@@ -1,5 +1,56 @@
 # @zag-js/hover-card
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`45451e9`](https://github.com/chakra-ui/zag/commit/45451e9c03b072020fbdf355c5182ed96b281776) Thanks [@github-actions](https://github.com/apps/github-actions)! - Add a `reason` to `onOpenChange`, describing what caused the change.
+
+  - Added `reason` to `onOpenChange` details: `trigger-hover`, `trigger-focus`, `trigger-blur`, `pointer-leave`,
+    `interact-outside`, `escape-key` or `script`. `api.setOpen` accepts a reason as its second argument, defaulting to
+    `script`.
+  - Fixed issue where dismissing with the `Escape` key was reported the same way as pressing outside.
+  - Fixed issue where leaving the trigger before the open delay elapsed fired `onOpenChange` with `open: false`, even
+    though the hover card had never opened.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7) Thanks [@github-actions](https://github.com/apps/github-actions)! - Add inline positioning for references that wrap across lines.
+
+  - Fixed issue where a hover card anchored to a trigger spanning multiple lines was positioned against the box covering
+    every line, landing far from the pointer instead of under the line being hovered.
+  - Fixed issue where the hover card stayed over the previous trigger when the active trigger changed, showing the new
+    trigger's content in the old position.
+  - Added `inline` and `getInlineRectCoords` to `@zag-js/popper`, alongside a `positioning.middleware` option for
+    supplying extra Floating UI middleware. The middleware is only bundled by machines that import it.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22) Thanks [@github-actions](https://github.com/apps/github-actions)! - Add `@zag-js/safe-area` and use it in the hover card to track the pointer travelling between the trigger and the
+  content.
+
+  - Fixed issue where the hover card closed while the pointer was still on its way to the content. Moving diagonally, or
+    pausing for longer than `closeDelay`, no longer dismisses it.
+  - Fixed issue where a hover card opened programmatically or by keyboard was dismissed by pointer movement anywhere on
+    the page.
+
+  The `open` and `closing` states are now `open.idle` and `open.closing`. `state.matches("open")` still works, but code
+  matching the literal state `"closing"` should use `"open.closing"`.
+
+  The tooltip uses it too when `interactive` is set, so the pointer can reach a hoverable tooltip without it closing on
+  the way (WCAG 1.4.13). Non-interactive tooltips are unchanged.
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`f7f9abf`](https://github.com/chakra-ui/zag/commit/f7f9abfd3f751f667ccd1a8339166f03e9b76c5a) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the hover card opened on focus that followed a pointer interaction, such as a dialog restoring focus
+  to the trigger. It now opens only for keyboard and assistive-technology focus, matching `@zag-js/tooltip`.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17), [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/safe-area@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +61,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -166,7 +217,7 @@
   `value` passed to `getTriggerProps`:
 
   ```jsx
-  const users = [{ id: 1, name: "Alice Johnson" }]
+  const users = [{ id: 1, name: "Alice Johnson" }];
 
   const Demo = () => {
     // One dialog, many triggers
@@ -174,21 +225,23 @@
       id: useId(),
       // Track the active trigger change
       onTriggerValueChange({ value }) {
-        const user = users.find((u) => u.id === value) ?? null
-        setActiveUser(user)
+        const user = users.find((u) => u.id === value) ?? null;
+        setActiveUser(user);
       },
-    })
+    });
 
-    const api = dialog.connect(service, normalizeProps)
+    const api = dialog.connect(service, normalizeProps);
 
     return (
       <>
         {users.map((user) => (
-          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+          <button {...api.getTriggerProps({ value: user.id })}>
+            Edit {user.name}
+          </button>
         ))}
       </>
-    )
-  }
+    );
+  };
   ```
 
   When the component is open and a different trigger is activated, it switches and repositions without closing.
@@ -622,6 +675,7 @@
 - [`05bf5c1`](https://github.com/chakra-ui/zag/commit/05bf5c1037fb58e8f09e5bc78a04501e551d715d) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Change default delay values for hover card to improve
   accessibility.
+
   - `openDelay`: from `700ms` to `600ms`
 
 - Updated dependencies []:
@@ -1575,14 +1629,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3117,6 +3171,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -3342,7 +3397,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -3350,7 +3405,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -3370,7 +3425,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes
@@ -3464,15 +3519,15 @@
   [@TimKolberger](https://github.com/TimKolberger)! - Add `open` and `close` functions to the connect api:
 
   ```ts
-  import * as hoverCard from "@zag-js/hover-card"
+  import * as hoverCard from "@zag-js/hover-card";
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(state, send, normalizeProps);
 
   // call `open` to open the hover card
-  api.open()
+  api.open();
 
   // call `close` to close the hover card
-  api.close()
+  api.close();
   ```
 
 ### Patch Changes

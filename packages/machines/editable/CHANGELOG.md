@@ -1,5 +1,17 @@
 # @zag-js/editable
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/interact-outside@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +22,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -1371,14 +1383,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3687,8 +3699,8 @@
   const [state, send] = useMachine(
     editable.machine({
       placeholder: { edit: "Enter...", preview: "Add name..." },
-    }),
-  )
+    })
+  );
   ```
 
 ## 0.1.4

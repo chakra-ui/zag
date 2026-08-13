@@ -1,5 +1,17 @@
 # @zag-js/carousel
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/scroll-snap@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +22,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -201,6 +213,7 @@
 
 - [`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled carousel inside dialog jumping or skipping pages.
+
   - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
   - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
 
@@ -219,6 +232,7 @@
 - [`ed1f1bb`](https://github.com/chakra-ui/zag/commit/ed1f1bb59c4b68ec61a4b96ae4cda783b10e00d8) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improved carousel reliability during drag, scroll, and runtime
   config changes.
+
   - Keeps page and indicators in sync after drag release and scroll settling.
   - Handles rapid mixed interactions (drag, wheel, buttons, indicators) more consistently.
   - Keeps page state valid when `slidesPerPage`, `slidesPerMove`, direction, or orientation change.
@@ -711,6 +725,7 @@
   [`04f4871`](https://github.com/chakra-ui/zag/commit/04f4871fc6deb829f4e6d8ff159a52881954ff8a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix an issue where the carousel would not update when
   `slideCount` or `autoplay` props change.
+
   - Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the
     last slide.
 
@@ -1459,14 +1474,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2797,6 +2812,7 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
+
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:

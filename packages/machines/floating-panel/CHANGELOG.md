@@ -1,5 +1,22 @@
 # @zag-js/floating-panel
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`, despite it being handled at runtime. On `dialog` and `drawer` it
+  was listed as a prop with a default, which stripped `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)` returns.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/store@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/rect-utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +27,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -36,6 +53,7 @@
   Both floating panel and image cropper now delegate all constrained rect manipulation to this engine.
 
   **New `@zag-js/rect-utils` exports:**
+
   - `applyMove`, `applyResize` — pointer-driven move and resize with boundary, size limits, aspect ratio, grid snap, and
     center-origin support
   - `clampPointInRange`, `centerInRect`, `centerOnPoint` — point/rect positioning helpers
@@ -47,9 +65,11 @@
   - `HandlePosition` type
 
   **Breaking: Removed from `@zag-js/rect-utils`:**
+
   - `resizeRect`, `AffineTransform`, `compassDirectionMap`, `oppositeDirectionMap`, `ScalingOptions`
 
   **Breaking: Unified handle naming across floating panel and image cropper:**
+
   - Floating panel: `ResizeTriggerProps.axis` → `.placement`, `data-axis` → `data-placement`, `ResizeTriggerAxis`
     removed (use `HandlePosition`), `resizeTriggerAxes` → `resizeTriggerPlacements`
   - Image cropper: `HandleProps.position` → `.placement`, `data-position` → `data-placement`, `handles` → `placements`
@@ -234,6 +254,7 @@
 
 - [`3990e97`](https://github.com/chakra-ui/zag/commit/3990e97dcb5d1708d492b7f3944e71bd4595e039) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled floating panel behavior.
+
   - Fix `open` taking precedence over `defaultOpen` during initialization
   - Fix `api.setPosition` and `api.setSize` to work independently of drag/resize state
   - Fix React `Maximum update depth exceeded` when content uses `ResizeObserver`
@@ -1740,14 +1761,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:

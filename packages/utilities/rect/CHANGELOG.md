@@ -1,5 +1,7 @@
 # @zag-js/rect-utils
 
+## 2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 2.0.0-next.0
@@ -18,6 +20,7 @@
   Both floating panel and image cropper now delegate all constrained rect manipulation to this engine.
 
   **New `@zag-js/rect-utils` exports:**
+
   - `applyMove`, `applyResize` — pointer-driven move and resize with boundary, size limits, aspect ratio, grid snap, and
     center-origin support
   - `clampPointInRange`, `centerInRect`, `centerOnPoint` — point/rect positioning helpers
@@ -29,9 +32,11 @@
   - `HandlePosition` type
 
   **Breaking: Removed from `@zag-js/rect-utils`:**
+
   - `resizeRect`, `AffineTransform`, `compassDirectionMap`, `oppositeDirectionMap`, `ScalingOptions`
 
   **Breaking: Unified handle naming across floating panel and image cropper:**
+
   - Floating panel: `ResizeTriggerProps.axis` → `.placement`, `data-axis` → `data-placement`, `ResizeTriggerAxis`
     removed (use `HandlePosition`), `resizeTriggerAxes` → `resizeTriggerPlacements`
   - Image cropper: `HandleProps.position` → `.placement`, `data-position` → `data-placement`, `handles` → `placements`

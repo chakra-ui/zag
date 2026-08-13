@@ -1,5 +1,17 @@
 # @zag-js/toast
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +22,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -148,6 +160,7 @@
 
 - [`2981232`](https://github.com/chakra-ui/zag/commit/29812320badb8066208b2ef5337eec80f71e96b7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Restore `role="region"` on the toast group element.
+
   - The role was previously removed to reduce screen reader landmark noise, but this caused an axe
     `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div` without a valid role.
   - The region landmark also enables keyboard navigation to the toast area (e.g. via F6).
@@ -178,6 +191,7 @@
 
 - [`daff476`](https://github.com/chakra-ui/zag/commit/daff4767985c02d8b4e808201935eeacdfa426b9) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improve toast group accessibility:
+
   - Remove `role="region"` landmark to reduce screen reader noise; keep `aria-live="polite"` with `aria-relevant` and
     `aria-atomic` for reliable, scoped announcements
   - Restructure `aria-label` for more natural output (e.g. "Notifications, bottom (Alt+T)")
@@ -566,10 +580,10 @@
 
   ```tsx
   // before
-  const store = toast.createStore({})
+  const store = toast.createStore({});
 
   // after
-  const store = toast.createStore()
+  const store = toast.createStore();
   ```
 
 - Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
@@ -883,6 +897,7 @@
 - [`c374878`](https://github.com/chakra-ui/zag/commit/c374878ba6a564afad27928b45382e963fba9b7e) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where app crashes when `toaster.promise` is called
   without loading option.
+
   - Now, the toast will not be created if the `loading` option is not provided.
   - The `loading` option is now required. A warning will be logged if it is not provided.
 
@@ -1439,14 +1454,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - [`8cb7ca7`](https://github.com/chakra-ui/zag/commit/8cb7ca7de9546382e9b1635429a9bab58bcbe546) Thanks
@@ -1919,10 +1934,10 @@
     action: {
       label: "Undo",
       onClick: () => {
-        console.log("undo")
+        console.log("undo");
       },
     },
-  })
+  });
   ```
 
   The `onClick` function will be called when the user clicks the action trigger.
@@ -2788,6 +2803,7 @@
   [@segunadebayo](https://github.com/segunadebayo)! - Redesign toast render apis to allow for framework control.
 
   **Some breaking changes:**
+
   - `defaultOptions` can now be passed directly to the `toast.group` machine context.
   - You can now pass the default `render` function to the `toast.group` machine context.
   - Removed `api.render` in favor of userland control. This eliminates the bug in Solid.js for custom toasts.
@@ -2988,6 +3004,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

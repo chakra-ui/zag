@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/auto-resize@2.0.0-next.2
+  - @zag-js/interact-outside@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/live-region@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +24,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -45,6 +59,7 @@
   ```
 
   ### Why
+
   - **Simpler default** — most usages only need add/remove, not inline rename
   - **Less surprise** — double-click to edit is a power-user feature that should be opted into
   - **Matches peers** — aligns with how other tag input libraries behave out of the box
@@ -238,6 +253,7 @@
   internally, so `validate` returning `true` did not allow duplicate tags to be added.
 
   **Supported use cases:**
+
   - **Sentence builders** — Build phrases from repeatable tokens (e.g. `"Hello"`, `","`, `" "`, `"world"`). Tokens can
     appear multiple times with different separators per item.
   - **Repeatable tokens** — Predefined values that users may select multiple times (e.g. `"a"`, `"a"`, `"b"`).
@@ -247,7 +263,7 @@
   ```js
   useMachine(tagsInput.machine, {
     allowDuplicates: true,
-  })
+  });
   ```
 
 ### Patch Changes
@@ -1670,14 +1686,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2672,6 +2688,7 @@
 - [`a110001`](https://github.com/chakra-ui/zag/commit/a110001fa422a71d879f3390308fff3f338d94cf) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where editing a tag and clearing it's value leaves an
   empty tag. Now, empty tags will be deleted.
+
   - Fix issue where deleting a tag with pointer and navigating with keyboard doesn't work
 
 - [`dfc85a4`](https://github.com/chakra-ui/zag/commit/dfc85a43337ca854ae37ecf9bdd6c6be99db8922) Thanks
@@ -3393,11 +3410,14 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
+
   - **Accordion**
+
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
+
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -3405,6 +3425,7 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
+
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -3516,6 +3537,7 @@
 - [#789](https://github.com/chakra-ui/zag/pull/789)
   [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `onHighlight` to `onFocusChange`
+
   - Remove `onTagUpdate`, use `onChange` instead
 
 - [#789](https://github.com/chakra-ui/zag/pull/789)

@@ -1,5 +1,17 @@
 # @zag-js/dismissable
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix removed dismissable layers retaining stack data attributes and CSS variables when their elements remain mounted.
+  This clears `data-nested`, `data-has-nested`, `--layer-index`, `--nested-layer-count`, and the derived `--z-index` after
+  removal, including when a layer has nested children.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/interact-outside@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Major Changes

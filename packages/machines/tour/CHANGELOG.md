@@ -1,5 +1,20 @@
 # @zag-js/tour
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-trap@2.0.0-next.2
+  - @zag-js/interact-outside@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +25,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -49,6 +64,7 @@
 - [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where dismissing a tour from a step's `effect`
   skipped cleanup and could miss firing the "completed" status.
+
   - Fixed issue where a tooltip step's position could reset unexpectedly when the tour closed.
 
 - [`7e43667`](https://github.com/chakra-ui/zag/commit/7e436671b3aebaf4cd74ee02709a56986e63eaad) Thanks
@@ -1755,14 +1771,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:

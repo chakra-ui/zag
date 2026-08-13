@@ -1,5 +1,23 @@
 # @zag-js/drawer
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`, despite it being handled at runtime. On `dialog` and `drawer` it
+  was listed as a prop with a default, which stripped `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)` returns.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/aria-hidden@2.0.0-next.2
+  - @zag-js/focus-trap@2.0.0-next.2
+  - @zag-js/remove-scroll@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +28,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -188,7 +206,7 @@
   `value` passed to `getTriggerProps`:
 
   ```jsx
-  const users = [{ id: 1, name: "Alice Johnson" }]
+  const users = [{ id: 1, name: "Alice Johnson" }];
 
   const Demo = () => {
     // One dialog, many triggers
@@ -196,21 +214,23 @@
       id: useId(),
       // Track the active trigger change
       onTriggerValueChange({ value }) {
-        const user = users.find((u) => u.id === value) ?? null
-        setActiveUser(user)
+        const user = users.find((u) => u.id === value) ?? null;
+        setActiveUser(user);
       },
-    })
+    });
 
-    const api = dialog.connect(service, normalizeProps)
+    const api = dialog.connect(service, normalizeProps);
 
     return (
       <>
         {users.map((user) => (
-          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+          <button {...api.getTriggerProps({ value: user.id })}>
+            Edit {user.name}
+          </button>
         ))}
       </>
-    )
-  }
+    );
+  };
   ```
 
   When the component is open and a different trigger is activated, it switches and repositions without closing.
@@ -270,6 +290,7 @@
 - [`c906c09`](https://github.com/chakra-ui/zag/commit/c906c099997be95d15396fcc5bb5583e9431c2bf) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add `description` anatomy part with `aria-describedby` support
   on the content element
+
   - Add `SwipeArea` part for swipe-to-open gestures from screen edges
 
     ```tsx
