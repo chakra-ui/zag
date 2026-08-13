@@ -116,9 +116,6 @@ export const layerStack = {
     if (index < 0) return
 
     const layer = this.layers[index]
-    if (layer.snapshot) {
-      publishSnapshot(layer, { ...layer.snapshot, active: false, blocked: false })
-    }
 
     // Track this node as recently removed to handle focus race conditions
     // during layer cleanup. This prevents parent layers from incorrectly
@@ -137,6 +134,11 @@ export const layerStack = {
 
     // remove this layer
     this.layers.splice(index, 1)
+
+    if (layer.snapshot) {
+      publishSnapshot(layer, { ...layer.snapshot, active: false, blocked: false })
+    }
+
     this.syncLayers()
   },
   removeBranch(node: HTMLElement) {

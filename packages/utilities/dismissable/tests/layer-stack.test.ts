@@ -123,6 +123,22 @@ describe("layerStack", () => {
 
       expect(getLastSnapshot(onLayerChange)).toMatchObject({ active: false, blocked: false, index: 0 })
     })
+
+    test("keeps the removed parent inactive when nested dismissal resyncs the stack", () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      document.body.append(parent, child)
+      const onParentChange = vi.fn()
+      const onChildChange = vi.fn()
+
+      layerStack.add(createLayer(parent, { onLayerChange: onParentChange }))
+      layerStack.add(createLayer(child, { onLayerChange: onChildChange }))
+
+      layerStack.remove(parent)
+
+      expect(getLastSnapshot(onParentChange)).toMatchObject({ active: false, blocked: false })
+      expect(getLastSnapshot(onChildChange)).toMatchObject({ active: true, index: 0, nested: false })
+    })
   })
 
   describe("sync metadata (two layers, same type)", () => {

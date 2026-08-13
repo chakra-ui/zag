@@ -2,8 +2,8 @@ import type { LayerSnapshot } from "./layer-stack"
 
 export function getDismissableLayerAttrs(layer: LayerSnapshot | null | undefined) {
   return {
-    "data-nested": layer?.nested ? layer.type : undefined,
-    "data-has-nested": layer?.hasNested ? layer.type : undefined,
+    "data-nested": layer?.active && layer.nested ? layer.type : undefined,
+    "data-has-nested": layer?.active && layer.hasNested ? layer.type : undefined,
   }
 }
 
@@ -34,14 +34,15 @@ export function getDismissableLayerStyle(
   layer: LayerSnapshot | null | undefined,
   options: DismissableLayerStyleOptions = {},
 ): DismissableLayerStyle {
+  const active = layer?.active === true
   const style: DismissableLayerStyle = {
-    "--layer-index": layer ? `${layer.index}` : undefined,
-    "--nested-layer-count": layer ? `${layer.nestedCount}` : undefined,
-    "--z-index": options.zIndex && layer ? "var(--layer-index)" : undefined,
+    "--layer-index": active ? `${layer.index}` : undefined,
+    "--nested-layer-count": active ? `${layer.nestedCount}` : undefined,
+    "--z-index": options.zIndex && active ? "var(--layer-index)" : undefined,
   }
 
   if (options.pointerEvents) {
-    style.pointerEvents = layer?.active ? (layer.blocked ? "none" : "auto") : undefined
+    style.pointerEvents = active ? (layer.blocked ? "none" : "auto") : undefined
   }
 
   return style
