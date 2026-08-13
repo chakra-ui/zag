@@ -95,6 +95,24 @@ export const hoverCardControls = defineControls({
   closeDelay: { type: "number", defaultValue: 300 },
 })
 
+export const numberFlowControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  trend: {
+    type: "select",
+    options: ["false", "true", "1", "-1"] as const,
+    defaultValue: "false",
+    transformValue(value) {
+      if (value === "true") return true
+      if (value === "false") return false
+      return Number(value)
+    },
+  },
+  continuous: { type: "boolean", defaultValue: false },
+  respectMotionPreference: { type: "boolean", defaultValue: true },
+  live: { type: "boolean", defaultValue: false },
+  stagger: { type: "string", defaultValue: "25ms" },
+})
+
 export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },

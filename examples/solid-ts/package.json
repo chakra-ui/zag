@@ -60,6 +60,7 @@
     "@zag-js/menu": "workspace:*",
     "@zag-js/menubar": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
+    "@zag-js/number-flow": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/password-input": "workspace:*",

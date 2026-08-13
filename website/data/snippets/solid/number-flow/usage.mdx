@@ -1,0 +1,64 @@
+```tsx
+import * as numberFlow from "@zag-js/number-flow"
+import { Key, normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For, Show } from "solid-js"
+
+function NumberFlow() {
+  const service = useMachine(numberFlow.machine, {
+    id: createUniqueId(),
+    defaultValue: 1234,
+  })
+
+  const api = createMemo(() => numberFlow.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      {/* `Key` matches on `segment.key`. A plain `For` compares by reference, and
+          every update builds fresh segments, so it would rebuild each digit's DOM
+          and drop the roll in flight. */}
+      <Key each={api().segments} by={(segment) => segment.key}>
+        {(segment) => {
+          // `Key` runs this once per key, so the getters must read `segment()`
+          // inside the JSX. `Show` hands its child a narrowed accessor.
+          const digit = createMemo(() => {
+            const current = segment()
+            return numberFlow.isDigitSegment(current) ? current : null
+          })
+          const symbol = () => segment() as numberFlow.SymbolSegment
+
+          return (
+            <Show
+              when={digit()}
+              fallback={
+                <span {...api().getSymbolProps({ segment: symbol() })}>
+                  {symbol().value}
+                </span>
+              }
+            >
+              {(segment) => (
+                <span {...api().getDigitProps({ segment: segment() })}>
+                  <span {...api().getDigitTrackProps({ segment: segment() })}>
+                    <For each={api().digitCells}>
+                      {(cell) => (
+                        <span
+                          {...api().getDigitCellProps({
+                            segment: segment(),
+                            cell,
+                          })}
+                        >
+                          {cell.glyph}
+                        </span>
+                      )}
+                    </For>
+                  </span>
+                </span>
+              )}
+            </Show>
+          )
+        }}
+      </Key>
+      <span {...api().getValueTextProps()}>{api().announcedValueText}</span>
+    </div>
+  )
+}
+```

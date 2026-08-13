@@ -4147,6 +4147,134 @@
       }
     }
   },
+  "number-flow": {
+    "api": {
+      "value": {
+        "type": "number",
+        "description": "The current numeric value."
+      },
+      "valueText": {
+        "type": "string",
+        "description": "The flattened, locale-formatted text (including prefix/suffix). Use for `aria-label`\nor anywhere a plain string is needed."
+      },
+      "announcedValueText": {
+        "type": "string",
+        "description": "The text to render inside `getValueTextProps()`. Same as `valueText`, except it only\nupdates once the roll animation settles - so a fast counter doesn't spam assistive tech."
+      },
+      "segments": {
+        "type": "Segment[]",
+        "description": "The ordered segments of the formatted value - one per rolling digit, plus the symbols\nbetween them (group separators, currency symbols, signs, literals)."
+      },
+      "digitCells": {
+        "type": "readonly DigitCell[]",
+        "description": "The cells to render inside every digit track, in order. Map over this to build a digit's\nstrip - the same array is shared by every digit, and is stable across renders."
+      },
+      "digitGlyphs": {
+        "type": "string[]",
+        "description": "The locale digit glyphs `0-9`, in order. An escape hatch for rendering digits outside a\ndigit track - `digitCells` already carries the glyph for each cell."
+      },
+      "animating": {
+        "type": "boolean",
+        "description": "Whether a roll animation is currently in progress. Reads a ref - does not subscribe."
+      },
+      "setValue": {
+        "type": "(value: number) => void",
+        "description": "Sets the value."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements in the number-flow. Useful for composition."
+      },
+      "value": {
+        "type": "number | undefined",
+        "description": "The controlled numeric value to render."
+      },
+      "defaultValue": {
+        "type": "number | undefined",
+        "description": "The initial value to render when uncontrolled.",
+        "defaultValue": "0"
+      },
+      "onValueChange": {
+        "type": "((details: ValueChangeDetails) => void) | undefined",
+        "description": "Callback fired when the value changes."
+      },
+      "formatOptions": {
+        "type": "Intl.NumberFormatOptions | undefined",
+        "description": "The options to pass to the `Intl.NumberFormat` constructor."
+      },
+      "prefix": {
+        "type": "string | undefined",
+        "description": "A static string rendered before the formatted value. Does not animate."
+      },
+      "suffix": {
+        "type": "string | undefined",
+        "description": "A static string rendered after the formatted value. Does not animate."
+      },
+      "trend": {
+        "type": "Trend | undefined",
+        "description": "Controls the roll direction of each digit.\n- `false` (default): each digit takes its own shortest path (`9 -> 0` rolls forward one step).\n- `true`: every digit rolls in the direction of the overall value change.\n- `1` / `-1`: force every digit to roll up or down, regardless of the value change.",
+        "defaultValue": "false"
+      },
+      "continuous": {
+        "type": "boolean | undefined",
+        "description": "Whether digits spin through every intermediate value instead of taking the nearest path.",
+        "defaultValue": "false"
+      },
+      "spinTiming": {
+        "type": "TimingOptions | undefined",
+        "description": "The timing of the per-digit roll transition.",
+        "defaultValue": "{ duration: \"900ms\", easing: \"cubic-bezier(0.4, 0, 0.2, 1)\" }"
+      },
+      "transformTiming": {
+        "type": "TimingOptions | undefined",
+        "description": "The timing of layout transitions - slots and static parts entering/exiting.",
+        "defaultValue": "{ duration: \"500ms\", easing: \"cubic-bezier(0.4, 0, 0.2, 1)\" }"
+      },
+      "stagger": {
+        "type": "string | undefined",
+        "description": "A CSS `<time>` delay applied between adjacent digit slots, e.g. `\"25ms\"`.",
+        "defaultValue": "undefined"
+      },
+      "respectMotionPreference": {
+        "type": "boolean | undefined",
+        "description": "Whether to suppress the roll animation when the user prefers reduced motion.",
+        "defaultValue": "true"
+      },
+      "live": {
+        "type": "boolean | undefined",
+        "description": "Whether the value is announced to assistive technology as it changes.\nWhen `false`, the rendered value is still readable, but changes are not announced.",
+        "defaultValue": "false"
+      },
+      "onAnimationStart": {
+        "type": "((details: AnimationDetails) => void) | undefined",
+        "description": "Callback fired when a value change starts a roll animation."
+      },
+      "onAnimationComplete": {
+        "type": "((details: AnimationDetails) => void) | undefined",
+        "description": "Callback fired when the roll animation settles."
+      },
+      "locale": {
+        "type": "string | undefined",
+        "description": "The current locale. Based on the BCP 47 definition.",
+        "defaultValue": "\"en-US\""
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "number-input": {
     "api": {
       "focused": {

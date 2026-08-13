@@ -1280,6 +1280,31 @@
       "data-value": "The value of the item"
     }
   },
+  "number-flow": {
+    "Root": {
+      "data-number-flow-root": "<uid>",
+      "data-state": "\"rolling\" | \"idle\"",
+      "data-trend": "",
+      "data-reduced-motion": ""
+    },
+    "Symbol": {
+      "data-number-flow-symbol": "<uid>",
+      "data-type": "The type of the item"
+    },
+    "Digit": {
+      "data-number-flow-digit": "<uid>",
+      "data-place": ""
+    },
+    "DigitTrack": {
+      "data-number-flow-digit-track": "<uid>",
+      "data-place": ""
+    },
+    "DigitCell": {
+      "data-number-flow-digit-cell": "<uid>",
+      "data-place": "",
+      "data-digit": ""
+    }
+  },
   "number-input": {
     "Root": {
       "data-number-input-root": "<uid>",

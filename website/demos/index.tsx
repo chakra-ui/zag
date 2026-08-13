@@ -63,6 +63,7 @@ import { Drawer } from "./drawer"
 import { FloatingPanel } from "./floating-panel"
 import { Listbox } from "./listbox"
 import { Marquee } from "./marquee"
+import { NumberFlow } from "./number-flow"
 import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
@@ -584,6 +585,17 @@ const components = {
         draggable: true,
         disabled: false,
         lockAspectRatio: false,
+      }}
+    />
+  ),
+  NumberFlow: () => (
+    <Playground
+      name="number-flow"
+      component={NumberFlow}
+      defaultProps={{
+        trend: false,
+        continuous: false,
+        stagger: "25ms",
       }}
     />
   ),

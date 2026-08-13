@@ -1,11 +1,4 @@
 {
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
-    }
-  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",
@@ -14,6 +7,13 @@
     "Marker": {
       "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
       "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -112,9 +112,16 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
-  "listbox": {
-    "List": {
-      "--column-count": "The column count value for the List"
+  "image-cropper": {
+    "Root": {
+      "--crop-width": "The width of the Root",
+      "--crop-height": "The height of the Root",
+      "--crop-x": "The crop x value for the Root",
+      "--crop-y": "The crop y value for the Root",
+      "--image-zoom": "The image zoom value for the Root",
+      "--image-rotation": "The image rotation value for the Root",
+      "--image-offset-x": "The offset position for image",
+      "--image-offset-y": "The offset position for image"
     }
   },
   "marquee": {
@@ -126,16 +133,9 @@
       "--marquee-translate": "The marquee translate value for the Root"
     }
   },
-  "image-cropper": {
-    "Root": {
-      "--crop-width": "The width of the Root",
-      "--crop-height": "The height of the Root",
-      "--crop-x": "The crop x value for the Root",
-      "--crop-y": "The crop y value for the Root",
-      "--image-zoom": "The image zoom value for the Root",
-      "--image-rotation": "The image rotation value for the Root",
-      "--image-offset-x": "The offset position for image",
-      "--image-offset-y": "The offset position for image"
+  "listbox": {
+    "List": {
+      "--column-count": "The column count value for the List"
     }
   },
   "navigation-menu": {
@@ -178,6 +178,13 @@
       "--offset": "The offset position of the element"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -185,13 +192,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "scheduler": {
@@ -226,6 +226,11 @@
       "--percent": "The percent value for the Root"
     }
   },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
+    }
+  },
   "tabs": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -233,11 +238,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "timer": {
-    "Item": {
-      "--value": "The current value"
     }
   },
   "toc": {
@@ -293,6 +293,16 @@
       "--depth": "The depth value for the Node"
     }
   },
+  "number-flow": {
+    "Root": {
+      "--spin-duration": "The spin duration value for the root",
+      "--spin-easing": "The spin easing value for the root",
+      "--transform-duration": "The transform duration value for the root",
+      "--transform-easing": "The transform easing value for the root",
+      "--stagger": "The stagger value for the root",
+      "--place-index": "The place index value for the root"
+    }
+  },
   "slider": {
     "Root": {
       "--slider-thumb-width": "The thumb width of the slider",
@@ -329,31 +339,6 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "combobox": {
-    "Arrow": {
-      "--arrow-size": "The size of the arrow",
-      "--arrow-size-half": "Half the size of the arrow",
-      "--arrow-background": "Use this variable to style the arrow background",
-      "--arrow-offset": "The offset position of the arrow"
-    },
-    "Positioner": {
-      "--reference-width": "The width of the reference element",
-      "--reference-height": "The height of the root",
-      "--available-width": "The available width in viewport",
-      "--available-height": "The available height in viewport",
-      "--x": "The x position for transform",
-      "--y": "The y position for transform",
-      "--z-index": "The z-index value",
-      "--transform-origin": "The transform origin for animations"
-    },
-    "Content": {
-      "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested comboboxs"
-    },
-    "Backdrop": {
-      "--layer-index": "The index of the dismissable in the layer stack"
-    }
-  },
   "date-picker": {
     "Arrow": {
       "--arrow-size": "The size of the arrow",
@@ -374,6 +359,31 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested date-pickers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "combobox": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--reference-width": "The width of the reference element",
+      "--reference-height": "The height of the root",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--transform-origin": "The transform origin for animations"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested comboboxs"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"

@@ -1,0 +1,30 @@
+```svelte
+<script lang="ts">
+  import * as numberFlow from "@zag-js/number-flow"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(numberFlow.machine, { id, defaultValue: 1234 })
+
+  const api = $derived(numberFlow.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <!-- keyed by `segment.key`, so a digit keeps its DOM when the number
+       grows or shrinks and the roll in flight is not dropped -->
+  {#each api.segments as segment (segment.key)}
+    {#if segment.kind === "digit"}
+      <span {...api.getDigitProps({ segment })}>
+        <span {...api.getDigitTrackProps({ segment })}>
+          {#each api.digitCells as cell (cell.index)}<span {...api.getDigitCellProps({ segment, cell })}
+              >{cell.glyph}</span
+            >{/each}
+        </span>
+      </span>
+    {:else}
+      <span {...api.getSymbolProps({ segment })}>{segment.value}</span>
+    {/if}
+  {/each}
+  <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
+</div>
+```

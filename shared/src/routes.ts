@@ -481,6 +481,15 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "number-flow",
+    label: "Number Flow",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "formatting", title: "Formatting" },
+      { slug: "continuous", title: "Continuous" },
+    ],
+  },
+  {
     slug: "number-input",
     label: "Number Input",
     examples: [
