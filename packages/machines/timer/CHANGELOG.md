@@ -1,5 +1,16 @@
 # @zag-js/checkbox
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +21,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -1257,14 +1268,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -1617,6 +1628,7 @@
 - [`f079c60`](https://github.com/chakra-ui/zag/commit/f079c603d71bb6bbd4b63f750343c6fe2f668d4f) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Introduces new area and control parts for better anatomy and
   structure.
+
   - [BREAKING] Move `role"timer` to new area part.
   - Automatically hide the action triggers based on the action prop passed.
 
@@ -1625,18 +1637,28 @@
   ```tsx
   <div>
     <div {...api.getRootProps()}>
-      <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+      <div {...api.getItemProps({ type: "days" })}>
+        {api.formattedTime.days}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+      <div {...api.getItemProps({ type: "hours" })}>
+        {api.formattedTime.hours}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+      <div {...api.getItemProps({ type: "minutes" })}>
+        {api.formattedTime.minutes}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+      <div {...api.getItemProps({ type: "seconds" })}>
+        {api.formattedTime.seconds}
+      </div>
     </div>
     <div>
       <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
       <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
-      <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+      <button {...api.getActionTriggerProps({ action: "resume" })}>
+        RESUME
+      </button>
       <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
     </div>
   </div>
@@ -1647,18 +1669,28 @@
   ```tsx
   <div {...api.getRootProps()}>
     <div {...api.getAreaProps()}>
-      <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+      <div {...api.getItemProps({ type: "days" })}>
+        {api.formattedTime.days}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+      <div {...api.getItemProps({ type: "hours" })}>
+        {api.formattedTime.hours}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+      <div {...api.getItemProps({ type: "minutes" })}>
+        {api.formattedTime.minutes}
+      </div>
       <div {...api.getSeparatorProps()}>:</div>
-      <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+      <div {...api.getItemProps({ type: "seconds" })}>
+        {api.formattedTime.seconds}
+      </div>
     </div>
     <div {...api.getControlProps()}>
       <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
       <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
-      <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+      <button {...api.getActionTriggerProps({ action: "resume" })}>
+        RESUME
+      </button>
       <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
     </div>
   </div>

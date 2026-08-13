@@ -1,5 +1,16 @@
 # @zag-js/menubar
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -21,11 +32,14 @@
   - Looping focus and disabled state
 
   ```tsx
-  import * as menu from "@zag-js/menu"
-  import * as menubar from "@zag-js/menubar"
+  import * as menu from "@zag-js/menu";
+  import * as menubar from "@zag-js/menubar";
 
-  const menubarApi = menubar.connect(menubarService, normalizeProps)
-  const menuService = useMachine(menu.machine, { id: "file", menubar: menubarApi.getMenuContext() })
+  const menubarApi = menubar.connect(menubarService, normalizeProps);
+  const menuService = useMachine(menu.machine, {
+    id: "file",
+    menubar: menubarApi.getMenuContext(),
+  });
   ```
 
 ### Patch Changes

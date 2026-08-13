@@ -1,5 +1,24 @@
 # @zag-js/popper
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7) Thanks [@github-actions](https://github.com/apps/github-actions)! - Add inline positioning for references that wrap across lines.
+
+  - Fixed issue where a hover card anchored to a trigger spanning multiple lines was positioned against the box covering
+    every line, landing far from the pointer instead of under the line being hovered.
+  - Fixed issue where the hover card stayed over the previous trigger when the active trigger changed, showing the new
+    trigger's content in the old position.
+  - Added `inline` and `getInlineRectCoords` to `@zag-js/popper`, alongside a `positioning.middleware` option for
+    supplying extra Floating UI middleware. The middleware is only bundled by machines that import it.
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes

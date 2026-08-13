@@ -1,5 +1,34 @@
 # @zag-js/core
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps;
+    defaultPropKey: PropsWithDefault;
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work unchanged.
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -1036,6 +1065,7 @@
 - [`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where react elements could not be passed to tree view.
   In general, we've improved the entire machine to better support complex objects like react and vue elements.
+
   - Remove support for promises in store and snapshot. Prefer to use framework-specific hooks to manage async
     operations.
 
@@ -1991,8 +2021,8 @@
       compareFns: {
         date: (a, b) => a.getTime() === b.getTime(),
       },
-    },
-  )
+    }
+  );
   ```
 
 - [#462](https://github.com/chakra-ui/zag/pull/462)
@@ -2168,9 +2198,9 @@
   This helper can be used in inline guards or the gaurds options.
 
   ```js
-  import { guards } from "@zag-js/core"
+  import { guards } from "@zag-js/core";
 
-  const { isIn } = gaurds
+  const { isIn } = gaurds;
 
   const machine = createMachine({
     on: {
@@ -2182,7 +2212,7 @@
       open: {},
       closed: {},
     },
-  })
+  });
   ```
 
 * [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018) Thanks

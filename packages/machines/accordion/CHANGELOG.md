@@ -1,5 +1,16 @@
 # @zag-js/accordion
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -30,7 +41,7 @@
   consistent with `tabs` and `toggle-group`.
 
   ```ts
-  accordion.machine({ loopFocus: false }) // stop at the ends instead of wrapping
+  accordion.machine({ loopFocus: false }); // stop at the ends instead of wrapping
   ```
 
 ## 1.43.0
@@ -1270,14 +1281,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2545,11 +2556,14 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
+
   - **Accordion**
+
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
+
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -2557,6 +2571,7 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
+
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2650,6 +2665,7 @@
   [@segunadebayo](https://github.com/segunadebayo)! - Remove support for passing value as `string`.
 
   The `value` property must be an array of strings.
+
   - When `multiple` is `false`, the array must contain a single string.
   - When `multiple` is `true`, the array can contain multiple strings.
 
@@ -2726,6 +2742,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

@@ -1,5 +1,28 @@
 # @zag-js/types
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps;
+    defaultPropKey: PropsWithDefault;
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work unchanged.
+
 ## 2.0.0-next.1
 
 ## 2.0.0-next.0
@@ -20,12 +43,16 @@
   ### Before
 
   ```html
-  <button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">Open</button>
+  <button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">
+    Open
+  </button>
   <div data-scope="dialog" data-part="content" data-ownedby="dialog:1">...</div>
   ```
 
   ```css
-  [data-scope="dialog"][data-part="trigger"] { ... }
+  [data-scope="dialog"][data-part="trigger"] {
+    ...;
+  }
   ```
 
   ### After
@@ -36,10 +63,13 @@
   ```
 
   ```css
-  [data-dialog-trigger] { ... }
+  [data-dialog-trigger] {
+    ...;
+  }
   ```
 
   ### Motivation
+
   - **Seamless composition** - an element can participate in multiple machines via separate attributes (e.g.
     `data-popover-trigger` + `data-tooltip-trigger` on the same button)
   - **Simpler selectors** - `[data-dialog-trigger]` instead of `[data-scope="dialog"][data-part="trigger"]`

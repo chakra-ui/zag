@@ -1,5 +1,21 @@
 # @zag-js/combobox
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/collection@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/live-region@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +26,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -87,6 +103,7 @@
   ```
 
   Other changes:
+
   - Replaced `composite` with `popupType: "listbox" | "dialog"` (default `"listbox"`). One declaration captures the
     popover-style pattern:
     - Drives `aria-haspopup` on the trigger (`"listbox"` or `"dialog"`).
@@ -578,6 +595,7 @@
 
 - [`6f8aaf6`](https://github.com/chakra-ui/zag/commit/6f8aaf60ea4a119bc65f85b7efb54aa9924ca02f) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus stealing in controlled open mode
+
   - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
 
 - [#2822](https://github.com/chakra-ui/zag/pull/2822)
@@ -857,6 +875,7 @@
   [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
   `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
   scroll-to-top.
+
   - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
 
 - Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
@@ -1908,14 +1927,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2037,10 +2056,10 @@
       value: "nils",
       // use router.push to navigate to the selected tab
       navigate(details) {
-        router.push(`#${details.value}`)
+        router.push(`#${details.value}`);
       },
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes
@@ -3027,6 +3046,7 @@
   [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add `open` and `open.controlled` property to programmatically
   control the combobox's open state
+
   - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
     a function that returns a boolean.
 
@@ -3035,8 +3055,8 @@
     combobox.machine({
       // openOnChange: true,
       openOnChange: ({ inputValue }) => inputValue.length > 2,
-    }),
-  )
+    })
+  );
   ```
 
   - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
@@ -3046,10 +3066,10 @@
   const [state, send] = useMachine(
     combobox.machine({
       getSelectionValue({ inputValue, valueAsString }) {
-        return `${inputValue} ${valueAsString}`
+        return `${inputValue} ${valueAsString}`;
       },
-    }),
-  )
+    })
+  );
   ```
 
   - Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
@@ -3059,6 +3079,7 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
+
   - `isFocused` -> `focused`
   - `isOpen` -> `open`
   - `isInputValueEmpty` -> `inputEmpty`
@@ -3960,20 +3981,20 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
     select.machine({
       collection,
       id: useId(),
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes
@@ -4127,6 +4148,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

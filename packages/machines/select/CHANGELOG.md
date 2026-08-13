@@ -1,5 +1,24 @@
 # @zag-js/select
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`, despite it being handled at runtime. On `dialog` and `drawer` it
+  was listed as a prop with a default, which stripped `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)` returns.
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/collection@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/live-region@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +29,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -91,6 +110,7 @@
   ```
 
   Other changes:
+
   - `aria-controls` on the trigger now points to the list id, not the content id.
   - The list element is the keyboard focus target. `scrollIntoView`, scroll arrows, `scrollToIndexFn`, and the
     activedescendant observer all anchor on the list.
@@ -794,6 +814,7 @@
   [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
   `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
   scroll-to-top.
+
   - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
 
 - Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
@@ -1757,14 +1778,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3687,11 +3708,14 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
+
   - **Accordion**
+
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
+
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -3699,6 +3723,7 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
+
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -3836,20 +3861,20 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
     select.machine({
       collection,
       id: useId(),
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes
@@ -3882,6 +3907,7 @@
 - [#816](https://github.com/chakra-ui/zag/pull/816)
   [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select clicks underlying element on mobile.
+
   - Fix issue where combobox and menu option item triggers double click.
 
 - [#807](https://github.com/chakra-ui/zag/pull/807)
@@ -4011,6 +4037,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -4502,6 +4529,7 @@
 - [`839a296a`](https://github.com/chakra-ui/zag/commit/839a296ac493c4305d6f4cf0bf12c0762463e91a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `openMenu`/`closeMenu` to `open`/`close` respectively for
   consistency
+
   - Add `type=button` to select trigger
   - Add missing `data-disabled` attribute to select trigger
   - Set `selectOnTab` to `false` by default

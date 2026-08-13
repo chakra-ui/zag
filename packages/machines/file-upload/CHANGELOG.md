@@ -1,5 +1,18 @@
 # @zag-js/file-upload
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/i18n-utils@2.0.0-next.2
+  - @zag-js/file-utils@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +23,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -274,6 +287,7 @@
 
 - [`e847201`](https://github.com/chakra-ui/zag/commit/e847201a3d0b98d3b109d702f9942f0bfa25b97f) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility violations in file upload component
+
   - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
   - Add `aria-hidden` to hidden input to exclude from accessibility tree
 
@@ -579,6 +593,7 @@
 - [`2def7af`](https://github.com/chakra-ui/zag/commit/2def7afac7a7ed3815c688eb9de56000e2ce845c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Resolved an issue where `onFileReject` was incorrectly triggered
   when deleting accepted files using `ItemDeleteTrigger`
+
   - The file deletion logic now properly differentiates between accepted and rejected files, preventing unnecessary
     callbacks
   - Added `type` prop to all item-related components (`ItemProps`, `ItemGroupProps`) to specify whether items are
@@ -776,17 +791,17 @@
     // 1. Define a function to transform the files
     transformFiles: async (files) => {
       return files.map((file) => {
-        return new File([file], file.name, { type: file.type })
-      })
+        return new File([file], file.name, { type: file.type });
+      });
     },
-  })
+  });
 
   // 2. Connect the service to the component
-  const api = fileUpload.connect(service, normalizeProps)
+  const api = fileUpload.connect(service, normalizeProps);
 
   // 3. Show loading indicator when files are being transformed
   if (api.transforming) {
-    return <div>Transforming files...</div>
+    return <div>Transforming files...</div>;
   }
   ```
 
@@ -837,8 +852,10 @@
 
   ```tsx
   const service = useMachine(fileUpload.machine, {
-    defaultAcceptedFiles: [new File(["test"], "test.txt", { type: "text/plain" })],
-  })
+    defaultAcceptedFiles: [
+      new File(["test"], "test.txt", { type: "text/plain" }),
+    ],
+  });
   ```
 
 ### Patch Changes
@@ -1137,9 +1154,9 @@
     id: useId(),
     accept: ["image/jpeg", "image/png"],
     transformFiles: async (files) => {
-      return Promise.all(files.map((file) => compress(file, { size: 200 })))
+      return Promise.all(files.map((file) => compress(file, { size: 200 })));
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -1589,14 +1606,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -1816,13 +1833,13 @@
   ```ts
   fileUpload.machine({
     validate(file, details) {
-      const { acceptedFiles, rejectedFiles } = details
+      const { acceptedFiles, rejectedFiles } = details;
       // Check for duplicate files by comparing names in acceptedFiles
-      const duplicate = acceptedFiles.some((item) => item.name === file.name)
-      if (duplicate) return ["FILE_EXISTS"]
-      return null // No errors
+      const duplicate = acceptedFiles.some((item) => item.name === file.name);
+      if (duplicate) return ["FILE_EXISTS"];
+      return null; // No errors
     },
-  })
+  });
   ```
 
 - Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
@@ -2295,6 +2312,7 @@
 - [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
   `invalid`, `required`, and `readOnly`
+
   - Export `Service` from all machines for use in Lit based components.
 
 - [`0033e46`](https://github.com/chakra-ui/zag/commit/0033e46d0600bdee08619f514afb6afe85a0cca9) Thanks
@@ -2568,6 +2586,7 @@
   `<input type=file>`, is largely a readonly operation that can't be set by the user.
 
   > Consider using the `onFileChange` event to handle file changes.
+
   - Rename `api.files` to `api.acceptedFiles`
   - Rename `onFilesChange` to `onFileChange`
 
@@ -2898,6 +2917,7 @@
 
 - [`e02fc592`](https://github.com/chakra-ui/zag/commit/e02fc59202a8a72f66de6ce63c74df492cc57664) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `onFileAccept` and `onFileReject` callbacks.
+
   - Add support customizing `ids` and aria labels using `messages` context property.
   - **Breaking**: Update file error types
     - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`

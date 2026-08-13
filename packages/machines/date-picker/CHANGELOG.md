@@ -1,5 +1,20 @@
 # @zag-js/date-picker
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/date-utils@2.0.0-next.2
+  - @zag-js/live-region@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +25,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -411,6 +426,7 @@
 
 - [`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - **DatePicker**
+
   - Fix `api.selectToday()` sending incorrect value format to state machine
   - Add `focus` option to `api.clearValue({ focus?: boolean })`
   - Add `api.setTime(time, index?)` for date-time picker support
@@ -420,6 +436,7 @@
   - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
 
   **Date utils**
+
   - Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
 
 - [`75788b9`](https://github.com/chakra-ui/zag/commit/75788b974d75812f13862990da3ddc1715a9849d) Thanks
@@ -493,6 +510,7 @@
   range changes.
 
   This callback fires when:
+
   - Clicking next/prev triggers
   - Selecting a month from the month dropdown
   - Selecting a year from the year dropdown
@@ -552,6 +570,7 @@
 
 - [`fd6aaae`](https://github.com/chakra-ui/zag/commit/fd6aaae0897507d6292c75e1d29caac7f91fdead) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Add support for `required` and `invalid` props in date-picker
+
   - Add `required` prop to mark the date picker as required for form validation
   - Add `invalid` prop to mark the date picker as invalid
   - Both props are now properly passed to the input element with appropriate ARIA attributes
@@ -906,6 +925,7 @@
   [`5778795`](https://github.com/chakra-ui/zag/commit/5778795130da1f8aa09adb02429d51912f05adcb) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix keyboard navigation issue where pressing HOME key in month
   view would incorrectly jump to an invalid date instead of January, potentially causing date selection errors.
+
   - Clear hover state immediately when completing range selection instead of waiting for pointer to leave the calendar
     area.
 
@@ -913,6 +933,7 @@
   [`5778795`](https://github.com/chakra-ui/zag/commit/5778795130da1f8aa09adb02429d51912f05adcb) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - fix(date-picker): ensure Month/Year select labels update under
   min/max constraints
+
   - Sync Month/Year `<select>` values when `startValue` changes so the labels reflect the visible month/year even if
     `focusedValue` doesn't change.
   - Add `hash` for `startValue` to enable efficient watcher updates.
@@ -1093,6 +1114,7 @@
 
   This change resolves critical issues with date comparison operations when different date types (`CalendarDate`,
   `CalendarDateTime`, `ZonedDateTime`) are mixed, particularly in scenarios involving time components.
+
   - Convert `now(timeZone)` result to `CalendarDate` to ensure consistent date types without time components across all
     date range preset operations
   - Update `constrainValue` function to normalize all input dates to `CalendarDate` before comparison, preventing
@@ -1976,14 +1998,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -2885,6 +2907,7 @@
 - [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
   `invalid`, `required`, and `readOnly`
+
   - Export `Service` from all machines for use in Lit based components.
 
 - [`82c0aef`](https://github.com/chakra-ui/zag/commit/82c0aef542d20c55a3ca7e63a753060c88005a59) Thanks
@@ -4176,6 +4199,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

@@ -1,5 +1,21 @@
 # @zag-js/cascade-select
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/collection@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/rect-utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +26,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -357,6 +373,7 @@
 
 - [`f64e81f`](https://github.com/chakra-ui/zag/commit/f64e81f9f024db30c24d06ed33fbd0e4764393ed) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - **Cascade Select**: Fix API inconsistencies
+
   - Fix ElementIds: `list` param type (number → string), add `valuePath` param names with JSDoc for `list` and `item`
   - Rename `highlightedItem` to `highlightedItems` in API and context for consistency with HighlightChangeDetails
     callback

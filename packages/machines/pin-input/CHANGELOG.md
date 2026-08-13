@@ -1,5 +1,16 @@
 # @zag-js/pin-input
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +21,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -41,6 +52,7 @@
   ```
 
   ### Why
+
   - **Predictable** — machine knows the count upfront without waiting for DOM to render
   - **Simpler internals** — no DOM queries or mutation observers to detect input elements
   - **SSR-friendly** — count is available before hydration
@@ -1317,14 +1329,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3391,10 +3403,11 @@
   define their own patterns to validate against.
 
   ```jsx
-  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }))
+  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }));
   ```
 
   Improve form support by exposing `hiddenInputProps`. When the machine is passed a `name` property:
+
   - The `input` element with `api.hiddenInputProps` is attached will send updates to the closest `form` element.
   - When the pin input's value is complete and the `Enter` key is pressed, the closest `form` will be submitted.
 

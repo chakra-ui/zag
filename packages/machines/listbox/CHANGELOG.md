@@ -1,5 +1,18 @@
 # @zag-js/listbox
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/collection@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +23,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -57,6 +70,7 @@
   ```
 
   Changes:
+
   - New `getListProps()` carries `role="listbox"`, `aria-activedescendant`, `aria-multiselectable`, `aria-labelledby`,
     and `tabIndex=0`. The list element is the keyboard focus target.
   - `getContentProps()` no longer carries listbox semantics. Keyboard handlers remain on content as event delegation, so
@@ -671,6 +685,7 @@
   [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
   `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
   scroll-to-top.
+
   - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
 
 - [`2fa0d95`](https://github.com/chakra-ui/zag/commit/2fa0d95fd6b9f93d1556470cbc21d5228a77c81c) Thanks

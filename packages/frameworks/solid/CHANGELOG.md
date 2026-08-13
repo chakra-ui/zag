@@ -1,5 +1,36 @@
 # @zag-js/solid
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps;
+    defaultPropKey: PropsWithDefault;
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work unchanged.
+
+### Patch Changes
+
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/store@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -1762,15 +1793,15 @@
   **Before**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 })
-  props // Proxy { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props; // Proxy { a: 2 }
   ```
 
   **After**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 })
-  props() // { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props(); // { a: 2 }
   ```
 
 ### Patch Changes
@@ -2382,7 +2413,7 @@
         max: props.max,
         min: props.min,
       })),
-    })
+    });
   }
   ```
 

@@ -1,5 +1,20 @@
 # @zag-js/menu
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/rect-utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -21,11 +36,14 @@
   - Looping focus and disabled state
 
   ```tsx
-  import * as menu from "@zag-js/menu"
-  import * as menubar from "@zag-js/menubar"
+  import * as menu from "@zag-js/menu";
+  import * as menubar from "@zag-js/menubar";
 
-  const menubarApi = menubar.connect(menubarService, normalizeProps)
-  const menuService = useMachine(menu.machine, { id: "file", menubar: menubarApi.getMenuContext() })
+  const menubarApi = menubar.connect(menubarService, normalizeProps);
+  const menuService = useMachine(menu.machine, {
+    id: "file",
+    menubar: menubarApi.getMenuContext(),
+  });
   ```
 
 - [#3167](https://github.com/chakra-ui/zag/pull/3167)
@@ -34,7 +52,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -208,7 +226,7 @@
   `value` passed to `getTriggerProps`:
 
   ```jsx
-  const users = [{ id: 1, name: "Alice Johnson" }]
+  const users = [{ id: 1, name: "Alice Johnson" }];
 
   const Demo = () => {
     // One dialog, many triggers
@@ -216,21 +234,23 @@
       id: useId(),
       // Track the active trigger change
       onTriggerValueChange({ value }) {
-        const user = users.find((u) => u.id === value) ?? null
-        setActiveUser(user)
+        const user = users.find((u) => u.id === value) ?? null;
+        setActiveUser(user);
       },
-    })
+    });
 
-    const api = dialog.connect(service, normalizeProps)
+    const api = dialog.connect(service, normalizeProps);
 
     return (
       <>
         {users.map((user) => (
-          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+          <button {...api.getTriggerProps({ value: user.id })}>
+            Edit {user.name}
+          </button>
         ))}
       </>
-    )
-  }
+    );
+  };
   ```
 
   When the component is open and a different trigger is activated, it switches and repositions without closing.
@@ -1773,14 +1793,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -1894,10 +1914,10 @@
       value: "nils",
       // use router.push to navigate to the selected tab
       navigate(details) {
-        router.push(`#${details.value}`)
+        router.push(`#${details.value}`);
       },
-    }),
-  )
+    })
+  );
   ```
 
 ### Patch Changes
@@ -2847,10 +2867,12 @@
 
 - [`b27380f`](https://github.com/chakra-ui/zag/commit/b27380f807910f9c21614976a99057ae1dae661b) Thanks
   [@cschroeter](https://github.com/cschroeter)! - Breaking: Refactor the anatomy
+
   - Rename `getOptionItemIndicatorProps` to `getItemIndicatorProps`
   - Rename `getOptionItemTextProps` to `getItemTextProps`
 
   Changed `data-part` to match new anatomy:
+
   - `data-part="option-item"` -> `data-part="item"`
   - `data-part="option-item-indicator"` -> `data-part="item-indicator"`
   - `data-part="option-item-text"` -> `data-part="item-text"`
@@ -3498,11 +3520,13 @@
 
 - [`97e559d6`](https://github.com/chakra-ui/zag/commit/97e559d6a56d1452208b27c026ad02c37070e016) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add new `optionItemIndicator` and `optionItemText` part
+
   - Add `api.optionItemIndicatorProps(...)`, `api.optionItemTextProps(...)` support
   - Add `api.getOptionItemState` and `api.getItemState`
   - Export `OptionItemState` and `ItemState` types
 
   > Breaking changes
+
   - Removed `api.isOptionChecked` in favor of `api.getOptionItemState`
 
 ### Patch Changes
@@ -3527,11 +3551,14 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
+
   - **Accordion**
+
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
+
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -3539,6 +3566,7 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
+
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -3754,6 +3782,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -4023,7 +4052,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes

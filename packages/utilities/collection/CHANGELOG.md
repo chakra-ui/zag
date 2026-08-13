@@ -1,5 +1,12 @@
 # @zag-js/collection
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -356,6 +363,7 @@
 
 - [`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
+
   - Avoid recomputing groups on every call to `at()` and `indexOf()`
   - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
   - **GridCollection**
@@ -540,12 +548,12 @@
       value: "ROOT",
       children: [{ value: "child1" }, { value: "child2" }],
     },
-  })
+  });
 
-  const flattened = tree.flatten()
-  const reconstructed = flattenedToTree(flattened)
+  const flattened = tree.flatten();
+  const reconstructed = flattenedToTree(flattened);
 
-  console.log(reconstructed.rootNode)
+  console.log(reconstructed.rootNode);
 
   // {
   //   value: "ROOT",
@@ -738,7 +746,9 @@
 - [#2396](https://github.com/chakra-ui/zag/pull/2396)
   [`0cb6c0e`](https://github.com/chakra-ui/zag/commit/0cb6c0e70193b8a30c17c96f2b739be215f266ed) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
+
   - Fix stale issues in mutation methods by returning a new `ListCollection` instead of mutating the internal `items`
+
     - Add new methods to the list collection: `update`, `upsert`, `remove`, `append`, `prepend`, `move`
 
   - **GridCollection**
@@ -924,6 +934,7 @@
 
 - [`2e4ae72`](https://github.com/chakra-ui/zag/commit/2e4ae729818cd334d9cfe4ddb15c14dc2aabb6bb) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Add support for new methods:
+
   - `getPreviousSibling`: Get the previous sibling node of the given node.
   - `getNextSibling`: Get the next sibling node of the given node.
   - `remove`: Remove the given node from the collection.

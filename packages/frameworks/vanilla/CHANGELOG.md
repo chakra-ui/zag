@@ -1,5 +1,36 @@
 # @zag-js/vanilla
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps;
+    defaultPropKey: PropsWithDefault;
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work unchanged.
+
+### Patch Changes
+
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17)]:
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/store@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
@@ -246,21 +277,22 @@
 
 - [`19975c3`](https://github.com/chakra-ui/zag/commit/19975c3e49bceefdedbd78c400bdf0aae0c9ed18) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Initial release of the vanilla JavaScript adapter for Zag.js.
+
   - `VanillaMachine` - Class-based wrapper for zag machines with start/stop lifecycle
   - `normalizeProps` - Converts React-style props to vanilla DOM attributes
   - `spreadProps` - Spreads props onto DOM elements with event listener management
 
   ```typescript
-  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla"
-  import * as toggle from "@zag-js/toggle"
+  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
+  import * as toggle from "@zag-js/toggle";
 
-  const machine = new VanillaMachine(toggle.machine, { id: "toggle" })
-  machine.start()
+  const machine = new VanillaMachine(toggle.machine, { id: "toggle" });
+  machine.start();
 
-  const api = toggle.connect(machine.service, normalizeProps)
-  spreadProps(buttonEl, api.buttonProps)
+  const api = toggle.connect(machine.service, normalizeProps);
+  spreadProps(buttonEl, api.buttonProps);
 
-  machine.stop()
+  machine.stop();
   ```
 
 ### Patch Changes

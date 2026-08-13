@@ -1,5 +1,35 @@
 # @zag-js/tooltip
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252) [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22) Thanks [@github-actions](https://github.com/apps/github-actions)! - Add `@zag-js/safe-area` and use it in the hover card to track the pointer travelling between the trigger and the
+  content.
+
+  - Fixed issue where the hover card closed while the pointer was still on its way to the content. Moving diagonally, or
+    pausing for longer than `closeDelay`, no longer dismisses it.
+  - Fixed issue where a hover card opened programmatically or by keyboard was dismissed by pointer movement anywhere on
+    the page.
+
+  The `open` and `closing` states are now `open.idle` and `open.closing`. `state.matches("open")` still works, but code
+  matching the literal state `"closing"` should use `"open.closing"`.
+
+  The tooltip uses it too when `interactive` is set, so the pointer can reach a hoverable tooltip without it closing on
+  the way (WCAG 1.4.13). Non-interactive tooltips are unchanged.
+
+### Patch Changes
+
+- Updated dependencies [[`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05), [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7), [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17), [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/safe-area@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes
@@ -10,7 +40,7 @@
   `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
 
   ```ts
-  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  const triggerState = dialog.getTriggerState({ value: "confirm" });
   // { value: "confirm", current: true, open: true }
   ```
 
@@ -155,7 +185,7 @@
   `value` passed to `getTriggerProps`:
 
   ```jsx
-  const users = [{ id: 1, name: "Alice Johnson" }]
+  const users = [{ id: 1, name: "Alice Johnson" }];
 
   const Demo = () => {
     // One dialog, many triggers
@@ -163,21 +193,23 @@
       id: useId(),
       // Track the active trigger change
       onTriggerValueChange({ value }) {
-        const user = users.find((u) => u.id === value) ?? null
-        setActiveUser(user)
+        const user = users.find((u) => u.id === value) ?? null;
+        setActiveUser(user);
       },
-    })
+    });
 
-    const api = dialog.connect(service, normalizeProps)
+    const api = dialog.connect(service, normalizeProps);
 
     return (
       <>
         {users.map((user) => (
-          <button {...api.getTriggerProps({ value: user.id })}>Edit {user.name}</button>
+          <button {...api.getTriggerProps({ value: user.id })}>
+            Edit {user.name}
+          </button>
         ))}
       </>
-    )
-  }
+    );
+  };
   ```
 
   When the component is open and a different trigger is activated, it switches and repositions without closing.
@@ -400,6 +432,7 @@
 
 - [`37a6759`](https://github.com/chakra-ui/zag/commit/37a6759bd3861eef8bb8c382ae9e73a45c5c3d51) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix tooltip not showing when scrolling with pointer over trigger
+
   - Added `onPointerOver` handler to complement `onPointerMove` for better hover detection during scroll events
   - This ensures tooltips properly appear when the pointer enters the trigger element via scrolling, not just via
     pointer movement
@@ -621,6 +654,7 @@
 - [`31ad169`](https://github.com/chakra-ui/zag/commit/31ad16905fa88010cf1366a70a9d27bd9c6230de) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Change default delay values for tooltip to improve accessibility.
   [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+
   - `openDelay`: from `1000ms` to `400ms`
   - `closeDelay`: from `500ms` to `150ms`
 
@@ -1630,14 +1664,14 @@
 
   ```ts
   interface Item {
-    code: string
-    label: string
+    code: string;
+    label: string;
   }
 
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-  })
+  });
   ```
 
 - Updated dependencies []:
@@ -3240,6 +3274,7 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -3479,7 +3514,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -3487,7 +3522,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -3507,7 +3542,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes
