@@ -1,5 +1,6 @@
 import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { isEqual } from "@zag-js/utils"
@@ -383,6 +384,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         onPointerEnter(event) {
           if (!interactive) return
           if (itemState.disabled) return
+          if (getInteractionModality() !== "pointer") return
           send({
             type: "ITEM.POINTER_ENTER",
             value: itemState.value,
@@ -395,7 +397,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
           if (!interactive) return
           if (itemState.disabled) return
           if (event.pointerType !== "mouse") return
-
+          if (getInteractionModality() !== "pointer") return
           const pointerMoved = service.event.previous()?.type.includes("POINTER")
           if (!pointerMoved) return
 
