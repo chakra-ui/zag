@@ -1,4 +1,5 @@
 import { isGridCollection, type CollectionItem } from "@zag-js/collection"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
@@ -238,6 +239,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onPointerMove(event) {
           if (!props.highlightOnHover) return
           if (itemState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
           if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
