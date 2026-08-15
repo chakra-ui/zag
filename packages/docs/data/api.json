@@ -4500,7 +4500,7 @@
       },
       "getDataUrl": {
         "type": "(type: DataUrlType, quality?: number) => Promise<string>",
-        "description": "Returns the data URL of the qr code."
+        "description": "Returns the data URL of the qr code. Includes the overlay when present."
       }
     },
     "context": {

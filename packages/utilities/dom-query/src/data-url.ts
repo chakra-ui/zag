@@ -17,17 +17,22 @@ export interface DataUrlOptions {
    * Useful when type is `image/jpeg`
    */
   background?: string | undefined
+  /**
+   * Explicit size to use instead of the element's bounding box.
+   * Useful when the svg is not in the document.
+   */
+  size?: { width: number; height: number } | undefined
 }
 
 export function getDataUrl(svg: SVGSVGElement | undefined | null, opts: DataUrlOptions): Promise<string> {
-  const { type, quality = 0.92, background } = opts
+  const { type, quality = 0.92, background, size } = opts
 
   if (!svg) throw new Error("[zag-js > getDataUrl]: Could not find the svg element")
 
   const win = getWindow(svg)
   const doc = win.document
 
-  const svgBounds = svg.getBoundingClientRect()
+  const svgBounds = size ?? svg.getBoundingClientRect()
 
   const svgClone = svg.cloneNode(true) as SVGSVGElement
   if (!svgClone.hasAttribute("viewBox")) {

@@ -1,4 +1,3 @@
-import { getDataUrl } from "@zag-js/dom-query"
 import { createMachine, memo } from "@zag-js/core"
 import { encode } from "uqr"
 import * as dom from "./qr-code.dom"
@@ -56,9 +55,8 @@ export const machine = createMachine<QrCodeSchema>({
       },
       downloadQrCode({ event, scope }) {
         const { mimeType, quality, fileName } = event
-        const svgEl = dom.getFrameEl(scope)
         const doc = scope.getDoc()
-        getDataUrl(svgEl, { type: mimeType, quality }).then((dataUri) => {
+        dom.getDataUrl(scope, { type: mimeType, quality }).then((dataUri) => {
           const a = doc.createElement("a")
           a.href = dataUri
           a.rel = "noopener"
