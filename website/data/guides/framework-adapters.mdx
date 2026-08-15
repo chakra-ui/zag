@@ -1,0 +1,161 @@
+---
+title: Building a Framework Adapter
+description: Build and maintain a framework adapter for Zag machines
+---
+
+A framework adapter connects Zag's framework-agnostic machines to your
+framework's reactivity, lifecycle, and DOM bindings.
+
+```text
+machine + user props
+  -> useMachine()
+  -> service
+  -> connect(service, normalizeProps)
+  -> element props
+```
+
+Don't implement the machine interpreter from scratch. Port the official adapter
+whose reactivity model is closest to your framework:
+
+| Reactivity model                          | Starting point                                                                                                                                                   |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hook-based rendering                      | [React](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/react) or [Preact](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/preact) |
+| Signals and computed values               | [Solid](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/solid)                                                                                    |
+| Refs, computed values, and watchers       | [Vue](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vue)                                                                                        |
+| Compiler-managed reactivity               | [Svelte](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/svelte)                                                                                  |
+| Subscriptions without a component runtime | [Vanilla JavaScript](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vanilla)                                                                     |
+
+## Implement the Adapter
+
+An adapter has three main responsibilities.
+
+### 1. Bind the Machine
+
+Copy `machine.ts` and its supporting reactive primitives from your chosen
+adapter. Replace the framework-specific parts:
+
+- Reactive state and controlled values
+- Mutable, non-reactive refs
+- Computed values and dependency tracking
+- Mount and unmount hooks
+- Synchronous update behavior
+
+These are the main contracts to map to your framework:
+
+#### Bindable
+
+Maps controlled and uncontrolled values to reactive state.
+
+```ts
+interface Bindable<T> {
+  initial: T | undefined
+  ref: unknown
+  get(): T
+  set(value: T | ((previous: T) => T)): void
+  invoke(nextValue: T, previousValue: T): void
+  hash(value: T): string
+}
+```
+
+#### Refs
+
+Hold mutable values without triggering a render.
+
+```ts
+interface Refs<T> {
+  get<K extends keyof T>(key: K): T[K]
+  set<K extends keyof T>(key: K, value: T[K]): void
+}
+```
+
+#### Watch
+
+Maps machine dependencies to your framework's effect primitive.
+
+```ts
+type Track = (
+  dependencies: Array<() => string | number | boolean | null | undefined>,
+  effect: () => void,
+) => void
+```
+
+```ts
+watch({ track, prop, action }) {
+  track([() => prop("disabled")], () => {
+    action(["syncDisabled"])
+  })
+}
+```
+
+#### useMachine
+
+Runs the machine lifecycle and returns the service consumed by `connect`.
+
+```ts
+function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
+  props?: Partial<T["props"]>,
+): Service<T>
+```
+
+Keep Zag's core transition helpers and effect ordering intact.
+
+### 2. Normalize DOM Props
+
+Zag prop getters use a canonical, React-like shape. Use `createNormalizer` from
+`@zag-js/types` to convert those props to your framework's format.
+
+At minimum, test:
+
+- Focus, blur, input, change, and double-click events
+- `className`, `htmlFor`, `defaultValue`, and `defaultChecked`
+- Style objects and CSS custom properties
+- Case-sensitive SVG attributes such as `viewBox`
+
+Compare your implementation with the official
+[normalizers](https://github.com/chakra-ui/zag/tree/main/packages/frameworks).
+
+### 3. Apply Props to Elements
+
+Frameworks with prop spreading can apply a prop getter directly:
+
+```tsx
+<button {...api.getTriggerProps()}>Open</button>
+```
+
+If your framework doesn't support this, provide a directive, action, or helper
+that applies attributes, properties, styles, and event listeners. It must also
+remove values that disappear when the props change.
+
+## Test the Adapter
+
+Before publishing, verify:
+
+- Controlled and uncontrolled values stay in sync
+- User props update reactively
+- Entry and exit effects run and clean up
+- Prop normalization works for inputs, buttons, styles, and SVG
+- Event listeners update without duplicates
+- Server rendering doesn't access the DOM before mount
+
+Use Checkbox, Tooltip, and Combobox as integration tests. Together they cover
+controlled state, effects, timers, keyboard events, and collections.
+
+Declare Zag and your framework as peer dependencies, and document the version
+ranges you test. Adapter internals can change with Zag's machine contract, so
+compare your implementation with its official starting point when upgrading.
+
+## Community Adapters
+
+These adapters are maintained by community members. They are not covered by
+Zag's official support or release process, so check each project's supported Zag
+and framework versions before adopting it.
+
+| Framework | Adapter                                                | Status               |
+| --------- | ------------------------------------------------------ | -------------------- |
+| Angular   | [`zag-angular`](https://github.com/makuko/zag-angular) | Community maintained |
+| Marko     | [`marko-zag`](https://github.com/svallory/marko-zag)   | Work in progress     |
+
+Built an adapter for another framework? Open a documentation pull request that
+links to its source, package, usage example, test suite, and supported version
+ranges.
