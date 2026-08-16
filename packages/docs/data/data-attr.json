@@ -776,7 +776,8 @@
     "ViewTrigger": {
       "data-scope": "date-picker",
       "data-part": "view-trigger",
-      "data-view": "The view of the viewtrigger"
+      "data-view": "The view of the viewtrigger",
+      "data-disabled": "Present when disabled"
     },
     "ViewControl": {
       "data-scope": "date-picker",

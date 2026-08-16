@@ -1,5 +1,35 @@
 # @zag-js/date-picker
 
+## 1.43.1
+
+### Patch Changes
+
+- [`96f21cd`](https://github.com/chakra-ui/zag/commit/96f21cd0d1fe556ff3b8e3f2b7d4a564054162eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every message to be
+  supplied. It's now typed as `Partial<IntlTranslations>`, so you can override a single message and let the rest fall
+  back to the defaults.
+
+- [`1be6c5a`](https://github.com/chakra-ui/zag/commit/1be6c5a8d9ba0088bd3656ad0145724999df6839) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `aria-label` from `getViewTriggerProps()` naming the wrong
+  view. In day view it announced "Switch to year view" while the trigger actually switches to month view.
+  `translations.viewTrigger` now receives the resolved next view, and the trigger disables itself once there's no
+  further view to switch to.
+
+  Fix `translations.dayCell()` announcing the generic "Choose" label for dates between a selected range's start and end.
+  It now announces "In range".
+
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/dismissable@1.43.1
+  - @zag-js/popper@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+  - @zag-js/date-utils@1.43.1
+  - @zag-js/live-region@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes
