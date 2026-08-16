@@ -2,4 +2,5 @@
 "@zag-js/qr-code": minor
 ---
 
-Make `getDataUrl` and `getDownloadTriggerProps` include the overlay in the exported image when one is rendered (fixes #3277).
+Include the rendered overlay in `getDataUrl()` and in the file produced by `getDownloadTriggerProps()`. The export
+previously contained only the QR matrix, so a logo or badge placed over the code was dropped.
