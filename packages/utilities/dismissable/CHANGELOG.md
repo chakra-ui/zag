@@ -1,5 +1,19 @@
 # @zag-js/dismissable
 
+## 1.43.1
+
+### Patch Changes
+
+- [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `Escape` being ignored right after a dismissable layer opens.
+  `trackDismissableElement` deferred handler registration to the next animation frame, so a dialog, popover or menu was
+  painted and focus-trapped while its layer was not yet on the stack. Under CPU load that gap grew well past one frame
+  and swallowed the keypress. Handlers now register as soon as the node commits.
+- Updated dependencies [[`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/interact-outside@1.43.1
+  - @zag-js/utils@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes
