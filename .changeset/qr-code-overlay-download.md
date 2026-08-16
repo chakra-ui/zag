@@ -1,5 +1,5 @@
 ---
-"@zag-js/qr-code": minor
+"@zag-js/qr-code": patch
 ---
 
 Include the rendered overlay in `getDataUrl()` and in the file produced by `getDownloadTriggerProps()`. The export
