@@ -1,6 +1,6 @@
 {
   "name": "svelte-kit-starter",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,7 +16,7 @@
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.70.2",
     "@sveltejs/vite-plugin-svelte": "7.3.0",
-    "svelte": "5.56.3",
+    "svelte": "5.56.9",
     "vite": "8.2.1"
   }
 }

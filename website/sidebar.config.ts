@@ -65,6 +65,11 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           id: "programmatic-control",
         },
         { type: "doc", label: "Building Machines", id: "building-machines" },
+        {
+          type: "doc",
+          label: "Framework Adapters",
+          id: "framework-adapters",
+        },
         { type: "doc", label: "Migration", id: "migration" },
       ],
     },

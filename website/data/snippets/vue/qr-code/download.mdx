@@ -1,0 +1,40 @@
+```html
+<script setup lang="ts">
+  import * as qrCode from "@zag-js/qr-code"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+
+  const service = useMachine(qrCode.machine, {
+    id: "1",
+    value: "https://github.com/chakra-ui",
+    encoding: { ecc: "H" },
+  })
+
+  const api = computed(() => qrCode.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <div v-bind="api.getRootProps()">
+      <svg v-bind="api.getFrameProps()">
+        <path v-bind="api.getPatternProps()" />
+      </svg>
+      <div v-bind="api.getOverlayProps()">
+        <img
+          src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4"
+          alt=""
+        />
+      </div>
+    </div>
+    <button
+      v-bind="
+        api.getDownloadTriggerProps({
+          mimeType: 'image/png',
+          fileName: 'qr-code.png',
+        })
+      "
+    >
+      Download
+    </button>
+  </div>
+</template>
+```

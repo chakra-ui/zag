@@ -1,5 +1,21 @@
 # @zag-js/tooltip
 
+## 1.43.1
+
+### Patch Changes
+
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6),
+  [`96f21cd`](https://github.com/chakra-ui/zag/commit/96f21cd0d1fe556ff3b8e3f2b7d4a564054162eb),
+  [`11926f0`](https://github.com/chakra-ui/zag/commit/11926f0724f1be2ff26df18c1d498fd8742f3b00)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/focus-visible@1.43.1
+  - @zag-js/popper@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes
