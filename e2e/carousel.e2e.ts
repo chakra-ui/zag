@@ -45,6 +45,18 @@ test.describe("carousel", () => {
     await I.seeIndicatorIsActive(1)
   })
 
+  test("manual scroll stops autoplay and updates the active indicator", async () => {
+    await I.controls.bool("loop", true)
+    await I.clickAutoplayTrigger()
+    await I.seeAutoplayIsOn()
+
+    await I.wheelCarousel(500)
+    await I.waitForScrollSettle()
+
+    await I.seeAutoplayIsOff()
+    await I.seeIndicatorIsActive(1)
+  })
+
   test("clicking indicator scrolls to correct slide", async () => {
     await I.clickIndicator(2)
     await I.seeIndicatorIsActive(2)

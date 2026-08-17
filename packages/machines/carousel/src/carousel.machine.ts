@@ -243,6 +243,9 @@ export const machine = createMachine<CarouselSchema>({
           target: "dragging",
           actions: ["invokeDragStart"],
         },
+        "USER.SCROLL": {
+          target: "userScroll",
+        },
         "AUTOPLAY.PAUSE": {
           target: "idle",
         },
