@@ -17,6 +17,21 @@ function isValidKey(e: KeyboardEvent) {
 
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
+const interactiveContentSelector = [
+  "a[href]",
+  "audio[controls]",
+  "button",
+  "details",
+  "embed",
+  "iframe",
+  "img[controls]",
+  "img[usemap]",
+  "input",
+  "select",
+  "textarea",
+  "video[controls]",
+].join(",")
+
 function isKeyboardFocusEvent(isTextInput: boolean, modality: Modality, e: HandlerEvent) {
   const eventTarget = e ? getEventTarget<Element>(e) : null
   const doc = getDocument(eventTarget)
@@ -63,6 +78,7 @@ interface GlobalListenerData {
 export let listenerMap = new Map<Window, GlobalListenerData>()
 
 let hasEventBeforeFocus = false
+let pendingLabelControl: HTMLElement | null = null
 let hasBlurredWindowRecently = false
 let lastPointerPosition: { x: number; y: number } | null = null
 
@@ -85,6 +101,7 @@ function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
 }
 
 function handleKeyboardEvent(e: KeyboardEvent) {
+  pendingLabelControl = null
   hasEventBeforeFocus = true
   if (isValidKey(e)) {
     currentModality = "keyboard"
@@ -100,6 +117,7 @@ function handlePointerEvent(e: PointerEvent | MouseEvent) {
   lastPointerPosition = { x: e.clientX, y: e.clientY }
   currentModality = "pointer"
   if (e.type === "mousedown" || e.type === "pointerdown") {
+    pendingLabelControl = null
     hasEventBeforeFocus = true
     triggerChangeHandlers("pointer", e)
   }
@@ -107,9 +125,28 @@ function handlePointerEvent(e: PointerEvent | MouseEvent) {
 
 function handleClickEvent(e: MouseEvent) {
   if (isVirtualClick(e)) {
+    pendingLabelControl = null
     hasEventBeforeFocus = true
     currentModality = "virtual"
+    return
   }
+
+  pendingLabelControl = null
+
+  // During label activation, pointerdown may focus a focusable ancestor before the
+  // click's default action focuses the associated control. Remember the expected
+  // control here so its focus is not mistaken for a virtual interaction.
+  const target = getEventTarget<Element>(e)
+  const label = target?.closest<HTMLLabelElement>("label")
+  const control = label?.control
+  if (!label || !control || control.matches(":disabled")) return
+
+  // Activating interactive content nested in a label must not activate the label's
+  // control, unless the interactive content is the control itself.
+  const interactive = target?.closest(interactiveContentSelector)
+  if (interactive && label.contains(interactive) && interactive !== control) return
+
+  if (control !== getActiveElement(label.ownerDocument)) pendingLabelControl = control
 }
 
 function handleFocusEvent(e: FocusEvent) {
@@ -117,6 +154,7 @@ function handleFocusEvent(e: FocusEvent) {
   // first on the window, then on the document. We ignore these events so they don't
   // cause keyboard focus rings to appear.
   const target = getEventTarget(e)
+  const isLabelActivationFocus = target === pendingLabelControl
 
   if (
     target === getWindow(target as Element) ||
@@ -129,12 +167,13 @@ function handleFocusEvent(e: FocusEvent) {
 
   // If a focus event occurs without a preceding keyboard or pointer event, switch to virtual modality.
   // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
-  if (!hasEventBeforeFocus && !hasBlurredWindowRecently) {
+  if (!hasEventBeforeFocus && !isLabelActivationFocus && !hasBlurredWindowRecently) {
     currentModality = "virtual"
     triggerChangeHandlers("virtual", e)
   }
 
   hasEventBeforeFocus = false
+  pendingLabelControl = null
   hasBlurredWindowRecently = false
 }
 
@@ -144,6 +183,7 @@ function handleWindowBlur() {
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
   hasEventBeforeFocus = false
+  pendingLabelControl = null
   hasBlurredWindowRecently = true
 }
 

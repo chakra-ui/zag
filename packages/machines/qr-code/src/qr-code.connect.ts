@@ -1,4 +1,3 @@
-import { getDataUrl } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./qr-code.anatomy"
 import * as dom from "./qr-code.dom"
@@ -31,8 +30,7 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
       send({ type: "VALUE.SET", value })
     },
     getDataUrl(type, quality) {
-      const svgEl = dom.getFrameEl(scope)
-      return getDataUrl(svgEl, { type, quality })
+      return dom.getDataUrl(scope, { type, quality })
     },
 
     getRootProps() {
@@ -66,6 +64,7 @@ export function connect<T extends PropTypes>(service: QrCodeService, normalize: 
 
     getOverlayProps() {
       return normalize.element({
+        id: dom.getOverlayId(scope),
         ...parts.overlay.attrs,
         style: {
           position: "absolute",
