@@ -2,7 +2,7 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 

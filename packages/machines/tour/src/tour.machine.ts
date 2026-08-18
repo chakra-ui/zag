@@ -30,14 +30,6 @@ export const machine = createMachine<TourSchema>({
       spotlightOffset: { x: 10, y: 10 },
       spotlightRadius: 4,
       ...props,
-      translations: {
-        nextStep: "next step",
-        prevStep: "previous step",
-        close: "close tour",
-        progressText: ({ current, total }) => `${current + 1} of ${total}`,
-        skip: "skip tour",
-        ...props.translations,
-      },
     }
   },
 

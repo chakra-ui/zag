@@ -1,5 +1,6 @@
 import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } from "@internationalized/date"
 import { createMachine, memo, type Params } from "@zag-js/core"
+import { mergeWithDefault } from "@zag-js/utils"
 import { constrainSegments, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -39,7 +40,6 @@ export const machine = createMachine<DateInputSchema>({
     const timeZone = props.timeZone || "UTC"
     const selectionMode = props.selectionMode || "single"
     const granularity = props.granularity || "day"
-    const translations = { ...defaultTranslations, ...props.translations }
 
     const calendar = resolveCalendar(locale, props.createCalendar)
 
@@ -79,7 +79,6 @@ export const machine = createMachine<DateInputSchema>({
       selectionMode,
       format: createFormatFn(formatter),
       ...props,
-      translations,
       value,
       defaultValue,
       granularity,
@@ -184,7 +183,7 @@ export const machine = createMachine<DateInputSchema>({
         const placeholderValue = context.get("placeholderValue")
         const displayValues = context.get("displayValues")
         const allSegments = prop("allSegments")
-        const translations = prop("translations") || defaultTranslations
+        const translations = mergeWithDefault(defaultTranslations, prop("translations"))
         const granularity = prop("granularity")
         const formatter = prop("formatter")
         const locale = prop("locale")

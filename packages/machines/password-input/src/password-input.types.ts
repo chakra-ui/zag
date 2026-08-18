@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Partial, PropTypes } from "@zag-js/types"
 
 export interface VisibilityChangeDetails {
   visible: boolean
@@ -11,7 +11,7 @@ export type ElementIds = Partial<{
 }>
 
 export type IntlTranslations = Partial<{
-  visibilityTrigger: ((visible: boolean) => string) | undefined
+  visibilityTrigger: (visible: boolean) => string
 }>
 
 export interface PasswordInputProps extends DirectionProperty, CommonProperties {

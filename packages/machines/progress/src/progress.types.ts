@@ -4,6 +4,7 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
+  Partial,
   PropTypes,
   RequiredBy,
 } from "@zag-js/types"
@@ -26,9 +27,9 @@ export interface ValueChangeDetails {
   value: number | null
 }
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   value: (details: ValueTranslationDetails) => string
-}
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -88,7 +89,7 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   locale?: string | undefined
 }
 
-type PropsWithDefault = "orientation" | "translations" | "min" | "max" | "formatOptions"
+type PropsWithDefault = "orientation" | "min" | "max" | "formatOptions"
 
 type Computed = Readonly<{
   isIndeterminate: boolean
