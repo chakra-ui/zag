@@ -1,5 +1,21 @@
 # @zag-js/qr-code
 
+## 1.43.1
+
+### Patch Changes
+
+- [`b5347f7`](https://github.com/chakra-ui/zag/commit/b5347f75c2c80e979f4b1c40b595a582f7474f92) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Include the rendered overlay in `getDataUrl()` and in the file
+  produced by `getDownloadTriggerProps()`. The export previously contained only the QR matrix, so a logo or badge placed
+  over the code was dropped.
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes
