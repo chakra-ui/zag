@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -26,9 +26,9 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  closeTriggerLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  closeTriggerLabel: string
+}>
 
 export type ElementIds = Partial<{
   anchor: string
@@ -132,14 +132,7 @@ export interface PopoverProps
 }
 
 type PropsWithDefault =
-  | "closeOnInteractOutside"
-  | "closeOnEscape"
-  | "modal"
-  | "portalled"
-  | "autoFocus"
-  | "restoreFocus"
-  | "positioning"
-  | "translations"
+  "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "restoreFocus" | "positioning"
 
 type ComputedContext = Readonly<{
   /**
@@ -189,7 +182,7 @@ export interface TriggerProps {
   /**
    * The value that identifies this specific trigger
    */
-  value?: string
+  value?: string | undefined
 }
 
 /* -----------------------------------------------------------------------------

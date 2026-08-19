@@ -10,12 +10,16 @@ import {
   isOwnedBy,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { invariant } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { invariant, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
 import * as dom from "./pin-input.dom"
-import type { PinInputApi, PinInputSchema } from "./pin-input.types"
+import type { IntlTranslations, PinInputApi, PinInputSchema } from "./pin-input.types"
 import { isValidValue } from "./pin-input.utils"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
+}
 
 export function connect<T extends PropTypes>(
   service: Service<PinInputSchema>,
@@ -28,7 +32,7 @@ export function connect<T extends PropTypes>(
   const readOnly = !!prop("readOnly")
   const invalid = !!prop("invalid")
   const required = !!prop("required")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const focusedIndex = context.get("focusedIndex")
 
   function focus() {

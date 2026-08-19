@@ -1,16 +1,25 @@
 import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
-import type { StepActionMap, TourApi, TourService } from "./tour.types"
+import type { IntlTranslations, StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
 import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  nextStep: "next step",
+  prevStep: "previous step",
+  close: "close tour",
+  progressText: ({ current, total }) => `${current + 1} of ${total}`,
+  skip: "skip tour",
+}
+
 export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
   const { state, context, computed, send, prop, scope } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const open = state.hasTag("open")
 
   const steps = Array.from(context.get("steps"))
@@ -111,7 +120,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       const index = getEffectiveStepIndex(steps, step?.id)
       const total = getEffectiveSteps(steps).length
       const details = { current: index, total }
-      return prop("translations").progressText?.(details) ?? ""
+      return translations.progressText(details)
     },
 
     getBackdropProps() {
@@ -262,7 +271,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.closeTrigger.attrs,
         type: "button",
         "data-type": step?.type,
-        "aria-label": prop("translations").close,
+        "aria-label": translations.close,
         onClick: actionMap.dismiss,
       })
     },
@@ -278,7 +287,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": prop("translations").nextStep,
+            "aria-label": translations.nextStep,
             onClick: actionMap.next,
           }
           break
@@ -288,7 +297,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "prev",
             disabled: !hasPrevStep,
             "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": prop("translations").prevStep,
+            "aria-label": translations.prevStep,
             onClick: actionMap.prev,
           }
           break
@@ -296,7 +305,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": prop("translations").close,
+            "aria-label": translations.close,
             onClick: actionMap.dismiss,
           }
           break
@@ -304,7 +313,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "skip":
           actionProps = {
             "data-type": "skip",
-            "aria-label": prop("translations").skip,
+            "aria-label": translations.skip,
             onClick: actionMap.skip,
           }
           break

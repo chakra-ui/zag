@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -23,9 +23,9 @@ export interface NavigateDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  listLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  listLabel: string
+}>
 
 export type ElementIds = Partial<{
   root: string

@@ -1,6 +1,12 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { RequiredBy } from "@zag-js/types"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  OrientationProperty,
+  Partial,
+  PropTypes,
+  RequiredBy,
+} from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -32,15 +38,15 @@ export interface ProgressTextDetails {
   totalPages: number
 }
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   nextTrigger: string
   prevTrigger: string
   indicator: (index: number) => string
   item: (index: number, count: number) => string
   autoplayStart: string
   autoplayStop: string
-  progressText?: ((details: ProgressTextDetails) => string) | undefined
-}
+  progressText: (details: ProgressTextDetails) => string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -159,7 +165,6 @@ type PropsWithDefault =
   | "autoplay"
   | "allowMouseDrag"
   | "inViewThreshold"
-  | "translations"
   | "slideCount"
   | "autoSize"
 

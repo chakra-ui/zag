@@ -28,10 +28,6 @@ export const machine = createMachine<SelectSchema>({
       defaultValue: [],
       ...props,
       collection: props.collection ?? collection.empty(),
-      translations: {
-        clearTriggerLabel: "Clear value",
-        ...props.translations,
-      },
       positioning: {
         placement: "bottom-start",
         gutter: 8,

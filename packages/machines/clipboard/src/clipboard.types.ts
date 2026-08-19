@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -17,9 +17,9 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  triggerLabel?: ((copied: boolean) => string) | undefined
-}
+export type IntlTranslations = Partial<{
+  triggerLabel: (copied: boolean) => string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -62,7 +62,7 @@ export interface ClipboardProps extends CommonProperties {
 
 export interface ClipboardSchema {
   state: "idle" | "copied"
-  props: RequiredBy<ClipboardProps, "timeout" | "translations">
+  props: RequiredBy<ClipboardProps, "timeout">
   context: {
     value: string
   }

@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Partial, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details

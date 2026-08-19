@@ -1,17 +1,22 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
 import * as dom from "./toast.dom"
-import type { ToastApi, ToastSchema } from "./toast.types"
+import type { IntlTranslations, ToastApi, ToastSchema } from "./toast.types"
 import { getGhostAfterStyle, getGhostBeforeStyle, getPlacementStyle } from "./toast.utils"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  closeTriggerLabel: "Dismiss notification",
+}
 
 export function connect<T extends PropTypes, O>(
   service: Service<ToastSchema<O>>,
   normalize: NormalizeProps<T>,
 ): ToastApi<T, O> {
   const { state, send, prop, scope, context, computed } = service
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const visible = state.hasTag("visible")
   const paused = state.hasTag("paused")

@@ -1,5 +1,9 @@
 import type { JSX } from "./jsx"
 
+export type Partial<T> = {
+  [K in keyof T]?: T[K] | undefined
+}
+
 export type RequiredBy<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>
 
 export type Nullable<T> = T | null

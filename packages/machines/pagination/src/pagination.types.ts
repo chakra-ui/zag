@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -28,14 +28,14 @@ export interface PageUrlDetails {
   pageSize: number
 }
 
-export interface IntlTranslations {
-  rootLabel?: string | undefined
-  firstTriggerLabel?: string | undefined
-  prevTriggerLabel?: string | undefined
-  nextTriggerLabel?: string | undefined
-  lastTriggerLabel?: string | undefined
-  itemLabel?: ((details: ItemLabelDetails) => string) | undefined
-}
+export type IntlTranslations = Partial<{
+  rootLabel: string
+  firstTriggerLabel: string
+  prevTriggerLabel: string
+  nextTriggerLabel: string
+  lastTriggerLabel: string
+  itemLabel: (details: ItemLabelDetails) => string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -110,14 +110,7 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
   getPageUrl?: ((details: PageUrlDetails) => string) | undefined
 }
 
-type PropsWithDefault =
-  | "defaultPageSize"
-  | "defaultPage"
-  | "siblingCount"
-  | "boundaryCount"
-  | "translations"
-  | "type"
-  | "count"
+type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "boundaryCount" | "type" | "count"
 
 interface PrivateContext {
   page: number

@@ -2,7 +2,7 @@ import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { IndexPath, ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -129,10 +129,10 @@ export interface VisibleNode<T extends TreeNode = TreeNode> {
   indexPath: IndexPath
 }
 
-export interface IntlTranslations {
-  treeLabel?: string | undefined
-  renameInputLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  treeLabel: string
+  renameInputLabel: string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -265,13 +265,7 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
 }
 
 type PropsWithDefault =
-  | "collection"
-  | "selectionMode"
-  | "expandOnClick"
-  | "typeahead"
-  | "defaultExpandedValue"
-  | "defaultSelectedValue"
-  | "translations"
+  "collection" | "selectionMode" | "expandOnClick" | "typeahead" | "defaultExpandedValue" | "defaultSelectedValue"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 

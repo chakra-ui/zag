@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
 /* -----------------------------------------------------------------------------
@@ -50,10 +50,10 @@ export type ElementIds = Partial<{
   label: string
 }>
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   clearTrigger: string
   control: string
-}
+}>
 
 export type { StrokeOptions }
 
@@ -111,7 +111,7 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
   paths?: string[] | undefined
 }
 
-type PropsWithDefault = "drawing" | "translations"
+type PropsWithDefault = "drawing"
 
 interface PrivateContext {
   /**
