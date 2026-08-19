@@ -1,9 +1,19 @@
 import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, throttle } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { clampValue, mergeWithDefault, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
-import type { CarouselApi, CarouselService } from "./carousel.types"
+import type { CarouselApi, CarouselService, IntlTranslations } from "./carousel.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  nextTrigger: "Next slide",
+  prevTrigger: "Previous slide",
+  indicator: (index) => `Go to slide ${index + 1}`,
+  item: (index, count) => `${index + 1} of ${count}`,
+  autoplayStart: "Start slide rotation",
+  autoplayStop: "Stop slide rotation",
+  progressText: ({ page, totalPages }) => `${page} / ${totalPages}`,
+}
 
 export function connect<T extends PropTypes>(service: CarouselService, normalize: NormalizeProps<T>): CarouselApi<T> {
   const { state, context, computed, send, scope, prop } = service
@@ -22,7 +32,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const slidesPerPage = prop("slidesPerPage")
 
   const padding = prop("padding")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   return {
     isPlaying,
@@ -148,7 +158,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
         "data-orientation": prop("orientation"),
-        "aria-label": translations.item(props.index, prop("slideCount")),
+        "aria-label": translations.item?.(props.index, prop("slideCount")),
         "aria-hidden": ariaAttr(!isInView),
         style: {
           flex: "0 0 auto",
@@ -266,7 +276,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
         "data-current": dataAttr(props.index === activePage),
-        "aria-label": translations.indicator(props.index),
+        "aria-label": translations.indicator?.(props.index),
         onClick(event) {
           if (event.defaultPrevented) return
           if (props.readOnly) return

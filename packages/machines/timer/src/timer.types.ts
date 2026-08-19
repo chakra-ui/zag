@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 export interface Time<T = number> {
   days: T
@@ -13,9 +13,9 @@ export type TimePart = keyof Time
 
 export type TimerAction = "start" | "pause" | "resume" | "reset" | "restart"
 
-export interface IntlTranslations {
-  areaLabel?: ((time: Time, formattedTime: Time<string>) => string) | undefined
-}
+export type IntlTranslations = Partial<{
+  areaLabel: (time: Time, formattedTime: Time<string>) => string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -76,7 +76,7 @@ export interface TimerProps extends CommonProperties {
   onComplete?: (() => void) | undefined
 }
 
-type PropsWithDefault = "interval" | "startMs" | "translations"
+type PropsWithDefault = "interval" | "startMs"
 
 interface Context {
   /**

@@ -1,7 +1,7 @@
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 

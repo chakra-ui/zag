@@ -13,10 +13,6 @@ export const machine = createMachine<ToastSchema>({
     return {
       closable: true,
       ...props,
-      translations: {
-        closeTriggerLabel: "Dismiss notification",
-        ...props.translations,
-      },
       duration: getToastDuration(props.duration, props.type!),
     }
   },

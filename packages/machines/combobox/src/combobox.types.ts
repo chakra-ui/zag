@@ -2,7 +2,7 @@ import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
 
 /* -----------------------------------------------------------------------------
@@ -75,10 +75,10 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  triggerLabel?: string | undefined
-  clearTriggerLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  triggerLabel: string
+  clearTriggerLabel: string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -296,7 +296,6 @@ type PropsWithDefault =
   | "collection"
   | "selectionBehavior"
   | "closeOnSelect"
-  | "translations"
   | "positioning"
   | "defaultValue"
   | "defaultInputValue"

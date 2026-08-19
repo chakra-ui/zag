@@ -1,10 +1,10 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { ImageCropperApi, ImageCropperService, IntlTranslations } from "./image-cropper.types"
 import {
   roundRect,
   isEqualFlip,
@@ -17,6 +17,28 @@ import {
 } from "./utils/crop"
 import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  rootLabel: "Image cropper",
+  rootRoleDescription: "Image cropper",
+  previewLoading: "Image cropper preview loading",
+  previewDescription({ crop, zoom, rotation }) {
+    const zoomText = zoom != null && Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
+    const rotationText =
+      rotation != null && Number.isFinite(rotation) ? `${Math.round(rotation)} degrees rotation` : "0 degrees rotation"
+    return `Image cropper preview, ${zoomText}, ${rotationText}. Crop positioned at ${crop.x}px from the left and ${crop.y}px from the top with a size of ${crop.width}px by ${crop.height}px.`
+  },
+  selectionLabel: ({ shape }) => `Crop selection area (${shape === "circle" ? "circle" : "rectangle"})`,
+  selectionRoleDescription: "2d slider",
+  selectionInstructions:
+    "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
+  selectionValueText({ shape, x, y, width, height }) {
+    if (shape === "circle") {
+      return `Position X ${x}px, Y ${y}px. Diameter ${width}px.`
+    }
+    return `Position X ${x}px, Y ${y}px. Size ${width}px by ${height}px.`
+  },
+}
+
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
   normalize: NormalizeProps<T>,
@@ -26,7 +48,7 @@ export function connect<T extends PropTypes>(
   const dragging = state.matches("dragging")
   const panning = state.matches("panning")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const fixedCropArea = prop("fixedCropArea")
   const cropShape = prop("cropShape")
 

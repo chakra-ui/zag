@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { Point, Rect, Size } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
@@ -130,13 +130,13 @@ export interface ProgressTextDetails {
   total: number
 }
 
-export interface IntlTranslations {
-  progressText?: ((details: ProgressTextDetails) => string) | undefined
-  nextStep?: string | undefined
-  prevStep?: string | undefined
-  close?: string | undefined
-  skip?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  progressText: (details: ProgressTextDetails) => string
+  nextStep: string
+  prevStep: string
+  close: string
+  skip: string
+}>
 
 export type ElementIds = Partial<{
   content: string
@@ -215,7 +215,6 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
 type PropsWithDefault =
   | "spotlightOffset"
   | "spotlightRadius"
-  | "translations"
   | "closeOnInteractOutside"
   | "closeOnEscape"
   | "keyboardNavigation"

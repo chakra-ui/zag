@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -48,11 +48,11 @@ export type ElementIds = Partial<{
   itemDeleteTrigger: (id: string) => string
 }>
 
-export interface IntlTranslations {
-  dropzone?: string | undefined
-  itemPreview?: ((file: File) => string) | undefined
-  deleteFile?: ((file: File) => string) | undefined
-}
+export type IntlTranslations = Partial<{
+  dropzone: string
+  itemPreview: (file: File) => string
+  deleteFile: (file: File) => string
+}>
 
 export interface FileUploadProps extends LocaleProperties, CommonProperties {
   /**
@@ -153,13 +153,7 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
-type PropsWithDefault =
-  | "minFileSize"
-  | "maxFileSize"
-  | "maxFiles"
-  | "preventDocumentDrop"
-  | "allowDrop"
-  | "translations"
+type PropsWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop"
 
 interface Context {
   /**
