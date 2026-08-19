@@ -4,6 +4,7 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
+  Partial,
   Point,
   PropTypes,
   Rect,
@@ -32,9 +33,9 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  rootLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  rootLabel: string
+}>
 
 export interface NavigationMenuProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**

@@ -1,6 +1,6 @@
 import type { NumberParser } from "@internationalized/number"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -36,21 +36,21 @@ export type ElementIds = Partial<{
   scrubber: string
 }>
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
    */
-  valueText?: ((value: string) => string) | undefined
+  valueText: (value: string) => string
   /**
    * The label foe the increment button
    */
-  incrementLabel?: string | undefined
+  incrementLabel: string
   /**
    * The label for the decrement button
    */
-  decrementLabel?: string | undefined
-}
+  decrementLabel: string
+}>
 
 export interface NumberInputProps extends LocaleProperties, CommonProperties {
   /**
@@ -185,7 +185,6 @@ type PropsWithDefault =
   | "allowOverflow"
   | "inputMode"
   | "pattern"
-  | "translations"
   | "step"
   | "largeStep"
   | "smallStep"

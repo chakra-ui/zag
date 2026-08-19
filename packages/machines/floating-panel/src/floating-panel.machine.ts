@@ -17,15 +17,9 @@ import {
 import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
-import type { FloatingPanelSchema, IntlTranslations, Stage } from "./floating-panel.types"
+import type { FloatingPanelSchema, Stage } from "./floating-panel.types"
 
 const { not, and } = createGuards<FloatingPanelSchema>()
-
-const defaultTranslations: IntlTranslations = {
-  minimize: "Minimize window",
-  maximize: "Maximize window",
-  restore: "Restore window",
-}
 
 const FALLBACK_SIZE = Object.freeze({ width: 320, height: 240 })
 const FALLBACK_POSITION = Object.freeze({ x: 300, y: 100 })
@@ -40,10 +34,6 @@ export const machine = createMachine<FloatingPanelSchema>({
       resizable: true,
       draggable: true,
       ...props,
-      translations: {
-        ...defaultTranslations,
-        ...props.translations,
-      },
     }
   },
 

@@ -12,13 +12,6 @@ export const machine = createMachine<EditableSchema>({
       defaultValue: "",
       selectOnFocus: true,
       ...props,
-      translations: {
-        input: "editable input",
-        edit: "edit",
-        submit: "submit",
-        cancel: "cancel",
-        ...props.translations,
-      },
     }
   },
 
