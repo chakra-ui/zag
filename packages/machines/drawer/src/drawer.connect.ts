@@ -1,11 +1,22 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, compact, toPx } from "@zag-js/utils"
+import { clampValue, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
 import { isNegativeSwipeDirection, isVerticalSwipeDirection } from "./utils/session"
-import type { DrawerApi, DrawerService, TriggerProps } from "./drawer.types"
+import type {
+  BackdropState,
+  ContentState,
+  DrawerApi,
+  DrawerService,
+  PositionerState,
+  SwipeAreaProps,
+  SwipeAreaState,
+  TriggerProps,
+  TriggerState,
+} from "./drawer.types"
 
 const SWIPE_OPEN_HIDDEN_OFFSET = 9999
 
@@ -35,6 +46,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
   const snapPointOffset = resolvedActiveSnapPoint?.offset ?? 0
 
+  const nestedMetrics = context.get("nestedMetrics")
+  const layer = context.get("layer")
+
   const swipeOpenOffset = getSwipeOpenOffset(swipingOpen, dragOffset, contentSize)
   const currentOffset = swipeOpenOffset ?? dragOffset ?? snapPointOffset
   const signedSnapPointOffset = isNegativeSwipeDirection(physicalDirection) ? -snapPointOffset : snapPointOffset
@@ -52,6 +66,63 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const signedCurrentOffset = isNegativeSwipeDirection(physicalDirection) ? -currentOffset : currentOffset
   const translateX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedCurrentOffset
   const translateY = isVerticalSwipeDirection(physicalDirection) ? signedCurrentOffset : 0
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getBackdropState(): BackdropState {
+    const swiping = dragging || swipingOpen
+    return {
+      open,
+      swiping,
+      hidden: !open || (swipingOpen && dragOffset === null),
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+    }
+  }
+
+  function getPositionerState(): PositionerState {
+    return {
+      open,
+      closed,
+      swipeDirection: physicalDirection,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      modal: !!prop("modal"),
+      expanded: resolvedActiveSnapPoint?.offset === 0,
+      swiping: dragging || swipingOpen,
+      dragging,
+      swipeDirection: physicalDirection,
+      nestedDrawerOpen: nestedMetrics.open,
+      nestedDrawerSwiping: nestedMetrics.swiping,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+    }
+  }
+
+  function getSwipeAreaState(props: SwipeAreaProps = {}): SwipeAreaState {
+    const disabled = props.disabled ?? false
+    const openDirection = props.swipeDirection ?? oppositeSwipeDirection[swipeDirection]
+    const direction = resolveSwipeDirection(openDirection, prop("dir"))
+    return { direction, disabled, open, swiping: swipingOpen }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   function onContentPointerDown(event: JSX.PointerEvent<HTMLElement>) {
     refs.get("swipeSession").contentPointerDown({
@@ -110,23 +181,29 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       return contentSize
     },
 
+    getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        hidden: closed,
-        "data-state": open ? "open" : "closed",
-        "data-swipe-direction": physicalDirection,
-        style: compact<JSX.CSSProperties>({
+        hidden: positionerState.closed,
+        "data-state": positionerState.open ? "open" : "closed",
+        "data-swipe-direction": positionerState.swipeDirection,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
           pointerEvents: closing || !prop("modal") ? "none" : undefined,
-        }),
+        },
       })
     },
 
+    getContentState,
     getContentProps(props = { draggable: true }) {
       const movementX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedMovement
       const movementY = isVerticalSwipeDirection(physicalDirection) ? signedMovement : 0
       const rendered = context.get("rendered")
+      const contentState = getContentState()
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
@@ -134,17 +211,20 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: prop("role"),
-        "aria-modal": prop("modal"),
+        "aria-modal": contentState.modal,
         "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-expanded": resolvedActiveSnapPoint?.offset === 0 ? "" : undefined,
-        "data-swipe-direction": physicalDirection,
-        "data-swiping": dragging || swipingOpen ? "" : undefined,
-        "data-dragging": dragging ? "" : undefined,
-        style: compact<JSX.CSSProperties>({
-          pointerEvents: prop("modal") ? undefined : "auto",
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-expanded": contentState.expanded ? "" : undefined,
+        "data-swipe-direction": contentState.swipeDirection,
+        "data-swiping": contentState.swiping ? "" : undefined,
+        "data-dragging": contentState.dragging ? "" : undefined,
+        "data-nested-drawer-open": contentState.nestedDrawerOpen ? "" : undefined,
+        "data-nested-drawer-swiping": contentState.nestedDrawerSwiping ? "" : undefined,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
           transitionDuration: dragging || swipingOpen ? "0s" : undefined,
@@ -160,8 +240,12 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-swipe-movement-x": toPx(movementX),
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
+          "--nested-drawers": `${nestedMetrics.count}`,
+          "--drawer-height": nestedMetrics.height > 0 ? toPx(nestedMetrics.height) : undefined,
+          "--drawer-frontmost-height":
+            nestedMetrics.frontmostHeight > 0 ? toPx(nestedMetrics.frontmostHeight) : undefined,
           willChange: "transform",
-        }),
+        },
         onPointerDown(event) {
           if (!props.draggable) return
           onContentPointerDown(event)
@@ -190,9 +274,11 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       send({ type: "OPEN", value: value ?? undefined })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
@@ -200,7 +286,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
-        "aria-expanded": value == null ? open : open && current,
+        "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         "data-current": dataAttr(current),
@@ -212,13 +298,17 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       })
     },
 
+    getBackdropState,
     getBackdropProps() {
+      const backdropState = getBackdropState()
       return normalize.element({
         ...parts.backdrop.attrs(scope.id),
-        hidden: !open || (swipingOpen && dragOffset === null),
-        "data-state": open ? "open" : "closed",
-        "data-swiping": dragging || swipingOpen ? "" : undefined,
+        hidden: backdropState.hidden,
+        "data-state": backdropState.open ? "open" : "closed",
+        "data-swiping": backdropState.swiping ? "" : undefined,
+        ...getDismissableLayerAttrs(layer),
         style: {
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
           willChange: "opacity",
           pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,
@@ -254,10 +344,10 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       })
     },
 
+    getSwipeAreaState,
     getSwipeAreaProps(props = {}) {
-      const disabled = props.disabled ?? false
-      const openDirection = props.swipeDirection ?? oppositeSwipeDirection[swipeDirection]
-      const physicalOpenDirection = resolveSwipeDirection(openDirection, prop("dir"))
+      const swipeAreaState = getSwipeAreaState(props)
+      const { disabled, direction: physicalOpenDirection } = swipeAreaState
 
       return normalize.element({
         ...parts.swipeArea.attrs(scope.id),

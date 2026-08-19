@@ -9,11 +9,13 @@ export type {
   NavigationMenuService as Service,
   ArrowProps,
   ContentProps,
+  ContentState,
   ElementIds,
   IntlTranslations,
   ViewportProps,
   ItemProps,
   ItemState,
   LinkProps,
+  TriggerState,
   ValueChangeDetails,
 } from "./navigation-menu.types"

@@ -2,6 +2,7 @@
   import Presence from "$lib/components/presence.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/menu.css"
 
   interface Document {
     id: number
@@ -78,10 +79,9 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active Document:</strong>
       {activeDocument ? `${activeDocument.name} (${activeDocument.type})` : "-"}
     </div>

@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./checkbox.anatomy"
 import * as dom from "./checkbox.dom"
-import type { CheckboxApi, CheckboxSchema } from "./checkbox.types"
+import type { CheckboxApi, CheckboxSchema, RootState } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(
   service: Service<CheckboxSchema>,
@@ -23,17 +23,28 @@ export function connect<T extends PropTypes>(
   const indeterminate = computed("indeterminate")
   const checkedState = context.get("checked")
 
-  const dataAttrs = {
-    "data-active": dataAttr(context.get("active")),
-    "data-focus": dataAttr(focused),
-    "data-focus-visible": dataAttr(focusVisible),
-    "data-readonly": dataAttr(readOnly),
-    "data-hover": dataAttr(context.get("hovered")),
-    "data-disabled": dataAttr(disabled),
-    "data-state": indeterminate ? "indeterminate" : checked ? "checked" : "unchecked",
-    "data-invalid": dataAttr(invalid),
-    "data-required": dataAttr(required),
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return {
+      checked,
+      indeterminate,
+      disabled,
+      invalid,
+      required,
+      readOnly,
+      focused,
+      focusVisible,
+      hovered: context.get("hovered"),
+      active: context.get("active"),
+    }
   }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     checked,
@@ -50,10 +61,12 @@ export function connect<T extends PropTypes>(
       send({ type: "CHECKED.TOGGLE", checked: checked, isTrusted: false })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.root.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
@@ -74,41 +87,45 @@ export function connect<T extends PropTypes>(
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.label.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         "aria-hidden": true,
       })
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
-        hidden: !indeterminate && !checked,
+        hidden: !rootState.indeterminate && !rootState.checked,
       })
     },
 
     getHiddenInputProps() {
+      const rootState = getRootState()
       return normalize.input({
         id: dom.getHiddenInputId(scope),
         type: "checkbox",
         required: prop("required"),
-        defaultChecked: checked,
-        disabled: disabled,
+        defaultChecked: rootState.checked,
+        disabled: rootState.disabled,
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-invalid": invalid,
+        "aria-invalid": rootState.invalid,
         name: prop("name"),
         form: prop("form"),
         value: prop("value"),
@@ -131,5 +148,19 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+  }
+}
+
+function getDataAttrs(rootState: RootState) {
+  return {
+    "data-active": dataAttr(rootState.active),
+    "data-focus": dataAttr(rootState.focused),
+    "data-focus-visible": dataAttr(rootState.focusVisible),
+    "data-readonly": dataAttr(rootState.readOnly),
+    "data-hover": dataAttr(rootState.hovered),
+    "data-disabled": dataAttr(rootState.disabled),
+    "data-state": rootState.indeterminate ? "indeterminate" : rootState.checked ? "checked" : "unchecked",
+    "data-invalid": dataAttr(rootState.invalid),
+    "data-required": dataAttr(rootState.required),
   }
 }

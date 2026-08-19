@@ -36,7 +36,8 @@ Install the date-picker package:
 
 Check the date-picker anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="date-picker" />
 
@@ -627,22 +628,22 @@ const service = useMachine(datepicker.machine, {
 
 ## Styling guide
 
-Each date-picker part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="date-picker"][data-part="root"] {
+[data-date-picker-root] {
   /* styles for the root part */
 }
 
-[data-scope="date-picker"][data-part="input"] {
+[data-date-picker-input] {
   /* styles for the input part */
 }
 
-[data-scope="date-picker"][data-part="trigger"] {
+[data-date-picker-trigger] {
   /* styles for the trigger part */
 }
 
-[data-scope="date-picker"][data-part="content"] {
+[data-date-picker-content] {
   /* styles for the input part */
 }
 ```
@@ -650,7 +651,7 @@ Each date-picker part includes a `data-part` attribute you can target in CSS.
 ### Open State
 
 ```css
-[data-scope="date-picker"][data-part="trigger"] {
+[data-date-picker-trigger] {
   &[data-state="open"] {
     /* styles for the open state */
   }
@@ -664,7 +665,7 @@ Each date-picker part includes a `data-part` attribute you can target in CSS.
 ### Cell States
 
 ```css
-[data-scope="date-picker"][data-part="table-cell-trigger"] {
+[data-date-picker-table-cell-trigger] {
   /* styles for the cell */
 
   &[data-selected] {
@@ -700,7 +701,7 @@ day, month, and year table cell triggers for styling the selected and hovered
 ranges.
 
 ```css
-[data-scope="date-picker"][data-part="table-cell-trigger"] {
+[data-date-picker-table-cell-trigger] {
   &[data-range-start] {
     /* styles for the start of the selected range */
   }

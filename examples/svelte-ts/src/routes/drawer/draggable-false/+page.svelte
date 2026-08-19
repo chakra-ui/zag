@@ -6,7 +6,7 @@
   import { useControls } from "$lib/use-controls.svelte"
   import { drawerControls } from "@zag-js/shared"
   import Presence from "$lib/components/presence.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   const controls = useControls(drawerControls)
 

@@ -34,13 +34,13 @@ export default async function config() {
     return nextConfig
   }
 
-  process.env.VELITE_STARTED = '1'
-  const { build } = await import('velite')
+  process.env.VELITE_STARTED = "1"
+  const { build } = await import("velite")
 
-  const isDev = process.env.NODE_ENV === 'development'
+  const isDev = process.env.NODE_ENV === "development"
 
   if (isDev) {
-    console.log('Starting Velite in watch mode...')
+    console.log("Starting Velite in watch mode...")
     build({ watch: true })
   } else {
     await build({ clean: true })

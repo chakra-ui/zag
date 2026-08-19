@@ -18,7 +18,8 @@ provides a more customizable and consistent user experience.
 
 - Supports custom color area
 - Supports RGBA, HSLA, HEX, HSBA, **OKLab**, and **OKLCH** formats
-- Optional **sRGB gamut overlay** on the 2D area when using OKLab/OKLCH (`getGamutOverlay`, `getGamutOverlayProps`, anatomy part `gamutOverlay`)
+- Optional **sRGB gamut overlay** on the 2D area when using OKLab/OKLCH
+  (`getGamutOverlay`, `getGamutOverlayProps`, anatomy part `gamutOverlay`)
 - Supports channel inputs and sliders
 - Supports mouse, touch, and keyboard interactions
 - Supports form submission and reset events
@@ -35,7 +36,8 @@ Install the color picker package:
 To set up the color picker correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="color-picker" />
 
@@ -115,11 +117,22 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 ### Wide gamut (OKLab / OKLCH)
 
-The **2D color area** stays **HSBA** (saturation × brightness, **hue** on the third-axis slider) for a familiar control surface, even when the **output format** is OKLab or OKLCH.
+The **2D color area** stays **HSBA** (saturation × brightness, **hue** on the
+third-axis slider) for a familiar control surface, even when the **output
+format** is OKLab or OKLCH.
 
-Use **`api.getGamutOverlay(props?)`** for SVG path data (`path`, `labelPosition`) that draws the **sRGB gamut boundary** in that HSB view. The boundary is computed like Chrome DevTools (HSV interpreted in a wide working space vs sRGB). Pass the **same** `props` to **`getAreaProps`**, **`getGamutOverlay`**, and **`getGamutOverlayProps`**—including optional `xChannel` / `yChannel` overrides and optional **`pixelRatio`** (defaults to `globalThis.devicePixelRatio` in the browser for sharper curves on retina).
+Use **`api.getGamutOverlay(props?)`** for SVG path data (`path`,
+`labelPosition`) that draws the **sRGB gamut boundary** in that HSB view. The
+boundary is computed like Chrome DevTools (HSV interpreted in a wide working
+space vs sRGB). Pass the **same** `props` to **`getAreaProps`**,
+**`getGamutOverlay`**, and **`getGamutOverlayProps`**—including optional
+`xChannel` / `yChannel` overrides and optional **`pixelRatio`** (defaults to
+`globalThis.devicePixelRatio` in the browser for sharper curves on retina).
 
-**`api.isInSrgbGamut`** is `true` when the current color lies inside the sRGB cube in linear RGB space. When `false`, your OKLab/OKLCH **string** may still be wide-gamut while **hex** or 8-bit **RGBA** outputs **clamp**—use this flag for badges, tooltips, or warnings.
+**`api.isInSrgbGamut`** is `true` when the current color lies inside the sRGB
+cube in linear RGB space. When `false`, your OKLab/OKLCH **string** may still be
+wide-gamut while **hex** or 8-bit **RGBA** outputs **clamp**—use this flag for
+badges, tooltips, or warnings.
 
 ### Setting the initial format
 
@@ -264,8 +277,8 @@ const service = useMachine(colorPicker.machine, {
 
 ## Styling guide
 
-Each color picker part has a `data-part` attribute added to them to help you
-identify and style them easily.
+Each color picker part includes a component-scoped data attribute to help you
+identify and style it easily.
 
 ### Open and closed state
 
@@ -273,15 +286,15 @@ When the color picker is open or closed, the `data-state` attribute is added to
 the trigger, content, control parts.
 
 ```css
-[data-part="control"][data-state="open|closed"] {
+[data-color-picker-control][data-state="open|closed"] {
   /* styles for control open or state */
 }
 
-[data-part="trigger"][data-state="open|closed"] {
+[data-color-picker-trigger][data-state="open|closed"] {
   /* styles for control open or state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-color-picker-content][data-state="open|closed"] {
   /* styles for control open or state */
 }
 ```
@@ -292,11 +305,11 @@ When the color picker is focused, the `data-focus` attribute is added to the
 control and label parts.
 
 ```css
-[data-part="control"][data-focus] {
+[data-color-picker-control][data-focus] {
   /* styles for control focus state */
 }
 
-[data-part="label"][data-focus] {
+[data-color-picker-label][data-focus] {
   /* styles for label focus state */
 }
 ```
@@ -307,19 +320,19 @@ When the color picker is disabled, the `data-disabled` attribute is added to the
 label, control, trigger and option parts.
 
 ```css
-[data-part="label"][data-disabled] {
+[data-color-picker-label][data-disabled] {
   /* styles for label disabled state */
 }
 
-[data-part="control"][data-disabled] {
+[data-color-picker-control][data-disabled] {
   /* styles for control disabled state */
 }
 
-[data-part="trigger"][data-disabled] {
+[data-color-picker-trigger][data-disabled] {
   /* styles for trigger disabled state */
 }
 
-[data-part="swatch-trigger"][data-disabled] {
+[data-color-picker-swatch-trigger][data-disabled] {
   /* styles for item disabled state */
 }
 ```
@@ -330,7 +343,7 @@ When a swatch's color value matches the color picker's value, the
 `data-state=checked` attribute is added to the swatch part.
 
 ```css
-[data-part="swatch-trigger"][data-state="checked|unchecked"] {
+[data-color-picker-swatch-trigger][data-state="checked|unchecked"] {
   /* styles for swatch's checked state */
 }
 ```

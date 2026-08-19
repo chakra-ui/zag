@@ -2,7 +2,7 @@
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
-import styles from "../../../../shared/styles/drawer-mobile-nav.module.css"
+import styles from "@styles/drawer-mobile-nav.module.css"
 
 const NAV_ITEMS = [
   { href: "#", label: "Overview" },
@@ -36,7 +36,12 @@ const api = computed(() => drawer.connect(service, normalizeProps))
             <div :class="styles.handle" v-bind="api.getGrabberProps()">
               <div :class="styles.handleIndicator" v-bind="api.getGrabberIndicatorProps()" />
             </div>
-            <button type="button" :class="styles.closeButton" v-bind="api.getCloseTriggerProps()" aria-label="Close menu">
+            <button
+              type="button"
+              :class="styles.closeButton"
+              v-bind="api.getCloseTriggerProps()"
+              aria-label="Close menu"
+            >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
                   d="M0.75 0.75L6 6M11.25 11.25L6 6M6 6L0.75 11.25M6 6L11.25 0.75"

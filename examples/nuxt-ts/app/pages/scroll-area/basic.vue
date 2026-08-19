@@ -2,6 +2,7 @@
 import * as scrollArea from "@zag-js/scroll-area"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, useId } from "vue"
+import "@styles/scroll-area.css"
 
 const service = useMachine(scrollArea.machine, { id: useId() })
 const api = computed(() => scrollArea.connect(service, normalizeProps))

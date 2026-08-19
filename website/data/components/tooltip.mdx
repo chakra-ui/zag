@@ -33,7 +33,8 @@ Install the tooltip package:
 
 Check the tooltip anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="tooltip" />
 
@@ -200,14 +201,14 @@ api.setOpen(true)
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-part="trigger"] {
+[data-tooltip-trigger] {
   /* styles for the content */
 }
 
-[data-part="content"] {
+[data-tooltip-content] {
   /* styles for the content */
 }
 ```
@@ -217,11 +218,11 @@ Each part includes a `data-part` attribute you can target in CSS.
 When the tooltip is open, the `data-state` attribute is added to the trigger
 
 ```css
-[data-part="trigger"][data-state="open|closed"] {
+[data-tooltip-trigger][data-state="open|closed"] {
   /* styles for the trigger's expanded state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-tooltip-content][data-state="open|closed"] {
   /* styles for the trigger's expanded state */
 }
 ```
@@ -231,7 +232,7 @@ When the tooltip is open, the `data-state` attribute is added to the trigger
 When using arrows within the menu, you can style it using css variables.
 
 ```css
-[data-part="arrow"] {
+[data-tooltip-arrow] {
   --arrow-size: 20px;
   --arrow-background: red;
 }

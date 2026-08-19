@@ -44,15 +44,17 @@ export function Combobox() {
         </div>
       </div>
       <div {...api.getPositionerProps()}>
-        {options.length > 0 && (
-          <ul {...api.getContentProps()}>
-            {options.map((item) => (
-              <li key={item.code} {...api.getItemProps({ item })}>
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        )}
+        <div {...api.getContentProps()}>
+          {options.length > 0 && (
+            <div {...api.getListProps()}>
+              {options.map((item) => (
+                <div key={item.code} {...api.getItemProps({ item })}>
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

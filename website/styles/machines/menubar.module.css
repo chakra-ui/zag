@@ -1,0 +1,11 @@
+@layer recipes {
+  .Root {
+    display: inline-flex;
+    gap: 0.25rem;
+
+    &[data-orientation="vertical"] {
+      flex-direction: column;
+      width: 10rem;
+    }
+  }
+}

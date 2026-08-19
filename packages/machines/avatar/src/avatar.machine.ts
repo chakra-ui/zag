@@ -60,9 +60,12 @@ export const machine = createMachine<AvatarSchema>({
       invokeOnError({ prop }) {
         prop("onStatusChange")?.({ status: "error" })
       },
-      checkImageStatus({ send, scope }) {
+      checkImageStatus({ send, scope, prop }) {
         const imageEl = dom.getImageEl(scope)
-        if (!imageEl?.complete) return
+        if (!imageEl?.complete) {
+          prop("onStatusChange")?.({ status: "loading" })
+          return
+        }
         const type = hasLoaded(imageEl) ? "img.loaded" : "img.error"
         send({ type, src: "ssr" })
       },

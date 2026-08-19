@@ -35,7 +35,10 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           }
           const itemState = api.getItemState(itemProps)
           return (
-            <li key={collection.getNodeValue(item)} {...api.getItemProps(itemProps)}>
+            <li
+              key={collection.getNodeValue(item)}
+              {...api.getItemProps(itemProps)}
+            >
               <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
               {itemState.hasChildren && <span>›</span>}
               <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
@@ -49,7 +52,10 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
             node={nodeState.highlightedChild}
             api={api}
             indexPath={[...indexPath, nodeState.highlightedIndex]}
-            value={[...value, collection.getNodeValue(nodeState.highlightedChild)]}
+            value={[
+              ...value,
+              collection.getNodeValue(nodeState.highlightedChild),
+            ]}
           />
         )}
     </>

@@ -2,6 +2,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/file-upload.css"
 
 const controls = useControls(fileUploadControls)
 

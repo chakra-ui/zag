@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/date-picker.css"
 
 import { nanoid } from "nanoid"
 import { DatePicker } from "../src/date-picker"

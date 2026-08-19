@@ -1,5 +1,167 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/color-utils@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+
+## 2.0.0-next.0
+
+### Minor Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`c83d417`](https://github.com/chakra-ui/zag/commit/c83d41797a888975b97599448cc080ea3ff22279) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add OKLab and OKLCH as color formats with `in oklab` /
+  `in oklch` area and slider gradients, plus an optional sRGB gamut overlay for wide-gamut picking.
+
+  **Color picker API:** Use `getGamutOverlay(props?)` (replaces the removed `gamutOverlay` property) with the same props
+  as `getAreaProps` / `getGamutOverlayProps`. Adds `isInSrgbGamut` and optional `pixelRatio` on overlay props for
+  DPR-aware boundary sampling. See
+  [OSS-2393](https://linear.app/chakra/issue/OSS-2393/color-picker-wide-gamut-color-support-oklaboklch-srgb-gamut-overlay).
+
+## 1.43.0
+
+### Patch Changes
+
+- [#3198](https://github.com/chakra-ui/zag/pull/3198)
+  [`e4e0b2d`](https://github.com/chakra-ui/zag/commit/e4e0b2d04a9e6d909db36d8ed0c9ad54790190a6) Thanks
+  [@mahirhir](https://github.com/mahirhir)! - Fix the color channel input committing a partial value when `Enter` is
+  pressed to confirm an IME composition.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/popper@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/color-utils@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/color-utils@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/popper@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`c83d417`](https://github.com/chakra-ui/zag/commit/c83d41797a888975b97599448cc080ea3ff22279),
+  [`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/color-utils@2.0.0-next.0
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/dismissable@2.0.0-next.0
+  - @zag-js/popper@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`d68e9c0`](https://github.com/chakra-ui/zag/commit/d68e9c0ee2ba9f5c560cc93782b95ba971e8baa4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Invoke `onValueChangeEnd` when the user picks a color with the
+  EyeDropper API, consistent with ending a drag on the area or channel sliders.
+
+- [#3130](https://github.com/chakra-ui/zag/pull/3130)
+  [`005e8fa`](https://github.com/chakra-ui/zag/commit/005e8fafdcb1226fd2a3a07617a47cc76c2d823f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-side` to placement-aware parts based on the current
+  placement.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7),
+  [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/popper@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/color-utils@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- [`43e5a18`](https://github.com/chakra-ui/zag/commit/43e5a18be5910a6d1a2387782b8e6157b9d2500e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color value to respect the specified `format` when setting
+  values via props or `setValue`.
+
+  Previously, the internal color object could retain a mismatched format (e.g., RGB when `format` is `hsla`), causing
+  inconsistent `value` objects in `onValueChange` callbacks.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/color-utils@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/popper@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

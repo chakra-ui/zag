@@ -1,5 +1,130 @@
 # @zag-js/number-input
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+
+## 2.0.0-next.0
+
+### Minor Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`ae80265`](https://github.com/chakra-ui/zag/commit/ae80265cf1f6bf0d9dd12776d26bd57cd457896a) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Improve scrubber and add configurable step sizes.
+  - **New part: `scrubberCursor`** — Expose the virtual cursor as a renderable part (`getScrubberCursorProps`) so
+    consumers can style or replace it. The old auto-created DOM element is removed; consumers render their own content
+    (e.g. a Lucide icon).
+  - **`scrubberPixelSensitivity`** — Control how many pixels of pointer movement trigger one step change (default `2`).
+    Uses cumulative delta tracking for precise control.
+  - **`scrubberTeleportDistance`** — Set a pixel distance for virtual cursor wrapping. When unset, wraps at viewport
+    bounds.
+  - **`scrubberDirection`** — Support `"horizontal"` (default) or `"vertical"` scrubbing.
+  - **`largeStep` / `smallStep`** — Explicit step sizes for Shift (default `step * 10`) and Alt/Option (default
+    `step * 0.1`) modifier keys. Alt replaces Ctrl for fine control, matching design tool conventions.
+  - **`snapOnStep`** — Snap values to step multiples when scrubbing or using keyboard.
+
+## 1.43.0
+
+### Patch Changes
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Minor Changes
+
+- [`f71bd89`](https://github.com/chakra-ui/zag/commit/f71bd89852dcb8988b4f081e13a32a68ad1031e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where `Cmd`/`Ctrl` + arrow keys produced values off
+  the `step` grid (e.g. non-integer values when `step: 1`). Stepping with modifier keys now stays aligned to `step`.
+
+  Replaced the implicit modifier-based stepping with explicit, configurable props:
+
+  - **Slider**: added `largeStep` (defaults to `10 * step`) used when `Shift` or `PageUp`/`PageDown` is pressed.
+  - **Number Input**: added `largeStep` (defaults to `10 * step`, on `Shift`) and `smallStep` (defaults to `step / 10`,
+    on `Alt`).
+
+  The defaults preserve the previous stepping magnitudes, so existing behavior is unchanged unless the new props are
+  set.
+
+### Patch Changes
+
+- [#3170](https://github.com/chakra-ui/zag/pull/3170)
+  [`da88564`](https://github.com/chakra-ui/zag/commit/da885645da7c138ef9800f3ca0e3db1d7b507ba2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `api.setValue` with a number throws when
+  `formatOptions` is defined.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`de90989`](https://github.com/chakra-ui/zag/commit/de90989b9b2c2e014a900f286049e82308b14d42) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix inconsistent blur behavior in number-input when the input is
+  cleared and min is greater than 0.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

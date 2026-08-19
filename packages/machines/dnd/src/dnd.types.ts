@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Point, Rect } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Drop placement
@@ -120,6 +120,17 @@ export interface ItemState {
   isDisabled: boolean
 }
 
+export interface DragPreviewState {
+  /**
+   * Whether a drag is in progress
+   */
+  dragging: boolean
+  /**
+   * Whether the drag preview should be rendered
+   */
+  visible: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine props
  * -----------------------------------------------------------------------------*/
@@ -163,6 +174,11 @@ export interface DndProps extends DirectionProperty, CommonProperties {
    * @default 20
    */
   scrollThreshold?: number | undefined
+  /**
+   * Maximum auto-scroll speed in pixels per animation frame.
+   * @default 4
+   */
+  scrollMaxSpeed?: number | undefined
   /**
    * Number of columns in a grid layout. When set, enables grid-mode collision
    * detection and 4-directional keyboard navigation.
@@ -224,6 +240,7 @@ type PropsWithDefault =
   | "stickyDelay"
   | "dragOverDelay"
   | "scrollThreshold"
+  | "scrollMaxSpeed"
 
 /* -----------------------------------------------------------------------------
  * Schema
@@ -245,6 +262,8 @@ interface Refs {
   dragOverTimer: ReturnType<typeof setTimeout> | null
   activationTimer: ReturnType<typeof setTimeout> | null
   pendingValue: string | undefined
+  dragOffset: Point | null
+  dragRect: Rect | null
   didDrop: boolean
   autoScrollMove: ((x: number, y: number) => void) | null
   dropTargetSequence: string[]
@@ -253,7 +272,8 @@ interface Refs {
 
 export interface DndSchema {
   state: "idle" | "pointer:pending" | "pointer:dragging" | "keyboard:session"
-  props: RequiredBy<DndProps, PropsWithDefault>
+  props: DndProps
+  defaultPropKey: PropsWithDefault
   context: Context
   refs: Refs
   action: string
@@ -319,5 +339,9 @@ export interface DndApi<T extends PropTypes = PropTypes> {
   getDragHandleProps(props: DragHandleProps): T["element"]
   getDropTargetProps(props: DropTargetProps): T["element"]
   getDropIndicatorProps(props: DropIndicatorProps): T["element"]
+  /**
+   * Returns the state of the drag preview
+   */
+  getDragPreviewState(): DragPreviewState
   getDragPreviewProps(): T["element"]
 }

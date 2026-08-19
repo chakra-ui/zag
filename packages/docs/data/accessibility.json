@@ -227,6 +227,18 @@
       }
     ]
   },
+  "hover-card": {
+    "keyboard": [
+      {
+        "keys": ["Tab"],
+        "description": "Opens the hover card once focus reaches the trigger, after the open delay. Closes it when focus leaves."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "If open, closes the hover card."
+      }
+    ]
+  },
   "tooltip": {
     "keyboard": [
       {
@@ -335,19 +347,19 @@
       },
       {
         "keys": ["PageUp"],
-        "description": "<span>Increases the value by a larger step</span>"
+        "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["PageDown"],
-        "description": "<span>Decreases the value by a larger step</span>"
+        "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Shift + ArrowUp"],
-        "description": "<span>Increases the value by a larger step</span>"
+        "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Shift + ArrowDown"],
-        "description": "<span>Decreases the value by a larger step</span>"
+        "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
         "keys": ["Home"],
@@ -464,6 +476,14 @@
       {
         "keys": ["Enter", "Space"],
         "description": "In manual mode, when a trigger is focused, moves focus to its associated content."
+      }
+    ]
+  },
+  "toggle": {
+    "keyboard": [
+      {
+        "keys": ["Space", "Enter"],
+        "description": "Toggle the pressed state"
       }
     ]
   },
@@ -702,12 +722,20 @@
         "description": "Decrements the value of the number input by a predefined step."
       },
       {
-        "keys": ["PageUp"],
-        "description": "Increments the value of the number input by a larger predefined step."
+        "keys": ["Shift + ArrowUp"],
+        "description": "Increments the value of the number input by the `largeStep` amount."
       },
       {
-        "keys": ["PageDown"],
-        "description": "Decrements the value of the number input by a larger predefined step."
+        "keys": ["Shift + ArrowDown"],
+        "description": "Decrements the value of the number input by the `largeStep` amount."
+      },
+      {
+        "keys": ["Alt + ArrowUp"],
+        "description": "Increments the value of the number input by the `smallStep` amount."
+      },
+      {
+        "keys": ["Alt + ArrowDown"],
+        "description": "Decrements the value of the number input by the `smallStep` amount."
       },
       {
         "keys": ["Home"],
@@ -860,6 +888,30 @@
       {
         "keys": ["End"],
         "description": "<span>When focus is on trigger, moves focus to the last trigger.<br />When focus is on content, moves focus to the last link.</span>"
+      }
+    ]
+  },
+  "menubar": {
+    "keyboard": [
+      {
+        "keys": ["ArrowRight", "ArrowLeft"],
+        "description": "In a horizontal menubar, moves focus to the next/previous menu. If a menu is open, opens the sibling menu."
+      },
+      {
+        "keys": ["ArrowDown", "ArrowUp"],
+        "description": "In a vertical menubar, moves focus to the next/previous menu. In a horizontal menubar, opens the focused menu."
+      },
+      {
+        "keys": ["Enter", "Space"],
+        "description": "Opens the focused menu and highlights its first item."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "Moves focus to the first/last menu."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Closes the open menu and returns focus to its trigger."
       }
     ]
   }

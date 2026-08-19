@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -35,6 +35,7 @@ export interface SelectionDetails {
 export type ElementIds = Partial<{
   root: string
   content: string
+  list: string
   label: string
   item: (id: string | number) => string
   itemGroup: (id: string | number) => string
@@ -132,7 +133,8 @@ type PropsWithDefault = "collection" | "selectionMode"
 
 export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"
-  props: RequiredBy<ListboxProps<T>, PropsWithDefault>
+  props: ListboxProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     highlightedValue: string | null
@@ -213,6 +215,40 @@ export interface ItemGroupProps {
 
 export interface ItemGroupLabelProps {
   htmlFor: string
+}
+
+export interface ContentState {
+  /**
+   * The orientation of the listbox
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The layout of the listbox content
+   */
+  layout: "list" | "grid"
+  /**
+   * Whether the listbox has no items
+   */
+  empty: boolean
+}
+
+export interface ListState {
+  /**
+   * The orientation of the listbox
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The layout of the listbox content
+   */
+  layout: "list" | "grid"
+  /**
+   * Whether the listbox has no items
+   */
+  empty: boolean
+  /**
+   * Whether the listbox allows multiple selection
+   */
+  multiple: boolean
 }
 
 export interface InputProps {
@@ -320,7 +356,16 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getValueTextProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
+  /**
+   * Returns the state of the list
+   */
+  getListState: () => ListState
+  getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]

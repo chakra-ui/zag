@@ -28,9 +28,9 @@ export const machine = createMachine({
 
   context({ prop, bindable }) {
     return {
-      value: bindable(() => ({
-        value: prop("value"),
-        defaultValue: prop("defaultValue"),
+      value: bindable<string[]>(() => ({
+        value: prop("value") ? fill(prop("value")!, prop("count")) : undefined,
+        defaultValue: fill(prop("defaultValue") ?? [], prop("count")),
         isEqual,
         onChange(value) {
           prop("onValueChange")?.({ value, valueAsString: value.join("") })
@@ -151,7 +151,7 @@ export const machine = createMachine({
   implementations: {
     guards: {
       autoFocus: ({ prop }) => !!prop("autoFocus"),
-      hasValue: ({ context }) => context.get("value")[context.get("focusedIndex")] !== "",
+      hasValue: ({ context, computed }) => computed("_value")[context.get("focusedIndex")] !== "",
       isValueComplete: ({ computed }) => computed("isValueComplete"),
       hasIndex: ({ event }) => event.index !== undefined,
     },
@@ -317,8 +317,10 @@ function getNextValue(current: string, next: string) {
   return nextValue ?? ""
 }
 
-function fill(value: string[], count: number) {
-  return Array.from<string>({ length: count })
+function fill(value: string[], count: number | undefined) {
+  // Guard against an undefined/zero count so we never collapse a provided value to an empty array
+  const length = count || value.length
+  return Array.from<string>({ length })
     .fill("")
     .map((v, i) => value[i] || v)
 }

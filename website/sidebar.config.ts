@@ -1,6 +1,7 @@
 import { AiOutlineCompass, AiOutlineBook, AiOutlineTool } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
 import { IconType } from "react-icons/lib"
+import siteConfig from "site.config"
 
 interface CategoryItem {
   type: "category"
@@ -45,7 +46,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           type: "doc",
           label: "Changelog",
           id: "changelogs",
-          href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
+          href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
         },
         { type: "doc", label: "LLMs.txt", id: "llms-txt" },
       ],
@@ -59,6 +60,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Styling", id: "styling" },
         { type: "doc", label: "Composition", id: "composition" },
         { type: "doc", label: "Collection", id: "collection" },
+        { type: "doc", label: "Virtualizer", id: "virtualizer" },
         {
           type: "doc",
           label: "Programmatic Control",
@@ -77,7 +79,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Angle Slider", id: "angle-slider" },
         { type: "doc", label: "Avatar", id: "avatar" },
-        // { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Carousel", id: "carousel" },
         {
           type: "doc",
@@ -93,6 +94,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Date Input", id: "date-input", beta: true },
         { type: "doc", label: "Date Picker", id: "date-picker" },
         { type: "doc", label: "Dialog", id: "dialog" },
+        { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },
         { type: "doc", label: "Floating Panel", id: "floating-panel" },
@@ -102,8 +104,10 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Marquee", id: "marquee" },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Menu (Nested)", id: "nested-menu" },
+        { type: "doc", label: "Menubar", id: "menubar" },
         { type: "doc", label: "Context Menu", id: "context-menu" },
         { type: "doc", label: "Navigation Menu", id: "navigation-menu" },
+        { type: "doc", label: "Number Flow", id: "number-flow" },
         { type: "doc", label: "Number Input", id: "number-input" },
         { type: "doc", label: "Pagination", id: "pagination" },
         {
@@ -142,6 +146,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Tags Input", id: "tags-input" },
         { type: "doc", label: "Timer", id: "timer" },
         { type: "doc", label: "Toast", id: "toast" },
+        { type: "doc", label: "Toggle", id: "toggle" },
         { type: "doc", label: "Toggle Group", id: "toggle-group" },
         { type: "doc", label: "Tooltip", id: "tooltip" },
         { type: "doc", label: "Tour", id: "tour" },

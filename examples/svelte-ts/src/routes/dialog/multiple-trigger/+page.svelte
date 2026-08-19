@@ -4,6 +4,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
   import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/dialog.css"
 
   interface User {
     id: number
@@ -61,10 +62,9 @@
       </tbody>
     </table>
 
-    <div
-      style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;"
-    >
-      <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px;">
+      <strong>Active Trigger:</strong>
+      {api.triggerValue || "-"} <br />
       <strong>Active User:</strong>
       {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
     </div>

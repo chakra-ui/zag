@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   dataAttr,
@@ -9,18 +10,29 @@ import {
   isLeftClick,
   isOpeningInNewTab,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
-import type { CollectionItem, ComboboxApi, ComboboxService, ItemProps, ItemState } from "./combobox.types"
+import type {
+  CollectionItem,
+  ComboboxApi,
+  ComboboxService,
+  ContentState,
+  ItemProps,
+  ItemState,
+  RootState,
+  TriggerProps,
+  TriggerState,
+} from "./combobox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
   normalize: NormalizeProps<T>,
 ): ComboboxApi<T, V> {
   const { context, prop, state, send, scope, computed, event } = service
+  const layer = context.get("layer")
 
   const translations = prop("translations")
   const collection = prop("collection")
@@ -33,14 +45,21 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
-  const composite = prop("composite")
   const highlightedValue = context.get("highlightedValue")
+  const popupType = prop("popupType")
+  const isDialogPopup = popupType === "dialog"
+
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
-    positioned: context.get("positioned"),
+    placement: currentPlacement,
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
@@ -53,6 +72,35 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       selected: context.get("value").includes(value),
     }
   }
+
+  function getRootState(): RootState {
+    return { invalid, readOnly }
+  }
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    return {
+      open,
+      disabled,
+      invalid,
+      readOnly,
+      focusable: props.focusable ?? isDialogPopup,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+      empty: collection.size === 0,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     focused,
@@ -104,12 +152,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -125,7 +175,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
-          if (composite) return
+          if (!isDialogPopup) return
           event.preventDefault()
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
@@ -147,7 +197,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -173,7 +227,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         role: "combobox",
         defaultValue: context.get("inputValue"),
         "aria-autocomplete": computed("autoComplete") ? "both" : "list",
-        "aria-controls": dom.getContentId(scope),
+        "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "aria-activedescendant": highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined,
@@ -232,14 +286,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             Enter(event) {
               send({ type: "INPUT.ENTER", keypress, src: "item-select" })
 
-              // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
-              const submittable = computed("isCustomValue") && prop("allowCustomValue")
-              // Also allow submission when there's no highlighted item (bug fix)
               const hasHighlight = highlightedValue != null
-              // Allow submission when alwaysSubmitOnEnter is true
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
+              const willBeRejected = computed("isCustomValue") && !prop("allowCustomValue")
 
-              if (open && !submittable && !alwaysSubmit && hasHighlight) {
+              if (open && !alwaysSubmit && (hasHighlight || willBeRejected)) {
                 event.preventDefault()
               }
 
@@ -263,25 +314,28 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getTriggerState,
     getTriggerProps(props = {}) {
+      const triggerState = getTriggerState(props)
+      const { focusable } = triggerState
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getTriggerId(scope),
-        "aria-haspopup": composite ? "listbox" : "dialog",
+        "aria-haspopup": popupType,
         type: "button",
-        tabIndex: props.focusable ? undefined : -1,
+        tabIndex: focusable ? undefined : -1,
         "aria-label": translations.triggerLabel,
-        "aria-expanded": open,
-        "data-state": open ? "open" : "closed",
-        "aria-controls": open ? dom.getContentId(scope) : undefined,
-        disabled,
-        "data-invalid": dataAttr(invalid),
-        "data-focusable": dataAttr(props.focusable),
-        "data-readonly": dataAttr(readOnly),
-        "data-disabled": dataAttr(disabled),
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "aria-controls": triggerState.open ? `${dom.getListId(scope)} ${dom.getContentId(scope)}` : undefined,
+        disabled: triggerState.disabled,
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-focusable": dataAttr(focusable),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-disabled": dataAttr(triggerState.disabled),
         onFocus() {
-          if (!props.focusable) return
+          if (!focusable) return
           send({ type: "INPUT.FOCUS", src: "trigger" })
         },
         onClick(event) {
@@ -301,7 +355,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (composite) return
+          if (!focusable) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
@@ -323,19 +377,22 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role: !composite ? "dialog" : "listbox",
-        tabIndex: -1,
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
-        "aria-labelledby": dom.getLabelId(scope),
-        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
-        "data-empty": dataAttr(collection.size === 0),
+        role: isDialogPopup ? "dialog" : "presentation",
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
+        "data-empty": dataAttr(contentState.empty),
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           // prevent options or elements within listbox from taking focus
@@ -347,10 +404,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getListProps() {
       return normalize.element({
         ...parts.list.attrs(scope.id),
-        role: !composite ? "listbox" : undefined,
+        id: dom.getListId(scope),
+        role: "listbox",
         "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
+        "aria-multiselectable": prop("multiple") ? true : undefined,
       })
     },
 

@@ -30,7 +30,8 @@ Install the QR code package:
 
 Check the QR code anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="qr-code" />
 
@@ -141,7 +142,7 @@ automatically centered within the QR code.
 To change the color of the QR code, set the `fill` attribute on the `path` part.
 
 ```css
-[data-scope="qr-code"][data-part="pattern"] {
+[data-qr-code-pattern] {
   fill: green;
 }
 ```
@@ -149,7 +150,7 @@ To change the color of the QR code, set the `fill` attribute on the `path` part.
 To change the background color of the QR code, set the `background-color`
 
 ```css
-[data-scope="qr-code"][data-part="frame"] {
+[data-qr-code-frame] {
   background-color: white;
 }
 ```
@@ -179,22 +180,22 @@ You can also use `api.getDownloadTriggerProps` to create a download button.
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="qr-code"][data-part="root"] {
+[data-qr-code-root] {
   /* Styles for the root part */
 }
 
-[data-scope="qr-code"][data-part="frame"] {
+[data-qr-code-frame] {
   /* Styles for the svg part */
 }
 
-[data-scope="qr-code"][data-part="pattern"] {
+[data-qr-code-pattern] {
   /* Styles for the path */
 }
 
-[data-scope="qr-code"][data-part="overlay"] {
+[data-qr-code-overlay] {
   /* Styles for the logo */
 }
 ```

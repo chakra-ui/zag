@@ -31,16 +31,18 @@
 
   <Teleport to="body">
     <div v-bind="api.getPositionerProps()">
-      <ul v-bind="api.getContentProps()">
-        <li
-          v-for="item in selectData"
-          :key="item.value"
-          v-bind="api.getItemProps({ item })"
-        >
-          <span>{{ item.label }}</span>
-          <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
-        </li>
-      </ul>
+      <div v-bind="api.getContentProps()">
+        <div v-bind="api.getListProps()">
+          <div
+            v-for="item in selectData"
+            :key="item.value"
+            v-bind="api.getItemProps({ item })"
+          >
+            <span>{{ item.label }}</span>
+            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+          </div>
+        </div>
+      </div>
     </div>
   </Teleport>
 </template>

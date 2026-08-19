@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -62,13 +62,6 @@ export interface PopoverProps
    */
   modal?: boolean | undefined
   /**
-   * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
-   * of the popover content.
-   *
-   * @default true
-   */
-  portalled?: boolean | undefined
-  /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
    *
@@ -78,7 +71,17 @@ export interface PopoverProps
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
+  /**
+   * Element to receive focus when the popover is closed.
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
+  /**
+   * Whether to restore focus to the element that had focus before the popover was opened.
+   *
+   * @default true
+   */
+  restoreFocus?: boolean | undefined
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    * @default true
@@ -125,19 +128,16 @@ type PropsWithDefault =
   | "closeOnInteractOutside"
   | "closeOnEscape"
   | "modal"
-  | "portalled"
   | "autoFocus"
+  | "restoreFocus"
   | "positioning"
   | "translations"
 
-type ComputedContext = Readonly<{
-  /**
-   * The computed value of `portalled`
-   */
-  currentPortalled: boolean
-}>
-
 interface PrivateContext {
+  /**
+   * The computed layer stack state used for declarative styles and attributes.
+   */
+  layer: LayerSnapshot | null
   /**
    * The elements that are rendered on mount
    */
@@ -153,17 +153,14 @@ interface PrivateContext {
    * The trigger value
    */
   triggerValue: string | null
-  /**
-   * Whether the popover has been positioned
-   */
-  positioned: boolean
 }
 
 export interface PopoverSchema {
-  props: RequiredBy<PopoverProps, PropsWithDefault>
+  props: PopoverProps
+  defaultPropKey: PropsWithDefault
   state: "open" | "closed"
   context: PrivateContext
-  computed: ComputedContext
+  computed: {}
   event: EventObject
   action: string
   effect: string
@@ -185,15 +182,64 @@ export interface TriggerProps {
   value?: string
 }
 
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the popover
+   */
+  current: boolean
+  /**
+   * Whether the popover is open
+   */
+  open: boolean
+}
+
+export interface PositionerState {
+  /**
+   * Whether the popover is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the popover has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the popover is open
+   */
+  open: boolean
+  /**
+   * Whether the popover is modal
+   */
+  modal: boolean
+  /**
+   * Whether the popover is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the popover has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
 export interface PopoverApi<T extends PropTypes = PropTypes> {
-  /**
-   * Whether the popover is portalled.
-   */
-  portalled: boolean
   /**
    * Whether the popover is open
    */
@@ -218,9 +264,21 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
   getAnchorProps: () => T["element"]
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getIndicatorProps: () => T["element"]
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
   getDescriptionProps: () => T["element"]

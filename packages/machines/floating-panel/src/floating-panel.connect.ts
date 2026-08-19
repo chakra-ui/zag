@@ -3,7 +3,17 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { match, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
-import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
+import type {
+  ContentState,
+  ControlState,
+  FloatingPanelApi,
+  FloatingPanelService,
+  ResizeTriggerProps,
+  ResizeTriggerState,
+  StageTriggerProps,
+  StageTriggerState,
+  TriggerState,
+} from "./floating-panel.types"
 import { getResizePlacementStyle } from "./get-resize-placement-style"
 
 const validStages = new Set(["minimized", "maximized", "default"])
@@ -28,6 +38,44 @@ export function connect<T extends PropTypes>(
   const isStaged = computed("isStaged")
   const canResize = computed("canResize")
   const canDrag = computed("canDrag")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(): TriggerState {
+    return { open, dragging, disabled: !!prop("disabled") }
+  }
+
+  function getContentState(): ContentState {
+    return { open, dragging, topmost: !!isTopmost, minimized: isMinimized, maximized: isMaximized, staged: isStaged }
+  }
+
+  function getControlState(): ControlState {
+    return {
+      disabled: !!prop("disabled"),
+      stage: context.get("stage"),
+      minimized: isMinimized,
+      maximized: isMaximized,
+      staged: isStaged,
+    }
+  }
+
+  function getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState {
+    return { placement: props.placement, disabled: !canResize }
+  }
+
+  function getStageTriggerState(props: StageTriggerProps): StageTriggerState {
+    if (!validStages.has(props.stage)) {
+      throw new Error(`[zag-js] Invalid stage: ${props.stage}. Must be one of: ${Array.from(validStages).join(", ")}`)
+    }
+    const hidden = props.stage === "default" ? !isStaged : isStaged
+    return { stage: props.stage, hidden }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open,
@@ -58,14 +106,16 @@ export function connect<T extends PropTypes>(
       send({ type: "RESTORE" })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
-        disabled: prop("disabled"),
-        "data-state": open ? "open" : "closed",
-        "data-dragging": dataAttr(dragging),
+        disabled: triggerState.disabled,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-dragging": dataAttr(triggerState.dragging),
         "aria-controls": dom.getContentId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
@@ -92,26 +142,28 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         role: "dialog",
         tabIndex: 0,
-        hidden: !open,
+        hidden: !contentState.open,
         id: dom.getContentId(scope),
         "aria-labelledby": dom.getTitleId(scope),
-        "data-state": open ? "open" : "closed",
-        "data-dragging": dataAttr(dragging),
-        "data-topmost": dataAttr(isTopmost),
-        "data-behind": dataAttr(!isTopmost),
-        "data-minimized": dataAttr(isMinimized),
-        "data-maximized": dataAttr(isMaximized),
-        "data-staged": dataAttr(isStaged),
+        "data-state": contentState.open ? "open" : "closed",
+        "data-dragging": dataAttr(contentState.dragging),
+        "data-topmost": dataAttr(contentState.topmost),
+        "data-behind": dataAttr(!contentState.topmost),
+        "data-minimized": dataAttr(contentState.minimized),
+        "data-maximized": dataAttr(contentState.maximized),
+        "data-staged": dataAttr(contentState.staged),
         style: {
           width: "var(--width)",
           height: "var(--height)",
-          overflow: isMinimized ? "hidden" : undefined,
+          overflow: contentState.minimized ? "hidden" : undefined,
         },
         onFocus() {
           send({ type: "CONTENT_FOCUS" })
@@ -166,34 +218,25 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getStageTriggerState,
     getStageTriggerProps(props) {
-      if (!validStages.has(props.stage)) {
-        throw new Error(`[zag-js] Invalid stage: ${props.stage}. Must be one of: ${Array.from(validStages).join(", ")}`)
-      }
+      const stageTriggerState = getStageTriggerState(props)
 
       const translations = prop("translations")
 
-      const actionProps = match(props.stage, {
-        minimized: () => ({
-          "aria-label": translations.minimize,
-          hidden: isStaged,
-        }),
-        maximized: () => ({
-          "aria-label": translations.maximize,
-          hidden: isStaged,
-        }),
-        default: () => ({
-          "aria-label": translations.restore,
-          hidden: !isStaged,
-        }),
+      const ariaLabel = match(props.stage, {
+        minimized: () => translations.minimize,
+        maximized: () => translations.maximize,
+        default: () => translations.restore,
       })
 
       return normalize.button({
         ...parts.stageTrigger.attrs(scope.id),
         dir: prop("dir"),
         disabled: prop("disabled"),
-        "data-stage": props.stage,
-        ...actionProps,
+        "data-stage": stageTriggerState.stage,
+        "aria-label": ariaLabel,
+        hidden: stageTriggerState.hidden,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
@@ -208,12 +251,14 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getResizeTriggerState,
     getResizeTriggerProps(props: ResizeTriggerProps) {
+      const resizeTriggerState = getResizeTriggerState(props)
       return normalize.element({
         ...parts.resizeTrigger.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(!canResize),
-        "data-placement": props.placement,
+        "data-disabled": dataAttr(resizeTriggerState.disabled),
+        "data-placement": resizeTriggerState.placement,
         onPointerDown(event) {
           if (!canResize) return
           if (!isLeftClick(event)) return
@@ -286,15 +331,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getControlState,
     getControlProps() {
+      const controlState = getControlState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(prop("disabled")),
-        "data-stage": context.get("stage"),
-        "data-minimized": dataAttr(isMinimized),
-        "data-maximized": dataAttr(isMaximized),
-        "data-staged": dataAttr(isStaged),
+        "data-disabled": dataAttr(controlState.disabled),
+        "data-stage": controlState.stage,
+        "data-minimized": dataAttr(controlState.minimized),
+        "data-maximized": dataAttr(controlState.maximized),
+        "data-staged": dataAttr(controlState.staged),
       })
     },
 

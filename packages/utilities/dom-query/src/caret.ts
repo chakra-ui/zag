@@ -7,6 +7,16 @@ export function isCaretAtStart(input: HTMLInputElement | HTMLTextAreaElement | n
   }
 }
 
+export function isCaretAtEnd(input: HTMLInputElement | HTMLTextAreaElement | null) {
+  if (!input) return false
+  try {
+    const length = input.value.length
+    return input.selectionStart === length && input.selectionEnd === length
+  } catch {
+    return input.value === ""
+  }
+}
+
 export function setCaretToEnd(input: HTMLInputElement | HTMLTextAreaElement | null) {
   if (!input) return
   try {

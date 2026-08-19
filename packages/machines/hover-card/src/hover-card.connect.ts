@@ -1,29 +1,78 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { isFocusVisible } from "@zag-js/focus-visible"
+import { getInlineRectCoords, getLineRects, getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import * as dom from "./hover-card.dom"
-import type { HoverCardApi, HoverCardService, TriggerProps } from "./hover-card.types"
+import type {
+  ContentState,
+  HoverCardApi,
+  HoverCardService,
+  PositionerState,
+  TriggerProps,
+  TriggerState,
+} from "./hover-card.types"
 
 export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
-  const { state, send, prop, context, scope } = service
+  const { state, send, prop, context, refs, scope } = service
+  const layer = context.get("layer")
 
   const open = state.hasTag("open")
   const triggerValue = context.get("triggerValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
-    positioned: context.get("positioned"),
+    placement: currentPlacement,
   })
+
+  // Frozen once open, and measured once per hover so the moves in between cost no layout.
+  const captureInlineCoords = (event: { currentTarget: unknown; clientX: number; clientY: number }) => {
+    if (open) return
+    const element = event.currentTarget as Element
+    const cached = refs.get("inlineLines")
+    const lines = cached?.element === element ? cached.lines : getLineRects(element.getClientRects()).lines
+    refs.set("inlineLines", { element, lines })
+    refs.set("inlineCoords", getInlineRectCoords({ element, x: event.clientX, y: event.clientY, lines }))
+  }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open: open,
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       if (prop("disabled")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
     triggerValue,
     setTriggerValue(value) {
@@ -49,73 +98,94 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
 
       return normalize.element({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         "data-value": value,
         "data-current": dataAttr(current),
         "data-state": open ? "open" : "closed",
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
+          captureInlineCoords(event)
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_ENTER",
-            src: "trigger",
+            src: "trigger-hover",
             value,
           })
+        },
+        onPointerMove(event) {
+          if (event.pointerType === "touch") return
+          if (prop("disabled")) return
+          captureInlineCoords(event)
         },
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_LEAVE", src: "trigger" })
+          refs.set("inlineLines", undefined)
+          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
         },
         onFocus() {
           if (prop("disabled")) return
+          // Only keyboard/virtual focus opens. Focus arriving after a pointer interaction, such as
+          // a dialog restoring it, carries no intent to preview.
+          if (!isFocusVisible()) return
+          // Focus has no line to prefer.
+          refs.set("inlineCoords", undefined)
           const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_FOCUS",
+            src: "trigger-focus",
             value,
           })
         },
         onBlur() {
           if (prop("disabled")) return
-          send({ type: "TRIGGER_BLUR" })
+          send({ type: "TRIGGER_BLUR", src: "trigger-blur" })
         },
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        hidden: !open,
+        hidden: !contentState.open,
         tabIndex: -1,
-        "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_ENTER", src: "content" })
-        },
-        onPointerLeave(event) {
-          if (event.pointerType === "touch") return
-          if (prop("disabled")) return
-          send({ type: "POINTER_LEAVE", src: "content" })
+          send({ type: "POINTER_ENTER", src: "trigger-hover" })
         },
       })
     },

@@ -1,5 +1,83 @@
 # @zag-js/dismissable
 
+## 2.0.0-next.1
+
+### Major Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/interact-outside@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/interact-outside@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/interact-outside@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Deduplicate `layerStack.add()` by DOM node so the same element is
+  not registered twice (e.g. React Strict Mode). Fixes incorrect `data-has-nested`, `--layer-index`, and
+  `--nested-layer-count` on a single open dialog.
+
+- [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix crash (`Cannot read properties of null (reading 'style')`)
+  when a pointer-blocking dialog or popover closes during SPA route teardown.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/interact-outside@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/interact-outside@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

@@ -1,11 +1,12 @@
 import { dataAttr, getEventKey, getEventPoint, isLeftClick, MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./dnd.anatomy"
 import * as dom from "./dnd.dom"
-import type { DndApi, DndService } from "./dnd.types"
+import type { DndApi, DndService, DragPreviewState, ItemState } from "./dnd.types"
 
 export function connect<T extends PropTypes>(service: DndService, normalize: NormalizeProps<T>): DndApi<T> {
-  const { state, send, prop, context, scope } = service
+  const { state, send, prop, context, scope, refs } = service
 
   const isDragging = state.matches("pointer:dragging", "keyboard:session")
   const isKeyboardDragging = state.matches("keyboard:session")
@@ -13,6 +14,8 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
   const dropTarget = context.get("dropTarget")
   const dropPlacement = context.get("dropPlacement")
   const pointerPosition = context.get("pointerPosition")
+  const dragOffset = refs.get("dragOffset")
+  const dragRect = refs.get("dragRect")
 
   const orientation = prop("orientation")
   const isVertical = orientation === "vertical"
@@ -84,6 +87,27 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
   const defaultInstructions = "Press Enter or Space to start dragging."
   const instructions = prop("translations")?.instructions ?? defaultInstructions
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getItemState(value: string): ItemState {
+    return {
+      isDragging: dragValueSet.has(value),
+      isOver: dropTarget === value,
+      dropPlacement: dropTarget === value ? dropPlacement : null,
+      isDisabled: prop("canDrag") ? !prop("canDrag")!(value) : false,
+    }
+  }
+
+  function getDragPreviewState(): DragPreviewState {
+    return { dragging: isDragging, visible: isDragging && !!pointerPosition }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     isDragging,
     isKeyboardDragging,
@@ -94,14 +118,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
     pointerPosition,
     instructions,
 
-    getItemState(value) {
-      return {
-        isDragging: dragValueSet.has(value),
-        isOver: dropTarget === value,
-        dropPlacement: dropTarget === value ? dropPlacement : null,
-        isDisabled: prop("canDrag") ? !prop("canDrag")!(value) : false,
-      }
-    },
+    getItemState,
 
     cancelDrag() {
       send({ type: "DRAG.CANCEL" })
@@ -136,6 +153,11 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "aria-roledescription": "draggable",
         "aria-description": canDrag ? instructions : undefined,
         "aria-grabbed": isDragging ? isPartOfDrag : undefined,
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: "none",
+        },
         onPointerDown(event) {
           if (!canDrag) return
           if (!isLeftClick(event)) return
@@ -181,6 +203,11 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "aria-description": canDrag ? instructions : undefined,
         "aria-grabbed": isDragging ? isPartOfDrag : undefined,
         tabIndex: canDrag ? 0 : undefined,
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: "none",
+        },
         onPointerDown(event) {
           if (!canDrag) return
           if (!isLeftClick(event)) return
@@ -246,20 +273,28 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
       })
     },
 
+    getDragPreviewState,
     getDragPreviewProps() {
+      const dragPreviewState = getDragPreviewState()
       return normalize.element({
         ...parts.dragPreview.attrs(scope.id),
-        "data-dragging": dataAttr(isDragging),
+        "data-dragging": dataAttr(dragPreviewState.dragging),
         "aria-hidden": true,
-        hidden: !isDragging || !pointerPosition,
+        hidden: !dragPreviewState.visible,
         style: {
+          "--drag-preview-width": toPx(dragRect?.width),
+          "--drag-preview-height": toPx(dragRect?.height),
           position: "fixed",
           top: "0",
           left: "0",
           pointerEvents: "none",
           zIndex: MAX_Z_INDEX,
-          transform: pointerPosition ? `translate3d(${pointerPosition.x}px, ${pointerPosition.y}px, 0)` : undefined,
-          willChange: isDragging ? "transform" : undefined,
+          transform: pointerPosition
+            ? `translate3d(${pointerPosition.x - (dragOffset?.x ?? 0)}px, ${
+                pointerPosition.y - (dragOffset?.y ?? 0)
+              }px, 0)`
+            : undefined,
+          willChange: dragPreviewState.dragging ? "transform" : undefined,
         },
       })
     },

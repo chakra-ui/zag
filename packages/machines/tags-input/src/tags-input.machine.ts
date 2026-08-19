@@ -97,6 +97,9 @@ export const machine = createMachine<TagsInputSchema>({
   },
 
   watch({ track, context, action, computed, refs }) {
+    track([() => computed("valueAsString")], () => {
+      action(["dispatchChangeEvent"])
+    })
     track([() => context.get("editedTagValue")], () => {
       action(["syncEditedTagInputValue"])
     })
@@ -438,7 +441,9 @@ export const machine = createMachine<TagsInputSchema>({
         send({ type: "EXTERNAL_BLUR", id: event.id })
       },
       dispatchChangeEvent({ scope, computed }) {
-        dom.dispatchInputEvent(scope, computed("valueAsString"))
+        queueMicrotask(() => {
+          dom.dispatchInputEvent(scope, computed("valueAsString"))
+        })
       },
       highlightNextTag({ context, scope }) {
         const highlightedTagId = context.get("highlightedTagId")

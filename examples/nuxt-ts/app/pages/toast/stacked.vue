@@ -3,6 +3,7 @@ import { toastControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as toast from "@zag-js/toast"
 import ToastItem from "../../components/ToastItem.vue"
+import "@styles/toast.css"
 
 const controls = useControls(toastControls)
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 const scenario = ref<"always-open" | "controlled">("controlled")
 </script>

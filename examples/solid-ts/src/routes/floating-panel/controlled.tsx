@@ -4,6 +4,7 @@ import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-solid"
 import { For, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/floating-panel.css"
 
 export default function Page() {
   const id = createUniqueId()

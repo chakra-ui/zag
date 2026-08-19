@@ -2,6 +2,7 @@
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/cascade-select.css"
 
 interface Node {
   label: string

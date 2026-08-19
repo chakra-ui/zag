@@ -5,7 +5,18 @@ import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { flatArray } from "@zag-js/utils"
 import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
-import type { FileUploadApi, FileUploadService, ItemType } from "./file-upload.types"
+import type {
+  DropzoneState,
+  FileUploadApi,
+  FileUploadService,
+  ItemGroupProps,
+  ItemGroupState,
+  ItemProps,
+  ItemState,
+  ItemType,
+  RootState,
+  TriggerState,
+} from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
 const DEFAULT_ITEM_TYPE: ItemType = "accepted"
@@ -35,6 +46,36 @@ export function connect<T extends PropTypes>(
 
   const acceptedFiles = context.get("acceptedFiles")
   const maxFiles = prop("maxFiles")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, readOnly, dragging }
+  }
+
+  function getDropzoneState(): DropzoneState {
+    return { disabled, readOnly, dragging, invalid: !!prop("invalid") }
+  }
+
+  function getTriggerState(): TriggerState {
+    return { disabled, readOnly, invalid: !!prop("invalid") }
+  }
+
+  function getItemGroupState(props: ItemGroupProps): ItemGroupState {
+    const { type = DEFAULT_ITEM_TYPE } = props
+    return { disabled, type }
+  }
+
+  function getItemState(props: ItemProps): ItemState {
+    const { type = DEFAULT_ITEM_TYPE } = props
+    return { disabled, readOnly, type }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     dragging,
@@ -89,17 +130,21 @@ export function connect<T extends PropTypes>(
       return true
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-dragging": dataAttr(dragging),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-dragging": dataAttr(rootState.dragging),
       })
     },
 
+    getDropzoneState,
     getDropzoneProps(props = {}) {
+      const dropzoneState = getDropzoneState()
       return normalize.element({
         ...parts.dropzone.attrs(scope.id),
         dir: prop("dir"),
@@ -107,10 +152,10 @@ export function connect<T extends PropTypes>(
         role: props.disableClick ? "application" : "button",
         "aria-label": translations.dropzone,
         "aria-disabled": disabled || readOnly || undefined,
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-dragging": dataAttr(dragging),
+        "data-invalid": dataAttr(dropzoneState.invalid),
+        "data-disabled": dataAttr(dropzoneState.disabled),
+        "data-readonly": dataAttr(dropzoneState.readOnly),
+        "data-dragging": dataAttr(dropzoneState.dragging),
         onKeyDown(event) {
           if (disabled || readOnly) return
           if (event.defaultPrevented) return
@@ -184,14 +229,16 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
-        disabled: disabled || readOnly,
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(prop("invalid")),
+        disabled: triggerState.disabled || triggerState.readOnly,
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-invalid": dataAttr(triggerState.invalid),
         type: "button",
         onClick(event) {
           if (disabled || readOnly) return
@@ -232,58 +279,61 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getItemGroupState,
     getItemGroupProps(props = {}) {
-      const { type = DEFAULT_ITEM_TYPE } = props
+      const itemGroupState = getItemGroupState(props)
       return normalize.element({
         ...parts.itemGroup.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemGroupState.disabled),
+        "data-type": itemGroupState.type,
       })
     },
 
+    getItemState,
     getItemProps(props) {
-      const { type = DEFAULT_ITEM_TYPE } = props
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-type": itemState.type,
       })
     },
 
     getItemNameProps(props) {
-      const { type = DEFAULT_ITEM_TYPE } = props
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemName.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-type": itemState.type,
       })
     },
 
     getItemSizeTextProps(props) {
-      const { type = DEFAULT_ITEM_TYPE } = props
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemSizeText.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-type": itemState.type,
       })
     },
 
     getItemPreviewProps(props) {
-      const { type = DEFAULT_ITEM_TYPE } = props
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemPreview.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-type": itemState.type,
       })
     },
 
     getItemPreviewImageProps(props) {
-      const { file, url, type = DEFAULT_ITEM_TYPE } = props
+      const { file, url } = props
+      const itemState = getItemState(props)
       const isImage = file.type.startsWith("image/")
       if (!isImage) {
         throw new Error("Preview Image is only supported for image files")
@@ -292,25 +342,26 @@ export function connect<T extends PropTypes>(
         ...parts.itemPreviewImage.attrs(scope.id),
         alt: translations.itemPreview?.(file),
         src: url,
-        "data-disabled": dataAttr(disabled),
-        "data-type": type,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-type": itemState.type,
       })
     },
 
     getItemDeleteTriggerProps(props) {
-      const { file, type = DEFAULT_ITEM_TYPE } = props
+      const { file } = props
+      const itemState = getItemState(props)
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
-        disabled: disabled || readOnly,
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-type": type,
+        disabled: itemState.disabled || itemState.readOnly,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-readonly": dataAttr(itemState.readOnly),
+        "data-type": itemState.type,
         "aria-label": translations.deleteFile?.(file),
         onClick() {
-          if (disabled || readOnly) return
-          send({ type: "FILE.DELETE", file, itemType: type })
+          if (itemState.disabled || itemState.readOnly) return
+          send({ type: "FILE.DELETE", file, itemType: itemState.type })
         },
       })
     },

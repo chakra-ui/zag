@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -107,7 +107,8 @@ type PropsWithDefault = "orientation" | "activationMode" | "loopFocus"
 
 export type TabsSchema = {
   state: "idle" | "focused"
-  props: RequiredBy<TabsProps, PropsWithDefault>
+  props: TabsProps
+  defaultPropKey: PropsWithDefault
   context: {
     ssr: boolean
     value: string | null
@@ -169,6 +170,13 @@ export interface ContentProps {
   value: string
 }
 
+export interface ContentState {
+  /**
+   * Whether the tab content is selected
+   */
+  selected: boolean
+}
+
 export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
@@ -215,6 +223,10 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getTriggerProps: (props: TriggerProps) => T["button"]
+  /**
+   * Returns the state of the content with the given props
+   */
+  getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getIndicatorProps: () => T["element"]
 }

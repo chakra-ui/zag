@@ -155,7 +155,7 @@ const components = defineCollection({
         npmUrl: data.package
           ? `https://www.npmjs.com/package/${data.package}`
           : "",
-        sourceUrl: `${siteConfig.repo.url}/tree/main/packages/machines/${packageSlug}`,
+        sourceUrl: `${siteConfig.repo.treeUrl}/packages/machines/${packageSlug}`,
         visualizeUrl: `https://zag-visualizer.vercel.app/${packageSlug}`,
         version: (() => {
           if (!data.package) return ""
@@ -216,7 +216,7 @@ const utilities = defineCollection({
         npmUrl: data.package
           ? `https://www.npmjs.com/package/${data.package}`
           : "",
-        sourceUrl: `${siteConfig.repo.url}/tree/main/packages/machines/${packageSlug}`,
+        sourceUrl: `${siteConfig.repo.treeUrl}/packages/machines/${packageSlug}`,
         visualizeUrl: `https://zag-visualizer.vercel.app/${packageSlug}`,
         version: (() => {
           if (!data.package) return ""

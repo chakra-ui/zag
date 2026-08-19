@@ -16,8 +16,7 @@ clickable trigger element.
 
 - Focus is managed and can be customized
 - Supports modal and non-modal modes
-- Ensures correct DOM order after tabbing out of the popover, whether it's
-  portalled or not
+- Ensures correct DOM order after tabbing out of the popover
 - Supports multiple triggers sharing a single popover instance
 
 ## Installation
@@ -30,7 +29,8 @@ Install the popover package:
 
 Check the popover anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="popover" />
 
@@ -53,16 +53,9 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="popover/usage.mdx" />
 
-### Rendering the popover in a portal
-
-By default, the popover is rendered in the same DOM hierarchy as the trigger. To
-render the popover within a portal, pass `portalled: true` property to the
-machine's context.
-
-> Note: This requires that you render the component within a `Portal` based on
-> the framework you use.
-
-<CodeSnippet id="popover/render-in-portal.mdx" />
+The positioner is rendered in a `Portal` (or `Teleport`/`use:portal` depending
+on your framework). Zag automatically preserves the correct tab order after the
+trigger, even though the content lives elsewhere in the DOM.
 
 ### Managing focus within popover
 
@@ -90,9 +83,7 @@ it'll:
 - hide content behind the popover from screen readers
 
 To make the popover modal, set the `modal: true` property in the machine's
-context. When `modal: true`, we set the `portalled` attribute to `true` as well.
-
-> **Note**: This requires that you render the component within a `Portal`.
+context.
 
 ```tsx {2}
 const service = useMachine(popover.machine, {
@@ -221,7 +212,7 @@ and the popover will be rendered outside the dialog.
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -229,15 +220,15 @@ When the popover is expanded, we add a `data-state` and `data-placement`
 attribute to the trigger.
 
 ```css
-[data-part="trigger"][data-state="open|closed"] {
+[data-popover-trigger][data-state="open|closed"] {
   /* styles for the expanded state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-popover-content][data-state="open|closed"] {
   /* styles for the expanded state */
 }
 
-[data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 ```
@@ -247,12 +238,25 @@ attribute to the trigger.
 When the popover is expanded, `data-placement` is added to trigger and content.
 
 ```css
-[data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 
-[data-part="content"][data-placement="(top|bottom)-(start|end)"] {
+[data-popover-content][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
+}
+```
+
+### Compensating for scrollbar width
+
+When `modal` is `true`, Zag applies `--scrollbar-width` on the root element. Use
+this CSS variable to keep fixed or sticky elements aligned when the popover
+opens and body scrolling is locked.
+
+```css
+.app-header {
+  position: fixed;
+  inset-inline-end: calc(1rem + var(--scrollbar-width, 0px));
 }
 ```
 
@@ -262,7 +266,7 @@ The arrow element requires specific css variables to be set for it to show
 correctly.
 
 ```css
-[data-part="arrow"] {
+[data-popover-arrow] {
   --arrow-background: white;
   --arrow-size: 16px;
 }
@@ -273,7 +277,7 @@ A common technique for adding a shadow to the arrow is to use
 the `--arrow-shadow-color` variable.
 
 ```css
-[data-part="arrow"] {
+[data-popover-arrow] {
   --arrow-shadow-color: gray;
 }
 ```

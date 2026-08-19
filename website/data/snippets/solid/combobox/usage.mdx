@@ -48,15 +48,17 @@ export function Combobox() {
         </div>
       </div>
       <div {...api().getPositionerProps()}>
-        <Show when={options().length > 0}>
-          <ul {...api().getContentProps()}>
-            <For each={options()}>
-              {(item) => (
-                <li {...api().getItemProps({ item })}>{item.label}</li>
-              )}
-            </For>
-          </ul>
-        </Show>
+        <div {...api().getContentProps()}>
+          <Show when={options().length > 0}>
+            <div {...api().getListProps()}>
+              <For each={options()}>
+                {(item) => (
+                  <div {...api().getItemProps({ item })}>{item.label}</div>
+                )}
+              </For>
+            </div>
+          </Show>
+        </div>
       </div>
     </div>
   )

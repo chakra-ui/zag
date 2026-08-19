@@ -3,6 +3,7 @@ import * as toast from "@zag-js/toast"
 import { createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { ToastItem } from "~/components/toast-item"
+import "@styles/toast.css"
 
 const toaster = toast.createStore({
   overlap: true,

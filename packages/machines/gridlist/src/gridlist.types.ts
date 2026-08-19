@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -198,7 +198,8 @@ type PropsWithDefault = "collection" | "selectionMode"
 
 export interface GridListSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"
-  props: RequiredBy<GridListProps<T>, PropsWithDefault>
+  props: GridListProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     focusedValue: string | null
@@ -255,6 +256,29 @@ export interface ItemProps<T extends CollectionItem = CollectionItem> {
    * Whether to focus the item on hover
    */
   focusOnHover?: boolean | undefined
+}
+
+export interface ContentState {
+  /**
+   * Whether the gridlist is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the gridlist has no items
+   */
+  empty: boolean
+  /**
+   * The layout of the gridlist content
+   */
+  layout: "stack" | "grid"
+  /**
+   * The number of columns in the gridlist content (grid layout only)
+   */
+  columnCount: number
+  /**
+   * Whether the gridlist allows multiple selection
+   */
+  multiple: boolean
 }
 
 export interface ItemState {
@@ -378,6 +402,10 @@ export interface GridListApi<T extends PropTypes = PropTypes, V extends Collecti
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getItemGroupProps: (props: ItemGroupProps) => T["element"]
   getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]

@@ -3,6 +3,7 @@ import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { RotateCcw } from "lucide-vue-next"
+import "@styles/signature-pad.css"
 
 const url = ref("")
 const setUrl = (v: string) => (url.value = v)

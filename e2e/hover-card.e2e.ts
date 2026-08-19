@@ -1,99 +1,259 @@
 import { expect, test } from "@playwright/test"
-import { a11y, part } from "./_utils"
+import { part } from "./_utils"
+import { HoverCardModel, OPEN_DELAY } from "./models/hover-card.model"
 
-const trigger = part("hover-card", "trigger")
-const content = part("hover-card", "content")
-const testText = "[data-testid=test-text]"
+let I: HoverCardModel
 
-test.beforeEach(async ({ page }) => {
-  await page.goto("/hover-card/basic")
-})
+test.describe("hover card", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new HoverCardModel(page)
+    await I.goto()
+  })
 
-test("should have no accessibility violation", async ({ page }) => {
-  await a11y(page, trigger)
-})
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
+  })
 
-test("content should be hidden by default", async ({ page }) => {
-  await expect(page.locator(content)).not.toBeVisible()
-})
+  test("content should be hidden by default", async () => {
+    await I.dontSeeContent()
+  })
 
-test("should be opened after hovering trigger", async ({ page }) => {
-  await page.hover(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
-})
+  test("should open on hover", async () => {
+    await I.hoverTrigger()
+    await I.seeContent()
+  })
 
-test("should have no accessibility violation in content", async ({ page }) => {
-  await page.hover(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+  test("should have no accessibility violations in the content", async () => {
+    await I.hoverTrigger()
+    await I.seeContent()
+    await I.checkAccessibility(part("hover-card", "content"))
+  })
 
-  await a11y(page, content)
-})
+  test("should open on focus", async () => {
+    await I.focusTrigger()
+    await I.seeContent()
+  })
 
-test("should be opened after focusing trigger", async ({ page }) => {
-  await page.focus(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
-})
+  test("should not open when focus follows a pointer interaction", async () => {
+    // e.g. a dialog restoring focus to the trigger. The pointer never touches it, and nothing
+    // about the interaction says the user wants a preview.
+    await I.pressAway()
+    await I.focusTrigger()
+    await I.dontSeeContent()
+  })
 
-test("should be closed after blurring trigger", async ({ page }) => {
-  await page.focus(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+  test("should close on blur", async () => {
+    await I.focusTrigger()
+    await I.seeContent()
 
-  await page.locator(trigger).evaluate((e) => e.blur())
-  await page.waitForTimeout(500)
-  await expect(page.locator(content)).not.toBeVisible()
-})
+    await I.blurTrigger()
+    await I.waitOutCloseDelay()
+    await I.dontSeeContent()
+  })
 
-test("should be closed after blurring trigger with keyboard", async ({ page }) => {
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+  test("[keyboard] should close when tabbing away from the trigger", async () => {
+    await I.clickMain()
+    await I.pressKey("Tab")
+    await I.advance(OPEN_DELAY)
+    await I.seeContent()
 
-  await page.keyboard.press("Tab")
+    await I.pressKey("Tab")
+    await I.waitOutCloseDelay()
+    await I.dontSeeContent()
+  })
 
-  await page.waitForTimeout(500)
-  await expect(page.locator(content)).not.toBeVisible()
-})
+  test("should stay open on blur when the pointer opened it", async () => {
+    await I.hoverTrigger()
+    await I.seeContent()
 
-test("should remain open after blurring trigger if pointer opens card", async ({ page }) => {
-  await page.hover(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+    await I.focusTrigger()
+    await I.seeContent()
 
-  await page.focus(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+    await I.blurTrigger()
+    await I.seeContent()
 
-  await page.locator(trigger).evaluate((e) => e.blur())
-  await page.waitForTimeout(500)
-  await expect(page.locator(content)).toBeVisible()
+    await I.hoverTestText()
+    await I.waitOutCloseDelay()
+    await I.dontSeeContent()
+  })
 
-  await page.hover(testText)
-  await page.waitForTimeout(500)
-  await expect(page.locator(content)).not.toBeVisible()
-})
+  test("should stay open when moving from the trigger to the content", async () => {
+    await I.hoverTrigger()
+    await I.seeContent()
 
-test("should remain open after moving from trigger to content", async ({ page }) => {
-  await page.hover(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+    await I.hoverContent()
+    await I.seeContent()
+  })
 
-  await page.hover(content)
-  await expect(page.locator(content)).toBeVisible()
-})
+  test("should stay open when moving from the content back to the trigger", async () => {
+    await I.hoverTrigger()
+    await I.seeContent()
 
-test("should remain open after moving from content back to trigger", async ({ page }) => {
-  await page.hover(trigger)
-  await page.waitForSelector(content)
-  await expect(page.locator(content)).toBeVisible()
+    await I.hoverContent()
+    await I.seeContent()
 
-  await page.hover(content)
-  await expect(page.locator(content)).toBeVisible()
+    await I.hoverTrigger()
+    await I.seeContent()
+  })
 
-  await page.hover(trigger)
-  await expect(page.locator(content)).toBeVisible()
+  test.describe("inside a dialog", () => {
+    test("should open on hover, and not on the dialog's own focus", async () => {
+      await I.goto("/hover-card/hovercard-in-dialog")
+      await I.page.locator('[data-testid="trigger-1"]').click()
+      await I.advance(OPEN_DELAY)
+
+      // The dialog traps focus onto the trigger, but the dialog was opened by pointer, so that
+      // focus carries no intent to preview.
+      await I.dontSeeContent()
+
+      await I.hoverTrigger()
+      await I.seeContent()
+    })
+  })
+
+  test.describe("open change reason", () => {
+    // The controlled example records every `onOpenChange` it receives.
+    test.beforeEach(async () => {
+      await I.goto("/hover-card/controlled")
+    })
+
+    test("should report the pointer opening and leaving", async () => {
+      await I.hoverTrigger()
+      await I.moveClearOfCard()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-hover close:pointer-leave")
+    })
+
+    test("should report an outside press", async () => {
+      await I.hoverTrigger()
+      await I.pressOutside()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-hover close:interact-outside")
+    })
+
+    test("should report focus and blur", async () => {
+      await I.focusTrigger()
+      await I.blurTrigger()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-focus close:trigger-blur")
+    })
+
+    test("should tell escape apart from an outside press", async () => {
+      await I.focusTrigger()
+      await I.pressKey("Escape")
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("open:trigger-focus close:escape-key")
+    })
+
+    test("should stay silent when the warmup is cancelled", async () => {
+      // The card never opened, so there is no close to report.
+      await I.hoverTrigger({ wait: false })
+      await I.moveClearOfCard()
+      await I.waitOutCloseDelay()
+      await I.seeOpenChangeLog("")
+    })
+  })
+
+  test.describe("safe area", () => {
+    test("should stay open while the pointer travels diagonally to the content", async () => {
+      await I.hoverTrigger()
+      await I.seeContent()
+
+      await I.moveIntoCorridor()
+      await I.waitOutCloseDelay()
+      await I.seeContent()
+
+      await I.moveOntoContent()
+      await I.seeContent()
+    })
+
+    test("should close when the pointer leaves the safe area", async () => {
+      await I.hoverTrigger()
+      await I.seeContent()
+
+      await I.moveAwayFromContent()
+      await I.waitOutCloseDelay()
+      await I.dontSeeContent()
+    })
+
+    test("should cancel the close when the pointer returns to the corridor", async () => {
+      await I.hoverTrigger()
+      await I.seeContent()
+
+      // leave, then come back into the corridor before the close delay elapses
+      await I.moveAwayFromContent()
+      await I.moveIntoCorridor(-20)
+
+      await I.waitOutCloseDelay()
+      await I.seeContent()
+    })
+
+    test("should anchor to the line the pointer is on, not the union of every line", async () => {
+      await I.goto("/hover-card/inline")
+
+      const lines = await I.triggerLines()
+      expect(lines.length).toBeGreaterThan(2)
+
+      const first = await I.hoverLine(0)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(first)
+
+      await I.moveClearOfParagraph()
+      await I.waitOutCloseDelay()
+      await I.dontSeeContent()
+
+      const last = await I.hoverLine(lines.length - 1)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(last)
+    })
+
+    test("should track the pointer across lines while warming up", async () => {
+      await I.goto("/hover-card/inline")
+
+      const lines = await I.triggerLines()
+      const first = lines[0]
+      const last = lines[lines.length - 1]
+
+      await I.page.mouse.move(first.x + first.width / 2, first.y + first.height / 2, { steps: 4 })
+      await I.page.mouse.move(last.x + last.width / 2, last.y + last.height / 2, { steps: 4 })
+      await I.advance(OPEN_DELAY)
+
+      await I.seeContent()
+      await I.seeCardAnchoredTo(last)
+    })
+
+    test("should not carry one trigger's line over to another", async () => {
+      await I.goto("/hover-card/inline")
+
+      const first = await I.hoverLine(0)
+      await I.seeContent()
+      await I.seeCardAnchoredTo(first)
+
+      // Switched by button, so the pointer never reaches B.
+      const otherLines = await I.otherTriggerLines()
+      await I.switchTrigger()
+
+      await I.seeContent()
+      await I.seeCardAnchoredTo(otherLines[otherLines.length - 1])
+      await I.dontSeeCardAnchoredTo(otherLines[0])
+    })
+
+    test("should not close a default-open card until the pointer engages with it", async () => {
+      await I.goto("/hover-card/default-open")
+      await I.seeContent()
+
+      // the pointer has never been on the trigger or the content, so wandering the page has no
+      // relationship with this card
+      await I.moveClearOfCard(40)
+      await I.moveClearOfCard(700)
+      await I.waitOutCloseDelay()
+      await I.seeContent()
+
+      // once it has actually been hovered, leaving closes it as usual
+      await I.moveOntoContent()
+      await I.moveClearOfCard(40)
+      await I.waitOutCloseDelay()
+      await I.dontSeeContent()
+    })
+  })
 })

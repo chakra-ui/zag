@@ -1,10 +1,10 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { observeChildren, raf } from "@zag-js/dom-query"
 import { addOrRemove, ensureProps, isArray, isEqual } from "@zag-js/utils"
 import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
 
-const { not, and } = createGuards<ToggleGroupSchema>()
+const { not } = createGuards<ToggleGroupSchema>()
 
 export const machine = createMachine<ToggleGroupSchema>({
   props({ props }) {
@@ -22,6 +22,8 @@ export const machine = createMachine<ToggleGroupSchema>({
     return "idle"
   },
 
+  effects: ["trackItemMutations"],
+
   context({ prop, bindable }) {
     return {
       value: bindable<string[]>(() => ({
@@ -31,10 +33,10 @@ export const machine = createMachine<ToggleGroupSchema>({
           prop("onValueChange")?.({ value })
         },
       })),
-      focusedId: bindable<string | null>(() => ({
+      focusedValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
-      isTabbingBackward: bindable<boolean>(() => ({
+      hasInteracted: bindable<boolean>(() => ({
         defaultValue: false,
       })),
       isClickFocus: bindable<boolean>(() => ({
@@ -62,31 +64,38 @@ export const machine = createMachine<ToggleGroupSchema>({
     "ROOT.MOUSE_DOWN": {
       actions: ["setClickFocus"],
     },
+    "ROOT.BLUR": {
+      actions: ["clearClickFocus"],
+    },
+    "ITEMS.CHANGE": {
+      actions: ["syncHasInteracted"],
+    },
   },
 
   states: {
+    // Active only before the first successful focus — the root then permanently cedes its tabindex.
     idle: {
       on: {
         "ROOT.FOCUS": {
           target: "focused",
-          guard: not(and("isClickFocus", "isTabbingBackward")),
-          actions: ["focusFirstToggle", "clearClickFocus"],
+          guard: not("isClickFocus"),
+          actions: ["focusFirstToggle", "setHasInteracted", "clearClickFocus"],
         },
         "TOGGLE.FOCUS": {
           target: "focused",
-          actions: ["setFocusedId"],
+          actions: ["setFocusedValue", "setHasInteracted"],
         },
       },
     },
 
     focused: {
       on: {
-        "ROOT.BLUR": {
-          target: "idle",
-          actions: ["clearIsTabbingBackward", "clearFocusedId", "clearClickFocus"],
+        "ROOT.FOCUS": {
+          guard: not("isClickFocus"),
+          actions: ["focusFirstToggle", "clearClickFocus"],
         },
         "TOGGLE.FOCUS": {
-          actions: ["setFocusedId"],
+          actions: ["setFocusedValue"],
         },
         "TOGGLE.FOCUS_NEXT": {
           actions: ["focusNextToggle"],
@@ -100,16 +109,6 @@ export const machine = createMachine<ToggleGroupSchema>({
         "TOGGLE.FOCUS_LAST": {
           actions: ["focusLastToggle"],
         },
-        "TOGGLE.SHIFT_TAB": [
-          {
-            guard: not("isFirstToggleFocused"),
-            target: "idle",
-            actions: ["setIsTabbingBackward"],
-          },
-          {
-            actions: ["setIsTabbingBackward"],
-          },
-        ],
       },
     },
   },
@@ -117,32 +116,30 @@ export const machine = createMachine<ToggleGroupSchema>({
   implementations: {
     guards: {
       isClickFocus: ({ context }) => context.get("isClickFocus"),
-      isTabbingBackward: ({ context }) => context.get("isTabbingBackward"),
-      isFirstToggleFocused: ({ context, scope }) => context.get("focusedId") === dom.getFirstEl(scope)?.id,
     },
 
     actions: {
-      setIsTabbingBackward({ context }) {
-        context.set("isTabbingBackward", true)
-      },
-      clearIsTabbingBackward({ context }) {
-        context.set("isTabbingBackward", false)
-      },
       setClickFocus({ context }) {
         context.set("isClickFocus", true)
       },
       clearClickFocus({ context }) {
         context.set("isClickFocus", false)
       },
+      setHasInteracted({ context }) {
+        context.set("hasInteracted", true)
+      },
+      syncHasInteracted({ context, scope }) {
+        if (!context.get("hasInteracted")) return
+        if (dom.hasFocusableItem(scope)) return
+        context.set("hasInteracted", false)
+        context.set("focusedValue", null)
+      },
       checkIfWithinToolbar({ context, scope }) {
         const closestToolbar = dom.getRootEl(scope)?.closest("[role=toolbar]")
         context.set("isWithinToolbar", !!closestToolbar)
       },
-      setFocusedId({ context, event }) {
-        context.set("focusedId", event.id)
-      },
-      clearFocusedId({ context }) {
-        context.set("focusedId", null)
+      setFocusedValue({ context, event }) {
+        context.set("focusedValue", event.value)
       },
       setValue({ context, event, prop }) {
         ensureProps(event, ["value"])
@@ -157,18 +154,20 @@ export const machine = createMachine<ToggleGroupSchema>({
         }
         context.set("value", next)
       },
-      focusNextToggle({ context, scope, prop }) {
+      focusNextToggle({ context, scope, computed }) {
         raf(() => {
-          const focusedId = context.get("focusedId")
-          if (!focusedId) return
-          dom.getNextEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
+          const focusedValue = context.get("focusedValue")
+          if (!focusedValue) return
+          const id = dom.getItemId(scope, focusedValue)
+          dom.getNextEl(scope, id, computed("currentLoopFocus"))?.focus({ preventScroll: true })
         })
       },
-      focusPrevToggle({ context, scope, prop }) {
+      focusPrevToggle({ context, scope, computed }) {
         raf(() => {
-          const focusedId = context.get("focusedId")
-          if (!focusedId) return
-          dom.getPrevEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
+          const focusedValue = context.get("focusedValue")
+          if (!focusedValue) return
+          const id = dom.getItemId(scope, focusedValue)
+          dom.getPrevEl(scope, id, computed("currentLoopFocus"))?.focus({ preventScroll: true })
         })
       },
       focusFirstToggle({ scope }) {
@@ -179,6 +178,20 @@ export const machine = createMachine<ToggleGroupSchema>({
       focusLastToggle({ scope }) {
         raf(() => {
           dom.getLastEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+    },
+
+    effects: {
+      trackItemMutations({ scope, send }) {
+        const root = dom.getRootEl(scope)
+        if (!root) return
+        return observeChildren(root, {
+          attributes: true,
+          attributeFilter: ["disabled", "data-disabled"],
+          callback() {
+            send({ type: "ITEMS.CHANGE" })
+          },
         })
       },
     },

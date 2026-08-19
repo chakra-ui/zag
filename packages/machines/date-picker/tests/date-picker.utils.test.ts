@@ -1,6 +1,6 @@
 import { parseDate } from "@internationalized/date"
 import { describe, expect, test } from "vitest"
-import { adjustStartAndEndDate, isDateWithinRange, sortDates } from "../src/date-picker.utils"
+import { adjustStartAndEndDate, getVisibleRangeText, isDateWithinRange, sortDates } from "../src/date-picker.utils"
 
 describe("DatePicker Utils", () => {
   describe("sortDates", () => {
@@ -146,6 +146,34 @@ describe("DatePicker Utils", () => {
       const value = [null, null]
 
       expect(isDateWithinRange(date, value)).toBe(false)
+    })
+  })
+
+  describe("getVisibleRangeText", () => {
+    const startValue = parseDate("2026-06-01")
+    const endValue = parseDate("2026-06-30")
+
+    test("should not reuse memoized result across selection modes", () => {
+      // same view/range/locale/timeZone, only selectionMode differs
+      const range = getVisibleRangeText({
+        view: "day",
+        startValue,
+        endValue,
+        locale: "en",
+        timeZone: "UTC",
+        selectionMode: "range",
+      })
+      expect(range.formatted).toBe("June 2026 - June 2026")
+
+      const single = getVisibleRangeText({
+        view: "day",
+        startValue,
+        endValue,
+        locale: "en",
+        timeZone: "UTC",
+        selectionMode: "single",
+      })
+      expect(single.formatted).toBe("June 2026")
     })
   })
 })

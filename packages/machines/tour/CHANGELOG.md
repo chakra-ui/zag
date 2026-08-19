@@ -1,5 +1,146 @@
 # @zag-js/tour
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-trap@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where dismissing a tour from a step's `effect`
+  skipped cleanup and could miss firing the "completed" status.
+  - Fixed issue where a tooltip step's position could reset unexpectedly when the tour closed.
+
+- [`7e43667`](https://github.com/chakra-ui/zag/commit/7e436671b3aebaf4cd74ee02709a56986e63eaad) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where a step action with `action: "skip"` did nothing
+  when clicked.
+
+- Updated dependencies [[`2b19978`](https://github.com/chakra-ui/zag/commit/2b199781b1a8d9b8a57b03dff443cf5dbf55c912),
+  [`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/focus-trap@1.43.0
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/popper@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/interact-outside@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-trap@1.42.0
+  - @zag-js/interact-outside@1.42.0
+  - @zag-js/popper@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/dismissable@2.0.0-next.0
+  - @zag-js/focus-trap@2.0.0-next.0
+  - @zag-js/interact-outside@2.0.0-next.0
+  - @zag-js/popper@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [#3130](https://github.com/chakra-ui/zag/pull/3130)
+  [`005e8fa`](https://github.com/chakra-ui/zag/commit/005e8fafdcb1226fd2a3a07617a47cc76c2d823f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-side` to placement-aware parts based on the current
+  placement.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7),
+  [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/popper@1.41.0
+  - @zag-js/focus-trap@1.41.0
+  - @zag-js/interact-outside@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/focus-trap@1.40.0
+  - @zag-js/interact-outside@1.40.0
+  - @zag-js/popper@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

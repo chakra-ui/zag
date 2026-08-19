@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { DateValue } from "@internationalized/date"
 
 /* -----------------------------------------------------------------------------
@@ -387,7 +387,8 @@ type Computed = Readonly<{
 
 export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> {
   state: "idle" | "slot-selecting" | "event-dragging" | "event-resizing"
-  props: RequiredBy<SchedulerProps<T>, PropsWithDefault>
+  props: SchedulerProps<T>
+  defaultPropKey: PropsWithDefault
   context: SchedulerContext
   refs: {
     dragOrigin: { x: number; y: number } | null
@@ -407,6 +408,25 @@ export type SchedulerMachine<T extends SchedulerPayload = SchedulerPayload> = Ma
 /* -----------------------------------------------------------------------------
  * Connect API types
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * The current view
+   */
+  view: ViewType
+  /**
+   * Whether the user is currently dragging an event
+   */
+  dragging: boolean
+  /**
+   * Whether the user is currently resizing an event
+   */
+  resizing: boolean
+  /**
+   * Whether the user is currently selecting a slot
+   */
+  selectingSlot: boolean
+}
 
 export interface EventPosition {
   /**
@@ -832,6 +852,10 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
    */
   getSelectedSlotEl: () => HTMLElement | null
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getHeaderProps: () => T["element"]
   getHeaderTitleProps: () => T["element"]

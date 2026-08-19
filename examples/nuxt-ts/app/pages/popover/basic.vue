@@ -2,6 +2,7 @@
 import * as popover from "@zag-js/popover"
 import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/popover.css"
 
 const controls = useControls(popoverControls)
 
@@ -23,7 +24,7 @@ const api = computed(() => popover.connect(service, normalizeProps))
         Click me
         <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
       </button>
-      <Teleport to="#teleports" :disabled="!api.portalled">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <Presence data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">

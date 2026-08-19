@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as dialog from "@zag-js/dialog"
   import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/dialog.css"
 
   const id = $props.id()
   const service = useMachine(dialog.machine, { id })

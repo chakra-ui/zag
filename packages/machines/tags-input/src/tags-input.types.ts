@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -222,7 +222,8 @@ type ComputedContext = Readonly<{
 export interface TagsInputSchema {
   state: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
   tag: "focused" | "editing"
-  props: RequiredBy<TagsInputProps, PropsWithDefault>
+  props: TagsInputProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     inputValue: string
@@ -255,6 +256,29 @@ export interface ItemProps {
   index: string | number
   value: string
   disabled?: boolean | undefined
+}
+
+export interface RootState {
+  /**
+   * Whether the tags input is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the tags input is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the tags input is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the tags input is focused
+   */
+  focused: boolean
+  /**
+   * Whether the tags input has no tags
+   */
+  empty: boolean
 }
 
 export interface ItemState {
@@ -334,6 +358,10 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
    */
   getItemState: (props: ItemProps) => ItemState
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]

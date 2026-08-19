@@ -33,7 +33,8 @@ Install the cascade select package:
 
 Check the cascade select anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="cascade-select" />
 
@@ -394,7 +395,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 ## Styling guide
 
-Each cascade select part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -402,11 +403,11 @@ When the cascade select is open, the trigger and content is given a `data-state`
 attribute.
 
 ```css
-[data-part="trigger"][data-state="open|closed"] {
+[data-cascade-select-trigger][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-cascade-select-content][data-state="open|closed"] {
   /* styles for open or closed state */
 }
 ```
@@ -416,7 +417,7 @@ attribute.
 Items are given a `data-state` attribute, indicating whether they are selected.
 
 ```css
-[data-part="item"][data-state="checked|unchecked"] {
+[data-cascade-select-item][data-state="checked|unchecked"] {
   /* styles for selected or unselected state */
 }
 ```
@@ -427,7 +428,7 @@ When an item is highlighted, via keyboard navigation or pointer, it is given a
 `data-highlighted` attribute.
 
 ```css
-[data-part="item"][data-highlighted] {
+[data-cascade-select-item][data-highlighted] {
   /* styles for highlighted state */
 }
 ```
@@ -438,7 +439,7 @@ When an item has children (is a branch node), it is given a `data-has-children`
 attribute.
 
 ```css
-[data-part="item"][data-has-children] {
+[data-cascade-select-item][data-has-children] {
   /* styles for items with children (branch nodes) */
 }
 ```
@@ -449,11 +450,11 @@ When the cascade select is invalid, the label and trigger is given a
 `data-invalid` attribute.
 
 ```css
-[data-part="label"][data-invalid] {
+[data-cascade-select-label][data-invalid] {
   /* styles for invalid state */
 }
 
-[data-part="trigger"][data-invalid] {
+[data-cascade-select-trigger][data-invalid] {
   /* styles for invalid state */
 }
 ```
@@ -464,15 +465,15 @@ When the cascade select is disabled, the trigger and label is given a
 `data-disabled` attribute.
 
 ```css
-[data-part="trigger"][data-disabled] {
+[data-cascade-select-trigger][data-disabled] {
   /* styles for disabled state */
 }
 
-[data-part="label"][data-disabled] {
+[data-cascade-select-label][data-disabled] {
   /* styles for disabled label state */
 }
 
-[data-part="item"][data-disabled] {
+[data-cascade-select-item][data-disabled] {
   /* styles for disabled item state */
 }
 ```
@@ -483,7 +484,7 @@ When no option is selected, the trigger is given a `data-placeholder-shown`
 attribute.
 
 ```css
-[data-part="trigger"][data-placeholder-shown] {
+[data-cascade-select-trigger][data-placeholder-shown] {
   /* styles for empty state */
 }
 ```

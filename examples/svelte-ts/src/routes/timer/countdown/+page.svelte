@@ -3,6 +3,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as timer from "@zag-js/timer"
+  import "@styles/timer.css"
 
   const id = $props.id()
   const service = useMachine(timer.machine, {

@@ -1,0 +1,240 @@
+.main {
+  width: 100%;
+  max-width: 960px;
+}
+
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-column-bg: #f8fafc;
+  --dnd-card-bg: #ffffff;
+  --dnd-muted: #52525b;
+  --dnd-indicator: #2563eb;
+  --dnd-handle: #71717a;
+
+  position: relative;
+}
+
+.cardRoot {
+  position: relative;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.columnItem {
+  position: relative;
+  min-width: 0;
+}
+
+.column {
+  min-width: 0;
+  border: 1px solid var(--dnd-border);
+  border-radius: 6px;
+  background: var(--dnd-column-bg);
+  padding: 8px;
+
+  &[data-column-dragging] {
+    opacity: 0.45;
+  }
+}
+
+.columnHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 32px;
+  margin-bottom: 8px;
+  padding-inline: 2px;
+  cursor: grab;
+
+  &[data-dragging] {
+    cursor: grabbing;
+  }
+}
+
+.columnTitle {
+  margin-block: 0;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.columnDragHandle {
+  outline: 0;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle);
+}
+
+.count {
+  color: var(--dnd-muted);
+  font-size: 12px;
+}
+
+.items {
+  display: grid;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.item {
+  position: relative;
+}
+
+.card {
+  cursor: grab;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--dnd-border);
+  border-radius: 6px;
+  background: var(--dnd-card-bg);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+
+  &[data-dragging] {
+    opacity: 0.45;
+    cursor: grabbing;
+  }
+}
+
+.dragHandle {
+  cursor: grab;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle);
+  padding-top: 2px;
+
+  &:hover {
+    color: #18181b;
+  }
+}
+
+.cardBody {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cardMeta {
+  color: var(--dnd-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dnd-indicator);
+  opacity: 0;
+  z-index: 1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--dnd-indicator);
+    border-radius: 999px;
+    background: var(--dnd-card-bg);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
+
+  &[data-placement="before"] {
+    top: -4px;
+  }
+
+  &[data-placement="after"] {
+    bottom: -4px;
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.columnDropIndicator {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--dnd-indicator);
+  opacity: 0;
+  z-index: 2;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--dnd-indicator);
+    border-radius: 999px;
+    background: var(--dnd-column-bg);
+    transform: translateX(-50%);
+    box-sizing: border-box;
+  }
+
+  &[data-placement="before"] {
+    left: -7px;
+  }
+
+  &[data-placement="after"] {
+    right: -7px;
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.columnEndTarget {
+  min-height: 38px;
+  border: 1px dashed var(--dnd-border);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  color: var(--dnd-muted);
+  font-size: 12px;
+
+  &[data-drop-target] {
+    border-color: var(--dnd-indicator);
+    color: var(--dnd-indicator);
+    background: color-mix(in srgb, var(--dnd-indicator) 8%, white);
+  }
+}
+
+.dragPreview {
+  width: var(--drag-preview-width);
+  min-height: var(--drag-preview-height);
+  max-width: min(var(--drag-preview-width), calc(100vw - 16px));
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+}
+
+.columnPreview {
+  width: var(--drag-preview-width);
+  min-height: var(--drag-preview-height);
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+}

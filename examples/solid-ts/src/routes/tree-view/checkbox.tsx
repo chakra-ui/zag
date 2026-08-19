@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, CheckSquareIcon, SquareIcon, MinusSquareIcon } from "lucide-solid"
 import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -38,12 +39,6 @@ const collection = tree.collection<Node>({
   },
 })
 
-const iconMap = {
-  true: CheckSquareIcon,
-  false: SquareIcon,
-  indeterminate: MinusSquareIcon,
-}
-
 interface TreeNodeProps {
   node: Node
   indexPath: number[]
@@ -58,17 +53,18 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api().getNodeGroupProps(nodeProps)}>
       <div {...api().getNodeProps(nodeProps)}>
-        <div {...api().getCellProps(nodeProps)}>
-          {(() => {
-            const Icon = iconMap[nodeState().checked.toString()]
-            return (
-              <span {...api().getNodeCheckboxProps(nodeProps)}>
-                <Icon />
-              </span>
-            )
-          })()}
+        <div {...api().getNodeCellProps(nodeProps)}>
+          <span {...api().getNodeCheckboxProps(nodeProps)}>
+            {nodeState().checked === true ? (
+              <CheckSquareIcon />
+            ) : nodeState().checked === "indeterminate" ? (
+              <MinusSquareIcon />
+            ) : (
+              <SquareIcon />
+            )}
+          </span>
         </div>
-        <div {...api().getCellProps(nodeProps)}>
+        <div {...api().getNodeCellProps(nodeProps)}>
           <span {...api().getNodeTextProps(nodeProps)}>{node.name}</span>
           <Show when={nodeState().isBranch}>
             <span {...api().getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>

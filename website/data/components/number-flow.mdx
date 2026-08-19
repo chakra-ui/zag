@@ -1,0 +1,350 @@
+---
+title: Number Flow
+description: Animate a number by rolling each digit to its new value.
+package: "@zag-js/number-flow"
+---
+
+Number Flow animates a value change by rolling each digit to its new value, the
+way a mechanical counter does. Use it for prices, scores, vote counts, and live
+metrics, where a number changing is worth noticing.
+
+Unlike most machines in Zag.js, a digit is not one element. You render a strip
+of `0-9` cells inside each digit, and the machine translates the strip so the
+right cell lands in view.
+
+<Resources pkg="@zag-js/number-flow" />
+
+<Showcase id="NumberFlow" />
+
+**Features**
+
+- Locale-aware formatting through `Intl.NumberFormat`, including currency,
+  percent, and non-Latin numeral systems.
+- Digits keyed by decimal place, so `999` to `1000` adds one digit instead of
+  re-keying the rest mid-roll.
+- Each digit takes its own shortest path, or rolls in a direction you force.
+- Spins through every intermediate value when you want the count to read as
+  motion rather than a jump.
+- Driven by CSS transitions, with one shared `requestAnimationFrame` write per
+  frame across every instance on the page.
+- Snaps straight to the value when the user prefers reduced motion.
+
+## Installation
+
+Install the number-flow package:
+
+<CodeSnippet id="number-flow/installation.mdx" />
+
+## Usage
+
+Import the number-flow package:
+
+```tsx
+import * as numberFlow from "@zag-js/number-flow"
+```
+
+The number-flow package exports two key functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+
+Rendering takes two collections from the `api`:
+
+- `api.segments` is the formatted value broken into ordered pieces. A segment is
+  either a `digit` that rolls, or a `symbol` that does not (group separators,
+  currency symbols, signs, decimal points).
+- `api.digitCells` is the strip to render inside every digit. It is the same
+  array for every digit on the page, and it does not change between renders.
+
+<CodeSnippet id="number-flow/usage.mdx" />
+
+Use `segment.key` as the render key rather than the array index. Keys are
+derived from the decimal place, so a digit keeps its identity when the number
+grows or shrinks. Keying by index re-creates the DOM on every digit-count change
+and drops whatever roll was in flight.
+
+### Setting the initial value
+
+Set `defaultValue` to render a starting value without controlling it.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  defaultValue: 1234,
+})
+```
+
+### Controlling the value
+
+Use `value` and `onValueChange` to drive the number from your own state.
+
+```tsx {3-7}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  value: price,
+  onValueChange(details) {
+    // details => { value: number }
+    setPrice(details.value)
+  },
+})
+```
+
+### Formatting the value
+
+Pass `formatOptions` straight through to `Intl.NumberFormat`, and `locale` to
+pick the numeral system and separators.
+
+```tsx {3-4}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  locale: "de-DE",
+  formatOptions: { style: "currency", currency: "EUR" },
+})
+```
+
+Non-Latin numeral systems work the same way. The strip renders the locale's own
+glyphs, so `ar-EG` rolls through `٠` to `٩`.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  locale: "ar-EG",
+})
+```
+
+### Adding a prefix or suffix
+
+Use `prefix` and `suffix` for text that sits outside the formatted number and
+never rolls.
+
+```tsx {3-4}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  prefix: "~",
+  suffix: " req/s",
+})
+```
+
+Both are included in `api.valueText`, so screen readers announce them.
+
+### Choosing the roll direction
+
+By default each digit takes its own shortest path, so `9` to `0` rolls forward
+one step instead of backward nine.
+
+Set `trend` to `true` to make every digit roll in the direction the value moved,
+or to `1` or `-1` to force a direction regardless.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  trend: true,
+})
+```
+
+> Under sustained input faster than `spinTiming.duration`, a digit will
+> occasionally take the short way round instead of the `trend` direction. This
+> is deliberate: it guarantees the digit always lands on a rendered cell rather
+> than scrolling past the end of its strip and showing nothing.
+
+### Spinning through every value
+
+Set `continuous` to spin through the intermediate values instead of taking the
+nearest path. A change from `0` to `12` rolls the ones digit twelve cells rather
+than two.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  continuous: true,
+})
+```
+
+Large jumps are capped at what the strip can show, so the digit spins fewer
+times rather than blanking. It always comes to rest on the correct value.
+
+### Tuning the animation
+
+`spinTiming` controls the digit roll. `transformTiming` controls layout changes,
+which is what runs when a digit enters or exits.
+
+```tsx {3-4}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  spinTiming: { duration: "500ms", easing: "ease-out" },
+  transformTiming: { duration: "300ms", easing: "ease-out" },
+})
+```
+
+Both take CSS values, not numbers, because the animation runs as a CSS
+transition rather than in JavaScript.
+
+### Staggering the digits
+
+Set `stagger` to delay each digit against the one to its left, so the number
+settles from most significant to least.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  stagger: "25ms",
+})
+```
+
+### Reacting to the animation
+
+`onAnimationStart` fires once when a roll begins, and `onAnimationComplete` once
+when every digit has settled. A burst of value changes that lands mid-roll
+counts as one animation, not one per change.
+
+```tsx {3-9}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  onAnimationStart(details) {
+    // details => { places: number[] }
+    console.log("rolling", details.places)
+  },
+  onAnimationComplete(details) {
+    console.log("settled", details.places)
+  },
+})
+```
+
+`places` holds the decimal place of each digit that moved. Place `0` is the ones
+column, `-1` the first fraction digit.
+
+### Announcing the value
+
+By default the root is exposed as a single image with `aria-label` set to the
+formatted value, so assistive technology reads the number rather than the strip
+of cells behind it.
+
+Set `live` to announce changes as they happen instead. The value is announced
+once the roll settles, so a fast counter does not flood the screen reader with
+every intermediate value.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  live: true,
+})
+```
+
+Render `api.announcedValueText` inside `getValueTextProps()`. It holds the
+settled value, which is what makes the debounce work.
+
+### Respecting reduced motion
+
+When the user prefers reduced motion, the value snaps into place instead of
+rolling. Set `respectMotionPreference` to `false` to roll anyway.
+
+```tsx {3}
+const service = useMachine(numberFlow.machine, {
+  id: useId(),
+  respectMotionPreference: false,
+})
+```
+
+## Styling guide
+
+The machine sets the structural styles inline, so you do not need to write them.
+The digit gets `overflow: hidden` and a fixed `1lh` height, the track is a flex
+column, and each cell is `1lh` tall. That is what clips the strip to one line
+and keeps the roll aligned to the text baseline.
+
+What is left to you is typography and color:
+
+```css
+[data-number-flow-root] {
+  font-variant-numeric: tabular-nums;
+}
+
+[data-number-flow-symbol] {
+  /* keeps literal spaces, e.g. the gap in "1 234,56 €" */
+  white-space: pre;
+}
+
+[data-number-flow-digit] {
+  vertical-align: top;
+}
+
+[data-number-flow-digit-cell] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+> Use a font with tabular figures. Proportional digits change width as they
+> roll, which makes the number jitter.
+
+### Rolling State
+
+Use the `[data-state]` attribute to style the number while it rolls.
+
+```css
+[data-number-flow-root][data-state="rolling"] {
+  /* styles while any digit is moving */
+}
+
+[data-number-flow-root][data-state="idle"] {
+  /* styles at rest */
+}
+```
+
+### Trend State
+
+Use the `[data-trend]` attribute to style by the direction of the last change.
+It holds `up`, `down`, or `none`, and stays set for the whole roll.
+
+```css
+[data-number-flow-root][data-trend="up"] {
+  color: green;
+}
+
+[data-number-flow-root][data-trend="down"] {
+  color: red;
+}
+```
+
+### Reduced Motion State
+
+Use the `[data-reduced-motion]` attribute to style the number when animations
+are suppressed.
+
+```css
+[data-number-flow-root][data-reduced-motion] {
+  /* styles when the roll is disabled */
+}
+```
+
+### Targeting a specific digit
+
+Every digit carries its decimal place in `[data-place]`, counted from the
+decimal point. Symbols carry their `Intl` type in `[data-type]`.
+
+```css
+[data-number-flow-digit][data-place="0"] {
+  /* the ones column */
+}
+
+[data-number-flow-symbol][data-type="currency"] {
+  /* the currency symbol */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The number-flow machine exposes the following context properties:
+
+<ContextTable name="number-flow" />
+
+### Machine API
+
+The number-flow `api` exposes the following methods:
+
+<ApiTable name="number-flow" />

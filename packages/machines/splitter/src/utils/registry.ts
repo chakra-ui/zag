@@ -1,4 +1,4 @@
-import { contains, getDocument, getParentElement } from "@zag-js/dom-query"
+import { contains, getDocument, getParentElement, isElement } from "@zag-js/dom-query"
 import type { Orientation, Point } from "@zag-js/types"
 import { intersects, toRect } from "./intersects"
 import { compareStackingOrder } from "./stacking-order"
@@ -133,7 +133,7 @@ export class SplitterRegistry {
   ): ResizeHandleData[] {
     const hits = this.findHitHandles(x, y, pointerType)
 
-    const targetElement = eventTarget instanceof HTMLElement || eventTarget instanceof SVGElement ? eventTarget : null
+    const targetElement = isElement(eventTarget) ? eventTarget : null
     if (!targetElement || !contains(this.doc, targetElement)) return hits
 
     return hits.filter((handle) => {
@@ -150,7 +150,7 @@ export class SplitterRegistry {
       try {
         if (compareStackingOrder(targetElement, dragHandleElement) > 0) {
           const dragHandleRect = dragHandleElement.getBoundingClientRect()
-          let currentElement: HTMLElement | SVGElement | null = targetElement
+          let currentElement: Element | null = targetElement
 
           while (currentElement) {
             if (currentElement.contains(dragHandleElement)) break
@@ -160,7 +160,7 @@ export class SplitterRegistry {
               return false // Target is above and overlaps — skip this handle
             }
 
-            currentElement = getParentElement(currentElement) as HTMLElement | null
+            currentElement = getParentElement(currentElement)
           }
         }
       } catch {

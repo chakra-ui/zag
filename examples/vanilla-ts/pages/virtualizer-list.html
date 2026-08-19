@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List Virtualizer · Vanilla</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 20px;
+        max-width: 900px;
+        margin: 0;
+      }
+      .controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 12px 0;
+      }
+      #scroll-container {
+        height: 420px;
+        width: 100%;
+        overflow: auto;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        position: relative;
+        contain: strict;
+        will-change: scroll-position;
+      }
+      #inner {
+        position: relative;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>List Virtualizer</h1>
+    <p style="color: #64748b">Efficiently render 10,000 rows.</p>
+
+    <label style="display: inline-flex; align-items: center; gap: 8px; user-select: none">
+      <input type="checkbox" id="smooth-toggle" checked />
+      Smooth scroll
+    </label>
+
+    <div class="controls">
+      <button type="button" data-action="top">Scroll to top</button>
+      <button type="button" data-action="middle">Scroll to middle</button>
+      <button type="button" data-action="bottom">Scroll to bottom</button>
+    </div>
+
+    <div id="scroll-container" tabindex="0" aria-label="Virtualized list">
+      <div id="inner"></div>
+    </div>
+
+    <script type="module" src="../src/virtualizer-list.ts"></script>
+  </body>
+</html>

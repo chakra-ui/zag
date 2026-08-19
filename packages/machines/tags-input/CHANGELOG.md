@@ -1,5 +1,137 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/auto-resize@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/interact-outside@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+
+## 2.0.0-next.0
+
+### Major Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`bd8e235`](https://github.com/chakra-ui/zag/commit/bd8e235819bfce769874e52672a3471ea4c0b0fe) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** `editable` now defaults to `false`.
+
+  Inline editing of existing tags (via double-click or pressing `Enter` on a highlighted tag) is now opt-in. Tags are
+  add/remove only by default.
+
+  ```diff
+    tagsInput.machine({
+      id: "tags",
+  +   editable: true, // add this to preserve inline rename
+    })
+  ```
+
+  ### Why
+  - **Simpler default** — most usages only need add/remove, not inline rename
+  - **Less surprise** — double-click to edit is a power-user feature that should be opted into
+  - **Matches peers** — aligns with how other tag input libraries behave out of the box
+
+## 1.43.0
+
+### Patch Changes
+
+- Updated dependencies [[`7f7a6a4`](https://github.com/chakra-ui/zag/commit/7f7a6a40fdbe9494de4b9718179b25eb75857fca),
+  [`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/auto-resize@1.43.0
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/interact-outside@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+  - @zag-js/live-region@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- [#3194](https://github.com/chakra-ui/zag/pull/3194)
+  [`81eb2e0`](https://github.com/chakra-ui/zag/commit/81eb2e00beb874a56fee1500beb904d3b0512d6d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix native form submit so `FormData` reflects the current tags
+  ([#3193](https://github.com/chakra-ui/zag/issues/3193)).
+
+  The hidden input kept its initial value after tags were added, removed, or cleared. With `defaultValue={["a"]}`,
+  adding `"b"` and submitting sent `"a"` instead of `"a, b"`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/auto-resize@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/interact-outside@1.42.0
+  - @zag-js/live-region@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/auto-resize@2.0.0-next.0
+  - @zag-js/interact-outside@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+  - @zag-js/live-region@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/auto-resize@1.41.0
+  - @zag-js/interact-outside@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+  - @zag-js/live-region@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/auto-resize@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/interact-outside@1.40.0
+  - @zag-js/live-region@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

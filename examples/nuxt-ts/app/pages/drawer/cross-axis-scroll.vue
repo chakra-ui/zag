@@ -2,7 +2,7 @@
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 const service = useMachine(drawer.machine, { id: useId() })
 
@@ -23,10 +23,7 @@ const api = computed(() => drawer.connect(service, normalizeProps))
           Try scrolling the image carousel horizontally. It should scroll without triggering the drawer drag.
         </p>
 
-        <div
-          data-testid="horizontal-scroll"
-          style="display: flex; gap: 12px; overflow-x: auto; padding: 16px"
-        >
+        <div data-testid="horizontal-scroll" style="display: flex; gap: 12px; overflow-x: auto; padding: 16px">
           <div
             v-for="i in 10"
             :key="i"

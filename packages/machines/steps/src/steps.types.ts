@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -92,7 +92,8 @@ type ComputedContext = Readonly<{
 }>
 
 export interface StepsSchema {
-  props: RequiredBy<StepsProps, PropsWithDefault>
+  props: StepsProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   state: "idle"

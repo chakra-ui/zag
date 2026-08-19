@@ -2,6 +2,7 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { hoverCardControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/hover-card.css"
 
 const controls = useControls(hoverCardControls)
 

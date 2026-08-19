@@ -7,4 +7,5 @@ export type {
   ToggleMachine as Machine,
   ToggleProps as Props,
   ToggleService as Service,
+  RootState,
 } from "./toggle.types"

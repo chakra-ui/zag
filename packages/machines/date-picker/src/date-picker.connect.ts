@@ -11,10 +11,12 @@ import {
 } from "@internationalized/date"
 import {
   constrainValue,
+  ensureValidCharacters,
   getDateRangePreset,
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
+  getLocaleSeparator,
   getMonthDays,
   getMonthFormatter,
   getMonthNames,
@@ -26,32 +28,35 @@ import {
   getYearsRange,
   isDateOutsideRange,
   isDateUnavailable,
+  isValidCharacter,
 } from "@zag-js/date-utils"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {
+  ContentState,
   DatePickerApi,
   DatePickerService,
   DayTableCellProps,
   DayTableCellState,
+  InputState,
+  RootState,
   TableCellProps,
   TableCellState,
   TableProps,
+  TriggerState,
   WeekNumberCellProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   defaultTranslations,
-  ensureValidCharacters,
   getInputPlaceholder,
-  getLocaleSeparator,
   getRoleDescription,
   isDateWithinRange,
-  isValidCharacter,
 } from "./date-picker.utils"
 
 export function connect<T extends PropTypes>(
@@ -59,6 +64,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): DatePickerApi<T> {
   const { state, context, prop, send, computed, scope } = service
+  const layer = context.get("layer")
 
   const startValue = context.get("startValue")
   const endValue = computed("endValue")
@@ -91,10 +97,10 @@ export function connect<T extends PropTypes>(
   const isMaxSelected = isMultiPicker && maxSelectedDates != null && selectedValue.length >= maxSelectedDates
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   const separator = getLocaleSeparator(locale)
@@ -138,6 +144,10 @@ export function connect<T extends PropTypes>(
     const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
@@ -280,6 +290,39 @@ export function connect<T extends PropTypes>(
     return [view, id].filter(Boolean).join(" ")
   }
 
+  function getRootState(): RootState {
+    return { open, disabled, readOnly, empty }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      disabled,
+      placeholderShown: empty,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      inline: !!prop("inline"),
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getInputState(): InputState {
+    return { open, disabled, readOnly, invalid, placeholderShown: empty }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     focused,
     open,
@@ -409,14 +452,16 @@ export function connect<T extends PropTypes>(
       send({ type: "GOTO.PREV", view: context.get("view") })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-empty": dataAttr(empty),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-empty": dataAttr(rootState.empty),
       })
     },
 
@@ -450,19 +495,24 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
-        hidden: !open,
+        hidden: !contentState.open,
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
-        "data-inline": dataAttr(prop("inline")),
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-inline": dataAttr(contentState.inline),
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "application",
         "aria-roledescription": "datepicker",
         "aria-label": translations.content,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 
@@ -483,9 +533,12 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
+          // readOnly still allows roving-focus navigation
+          if (disabled) return
 
           const keyMap: EventKeyMap = {
             Enter() {
+              if (!interactive) return
               if (view === "day" && isUnavailable(focusedValue)) return
               if (view === "month") {
                 const cellState = getMonthTableCellState({ value: focusedValue.month })
@@ -638,11 +691,12 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": translations.dayCell(cellState),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "aria-invalid": ariaAttr(cellState.invalid),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value.toString(),
         "data-view": "day",
@@ -659,6 +713,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
@@ -668,7 +723,13 @@ export function connect<T extends PropTypes>(
               if (!cellState.selectable) return
               const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
-              send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
+              send({
+                type: "CELL.POINTER_MOVE",
+                cell: "day",
+                value,
+                focus,
+                outsideRange: cellState.outsideRange,
+              })
             }
           : undefined,
       })
@@ -699,10 +760,11 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "month",
@@ -716,6 +778,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
@@ -756,10 +819,11 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
         dir: prop("dir"),
-        tabIndex: cellState.focused ? 0 : -1,
+        tabIndex: disabled ? -1 : cellState.focused ? 0 : -1,
         "aria-label": cellState.valueText,
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
+        "data-selectable": dataAttr(cellState.selectable),
         "data-selected": dataAttr(cellState.selected),
         "data-value": value,
         "data-view": "year",
@@ -773,6 +837,7 @@ export function connect<T extends PropTypes>(
         "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
         },
@@ -833,24 +898,29 @@ export function connect<T extends PropTypes>(
         hidden: !selectedValue.length,
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "VALUE.CLEAR" })
         },
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
-        "data-placement": currentPlacement,
-        "aria-label": translations.trigger(open),
+        "data-placement": triggerState.placement,
+        "data-side": triggerState.side,
+        "aria-label": translations.trigger(triggerState.open),
         "aria-controls": dom.getContentId(scope),
-        "data-state": open ? "open" : "closed",
-        "data-placeholder-shown": dataAttr(empty),
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
         "aria-haspopup": "grid",
-        disabled,
+        disabled: triggerState.disabled,
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -895,8 +965,10 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps(props = {}) {
       const { index = 0, fixOnBlur = true } = props
+      const inputState = getInputState()
 
       return normalize.input({
         ...parts.input.attrs(scope.id),
@@ -907,18 +979,18 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         name: prop("name"),
         "data-index": index,
-        "data-state": open ? "open" : "closed",
-        "data-placeholder-shown": dataAttr(empty),
-        readOnly,
-        disabled,
+        "data-state": inputState.open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(inputState.placeholderShown),
+        readOnly: inputState.readOnly,
+        disabled: inputState.disabled,
         required: prop("required"),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
         placeholder: prop("placeholder") || getInputPlaceholder(locale),
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
-          if (!isValidCharacter(data, separator)) {
+          if (!isValidCharacter(data, separator, locale)) {
             event.preventDefault()
           }
         },
@@ -956,7 +1028,7 @@ export function connect<T extends PropTypes>(
         },
         onInput(event) {
           const value = event.currentTarget.value
-          send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
+          send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator, locale), index })
         },
       })
     },
@@ -993,7 +1065,11 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -1006,6 +1082,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "PRESET.CLICK", value })
         },
       })

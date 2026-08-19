@@ -1,4 +1,5 @@
 import { contains, nextTick } from "@zag-js/dom-query"
+import { isEqual } from "@zag-js/utils"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 
@@ -11,12 +12,24 @@ export type LayerDismissEventDetail = {
 
 export type LayerDismissEvent = CustomEvent<LayerDismissEventDetail>
 
+export interface LayerSnapshot {
+  active: boolean
+  type: LayerType
+  index: number
+  nested: boolean
+  hasNested: boolean
+  nestedCount: number
+  blocked: boolean
+}
+
 export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
+  onLayerChange?: ((snapshot: LayerSnapshot) => void) | undefined
+  snapshot?: LayerSnapshot | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
@@ -86,6 +99,12 @@ export const layerStack = {
     return Array.from(this.branches).some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
+    // Idempotent per DOM node: React Strict Mode (and similar races) can register
+    // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
+    const existingIndex = this.indexOf(layer.node)
+    if (existingIndex !== -1) {
+      this.layers.splice(existingIndex, 1)
+    }
     this.layers.push(layer)
     this.syncLayers()
   },
@@ -95,6 +114,8 @@ export const layerStack = {
   remove(node: HTMLElement) {
     const index = this.indexOf(node)
     if (index < 0) return
+
+    const layer = this.layers[index]
 
     // Track this node as recently removed to handle focus race conditions
     // during layer cleanup. This prevents parent layers from incorrectly
@@ -113,6 +134,11 @@ export const layerStack = {
 
     // remove this layer
     this.layers.splice(index, 1)
+
+    if (layer.snapshot) {
+      publishSnapshot(layer, { ...layer.snapshot, active: false, blocked: false })
+    }
+
     this.syncLayers()
   },
   removeBranch(node: HTMLElement) {
@@ -121,26 +147,21 @@ export const layerStack = {
   },
   syncLayers() {
     this.layers.forEach((layer, index) => {
-      layer.node.style.setProperty("--layer-index", `${index}`)
-
-      // Remove previous data attributes
-      layer.node.removeAttribute("data-nested")
-      layer.node.removeAttribute("data-has-nested")
-
-      // Check if this layer is nested within another of the same type
-      const parentOfSameType = this.getParentLayerOfType(layer.node, layer.type)
-      if (parentOfSameType) {
-        layer.node.setAttribute("data-nested", layer.type)
+      const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
+      const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+      const snapshot: LayerSnapshot = {
+        active: true,
+        type: layer.type,
+        index,
+        nested: parentOfSameType != null,
+        hasNested: nestedCount > 0,
+        nestedCount,
+        blocked: layerStack.isBelowPointerBlockingLayer(layer.node),
       }
 
-      // Check if this layer has nested layers of the same type
-      const nestedCount = this.countNestedLayersOfType(layer.node, layer.type)
-      if (nestedCount > 0) {
-        layer.node.setAttribute("data-has-nested", layer.type)
+      if (!isEqual(layer.snapshot, snapshot)) {
+        publishSnapshot(layer, snapshot)
       }
-
-      // Set the nested layer count
-      layer.node.style.setProperty("--nested-layer-count", `${nestedCount}`)
     })
   },
   indexOf(node: HTMLElement | undefined) {
@@ -172,6 +193,11 @@ export const layerStack = {
   clear() {
     this.remove(this.layers[0].node)
   },
+}
+
+function publishSnapshot(layer: Layer, snapshot: LayerSnapshot) {
+  layer.snapshot = snapshot
+  layer.onLayerChange?.(snapshot)
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, detail?: LayerDismissEventDetail) {

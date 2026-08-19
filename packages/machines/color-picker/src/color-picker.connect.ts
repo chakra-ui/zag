@@ -1,7 +1,15 @@
 import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/color-utils"
-import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
+import {
+  getEventKey,
+  getEventPoint,
+  getEventStep,
+  isComposingEvent,
+  isLeftClick,
+  isModifierKey,
+} from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import * as dom from "./color-picker.dom"
@@ -10,20 +18,30 @@ import type {
   ColorFormat,
   ColorPickerService,
   ColorPickerApi,
+  ContentState,
   GamutOverlayProps,
+  RootState,
   SwatchTriggerProps,
   SwatchTriggerState,
+  TriggerState,
 } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getGamutOverlayData } from "./utils/get-gamut-overlay-path"
 import { getSliderBackground } from "./utils/get-slider-background"
 
+function getDefaultDevicePixelRatio(): number {
+  if (typeof globalThis === "undefined") return 1
+  const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
+  return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
+}
+
 export function connect<T extends PropTypes>(
   service: ColorPickerService,
   normalize: NormalizeProps<T>,
 ): ColorPickerApi<T> {
   const { context, send, prop, computed, state, scope } = service
+  const layer = context.get("layer")
 
   const value = context.get("value")
   const format = context.get("format")
@@ -50,23 +68,21 @@ export function connect<T extends PropTypes>(
     }
   }
 
-  function getDefaultDevicePixelRatio(): number {
-    if (typeof globalThis === "undefined") return 1
-    const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
-    return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
-  }
-
   function resolveGamutOverlay(props: GamutOverlayProps = {}) {
     const pixelRatio = props.pixelRatio ?? getDefaultDevicePixelRatio()
     return getGamutOverlayData(stableAreaValue, getAreaChannels(props), format, { pixelRatio })
   }
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
     const color = normalizeColor(props.value).toFormat(context.get("format"))
@@ -77,6 +93,36 @@ export function connect<T extends PropTypes>(
       disabled: props.disabled || !interactive,
     }
   }
+
+  function getRootState(): RootState {
+    return { disabled, readOnly, invalid }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      focused,
+      disabled,
+      invalid,
+      readOnly,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     dragging,
@@ -117,13 +163,15 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
         style: {
           "--value": value.toString("css"),
         },
@@ -161,23 +209,26 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
-        disabled: disabled,
+        disabled: triggerState.disabled,
         "aria-label": `select color. current color is ${valueAsString}`,
         "aria-controls": dom.getContentId(scope),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-haspopup": prop("inline") ? undefined : "dialog",
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
-        "data-placement": currentPlacement,
-        "aria-expanded": open,
-        "data-state": open ? "open" : "closed",
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-placement": triggerState.placement,
+        "data-side": triggerState.side,
+        "aria-expanded": triggerState.open,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-focus": dataAttr(triggerState.focused),
         type: "button",
         onClick() {
           if (!interactive) return
@@ -197,20 +248,29 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         dir: prop("dir"),
         role: prop("inline") ? undefined : "dialog",
         tabIndex: -1,
-        "data-placement": currentPlacement,
-        "data-state": open ? "open" : "closed",
-        hidden: !open,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-state": contentState.open ? "open" : "closed",
+        hidden: !contentState.open,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
       })
     },
 
@@ -621,6 +681,7 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
+          if (isComposingEvent(event)) return
           if (event.key === "Enter") {
             const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })

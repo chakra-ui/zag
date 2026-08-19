@@ -3,6 +3,7 @@ import * as floatingPanel from "@zag-js/floating-panel"
 import { floatingPanelControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
+import "@styles/floating-panel.css"
 
 const controls = useControls(floatingPanelControls)
 
@@ -45,7 +46,11 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
             <p>Some content</p>
           </div>
 
-          <div v-for="placement in floatingPanel.resizeTriggerPlacements" :key="placement" v-bind="api.getResizeTriggerProps({ placement })" />
+          <div
+            v-for="placement in floatingPanel.resizeTriggerPlacements"
+            :key="placement"
+            v-bind="api.getResizeTriggerProps({ placement })"
+          />
         </div>
       </div>
     </div>

@@ -1,0 +1,15 @@
+[data-toggle-group-root] {
+  display: flex;
+}
+
+[data-toggle-group-item] {
+  border-radius: 0px;
+  border: 0;
+  width: 40px;
+  height: 40px;
+}
+
+[data-toggle-group-item][data-pressed] {
+  background-color: blue;
+  color: white;
+}

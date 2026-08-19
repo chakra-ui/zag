@@ -23,13 +23,15 @@
 
 <div {...api.getRootProps()}>
   <label {...api.getLabelProps()}>Select country</label>
-  <ul {...api.getContentProps()}>
-    {#each data as item}
-      <li {...api.getItemProps({ item })}>
-        <span {...api.getItemTextProps({ item })}>{item.label}</span>
-        <span {...api.getItemIndicatorProps({ item })}>✓</span>
-      </li>
-    {/each}
-  </ul>
+  <div {...api.getContentProps()}>
+    <ul {...api.getListProps()}>
+      {#each data as item}
+        <li {...api.getItemProps({ item })}>
+          <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          <span {...api.getItemIndicatorProps({ item })}>✓</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
 </div>
 ```

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/tooltip.css"
 
 interface Product {
   id: number

@@ -1,19 +1,35 @@
 export { GridVirtualizer, type VirtualColumn, type VirtualRow } from "./grid-virtualizer"
 export { ListVirtualizer } from "./list-virtualizer"
+export { WaterfallVirtualizer } from "./waterfall-virtualizer"
 export type {
   CSSProperties,
   GridVirtualizerOptions,
   GroupMeta,
+  InitialMeasurements,
   ItemMeasurement,
   ItemState,
   ListVirtualizerOptions,
+  MeasureElementContext,
   Range,
+  RangeChangeDetails,
+  RangeChangeReason,
+  RangeExtractor,
+  RangeExtractorContext,
   ScrollAnchor,
+  ScrollByOptions,
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
+  ShouldAdjustScrollOnSizeChangeContext,
   TimerId,
+  VirtualizerDir,
   VirtualItem,
+  VirtualizerOrientation,
+  VirtualRange,
+  WaterfallLaneAssignment,
+  WaterfallColumnMetrics,
+  WaterfallLayoutState,
+  WaterfallVirtualizerOptions,
   VirtualizerOptions,
 } from "./types"
 export { WindowVirtualizer, type WindowVirtualizerOptions } from "./window-virtualizer"

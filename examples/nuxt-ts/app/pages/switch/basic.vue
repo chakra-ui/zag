@@ -2,6 +2,7 @@
 import * as zagSwitch from "@zag-js/switch"
 import { switchControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/switch.css"
 
 const controls = useControls(switchControls)
 

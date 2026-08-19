@@ -116,7 +116,7 @@ export class TreeView extends Component<tree.Props, tree.Api> {
     this.spreadProps(rowEl, this.api.getNodeProps(nodeProps))
 
     const cellEl = this.doc.createElement("div")
-    this.spreadProps(cellEl, this.api.getCellProps(nodeProps))
+    this.spreadProps(cellEl, this.api.getNodeCellProps(nodeProps))
 
     cellEl.appendChild(nodeState.isBranch ? this.createFolderIcon() : this.createFileIcon())
 

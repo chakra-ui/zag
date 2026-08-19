@@ -48,6 +48,18 @@ export class DndModel extends Model {
     })
   }
 
+  // The grid example draws a placeholder instead of drop indicators, so assert on the drop target's own state.
+  async getActiveDropTarget() {
+    return this.page.evaluate(() => {
+      const el = document.querySelector("[data-dnd-drop-target][data-drop-target]")
+      return el ? { value: el.getAttribute("data-value"), placement: el.getAttribute("data-drop-placement") } : null
+    })
+  }
+
+  async seeDropTarget(value: string, placement: string) {
+    await expect.poll(() => this.getActiveDropTarget(), { timeout: 2000 }).toEqual({ value, placement })
+  }
+
   async dragTo(fromValue: string, toValue: string, placement: "before" | "after" = "before") {
     const handle = this.getDragHandle(fromValue)
     const target = this.getDropTarget(toValue)

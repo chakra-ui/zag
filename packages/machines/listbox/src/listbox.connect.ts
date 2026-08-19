@@ -19,7 +19,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./listbox.anatomy"
 import * as dom from "./listbox.dom"
-import type { ItemProps, ItemState, ListboxApi, ListboxSchema } from "./listbox.types"
+import type { ContentState, ItemProps, ItemState, ListboxApi, ListboxSchema, ListState } from "./listbox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<ListboxSchema<V>>,
@@ -46,6 +46,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
@@ -61,6 +65,23 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       selected: context.get("value").includes(value),
     }
   }
+
+  function getContentState(): ContentState {
+    return { orientation: prop("orientation") ?? "vertical", layout, empty: collection.size === 0 }
+  }
+
+  function getListState(): ListState {
+    return {
+      orientation: prop("orientation") ?? "vertical",
+      layout,
+      empty: collection.size === 0,
+      multiple: computed("multiple"),
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     empty: value.length === 0,
@@ -131,7 +152,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         autoComplete: "off",
         autoCorrect: "off",
         "aria-haspopup": "listbox",
-        "aria-controls": dom.getContentId(scope),
+        "aria-controls": dom.getListId(scope),
         "aria-autocomplete": "list",
         "aria-activedescendant": ariaActiveDescendant,
         spellCheck: false,
@@ -160,7 +181,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             event.preventDefault()
             const win = scope.getWin()
             const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
-            dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+            dom.getListEl(scope)?.dispatchEvent(keyboardEvent)
           }
 
           switch (nativeEvent.key) {
@@ -242,7 +263,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onMouseDown(event) {
           event.preventDefault()
-          dom.getContentEl(scope)?.focus()
+          dom.getListEl(scope)?.focus()
         },
         onClick(event) {
           if (event.defaultPrevented) return
@@ -305,31 +326,19 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role: "listbox",
         ...parts.content.attrs(scope.id),
-        "data-activedescendant": ariaActiveDescendant,
-        "aria-activedescendant": ariaActiveDescendant,
-        "data-orientation": prop("orientation"),
-        "aria-multiselectable": computed("multiple") ? true : undefined,
-        "aria-labelledby": dom.getLabelId(scope),
-        tabIndex: 0,
-        "data-layout": layout,
-        "data-empty": dataAttr(collection.size === 0),
-        style: {
-          "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
-        },
-        onFocus() {
-          send({ type: "CONTENT.FOCUS" })
-        },
-        onBlur() {
-          send({ type: "CONTENT.BLUR" })
-        },
+        "data-orientation": contentState.orientation,
+        "data-layout": contentState.layout,
+        "data-empty": dataAttr(contentState.empty),
         onKeyDown(event) {
           if (!interactive) return
+          if (event.defaultPrevented) return
           const target = getEventTarget<Element>(event)
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
@@ -443,6 +452,34 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })
             event.preventDefault()
           }
+        },
+      })
+    },
+
+    getListState,
+    getListProps() {
+      const listState = getListState()
+      return normalize.element({
+        dir: prop("dir"),
+        id: dom.getListId(scope),
+        role: "listbox",
+        ...parts.list.attrs(scope.id),
+        "data-activedescendant": ariaActiveDescendant,
+        "aria-activedescendant": ariaActiveDescendant,
+        "data-orientation": listState.orientation,
+        "aria-multiselectable": listState.multiple ? true : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        tabIndex: 0,
+        "data-layout": listState.layout,
+        "data-empty": dataAttr(listState.empty),
+        style: {
+          "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
+        },
+        onFocus() {
+          send({ type: "CONTENT.FOCUS" })
+        },
+        onBlur() {
+          send({ type: "CONTENT.BLUR" })
         },
       })
     },

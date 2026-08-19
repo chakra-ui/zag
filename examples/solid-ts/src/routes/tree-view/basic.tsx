@@ -6,6 +6,7 @@ import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -65,7 +66,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api().getNodeGroupProps(nodeProps)}>
       <div {...api().getNodeProps(nodeProps)}>
-        <div {...api().getCellProps(nodeProps)}>
+        <div {...api().getNodeCellProps(nodeProps)}>
           <Show when={nodeState().isBranch} fallback={<FileIcon />}>
             <FolderIcon />
           </Show>

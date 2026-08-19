@@ -11,6 +11,25 @@ export function closeRootMenu(ctx: { parent: MenuService | null | undefined }) {
   parent?.send({ type: "CLOSE" })
 }
 
+// Walks up to the root menu of the tree and returns its menubar element + orientation,
+// so any menu (incl. a nested submenu) can reach the menubar its root menu lives in.
+export function getTreeMenubar(service: MenuService): {
+  rootEl: HTMLElement | null
+  orientation: "horizontal" | "vertical"
+} {
+  let root = service
+  while (root.context.get("isSubmenu")) {
+    const parent = root.refs.get("parent")
+    if (!parent) break
+    root = parent
+  }
+  const menubar = root.prop("menubar")
+  return {
+    rootEl: dom.getMenubarEl(root.scope, menubar?.rootId),
+    orientation: menubar?.orientation ?? "horizontal",
+  }
+}
+
 export function isWithinPolygon(polygon: Point[] | null, point: Point) {
   if (!polygon) return false
   return isPointInPolygon(polygon, point)

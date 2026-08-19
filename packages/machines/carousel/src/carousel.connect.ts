@@ -3,7 +3,14 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
-import type { CarouselApi, CarouselService } from "./carousel.types"
+import type {
+  CarouselApi,
+  CarouselService,
+  IndicatorProps,
+  IndicatorState,
+  ItemProps,
+  ItemState,
+} from "./carousel.types"
 
 export function connect<T extends PropTypes>(service: CarouselService, normalize: NormalizeProps<T>): CarouselApi<T> {
   const { state, context, computed, send, scope, prop } = service
@@ -23,6 +30,22 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
   const itemSpacing = prop("itemSpacing")
   const translations = prop("translations")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getItemState(props: ItemProps): ItemState {
+    return { index: props.index, inView: context.get("slidesInView").includes(props.index) }
+  }
+
+  function getIndicatorState(props: IndicatorProps): IndicatorState {
+    return { index: props.index, current: props.index === activePage, readOnly: !!props.readOnly }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     isPlaying,
@@ -136,19 +159,20 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
       })
     },
 
+    getItemState,
     getItemProps(props) {
-      const isInView = context.get("slidesInView").includes(props.index)
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs(scope.id),
         id: dom.getItemId(scope, props.index),
         dir: prop("dir"),
         role: "group",
         "data-index": props.index,
-        "data-inview": dataAttr(isInView),
+        "data-inview": dataAttr(itemState.inView),
         "aria-roledescription": "slide",
         "data-orientation": prop("orientation"),
         "aria-label": translations.item(props.index, prop("count")),
-        "aria-hidden": ariaAttr(!isInView),
+        "aria-hidden": ariaAttr(!itemState.inView),
         style: {
           flex: "0 0 auto",
           [horizontal ? "maxWidth" : "maxHeight"]: "100%",
@@ -254,19 +278,21 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
       })
     },
 
+    getIndicatorState,
     getIndicatorProps(props) {
+      const indicatorState = getIndicatorState(props)
       return normalize.button({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         "data-orientation": prop("orientation"),
         "data-index": props.index,
-        "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === activePage),
+        "data-readonly": dataAttr(indicatorState.readOnly),
+        "data-current": dataAttr(indicatorState.current),
         "aria-label": translations.indicator(props.index),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (props.readOnly) return
+          if (indicatorState.readOnly) return
           send({ type: "PAGE.SET", index: props.index, src: "indicator" })
         },
       })

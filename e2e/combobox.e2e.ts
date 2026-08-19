@@ -357,6 +357,105 @@ test.describe("combobox / autocomplete", () => {
   })
 })
 
+test.describe("combobox / form", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox/form")
+  })
+
+  test("[keyboard] Enter on highlighted item selects and does not submit form", async () => {
+    await I.controls.select("inputBehavior", "none")
+
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.dontSeeDropdown()
+    await I.seeSubmitCount(0)
+  })
+
+  test("[no highlight / rejected value] Enter does not submit when typed value won't be accepted", async () => {
+    await I.controls.select("inputBehavior", "none")
+
+    await I.focusInput()
+    await I.type("z")
+    await I.seeDropdown()
+    await I.dontSeeHighlightedItem()
+
+    await I.pressKey("Enter")
+    await I.seeSubmitCount(0)
+  })
+
+  test("[autoHighlight] Enter selects auto-highlighted item and does not submit", async () => {
+    await I.controls.select("inputBehavior", "autohighlight")
+
+    await I.focusInput()
+    await I.type("z")
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.seeSubmitCount(0)
+  })
+
+  test("[allowCustomValue + highlight] Enter selects highlighted item and does not submit", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.type("z")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.seeSubmitCount(0)
+  })
+
+  test("[allowCustomValue] Enter submits custom value on first press", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.type("my custom country")
+    await I.dontSeeHighlightedItem()
+
+    await I.pressKey("Enter")
+    await I.seeSubmitCount(1)
+    await I.seeLastSubmit("my custom country")
+  })
+
+  test("[alwaysSubmitOnEnter / highlight] Enter selects highlighted item and submits form", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("alwaysSubmitOnEnter", true)
+
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.seeSubmitCount(1)
+    await I.seeLastSubmit("Zambia")
+  })
+
+  test("[alwaysSubmitOnEnter + allowCustomValue] Enter submits custom value with no highlight", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("alwaysSubmitOnEnter", true)
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.type("my custom country")
+    await I.dontSeeHighlightedItem()
+
+    await I.pressKey("Enter")
+    await I.seeSubmitCount(1)
+    await I.seeLastSubmit("my custom country")
+  })
+})
+
 test.describe("combobox / multiple", () => {
   test.beforeEach(async ({ page }) => {
     I = new ComboboxModel(page)

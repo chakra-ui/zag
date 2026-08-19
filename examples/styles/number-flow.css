@@ -1,0 +1,62 @@
+[data-number-flow-root] {
+  font-size: 3rem;
+  font-weight: 600;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: #1a202c;
+  letter-spacing: -0.01em;
+
+  &[data-trend="up"] {
+    color: #2f855a;
+  }
+
+  &[data-trend="down"] {
+    color: #c53030;
+  }
+}
+
+[data-number-flow-symbol] {
+  white-space: pre;
+}
+
+[data-number-flow-digit] {
+  vertical-align: top;
+}
+
+[data-number-flow-digit-cell] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+}
+
+.number-flow__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.number-flow__actions button {
+  padding: 6px 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: #edf2f7;
+  }
+}
+
+.number-flow__value {
+  font-size: 16px;
+  color: #4a5568;
+}

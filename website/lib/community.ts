@@ -1,3 +1,5 @@
+import siteConfig from "site.config"
+
 export interface CommunityLink {
   title: string
   description: string
@@ -32,7 +34,7 @@ export const communityLinks: CommunityLink[] = [
     title: "Discord",
     description:
       "Ask questions, share what you're building, and chat with maintainers.",
-    href: "https://zagjs.com/discord",
+    href: siteConfig.discord.url,
   },
   {
     title: "GitHub Discussions",

@@ -2,6 +2,7 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { listboxControls, selectData } from "@zag-js/shared"
+import "@styles/listbox.css"
 
 interface Item {
   label: string
@@ -30,12 +31,14 @@ const api = computed(() => listbox.connect(service, normalizeProps))
   <main class="listbox">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Label</label>
-      <ul v-bind="api.getContentProps()">
-        <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-          <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
-          <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
-        </li>
-      </ul>
+      <div v-bind="api.getContentProps()">
+        <ul v-bind="api.getListProps()">
+          <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+            <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </main>
 

@@ -11,9 +11,13 @@ export type {
   ElementIds,
   FocusChangeDetails,
   MarkerProps,
+  MarkerState,
+  RootState,
   ThumbProps,
+  ThumbState,
   ValueChangeDetails,
   ValueTextDetails,
   ThumbAlignment,
   ThumbCollisionBehavior,
+  SliderOrigin,
 } from "./slider.types"

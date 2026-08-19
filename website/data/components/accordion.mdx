@@ -28,7 +28,8 @@ Install the accordion package:
 
 Check the accordion anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="accordion" />
 
@@ -172,7 +173,7 @@ const service = useMachine(accordion.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -180,15 +181,15 @@ When an accordion item expands or collapses, `data-state` is set to `open` or
 `closed` on the item, trigger, and content elements.
 
 ```css
-[data-part="item"][data-state="open|closed"] {
+[data-accordion-item][data-state="open|closed"] {
   /* styles for the item is open or closed state */
 }
 
-[data-part="item-trigger"][data-state="open|closed"] {
+[data-accordion-item-trigger][data-state="open|closed"] {
   /* styles for the item is open or closed state */
 }
 
-[data-part="item-content"][data-state="open|closed"] {
+[data-accordion-item-content][data-state="open|closed"] {
   /* styles for the item is open or closed state */
 }
 ```
@@ -199,15 +200,15 @@ When an accordion item's trigger is focused, a `data-focus` attribute is set on
 the item and content.
 
 ```css
-[data-part="item"][data-focus] {
+[data-accordion-item][data-focus] {
   /* styles for the item's focus state */
 }
 
-[data-part="item-trigger"]:focus {
+[data-accordion-item-trigger]:focus {
   /* styles for the trigger's focus state */
 }
 
-[data-part="item-content"][data-focus] {
+[data-accordion-item-content][data-focus] {
   /* styles for the content's focus state */
 }
 ```

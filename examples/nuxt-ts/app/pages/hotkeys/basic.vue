@@ -235,15 +235,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div
-      style="
-        background-color: #000;
-        color: #00ff00;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        font-family: monospace;
-      "
-    >
+    <div style="background-color: #000; color: #00ff00; padding: 1rem; border-radius: 0.5rem; font-family: monospace">
       <div style="margin-bottom: 0.5rem; color: #888">Event Log:</div>
       <div v-for="(log, i) in logs" :key="i" style="font-size: 0.8rem">
         {{ log }}

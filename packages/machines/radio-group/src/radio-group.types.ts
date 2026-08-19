@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null
@@ -129,7 +129,8 @@ interface Refs {
 
 export interface RadioGroupSchema {
   state: "idle"
-  props: RequiredBy<RadioGroupProps, PropsWithDefault>
+  props: RadioGroupProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs
@@ -188,6 +189,29 @@ export interface ItemState {
   active: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the radio group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the radio group is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the radio group is required
+   */
+  required: boolean
+  /**
+   * Whether the radio group is read-only
+   */
+  readOnly: boolean
+  /**
+   * The orientation of the radio group
+   */
+  orientation: "horizontal" | "vertical" | undefined
+}
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -213,6 +237,10 @@ export interface RadioGroupApi<T extends PropTypes = PropTypes> {
    * Returns the state details of a radio input
    */
   getItemState: (props: ItemProps) => ItemState
+  /**
+   * Returns the state of the radio group
+   */
+  getRootState: () => RootState
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]

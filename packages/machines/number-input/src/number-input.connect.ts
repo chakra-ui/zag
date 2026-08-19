@@ -2,7 +2,7 @@ import {
   ariaAttr,
   dataAttr,
   getEventPoint,
-  getEventStep,
+  getEventStepValue,
   getWindow,
   MAX_Z_INDEX,
   isComposingEvent,
@@ -16,7 +16,14 @@ import { roundToDpr, toPx } from "@zag-js/utils"
 import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
-import type { NumberInputApi, NumberInputService } from "./number-input.types"
+import type {
+  DecrementTriggerState,
+  IncrementTriggerState,
+  InputState,
+  NumberInputApi,
+  NumberInputService,
+  RootState,
+} from "./number-input.types"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -38,6 +45,30 @@ export function connect<T extends PropTypes>(
 
   const translations = prop("translations")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, focused, invalid, scrubbing }
+  }
+
+  function getInputState(): InputState {
+    return { disabled, invalid, readOnly, scrubbing }
+  }
+
+  function getIncrementTriggerState(): IncrementTriggerState {
+    return { disabled: isIncrementDisabled }
+  }
+
+  function getDecrementTriggerState(): DecrementTriggerState {
+    return { disabled: isDecrementDisabled }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     focused: focused,
     scrubbing: scrubbing,
@@ -46,35 +77,37 @@ export function connect<T extends PropTypes>(
     value: computed("formattedValue"),
     valueAsNumber: computed("valueAsNumber"),
     setValue(value) {
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "script" })
     },
     clearValue() {
-      send({ type: "VALUE.CLEAR" })
+      send({ type: "VALUE.CLEAR", src: "script" })
     },
     increment() {
-      send({ type: "VALUE.INCREMENT" })
+      send({ type: "VALUE.INCREMENT", src: "script" })
     },
     decrement() {
-      send({ type: "VALUE.DECREMENT" })
+      send({ type: "VALUE.DECREMENT", src: "script" })
     },
     setToMax() {
-      send({ type: "VALUE.SET", value: prop("max") })
+      send({ type: "VALUE.SET", value: prop("max"), src: "script" })
     },
     setToMin() {
-      send({ type: "VALUE.SET", value: prop("min") })
+      send({ type: "VALUE.SET", value: prop("min"), src: "script" })
     },
     focus() {
       dom.getInputEl(scope)?.focus()
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-focus": dataAttr(focused),
-        "data-invalid": dataAttr(invalid),
-        "data-scrubbing": dataAttr(scrubbing),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-focus": dataAttr(rootState.focused),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-scrubbing": dataAttr(rootState.scrubbing),
       })
     },
 
@@ -122,7 +155,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getInputState,
     getInputProps() {
+      const inputState = getInputState()
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
@@ -133,11 +168,11 @@ export function connect<T extends PropTypes>(
         defaultValue: computed("formattedValue"),
         pattern: prop("formatOptions") ? undefined : prop("pattern"),
         inputMode: prop("inputMode"),
-        "aria-invalid": ariaAttr(invalid),
-        "data-invalid": dataAttr(invalid),
-        disabled,
-        "data-disabled": dataAttr(disabled),
-        readOnly,
+        "aria-invalid": ariaAttr(inputState.invalid),
+        "data-invalid": dataAttr(inputState.invalid),
+        disabled: inputState.disabled,
+        "data-disabled": dataAttr(inputState.disabled),
+        readOnly: inputState.readOnly,
         required: prop("required"),
         autoComplete: "off",
         autoCorrect: "off",
@@ -148,16 +183,16 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": prop("max"),
         "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
         "aria-valuetext": computed("valueText"),
-        "data-scrubbing": dataAttr(scrubbing),
+        "data-scrubbing": dataAttr(inputState.scrubbing),
         onFocus() {
           send({ type: "INPUT.FOCUS" })
         },
         onBlur() {
-          send({ type: "INPUT.BLUR" })
+          send({ type: "INPUT.BLUR", src: "input-blur" })
         },
         onInput(event) {
           const selection = recordCursor(event.currentTarget, scope)
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection, src: "input-change" })
         },
         onBeforeInput(event) {
           try {
@@ -178,7 +213,7 @@ export function connect<T extends PropTypes>(
           if (readOnly) return
           if (isComposingEvent(event)) return
 
-          const step = getEventStep(event, {
+          const step = getEventStepValue(event, {
             step: prop("step"),
             largeStep: prop("largeStep"),
             smallStep: prop("smallStep"),
@@ -186,26 +221,40 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
-              send({ type: "INPUT.ARROW_UP", step })
+              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
               event.preventDefault()
+              event.stopPropagation()
             },
             ArrowDown() {
-              send({ type: "INPUT.ARROW_DOWN", step })
+              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
               event.preventDefault()
+              event.stopPropagation()
+            },
+            PageUp() {
+              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
+              event.preventDefault()
+              event.stopPropagation()
+            },
+            PageDown() {
+              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
+              event.preventDefault()
+              event.stopPropagation()
             },
             Home() {
               if (isModifierKey(event)) return
-              send({ type: "INPUT.HOME" })
+              send({ type: "INPUT.HOME", src: "keyboard" })
               event.preventDefault()
+              event.stopPropagation()
             },
             End() {
               if (isModifierKey(event)) return
-              send({ type: "INPUT.END" })
+              send({ type: "INPUT.END", src: "keyboard" })
               event.preventDefault()
+              event.stopPropagation()
             },
             Enter(event) {
               const selection = recordCursor(event.currentTarget, scope)
-              send({ type: "INPUT.ENTER", selection })
+              send({ type: "INPUT.ENTER", selection, src: "keyboard" })
             },
           }
 
@@ -215,21 +264,28 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getDecrementTriggerState,
     getDecrementTriggerProps() {
+      const decrementTriggerState = getDecrementTriggerState()
       return normalize.button({
         ...parts.decrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        disabled: isDecrementDisabled,
-        "data-disabled": dataAttr(isDecrementDisabled),
+        disabled: decrementTriggerState.disabled,
+        "data-disabled": dataAttr(decrementTriggerState.disabled),
         "aria-label": translations.decrementLabel,
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
-          if (isDecrementDisabled) return
+          if (decrementTriggerState.disabled) return
           if (!isLeftClick(event)) return
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
+          send({
+            type: "TRIGGER.PRESS_DOWN",
+            hint: "decrement",
+            pointerType: event.pointerType,
+            src: "decrement-press",
+          })
           if (event.pointerType === "mouse") {
             event.preventDefault()
           }
@@ -238,29 +294,39 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
         },
         onPointerLeave() {
-          if (isDecrementDisabled) return
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
+          if (decrementTriggerState.disabled) return
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", src: "decrement-press" })
+        },
+        onPointerCancel(event) {
+          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
         },
       })
     },
 
+    getIncrementTriggerState,
     getIncrementTriggerProps() {
+      const incrementTriggerState = getIncrementTriggerState()
       return normalize.button({
         ...parts.incrementTrigger.attrs(scope.id),
         dir: prop("dir"),
-        disabled: isIncrementDisabled,
-        "data-disabled": dataAttr(isIncrementDisabled),
+        disabled: incrementTriggerState.disabled,
+        "data-disabled": dataAttr(incrementTriggerState.disabled),
         "aria-label": translations.incrementLabel,
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
-          if (isIncrementDisabled || !isLeftClick(event)) return
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
+          if (incrementTriggerState.disabled || !isLeftClick(event)) return
+          send({
+            type: "TRIGGER.PRESS_DOWN",
+            hint: "increment",
+            pointerType: event.pointerType,
+            src: "increment-press",
+          })
           if (event.pointerType === "mouse") {
             event.preventDefault()
           }
@@ -269,10 +335,13 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
         },
         onPointerLeave(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
+        },
+        onPointerCancel(event) {
+          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
         },
       })
     },

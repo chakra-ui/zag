@@ -7,6 +7,7 @@ import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/combobox.css"
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -70,17 +71,19 @@ export default function Page() {
           </div>
 
           <div {...api().getPositionerProps()}>
-            <Show when={options().length > 0}>
-              <ul data-testid="combobox-content" {...api().getContentProps()}>
-                <Index each={options()}>
-                  {(item) => (
-                    <li class="combobox__option" {...api().getItemProps({ item: item() })}>
-                      {item().label}
-                    </li>
-                  )}
-                </Index>
-              </ul>
-            </Show>
+            <div data-testid="combobox-content" {...api().getContentProps()}>
+              <Show when={options().length > 0}>
+                <div {...api().getListProps()}>
+                  <Index each={options()}>
+                    {(item) => (
+                      <div class="combobox__option" {...api().getItemProps({ item: item() })}>
+                        {item().label}
+                      </div>
+                    )}
+                  </Index>
+                </div>
+              </Show>
+            </div>
           </div>
         </div>
       </main>

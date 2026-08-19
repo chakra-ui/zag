@@ -3,6 +3,7 @@
 
 import {
   addDomEvent,
+  contains,
   getActiveElement,
   getControlledElements,
   getDocument,
@@ -77,6 +78,9 @@ export class FocusTrap {
     recentNavEvent: undefined,
   }
 
+  // Used to only pass `focusVisible` on keyboard-driven return focus.
+  private lastInteractionType: "keyboard" | "pointer" = "keyboard"
+
   // Track portal containers that contain controlled elements
   private portalContainers = new Set<HTMLElement>()
 
@@ -149,13 +153,24 @@ export class FocusTrap {
         container.contains(element) ||
         composedPath?.includes(container) ||
         tabbableNodes.find((node) => node === element) ||
-        this.isControlledElement(container, element),
+        this.isControlledElement(container, element) ||
+        this.isPersistentElement(element, event),
     )
   }
 
   private isControlledElement(container: HTMLElement, element: HTMLElement): boolean {
     if (!this.config.followControlledElements) return false
     return isControlledElement(container, element)
+  }
+
+  private isPersistentElement(element: HTMLElement, event?: Event): boolean {
+    const persistentElements = this.config.persistentElements
+    if (!persistentElements || persistentElements.length === 0) return false
+    const composedPath = typeof event?.composedPath === "function" ? event.composedPath() : undefined
+    return persistentElements.some((getEl) => {
+      const el = getEl()
+      return contains(el, element) || (el != null && composedPath?.includes(el))
+    })
   }
 
   private updateTabbableNodes() {
@@ -238,17 +253,11 @@ export class FocusTrap {
 
   private listenerCleanups: VoidFunction[] = []
 
-  private addListeners() {
+  private attachListeners() {
     if (!this.state.active) return
 
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(this.trapStack, this)
-
-    this.state.delayInitialFocusTimer = this.config.delayInitialFocus
-      ? delay(() => {
-          this.tryFocus(this.getInitialFocusNode())
-        })
-      : this.tryFocus(this.getInitialFocusNode())
 
     this.listenerCleanups.push(
       addDomEvent(this.doc, "focusin", this.handleFocus, true),
@@ -259,6 +268,23 @@ export class FocusTrap {
       addDomEvent(this.doc, "keydown", this.handleEscapeKey),
     )
 
+    return this
+  }
+
+  private commitInitialFocus() {
+    this.state.delayInitialFocusTimer = this.config.delayInitialFocus
+      ? delay(() => {
+          this.tryFocus(this.getInitialFocusNode())
+        })
+      : this.tryFocus(this.getInitialFocusNode())
+
+    return this
+  }
+
+  private addListeners() {
+    if (!this.state.active) return
+    this.attachListeners()
+    this.commitInitialFocus()
     return this
   }
 
@@ -365,6 +391,8 @@ export class FocusTrap {
   }
 
   private handlePointerDown = (event: MouseEvent | TouchEvent) => {
+    this.lastInteractionType = "pointer"
+
     const target = getEventTarget(event) as HTMLElement
 
     if (this.findContainerIndex(target, event) >= 0) {
@@ -403,6 +431,8 @@ export class FocusTrap {
   }
 
   private handleTabKey = (event: KeyboardEvent) => {
+    this.lastInteractionType = "keyboard"
+
     if (this.config.isKeyForward!(event) || this.config.isKeyBackward!(event)) {
       this.state.recentNavEvent = event
       const isBackward = this.config.isKeyBackward!(event)
@@ -544,7 +574,19 @@ export class FocusTrap {
     return node
   }
 
-  private tryFocus = (node: HTMLElement | false | null) => {
+  private containsElement(element: HTMLElement): boolean {
+    return this.state.containers.some((container) => contains(container, element))
+  }
+
+  // Don't override focus that something else (incl. another trap in the stack) already claimed since deactivation.
+  private isSafeToOverrideFocus(): boolean {
+    const activeEl = getActiveElement(this.doc)
+    if (!activeEl || activeEl === this.doc.body) return true
+    if (this.containsElement(activeEl)) return true
+    return this.trapStack.some((trap) => trap !== this && trap.containsElement(activeEl))
+  }
+
+  private tryFocus = (node: HTMLElement | false | null, focusOptions?: FocusOptions) => {
     if (node === false) return
     if (node === getActiveElement(this.doc)) return
     if (!node || !node.focus) {
@@ -552,7 +594,7 @@ export class FocusTrap {
       return
     }
 
-    node.focus({ preventScroll: !!this.config.preventScroll })
+    node.focus({ preventScroll: !!this.config.preventScroll, ...focusOptions })
     // NOTE: focus() API does not trigger focusIn event so set MRU node manually
     this.state.mostRecentlyFocusedNode = node
 
@@ -630,9 +672,11 @@ export class FocusTrap {
 
     const finishDeactivation = () => {
       delay(() => {
-        if (returnFocus) {
+        if (returnFocus && this.isSafeToOverrideFocus()) {
           const returnFocusNode = this.getReturnFocusNode(this.state.nodeFocusedBeforeActivation)
-          this.tryFocus(returnFocusNode)
+          const focusOptions: FocusOptions | undefined =
+            this.lastInteractionType === "keyboard" ? { focusVisible: true } : undefined
+          this.tryFocus(returnFocusNode, focusOptions)
         }
         onPostDeactivate?.()
       })
@@ -677,8 +721,17 @@ export class FocusTrap {
     this.state.paused = false
     onUnpause?.()
 
-    this.updateTabbableNodes()
-    this.addListeners()
+    // Best-effort: container may transiently have nothing focusable (e.g. mid re-render).
+    try {
+      this.updateTabbableNodes()
+    } catch {}
+
+    this.attachListeners()
+
+    try {
+      this.commitInitialFocus()
+    } catch {}
+
     this.updateObservedNodes()
 
     onPostUnpause?.()

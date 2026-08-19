@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -125,7 +125,8 @@ interface PrivateContext {
 export interface RatingGroupSchema {
   state: "idle" | "hover" | "focus"
   context: PrivateContext
-  props: RequiredBy<RatingGroupProps, PropsWithDefault>
+  props: RatingGroupProps
+  defaultPropKey: PropsWithDefault
   computed: ComputedContext
   private: PrivateContext
   action: string
@@ -159,6 +160,17 @@ export interface ItemState {
    * Whether the rating item is checked.
    */
   checked: boolean
+}
+
+export interface ControlState {
+  /**
+   * Whether the rating group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the rating group is read-only
+   */
+  readOnly: boolean
 }
 
 export interface RatingGroupApi<T extends PropTypes = PropTypes> {
@@ -198,6 +210,10 @@ export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getHiddenInputProps: () => T["input"]
   getLabelProps: () => T["element"]
+  /**
+   * Returns the state of the control
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
 }

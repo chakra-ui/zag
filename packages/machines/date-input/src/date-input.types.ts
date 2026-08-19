@@ -10,7 +10,7 @@ import type {
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"
 
@@ -164,6 +164,12 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   hourCycle?: HourCycle | undefined
   /**
+   * Whether to hide the time zone segment when the value is a `ZonedDateTime`.
+   * Has no effect for values without a time zone.
+   * @default false
+   */
+  hideTimeZone?: boolean | undefined
+  /**
    * Determines the smallest unit that is displayed in the date input.
    * @default "day"
    */
@@ -255,7 +261,8 @@ type Refs = {
 
 export interface DateInputSchema {
   state: "idle" | "focused"
-  props: RequiredBy<DateInputProps, PropsWithDefault>
+  props: DateInputProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs
@@ -350,6 +357,59 @@ export interface LabelProps {
   index?: number | undefined
 }
 
+export interface RootState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+}
+
+export interface ControlState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the date input is focused.
+   */
+  focused: boolean
+}
+
+export interface SegmentGroupState {
+  /**
+   * Whether the date input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether this segment group is focused.
+   */
+  focused: boolean
+}
+
 export interface HiddenInputProps {
   index?: number | undefined
   name?: string | undefined
@@ -410,9 +470,21 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   getSegmentState: (props: SegmentProps) => SegmentState
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
+  /**
+   * Returns the state of the control.
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of a given segment group.
+   */
+  getSegmentGroupState: (props?: SegmentGroupProps | undefined) => SegmentGroupState
   getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
   getSegmentProps: (props: SegmentProps) => T["element"]
   getHiddenInputProps: (props?: HiddenInputProps | undefined) => T["input"]

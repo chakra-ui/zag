@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./radio-group.anatomy"
 import * as dom from "./radio-group.dom"
-import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService } from "./radio-group.types"
+import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService, RootState } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(
   service: RadioGroupService,
@@ -13,8 +13,22 @@ export function connect<T extends PropTypes>(
   const { context, send, computed, prop, scope } = service
 
   const groupDisabled = computed("isDisabled")
-  const groupInvalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const groupInvalid = !!prop("invalid")
+  const readOnly = !!prop("readOnly")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return {
+      disabled: groupDisabled,
+      invalid: groupInvalid,
+      required: !!prop("required"),
+      readOnly,
+      orientation: prop("orientation"),
+    }
+  }
 
   function getItemState(props: ItemProps): ItemState {
     return {
@@ -49,6 +63,10 @@ export function connect<T extends PropTypes>(
     nodeToFocus?.focus()
   }
 
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     focus,
     value: context.get("value"),
@@ -59,19 +77,21 @@ export function connect<T extends PropTypes>(
       send({ type: "SET_VALUE", value: null, isTrusted: false })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         role: "radiogroup",
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-required": prop("required") || undefined,
-        "aria-disabled": groupDisabled || undefined,
-        "aria-readonly": readOnly || undefined,
-        "data-orientation": prop("orientation"),
-        "data-disabled": dataAttr(groupDisabled),
-        "data-invalid": dataAttr(groupInvalid),
-        "data-required": dataAttr(prop("required")),
-        "aria-orientation": prop("orientation"),
+        "aria-required": rootState.required || undefined,
+        "aria-disabled": rootState.disabled || undefined,
+        "aria-readonly": rootState.readOnly || undefined,
+        "data-orientation": rootState.orientation,
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-required": dataAttr(rootState.required),
+        "aria-orientation": rootState.orientation,
         dir: prop("dir"),
         style: {
           position: "relative",

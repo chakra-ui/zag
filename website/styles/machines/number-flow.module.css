@@ -1,0 +1,57 @@
+@layer recipes {
+  .Wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .Root {
+    font-size: 3rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+
+    &[data-trend="up"] {
+      color: var(--colors-text-primary-bold);
+    }
+  }
+
+  .Symbol {
+    /* keeps literal spaces, e.g. the gap in "1 234,56 €" */
+    white-space: pre;
+  }
+
+  .Digit {
+    vertical-align: top;
+  }
+
+  .Cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .Actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .Button {
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+    border-radius: 6px;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+}

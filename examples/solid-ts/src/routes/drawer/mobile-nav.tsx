@@ -2,7 +2,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer-mobile-nav.module.css"
+import styles from "@styles/drawer-mobile-nav.module.css"
 
 const NAV_ITEMS = [
   { href: "#", label: "Overview" },

@@ -1,6 +1,12 @@
 import { getComputedStyle, getDocumentElement, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { ListVirtualizer } from "./list-virtualizer"
-import type { CSSProperties, ListVirtualizerOptions, ScrollToIndexOptions, ScrollToIndexResult } from "./types"
+import type {
+  CSSProperties,
+  ListVirtualizerOptions,
+  ScrollByOptions,
+  ScrollToIndexOptions,
+  ScrollToIndexResult,
+} from "./types"
 
 type WindowType = Window & typeof globalThis
 
@@ -59,23 +65,19 @@ export interface WindowVirtualizerOptions extends ListVirtualizerOptions {
  */
 export class WindowVirtualizer extends ListVirtualizer {
   private windowOptions: WindowVirtualizerOptions
+  private hasSetupWindowScrolling = false
   private windowScrollHandler?: VoidFunction
   private windowResizeHandler?: VoidFunction
   /** Where we listen for scroll — `window` or a scrollable ancestor (e.g. `main` with overflow-y: auto). */
   private scrollListenerTarget: EventTarget | null = null
   /** Cleanup for ResizeObserver on the scroll parent (when it is an HTMLElement, not `window`). */
   private scrollTargetResizeCleanup: VoidFunction | undefined
-  private getWindow: () => WindowType
 
   /**
-   * `ListVirtualizer` may call `setViewportSize` during `super()` when `initialSize` is set — before
-   * `this.getWindow` / `this.windowOptions` are assigned, so always resolve via `this.options` or global.
+   * `ListVirtualizer` may call `setViewportSize` during `super()` when `initialRect` is set — before
+   * `this.windowOptions` is assigned, so always resolve via `this.options` or global.
    */
   private resolveWindow(): WindowType | undefined {
-    const bound = (this as unknown as { getWindow?: () => WindowType }).getWindow
-    if (typeof bound === "function") {
-      return bound()
-    }
     return (
       (this.options as WindowVirtualizerOptions).getWindow?.() ?? (typeof window !== "undefined" ? window : undefined)
     )
@@ -84,19 +86,21 @@ export class WindowVirtualizer extends ListVirtualizer {
   constructor(options: WindowVirtualizerOptions) {
     super(options)
     this.windowOptions = options
-    this.getWindow = options.getWindow ?? (() => window)
-    this.setupWindowScrolling()
   }
 
   private setupWindowScrolling(): void {
+    if (this.hasSetupWindowScrolling) return
+    this.hasSetupWindowScrolling = true
+
     this.windowScrollHandler = () => {
+      if (this.destroyed) return
       const offset = this.getWindowScrollOffset()
 
       // Create a mock event that matches the expected interface
       const mockEvent = {
         currentTarget: {
-          scrollTop: this.options.horizontal ? 0 : offset,
-          scrollLeft: this.options.horizontal ? offset : 0,
+          scrollTop: this.isHorizontal ? 0 : offset,
+          scrollLeft: this.isHorizontal ? offset : 0,
         },
       }
 
@@ -104,6 +108,7 @@ export class WindowVirtualizer extends ListVirtualizer {
     }
 
     this.windowResizeHandler = () => {
+      if (this.destroyed) return
       if (this.scrollElement) {
         this.measure()
       }
@@ -122,7 +127,7 @@ export class WindowVirtualizer extends ListVirtualizer {
 
     const win = this.resolveWindow()
     const explicit = this.windowOptions.scrollingElement
-    const target = explicit ?? findScrollableParent(scrollElement, this.options.horizontal) ?? win ?? null
+    const target = explicit ?? findScrollableParent(scrollElement, this.isHorizontal) ?? win ?? null
 
     this.scrollListenerTarget = target
 
@@ -143,7 +148,7 @@ export class WindowVirtualizer extends ListVirtualizer {
 
     if (!target || !isHTMLElement(target)) return
 
-    const { horizontal } = this.options
+    const horizontal = this.isHorizontal
     let lastWidth = 0
     let lastHeight = 0
 
@@ -175,10 +180,14 @@ export class WindowVirtualizer extends ListVirtualizer {
   }
 
   override init(scrollElement: HTMLElement): void {
+    this.setupWindowScrolling()
     this.attachScrollListener(scrollElement)
     super.init(scrollElement)
     // Sync scroll offset after layout so `scrollOffset` matches list-space coordinates (not raw `pageYOffset`).
-    queueMicrotask(() => this.windowScrollHandler?.())
+    queueMicrotask(() => {
+      if (this.destroyed) return
+      this.windowScrollHandler?.()
+    })
   }
 
   /**
@@ -189,7 +198,7 @@ export class WindowVirtualizer extends ListVirtualizer {
     const win = this.resolveWindow()
     const windowOffset =
       this.windowOptions?.windowOffset ?? (this.options as WindowVirtualizerOptions).windowOffset ?? 0
-    const { horizontal } = this.options
+    const horizontal = this.isHorizontal
 
     if (!win) {
       return 0
@@ -209,7 +218,9 @@ export class WindowVirtualizer extends ListVirtualizer {
       this.windowOptions?.scrollingElement ?? (this.options as WindowVirtualizerOptions).scrollingElement ?? rootElement
 
     if (horizontal) {
-      return (scrollingElement.scrollLeft || win.pageXOffset || 0) - windowOffset
+      const raw = scrollingElement.scrollLeft || win.pageXOffset || 0
+      const target = isHTMLElement(scrollingElement) ? scrollingElement : null
+      return this.toLogicalHorizontalOffset(raw, target) - windowOffset
     }
     return (scrollingElement.scrollTop || win.pageYOffset || 0) - windowOffset
   }
@@ -232,8 +243,8 @@ export class WindowVirtualizer extends ListVirtualizer {
     return {
       ...baseStyle,
       position: "relative",
-      marginTop: this.options.horizontal ? 0 : windowOffset,
-      marginLeft: this.options.horizontal ? windowOffset : 0,
+      marginTop: this.isHorizontal ? 0 : windowOffset,
+      marginLeft: this.isHorizontal ? windowOffset : 0,
     }
   }
 
@@ -252,7 +263,7 @@ export class WindowVirtualizer extends ListVirtualizer {
 
   override setViewportSize(_size: number): void {
     const win = this.resolveWindow()
-    const { horizontal } = this.options
+    const horizontal = this.isHorizontal
     const target = this.scrollListenerTarget ?? win
 
     let size: number
@@ -266,10 +277,13 @@ export class WindowVirtualizer extends ListVirtualizer {
     super.setViewportSize(size)
   }
 
-  override scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
+  override scrollToOffset(offset: number, options: ScrollByOptions = {}): ScrollToIndexResult {
+    if (options.smooth) return super.scrollToOffset(offset, options)
+
+    const targetOffset = Math.max(0, offset)
     const win = this.resolveWindow()
     const el = this.scrollElement
-    const { horizontal } = this.options
+    const horizontal = this.isHorizontal
     const windowOffset = this.windowOptions.windowOffset ?? 0
     const scrollTarget = this.scrollListenerTarget ?? win
 
@@ -279,23 +293,24 @@ export class WindowVirtualizer extends ListVirtualizer {
           const rect = el.getBoundingClientRect()
           if (horizontal) {
             const docOrigin = win.pageXOffset + rect.left
-            win.scrollTo(docOrigin + offset - windowOffset, win.pageYOffset)
+            win.scrollTo(docOrigin + targetOffset - windowOffset, win.pageYOffset)
           } else {
             const docOrigin = win.pageYOffset + rect.top
-            win.scrollTo(win.pageXOffset, docOrigin + offset - windowOffset)
+            win.scrollTo(win.pageXOffset, docOrigin + targetOffset - windowOffset)
           }
         }
       } else if (isHTMLElement(scrollTarget)) {
-        const delta = offset - this.scrollOffset
         if (horizontal) {
-          scrollTarget.scrollLeft += delta
+          const rawTarget = this.toRawHorizontalOffset(targetOffset, scrollTarget)
+          scrollTarget.scrollLeft = rawTarget
         } else {
+          const delta = targetOffset - this.scrollOffset
           scrollTarget.scrollTop += delta
         }
       }
     }
 
-    return super.scrollTo(offset)
+    return super.scrollToOffset(targetOffset)
   }
 
   override scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
@@ -304,10 +319,10 @@ export class WindowVirtualizer extends ListVirtualizer {
 
     const targetOffset = this.resolveScrollToOffset(index, align)
     if (targetOffset === null) {
-      return this.options.horizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
+      return this.isHorizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
     }
 
-    const { horizontal } = this.options
+    const horizontal = this.isHorizontal
     const scrollTarget = this.scrollListenerTarget ?? this.resolveWindow()
 
     if (isHTMLElement(scrollTarget)) {
@@ -316,10 +331,13 @@ export class WindowVirtualizer extends ListVirtualizer {
         const rect = el.getBoundingClientRect()
         const containerRect = scrollTarget.getBoundingClientRect()
         const relativeOffset = horizontal
-          ? rect.left - containerRect.left + scrollTarget.scrollLeft
+          ? rect.left - containerRect.left + this.toLogicalHorizontalOffset(scrollTarget.scrollLeft, scrollTarget)
           : rect.top - containerRect.top + scrollTarget.scrollTop
+        const nextLogical = relativeOffset + targetOffset
         scrollTarget.scrollTo({
-          [horizontal ? "left" : "top"]: relativeOffset + targetOffset,
+          [horizontal ? "left" : "top"]: horizontal
+            ? this.toRawHorizontalOffset(nextLogical, scrollTarget)
+            : relativeOffset + targetOffset,
           behavior: "smooth",
         })
       }
@@ -337,7 +355,7 @@ export class WindowVirtualizer extends ListVirtualizer {
       }
     }
 
-    return super.scrollTo(targetOffset)
+    return super.scrollToOffset(targetOffset)
   }
 
   override destroy(): void {
@@ -347,6 +365,9 @@ export class WindowVirtualizer extends ListVirtualizer {
     if (this.windowResizeHandler && typeof win !== "undefined") {
       win.removeEventListener("resize", this.windowResizeHandler)
     }
+    delete this.windowScrollHandler
+    delete this.windowResizeHandler
+    this.hasSetupWindowScrolling = false
 
     super.destroy()
   }

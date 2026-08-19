@@ -1,12 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type {
-  CommonProperties,
-  DirectionProperty,
-  Orientation,
-  OrientationProperty,
-  PropTypes,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -98,7 +91,8 @@ type Computed = Readonly<{
 }>
 
 export interface ProgressSchema {
-  props: RequiredBy<ProgressProps, PropsWithDefault>
+  props: ProgressProps
+  defaultPropKey: PropsWithDefault
   computed: Computed
   context: {
     value: number | null
@@ -120,6 +114,17 @@ export type ProgressMachine = Machine<ProgressSchema>
 
 export interface ViewProps {
   state: ProgressState
+}
+
+export interface ViewState {
+  /**
+   * The progress state this view represents
+   */
+  state: ProgressState
+  /**
+   * Whether this view matches the current progress state
+   */
+  visible: boolean
 }
 
 export interface ProgressApi<T extends PropTypes = PropTypes> {
@@ -169,6 +174,10 @@ export interface ProgressApi<T extends PropTypes = PropTypes> {
   getTrackProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getRangeProps: () => T["element"]
+  /**
+   * Returns the state of a view
+   */
+  getViewState: (props: ViewProps) => ViewState
   getViewProps: (props: ViewProps) => T["element"]
   getCircleProps: () => T["svg"]
   getCircleTrackProps: () => T["circle"]

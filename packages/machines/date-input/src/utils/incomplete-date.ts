@@ -89,6 +89,28 @@ export class IncompleteDate {
     return res
   }
 
+  /** Rebuild this date under a new hour cycle, preserving all field values. */
+  withHourCycle(nextHourCycle: HourCycle): IncompleteDate {
+    if (nextHourCycle === this.hourCycle) return this
+    const hour24 = this.hour != null ? fromHourCycle(this.hour, this.dayPeriod ?? 0, this.hourCycle) : null
+    const res = new IncompleteDate(this.calendar, nextHourCycle, {
+      era: this.era,
+      year: this.year,
+      month: this.month,
+      day: this.day,
+      hour: hour24,
+      minute: this.minute,
+      second: this.second,
+      millisecond: this.millisecond,
+    } as Partial<Omit<AnyDateTime, "copy">>)
+    res.offset = this.offset
+    // Preserve a user-picked AM/PM that has no concrete hour yet (constructor drops it when hour is null).
+    if (this.hour == null && this.dayPeriod != null && (nextHourCycle === "h12" || nextHourCycle === "h11")) {
+      res.dayPeriod = this.dayPeriod
+    }
+    return res
+  }
+
   /** Checks whether all the specified segments have a value. */
   isComplete(segments: SegmentType[]): boolean {
     return segments.every((segment) => (this as Record<string, unknown>)[segment] != null)

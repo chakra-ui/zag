@@ -1,6 +1,6 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -59,7 +59,7 @@ export interface DialogProps
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement) | null | undefined
   /**
    * Element to receive focus when the dialog is closed
    */
@@ -124,12 +124,16 @@ type PropsWithDefault =
   | "trapFocus"
   | "restoreFocus"
   | "preventScroll"
-  | "initialFocusEl"
 
 export interface DialogSchema {
-  props: RequiredBy<DialogProps, PropsWithDefault>
+  props: DialogProps
+  defaultPropKey: PropsWithDefault
   state: "open" | "closed"
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     rendered: { title: boolean; description: boolean }
     triggerValue: string | null
   }
@@ -137,7 +141,6 @@ export interface DialogSchema {
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
   action:
     | "checkRenderedElements"
-    | "syncZIndex"
     | "setInitialFocus"
     | "invokeOnClose"
     | "invokeOnOpen"
@@ -164,6 +167,66 @@ export interface TriggerProps {
   value?: string
 }
 
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the dialog
+   */
+  current: boolean
+  /**
+   * Whether the dialog is open
+   */
+  open: boolean
+}
+
+export interface BackdropState {
+  /**
+   * Whether the dialog is open
+   */
+  open: boolean
+  /**
+   * Whether the dialog is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the dialog has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface PositionerState {
+  /**
+   * Whether the dialog is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the dialog has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the dialog is open
+   */
+  open: boolean
+  /**
+   * Whether the dialog is modal
+   */
+  modal: boolean
+  /**
+   * Whether the dialog is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the dialog has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
 export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is open
@@ -182,9 +245,25 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
    */
   setTriggerValue: (value: string | null) => void
 
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
+  /**
+   * Returns the state of the backdrop
+   */
+  getBackdropState: () => BackdropState
   getBackdropProps: () => T["element"]
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
   getDescriptionProps: () => T["element"]

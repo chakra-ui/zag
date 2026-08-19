@@ -153,7 +153,8 @@ export type MarqueeService = Service<MarqueeSchema>
 export type MarqueeMachine = Machine<MarqueeSchema>
 
 export interface MarqueeSchema {
-  props: UserDefinedContext
+  props: MarqueeProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: {
@@ -176,6 +177,17 @@ export interface ContentProps {
    * The index of the content instance (0 for original, 1+ for duplicates).
    */
   index: number
+}
+
+export interface ContentState {
+  /**
+   * The index of the content instance
+   */
+  index: number
+  /**
+   * Whether this content instance is a clone (duplicate)
+   */
+  clone: boolean
 }
 
 export interface EdgeProps {
@@ -233,6 +245,10 @@ export interface MarqueeApi<T extends PropTypes = PropTypes> {
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
+  /**
+   * Returns the state of a content instance
+   */
+  getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getEdgeProps: (props: EdgeProps) => T["element"]
   getItemProps: () => T["element"]

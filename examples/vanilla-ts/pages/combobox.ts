@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/combobox.css"
 
 import { Combobox } from "../src/combobox"
 import { nanoid } from "nanoid"

@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
 import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -53,13 +54,13 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <div {...api().getNodeGroupProps(nodeProps)}>
       <div {...api().getNodeProps(nodeProps)}>
         <Show when={nodeState().isBranch}>
-          <div {...api().getCellProps(nodeProps)}>
+          <div {...api().getNodeCellProps(nodeProps)}>
             <button {...api().getNodeExpandTriggerProps(nodeProps)}>
               <ChevronRightIcon />
             </button>
           </div>
         </Show>
-        <div {...api().getCellProps(nodeProps)}>
+        <div {...api().getNodeCellProps(nodeProps)}>
           <Show when={nodeState().isBranch} fallback={<FileIcon />}>
             <FolderIcon />
           </Show>

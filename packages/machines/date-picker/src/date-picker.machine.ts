@@ -26,7 +26,7 @@ import {
   parseDateString,
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { disableTextSelection, raf, restoreTextSelection, setElementValue } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -105,16 +105,15 @@ export const machine = createMachine<DatePickerSchema>({
     focusedValue = constrainValue(toTargetCalendar(focusedValue), props.min, props.max)
 
     // get the initial view
-    const minView: DateView = "day"
-    const maxView: DateView = "year"
-    const defaultView = clampView(props.view || minView, minView, maxView)
+    const minView: DateView = props.minView || "day"
+    const maxView: DateView = props.maxView || "year"
+    const defaultView = clampView(props.defaultView || props.view || minView, minView, maxView)
 
     return {
       locale,
       numOfMonths,
       timeZone,
       selectionMode,
-      defaultView,
       minView,
       maxView,
       outsideDaySelectable: false,
@@ -137,6 +136,7 @@ export const machine = createMachine<DatePickerSchema>({
       defaultFocusedValue: focusedValue,
       value,
       defaultValue: defaultValue ?? [],
+      defaultView,
       positioning: {
         placement: "bottom",
         ...props.positioning,
@@ -145,7 +145,7 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen") || prop("inline")
+    const open = prop("inline") || (prop("open") ?? prop("defaultOpen"))
     return open ? "open" : "idle"
   },
 
@@ -157,6 +157,9 @@ export const machine = createMachine<DatePickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       focusedValue: bindable<DateValue>(() => ({
         defaultValue: prop("defaultFocusedValue"),
         value: prop("focusedValue"),
@@ -214,7 +217,6 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -287,7 +289,13 @@ export const machine = createMachine<DatePickerSchema>({
       actions: ["setFocusedDate"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"],
+      actions: [
+        "clearDateValue",
+        "clearFocusedDate",
+        "setActiveIndexToStart",
+        "clearHoveredDate",
+        "focusFirstInputElement",
+      ],
     },
     "INPUT.CHANGE": [
       {
@@ -357,7 +365,7 @@ export const machine = createMachine<DatePickerSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["focusFirstSelectedDate", "focusActiveCell"],
+          actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell"],
         },
         "TRIGGER.CLICK": [
           {
@@ -366,7 +374,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
         OPEN: [
@@ -376,7 +384,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
       },
@@ -387,7 +395,7 @@ export const machine = createMachine<DatePickerSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["focusFirstSelectedDate", "focusActiveCell"],
+          actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell"],
         },
         "TRIGGER.CLICK": [
           {
@@ -396,7 +404,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
         OPEN: [
@@ -406,7 +414,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "open",
-            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+            actions: ["resetView", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
       },
@@ -414,8 +422,9 @@ export const machine = createMachine<DatePickerSchema>({
 
     open: {
       tags: ["open"],
+      entry: ["resumeRangeSelection"],
       effects: ["trackDismissableElement", "trackPositioning"],
-      exit: ["clearHoveredDate", "resetView", "clearPositioned"],
+      exit: ["clearHoveredDate"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -497,10 +506,16 @@ export const machine = createMachine<DatePickerSchema>({
           },
           // ===
         ],
-        "CELL.POINTER_MOVE": {
-          guard: and("isRangePicker", "isSelectingEndDate"),
-          actions: ["setHoveredDate", "setFocusedDate"],
-        },
+        "CELL.POINTER_MOVE": [
+          {
+            guard: and("isRangePicker", "isSelectingEndDate", "isDayPointerMoveOutsideVisibleMonth"),
+            actions: ["setHoveredDate"],
+          },
+          {
+            guard: and("isRangePicker", "isSelectingEndDate"),
+            actions: ["setHoveredDate", "setFocusedDate"],
+          },
+        ],
         "TABLE.POINTER_LEAVE": {
           guard: "isRangePicker",
           actions: ["clearHoveredDate"],
@@ -528,7 +543,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: and("isRangePicker", "hasSelectedRange"),
-            actions: ["setActiveIndexToStart", "clearDateValue", "setSelectedDate", "setActiveIndexToEnd"],
+            actions: ["setActiveIndexToStart", "resetSelection", "setActiveIndexToEnd", "focusNextDay"],
           },
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
@@ -712,11 +727,13 @@ export const machine = createMachine<DatePickerSchema>({
       isRangePicker: ({ prop }) => prop("selectionMode") === "range",
       hasSelectedRange: ({ context }) => context.get("value").length === 2,
       isMultiPicker: ({ prop }) => prop("selectionMode") === "multiple",
-      canSelectDate: ({ context, prop, event }) => {
+      canSelectDate: (params) => {
+        const { context, prop, event } = params
         const maxSelectedDates = prop("maxSelectedDates")
         if (maxSelectedDates == null) return true
         const existingValues = context.get("value")
-        const currentValue = event.value ?? context.get("focusedValue")
+        // Normalize month/year cells numeric valueto a DateValue
+        const currentValue = normalizeValue(params, event.value ?? context.get("focusedValue"))
         // Allow if deselecting (date already selected)
         const isDeselecting = existingValues.some((date) => isDateEqual(date, currentValue))
         if (isDeselecting) return true
@@ -730,6 +747,7 @@ export const machine = createMachine<DatePickerSchema>({
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
+      isDayPointerMoveOutsideVisibleMonth: ({ event }) => event.cell === "day" && event.outsideRange === true,
     },
 
     effects: {
@@ -746,7 +764,6 @@ export const machine = createMachine<DatePickerSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
@@ -764,6 +781,9 @@ export const machine = createMachine<DatePickerSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           defer: true,
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
             context.set("restoreFocus", !event.detail.focusable)
@@ -904,9 +924,6 @@ export const machine = createMachine<DatePickerSchema>({
       },
       clearHoveredDate({ context }) {
         context.set("hoveredValue", null)
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       selectFocusedDate({ context, computed }) {
         const values = Array.from(context.get("value"))
@@ -1083,6 +1100,11 @@ export const machine = createMachine<DatePickerSchema>({
       setActiveIndexToStart({ context }) {
         context.set("activeIndex", 0)
       },
+      resumeRangeSelection({ context, prop }) {
+        if (prop("selectionMode") === "range" && context.get("value").length === 1) {
+          context.set("activeIndex", 1)
+        }
+      },
       focusActiveCell({ scope, context, event }) {
         if (event.src === "input.click") return
         raf(() => {
@@ -1098,12 +1120,10 @@ export const machine = createMachine<DatePickerSchema>({
         })
       },
       setHoveredValueIfKeyboard({ context, event, prop }) {
-        if (
-          !event.type.startsWith("TABLE.ARROW") ||
-          prop("selectionMode") !== "range" ||
-          context.get("activeIndex") === 0
-        )
-          return
+        const isKeyboardNavigation =
+          event.type.startsWith("TABLE.ARROW") ||
+          ["TABLE.ENTER", "TABLE.HOME", "TABLE.END", "TABLE.PAGE_UP", "TABLE.PAGE_DOWN"].includes(event.type)
+        if (!isKeyboardNavigation || prop("selectionMode") !== "range" || context.get("activeIndex") === 0) return
         context.set("hoveredValue", context.get("focusedValue").copy())
       },
       focusTriggerElement({ scope }) {
@@ -1194,13 +1214,14 @@ export const machine = createMachine<DatePickerSchema>({
         date = constrainValue(date, prop("min"), prop("max"))
 
         const values = Array.from(context.get("value"))
-        values[event.index] = date
+        values[event.index] = preserveTime(values[event.index], date)
+        const adjustedValues = adjustStartAndEndDate(values)
 
-        context.set("value", values)
+        context.set("value", adjustedValues)
 
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
-        const valueAsString = getValueAsString(values, prop)
+        const valueAsString = getValueAsString(adjustedValues, prop)
         context.set("inputValue", valueAsString[event.index])
       },
 

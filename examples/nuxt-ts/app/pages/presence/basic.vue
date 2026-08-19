@@ -3,6 +3,7 @@ import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import type { VNodeRef } from "vue"
 import { watch } from "vue"
+import "@styles/presence.css"
 
 const present = ref(false)
 const service = useMachine(

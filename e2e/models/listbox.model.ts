@@ -31,10 +31,14 @@ export class ListboxModel extends Model {
     return this.page.locator("[data-listbox-content]")
   }
 
+  get list() {
+    return this.page.locator("[data-listbox-list]")
+  }
+
   async tabToContent() {
     await this.page.click("main.listbox", { position: { x: 300, y: 30 }, force: true })
     await this.page.keyboard.press("Tab")
-    await expect(this.content).toBeFocused()
+    await expect(this.list).toBeFocused()
   }
 
   typeSequentially(value: string) {

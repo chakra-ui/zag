@@ -97,7 +97,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div className={styles.Node} {...api.getNodeProps(nodeProps)}>
-        <div className={styles.Cell} {...api.getCellProps(nodeProps)}>
+        <div className={styles.Cell} {...api.getNodeCellProps(nodeProps)}>
           {nodeState.isBranch ? <LuFolder /> : <LuFile />}
           <span
             className={styles.NodeText}

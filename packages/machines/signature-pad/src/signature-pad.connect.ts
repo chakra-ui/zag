@@ -2,7 +2,7 @@ import { dataAttr, getEventTarget, getRelativePoint, isLeftClick, isModifierKey 
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
 import * as dom from "./signature-pad.dom"
-import type { SignaturePadApi, SignaturePadService } from "./signature-pad.types"
+import type { RootState, SignaturePadApi, SignaturePadService } from "./signature-pad.types"
 
 export function connect<T extends PropTypes>(
   service: SignaturePadService,
@@ -18,6 +18,18 @@ export function connect<T extends PropTypes>(
 
   const translations = prop("translations")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, required, drawing, empty }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     empty: empty,
     drawing: drawing,
@@ -32,11 +44,15 @@ export function connect<T extends PropTypes>(
       return dom.getDataUrl(scope, { type, quality })
     },
 
+    getRootState,
+
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-required": dataAttr(required),
+        dir: prop("dir"),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-required": dataAttr(rootState.required),
         htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (!interactive) return
@@ -48,21 +64,25 @@ export function connect<T extends PropTypes>(
     },
 
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
+        dir: prop("dir"),
+        "data-disabled": dataAttr(rootState.disabled),
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        tabIndex: disabled ? undefined : 0,
+        dir: prop("dir"),
+        tabIndex: rootState.disabled ? undefined : 0,
         role: "application",
         "aria-roledescription": "signature pad",
         "aria-label": translations.control,
-        "aria-disabled": disabled,
-        "data-disabled": dataAttr(disabled),
+        "aria-disabled": rootState.disabled,
+        "data-disabled": dataAttr(rootState.disabled),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if (isModifierKey(event)) return
@@ -118,19 +138,23 @@ export function connect<T extends PropTypes>(
     },
 
     getGuideProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.guide.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
+        dir: prop("dir"),
+        "data-disabled": dataAttr(rootState.disabled),
       })
     },
 
     getClearTriggerProps() {
+      const rootState = getRootState()
       return normalize.button({
         ...parts.clearTrigger.attrs(scope.id),
+        dir: prop("dir"),
         type: "button",
         "aria-label": translations.clearTrigger,
-        hidden: !context.get("paths").length || drawing,
-        disabled,
+        hidden: !context.get("paths").length || rootState.drawing,
+        disabled: rootState.disabled,
         onClick() {
           send({ type: "CLEAR" })
         },
@@ -138,12 +162,13 @@ export function connect<T extends PropTypes>(
     },
 
     getHiddenInputProps(props) {
+      const rootState = getRootState()
       return normalize.input({
         id: dom.getHiddenInputId(scope),
         type: "text",
         hidden: true,
-        disabled,
-        required: prop("required"),
+        disabled: rootState.disabled,
+        required: rootState.required,
         readOnly: true,
         name: prop("name"),
         value: props.value,

@@ -4,7 +4,7 @@
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   interface User {
     id: number
@@ -61,7 +61,8 @@
   </table>
 
   <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-    <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
+    <strong>Active Trigger:</strong>
+    {api.triggerValue || "-"} <br />
     <strong>Active User:</strong>
     {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
   </div>

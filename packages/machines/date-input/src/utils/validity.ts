@@ -1,6 +1,9 @@
 import type { Params } from "@zag-js/core"
-import type { DateInputSchema, SelectionMode } from "../date-input.types"
+import type { DateInputSchema, DateSegment, SelectionMode } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
+
+/** A segment is focusable (gets a spinbutton role + tab stop) when it's not a layout literal. */
+export const isFocusableSegment = (segment: DateSegment): boolean => segment.type !== "literal"
 
 export function getGroupCount(selectionMode: SelectionMode): number {
   return selectionMode === "range" ? 2 : 1
@@ -37,26 +40,52 @@ export function getActiveSegment(ctx: Params<DateInputSchema>) {
   return allSegments[index]?.[localIndex]
 }
 
-export function advanceToNextSegment(ctx: Params<DateInputSchema>) {
+type SegmentPredicate = (segment: DateSegment) => boolean
+
+export function goToNextSegment(ctx: Params<DateInputSchema>, predicate: SegmentPredicate = isFocusableSegment) {
   const { context } = ctx
   const index = context.get("activeIndex")
   const { allSegments, segments, offset, localIndex } = resolveActiveSegment(ctx)
-  const nextLocalIndex = segments.findIndex((s, i) => i > localIndex && s.isEditable)
+  const nextLocalIndex = segments.findIndex((s, i) => i > localIndex && predicate(s))
 
   if (nextLocalIndex !== -1) {
     context.set("activeSegmentIndex", offset + nextLocalIndex)
     return
   }
 
-  // Advance to the first editable segment of the next date group (e.g. range mode)
+  // Advance to the first matching segment of the next date group (e.g. range mode)
   const nextGroupSegments = allSegments[index + 1]
   if (!nextGroupSegments) return
 
-  const firstNextGroupEditableLocalIndex = nextGroupSegments.findIndex((s) => s.isEditable)
-  if (firstNextGroupEditableLocalIndex === -1) return
+  const firstNextGroupLocalIndex = nextGroupSegments.findIndex(predicate)
+  if (firstNextGroupLocalIndex === -1) return
 
   context.set("activeIndex", index + 1)
-  context.set("activeSegmentIndex", offset + segments.length + firstNextGroupEditableLocalIndex)
+  context.set("activeSegmentIndex", offset + segments.length + firstNextGroupLocalIndex)
+}
+
+export function goToPreviousSegment(ctx: Params<DateInputSchema>, predicate: SegmentPredicate = isFocusableSegment) {
+  const { context } = ctx
+  const index = context.get("activeIndex")
+  const { allSegments, segments, offset, localIndex } = resolveActiveSegment(ctx)
+  const prevLocalIndex = segments.findLastIndex((s, i) => i < localIndex && predicate(s))
+
+  if (prevLocalIndex !== -1) {
+    context.set("activeSegmentIndex", offset + prevLocalIndex)
+    return
+  }
+
+  // Retreat to the last matching segment of the previous date group (e.g. range mode)
+  const prevGroupIndex = index - 1
+  if (prevGroupIndex < 0) return
+  const prevGroupSegments = allSegments[prevGroupIndex]
+  if (!prevGroupSegments) return
+
+  const lastPrevGroupLocalIndex = prevGroupSegments.findLastIndex(predicate)
+  if (lastPrevGroupLocalIndex === -1) return
+
+  context.set("activeIndex", prevGroupIndex)
+  context.set("activeSegmentIndex", getGroupOffset(allSegments, prevGroupIndex) + lastPrevGroupLocalIndex)
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,13 @@
-import { getComputedStyle, isIos, setStyleProperty, setStyle } from "@zag-js/dom-query"
+import { getComputedStyle, isIos, isOverflowElement, setStyleProperty, setStyle } from "@zag-js/dom-query"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
+
+interface LockState {
+  count: number
+  cleanup: VoidFunction
+}
+
+const lockMap = new WeakMap<Document, LockState>()
 
 function getPaddingProperty(documentElement: HTMLElement) {
   // RTL <body> scrollbar
@@ -15,14 +22,17 @@ function hasStableScrollbarGutter(element: HTMLElement): boolean {
   return scrollbarGutter === "stable" || scrollbarGutter?.startsWith("stable ") === true
 }
 
-export function preventBodyScroll(_document?: Document) {
-  const doc = _document ?? document
-  const win = doc.defaultView ?? window
-
+// html scrolls when it overflows, body otherwise (e.g. app-shell layouts where body is
+// permanently hidden and an inner region scrolls instead).
+function getScrollContainer(doc: Document): HTMLElement {
   const { documentElement, body } = doc
+  return isOverflowElement(documentElement) ? documentElement : body
+}
 
-  const locked = body.hasAttribute(LOCK_CLASSNAME)
-  if (locked) return
+function applyLock(doc: Document): VoidFunction {
+  const win = doc.defaultView ?? window
+  const { documentElement, body } = doc
+  const scroller = getScrollContainer(doc)
 
   // Check if scrollbar-gutter: stable is set on html or body
   // If so, the browser already reserves space for the scrollbar
@@ -35,7 +45,7 @@ export function preventBodyScroll(_document?: Document) {
   const setScrollbarWidthProperty = () => setStyleProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
   const paddingProperty = getPaddingProperty(documentElement)
 
-  const setBodyStyle = () => {
+  const setScrollerStyle = () => {
     // Only add padding if scrollbar-gutter: stable is not set
     const styles: Record<string, string> = {
       overflow: "hidden",
@@ -45,7 +55,7 @@ export function preventBodyScroll(_document?: Document) {
       styles[paddingProperty] = `${scrollbarWidth}px`
     }
 
-    return setStyle(body, styles)
+    return setStyle(scroller, styles)
   }
 
   // Only iOS doesn't respect `overflow: hidden` on document.body
@@ -77,10 +87,36 @@ export function preventBodyScroll(_document?: Document) {
     }
   }
 
-  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setBodyStyle()]
+  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setScrollerStyle()]
 
   return () => {
     cleanups.forEach((fn) => fn?.())
     body.removeAttribute(LOCK_CLASSNAME)
+  }
+}
+
+export function preventBodyScroll(_document?: Document): VoidFunction {
+  const doc = _document ?? document
+
+  // Ref-count locks per document so concurrent callers (nested dialogs, React Strict Mode
+  // remounts) each get a cleanup that releases their own claim. The DOM mutation only
+  // applies on the first lock and only reverts when the last lock releases.
+  let state = lockMap.get(doc)
+  if (!state) {
+    state = { count: 0, cleanup: applyLock(doc) }
+    lockMap.set(doc, state)
+  }
+  state.count++
+
+  const lockState = state
+  let released = false
+  return () => {
+    if (released) return
+    released = true
+    lockState.count--
+    if (lockState.count === 0) {
+      lockState.cleanup()
+      lockMap.delete(doc)
+    }
   }
 }

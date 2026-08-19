@@ -1,6 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
 import { createContext, createMemo, createUniqueId, useContext, type ParentProps } from "solid-js"
+import "@styles/splitter.css"
 
 const registry = splitter.registry({
   hitAreaMargins: { coarse: 15, fine: 8 },

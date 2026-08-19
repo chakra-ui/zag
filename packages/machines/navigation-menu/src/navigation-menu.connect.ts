@@ -1,3 +1,4 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   contains,
   dataAttr,
@@ -11,13 +12,22 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
-import type { ItemProps, ItemState, NavigationMenuApi, NavigationMenuService } from "./navigation-menu.types"
+import type {
+  ContentProps,
+  ContentState,
+  ItemProps,
+  ItemState,
+  NavigationMenuApi,
+  NavigationMenuService,
+  TriggerState,
+} from "./navigation-menu.types"
 
 export function connect<T extends PropTypes>(
   service: NavigationMenuService,
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
   const { context, send, prop, scope } = service
+  const layer = context.get("layer")
   const translations = prop("translations")
 
   const triggerRect = context.get("triggerRect")
@@ -46,6 +56,32 @@ export function connect<T extends PropTypes>(
       disabled: !!props.disabled,
     }
   }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: ItemProps): TriggerState {
+    const itemState = getItemState(props)
+    return { value: props.value, disabled: itemState.disabled, open: itemState.selected }
+  }
+
+  function getContentState(props: ContentProps): ContentState {
+    const itemState = getItemState(props)
+    const currentValue = context.get("value") || context.get("previousValue")
+    const selected = isViewportRendered ? currentValue === props.value : itemState.selected
+    const contentLayer = !isViewportRendered && selected ? layer : null
+    return {
+      value: props.value,
+      open: selected,
+      nested: !!contentLayer?.nested,
+      hasNested: !!contentLayer?.hasNested,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open,
@@ -144,19 +180,21 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps(props) {
       const itemState = getItemState(props)
+      const triggerState = getTriggerState(props)
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
-        disabled: itemState.disabled,
+        disabled: triggerState.disabled,
         "data-value": props.value,
-        "data-state": itemState.selected ? "open" : "closed",
-        "data-disabled": dataAttr(itemState.disabled),
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-disabled": dataAttr(triggerState.disabled),
         "aria-controls": itemState.contentId,
-        "aria-expanded": itemState.selected,
+        "aria-expanded": triggerState.open,
         onPointerEnter(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
@@ -301,21 +339,24 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps(props) {
       const itemState = getItemState(props)
+      const contentState = getContentState(props)
 
-      const currentValue = context.get("value") || context.get("previousValue")
-      const selected = isViewportRendered ? currentValue === props.value : itemState.selected
+      const contentLayer = !isViewportRendered && contentState.open ? layer : null
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: itemState.contentId,
         dir: prop("dir"),
-        hidden: !selected,
+        hidden: !contentState.open,
         "aria-labelledby": itemState.triggerId,
-        "data-state": selected ? "open" : "closed",
+        "data-state": contentState.open ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
+        ...getDismissableLayerAttrs(contentLayer),
+        style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
           send({ type: "CONTENT.POINTERENTER", value: props.value })
@@ -384,6 +425,7 @@ export function connect<T extends PropTypes>(
     getViewportProps(props = {}) {
       const { align = "center" } = props
       const open = Boolean(value)
+      const viewportLayer = isViewportRendered ? layer : null
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
         dir: prop("dir"),
@@ -391,13 +433,15 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-align": align,
+        ...getDismissableLayerAttrs(viewportLayer),
         style: {
+          ...getDismissableLayerStyle(viewportLayer),
           transition: preventTransition ? "none" : undefined,
-          pointerEvents: !open ? "none" : undefined,
           "--viewport-width": toPx(viewportSize?.width),
           "--viewport-height": toPx(viewportSize?.height),
           "--viewport-x": toPx(viewportPosition?.x),
           "--viewport-y": toPx(viewportPosition?.y),
+          pointerEvents: !open ? "none" : viewportLayer?.active ? (viewportLayer.blocked ? "none" : "auto") : undefined,
         },
         onPointerEnter() {
           send({ type: "CONTENT.POINTERENTER" })

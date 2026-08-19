@@ -5,7 +5,7 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type LoadStatus = "error" | "loaded"
+export type LoadStatus = "loading" | "error" | "loaded"
 
 export interface StatusChangeDetails {
   status: LoadStatus
@@ -34,6 +34,7 @@ export interface AvatarProps extends CommonProperties, DirectionProperty {
 
 export interface AvatarSchema {
   props: AvatarProps
+  defaultPropKey: never
   context: any
   initial: "loading"
   effect: "trackImageRemoval" | "trackSrcChange"
@@ -56,13 +57,13 @@ export type AvatarMachine = Machine<AvatarSchema>
 
 export interface AvatarApi<T extends PropTypes = PropTypes> {
   /**
+   * The current image loading status.
+   */
+  status: LoadStatus
+  /**
    * Whether the image is loaded.
    */
   loaded: boolean
-  /**
-   * Function to set new src.
-   */
-  setSrc: (src: string) => void
   /**
    * Function to set loaded state.
    */

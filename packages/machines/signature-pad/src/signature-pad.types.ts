@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
 /* -----------------------------------------------------------------------------
@@ -13,7 +13,14 @@ export interface Point {
 }
 
 export interface DrawDetails {
+  /**
+   * The committed paths of the signature pad.
+   */
   paths: string[]
+  /**
+   * The path currently being drawn, if any.
+   */
+  currentPath: string | null
 }
 
 export interface DrawingOptions extends StrokeOptions {
@@ -64,7 +71,8 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
    */
   translations?: IntlTranslations | undefined
   /**
-   * Callback when the signature pad is drawing.
+   * Callback when the signature pad is drawing or the committed paths change.
+   * `paths` contains only committed strokes; use `currentPath` for the in-progress stroke.
    */
   onDraw?: ((details: DrawDetails) => void) | undefined
   /**
@@ -127,7 +135,8 @@ type ComputedContext = Readonly<{
 
 export interface SignaturePadSchema {
   state: "idle" | "drawing"
-  props: RequiredBy<SignaturePadProps, PropsWithDefault>
+  props: SignaturePadProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   action: string
@@ -150,6 +159,25 @@ export interface SegmentPathProps {
 
 export interface HiddenInputProps {
   value: string
+}
+
+export interface RootState {
+  /**
+   * Whether the signature pad is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the signature pad is required
+   */
+  required: boolean
+  /**
+   * Whether the user is currently drawing
+   */
+  drawing: boolean
+  /**
+   * Whether the signature pad is empty
+   */
+  empty: boolean
 }
 
 export interface SignaturePadApi<T extends PropTypes = PropTypes> {
@@ -178,6 +206,10 @@ export interface SignaturePadApi<T extends PropTypes = PropTypes> {
    */
   clear: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getLabelProps: () => T["element"]
   getRootProps: () => T["element"]
   getControlProps: () => T["element"]

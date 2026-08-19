@@ -4,6 +4,363 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.0](./#1.43.0) - 2026-07-28
+
+### Added
+
+- **Dialog, Drawer**: Add `data-autofocus` and `data-no-autofocus` to control which element gets focus on open. Mark
+  chrome controls like the close button with `data-no-autofocus` to skip them, or mark the real target with
+  `data-autofocus`.
+
+  ```jsx
+  <div {...api.getContentProps()}>
+    {/* skipped on open, still in tab order */}
+    <button {...api.getCloseTriggerProps()} data-no-autofocus>
+      Close
+    </button>
+    <button data-no-autofocus aria-label="Help">
+      ?
+    </button>
+
+    {/* receives initial focus */}
+    <input data-autofocus />
+    <button>Save</button>
+  </div>
+  ```
+
+  Priority: `initialFocusEl` → `[data-autofocus]` → first tabbable without `[data-no-autofocus]` → content root.
+
+- **Focus Trap**: Add a `persistentElements` option to declare portalled content as part of the trap when it isn't
+  reachable via `aria-controls`/`aria-expanded`.
+
+- **Image Cropper**: Add exact natural-image `corners` and `outputSize` to `getCropData()`, plus a `maxSize` option to
+  limit `getCroppedImage()` output dimensions.
+
+- **Popper**: Add an `applyStyles` option to control whether computed position styles are written directly to the DOM.
+
+### Fixed
+
+- **Auto Resize**: Fix issue where writing to a controlled textarea's `value` programmatically dispatched a synthetic
+  `input` event, feeding the value back into the framework and breaking controlled state.
+
+- **Color Picker**: Fix issue where the channel input committed a partial value when `Enter` was pressed to confirm an
+  IME composition.
+
+- **Date Input**
+  - Fix issue where segment text lagged behind in-progress edits when typing over a committed date.
+  - Fix in-progress edits being discarded while focus catches up after auto-advance. Fast typing and
+    `ArrowUp`/`ArrowDown`/`Home`/`End` now apply to the active segment.
+
+- **Date Picker**
+  - Fix issue where disabled and read-only pickers still responded to cell clicks, the clear trigger, and presets.
+    Read-only pickers keep roving-focus navigation. Disabled pickers are out of the tab order.
+  - Fix issue where the `minView`, `maxView`, and `defaultView` props were ignored when resolving the initial view,
+    which was hardcoded to `day` through `year`.
+  - Fix issue where `defaultOpen` took precedence over `open`, so a controlled picker could open against its own prop.
+  - Fix issue where `maxSelectedDates` was not enforced on month and year cells in `multiple` selection mode.
+  - Fix issue where keyboard range selection diverged from pointer behavior. Selecting a third date now restarts the
+    range, and the hover preview updates for `Enter`, `Home`, `End`, and `PageUp`/`PageDown`.
+  - Fix issue where reopening the calendar with only a start date restarted the range instead of resuming it.
+
+- **Drawer**: Fix issue where the backdrop flickered on a controlled close with an async `open` setter.
+
+- **Focus Trap**
+  - Fix issue where returning focus on deactivate could steal focus back from an element the app had legitimately
+    focused in the meantime, such as a follow-up dialog opened right after closing the current one.
+  - Fix issue where deactivating a nested trap, like a popover inside a dialog, could throw if the outer trap's
+    container had no connected focusable element at that moment.
+  - Fix issue where the focus ring did not show on the returned-to element after a keyboard-driven deactivation such as
+    `Escape`. Focus now returns with `focusVisible: true`.
+
+- **Frameworks**
+  - Fix issue where `bindable` in Vue and Svelte resolved `defaultValue` before `value`, unlike React and Solid.
+  - Fix issue where machine exit actions ran in Solid and Svelte when a component was disposed before the machine
+    started.
+
+- **Image Cropper**: Fix `getCroppedImage()` and `getCropData()` returning a different region from the visible crop
+  after rotating or flipping the image.
+
+- **Marquee**: Fix issue where scrolling speed depended on the content width. The duration is now derived from the
+  content size, the actual translation distance, instead of the root size. The configured `speed` matches the real pixel
+  speed even when the content is smaller than the viewport.
+
+- **Popover**: Fix issue where tabbing out of portalled content looped back into the content when the trigger was the
+  last tabbable on the page. Focus now moves to the next tabbable after the trigger.
+
+- **React**: Fix issue where `useMachine` returned new `send`, `prop`, `context`, `computed`, `refs`, and `getStatus`
+  references on every render, so they were unsafe in effect dependency arrays.
+
+- **Remove Scroll**: Fix issue where the scroll lock applied to `<body>` on layouts where `<html>` is the actual scroll
+  container, so nothing was locked.
+
+- **Signature Pad**: Fix issue where controlled `paths` went out of sync because the in-progress stroke was appended to
+  `paths`. It stays in `onDraw.currentPath` until the stroke ends.
+
+- **Solid**: Fix issue where a `value` of `null` was read as uncontrolled, so controlled components fell back to
+  internal state.
+
+- **Splitter**
+  - Fix issue where collapsed panels sized to `minSize` instead of `collapsedSize`.
+  - Fix issue where keyboard resizing stopped working when a resize trigger received focus while hovered.
+
+- **Tour**
+  - Fix issue where dismissing a tour from a step's `effect` skipped cleanup and could miss firing the `completed`
+    status.
+  - Fix issue where a tooltip step's position could reset unexpectedly when the tour closed.
+  - Fix issue where a step action with `action: "skip"` did nothing when clicked.
+
+## [1.42.0](./#1.42.0) - 2026-06-29
+
+### Added
+
+- **Number Input**: Add `largeStep` (defaults to `10 * step`, applied on `Shift`) and `smallStep` (defaults to
+  `step / 10`, applied on `Alt`) props for configurable keyboard stepping. The defaults preserve the previous stepping
+  magnitudes.
+
+- **Slider**: Add `largeStep` prop (defaults to `10 * step`), applied on `Shift` or `PageUp`/`PageDown`. The default
+  preserves the previous stepping magnitude.
+
+### Fixed
+
+- **Cascade Select**: Fix issue where pressing `Enter` on a highlighted leaf node did not select it in non-React
+  frameworks.
+
+- **Date Input**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits. Latin-locale behavior is unchanged.
+  - Fix timezone-naive values (`CalendarDate`/`CalendarDateTime`) being shifted by the viewer's local UTC offset when a
+    custom `formatter` without an explicit `timeZone` is provided. The instant fed to the formatter is now built using
+    the formatter's own resolved time zone, so a wall-clock value round-trips unshifted.
+
+- **Date Picker**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits.
+  - Add date reordering on blur for range selection to match other selection paths.
+  - Fix day view briefly flashing when closing the date picker from the month or year view.
+  - Fix `visibleRangeText` returning a stale value when multiple date pickers with different `selectionMode` (or
+    `timeZone`) share the same visible range. This previously surfaced as SSR hydration mismatches.
+
+- **Menu**: Fix issue where the context menu briefly flashes at the top-left corner before positioning, and where a
+  long-press (touch) context menu opens stuck at `(0,0)` without ever repositioning to the touch point.
+
+- **Number Input**
+  - Fix issue where calling `api.setValue` with a number throws when `formatOptions` is defined.
+  - Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when `step: 1`).
+
+- **Slider**: Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when
+  `step: 1`).
+
+- **Tags Input**: Fix native form submit so `FormData` reflects the current tags. The hidden input previously kept its
+  initial value after tags were added, removed, or cleared.
+
+- **Toast**: Fix toast height measurement including the `scale` transform in overlap mode, causing a height flicker when
+  expanding the stack. Height is now measured from the untransformed element.
+
+## [1.41.2](./#1.41.2) - 2026-06-05
+
+### Fixed
+
+- **Date Input**: Fix date segment placeholders for locales with explicit script subtags.
+
+- **Drawer**
+  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g.
+    history API or a delayed state update).
+  - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
+
+- **Image Cropper**: Fix `getCroppedImage` and `getCropData` returning the wrong region when the image is displayed at a
+  size different from its natural resolution (e.g. `width/height: 100%`).
+
+- **Pin Input**: Fix issue where `data-filled` was incorrectly set on every input on first render.
+
+- **Signature Pad**: Fix issue where the `dir` prop was accepted but never forwarded to the DOM.
+
+## [1.41.1](./#1.41.1) - 2026-05-26
+
+### Fixed
+
+- **Dismissable**: Fix layer `pointer-events` being wiped by frameworks (Svelte, Vue) whose spread updates rewrite the
+  entire `style` attribute.
+
+- **Drawer**
+  - Fix controlled drawers snapping back to open before the close animation when dismissed via swipe.
+  - Fix indent and indent-background snapping back into place after the close animation instead of transitioning in
+    sync.
+  - Fix `--drawer-swipe-progress` jumping to `1` at the start of a dismiss swipe; it now goes smoothly from `0` (at
+    rest) to `1` (fully dismissed).
+  - Fix drawer freezing mid-drag on release when its content mounts lazily which left snap points unmeasured.
+
+## [1.41.0](./#1.41.0) - 2026-05-22
+
+### Added
+
+- **Floating Components**: Add `data-side` to placement-aware parts based on the current placement.
+
+  > Affected Components: Cascade Select, Color Picker, Combobox, Date Picker, Hover Card, Menu, Popover, Select,
+  > Tooltip, Tour.
+
+- **Date Input**
+  - Add `hideTimeZone` prop. The `timeZoneName` segment now renders automatically when the value is a `ZonedDateTime`,
+    and can be hidden via `hideTimeZone: true`.
+  - Arrow navigation and auto-advance after typing now reach read-only focusable segments (e.g. `timeZoneName`). Typing
+    the final editable segment (e.g. "P" on `dayPeriod`) advances focus to the trailing read-only segment instead of
+    staying put.
+
+- **Splitter**
+  - Add CSS unit support for `defaultSize`, `minSize`, and `maxSize`. The splitter now accepts `px`, `em`, `rem`, `vh`,
+    and `vw` in addition to percentages, and resolves them to percentages after hydration.
+
+  ```tsx
+  const service = useMachine(splitter.machine, {
+    panels: [
+      { id: "nav", minSize: "240px", maxSize: "480px" },
+      { id: "main", minSize: 30 },
+    ],
+    defaultSize: ["240px", "60vw"],
+  })
+  ```
+
+  - Add `resizeBehavior` per panel. Set to `"preserve-pixel-size"` to keep a panel's pixel size constant when the parent
+    splitter group resizes. Leave at least one panel as `"preserve-relative-size"` (the default) so the layout can
+    absorb the change.
+
+  ```tsx
+  panels: [
+    { id: "nav", minSize: 20 },
+    {
+      id: "main",
+      minSize: "240px",
+      maxSize: "480px",
+      resizeBehavior: "preserve-pixel-size",
+    },
+    { id: "aside", minSize: 20 },
+  ]
+  ```
+
+  - Allow non-panel children inside the splitter root for fixed toolbars, rails, or status areas that should not be
+    managed as panels. Use partial trigger ids (`"left:"`, `":right"`) to bind handles around the fixed element.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <div {...api.getPanelProps({ id: "left" })}>Left</div>
+    <div {...api.getResizeTriggerProps({ id: "left:" })} />
+    <div style={{ flex: "0 0 180px" }}>Fixed sized element</div>
+    <div {...api.getResizeTriggerProps({ id: ":right" })} />
+    <div {...api.getPanelProps({ id: "right" })}>Right</div>
+  </div>
+  ```
+
+- **TOC**: Add `api.scrollTo(value, details?)` for programmatically scrolling to a heading. The optional
+  `details.behavior` controls the scroll behavior; when omitted, the platform default applies.
+
+  ```tsx
+  api.scrollTo("installation", { behavior: "smooth" })
+  ```
+
+### Fixed
+
+- **Accordion**: Remove redundant `aria-disabled` from accordion item triggers.
+
+- **Color Picker**: Invoke `onValueChangeEnd` when the user picks a color with the EyeDropper API, consistent with
+  ending a drag on the area or channel sliders.
+
+- **Combobox**: Fix `Enter` no longer submits the form when an item is highlighted (regardless of `allowCustomValue`),
+  or when the typed value will be rejected by `allowCustomValue: false`.
+
+- **Date Input**
+  - Fix min/max handling to preserve entered segments while editing. Values are now clamped segment-by-segment on blur,
+    so `06/15/1999` with min `2000-01-01` becomes `06/15/2000` instead of snapping to `01/01/2000`.
+  - Fix range mode keyboard navigation so `ArrowRight` moves from the last segment of the start date to the first
+    segment of the end date.
+  - Fix time-only formatters (no `year` segment) never firing `onValueChange` — `era` is now only required when `year`
+    is present.
+  - Fix `setSegmentValue` reading stale `displayValues`. `updateSegmentValue` returns the new `IncompleteDate` directly
+    so the commit check uses the fresh value.
+  - Fix `dayPeriod` (AM/PM) arrow up/down not updating the visible segment when `hourCycle` changes at runtime —
+    `displayValues` now re-sync to the new hour cycle while preserving in-progress edits.
+  - Fix typing "A" / "P" on the `dayPeriod` segment not updating the visible AM/PM. The typing path was writing `12` for
+    PM while every other code path uses `1`, so the display silently stayed on AM.
+
+- **Date Picker**
+  - Fix `VALUE.CLEAR` not resetting `activeIndex` and `hoveredValue` in range mode when `getInputProps` inputs are not
+    rendered.
+  - Fix issue where the date input was not writable in locales whose date format separator contains more than one
+    character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`).
+  - Fix issue in Firefox where native month/year `<select>` is not interactive when the picker is inside a modal dialog.
+  - Fix range selection with `outsideDaySelectable`: hovering outside-month days no longer changes the visible month;
+    hover preview for the end date still updates.
+
+- **Dialog, Drawer, Hover Card, Menu, Popover, Tooltip**
+  - Fix custom trigger elements (via `ids.trigger`) being ignored when shared across components (e.g. wrapping a
+    `Popover.Trigger` in a `Tooltip` with the same id), causing broken positioning and a close-then-reopen cycle on
+    trigger clicks.
+  - Fix trigger element lookups in shadow root.
+
+- **Dismissable**
+  - Deduplicate `layerStack.add()` by DOM node so the same element is not registered twice (e.g. React Strict Mode).
+    Fixes incorrect `data-has-nested`, `--layer-index`, and `--nested-layer-count` on a single open dialog.
+  - Fix crash (`Cannot read properties of null (reading 'style')`) when a pointer-blocking dialog or popover closes
+    during SPA route teardown.
+
+- **Frameworks**: Fix dialog, drawer, and popover leaving `<body>` uninteractive (`data-scroll-lock`, `data-inert`,
+  `overflow: hidden`, `pointer-events: none`) after closing under React 19 Strict Mode.
+
+- **Number Input**: Fix inconsistent blur behavior when the input is cleared and `min` is greater than `0`.
+
+- **Popper**
+  - Fix `flip`, `shift`, and `hide` middleware ignoring a late-mounted `boundary`. The boundary is now re-resolved on
+    every `computePosition` tick, so a function-form `boundary: () => element` picks up the element once it mounts.
+  - Forward `boundary` into the `size` middleware so available width/height match `flip`/`shift`, with per-tick
+    resolution for function boundaries.
+
+- **Preact**: Avoid bundling `@zag-js/utils` and remove unused `proxy-compare`.
+
+- **Remove Scroll**: Fix scroll lock leaking on `<body>` (`data-scroll-lock`, `overflow: hidden`) when nested dialogs or
+  React Strict Mode trigger overlapping locks.
+
+- **Splitter**
+  - Fix clicking a `ResizeTrigger` not moving focus to it, which prevented arrow keys from resizing the splitter until
+    it was tab-focused (notably on Safari).
+  - Fix `data-focus` being applied on hover by only setting it when the trigger is actually focused.
+
+- **Tabs**: Observe the tab list with `ResizeObserver` so the indicator rect updates when the list resizes without
+  individual tab triggers changing size (e.g. responsive grid reflow).
+
+### Changed
+
+- **TOC**: Rename `getScrollEl` context prop to `scrollEl` for consistency with other machines (e.g. `initialFocusEl`,
+  `finalFocusEl`).
+
+## [1.40.0](./#1.40.0) - 2026-04-07
+
+### Added
+
+- **Popover**: Add `finalFocusEl` and `restoreFocus` props to control focus behavior when the popover closes.
+  - `finalFocusEl`: specify an element to receive focus instead of the trigger
+  - `restoreFocus`: set to `false` to prevent focus from returning to the trigger (default `true`)
+
+  Both work in modal and non-modal modes.
+
+### Fixed
+
+- **Color Picker**: Fix color value to respect the specified `format` when setting values via props or `setValue`.
+  Previously, the internal color object could retain a mismatched format (e.g., RGB when `format` is `hsla`), causing
+  inconsistent `value` objects in `onValueChange` callbacks.
+
+- **Date Input**: Defer min/max constraint until segment is fully typed or on blur to prevent resetting other segments
+  mid-keystroke.
+
+- **Date Picker**: Fix `isDateEqual` to consider time components of `CalendarDateTime` and `ZonedDateTime` values. This
+  ensures `onValueChange` fires correctly when time segments change in the date input.
+
+- **Navigation Menu**: Remove aggressive and redundant default `aria-label`.
+
+- **Vanilla**: Do not use `{}` instead of `undefined` and `null` computed value (fixes `accept="[object Object]"` in
+  File Upload with `accept: undefined`).
+
+### Changed
+
+- **Date Utils**: Remove unsupported `"month"` and `"year"` values from `DateGranularity` type.
+
 ## [1.39.1](./#1.39.1) - 2026-04-05
 
 ### Added

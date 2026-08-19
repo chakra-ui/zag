@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -8,6 +8,8 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 export type ThumbCollisionBehavior = "none" | "push" | "swap"
 
 export type ThumbAlignment = "contain" | "center"
+
+export type SliderOrigin = "start" | "center" | "end" | number
 
 export interface ValueChangeDetails {
   value: number[]
@@ -113,6 +115,12 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   step?: number | undefined
   /**
+   * The step value of the slider when the `Shift` key is held, or the
+   * `PageUp`/`PageDown` keys are used.
+   * @default 10 * step
+   */
+  largeStep?: number | undefined
+  /**
    * The minimum permitted steps between multiple thumbs.
    *
    * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
@@ -129,15 +137,14 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   orientation?: "vertical" | "horizontal" | undefined
   /**
-   * The origin of the slider range. The track is filled from the origin
-   * to the thumb for single values.
-   * - "start": Useful when the value represents an absolute value
-   * - "center": Useful when the value represents an offset (relative)
-   * - "end": Useful when the value represents an offset from the end
+   * The origin of the slider range. The track is filled from the origin to the thumb.
+   * - `"start"` / `"end"`: fill from `min` / `max`
+   * - `"center"`: fill from the midpoint of `min`/`max`
+   * - a `number`: fill from that value instead, for when the neutral point isn't the midpoint
    *
    * @default "start"
    */
-  origin?: "start" | "center" | "end" | undefined
+  origin?: SliderOrigin | undefined
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
@@ -166,6 +173,7 @@ type PropsWithDefault =
   | "min"
   | "max"
   | "step"
+  | "largeStep"
   | "orientation"
   | "defaultValue"
   | "origin"
@@ -234,7 +242,8 @@ interface Context {
 
 export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
-  props: RequiredBy<SliderProps, PropsWithDefault>
+  props: SliderProps
+  defaultPropKey: PropsWithDefault
   context: Context
   refs: {
     /**
@@ -272,13 +281,74 @@ export interface MarkerProps {
   value: number
 }
 
+export interface MarkerState {
+  /**
+   * The value of the marker
+   */
+  value: number
+  /**
+   * Whether the marker is disabled
+   */
+  disabled: boolean
+  /**
+   * The state of the marker relative to the slider value
+   */
+  state: "under-value" | "over-value" | "at-value"
+}
+
 export interface ThumbProps {
   index: number
   name?: string | undefined
 }
 
+export interface ThumbState {
+  /**
+   * The index of the thumb
+   */
+  index: number
+  /**
+   * The value of the thumb
+   */
+  value: number
+  /**
+   * Whether the thumb is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the thumb is focused
+   */
+  focused: boolean
+  /**
+   * Whether the thumb is being dragged
+   */
+  dragging: boolean
+}
+
 export interface DraggingIndicatorProps {
   index: number
+}
+
+export interface RootState {
+  /**
+   * Whether the slider is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the slider is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the slider is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the slider is focused
+   */
+  focused: boolean
+  /**
+   * The orientation of the slider
+   */
+  orientation: "vertical" | "horizontal"
 }
 
 export interface SliderApi<T extends PropTypes = PropTypes> {
@@ -343,15 +413,27 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
 
+  /**
+   * Returns the state of the slider
+   */
+  getRootState: () => RootState
   getLabelProps: () => T["label"]
   getRootProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getTrackProps: () => T["element"]
+  /**
+   * Returns the state of a specific thumb
+   */
+  getThumbState: (props: ThumbProps) => ThumbState
   getThumbProps: (props: ThumbProps) => T["element"]
   getHiddenInputProps: (props: ThumbProps) => T["input"]
   getRangeProps: () => T["element"]
   getControlProps: () => T["element"]
   getMarkerGroupProps: () => T["element"]
+  /**
+   * Returns the state of a specific marker
+   */
+  getMarkerState: (props: MarkerProps) => MarkerState
   getMarkerProps: (props: MarkerProps) => T["element"]
   getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
 }

@@ -30,7 +30,8 @@ Install the range slider package:
 
 Check the slider anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="slider" />
 
@@ -53,7 +54,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="range-slider/usage.mdx" />
 
-## Changing the orientation
+### Changing the orientation
 
 By default, the slider is assumed to be horizontal. To change the orientation to
 vertical, set the `orientation` property in the machine's context to `vertical`.
@@ -70,7 +71,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Setting the initial value
+### Setting the initial value
 
 ```tsx {2}
 const service = useMachine(rangeSlider.machine, {
@@ -78,7 +79,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Controlled range value
+### Controlled range value
 
 Use `value` and `onValueChange` to control both thumb values externally.
 
@@ -91,7 +92,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Specifying the minimum and maximum
+### Specifying the minimum and maximum
 
 By default, the minimum is `0` and the maximum is `100`. If that's not what you
 want, you can easily specify different bounds by changing the values of the min
@@ -106,7 +107,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Setting the value's granularity
+### Setting the value's granularity
 
 By default, the granularity, is `1`, meaning that the value is always an
 integer. You can change the step attribute to control the granularity.
@@ -122,7 +123,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Listening for changes
+### Listening for changes
 
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
@@ -140,7 +141,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Listening for thumb focus changes
+### Listening for thumb focus changes
 
 Use `onFocusChange` to track which thumb is currently focused.
 
@@ -153,7 +154,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Preventing thumb overlap
+### Preventing thumb overlap
 
 By default, the range slider thumbs are allowed to overlap when their values are
 equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
@@ -165,7 +166,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Thumb collision behavior
+### Thumb collision behavior
 
 Use `thumbCollisionBehavior` to control how thumbs behave on collision.
 
@@ -176,7 +177,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use range slider in forms, set `name` and render
 `api.getHiddenInputProps({ index })` for each thumb.
@@ -187,7 +188,7 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
-## RTL Support
+### RTL Support
 
 The slider has built-in support for RTL alignment and interaction. In the RTL
 mode, operations are performed from right to left, meaning, the left arrow key
@@ -206,7 +207,7 @@ const service = useMachine(rangeSlider.machine, {
 
 ## Styling guide
 
-Each slider part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Focused State
 
@@ -214,23 +215,23 @@ When the slider thumb is focused, the `data-focus` attribute is added to the
 root, control, thumb and label parts.
 
 ```css
-[data-part="root"][data-focus] {
+[data-slider-root][data-focus] {
   /* styles for root focus state */
 }
 
-[data-part="thumb"]:focus {
+[data-slider-thumb]:focus {
   /* styles for thumb focus state */
 }
 
-[data-part="control"][data-focus] {
+[data-slider-control][data-focus] {
   /* styles for control focus state */
 }
 
-[data-part="track"][data-focus] {
+[data-slider-track][data-focus] {
   /* styles for track focus state */
 }
 
-[data-part="range"][data-focus] {
+[data-slider-range][data-focus] {
   /* styles for range focus state */
 }
 ```
@@ -241,27 +242,27 @@ When the slider is disabled, the `data-disabled` attribute is added to the root,
 label, control and thumb.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-slider-root][data-disabled] {
   /* styles for root disabled state */
 }
 
-[data-part="label"][data-disabled] {
+[data-slider-label][data-disabled] {
   /* styles for label disabled state */
 }
 
-[data-part="control"][data-disabled] {
+[data-slider-control][data-disabled] {
   /* styles for control disabled state */
 }
 
-[data-part="value-text"][data-disabled] {
+[data-slider-value-text][data-disabled] {
   /* styles for output disabled state */
 }
 
-[data-part="thumb"][data-disabled] {
+[data-slider-thumb][data-disabled] {
   /* styles for thumb disabled state */
 }
 
-[data-part="range"][data-disabled] {
+[data-slider-range][data-disabled] {
   /* styles for range disabled state */
 }
 ```
@@ -269,15 +270,15 @@ label, control and thumb.
 ### Orientation
 
 ```css
-[data-part="root"][data-orientation="(horizontal|vertical)"] {
+[data-slider-root][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 
-[data-part="thumb"][data-orientation="(horizontal|vertical)"] {
+[data-slider-thumb][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 
-[data-part="track"][data-orientation="(horizontal|vertical)"] {
+[data-slider-track][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 ```

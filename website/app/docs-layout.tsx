@@ -74,11 +74,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
                     {doc.title}
                   </styled.h1>
                   {doc?.body?.raw && (
-                    <CopyPageWidget
-                      slug={pathname}
-                      content={doc.body.raw}
-                      title={doc.title}
-                    />
+                    <CopyPageWidget slug={pathname} title={doc.title} />
                   )}
                 </Flex>
               )}

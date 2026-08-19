@@ -72,11 +72,11 @@
           {max}
           {value}
           onkeydown={(e) => {
-          if (e.key === "Enter") {
-            const val = parseFloat((e.target as HTMLInputElement).value)
-            controls.setContext(key, isNaN(val) ? 0 : val)
-          }
-        }}
+            if (e.key === "Enter") {
+              const val = parseFloat((e.target as HTMLInputElement).value)
+              controls.setContext(key, isNaN(val) ? 0 : val)
+            }
+          }}
         />
       </div>
     {:else if type === "number"}{/if}

@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -29,6 +29,13 @@ export interface ActiveChangeDetails {
    * The active (visible) TOC items
    */
   activeItems: TocItem[]
+}
+
+export interface ScrollToDetails {
+  /**
+   * The behavior to use when scrolling to the heading.
+   */
+  behavior?: ScrollBehavior | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -70,7 +77,7 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    * Function that returns the scroll container element to observe within.
    * Defaults to the document/viewport.
    */
-  getScrollEl?: (() => HTMLElement | null) | undefined
+  scrollEl?: (() => HTMLElement | null) | undefined
   /**
    * Whether to auto-scroll the TOC container so the first active item
    * is visible when active headings change.
@@ -78,7 +85,9 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    */
   autoScroll?: boolean | undefined
   /**
-   * The scroll behavior for auto-scrolling the TOC container.
+   * The default scroll behavior used when auto-scrolling the TOC container
+   * and when scrolling to a heading (via link click or `api.scrollTo`).
+   * Can be overridden per-call by passing `behavior` to `api.scrollTo`.
    * @default "smooth"
    */
   scrollBehavior?: ScrollBehavior | undefined
@@ -101,7 +110,8 @@ type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehav
 
 export interface TocSchema {
   state: "idle"
-  props: RequiredBy<TocProps, PropsWithDefault>
+  props: TocProps
+  defaultPropKey: PropsWithDefault
   context: {
     activeIds: string[]
     indicatorRect: Rect | null
@@ -153,6 +163,13 @@ export interface ItemState {
   depth: number
 }
 
+export interface IndicatorState {
+  /**
+   * Whether the indicator has a target rect to point to
+   */
+  visible: boolean
+}
+
 export interface TocApi<T extends PropTypes = PropTypes> {
   /**
    * All currently active (visible) heading ids
@@ -171,6 +188,10 @@ export interface TocApi<T extends PropTypes = PropTypes> {
    */
   setActiveIds(value: string[]): void
   /**
+   * Scrolls to the heading with the given id.
+   */
+  scrollTo(value: string, details?: ScrollToDetails): void
+  /**
    * Returns the state of a TOC item
    */
   getItemState(props: ItemProps): ItemState
@@ -180,5 +201,9 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getLinkProps(props: ItemProps): T["element"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState(): IndicatorState
   getIndicatorProps(): T["element"]
 }

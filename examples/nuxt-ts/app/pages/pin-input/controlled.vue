@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/pin-input.css"
 
 const value = ref(["", "", ""])
 
@@ -30,11 +31,7 @@ const api = computed(() => pinInput.connect(service, normalizeProps))
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">Enter code:</label>
         <div v-bind="api.getControlProps()">
-          <input
-            v-for="index in api.items"
-            :data-testid="`input-${index + 1}`"
-            v-bind="api.getInputProps({ index })"
-          />
+          <input v-for="index in api.items" :data-testid="`input-${index + 1}`" v-bind="api.getInputProps({ index })" />
         </div>
         <input v-bind="api.getHiddenInputProps()" />
       </div>

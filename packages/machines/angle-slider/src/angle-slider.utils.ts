@@ -1,6 +1,6 @@
 import { createRect, getPointAngle } from "@zag-js/rect-utils"
 import type { Point } from "@zag-js/types"
-import { snapValueToStep } from "@zag-js/utils"
+import { mod, snapValueToStep } from "@zag-js/utils"
 
 export const MIN_VALUE = 0
 export const MAX_VALUE = 359
@@ -50,14 +50,9 @@ export function clampAngle(degree: number) {
 }
 
 export function constrainAngle(degree: number, step: number) {
-  const clampedDegree = clampAngle(degree)
-  const upperStep = Math.ceil(clampedDegree / step)
-  const nearestStep = Math.round(clampedDegree / step)
-  return upperStep >= clampedDegree / step
-    ? upperStep * step === MAX_VALUE
-      ? MIN_VALUE
-      : upperStep * step
-    : nearestStep * step
+  // Snap to the nearest step and wrap within [0, 360) so the control behaves
+  // as a true circle (e.g. dragging past 0°/360° wraps instead of sticking).
+  return mod(Math.round(degree / step) * step, 360)
 }
 
 export function snapAngleToStep(value: number, step: number) {

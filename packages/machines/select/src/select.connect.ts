@@ -1,4 +1,5 @@
 import type { Service } from "@zag-js/core"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   contains,
@@ -12,26 +13,41 @@ import {
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, ScrollArrowProps, SelectApi, SelectSchema } from "./select.types"
+import type {
+  CollectionItem,
+  ContentState,
+  ItemProps,
+  ItemState,
+  RootState,
+  ScrollArrowProps,
+  SelectApi,
+  SelectSchema,
+  TriggerState,
+} from "./select.types"
+
+// ArrowLeft/Right/Home/End cycle the closed select's value; ArrowUp/Down open it instead.
+const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send, refs } = service
+  const layer = context.get("layer")
   const translations = prop("translations")
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const invalid = !!prop("invalid")
   const required = !!prop("required")
   const readOnly = !!prop("readOnly")
-  const composite = prop("composite")
   const collection = prop("collection")
+  const popupType = prop("popupType")
+  const isDialogPopup = popupType === "dialog"
 
   const open = state.hasTag("open")
   const focused = state.matches("focused")
@@ -47,11 +63,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
   const aligned = context.get("aligned")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
 
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getItemState(props: ItemProps): ItemState {
     const _disabled = collection.getItemDisabled(props.item)
@@ -65,10 +86,39 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     }
   }
 
+  function getRootState(): RootState {
+    return { invalid, readOnly }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      focused,
+      disabled: !!disabled,
+      invalid,
+      required,
+      readOnly,
+      placeholderShown: !computed("hasSelectedItems"),
+    }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
 
   return {
@@ -121,12 +171,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getItemState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -169,27 +221,30 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         id: dom.getTriggerId(scope),
-        disabled: disabled,
+        disabled: triggerState.disabled,
         dir: prop("dir"),
         type: "button",
         role: "combobox",
-        "aria-controls": dom.getContentId(scope),
-        "aria-expanded": open,
-        "aria-haspopup": "listbox",
-        "data-state": open ? "open" : "closed",
-        "aria-invalid": invalid,
-        "aria-required": required,
+        "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
+        "aria-expanded": triggerState.open,
+        "aria-haspopup": popupType,
+        "data-state": triggerState.open ? "open" : "closed",
+        "aria-invalid": triggerState.invalid,
+        "aria-required": triggerState.required,
         "aria-labelledby": dom.getLabelId(scope),
         ...parts.trigger.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-readonly": dataAttr(triggerState.readOnly),
         "data-placement": currentPlacement,
         "data-align-with-trigger": dataAttr(aligned),
-        "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
+        "data-side": currentPlacementSide,
+        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
         onClick(event) {
           if (!interactive) return
           if (event.defaultPrevented) return
@@ -206,6 +261,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
+
+          // Nested in a toolbar: defer to its own roving-tabindex nav instead of cycling.
+          if (
+            !open &&
+            !event.altKey &&
+            CYCLE_KEYS.has(getEventKey(event, { dir: prop("dir"), orientation: "vertical" }))
+          ) {
+            const trigger = event.currentTarget as HTMLElement | null
+            if (trigger?.closest("[role=toolbar]")) return
+          }
+
           refs.set("openMethod", "keyboard")
 
           const keyMap: EventKeyMap = {
@@ -429,27 +495,34 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          transform: aligned ? "none" : popperStyles.floating.transform,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
-        hidden: !open,
+        hidden: !contentState.open,
         dir: prop("dir"),
         id: dom.getContentId(scope),
-        role: composite ? "listbox" : "dialog",
+        role: isDialogPopup ? "dialog" : "presentation",
         ...parts.content.attrs(scope.id),
-        "data-state": open ? "open" : "closed",
-        "data-placement": currentPlacement,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-placement": contentState.placement,
         "data-align-with-trigger": dataAttr(aligned),
-        "data-activedescendant": ariaActiveDescendant,
-        "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
-        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
-        "aria-labelledby": dom.getLabelId(scope),
-        tabIndex: 0,
+        "data-side": contentState.side,
+        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onKeyDown(event) {
           if (!interactive) return
+          if (event.defaultPrevented) return
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
           // select should not be navigated using tab key so we prevent it
@@ -463,27 +536,38 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             }
           }
 
+          const target = getEventTarget<Element>(event)
+
           const keyMap: EventKeyMap = {
-            ArrowUp() {
+            ArrowUp(event) {
+              event.preventDefault()
               send({ type: "CONTENT.ARROW_UP" })
             },
-            ArrowDown() {
+            ArrowDown(event) {
+              event.preventDefault()
               send({ type: "CONTENT.ARROW_DOWN" })
             },
-            Home() {
+            Home(event) {
+              if (isEditableElement(target)) return
+              event.preventDefault()
               send({ type: "CONTENT.HOME" })
             },
-            End() {
+            End(event) {
+              if (isEditableElement(target)) return
+              event.preventDefault()
               send({ type: "CONTENT.END" })
             },
-            Enter() {
+            Enter(event) {
+              event.preventDefault()
               send({ type: "ITEM.CLICK", src: "keydown.enter" })
             },
             Space(event) {
+              if (isEditableElement(target)) return
+              event.preventDefault()
               if (isTypingAhead) {
                 send({ type: "CONTENT.TYPEAHEAD", key: event.key })
               } else {
-                keyMap.Enter?.(event)
+                send({ type: "ITEM.CLICK", src: "keydown.space" })
               }
             },
           }
@@ -492,15 +576,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
           if (exec) {
             exec(event)
-            event.preventDefault()
             return
           }
 
-          const target = getEventTarget<Element>(event)
-
-          if (isEditableElement(target)) {
-            return
-          }
+          if (isEditableElement(target)) return
 
           if (getByTypeahead.isValidEvent(event)) {
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })
@@ -513,11 +592,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getListProps() {
       return normalize.element({
         ...parts.list.attrs(scope.id),
+        id: dom.getListId(scope),
+        role: "listbox",
         tabIndex: 0,
-        role: !composite ? "listbox" : undefined,
-        "aria-labelledby": dom.getTriggerId(scope),
-        "aria-activedescendant": !composite ? ariaActiveDescendant : undefined,
-        "aria-multiselectable": !composite && prop("multiple") ? true : undefined,
+        dir: prop("dir"),
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-activedescendant": ariaActiveDescendant,
+        "aria-multiselectable": prop("multiple") ? true : undefined,
+        "data-activedescendant": ariaActiveDescendant,
       })
     },
   }

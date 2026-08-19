@@ -1,5 +1,75 @@
 # @zag-js/vue
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/store@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- [#3218](https://github.com/chakra-ui/zag/pull/3218)
+  [`5d887ec`](https://github.com/chakra-ui/zag/commit/5d887ecd55d537d13bdc976ec3d11b28504b13ec) Thanks
+  [@Hwacc](https://github.com/Hwacc)! - Fix bindable to resolve `value` before `defaultValue`, matching React/Solid.
+
+- Updated dependencies [[`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/core@1.43.0
+  - @zag-js/store@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.42.0
+  - @zag-js/store@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/store@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dialog, drawer, and popover leaving `<body>` uninteractive
+  (`data-scroll-lock`, `data-inert`, `overflow: hidden`, `pointer-events: none`) after closing under React 19 Strict
+  Mode.
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/store@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.40.0
+  - @zag-js/store@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

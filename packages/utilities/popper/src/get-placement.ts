@@ -12,6 +12,7 @@ const defaultOptions: PositioningOptions = {
   placement: "bottom",
   listeners: true,
   restoreStyles: false,
+  applyStyles: true,
   gutter: 8,
   flip: true,
   slide: true,
@@ -82,23 +83,27 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
 
 function getFlipMiddleware(opts: Options) {
   if (!opts.flip) return
-  const boundary = resolveBoundaryOption(opts.boundary)
-  return flip({
-    ...(boundary ? { boundary } : undefined),
-    padding: opts.overflowPadding,
-    fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
+  return flip(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      ...(boundary ? { boundary } : undefined),
+      padding: opts.overflowPadding,
+      fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
+    }
   })
 }
 
 function getShiftMiddleware(opts: Options) {
   if (!opts.slide && !opts.overlap) return
-  const boundary = resolveBoundaryOption(opts.boundary)
-  return shift({
-    ...(boundary ? { boundary } : undefined),
-    mainAxis: opts.slide,
-    crossAxis: opts.overlap,
-    padding: opts.overflowPadding,
-    limiter: limitShift(),
+  return shift(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      ...(boundary ? { boundary } : undefined),
+      mainAxis: opts.slide,
+      crossAxis: opts.overlap,
+      padding: opts.overflowPadding,
+      limiter: limitShift(),
+    }
   })
 }
 
@@ -111,39 +116,46 @@ function getSizeMiddleware(opts: Options) {
   let lastAvailableWidth: number | undefined
   let lastAvailableHeight: number | undefined
 
-  return size({
-    padding: opts.overflowPadding,
-    apply({ elements, rects, availableHeight, availableWidth }) {
-      const floating = elements.floating
+  return size(() => {
+    const boundary = resolveBoundaryOption(opts.boundary)
+    return {
+      padding: opts.overflowPadding,
+      ...(boundary ? { boundary } : undefined),
+      apply({ elements, rects, availableHeight, availableWidth }) {
+        const floating = elements.floating
 
-      const referenceWidth = Math.round(rects.reference.width)
-      const referenceHeight = Math.round(rects.reference.height)
-      availableWidth = Math.floor(availableWidth)
-      availableHeight = Math.floor(availableHeight)
+        const referenceWidth = Math.round(rects.reference.width)
+        const referenceHeight = Math.round(rects.reference.height)
+        availableWidth = Math.floor(availableWidth)
+        availableHeight = Math.floor(availableHeight)
 
-      if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
-        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-        lastReferenceWidth = referenceWidth
-      }
-      if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
-        floating.style.setProperty("--reference-height", `${referenceHeight}px`)
-        lastReferenceHeight = referenceHeight
-      }
-      if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
-        floating.style.setProperty("--available-width", `${availableWidth}px`)
-        lastAvailableWidth = availableWidth
-      }
-      if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
-        floating.style.setProperty("--available-height", `${availableHeight}px`)
-        lastAvailableHeight = availableHeight
-      }
-    },
+        if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
+          floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+          lastReferenceWidth = referenceWidth
+        }
+        if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
+          floating.style.setProperty("--reference-height", `${referenceHeight}px`)
+          lastReferenceHeight = referenceHeight
+        }
+        if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
+          floating.style.setProperty("--available-width", `${availableWidth}px`)
+          lastAvailableWidth = availableWidth
+        }
+        if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
+          floating.style.setProperty("--available-height", `${availableHeight}px`)
+          lastAvailableHeight = availableHeight
+        }
+      },
+    }
   })
 }
 
 function hideWhenDetachedMiddleware(opts: Options) {
   if (!opts.hideWhenDetached) return
-  return hide({ strategy: "referenceHidden", boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors" })
+  return hide(() => ({
+    strategy: "referenceHidden",
+    boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors",
+  }))
 }
 
 function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
@@ -238,6 +250,7 @@ function getPlacementImpl(
     restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
     middleware = [
+      ...(options.middleware ?? []),
       getOffsetMiddleware(arrowEl, options),
       getFlipMiddleware(options),
       getShiftMiddleware(options),
@@ -305,11 +318,12 @@ function getPlacementImpl(
       strategy,
     })
 
-    onComplete?.(pos)
-
     const win = getWindow(floating)
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
+    onComplete?.({ ...pos, x, y })
+
+    if (options.applyStyles === false) return
 
     if (!isApproximatelyEqual(lastX, x)) {
       floating.style.setProperty("--x", `${x}px`)

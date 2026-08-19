@@ -17,8 +17,6 @@ const eventMap: Record<string, string> = {
   onBlur: "onfocusout",
   onDoubleClick: "onDblClick",
   onChange: "onInput",
-  defaultChecked: "checked",
-  defaultValue: "value",
 }
 
 function toPreactProp(prop: string) {

@@ -1,0 +1,169 @@
+.main {
+  width: 100%;
+  max-width: 540px;
+}
+
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-indicator: #3b82f6;
+  --dnd-drop-on: #3b82f6;
+  --dnd-handle: #a1a1aa;
+
+  position: relative;
+}
+
+.draggable {
+  cursor: grab;
+  position: relative;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &[data-selected] {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
+
+  &[data-dragging] {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  &[data-selected-dragging] {
+    opacity: 0.5;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.dragHandle {
+  cursor: grab;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle, #a1a1aa);
+
+  &:hover {
+    color: #52525b;
+  }
+}
+
+.dropTarget {
+  position: relative;
+
+  &[data-drop-target][data-drop-placement="on"] {
+    outline: 2px solid var(--dnd-drop-on, #3b82f6);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dnd-indicator, #3b82f6);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.1s;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--dnd-indicator, #3b82f6);
+    border-radius: 999px;
+    background: var(--dnd-item-bg, #ffffff);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
+
+  &[data-placement="before"] {
+    top: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(-50%);
+  }
+
+  &[data-placement="after"] {
+    bottom: calc(-1 * var(--dnd-gap, 4px) / 2);
+    transform: translateY(50%);
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.dragPreview {
+  padding: 8px 12px;
+  border: 1px solid var(--dnd-border, #d4d4d8);
+  border-radius: 4px;
+  background: var(--dnd-item-bg, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.items {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+}
+
+.helperText {
+  font-size: 13px;
+  color: #71717a;
+  margin-bottom: 8px;
+}
+
+.scrollList {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.transferLayout {
+  display: flex;
+  gap: 24px;
+}
+
+.transferColumn {
+  flex: 1;
+}
+
+.transferList {
+  list-style: none;
+  padding: 0;
+  min-height: 60px;
+}
+
+.virtualViewport {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.virtualSizer {
+  width: 100%;
+  position: relative;
+}
+
+.virtualRowInner {
+  position: relative;
+  height: 100%;
+}

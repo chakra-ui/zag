@@ -2,7 +2,15 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
-import { Accessor, createMemo, createSignal, createUniqueId, Index, JSX, Show } from "solid-js"
+import {
+  Accessor,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  Index,
+  JSX,
+  Show,
+} from "solid-js"
 
 // 1. Create the tree collection with state
 
@@ -72,7 +80,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           <div {...api().getBranchIndentGuideProps(nodeProps)} />
           <Index each={node.children}>
             {(childNode, index) => (
-              <TreeNode node={childNode()} indexPath={[...indexPath, index]} api={api} />
+              <TreeNode
+                node={childNode()}
+                indexPath={[...indexPath, index]}
+                api={api}
+              />
             )}
           </Index>
         </div>
@@ -108,7 +120,9 @@ export function TreeView() {
       <p>Press F2 to rename any file or folder</p>
       <div {...api().getTreeProps()}>
         <Index each={collection().rootNode.children}>
-          {(node, index) => <TreeNode node={node()} indexPath={[index]} api={api} />}
+          {(node, index) => (
+            <TreeNode node={node()} indexPath={[index]} api={api} />
+          )}
         </Index>
       </div>
     </div>

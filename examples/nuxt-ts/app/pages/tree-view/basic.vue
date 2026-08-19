@@ -2,6 +2,7 @@
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/tree-view.css"
 
 const controls = useControls(treeviewControls)
 

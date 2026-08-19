@@ -86,6 +86,11 @@ export const VersionSelect = () => {
 const items = [
   {
     label: packageJson.version,
+    value: "https://v2.zagjs.com",
+    tag: "v2",
+  },
+  {
+    label: "1.x",
     value: "https://zagjs.com",
     tag: "v1",
   },

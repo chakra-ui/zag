@@ -6,6 +6,7 @@
   import { colorPickerControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import serialize from "form-serialize"
+  import "@styles/color-picker.css"
 
   const presets = ["#f47373", "#697689"]
 

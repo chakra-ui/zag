@@ -6,7 +6,9 @@ const virtualizerRoutes = [
   "/virtualizer/list",
   "/virtualizer/grid",
   "/virtualizer/padding",
+  "/virtualizer/scroll-padding",
   "/virtualizer/sticky",
+  "/virtualizer/infinite-scroll",
   "/virtualizer/window",
 ] as const
 

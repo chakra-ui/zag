@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/rating-group.css"
 
 import { nanoid } from "nanoid"
 import { RatingGroup } from "../src/rating-group"

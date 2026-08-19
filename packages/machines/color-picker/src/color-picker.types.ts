@@ -1,9 +1,9 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
 import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
@@ -114,7 +114,7 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * The controlled open state of the color picker
    */
@@ -159,7 +159,8 @@ type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "di
 export type ColorPickerSchema = {
   tag: "open" | "closed" | "dragging" | "focused"
   state: "idle" | "focused" | "open" | "open.idle" | "open.dragging"
-  props: RequiredBy<ColorPickerProps, PropsWithDefault>
+  props: ColorPickerProps
+  defaultPropKey: PropsWithDefault
   computed: {
     disabled: boolean
     rtl: boolean
@@ -168,6 +169,10 @@ export type ColorPickerSchema = {
     areaValue: Color
   }
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     format: ColorFormat
     value: Color
     activeId: string | null
@@ -177,7 +182,6 @@ export type ColorPickerSchema = {
     areaDragPosition: { x: number; y: number } | null
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
-    positioned: boolean
     restoreFocus: boolean
   }
   event: EventObject
@@ -240,6 +244,75 @@ export interface SwatchTriggerState {
   valueAsString: string
   checked: boolean
   disabled: boolean
+}
+
+export interface RootState {
+  /**
+   * Whether the color picker is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the color picker is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the color picker is invalid
+   */
+  invalid: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the color picker is open
+   */
+  open: boolean
+  /**
+   * Whether the trigger is focused
+   */
+  focused: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the color picker is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the color picker is read-only
+   */
+  readOnly: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
+export interface ContentState {
+  /**
+   * Whether the color picker is open
+   */
+  open: boolean
+  /**
+   * Whether the content is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the content has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
 }
 
 export interface SwatchProps {
@@ -320,11 +393,23 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getHiddenInputProps: () => T["input"]
   getValueTextProps: () => T["element"]

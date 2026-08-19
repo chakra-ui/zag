@@ -5,6 +5,7 @@
   import * as cascadeSelect from "@zag-js/cascade-select"
   import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/cascade-select.css"
 
   interface Node {
     label: string

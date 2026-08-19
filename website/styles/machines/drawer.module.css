@@ -5,13 +5,15 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    /* Dismissable stack sets `--z-index` / `--layer-index`; backdrop + positioner share mirrored z-index, DOM order stacks panel above overlay */
+    z-index: var(--z-index, calc(1400 + var(--layer-index, 0)));
   }
 
   .backdrop {
     position: fixed;
     inset: 0px;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1400;
+    z-index: var(--z-index, calc(1400 + var(--layer-index, 0)));
 
     &[data-state="open"] {
       animation: fadeIn 0.5s cubic-bezier(0.32, 0.72, 0, 1);
@@ -57,7 +59,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1400;
+    z-index: calc(1400 + var(--layer-index, 0));
 
     &[data-state="open"] {
       animation-name: slideIn;

@@ -4,6 +4,7 @@
   import * as dialog from "@zag-js/dialog"
   import Portal from "$lib/components/portal.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/carousel.css"
 
   const SLIDE_COUNT = 30
 

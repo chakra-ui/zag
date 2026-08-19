@@ -2,6 +2,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Portal } from "solid-js/web"
 import { createMemo, createUniqueId, onMount } from "solid-js"
+import "@styles/menu.css"
 
 export default function Page() {
   const service = useMachine(menu.machine, { id: createUniqueId() })

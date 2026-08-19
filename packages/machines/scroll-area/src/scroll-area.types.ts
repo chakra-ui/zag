@@ -68,6 +68,7 @@ export interface ScrollAreaRefs {
 export interface ScrollAreaSchema {
   state: "idle" | "dragging"
   props: ScrollAreaProps
+  defaultPropKey: never
   context: ScrollAreaContext
   event: EventObject
   action: string
@@ -82,7 +83,19 @@ export type ScrollAreaMachine = Machine<ScrollAreaSchema>
 
 export interface ScrollbarState {
   hovering: boolean
+  dragging: boolean
   scrolling: boolean
+  hidden: boolean
+}
+
+export interface CornerState {
+  /**
+   * Whether the pointer is hovering the scroll area
+   */
+  hovering: boolean
+  /**
+   * Whether the corner is hidden
+   */
   hidden: boolean
 }
 
@@ -151,5 +164,9 @@ export interface ScrollAreaApi<T extends PropTypes> {
   getContentProps: () => T["element"]
   getScrollbarProps: (props?: ScrollbarProps) => T["element"]
   getThumbProps: (props?: ThumbProps) => T["element"]
+  /**
+   * Returns the state of the corner
+   */
+  getCornerState: () => CornerState
   getCornerProps: () => T["element"]
 }

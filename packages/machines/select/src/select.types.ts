@@ -1,9 +1,10 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { LiveRegion } from "@zag-js/live-region"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { AutoScrollHandlers } from "./select.dom"
 
 /* -----------------------------------------------------------------------------
@@ -40,13 +41,25 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface ItemAnnouncementDetails {
+  value: string
+  label: string
+  selected: boolean
+}
+
 export interface IntlTranslations {
   clearTriggerLabel?: string | undefined
+  /**
+   * Format the live-region announcement when the highlighted item changes.
+   * Useful for localizing the "selected" suffix or customizing the message.
+   */
+  itemAnnouncement?: ((details: ItemAnnouncementDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
   content: string
+  list: string
   control: string
   trigger: string
   clearTrigger: string
@@ -165,11 +178,6 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * Whether the select is a composed with other composite widgets like tabs or combobox
-   * @default true
-   */
-  composite?: boolean | undefined
-  /**
    * Whether the value can be cleared by clicking the selected item.
    *
    * **Note:** this is only applicable for single selection
@@ -182,14 +190,33 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * @default false
    */
   alignItemWithTrigger?: boolean | undefined
+  /**
+   * Element to receive focus when the select is opened. Defaults to the first
+   * tabbable element inside the content (typically the list).
+   */
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
+  /**
+   * The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and
+   * the `role` of the content element.
+   * - `"listbox"` (default) — content is a passthrough wrapper; the list bears `role="listbox"`.
+   * - `"dialog"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.
+   *
+   * @default "listbox"
+   */
+  popupType?: "listbox" | "dialog" | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupType" | "collection" | "translations"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
-  props: RequiredBy<SelectProps<T>, PropsWithDefault>
+  props: SelectProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     currentPlacement: Placement | undefined
     value: string[]
     highlightedValue: string | null
@@ -197,7 +224,6 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
     scrollArrowVisibility: "none" | "top" | "bottom" | "both"
-    positioned: boolean
     aligned: boolean
   }
   computed: {
@@ -215,6 +241,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     autoScrollBottom: AutoScrollHandlers | null
     realignWithTrigger: VoidFunction | null
     handleGrowth: VoidFunction | null
+    liveRegion: LiveRegion | null
   }
   action: string
   guard: string
@@ -258,6 +285,71 @@ export interface ItemState {
    * Whether the item is highlighted
    */
   highlighted: boolean
+}
+
+export interface RootState {
+  /**
+   * Whether the select is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the select is open
+   */
+  open: boolean
+  /**
+   * Whether the select is focused
+   */
+  focused: boolean
+  /**
+   * Whether the select is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the select is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the select is required
+   */
+  required: boolean
+  /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the trigger is showing the placeholder (no selected items)
+   */
+  placeholderShown: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the select is open
+   */
+  open: boolean
+  /**
+   * Whether the select is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the select has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
 }
 
 export interface ItemGroupProps {
@@ -376,14 +468,26 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
    */
   disabled: boolean
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getIndicatorProps: () => T["element"]
   getClearTriggerProps: () => T["button"]
   getValueTextProps: () => T["element"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]

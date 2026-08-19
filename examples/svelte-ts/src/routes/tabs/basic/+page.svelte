@@ -5,6 +5,7 @@
   import { tabsControls, tabsData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tabs from "@zag-js/tabs"
+  import "@styles/tabs.css"
 
   const controls = useControls(tabsControls)
 

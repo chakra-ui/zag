@@ -3,7 +3,7 @@ import { contains } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import * as dom from "./toast.dom"
-import type { ToastGroupApi, ToastGroupSchema } from "./toast.types"
+import type { GroupState, ToastGroupApi, ToastGroupSchema } from "./toast.types"
 import { getGroupPlacementStyle } from "./toast.utils"
 
 export function groupConnect<T extends PropTypes, O = any>(
@@ -13,6 +13,20 @@ export function groupConnect<T extends PropTypes, O = any>(
   //
   const { context, prop, send, refs, computed, scope } = service
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getGroupState(): GroupState {
+    const placement = computed("placement")
+    const [side, align = "center"] = placement.split("-")
+    return { placement, side, align }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     getCount() {
       return context.get("toasts").length
@@ -20,12 +34,13 @@ export function groupConnect<T extends PropTypes, O = any>(
     getToasts() {
       return context.get("toasts")
     },
+    getGroupState,
     getGroupProps(options = {}) {
       const { label = "Notifications" } = options
       const { hotkey } = prop("store").attrs
       const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "")
-      const placement = computed("placement")
-      const [side, align = "center"] = placement.split("-")
+      const groupState = getGroupState()
+      const { placement, side, align } = groupState
 
       return normalize.element({
         ...parts.group.attrs(scope.id),

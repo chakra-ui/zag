@@ -30,7 +30,8 @@ Install the carousel package:
 
 Check the carousel anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="carousel" />
 
@@ -242,42 +243,42 @@ const service = useMachine(carousel.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-part="root"] {
+[data-carousel-root] {
   /* styles for the root part */
 }
 
-[data-part="item-group"] {
+[data-carousel-item-group] {
   /* styles for the item-group part */
 }
 
-[data-part="item"] {
+[data-carousel-item] {
   /* styles for the root part */
 }
 
-[data-part="control"] {
+[data-carousel-control] {
   /* styles for the control part */
 }
 
-[data-part="next-trigger"] {
+[data-carousel-next-trigger] {
   /* styles for the next-trigger part */
 }
 
-[data-part="prev-trigger"] {
+[data-carousel-prev-trigger] {
   /* styles for the prev-trigger part */
 }
 
-[data-part="indicator-group"] {
+[data-carousel-indicator-group] {
   /* styles for the indicator-group part */
 }
 
-[data-part="indicator"] {
+[data-carousel-indicator] {
   /* styles for the indicator part */
 }
 
-[data-part="autoplay-trigger"] {
+[data-carousel-autoplay-trigger] {
   /* styles for the autoplay-trigger part */
 }
 ```
@@ -288,7 +289,7 @@ When a carousel's indicator is active, a `data-current` attribute is set on the
 indicator.
 
 ```css
-[data-part="indicator"][data-current] {
+[data-carousel-indicator][data-current] {
   /* styles for the indicator's active state */
 }
 ```

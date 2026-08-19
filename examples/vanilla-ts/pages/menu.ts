@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/menu.css"
 
 import { nanoid } from "nanoid"
 import { Menu } from "../src/menu"

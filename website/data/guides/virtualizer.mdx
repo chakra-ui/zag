@@ -1,0 +1,195 @@
+---
+title: Virtualizer
+description:
+  Build smooth virtualized lists, grids, window views, and masonry layouts.
+package: "@zag-js/virtualizer"
+---
+
+The virtualizer package provides low-level primitives for rendering large data
+sets without mounting every item at once. You control rendering, measurement,
+and scroll behavior while the virtualizer keeps the visible range in sync.
+
+<Resources pkg="@zag-js/virtualizer" />
+
+## Overview
+
+The package virtualizes large datasets by continuously reconciling:
+
+- Viewport state (`scroll` + viewport rect)
+- Item measurements (estimated first, measured after render)
+- Visible range (plus overscan)
+
+Use this setup flow in every framework:
+
+1. Create the virtualizer with realistic estimates.
+2. Render `virtualizer.getVirtualItems()`.
+3. Measure mounted items (`measureElement` / `measureItem`).
+4. Cleanup on unmount (`destroy`).
+
+```ts
+import { ListVirtualizer } from "@zag-js/virtualizer"
+
+const virtualizer = new ListVirtualizer({
+  count: messages.length,
+  estimatedSize: () => 56,
+  overscan: 8,
+  orientation: "vertical",
+  dir: "ltr",
+  onRangeChange: ({ range, reason }) => {
+    renderRange(range, reason)
+  },
+})
+
+virtualizer.init(scrollRef.current)
+```
+
+### Performance and debugging
+
+- Keep estimates close to measured reality to reduce correction churn.
+- Raise `overscan` only when fast scroll reveals blank gaps.
+- Log `range` and `reason` in `onRangeChange` to detect unnecessary work.
+- Measure after layout settles; avoid measuring hidden elements.
+
+### Pitfalls
+
+- `transform: scale(...)` on the scroll container is unsupported.
+- Always call `destroy()` to release observers/listeners.
+
+## List virtualization
+
+Use `ListVirtualizer` for one-dimensional feeds, logs, and chat timelines.
+
+```ts
+const virtualizer = new ListVirtualizer({
+  count: messages.length,
+  estimatedSize: (index) => (index % 3 === 0 ? 72 : 56),
+  overscan: 10,
+  orientation: "vertical",
+  dir: "ltr",
+  indexToKey: (index) => messages[index].id,
+  keyToIndex: (key) => messageIndexById.get(key) ?? -1,
+  onRangeChange: ({ range, reason }) => {
+    // reason: "scroll" | "resize" | "measurement" | "count" | "manual"
+    updateVisibleWindow(range, reason)
+  },
+})
+```
+
+For horizontal lists, set `orientation: "horizontal"` and pass `dir: "ltr"` or
+`dir: "rtl"` to match document direction.
+
+## Grid virtualization
+
+Use `GridVirtualizer` when both row and column virtualization are required.
+
+```ts
+import { GridVirtualizer } from "@zag-js/virtualizer"
+
+const virtualizer = new GridVirtualizer({
+  rowCount: rows.length,
+  columnCount: 4,
+  estimatedRowSize: () => 180,
+  estimatedColumnSize: () => 260,
+  overscan: 4,
+  orientation: "vertical",
+  dir: "ltr",
+  onRangeChange: ({ range, reason }) => {
+    reportVisibleRows(range.startIndex, range.endIndex, reason)
+  },
+})
+```
+
+The reported range maps to visible row indexes.
+
+## Window virtualization
+
+Use `WindowVirtualizer` when scroll is driven by `window`.
+
+```ts
+import { WindowVirtualizer } from "@zag-js/virtualizer"
+
+const virtualizer = new WindowVirtualizer({
+  count: rows.length,
+  estimatedSize: () => 48,
+  overscan: 6,
+  orientation: "vertical",
+  dir: "ltr",
+  initialRect: { width: 1024, height: 720 },
+  scrollingElement: document.scrollingElement ?? undefined,
+  windowOffset: 0,
+})
+
+virtualizer.init(containerEl)
+```
+
+If your app supports horizontal layouts, `orientation` and `dir` follow the same
+behavior as `ListVirtualizer`.
+
+## Waterfall virtualization
+
+Use `WaterfallVirtualizer` for masonry-style layouts with uneven item heights.
+
+```ts
+import { WaterfallVirtualizer } from "@zag-js/virtualizer"
+
+const virtualizer = new WaterfallVirtualizer({
+  count: cards.length,
+  minColumnWidth: 280,
+  columnGap: 16,
+  rowGap: 16,
+  estimatedSize: (index, laneWidth) =>
+    estimateCardHeight(cards[index], laneWidth),
+  laneAssignment: "measured", // or "preserve"
+  initialRect: { width: 1200, height: 800 },
+})
+```
+
+`WaterfallVirtualizer` is vertical-only and LTR-only in v1
+(`orientation: "vertical"`, `dir: "ltr"`).
+
+- `measured` assigns items to the current shortest lane.
+- `preserve` keeps previous lane choices when possible for more stable
+  placement.
+
+## SSR and hydration
+
+Seed predictable viewport and measurement data to avoid hydration jumps.
+
+```ts
+const virtualizer = new ListVirtualizer({
+  count: items.length,
+  estimatedSize: () => 56,
+  initialRect: { width: 1024, height: 720 },
+  initialOffset: 0,
+  initialMeasurements: cachedMeasurements,
+})
+```
+
+Use:
+
+- `initialRect` for first known viewport dimensions.
+- `initialOffset` for known initial scroll position.
+- `initialMeasurements` (`Map` or object) to restore measured sizes.
+
+## Anchor stability
+
+For prepend/chat flows, pair stable keys with controlled compensation.
+
+```ts
+const virtualizer = new ListVirtualizer({
+  count: items.length,
+  estimatedSize: () => 20,
+  indexToKey: (index) => items[index].id,
+  keyToIndex: (key) => keyToIndexMap.get(key) ?? -1,
+  shouldAdjustScrollOnSizeChange: ({ key, delta, viewportStart }) => {
+    return isPrependedKey(key) && delta !== 0 && viewportStart > 0
+  },
+})
+```
+
+Practical pattern:
+
+1. Keep stable `indexToKey` / `keyToIndex`.
+2. Prepend data and update `count`.
+3. Re-measure prepended rows.
+4. Use `shouldAdjustScrollOnSizeChange` to decide when compensation applies.

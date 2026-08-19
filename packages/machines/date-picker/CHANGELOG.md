@@ -1,5 +1,203 @@
 # @zag-js/date-picker
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix positioner appearing in the top-left corner on first
+  open (most visible in the Svelte adapter). The positioner now stays hidden off-screen via a CSS variable fallback in
+  `transform` instead of a `positioned`-gated `opacity`. This keeps the framework-managed style static, so reactive
+  re-renders no longer clobber the `--x`/`--y` variables popper sets.
+
+  As a result, the internal `positioned` context flag is removed from positioned machines (popover, menu, select, etc.).
+
+  Also fixes `cascade-select` positioning: it now sets the initial placement before measuring and defers the first
+  placement computation (matching the other components), so it positions correctly on open — including `defaultOpen`.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78),
+  [`8148d4d`](https://github.com/chakra-ui/zag/commit/8148d4dc44c1d3638869c2fdcf4d9e5fba14decd)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/popper@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/date-utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/live-region@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- [#3200](https://github.com/chakra-ui/zag/pull/3200)
+  [`913e0f4`](https://github.com/chakra-ui/zag/commit/913e0f4a68171f527ed43ad1d98418accba8a711) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix date picker behavior for disabled and read-only states, controlled open
+  state, min view defaults, and month/year multi-select limits.
+
+- [#3205](https://github.com/chakra-ui/zag/pull/3205)
+  [`a968447`](https://github.com/chakra-ui/zag/commit/a968447fe854e402f41b1a94f491bd980abdd04b) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix keyboard range selection to match the pointer behavior.
+
+- [#3205](https://github.com/chakra-ui/zag/pull/3205)
+  [`d0baf58`](https://github.com/chakra-ui/zag/commit/d0baf5867297455e0356d67cec95fd6b7fecd1f4) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Resume range selection when reopening the calendar with an incomplete range.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/popper@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+  - @zag-js/date-utils@1.43.0
+  - @zag-js/live-region@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- [`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow typing dates using the locale's native numerals (e.g.
+  Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to ASCII digits. Latin-locale behavior is unchanged.
+
+- [#3189](https://github.com/chakra-ui/zag/pull/3189)
+  [`fa37b7e`](https://github.com/chakra-ui/zag/commit/fa37b7e1537b8963a22db356d7b077bb160430ef) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Adds date reordering on blur for range selection to match other selection
+  paths.
+
+- [#3191](https://github.com/chakra-ui/zag/pull/3191)
+  [`0062c9b`](https://github.com/chakra-ui/zag/commit/0062c9b408bbc13f1d2fa91d2d0d769b444ed49b) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix day view briefly flashing when closing the date picker from the month or
+  year view.
+
+- [#3175](https://github.com/chakra-ui/zag/pull/3175)
+  [`8710898`](https://github.com/chakra-ui/zag/commit/8710898ca6abaede20332c68033abf0581b16dd7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` returning a stale value when multiple date
+  pickers with different `selectionMode` (or `timeZone`) share the same visible range. The internal memo key now
+  includes `selectionMode` and `timeZone`, preventing a `range`-formatted label (e.g. `June 2026 - June 2026`) from
+  leaking into a `single`/`multiple` picker that should show `June 2026`. This previously surfaced as SSR hydration
+  mismatches.
+- Updated dependencies [[`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5)]:
+  - @zag-js/date-utils@1.42.0
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/live-region@1.42.0
+  - @zag-js/popper@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/dismissable@2.0.0-next.0
+  - @zag-js/popper@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+  - @zag-js/date-utils@2.0.0-next.0
+  - @zag-js/live-region@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`6656545`](https://github.com/chakra-ui/zag/commit/6656545e99156b36f7e4b991692c79a5b75edf08) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `VALUE.CLEAR` not resetting `activeIndex` and `hoveredValue`
+  in range mode when `getInputProps` inputs are not rendered.
+
+- [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the date input was not writable in locales whose
+  date format separator contains more than one character (e.g. `cs-CZ`, `sk-SK`, `hu-HU`, `ko-KR` which use `". "`)
+
+- [`218b327`](https://github.com/chakra-ui/zag/commit/218b327d63cd27c1df3ac566dc8a34462ee12be0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Firefox where native month/year `<select>` is not
+  interactive when the picker is inside a modal dialog.
+
+- [`829f78c`](https://github.com/chakra-ui/zag/commit/829f78cd297cf256d26fab8b5b43a233b9af8c9b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix range selection with `outsideDaySelectable`: hovering
+  outside-month days no longer changes the visible month; hover preview for the end date still updates.
+
+- [#3130](https://github.com/chakra-ui/zag/pull/3130)
+  [`005e8fa`](https://github.com/chakra-ui/zag/commit/005e8fafdcb1226fd2a3a07617a47cc76c2d823f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-side` to placement-aware parts based on the current
+  placement.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`6dbc33a`](https://github.com/chakra-ui/zag/commit/6dbc33aceee09aba5cfe036a128b9efc76a442d0),
+  [`8715c64`](https://github.com/chakra-ui/zag/commit/8715c64306f62219e53c9cdbd3695607d50406a4),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`0973473`](https://github.com/chakra-ui/zag/commit/09734734e78624f13b1a2d0fcf56c94a3b3ed6a7),
+  [`020d79d`](https://github.com/chakra-ui/zag/commit/020d79d057438ba841c9fe1a88504938c23efe73),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/date-utils@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/popper@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+  - @zag-js/live-region@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- [`00809cd`](https://github.com/chakra-ui/zag/commit/00809cd3adeb17d4c10efd5a91d87b903d13d05b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `isDateEqual` to consider time components of
+  `CalendarDateTime` and `ZonedDateTime` values.
+
+  This ensures `onValueChange` fires correctly when time segments change in the date input.
+
+- Updated dependencies [[`00809cd`](https://github.com/chakra-ui/zag/commit/00809cd3adeb17d4c10efd5a91d87b903d13d05b),
+  [`8181b98`](https://github.com/chakra-ui/zag/commit/8181b98c75305a037958eedf42cd13c95a6b439c)]:
+  - @zag-js/date-utils@1.40.0
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/live-region@1.40.0
+  - @zag-js/popper@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

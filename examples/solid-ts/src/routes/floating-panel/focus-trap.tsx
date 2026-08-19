@@ -5,6 +5,7 @@ import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useFocusTrap } from "~/hooks/use-focus-trap"
+import "@styles/floating-panel.css"
 
 export default function Page() {
   const service = useMachine(floatingPanel.machine, { id: createUniqueId(), closeOnEscape: true })

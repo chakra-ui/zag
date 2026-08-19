@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
 
 export interface Time<T = number> {
   days: T
@@ -102,7 +102,8 @@ interface Computed {
 
 export interface TimerSchema {
   state: "idle" | "running" | "paused" | "running:temp"
-  props: RequiredBy<TimerProps, PropsWithDefault>
+  props: TimerProps
+  defaultPropKey: PropsWithDefault
   context: Context
   computed: Computed
   event: EventObject
@@ -125,6 +126,17 @@ export interface ItemProps {
 
 export interface ActionTriggerProps {
   action: TimerAction
+}
+
+export interface ActionTriggerState {
+  /**
+   * The action this trigger represents
+   */
+  action: TimerAction
+  /**
+   * Whether the action trigger is visible for the current timer state
+   */
+  visible: boolean
 }
 
 export interface TimerApi<T extends PropTypes = PropTypes> {
@@ -176,5 +188,9 @@ export interface TimerApi<T extends PropTypes = PropTypes> {
   getItemValueProps: (props: ItemProps) => T["element"]
   getItemLabelProps: (props: ItemProps) => T["element"]
   getSeparatorProps: () => T["element"]
+  /**
+   * Returns the state of an action trigger
+   */
+  getActionTriggerState: (props: ActionTriggerProps) => ActionTriggerState
   getActionTriggerProps: (props: ActionTriggerProps) => T["button"]
 }

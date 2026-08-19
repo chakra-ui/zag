@@ -25,6 +25,7 @@ export interface PresenceSchema {
     styles: CSSStyleDeclaration | null
   }
   props: PresenceProps
+  defaultPropKey: never
   context: {
     initial: boolean
     unmountAnimationName: string | null

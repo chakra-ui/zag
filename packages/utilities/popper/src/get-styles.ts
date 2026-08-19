@@ -14,11 +14,9 @@ const ARROW_FLOATING_STYLE = {
 } as const
 
 export function getPlacementStyles(
-  options: Pick<PositioningOptions, "placement" | "sameWidth" | "fitViewport" | "strategy"> & {
-    positioned?: boolean | undefined
-  } = {},
+  options: Pick<PositioningOptions, "placement" | "sameWidth" | "fitViewport" | "strategy"> = {},
 ) {
-  const { placement, sameWidth, fitViewport, strategy = "absolute", positioned = true } = options
+  const { placement, sameWidth, fitViewport, strategy = "absolute" } = options
 
   return {
     arrow: {
@@ -51,9 +49,9 @@ export function getPlacementStyles(
       pointerEvents: !placement ? "none" : undefined,
       top: "0px",
       left: "0px",
-      // move off-screen if placement is not defined
-      transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
-      opacity: !positioned ? "0" : undefined,
+      // Hide off-screen until popper sets --x/--y. Keeping this style static (vs a
+      // `positioned`-gated opacity) stops reactive re-renders from clobbering those vars.
+      transform: "translate3d(var(--x, 0px), var(--y, -100vh), 0)",
       zIndex: "var(--z-index)",
     } as const,
   }

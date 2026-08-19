@@ -1,0 +1,177 @@
+---
+title: Website Deployment
+description: How the docs site is deployed, and the checklist for taking v2 live
+---
+
+Internal runbook. This file lives outside `website/data/`, so Velite never picks
+it up and it does not render as a page.
+
+## Topology
+
+Two Vercel projects under the **chakra-ui** team, both importing `chakra-ui/zag`
+with Root Directory `website` and Node 24.x:
+
+| Project          | Production branch | Serves                                       |
+| ---------------- | ----------------- | -------------------------------------------- |
+| `zag-website`    | `main`            | `zagjs.com`, `www.zagjs.com`, `v0.zagjs.com` |
+| `zag-website-v2` | `v2`              | `v2.zagjs.com`                               |
+
+`zagjs.com` runs on Vercel nameservers (`ns1/ns2.vercel-dns.com`) with a
+`*  ALIAS  cname.vercel-dns-016.com` record, so **any new subdomain needs no DNS
+work** — attaching it to a project is enough:
+
+```bash
+vercel domains add <sub>.zagjs.com <project> --scope chakra-ui
+```
+
+Both projects leave Build and Install commands at the Next.js defaults. Two
+things that matter if you ever touch them:
+
+- The install must run at the **workspace root**, unfiltered. `styled-system/`
+  is gitignored and only appears when the root `pnpm install` runs the website's
+  `prepare: panda codegen` script.
+- `pnpm build` is **not** a prerequisite. Every workspace package points `main`
+  at `src/index.ts` (dist entrypoints are swapped in at publish time by
+  `clean-package`), and `next.config.mjs` sets `experimental.externalDir`, so
+  `next build` compiles the linked TS sources directly. `.velite/` is generated
+  inside `next.config.mjs` itself.
+
+`zag-website-v2` carries an Ignored Build Step so it only builds its own branch:
+
+```bash
+[ "$VERCEL_GIT_COMMIT_REF" = "v2" ] && exit 1 || exit 0
+```
+
+Exit 1 means build, exit 0 means skip. It has to be a **project-level** setting.
+A `vercel.json` `ignoreCommand` under `website/` does not work here: it is read
+from the branch being built, so a `main` build would find no file and build
+anyway — and once `v2` merges, the file would land on `main` and start applying
+to `zag-website` as well.
+
+## Recreating the project
+
+Everything is reachable from the CLI — nothing here needs the dashboard.
+
+```bash
+export SCOPE="--scope chakra-ui"
+export TEAM="team_KrM4oUpO36KPkA0WWixqURnU"
+
+vercel project add zag-website-v2 $SCOPE
+vercel project update zag-website-v2 --root-directory website --framework nextjs $SCOPE
+
+for e in production preview; do
+  vercel env add NEXT_PUBLIC_SITE_URL $e --value "https://v2.zagjs.com" --no-sensitive --yes --project zag-website-v2 $SCOPE
+  vercel env add NEXT_PUBLIC_NOINDEX $e --value "1" --no-sensitive --yes --project zag-website-v2 $SCOPE
+  vercel env add NEXT_PUBLIC_ANALYTICS_DOMAIN $e --value "" --no-sensitive --yes --project zag-website-v2 $SCOPE
+done
+
+# run from a v2 checkout — see the note below
+vercel link --yes --project zag-website-v2 --team chakra-ui
+vercel git connect git@github.com:chakra-ui/zag.git --yes
+
+# the only setting with no CLI flag; vercel api handles auth itself
+echo '{"commandForIgnoringBuildStep": "[ \"$VERCEL_GIT_COMMIT_REF\" = \"v2\" ] && exit 1 || exit 0"}' \
+  | vercel api "/v9/projects/zag-website-v2?teamId=$TEAM" -X PATCH --input - --raw
+
+vercel domains add v2.zagjs.com zag-website-v2 $SCOPE
+```
+
+Three things that are easy to get wrong:
+
+- **`vercel git connect` sets the production branch from the branch you run it
+  on.** Run it from a `main` checkout and the project deploys `main`. There is
+  no CLI flag for it — verify with the `vercel api` GET below and PATCH
+  `link.productionBranch` if it is wrong.
+- **`vercel env add` defaults to Sensitive**, which makes values unreadable in
+  the dashboard. Pass `--no-sensitive`.
+- **`vercel api` prints a beta banner on stderr.** Use `2>/dev/null` before
+  piping to `jq`, not `2>&1`.
+
+To read back the full configuration:
+
+```bash
+vercel api "/v9/projects/zag-website-v2?teamId=$TEAM" --raw 2>/dev/null \
+  | jq '{rootDirectory, framework, nodeVersion, commandForIgnoringBuildStep,
+         link: (.link | {org, repo, productionBranch})}'
+```
+
+`vercel link` also writes a root `.env.local` holding a `VERCEL_OIDC_TOKEN` and
+appends `.env*` to `.gitignore`. Keep the ignore rule; the token file is
+regenerable and safe to delete.
+
+## Environment variables
+
+All three default to v1 behaviour when unset, which is why `zag-website` has no
+environment variables at all and why this configuration merges into `main`
+without breaking the live site. They are read in `site.config.ts`.
+
+| Variable                       | Default             | Set on `zag-website-v2` | Gates                                                                  |
+| ------------------------------ | ------------------- | ----------------------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`         | `https://zagjs.com` | `https://v2.zagjs.com`  | Canonical URL, OG tags, `sitemap.xml`, `robots.txt`, `llms*.txt` links |
+| `NEXT_PUBLIC_NOINDEX`          | unset               | `1`                     | `robots.txt` → `Disallow: /`, empty sitemap, `noindex` meta tag        |
+| `NEXT_PUBLIC_ANALYTICS_DOMAIN` | `zagjs.com`         | _(empty)_               | Plausible script — empty removes it entirely                           |
+
+Since these are `NEXT_PUBLIC_*`, they are inlined at build time. Changing one in
+the Vercel dashboard requires a **redeploy**, not just a restart.
+
+## Branch-pinned values
+
+`site.config.ts` has a `branch` field that drives every GitHub link —
+`repo.editUrl` ("Edit this page"), `repo.blobUrl` (changelog link in
+`sidebar.config.ts`) and `repo.treeUrl` (component `sourceUrl` in
+`velite.config.ts`). It is set to `"v2"` on this branch.
+
+`components/nav/version-select.tsx` hardcodes the version switcher entries.
+
+These two are the only things that do **not** flip automatically. Everything
+else is env-driven.
+
+## Go-live checklist
+
+Order matters — cut the archive branch before `main` becomes v2.
+
+### 1. Archive v1
+
+- [ ] Cut a `v1` branch from `main` at the last v1 commit, and push it
+- [ ] Attach `v1.zagjs.com` to a project serving that branch, mirroring how
+      `v0.zagjs.com` is already served
+- [ ] Verify `v1.zagjs.com` renders before touching anything else
+
+### 2. Flip the code
+
+- [ ] `site.config.ts` — `branch: "v2"` → `"main"`
+- [ ] `components/nav/version-select.tsx` — current entry → `https://zagjs.com`
+      tagged `v2`; add `v1` → `https://v1.zagjs.com`; keep `v0`
+- [ ] `data/guides/migration.mdx` — retarget from "Migrating to v1" to v1 → v2
+- [ ] Merge `v2` into `main`
+
+### 3. Flip the hosting
+
+- [ ] `zag-website` picks up the merge and deploys v2 to `zagjs.com` — confirm
+      before proceeding
+- [ ] Point `v2.zagjs.com` at `zagjs.com` so shared links keep working, either
+      by leaving the domain attached to `zag-website-v2` with a redirect or by
+      moving it onto `zag-website`
+- [ ] Delete `zag-website-v2`, or keep it as the staging project for v3
+
+### 4. Restore SEO and analytics
+
+- [ ] Remove `NEXT_PUBLIC_NOINDEX` wherever it is still set
+- [ ] Remove `NEXT_PUBLIC_ANALYTICS_DOMAIN`, or set it to `zagjs.com`
+- [ ] Redeploy — these are build-time inlined
+- [ ] Confirm `zagjs.com/robots.txt` reads `Allow: /` with a `Host:` line, and
+      that `sitemap.xml` is populated
+- [ ] Set `NEXT_PUBLIC_NOINDEX=1` on the `v1.zagjs.com` deployment so the
+      archived docs stop competing in search
+- [ ] Resubmit `zagjs.com/sitemap.xml` in Google Search Console
+
+## Verifying a deploy
+
+```bash
+curl -s https://<host>/robots.txt          # Allow: / on live, Disallow: / on staged
+curl -s https://<host>/sitemap.xml | head  # populated on live, empty urlset on staged
+curl -s https://<host>/ | grep plausible   # present only where analytics is on
+```
+
+Then load the site and check the version switcher, a component page with live
+examples, and that "Edit this page" resolves to the right branch.

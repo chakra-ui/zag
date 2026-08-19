@@ -1,7 +1,7 @@
 <script lang="ts">
   import DrawerControlledAlwaysOpen from "./DrawerControlledAlwaysOpen.svelte"
   import DrawerControlledManaged from "./DrawerControlledManaged.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   const parentId = $props.id()
 

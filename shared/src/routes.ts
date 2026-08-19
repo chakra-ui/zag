@@ -40,7 +40,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "cascade-select",
     label: "Cascade Select",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
+    ],
   },
   {
     slug: "marquee",
@@ -69,6 +73,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "range-input", title: "Range Input" },
       { slug: "action-sheet", title: "Action Sheet" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "controlled-async", title: "Controlled Async" },
       { slug: "mobile-nav", title: "Mobile Nav" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "nested", title: "Nested" },
@@ -81,7 +86,13 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
+      { slug: "column-reverse", title: "Column Reverse" },
     ],
+  },
+  {
+    slug: "scroll-lock",
+    label: "Scroll Lock",
+    examples: [{ slug: "html-scroller", title: "HTML Scroll Container" }],
   },
   {
     slug: "async-list",
@@ -134,7 +145,14 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "angle-slider",
     label: "Angle Slider",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "circular-thumb", title: "Circular Thumb" },
+      { slug: "larger-step", title: "Larger Step (Snap Points)" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "color-wheel", title: "Color Wheel (Hue)" },
+      { slug: "rtl", title: "RTL" },
+    ],
   },
   {
     slug: "steps",
@@ -180,6 +198,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Collapsible",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "uncontrolled", title: "Uncontrolled" },
       { slug: "nested", title: "Nested" },
     ],
   },
@@ -197,10 +217,13 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "checkbox", title: "Checkbox" },
       { slug: "rename", title: "Rename" },
       { slug: "filtering", title: "Filtering" },
+      { slug: "combobox-filter", title: "Combobox Filter" },
       { slug: "links", title: "Links" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "json-tree", title: "JSON Tree" },
       { slug: "expand-trigger", title: "Expand Trigger" },
       { slug: "actions", title: "Actions" },
+      { slug: "in-dialog", title: "Dialog" },
     ],
   },
   {
@@ -222,18 +245,27 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "presence",
     label: "Presence",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "animate", title: "Animate Presence" },
+    ],
   },
   {
     slug: "avatar",
     label: "Avatar",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "with-menu", title: "With Menu" },
+      { slug: "with-tooltip", title: "With Tooltip" },
+    ],
   },
   {
     slug: "color-picker",
     label: "Color Picker",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "inline", title: "Inline" },
       { slug: "in-dialog", title: "Dialog" },
       { slug: "oklch", title: "OKLCH + gamut overlay" },
@@ -259,7 +291,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Picker",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "range", title: "Range" },
+      { slug: "range-calendar", title: "Range calendar" },
       { slug: "multi", title: "Multi" },
       { slug: "inline", title: "Inline" },
       { slug: "month-range", title: "Month + Range" },
@@ -276,6 +311,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "week-numbers", title: "Week Numbers" },
       { slug: "dynamic-max", title: "Dynamic Max" },
       { slug: "unavailable", title: "Unavailable" },
+      { slug: "controlled-range-picker", title: "Controlled Range Picker" },
     ],
   },
   {
@@ -283,6 +319,12 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Date Input",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "time-only", title: "Time Only" },
+      { slug: "time-only-controlled", title: "Time Only (Controlled)" },
+      { slug: "timezone", title: "Timezone" },
+      { slug: "hour-cycle", title: "Hour Cycle" },
+      { slug: "min-max", title: "Min Max" },
       { slug: "range", title: "Range" },
       { slug: "custom-calendar", title: "Custom Calendar" },
     ],
@@ -292,22 +334,31 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Select",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "align-item-with-trigger", title: "Align Item With Trigger" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "async", title: "Async" },
       { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "Dialog" },
       { slug: "in-popover", title: "Popover" },
+      { slug: "mobile-touchend", title: "Mobile Touch End" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
+      { slug: "search-params", title: "Search Params" },
       { slug: "tabs", title: "Tabs" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "with-search", title: "With Search" },
+      { slug: "with-select-all", title: "With Select All" },
     ],
   },
   {
     slug: "accordion",
     label: "Accordion",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "collapsible", title: "With Collapsible" },
+    ],
   },
   {
     slug: "checkbox",
@@ -319,6 +370,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Combobox",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "async", title: "Async" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
@@ -353,8 +406,10 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "delayed-close", title: "Delayed Close" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
+      { slug: "non-modal", title: "Non-Modal" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
+      { slug: "search-params", title: "Search Params" },
     ],
   },
   {
@@ -362,8 +417,11 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "inline", title: "Inline" },
     ],
   },
   {
@@ -371,6 +429,8 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
       { slug: "nested", title: "Nested" },
       { slug: "options", title: "With options" },
@@ -384,10 +444,20 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "menubar",
+    label: "Menubar",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "nested", title: "Nested" },
+      { slug: "vertical", title: "Vertical" },
+    ],
+  },
+  {
     slug: "context-menu",
     label: "Context Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -399,11 +469,24 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "tree-dnd", title: "Tree" },
       { slug: "grid", title: "Grid" },
       { slug: "gridlist", title: "Grid List" },
+      { slug: "kanban", title: "Kanban" },
+      { slug: "variable-size", title: "Variable Size" },
       { slug: "drag-preview", title: "Drag Preview" },
       { slug: "transfer", title: "Transfer" },
       { slug: "multi-item", title: "Multi Item" },
       { slug: "auto-scroll", title: "Auto Scroll" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "virtualized-list", title: "Virtualized List" },
+      { slug: "virtualized-tree", title: "Virtualized Tree" },
+    ],
+  },
+  {
+    slug: "number-flow",
+    label: "Number Flow",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "formatting", title: "Formatting" },
+      { slug: "continuous", title: "Continuous" },
     ],
   },
   {
@@ -439,6 +522,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Popover",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
@@ -447,6 +531,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "selection", title: "Selection" },
       { slug: "single-tab-stop", title: "Single Tab Stop" },
       { slug: "responsive", title: "Responsive" },
+      { slug: "sibling-dialog", title: "Sibling Dialog" },
       { slug: "tooltip", title: "Tooltip" },
     ],
   },
@@ -490,6 +575,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "editable", title: "Editable" },
+      { slug: "form", title: "Form" },
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },
@@ -517,11 +603,28 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "toolbar",
+    label: "Toolbar",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "orientation", title: "Orientation" },
+      { slug: "disabled-items", title: "Disabled Items" },
+      { slug: "rich-text-editor", title: "Rich Text Editor" },
+      { slug: "with-menu", title: "With Menu" },
+      { slug: "with-number-input", title: "With Number Input" },
+      { slug: "with-tooltip", title: "With Tooltip" },
+      { slug: "with-checkbox", title: "With Checkbox" },
+      { slug: "conditional-items", title: "Conditional Items" },
+      { slug: "rtl", title: "RTL" },
+    ],
+  },
+  {
     slug: "toc",
     label: "TOC",
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "indicator", title: "Indicator" },
+      { slug: "scroll-element", title: "Scroll Element" },
     ],
   },
   {
@@ -529,8 +632,12 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "default-open", title: "Default Open" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "controlled-multiple", title: "Controlled Multiple" },
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
+      { slug: "interactive", title: "Interactive" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -546,8 +653,14 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "collapsible", title: "Collapsible" },
       { slug: "conditional", title: "Conditional" },
+      { slug: "controlled", title: "Controlled" },
       { slug: "multiple", title: "Multiple" },
       { slug: "nested", title: "Nested" },
+      { slug: "fixed-size", title: "Fixed Size" },
+      { slug: "group-resize-behavior", title: "Group Resize Behavior" },
+      { slug: "persistent-layout", title: "Persistent Layout" },
+      { slug: "pixel-constraints", title: "Pixel Constraints" },
+      { slug: "relative-units", title: "Relative Units" },
     ],
   },
   {
@@ -582,13 +695,53 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "list", title: "List" },
       { slug: "grid", title: "Grid" },
       { slug: "padding", title: "Padding" },
+      { slug: "scroll-padding", title: "Scroll Padding" },
       { slug: "sticky", title: "Sticky Headers" },
+      { slug: "infinite-scroll", title: "Infinite Scroll" },
       { slug: "window", title: "Window scroll" },
       { slug: "perf", title: "Perf: Fixed Height" },
       { slug: "perf-variable", title: "Perf: Variable (measureElement)" },
       { slug: "perf-dynamic", title: "Perf: Variable (Known Sizes)" },
+      { slug: "perf-waterfall", title: "Perf: Waterfall / Masonry" },
       { slug: "perf-window", title: "Perf: Window scroll" },
     ],
+  },
+  {
+    slug: "anatomy",
+    label: "Anatomy",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "autoresize",
+    label: "Auto Resize",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+    ],
+  },
+  {
+    slug: "dismissable",
+    label: "Dismissable",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "focus-visible",
+    label: "Focus Visible",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
+    slug: "sandbox",
+    label: "Sandbox",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "composable", title: "Composable" },
+      { slug: "nested-states", title: "Nested States" },
+    ],
+  },
+  {
+    slug: "swap",
+    label: "Swap",
+    examples: [{ slug: "basic", title: "Basic" }],
   },
 ]
 

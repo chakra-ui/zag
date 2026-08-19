@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -112,7 +112,8 @@ interface PrivateContext {
 }
 
 export interface SwitchSchema {
-  props: RequiredBy<SwitchProps, PropsWithDefault>
+  props: SwitchProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   state: "ready"
   computed: ComputedContext
@@ -129,6 +130,45 @@ export type SwitchMachine = Machine<SwitchSchema>
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * Whether the switch is checked
+   */
+  checked: boolean
+  /**
+   * Whether the switch is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the switch is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the switch is required
+   */
+  required: boolean
+  /**
+   * Whether the switch is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the switch is focused
+   */
+  focused: boolean
+  /**
+   * Whether the switch is focused and the focus is visible
+   */
+  focusVisible: boolean
+  /**
+   * Whether the switch is hovered
+   */
+  hovered: boolean
+  /**
+   * Whether the switch is active or pressed
+   */
+  active: boolean
+}
 
 export interface SwitchApi<T extends PropTypes = PropTypes> {
   /**
@@ -152,6 +192,10 @@ export interface SwitchApi<T extends PropTypes = PropTypes> {
    */
   toggleChecked: VoidFunction
 
+  /**
+   * Returns the state of the switch
+   */
+  getRootState: () => RootState
   getRootProps: () => T["label"]
   getLabelProps: () => T["element"]
   getThumbProps: () => T["element"]

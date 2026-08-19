@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import * as dom from "./pagination.dom"
-import type { PaginationService, PaginationApi } from "./pagination.types"
+import type { ItemProps, ItemState, PaginationService, PaginationApi } from "./pagination.types"
 import { getTransformedRange } from "./pagination.utils"
 
 export function connect<T extends PropTypes>(
@@ -33,6 +33,18 @@ export function connect<T extends PropTypes>(
     siblingCount: prop("siblingCount"),
     boundaryCount: prop("boundaryCount"),
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getItemState(props: ItemProps): ItemState {
+    return { value: props.value, current: props.value === page }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     count,
@@ -81,17 +93,18 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getItemState,
     getItemProps(props) {
       const index = props.value
-      const isCurrentPage = index === page
+      const itemState = getItemState(props)
 
       return normalize.element({
         id: dom.getItemId(scope, index),
         ...parts.item.attrs(scope.id),
         dir: prop("dir"),
         "data-index": index,
-        "data-selected": dataAttr(isCurrentPage),
-        "aria-current": isCurrentPage ? "page" : undefined,
+        "data-selected": dataAttr(itemState.current),
+        "aria-current": itemState.current ? "page" : undefined,
         "aria-label": translations.itemLabel?.({ page: index, totalPages }),
         onClick() {
           send({ type: "SET_PAGE", page: index })

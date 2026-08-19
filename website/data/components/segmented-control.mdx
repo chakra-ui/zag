@@ -27,7 +27,8 @@ Install the radio group package:
 
 Check the segmented control anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="segmented-control" />
 
@@ -125,60 +126,60 @@ const service = useMachine(radio.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Indicator
 
 Style the segmented control Indicator through the `indicator` part.
 
 ```css
-[data-part="indicator"] {
+[data-radio-group-indicator] {
   /* styles for indicator */
 }
 ```
 
 ### Focused State
 
-When the radio input is focused, the `data-focus` attribute is added to the root
-and label parts.
+When the radio input is focused, the `data-focus` attribute is added to the item
+and text parts.
 
 ```css
-[data-part="radio"][data-focus] {
+[data-radio-group-item][data-focus] {
   /* styles for radio focus state */
 }
 
-[data-part="radio-label"][data-focus] {
-  /* styles for radio label focus state */
+[data-radio-group-item-text][data-focus] {
+  /* styles for radio text focus state */
 }
 ```
 
 ### Disabled State
 
-When the radio is disabled, the `data-disabled` attribute is added to the root
-and label parts.
+When the radio is disabled, the `data-disabled` attribute is added to the item
+and text parts.
 
 ```css
-[data-part="radio"][data-disabled] {
+[data-radio-group-item][data-disabled] {
   /* styles for radio disabled state */
 }
 
-[data-part="radio-label"][data-disabled] {
-  /* styles for radio label disabled state */
+[data-radio-group-item-text][data-disabled] {
+  /* styles for radio text disabled state */
 }
 ```
 
 ### Invalid State
 
-When the radio is invalid, the `data-invalid` attribute is added to the root and
-label parts.
+When the radio is invalid, the `data-invalid` attribute is added to the item and
+text parts.
 
 ```css
-[data-part="radio"][data-invalid] {
+[data-radio-group-item][data-invalid] {
   /* styles for radio invalid state */
 }
 
-[data-part="radio-label"][data-invalid] {
-  /* styles for radio label invalid state */
+[data-radio-group-item-text][data-invalid] {
+  /* styles for radio text invalid state */
 }
 ```
 

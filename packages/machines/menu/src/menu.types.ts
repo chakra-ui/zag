@@ -1,9 +1,9 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -145,13 +145,44 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * Function called when the trigger value changes.
    */
   onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
+  /**
+   * Config provided by a parent menubar. When set, this menu acts as a menubar menu:
+   * its trigger becomes a `menuitem` and it coordinates open/close/focus with sibling menus.
+   * Adapters typically populate this from a menubar context. Omit it for submenus.
+   */
+  menubar?: MenubarContext | undefined
+}
+
+export interface MenubarContext {
+  /**
+   * The resolved id of the menubar root element. Used to scope the coordination events.
+   */
+  rootId: string
+  /**
+   * The id of the currently tabbable menubar trigger.
+   */
+  activeId: string | null
+  /**
+   * Whether the menubar (and therefore this menu's trigger) is disabled.
+   */
+  disabled?: boolean | undefined
+  /**
+   * The orientation of the menubar.
+   * @default "horizontal"
+   */
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
-  props: RequiredBy<MenuProps, PropsWithDefault>
+  props: MenuProps
+  defaultPropKey: PropsWithDefault
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     highlightedValue: string | null
     lastHighlightedValue: string | null
     currentPlacement: Placement | undefined
@@ -160,12 +191,13 @@ export interface MenuSchema {
     isSubmenu: boolean
     triggerValue: string | null
     pointerRoutingMode: "interactive" | "locked"
-    positioned: boolean
   }
   computed: {
     isRtl: boolean
     isTypingAhead: boolean
     highlightedId: string | null
+    isInMenubar: boolean
+    menubarDisabled: boolean
   }
   refs: {
     parent: MenuService | null
@@ -173,6 +205,7 @@ export interface MenuSchema {
     pointerRoutingLocked: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
+    menubarCloseReason: string | null
   }
 
   action: string
@@ -288,6 +321,59 @@ export interface OptionItemState extends ItemState {
   checked: boolean
 }
 
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the menu
+   */
+  current: boolean
+  /**
+   * Whether the menu is open
+   */
+  open: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+}
+
+export interface PositionerState {
+  /**
+   * Whether the menu is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the menu has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the menu is open
+   */
+  open: boolean
+  /**
+   * Whether the menu is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the menu has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
 export interface ItemGroupProps {
   /**
    * The `id` of the element that provides accessibility label to the option group
@@ -361,11 +447,23 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
 
   getContextTriggerProps: (props?: TriggerProps) => T["element"]
   getTriggerItemProps: <A extends Api>(childApi: A) => T["element"]
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getIndicatorProps: () => T["element"]
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getSeparatorProps: () => T["element"]
   getItemProps: (options: ItemProps) => T["element"]

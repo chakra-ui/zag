@@ -2,7 +2,7 @@
   import * as drawer from "@zag-js/drawer"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   interface Props {
     id: string
@@ -38,9 +38,7 @@
         <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
       </div>
       <div {...api.getTitleProps()}>Controlled Drawer</div>
-      <p {...api.getDescriptionProps()}>
-        This drawer is fully controlled. Swipe, escape, and outside click all work.
-      </p>
+      <p {...api.getDescriptionProps()}>This drawer is fully controlled. Swipe, escape, and outside click all work.</p>
       <p style="font-size: 14px">
         Open: <strong>{String(open)}</strong>
       </p>

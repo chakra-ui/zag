@@ -1,6 +1,6 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
 import { createGuards, createMachine, type Scope } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   disableTextSelection,
   dispatchInputValueEvent,
@@ -53,6 +53,9 @@ export const machine = createMachine<ColorPickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       value: bindable<Color>(() => ({
         defaultValue: prop("defaultValue").toFormat(prop("format") ?? prop("defaultFormat")),
         value: prop("value")?.toFormat(prop("format") ?? prop("defaultFormat")),
@@ -87,7 +90,6 @@ export const machine = createMachine<ColorPickerSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -213,7 +215,6 @@ export const machine = createMachine<ColorPickerSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearPositioned"],
       effects: ["trackPositioning", "trackDismissableElement"],
       initial: "idle",
       on: {
@@ -387,7 +388,6 @@ export const machine = createMachine<ColorPickerSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
@@ -397,6 +397,9 @@ export const machine = createMachine<ColorPickerSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "popover",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           exclude: dom.getTriggerEl(scope),
           defer: true,
           onInteractOutside(event) {
@@ -442,10 +445,7 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
-      clearPositioned({ context }) {
-        context.set("positioned", false)
-      },
-      openEyeDropper({ scope, context }) {
+      openEyeDropper({ scope, context, prop }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win
         if (!isSupported) return
@@ -456,6 +456,13 @@ export const machine = createMachine<ColorPickerSchema>({
             const format = context.get("value").getFormat()
             const color = parseColor(sRGBHex).toFormat(format) as Color
             context.set("value", color)
+            return color
+          })
+          .then((value) => {
+            prop("onValueChangeEnd")?.({
+              value,
+              valueAsString: value.toString(context.get("format")),
+            })
           })
           .catch(() => void 0)
       },

@@ -5,6 +5,7 @@
   import * as popover from "@zag-js/popover"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
+  import "@styles/floating-panel.css"
 
   const id = $props.id()
   const service = useMachine(floatingPanel.machine, () => ({
@@ -17,7 +18,6 @@
 
   const popoverService = useMachine(popover.machine, () => ({
     id: `${id}-popover`,
-    portalled: false,
   }))
 
   const popoverApi = $derived(popover.connect(popoverService, normalizeProps))

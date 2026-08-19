@@ -1,17 +1,28 @@
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { isEqual } from "@zag-js/utils"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
-import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, TreeNode } from "./cascade-select.types"
+import type {
+  CascadeSelectApi,
+  CascadeSelectSchema,
+  ContentState,
+  ItemProps,
+  ItemState,
+  RootState,
+  TreeNode,
+  TriggerState,
+} from "./cascade-select.types"
 
 export function connect<T extends PropTypes, V = TreeNode>(
   service: Service<CascadeSelectSchema>,
   normalize: NormalizeProps<T>,
 ): CascadeSelectApi<T, V> {
   const { send, context, prop, scope, computed, state } = service
+  const layer = context.get("layer")
 
   const collection = prop("collection")
   const value = context.get("value")
@@ -20,6 +31,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const highlightedIndexPath = context.get("highlightedIndexPath")
   const highlightedValue = context.get("highlightedValue")
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const interactive = computed("isInteractive")
   const valueAsString = computed("valueAsString")
@@ -30,8 +42,14 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
-    positioned: context.get("positioned"),
   })
+
+  const hasSelectedItems = value.length > 0
+  const empty = value.length === 0
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   const getItemState = (props: ItemProps<V>): ItemState => {
     const { item, indexPath, value: itemValue } = props
@@ -55,8 +73,30 @@ export function connect<T extends PropTypes, V = TreeNode>(
     }
   }
 
-  const hasSelectedItems = value.length > 0
-  const empty = value.length === 0
+  function getRootState(): RootState {
+    return { open, disabled: !!disabled, readOnly: !!prop("readOnly"), invalid: !!prop("invalid") }
+  }
+
+  function getTriggerState(): TriggerState {
+    return {
+      open,
+      focused,
+      disabled: !!disabled,
+      invalid: !!prop("invalid"),
+      readOnly: !!prop("readOnly"),
+      placeholderShown: !hasSelectedItems,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  function getContentState(): ContentState {
+    return { open, nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     collection,
@@ -111,14 +151,16 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     getItemState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-state": rootState.open ? "open" : "closed",
       })
     },
 
@@ -152,7 +194,9 @@ export function connect<T extends PropTypes, V = TreeNode>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         dir: prop("dir"),
@@ -160,17 +204,18 @@ export function connect<T extends PropTypes, V = TreeNode>(
         type: "button",
         role: "combobox",
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": open,
+        "aria-expanded": triggerState.open,
         "aria-haspopup": "listbox",
         "aria-labelledby": dom.getLabelId(scope),
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-focus": dataAttr(focused),
-        "data-placement": currentPlacement,
-        "data-placeholder-shown": dataAttr(!hasSelectedItems),
-        disabled,
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-readonly": dataAttr(triggerState.readOnly),
+        "data-invalid": dataAttr(triggerState.invalid),
+        "data-focus": dataAttr(triggerState.focused),
+        "data-placement": triggerState.placement,
+        "data-side": triggerState.side,
+        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
+        disabled: triggerState.disabled,
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -238,12 +283,18 @@ export function connect<T extends PropTypes, V = TreeNode>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
+    getContentState,
     getContentProps() {
       const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue.toString()) : undefined
+      const contentState = getContentState()
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
@@ -252,13 +303,15 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "aria-labelledby": dom.getLabelId(scope),
         "aria-activedescendant": highlightedItemId,
         "data-activedescendant": highlightedItemId,
-        "data-state": open ? "open" : "closed",
+        "data-state": contentState.open ? "open" : "closed",
         "aria-multiselectable": prop("multiple"),
         "aria-required": prop("required"),
         "aria-readonly": prop("readOnly"),
 
-        hidden: !open,
+        hidden: !contentState.open,
         tabIndex: 0,
+        ...getDismissableLayerAttrs(layer),
+        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onKeyDown(event) {
           if (!interactive) return
           if (!isSelfTarget(event)) return

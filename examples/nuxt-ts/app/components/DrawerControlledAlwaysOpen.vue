@@ -3,7 +3,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
 import { computed } from "vue"
-import styles from "../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 const id = useId()
 
@@ -19,8 +19,8 @@ const api = computed(() => drawer.connect(service, normalizeProps))
   <div>
     <h3>Always Open (no onOpenChange)</h3>
     <p style="font-size: 14px; color: #6b7280">
-      This drawer has <code>open: true</code> without <code>onOpenChange</code>. Swiping, escape, and outside click should
-      have no effect.
+      This drawer has <code>open: true</code> without <code>onOpenChange</code>. Swiping, escape, and outside click
+      should have no effect.
     </p>
     <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
     <div :class="styles.positioner" v-bind="api.getPositionerProps()">

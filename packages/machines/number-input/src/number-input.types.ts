@@ -1,23 +1,42 @@
 import type { NumberParser } from "@internationalized/number"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * The reason for the number input value change
+ */
+export type ValueChangeReason =
+  | "input-change"
+  | "input-blur" // clamped or formatted on blur
+  | "keyboard"
+  | "increment-press"
+  | "decrement-press"
+  | "wheel"
+  | "scrub"
+  | "script"
+
 export interface ValueChangeDetails {
   value: string
   valueAsNumber: number
+  reason?: ValueChangeReason | undefined
 }
 
-export interface FocusChangeDetails extends ValueChangeDetails {
+export interface FocusChangeDetails {
+  value: string
+  valueAsNumber: number
   focused: boolean
 }
 
 export type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
-export interface ValueInvalidDetails extends ValueChangeDetails {
+/** Detached from `ValueChangeDetails`: here `reason` is why the value is invalid. */
+export interface ValueInvalidDetails {
+  value: string
+  valueAsNumber: number
   reason: ValidityState
 }
 
@@ -158,7 +177,8 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
-   * Function invoked when the value is committed (when the input is blurred or the Enter key is pressed)
+   * Function invoked when the value settles: the input is blurred or `Enter` is pressed, a stepper
+   * or scrub gesture ends, or a key or wheel step completes.
    */
   onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
   /**
@@ -209,11 +229,11 @@ type PropsWithDefault =
   | "pattern"
   | "translations"
   | "step"
+  | "largeStep"
+  | "smallStep"
   | "spinOnPress"
   | "min"
   | "max"
-  | "largeStep"
-  | "smallStep"
   | "scrubberPixelSensitivity"
   | "scrubberDirection"
   | "snapOnStep"
@@ -307,9 +327,10 @@ interface PrivateContext {
 }
 
 export interface NumberInputSchema {
-  state: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
+  state: "idle" | "focused" | "pressed" | "pressed.waiting" | "pressed.repeating" | "scrubbing"
   tag: "focus"
-  props: RequiredBy<NumberInputProps, PropsWithDefault>
+  props: NumberInputProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   action: string
@@ -325,6 +346,58 @@ export type NumberInputMachine = Machine<NumberInputSchema>
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * Whether the number input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the number input is focused.
+   */
+  focused: boolean
+  /**
+   * Whether the number input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the number input is being scrubbed.
+   */
+  scrubbing: boolean
+}
+
+export interface InputState {
+  /**
+   * Whether the input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the input is being scrubbed.
+   */
+  scrubbing: boolean
+}
+
+export interface IncrementTriggerState {
+  /**
+   * Whether the increment trigger is disabled.
+   */
+  disabled: boolean
+}
+
+export interface DecrementTriggerState {
+  /**
+   * Whether the decrement trigger is disabled.
+   */
+  disabled: boolean
+}
 
 export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
@@ -380,12 +453,28 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
   getValueTextProps: () => T["element"]
+  /**
+   * Returns the state of the input.
+   */
+  getInputState: () => InputState
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the decrement trigger.
+   */
+  getDecrementTriggerState: () => DecrementTriggerState
   getDecrementTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the increment trigger.
+   */
+  getIncrementTriggerState: () => IncrementTriggerState
   getIncrementTriggerProps: () => T["button"]
   getScrubberProps: () => T["element"]
   getScrubberCursorProps: () => T["element"]

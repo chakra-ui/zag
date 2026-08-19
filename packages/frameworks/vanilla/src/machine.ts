@@ -11,6 +11,7 @@ import type {
   MachineSchema,
   Params,
   PropFn,
+  InputProps,
   Scope,
   Service,
   Transition,
@@ -26,7 +27,18 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import { compact, ensure, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
+import {
+  callAll,
+  compact,
+  ensure,
+  identity,
+  isEqual,
+  isFunction,
+  isString,
+  runIfFn,
+  toArray,
+  warn,
+} from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
@@ -48,7 +60,7 @@ export class VanillaMachine<T extends MachineSchema> {
   private cleanups: VoidFunction[] = []
   private subscriptions: Array<(service: Service<T>) => void> = []
 
-  private userPropsRef: { current: Partial<T["props"]> | (() => Partial<T["props"]>) }
+  private userPropsRef: { current: InputProps<T> | (() => InputProps<T>) }
 
   private getEvent = () => ({
     ...this.event,
@@ -73,7 +85,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
   constructor(
     private machine: Machine<T>,
-    userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
+    userProps: InputProps<T> | (() => InputProps<T>) = {} as InputProps<T>,
   ) {
     this.userPropsRef = { current: userProps }
 
@@ -84,7 +96,7 @@ export class VanillaMachine<T extends MachineSchema> {
     // create prop
     const prop: PropFn<T> = (key) => {
       const __props = runIfFn(this.userPropsRef.current)
-      const props: any = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
+      const props: any = machine.props?.({ props: compact(__props as any), scope: this.scope }) ?? __props
       return props[key] as any
     }
     this.prop = prop
@@ -171,13 +183,19 @@ export class VanillaMachine<T extends MachineSchema> {
 
         entering.forEach((item) => {
           const cleanup = this.effect(item.state?.effects)
-          if (cleanup) this.effects.set(item.path, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(item.path)
+            this.effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+          }
         })
 
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
           const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set(INIT_STATE, cleanup)
+          if (cleanup) {
+            const existing = this.effects.get(INIT_STATE)
+            this.effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+          }
         }
 
         entering.forEach((item) => {
@@ -189,13 +207,13 @@ export class VanillaMachine<T extends MachineSchema> {
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
-  updateProps(newProps: Partial<T["props"]> | (() => Partial<T["props"]>)) {
+  updateProps(newProps: InputProps<T> | (() => InputProps<T>)) {
     const prevSource = this.userPropsRef.current
 
     this.userPropsRef.current = () => {
       const prev = runIfFn(prevSource)
       const next = runIfFn(newProps)
-      return mergeMachineProps(prev, next)
+      return mergeMachineProps(prev as any, next as any) as InputProps<T>
     }
 
     this.notify()
@@ -254,7 +272,9 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(this.getParams())
-    return this.machine.implementations?.guards?.[str](this.getParams())
+    const fn = this.machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(this.getParams())
   }
 
   private effect = (keys: EffectsOrFn<T> | undefined) => {

@@ -2,7 +2,7 @@ import { dataAttr, getEventKey, getEventPoint, getEventStep, getNativeEvent, isL
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
-import type { AngleSliderApi, AngleSliderService } from "./angle-slider.types"
+import type { AngleSliderApi, AngleSliderService, MarkerProps, MarkerState, RootState } from "./angle-slider.types"
 import { getAngle, getDisplayAngle } from "./angle-slider.utils"
 
 export function connect<T extends PropTypes>(
@@ -18,13 +18,40 @@ export function connect<T extends PropTypes>(
   const dir = prop("dir")
   const displayAngle = getDisplayAngle(value, dir)
 
-  const disabled = prop("disabled")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const disabled = !!prop("disabled")
+  const invalid = !!prop("invalid")
+  const readOnly = !!prop("readOnly")
   const interactive = computed("interactive")
 
   const ariaLabel = prop("aria-label")
   const ariaLabelledBy = prop("aria-labelledby")
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { disabled, invalid, readOnly }
+  }
+
+  function getMarkerState(props: MarkerProps): MarkerState {
+    const { value: markerValue } = props
+    let markerState: MarkerState["state"]
+
+    if (markerValue < value) {
+      markerState = "under-value"
+    } else if (markerValue > value) {
+      markerState = "over-value"
+    } else {
+      markerState = "at-value"
+    }
+
+    return { value: markerValue, disabled, state: markerState }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     value,
@@ -34,13 +61,15 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
         style: {
           "--value": value,
           "--angle": `${displayAngle}deg`,
@@ -49,14 +78,15 @@ export function connect<T extends PropTypes>(
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
@@ -76,13 +106,14 @@ export function connect<T extends PropTypes>(
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         role: "presentation",
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -114,6 +145,7 @@ export function connect<T extends PropTypes>(
     },
 
     getThumbProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.thumb.attrs(scope.id),
         id: dom.getThumbId(scope),
@@ -124,10 +156,10 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": 360,
         "aria-valuemin": 0,
         "aria-valuenow": value,
-        tabIndex: readOnly || interactive ? 0 : undefined,
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        tabIndex: rootState.readOnly || interactive ? 0 : undefined,
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
         onFocus() {
           send({ type: "THUMB.FOCUS" })
         },
@@ -191,25 +223,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getMarkerState,
     getMarkerProps(props) {
-      let markerState: "under-value" | "over-value" | "at-value"
-
-      if (props.value < value) {
-        markerState = "under-value"
-      } else if (props.value > value) {
-        markerState = "over-value"
-      } else {
-        markerState = "at-value"
-      }
-
+      const markerState = getMarkerState(props)
       const markerDisplayAngle = getDisplayAngle(props.value, dir)
 
       return normalize.element({
         ...parts.marker.attrs(scope.id),
         dir: prop("dir"),
-        "data-value": props.value,
-        "data-state": markerState,
-        "data-disabled": dataAttr(disabled),
+        "data-value": markerState.value,
+        "data-state": markerState.state,
+        "data-disabled": dataAttr(markerState.disabled),
         style: {
           "--marker-value": props.value,
           "--marker-display-value": markerDisplayAngle,

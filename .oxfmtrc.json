@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "bracketSpacing": true,
+  "jsxSingleQuote": false,
+  "printWidth": 120,
+  "proseWrap": "always",
+  "semi": false,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "svelte": {},
+  "ignorePatterns": ["dist", "node_modules", "coverage", ".next", "build", "*.hbs"]
+}

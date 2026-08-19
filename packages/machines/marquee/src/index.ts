@@ -8,6 +8,7 @@ export type {
   MarqueeProps as Props,
   MarqueeService as Service,
   ContentProps,
+  ContentState,
   DimensionSnapshot,
   EdgeProps,
   ElementIds,

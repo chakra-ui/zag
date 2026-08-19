@@ -9,4 +9,5 @@ export type {
   SwitchService as Service,
   CheckedChangeDetails,
   ElementIds,
+  RootState,
 } from "./switch.types"

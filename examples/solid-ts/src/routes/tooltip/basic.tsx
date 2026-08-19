@@ -4,6 +4,7 @@ import { createMemo, createUniqueId, Show } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/tooltip.css"
 
 export default function Page() {
   const service = useMachine(tooltip.machine, { id: createUniqueId() })

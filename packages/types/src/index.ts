@@ -7,7 +7,7 @@ export type Nullable<T> = T | null
 export type NonNullable<T> = T extends null | undefined ? never : T
 
 export type Required<T> = {
-  [P in keyof T]-?: NonNullable<T[P]>
+  [P in keyof T]-?: Exclude<T[P], undefined>
 }
 
 export type Direction = "ltr" | "rtl"

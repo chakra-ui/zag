@@ -1,11 +1,19 @@
 import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
-import type { StepActionMap, TourApi, TourService } from "./tour.types"
+import type {
+  BackdropState,
+  ContentState,
+  PositionerState,
+  SpotlightState,
+  StepActionMap,
+  TourApi,
+  TourService,
+} from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
 import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
@@ -25,12 +33,38 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const lastStep = computed("isLastStep")
 
   const placement = context.get("currentPlacement")
+  const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
+  const floatingOffset = context.get("floatingOffset")
+  const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getBackdropState(): BackdropState {
+    return { open, type: step?.type }
+  }
+
+  function getSpotlightState(): SpotlightState {
+    return { open, hasTarget: !!step?.target?.() }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { type: step?.type, placement, side: placementSide }
+  }
+
+  function getContentState(): ContentState {
+    return { open, type: step?.type, placement, side: placementSide, stepId: step?.id ?? null }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
-    placement: isTooltipPlacement(placement) ? placement : undefined,
-    positioned: context.get("positioned"),
+    placement: tooltipPositioned && isTooltipPlacement(placement) ? placement : undefined,
   })
 
   const clipPath = getClipPath({
@@ -112,13 +146,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return prop("translations").progressText?.(details) ?? ""
     },
 
+    getBackdropState,
     getBackdropProps() {
+      const backdropState = getBackdropState()
       return normalize.element({
         ...parts.backdrop.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-type": step?.type,
+        hidden: !backdropState.open,
+        "data-state": backdropState.open ? "open" : "closed",
+        "data-type": backdropState.type,
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
@@ -129,17 +165,23 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getSpotlightState,
     getSpotlightProps() {
+      const spotlightState = getSpotlightState()
       return normalize.element({
         ...parts.spotlight.attrs(scope.id),
-        hidden: !open || !step?.target?.(),
+        hidden: !spotlightState.open || !spotlightState.hasTarget,
         style: {
           "--tour-layer": 1,
+          "--spotlight-x": toPx(targetRect.x),
+          "--spotlight-y": toPx(targetRect.y),
+          "--spotlight-width": toPx(targetRect.width),
+          "--spotlight-height": toPx(targetRect.height),
           position: "absolute",
-          width: toPx(targetRect.width),
-          height: toPx(targetRect.height),
-          left: toPx(targetRect.x),
-          top: toPx(targetRect.y),
+          width: "var(--spotlight-width)",
+          height: "var(--spotlight-height)",
+          left: "var(--spotlight-x)",
+          top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
         },
@@ -152,15 +194,26 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-type": step?.type,
-        "data-placement": placement,
+        "data-type": positionerState.type,
+        "data-placement": positionerState.placement,
+        "data-side": positionerState.side,
         style: {
           "--tour-layer": 2,
-          ...(step?.type === "tooltip" && popperStyles.floating),
+          ...(positionerState.type === "tooltip" && {
+            ...popperStyles.floating,
+            ...(floatingOffset && {
+              "--x": toPx(floatingOffset.x),
+              "--y": toPx(floatingOffset.y),
+            }),
+            "--z-index": "calc(var(--tour-layer) + var(--tour-z-index))",
+          }),
+          ...(!open && { pointerEvents: "none" }),
         },
       })
     },
@@ -169,8 +222,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
-        hidden: step?.type !== "tooltip",
-        style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
+        hidden: !tooltipPositioned,
+        style: tooltipPositioned ? popperStyles.arrow : undefined,
         opacity: hasTarget ? undefined : 0,
       })
     },
@@ -183,7 +236,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
@@ -192,11 +247,12 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-type": step?.type,
-        "data-placement": placement,
-        "data-step": step?.id,
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-type": contentState.type,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        "data-step": contentState.stepId,
         "aria-labelledby": dom.getTitleId(scope),
         "aria-describedby": dom.getDescriptionId(scope),
         tabIndex: -1,
@@ -225,6 +281,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.title.attrs(scope.id),
         id: dom.getTitleId(scope),
         "data-placement": hasTarget ? placement : "center",
+        "data-side": hasTarget ? placementSide : undefined,
       })
     },
 
@@ -233,6 +290,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.description.attrs(scope.id),
         id: dom.getDescriptionId(scope),
         "data-placement": hasTarget ? placement : "center",
+        "data-side": hasTarget ? placementSide : undefined,
       })
     },
 
@@ -276,6 +334,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "close",
             "aria-label": prop("translations").close,
             onClick: actionMap.dismiss,
+          }
+          break
+
+        case "skip":
+          actionProps = {
+            "data-type": "skip",
+            "aria-label": prop("translations").skip,
+            onClick: actionMap.skip,
           }
           break
 

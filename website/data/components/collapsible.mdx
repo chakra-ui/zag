@@ -131,23 +131,23 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
   }
 }
 
-[data-scope="collapsible"][data-part="content"] {
+[data-collapsible-content] {
   overflow: hidden;
   max-width: 400px;
 }
 
-[data-scope="collapsible"][data-part="content"][data-state="open"] {
+[data-collapsible-content][data-state="open"] {
   animation: expand 110ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 
-[data-scope="collapsible"][data-part="content"][data-state="closed"] {
+[data-collapsible-content][data-state="closed"] {
   animation: collapse 110ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 ```
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -155,15 +155,15 @@ When a collapsible opens or closes, `data-state` is set to `open` or `closed` on
 the root, trigger, and content.
 
 ```css
-[data-part="root"][data-state="open|closed"] {
+[data-collapsible-root][data-state="open|closed"] {
   /* styles for the collapsible is open or closed state */
 }
 
-[data-part="trigger"][data-state="open|closed"] {
+[data-collapsible-trigger][data-state="open|closed"] {
   /* styles for the collapsible is open or closed state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-collapsible-content][data-state="open|closed"] {
   /* styles for the collapsible is open or closed state */
 }
 ```
@@ -174,15 +174,15 @@ When a collapsible's trigger is focused, a `data-focus` attribute is set on the
 root, trigger and content.
 
 ```css
-[data-part="root"][data-focus] {
+[data-collapsible-root][data-focus] {
   /* styles for the item's focus state */
 }
 
-[data-part="trigger"][data-focus] {
+[data-collapsible-trigger][data-focus] {
   /* styles for the content's focus state */
 }
 
-[data-part="content"][data-focus] {
+[data-collapsible-content][data-focus] {
   /* styles for the content's focus state */
 }
 ```
@@ -195,11 +195,11 @@ These variables are automatically calculated and updated based on the content's
 dimensions.
 
 ```css
-[data-scope="collapsible"][data-part="content"][data-state="open"] {
+[data-collapsible-content][data-state="open"] {
   animation: slideDown 200ms ease;
 }
 
-[data-scope="collapsible"][data-part="content"][data-state="closed"] {
+[data-collapsible-content][data-state="closed"] {
   animation: slideUp 200ms ease;
 }
 

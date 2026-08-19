@@ -7,8 +7,13 @@ export interface SortDescriptor<Item> {
   direction: SortDirection
 }
 
-export interface LoadDetails<Filter, Sorting, Cursor> {
+export interface LoadDetails<Item, Filter, Sorting, Cursor> {
   signal: AbortSignal | undefined
+  /**
+   * The items currently in the list when the load begins.
+   * Empty on reload (unless `keepPreviousItems` is set); the existing items when loading more.
+   */
+  items: Item[]
   filter: Filter
   cursor?: Cursor | undefined
   sorting?: Sorting | undefined
@@ -31,7 +36,7 @@ export interface AsyncListProps<Item, Filter = string, Sorting = SortDescriptor<
   /**
    * The function to call when the list is loaded
    */
-  load: (args: LoadDetails<Filter, Sorting, Cursor>) => Promise<LoadResult<Item, Cursor>>
+  load: (args: LoadDetails<Item, Filter, Sorting, Cursor>) => Promise<LoadResult<Item, Cursor>>
   /**
    * The function to call when the list is sorted client-side.
    * When provided, sorting is performed locally instead of triggering a new load.
@@ -78,13 +83,14 @@ export interface AsyncListProps<Item, Filter = string, Sorting = SortDescriptor<
 export interface AsyncListSchema<Item, Filter, Sorting, Cursor> {
   state: "idle" | "loading" | "sorting"
   props: AsyncListProps<Item, Filter, Sorting, Cursor>
+  defaultPropKey: never
   context: {
     items: Item[]
     filter: Filter
     cursor?: Cursor | undefined
     sorting?: Sorting | undefined
-    error?: any | undefined
-    isLoadMore: boolean
+    error?: Error | undefined
+    isLoadingMore: boolean
   }
   refs: {
     abort: AbortController | null
@@ -146,7 +152,7 @@ export interface AsyncListApi<Item, Filter = string, Sorting = SortDescriptor<It
   /**
    * The error instance returned by the last fetch.
    */
-  error: any | undefined
+  error: Error | undefined
   /**
    * Function to abort the current fetch.
    */

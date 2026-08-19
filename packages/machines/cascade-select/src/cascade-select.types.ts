@@ -1,9 +1,9 @@
-import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -166,12 +166,16 @@ type PropsWithDefault = "collection" | "closeOnSelect" | "loopFocus" | "highligh
 
 export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
-  props: RequiredBy<CascadeSelectProps<T>, PropsWithDefault>
+  props: CascadeSelectProps<T>
+  defaultPropKey: PropsWithDefault
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     value: string[][]
     highlightedValue: string[]
     currentPlacement: Placement | undefined
-    positioned: boolean
     fieldsetDisabled: boolean
     graceArea: Point[] | null
     valueIndexPath: IndexPath[]
@@ -245,6 +249,75 @@ export interface ItemState<T = TreeNode> {
    * The index of the highlighted child
    */
   highlightedIndex: number
+}
+
+export interface RootState {
+  /**
+   * Whether the cascade-select is open
+   */
+  open: boolean
+  /**
+   * Whether the cascade-select is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the cascade-select is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the cascade-select is invalid
+   */
+  invalid: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the cascade-select is open
+   */
+  open: boolean
+  /**
+   * Whether the cascade-select is focused
+   */
+  focused: boolean
+  /**
+   * Whether the cascade-select is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the cascade-select is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the cascade-select is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the trigger is showing the placeholder (no selected items)
+   */
+  placeholderShown: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+}
+
+export interface ContentState {
+  /**
+   * Whether the cascade-select is open
+   */
+  open: boolean
+  /**
+   * Whether the cascade-select is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the cascade-select has nested layered elements within it
+   */
+  hasNested: boolean
 }
 
 export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode> {
@@ -333,13 +406,25 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   getItemState(props: ItemProps<V>): ItemState<V>
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState(): RootState
   getRootProps(): T["element"]
   getLabelProps(): T["element"]
   getControlProps(): T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState(): TriggerState
   getTriggerProps(): T["element"]
   getIndicatorProps(): T["element"]
   getClearTriggerProps(): T["element"]
   getPositionerProps(): T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState(): ContentState
   getContentProps(): T["element"]
   getListProps(props: ItemProps<V>): T["element"]
   getItemProps(props: ItemProps<V>): T["element"]

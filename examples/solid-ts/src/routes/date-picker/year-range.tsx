@@ -6,6 +6,7 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
 import { CalendarDate, type DateValue } from "@internationalized/date"
+import "@styles/date-picker.css"
 
 const format = (date: DateValue) => {
   if (!date) {

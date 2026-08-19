@@ -5,6 +5,7 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 import { createMemo, createUniqueId, For } from "solid-js"
+import "@styles/listbox.css"
 
 interface Item {
   label: string
@@ -30,16 +31,18 @@ export default function Page() {
       <main class="listbox">
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>Label {api().highlightedValue}</label>
-          <ul {...api().getContentProps()}>
-            <For each={selectData}>
-              {(item) => (
-                <li {...api().getItemProps({ item })}>
-                  <span {...api().getItemTextProps({ item })}>{item.label}</span>
-                  <span {...api().getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              )}
-            </For>
-          </ul>
+          <div {...api().getContentProps()}>
+            <ul {...api().getListProps()}>
+              <For each={selectData}>
+                {(item) => (
+                  <li {...api().getItemProps({ item })}>
+                    <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
         </div>
       </main>
 

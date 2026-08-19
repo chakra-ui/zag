@@ -5,6 +5,7 @@ import { parts } from "./select.anatomy"
 // ID generators — kept for ARIA attributes in connect
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
+export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
 export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `${ctx.id}:trigger`
 export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `${ctx.id}:clear-trigger`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
@@ -20,6 +21,7 @@ export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
 // Element lookups — use querySelector with merged data attributes
 export const getHiddenSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getHiddenSelectId(ctx))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
+export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
 export const getClearTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.clearTrigger))

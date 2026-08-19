@@ -2,6 +2,7 @@
 import * as tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed } from "vue"
+import "@styles/tooltip.css"
 
 const service = useMachine(tooltip.machine, {
   id: useId(),

@@ -4,7 +4,7 @@ import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/vue"
 import Presence from "~/components/Presence.vue"
 import { computed } from "vue"
 
-import styles from "../../../../shared/styles/drawer-indent-effect.module.css"
+import styles from "@styles/drawer-indent-effect.module.css"
 
 const stack = drawer.createStack()
 const snapshot = useSyncExternalStore(stack.subscribe, stack.getSnapshot)
@@ -42,9 +42,7 @@ const stackApi = computed(() => drawer.connectStack(snapshot.value, normalizePro
           </div>
           <div :class="styles.contentInner">
             <h2 v-bind="api.getTitleProps()" :class="styles.title">Notifications</h2>
-            <p v-bind="api.getDescriptionProps()" :class="styles.description">
-              You are all caught up. Good job!
-            </p>
+            <p v-bind="api.getDescriptionProps()" :class="styles.description">You are all caught up. Good job!</p>
             <div :class="styles.actions">
               <button v-bind="api.getCloseTriggerProps()" :class="styles.close">Close</button>
             </div>

@@ -1,9 +1,13 @@
 import { DateFormatter, toCalendarDateTime, type Calendar } from "@internationalized/date"
 import type { PropFn } from "@zag-js/core"
-import { constrainValue, getTodayDate } from "@zag-js/date-utils"
+import { constrainSegments, getTodayDate } from "@zag-js/date-utils"
 import type { DateGranularity } from "@zag-js/date-utils"
 import type { DateInputSchema, DateValue } from "../date-input.types"
 import { needsTimeGranularity } from "./segments"
+
+export function toFormatterDate(date: DateValue, formatter: DateFormatter): Date {
+  return date.toDate(formatter.resolvedOptions().timeZone)
+}
 
 export function getValueAsString(value: DateValue[], prop: PropFn<DateInputSchema>) {
   return value.map((date) => {
@@ -17,7 +21,7 @@ export function getValueAsString(value: DateValue[], prop: PropFn<DateInputSchem
 }
 
 export function constrainValues(values: DateValue[] | undefined, min?: DateValue, max?: DateValue) {
-  return values?.map((date) => constrainValue(date, min, max))
+  return values?.map((date) => constrainSegments(date, min, max))
 }
 
 export function resolveHourCycleProp(hourCycle?: 12 | 24): "h12" | "h23" | undefined {
@@ -46,7 +50,7 @@ export function resolvePlaceholderValue(
     value?.[0] ||
     defaultValue?.[0] ||
     getTodayDate(timeZone, calendar)
-  placeholder = constrainValue(placeholder, options.min, options.max)
+  placeholder = constrainSegments(placeholder, options.min, options.max)
   if (needsTimeGranularity(granularity) && !("hour" in placeholder)) {
     placeholder = toCalendarDateTime(placeholder)
   }
@@ -54,10 +58,10 @@ export function resolvePlaceholderValue(
 }
 
 export function createFormatFn(formatter: DateFormatter) {
-  return (date: DateValue, { timeZone }: { timeZone: string }) => {
-    const jsd = date.toDate(timeZone)
+  return (date: DateValue): string => {
     const isBC = date.calendar?.identifier === "gregory" && date.era === "BC"
     if (isBC) {
+      const jsd = date.toDate("UTC")
       const prolYear = jsd.getUTCFullYear()
       const safeDate = new Date(Date.UTC(2000, jsd.getUTCMonth(), jsd.getUTCDate()))
       return formatter
@@ -65,6 +69,6 @@ export function createFormatFn(formatter: DateFormatter) {
         .map((p) => (p.type === "year" ? String(prolYear) : p.value))
         .join("")
     }
-    return formatter.format(jsd)
+    return formatter.format(toFormatterDate(date, formatter))
   }
 }

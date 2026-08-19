@@ -2,7 +2,11 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId, createSignal } from "solid-js"
 import { Portal } from "solid-js/web"
-import styles from "@zag-js/shared/src/style.css?inline"
+import keyframes from "@styles/keyframes.css?inline"
+import dialogStyles from "@styles/dialog.css?inline"
+import "@styles/dialog.css"
+
+const styles = keyframes + dialogStyles
 
 export default function Page() {
   let mountRef!: HTMLElement

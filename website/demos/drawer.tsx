@@ -11,6 +11,7 @@ export function Drawer(props: DrawerProps) {
   const service = useMachine(drawer.machine, {
     id: useId(),
     ...props,
+    snapPoints: [1],
     defaultSnapPoint: 1,
   })
 

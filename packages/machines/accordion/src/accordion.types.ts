@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -65,13 +65,20 @@ export interface AccordionProps extends DirectionProperty, CommonProperties {
    *  @default "vertical"
    */
   orientation?: "horizontal" | "vertical" | undefined
+  /**
+   * Whether to loop focus back to the first/last trigger when navigating
+   * past the end/start with the arrow keys.
+   * @default true
+   */
+  loopFocus?: boolean | undefined
 }
 
-type PropsWithDefault = "multiple" | "collapsible" | "orientation"
+type PropsWithDefault = "multiple" | "collapsible" | "orientation" | "loopFocus"
 
 export type AccordionSchema = {
   state: "idle" | "focused"
-  props: RequiredBy<AccordionProps, PropsWithDefault>
+  props: AccordionProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     focusedValue: string | null
@@ -139,6 +146,11 @@ export interface AccordionApi<T extends PropTypes = PropTypes> {
 
   getRootProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
+  /**
+   * Returns props for the item heading wrapper around the trigger.
+   * Render this as a heading element (e.g. `h3`) per the WAI-ARIA accordion pattern.
+   */
+  getItemHeaderProps: (props: ItemProps) => T["element"]
   getItemContentProps: (props: ItemProps) => T["element"]
   getItemTriggerProps: (props: ItemProps) => T["button"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]

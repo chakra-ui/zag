@@ -7,6 +7,7 @@ import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterServi
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
 import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
+import { resolvePanelSizes } from "./utils/size"
 
 export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>): SplitterApi<T> {
   const { state, send, prop, computed, context, scope } = service
@@ -16,25 +17,66 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
   const registry = prop("registry")
 
   const orientation = prop("orientation")
+  const rawPanels = prop("panels")
+  const panels = context.get("panels")
+
+  const getResolvedSizes = () => {
+    const sizes = context.get("size")
+    if (sizes.length > 0) return sizes
+    return resolvePanelSizes({
+      sizes: prop("size") ?? prop("defaultSize"),
+      panels: rawPanels,
+      rootEl: null,
+      orientation,
+    })
+  }
 
   const getPanelStyle = (id: string) => {
-    const panels = prop("panels")
-    const panelIndex = panels.findIndex((panel) => panel.id === id)
-    const defaultSize = context.initial("size")[panelIndex]
+    const panelIndex = rawPanels.findIndex((panel) => panel.id === id)
+    const size = prop("size")?.[panelIndex]
+    const defaultSize = prop("defaultSize")?.[panelIndex]
     const dragState = context.get("dragState")
+    const resolvedSizes = context.get("size")
+    const panelData = panels[panelIndex]
+    const panelSize = resolvedSizes[panelIndex]
+    const collapsed =
+      !!panelData?.collapsible && panelSize != null && fuzzyNumbersEqual(panelSize, panelData.collapsedSize ?? 0)
+
     return getPanelFlexBoxStyle({
+      size,
       defaultSize,
       dragState,
-      sizes: context.get("size"),
-      panels: panels,
+      resolvedSizes,
+      panels: rawPanels,
       panelIndex,
+      horizontal,
+      collapsed,
     })
+  }
+
+  const resolveResizeTriggerId = (id: string) => {
+    const [beforeId, afterId] = id.split(":")
+    if (beforeId && afterId) return id
+
+    if (beforeId) {
+      const index = rawPanels.findIndex((panel) => panel.id === beforeId)
+      const nextPanel = rawPanels[index + 1]
+      return nextPanel ? `${beforeId}:${nextPanel.id}` : id
+    }
+
+    if (afterId) {
+      const index = rawPanels.findIndex((panel) => panel.id === afterId)
+      const prevPanel = rawPanels[index - 1]
+      return prevPanel ? `${prevPanel.id}:${afterId}` : id
+    }
+
+    return id
   }
 
   const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
     const { id, disabled } = props
     const dragging = context.get("dragState")?.resizeTriggerId === id
-    const focused = dragging || context.get("keyboardState")?.resizeTriggerId === id
+    const focused = dragging || (state.matches("focused") && context.get("keyboardState")?.resizeTriggerId === id)
     return {
       dragging,
       focused,
@@ -46,13 +88,13 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     dragging,
     orientation,
     getPanels() {
-      return prop("panels")
+      return rawPanels
     },
     getPanelById(id) {
-      return getPanelById(prop("panels"), id)
+      return getPanelById(rawPanels, id)
     },
     getItems() {
-      return prop("panels").flatMap((panel, index, arr) => {
+      return rawPanels.flatMap((panel, index, arr) => {
         const nextPanel = arr[index + 1]
         if (panel && nextPanel) {
           return [
@@ -64,13 +106,13 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       })
     },
     getSizes() {
-      return context.get("size")
+      return getResolvedSizes()
     },
     setSizes(size) {
       send({ type: "SIZE.SET", size })
     },
     resetSizes() {
-      send({ type: "SIZE.SET", size: context.initial("size") })
+      send({ type: "SIZE.RESET" })
     },
     collapsePanel(id) {
       send({ type: "PANEL.COLLAPSE", id })
@@ -82,31 +124,31 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       send({ type: "PANEL.RESIZE", id, size: unsafePanelSize })
     },
     getPanelSize(id) {
-      const panels = prop("panels")
-      const size = context.get("size")
+      const panels = context.get("panels")
+      const size = getResolvedSizes()
       const panelData = getPanelById(panels, id)
 
       const { panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize != null, () => `Panel size not found for panel "${panelData.id}"`)
 
       return panelSize
     },
     isPanelCollapsed(id) {
-      const panels = prop("panels")
-      const size = context.get("size")
+      const panels = context.get("panels")
+      const size = getResolvedSizes()
       const panelData = getPanelById(panels, id)
 
       const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize != null, () => `Panel size not found for panel "${panelData.id}"`)
       return collapsible === true && fuzzyNumbersEqual(panelSize, collapsedSize)
     },
     isPanelExpanded(id) {
-      const panels = prop("panels")
-      const size = context.get("size")
+      const panels = context.get("panels")
+      const size = getResolvedSizes()
       const panelData = getPanelById(panels, id)
 
       const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize != null, () => `Panel size not found for panel "${panelData.id}"`)
 
       return !collapsible || fuzzyCompareNumbers(panelSize, collapsedSize) > 0
     },
@@ -160,7 +202,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getResizeTriggerProps(props) {
       const { id } = props
       const triggerState = getResizeTriggerState(props)
-      const aria = getAriaValue(context.get("size"), prop("panels"), id)
+      const resolvedId = resolveResizeTriggerId(id)
+      const aria = getAriaValue(getResolvedSizes(), panels, resolvedId)
 
       return normalize.element({
         ...parts.resizeTrigger.attrs(scope.id),
@@ -174,7 +217,10 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         "aria-valuemax": aria.valueMax,
         "data-orientation": orientation,
         "aria-orientation": orientation,
-        "aria-controls": `${dom.getPanelId(scope, aria.beforeId)} ${dom.getPanelId(scope, aria.afterId)}`,
+        "aria-controls":
+          aria.beforeId && aria.afterId
+            ? `${dom.getPanelId(scope, aria.beforeId)} ${dom.getPanelId(scope, aria.afterId)}`
+            : undefined,
         "data-focus": dataAttr(triggerState.focused),
         "data-dragging": dataAttr(triggerState.dragging),
         "data-disabled": dataAttr(triggerState.disabled),
@@ -197,6 +243,10 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
             event.preventDefault()
             return
           }
+
+          // Safari doesn't move focus to non-form elements on pointer down,
+          // so focus explicitly to enable keyboard resizing after clicking.
+          event.currentTarget.focus({ preventScroll: true })
 
           // If registry is enabled, it handles pointer events
           if (registry) {

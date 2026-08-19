@@ -6,7 +6,7 @@ import { createPortal } from "react-dom"
 
 export interface PortalProps {
   disabled?: boolean | undefined
-  container?: RefObject<HTMLElement> | undefined
+  container?: RefObject<HTMLElement | null> | undefined
   getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 

@@ -6,6 +6,7 @@
   import * as popover from "@zag-js/popover"
   import { popoverControls } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import "@styles/popover.css"
 
   const controls = useControls(popoverControls)
 
@@ -26,7 +27,7 @@
 
     <div {...api.getAnchorProps()}>anchor</div>
 
-    <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()}>
+    <div use:portal {...api.getPositionerProps()}>
       <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()}>
         <div {...api.getArrowProps()}>
           <div {...api.getArrowTipProps()}></div>

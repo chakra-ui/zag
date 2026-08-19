@@ -1,8 +1,8 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
 
 /* -----------------------------------------------------------------------------
@@ -86,6 +86,7 @@ export type ElementIds = Partial<{
   control: string
   input: string
   content: string
+  list: string
   trigger: string
   clearTrigger: string
   item: (id: string, index?: number) => string
@@ -270,11 +271,6 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * Whether the combobox is a composed with other composite widgets like tabs
-   * @default true
-   */
-  composite?: boolean | undefined
-  /**
    * Whether to disable registering this a dismissable layer
    */
   disableLayer?: boolean | undefined
@@ -282,13 +278,24 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Function to navigate to the selected item
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
+  /**
+   * The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the
+   * `role` of the content element, the trigger's keyboard handling, and the
+   * label's click target.
+   * - `"listbox"` (default) — input-driven combobox; popup is a passive listbox.
+   * - `"dialog"` — popover-style combobox; popup is announced as a dialog,
+   *   trigger is keyboard-active, label-click focuses the trigger.
+   *
+   * @default "listbox"
+   */
+  popupType?: "listbox" | "dialog" | undefined
 }
 
 type PropsWithDefault =
   | "openOnChange"
   | "openOnKeyPress"
-  | "composite"
   | "loopFocus"
+  | "popupType"
   | "positioning"
   | "openOnClick"
   | "openOnChange"
@@ -302,17 +309,21 @@ type PropsWithDefault =
   | "defaultInputValue"
 
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
-  props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
+  props: ComboboxProps<T>
+  defaultPropKey: PropsWithDefault
   state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     value: string[]
     inputValue: string
     highlightedValue: string | null
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
-    positioned: boolean
   }
   refs: {
     liveRegion: LiveRegion | null
@@ -376,6 +387,67 @@ export interface ItemState {
    * Whether the item is highlighted via pointer or keyboard navigation
    */
   highlighted: boolean
+}
+
+export interface RootState {
+  /**
+   * Whether the combobox is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the combobox is read-only
+   */
+  readOnly: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the combobox is open
+   */
+  open: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the combobox is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the combobox is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the trigger is focusable
+   */
+  focusable: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the combobox is open
+   */
+  open: boolean
+  /**
+   * Whether the combobox is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the combobox has nested layered elements within it
+   */
+  hasNested: boolean
+  /**
+   * The current placement of the content relative to the trigger
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * Whether the combobox has no items to show
+   */
+  empty: boolean
 }
 
 export interface ItemGroupProps {
@@ -481,12 +553,24 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   disabled: boolean
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getClearTriggerProps: () => T["button"]
   getListProps: () => T["element"]

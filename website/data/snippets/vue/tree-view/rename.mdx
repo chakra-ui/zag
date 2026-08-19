@@ -31,7 +31,10 @@
     <div v-bind="api.getBranchProps(nodeProps)">
       <div v-bind="api.getBranchControlProps(nodeProps)">
         <FolderIcon />
-        <span v-bind="api.getBranchTextProps(nodeProps)" :style="{ display: nodeState.renaming ? 'none' : 'inline' }">
+        <span
+          v-bind="api.getBranchTextProps(nodeProps)"
+          :style="{ display: nodeState.renaming ? 'none' : 'inline' }"
+        >
           {{ node.name }}
         </span>
         <input v-bind="api.getNodeRenameInputProps(nodeProps)" />
@@ -54,7 +57,10 @@
   <template v-else>
     <div v-bind="api.getItemProps(nodeProps)">
       <FileIcon />
-      <span v-bind="api.getItemTextProps(nodeProps)" :style="{ display: nodeState.renaming ? 'none' : 'inline' }">
+      <span
+        v-bind="api.getItemTextProps(nodeProps)"
+        :style="{ display: nodeState.renaming ? 'none' : 'inline' }"
+      >
         {{ node.name }}
       </span>
       <input v-bind="api.getNodeRenameInputProps(nodeProps)" />

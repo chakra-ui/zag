@@ -4,7 +4,8 @@ This guide explains the file structure and conventions used in Zag.js machine pa
 
 ## Overview
 
-Each machine package in Zag.js follows a consistent structure that separates concerns and makes the codebase maintainable. Understanding this structure is crucial for creating new components or modifying existing ones.
+Each machine package in Zag.js follows a consistent structure that separates concerns and makes the codebase
+maintainable. Understanding this structure is crucial for creating new components or modifying existing ones.
 
 ## Machine Package Structure
 
@@ -33,6 +34,7 @@ packages/machines/{component}/
 Defines the component's parts (elements) using the anatomy API.
 
 **Purpose:**
+
 - Declares all DOM elements that make up the component
 - Generates consistent data attributes for styling and testing
 - Creates type-safe part references
@@ -56,6 +58,7 @@ export const parts = anatomy.build()
 ```
 
 **Key Points:**
+
 - Component name should match the package name
 - Part names should be descriptive and semantic
 - Keep parts sorted alphabetically for consistency
@@ -73,6 +76,7 @@ parts.content.attrs
 Contains DOM queries and element getters.
 
 **Purpose:**
+
 - Centralize all DOM-related operations
 - Generate consistent element IDs
 - Provide type-safe element queries
@@ -84,21 +88,16 @@ import type { Scope } from "@zag-js/core"
 import { queryAll } from "@zag-js/dom-query"
 
 // ID Generators
-export const getContentId = (ctx: Scope) =>
-  ctx.ids?.content ?? `drawer:${ctx.id}:content`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `drawer:${ctx.id}:content`
 
-export const getTitleId = (ctx: Scope) =>
-  ctx.ids?.title ?? `drawer:${ctx.id}:title`
+export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `drawer:${ctx.id}:title`
 
-export const getTriggerId = (ctx: Scope) =>
-  ctx.ids?.trigger ?? `drawer:${ctx.id}:trigger`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `drawer:${ctx.id}:trigger`
 
 // Element Getters
-export const getContentEl = (ctx: Scope) =>
-  ctx.getById(getContentId(ctx))
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
 
-export const getTriggerEl = (ctx: Scope) =>
-  ctx.getById(getTriggerId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 
 // Specialized Queries
 export const getScrollEls = (scope: Scope) => {
@@ -121,19 +120,20 @@ export const getScrollEls = (scope: Scope) => {
 ```
 
 **Naming Conventions:**
+
 - ID generators: `get{Part}Id(ctx: Scope)`
 - Element getters: `get{Part}El(ctx: Scope)`
 - Custom queries: Descriptive function names
 
 **ID Format:**
+
 ```
 {component}:{instance-id}:{part}
 ```
 
 Example: `drawer:my-sheet-1:content`
 
-**Custom IDs:**
-Users can override IDs via the `ids` prop:
+**Custom IDs:** Users can override IDs via the `ids` prop:
 
 ```typescript
 useMachine(drawer.machine, {
@@ -149,6 +149,7 @@ useMachine(drawer.machine, {
 Defines all TypeScript types for the component.
 
 **Purpose:**
+
 - Type-safe props and API
 - Document prop requirements and defaults
 - Define internal types (schema, service, etc.)
@@ -177,9 +178,7 @@ export type ElementIds = Partial<{
 }>
 
 // Component props
-export interface DrawerProps
-  extends DirectionProperty,
-          CommonProperties {
+export interface DrawerProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the drawer. Useful for composition.
    */
@@ -208,10 +207,7 @@ export interface DrawerProps
 }
 
 // Props with defaults (used in schema)
-type PropsWithDefault =
-  | "trapFocus"
-  | "modal"
-  | "closeOnEscape"
+type PropsWithDefault = "trapFocus" | "modal" | "closeOnEscape"
 
 // Machine schema
 export interface DrawerSchema {
@@ -283,6 +279,7 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
 Contains the state machine definition.
 
 **Purpose:**
+
 - Define component behavior and state transitions
 - Implement guards, actions, and effects
 - Handle all business logic
@@ -342,6 +339,7 @@ export const machine = createMachine<{Component}Schema>({
 Connects the machine to framework-specific rendering.
 
 **Purpose:**
+
 - Generate framework-compatible element props
 - Expose public API methods
 - Handle DOM events and interactions
@@ -409,11 +407,13 @@ export function connect<T extends PropTypes>(
 **Key Points:**
 
 1. **Destructure Service:**
+
    ```typescript
    const { state, send, context, scope, prop } = service
    ```
 
 2. **Derive State Early:**
+
    ```typescript
    const open = state.hasTag("open")
    const disabled = prop("disabled")
@@ -426,9 +426,10 @@ export function connect<T extends PropTypes>(
    - `normalize.label()` for label elements
 
 4. **Include Anatomy Parts:**
+
    ```typescript
    return normalize.element({
-     ...parts.content.attrs,  // Always spread first
+     ...parts.content.attrs, // Always spread first
      // ... other props
    })
    ```
@@ -451,6 +452,7 @@ export type * from "./drawer.types"
 ```
 
 **Export Conventions:**
+
 - Export `anatomy`, `connect`, `machine` as named exports
 - Export `dom` utilities as namespace (`* as dom`)
 - Export types with `type *` (TypeScript 4.5+)
@@ -528,6 +530,7 @@ export class DragManager {
 ```
 
 **Key Points:**
+
 - Use workspace protocol for internal dependencies
 - Mark as side-effect free: `"sideEffects": false`
 - Include relevant keywords for discoverability
@@ -588,11 +591,7 @@ Start with `{component}.anatomy.ts`:
 ```typescript
 import { createAnatomy } from "@zag-js/anatomy"
 
-export const anatomy = createAnatomy("my-component").parts(
-  "root",
-  "trigger",
-  "content",
-)
+export const anatomy = createAnatomy("my-component").parts("root", "trigger", "content")
 
 export const parts = anatomy.build()
 ```
@@ -600,6 +599,7 @@ export const parts = anatomy.build()
 ### 3. Define Types
 
 Create `{component}.types.ts` with:
+
 - Props interface
 - Schema interface
 - API interface
@@ -608,6 +608,7 @@ Create `{component}.types.ts` with:
 ### 4. Create DOM Utilities
 
 In `{component}.dom.ts`, add:
+
 - ID generators for all parts
 - Element getters
 - Specialized queries if needed
@@ -615,6 +616,7 @@ In `{component}.dom.ts`, add:
 ### 5. Build the Machine
 
 In `{component}.machine.ts`:
+
 - Define props with defaults
 - Set up context (bindable state)
 - Create states and transitions
@@ -623,6 +625,7 @@ In `{component}.machine.ts`:
 ### 6. Create Connect Function
 
 In `{component}.connect.ts`:
+
 - Derive state from machine
 - Implement public methods
 - Create prop getters with proper attributes
@@ -634,6 +637,7 @@ Create E2E tests in `e2e/{component}.e2e.ts`
 ### 8. Create Examples
 
 Add examples for all frameworks:
+
 - `examples/next-ts/pages/{component}.tsx`
 - `examples/nuxt-ts/app/pages/{component}.vue`
 - `examples/solid-ts/src/routes/{component}.tsx`
@@ -738,6 +742,7 @@ Use TypeScript for all files. No implicit `any`.
 ### 3. Document Props
 
 Every prop should have JSDoc comments with:
+
 - Description
 - `@default` value if applicable
 - Usage notes
@@ -749,6 +754,7 @@ Always include proper ARIA attributes and keyboard interactions.
 ### 5. Test Comprehensively
 
 Write E2E tests covering:
+
 - Accessibility
 - User interactions
 - Edge cases
@@ -775,6 +781,7 @@ Zag.js components follow a consistent, well-organized structure:
 - **index.ts**: Public exports
 
 This structure ensures:
+
 - Clear separation of concerns
 - Easy navigation and maintenance
 - Consistent patterns across components

@@ -3,6 +3,7 @@ import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { MoveHorizontalIcon } from "lucide-vue-next"
+import "@styles/number-input.css"
 
 const controls = useControls(numberInputControls)
 

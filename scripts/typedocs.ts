@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs"
 import { join } from "path"
-import { ModuleResolutionKind, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
+import { ModuleResolutionKind, Node, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
 import { getMachinePackages } from "./get-packages"
 import { pascalCase } from "scule"
 
@@ -32,7 +32,21 @@ function getPropTypes(sourceFile: SourceFile | undefined, typeName: string, type
 
   contextType?.getProperties().forEach((property) => {
     const name = property.getName()
-    const type = property.getValueDeclaration()?.getType()?.getText()
+    const declaration = property.getValueDeclaration()
+
+    // Prefer the declared annotation: ts-morph + TypeScript's checker can
+    // collapse class-union aliases (e.g. `DateValue = CalendarDate | ...`)
+    // down to `any` when computing the apparent property type. Reading the
+    // annotation node directly preserves the authored signature.
+    let type: string | undefined
+    if (declaration && Node.isPropertySignature(declaration)) {
+      const annotation = declaration.getTypeNode()?.getText()
+      if (annotation) {
+        type =
+          declaration.hasQuestionToken() && !/\bundefined\b/.test(annotation) ? `${annotation} | undefined` : annotation
+      }
+    }
+    type ??= declaration?.getType()?.getText()
 
     const defaultValue = getDefaultValue(property)
     const description = getDescription(property, typeChecker)

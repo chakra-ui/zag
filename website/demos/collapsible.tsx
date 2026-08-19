@@ -26,7 +26,7 @@ export function Collapsible(props: CollapsibleProps) {
           tempor incididunt ut labore et dolore magna sfsd. Ut enim ad minimdfd
           v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
           sunt in culpa qui officia deserunt mollit anim id est laborum.{" "}
-          <a href="#">Some Link</a>
+          <a href="https://zagjs.com">Some Link</a>
         </p>
       </div>
     </div>

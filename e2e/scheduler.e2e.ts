@@ -41,14 +41,12 @@ test.describe("scheduler", () => {
   })
 
   test("overlapping events each take ~50% width", async () => {
-    const event1 = I.getEvent("1")
-    const event4 = I.getEvent("4")
-    const box1 = await event1.boundingBox()
-    const box4 = await event4.boundingBox()
-    const gridBox = await I.grid.boundingBox()
-    if (!box1 || !box4 || !gridBox) throw new Error("Could not get bounding boxes")
-    expect(box1.width).toBeCloseTo(gridBox.width / 2, -1)
-    expect(box4.width).toBeCloseTo(gridBox.width / 2, -1)
+    const box1 = await I.getEvent("1").boundingBox()
+    const box4 = await I.getEvent("4").boundingBox()
+    const columnBox = await I.getDayColumnOf("1").boundingBox()
+    if (!box1 || !box4 || !columnBox) throw new Error("Could not get bounding boxes")
+    expect(box1.width).toBeCloseTo(columnBox.width / 2, -1)
+    expect(box4.width).toBeCloseTo(columnBox.width / 2, -1)
   })
 
   test("[pointer] dragging an event fires onEventDrop", async () => {
@@ -71,12 +69,10 @@ test.describe("scheduler", () => {
   })
 
   test("[keyboard] pressing Escape during drag cancels the drag", async () => {
-    const event1 = I.getEvent("1")
-    const box = await event1.boundingBox()
-    if (!box) throw new Error("Event 1 not found")
-    await I.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    const { x, y } = await I.getEventGrabPoint("1")
+    await I.page.mouse.move(x, y)
     await I.page.mouse.down()
-    await I.page.mouse.move(box.x + box.width / 2, box.y + 120, { steps: 5 })
+    await I.page.mouse.move(x, y + 120, { steps: 5 })
     await I.seeEventDragging("1")
     await I.page.keyboard.press("Escape")
     await I.page.mouse.up()

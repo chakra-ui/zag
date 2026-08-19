@@ -1,0 +1,90 @@
+.main {
+  width: 100%;
+  max-width: 540px;
+}
+
+.root {
+  --dnd-border: #d4d4d8;
+  --dnd-item-bg: #ffffff;
+  --dnd-indicator: #3b82f6;
+  --dnd-drop-on: #3b82f6;
+  --dnd-handle: #a1a1aa;
+
+  position: relative;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--column-count, 3), 1fr);
+  gap: 8px;
+}
+
+.item {
+  position: relative;
+}
+
+.draggable {
+  cursor: grab;
+  padding: 16px 12px;
+  border-radius: 8px;
+  background: var(--item-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  min-height: 54px;
+
+  &[data-dragging] {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  &[data-selected-dragging] {
+    opacity: 0.5;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.placeholder {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  border: 2px solid var(--dnd-indicator, #3b82f6);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dnd-indicator, #3b82f6) 12%, white);
+  box-sizing: border-box;
+}
+
+.dragHandle {
+  cursor: grab;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  color: var(--dnd-handle, #a1a1aa);
+
+  &:hover {
+    color: #52525b;
+  }
+}
+
+.dragPreview {
+  display: inline-flex;
+  align-items: center;
+  width: var(--drag-preview-width);
+  height: var(--drag-preview-height);
+  max-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  padding: 16px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--item-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: inherit;
+  white-space: nowrap;
+}

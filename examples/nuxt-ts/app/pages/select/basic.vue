@@ -3,6 +3,7 @@ import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/select.css"
 
 const controls = useControls(selectControls)
 
@@ -42,12 +43,14 @@ const api = computed(() => select.connect(service, normalizeProps))
       </form>
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
-          <ul v-bind="api.getContentProps()">
-            <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-              <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
-              <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
-            </li>
-          </ul>
+          <div v-bind="api.getContentProps()">
+            <div v-bind="api.getListProps()">
+              <div v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+                <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+                <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+              </div>
+            </div>
+          </div>
         </div>
       </Teleport>
     </div>

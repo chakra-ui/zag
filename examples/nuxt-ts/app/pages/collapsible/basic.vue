@@ -3,6 +3,7 @@ import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronDownIcon } from "lucide-vue-next"
+import "@styles/collapsible.css"
 
 const controls = useControls(collapsibleControls)
 

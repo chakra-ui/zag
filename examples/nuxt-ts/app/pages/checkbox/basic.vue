@@ -3,6 +3,7 @@ import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
+import "@styles/checkbox.css"
 
 const controls = useControls(checkboxControls)
 

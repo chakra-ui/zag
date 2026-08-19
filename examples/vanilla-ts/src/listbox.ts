@@ -43,15 +43,15 @@ export class Listbox extends Component<ListboxComponentProps, listbox.Api> {
   }
 
   syncItems = () => {
-    const content = this.rootEl.querySelector<HTMLElement>(".listbox-content")
-    if (!content) return
+    const list = this.rootEl.querySelector<HTMLElement>(".listbox-list")
+    if (!list) return
 
-    const existingItems = Array.from(content.querySelectorAll<HTMLElement>(".listbox-item"))
+    const existingItems = Array.from(list.querySelectorAll<HTMLElement>(".listbox-item"))
 
     // Remove excess items
     while (existingItems.length > listboxData.length) {
       const item = existingItems.pop()
-      if (item) content.removeChild(item)
+      if (item) list.removeChild(item)
     }
 
     // Update or create items
@@ -72,7 +72,7 @@ export class Listbox extends Component<ListboxComponentProps, listbox.Api> {
         indicatorEl.textContent = "✓"
         itemEl.appendChild(indicatorEl)
 
-        content.appendChild(itemEl)
+        list.appendChild(itemEl)
       }
 
       // Always spread props
@@ -99,6 +99,9 @@ export class Listbox extends Component<ListboxComponentProps, listbox.Api> {
 
     const content = this.rootEl.querySelector<HTMLElement>(".listbox-content")
     if (content) this.spreadProps(content, this.api.getContentProps())
+
+    const list = this.rootEl.querySelector<HTMLElement>(".listbox-list")
+    if (list) this.spreadProps(list, this.api.getListProps())
 
     // Sync items after all other props are set
     this.syncItems()

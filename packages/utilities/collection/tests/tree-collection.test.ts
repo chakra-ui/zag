@@ -212,6 +212,18 @@ describe("tree / traversal", () => {
     `)
   })
 
+  it("contains - matches descendants and self", () => {
+    expect(tree.contains([0], [0, 0])).toBe(true)
+    expect(tree.contains([0, 3], [0, 3, 0])).toBe(true)
+    expect(tree.contains([0, 3], [0, 3])).toBe(true)
+  })
+
+  it("contains - rejects ancestors and unrelated paths", () => {
+    expect(tree.contains([0, 3], [0])).toBe(false)
+    expect(tree.contains([0, 1], [0])).toBe(false)
+    expect(tree.contains([0], [1])).toBe(false)
+  })
+
   it("index path and value path", () => {
     expect(tree.getIndexPath("child1-2")).toMatchInlineSnapshot(`
       [

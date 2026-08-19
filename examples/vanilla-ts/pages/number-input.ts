@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/number-input.css"
 
 import { nanoid } from "nanoid"
 import { NumberInput } from "../src/number-input"

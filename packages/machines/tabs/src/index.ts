@@ -9,6 +9,7 @@ export type {
   TabsService as Service,
   ElementIds,
   ContentProps,
+  ContentState,
   IntlTranslations,
   FocusChangeDetails,
   NavigateDetails,

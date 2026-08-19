@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/tree-view.css"
 
 import { nanoid } from "nanoid"
 import { TreeView } from "../src/tree-view"

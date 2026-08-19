@@ -35,7 +35,8 @@ Install the tags input package:
 To set up the tags input correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="tags-input" />
 
@@ -272,7 +273,7 @@ api.focus()
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Focused state
 
@@ -280,15 +281,15 @@ The input is focused when the user clicks on it. In this focused state, the root
 and label receive `data-focus`.
 
 ```css
-[data-part="root"][data-focus] {
+[data-tags-input-root][data-focus] {
   /* styles for root focus state */
 }
 
-[data-part="label"][data-focus] {
+[data-tags-input-label][data-focus] {
   /* styles for label focus state */
 }
 
-[data-part="input"]:focus {
+[data-tags-input-input]:focus {
   /* styles for input focus state */
 }
 ```
@@ -300,15 +301,15 @@ context, the `data-invalid` attribute is set on the root, input, control, and
 label.
 
 ```css
-[data-part="root"][data-invalid] {
+[data-tags-input-root][data-invalid] {
   /* styles for invalid state for root */
 }
 
-[data-part="label"][data-invalid] {
+[data-tags-input-label][data-invalid] {
   /*  styles for invalid state for label */
 }
 
-[data-part="input"][data-invalid] {
+[data-tags-input-input][data-invalid] {
   /*  styles for invalid state for input */
 }
 ```
@@ -320,19 +321,19 @@ context, the `data-disabled` attribute is set on the root, input, control and
 label.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-tags-input-root][data-disabled] {
   /* styles for disabled state for root */
 }
 
-[data-part="label"][data-disabled] {
+[data-tags-input-label][data-disabled] {
   /* styles for disabled state for label */
 }
 
-[data-part="input"][data-disabled] {
+[data-tags-input-input][data-disabled] {
   /* styles for disabled state for input */
 }
 
-[data-part="control"][data-disabled] {
+[data-tags-input-control][data-disabled] {
   /* styles for disabled state for control */
 }
 ```
@@ -340,7 +341,7 @@ label.
 When a tag is disabled, the `data-disabled` attribute is set on the tag.
 
 ```css
-[data-part="item-preview"][data-disabled] {
+[data-tags-input-item-preview][data-disabled] {
   /* styles for disabled tag  */
 }
 ```
@@ -351,7 +352,7 @@ When a tag is highlighted via the keyboard navigation or pointer hover, a
 `data-highlighted` attribute is set on the tag.
 
 ```css
-[data-part="item-preview"][data-highlighted] {
+[data-tags-input-item-preview][data-highlighted] {
   /* styles for visual focus */
 }
 ```
@@ -362,19 +363,19 @@ When the tags input is in its readonly state, the `data-readonly` attribute is
 set on the root, label, input and control.
 
 ```css
-[data-part="root"][data-readonly] {
+[data-tags-input-root][data-readonly] {
   /* styles for readonly for root */
 }
 
-[data-part="control"][data-readonly] {
+[data-tags-input-control][data-readonly] {
   /* styles for readonly for control */
 }
 
-[data-part="input"][data-readonly] {
+[data-tags-input-input][data-readonly] {
   /* styles for readonly for input  */
 }
 
-[data-part="label"][data-readonly] {
+[data-tags-input-label][data-readonly] {
   /* styles for readonly for label */
 }
 ```

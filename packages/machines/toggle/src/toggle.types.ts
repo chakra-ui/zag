@@ -23,6 +23,7 @@ export interface ToggleProps {
 export interface ToggleSchema {
   state: "idle"
   props: ToggleProps
+  defaultPropKey: never
   context: {
     pressed: boolean
   }
@@ -35,6 +36,17 @@ export interface ToggleSchema {
 export type ToggleService = Service<ToggleSchema>
 
 export type ToggleMachine = Machine<ToggleSchema>
+
+export interface RootState {
+  /**
+   * Whether the toggle is pressed
+   */
+  pressed: boolean
+  /**
+   * Whether the toggle is disabled
+   */
+  disabled: boolean
+}
 
 export interface ToggleApi<T extends PropTypes = PropTypes> {
   /**
@@ -50,6 +62,16 @@ export interface ToggleApi<T extends PropTypes = PropTypes> {
    */
   setPressed: (pressed: boolean) => void
 
+  /**
+   * Returns the state of the toggle
+   */
+  getRootState: () => RootState
+  /**
+   * Props for the root `button` element.
+   */
   getRootProps: () => T["element"]
+  /**
+   * Props for the optional visual indicator (e.g. icon) element.
+   */
   getIndicatorProps: () => T["element"]
 }

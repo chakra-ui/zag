@@ -32,7 +32,8 @@ Install the slider package:
 
 Check the slider anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="slider" />
 
@@ -262,7 +263,7 @@ track.
 
 ## Styling guide
 
-Each slider part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Focused State
 
@@ -270,23 +271,23 @@ When the slider thumb is focused, the `data-focus` attribute is added to the
 root, control, thumb and label parts.
 
 ```css
-[data-part="root"][data-focus] {
+[data-slider-root][data-focus] {
   /* styles for root focus state */
 }
 
-[data-part="thumb"]:focus {
+[data-slider-thumb]:focus {
   /* styles for thumb focus state */
 }
 
-[data-part="control"][data-focus] {
+[data-slider-control][data-focus] {
   /* styles for control focus state */
 }
 
-[data-part="track"][data-focus] {
+[data-slider-track][data-focus] {
   /* styles for track focus state */
 }
 
-[data-part="range"][data-focus] {
+[data-slider-range][data-focus] {
   /* styles for range focus state */
 }
 ```
@@ -297,27 +298,27 @@ When the slider is disabled, the `data-disabled` attribute is added to the root,
 label, control and thumb.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-slider-root][data-disabled] {
   /* styles for root disabled state */
 }
 
-[data-part="label"][data-disabled] {
+[data-slider-label][data-disabled] {
   /* styles for label disabled state */
 }
 
-[data-part="control"][data-disabled] {
+[data-slider-control][data-disabled] {
   /* styles for control disabled state */
 }
 
-[data-part="value-text"][data-disabled] {
+[data-slider-value-text][data-disabled] {
   /* styles for output disabled state */
 }
 
-[data-part="thumb"][data-disabled] {
+[data-slider-thumb][data-disabled] {
   /* styles for thumb disabled state */
 }
 
-[data-part="range"][data-disabled] {
+[data-slider-range][data-disabled] {
   /* styles for thumb disabled state */
 }
 ```
@@ -328,27 +329,27 @@ When the slider is invalid, the `data-invalid` attribute is added to the root,
 track, range, label, and thumb parts.
 
 ```css
-[data-part="root"][data-invalid] {
+[data-slider-root][data-invalid] {
   /* styles for root invalid state */
 }
 
-[data-part="label"][data-invalid] {
+[data-slider-label][data-invalid] {
   /* styles for label invalid state */
 }
 
-[data-part="control"][data-invalid] {
+[data-slider-control][data-invalid] {
   /* styles for control invalid state */
 }
 
-[data-part="valueText"][data-invalid] {
+[data-slider-value-text][data-invalid] {
   /* styles for output invalid state */
 }
 
-[data-part="thumb"][data-invalid] {
+[data-slider-thumb][data-invalid] {
   /* styles for thumb invalid state */
 }
 
-[data-part="range"][data-invalid] {
+[data-slider-range][data-invalid] {
   /* styles for range invalid state */
 }
 ```
@@ -356,15 +357,15 @@ track, range, label, and thumb parts.
 ### Orientation
 
 ```css
-[data-part="root"][data-orientation="(horizontal|vertical)"] {
+[data-slider-root][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 
-[data-part="thumb"][data-orientation="(horizontal|vertical)"] {
+[data-slider-thumb][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 
-[data-part="track"][data-orientation="(horizontal|vertical)"] {
+[data-slider-track][data-orientation="(horizontal|vertical)"] {
   /* styles for horizontal or vertical  */
 }
 ```
@@ -372,7 +373,7 @@ track, range, label, and thumb parts.
 ### Styling the markers
 
 ```css
-[data-part="marker"][data-state="(at|under|over)-value"] {
+[data-slider-marker][data-state="(at|under|over)-value"] {
   /* styles for when the value exceeds the marker's value */
 }
 ```

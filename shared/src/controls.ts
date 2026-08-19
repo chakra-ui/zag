@@ -13,6 +13,7 @@ export const schedulerControls = defineControls({
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: true },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
@@ -63,6 +64,8 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
+  allowCustomValue: { type: "boolean", defaultValue: false },
+  alwaysSubmitOnEnter: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({
@@ -92,11 +95,30 @@ export const hoverCardControls = defineControls({
   closeDelay: { type: "number", defaultValue: 300 },
 })
 
+export const numberFlowControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  trend: {
+    type: "select",
+    options: ["false", "true", "1", "-1"] as const,
+    defaultValue: "false",
+    transformValue(value) {
+      if (value === "true") return true
+      if (value === "false") return false
+      return Number(value)
+    },
+  },
+  continuous: { type: "boolean", defaultValue: false },
+  respectMotionPreference: { type: "boolean", defaultValue: true },
+  live: { type: "boolean", defaultValue: false },
+  stagger: { type: "string", defaultValue: "25ms" },
+})
+
 export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
+  focusInputOnChange: { type: "boolean", defaultValue: true },
   snapOnStep: { type: "boolean", defaultValue: false },
   step: { type: "number", defaultValue: 1 },
   largeStep: { type: "number" },
@@ -136,7 +158,6 @@ export const pinInputControls = defineControls({
 
 export const popoverControls = defineControls({
   modal: { type: "boolean", defaultValue: false },
-  portalled: { type: "boolean", defaultValue: true },
   autoFocus: { type: "boolean", defaultValue: true },
   closeOnEsc: { type: "boolean", defaultValue: true },
 })
@@ -157,6 +178,7 @@ export const sliderControls = defineControls({
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
   step: { type: "number", defaultValue: 1 },
+  largeStep: { type: "number" },
 })
 
 export const tabsControls = defineControls({
@@ -259,7 +281,7 @@ export const datePickerControls = defineControls({
   openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
 })
@@ -271,13 +293,19 @@ export const dateInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   locale: {
     type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "cs-CZ", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
   granularity: {
     type: "select",
     options: ["day", "hour", "minute", "second"] as const,
     defaultValue: "day",
+  },
+  hourCycle: {
+    type: "select",
+    options: ["12", "24"] as const,
+    defaultValue: "",
+    transformValue: (value) => (value === "" ? undefined : (Number(value) as 12 | 24)),
   },
   placeholderValue: {
     type: "date",
@@ -329,10 +357,18 @@ export const fileUploadControls = defineControls({
 })
 
 export const toggleGroupControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
   rovingFocus: { type: "boolean", defaultValue: true },
+})
+
+export const toolbarControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+  disabled: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: true },
 })
 
 export const progressControls = defineControls({
@@ -366,6 +402,7 @@ export const floatingPanelControls = defineControls({
 })
 
 export const signaturePadControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   "drawing.size": { type: "number", defaultValue: 2 },

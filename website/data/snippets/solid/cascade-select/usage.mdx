@@ -22,7 +22,11 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
   const indexPath = () => props.indexPath ?? []
   const value = () => props.value ?? []
 
-  const nodeProps = () => ({ indexPath: indexPath(), value: value(), item: props.node })
+  const nodeProps = () => ({
+    indexPath: indexPath(),
+    value: value(),
+    item: props.node,
+  })
   const nodeState = () => props.api.getItemState(nodeProps())
   const children = () => collection.getNodeChildren(props.node)
 
@@ -39,7 +43,9 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
             const itemState = () => props.api.getItemState(itemProps())
             return (
               <li {...props.api.getItemProps(itemProps())}>
-                <span {...props.api.getItemTextProps(itemProps())}>{item().label}</span>
+                <span {...props.api.getItemTextProps(itemProps())}>
+                  {item().label}
+                </span>
                 {itemState().hasChildren && <span>›</span>}
                 <span {...props.api.getItemIndicatorProps(itemProps())}>✓</span>
               </li>
@@ -53,7 +59,10 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
             node={nodeState().highlightedChild}
             api={props.api}
             indexPath={[...indexPath(), nodeState().highlightedIndex]}
-            value={[...value(), collection.getNodeValue(nodeState().highlightedChild)]}
+            value={[
+              ...value(),
+              collection.getNodeValue(nodeState().highlightedChild),
+            ]}
           />
         )}
     </>

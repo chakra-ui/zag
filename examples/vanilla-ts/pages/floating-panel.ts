@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/floating-panel.css"
 
 import { nanoid } from "nanoid"
 import { FloatingPanel } from "../src/floating-panel"

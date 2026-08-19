@@ -192,11 +192,7 @@ export const machine = createMachine<ToastSchema>({
           if (!rootEl) return
 
           const syncHeight = () => {
-            const originalHeight = rootEl.style.height
-            rootEl.style.height = "auto"
-            const height = rootEl.getBoundingClientRect().height
-            rootEl.style.height = originalHeight
-
+            const height = measureLayoutHeight(rootEl)
             const item = { id: prop("id"), height }
             setHeight(prop("parent"), item)
           }
@@ -234,10 +230,7 @@ export const machine = createMachine<ToastSchema>({
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
-          const originalHeight = rootEl.style.height
-          rootEl.style.height = "auto"
-          const height = rootEl.getBoundingClientRect().height
-          rootEl.style.height = originalHeight
+          const height = measureLayoutHeight(rootEl)
           context.set("initialHeight", height)
 
           const item = { id: prop("id"), height }
@@ -279,6 +272,16 @@ export const machine = createMachine<ToastSchema>({
     },
   },
 })
+
+function measureLayoutHeight(el: HTMLElement): number {
+  // `offsetHeight` reports the layout height and ignores the `scale` transform applied
+  // to sibling toasts in overlap mode (unlike `getBoundingClientRect().height`).
+  const prevHeight = el.style.height
+  el.style.height = "auto"
+  const height = el.offsetHeight
+  el.style.height = prevHeight
+  return height
+}
 
 function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
   const { id, height } = item

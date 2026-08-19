@@ -1,0 +1,40 @@
+```tsx
+import * as numberFlow from "@zag-js/number-flow"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function NumberFlow() {
+  const service = useMachine(numberFlow.machine, {
+    id: useId(),
+    defaultValue: 1234,
+  })
+
+  const api = numberFlow.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      {api.segments.map((segment) =>
+        segment.kind === "digit" ? (
+          <span key={segment.key} {...api.getDigitProps({ segment })}>
+            <span {...api.getDigitTrackProps({ segment })}>
+              {api.digitCells.map((cell) => (
+                <span
+                  key={cell.index}
+                  {...api.getDigitCellProps({ segment, cell })}
+                >
+                  {cell.glyph}
+                </span>
+              ))}
+            </span>
+          </span>
+        ) : (
+          <span key={segment.key} {...api.getSymbolProps({ segment })}>
+            {segment.value}
+          </span>
+        ),
+      )}
+      <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
+    </div>
+  )
+}
+```

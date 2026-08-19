@@ -5,6 +5,7 @@
   import { tagsInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tagsInput from "@zag-js/tags-input"
+  import "@styles/tags-input.css"
 
   function toDashCase(str: string) {
     return str.replace(/\s+/g, "-").toLowerCase()

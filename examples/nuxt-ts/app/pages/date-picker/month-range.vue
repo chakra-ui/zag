@@ -4,6 +4,7 @@ import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed } from "vue"
 import { CalendarDate, type DateValue } from "@internationalized/date"
+import "@styles/date-picker.css"
 
 const format = (date: DateValue) => {
   if (!date) return ""

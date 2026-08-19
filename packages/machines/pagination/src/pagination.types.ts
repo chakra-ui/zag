@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -149,7 +149,8 @@ type ComputedContext = Readonly<{
 
 export interface PaginationSchema {
   state: "idle"
-  props: RequiredBy<PaginationProps, PropsWithDefault>
+  props: PaginationProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   event: EventObject
@@ -169,6 +170,17 @@ export type PaginationMachine = Machine<PaginationSchema>
 export interface ItemProps {
   type: "page"
   value: number
+}
+
+export interface ItemState {
+  /**
+   * The page number of the item
+   */
+  value: number
+  /**
+   * Whether the item is the current page
+   */
+  current: boolean
 }
 
 export interface EllipsisProps {
@@ -246,6 +258,10 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
 
   getRootProps: () => T["element"]
   getEllipsisProps: (props: EllipsisProps) => T["element"]
+  /**
+   * Returns the state of a pagination item
+   */
+  getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getFirstTriggerProps: () => T["element"]
   getPrevTriggerProps: () => T["element"]

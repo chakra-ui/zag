@@ -1,7 +1,7 @@
 import { addDomEvent } from "./event"
-import { isActiveElement } from "./node"
+import { contains, isActiveElement } from "./node"
 import { raf } from "./raf"
-import { getNextTabbable, getTabbableEdges, type GetShadowRootOption } from "./tabbable"
+import { getTabbableEdges, getTabbables, type GetShadowRootOption } from "./tabbable"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
 
 export interface ProxyTabFocusOptions<T = MaybeElement> {
@@ -12,44 +12,66 @@ export interface ProxyTabFocusOptions<T = MaybeElement> {
   getShadowRoot?: GetShadowRootOption | undefined
 }
 
-function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOptions = {}) {
+function resolveElement(value: MaybeElementOrFn | undefined): MaybeElement {
+  if (value == null) return null
+  return typeof value === "function" ? value() : value
+}
+
+/** Next tabbable after `trigger`, skipping anything inside `container` (portalled content). */
+function getNextTabbableAfterTrigger(
+  container: HTMLElement,
+  trigger: MaybeElement,
+  getShadowRoot: GetShadowRootOption,
+) {
+  if (!trigger) return null
+  const tabbables = getTabbables(container.ownerDocument.body, { getShadowRoot })
+  const triggerIndex = tabbables.indexOf(trigger)
+  if (triggerIndex === -1) return null
+
+  for (let i = triggerIndex + 1; i < tabbables.length; i++) {
+    const el = tabbables[i]
+    if (!contains(container, el)) return el
+  }
+  return null
+}
+
+function proxyTabFocusImpl(container: MaybeElementOrFn, options: ProxyTabFocusOptions<MaybeElementOrFn> = {}) {
   const { triggerElement, onFocus, onFocusEnter, getShadowRoot } = options
 
-  const doc = container?.ownerDocument || document
-  const body = doc.body
+  const initial = resolveElement(container) ?? resolveElement(triggerElement)
+  const doc = initial?.ownerDocument || document
 
   function onKeyDown(event: KeyboardEvent) {
     if (event.key !== "Tab") return
 
-    let elementToFocus: MaybeElement | undefined = null
+    // Resolve per keypress so late-mounted / portalled nodes stay correct
+    const content = resolveElement(container)
+    const trigger = resolveElement(triggerElement)
+    if (!content) return
 
-    // get all tabbable elements within the container
-    const [firstTabbable, lastTabbable] = getTabbableEdges(container, { includeContainer: true, getShadowRoot })
-    const nextTabbableAfterTrigger = getNextTabbable(body, { current: triggerElement, getShadowRoot })
-
+    const [firstTabbable, lastTabbable] = getTabbableEdges(content, { includeContainer: true, getShadowRoot })
     const noTabbableElements = !firstTabbable && !lastTabbable
 
-    // if we're focused on the element after the reference element and the user tabs backwards
-    // we want to focus the last tabbable element
-    if (event.shiftKey && isActiveElement(nextTabbableAfterTrigger)) {
-      onFocusEnter?.()
-      elementToFocus = lastTabbable
-    }
-    // if we're focused on the first tabbable element and the user tabs backwards
-    // we want to focus the reference element
-    else if (event.shiftKey && (isActiveElement(firstTabbable) || noTabbableElements)) {
-      elementToFocus = triggerElement
-    }
-    // if we're focused on the reference element and the user tabs forwards
-    // we want to focus the first tabbable element
-    else if (!event.shiftKey && isActiveElement(triggerElement)) {
+    let elementToFocus: MaybeElement | undefined = null
+
+    // Cheap paths first — avoid scanning body tabbables unless exiting/re-entering content
+    if (event.shiftKey && (isActiveElement(firstTabbable) || noTabbableElements)) {
+      // Shift+Tab from first item → trigger
+      elementToFocus = trigger
+    } else if (!event.shiftKey && isActiveElement(trigger)) {
+      // Tab from trigger → first item
       onFocusEnter?.()
       elementToFocus = firstTabbable
-    }
-    // if we're focused on the last tabbable element and the user tabs forwards
-    // we want to focus the next tabbable element after the reference element
-    else if (!event.shiftKey && (isActiveElement(lastTabbable) || noTabbableElements)) {
-      elementToFocus = nextTabbableAfterTrigger
+    } else if (!event.shiftKey && (isActiveElement(lastTabbable) || noTabbableElements)) {
+      // Tab from last item → next after trigger (outside content)
+      elementToFocus = getNextTabbableAfterTrigger(content, trigger, getShadowRoot)
+    } else if (event.shiftKey) {
+      // Shift+Tab from next-after-trigger → last item
+      const nextTabbableAfterTrigger = getNextTabbableAfterTrigger(content, trigger, getShadowRoot)
+      if (isActiveElement(nextTabbableAfterTrigger)) {
+        onFocusEnter?.()
+        elementToFocus = lastTabbable
+      }
     }
 
     if (!elementToFocus) return
@@ -63,19 +85,16 @@ function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOption
     }
   }
 
-  // listen for the tab key in the capture phase
   return addDomEvent(doc, "keydown", onKeyDown, true)
 }
 
 export function proxyTabFocus(container: MaybeElementOrFn, options: ProxyTabFocusOptions<MaybeElementOrFn>) {
-  const { defer, triggerElement, ...restOptions } = options
+  const { defer, ...restOptions } = options
   const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
     func(() => {
-      const node = typeof container === "function" ? container() : container
-      const trigger = typeof triggerElement === "function" ? triggerElement() : triggerElement
-      cleanups.push(proxyTabFocusImpl(node, { triggerElement: trigger, ...restOptions }))
+      cleanups.push(proxyTabFocusImpl(container, restOptions))
     }),
   )
   return () => {

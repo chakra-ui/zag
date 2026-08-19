@@ -1,4 +1,5 @@
-import "@zag-js/shared/src/style.css"
+import "@styles/global.css"
+import "@styles/accordion.css"
 
 import { Accordion } from "../src/accordion"
 import { nanoid } from "nanoid"

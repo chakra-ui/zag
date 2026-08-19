@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -76,7 +76,8 @@ type PropsWithDefault = "value"
 
 export interface CheckboxSchema {
   state: "ready"
-  props: RequiredBy<CheckboxProps, PropsWithDefault>
+  props: CheckboxProps
+  defaultPropKey: PropsWithDefault
   context: {
     checked: CheckedState
     active: boolean
@@ -103,6 +104,49 @@ export type CheckboxMachine = Machine<CheckboxSchema>
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * Whether the checkbox is checked
+   */
+  checked: boolean
+  /**
+   * Whether the checkbox is indeterminate
+   */
+  indeterminate: boolean
+  /**
+   * Whether the checkbox is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the checkbox is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the checkbox is required
+   */
+  required: boolean
+  /**
+   * Whether the checkbox is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the checkbox is focused
+   */
+  focused: boolean
+  /**
+   * Whether the checkbox is focused and the focus is visible
+   */
+  focusVisible: boolean
+  /**
+   * Whether the checkbox is hovered
+   */
+  hovered: boolean
+  /**
+   * Whether the checkbox is active or pressed
+   */
+  active: boolean
+}
 
 export interface CheckboxApi<T extends PropTypes = PropTypes> {
   /**
@@ -134,6 +178,10 @@ export interface CheckboxApi<T extends PropTypes = PropTypes> {
    */
   toggleChecked: VoidFunction
 
+  /**
+   * Returns the state of the checkbox
+   */
+  getRootState: () => RootState
   getRootProps: () => T["label"]
   getLabelProps: () => T["element"]
   getControlProps: () => T["element"]

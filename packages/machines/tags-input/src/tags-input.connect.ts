@@ -3,7 +3,7 @@ import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent, isLe
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
-import type { ItemProps, ItemState, TagsInputApi, TagsInputSchema } from "./tags-input.types"
+import type { ItemProps, ItemState, RootState, TagsInputApi, TagsInputSchema } from "./tags-input.types"
 
 export function connect<T extends PropTypes>(
   service: Service<TagsInputSchema>,
@@ -23,6 +23,10 @@ export function connect<T extends PropTypes>(
   const editingTag = state.matches("editing:tag")
   const empty = computed("count") === 0
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
   function getItemState(options: ItemProps): ItemState {
     const id = dom.getItemId(scope, options)
     const editedTagId = context.get("editedTagId")
@@ -34,6 +38,14 @@ export function connect<T extends PropTypes>(
       disabled: Boolean(options.disabled || disabled),
     }
   }
+
+  function getRootState(): RootState {
+    return { invalid: !!invalid, readOnly, disabled, focused, empty }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     empty: empty,
@@ -69,15 +81,17 @@ export function connect<T extends PropTypes>(
     },
     getItemState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         ...parts.root.attrs(scope.id),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
-        "data-disabled": dataAttr(disabled),
-        "data-focus": dataAttr(focused),
-        "data-empty": dataAttr(empty),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-focus": dataAttr(rootState.focused),
+        "data-empty": dataAttr(rootState.empty),
         onPointerDown() {
           if (!interactive) return
           send({ type: "POINTER_DOWN" })

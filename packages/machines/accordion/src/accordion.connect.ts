@@ -87,6 +87,18 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getItemHeaderProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemHeader.attrs(scope.id),
+        dir: prop("dir"),
+        "data-state": itemState.expanded ? "open" : "closed",
+        "data-focus": dataAttr(itemState.focused),
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-orientation": prop("orientation"),
+      })
+    },
+
     getItemTriggerProps(props) {
       const { value } = props
       const itemState = getItemState(props)
@@ -101,7 +113,6 @@ export function connect<T extends PropTypes>(
         "aria-expanded": itemState.expanded,
         disabled: itemState.disabled,
         "data-orientation": prop("orientation"),
-        "aria-disabled": itemState.disabled,
         "data-state": itemState.expanded ? "open" : "closed",
         "data-focus": dataAttr(itemState.focused),
         onFocus() {

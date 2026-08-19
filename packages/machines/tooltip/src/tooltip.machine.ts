@@ -2,6 +2,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
+import { trackSafeArea } from "@zag-js/safe-area"
 import { ensureProps } from "@zag-js/utils"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -42,6 +43,7 @@ export const machine = createMachine<TooltipSchema>({
   context: ({ bindable, prop, scope }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
     hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),
+    isPointer: bindable<boolean>(() => ({ defaultValue: false })),
     triggerValue: bindable<string | null>(() => ({
       defaultValue: prop("defaultTriggerValue") ?? null,
       value: prop("triggerValue"),
@@ -52,7 +54,6 @@ export const machine = createMachine<TooltipSchema>({
         onTriggerValueChange({ value, triggerElement })
       },
     })),
-    positioned: bindable(() => ({ defaultValue: false })),
   }),
 
   watch({ track, action, prop }) {
@@ -70,19 +71,19 @@ export const machine = createMachine<TooltipSchema>({
   },
 
   on: {
-    "triggerValue.set": {
+    "TRIGGER_VALUE.SET": {
       actions: ["setTriggerValue", "repositionImmediate"],
     },
   },
 
   states: {
     closed: {
-      entry: ["clearGlobalId"],
+      entry: ["clearGlobalId", "clearIsPointer"],
       on: {
-        "controlled.open": {
+        "CONTROLLED.OPEN": {
           target: "open",
         },
-        open: [
+        OPEN: [
           {
             guard: "isOpenControlled",
             actions: ["setTriggerValue", "invokeOnOpen"],
@@ -92,10 +93,10 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
-        "pointer.leave": {
+        POINTER_LEAVE: {
           actions: ["clearPointerMoveOpened"],
         },
-        "pointer.move": [
+        POINTER_MOVE: [
           {
             guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
             target: "opening",
@@ -104,7 +105,7 @@ export const machine = createMachine<TooltipSchema>({
           {
             guard: not("hasPointerMoveOpened"),
             target: "open",
-            actions: ["setPointerMoveOpened", "invokeOnOpen", "setTriggerValue"],
+            actions: ["setPointerMoveOpened", "setIsPointer", "invokeOnOpen", "setTriggerValue"],
           },
         ],
       },
@@ -113,23 +114,23 @@ export const machine = createMachine<TooltipSchema>({
     opening: {
       effects: ["trackScroll", "trackPointerlockChange", "waitForOpenDelay"],
       on: {
-        "after.openDelay": [
+        OPEN_DELAY: [
           {
             guard: "isOpenControlled",
-            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "setIsPointer", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "setIsPointer", "invokeOnOpen"],
           },
         ],
-        "controlled.open": {
+        "CONTROLLED.OPEN": {
           target: "open",
         },
-        "controlled.close": {
+        "CONTROLLED.CLOSE": {
           target: "closed",
         },
-        open: [
+        OPEN: [
           {
             guard: "isOpenControlled",
             actions: ["setTriggerValue", "invokeOnOpen"],
@@ -139,7 +140,7 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
-        "pointer.leave": [
+        POINTER_LEAVE: [
           {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
@@ -150,7 +151,7 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["clearPointerMoveOpened", "invokeOnClose"],
           },
         ],
-        close: [
+        CLOSE: [
           {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
@@ -165,14 +166,13 @@ export const machine = createMachine<TooltipSchema>({
     },
 
     open: {
-      effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
+      effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning", "trackSafeArea"],
       entry: ["setGlobalId"],
-      exit: ["clearPositioned"],
       on: {
-        "controlled.close": {
+        "CONTROLLED.CLOSE": {
           target: "closed",
         },
-        close: [
+        CLOSE: [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnClose"],
@@ -182,30 +182,34 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["invokeOnClose"],
           },
         ],
-        "pointer.leave": [
+        // Hoverable content means the pointer may be travelling to it (WCAG 1.4.13), so the
+        // safe area decides when it has really left.
+        POINTER_LEAVE: [
           {
-            guard: "isVisible",
+            guard: and(not("isInteractive"), "isVisible"),
             target: "closing",
             actions: ["clearPointerMoveOpened"],
           },
           // == group ==
           {
-            guard: "isOpenControlled",
+            guard: and(not("isInteractive"), "isOpenControlled"),
             actions: ["clearPointerMoveOpened", "invokeOnClose"],
           },
           {
+            guard: not("isInteractive"),
             target: "closed",
             actions: ["clearPointerMoveOpened", "invokeOnClose"],
           },
         ],
-        "content.pointer.leave": {
-          guard: "isInteractive",
+        "SAFE_AREA.EXIT": {
           target: "closing",
+          // Same bookkeeping the `POINTER_LEAVE` path does, or `closed` refuses the next hover.
+          actions: ["clearPointerMoveOpened"],
         },
-        "positioning.set": {
+        "POSITIONING.SET": {
           actions: ["reposition"],
         },
-        "triggerValue.set": {
+        "TRIGGER_VALUE.SET": {
           // Transition to closing (which cleans up trackPositioning) then immediately back to open
           // This re-creates the positioning effect with the new trigger
           target: "closing",
@@ -217,7 +221,7 @@ export const machine = createMachine<TooltipSchema>({
     closing: {
       effects: ["trackPositioning", "waitForCloseDelay"],
       on: {
-        "after.closeDelay": [
+        CLOSE_DELAY: [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnClose"],
@@ -227,13 +231,13 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["invokeOnClose"],
           },
         ],
-        "controlled.close": {
+        "CONTROLLED.CLOSE": {
           target: "closed",
         },
-        "controlled.open": {
+        "CONTROLLED.OPEN": {
           target: "open",
         },
-        close: [
+        CLOSE: [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnClose"],
@@ -243,29 +247,29 @@ export const machine = createMachine<TooltipSchema>({
             actions: ["invokeOnClose"],
           },
         ],
-        "pointer.move": [
+        POINTER_MOVE: [
           {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["setPointerMoveOpened", "setTriggerValue", "invokeOnOpen", "toggleVisibility"],
+            actions: ["setPointerMoveOpened", "setIsPointer", "setTriggerValue", "invokeOnOpen", "toggleVisibility"],
           },
           {
             target: "open",
-            actions: ["setPointerMoveOpened", "setTriggerValue", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "setIsPointer", "setTriggerValue", "invokeOnOpen"],
           },
         ],
-        "triggerValue.set": {
+        "TRIGGER_VALUE.SET": {
           target: "open",
           actions: ["setTriggerValue", "repositionImmediate"],
         },
-        reopen: {
+        REOPEN: {
           target: "open",
         },
-        "content.pointer.move": {
+        CONTENT_POINTER_MOVE: {
           guard: "isInteractive",
           target: "open",
         },
-        "positioning.set": {
+        "POSITIONING.SET": {
           actions: ["reposition"],
         },
       },
@@ -282,10 +286,10 @@ export const machine = createMachine<TooltipSchema>({
     },
 
     actions: {
-      setGlobalId: ({ prop }) => {
+      setGlobalId: ({ prop, event }) => {
         const prevId = store.get("id")
-        const isInstant = prevId !== null && prevId !== prop("id")
-        store.update({ id: prop("id"), prevId: isInstant ? prevId : null, instant: isInstant })
+        const isInstant = event.src === "trigger.focus" || (prevId !== null && prevId !== prop("id"))
+        store.update({ id: prop("id"), prevId: isInstant && prevId !== null ? prevId : null, instant: isInstant })
       },
 
       clearGlobalId: ({ prop }) => {
@@ -304,11 +308,11 @@ export const machine = createMachine<TooltipSchema>({
 
       closeIfDisabled: ({ prop, send }) => {
         if (!prop("disabled")) return
-        send({ type: "close", src: "disabled.change" })
+        send({ type: "CLOSE", src: "disabled.change" })
       },
 
       reposition: ({ context, event, prop, scope }) => {
-        if (event.type !== "positioning.set") return
+        if (event.type !== "POSITIONING.SET") return
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         getPlacement(getTriggerEl, getPositionerEl, {
@@ -337,7 +341,7 @@ export const machine = createMachine<TooltipSchema>({
       toggleVisibility: ({ prop, event, send }) => {
         queueMicrotask(() => {
           send({
-            type: prop("open") ? "controlled.open" : "controlled.close",
+            type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
             previousEvent: event,
           })
         })
@@ -352,6 +356,14 @@ export const machine = createMachine<TooltipSchema>({
         context.set("hasPointerMoveOpened", null)
       },
 
+      setIsPointer: ({ context }) => {
+        context.set("isPointer", true)
+      },
+
+      clearIsPointer: ({ context }) => {
+        context.set("isPointer", false)
+      },
+
       setTriggerValue: ({ context, event }) => {
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
@@ -360,17 +372,28 @@ export const machine = createMachine<TooltipSchema>({
       immediateReopen: ({ send }) => {
         // Immediately transition back to open to re-create the positioning effect
         queueMicrotask(() => {
-          send({ type: "reopen" })
+          send({ type: "REOPEN" })
         })
-      },
-
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
     },
     effects: {
       trackFocusVisible: ({ scope }) => {
         return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
+
+      // Only when hoverable: with `interactive: false` the content has `pointer-events: none`,
+      // so there is no journey to protect and its rect is unreachable.
+      trackSafeArea: ({ send, prop, scope, context }) => {
+        if (!prop("interactive")) return
+        return trackSafeArea({
+          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+          getContentEl: () => dom.getContentEl(scope),
+          openedByPointer: () => context.get("isPointer"),
+          defer: true,
+          onLeave() {
+            send({ type: "SAFE_AREA.EXIT" })
+          },
+        })
       },
 
       trackPositioning: ({ context, prop, scope }) => {
@@ -385,14 +408,13 @@ export const machine = createMachine<TooltipSchema>({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
 
       trackPointerlockChange: ({ send, scope }) => {
         const doc = scope.getDoc()
-        const onChange = () => send({ type: "close", src: "pointerlock:change" })
+        const onChange = () => send({ type: "CLOSE", src: "pointerlock:change" })
         return addDomEvent(doc, "pointerlockchange", onChange, false)
       },
 
@@ -407,7 +429,7 @@ export const machine = createMachine<TooltipSchema>({
 
         const cleanups = overflowParents.map((overflowParent) => {
           const onScroll = () => {
-            send({ type: "close", src: "scroll" })
+            send({ type: "CLOSE", src: "scroll" })
           }
           return addDomEvent(overflowParent, "scroll", onScroll, {
             passive: true,
@@ -424,8 +446,9 @@ export const machine = createMachine<TooltipSchema>({
         let cleanup: VoidFunction | undefined
         queueMicrotask(() => {
           cleanup = store.subscribe(() => {
-            if (store.get("id") !== prop("id")) {
-              send({ type: "close", src: "id.change" })
+            const id = store.get("id")
+            if (id !== null && id !== prop("id")) {
+              send({ type: "CLOSE", src: "id.change" })
             }
           })
         })
@@ -439,7 +462,7 @@ export const machine = createMachine<TooltipSchema>({
           if (isComposingEvent(event)) return
           if (event.key !== "Escape") return
           event.stopPropagation()
-          send({ type: "close", src: "keydown.escape" })
+          send({ type: "CLOSE", src: "keydown.escape" })
         }
 
         return addDomEvent(document, "keydown", onKeyDown, true)
@@ -447,14 +470,14 @@ export const machine = createMachine<TooltipSchema>({
 
       waitForOpenDelay: ({ send, prop, event }) => {
         const id = setTimeout(() => {
-          send({ type: "after.openDelay", previousEvent: event })
+          send({ type: "OPEN_DELAY", previousEvent: event })
         }, prop("openDelay"))
         return () => clearTimeout(id)
       },
 
       waitForCloseDelay: ({ send, prop, event }) => {
         const id = setTimeout(() => {
-          send({ type: "after.closeDelay", previousEvent: event })
+          send({ type: "CLOSE_DELAY", previousEvent: event })
         }, prop("closeDelay"))
         return () => clearTimeout(id)
       },

@@ -2,6 +2,7 @@
 import * as rating from "@zag-js/rating-group"
 import { ratingControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/rating-group.css"
 
 const controls = useControls(ratingControls)
 

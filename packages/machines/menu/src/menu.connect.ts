@@ -1,5 +1,6 @@
 import type { Service } from "@zag-js/core"
 import { mergeProps } from "@zag-js/core"
+import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
   dataAttr,
@@ -15,41 +16,56 @@ import {
   contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
-import { setParentRoutingLock } from "./menu.utils"
+import { getTreeMenubar, setParentRoutingLock } from "./menu.utils"
 import type {
+  ContentState,
   ItemProps,
   ItemState,
   MenuApi,
   MenuSchema,
   OptionItemProps,
   OptionItemState,
+  PositionerState,
   TriggerProps,
+  TriggerState,
 } from "./menu.types"
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
   const { context, send, state, computed, prop, scope } = service
+  const layer = context.get("layer")
 
   const open = state.hasTag("open")
 
   const isSubmenu = context.get("isSubmenu")
+  const isInMenubar = computed("isInMenubar")
+  const menubarDisabled = computed("menubarDisabled")
+  const menubarActiveId = prop("menubar")?.activeId
+  const menubarRootId = prop("menubar")?.rootId
+  // In a vertical menubar, triggers stack and menus fly out sideways, so the cross-axis
+  // keys change: the menu opens on ArrowRight and closes (not switches) on ArrowLeft.
+  const isVerticalMenubar = isInMenubar && prop("menubar")?.orientation === "vertical"
   const isTypingAhead = computed("isTypingAhead")
   const composite = prop("composite")
 
   const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const anchorPoint = context.get("anchorPoint")
   const highlightedValue = context.get("highlightedValue")
   const triggerValue = context.get("triggerValue")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: anchorPoint ? "bottom" : currentPlacement,
-    positioned: context.get("positioned"),
+    placement: currentPlacement,
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
 
   function getItemState(props: ItemProps): ItemState {
     return {
@@ -58,6 +74,35 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       highlighted: highlightedValue === props.value,
     }
   }
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return {
+      value,
+      current,
+      open: value == null ? open : open && current,
+      disabled: !!menubarDisabled,
+    }
+  }
+
+  function getPositionerState(): PositionerState {
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+  }
+
+  function getContentState(): ContentState {
+    return {
+      open,
+      nested: !!layer?.nested,
+      hasNested: !!layer?.hasNested,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+    }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   function getOptionItemProps(props: OptionItemProps) {
     const valueText = props.valueText ?? props.value
@@ -206,13 +251,22 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const triggerState = getTriggerState(props)
+      const { current } = triggerState
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs(scope.id) : parts.trigger.attrs(scope.id)),
-        "data-placement": context.get("currentPlacement"),
+        // Inside a menubar, the trigger owns its tabIndex from the menubar's active id.
+        role: isInMenubar ? "menuitem" : undefined,
+        tabIndex: isInMenubar ? (menubarActiveId === triggerId ? 0 : -1) : undefined,
+        disabled: triggerState.disabled || undefined,
+        "aria-disabled": triggerState.disabled || undefined,
+        "data-disabled": triggerState.disabled ? "" : undefined,
+        "data-placement": currentPlacement,
+        "data-side": currentPlacementSide,
         type: "button",
         dir: prop("dir"),
         id: triggerId,
@@ -224,7 +278,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
-        "aria-expanded": value == null ? open : open && current,
+        "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
           if (event.pointerType !== "mouse") return
@@ -262,6 +316,15 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             value,
           })
         },
+        onPointerEnter(event) {
+          if (event.pointerType !== "mouse") return
+          if (!isInMenubar || open) return
+          if (dom.isTargetDisabled(event.currentTarget)) return
+          // Hover-to-open: once a sibling menu is open, hovering this trigger switches to it.
+          if (dom.getMenubarEl(scope, menubarRootId)?.dataset.hasOpenMenu === "true") {
+            send({ type: "OPEN" })
+          }
+        },
         onBlur() {
           send({ type: "TRIGGER_BLUR" })
         },
@@ -271,12 +334,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onKeyDown(event) {
           if (event.defaultPrevented) return
           const keyMap: EventKeyMap = {
-            ArrowDown() {
-              send({ type: "ARROW_DOWN", value })
-            },
-            ArrowUp() {
-              send({ type: "ARROW_UP", value })
-            },
             Enter() {
               send({ type: "ARROW_DOWN", src: "enter", value })
             },
@@ -285,8 +342,17 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             },
           }
 
+          if (isVerticalMenubar) {
+            // Up/Down move between triggers (handled by the menubar), so the menu opens
+            // on the cross-axis key (fly-out to the side).
+            keyMap.ArrowRight = () => send({ type: "ARROW_DOWN", value })
+          } else {
+            keyMap.ArrowDown = () => send({ type: "ARROW_DOWN", value })
+            keyMap.ArrowUp = () => send({ type: "ARROW_UP", value })
+          }
+
           const key = getEventKey(event, {
-            orientation: "vertical",
+            orientation: isVerticalMenubar ? "horizontal" : "vertical",
             dir: prop("dir"),
           })
           const exec = keyMap[key]
@@ -307,11 +373,16 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       })
     },
 
+    getPositionerState,
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...popperStyles.floating,
+          ...getDismissableLayerStyle(layer, { zIndex: true }),
+        },
       })
     },
 
@@ -331,13 +402,15 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "aria-label": prop("aria-label"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
         role: composite ? "menu" : "dialog",
         tabIndex: 0,
         dir: prop("dir"),
@@ -345,7 +418,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-labelledby": anchorPoint
           ? dom.getContextTriggerId(scope, triggerValue ?? undefined)
           : dom.getTriggerId(scope, triggerValue ?? undefined),
-        "data-placement": currentPlacement,
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+        },
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
           send({ type: "MENU_POINTERENTER" })
@@ -375,9 +453,38 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               send({ type: "ARROW_UP" })
             },
             ArrowLeft() {
+              const menubar = getTreeMenubar(service)
+              if (menubar.orientation === "vertical") {
+                // Menus fly out to the right, so Left collapses one level: a submenu returns
+                // to its parent; a top-level menubar menu closes back to its trigger.
+                send({ type: isSubmenu ? "ARROW_LEFT" : "CLOSE" })
+                return
+              }
+              // Horizontal: a top-level menubar menu hops to the previous sibling (stays open).
+              if (isInMenubar && menubar.rootEl) {
+                service.refs.set("menubarCloseReason", "list-navigation")
+                dom.dispatchMenubarEvent(menubar.rootEl, "menu:focus-prev")
+                return
+              }
               send({ type: "ARROW_LEFT" })
             },
             ArrowRight() {
+              const hv = context.get("highlightedValue")
+              const isSubmenuTrigger =
+                (hv != null ? dom.getItemEl(scope, hv) : null)?.getAttribute("aria-haspopup") === "menu"
+              // A submenu trigger always opens its submenu (both orientations).
+              if (isSubmenuTrigger) {
+                send({ type: "ARROW_RIGHT" })
+                return
+              }
+              // On a leaf, only a horizontal menubar hops to the next sibling (incl. from a
+              // nested submenu). Vertical switches siblings via the trigger's Up/Down instead.
+              const menubar = getTreeMenubar(service)
+              if (menubar.orientation === "horizontal" && menubar.rootEl) {
+                service.refs.set("menubarCloseReason", "list-navigation")
+                dom.dispatchMenubarEvent(menubar.rootEl, "menu:focus-next")
+                return
+              }
               send({ type: "ARROW_RIGHT" })
             },
             Enter() {

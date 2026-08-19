@@ -64,6 +64,12 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "dnd": {
+    "DragPreview": {
+      "--drag-preview-width": "The width of the DragPreview",
+      "--drag-preview-height": "The height of the DragPreview"
+    }
+  },
   "drawer": {
     "Content": {
       "--drawer-translate": "The drawer translate value for the Content",
@@ -74,6 +80,9 @@
       "--drawer-swipe-movement-x": "The drawer swipe movement x value for the Content",
       "--drawer-swipe-movement-y": "The drawer swipe movement y value for the Content",
       "--drawer-swipe-strength": "The drawer swipe strength value for the Content",
+      "--nested-drawers": "The nested drawers value for the Content",
+      "--drawer-height": "The height of the Content",
+      "--drawer-frontmost-height": "The height of the Content",
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested drawers"
     },
@@ -115,11 +124,6 @@
       "--image-offset-y": "The offset position for image"
     }
   },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
-    }
-  },
   "marquee": {
     "Root": {
       "--marquee-duration": "The marquee duration value for the Root",
@@ -127,6 +131,11 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
+    }
+  },
+  "listbox": {
+    "List": {
+      "--column-count": "The column count value for the List"
     }
   },
   "navigation-menu": {
@@ -154,6 +163,13 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "number-input": {
+    "Scrubber": {
+      "--scrubber-x": "The scrubber x value for the Scrubber",
+      "--scrubber-y": "The scrubber y value for the Scrubber",
+      "--scrubber-scale": "The scrubber scale value for the Scrubber"
+    }
+  },
   "progress": {
     "Root": {
       "--percent": "The percent value for the root",
@@ -178,6 +194,19 @@
       "--height": "The height of the element"
     }
   },
+  "scheduler": {
+    "DragPreview": {
+      "--event-color": "The color of the DragPreview"
+    },
+    "DragOrigin": {
+      "--event-color": "The color of the DragOrigin"
+    },
+    "Root": {
+      "--scheduler-visible-days": "The scheduler visible days value for the Root",
+      "--scheduler-day-count": "The scheduler day count value for the Root",
+      "--scheduler-hour-count": "The scheduler hour count value for the Root"
+    }
+  },
   "scroll-area": {
     "Root": {
       "--corner-width": "The width of the Root",
@@ -197,6 +226,11 @@
       "--percent": "The percent value for the Root"
     }
   },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
+    }
+  },
   "tabs": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -204,11 +238,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "timer": {
-    "Item": {
-      "--value": "The current value"
     }
   },
   "toc": {
@@ -228,7 +257,11 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     },
     "Spotlight": {
-      "--tour-layer": "The tour layer value for the Spotlight"
+      "--tour-layer": "The tour layer value for the Spotlight",
+      "--spotlight-x": "The spotlight x value for the Spotlight",
+      "--spotlight-y": "The spotlight y value for the Spotlight",
+      "--spotlight-width": "The width of the Spotlight",
+      "--spotlight-height": "The height of the Spotlight"
     },
     "Positioner": {
       "--tour-layer": "The tour layer value for the Positioner",
@@ -253,11 +286,21 @@
     }
   },
   "tree-view": {
-    "Item": {
-      "--depth": "The depth value for the Item"
+    "NodeGroup": {
+      "--depth": "The depth value for the NodeGroup"
     },
-    "Branch": {
-      "--depth": "The depth value for the Branch"
+    "Node": {
+      "--depth": "The depth value for the Node"
+    }
+  },
+  "number-flow": {
+    "Root": {
+      "--spin-duration": "The spin duration value for the root",
+      "--spin-easing": "The spin easing value for the root",
+      "--transform-duration": "The transform duration value for the root",
+      "--transform-easing": "The transform easing value for the root",
+      "--stagger": "The stagger value for the root",
+      "--place-index": "The place index value for the root"
     }
   },
   "slider": {
@@ -296,31 +339,6 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "combobox": {
-    "Arrow": {
-      "--arrow-size": "The size of the arrow",
-      "--arrow-size-half": "Half the size of the arrow",
-      "--arrow-background": "Use this variable to style the arrow background",
-      "--arrow-offset": "The offset position of the arrow"
-    },
-    "Positioner": {
-      "--reference-width": "The width of the reference element",
-      "--reference-height": "The height of the root",
-      "--available-width": "The available width in viewport",
-      "--available-height": "The available height in viewport",
-      "--x": "The x position for transform",
-      "--y": "The y position for transform",
-      "--z-index": "The z-index value",
-      "--transform-origin": "The transform origin for animations"
-    },
-    "Content": {
-      "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested comboboxs"
-    },
-    "Backdrop": {
-      "--layer-index": "The index of the dismissable in the layer stack"
-    }
-  },
   "date-picker": {
     "Arrow": {
       "--arrow-size": "The size of the arrow",
@@ -341,6 +359,31 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested date-pickers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "combobox": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--reference-width": "The width of the reference element",
+      "--reference-height": "The height of the root",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--transform-origin": "The transform origin for animations"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested comboboxs"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"

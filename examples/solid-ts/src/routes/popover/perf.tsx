@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
+import "@styles/popover.css"
 
 const items = Array.from({ length: 200 }, (_, i) => ({
   id: i,

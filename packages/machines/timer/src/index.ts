@@ -9,6 +9,7 @@ export type {
   TimerProps as Props,
   TimerService as Service,
   ActionTriggerProps,
+  ActionTriggerState,
   ItemProps,
   ElementIds,
   IntlTranslations,

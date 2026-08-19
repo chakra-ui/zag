@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/checkbox",
-  "version": "1.39.1",
+  "version": "2.0.0-next.1",
   "description": "Core logic for the checkbox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watch",
     "prepack": "clean-package",

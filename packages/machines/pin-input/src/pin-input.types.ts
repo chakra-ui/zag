@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -140,7 +140,8 @@ type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue" | "count
 
 export interface PinInputSchema {
   state: "idle" | "focused"
-  props: RequiredBy<PinInputProps, PropsWithDefault>
+  props: PinInputProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string[]
     focusedIndex: number
@@ -170,6 +171,83 @@ export type PinInputMachine = Machine<PinInputSchema>
 
 export interface InputProps {
   index: number
+}
+
+export interface RootState {
+  /**
+   * Whether the pin input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the pin input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether all inputs are filled.
+   */
+  complete: boolean
+  /**
+   * Whether the pin input is read-only.
+   */
+  readOnly: boolean
+}
+
+export interface LabelState {
+  /**
+   * Whether the pin input is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the pin input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether all inputs are filled.
+   */
+  complete: boolean
+  /**
+   * Whether the pin input is required.
+   */
+  required: boolean
+  /**
+   * Whether the pin input is read-only.
+   */
+  readOnly: boolean
+}
+
+export interface InputState {
+  /**
+   * The index of the input.
+   */
+  index: number
+  /**
+   * Whether the input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the input value is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether all inputs are filled.
+   */
+  complete: boolean
+  /**
+   * Whether this input has a value.
+   */
+  filled: boolean
+  /**
+   * Whether this input is focused.
+   */
+  focused: boolean
+  /**
+   * Whether this input is the tabbable input in the group.
+   */
+  tabbable: boolean
 }
 
 export interface PinInputApi<T extends PropTypes = PropTypes> {
@@ -209,9 +287,21 @@ export interface PinInputApi<T extends PropTypes = PropTypes> {
    * Function to focus the pin-input. This will focus the first input.
    */
   focus: VoidFunction
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
+  /**
+   * Returns the state of the label.
+   */
+  getLabelState: () => LabelState
   getLabelProps: () => T["label"]
   getHiddenInputProps: () => T["input"]
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of a given input.
+   */
+  getInputState: (props: InputProps) => InputState
   getInputProps: (props: InputProps) => T["input"]
 }

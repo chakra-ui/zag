@@ -1,0 +1,90 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    ".next",
+    "**/.svelte-kit",
+    "**/.vercel",
+    "build",
+    "examples/preact-ts",
+    "examples/vue-ts",
+    "plop-templates",
+    "**/*.d.ts",
+    "**/.output",
+    "website/styled-system",
+    "website/.velite"
+  ],
+  "env": { "browser": true, "node": true, "es2024": true },
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "no-case-declarations": "off",
+    "no-empty": "off",
+    "no-prototype-builtins": "off",
+    "no-redeclare": "off",
+    "no-unassigned-vars": "off",
+    "no-undef": "off",
+    "no-unused-expressions": "off",
+    "no-useless-assignment": "off",
+    "no-useless-escape": "off",
+    "prefer-const": "off",
+    "prefer-rest-params": "off",
+    "prefer-spread": "off",
+    "preserve-caught-error": "off",
+    "typescript/ban-ts-comment": "off",
+    "typescript/no-empty-object-type": "off",
+    "typescript/no-explicit-any": "off",
+    "typescript/no-namespace": "off",
+    "typescript/no-non-null-asserted-optional-chain": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-require-imports": "off",
+    "typescript/no-this-alias": "off",
+    "typescript/no-unsafe-function-type": "off",
+    "typescript/no-wrapper-object-types": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "oxc/erasing-op": "off",
+    "unicorn/no-new-array": "off",
+    "unicorn/no-useless-spread": "off",
+    "unicorn/no-useless-fallback-in-spread": "off"
+  },
+  "overrides": [
+    {
+      "files": ["website/**/*.tsx"],
+      "plugins": ["react", "jsx-a11y", "nextjs"],
+      "rules": {
+        "react/no-unescaped-entities": "off",
+        "react/exhaustive-deps": "off",
+        "nextjs/no-img-element": "off",
+        "jsx-a11y/label-has-associated-control": "off"
+      }
+    },
+    {
+      "files": ["examples/next-ts/**/*.tsx"],
+      "plugins": ["react", "jsx-a11y", "nextjs"],
+      "rules": {
+        "react/no-unescaped-entities": "off",
+        "react/exhaustive-deps": "off",
+        "nextjs/no-img-element": "off",
+        "jsx-a11y/label-has-associated-control": "off",
+        "jsx-a11y/anchor-is-valid": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        "jsx-a11y/no-noninteractive-tabindex": "warn",
+        "jsx-a11y/prefer-tag-over-role": "warn",
+        "jsx-a11y/control-has-associated-label": "warn",
+        "jsx-a11y/no-autofocus": "warn",
+        "jsx-a11y/alt-text": "warn"
+      }
+    }
+  ]
+}

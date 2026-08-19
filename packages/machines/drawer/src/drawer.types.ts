@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 import type { DrawerSwipeSession } from "./utils/drawer-session"
 import type { PhysicalSwipeDirection } from "./utils/session"
 
@@ -31,6 +32,30 @@ export interface ResolvedSnapPoint {
 
 export interface SnapPointChangeDetails {
   snapPoint: SnapPoint | null
+}
+
+// zag-ignore-export
+export interface NestedDrawerMetrics {
+  /**
+   * Number of drawers stacked in front of this one.
+   */
+  count: number
+  /**
+   * The measured height of this drawer's content.
+   */
+  height: number
+  /**
+   * The measured height of the frontmost drawer's content.
+   */
+  frontmostHeight: number
+  /**
+   * Whether a nested drawer is currently open in front of this one.
+   */
+  open: boolean
+  /**
+   * Whether a drawer in front of this one is currently being swiped.
+   */
+  swiping: boolean
 }
 
 export interface DrawerStackSnapshot {
@@ -92,7 +117,7 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
   /**
    * Element to receive focus when the sheet is opened.
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement) | null | undefined
   /**
    * Element to receive focus when the sheet is closed.
    */
@@ -200,7 +225,6 @@ type PropsWithDefault =
   | "trapFocus"
   | "restoreFocus"
   | "preventScroll"
-  | "initialFocusEl"
   | "snapPoints"
   | "swipeDirection"
   | "snapToSequentialPoints"
@@ -210,10 +234,15 @@ type PropsWithDefault =
   | "defaultSnapPoint"
 
 export interface DrawerSchema {
-  props: RequiredBy<DrawerProps, PropsWithDefault>
+  props: DrawerProps
+  defaultPropKey: PropsWithDefault
   state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
   tag: "open" | "closed"
   context: {
+    /**
+     * The computed layer stack state used for declarative styles and attributes.
+     */
+    layer: LayerSnapshot | null
     triggerValue: string | null
     dragOffset: number | null
     snapPoint: SnapPoint | null
@@ -223,9 +252,11 @@ export interface DrawerSchema {
     rootFontSize: number
     swipeStrength: number
     rendered: { title: boolean; description: boolean }
+    nestedMetrics: NestedDrawerMetrics
   }
   refs: {
     swipeSession: DrawerSwipeSession
+    snapBackFrame: AnimationFrame
   }
   computed: {
     drawerId: string
@@ -262,6 +293,129 @@ export interface SwipeAreaProps {
    * Defaults to the opposite of the drawer's `swipeDirection`.
    */
   swipeDirection?: SwipeDirection | undefined
+}
+
+export interface TriggerState {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value: string | undefined
+  /**
+   * Whether this trigger is the one that opened the drawer
+   */
+  current: boolean
+  /**
+   * Whether the drawer is open
+   */
+  open: boolean
+}
+
+export interface BackdropState {
+  /**
+   * Whether the drawer is open
+   */
+  open: boolean
+  /**
+   * Whether the drawer is currently being swiped
+   */
+  swiping: boolean
+  /**
+   * Whether the backdrop is hidden
+   */
+  hidden: boolean
+  /**
+   * Whether the drawer is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the drawer has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface PositionerState {
+  /**
+   * Whether the drawer is open
+   */
+  open: boolean
+  /**
+   * Whether the drawer is fully closed
+   */
+  closed: boolean
+  /**
+   * The physical swipe direction, resolved for text direction
+   */
+  swipeDirection: PhysicalSwipeDirection
+  /**
+   * Whether the drawer is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the drawer has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the drawer is open
+   */
+  open: boolean
+  /**
+   * Whether the drawer is modal
+   */
+  modal: boolean
+  /**
+   * Whether the drawer is expanded to its full snap point (offset 0)
+   */
+  expanded: boolean
+  /**
+   * Whether the drawer is being dragged or swiping open
+   */
+  swiping: boolean
+  /**
+   * Whether the drawer is currently being dragged
+   */
+  dragging: boolean
+  /**
+   * The physical swipe direction, resolved for text direction
+   */
+  swipeDirection: PhysicalSwipeDirection
+  /**
+   * Whether a nested drawer is currently open in front of this one
+   */
+  nestedDrawerOpen: boolean
+  /**
+   * Whether a nested drawer in front of this one is currently being swiped
+   */
+  nestedDrawerSwiping: boolean
+  /**
+   * Whether the drawer is nested within another layered element
+   */
+  nested: boolean
+  /**
+   * Whether the drawer has nested layered elements within it
+   */
+  hasNested: boolean
+}
+
+export interface SwipeAreaState {
+  /**
+   * The swipe direction that opens the drawer
+   */
+  direction: PhysicalSwipeDirection
+  /**
+   * Whether the swipe area is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the drawer is open
+   */
+  open: boolean
+  /**
+   * Whether the drawer is currently being swiped open
+   */
+  swiping: boolean
 }
 
 export interface DrawerApi<T extends PropTypes = PropTypes> {
@@ -319,14 +473,34 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
    */
   getContentSize: () => number | null
 
+  /**
+   * Returns the state of the positioner
+   */
+  getPositionerState: () => PositionerState
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]
   getDescriptionProps: () => T["element"]
+  /**
+   * Returns the state of a specific trigger, including whether it's the currently active one
+   */
+  getTriggerState: (props?: TriggerProps) => TriggerState
   getTriggerProps: (props?: TriggerProps) => T["element"]
+  /**
+   * Returns the state of the backdrop
+   */
+  getBackdropState: () => BackdropState
   getBackdropProps: () => T["element"]
   getGrabberProps: () => T["element"]
   getGrabberIndicatorProps: () => T["element"]
   getCloseTriggerProps: () => T["element"]
+  /**
+   * Returns the state of the swipe area
+   */
+  getSwipeAreaState: (props?: SwipeAreaProps) => SwipeAreaState
   getSwipeAreaProps: (props?: SwipeAreaProps) => T["element"]
 }

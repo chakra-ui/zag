@@ -4,12 +4,16 @@ export { connect } from "./dialog.connect"
 export { machine } from "./dialog.machine"
 export * from "./dialog.props"
 export type {
+  BackdropState,
+  ContentState,
   DialogApi as Api,
   DialogMachine as Machine,
   DialogProps as Props,
   DialogService as Service,
   ElementIds,
   OpenChangeDetails,
+  PositionerState,
   TriggerValueChangeDetails,
   TriggerProps,
+  TriggerState,
 } from "./dialog.types"

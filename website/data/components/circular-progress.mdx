@@ -27,7 +27,8 @@ Install the progress package:
 
 Check the progress anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="circular-progress" />
 
@@ -127,7 +128,7 @@ const service = useMachine(progress.machine, {
 Use the `--size` CSS variable to set the size of the progress bar.
 
 ```css
-[data-scope="progress"][data-part="circle"] {
+[data-progress-circle] {
   --size: 400px;
 }
 ```
@@ -137,7 +138,7 @@ Use the `--size` CSS variable to set the size of the progress bar.
 Use the `--thickness` CSS variable to set the size of the progress bar.
 
 ```css
-[data-scope="progress"][data-part="circle"] {
+[data-progress-circle] {
   --thickness: 4px;
 }
 ```
@@ -161,18 +162,18 @@ const service = useMachine(progress.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="progress"][data-part="root"] {
+[data-progress-root] {
   /* Styles for the root part */
 }
 
-[data-scope="progress"][data-part="circle-track"] {
+[data-progress-circle-track] {
   /* Styles for the track part */
 }
 
-[data-scope="progress"][data-part="circle-range"] {
+[data-progress-circle-range] {
   /* Styles for the range part */
 }
 ```
@@ -183,15 +184,15 @@ To style the indeterminate state, you can use the `[data-state=indeterminate]`
 selector.
 
 ```css
-[data-scope="progress"][data-part="root"][data-state="indeterminate"] {
+[data-progress-root][data-state="indeterminate"] {
   /* Styles for the root indeterminate state */
 }
 
-[data-scope="progress"][data-part="circle-track"][data-state="indeterminate"] {
+[data-progress-circle-track][data-state="indeterminate"] {
   /* Styles for the root indeterminate state */
 }
 
-[data-scope="progress"][data-part="circle-range"][data-state="indeterminate"] {
+[data-progress-circle-range][data-state="indeterminate"] {
   /* Styles for the root indeterminate state */
 }
 ```

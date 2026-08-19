@@ -1,0 +1,17 @@
+```tsx
+import * as toggle from "@zag-js/toggle"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function Toggle() {
+  const service = useMachine(toggle.machine, { id: useId() })
+  const api = toggle.connect(service, normalizeProps)
+
+  return (
+    <button {...api.getRootProps()}>
+      <span {...api.getIndicatorProps()} />
+      Bold
+    </button>
+  )
+}
+```

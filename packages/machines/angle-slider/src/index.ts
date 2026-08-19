@@ -9,5 +9,7 @@ export type {
   AngleSliderService as Service,
   ElementIds,
   MarkerProps,
+  MarkerState,
+  RootState,
   ValueChangeDetails,
 } from "./angle-slider.types"

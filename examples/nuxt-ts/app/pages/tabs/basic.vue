@@ -2,6 +2,7 @@
 import * as tabs from "@zag-js/tabs"
 import { tabsControls, tabsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/tabs.css"
 
 const controls = useControls(tabsControls)
 

@@ -2,6 +2,7 @@
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/carousel.css"
 
 const SLIDE_COUNT = 30
 

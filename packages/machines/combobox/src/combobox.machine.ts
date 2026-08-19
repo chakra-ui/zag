@@ -5,7 +5,7 @@ import {
   type CollectionItem,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   clickIfLink,
   isApple,
@@ -41,7 +41,7 @@ export const machine = createMachine({
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
       openOnChange: true,
-      composite: true,
+      popupType: "listbox",
       navigate({ node }) {
         clickIfLink(node)
       },
@@ -70,6 +70,9 @@ export const machine = createMachine({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -151,7 +154,6 @@ export const machine = createMachine({
           }),
         }
       }),
-      positioned: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -230,7 +232,7 @@ export const machine = createMachine({
       states: {
         idle: {
           tags: ["idle"],
-          entry: ["scrollContentToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue"],
           on: {
             "CONTROLLED.OPEN": {
               target: "open.interacting",
@@ -277,7 +279,7 @@ export const machine = createMachine({
 
         focused: {
           tags: ["focused"],
-          entry: ["scrollContentToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -395,7 +397,6 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      exit: ["clearPositioned"],
       effects: [
         "trackFocusVisible",
         "scrollToHighlightedItem",
@@ -527,7 +528,7 @@ export const machine = createMachine({
             "INPUT.ARROW_DOWN": [
               {
                 guard: and("autoComplete", "isLastItemHighlighted"),
-                actions: ["clearHighlightedValue", "scrollContentToTop"],
+                actions: ["clearHighlightedValue", "scrollToTop"],
               },
               {
                 actions: ["highlightNextItem"],
@@ -670,11 +671,14 @@ export const machine = createMachine({
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
-      trackDismissableLayer({ send, prop, scope }) {
+      trackDismissableLayer({ send, prop, scope, context }) {
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
           type: "listbox",
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -708,7 +712,6 @@ export const machine = createMachine({
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
@@ -725,7 +728,7 @@ export const machine = createMachine({
           const highlightedValue = context.get("highlightedValue")
           if (!highlightedValue) return
 
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -740,7 +743,7 @@ export const machine = createMachine({
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
-            scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+            scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
           })
           cleanups.push(raf_cleanup)
         }
@@ -811,7 +814,7 @@ export const machine = createMachine({
           if (highlightedValue == null) return
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -824,7 +827,7 @@ export const machine = createMachine({
             return
           }
 
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
         })
       },
       selectItem(params) {
@@ -929,7 +932,7 @@ export const machine = createMachine({
           context.set("inputValue", inputValue)
         })
       },
-      scrollContentToTop({ prop, scope }) {
+      scrollToTop({ prop, scope }) {
         const scrollToIndexFn = prop("scrollToIndexFn")
         if (scrollToIndexFn) {
           const firstValue = prop("collection").firstValue
@@ -939,9 +942,9 @@ export const machine = createMachine({
             getElement: () => dom.getItemEl(scope, firstValue),
           })
         } else {
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-          contentEl.scrollTop = 0
+          const listEl = dom.getListEl(scope)
+          if (!listEl) return
+          listEl.scrollTop = 0
         }
       },
       invokeOnOpen({ prop, event, context }) {
@@ -1063,9 +1066,6 @@ export const machine = createMachine({
         if (!optionText) return
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

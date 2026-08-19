@@ -2,7 +2,7 @@ import { ariaAttr, dataAttr, getEventKey, getEventPoint, getRelativePoint, isLef
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import * as dom from "./rating-group.dom"
 import { parts } from "./rating-group.anatomy"
-import type { ItemProps, ItemState, RatingGroupApi, RatingGroupService } from "./rating-group.types"
+import type { ControlState, ItemProps, ItemState, RatingGroupApi, RatingGroupService } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(
   service: RatingGroupService,
@@ -18,6 +18,14 @@ export function connect<T extends PropTypes>(
   const hoveredValue = context.get("hoveredValue")
   const translations = prop("translations")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getControlState(): ControlState {
+    return { disabled, readOnly }
+  }
+
   function getItemState(props: ItemProps): ItemState {
     const currentValue = computed("isHovering") ? hoveredValue : value
     const equal = Math.ceil(currentValue) === props.index
@@ -30,6 +38,10 @@ export function connect<T extends PropTypes>(
       checked: equal || (value <= 0 && props.index === 1),
     }
   }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     hovering: computed("isHovering"),
@@ -84,16 +96,18 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getControlState,
     getControlProps() {
+      const controlState = getControlState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         role: "radiogroup",
         "aria-orientation": "horizontal",
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-readonly": ariaAttr(readOnly),
-        "data-readonly": dataAttr(readOnly),
-        "data-disabled": dataAttr(disabled),
+        "aria-readonly": ariaAttr(controlState.readOnly),
+        "data-readonly": dataAttr(controlState.readOnly),
+        "data-disabled": dataAttr(controlState.disabled),
         onPointerMove(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return

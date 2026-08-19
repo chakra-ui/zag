@@ -228,8 +228,7 @@
       <textarea
         placeholder="Textarea - try Ctrl/Cmd+Enter here (Ctrl+I won't work)"
         rows={3}
-        style="padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #ccc; resize: vertical"
-      ></textarea>
+        style="padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #ccc; resize: vertical"></textarea>
       <select style="padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #ccc">
         <option>Select dropdown - try Ctrl/Cmd+Enter here</option>
         <option>Option 2</option>

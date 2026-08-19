@@ -58,6 +58,7 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
 export interface CollapsibleSchema {
   state: "open" | "closed" | "closing"
   props: CollapsibleProps
+  defaultPropKey: never
   context: {
     size: { width: number; height: number }
     initial: boolean
@@ -99,6 +100,40 @@ export type CollapsibleMachine = Machine<CollapsibleSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface TriggerState {
+  /**
+   * Whether the collapsible is open
+   */
+  open: boolean
+  /**
+   * Whether the collapsible is visible (open or closing)
+   */
+  visible: boolean
+  /**
+   * Whether the collapsible is disabled
+   */
+  disabled: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the collapsible is open
+   */
+  open: boolean
+  /**
+   * Whether the collapsible is visible (open or closing)
+   */
+  visible: boolean
+  /**
+   * Whether the collapsible is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the content has a collapsed height or width
+   */
+  hasCollapsedSize: boolean
+}
+
 export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the collapsible is open.
@@ -122,7 +157,15 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   measureSize: VoidFunction
 
   getRootProps: () => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getIndicatorProps: () => T["element"]
 }

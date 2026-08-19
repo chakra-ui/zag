@@ -4,14 +4,14 @@
  */
 
 import { ensure } from "@zag-js/utils"
-import type { PanelData } from "../splitter.types"
+import type { NormalizedPanelData } from "../splitter.types"
 import { fuzzyCompareNumbers, fuzzySizeEqual, fuzzyNumbersEqual } from "./fuzzy"
 import { resizePanel } from "./resize-panel"
 
 interface Layout {
   delta: number
   initialSize: number[]
-  panels: PanelData[]
+  panels: NormalizedPanelData[]
   pivotIndices: number[]
   prevSize: number[]
   trigger: "imperative-api" | "keyboard" | "mouse-or-touch"

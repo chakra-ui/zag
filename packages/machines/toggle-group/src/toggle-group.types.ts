@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -76,17 +76,19 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * Whether the user is tabbing backward.
-   */
-  isTabbingBackward: boolean
-  /**
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
   /**
-   * The value of the toggle that was focused.
+   * The value of the toggle that currently holds the roving tabindex.
+   * Persists across blur, so tabbing away and back resumes at the same toggle.
    */
-  focusedId: string | null
+  focusedValue: string | null
+  /**
+   * Whether the root has ever redirected focus to a toggle. Once true, the root
+   * permanently cedes its own tabindex to whichever toggle is tracked.
+   */
+  hasInteracted: boolean
   /**
    * Whether the toggle group is within a toolbar.
    * This is used to determine whether to use roving tab index.
@@ -99,7 +101,8 @@ interface PrivateContext {
 }
 
 export interface ToggleGroupSchema {
-  props: RequiredBy<ToggleGroupProps, PropsWithDefault>
+  props: ToggleGroupProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   state: "idle" | "focused"
@@ -141,6 +144,21 @@ export interface ItemState {
   focused: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the toggle group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the toggle group allows multiple pressed items
+   */
+  multiple: boolean
+  /**
+   * The orientation of the toggle group
+   */
+  orientation: Orientation
+}
+
 export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the toggle group.
@@ -154,6 +172,10 @@ export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
    * Returns the state of the toggle item.
    */
   getItemState: (props: ItemProps) => ItemState
+  /**
+   * Returns the state of the toggle group
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["button"]
 }

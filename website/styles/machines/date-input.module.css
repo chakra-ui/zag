@@ -57,9 +57,9 @@
 
     &[data-placeholder-shown] {
       color: var(--colors-text-muted);
-       &:focus {
-         color: var(--colors-text-bold);
-       }
+      &:focus {
+        color: var(--colors-text-bold);
+      }
     }
 
     &[data-type="literal"] {

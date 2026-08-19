@@ -9,29 +9,41 @@ type WebServer = InferServer<PlaywrightTestConfig["webServer"]>
 export function getWebServer(): WebServer {
   const framework = process.env.FRAMEWORK || "react"
 
+  const reactPort = process.env.PORT ?? "3000"
+  const vuePort = process.env.PORT ?? "3001"
+  const solidPort = process.env.PORT ?? "3002"
+  const sveltePort = process.env.PORT ?? "3003"
+  const preactPort = process.env.PORT ?? "3004"
+
   const frameworks: Record<string, WebServer> = {
     react: {
       cwd: "./examples/next-ts",
-      command: "cross-env PORT=3000 pnpm dev",
-      url: "http://localhost:3000",
+      command: `cross-env PORT=${reactPort} pnpm dev`,
+      url: `http://localhost:${reactPort}`,
       reuseExistingServer: !CI,
     },
     vue: {
-      cwd: "./examples/vue-ts",
-      command: "pnpm vite --port 3001",
-      url: "http://localhost:3001",
+      cwd: "./examples/nuxt-ts",
+      command: `pnpm dev --port ${vuePort}`,
+      url: `http://localhost:${vuePort}`,
       reuseExistingServer: !CI,
     },
     solid: {
       cwd: "./examples/solid-ts",
-      command: "pnpm vite --port 3002",
-      url: "http://localhost:3002",
+      command: `pnpm dev --port ${solidPort}`,
+      url: `http://localhost:${solidPort}`,
       reuseExistingServer: !CI,
     },
     svelte: {
       cwd: "./examples/svelte-ts",
-      command: "pnpm vite --port 3003",
-      url: "http://localhost:3003",
+      command: `pnpm dev --port ${sveltePort}`,
+      url: `http://localhost:${sveltePort}`,
+      reuseExistingServer: !CI,
+    },
+    preact: {
+      cwd: "./examples/preact-ts",
+      command: `pnpm dev --port ${preactPort}`,
+      url: `http://localhost:${preactPort}`,
       reuseExistingServer: !CI,
     },
   }

@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -62,7 +62,8 @@ export interface ClipboardProps extends CommonProperties {
 
 export interface ClipboardSchema {
   state: "idle" | "copied"
-  props: RequiredBy<ClipboardProps, "timeout" | "translations">
+  props: ClipboardProps
+  defaultPropKey: "timeout" | "translations"
   context: {
     value: string
   }
@@ -81,6 +82,17 @@ export type ClipboardMachine = Machine<ClipboardSchema>
 
 export interface IndicatorProps {
   copied: boolean
+}
+
+export interface IndicatorState {
+  /**
+   * The copied state this indicator represents
+   */
+  copied: boolean
+  /**
+   * Whether the indicator matches the current copied state
+   */
+  visible: boolean
 }
 
 export interface ClipboardApi<T extends PropTypes = PropTypes> {
@@ -106,5 +118,9 @@ export interface ClipboardApi<T extends PropTypes = PropTypes> {
   getControlProps: () => T["element"]
   getTriggerProps: () => T["button"]
   getInputProps: () => T["input"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState: (props: IndicatorProps) => IndicatorState
   getIndicatorProps: (props: IndicatorProps) => T["element"]
 }

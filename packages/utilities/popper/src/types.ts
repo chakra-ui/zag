@@ -1,4 +1,11 @@
-import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
+import type {
+  AutoUpdateOptions,
+  Boundary,
+  ComputePositionReturn,
+  Middleware,
+  Placement,
+  VirtualElement,
+} from "@floating-ui/dom"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
@@ -21,6 +28,12 @@ export interface PositioningOptions {
    * Whether styles applied by the positioning utility should be restored on cleanup.
    */
   restoreStyles?: boolean | undefined
+  /**
+   * Whether to apply computed position styles (`--x`, `--y`, `--z-index`) to the floating element.
+   * Set to `false` when the consumer applies these from context (e.g. for exit animations).
+   * @default true
+   */
+  applyStyles?: boolean | undefined
   /**
    * Whether the popover should be hidden when the reference element is detached
    */
@@ -90,6 +103,10 @@ export interface PositioningOptions {
    * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
    */
   boundary?: (() => Boundary) | Boundary | "clipping-ancestors" | undefined
+  /**
+   * Extra Floating UI middleware, prepended to the built-in stack so it runs before `offset`.
+   */
+  middleware?: Middleware[] | undefined
   /**
    * Options to activate auto-update listeners
    */

@@ -14,6 +14,7 @@ export type {
   ElementIds,
   HiddenInputProps,
   IntlTranslations,
+  RootState,
   SegmentPathProps,
   StrokeOptions,
   DataUrlOptions,

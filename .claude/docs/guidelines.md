@@ -25,8 +25,8 @@
 
 ### Pre-Commit Hooks
 
-- ESLint for code quality
-- Prettier for formatting
+- oxlint for code quality
+- oxfmt for formatting
 - TypeScript type checking
 - Commit message linting (conventional commits)
 

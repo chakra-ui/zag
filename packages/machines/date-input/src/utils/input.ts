@@ -1,13 +1,18 @@
 import { DateFormatter } from "@internationalized/date"
 import type { Params } from "@zag-js/core"
 import type { DateInputSchema, DateSegment } from "../date-input.types"
-import { advanceToNextSegment, getActiveDisplayValue, setDisplayValue } from "./validity"
+import { IncompleteDate } from "./incomplete-date"
+import { goToNextSegment, getActiveDisplayValue, setDisplayValue } from "./validity"
 
 export function isNumberString(value: string) {
   return !Number.isNaN(Number.parseInt(value))
 }
 
-export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSegment, input: string) {
+export function updateSegmentValue(
+  ctx: Params<DateInputSchema>,
+  segment: DateSegment,
+  input: string,
+): IncompleteDate | undefined {
   const { context, prop } = ctx
   const type = segment.type as DateSegment["type"]
   const index = context.get("activeIndex")
@@ -16,6 +21,7 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
   const placeholderValue = context.get("placeholderValue")
 
   let dv = getActiveDisplayValue(ctx)
+  let next: IncompleteDate | undefined
 
   switch (type) {
     case "dayPeriod": {
@@ -33,14 +39,15 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
 
       const lowerInput = input.toLowerCase()
       if (am.toLowerCase().startsWith(lowerInput)) {
-        setDisplayValue(ctx, index, dv.set("dayPeriod", 0, placeholderValue))
+        next = dv.set("dayPeriod", 0, placeholderValue)
       } else if (pm.toLowerCase().startsWith(lowerInput)) {
-        setDisplayValue(ctx, index, dv.set("dayPeriod", 12, placeholderValue))
+        next = dv.set("dayPeriod", 1, placeholderValue)
       } else {
         break
       }
 
-      advanceToNextSegment(ctx)
+      setDisplayValue(ctx, index, next)
+      goToNextSegment(ctx)
       break
     }
     case "era": {
@@ -54,8 +61,9 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
         const eraDate = dv.toValue(placeholderValue).set({ year: 1 }).toDate(prop("timeZone"))
         const formattedEra = eraFormatter.formatToParts(eraDate).find((p) => p.type === "era")?.value
         if (formattedEra && formattedEra.toLowerCase().startsWith(lowerInput)) {
-          setDisplayValue(ctx, index, dv.set("era", eras[i], placeholderValue))
-          advanceToNextSegment(ctx)
+          next = dv.set("era", eras[i], placeholderValue)
+          setDisplayValue(ctx, index, next)
+          goToNextSegment(ctx)
           break
         }
       }
@@ -103,6 +111,7 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
       const shouldSetValue = segmentValue !== 0 || allowsZero
       if (shouldSetValue) {
         dv = dv.set(type, segmentValue, placeholderValue)
+        next = dv
         setDisplayValue(ctx, index, dv)
       }
 
@@ -112,7 +121,7 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
       ) {
         context.set("enteredKeys", "")
         if (shouldSetValue) {
-          advanceToNextSegment(ctx)
+          goToNextSegment(ctx)
         }
       } else {
         context.set("enteredKeys", newValue)
@@ -120,4 +129,6 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
       break
     }
   }
+
+  return next
 }

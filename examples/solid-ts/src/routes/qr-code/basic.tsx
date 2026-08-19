@@ -5,6 +5,7 @@ import { qrCodeControls } from "@zag-js/shared"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/qr-code.css"
 
 export default function Page() {
   const controls = useControls(qrCodeControls)

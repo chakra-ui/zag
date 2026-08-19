@@ -6,6 +6,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
   import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-svelte"
+  import "@styles/tree-view.css"
 
   const controls = useControls(treeviewControls)
 
@@ -75,7 +76,7 @@
 
   <div {...api.getNodeGroupProps({ indexPath, node })}>
     <div {...api.getNodeProps({ indexPath, node })}>
-      <div {...api.getCellProps({ indexPath, node })}>
+      <div {...api.getNodeCellProps({ indexPath, node })}>
         {#if nodeState.isBranch}
           <FolderIcon />
         {:else}

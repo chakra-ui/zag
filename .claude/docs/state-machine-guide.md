@@ -22,31 +22,19 @@ export const machine = createMachine<ComponentSchema>({
   refs() {
     /* ... */
   },
-  computed: {
-    /* ... */
-  },
+  computed: {/* ... */},
   watch({ track, action, prop }) {
     /* ... */
   },
   initialState({ prop }) {
     /* ... */
   },
-  on: {
-    /* global event handlers */
-  },
-  states: {
-    /* state definitions */
-  },
+  on: {/* global event handlers */},
+  states: {/* state definitions */},
   implementations: {
-    guards: {
-      /* ... */
-    },
-    actions: {
-      /* ... */
-    },
-    effects: {
-      /* ... */
-    },
+    guards: {/* ... */},
+    actions: {/* ... */},
+    effects: {/* ... */},
   },
 })
 ```

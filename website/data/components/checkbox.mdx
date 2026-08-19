@@ -28,7 +28,8 @@ Install the checkbox package:
 
 Check the checkbox anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="checkbox" />
 
@@ -149,7 +150,7 @@ const service = useMachine(checkbox.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Checked state
 
@@ -157,15 +158,15 @@ When the checkbox input is checked, the `data-state` attribute is added to the
 root, control and label parts.
 
 ```css
-[data-part="root"][data-state="checked|unchecked|indeterminate"] {
+[data-checkbox-root][data-state="checked|unchecked|indeterminate"] {
   /* styles for when checkbox is checked */
 }
 
-[data-part="control"][data-state="checked|unchecked|indeterminate"] {
+[data-checkbox-control][data-state="checked|unchecked|indeterminate"] {
   /* styles for when checkbox is checked */
 }
 
-[data-part="label"][data-state="checked|unchecked|indeterminate"] {
+[data-checkbox-label][data-state="checked|unchecked|indeterminate"] {
   /* styles for when checkbox is checked */
 }
 ```
@@ -176,15 +177,15 @@ When the checkbox input is focused, the `data-focus` attribute is added to the
 root, control and label parts.
 
 ```css
-[data-part="root"][data-focus] {
+[data-checkbox-root][data-focus] {
   /* styles for root focus state */
 }
 
-[data-part="control"][data-focus] {
+[data-checkbox-control][data-focus] {
   /* styles for control focus state */
 }
 
-[data-part="label"][data-focus] {
+[data-checkbox-label][data-focus] {
   /* styles for label focus state */
 }
 ```
@@ -195,15 +196,15 @@ When the checkbox is disabled, the `data-disabled` attribute is added to the
 root, control and label parts.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-checkbox-root][data-disabled] {
   /* styles for root disabled state */
 }
 
-[data-part="control"][data-disabled] {
+[data-checkbox-control][data-disabled] {
   /* styles for control disabled state */
 }
 
-[data-part="label"][data-disabled] {
+[data-checkbox-label][data-disabled] {
   /* styles for label disabled state */
 }
 ```
@@ -214,15 +215,15 @@ When the checkbox is invalid, the `data-invalid` attribute is added to the root,
 control and label parts.
 
 ```css
-[data-part="root"][data-invalid] {
+[data-checkbox-root][data-invalid] {
   /* styles for root invalid state */
 }
 
-[data-part="control"][data-invalid] {
+[data-checkbox-control][data-invalid] {
   /* styles for control invalid state */
 }
 
-[data-part="label"][data-invalid] {
+[data-checkbox-label][data-invalid] {
   /* styles for label invalid state */
 }
 ```

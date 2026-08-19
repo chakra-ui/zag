@@ -4,7 +4,7 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Presence from "$lib/components/presence.svelte"
-  import styles from "../../../../../shared/styles/drawer.module.css"
+  import styles from "@styles/drawer.module.css"
 
   const id = $props.id()
 

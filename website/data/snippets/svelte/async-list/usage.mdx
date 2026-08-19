@@ -1,7 +1,7 @@
 ```svelte
 <script>
   import * as asyncList from "@zag-js/async-list"
-  import { useMachine, normalizeProps } from "@zag-js/svelte"
+  import { useMachine } from "@zag-js/svelte"
 
   const service = useMachine(asyncList.machine, {
     async load({ signal }) {
@@ -14,28 +14,21 @@
     },
   })
 
-  const api = $derived(asyncList.connect(service, normalizeProps))
+  const api = $derived(asyncList.connect(service))
 </script>
 
 <div>
   <div>
     <pre>{JSON.stringify(api.items, null, 2)}</pre>
-    <input
-      type="text"
-      oninput={(e) => api.setFilterText(e.target.value)}
-    />
+    <input type="text" oninput={(e) => api.setFilter(e.target.value)} />
   </div>
   <div>
-    {#if api.loading}
+    {#if api.isLoading}
       <p>Loading...</p>
     {/if}
     <button onclick={() => api.reload()}>Reload</button>
     <button onclick={() => api.loadMore()}>Load More</button>
-    <button
-      onclick={() => api.sort({ column: "name", direction: "ascending" })}
-    >
-      Sort by name
-    </button>
+    <button onclick={() => api.setSorting({ column: "name", direction: "ascending" })}>Sort by name</button>
   </div>
 </div>
 ```

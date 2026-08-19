@@ -21,7 +21,8 @@ Install the pagination package:
 To set up the pagination correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="pagination" />
 
@@ -174,36 +175,36 @@ const service = useMachine(pagination.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-part="root"] {
+[data-pagination-root] {
   /* styles for the pagination's root */
 }
 
-[data-part="item"] {
+[data-pagination-item] {
   /* styles for the pagination's items */
 }
 
-[data-part="ellipsis"] {
+[data-pagination-ellipsis] {
   /* styles for the pagination's ellipsis */
 }
 
-[data-part="prev-trigger"] {
+[data-pagination-prev-trigger] {
   /* styles for the pagination's previous page trigger */
 }
 
-[data-part="next-trigger"] {
+[data-pagination-next-trigger] {
   /* styles for the pagination's next page trigger */
 }
 
 /* We add a data-disabled attribute to the prev/next items when on the first/last page  */
 
-[data-part="prev-trigger"][data-disabled] {
+[data-pagination-prev-trigger][data-disabled] {
   /* styles for the pagination's previous page trigger when on first page */
 }
 
-[data-part="next-trigger"][data-disabled] {
+[data-pagination-next-trigger][data-disabled] {
   /* styles for the pagination's next page trigger when on first page */
 }
 ```

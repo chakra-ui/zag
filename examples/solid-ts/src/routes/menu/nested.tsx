@@ -5,6 +5,7 @@ import { For, createMemo, createUniqueId, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/menu.css"
 
 export default function Page() {
   const service = useMachine(menu.machine, { id: createUniqueId() })

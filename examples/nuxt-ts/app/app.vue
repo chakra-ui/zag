@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import "../../../shared/src/style.css"
+import "@styles/global.css"
 </script>
 
 <template>
   <div class="page">
-    <aside class="nav">
-      <header>Zagjs</header>
-      <SideNav />
-    </aside>
+    <SideNav />
     <NuxtPage />
   </div>
 </template>

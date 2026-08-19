@@ -3,7 +3,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import * as dom from "./collapsible.dom"
-import type { CollapsibleApi, CollapsibleSchema } from "./collapsible.types"
+import type { CollapsibleApi, CollapsibleSchema, ContentState, TriggerState } from "./collapsible.types"
 import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
@@ -27,6 +27,22 @@ export function connect<T extends PropTypes>(
 
   const skip = !context.get("initial") && open
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(): TriggerState {
+    return { open, visible, disabled }
+  }
+
+  function getContentState(): ContentState {
+    return { open, visible, disabled, hasCollapsedSize }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     disabled,
     visible,
@@ -48,15 +64,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "data-collapsible": "",
-        "data-state": skip ? undefined : open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-has-collapsed-size": dataAttr(hasCollapsedSize),
-        hidden: !visible && !hasCollapsedSize,
+        "data-state": skip ? undefined : contentState.open ? "open" : "closed",
+        "data-disabled": dataAttr(contentState.disabled),
+        "data-has-collapsed-size": dataAttr(contentState.hasCollapsedSize),
+        hidden: !contentState.visible && !contentState.hasCollapsedSize,
         dir: prop("dir"),
         style: {
           "--height": toPx(height),
@@ -79,20 +97,22 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getTriggerState,
     getTriggerProps() {
+      const triggerState = getTriggerState()
       return normalize.element({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
+        "data-state": triggerState.open ? "open" : "closed",
+        "data-disabled": dataAttr(triggerState.disabled),
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": visible || false,
+        "aria-expanded": triggerState.visible || false,
         onClick(event) {
           if (event.defaultPrevented) return
-          if (disabled) return
-          send({ type: open ? "close" : "open" })
+          if (triggerState.disabled) return
+          send({ type: triggerState.open ? "close" : "open" })
         },
       })
     },

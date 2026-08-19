@@ -3,6 +3,7 @@ import * as slider from "@zag-js/slider"
 import { sliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/slider.css"
 
 const controls = useControls(sliderControls)
 

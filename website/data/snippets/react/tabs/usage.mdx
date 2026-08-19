@@ -10,7 +10,10 @@ const data = [
 ]
 
 export function Tabs() {
-  const service = useMachine(tabs.machine, { id: useId(), defaultValue: "item-1" })
+  const service = useMachine(tabs.machine, {
+    id: useId(),
+    defaultValue: "item-1",
+  })
 
   const api = tabs.connect(service, normalizeProps)
 

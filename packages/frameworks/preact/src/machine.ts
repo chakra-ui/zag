@@ -9,6 +9,7 @@ import type {
   Machine,
   MachineSchema,
   Params,
+  InputProps,
   Service,
 } from "@zag-js/core"
 import {
@@ -21,7 +22,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
@@ -30,7 +31,7 @@ import { useTrack } from "./track"
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
-  userProps: Partial<T["props"]> = {},
+  userProps: InputProps<T> = {} as InputProps<T>,
 ): Service<T> {
   const scope = useMemo(() => {
     const { id, ids, getRootNode } = userProps as any
@@ -41,7 +42,7 @@ export function useMachine<T extends MachineSchema>(
     if (machine.debug) console.log(...args)
   }
 
-  const props: any = machine.props?.({ props: userProps, scope }) ?? userProps
+  const props: any = machine.props?.({ props: compact(userProps), scope }) ?? userProps
   const prop = useProp(props)
 
   const context = machine.context?.({
@@ -141,7 +142,9 @@ export function useMachine<T extends MachineSchema>(
 
   const guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(getParams())
-    return machine.implementations?.guards?.[str](getParams())
+    const fn = machine.implementations?.guards?.[str]
+    if (!fn) warn(`[zag-js] No implementation found for guard "${JSON.stringify(str)}"`)
+    return fn?.(getParams())
   }
 
   const effect = (keys: EffectsOrFn<T> | undefined) => {
@@ -202,13 +205,19 @@ export function useMachine<T extends MachineSchema>(
 
       entering.forEach((item) => {
         const cleanup = effect(item.state?.effects)
-        if (cleanup) effects.current.set(item.path, cleanup)
+        if (cleanup) {
+          const existing = effects.current.get(item.path)
+          effects.current.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
+        }
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.current.set(INIT_STATE, cleanup)
+        if (cleanup) {
+          const existing = effects.current.get(INIT_STATE)
+          effects.current.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
+        }
       }
 
       entering.forEach((item) => {

@@ -3,6 +3,7 @@ import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { gridListControls, gridListData } from "@zag-js/shared"
 import { CheckIcon } from "lucide-vue-next"
+import "@styles/gridlist.css"
 
 interface Mailbox {
   id: string
@@ -41,11 +42,7 @@ const api = computed(() => gridlist.connect(service, normalizeProps))
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">Mailboxes</label>
         <div v-bind="api.getContentProps()">
-          <div
-            v-for="item in gridListData"
-            :key="item.id"
-            v-bind="api.getItemProps({ item, focusOnHover: true })"
-          >
+          <div v-for="item in gridListData" :key="item.id" v-bind="api.getItemProps({ item, focusOnHover: true })">
             <div v-bind="api.getCellProps()">
               <button v-if="api.hasCheckbox" v-bind="api.getItemCheckboxProps({ item })">
                 <CheckIcon v-bind="api.getItemIndicatorProps({ item })" />

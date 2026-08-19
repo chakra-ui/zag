@@ -2,6 +2,7 @@
 import * as editable from "@zag-js/editable"
 import { editableControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/editable.css"
 
 const controls = useControls(editableControls)
 

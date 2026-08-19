@@ -5,6 +5,7 @@
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { onMount } from "svelte"
+  import "@styles/menu.css"
 
   const service = useMachine(menu.machine, { id: "1" })
   const root = $derived(menu.connect(service, normalizeProps))

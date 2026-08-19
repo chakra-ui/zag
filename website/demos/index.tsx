@@ -20,6 +20,7 @@ import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { Menubar } from "./menubar"
 import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
@@ -62,9 +63,11 @@ import { Drawer } from "./drawer"
 import { FloatingPanel } from "./floating-panel"
 import { Listbox } from "./listbox"
 import { Marquee } from "./marquee"
+import { NumberFlow } from "./number-flow"
 import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
+import { Toggle } from "./toggle"
 import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
@@ -255,6 +258,18 @@ const components = {
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
+  Menubar: () => (
+    <Playground
+      name="menubar"
+      component={Menubar}
+      defaultProps={{
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
+      }}
+    />
+  ),
   ContextMenu: () => <Playground name="context-menu" component={ContextMenu} />,
   NestedMenu: () => <Playground name="nested-menu" component={NestedMenu} />,
   NumberInput: () => (
@@ -322,7 +337,6 @@ const components = {
       component={Popover}
       defaultProps={{
         modal: false,
-        portalled: false,
         autoFocus: true,
         closeOnInteractOutside: true,
         closeOnEscape: true,
@@ -450,6 +464,15 @@ const components = {
   ),
 
   Toast: () => <Playground name="toast" component={ToastGroup} />,
+  Toggle: () => (
+    <Playground
+      name="toggle"
+      component={Toggle}
+      defaultProps={{
+        disabled: false,
+      }}
+    />
+  ),
   ToggleGroup: () => (
     <Playground
       name="toggle-group"
@@ -499,7 +522,7 @@ const components = {
         invalid: false,
         granularity: {
           default: "day",
-          options: ["day", "month", "year", "hour", "minute", "second"],
+          options: ["day", "hour", "minute", "second"],
         },
         selectionMode: { default: "single", options: ["single", "range"] },
         shouldForceLeadingZeros: false,
@@ -562,6 +585,17 @@ const components = {
         draggable: true,
         disabled: false,
         lockAspectRatio: false,
+      }}
+    />
+  ),
+  NumberFlow: () => (
+    <Playground
+      name="number-flow"
+      component={NumberFlow}
+      defaultProps={{
+        trend: false,
+        continuous: false,
+        stagger: "25ms",
       }}
     />
   ),

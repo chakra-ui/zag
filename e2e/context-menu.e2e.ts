@@ -44,4 +44,13 @@ test.describe("context menu", () => {
     await I.seeDropdown()
     await I.seeMenuIsPositioned()
   })
+
+  test("should open at the touch point on long-press", async () => {
+    const point = await I.getContextTriggerPoint()
+    await I.longPressContextTrigger(point)
+
+    // the long-press timer opens the menu after 700ms
+    await I.seeDropdown()
+    await I.seeMenuIsPositionedNear(point)
+  })
 })

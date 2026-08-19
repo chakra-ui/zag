@@ -37,6 +37,7 @@ import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
 import { ToastAnatomy } from "./toast"
 import { TocAnatomy } from "./toc"
+import { ToggleAnatomy } from "./toggle"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
@@ -69,6 +70,7 @@ export const allComponents = {
   "segmented-control": SegmentedControlAnatomy,
   "tags-input": TagsInputAnatomy,
   "toggle-group": ToggleGroupAnatomy,
+  toggle: ToggleAnatomy,
   accordion: AccordionAnatomy,
   avatar: AvatarAnatomy,
   carousel: CarouselAnatomy,

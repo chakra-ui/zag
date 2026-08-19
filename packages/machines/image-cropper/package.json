@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/image-cropper",
-  "version": "1.39.1",
+  "version": "2.0.0-next.1",
   "description": "Core logic for the image-cropper widget implemented as a state machine",
   "keywords": [
     "js",
@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

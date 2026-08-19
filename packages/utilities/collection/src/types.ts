@@ -57,7 +57,7 @@ export interface TreeCollectionMethods<T> {
   isNodeDisabled: (node: T) => boolean
   nodeToValue: (node: T) => string
   nodeToString: (node: T) => string
-  nodeToChildren: (node: T) => any[]
+  nodeToChildren: (node: T) => any[] | undefined | null
   nodeToChildrenCount: (node: T) => number | undefined
 }
 

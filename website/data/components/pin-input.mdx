@@ -31,7 +31,8 @@ Install the pin input package:
 
 Check the pin input anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="pin-input" />
 
@@ -255,7 +256,7 @@ const service = useMachine(pinInput.machine, {
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Completed state
 
@@ -263,11 +264,11 @@ When all values have been filled, we attach a `data-complete` attribute to the
 root and input parts.
 
 ```css
-[data-part="root"][data-complete] {
+[data-pin-input-root][data-complete] {
   /* styles for when all value has been filled */
 }
 
-[data-part="input"][data-complete] {
+[data-pin-input-input][data-complete] {
   /* styles for when all value has been filled */
 }
 ```
@@ -278,7 +279,7 @@ When an invalid value is entered, we attach a `data-invalid` attribute to the
 affected input part.
 
 ```css
-[data-part="input"][data-invalid] {
+[data-pin-input-input][data-invalid] {
   /* styles for when the input is invalid */
 }
 ```
@@ -289,11 +290,11 @@ When the pin-input is disabled, we attach a `data-disabled` attribute to the
 root and input parts.
 
 ```css
-[data-part="root"][data-disabled] {
+[data-pin-input-root][data-disabled] {
   /* styles for when the input is disabled */
 }
 
-[data-part="input"][data-disabled] {
+[data-pin-input-input][data-disabled] {
   /* styles for when the input is disabled */
 }
 ```

@@ -3,6 +3,7 @@ import * as clipboard from "@zag-js/clipboard"
 import { clipboardControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
+import "@styles/clipboard.css"
 
 const controls = useControls(clipboardControls)
 

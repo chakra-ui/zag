@@ -3,6 +3,7 @@ import * as radio from "@zag-js/radio-group"
 import { radioControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
+import "@styles/radio-group.css"
 
 const controls = useControls(radioControls)
 

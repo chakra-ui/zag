@@ -26,7 +26,8 @@ Install the steps package:
 
 Check the steps anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="steps" />
 
@@ -47,7 +48,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
-## Setting the initial step
+### Setting the initial step
 
 Set the initial step by passing `defaultStep` to the machine context.
 
@@ -59,7 +60,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Controlled current step
+### Controlled current step
 
 Use `step` and `onStepChange` for controlled usage.
 
@@ -72,7 +73,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for step change
+### Listening for step change
 
 When the active step changes, the machine will invoke the `onStepChange` event
 
@@ -85,7 +86,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Listening for steps completion
+### Listening for steps completion
 
 When all steps are completed, the machine will invoke the `onStepComplete` event
 
@@ -97,7 +98,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Enforcing linear steps
+### Enforcing linear steps
 
 To enforce linear steps, you can set the `linear` prop to `true` when creating
 the steps machine. This will prevent users from skipping steps.
@@ -108,7 +109,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Validating steps in linear mode
+### Validating steps in linear mode
 
 Use `isStepValid` to block forward navigation when a step is incomplete.
 
@@ -125,7 +126,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Skipping optional steps
+### Skipping optional steps
 
 Use `isStepSkippable` when some steps should be bypassed by next/prev
 navigation.
@@ -138,7 +139,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Changing the orientation
+### Changing the orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
@@ -150,7 +151,7 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-## Programmatic navigation
+### Programmatic navigation
 
 Use the API methods to move through the flow in code.
 
@@ -163,30 +164,30 @@ api.resetStep()
 
 ## Styling guide
 
-Each part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="steps"][data-part="root"] {
+[data-steps-root] {
   /* styles for the root part */
 }
 
-[data-scope="steps"][data-part="root"][data-orientation="horizontal|vertical"] {
+[data-steps-root][data-orientation="horizontal|vertical"] {
   /* styles for the root part based on orientation */
 }
 
-[data-scope="steps"][data-part="list"] {
+[data-steps-list] {
   /* styles for the list part */
 }
 
-[data-scope="steps"][data-part="list"][data-orientation="horizontal|vertical"] {
+[data-steps-list][data-orientation="horizontal|vertical"] {
   /* styles for the list part based on orientation */
 }
 
-[data-scope="steps"][data-part="separator"] {
+[data-steps-separator] {
   /* styles for the separator part */
 }
 
-[data-scope="steps"][data-part="separator"][data-orientation="horizontal|vertical"] {
+[data-steps-separator][data-orientation="horizontal|vertical"] {
   /* styles for the separator part based on orientation */
 }
 ```
@@ -196,11 +197,11 @@ Each part includes a `data-part` attribute you can target in CSS.
 To style the current step, you can use the `data-current` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-current] {
+[data-steps-item][data-current] {
   /* item styles for the current step */
 }
 
-[data-scope="steps"][data-part="separator"][data-current] {
+[data-steps-separator][data-current] {
   /* separator styles for the current step */
 }
 ```
@@ -210,11 +211,11 @@ To style the current step, you can use the `data-current` attribute.
 To style the completed step, you can use the `data-complete` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-complete] {
+[data-steps-item][data-complete] {
   /* item styles for the completed step */
 }
 
-[data-scope="steps"][data-part="separator"][data-complete] {
+[data-steps-separator][data-complete] {
   /* separator styles for the completed step */
 }
 ```
@@ -224,11 +225,11 @@ To style the completed step, you can use the `data-complete` attribute.
 To style the incomplete step, you can use the `data-incomplete` attribute.
 
 ```css
-[data-scope="steps"][data-part="item"][data-incomplete] {
+[data-steps-item][data-incomplete] {
   /* item styles for the incomplete step */
 }
 
-[data-scope="steps"][data-part="separator"][data-incomplete] {
+[data-steps-separator][data-incomplete] {
   /* separator styles for the incomplete step */
 }
 ```

@@ -10,6 +10,7 @@ export type {
   GridListService as Service,
   ActionDetails,
   CellProps,
+  ContentState,
   ElementIds,
   FocusChangeDetails,
   ItemCheckboxProps,

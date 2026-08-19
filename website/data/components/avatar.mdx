@@ -24,7 +24,8 @@ Install the avatar package:
 
 Check the avatar anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="avatar" />
 
@@ -47,40 +48,58 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="avatar/usage.mdx" />
 
-### Listening for loading status changes
+### Loading status
 
-When the image loads or fails, `onStatusChange` is invoked.
+The image loading status is `loading`, `loaded`, or `error`. Read the current
+value from `api.status`, or react to changes with `onStatusChange`.
 
 ```tsx {2}
 const service = useMachine(avatar.machine, {
   onStatusChange(details) {
-    // details => { status: "error" | "loaded" }
+    // details => { status: "loading" | "error" | "loaded" }
   },
 })
 ```
 
-### Updating the image source programmatically
+### Updating the image source
 
-Use `api.setSrc` when the image source changes after mount.
+You own the image `src`; the machine observes the rendered image and owns its
+loading lifecycle. Update `src` however you normally would and the machine
+reacts, resetting to `loading` and then to `loaded` or `error`.
+
+This holds for `srcSet` and `<picture>` too, since the machine watches the
+element rather than a value you hand it.
 
 ```tsx
-api.setSrc(nextSrc)
+const [src, setSrc] = useState(initialSrc)
+
+<img alt="" src={src} {...api.getImageProps()} />
 ```
+
+Two cases the machine already covers, so you don't have to:
+
+- An image served from cache can finish loading before the `load` handler is
+  attached. The machine checks whether the image is already complete.
+- Setting `src` to a URL that previously failed retries it, rather than staying
+  in the error state.
+
+If the image is loaded by something that doesn't fire `load` and `error` on the
+element itself, drive the lifecycle with `api.setLoaded()` and `api.setError()`.
 
 ## Styling guide
 
-Each avatar part includes a `data-part` attribute you can target in CSS.
+Each part includes a component-scoped data attribute you can target in CSS.
 
 ```css
-[data-scope="avatar"][data-part="root"] {
+[data-avatar-root] {
   /* Styles for the root part */
 }
 
-[data-scope="avatar"][data-part="image"] {
+[data-avatar-image] {
   /* Styles for the image part */
 }
 
-[data-scope="avatar"][data-part="fallback"] {
+[data-avatar-fallback] {
   /* Styles for the fallback part */
 }
 ```

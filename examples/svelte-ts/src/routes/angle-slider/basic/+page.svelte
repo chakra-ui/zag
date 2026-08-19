@@ -5,6 +5,7 @@
   import * as angleSlider from "@zag-js/angle-slider"
   import { angleSliderControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import "@styles/angle-slider.css"
 
   const controls = useControls(angleSliderControls)
 

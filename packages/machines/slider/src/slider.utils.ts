@@ -1,6 +1,13 @@
 import type { Params } from "@zag-js/core"
-import { clampValue, getNextStepValue, getPreviousStepValue, getValueRanges, snapValueToStep } from "@zag-js/utils"
-import type { SliderSchema, ThumbCollisionBehavior } from "./slider.types"
+import {
+  clampValue,
+  getNextStepValue,
+  getPreviousStepValue,
+  getValuePercent,
+  getValueRanges,
+  snapValueToStep,
+} from "@zag-js/utils"
+import type { SliderOrigin, SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
 
@@ -223,5 +230,30 @@ export function assignArray(current: number[], next: number[]) {
   for (let i = 0; i < next.length; i++) {
     const value = next[i]
     current[i] = value
+  }
+}
+
+/** Resolves the `origin` prop to a percent position (0-100) within `min`-`max`. */
+export function getOriginPercent(origin: SliderOrigin, min: number, max: number): number {
+  if (typeof origin === "number") {
+    return clampValue(100 * getValuePercent(origin, min, max), 0, 100)
+  }
+  switch (origin) {
+    case "end":
+      return 100
+    case "center":
+      return 50
+    case "start":
+    default:
+      return 0
+  }
+}
+
+/** Track-fill insets (from the left/right edges) needed to fill between origin and value. */
+export function getFillRange(valuePercent: number, originPercent: number): { start: number; end: number } {
+  const isBeforeOrigin = valuePercent < originPercent
+  return {
+    start: isBeforeOrigin ? valuePercent : originPercent,
+    end: isBeforeOrigin ? 100 - originPercent : 100 - valuePercent,
   }
 }

@@ -1,5 +1,165 @@
 # @zag-js/drawer
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move layer stack styles and attributes into machine
+  connect props so framework renders cannot overwrite them.
+
+  **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
+  nesting metadata, and pointer blocking state to the registered element through your framework's render output.
+
+- Updated dependencies [[`037af89`](https://github.com/chakra-ui/zag/commit/037af89695fa2459fe496c419cbf56ed56510d78)]:
+  - @zag-js/dismissable@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/aria-hidden@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-trap@2.0.0-next.1
+  - @zag-js/remove-scroll@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- [`6091040`](https://github.com/chakra-ui/zag/commit/6091040e02a91b2061790778974054361bdc6c9f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix backdrop flicker on controlled close with an async `open`
+  setter by clearing swipe animation overrides only when entering `closing`
+
+- [`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve initial focus selection in dialogs and drawers. Mark
+  chrome controls with `data-no-autofocus` to skip them, or mark the desired target with `data-autofocus`.
+
+  ```jsx
+  <div {...api.getContentProps()}>
+    {/* skipped on open, still in tab order */}
+    <button {...api.getCloseTriggerProps()} data-no-autofocus>
+      Close
+    </button>
+    <button data-no-autofocus aria-label="Help">
+      ?
+    </button>
+
+    {/* receives initial focus */}
+    <input data-autofocus />
+    <button>Save</button>
+  </div>
+  ```
+
+  Priority: `initialFocusEl` → `[data-autofocus]` → first tabbable without `[data-no-autofocus]` → content root.
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- Updated dependencies [[`2b19978`](https://github.com/chakra-ui/zag/commit/2b199781b1a8d9b8a57b03dff443cf5dbf55c912),
+  [`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`9ccb894`](https://github.com/chakra-ui/zag/commit/9ccb89426e9d48483bd95739800322c4865ecacc),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/focus-trap@1.43.0
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/remove-scroll@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/aria-hidden@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/aria-hidden@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-trap@1.42.0
+  - @zag-js/remove-scroll@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/aria-hidden@2.0.0-next.0
+  - @zag-js/dismissable@2.0.0-next.0
+  - @zag-js/focus-trap@2.0.0-next.0
+  - @zag-js/remove-scroll@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- [`de7524c`](https://github.com/chakra-ui/zag/commit/de7524cfc27c2c183345ee019c547eefda2771f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix custom trigger elements (via `ids.trigger`) being ignored when
+  shared across components (e.g. wrapping a `Popover.Trigger` in a `Tooltip` with the same id), causing broken
+  positioning and a close-then-reopen cycle on trigger clicks.
+
+- [#3127](https://github.com/chakra-ui/zag/pull/3127)
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix trigger element lookups in shadow root.
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`027d513`](https://github.com/chakra-ui/zag/commit/027d5139da08fe0bf628c40e31dd488f1dde17d1),
+  [`352f21e`](https://github.com/chakra-ui/zag/commit/352f21e170334a3fb50c2d9252ed45d1540ddd71),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`d729dc2`](https://github.com/chakra-ui/zag/commit/d729dc23d3bdb10aaac9e4016503bd6ea49b26b9),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dismissable@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/remove-scroll@1.41.0
+  - @zag-js/aria-hidden@1.41.0
+  - @zag-js/focus-trap@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/aria-hidden@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dismissable@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/focus-trap@1.40.0
+  - @zag-js/remove-scroll@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

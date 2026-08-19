@@ -50,15 +50,19 @@ watch(nodeRef, () => {
 // Restart CSS animations when element transitions from display:none to visible.
 // Vue's synchronous send applies hidden=false and data-state="open" in the same paint,
 // so the browser doesn't trigger the animation for elements coming out of display:none.
-watch(present, (isPresent) => {
-  if (isPresent) {
-    const node = nodeRef.value as HTMLElement | null
-    if (!node) return
-    node.style.animation = "none"
-    void node.offsetHeight
-    node.style.animation = ""
-  }
-}, { flush: "post" })
+watch(
+  present,
+  (isPresent) => {
+    if (isPresent) {
+      const node = nodeRef.value as HTMLElement | null
+      if (!node) return
+      node.style.animation = "none"
+      void node.offsetHeight
+      node.style.animation = ""
+    }
+  },
+  { flush: "post" },
+)
 
 const unmounted = computed(() => {
   if (!api.value.present && !wasEverPresent.value && props.lazyMount) return true

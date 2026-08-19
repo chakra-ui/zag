@@ -5,6 +5,7 @@ import { ratingControls } from "@zag-js/shared"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/rating-group.css"
 
 function HalfStar() {
   return (

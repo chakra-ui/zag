@@ -14,7 +14,7 @@ export const props = createProps<TocProps>()([
   "onActiveChange",
   "rootMargin",
   "scrollBehavior",
-  "getScrollEl",
+  "scrollEl",
   "threshold",
 ])
 

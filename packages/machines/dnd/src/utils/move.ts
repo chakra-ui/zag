@@ -27,6 +27,8 @@ export function reorder<T>(items: T[], options: ReorderOptions<T>): T[] {
   const { target, placement, itemToValue } = options
   const sourceValues = new Set(Array.isArray(options.source) ? options.source : [options.source])
 
+  if (sourceValues.has(target)) return items
+
   const dragged: T[] = []
   const remaining: T[] = []
 

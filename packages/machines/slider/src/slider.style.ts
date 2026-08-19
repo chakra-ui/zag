@@ -2,6 +2,7 @@ import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
 import { getValuePercent, getValueTransformer, toPx } from "@zag-js/utils"
 import type { SliderSchema } from "./slider.types"
+import { getFillRange, getOriginPercent } from "./slider.utils"
 
 type Ctx = Params<SliderSchema>
 
@@ -21,17 +22,9 @@ export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed">) {
   const [firstPercent, lastPercent] = getBounds(valuePercent)
 
   if (valuePercent.length === 1) {
-    if (prop("origin") === "center") {
-      const isNegative = valuePercent[0] < 50
-      const start = isNegative ? `${valuePercent[0]}%` : "50%"
-      const end = isNegative ? "50%" : `${100 - valuePercent[0]}%`
-      return { start, end }
-    }
-    if (prop("origin") === "end") {
-      return { start: `${lastPercent}%`, end: "0%" }
-    }
-
-    return { start: "0%", end: `${100 - lastPercent}%` }
+    const originPercent = getOriginPercent(prop("origin"), prop("min"), prop("max"))
+    const { start, end } = getFillRange(valuePercent[0], originPercent)
+    return { start: `${start}%`, end: `${end}%` }
   }
 
   return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }

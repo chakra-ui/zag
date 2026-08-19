@@ -3,7 +3,7 @@ import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./switch.anatomy"
 import * as dom from "./switch.dom"
-import type { SwitchApi, SwitchService } from "./switch.types"
+import type { RootState, SwitchApi, SwitchService } from "./switch.types"
 
 export function connect<T extends PropTypes>(service: SwitchService, normalize: NormalizeProps<T>): SwitchApi<T> {
   const { context, send, prop, scope } = service
@@ -16,18 +16,29 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
   const focused = !disabled && context.get("focused")
   const focusVisible = !disabled && context.get("focusVisible")
   const active = !disabled && context.get("active")
+  const invalid = !!prop("invalid")
 
-  const dataAttrs = {
-    "data-active": dataAttr(active),
-    "data-focus": dataAttr(focused),
-    "data-focus-visible": dataAttr(focusVisible),
-    "data-readonly": dataAttr(readOnly),
-    "data-hover": dataAttr(context.get("hovered")),
-    "data-disabled": dataAttr(disabled),
-    "data-state": checked ? "checked" : "unchecked",
-    "data-invalid": dataAttr(prop("invalid")),
-    "data-required": dataAttr(required),
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return {
+      checked,
+      disabled,
+      invalid,
+      required,
+      readOnly,
+      focused,
+      focusVisible,
+      hovered: context.get("hovered"),
+      active,
+    }
   }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     checked: checked,
@@ -40,10 +51,12 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
       send({ type: "CHECKED.TOGGLE", checked: checked, isTrusted: false })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.root.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
@@ -68,41 +81,45 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.label.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
       })
     },
 
     getThumbProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.thumb.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         "aria-hidden": true,
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        ...dataAttrs,
+        ...getDataAttrs(rootState),
         dir: prop("dir"),
         "aria-hidden": true,
       })
     },
 
     getHiddenInputProps() {
+      const rootState = getRootState()
       return normalize.input({
         id: dom.getHiddenInputId(scope),
         type: "checkbox",
         required: prop("required"),
-        defaultChecked: checked,
-        disabled: disabled,
+        defaultChecked: rootState.checked,
+        disabled: rootState.disabled,
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-invalid": prop("invalid"),
+        "aria-invalid": rootState.invalid,
         name: prop("name"),
         form: prop("form"),
         value: prop("value"),
@@ -125,5 +142,19 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
         },
       })
     },
+  }
+}
+
+function getDataAttrs(rootState: RootState) {
+  return {
+    "data-active": dataAttr(rootState.active),
+    "data-focus": dataAttr(rootState.focused),
+    "data-focus-visible": dataAttr(rootState.focusVisible),
+    "data-readonly": dataAttr(rootState.readOnly),
+    "data-hover": dataAttr(rootState.hovered),
+    "data-disabled": dataAttr(rootState.disabled),
+    "data-state": rootState.checked ? "checked" : "unchecked",
+    "data-invalid": dataAttr(rootState.invalid),
+    "data-required": dataAttr(rootState.required),
   }
 }

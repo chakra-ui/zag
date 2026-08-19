@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Virtualizer · Vanilla</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 20px;
+        max-width: 960px;
+        margin: 0;
+      }
+      #scroll-container {
+        height: 520px;
+        width: 100%;
+        overflow: auto;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin-top: 16px;
+        position: relative;
+        contain: strict;
+        will-change: scroll-position;
+      }
+      #inner {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Grid Virtualizer</h1>
+    <p style="color: #64748b">Virtualizing 1,000 rows × 50 columns.</p>
+
+    <div id="scroll-container" tabindex="0" aria-label="Virtualized grid">
+      <div id="inner"></div>
+    </div>
+
+    <script type="module" src="../src/virtualizer-grid.ts"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DataUrlType } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
 
 /* -----------------------------------------------------------------------------
@@ -55,7 +55,8 @@ type Computed = Readonly<{
 }>
 
 export interface QrCodeSchema {
-  props: RequiredBy<QrCodeProps, PropsWithDefault>
+  props: QrCodeProps
+  defaultPropKey: PropsWithDefault
   context: {
     value: string
   }

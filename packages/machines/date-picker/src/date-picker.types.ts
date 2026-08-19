@@ -9,9 +9,10 @@ import type {
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
 import type { DateRangePreset, DateValue } from "@zag-js/date-utils"
+import type { LayerSnapshot } from "@zag-js/dismissable"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -319,6 +320,10 @@ type PropsWithDefault =
 
 interface PrivateContext {
   /**
+   * The computed layer stack state used for declarative styles and attributes.
+   */
+  layer: LayerSnapshot | null
+  /**
    * The active input value (based on the active index)
    */
   inputValue: string
@@ -347,10 +352,6 @@ interface PrivateContext {
    * Whether the calendar should restore focus to the input when it closes.
    */
   restoreFocus?: boolean | undefined
-  /**
-   * Whether the popover has been positioned at least once.
-   */
-  positioned: boolean
   /**
    * The selected date(s).
    */
@@ -410,7 +411,8 @@ type Refs = {
 export interface DatePickerSchema {
   state: "idle" | "focused" | "open"
   tag: "open" | "closed"
-  props: RequiredBy<DatePickerProps, PropsWithDefault>
+  props: DatePickerProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: Refs
@@ -544,6 +546,98 @@ export interface MonthFormatOptions {
 
 export interface VisibleRangeText extends Range<string> {
   formatted: string
+}
+
+export interface RootState {
+  /**
+   * Whether the date picker is open.
+   */
+  open: boolean
+  /**
+   * Whether the date picker is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the date picker is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the date picker has no selected value.
+   */
+  empty: boolean
+}
+
+export interface TriggerState {
+  /**
+   * Whether the date picker is open.
+   */
+  open: boolean
+  /**
+   * Whether the trigger is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the trigger is showing the placeholder (no selected value).
+   */
+  placeholderShown: boolean
+  /**
+   * The current placement of the content relative to the trigger.
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on.
+   */
+  side: PlacementSide | undefined
+}
+
+export interface ContentState {
+  /**
+   * Whether the date picker is open.
+   */
+  open: boolean
+  /**
+   * Whether the content is nested within another layered element.
+   */
+  nested: boolean
+  /**
+   * Whether the content has nested layered elements within it.
+   */
+  hasNested: boolean
+  /**
+   * Whether the date picker is rendered inline.
+   */
+  inline: boolean
+  /**
+   * The current placement of the content relative to the trigger.
+   */
+  placement: Placement | undefined
+  /**
+   * The side of the trigger the content is placed on.
+   */
+  side: PlacementSide | undefined
+}
+
+export interface InputState {
+  /**
+   * Whether the date picker is open.
+   */
+  open: boolean
+  /**
+   * Whether the input is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the input is read-only.
+   */
+  readOnly: boolean
+  /**
+   * Whether the input value is invalid.
+   */
+  invalid: boolean
+  /**
+   * Whether the input is showing the placeholder (no selected value).
+   */
+  placeholderShown: boolean
 }
 
 export interface DatePickerApi<T extends PropTypes = PropTypes> {
@@ -743,9 +837,17 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   getYearTableCellState: (props: TableCellProps) => TableCellState
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of the content.
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getRangeTextProps: () => T["element"]
@@ -772,12 +874,20 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getPrevTriggerProps: (props?: ViewProps) => T["button"]
 
   getClearTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the trigger.
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getPresetTriggerProps: (props: PresetTriggerProps) => T["button"]
 
   getViewProps: (props?: ViewProps) => T["element"]
   getViewTriggerProps: (props?: ViewProps) => T["button"]
   getViewControlProps: (props?: ViewProps) => T["element"]
+  /**
+   * Returns the state of the input.
+   */
+  getInputState: () => InputState
   getInputProps: (props?: InputProps) => T["input"]
   getMonthSelectProps: () => T["select"]
   getYearSelectProps: () => T["select"]

@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
-import { getComputedStyle, getInitialFocus, raf } from "@zag-js/dom-query"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getInitialFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -10,7 +10,7 @@ import type { DialogSchema } from "./dialog.types"
 export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
-    const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const initialFocusEl = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
     const modal = typeof props.modal === "boolean" ? props.modal : true
     return {
       role: "dialog",
@@ -32,6 +32,9 @@ export const machine = createMachine<DialogSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
       })),
@@ -56,7 +59,7 @@ export const machine = createMachine<DialogSchema>({
 
   states: {
     open: {
-      entry: ["checkRenderedElements", "syncZIndex", "setInitialFocus"],
+      entry: ["checkRenderedElements", "setInitialFocus"],
       effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
@@ -126,13 +129,16 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
-          exclude: dom.getTriggerEls(scope),
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (!prop("closeOnInteractOutside")) {
@@ -166,7 +172,11 @@ export const machine = createMachine<DialogSchema>({
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: prop("initialFocusEl"),
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              getInitialEl: prop("initialFocusEl"),
+            }),
           setReturnFocus: (el) => {
             // If finalFocusEl is provided, use it
             const finalFocusEl = prop("finalFocusEl")?.()
@@ -214,20 +224,6 @@ export const machine = createMachine<DialogSchema>({
           context.set("rendered", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
-          })
-        })
-      },
-
-      syncZIndex({ scope }) {
-        raf(() => {
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-
-          const styles = getComputedStyle(contentEl)
-          const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
-          elems.forEach((node) => {
-            node?.style.setProperty("--z-index", styles.zIndex)
-            node?.style.setProperty("--layer-index", styles.getPropertyValue("--layer-index"))
           })
         })
       },

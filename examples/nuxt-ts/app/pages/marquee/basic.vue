@@ -2,6 +2,7 @@
 import * as marquee from "@zag-js/marquee"
 import { marqueeControls, marqueeData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/marquee.css"
 
 const controls = useControls(marqueeControls)
 

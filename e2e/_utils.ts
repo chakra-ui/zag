@@ -25,8 +25,11 @@ export const controls = (page: Page) => {
     },
     bool: async (id: string, value = true) => {
       const el = page.locator(testid(id))
-      if (value) await el.check()
-      else await el.uncheck()
+      // React tracks checkbox changes via `click`, so assigning `checked` directly is not observed.
+      await el.evaluate((node, checked) => {
+        const input = node as HTMLInputElement
+        if (input.checked !== checked) input.click()
+      }, value)
     },
     select: async (id: string, value: string) => {
       const el = page.locator(testid(id))
@@ -93,6 +96,8 @@ export const rect = async (el: Locator) => {
     maxY: bbox.y + bbox.height,
   }
 }
+
+export const approximatelyEqual = (a: number, b: number, tolerance = 1) => Math.abs(a - b) <= tolerance
 
 export async function isInViewport(viewport: Locator, el: Locator) {
   const bbox = await rect(el)

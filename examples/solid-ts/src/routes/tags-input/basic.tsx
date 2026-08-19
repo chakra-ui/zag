@@ -5,6 +5,7 @@ import { tagsInputControls } from "@zag-js/shared"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+import "@styles/tags-input.css"
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()

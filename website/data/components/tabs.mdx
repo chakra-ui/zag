@@ -28,7 +28,8 @@ Install the tabs package:
 
 Check the tabs anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM.
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
 
 <Anatomy id="tabs" />
 
@@ -209,11 +210,11 @@ When a tab is selected, a `data-selected` attribute is added to the trigger and
 content elements.
 
 ```css
-[data-part="trigger"][data-state="active"] {
+[data-tabs-trigger][data-state="active"] {
   /* Styles for selected tab */
 }
 
-[data-part="content"][data-state="active"] {
+[data-tabs-content][data-state="active"] {
   /* Styles for selected tab */
 }
 ```
@@ -224,7 +225,7 @@ When a tab is disabled, a `data-disabled` attribute is added to the trigger
 element.
 
 ```css
-[data-part="trigger"][data-disabled] {
+[data-tabs-trigger][data-disabled] {
   /* Styles for disabled tab */
 }
 ```
@@ -235,7 +236,7 @@ When a tab is focused, you the `:focus` or `:focus-visible` pseudo-class to
 style it.
 
 ```css
-[data-part="trigger"]:focus {
+[data-tabs-trigger]:focus {
   /* Styles for focused tab */
 }
 ```
@@ -243,7 +244,7 @@ style it.
 When any tab is focused, the list is given a `data-focus` attribute.
 
 ```css
-[data-part="list"][data-focus] {
+[data-tabs-list][data-focus] {
   /* Styles for when any tab is focused */
 }
 ```
@@ -254,19 +255,19 @@ All parts of the tabs component have the `data-orientation` attribute. You can
 use this to set the style for the horizontal or vertical tabs.
 
 ```css
-[data-part="trigger"][data-orientation="(horizontal|vertical)"] {
+[data-tabs-trigger][data-orientation="(horizontal|vertical)"] {
   /* Styles for horizontal/vertical tabs */
 }
 
-[data-part="root"][data-orientation="(horizontal|vertical)"] {
+[data-tabs-root][data-orientation="(horizontal|vertical)"] {
   /* Styles for horizontal/vertical root */
 }
 
-[data-part="indicator"][data-orientation="(horizontal|vertical)"] {
+[data-tabs-indicator][data-orientation="(horizontal|vertical)"] {
   /* Styles for horizontal/vertical tab-indicator */
 }
 
-[data-part="list"][data-orientation="(horizontal|vertical)"] {
+[data-tabs-list][data-orientation="(horizontal|vertical)"] {
   /* Styles for horizontal/vertical list */
 }
 ```
@@ -280,7 +281,7 @@ The transition definition is applied when the selected tab changes to allow the
 indicator move smoothly to the new selected tab.
 
 ```css
-[data-part="indicator"] {
+[data-tabs-indicator] {
   --transition-duration: 0.2s;
   --transition-timing-function: ease-in-out;
 }

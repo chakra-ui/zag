@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   raf,
   trackFormControl,
@@ -42,6 +42,9 @@ export const machine = createMachine<CascadeSelectSchema>({
 
   context({ prop, bindable }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       value: bindable<string[][]>(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
@@ -77,7 +80,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
-      positioned: bindable(() => ({ defaultValue: false })),
       fieldsetDisabled: bindable<boolean>(() => ({
         defaultValue: false,
       })),
@@ -299,17 +301,18 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["clearHighlightedValue", "scrollContentToTop", "clearPositioned"],
+      exit: ["scrollContentToTop"],
       effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
           {
             guard: "restoreFocus",
             target: "focused",
-            actions: ["focusTriggerEl"],
+            actions: ["focusTriggerEl", "clearHighlightedValue"],
           },
           {
             target: "idle",
+            actions: ["clearHighlightedValue"],
           },
         ],
         CLOSE: [
@@ -320,11 +323,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: "restoreFocus",
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             target: "idle",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearHighlightedValue"],
           },
         ],
         "TRIGGER.CLICK": [
@@ -334,7 +337,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
         ],
         "ITEM.CLICK": [
@@ -345,7 +348,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("canSelectItem", and("shouldCloseOnSelect", not("multiple"))),
             target: "focused",
-            actions: ["selectItem", "invokeOnClose", "focusTriggerEl"],
+            actions: ["selectItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "canSelectItem",
@@ -424,12 +427,12 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("isAtRootLevel", "restoreFocus"),
             target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "isAtRootLevel",
             target: "idle",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearHighlightedValue"],
           },
           {
             guard: "canNavigateToParent",
@@ -448,7 +451,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: and("canSelectHighlightedItem", and("shouldCloseOnSelectHighlighted", not("multiple"))),
             target: "focused",
-            actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl"],
+            actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedValue"],
           },
           {
             guard: "canSelectHighlightedItem",
@@ -601,10 +604,13 @@ export const machine = createMachine<CascadeSelectSchema>({
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -619,14 +625,15 @@ export const machine = createMachine<CascadeSelectSchema>({
         })
       },
       computePlacement({ context, prop, scope }) {
+        context.set("currentPlacement", prop("positioning")?.placement)
         const triggerEl = () => dom.getTriggerEl(scope)
         const positionerEl = () => dom.getPositionerEl(scope)
 
         return getPlacement(triggerEl, positionerEl, {
           ...prop("positioning"),
+          defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
-            context.set("positioned", true)
           },
         })
       },
@@ -1010,9 +1017,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       dispatchChangeEvent({ scope, context }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: context.hash("value") })
-      },
-      clearPositioned({ context }) {
-        context.set("positioned", false)
       },
       scrollContentToTop({ scope, prop }) {
         const scrollToIndexFn = prop("scrollToIndexFn")

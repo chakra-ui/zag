@@ -30,6 +30,16 @@ export const getGroupLabelId = (ctx: Scope, id: string) => ctx.ids?.groupLabel?.
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
+
+// The menu is told its menubar's root id via the `menubar` prop; coordination events
+// are dispatched on that element. (No DOM sniffing — the relationship is declared.)
+export const getMenubarEl = (ctx: Scope, rootId: string | undefined): HTMLElement | null =>
+  rootId ? ctx.getById<HTMLElement>(rootId) : null
+
+export const dispatchMenubarEvent = (menubarEl: HTMLElement, type: string, detail?: any) => {
+  const win = getWindow(menubarEl)
+  menubarEl.dispatchEvent(new win.CustomEvent(type, { detail }))
+}
 export const getItemEl = (ctx: Scope, value: string | null) =>
   value ? ctx.query(`${ctx.selector(parts.item)}[data-value="${value}"]`) : null
 export const getArrowEl = (ctx: Scope) => ctx.query(ctx.selector(parts.arrow))

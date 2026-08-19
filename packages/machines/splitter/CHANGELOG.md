@@ -1,5 +1,141 @@
 # @zag-js/splitter
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+
+## 2.0.0-next.0
+
+## 1.43.0
+
+### Patch Changes
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- [#3180](https://github.com/chakra-ui/zag/pull/3180)
+  [`504476e`](https://github.com/chakra-ui/zag/commit/504476e485b72b915ee6cc33d5d131cbd4c9c2e4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix collapsible panel CSS so collapsed panels honor
+  `collapsedSize` instead of `minSize`.
+
+- [#3226](https://github.com/chakra-ui/zag/pull/3226)
+  [`6d457de`](https://github.com/chakra-ui/zag/commit/6d457de34d0e67eeec4ac20af4bbca9ed9200636) Thanks
+  [@aose-yuu](https://github.com/aose-yuu)! - Fix keyboard resizing when a resize trigger receives focus while hovered.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Minor Changes
+
+- [`68d3d5b`](https://github.com/chakra-ui/zag/commit/68d3d5b84e7b12d3fbff0cfad7de35ac9541fca4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add CSS unit support for `defaultSize`, `minSize`, and
+  `maxSize`. The splitter now accepts `px`, `em`, `rem`, `vh`, and `vw` in addition to percentages, and resolves them to
+  percentages after hydration.
+
+  ```tsx
+  const service = useMachine(splitter.machine, {
+    panels: [
+      { id: "nav", minSize: "240px", maxSize: "480px" },
+      { id: "main", minSize: 30 },
+    ],
+    defaultSize: ["240px", "60vw"],
+  })
+  ```
+
+  - Add `resizeBehavior` per panel. Set to `"preserve-pixel-size"` to keep a panel's pixel size constant when the parent
+    splitter group resizes. Leave at least one panel as `"preserve-relative-size"` (the default) so the layout can
+    absorb the change.
+
+  ```tsx
+  panels: [
+    { id: "nav", minSize: 20 },
+    {
+      id: "main",
+      minSize: "240px",
+      maxSize: "480px",
+      resizeBehavior: "preserve-pixel-size",
+    },
+    { id: "aside", minSize: 20 },
+  ]
+  ```
+
+  - Allow non-panel children inside the splitter root for fixed toolbars, rails, or status areas that should not be
+    managed as panels. Use partial trigger ids (`"left:"`, `":right"`) to bind handles around the fixed element.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <div {...api.getPanelProps({ id: "left" })}>Left</div>
+    <div {...api.getResizeTriggerProps({ id: "left:" })} />
+    <div style={{ flex: "0 0 180px" }}>Fixed sized element</div>
+    <div {...api.getResizeTriggerProps({ id: ":right" })} />
+    <div {...api.getPanelProps({ id: "right" })}>Right</div>
+  </div>
+  ```
+
+### Patch Changes
+
+- [`53871f5`](https://github.com/chakra-ui/zag/commit/53871f5e51c0cab203dfd8693fcb5d2e7236c8f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicking a `ResizeTrigger` not moving focus to it, which
+  prevented arrow keys from resizing the splitter until it was tab-focused (notably on Safari).
+  - Fix `data-focus` being applied on hover by only setting it when the trigger is actually focused.
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

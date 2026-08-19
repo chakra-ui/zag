@@ -21,7 +21,7 @@ interface ContextParams<T extends Dict> {
 }
 
 export interface PropFn<T extends Dict> {
-  <K extends keyof T["props"]>(key: K): T["props"][K]
+  <K extends keyof T["props"]>(key: K): ResolvedProps<T>[K]
 }
 
 export interface ComputedFn<T extends Dict> {
@@ -78,7 +78,7 @@ export interface BindableFn {
 export interface Scope {
   id?: string | undefined
   ids?: Record<string, any> | undefined
-  getRootNode: () => ShadowRoot | Document | Node
+  getRootNode: () => ShadowRoot | Document | Element
   getById: <T extends Element = HTMLElement>(id: string) => T | null
   query: <T extends Element = HTMLElement>(selector: string) => T | null
   queryAll: <T extends Element = HTMLElement>(selector: string) => T[]
@@ -197,7 +197,11 @@ export interface MachineState<T extends Dict, Parent extends string = string> {
 
 export interface Machine<T extends Dict> {
   debug?: boolean | undefined
-  props?: ((params: PropsParams<T>) => T["props"]) | undefined
+  /**
+   * Fills in defaults. Typed loosely because implementations end with `...props`,
+   * which widens every field back to optional.
+   */
+  props?: ((params: PropsParams<T>) => Partial<T["props"]>) | undefined
   context?:
     | ((params: ContextParams<T>) => {
         [K in keyof T["context"]]: Bindable<T["context"][K]>
@@ -250,8 +254,22 @@ interface MachineBaseProps {
   [key: string]: any
 }
 
+type RequiredKeys<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: Exclude<T[P], undefined> }
+
+/** Props as the machine sees them: keys listed in `defaultPropKey` are guaranteed present. */
+export type ResolvedProps<T extends MachineSchema> = T extends { defaultPropKey: infer K }
+  ? RequiredKeys<NonNullable<T["props"]>, Extract<K, keyof NonNullable<T["props"]>>>
+  : NonNullable<T["props"]>
+
+/** Props as the user passes them. Machines that have not opted in keep the older, looser shape. */
+export type InputProps<T extends MachineSchema> = T extends { defaultPropKey: any }
+  ? NonNullable<T["props"]>
+  : Partial<NonNullable<T["props"]>>
+
 export interface MachineSchema {
   props?: MachineBaseProps | undefined
+  /** Union of prop keys that `machine.props()` fills in. */
+  defaultPropKey?: string | undefined
   context?: Record<string, any> | undefined
   refs?: Record<string, any> | undefined
   computed?: Record<string, any> | undefined

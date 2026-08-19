@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { HandlePosition, Point, Size } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -133,7 +133,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    * Element to receive focus when the panel is opened.
    * By default, the first focusable element in the content is focused.
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => HTMLElement | null) | null | undefined
   /**
    * Element to receive focus when the panel is closed.
    * By default, the trigger element is focused.
@@ -226,7 +226,8 @@ type ComputedContext = Readonly<{
 }>
 
 export interface FloatingPanelSchema {
-  props: RequiredBy<FloatingPanelProps, PropsWithDefault>
+  props: FloatingPanelProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   tag: "open" | "closed"
@@ -257,6 +258,93 @@ export interface StageTriggerProps {
    * The stage of the panel
    */
   stage: Stage
+}
+
+export interface TriggerState {
+  /**
+   * Whether the panel is open
+   */
+  open: boolean
+  /**
+   * Whether the panel is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the trigger is disabled
+   */
+  disabled: boolean
+}
+
+export interface ContentState {
+  /**
+   * Whether the panel is open
+   */
+  open: boolean
+  /**
+   * Whether the panel is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the panel is topmost in the panel stack
+   */
+  topmost: boolean
+  /**
+   * Whether the panel is minimized
+   */
+  minimized: boolean
+  /**
+   * Whether the panel is maximized
+   */
+  maximized: boolean
+  /**
+   * Whether the panel is minimized or maximized
+   */
+  staged: boolean
+}
+
+export interface ControlState {
+  /**
+   * Whether the control is disabled
+   */
+  disabled: boolean
+  /**
+   * The stage of the panel
+   */
+  stage: Stage
+  /**
+   * Whether the panel is minimized
+   */
+  minimized: boolean
+  /**
+   * Whether the panel is maximized
+   */
+  maximized: boolean
+  /**
+   * Whether the panel is minimized or maximized
+   */
+  staged: boolean
+}
+
+export interface ResizeTriggerState {
+  /**
+   * The placement of the resize handle
+   */
+  placement: HandlePosition
+  /**
+   * Whether the resize trigger is disabled
+   */
+  disabled: boolean
+}
+
+export interface StageTriggerState {
+  /**
+   * The stage that this trigger switches the panel to
+   */
+  stage: Stage
+  /**
+   * Whether the trigger is hidden because the panel is already in this stage
+   */
+  hidden: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -318,14 +406,34 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   draggable: boolean
 
   getDragTriggerProps: () => T["element"]
+  /**
+   * Returns the state of a specific resize trigger
+   */
+  getResizeTriggerState: (props: ResizeTriggerProps) => ResizeTriggerState
   getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]
+  /**
+   * Returns the state of the trigger
+   */
+  getTriggerState: () => TriggerState
   getTriggerProps: () => T["button"]
   getPositionerProps: () => T["element"]
+  /**
+   * Returns the state of the content
+   */
+  getContentState: () => ContentState
   getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
   getHeaderProps: () => T["element"]
   getBodyProps: () => T["element"]
   getCloseTriggerProps: () => T["button"]
+  /**
+   * Returns the state of the control
+   */
+  getControlState: () => ControlState
   getControlProps: () => T["element"]
+  /**
+   * Returns the state of a specific stage trigger
+   */
+  getStageTriggerState: (props: StageTriggerProps) => StageTriggerState
   getStageTriggerProps: (props: StageTriggerProps) => T["button"]
 }

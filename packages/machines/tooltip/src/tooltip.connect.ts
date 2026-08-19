@@ -1,12 +1,12 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr, isLeftClick } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { TooltipApi, TooltipSchema, TriggerProps } from "./tooltip.types"
+import type { ContentState, TooltipApi, TooltipSchema, TriggerProps, TriggerState } from "./tooltip.types"
 
 export function connect<P extends PropTypes>(
   service: Service<TooltipSchema>,
@@ -18,6 +18,8 @@ export function connect<P extends PropTypes>(
 
   const open = state.matches("open", "closing")
   const triggerValue = context.get("triggerValue")
+  const currentPlacement = context.get("currentPlacement")
+  const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const contentId = dom.getContentId(scope)
 
@@ -25,30 +27,51 @@ export function connect<P extends PropTypes>(
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
-    positioned: context.get("positioned"),
+    placement: currentPlacement,
   })
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getTriggerState(props: TriggerProps = {}): TriggerState {
+    const { value } = props
+    const current = value == null ? false : triggerValue === value
+    return { value, current, open: value == null ? open : open && current }
+  }
+
+  function getContentState(): ContentState {
+    const isCurrentTooltip = store.get("id") === id
+    const isPrevTooltip = store.get("prevId") === id
+    const instant = !!store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+    return { open, instant, placement: currentPlacement, side: currentPlacementSide }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     open: open,
     setOpen(nextOpen) {
       const open = state.matches("open", "closing")
       if (open === nextOpen) return
-      send({ type: nextOpen ? "open" : "close" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
     triggerValue,
     setTriggerValue(value) {
-      send({ type: "triggerValue.set", value: value ?? undefined })
+      send({ type: "TRIGGER_VALUE.SET", value: value ?? undefined })
     },
 
     reposition(options = {}) {
-      send({ type: "positioning.set", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
+    getTriggerState,
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : triggerValue === value
+      const { current } = getTriggerState(props)
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
@@ -64,14 +87,14 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!prop("closeOnClick")) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CLOSE", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (!isFocusVisible()) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "OPEN", src: "trigger.focus", value, triggerId })
         },
         onBlur(event) {
           if (event.defaultPrevented) return
@@ -82,7 +105,7 @@ export function connect<P extends PropTypes>(
           const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
           const focusedAnotherTrigger = activeEl?.closest(`[${parts.trigger.attr}="${scope.id}"]`) != null
           if (!focusedAnotherTrigger) {
-            send({ type: "close", src: "trigger.blur", value, triggerId })
+            send({ type: "CLOSE", src: "trigger.blur", value, triggerId })
           }
         },
         onPointerDown(event) {
@@ -91,7 +114,7 @@ export function connect<P extends PropTypes>(
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
           if (id === store.get("id")) {
-            send({ type: "close", src: "trigger.pointerdown", value, triggerId })
+            send({ type: "CLOSE", src: "trigger.pointerdown", value, triggerId })
           }
         },
         onPointerMove(event) {
@@ -99,21 +122,21 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (event.pointerType === "touch") return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "triggerValue.set" : "pointer.move", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_MOVE", value, triggerId })
         },
         onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "pointer.move", value, triggerId })
+          send({ type: "POINTER_MOVE", value, triggerId })
         },
         onPointerLeave() {
           if (disabled) return
-          send({ type: "pointer.leave" })
+          send({ type: "POINTER_LEAVE" })
         },
         onPointerCancel() {
           if (disabled) return
-          send({ type: "pointer.leave" })
+          send({ type: "POINTER_LEAVE" })
         },
       })
     },
@@ -142,25 +165,22 @@ export function connect<P extends PropTypes>(
       })
     },
 
+    getContentState,
     getContentProps() {
-      const isCurrentTooltip = store.get("id") === id
-      const isPrevTooltip = store.get("prevId") === id
-      const instant = store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+      const contentState = getContentState()
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-instant": dataAttr(instant),
+        hidden: !contentState.open,
+        "data-state": contentState.open ? "open" : "closed",
+        "data-instant": dataAttr(contentState.instant),
         role: hasAriaLabel ? undefined : "tooltip",
         id: hasAriaLabel ? undefined : contentId,
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": contentState.placement,
+        "data-side": contentState.side,
         onPointerEnter() {
-          send({ type: "content.pointer.move" })
-        },
-        onPointerLeave() {
-          send({ type: "content.pointer.leave" })
+          send({ type: "CONTENT_POINTER_MOVE" })
         },
         style: {
           pointerEvents: prop("interactive") ? "auto" : "none",

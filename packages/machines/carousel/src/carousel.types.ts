@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { RequiredBy } from "@zag-js/types"
+
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -179,7 +179,8 @@ export type CarouselService = Service<CarouselSchema>
 export type CarouselMachine = Machine<CarouselSchema>
 
 export interface CarouselSchema {
-  props: RequiredBy<CarouselProps, PropsWithDefault>
+  props: CarouselProps
+  defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
   refs: {
@@ -218,6 +219,32 @@ export interface IndicatorProps {
    * @default false
    */
   readOnly?: boolean | undefined
+}
+
+export interface ItemState {
+  /**
+   * The index of the item
+   */
+  index: number
+  /**
+   * Whether the item is in view
+   */
+  inView: boolean
+}
+
+export interface IndicatorState {
+  /**
+   * The index of the indicator
+   */
+  index: number
+  /**
+   * Whether the indicator represents the current page
+   */
+  current: boolean
+  /**
+   * Whether the indicator is read only
+   */
+  readOnly: boolean
 }
 
 export interface CarouselApi<T extends PropTypes = PropTypes> {
@@ -290,11 +317,19 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getControlProps: () => T["element"]
   getItemGroupProps: () => T["element"]
+  /**
+   * Returns the state of a carousel item
+   */
+  getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getPrevTriggerProps: () => T["button"]
   getNextTriggerProps: () => T["button"]
   getAutoplayTriggerProps: () => T["button"]
   getIndicatorGroupProps: () => T["element"]
+  /**
+   * Returns the state of a carousel indicator
+   */
+  getIndicatorState: (props: IndicatorProps) => IndicatorState
   getIndicatorProps: (props: IndicatorProps) => T["button"]
   getProgressTextProps: () => T["element"]
 }

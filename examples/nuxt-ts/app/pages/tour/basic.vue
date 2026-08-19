@@ -4,6 +4,7 @@ import * as tour from "@zag-js/tour"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { X } from "lucide-vue-next"
 import { useId } from "vue"
+import "@styles/tour.css"
 
 const controls = useControls(tourControls)
 

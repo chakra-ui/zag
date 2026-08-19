@@ -6,6 +6,7 @@
   import * as signaturePad from "@zag-js/signature-pad"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { RotateCcw } from "lucide-svelte"
+  import "@styles/signature-pad.css"
 
   const controls = useControls(signaturePadControls)
 

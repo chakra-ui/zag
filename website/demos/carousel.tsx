@@ -32,7 +32,7 @@ export function Carousel(props: CarouselProps) {
             {...api.getItemProps({ index })}
             key={index}
           >
-            <img src={image} alt={`Slide Image ${index}`} />
+            <img src={image} alt={`Slide ${index + 1}`} />
           </div>
         ))}
       </div>

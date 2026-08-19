@@ -2,6 +2,7 @@
 import * as toc from "@zag-js/toc"
 import { tocControls, tocData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/toc.css"
 
 const controls = useControls(tocControls)
 
@@ -22,15 +23,8 @@ const api = computed(() => toc.connect(service, normalizeProps))
       <nav v-bind="api.getRootProps()">
         <h5 v-bind="api.getTitleProps()">On this page</h5>
         <ul v-bind="api.getListProps()">
-          <li
-            v-for="item in tocData"
-            :key="item.value"
-            v-bind="api.getItemProps({ item })"
-          >
-            <a
-              :href="`#${item.value}`"
-              v-bind="api.getLinkProps({ item })"
-            >
+          <li v-for="item in tocData" :key="item.value" v-bind="api.getItemProps({ item })">
+            <a :href="`#${item.value}`" v-bind="api.getLinkProps({ item })">
               {{ item.label }}
             </a>
           </li>

@@ -1,17 +1,7 @@
 import { getDocument, isHTMLElement, setStyle, waitForElement } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
-let originalBodyPointerEvents: string
-
-export function assignPointerEventToLayers() {
-  layerStack.layers.forEach(({ node }) => {
-    node.style.pointerEvents = layerStack.isBelowPointerBlockingLayer(node) ? "none" : "auto"
-  })
-}
-
-export function clearPointerEvent(node: HTMLElement) {
-  node.style.pointerEvents = ""
-}
+const originalBodyPointerEvents = new WeakMap<HTMLElement, string>()
 
 export function disablePointerEventsOutside(node: HTMLElement, persistentElements?: Array<() => Element | null>) {
   const doc = getDocument(node)
@@ -19,10 +9,12 @@ export function disablePointerEventsOutside(node: HTMLElement, persistentElement
   const cleanups: VoidFunction[] = []
 
   if (layerStack.hasPointerBlockingLayer() && !doc.body.hasAttribute("data-inert")) {
-    originalBodyPointerEvents = document.body.style.pointerEvents
+    originalBodyPointerEvents.set(doc.body, doc.body.style.pointerEvents)
     queueMicrotask(() => {
-      doc.body.style.pointerEvents = "none"
-      doc.body.setAttribute("data-inert", "")
+      const body = doc.body
+      if (!body) return
+      body.style.pointerEvents = "none"
+      body.setAttribute("data-inert", "")
     })
   }
 
@@ -41,9 +33,15 @@ export function disablePointerEventsOutside(node: HTMLElement, persistentElement
   return () => {
     if (layerStack.hasPointerBlockingLayer()) return
     queueMicrotask(() => {
-      doc.body.style.pointerEvents = originalBodyPointerEvents
-      doc.body.removeAttribute("data-inert")
-      if (doc.body.style.length === 0) doc.body.removeAttribute("style")
+      const body = doc.body
+      if (!body) return
+      const original = originalBodyPointerEvents.get(body)
+      if (original !== undefined) {
+        body.style.pointerEvents = original
+        originalBodyPointerEvents.delete(body)
+      }
+      body.removeAttribute("data-inert")
+      if (body.style.length === 0) body.removeAttribute("style")
     })
     cleanups.forEach((fn) => fn())
   }

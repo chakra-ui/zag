@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/hover-card.css"
 
 interface User {
   id: number
@@ -129,8 +130,12 @@ const api = computed(() => hoverCard.connect(service, normalizeProps))
             </div>
             <p style="margin-bottom: 16px; color: #444">{{ activeUser.bio }}</p>
             <div style="display: flex; gap: 24px; color: #666; font-size: 14px">
-              <div><strong style="color: #000">{{ activeUser.followers.toLocaleString() }}</strong> Followers</div>
-              <div><strong style="color: #000">{{ activeUser.following.toLocaleString() }}</strong> Following</div>
+              <div>
+                <strong style="color: #000">{{ activeUser.followers.toLocaleString() }}</strong> Followers
+              </div>
+              <div>
+                <strong style="color: #000">{{ activeUser.following.toLocaleString() }}</strong> Following
+              </div>
             </div>
           </template>
         </Presence>

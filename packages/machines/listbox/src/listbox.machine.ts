@@ -242,7 +242,7 @@ export const machine = createMachine({
           // don't scroll into view if we're using the pointer
           if (modality === "pointer") return
 
-          const contentEl = dom.getContentEl(scope)
+          const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
@@ -258,7 +258,7 @@ export const machine = createMachine({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
         }
 
         raf(() => {
@@ -266,8 +266,8 @@ export const machine = createMachine({
           exec(true)
         })
 
-        const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const listEl = () => dom.getListEl(scope)
+        return observeAttributes(listEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {

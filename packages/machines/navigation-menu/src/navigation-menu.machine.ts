@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
@@ -30,6 +30,9 @@ export const machine = createMachine({
 
   context({ prop, bindable }) {
     return {
+      layer: bindable<LayerSnapshot | null>(() => ({
+        defaultValue: null,
+      })),
       // value tracking
       value: bindable<string>(() => ({
         defaultValue: prop("defaultValue"),
@@ -257,6 +260,9 @@ export const machine = createMachine({
 
         const contentDismissable = trackDismissableElement(getContentEl, {
           defer: true,
+          onLayerChange(layer) {
+            context.set("layer", layer)
+          },
           onFocusOutside(event) {
             const target = event.detail.target as HTMLElement
 

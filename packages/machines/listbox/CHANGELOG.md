@@ -1,5 +1,139 @@
 # @zag-js/listbox
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- [#3167](https://github.com/chakra-ui/zag/pull/3167)
+  [`d2b9972`](https://github.com/chakra-ui/zag/commit/d2b9972052c5f131aacb1a8e5e4fd3f31ce15e07) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `get<Part>State()` getters (e.g. `getTriggerState`,
+  `getContentState`, `getRootState`), extending the existing `getItemState` convention to every part with derived state.
+
+  ```ts
+  const triggerState = dialog.getTriggerState({ value: "confirm" })
+  // { value: "confirm", current: true, open: true }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`1b6233d`](https://github.com/chakra-ui/zag/commit/1b6233d09bd8f0076f2b282bd8f5a58d8c65260b)]:
+  - @zag-js/collection@2.0.0-next.1
+  - @zag-js/anatomy@2.0.0-next.1
+  - @zag-js/core@2.0.0-next.1
+  - @zag-js/types@2.0.0-next.1
+  - @zag-js/utils@2.0.0-next.1
+  - @zag-js/dom-query@2.0.0-next.1
+  - @zag-js/focus-visible@2.0.0-next.1
+
+## 2.0.0-next.0
+
+### Major Changes
+
+- [#3061](https://github.com/chakra-ui/zag/pull/3061)
+  [`a4ccbbe`](https://github.com/chakra-ui/zag/commit/a4ccbbe08b03ec13d58a363d9d1a83612c7cd97c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Move `role="listbox"` and related ARIA semantics from the
+  `content` part to a new `list` part. The `content` part now acts as a presentational wrapper, allowing consumers to
+  render headers, footers, and search inputs inside the popup without polluting the listbox's accessibility tree.
+
+  **Breaking change** — markup must be updated to render `<ul {...api.getListProps()}>` inside
+  `<div {...api.getContentProps()}>`:
+
+  ```tsx
+  // Before
+  <div {...api.getRootProps()}>
+    <ul {...api.getContentProps()}>
+      {items.map(item => <li {...api.getItemProps({ item })}>...</li>)}
+    </ul>
+  </div>
+
+  // After
+  <div {...api.getRootProps()}>
+    <div {...api.getContentProps()}>
+      <ul {...api.getListProps()}>
+        {items.map(item => <li {...api.getItemProps({ item })}>...</li>)}
+      </ul>
+    </div>
+  </div>
+  ```
+
+  Changes:
+  - New `getListProps()` carries `role="listbox"`, `aria-activedescendant`, `aria-multiselectable`, `aria-labelledby`,
+    and `tabIndex=0`. The list element is the keyboard focus target.
+  - `getContentProps()` no longer carries listbox semantics. Keyboard handlers remain on content as event delegation, so
+    a custom `<input>` rendered inside content can drive list navigation via key bubbling.
+  - `aria-controls` on the input now points to the list id, not the content id.
+  - `scrollIntoView` retargets to the list element. Virtualized listboxes should attach the scroll ref to the list.
+  - New `list` part added to anatomy. New `getListId` / `getListEl` DOM helpers.
+
+## 1.43.0
+
+### Patch Changes
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/focus-visible@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/collection@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/collection@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/focus-visible@1.42.0
+
+## 1.41.2
+
+### Patch Changes
+
+- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
+  - @zag-js/anatomy@2.0.0-next.0
+  - @zag-js/types@2.0.0-next.0
+  - @zag-js/dom-query@2.0.0-next.0
+  - @zag-js/core@2.0.0-next.0
+  - @zag-js/focus-visible@2.0.0-next.0
+  - @zag-js/collection@2.0.0-next.0
+  - @zag-js/utils@2.0.0-next.0
+
+## 1.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`13cd5d5`](https://github.com/chakra-ui/zag/commit/13cd5d5141022a7212987bd7ccfd9d0999cb905f),
+  [`84b9e2b`](https://github.com/chakra-ui/zag/commit/84b9e2bdcbdc4e9404da94f13a663e5ff492be28)]:
+  - @zag-js/core@1.41.0
+  - @zag-js/dom-query@1.41.0
+  - @zag-js/focus-visible@1.41.0
+  - @zag-js/anatomy@1.41.0
+  - @zag-js/types@1.41.0
+  - @zag-js/collection@1.41.0
+  - @zag-js/utils@1.41.0
+
+## 1.40.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.40.0
+  - @zag-js/core@1.40.0
+  - @zag-js/types@1.40.0
+  - @zag-js/collection@1.40.0
+  - @zag-js/utils@1.40.0
+  - @zag-js/dom-query@1.40.0
+  - @zag-js/focus-visible@1.40.0
+
 ## 1.39.1
 
 ### Patch Changes

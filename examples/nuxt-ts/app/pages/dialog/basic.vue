@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/dialog.css"
 
 const service = useMachine(dialog.machine, { id: useId() })
 const api = computed(() => dialog.connect(service, normalizeProps))

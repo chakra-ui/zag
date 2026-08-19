@@ -9,7 +9,10 @@ export type {
   PinInputService as Service,
   ElementIds,
   InputProps,
+  InputState,
   IntlTranslations,
+  LabelState,
+  RootState,
   ValueChangeDetails,
   ValueInvalidDetails,
 } from "./pin-input.types"
