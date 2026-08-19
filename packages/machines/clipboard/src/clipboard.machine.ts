@@ -10,10 +10,6 @@ export const machine = createMachine<ClipboardSchema>({
       timeout: 3000,
       defaultValue: "",
       ...props,
-      translations: {
-        triggerLabel: (copied) => (copied ? "Copied to clipboard" : "Copy to clipboard"),
-        ...props.translations,
-      },
     }
   },
 

@@ -3,7 +3,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -39,9 +39,9 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
-  clearTriggerLabel?: string | undefined
-}
+export type IntlTranslations = Partial<{
+  clearTriggerLabel: string
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -176,7 +176,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   deselectable?: boolean | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"

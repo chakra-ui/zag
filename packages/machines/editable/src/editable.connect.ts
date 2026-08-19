@@ -1,9 +1,17 @@
 import type { Service } from "@zag-js/core"
 import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./editable.anatomy"
 import * as dom from "./editable.dom"
-import type { EditableApi, EditableSchema } from "./editable.types"
+import type { EditableApi, EditableSchema, IntlTranslations } from "./editable.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  input: "editable input",
+  edit: "edit",
+  submit: "submit",
+  cancel: "cancel",
+}
 
 export function connect<T extends PropTypes>(
   service: Service<EditableSchema>,
@@ -16,7 +24,7 @@ export function connect<T extends PropTypes>(
   const required = !!prop("required")
   const invalid = !!prop("invalid")
   const autoResize = !!prop("autoResize")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const editing = state.matches("edit")
 

@@ -1,5 +1,14 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, RequiredBy, Size } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  Point,
+  PropTypes,
+  Rect,
+  Partial,
+  RequiredBy,
+  Size,
+} from "@zag-js/types"
 
 export type HandlePosition = "n" | "e" | "s" | "w" | "ne" | "se" | "sw" | "nw"
 
@@ -47,7 +56,7 @@ export interface SelectionValueTextDetails extends Rect {
   shape: "rectangle" | "circle"
 }
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   rootLabel: string
   rootRoleDescription: string
   previewLoading: string
@@ -56,7 +65,7 @@ export interface IntlTranslations {
   selectionRoleDescription: string
   selectionInstructions: string
   selectionValueText: (details: SelectionValueTextDetails) => string
-}
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -70,109 +79,109 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the image cropper elements
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identify accessibility elements and their states.
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The initial rectangle of the crop area.
    * If not provided, a smart default will be computed based on viewport size and aspect ratio.
    */
-  initialCrop?: Rect
+  initialCrop?: Rect | undefined
   /**
    * The minimum width of the crop area
    * @default 40
    */
-  minWidth?: number
+  minWidth?: number | undefined
   /**
    * The minimum height of the crop area
    * @default 40
    */
-  minHeight?: number
+  minHeight?: number | undefined
   /**
    * The maximum width of the crop area
    * @default Infinity
    */
-  maxWidth?: number
+  maxWidth?: number | undefined
   /**
    * The maximum height of the crop area
    * @default Infinity
    */
-  maxHeight?: number
+  maxHeight?: number | undefined
   /**
    * The aspect ratio to maintain for the crop area (width / height).
    * For example, an aspect ratio of 16 / 9 will maintain a width to height ratio of 16:9.
    * If not provided, the crop area can be freely resized.
    */
-  aspectRatio?: number
+  aspectRatio?: number | undefined
   /**
    * The shape of the crop area.
    * @default "rectangle"
    */
-  cropShape?: "rectangle" | "circle"
+  cropShape?: "rectangle" | "circle" | undefined
   /**
    * The controlled zoom level of the image.
    */
-  zoom?: number
+  zoom?: number | undefined
   /**
    * The controlled rotation of the image in degrees (0 - 360).
    */
-  rotation?: number
+  rotation?: number | undefined
   /**
    * The controlled flip state of the image.
    */
-  flip?: FlipState
+  flip?: FlipState | undefined
   /**
    * The initial zoom factor to apply to the image.
    * @default 1
    */
-  defaultZoom?: number
+  defaultZoom?: number | undefined
   /**
    * The initial rotation to apply to the image in degrees.
    * @default 0
    */
-  defaultRotation?: number
+  defaultRotation?: number | undefined
   /**
    * The initial flip state to apply to the image.
    * @default { horizontal: false, vertical: false }
    */
-  defaultFlip?: FlipState
+  defaultFlip?: FlipState | undefined
   /**
    * The amount of zoom applied per wheel step.
    * @default 0.1
    */
-  zoomStep?: number
+  zoomStep?: number | undefined
   /**
    * Controls how responsive pinch-to-zoom is.
    * @default 2
    */
-  zoomSensitivity?: number
+  zoomSensitivity?: number | undefined
   /**
    * The minimum zoom factor allowed.
    * @default 1
    */
-  minZoom?: number
+  minZoom?: number | undefined
   /**
    * The maximum zoom factor allowed.
    * @default 5
    */
-  maxZoom?: number
+  maxZoom?: number | undefined
   /**
    * The base nudge step for keyboard arrow keys (in pixels).
    * @default 1
    */
-  nudgeStep?: number
+  nudgeStep?: number | undefined
   /**
    * The nudge step when Shift key is held (in pixels).
    * @default 10
    */
-  nudgeStepShift?: number
+  nudgeStepShift?: number | undefined
   /**
    * The nudge step when Ctrl/Cmd key is held (in pixels).
    * @default 50
    */
-  nudgeStepCtrl?: number
+  nudgeStepCtrl?: number | undefined
   /**
    * Callback fired when the zoom level changes.
    */
@@ -193,7 +202,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * Whether the crop area is fixed in size and position.
    * @default false
    */
-  fixedCropArea?: boolean
+  fixedCropArea?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -213,7 +222,6 @@ type PropsWithDefault =
   | "nudgeStep"
   | "nudgeStepShift"
   | "nudgeStepCtrl"
-  | "translations"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
@@ -315,22 +323,22 @@ export interface GetCroppedImageOptions {
    * The output format of the cropped image.
    * @default "image/png"
    */
-  type?: string
+  type?: string | undefined
   /**
    * The quality of the output image (0-1) for lossy formats like JPEG.
    * @default 1
    */
-  quality?: number
+  quality?: number | undefined
   /**
    * Maximum output dimensions. The image is scaled down proportionally.
    * When omitted, the crop is exported at natural resolution.
    */
-  maxSize?: Size
+  maxSize?: Size | undefined
   /**
    * Whether to return a Blob or a data URL.
    * @default "blob"
    */
-  output?: "blob" | "dataUrl"
+  output?: "blob" | "dataUrl" | undefined
 }
 
 export interface ImageCropperApi<T extends PropTypes = PropTypes> {

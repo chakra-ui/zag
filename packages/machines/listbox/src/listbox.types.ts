@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details

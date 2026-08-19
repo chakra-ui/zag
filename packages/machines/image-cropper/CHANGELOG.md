@@ -1,5 +1,25 @@
 # @zag-js/image-cropper
 
+## 1.43.1
+
+### Patch Changes
+
+- [`3a2f5b0`](https://github.com/chakra-ui/zag/commit/3a2f5b0cf39798f798a639f30585643ff59c1408) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `fixedCropArea: true` disabling all keyboard interaction on
+  the crop selection. It removed the element from the tab order and ignored every key, including the `+`/`-` zoom
+  shortcuts that still apply in fixed mode.
+
+  The selection is now always focusable. Arrow keys pan the image, since there's nothing to move or resize, and
+  `Alt+Arrow` is a no-op.
+
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes

@@ -10,7 +10,7 @@ import type {
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"
 
@@ -44,9 +44,9 @@ export type SelectionMode = "single" | "range"
 
 export type HourCycle = 12 | 24
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   placeholder: (locale: string) => Record<EditableSegmentType, string>
-}
+}>
 
 export type ElementIds = Partial<{
   root: string
@@ -199,7 +199,6 @@ type PropsWithDefault =
   | "locale"
   | "timeZone"
   | "granularity"
-  | "translations"
   | "shouldForceLeadingZeros"
   | "formatter"
   | "allSegments"
@@ -279,16 +278,7 @@ export type DateInputMachine = Machine<DateInputSchema>
  * -----------------------------------------------------------------------------*/
 
 export type SegmentType =
-  | "era"
-  | "year"
-  | "month"
-  | "day"
-  | "hour"
-  | "minute"
-  | "second"
-  | "dayPeriod"
-  | "literal"
-  | "timeZoneName"
+  "era" | "year" | "month" | "day" | "hour" | "minute" | "second" | "dayPeriod" | "literal" | "timeZoneName"
 
 export type Segments = Partial<{
   -readonly [K in keyof typeof EDITABLE_SEGMENTS]: boolean
@@ -310,15 +300,15 @@ export interface DateSegment {
   /**
    * The numeric value for the segment, if applicable.
    */
-  value?: number
+  value?: number | undefined
   /**
    * The minimum numeric value for the segment, if applicable.
    */
-  minValue?: number
+  minValue?: number | undefined
   /**
    * The maximum numeric value for the segment, if applicable.
    */
-  maxValue?: number
+  maxValue?: number | undefined
   /**
    * Whether the value is a placeholder.
    */

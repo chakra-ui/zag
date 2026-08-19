@@ -17,9 +17,11 @@ import {
   isValueAtMax,
   isValueAtMin,
   isValueWithinRange,
+  mergeWithDefault,
 } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
+import { defaultTranslations } from "./number-input.translations"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
 
@@ -46,11 +48,6 @@ export const machine = createMachine({
       ...props,
       largeStep: props.largeStep ?? 10 * step,
       smallStep: props.smallStep ?? step / 10,
-      translations: {
-        incrementLabel: "increment value",
-        decrementLabel: "decrease value",
-        ...props.translations,
-      },
     }
   },
 
@@ -91,7 +88,10 @@ export const machine = createMachine({
     isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
     canIncrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMax"),
     canDecrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMin"),
-    valueText: ({ prop, context }) => prop("translations").valueText?.(context.get("value")),
+    valueText: ({ prop, context }) => {
+      const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+      return translations.valueText?.(context.get("value"))
+    },
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => createFormatter(locale, formatOptions),

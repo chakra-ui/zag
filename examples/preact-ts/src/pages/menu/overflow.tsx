@@ -2,10 +2,11 @@ import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId } from "react"
 
-const items = Array.from({ length: 40 }, (_, i) => ({
-  label: `Item ${i}`,
-  value: `item-${i}`,
-}))
+const items = [
+  ...Array.from({ length: 20 }, (_, i) => ({ label: `Item ${i}`, value: `item-${i}` })),
+  { label: "Zebra", value: "zebra" },
+  ...Array.from({ length: 20 }, (_, i) => ({ label: `Item ${i + 20}`, value: `item-${i + 20}` })),
+]
 
 export default function Page() {
   const service = useMachine(menu.machine, { id: useId() })

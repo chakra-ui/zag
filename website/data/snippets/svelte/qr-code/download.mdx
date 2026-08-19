@@ -1,0 +1,36 @@
+```svelte
+<script lang="ts">
+  import * as qrCode from "@zag-js/qr-code"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(qrCode.machine, {
+    id,
+    value: "https://github.com/chakra-ui",
+    encoding: { ecc: "H" },
+  })
+  const api = $derived(qrCode.connect(service, normalizeProps))
+</script>
+
+<div>
+  <div {...api.getRootProps()}>
+    <svg {...api.getFrameProps()}>
+      <path {...api.getPatternProps()}></path>
+    </svg>
+    <div {...api.getOverlayProps()}>
+      <img
+        src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4"
+        alt=""
+      />
+    </div>
+  </div>
+  <button
+    {...api.getDownloadTriggerProps({
+      mimeType: "image/png",
+      fileName: "qr-code.png",
+    })}
+  >
+    Download
+  </button>
+</div>
+```

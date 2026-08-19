@@ -11,10 +11,6 @@ export const machine = createMachine<RatingGroupSchema>({
       dir: "ltr",
       defaultValue: -1,
       ...props,
-      translations: {
-        ratingValueText: (index) => `${index} stars`,
-        ...props.translations,
-      },
     }
   },
 

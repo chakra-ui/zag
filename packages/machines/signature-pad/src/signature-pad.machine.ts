@@ -18,11 +18,6 @@ export const machine = createMachine<SignaturePadSchema>({
         streamline: 0.6,
         ...props.drawing,
       },
-      translations: {
-        control: "signature pad",
-        clearTrigger: "clear signature",
-        ...props.translations,
-      },
     }
   },
 

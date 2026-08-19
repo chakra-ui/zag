@@ -11,7 +11,7 @@ import type { Machine, Service } from "@zag-js/core"
 import type { DateRangePreset, DateValue } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -45,10 +45,10 @@ export interface OpenChangeDetails {
 }
 
 export interface Time {
-  hour?: number
-  minute?: number
-  second?: number
-  millisecond?: number
+  hour?: number | undefined
+  minute?: number | undefined
+  second?: number | undefined
+  millisecond?: number | undefined
 }
 
 export interface LocaleDetails {
@@ -62,21 +62,21 @@ export interface LocaleDetails {
 
 export type SelectionMode = "single" | "multiple" | "range"
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   dayCell: (state: DayTableCellState) => string
   nextTrigger: (view: DateView) => string
   monthSelect: string
   yearSelect: string
-  viewTrigger: (view: DateView) => string
+  viewTrigger: (view: DateView, nextView: DateView | undefined) => string
   prevTrigger: (view: DateView) => string
   presetTrigger: (value: string[]) => string
   clearTrigger: string
   trigger: (open: boolean) => string
   content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
-  weekColumnHeader?: string | undefined
-  weekNumberCell?: ((weekNumber: number) => string) | undefined
-}
+  weekColumnHeader: string
+  weekNumberCell: (weekNumber: number) => string
+}>
 
 export type ElementIds = Partial<{
   root: string

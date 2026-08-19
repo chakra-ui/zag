@@ -16,12 +16,6 @@ export const machine = createMachine<FileUploadSchema>({
       preventDocumentDrop: true,
       defaultAcceptedFiles: [],
       ...props,
-      translations: {
-        dropzone: "dropzone",
-        itemPreview: (file) => `preview of ${file.name}`,
-        deleteFile: (file) => `delete file ${file.name}`,
-        ...props.translations,
-      },
     }
   },
 

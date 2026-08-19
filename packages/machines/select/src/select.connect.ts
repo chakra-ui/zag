@@ -12,19 +12,24 @@ import {
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { ensure, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
+import type { CollectionItem, IntlTranslations, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  clearTriggerLabel: "Clear value",
+}
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send } = service
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const invalid = !!prop("invalid")
@@ -280,6 +285,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-disabled": ariaAttr(itemState.disabled),
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
+          // keyboard-driven scroll fires pointermove on the item that slid under the cursor
+          if (getInteractionModality() !== "pointer") return
           if (itemState.value === highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
@@ -293,8 +300,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
 
-          const pointerMoved = service.event.previous()?.type.includes("POINTER")
-          if (!pointerMoved) return
+          // keyboard-driven scroll fires pointerleave without any pointer input
+          if (getInteractionModality() !== "pointer") return
 
           send({ type: "ITEM.POINTER_LEAVE" })
         },

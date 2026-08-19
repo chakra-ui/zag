@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DataUrlType } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
 
 /* -----------------------------------------------------------------------------
@@ -14,6 +14,7 @@ export interface ValueChangeDetails {
 export type ElementIds = Partial<{
   root: string
   frame: string
+  overlay: string
 }>
 
 /* -----------------------------------------------------------------------------
@@ -100,7 +101,7 @@ export interface QrCodeApi<T extends PropTypes = PropTypes> {
    */
   setValue: (value: string) => void
   /**
-   * Returns the data URL of the qr code.
+   * Returns the data URL of the qr code. Includes the overlay when present.
    */
   getDataUrl: (type: DataUrlType, quality?: number) => Promise<string>
 

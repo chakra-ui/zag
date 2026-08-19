@@ -1,13 +1,18 @@
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
-import type { PopoverApi, PopoverService, TriggerProps } from "./popover.types"
+import type { IntlTranslations, PopoverApi, PopoverService, TriggerProps } from "./popover.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  closeTriggerLabel: "close",
+}
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
   const { state, context, send, computed, prop, scope } = service
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const open = state.matches("open")
 
   const currentPlacement = context.get("currentPlacement")
