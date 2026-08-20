@@ -188,3 +188,7 @@ public/feed.xml
 ## Panda
 styled-system
 styled-system-studio
+
+# Next.js generated agent files
+website/AGENTS.md
+website/CLAUDE.md
