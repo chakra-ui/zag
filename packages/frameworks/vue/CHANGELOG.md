@@ -1,5 +1,15 @@
 # @zag-js/vue
 
+## 1.43.3
+
+### Patch Changes
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/store@1.43.3
+  - @zag-js/utils@1.43.3
+
 ## 1.43.2
 
 ### Patch Changes

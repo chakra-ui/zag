@@ -1,5 +1,13 @@
 # @zag-js/async-list
 
+## 1.43.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.43.3
+  - @zag-js/utils@1.43.3
+
 ## 1.43.2
 
 ### Patch Changes
