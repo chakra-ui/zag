@@ -268,3 +268,219 @@ describe("HotkeyStore", () => {
     })
   })
 })
+
+describe("key state tracking", () => {
+  it("should report a held modifier via isPressed", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+    store.register({ id: "a", hotkey: "ctrl+k", action: () => {} })
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Shift", code: "ShiftLeft", shiftKey: true }))
+
+    expect(store.isPressed("shift")).toBe(true)
+    expect(store.getCurrentlyPressed()).toContain("Shift")
+
+    store.destroy()
+  })
+
+  it("should track pressed keys with no commands registered", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const seen: string[][] = []
+    store.subscribe(
+      (state) => Array.from(state.pressedKeys).join("|"),
+      () => seen.push([...store.getCurrentlyPressed()]),
+    )
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Shift", code: "ShiftLeft", shiftKey: true }))
+
+    expect(seen.at(-1)).toEqual(["Shift"])
+
+    store.destroy()
+  })
+
+  it("should fire a command enabled after being registered as disabled", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const action = vi.fn()
+    store.register({ id: "a", hotkey: "ctrl+k", action, enabled: false })
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true }))
+    expect(action).not.toHaveBeenCalled()
+
+    store.enable("a")
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Control", code: "ControlLeft", ctrlKey: true }))
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true }))
+
+    expect(action).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+  })
+
+  it("should detach all listeners on destroy even with active subscribers", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+    store.subscribe(
+      (state) => state.pressedKeys.size,
+      () => {},
+    )
+
+    store.destroy()
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Shift", code: "ShiftLeft", shiftKey: true }))
+
+    expect(store.getState().listening).toBe(false)
+    expect(store.getCurrentlyPressed()).toEqual([])
+  })
+
+  it("should fire a bubble-phase command registered after a subscriber", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    // Subscriber attaches a capture-phase listener first
+    store.subscribe(
+      (state) => state.pressedKeys.size,
+      () => {},
+    )
+
+    const action = vi.fn()
+    store.register({ id: "a", hotkey: "ctrl+k", action, options: { capture: false } })
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true }))
+
+    expect(action).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+  })
+
+  it("should fire targeted commands only when the event originates within the target", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const grid = document.createElement("div")
+    const cell = document.createElement("button")
+    grid.appendChild(cell)
+    const outside = document.createElement("button")
+    document.body.append(grid, outside)
+
+    const action = vi.fn()
+    store.register({ id: "nav", hotkey: "ArrowDown", action, options: { target: grid } })
+
+    outside.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    expect(action).not.toHaveBeenCalled()
+
+    cell.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    expect(action).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+    grid.remove()
+    outside.remove()
+  })
+
+  it("should skip a command while its target resolves to null", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const el = document.createElement("div")
+    document.body.appendChild(el)
+
+    let current: Element | null = null
+    const action = vi.fn()
+    store.register({ id: "a", hotkey: "ctrl+k", action, options: { target: () => current } })
+
+    el.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }))
+    expect(action).not.toHaveBeenCalled()
+
+    current = el
+    el.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }))
+    expect(action).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+    el.remove()
+  })
+
+  it("should match containment across shadow boundaries", () => {
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const host = document.createElement("div")
+    document.body.appendChild(host)
+    const shadow = host.attachShadow({ mode: "open" })
+    const inner = document.createElement("button")
+    shadow.appendChild(inner)
+
+    const action = vi.fn()
+    store.register({ id: "a", hotkey: "ctrl+k", action, options: { target: host } })
+
+    inner.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true, composed: true }),
+    )
+    expect(action).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+    host.remove()
+  })
+
+  it("should prefer a targeted command over a global one on the same hotkey", () => {
+    const store = createHotkeyStore({ conflictBehavior: "allow" })
+    store.init({ target: document })
+
+    const panel = document.createElement("div")
+    document.body.appendChild(panel)
+
+    const globalAction = vi.fn()
+    const scopedAction = vi.fn()
+    store.register({ id: "global", hotkey: "ctrl+k", action: globalAction })
+    store.register({ id: "scoped", hotkey: "ctrl+k", action: scopedAction, options: { target: panel } })
+
+    panel.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }))
+    expect(scopedAction).toHaveBeenCalledTimes(1)
+    expect(globalAction).not.toHaveBeenCalled()
+
+    document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }))
+    expect(globalAction).toHaveBeenCalledTimes(1)
+    expect(scopedAction).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+    panel.remove()
+  })
+
+  it("should not warn when the same hotkey is registered on different targets", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const store = createHotkeyStore()
+    store.init({ target: document })
+
+    const el = document.createElement("div")
+    document.body.appendChild(el)
+
+    store.register({ id: "global", hotkey: "ctrl+p", action: () => {} })
+    store.register({ id: "scoped", hotkey: "ctrl+p", action: () => {}, options: { target: el } })
+    expect(warn).not.toHaveBeenCalled()
+
+    store.register({ id: "global2", hotkey: "ctrl+p", action: () => {} })
+    expect(warn).toHaveBeenCalledTimes(1)
+
+    store.destroy()
+    el.remove()
+    warn.mockRestore()
+  })
+
+  it("should reset in-progress sequences when scopes change", () => {
+    const store = createHotkeyStore({ activeScopes: "a" })
+    store.init({ target: document })
+
+    const action = vi.fn()
+    store.register({ id: "seq", hotkey: "g > h", action, scopes: "a" })
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "g", code: "KeyG" }))
+    store.removeScope("a")
+    store.addScope("a")
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "h", code: "KeyH" }))
+
+    expect(action).not.toHaveBeenCalled()
+
+    store.destroy()
+  })
+})

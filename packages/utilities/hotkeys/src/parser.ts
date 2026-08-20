@@ -1,7 +1,7 @@
 import { keyToCode } from "./key-to-code"
 import { isModifierSet, normalizeModifier, resolveControlOrMeta } from "./modifier"
 import { normalizeKey } from "./normalize"
-import type { HotkeyOptions, ParsedHotkey, Platform, SequenceStep } from "./types"
+import type { HotkeyOptions, KeyboardModifiers, ParsedHotkey, Platform, SequenceStep } from "./types"
 import {
   getEventTarget,
   getPlatform,
@@ -18,6 +18,15 @@ function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: str
   const parts = hotkey.split(MODIFIER_SEPARATOR)
   const modifiers: string[] = []
   let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
+
+  // A lone modifier ("shift", "mod") is a modifier, not a key
+  if (parts.length === 1) {
+    const only = parts[0].trim()
+    const resolved = resolveControlOrMeta(only.toLowerCase(), platform).toLowerCase()
+    if (only !== "" && isModifierSet(resolved)) {
+      return { modifiers: [only], key: "" }
+    }
+  }
 
   // Process each part except the last one (which we assume is the key)
   for (let i = 0; i < parts.length - 1; i++) {
@@ -298,6 +307,33 @@ export function isHotKey(
     const parsed = parseHotkey(h, resolved)
     return matchesHotkey(parsed, event)
   })
+}
+
+// Serialize a parsed step into a canonical `Control+Shift+K` form
+function serializeStep(modifiers: KeyboardModifiers, keys: string[]): string {
+  const parts: string[] = []
+  if (modifiers.ctrl) parts.push("Control")
+  if (modifiers.alt) parts.push("Alt")
+  if (modifiers.shift) parts.push("Shift")
+  if (modifiers.meta) parts.push("Meta")
+  parts.push(...keys)
+  return parts.join(MODIFIER_SEPARATOR)
+}
+
+/**
+ * Resolve a hotkey string to a canonical form, so that equivalent hotkeys written
+ * differently (`mod+k`, `Meta+K`) produce the same string. Useful as a stable identity
+ * key for a registered hotkey.
+ */
+export function normalizeHotkey(hotkey: string, platform?: Platform): string {
+  const resolved = platform ?? getPlatform()
+  const parsed = parseHotkey(hotkey, resolved)
+
+  if (parsed.isSequence && parsed.sequenceSteps) {
+    return parsed.sequenceSteps.map((step) => serializeStep(step, [step.key])).join(` ${SEQUENCE_SEPARATOR} `)
+  }
+
+  return serializeStep(parsed, parsed.keys)
 }
 
 // Check if two hotkey strings are semantically equal (resolves aliases like mod → Meta/Control)

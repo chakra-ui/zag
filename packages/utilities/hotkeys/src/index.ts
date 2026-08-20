@@ -1,5 +1,5 @@
 export { createHotkeyStore, HotkeyStore } from "./store"
-export { isHotKey, isHotkeyEqual, parseHotkey } from "./parser"
+export { isHotKey, isHotkeyEqual, normalizeHotkey, parseHotkey } from "./parser"
 export { formatHotkey } from "./format"
 export { createHotkeyRecorder, HotkeyRecorder } from "./recorder"
 export { validateHotkey, assertValidHotkey } from "./validate"
@@ -12,9 +12,12 @@ export type {
   FormTagName,
   HotkeyAction,
   HotkeyCommand,
+  HotkeyCommandTarget,
   HotkeyOptions,
   HotkeyStoreOptions,
   HotkeyStoreState,
+  HotkeyTarget,
   KeyboardModifiers,
   ParsedHotkey,
+  Platform,
 } from "./types"
