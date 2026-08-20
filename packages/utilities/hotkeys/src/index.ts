@@ -1,6 +1,7 @@
 export { createHotkeyStore, HotkeyStore } from "./store"
 export { isHotKey, isHotkeyEqual, normalizeHotkey, parseHotkey } from "./parser"
 export { formatHotkey } from "./format"
+export { getPlatform } from "./utils"
 export { createHotkeyRecorder, HotkeyRecorder } from "./recorder"
 export { validateHotkey, assertValidHotkey } from "./validate"
 export type { ValidationResult } from "./validate"
@@ -20,4 +21,5 @@ export type {
   KeyboardModifiers,
   ParsedHotkey,
   Platform,
+  SequenceStep,
 } from "./types"
