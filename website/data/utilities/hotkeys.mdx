@@ -149,12 +149,11 @@ store.register({ id: "zoom-in", hotkey: "mod++", action: zoomIn })
 
 ## Scopes
 
-Scopes let you activate or deactivate groups of hotkeys. Commands only fire when
-at least one of their scopes is active. The default scope is `"*"` (always
-active).
+Scopes activate or deactivate groups of hotkeys. A command only fires when one
+of its scopes is active. The default scope is `"*"` (always active).
 
-This is useful for modal dialogs, multi-panel layouts, or any UI where different
-areas have different shortcuts.
+Use scopes for modal dialogs, multi-panel layouts, or any UI where different
+areas own different shortcuts.
 
 ```tsx
 const store = createHotkeyStore({
@@ -162,7 +161,7 @@ const store = createHotkeyStore({
   conflictBehavior: "allow",
 })
 
-// Same hotkey, different scopes — only the active scope fires
+// Same hotkey, different scopes. Only the active scope fires
 store.register({
   id: "editor-run",
   hotkey: "mod+Enter",
@@ -208,16 +207,15 @@ store.register({
 
 - When the same hotkey is registered globally and with a `target`, the targeted
   command wins inside its subtree.
-- The same hotkey registered on different targets is not reported as a
-  conflict.
+- The same hotkey registered on different targets is not reported as a conflict.
 - Containment is checked with `event.composedPath()`, so targets inside shadow
   DOM work.
 - If the function returns `null`, the command is skipped.
 
 ## Conditional commands
 
-Use `enabled` to conditionally enable a command. Accepts a boolean or a function
-that's evaluated on each keypress.
+Use `enabled` to turn a command on or off. Accepts a boolean, or a function
+evaluated on each keypress.
 
 ```tsx
 let isAdmin = false
@@ -237,9 +235,9 @@ store.setEnabled("admin-panel", () => isAdmin)
 
 ## Smart input handling
 
-By default, hotkeys with modifiers (Ctrl, Cmd, Alt) **work inside form
-elements** — just like browser shortcuts. Bare keys without modifiers are
-**blocked** in form elements to prevent interference with typing.
+Hotkeys with modifiers (Ctrl, Cmd, Alt) **work inside form elements** by
+default, just like browser shortcuts. Bare keys are **blocked** there so they
+don't interfere with typing.
 
 You can override this per command:
 
@@ -345,7 +343,7 @@ Control what happens when two commands register the same hotkey:
 
 ```tsx
 const store = createHotkeyStore({
-  conflictBehavior: "warn", // default — log a warning, allow both
+  conflictBehavior: "warn", // default: log a warning, allow both
 })
 ```
 
@@ -451,8 +449,8 @@ document.addEventListener("keydown", (event) => {
 
 ## Comparing hotkeys
 
-Use `isHotkeyEqual` to check if two hotkey strings are semantically equal. This
-resolves aliases like `mod` → `Meta`/`Control` and compares sequence steps.
+Use `isHotkeyEqual` to check if two hotkey strings resolve to the same keys.
+Aliases like `mod` are resolved, and sequence steps are compared step by step.
 
 ```tsx
 import { isHotkeyEqual } from "@zag-js/hotkeys"
@@ -476,7 +474,7 @@ const result = validateHotkey("mod+S")
 const result2 = validateHotkey("Foo+S")
 // { valid: false, errors: ['"Foo" is not a recognized modifier'], warnings: [] }
 
-// Throws on invalid — useful in dev
+// Throws on invalid input, useful during development
 assertValidHotkey("mod+S") // ok
 assertValidHotkey("Foo+S") // throws Error
 ```
@@ -514,8 +512,8 @@ formatHotkey("G > H", { sequenceSeparator: " then " })
 
 ## Recording hotkeys
 
-Use `createHotkeyRecorder` to let users record custom key combinations.
-Automatically handles both single chords and multi-step sequences.
+Use `createHotkeyRecorder` to let users record custom key combinations. It
+handles single chords and multi-step sequences.
 
 ```tsx
 import { createHotkeyRecorder } from "@zag-js/hotkeys"
@@ -561,15 +559,14 @@ recorder.destroy()
 
 - **Escape** cancels recording and invokes `onCancel`
 - **Backspace / Delete** clears the recorded value and invokes `onClear`
-- **Modifier-only presses** (Shift, Ctrl, etc.) are ignored — waits for a
-  non-modifier key
+- **Modifier-only presses** (Shift, Ctrl, etc.) are ignored until a non-modifier
+  key is pressed
 - **Dead keys** are skipped
 
 ### Sequence detection
 
-After capturing a chord, the recorder waits for the next key within a timeout
-window (default 1000ms). If another key is pressed, it's appended as a sequence
-step. If the timeout expires, the recording finalizes.
+After capturing a chord, the recorder waits (default 1000ms) for another key. A
+key press extends the sequence; the timeout finalizes the recording.
 
 ```tsx
 const recorder = createHotkeyRecorder({
@@ -584,7 +581,7 @@ Use `setOptions` to update callbacks without recreating the recorder. This
 avoids stale closure issues in React:
 
 ```tsx
-// In a React component — call on every render
+// In a React component, call on every render
 recorder.setOptions({
   onRecord(hotkey) {
     // Always has access to current state, no refs needed
@@ -602,7 +599,7 @@ const store = createHotkeyStore()
 // Register commands (can be done before or after init)
 store.register([...])
 
-// Attach to DOM — starts listening for keyboard events
+// Attach to the DOM and start listening for keyboard events
 store.init({ target: document })
 
 // Detach and clean up
@@ -615,25 +612,24 @@ The store can also be initialized inline:
 const store = createHotkeyStore({ target: document })
 ```
 
-The `target` accepts `Document`, `ShadowRoot`, or any `Element` — useful for
-scoping hotkeys to a specific panel or widget.
+The `target` accepts `Document`, `ShadowRoot`, or any `Element`, so you can
+scope hotkeys to a specific panel or widget.
 
 ## Caveats
 
 ### Symbol keys on non-US keyboard layouts
 
-When using **Cmd/Ctrl + symbol key** hotkeys (like `mod+/`, `mod+[`, `mod+]`),
-users on non-US keyboard layouts may experience issues. For example, on a German
-keyboard, `/` requires pressing Shift+7 — but some browsers report `event.key`
-incorrectly when Cmd/Ctrl is also held.
+**Cmd/Ctrl + symbol key** hotkeys (like `mod+/`, `mod+[`, `mod+]`) can fail on
+non-US keyboard layouts. On a German keyboard, `/` requires pressing Shift+7,
+and some browsers report `event.key` incorrectly when Cmd/Ctrl is also held.
 
-This is a known browser limitation that affects all JavaScript keyboard shortcut
-libraries. To work around it:
+This browser limitation affects every JavaScript shortcut library. To work
+around it:
 
 - **Prefer letter or digit keys** for Cmd/Ctrl combinations (`mod+K`, `mod+S`).
   These work reliably on every layout.
 - **Use bare symbol keys** without Cmd/Ctrl for navigation shortcuts (`/` for
-  search, `?` for help) — just like GitHub and Gmail do.
+  search, `?` for help), like GitHub and Gmail do.
 - **Register multiple commands** if you must use Cmd/Ctrl + symbol:
 
 ```tsx
