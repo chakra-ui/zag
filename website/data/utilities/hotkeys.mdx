@@ -4,9 +4,9 @@ description: Using the hotkeys utility in your project.
 package: "@zag-js/hotkeys"
 ---
 
-A framework-agnostic utility for managing keyboard shortcuts with zero
-dependencies. Supports modifier combinations, key sequences, scopes, recording,
-validation, and platform-adaptive keys.
+A framework-agnostic utility for managing keyboard shortcuts. Supports modifier
+combinations, key sequences, scopes, element targeting, recording, validation,
+and platform-adaptive keys.
 
 <Resources pkg="@zag-js/hotkeys" />
 
@@ -189,6 +189,31 @@ store.toggleScope("editor")
 store.getActiveScopes() // ["terminal"]
 ```
 
+## Targeting an element
+
+Use the `target` option to scope a command to a DOM subtree. The command only
+fires when the keyboard event originates inside the target.
+
+Pass an element, or a function that returns one. The function is resolved on
+every event, so it works with refs that mount after registration.
+
+```tsx
+store.register({
+  id: "grid-down",
+  hotkey: "ArrowDown",
+  action: moveDown,
+  options: { target: () => gridRef.current },
+})
+```
+
+- When the same hotkey is registered globally and with a `target`, the targeted
+  command wins inside its subtree.
+- The same hotkey registered on different targets is not reported as a
+  conflict.
+- Containment is checked with `event.composedPath()`, so targets inside shadow
+  DOM work.
+- If the function returns `null`, the command is skipped.
+
 ## Conditional commands
 
 Use `enabled` to conditionally enable a command. Accepts a boolean or a function
@@ -364,6 +389,9 @@ const commands = store.getState().commands // Map<string, HotkeyCommand>
 // Check if a hotkey combo is currently held
 store.isPressed("mod+S") // boolean
 
+// Bare modifiers work too
+store.isPressed("shift") // boolean
+
 // Get all currently pressed keys
 store.getCurrentlyPressed() // ["Meta", "S"]
 
@@ -466,6 +494,9 @@ formatHotkey("mod+S", { platform: "mac" })
 formatHotkey("mod+S", { platform: "windows" })
 // "Ctrl S"
 
+formatHotkey("meta+S", { platform: "linux" })
+// "Super S"
+
 formatHotkey("Alt+Shift+F", { platform: "mac", style: "symbols" })
 // "⌥ ⇧ F"
 
@@ -507,10 +538,11 @@ recorder.start()
 // User presses G then H → records "G > H" (auto-detected sequence)
 
 // Cancel or clear
-recorder.cancel() // stops, invokes onCancel
+recorder.cancel() // stops, restores the value from before recording, invokes onCancel
 recorder.clear() // stops, clears value, invokes onClear
 
-// Stop and finalize (accepts whatever has been captured so far)
+// Stop and finalize (accepts whatever has been captured so far;
+// keeps the previous value if nothing was captured)
 recorder.stop()
 
 // Read state
