@@ -336,6 +336,7 @@ export function connect<T extends PropTypes>(
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-required": dataAttr(required),
       })
     },
