@@ -1,5 +1,15 @@
 # @zag-js/scroll-snap
 
+## 1.43.2
+
+### Patch Changes
+
+- [`6ab0bd3`](https://github.com/chakra-ui/zag/commit/6ab0bd3d978ea802adc232ca0dfd214a33c8c1c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `findSnapPoint` returned incorrect positions for
+  `center` and `end` aligned items and in RTL, breaking carousel page detection when scrolling to a specific item.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes

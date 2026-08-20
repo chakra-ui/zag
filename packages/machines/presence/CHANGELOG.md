@@ -1,5 +1,18 @@
 # @zag-js/presence
 
+## 1.43.2
+
+### Patch Changes
+
+- [`c0dd1e9`](https://github.com/chakra-ui/zag/commit/c0dd1e94137cf507753f5854b688cb8fb6e37e60) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `onEnterComplete` to run logic after the enter animation
+  finishes.
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes

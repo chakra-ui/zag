@@ -1,5 +1,24 @@
 # @zag-js/image-cropper
 
+## 1.43.2
+
+### Patch Changes
+
+- [`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every `IntlTranslations`
+  message. You can pass one key and the rest fall back to the defaults (fixes
+  [#3287](https://github.com/chakra-ui/zag/issues/3287)).
+
+  `@zag-js/types` now exports a `Partial` that allows `undefined` on optional keys, matching
+  `exactOptionalPropertyTypes`.
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/anatomy@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes

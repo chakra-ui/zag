@@ -957,6 +957,7 @@
       "data-scope": "file-upload",
       "data-part": "label",
       "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
       "data-required": "Present when required"
     },
     "ClearTrigger": {

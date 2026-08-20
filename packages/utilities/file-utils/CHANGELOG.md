@@ -1,5 +1,12 @@
 # @zag-js/file-utils
 
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes
