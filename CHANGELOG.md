@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.3](./#1.43.3) - 2026-08-20
+
+### Fixed
+
+- Fixed issue where the `Partial` type exported from `@zag-js/types` shadowed the built-in `Partial`, changing what
+  `Partial<T>` meant in every file that imported it and breaking `@vue/compiler-sfc` on
+  `interface X extends Partial<Y>`.
+
+  Optional properties are now written explicitly as `?: T | undefined`, so types like `IntlTranslations` and
+  `ElementIds` are plain interfaces. Passing a single translation key still works.
+
 ## [1.43.2](./#1.43.2) - 2026-08-20
 
 ### Added
