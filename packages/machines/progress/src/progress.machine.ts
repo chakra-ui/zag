@@ -16,20 +16,6 @@ export const machine = createMachine<ProgressSchema>({
         style: "percent",
         ...props.formatOptions,
       },
-      translations: {
-        value: ({ value, percent, formatter }) => {
-          if (value === null) return "loading..."
-
-          if (formatter) {
-            const formatOptions = formatter.resolvedOptions()
-            const num = formatOptions.style === "percent" ? percent / 100 : value
-            return formatter.format(num)
-          }
-
-          return value.toString()
-        },
-        ...props.translations,
-      },
     }
   },
 

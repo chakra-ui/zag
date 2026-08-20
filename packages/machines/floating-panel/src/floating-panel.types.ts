@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Point, Size } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -37,11 +37,11 @@ export type ElementIds = Partial<{
   header: string
 }>
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   minimize: string
   maximize: string
   restore: string
-}
+}>
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -183,7 +183,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
   onStageChange?: ((details: StageChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" | "resizable" | "id" | "translations"
+type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" | "resizable" | "id"
 
 interface PrivateContext {
   /**

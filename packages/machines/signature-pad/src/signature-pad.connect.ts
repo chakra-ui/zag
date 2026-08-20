@@ -1,8 +1,14 @@
 import { dataAttr, getEventTarget, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./signature-pad.anatomy"
 import * as dom from "./signature-pad.dom"
-import type { SignaturePadApi, SignaturePadService } from "./signature-pad.types"
+import type { IntlTranslations, SignaturePadApi, SignaturePadService } from "./signature-pad.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  control: "signature pad",
+  clearTrigger: "clear signature",
+}
 
 export function connect<T extends PropTypes>(
   service: SignaturePadService,
@@ -16,7 +22,7 @@ export function connect<T extends PropTypes>(
   const disabled = !!prop("disabled")
   const required = !!prop("required")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   return {
     empty: empty,

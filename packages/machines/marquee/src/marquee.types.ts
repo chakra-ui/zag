@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,13 +21,13 @@ export type ElementIds = Partial<{
   content: (index: number) => string
 }>
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   /**
    * The label for the marquee, used for accessibility.
    * Should describe the content being scrolled (e.g., "Partner logos", "Latest news").
    */
   root: string
-}
+}>
 
 export interface DimensionSnapshot {
   rootSize: number
@@ -118,7 +118,6 @@ type PropsWithDefault =
   | "pauseOnInteraction"
   | "reverse"
   | "defaultPaused"
-  | "translations"
 
 export type UserDefinedContext = RequiredBy<MarqueeProps, PropsWithDefault>
 

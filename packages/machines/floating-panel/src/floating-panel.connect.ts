@@ -1,10 +1,21 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { match, toPx } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { match, mergeWithDefault, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
-import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
+import type {
+  FloatingPanelApi,
+  FloatingPanelService,
+  IntlTranslations,
+  ResizeTriggerProps,
+} from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  minimize: "Minimize window",
+  maximize: "Maximize window",
+  restore: "Restore window",
+}
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -13,6 +24,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): FloatingPanelApi<T> {
   const { state, send, scope, prop, computed, context } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const open = state.hasTag("open")
 
@@ -176,8 +188,6 @@ export function connect<T extends PropTypes>(
       if (!validStages.has(props.stage)) {
         throw new Error(`[zag-js] Invalid stage: ${props.stage}. Must be one of: ${Array.from(validStages).join(", ")}`)
       }
-
-      const translations = prop("translations")
 
       const actionProps = match(props.stage, {
         minimized: () => ({

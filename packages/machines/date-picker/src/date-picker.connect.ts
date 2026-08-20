@@ -33,7 +33,7 @@ import {
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk, isValueWithinRange } from "@zag-js/utils"
+import { chunk, isValueWithinRange, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {
@@ -99,7 +99,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = { ...defaultTranslations, ...prop("translations") }
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined

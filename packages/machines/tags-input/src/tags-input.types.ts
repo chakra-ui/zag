@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -34,7 +34,7 @@ export interface ValidateArgs {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface IntlTranslations {
+export type IntlTranslations = Partial<{
   clearTriggerLabel: string
   deleteTagTriggerLabel: (value: string) => string
   tagSelected: (value: string) => string
@@ -43,9 +43,9 @@ export interface IntlTranslations {
   tagEdited: (value: string) => string
   tagUpdated: (value: string) => string
   tagDeleted: (value: string) => string
-  noTagsSelected?: string | undefined
-  inputLabel?: ((count: number) => string) | undefined
-}
+  noTagsSelected: string
+  inputLabel: (count: number) => string
+}>
 
 type Log =
   | { type: "add" | "update" | "delete" | "select"; value: string }
@@ -205,7 +205,6 @@ type PropsWithDefault =
   | "validate"
   | "delimiter"
   | "defaultValue"
-  | "translations"
   | "max"
   | "sanitizeValue"
 

@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, Partial, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null

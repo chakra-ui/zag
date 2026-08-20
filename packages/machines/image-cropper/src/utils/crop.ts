@@ -1,5 +1,5 @@
 import type { PropFn } from "@zag-js/core"
-import type { Point, Rect, Size } from "@zag-js/types"
+import type { Partial, Point, Rect, Size } from "@zag-js/types"
 import { clampValue, isBoolean } from "@zag-js/utils"
 import type { FlipState, HandlePosition, ImageCropperProps, ImageCropperSchema } from "../image-cropper.types"
 

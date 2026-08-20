@@ -3,8 +3,9 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { contains, isCaretAtStart, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { isEqual, removeAt, uniq, warn } from "@zag-js/utils"
+import { isEqual, mergeWithDefault, removeAt, uniq, warn } from "@zag-js/utils"
 import * as dom from "./tags-input.dom"
+import { defaultTranslations } from "./tags-input.translations"
 import type { TagsInputSchema } from "./tags-input.types"
 
 const { and, not, or } = createGuards<TagsInputSchema>()
@@ -23,17 +24,6 @@ export const machine = createMachine<TagsInputSchema>({
       max: Infinity,
       sanitizeValue: (value: string) => value.trim(),
       ...props,
-      translations: {
-        clearTriggerLabel: "Clear all tags",
-        deleteTagTriggerLabel: (value) => `Delete tag ${value}`,
-        tagAdded: (value) => `Added tag ${value}`,
-        tagsPasted: (values) => `Pasted ${values.length} tags`,
-        tagEdited: (value) => `Editing tag ${value}. Press enter to save or escape to cancel.`,
-        tagUpdated: (value) => `Tag update to ${value}`,
-        tagDeleted: (value) => `Tag ${value} deleted`,
-        tagSelected: (value) => `Tag ${value} selected. Press enter to edit, delete or backspace to remove.`,
-        ...props.translations,
-      },
     }
   },
 
@@ -718,7 +708,7 @@ export const machine = createMachine<TagsInputSchema>({
       // queue logs with screen reader and get it announced
       announceLog({ refs, prop }) {
         const liveRegion = refs.get("liveRegion")
-        const translations = prop("translations")
+        const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
         const log = refs.get("log")
         if (!log.current || liveRegion == null) return
@@ -747,6 +737,9 @@ export const machine = createMachine<TagsInputSchema>({
             } else if (prev?.type === "update") {
               msg = `${translations.tagUpdated(prev.value)}. ${msg}`
             }
+            break
+          case "clear":
+            msg = translations.noTagsSelected
             break
           default:
             break
