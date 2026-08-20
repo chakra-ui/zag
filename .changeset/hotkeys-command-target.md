@@ -1,5 +1,5 @@
 ---
-"@zag-js/hotkeys": minor
+"@zag-js/hotkeys": patch
 ---
 
 - Add `target` option to hotkey commands for scoping a command to a DOM subtree. Accepts an element or a function
