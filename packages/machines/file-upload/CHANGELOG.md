@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 1.43.2
+
+### Patch Changes
+
+- [#3290](https://github.com/chakra-ui/zag/pull/3290)
+  [`f50a0e2`](https://github.com/chakra-ui/zag/commit/f50a0e26bc44463323ccb962a7ad3e9ccd14f5c0) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Add `data-invalid` to the label props so the label can be styled
+  when the file upload is invalid, matching other form components.
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/i18n-utils@1.43.2
+  - @zag-js/file-utils@1.43.2
+  - @zag-js/anatomy@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes
