@@ -1,18 +1,18 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, Point, Partial, PropTypes, Size } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, Point, PropTypes, Size } from "@zag-js/types"
 import type { Timeout } from "./utils/timeout"
 
 export type ScrollToEdge = "top" | "right" | "bottom" | "left"
 
 export type ScrollRecord<T> = Record<ScrollToEdge, T>
 
-export type ElementIds = Partial<{
-  root: string
-  viewport: string
-  content: string
-  scrollbar: string
-  thumb: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  viewport?: string | undefined
+  content?: string | undefined
+  scrollbar?: string | undefined
+  thumb?: string | undefined
+}
 
 export interface ScrollAreaProps extends DirectionProperty, CommonProperties {
   /**

@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -22,24 +22,24 @@ export type ActivationMode = "focus" | "dblclick" | "click" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
-export type IntlTranslations = Partial<{
-  edit: string
-  submit: string
-  cancel: string
-  input: string
-}>
+export interface IntlTranslations {
+  edit?: string | undefined
+  submit?: string | undefined
+  cancel?: string | undefined
+  input?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  area: string
-  label: string
-  preview: string
-  input: string
-  control: string
-  submitTrigger: string
-  cancelTrigger: string
-  editTrigger: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  area?: string | undefined
+  label?: string | undefined
+  preview?: string | undefined
+  input?: string | undefined
+  control?: string | undefined
+  submitTrigger?: string | undefined
+  cancelTrigger?: string | undefined
+  editTrigger?: string | undefined
+}
 
 export interface EditableProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**

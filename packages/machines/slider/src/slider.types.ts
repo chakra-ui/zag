@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -27,17 +27,17 @@ export interface ValueTextDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  thumb: (index: number) => string
-  hiddenInput: (index: number) => string
-  control: string
-  track: string
-  range: string
-  label: string
-  valueText: string
-  marker: (index: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  thumb?: ((index: number) => string) | undefined
+  hiddenInput?: ((index: number) => string) | undefined
+  control?: string | undefined
+  track?: string | undefined
+  range?: string | undefined
+  label?: string | undefined
+  valueText?: string | undefined
+  marker?: ((index: number) => string) | undefined
+}
 
 export interface SliderProps extends DirectionProperty, CommonProperties {
   /**

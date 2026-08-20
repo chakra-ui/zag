@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -26,12 +26,12 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  content: string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 export interface HoverCardProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**

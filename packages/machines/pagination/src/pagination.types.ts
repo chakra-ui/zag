@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -28,24 +28,24 @@ export interface PageUrlDetails {
   pageSize: number
 }
 
-export type IntlTranslations = Partial<{
-  rootLabel: string
-  firstTriggerLabel: string
-  prevTriggerLabel: string
-  nextTriggerLabel: string
-  lastTriggerLabel: string
-  itemLabel: (details: ItemLabelDetails) => string
-}>
+export interface IntlTranslations {
+  rootLabel?: string | undefined
+  firstTriggerLabel?: string | undefined
+  prevTriggerLabel?: string | undefined
+  nextTriggerLabel?: string | undefined
+  lastTriggerLabel?: string | undefined
+  itemLabel?: ((details: ItemLabelDetails) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  ellipsis: (index: number) => string
-  firstTrigger: string
-  prevTrigger: string
-  nextTrigger: string
-  lastTrigger: string
-  item: (page: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  ellipsis?: ((index: number) => string) | undefined
+  firstTrigger?: string | undefined
+  prevTrigger?: string | undefined
+  nextTrigger?: string | undefined
+  lastTrigger?: string | undefined
+  item?: ((page: number) => string) | undefined
+}
 
 export interface PaginationProps extends DirectionProperty, CommonProperties {
   /**

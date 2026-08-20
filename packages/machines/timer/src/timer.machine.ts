@@ -1,5 +1,4 @@
 import { createMachine, memo } from "@zag-js/core"
-import type { Partial } from "@zag-js/types"
 import { clampValue, setRafInterval, setRafTimeout } from "@zag-js/utils"
 import type { Time, TimerProps, TimerSchema } from "./timer.types"
 

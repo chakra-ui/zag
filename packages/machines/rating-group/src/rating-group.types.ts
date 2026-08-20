@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -17,17 +17,17 @@ export interface HoverChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  ratingValueText: (index: number) => string
-}>
+export interface IntlTranslations {
+  ratingValueText?: ((index: number) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  hiddenInput: string
-  control: string
-  item: (id: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  item?: ((id: string) => string) | undefined
+}
 
 export interface RatingGroupProps extends DirectionProperty, CommonProperties {
   /**

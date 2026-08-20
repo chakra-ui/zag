@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -13,10 +13,10 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  item: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  item?: ((value: string) => string) | undefined
+}
 
 export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
   /**

@@ -2,7 +2,7 @@ import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { IndexPath, ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -129,17 +129,17 @@ export interface VisibleNode<T extends TreeNode = TreeNode> {
   indexPath: IndexPath
 }
 
-export type IntlTranslations = Partial<{
-  treeLabel: string
-  renameInputLabel: string
-}>
+export interface IntlTranslations {
+  treeLabel?: string | undefined
+  renameInputLabel?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  tree: string
-  label: string
-  node: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  tree?: string | undefined
+  label?: string | undefined
+  node?: ((value: string) => string) | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
