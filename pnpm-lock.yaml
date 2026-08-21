@@ -122,9 +122,6 @@ importers:
       '@tanstack/react-virtual':
         specifier: 3.13.25
         version: 3.13.25(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@types/textarea-caret':
-        specifier: 3.0.4
-        version: 3.0.4
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -395,9 +392,6 @@ importers:
       react-spinners:
         specifier: 0.17.0
         version: 0.17.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      textarea-caret:
-        specifier: ^3.1.0
-        version: 3.1.0
       virtua:
         specifier: ^0.49.0
         version: 0.49.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(solid-js@1.9.13)(svelte@5.56.9(@typescript-eslint/types@8.67.0))(vue@3.5.41(typescript@6.0.3))
@@ -709,9 +703,6 @@ importers:
       '@tanstack/react-virtual':
         specifier: 3.13.25
         version: 3.13.25(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@types/textarea-caret':
-        specifier: 3.0.4
-        version: 3.0.4
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -979,9 +970,6 @@ importers:
       react-spinners:
         specifier: 0.17.0
         version: 0.17.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      textarea-caret:
-        specifier: ^3.1.0
-        version: 3.1.0
       virtua:
         specifier: ^0.49.0
         version: 0.49.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.13)(svelte@5.56.9(@typescript-eslint/types@8.67.0))(vue@3.5.41(typescript@6.0.3))
@@ -7373,9 +7361,6 @@ packages:
   '@types/signale@1.4.7':
     resolution: {integrity: sha512-nc0j37QupTT7OcYeH3gRE1ZfzUalEUsDKJsJ3IsJr0pjjFZTjtrX1Bsn6Kv56YXI/H9rNSwAkIPRxNlZI8GyQw==}
 
-  '@types/textarea-caret@3.0.4':
-    resolution: {integrity: sha512-epJGYB37/sNrTDbhfyRjHkXsQSAcO6zby0JBDS0QMt6HQ1f1W2E4YpSc7TQkNmWaWmYXv92zOIfN5PHA8CmThg==}
-
   '@types/through@0.0.33':
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
 
@@ -12357,9 +12342,6 @@ packages:
   text-decoder@1.2.7:
     resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
 
-  textarea-caret@3.1.0:
-    resolution: {integrity: sha512-cXAvzO9pP5CGa6NKx0WYHl+8CHKZs8byMkt3PCJBCmq2a34YA9pO1NrQET5pzeqnBjBdToF5No4rrmkDUgQC2Q==}
-
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
     engines: {node: '>=0.8'}
@@ -16687,8 +16669,6 @@ snapshots:
   '@types/signale@1.4.7':
     dependencies:
       '@types/node': 25.9.5
-
-  '@types/textarea-caret@3.0.4': {}
 
   '@types/through@0.0.33':
     dependencies:
@@ -23118,8 +23098,6 @@ snapshots:
       b4a: 1.8.1
     transitivePeerDependencies:
       - react-native-b4a
-
-  textarea-caret@3.1.0: {}
 
   thenify-all@1.6.0:
     dependencies:
