@@ -1,0 +1,50 @@
+[data-scope="meter"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 50%;
+}
+
+[data-scope="meter"][data-part="label"] {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+[data-scope="meter"][data-part="track"] {
+  height: 8px;
+  background-color: #ebebeb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+[data-scope="meter"][data-part="indicator"] {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+[data-scope="meter"][data-part="indicator"][data-state="optimal"] {
+  background-color: #22c55e; /* Green for 61%+ */
+}
+
+[data-scope="meter"][data-part="indicator"][data-state="caution"] {
+  background-color: #eab308; /* Yellow for 41-60% */
+}
+
+[data-scope="meter"][data-part="indicator"][data-state="warning"] {
+  background-color: #f97316; /* Orange for 21-40% */
+}
+
+[data-scope="meter"][data-part="indicator"][data-state="low"] {
+  background-color: #ef4444; /* Red for 1-20% */
+}
+
+[data-scope="meter"][data-part="indicator"][data-state="normal"] {
+  background-color: #94a3b8; /* Slate gray for 0% */
+}
+
+[data-scope="meter"][data-part="value-text"] {
+  font-size: 13px;
+  color: #555;
+}

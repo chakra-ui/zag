@@ -1,0 +1,38 @@
+{
+  "name": "@zag-js/meter",
+  "version": "0.0.0",
+  "description": "Core logic for the meter machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "meter",
+    "zag"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/meter",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  }
+}
