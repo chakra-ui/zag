@@ -77,6 +77,21 @@ test("should remain open after blurring trigger if pointer opens card", async ({
   await expect(page.locator(content)).not.toBeVisible()
 })
 
+test("should remain open after pointer leaves a focused trigger", async ({ page }) => {
+  await page.focus(trigger)
+  await page.waitForSelector(content)
+
+  await page.hover(trigger)
+  await page.hover(testText)
+  await page.waitForTimeout(500)
+
+  await expect(page.locator(trigger)).toBeFocused()
+  await expect(page.locator(content)).toBeVisible()
+
+  await page.locator(trigger).evaluate((element) => element.blur())
+  await expect(page.locator(content)).not.toBeVisible()
+})
+
 test("should remain open after moving from trigger to content", async ({ page }) => {
   await page.hover(trigger)
   await page.waitForSelector(content)
