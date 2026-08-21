@@ -1,5 +1,7 @@
 # @zag-js/types
 
+## 1.43.4
+
 ## 1.43.3
 
 ### Patch Changes
