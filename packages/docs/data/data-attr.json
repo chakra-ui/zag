@@ -616,13 +616,15 @@
       "data-state": "\"open\" | \"closed\"",
       "data-index": "The index of the item",
       "data-disabled": "Present when disabled",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
     },
     "Control": {
       "data-scope": "date-picker",
       "data-part": "control",
       "data-disabled": "Present when disabled",
-      "data-placeholder-shown": "Present when placeholder is shown"
+      "data-placeholder-shown": "Present when placeholder is shown",
+      "data-invalid": "Present when invalid"
     },
     "Content": {
       "data-scope": "date-picker",
