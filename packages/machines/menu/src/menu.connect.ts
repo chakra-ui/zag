@@ -122,7 +122,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", target, id, closeOnSelect })
+        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect })
       },
     })
   }
@@ -467,7 +467,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", target, option, closeOnSelect })
+            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect })
           },
         }),
       }

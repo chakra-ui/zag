@@ -433,6 +433,7 @@ export function connect<T extends PropTypes>(
         "data-index": index,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
       })
     },
 
@@ -443,6 +444,7 @@ export function connect<T extends PropTypes>(
         id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
         "data-placeholder-shown": dataAttr(empty),
+        "data-invalid": dataAttr(invalid),
       })
     },
 

@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 import type { DrawerSwipeSession } from "./utils/drawer-session"
 import type { PhysicalSwipeDirection } from "./utils/session"
 
@@ -80,19 +80,19 @@ export interface DrawerStackApi<T extends PropTypes = PropTypes> {
   getIndentBackgroundProps(): T["element"]
 }
 
-export type ElementIds = Partial<{
-  backdrop: string
-  positioner: string
-  content: string
-  title: string
-  description: string
-  header: string
-  trigger: string | ((value?: string) => string)
-  grabber: string
-  grabberIndicator: string
-  closeTrigger: string
-  swipeArea: string
-}>
+export interface ElementIds {
+  backdrop?: string | undefined
+  positioner?: string | undefined
+  content?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+  header?: string | undefined
+  trigger?: (string | ((value?: string) => string)) | undefined
+  grabber?: string | undefined
+  grabberIndicator?: string | undefined
+  closeTrigger?: string | undefined
+  swipeArea?: string | undefined
+}
 
 export interface DrawerProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
   /**

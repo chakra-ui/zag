@@ -837,8 +837,8 @@ export const machine = createMachine<MenuSchema>({
         })
         context.set("highlightedValue", dom.getItemValue(prev))
       },
-      invokeOnSelect({ context, prop, scope }) {
-        const value = context.get("highlightedValue")
+      invokeOnSelect({ context, prop, scope, event }) {
+        const value = event.value || dom.getItemValue(event.target) || context.get("highlightedValue")
         if (value == null) return
 
         const node = dom.getItemEl(scope, value)

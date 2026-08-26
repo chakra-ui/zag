@@ -2,7 +2,7 @@ import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
 
 /* -----------------------------------------------------------------------------
@@ -75,24 +75,24 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  triggerLabel: string
-  clearTriggerLabel: string
-}>
+export interface IntlTranslations {
+  triggerLabel?: string | undefined
+  clearTriggerLabel?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  control: string
-  input: string
-  content: string
-  trigger: string
-  clearTrigger: string
-  item: (id: string, index?: number) => string
-  positioner: string
-  itemGroup: (id: string | number) => string
-  itemGroupLabel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  control?: string | undefined
+  input?: string | undefined
+  content?: string | undefined
+  trigger?: string | undefined
+  clearTrigger?: string | undefined
+  item?: ((id: string, index?: number) => string) | undefined
+  positioner?: string | undefined
+  itemGroup?: ((id: string | number) => string) | undefined
+  itemGroupLabel?: ((id: string | number) => string) | undefined
+}
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {

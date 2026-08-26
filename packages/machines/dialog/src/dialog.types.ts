@@ -1,6 +1,6 @@
 import type { Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -25,15 +25,15 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  positioner: string
-  backdrop: string
-  content: string
-  closeTrigger: string
-  title: string
-  description: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  positioner?: string | undefined
+  backdrop?: string | undefined
+  content?: string | undefined
+  closeTrigger?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+}
 
 export interface DialogProps
   extends DirectionProperty, CommonProperties, DismissableElementHandlers, PersistentElementOptions {

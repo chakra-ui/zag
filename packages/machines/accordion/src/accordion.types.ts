@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -17,12 +17,12 @@ export interface FocusChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  item: (value: string) => string
-  itemContent: (value: string) => string
-  itemTrigger: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  item?: ((value: string) => string) | undefined
+  itemContent?: ((value: string) => string) | undefined
+  itemTrigger?: ((value: string) => string) | undefined
+}
 
 export interface AccordionProps extends DirectionProperty, CommonProperties {
   /**

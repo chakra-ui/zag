@@ -110,9 +110,9 @@ function handleKeyboardEvent(e: KeyboardEvent) {
 }
 
 function handlePointerEvent(e: PointerEvent | MouseEvent) {
-  // WebKit emits move events at an unchanged position when content scrolls under a resting cursor
+  // WebKit fires trusted moves at the same point when content scrolls under the cursor
   const isMove = e.type === "pointermove" || e.type === "mousemove"
-  if (isMove && lastPointerPosition?.x === e.clientX && lastPointerPosition?.y === e.clientY) return
+  if (isMove && e.isTrusted && lastPointerPosition?.x === e.clientX && lastPointerPosition?.y === e.clientY) return
 
   lastPointerPosition = { x: e.clientX, y: e.clientY }
   currentModality = "pointer"

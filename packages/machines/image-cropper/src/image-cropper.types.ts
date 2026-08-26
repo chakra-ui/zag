@@ -1,14 +1,5 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
-import type {
-  CommonProperties,
-  DirectionProperty,
-  Point,
-  PropTypes,
-  Rect,
-  Partial,
-  RequiredBy,
-  Size,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, RequiredBy, Size } from "@zag-js/types"
 
 export type HandlePosition = "n" | "e" | "s" | "w" | "ne" | "se" | "sw" | "nw"
 
@@ -56,24 +47,24 @@ export interface SelectionValueTextDetails extends Rect {
   shape: "rectangle" | "circle"
 }
 
-export type IntlTranslations = Partial<{
-  rootLabel: string
-  rootRoleDescription: string
-  previewLoading: string
-  previewDescription: (details: PreviewDescriptionDetails) => string
-  selectionLabel: (details: SelectionLabelDetails) => string
-  selectionRoleDescription: string
-  selectionInstructions: string
-  selectionValueText: (details: SelectionValueTextDetails) => string
-}>
+export interface IntlTranslations {
+  rootLabel?: string | undefined
+  rootRoleDescription?: string | undefined
+  previewLoading?: string | undefined
+  previewDescription?: ((details: PreviewDescriptionDetails) => string) | undefined
+  selectionLabel?: ((details: SelectionLabelDetails) => string) | undefined
+  selectionRoleDescription?: string | undefined
+  selectionInstructions?: string | undefined
+  selectionValueText?: ((details: SelectionValueTextDetails) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  viewport: string
-  image: string
-  selection: string
-  handle: (position: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  viewport?: string | undefined
+  image?: string | undefined
+  selection?: string | undefined
+  handle?: ((position: string) => string) | undefined
+}
 
 export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   /**

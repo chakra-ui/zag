@@ -1,12 +1,4 @@
-import type {
-  CommonProperties,
-  Direction,
-  DirectionProperty,
-  Partial,
-  PropTypes,
-  Required,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 
@@ -59,9 +51,9 @@ export interface ActionOptions {
  * Toast Translations
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  closeTriggerLabel: string
-}>
+export interface IntlTranslations {
+  closeTriggerLabel?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Toast Options

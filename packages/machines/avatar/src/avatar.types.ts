@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Partial, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -11,11 +11,11 @@ export interface StatusChangeDetails {
   status: LoadStatus
 }
 
-export type ElementIds = Partial<{
-  root: string
-  image: string
-  fallback: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  image?: string | undefined
+  fallback?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -26,20 +26,20 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  closeTriggerLabel: string
-}>
+export interface IntlTranslations {
+  closeTriggerLabel?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  anchor: string
-  trigger: string | ((value?: string) => string)
-  content: string
-  title: string
-  description: string
-  closeTrigger: string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  anchor?: string | undefined
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+  closeTrigger?: string | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 export interface PopoverProps
   extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {

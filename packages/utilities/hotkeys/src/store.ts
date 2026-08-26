@@ -5,6 +5,7 @@ import type {
   CommandDefinition,
   ConflictBehavior,
   HotkeyCommand,
+  HotkeyCommandTarget,
   HotkeyOptions,
   HotkeyStoreOptions,
   HotkeyStoreState,
@@ -12,7 +13,15 @@ import type {
   Platform,
   HotkeyTarget,
 } from "./types"
-import { getPlatform, getWin, isSymbolKey, MODIFIER_SEPARATOR, toArray } from "./utils"
+import {
+  getPlatform,
+  getWin,
+  isEventWithinTarget,
+  isSymbolKey,
+  MODIFIER_SEPARATOR,
+  resolveCommandTarget,
+  toArray,
+} from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -38,6 +47,11 @@ const DEFAULT_SCOPES: string[] = ["*"]
 // Check if a parsed hotkey has any non-shift modifiers (Ctrl, Meta, Alt)
 function hasNonShiftModifier(parsed: ParsedHotkey): boolean {
   return !!(parsed.ctrl || parsed.meta || parsed.alt)
+}
+
+// Targeted commands are more specific than global ones
+function computePriority(parsed: ParsedHotkey, options: HotkeyOptions): number {
+  return getHotkeyPriority(parsed) + (options.target != null ? 100 : 0)
 }
 
 export class HotkeyStore {
@@ -104,8 +118,9 @@ export class HotkeyStore {
 
   destroy(): void {
     this.stopListening()
-    this.clear()
+    // Clear subscribers first so `clear()` cannot restart listening
     this.subscribers.clear()
+    this.clear()
     this.sequenceStates.clear()
     this.firedCommands.clear()
     this.target = undefined
@@ -123,12 +138,14 @@ export class HotkeyStore {
 
   addScope(scope: string): this {
     this.state.activeScopes.add(scope)
+    this.clearAllSequences()
     this.notifySubscribers()
     return this
   }
 
   removeScope(scope: string): this {
     this.state.activeScopes.delete(scope)
+    this.clearAllSequences()
     this.notifySubscribers()
     return this
   }
@@ -147,6 +164,7 @@ export class HotkeyStore {
     } else {
       this.state.activeScopes.add(scope)
     }
+    this.clearAllSequences()
     this.notifySubscribers()
     return this
   }
@@ -160,9 +178,11 @@ export class HotkeyStore {
     }
 
     this.subscribers.add(subscriber)
+    this.updateListeners()
 
     return () => {
       this.subscribers.delete(subscriber)
+      this.updateListeners()
     }
   }
 
@@ -175,7 +195,6 @@ export class HotkeyStore {
 
       // Parse and cache hotkey
       const parsed = parseHotkey(command.hotkey, this.platform)
-      const priority = getHotkeyPriority(parsed)
 
       // Smart input defaults: if hotkey has a modifier (Ctrl/Cmd/Alt),
       // auto-enable on form tags unless explicitly configured
@@ -184,8 +203,9 @@ export class HotkeyStore {
         resolvedOptions.enableOnFormTags = true
       }
 
-      // Conflict detection
-      this.detectConflicts(command.id, command.hotkey)
+      const priority = computePriority(parsed, resolvedOptions)
+
+      this.detectConflicts(command.id, command.hotkey, resolvedOptions.target)
 
       this.state.commands.set(command.id, {
         id: command.id,
@@ -338,7 +358,7 @@ export class HotkeyStore {
       const hasModKeyInHotkey = command.hotkey.split(MODIFIER_SEPARATOR).some((part) => isModKey(part.trim()))
       if (hasModKeyInHotkey) {
         command._parsed = parseHotkey(command.hotkey, this.platform)
-        command._priority = getHotkeyPriority(command._parsed)
+        command._priority = computePriority(command._parsed, command.options)
       }
     }
   }
@@ -353,8 +373,8 @@ export class HotkeyStore {
     }
   }
 
-  // Conflict detection
-  private detectConflicts(newId: string, newHotkey: string): void {
+  // Conflict detection (same hotkey scoped to different targets is not a conflict)
+  private detectConflicts(newId: string, newHotkey: string, newTarget?: HotkeyCommandTarget | undefined): void {
     if (this.conflictBehavior === "allow") return
 
     const toDelete: string[] = []
@@ -362,6 +382,7 @@ export class HotkeyStore {
     for (const [existingId, existing] of this.state.commands) {
       if (existingId === newId) continue
       if (existing.hotkey !== newHotkey) continue
+      if (existing.options.target !== newTarget) continue
 
       const message =
         `[hotkeys] Conflict: "${newHotkey}" is already registered by command "${existingId}". ` +
@@ -388,14 +409,30 @@ export class HotkeyStore {
   }
 
   // Event handling
+  // The attached-listener configuration is effectively a state machine:
+  // detached | capture | bubble | both. Every registry mutation funnels
+  // through here so attached phases always converge to the required ones.
+  private getAttachedPhases(): { capture: boolean; bubble: boolean } {
+    return { capture: !!this.listeners.capture, bubble: !!this.listeners.bubble }
+  }
+
   private updateListeners(): void {
     if (!this.target) return
 
-    if (this.state.commands.size > 0) {
-      this.startListening()
-    } else {
+    const shouldListen = this.state.commands.size > 0 || this.subscribers.size > 0
+    if (!shouldListen) {
       this.stopListening()
+      return
     }
+
+    const required = this.getListenerPhases()
+    const attached = this.getAttachedPhases()
+    const phasesChanged = attached.capture !== required.capture || attached.bubble !== required.bubble
+
+    // Re-attach if the required phases changed (e.g. a bubble-phase
+    // command registered while only a capture listener is attached)
+    if (this.state.listening && phasesChanged) this.stopListening()
+    this.startListening()
   }
 
   private startListening(): void {
@@ -467,9 +504,6 @@ export class HotkeyStore {
     let bubble = false
 
     for (const command of this.state.commands.values()) {
-      const isEnabled = typeof command.enabled === "function" ? command.enabled() : command.enabled
-      if (!isEnabled) continue
-
       if (command.options.capture !== false) {
         capture = true
       } else {
@@ -478,6 +512,9 @@ export class HotkeyStore {
 
       if (capture && bubble) break
     }
+
+    // Key-state subscribers still need a listener when nothing is registered
+    if (!capture && !bubble) capture = true
 
     return { capture, bubble }
   }
@@ -535,6 +572,11 @@ export class HotkeyStore {
 
       const hasValidScope = command.scopes.some((scope) => scope === "*" || this.state.activeScopes.has(scope))
       if (!hasValidScope) continue
+
+      if (command.options.target != null) {
+        const el = resolveCommandTarget(command.options.target)
+        if (!el || !isEventWithinTarget(event, el)) continue
+      }
 
       if (!shouldTrigger(event, command.options)) continue
 

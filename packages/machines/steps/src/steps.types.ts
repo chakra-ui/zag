@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -19,12 +19,12 @@ export interface StepInvalidDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  list: string
-  triggerId: (index: number) => string
-  contentId: (index: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  list?: string | undefined
+  triggerId?: ((index: number) => string) | undefined
+  contentId?: ((index: number) => string) | undefined
+}
 
 export interface StepsProps extends DirectionProperty, CommonProperties {
   /**

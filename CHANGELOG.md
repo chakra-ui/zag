@@ -4,6 +4,64 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.3](./#1.43.3) - 2026-08-20
+
+### Fixed
+
+- Fixed issue where the `Partial` type exported from `@zag-js/types` shadowed the built-in `Partial`, changing what
+  `Partial<T>` meant in every file that imported it and breaking `@vue/compiler-sfc` on
+  `interface X extends Partial<Y>`.
+
+  Optional properties are now written explicitly as `?: T | undefined`, so types like `IntlTranslations` and
+  `ElementIds` are plain interfaces. Passing a single translation key still works.
+
+## [1.43.2](./#1.43.2) - 2026-08-20
+
+### Added
+
+- **File Upload**: Add `data-invalid` to the label props so you can style the label when the file upload is invalid.
+
+- **Hotkeys**
+  - Add `target` option to scope a command to a DOM subtree. Pass an element or a function returning one, and the
+    command only fires for events inside it. Targeted commands win over global ones on the same hotkey, and the same
+    hotkey on different targets is no longer a conflict.
+
+    ```ts
+    store.register({
+      id: "grid.down",
+      hotkey: "ArrowDown",
+      action: moveDown,
+      options: { target: () => gridEl },
+    })
+    ```
+
+  - Add `normalizeHotkey`, which resolves equivalent hotkeys (`mod+k`, `Meta+K`) to one canonical string.
+  - Add Linux detection. `formatHotkey` now shows `Meta` as `Super` on Linux instead of `Win`.
+  - Export the `Platform` type.
+
+- **Presence**: Add `onEnterComplete`, called when the enter animation finishes. Without an enter animation, it fires on
+  the next frame after mount. It doesn't fire on the initial render.
+
+### Fixed
+
+- **Hotkeys**
+  - Fix `isPressed` returning `false` for bare modifiers like `"shift"` or `"mod"`.
+  - Fix commands registered with `enabled: false` never firing, even after `enable()` or `setEnabled(id, true)`.
+  - Fix `subscribe` not reporting `pressedKeys` until at least one command was registered.
+  - Fix commands with `capture: false` never firing if the store was already listening.
+  - Fix `HotkeyRecorder.stop()` clearing the previous value when nothing new was recorded.
+  - Fix `HotkeyRecorder.cancel()` keeping a partial recording instead of restoring the previous value.
+  - Fix `addScope`, `removeScope` and `toggleScope` not resetting in-progress sequences like `setScope` does.
+  - Fix `formatHotkey("meta+K")` showing `Win` instead of `Super` on Linux. Android still shows `Win`.
+
+- **Scroll Snap**: Fix `findSnapPoint` returning wrong positions for `center` and `end` aligned items and in RTL, which
+  broke carousel page detection.
+
+- **Translations**: Fix `translations` requiring every message. Override one message and the rest fall back to the
+  defaults. `@zag-js/types` now exports a `Partial` compatible with `exactOptionalPropertyTypes`. Affects Carousel, Date
+  Input, Date Picker, Editable, Floating Panel, Image Cropper, Marquee, Pin Input, Progress, Rating Group, Signature
+  Pad, and Tags Input.
+
 ## [1.43.1](./#1.43.1) - 2026-08-16
 
 ### Fixed

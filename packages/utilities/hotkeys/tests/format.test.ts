@@ -1,5 +1,8 @@
+// @vitest-environment jsdom
+
 import { formatHotkey } from "../src/format"
 import type { FormatHotkeyOptions } from "../src/format"
+import { getPlatform } from "../src/utils"
 
 describe("formatHotkey / Windows", () => {
   const windowsOptions: FormatHotkeyOptions = { platform: "windows" }
@@ -480,5 +483,50 @@ describe("formatHotkey / useShortNames / Linux / true", () => {
 
   it("Control+S", () => {
     expect(formatHotkey("Control+S", options)).toBe("Ctrl S")
+  })
+})
+
+describe("linux formatting", () => {
+  it("should use Super for Meta on linux", () => {
+    expect(formatHotkey("meta+K", { platform: "linux" })).toContain("Super")
+    expect(formatHotkey("meta+K", { platform: "windows" })).toContain("Win")
+  })
+
+  it("should resolve linux from a linux platform string", () => {
+    vi.stubGlobal("navigator", { platform: "Linux x86_64", userAgent: "X11; Linux x86_64", vendor: "" })
+    expect(getPlatform()).toBe("linux")
+    vi.unstubAllGlobals()
+  })
+
+  it("should not resolve android as linux", () => {
+    vi.stubGlobal("navigator", {
+      platform: "Linux armv8l",
+      userAgent: "Mozilla/5.0 (Linux; Android 14) Chrome/120",
+      vendor: "",
+    })
+    expect(getPlatform()).toBe("windows")
+    vi.unstubAllGlobals()
+  })
+
+  it("should not resolve android as linux via userAgentData", () => {
+    vi.stubGlobal("navigator", {
+      userAgentData: { platform: "Android", brands: [{ brand: "Google Chrome", version: "143" }] },
+      platform: "Linux armv81",
+      userAgent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 Chrome/143 Mobile Safari/537.36",
+      vendor: "Google Inc.",
+    })
+    expect(getPlatform()).toBe("windows")
+    vi.unstubAllGlobals()
+  })
+
+  it("should resolve chromeos as linux", () => {
+    vi.stubGlobal("navigator", {
+      userAgentData: { platform: "Chrome OS", brands: [{ brand: "Google Chrome", version: "143" }] },
+      platform: "Linux x86_64",
+      userAgent: "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 Chrome/143 Safari/537.36",
+      vendor: "Google Inc.",
+    })
+    expect(getPlatform()).toBe("linux")
+    vi.unstubAllGlobals()
   })
 })

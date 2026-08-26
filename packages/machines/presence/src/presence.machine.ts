@@ -49,6 +49,7 @@ export const machine = createMachine<PresenceSchema>({
 
   states: {
     mounted: {
+      effects: ["trackEnterAnimation"],
       on: {
         UNMOUNT: {
           target: "unmounted",
@@ -60,7 +61,7 @@ export const machine = createMachine<PresenceSchema>({
       },
     },
     unmountSuspended: {
-      effects: ["trackAnimationEvents"],
+      effects: ["trackExitAnimation"],
       on: {
         MOUNT: {
           target: "mounted",
@@ -157,7 +158,50 @@ export const machine = createMachine<PresenceSchema>({
     },
 
     effects: {
-      trackAnimationEvents: ({ context, refs, send, prop }) => {
+      trackEnterAnimation: ({ context, refs, prop }) => {
+        // skip initial mount (present on first render)
+        if (!prop("onEnterComplete") || !context.get("initial")) return
+
+        let cancel: VoidFunction | undefined
+
+        const track = () => {
+          cancel = raf(() => {
+            const node = refs.get("node")
+
+            // node may not be registered yet; retry next frame
+            if (!node || !node.isConnected) {
+              track()
+              return
+            }
+
+            const styles = getComputedStyle(node)
+            const animationName = getAnimationName(styles)
+
+            if (animationName === "none" || styles.display === "none" || styles.animationDuration === "0s") {
+              prop("onEnterComplete")?.()
+              return
+            }
+
+            const onEnd = (event: AnimationEvent) => {
+              const target = getEventTarget(event)
+              if (target !== node || !prop("present")) return
+              node.removeEventListener("animationend", onEnd)
+              prop("onEnterComplete")?.()
+            }
+
+            node.addEventListener("animationend", onEnd)
+            return () => {
+              node.removeEventListener("animationend", onEnd)
+            }
+          })
+        }
+
+        track()
+
+        return () => cancel?.()
+      },
+
+      trackExitAnimation: ({ context, refs, send, prop }) => {
         const node = refs.get("node")
         if (!node) return
 

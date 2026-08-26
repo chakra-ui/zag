@@ -4,7 +4,6 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
-  Partial,
   Point,
   PropTypes,
   Rect,
@@ -20,22 +19,22 @@ export interface ValueChangeDetails {
   value: string
 }
 
-export type ElementIds = Partial<{
-  root: string
-  list: string
-  item: string
-  trigger: (value: string) => string
-  content: (value: string) => string
-  viewport: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  list?: string | undefined
+  item?: string | undefined
+  trigger?: ((value: string) => string) | undefined
+  content?: ((value: string) => string) | undefined
+  viewport?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  rootLabel: string
-}>
+export interface IntlTranslations {
+  rootLabel?: string | undefined
+}
 
 export interface NavigationMenuProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**

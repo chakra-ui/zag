@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
 /* -----------------------------------------------------------------------------
@@ -43,17 +43,17 @@ export interface DataUrlOptions {
   quality?: number | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  control: string
-  hiddenInput: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  control?: string | undefined
+  hiddenInput?: string | undefined
+  label?: string | undefined
+}
 
-export type IntlTranslations = Partial<{
-  clearTrigger: string
-  control: string
-}>
+export interface IntlTranslations {
+  clearTrigger?: string | undefined
+  control?: string | undefined
+}
 
 export type { StrokeOptions }
 
