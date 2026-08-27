@@ -1,16 +1,25 @@
 import { mergeProps } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
-import type { StepActionMap, TourApi, TourService } from "./tour.types"
+import type { IntlTranslations, StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
 import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  nextStep: "next step",
+  prevStep: "previous step",
+  close: "close tour",
+  progressText: ({ current, total }) => `${current + 1} of ${total}`,
+  skip: "skip tour",
+}
+
 export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
   const { state, context, computed, send, prop, scope } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const open = state.hasTag("open")
 
   const steps = Array.from(context.get("steps"))
@@ -27,10 +36,12 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
+  const floatingOffset = context.get("floatingOffset")
+  const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
-    placement: isTooltipPlacement(placement) ? placement : undefined,
+    placement: tooltipPositioned && isTooltipPlacement(placement) ? placement : undefined,
   })
 
   const clipPath = getClipPath({
@@ -109,7 +120,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       const index = getEffectiveStepIndex(steps, step?.id)
       const total = getEffectiveSteps(steps).length
       const details = { current: index, total }
-      return prop("translations").progressText?.(details) ?? ""
+      return translations.progressText(details)
     },
 
     getBackdropProps() {
@@ -136,11 +147,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         hidden: !open || !step?.target?.(),
         style: {
           "--tour-layer": 1,
+          "--spotlight-x": toPx(targetRect.x),
+          "--spotlight-y": toPx(targetRect.y),
+          "--spotlight-width": toPx(targetRect.width),
+          "--spotlight-height": toPx(targetRect.height),
           position: "absolute",
-          width: toPx(targetRect.width),
-          height: toPx(targetRect.height),
-          left: toPx(targetRect.x),
-          top: toPx(targetRect.y),
+          width: "var(--spotlight-width)",
+          height: "var(--spotlight-height)",
+          left: "var(--spotlight-x)",
+          top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
         },
@@ -163,7 +178,15 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "data-side": placementSide,
         style: {
           "--tour-layer": 2,
-          ...(step?.type === "tooltip" && popperStyles.floating),
+          ...(isTooltipStep(step) && {
+            ...popperStyles.floating,
+            ...(floatingOffset && {
+              "--x": toPx(floatingOffset.x),
+              "--y": toPx(floatingOffset.y),
+            }),
+            "--z-index": "calc(var(--tour-layer) + var(--tour-z-index))",
+          }),
+          ...(!open && { pointerEvents: "none" }),
         },
       })
     },
@@ -173,8 +196,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
         dir: prop("dir"),
-        hidden: step?.type !== "tooltip",
-        style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
+        hidden: !tooltipPositioned,
+        style: tooltipPositioned ? popperStyles.arrow : undefined,
         opacity: hasTarget ? undefined : 0,
       })
     },
@@ -244,10 +267,11 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     },
 
     getCloseTriggerProps() {
-      return normalize.element({
+      return normalize.button({
         ...parts.closeTrigger.attrs,
+        type: "button",
         "data-type": step?.type,
-        "aria-label": prop("translations").close,
+        "aria-label": translations.close,
         onClick: actionMap.dismiss,
       })
     },
@@ -263,7 +287,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": prop("translations").nextStep,
+            "aria-label": translations.nextStep,
             onClick: actionMap.next,
           }
           break
@@ -273,7 +297,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "prev",
             disabled: !hasPrevStep,
             "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": prop("translations").prevStep,
+            "aria-label": translations.prevStep,
             onClick: actionMap.prev,
           }
           break
@@ -281,8 +305,16 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": prop("translations").close,
+            "aria-label": translations.close,
             onClick: actionMap.dismiss,
+          }
+          break
+
+        case "skip":
+          actionProps = {
+            "data-type": "skip",
+            "aria-label": translations.skip,
+            onClick: actionMap.skip,
           }
           break
 

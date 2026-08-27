@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getTabbables, getWindow, queryAll } from "@zag-js/dom-query"
+import { getByOwnerId, getTabbables, getWindow, queryAll } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `nav-menu:${ctx.id}`
 export const getTriggerId = (ctx: Scope, value: string) =>
@@ -40,7 +40,7 @@ export const getTabbableEls = (ctx: Scope, value: string) => {
 export const getTriggerEls = (ctx: Scope) => queryAll(getListEl(ctx), `[data-part=trigger][data-uid='${ctx.id}']`)
 export const getLinkEls = (ctx: Scope, value: string) => {
   const contentEl = getContentEl(ctx, value)
-  return queryAll(contentEl, `[data-part=link][data-ownedby="${getContentId(ctx, value)}"]`)
+  return queryAll(contentEl, `[data-part=link]${getByOwnerId(getContentId(ctx, value))}`)
 }
 
 export const getElements = (ctx: Scope) => {

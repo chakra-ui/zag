@@ -18,11 +18,6 @@ export const machine = createMachine<SignaturePadSchema>({
         streamline: 0.6,
         ...props.drawing,
       },
-      translations: {
-        control: "signature pad",
-        clearTrigger: "clear signature",
-        ...props.translations,
-      },
     }
   },
 
@@ -37,7 +32,7 @@ export const machine = createMachine<SignaturePadSchema>({
         value: prop("paths"),
         sync: true,
         onChange(value) {
-          prop("onDraw")?.({ paths: value })
+          prop("onDraw")?.({ paths: value, currentPath: null })
         },
       })),
       currentPoints: bindable<Point[]>(() => ({
@@ -125,7 +120,8 @@ export const machine = createMachine<SignaturePadSchema>({
       },
       invokeOnDraw({ context, prop }) {
         prop("onDraw")?.({
-          paths: [...context.get("paths"), context.get("currentPath")!],
+          paths: context.get("paths"),
+          currentPath: context.get("currentPath"),
         })
       },
       invokeOnDrawEnd({ context, prop, scope, computed }) {

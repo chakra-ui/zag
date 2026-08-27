@@ -1,10 +1,10 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { ImageCropperApi, ImageCropperService, IntlTranslations } from "./image-cropper.types"
 import {
   roundRect,
   isEqualFlip,
@@ -14,8 +14,30 @@ import {
   isRightHandle,
   isTopHandle,
   isBottomHandle,
-  getCropSourceRect,
-} from "./image-cropper.utils"
+} from "./utils/crop"
+import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  rootLabel: "Image cropper",
+  rootRoleDescription: "Image cropper",
+  previewLoading: "Image cropper preview loading",
+  previewDescription({ crop, zoom, rotation }) {
+    const zoomText = zoom != null && Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
+    const rotationText =
+      rotation != null && Number.isFinite(rotation) ? `${Math.round(rotation)} degrees rotation` : "0 degrees rotation"
+    return `Image cropper preview, ${zoomText}, ${rotationText}. Crop positioned at ${crop.x}px from the left and ${crop.y}px from the top with a size of ${crop.width}px by ${crop.height}px.`
+  },
+  selectionLabel: ({ shape }) => `Crop selection area (${shape === "circle" ? "circle" : "rectangle"})`,
+  selectionRoleDescription: "2d slider",
+  selectionInstructions:
+    "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
+  selectionValueText({ shape, x, y, width, height }) {
+    if (shape === "circle") {
+      return `Position X ${x}px, Y ${y}px. Diameter ${width}px.`
+    }
+    return `Position X ${x}px, Y ${y}px. Size ${width}px by ${height}px.`
+  },
+}
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -26,7 +48,7 @@ export function connect<T extends PropTypes>(
   const dragging = state.matches("dragging")
   const panning = state.matches("panning")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const fixedCropArea = prop("fixedCropArea")
   const cropShape = prop("cropShape")
 
@@ -122,19 +144,16 @@ export function connect<T extends PropTypes>(
     },
 
     getCropData() {
-      const sourceRect = getCropSourceRect({
-        crop,
-        zoom,
-        offset,
-        viewportSize: viewportRect,
-        naturalSize,
-      })
+      const exportParams = dom.getCropExportParams(service)
+      const sourceRect = getCropSourceRect(exportParams)
 
       return {
         x: Math.round(sourceRect.x),
         y: Math.round(sourceRect.y),
         width: Math.round(sourceRect.width),
         height: Math.round(sourceRect.height),
+        corners: getCropSourcePoints(exportParams),
+        outputSize: getNaturalCropSize(exportParams),
         rotate: rotation,
         flipX: flip.horizontal,
         flipY: flip.vertical,
@@ -145,22 +164,21 @@ export function connect<T extends PropTypes>(
       const { type = "image/png", quality = 1, output = "blob" } = options
       if (!isVisibleRect(naturalSize)) return null
 
-      const canvas = dom.drawCroppedImageToCanvas(service)
+      const canvas = dom.drawCroppedImageToCanvas(service, options)
       if (!canvas) return null
 
-      if (output === "dataUrl") {
-        return canvas.toDataURL(type, quality)
-      }
+      try {
+        if (output === "dataUrl") {
+          const dataUrl = canvas.toDataURL(type, quality)
+          return dataUrl === "data:," ? null : dataUrl
+        }
 
-      return new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            resolve(blob)
-          },
-          type,
-          quality,
-        )
-      })
+        return await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob(resolve, type, quality)
+        })
+      } catch {
+        return null
+      }
     },
 
     getRootProps() {
@@ -239,11 +257,7 @@ export function connect<T extends PropTypes>(
       const flipHorizontal = flip.horizontal
       const flipVertical = flip.vertical
 
-      const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
-      const rotate = `rotate(${rotation}deg)`
-      const scaleX = zoom * (flipHorizontal ? -1 : 1)
-      const scaleY = zoom * (flipVertical ? -1 : 1)
-      const scale = `scale(${scaleX}, ${scaleY})`
+      const transform = getImageTransformCss({ zoom, offset, rotation, flip })
 
       return normalize.element({
         ...parts.image.attrs,
@@ -265,7 +279,9 @@ export function connect<T extends PropTypes>(
         style: {
           pointerEvents: "none",
           userSelect: "none",
-          transform: `${translate} ${rotate} ${scale}`,
+          objectFit: "fill",
+          transform,
+          transformOrigin: "center center",
           willChange: "transform",
         },
       })
@@ -276,11 +292,10 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
-        tabIndex: disabled ? undefined : 0,
+        tabIndex: 0,
         role: "slider",
         "aria-label": translations.selectionLabel({ shape: cropShape }),
         "aria-roledescription": translations.selectionRoleDescription,
-        "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": isVisibleRect(viewportRect)
           ? Math.max(0, Math.round(viewportRect.width - crop.width))
@@ -312,10 +327,6 @@ export function connect<T extends PropTypes>(
           send({ type: "POINTER_DOWN", point })
         },
         onKeyDown(event) {
-          if (disabled) {
-            event.preventDefault()
-            return
-          }
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
@@ -331,7 +342,19 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (altKey && (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")) {
+          const isArrowKey = key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight"
+          if (!isArrowKey) return
+
+          // In fixed crop mode there's nothing to resize or move, plain arrow keys pan the image instead.
+          // Alt+Arrow keeps meaning "resize", which doesn't apply here, so it's a no-op.
+          if (disabled) {
+            if (altKey) return
+            send({ type: "NUDGE_PAN", key, src, shiftKey, ctrlKey, metaKey })
+            event.preventDefault()
+            return
+          }
+
+          if (altKey) {
             const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
             send({
               type: "NUDGE_RESIZE_CROP",
@@ -346,26 +369,8 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowDown() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowLeft() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowRight() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
-            },
-          }
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          send({ type: "NUDGE_MOVE_CROP", key, src, shiftKey, ctrlKey, metaKey })
+          event.preventDefault()
         },
       })
     },

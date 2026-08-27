@@ -27,14 +27,14 @@ export interface ValueInvalidDetails extends ValueChangeDetails {
 
 export type InputMode = "text" | "tel" | "numeric" | "decimal"
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  input: string
-  incrementTrigger: string
-  decrementTrigger: string
-  scrubber: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  input?: string | undefined
+  incrementTrigger?: string | undefined
+  decrementTrigger?: string | undefined
+  scrubber?: string | undefined
+}
 
 export interface IntlTranslations {
   /**
@@ -185,7 +185,6 @@ type PropsWithDefault =
   | "allowOverflow"
   | "inputMode"
   | "pattern"
-  | "translations"
   | "step"
   | "largeStep"
   | "smallStep"

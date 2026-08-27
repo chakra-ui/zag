@@ -5,14 +5,14 @@ export interface VisibilityChangeDetails {
   visible: boolean
 }
 
-export type ElementIds = Partial<{
-  input: string
-  visibilityTrigger: string
-}>
+export interface ElementIds {
+  input?: string | undefined
+  visibilityTrigger?: string | undefined
+}
 
-export type IntlTranslations = Partial<{
-  visibilityTrigger: ((visible: boolean) => string) | undefined
-}>
+export interface IntlTranslations {
+  visibilityTrigger?: ((visible: boolean) => string) | undefined
+}
 
 export interface PasswordInputProps extends DirectionProperty, CommonProperties {
   /**

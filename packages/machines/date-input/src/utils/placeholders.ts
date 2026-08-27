@@ -1,4 +1,5 @@
-import type { IntlTranslations } from "../date-input.types"
+import type { Required } from "@zag-js/types"
+import type { EditableSegmentType, IntlTranslations } from "../date-input.types"
 
 // Locale-aware placeholders for date segments
 // Adapted from reka-ui / melt-ui (MIT license)
@@ -117,7 +118,7 @@ function getLocalePlaceholders(locale: string): LocalePlaceholder {
   return LOCALE_PLACEHOLDERS[lang] || LOCALE_PLACEHOLDERS.en
 }
 
-export const defaultTranslations: IntlTranslations = {
+export const defaultTranslations: Required<IntlTranslations> = {
   placeholder(locale) {
     const [year, month, day] = getLocalePlaceholders(locale)
     return {
@@ -133,6 +134,6 @@ export const defaultTranslations: IntlTranslations = {
       weekday: "weekday",
       unknown: "unknown",
       fractionalSecond: "ff",
-    }
+    } as Record<EditableSegmentType, string>
   },
 }

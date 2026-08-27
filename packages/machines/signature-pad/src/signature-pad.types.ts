@@ -13,7 +13,14 @@ export interface Point {
 }
 
 export interface DrawDetails {
+  /**
+   * The committed paths of the signature pad.
+   */
   paths: string[]
+  /**
+   * The path currently being drawn, if any.
+   */
+  currentPath: string | null
 }
 
 export interface DrawingOptions extends StrokeOptions {
@@ -36,16 +43,16 @@ export interface DataUrlOptions {
   quality?: number | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  control: string
-  hiddenInput: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  control?: string | undefined
+  hiddenInput?: string | undefined
+  label?: string | undefined
+}
 
 export interface IntlTranslations {
-  clearTrigger: string
-  control: string
+  clearTrigger?: string | undefined
+  control?: string | undefined
 }
 
 export type { StrokeOptions }
@@ -64,7 +71,8 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
    */
   translations?: IntlTranslations | undefined
   /**
-   * Callback when the signature pad is drawing.
+   * Callback when the signature pad is drawing or the committed paths change.
+   * `paths` contains only committed strokes; use `currentPath` for the in-progress stroke.
    */
   onDraw?: ((details: DrawDetails) => void) | undefined
   /**
@@ -103,7 +111,7 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
   paths?: string[] | undefined
 }
 
-type PropsWithDefault = "drawing" | "translations"
+type PropsWithDefault = "drawing"
 
 interface PrivateContext {
   /**

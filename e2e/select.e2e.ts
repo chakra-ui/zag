@@ -297,3 +297,23 @@ test.describe("compositions", () => {
     await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })
+
+test.describe("select / scroll under resting cursor", () => {
+  test("on end key, keep highlight when scroll moves content under the cursor", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Afghanistan (AF)")
+    await I.seeItemIsHighlighted("Afghanistan (AF)")
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Zimbabwe (ZW)")
+    await I.seeItemInViewport("Zimbabwe (ZW)")
+  })
+
+  test("after keyboard scroll, hover still moves the highlight", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Afghanistan (AF)")
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Zimbabwe (ZW)")
+    await I.hoverItem("Zambia (ZM)")
+    await I.seeItemIsHighlighted("Zambia (ZM)")
+  })
+})

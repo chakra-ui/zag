@@ -42,14 +42,14 @@ export interface ScrollToDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  title: string
-  list: string
-  item: (value: string) => string
-  link: (value: string) => string
-  indicator: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  title?: string | undefined
+  list?: string | undefined
+  item?: ((value: string) => string) | undefined
+  link?: ((value: string) => string) | undefined
+  indicator?: string | undefined
+}
 
 export interface TocProps extends DirectionProperty, CommonProperties {
   /**

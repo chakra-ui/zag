@@ -2977,7 +2977,7 @@
       },
       "getCropData": {
         "type": "() => CropData",
-        "description": "Function to get the crop data in natural image pixel coordinates.\nThese coordinates are relative to the original image dimensions,\naccounting for zoom, rotation, and flip transformations.\nUse this for server-side cropping or state persistence."
+        "description": "Function to get the crop geometry in natural image pixels.\nThe rect is axis-aligned; `corners` preserves the exact source quad."
       }
     },
     "context": {
@@ -4377,6 +4377,10 @@
         "type": "VoidFunction | undefined",
         "description": "Function called when the animation ends in the closed state"
       },
+      "onEnterComplete": {
+        "type": "VoidFunction | undefined",
+        "description": "Function called when the animation ends in the open state"
+      },
       "immediate": {
         "type": "boolean | undefined",
         "description": "Whether to synchronize the present change immediately or defer it to the next frame"
@@ -4500,7 +4504,7 @@
       },
       "getDataUrl": {
         "type": "(type: DataUrlType, quality?: number) => Promise<string>",
-        "description": "Returns the data URL of the qr code."
+        "description": "Returns the data URL of the qr code. Includes the overlay when present."
       }
     },
     "context": {
@@ -5065,7 +5069,7 @@
       },
       "onDraw": {
         "type": "((details: DrawDetails) => void) | undefined",
-        "description": "Callback when the signature pad is drawing."
+        "description": "Callback when the signature pad is drawing or the committed paths change.\n`paths` contains only committed strokes; use `currentPath` for the in-progress stroke."
       },
       "onDrawEnd": {
         "type": "((details: DrawEndDetails) => void) | undefined",

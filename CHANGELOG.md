@@ -4,6 +4,273 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.3](./#1.43.3) - 2026-08-20
+
+### Fixed
+
+- Fixed issue where the `Partial` type exported from `@zag-js/types` shadowed the built-in `Partial`, changing what
+  `Partial<T>` meant in every file that imported it and breaking `@vue/compiler-sfc` on
+  `interface X extends Partial<Y>`.
+
+  Optional properties are now written explicitly as `?: T | undefined`, so types like `IntlTranslations` and
+  `ElementIds` are plain interfaces. Passing a single translation key still works.
+
+## [1.43.2](./#1.43.2) - 2026-08-20
+
+### Added
+
+- **File Upload**: Add `data-invalid` to the label props so you can style the label when the file upload is invalid.
+
+- **Hotkeys**
+  - Add `target` option to scope a command to a DOM subtree. Pass an element or a function returning one, and the
+    command only fires for events inside it. Targeted commands win over global ones on the same hotkey, and the same
+    hotkey on different targets is no longer a conflict.
+
+    ```ts
+    store.register({
+      id: "grid.down",
+      hotkey: "ArrowDown",
+      action: moveDown,
+      options: { target: () => gridEl },
+    })
+    ```
+
+  - Add `normalizeHotkey`, which resolves equivalent hotkeys (`mod+k`, `Meta+K`) to one canonical string.
+  - Add Linux detection. `formatHotkey` now shows `Meta` as `Super` on Linux instead of `Win`.
+  - Export the `Platform` type.
+
+- **Presence**: Add `onEnterComplete`, called when the enter animation finishes. Without an enter animation, it fires on
+  the next frame after mount. It doesn't fire on the initial render.
+
+### Fixed
+
+- **Hotkeys**
+  - Fix `isPressed` returning `false` for bare modifiers like `"shift"` or `"mod"`.
+  - Fix commands registered with `enabled: false` never firing, even after `enable()` or `setEnabled(id, true)`.
+  - Fix `subscribe` not reporting `pressedKeys` until at least one command was registered.
+  - Fix commands with `capture: false` never firing if the store was already listening.
+  - Fix `HotkeyRecorder.stop()` clearing the previous value when nothing new was recorded.
+  - Fix `HotkeyRecorder.cancel()` keeping a partial recording instead of restoring the previous value.
+  - Fix `addScope`, `removeScope` and `toggleScope` not resetting in-progress sequences like `setScope` does.
+  - Fix `formatHotkey("meta+K")` showing `Win` instead of `Super` on Linux. Android still shows `Win`.
+
+- **Scroll Snap**: Fix `findSnapPoint` returning wrong positions for `center` and `end` aligned items and in RTL, which
+  broke carousel page detection.
+
+- **Translations**: Fix `translations` requiring every message. Override one message and the rest fall back to the
+  defaults. `@zag-js/types` now exports a `Partial` compatible with `exactOptionalPropertyTypes`. Affects Carousel, Date
+  Input, Date Picker, Editable, Floating Panel, Image Cropper, Marquee, Pin Input, Progress, Rating Group, Signature
+  Pad, and Tags Input.
+
+## [1.43.1](./#1.43.1) - 2026-08-16
+
+### Fixed
+
+- **Auto Resize**: Fix an XSS vector in `autoResizeInput()`. The hidden ghost element used to measure width assigned the
+  input's value with `innerHTML`, so a value containing markup was parsed and could execute. It now uses `textContent`.
+
+- **Cascade Select, Listbox**: Fix keyboard navigation losing the highlighted item when scrolling shifts content beneath
+  a resting pointer. The pointer events fired by that scroll were treated as a real hover and overrode the keyboard
+  highlight. Affects listboxes with `highlightOnHover` and cascade selects with `highlightTrigger: "hover"`.
+
+- **Combobox, Menu, Select**: Fix keyboard navigation clearing or moving the highlighted item while the mouse rests over
+  scrollable content. Scrolling the item into view moved the content under the cursor, and the resulting `pointerleave`
+  (or `pointermove` in Safari) was treated as a real hover.
+
+- **Core**: Fix `getExitEnterStates()` throwing during state transitions in browsers without `Array.prototype.at()`,
+  such as Safari below 15.4.
+
+- **Date Picker**
+  - Fix the `translations` prop requiring every message to be supplied. It's now typed as `Partial<IntlTranslations>`,
+    so you can override a single message and let the rest fall back to the defaults.
+  - Fix the `aria-label` from `getViewTriggerProps()` naming the wrong view. In day view it announced "Switch to year
+    view" while the trigger actually switches to month view. `translations.viewTrigger` now receives the resolved next
+    view, and the trigger disables itself once there's no further view to switch to.
+  - Fix `translations.dayCell()` announcing the generic "Choose" label for dates between a selected range's start and
+    end. It now announces "In range".
+
+- **Dismissable**: Fix `Escape` being ignored right after a dismissable layer opens. `trackDismissableElement` deferred
+  handler registration to the next animation frame, so a dialog, popover or menu was painted and focus-trapped while its
+  layer was not yet on the stack. Under CPU load that gap grew well past one frame and swallowed the keypress. Handlers
+  now register as soon as the node commits.
+
+- **Drawer, Navigation Menu, Steps, Tour**: Add `type="button"` to `getTriggerProps()` (steps, navigation-menu) and
+  `getCloseTriggerProps()` (drawer, tour). Without it these buttons defaulted to `type="submit"` and submitted an
+  ancestor form on click.
+
+- **Floating Panel**
+  - Fix closing a panel not removing it from the stack, so the next panel now becomes topmost.
+  - Fix stack order not applying to the positioner, so focusing a panel raises it above its siblings.
+
+- **Focus Visible**
+  - Fix the interaction modality being reported as `pointer` when content scrolls under a resting cursor. Safari emits
+    move events at an unchanged position in that case.
+  - Fix `trackFocusVisible()` classifying pointer focus as virtual when activating a label briefly moves focus to an
+    overlay container. Clicking a checkbox, radio or switch label added `data-focus-visible` to the control.
+
+- **Image Cropper**: Fix `fixedCropArea: true` disabling all keyboard interaction on the crop selection. It removed the
+  element from the tab order and ignored every key, including the `+`/`-` zoom shortcuts that still apply in fixed mode.
+  The selection is now always focusable. Arrow keys pan the image, since there's nothing to move or resize, and
+  `Alt+Arrow` is a no-op.
+
+- **QR Code**: Include the rendered overlay in `getDataUrl()` and in the file produced by `getDownloadTriggerProps()`.
+  The export previously contained only the QR matrix, so a logo or badge placed over the code was dropped.
+
+- **Splitter**: Fix the element from `getResizeTriggerProps()` matching `:focus-visible` after a pointer drag. It still
+  takes focus, so keyboard resizing keeps working, but no longer shows the focus ring.
+
+## [1.43.0](./#1.43.0) - 2026-07-28
+
+### Added
+
+- **Dialog, Drawer**: Add `data-autofocus` and `data-no-autofocus` to control which element gets focus on open. Mark
+  chrome controls like the close button with `data-no-autofocus` to skip them, or mark the real target with
+  `data-autofocus`.
+
+  ```jsx
+  <div {...api.getContentProps()}>
+    {/* skipped on open, still in tab order */}
+    <button {...api.getCloseTriggerProps()} data-no-autofocus>
+      Close
+    </button>
+    <button data-no-autofocus aria-label="Help">
+      ?
+    </button>
+
+    {/* receives initial focus */}
+    <input data-autofocus />
+    <button>Save</button>
+  </div>
+  ```
+
+  Priority: `initialFocusEl` → `[data-autofocus]` → first tabbable without `[data-no-autofocus]` → content root.
+
+- **Focus Trap**: Add a `persistentElements` option to declare portalled content as part of the trap when it isn't
+  reachable via `aria-controls`/`aria-expanded`.
+
+- **Image Cropper**: Add exact natural-image `corners` and `outputSize` to `getCropData()`, plus a `maxSize` option to
+  limit `getCroppedImage()` output dimensions.
+
+- **Popper**: Add an `applyStyles` option to control whether computed position styles are written directly to the DOM.
+
+### Fixed
+
+- **Auto Resize**: Fix issue where writing to a controlled textarea's `value` programmatically dispatched a synthetic
+  `input` event, feeding the value back into the framework and breaking controlled state.
+
+- **Color Picker**: Fix issue where the channel input committed a partial value when `Enter` was pressed to confirm an
+  IME composition.
+
+- **Date Input**
+  - Fix issue where segment text lagged behind in-progress edits when typing over a committed date.
+  - Fix in-progress edits being discarded while focus catches up after auto-advance. Fast typing and
+    `ArrowUp`/`ArrowDown`/`Home`/`End` now apply to the active segment.
+
+- **Date Picker**
+  - Fix issue where disabled and read-only pickers still responded to cell clicks, the clear trigger, and presets.
+    Read-only pickers keep roving-focus navigation. Disabled pickers are out of the tab order.
+  - Fix issue where the `minView`, `maxView`, and `defaultView` props were ignored when resolving the initial view,
+    which was hardcoded to `day` through `year`.
+  - Fix issue where `defaultOpen` took precedence over `open`, so a controlled picker could open against its own prop.
+  - Fix issue where `maxSelectedDates` was not enforced on month and year cells in `multiple` selection mode.
+  - Fix issue where keyboard range selection diverged from pointer behavior. Selecting a third date now restarts the
+    range, and the hover preview updates for `Enter`, `Home`, `End`, and `PageUp`/`PageDown`.
+  - Fix issue where reopening the calendar with only a start date restarted the range instead of resuming it.
+
+- **Drawer**: Fix issue where the backdrop flickered on a controlled close with an async `open` setter.
+
+- **Focus Trap**
+  - Fix issue where returning focus on deactivate could steal focus back from an element the app had legitimately
+    focused in the meantime, such as a follow-up dialog opened right after closing the current one.
+  - Fix issue where deactivating a nested trap, like a popover inside a dialog, could throw if the outer trap's
+    container had no connected focusable element at that moment.
+  - Fix issue where the focus ring did not show on the returned-to element after a keyboard-driven deactivation such as
+    `Escape`. Focus now returns with `focusVisible: true`.
+
+- **Frameworks**
+  - Fix issue where `bindable` in Vue and Svelte resolved `defaultValue` before `value`, unlike React and Solid.
+  - Fix issue where machine exit actions ran in Solid and Svelte when a component was disposed before the machine
+    started.
+
+- **Image Cropper**: Fix `getCroppedImage()` and `getCropData()` returning a different region from the visible crop
+  after rotating or flipping the image.
+
+- **Marquee**: Fix issue where scrolling speed depended on the content width. The duration is now derived from the
+  content size, the actual translation distance, instead of the root size. The configured `speed` matches the real pixel
+  speed even when the content is smaller than the viewport.
+
+- **Popover**: Fix issue where tabbing out of portalled content looped back into the content when the trigger was the
+  last tabbable on the page. Focus now moves to the next tabbable after the trigger.
+
+- **React**: Fix issue where `useMachine` returned new `send`, `prop`, `context`, `computed`, `refs`, and `getStatus`
+  references on every render, so they were unsafe in effect dependency arrays.
+
+- **Remove Scroll**: Fix issue where the scroll lock applied to `<body>` on layouts where `<html>` is the actual scroll
+  container, so nothing was locked.
+
+- **Signature Pad**: Fix issue where controlled `paths` went out of sync because the in-progress stroke was appended to
+  `paths`. It stays in `onDraw.currentPath` until the stroke ends.
+
+- **Solid**: Fix issue where a `value` of `null` was read as uncontrolled, so controlled components fell back to
+  internal state.
+
+- **Splitter**
+  - Fix issue where collapsed panels sized to `minSize` instead of `collapsedSize`.
+  - Fix issue where keyboard resizing stopped working when a resize trigger received focus while hovered.
+
+- **Tour**
+  - Fix issue where dismissing a tour from a step's `effect` skipped cleanup and could miss firing the `completed`
+    status.
+  - Fix issue where a tooltip step's position could reset unexpectedly when the tour closed.
+  - Fix issue where a step action with `action: "skip"` did nothing when clicked.
+
+## [1.42.0](./#1.42.0) - 2026-06-29
+
+### Added
+
+- **Number Input**: Add `largeStep` (defaults to `10 * step`, applied on `Shift`) and `smallStep` (defaults to
+  `step / 10`, applied on `Alt`) props for configurable keyboard stepping. The defaults preserve the previous stepping
+  magnitudes.
+
+- **Slider**: Add `largeStep` prop (defaults to `10 * step`), applied on `Shift` or `PageUp`/`PageDown`. The default
+  preserves the previous stepping magnitude.
+
+### Fixed
+
+- **Cascade Select**: Fix issue where pressing `Enter` on a highlighted leaf node did not select it in non-React
+  frameworks.
+
+- **Date Input**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits. Latin-locale behavior is unchanged.
+  - Fix timezone-naive values (`CalendarDate`/`CalendarDateTime`) being shifted by the viewer's local UTC offset when a
+    custom `formatter` without an explicit `timeZone` is provided. The instant fed to the formatter is now built using
+    the formatter's own resolved time zone, so a wall-clock value round-trips unshifted.
+
+- **Date Picker**
+  - Allow typing dates using the locale's native numerals (e.g. Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to
+    ASCII digits.
+  - Add date reordering on blur for range selection to match other selection paths.
+  - Fix day view briefly flashing when closing the date picker from the month or year view.
+  - Fix `visibleRangeText` returning a stale value when multiple date pickers with different `selectionMode` (or
+    `timeZone`) share the same visible range. This previously surfaced as SSR hydration mismatches.
+
+- **Menu**: Fix issue where the context menu briefly flashes at the top-left corner before positioning, and where a
+  long-press (touch) context menu opens stuck at `(0,0)` without ever repositioning to the touch point.
+
+- **Number Input**
+  - Fix issue where calling `api.setValue` with a number throws when `formatOptions` is defined.
+  - Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when `step: 1`).
+
+- **Slider**: Fix `Cmd`/`Ctrl` + arrow keys producing values off the `step` grid (e.g. non-integer values when
+  `step: 1`).
+
+- **Tags Input**: Fix native form submit so `FormData` reflects the current tags. The hidden input previously kept its
+  initial value after tags were added, removed, or cleared.
+
+- **Toast**: Fix toast height measurement including the `scale` transform in overlap mode, causing a height flicker when
+  expanding the stack. Height is now measured from the untransformed element.
+
 ## [1.41.2](./#1.41.2) - 2026-06-05
 
 ### Fixed
@@ -11,8 +278,8 @@ All notable changes to this project will be documented in this file.
 - **Date Input**: Fix date segment placeholders for locales with explicit script subtags.
 
 - **Drawer**
-  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g. history
-    API or a delayed state update).
+  - Fix controlled drawer flickering when swiped or backdrop-closed while the `open` setter is asynchronous (e.g.
+    history API or a delayed state update).
   - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
 
 - **Image Cropper**: Fix `getCroppedImage` and `getCropData` returning the wrong region when the image is displayed at a

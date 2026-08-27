@@ -22,24 +22,24 @@ export type ActivationMode = "focus" | "dblclick" | "click" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
-export type IntlTranslations = {
-  edit: string
-  submit: string
-  cancel: string
-  input: string
+export interface IntlTranslations {
+  edit?: string | undefined
+  submit?: string | undefined
+  cancel?: string | undefined
+  input?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  area: string
-  label: string
-  preview: string
-  input: string
-  control: string
-  submitTrigger: string
-  cancelTrigger: string
-  editTrigger: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  area?: string | undefined
+  label?: string | undefined
+  preview?: string | undefined
+  input?: string | undefined
+  control?: string | undefined
+  submitTrigger?: string | undefined
+  cancelTrigger?: string | undefined
+  editTrigger?: string | undefined
+}
 
 export interface EditableProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
@@ -152,7 +152,7 @@ export interface EditableProps extends DirectionProperty, CommonProperties, Inte
   onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "activationMode" | "submitMode" | "selectOnFocus" | "translations"
+type PropsWithDefault = "activationMode" | "submitMode" | "selectOnFocus"
 
 export interface EditableSchema {
   props: RequiredBy<EditableProps, PropsWithDefault>

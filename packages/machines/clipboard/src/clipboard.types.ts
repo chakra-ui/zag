@@ -21,11 +21,11 @@ export interface IntlTranslations {
   triggerLabel?: ((copied: boolean) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  input: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  input?: string | undefined
+  label?: string | undefined
+}
 
 export interface ClipboardProps extends CommonProperties {
   /**
@@ -62,7 +62,7 @@ export interface ClipboardProps extends CommonProperties {
 
 export interface ClipboardSchema {
   state: "idle" | "copied"
-  props: RequiredBy<ClipboardProps, "timeout" | "translations">
+  props: RequiredBy<ClipboardProps, "timeout">
   context: {
     value: string
   }

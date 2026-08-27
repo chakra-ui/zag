@@ -134,12 +134,12 @@ export interface IntlTranslations {
   renameInputLabel?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  tree: string
-  label: string
-  node: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  tree?: string | undefined
+  label?: string | undefined
+  node?: ((value: string) => string) | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -265,13 +265,7 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
 }
 
 type PropsWithDefault =
-  | "collection"
-  | "selectionMode"
-  | "expandOnClick"
-  | "typeahead"
-  | "defaultExpandedValue"
-  | "defaultSelectedValue"
-  | "translations"
+  "collection" | "selectionMode" | "expandOnClick" | "typeahead" | "defaultExpandedValue" | "defaultSelectedValue"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 

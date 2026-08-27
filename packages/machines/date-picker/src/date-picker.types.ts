@@ -45,10 +45,10 @@ export interface OpenChangeDetails {
 }
 
 export interface Time {
-  hour?: number
-  minute?: number
-  second?: number
-  millisecond?: number
+  hour?: number | undefined
+  minute?: number | undefined
+  second?: number | undefined
+  millisecond?: number | undefined
 }
 
 export interface LocaleDetails {
@@ -63,41 +63,41 @@ export interface LocaleDetails {
 export type SelectionMode = "single" | "multiple" | "range"
 
 export interface IntlTranslations {
-  dayCell: (state: DayTableCellState) => string
-  nextTrigger: (view: DateView) => string
-  monthSelect: string
-  yearSelect: string
-  viewTrigger: (view: DateView) => string
-  prevTrigger: (view: DateView) => string
-  presetTrigger: (value: string[]) => string
-  clearTrigger: string
-  trigger: (open: boolean) => string
-  content: string
-  placeholder: (locale: string) => { year: string; month: string; day: string }
+  dayCell?: ((state: DayTableCellState) => string) | undefined
+  nextTrigger?: ((view: DateView) => string) | undefined
+  monthSelect?: string | undefined
+  yearSelect?: string | undefined
+  viewTrigger?: ((view: DateView, nextView: DateView | undefined) => string) | undefined
+  prevTrigger?: ((view: DateView) => string) | undefined
+  presetTrigger?: ((value: string[]) => string) | undefined
+  clearTrigger?: string | undefined
+  trigger?: ((open: boolean) => string) | undefined
+  content?: string | undefined
+  placeholder?: ((locale: string) => { year: string; month: string; day: string }) | undefined
   weekColumnHeader?: string | undefined
   weekNumberCell?: ((weekNumber: number) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  label: (index: number) => string
-  table: (id: string) => string
-  tableHeader: (id: string) => string
-  tableBody: (id: string) => string
-  tableRow: (id: string) => string
-  content: string
-  cellTrigger: (id: string) => string
-  prevTrigger: (view: DateView) => string
-  nextTrigger: (view: DateView) => string
-  viewTrigger: (view: DateView) => string
-  clearTrigger: string
-  control: string
-  input: (index: number) => string
-  trigger: string
-  monthSelect: string
-  yearSelect: string
-  positioner: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: ((index: number) => string) | undefined
+  table?: ((id: string) => string) | undefined
+  tableHeader?: ((id: string) => string) | undefined
+  tableBody?: ((id: string) => string) | undefined
+  tableRow?: ((id: string) => string) | undefined
+  content?: string | undefined
+  cellTrigger?: ((id: string) => string) | undefined
+  prevTrigger?: ((view: DateView) => string) | undefined
+  nextTrigger?: ((view: DateView) => string) | undefined
+  viewTrigger?: ((view: DateView) => string) | undefined
+  clearTrigger?: string | undefined
+  control?: string | undefined
+  input?: ((index: number) => string) | undefined
+  trigger?: string | undefined
+  monthSelect?: string | undefined
+  yearSelect?: string | undefined
+  positioner?: string | undefined
+}
 
 export interface DatePickerProps extends DirectionProperty, CommonProperties {
   /**

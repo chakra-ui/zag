@@ -25,12 +25,12 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  content: string
-  arrow: string
-  positioner: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  arrow?: string | undefined
+  positioner?: string | undefined
+}
 
 export interface TooltipProps extends DirectionProperty, CommonProperties {
   /**

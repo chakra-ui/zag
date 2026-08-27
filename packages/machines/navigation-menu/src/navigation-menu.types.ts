@@ -19,14 +19,14 @@ export interface ValueChangeDetails {
   value: string
 }
 
-export type ElementIds = Partial<{
-  root: string
-  list: string
-  item: string
-  trigger: (value: string) => string
-  content: (value: string) => string
-  viewport: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  list?: string | undefined
+  item?: string | undefined
+  trigger?: ((value: string) => string) | undefined
+  content?: ((value: string) => string) | undefined
+  viewport?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

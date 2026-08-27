@@ -48,131 +48,131 @@ export interface SelectionValueTextDetails extends Rect {
 }
 
 export interface IntlTranslations {
-  rootLabel: string
-  rootRoleDescription: string
-  previewLoading: string
-  previewDescription: (details: PreviewDescriptionDetails) => string
-  selectionLabel: (details: SelectionLabelDetails) => string
-  selectionRoleDescription: string
-  selectionInstructions: string
-  selectionValueText: (details: SelectionValueTextDetails) => string
+  rootLabel?: string | undefined
+  rootRoleDescription?: string | undefined
+  previewLoading?: string | undefined
+  previewDescription?: ((details: PreviewDescriptionDetails) => string) | undefined
+  selectionLabel?: ((details: SelectionLabelDetails) => string) | undefined
+  selectionRoleDescription?: string | undefined
+  selectionInstructions?: string | undefined
+  selectionValueText?: ((details: SelectionValueTextDetails) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  viewport: string
-  image: string
-  selection: string
-  handle: (position: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  viewport?: string | undefined
+  image?: string | undefined
+  selection?: string | undefined
+  handle?: ((position: string) => string) | undefined
+}
 
 export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the image cropper elements
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identify accessibility elements and their states.
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The initial rectangle of the crop area.
    * If not provided, a smart default will be computed based on viewport size and aspect ratio.
    */
-  initialCrop?: Rect
+  initialCrop?: Rect | undefined
   /**
    * The minimum width of the crop area
    * @default 40
    */
-  minWidth?: number
+  minWidth?: number | undefined
   /**
    * The minimum height of the crop area
    * @default 40
    */
-  minHeight?: number
+  minHeight?: number | undefined
   /**
    * The maximum width of the crop area
    * @default Infinity
    */
-  maxWidth?: number
+  maxWidth?: number | undefined
   /**
    * The maximum height of the crop area
    * @default Infinity
    */
-  maxHeight?: number
+  maxHeight?: number | undefined
   /**
    * The aspect ratio to maintain for the crop area (width / height).
    * For example, an aspect ratio of 16 / 9 will maintain a width to height ratio of 16:9.
    * If not provided, the crop area can be freely resized.
    */
-  aspectRatio?: number
+  aspectRatio?: number | undefined
   /**
    * The shape of the crop area.
    * @default "rectangle"
    */
-  cropShape?: "rectangle" | "circle"
+  cropShape?: "rectangle" | "circle" | undefined
   /**
    * The controlled zoom level of the image.
    */
-  zoom?: number
+  zoom?: number | undefined
   /**
    * The controlled rotation of the image in degrees (0 - 360).
    */
-  rotation?: number
+  rotation?: number | undefined
   /**
    * The controlled flip state of the image.
    */
-  flip?: FlipState
+  flip?: FlipState | undefined
   /**
    * The initial zoom factor to apply to the image.
    * @default 1
    */
-  defaultZoom?: number
+  defaultZoom?: number | undefined
   /**
    * The initial rotation to apply to the image in degrees.
    * @default 0
    */
-  defaultRotation?: number
+  defaultRotation?: number | undefined
   /**
    * The initial flip state to apply to the image.
    * @default { horizontal: false, vertical: false }
    */
-  defaultFlip?: FlipState
+  defaultFlip?: FlipState | undefined
   /**
    * The amount of zoom applied per wheel step.
    * @default 0.1
    */
-  zoomStep?: number
+  zoomStep?: number | undefined
   /**
    * Controls how responsive pinch-to-zoom is.
    * @default 2
    */
-  zoomSensitivity?: number
+  zoomSensitivity?: number | undefined
   /**
    * The minimum zoom factor allowed.
    * @default 1
    */
-  minZoom?: number
+  minZoom?: number | undefined
   /**
    * The maximum zoom factor allowed.
    * @default 5
    */
-  maxZoom?: number
+  maxZoom?: number | undefined
   /**
    * The base nudge step for keyboard arrow keys (in pixels).
    * @default 1
    */
-  nudgeStep?: number
+  nudgeStep?: number | undefined
   /**
    * The nudge step when Shift key is held (in pixels).
    * @default 10
    */
-  nudgeStepShift?: number
+  nudgeStepShift?: number | undefined
   /**
    * The nudge step when Ctrl/Cmd key is held (in pixels).
    * @default 50
    */
-  nudgeStepCtrl?: number
+  nudgeStepCtrl?: number | undefined
   /**
    * Callback fired when the zoom level changes.
    */
@@ -193,7 +193,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * Whether the crop area is fixed in size and position.
    * @default false
    */
-  fixedCropArea?: boolean
+  fixedCropArea?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -213,7 +213,6 @@ type PropsWithDefault =
   | "nudgeStep"
   | "nudgeStepShift"
   | "nudgeStepCtrl"
-  | "translations"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
@@ -262,33 +261,50 @@ export interface GridProps {
   axis: "horizontal" | "vertical"
 }
 
+export interface CropSourcePoints {
+  topLeft: Point
+  topRight: Point
+  bottomRight: Point
+  bottomLeft: Point
+}
+
 export interface CropData {
   /**
-   * The x coordinate of the crop area in natural image pixels
+   * Axis-aligned bounds of the crop in natural image pixels, after inverting
+   * pan, zoom, flip, and rotation. Under rotation this is a bounding box of the
+   * oriented crop quad — use `getCroppedImage()` for pixel-exact output.
    */
   x: number
   /**
-   * The y coordinate of the crop area in natural image pixels
+   * The y coordinate of the crop bounds in natural image pixels
    */
   y: number
   /**
-   * The width of the crop area in natural image pixels
+   * The width of the crop bounds in natural image pixels
    */
   width: number
   /**
-   * The height of the crop area in natural image pixels
+   * The height of the crop bounds in natural image pixels
    */
   height: number
   /**
-   * The rotation of the image in degrees
+   * Natural image points corresponding to each corner of the crop.
+   */
+  corners: CropSourcePoints
+  /**
+   * Output size at the image's natural resolution before export limits.
+   */
+  outputSize: Size
+  /**
+   * The rotation of the preview image in degrees when the crop was taken
    */
   rotate: number
   /**
-   * Whether the image is flipped horizontally
+   * Whether the preview image was flipped horizontally when the crop was taken
    */
   flipX: boolean
   /**
-   * Whether the image is flipped vertically
+   * Whether the preview image was flipped vertically when the crop was taken
    */
   flipY: boolean
 }
@@ -298,17 +314,22 @@ export interface GetCroppedImageOptions {
    * The output format of the cropped image.
    * @default "image/png"
    */
-  type?: string
+  type?: string | undefined
   /**
    * The quality of the output image (0-1) for lossy formats like JPEG.
    * @default 1
    */
-  quality?: number
+  quality?: number | undefined
+  /**
+   * Maximum output dimensions. The image is scaled down proportionally.
+   * When omitted, the crop is exported at natural resolution.
+   */
+  maxSize?: Size | undefined
   /**
    * Whether to return a Blob or a data URL.
    * @default "blob"
    */
-  output?: "blob" | "dataUrl"
+  output?: "blob" | "dataUrl" | undefined
 }
 
 export interface ImageCropperApi<T extends PropTypes = PropTypes> {
@@ -394,10 +415,8 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    */
   getCroppedImage: (options?: GetCroppedImageOptions) => Promise<Blob | string | null>
   /**
-   * Function to get the crop data in natural image pixel coordinates.
-   * These coordinates are relative to the original image dimensions,
-   * accounting for zoom, rotation, and flip transformations.
-   * Use this for server-side cropping or state persistence.
+   * Function to get the crop geometry in natural image pixels.
+   * The rect is axis-aligned; `corners` preserves the exact source quad.
    */
   getCropData: () => CropData
 

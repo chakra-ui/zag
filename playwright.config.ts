@@ -6,56 +6,31 @@ type InferServer<T> = Exclude<T extends Array<infer U> ? U : T, undefined>
 
 type WebServer = InferServer<PlaywrightTestConfig["webServer"]>
 
+const examples = {
+  react: { dir: "next-ts", port: "3000" },
+  vue: { dir: "nuxt-ts", port: "3001" },
+  solid: { dir: "solid-ts", port: "3002" },
+  svelte: { dir: "svelte-ts", port: "3003" },
+  preact: { dir: "preact-ts", port: "3004" },
+}
+
 export function getWebServer(): WebServer {
   const framework = process.env.FRAMEWORK || "react"
 
-  const reactPort = process.env.PORT ?? "3000"
-  const vuePort = process.env.PORT ?? "3001"
-  const solidPort = process.env.PORT ?? "3002"
-  const sveltePort = process.env.PORT ?? "3003"
-  const preactPort = process.env.PORT ?? "3004"
-  const alpinePort = process.env.PORT ?? "3005"
-
-  const frameworks: Record<string, WebServer> = {
-    react: {
-      cwd: "./examples/next-ts",
-      command: `cross-env PORT=${reactPort} pnpm dev`,
-      url: `http://localhost:${reactPort}`,
-      reuseExistingServer: !CI,
-    },
-    vue: {
-      cwd: "./examples/vue-ts",
-      command: `pnpm vite --port ${vuePort}`,
-      url: `http://localhost:${vuePort}`,
-      reuseExistingServer: !CI,
-    },
-    solid: {
-      cwd: "./examples/solid-ts",
-      command: `pnpm vite --port ${solidPort}`,
-      url: `http://localhost:${solidPort}`,
-      reuseExistingServer: !CI,
-    },
-    svelte: {
-      cwd: "./examples/svelte-ts",
-      command: `pnpm vite --port ${sveltePort}`,
-      url: `http://localhost:${sveltePort}`,
-      reuseExistingServer: !CI,
-    },
-    preact: {
-      cwd: "./examples/preact-ts",
-      command: `pnpm vite --port ${preactPort}`,
-      url: `http://localhost:${preactPort}`,
-      reuseExistingServer: !CI,
-    },
-    alpine: {
-      cwd: "./examples/alpine-ts",
-      command: `pnpm vite --port ${alpinePort}`,
-      url: `http://localhost:${alpinePort}`,
-      reuseExistingServer: !CI,
-    },
+  const example = examples[framework as keyof typeof examples]
+  if (!example) {
+    throw new Error(`Unknown FRAMEWORK "${framework}". Expected one of: ${Object.keys(examples).join(", ")}`)
   }
 
-  return frameworks[framework]
+  const port = process.env.PORT ?? example.port
+
+  return {
+    cwd: `./examples/${example.dir}`,
+    command: "pnpm dev",
+    env: { PORT: port },
+    url: `http://localhost:${port}`,
+    reuseExistingServer: !CI,
+  }
 }
 
 const webServer = getWebServer()

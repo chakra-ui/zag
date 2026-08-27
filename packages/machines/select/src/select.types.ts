@@ -43,19 +43,19 @@ export interface IntlTranslations {
   clearTriggerLabel?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  content: string
-  control: string
-  trigger: string
-  clearTrigger: string
-  label: string
-  hiddenSelect: string
-  positioner: string
-  item: (id: string | number) => string
-  itemGroup: (id: string | number) => string
-  itemGroupLabel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  content?: string | undefined
+  control?: string | undefined
+  trigger?: string | undefined
+  clearTrigger?: string | undefined
+  label?: string | undefined
+  hiddenSelect?: string | undefined
+  positioner?: string | undefined
+  item?: ((id: string | number) => string) | undefined
+  itemGroup?: ((id: string | number) => string) | undefined
+  itemGroupLabel?: ((id: string | number) => string) | undefined
+}
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
@@ -176,7 +176,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   deselectable?: boolean | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"

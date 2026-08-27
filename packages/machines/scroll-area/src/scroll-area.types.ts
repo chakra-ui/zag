@@ -6,13 +6,13 @@ export type ScrollToEdge = "top" | "right" | "bottom" | "left"
 
 export type ScrollRecord<T> = Record<ScrollToEdge, T>
 
-export type ElementIds = Partial<{
-  root: string
-  viewport: string
-  content: string
-  scrollbar: string
-  thumb: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  viewport?: string | undefined
+  content?: string | undefined
+  scrollbar?: string | undefined
+  thumb?: string | undefined
+}
 
 export interface ScrollAreaProps extends DirectionProperty, CommonProperties {
   /**

@@ -72,6 +72,8 @@ export class HotkeyRecorder {
   // Sequence state
   private steps: string[] = []
   private sequenceTimerId?: ReturnType<typeof setTimeout> | undefined
+  // Value before recording started, restored on cancel or empty stop
+  private previousValue: RecordedHotkey | null = null
 
   constructor(options: HotkeyRecorderOptions = {}) {
     this.options = options
@@ -102,6 +104,7 @@ export class HotkeyRecorder {
 
     this.steps = []
     this.clearSequenceTimer()
+    this.previousValue = this.state.value
     this.setState({ recording: true, value: this.state.value })
     this.attachListeners(root)
     return this
@@ -124,7 +127,7 @@ export class HotkeyRecorder {
     this.detachListeners()
     this.clearSequenceTimer()
     this.steps = []
-    this.setState({ recording: false, value: this.state.value })
+    this.setState({ recording: false, value: this.previousValue })
     this.options.onCancel?.()
     return this
   }
@@ -136,6 +139,7 @@ export class HotkeyRecorder {
     this.detachListeners()
     this.clearSequenceTimer()
     this.steps = []
+    this.previousValue = null
     this.setState({ recording: false, value: null })
     this.options.onClear?.()
     return this
@@ -175,6 +179,7 @@ export class HotkeyRecorder {
     this.clearSequenceTimer()
     this.subscribers.clear()
     this.steps = []
+    this.previousValue = null
     this.target = undefined
   }
 
@@ -280,11 +285,13 @@ export class HotkeyRecorder {
     this.detachListeners()
     this.clearSequenceTimer()
 
-    const recorded = this.steps.length > 0 ? this.buildRecordedHotkey() : null
+    // Nothing recorded: keep the value from before recording started
+    const hasSteps = this.steps.length > 0
+    const recorded = hasSteps ? this.buildRecordedHotkey() : this.previousValue
     this.steps = []
     this.setState({ recording: false, value: recorded })
 
-    if (recorded) {
+    if (hasSteps && recorded) {
       this.options.onRecord?.(recorded)
     }
   }

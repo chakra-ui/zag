@@ -155,6 +155,10 @@ export const machine = createMachine<SplitterSchema>({
         HOVER_DELAY: {
           target: "hover",
         },
+        FOCUS: {
+          target: "focused",
+          actions: ["setKeyboardState"],
+        },
         POINTER_DOWN: {
           target: "dragging",
           actions: ["setDraggingState"],
@@ -168,6 +172,10 @@ export const machine = createMachine<SplitterSchema>({
     hover: {
       tags: ["focus"],
       on: {
+        FOCUS: {
+          target: "focused",
+          actions: ["setKeyboardState"],
+        },
         POINTER_DOWN: {
           target: "dragging",
           actions: ["setDraggingState"],

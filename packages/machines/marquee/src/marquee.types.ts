@@ -15,18 +15,18 @@ export interface PauseStatusDetails {
 
 export type Side = "start" | "end" | "top" | "bottom"
 
-export type ElementIds = Partial<{
-  root: string
-  viewport: string
-  content: (index: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  viewport?: string | undefined
+  content?: ((index: number) => string) | undefined
+}
 
 export interface IntlTranslations {
   /**
    * The label for the marquee, used for accessibility.
    * Should describe the content being scrolled (e.g., "Partner logos", "Latest news").
    */
-  root: string
+  root?: string | undefined
 }
 
 export interface DimensionSnapshot {
@@ -118,7 +118,6 @@ type PropsWithDefault =
   | "pauseOnInteraction"
   | "reverse"
   | "defaultPaused"
-  | "translations"
 
 export type UserDefinedContext = RequiredBy<MarqueeProps, PropsWithDefault>
 

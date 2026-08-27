@@ -109,7 +109,7 @@ function getSafeType<TType extends keyof Intl.DateTimeFormatPartTypesRegistry>(t
 }
 
 function getPlaceholder(type: EditableSegmentType, translations: IntlTranslations, locale: string): string {
-  return translations.placeholder(locale)[type]
+  return translations.placeholder?.(locale)?.[type] ?? ""
 }
 
 function isEditableSegment(type: keyof Intl.DateTimeFormatPartTypesRegistry): type is EditableSegmentType {

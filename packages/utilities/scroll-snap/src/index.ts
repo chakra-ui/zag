@@ -227,28 +227,27 @@ export function findSnapPoint(
   const dir = getDirection(parent)
   const scrollPadding = getScrollPadding(parent)
   const snapPositions = getSnapPositions(parent)
-  const items = [...snapPositions[axis].start, ...snapPositions[axis].center, ...snapPositions[axis].end]
-
   const isRtl = dir === "rtl"
   const usesNegativeScrollLeft = isRtl && axis === "x" && parent.scrollLeft <= 0
+  const layoutSize = axis === "x" ? parent.offsetWidth : parent.offsetHeight
+  const maxScroll = axis === "x" ? parent.scrollWidth - parent.offsetWidth : parent.scrollHeight - parent.offsetHeight
 
-  for (const item of items) {
-    if (predicate(item.node as HTMLElement)) {
-      // Apply the same transformation as getScrollSnapPositions
-      let position: number
+  for (const alignment of ["start", "center", "end"] as const) {
+    for (const item of snapPositions[axis][alignment]) {
+      if (!predicate(item.node as HTMLElement)) continue
 
-      if (axis === "x" && isRtl) {
-        // RTL horizontal: use right-edge based calculation
-        position = item.position - scrollPadding.x.after
-        if (usesNegativeScrollLeft) {
-          position = -position
-        }
+      let position = item.position
+      if (alignment === "center") {
+        position -= layoutSize / 2
+      } else if (alignment === "end") {
+        position -=
+          layoutSize - (axis === "x" ? (isRtl ? scrollPadding.x.before : scrollPadding.x.after) : scrollPadding.y.after)
       } else {
-        // LTR or vertical: standard calculation
-        position = item.position - (axis === "x" ? scrollPadding.x.before : scrollPadding.y.before)
+        position -= axis === "x" ? (isRtl ? scrollPadding.x.after : scrollPadding.x.before) : scrollPadding.y.before
       }
 
-      return position
+      position = clamp(0, maxScroll)(position)
+      return usesNegativeScrollLeft ? -position : position
     }
   }
 }

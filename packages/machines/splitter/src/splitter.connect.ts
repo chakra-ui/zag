@@ -36,14 +36,21 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     const size = prop("size")?.[panelIndex]
     const defaultSize = prop("defaultSize")?.[panelIndex]
     const dragState = context.get("dragState")
+    const resolvedSizes = context.get("size")
+    const panelData = panels[panelIndex]
+    const panelSize = resolvedSizes[panelIndex]
+    const collapsed =
+      !!panelData?.collapsible && panelSize != null && fuzzyNumbersEqual(panelSize, panelData.collapsedSize ?? 0)
+
     return getPanelFlexBoxStyle({
       size,
       defaultSize,
       dragState,
-      resolvedSizes: context.get("size"),
+      resolvedSizes,
       panels: rawPanels,
       panelIndex,
       horizontal,
+      collapsed,
     })
   }
 
@@ -243,7 +250,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
           // Safari doesn't move focus to non-form elements on pointer down,
           // so focus explicitly to enable keyboard resizing after clicking.
-          event.currentTarget.focus({ preventScroll: true })
+          event.currentTarget.focus({ preventScroll: true, focusVisible: false })
 
           // If registry is enabled, it handles pointer events
           if (registry) {

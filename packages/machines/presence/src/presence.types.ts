@@ -14,6 +14,10 @@ export interface PresenceProps {
    */
   onExitComplete?: VoidFunction | undefined
   /**
+   * Function called when the animation ends in the open state
+   */
+  onEnterComplete?: VoidFunction | undefined
+  /**
    * Whether to synchronize the present change immediately or defer it to the next frame
    */
   immediate?: boolean | undefined

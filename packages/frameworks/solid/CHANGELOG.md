@@ -1,5 +1,68 @@
 # @zag-js/solid
 
+## 1.43.3
+
+### Patch Changes
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/store@1.43.3
+  - @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/store@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/store@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+
+## 1.43.0
+
+### Patch Changes
+
+- [#3228](https://github.com/chakra-ui/zag/pull/3228)
+  [`42d8a92`](https://github.com/chakra-ui/zag/commit/42d8a92ce0901d685486fd02e41dc489bbf9df47) Thanks
+  [@aose-yuu](https://github.com/aose-yuu)! - Skip machine exit actions when a component is disposed before the machine
+  starts.
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- [#3232](https://github.com/chakra-ui/zag/pull/3232)
+  [`75ee543`](https://github.com/chakra-ui/zag/commit/75ee543195ce33f6a03055d0eae2eab5a8df10ce) Thanks
+  [@ylc395](https://github.com/ylc395)! - fix: controlled mode predicate in solidjs
+
+- Updated dependencies [[`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/core@1.43.0
+  - @zag-js/store@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.42.0
+  - @zag-js/store@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

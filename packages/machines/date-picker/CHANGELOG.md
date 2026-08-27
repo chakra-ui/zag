@@ -1,5 +1,148 @@
 # @zag-js/date-picker
 
+## 1.43.3
+
+### Patch Changes
+
+- [`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Write optional properties as explicit `?: T | undefined` instead
+  of wrapping them in `Partial` from `@zag-js/types`.
+
+  That export shadowed the built-in `Partial`, which changed what `Partial<T>` meant in every file importing it and
+  broke `@vue/compiler-sfc` on `interface X extends Partial<Y>`. Types like `IntlTranslations` and `ElementIds` are now
+  plain interfaces. Passing a single translation key still works.
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/dismissable@1.43.3
+  - @zag-js/popper@1.43.3
+  - @zag-js/anatomy@1.43.3
+  - @zag-js/utils@1.43.3
+  - @zag-js/date-utils@1.43.3
+  - @zag-js/live-region@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- [`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every `IntlTranslations`
+  message. You can pass one key and the rest fall back to the defaults (fixes
+  [#3287](https://github.com/chakra-ui/zag/issues/3287)).
+
+  `@zag-js/types` now exports a `Partial` that allows `undefined` on optional keys, matching
+  `exactOptionalPropertyTypes`.
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/dismissable@1.43.2
+  - @zag-js/popper@1.43.2
+  - @zag-js/anatomy@1.43.2
+  - @zag-js/date-utils@1.43.2
+  - @zag-js/live-region@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [`96f21cd`](https://github.com/chakra-ui/zag/commit/96f21cd0d1fe556ff3b8e3f2b7d4a564054162eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every message to be
+  supplied. It's now typed as `Partial<IntlTranslations>`, so you can override a single message and let the rest fall
+  back to the defaults.
+
+- [`1be6c5a`](https://github.com/chakra-ui/zag/commit/1be6c5a8d9ba0088bd3656ad0145724999df6839) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `aria-label` from `getViewTriggerProps()` naming the wrong
+  view. In day view it announced "Switch to year view" while the trigger actually switches to month view.
+  `translations.viewTrigger` now receives the resolved next view, and the trigger disables itself once there's no
+  further view to switch to.
+
+  Fix `translations.dayCell()` announcing the generic "Choose" label for dates between a selected range's start and end.
+  It now announces "In range".
+
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/dismissable@1.43.1
+  - @zag-js/popper@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+  - @zag-js/date-utils@1.43.1
+  - @zag-js/live-region@1.43.1
+
+## 1.43.0
+
+### Patch Changes
+
+- [#3200](https://github.com/chakra-ui/zag/pull/3200)
+  [`913e0f4`](https://github.com/chakra-ui/zag/commit/913e0f4a68171f527ed43ad1d98418accba8a711) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix date picker behavior for disabled and read-only states, controlled open
+  state, min view defaults, and month/year multi-select limits.
+
+- [#3205](https://github.com/chakra-ui/zag/pull/3205)
+  [`a968447`](https://github.com/chakra-ui/zag/commit/a968447fe854e402f41b1a94f491bd980abdd04b) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix keyboard range selection to match the pointer behavior.
+
+- [#3205](https://github.com/chakra-ui/zag/pull/3205)
+  [`d0baf58`](https://github.com/chakra-ui/zag/commit/d0baf5867297455e0356d67cec95fd6b7fecd1f4) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Resume range selection when reopening the calendar with an incomplete range.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`5b2117e`](https://github.com/chakra-ui/zag/commit/5b2117e2cc10555768e668cf614b7e3599c87901),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/popper@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/dismissable@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+  - @zag-js/date-utils@1.43.0
+  - @zag-js/live-region@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- [`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow typing dates using the locale's native numerals (e.g.
+  Arabic-Indic `٠-٩`, Devanagari `०-९`) in addition to ASCII digits. Latin-locale behavior is unchanged.
+
+- [#3189](https://github.com/chakra-ui/zag/pull/3189)
+  [`fa37b7e`](https://github.com/chakra-ui/zag/commit/fa37b7e1537b8963a22db356d7b077bb160430ef) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Adds date reordering on blur for range selection to match other selection
+  paths.
+
+- [#3191](https://github.com/chakra-ui/zag/pull/3191)
+  [`0062c9b`](https://github.com/chakra-ui/zag/commit/0062c9b408bbc13f1d2fa91d2d0d769b444ed49b) Thanks
+  [@olaf-k](https://github.com/olaf-k)! - Fix day view briefly flashing when closing the date picker from the month or
+  year view.
+
+- [#3175](https://github.com/chakra-ui/zag/pull/3175)
+  [`8710898`](https://github.com/chakra-ui/zag/commit/8710898ca6abaede20332c68033abf0581b16dd7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` returning a stale value when multiple date
+  pickers with different `selectionMode` (or `timeZone`) share the same visible range. The internal memo key now
+  includes `selectionMode` and `timeZone`, preventing a `range`-formatted label (e.g. `June 2026 - June 2026`) from
+  leaking into a `single`/`multiple` picker that should show `June 2026`. This previously surfaced as SSR hydration
+  mismatches.
+- Updated dependencies [[`ac7a81a`](https://github.com/chakra-ui/zag/commit/ac7a81a3fcae86500cdf15703118318570f976d5)]:
+  - @zag-js/date-utils@1.42.0
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dismissable@1.42.0
+  - @zag-js/dom-query@1.42.0
+  - @zag-js/live-region@1.42.0
+  - @zag-js/popper@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

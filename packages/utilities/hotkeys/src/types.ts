@@ -1,5 +1,7 @@
 export type HotkeyTarget = Document | ShadowRoot | Element
 
+export type HotkeyCommandTarget = HotkeyTarget | (() => HotkeyTarget | null)
+
 export type Platform = "mac" | "windows" | "linux"
 
 export interface KeyboardModifiers {
@@ -161,6 +163,13 @@ export interface HotkeyOptions {
    * @default "keydown"
    */
   eventType?: "keydown" | "keyup" | undefined
+  /**
+   * Scope the command to a DOM subtree. The command only fires when the event
+   * originates within this element. Accepts an element or a function returning
+   * one, resolved on every event; while it resolves to `null`, the command is
+   * skipped. The element must contain focus to receive keyboard events.
+   */
+  target?: HotkeyCommandTarget | undefined
 }
 
 // Store state interface

@@ -11,11 +11,11 @@ export interface StatusChangeDetails {
   status: LoadStatus
 }
 
-export type ElementIds = Partial<{
-  root: string
-  image: string
-  fallback: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  image?: string | undefined
+  fallback?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

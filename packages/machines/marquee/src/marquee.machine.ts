@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { dom } from "./marquee.dom"
+import { calculateDuration } from "./marquee.utils"
 import type { MarqueeSchema } from "./marquee.types"
 
 export const machine = createMachine<MarqueeSchema>({
@@ -15,9 +16,6 @@ export const machine = createMachine<MarqueeSchema>({
       pauseOnInteraction: false,
       reverse: false,
       defaultPaused: false,
-      translations: {
-        root: "Marquee content",
-      },
       ...props,
     }
   },
@@ -208,19 +206,3 @@ export const machine = createMachine<MarqueeSchema>({
     },
   },
 })
-
-function calculateDuration(options: {
-  rootSize: number
-  contentSize: number
-  speed: number
-  multiplier: number
-  autoFill: boolean
-}): number {
-  const { rootSize, contentSize, speed, multiplier, autoFill } = options
-
-  if (autoFill) {
-    return (contentSize * multiplier) / speed
-  }
-
-  return contentSize < rootSize ? rootSize / speed : contentSize / speed
-}

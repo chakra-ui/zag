@@ -22,6 +22,12 @@ export interface PositioningOptions {
    */
   restoreStyles?: boolean | undefined
   /**
+   * Whether to apply computed position styles (`--x`, `--y`, `--z-index`) to the floating element.
+   * Set to `false` when the consumer applies these from context (e.g. for exit animations).
+   * @default true
+   */
+  applyStyles?: boolean | undefined
+  /**
    * Whether the popover should be hidden when the reference element is detached
    */
   hideWhenDetached?: boolean | undefined

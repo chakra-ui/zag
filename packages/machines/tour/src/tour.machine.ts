@@ -7,7 +7,7 @@ import { getPlacement } from "@zag-js/popper"
 import { isEqual, isString, nextIndex, prevIndex, warn } from "@zag-js/utils"
 import * as dom from "./tour.dom"
 import type { StepDetails, StepEffectArgs, StepEffectCleanup, StepPlacement, TourSchema } from "./tour.types"
-import { isEventInRect, offset, type Rect, type Size } from "./utils/rect"
+import { isEventInRect, offset, type Point, type Rect, type Size } from "./utils/rect"
 import {
   findStep,
   findStepIndex,
@@ -30,14 +30,6 @@ export const machine = createMachine<TourSchema>({
       spotlightOffset: { x: 10, y: 10 },
       spotlightRadius: 4,
       ...props,
-      translations: {
-        nextStep: "next step",
-        prevStep: "previous step",
-        close: "close tour",
-        progressText: ({ current, total }) => `${current + 1} of ${total}`,
-        skip: "skip tour",
-        ...props.translations,
-      },
     }
   },
 
@@ -77,6 +69,9 @@ export const machine = createMachine<TourSchema>({
       })),
       currentPlacement: bindable<StepPlacement | undefined>(() => ({
         defaultValue: undefined,
+      })),
+      floatingOffset: bindable<Point | null>(() => ({
+        defaultValue: null,
       })),
     }
   },
@@ -179,7 +174,7 @@ export const machine = createMachine<TourSchema>({
       entry: ["validateSteps"],
       on: {
         START: {
-          actions: ["setInitialStep", "invokeOnStart"],
+          actions: ["clearStep", "setInitialStep", "invokeOnStart"],
         },
       },
     },
@@ -201,16 +196,16 @@ export const machine = createMachine<TourSchema>({
           {
             guard: "isLastStep",
             target: "tourInactive",
-            actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete", "clearStep"],
+            actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete"],
           },
           {
             target: "tourInactive",
-            actions: ["cleanupAll", "invokeOnDismiss", "clearStep"],
+            actions: ["cleanupAll", "invokeOnDismiss"],
           },
         ],
         SKIP: {
           target: "tourInactive",
-          actions: ["cleanupAll", "invokeOnSkip", "clearStep"],
+          actions: ["cleanupAll", "invokeOnSkip"],
         },
       },
 
@@ -298,6 +293,8 @@ export const machine = createMachine<TourSchema>({
 
         context.set("targetRect", { width: 0, height: 0, x: 0, y: 0 })
         context.set("resolvedTarget", null)
+        context.set("currentPlacement", undefined)
+        context.set("floatingOffset", null)
 
         refs.set("_internalChange", true)
         context.set("stepId", null)
@@ -531,10 +528,12 @@ export const machine = createMachine<TourSchema>({
         context.set("currentPlacement", step.placement ?? "bottom")
 
         if (isDialogStep(step)) {
+          context.set("floatingOffset", null)
           return dom.syncZIndex(scope)
         }
 
         if (!isTooltipStep(step)) {
+          context.set("floatingOffset", null)
           return
         }
 
@@ -545,7 +544,8 @@ export const machine = createMachine<TourSchema>({
           strategy: "absolute",
           gutter: 10,
           offset: step.offset,
-          restoreStyles: true,
+          restoreStyles: false,
+          applyStyles: false,
           getAnchorRect(el) {
             if (!isHTMLElement(el)) return null
             const rect = el.getBoundingClientRect()
@@ -555,6 +555,7 @@ export const machine = createMachine<TourSchema>({
             const { rects } = data.middlewareData
             context.set("currentPlacement", data.placement)
             context.set("targetRect", rects.reference)
+            context.set("floatingOffset", { x: data.x, y: data.y })
           },
         })
       },
@@ -638,7 +639,7 @@ function performStepTransition(params: Params<TourSchema>, idx: number) {
 }
 
 function createEffectUtilities(params: Params<TourSchema>, step: StepDetails, idx: number): StepEffectArgs {
-  const { context, computed, refs, send, prop } = params
+  const { context, computed, refs, send } = params
   const steps = context.get("steps")
 
   return {
@@ -667,9 +668,7 @@ function createEffectUtilities(params: Params<TourSchema>, step: StepDetails, id
       performStepTransition(params, targetIdx)
     },
     dismiss: () => {
-      refs.set("_internalChange", true)
-      context.set("stepId", null)
-      prop("onStatusChange")?.({ status: "dismissed", stepId: null, stepIndex: -1 })
+      send({ type: "DISMISS", src: "step-effect" })
     },
     target: step.target,
   }

@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getByOwnerId, isLeftClick } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -82,7 +82,7 @@ export function connect<P extends PropTypes>(
           // Check if focus moved to another trigger in the same tooltip.
           // If so, don't close - the focus handler will handle the switch.
           const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
-          const focusedAnotherTrigger = activeEl?.closest(`[data-ownedby="${scope.id}"]`) != null
+          const focusedAnotherTrigger = activeEl?.closest(getByOwnerId(scope.id)) != null
           if (!focusedAnotherTrigger) {
             send({ type: "close", src: "trigger.blur", value, triggerId })
           }

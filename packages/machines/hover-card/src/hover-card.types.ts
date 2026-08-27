@@ -26,12 +26,12 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  content: string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 export interface HoverCardProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**

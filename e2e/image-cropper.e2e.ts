@@ -3,6 +3,43 @@ import { ImageCropperModel } from "./models/image-cropper.model"
 
 let I: ImageCropperModel
 
+const quadrantImage = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600">
+    <path fill="#e11d48" d="M0 0h500v300H0z"/>
+    <path fill="#16a34a" d="M500 0h500v300H500z"/>
+    <path fill="#2563eb" d="M0 300h500v300H0z"/>
+    <path fill="#ca8a04" d="M500 300h500v300H500z"/>
+  </svg>
+`
+
+async function loadQuadrantImage() {
+  await I.page.route("https://picsum.photos/**", (route) =>
+    route.fulfill({
+      contentType: "image/svg+xml",
+      headers: { "access-control-allow-origin": "*" },
+      body: quadrantImage,
+    }),
+  )
+  await I.page.reload()
+  await I.waitForImageLoad()
+}
+
+async function getExportCenterColor() {
+  await I.page.getByRole("button", { name: "Export as Data URL" }).click()
+  const image = I.page.getByAltText("Cropped result")
+  await expect(image).toBeVisible()
+
+  return image.evaluate((element: HTMLImageElement) => {
+    const canvas = document.createElement("canvas")
+    canvas.width = element.naturalWidth
+    canvas.height = element.naturalHeight
+    const ctx = canvas.getContext("2d")!
+    ctx.drawImage(element, 0, 0)
+    const [r, g, b] = ctx.getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data
+    return { r, g, b, width: canvas.width, height: canvas.height }
+  })
+}
+
 test.describe("image-cropper / resizable", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)
@@ -162,6 +199,27 @@ test.describe("image-cropper / resizable", () => {
     expect(flipState.vertical).toBe(false)
     await expect(I.flipHorizontalCheckbox).not.toBeChecked()
     await expect(I.flipVerticalCheckbox).not.toBeChecked()
+  })
+
+  test("[export] should match the crop after flip and rotation (#3238)", async () => {
+    await loadQuadrantImage()
+    await I.dragSelection(100, -30)
+    const crop = await I.getSelectionRect()
+    const imageScale = await I.getNaturalImageScale()
+
+    await I.setFlipCheckbox("horizontal", true)
+    const flipped = await getExportCenterColor()
+    expect(flipped).toMatchObject({ r: 225, g: 29, b: 72 })
+    expect(flipped.width).toBeCloseTo(crop.width * imageScale.x, 0)
+    expect(flipped.height).toBeCloseTo(crop.height * imageScale.y, 0)
+
+    await I.page.getByRole("button", { name: "Clear Preview" }).click()
+    await I.page.getByTestId("reset-button").click()
+    await I.dragSelection(100, -30)
+
+    await I.rotationSlider.fill("90")
+    const rotated = await getExportCenterColor()
+    expect(rotated).toMatchObject({ r: 225, g: 29, b: 72 })
   })
 
   test("[keyboard + pointer] should lock aspect ratio with shift key during resize", async () => {
@@ -382,6 +440,57 @@ test.describe("image-cropper / fixedCropArea", () => {
     await I.wait(100)
 
     await I.seeSelectionPosition(initialRect.x, initialRect.y)
+  })
+
+  test("[keyboard] should remain focusable and pan the image with arrow keys", async () => {
+    await I.focusSelection()
+    await expect(I.selection).toBeFocused()
+
+    const initialSelectionRect = await I.getSelectionRect()
+
+    // zoom in first so there's slack to pan in both directions regardless of image aspect ratio
+    await I.pressKey("+", 3)
+
+    const initialTransform = await I.getImageTransform()
+    const { translateX: initialX, translateY: initialY } = await I.getTranslateFromMatrix(initialTransform)
+
+    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowDown")
+
+    const newTransform = await I.getImageTransform()
+    const { translateX: newX, translateY: newY } = await I.getTranslateFromMatrix(newTransform)
+
+    expect(newX).toBe(initialX + 1)
+    expect(newY).toBe(initialY + 1)
+
+    // the crop selection itself never moves in fixed mode
+    const newSelectionRect = await I.getSelectionRect()
+    expect(newSelectionRect.x).toBe(initialSelectionRect.x)
+    expect(newSelectionRect.y).toBe(initialSelectionRect.y)
+  })
+
+  test("[keyboard] should zoom with +/- keys", async () => {
+    await I.focusSelection()
+
+    await I.pressKey("+")
+    const transform = await I.getImageTransform()
+    const { scaleX } = await I.getScaleFromMatrix(transform)
+
+    expect(scaleX).toBeGreaterThan(1)
+  })
+
+  test("[keyboard] should not resize the crop with Alt+Arrow keys", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowRight", { alt: true })
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
   })
 })
 

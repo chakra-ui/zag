@@ -1,10 +1,9 @@
 import * as combobox from "@zag-js/combobox"
-import { raf } from "@zag-js/dom-query"
+import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
-import getCaretCoordinates from "textarea-caret"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
@@ -40,6 +39,7 @@ export default function Page() {
       setOptions(comboboxData)
     },
     inputBehavior: "autohighlight",
+    selectionBehavior: "preserve",
     openOnKeyPress: false,
     openOnChange: false,
     allowCustomValue: true,
@@ -52,9 +52,11 @@ export default function Page() {
       },
     },
     onValueChange({ value }) {
+      const textarea = ref.current
+      if (!textarea) return
       const valueAsString = collection.stringifyMany(value)
-      const offset = getTriggerOffset(ref.current)
-      const inputValue = replaceValue(offset, searchValueRef.current, valueAsString)(ref.current.value)
+      const offset = getTriggerOffset(textarea)
+      const inputValue = replaceValue(offset, searchValueRef.current, valueAsString)(textarea.value)
       raf(() => {
         api.setInputValue(inputValue)
       })
@@ -159,13 +161,9 @@ function getSearchValue(element: HTMLTextAreaElement, triggers = defaultTriggers
 function getAnchorRect(element: HTMLTextAreaElement | null, triggers = defaultTriggers) {
   if (!element) return null
   const offset = getTriggerOffset(element, triggers)
-  const { left, top, height } = getCaretCoordinates(element, offset + 1)
+  const { left, top, height } = getCaretPosition(element, { position: offset + 1 })
   const { x, y } = element.getBoundingClientRect()
-  return {
-    x: left + x - element.scrollLeft,
-    y: top + y - element.scrollTop,
-    height: Number.isNaN(height) ? 0 : height,
-  }
+  return { x: x + left, y: y + top, height }
 }
 
 function replaceValue(offset: number, searchValue: string, displayValue: string) {

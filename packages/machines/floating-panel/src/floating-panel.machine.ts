@@ -14,19 +14,12 @@ import {
   type Point,
   type Size,
 } from "@zag-js/rect-utils"
-import { subscribe } from "@zag-js/store"
 import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
-import type { FloatingPanelSchema, IntlTranslations, Stage } from "./floating-panel.types"
+import type { FloatingPanelSchema, Stage } from "./floating-panel.types"
 
 const { not, and } = createGuards<FloatingPanelSchema>()
-
-const defaultTranslations: IntlTranslations = {
-  minimize: "Minimize window",
-  maximize: "Maximize window",
-  restore: "Restore window",
-}
 
 const FALLBACK_SIZE = Object.freeze({ width: 320, height: 240 })
 const FALLBACK_POSITION = Object.freeze({ x: 300, y: 100 })
@@ -41,10 +34,6 @@ export const machine = createMachine<FloatingPanelSchema>({
       resizable: true,
       draggable: true,
       ...props,
-      translations: {
-        ...defaultTranslations,
-        ...props.translations,
-      },
     }
   },
 
@@ -94,6 +83,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       })),
       isTopmost: bindable<boolean | undefined>(() => ({
         defaultValue: undefined,
+      })),
+      stackIndex: bindable<number>(() => ({
+        defaultValue: -1,
       })),
     }
   },
@@ -159,6 +151,7 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
+      exit: ["removeFromPanelStack"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": {
@@ -312,15 +305,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       trackPanelStack({ context, scope }) {
-        const unsub = subscribe(panelStack, () => {
+        const unsub = panelStack.subscribe(() => {
           context.set("isTopmost", panelStack.isTopmost(scope.id!))
-          const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-
-          const index = panelStack.indexOf(scope.id!)
-          if (index === -1) return
-
-          contentEl.style.setProperty("--z-index", `${index + 1}`)
+          context.set("stackIndex", panelStack.indexOf(scope.id!))
         })
 
         return () => {
@@ -585,6 +572,9 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       bringToFrontOfPanelStack({ prop }) {
         panelStack.bringToFront(prop("id"))
+      },
+      removeFromPanelStack({ prop }) {
+        panelStack.remove(prop("id"))
       },
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })

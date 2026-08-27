@@ -1,5 +1,54 @@
 # @zag-js/core
 
+## 1.43.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `getExitEnterStates()` throwing during state transitions in
+  browsers without `Array.prototype.at()`, such as Safari below 15.4.
+- Updated dependencies [[`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/utils@1.43.1
+
+## 1.43.0
+
+### Patch Changes
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

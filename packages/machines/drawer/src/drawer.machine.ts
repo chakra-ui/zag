@@ -254,7 +254,6 @@ export const machine = createMachine<DrawerSchema>({
           {
             guard: and("shouldCloseOnSwipe", "isOpenControlled"),
             actions: [
-              "clearSwipeOpenAnimation",
               "clearRegistrySwiping",
               "clearPointerStart",
               "setDismissSwipeStrength",
@@ -295,7 +294,7 @@ export const machine = createMachine<DrawerSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
-            actions: ["clearSwipeOpenAnimation", "invokeOnClose"],
+            actions: ["invokeOnClose"],
           },
           {
             target: "closing",
@@ -758,7 +757,11 @@ export const machine = createMachine<DrawerSchema>({
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: prop("initialFocusEl"),
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              getInitialEl: prop("initialFocusEl"),
+            }),
           setReturnFocus: (el) => {
             const finalFocusEl = prop("finalFocusEl")?.()
             if (finalFocusEl) return finalFocusEl

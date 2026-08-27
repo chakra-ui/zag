@@ -59,3 +59,27 @@ export const createSplitProps = <T extends Dict>(keys: (keyof T)[]) => {
 export function omit<T extends Record<string, any>>(obj: T, keys: string[]) {
   return createSplitProps(keys)(obj)[1]
 }
+
+type Defined<T> = {
+  [K in keyof T]-?: Exclude<T[K], undefined>
+}
+
+export type MergeWithDefault<D, O = unknown> = Defined<D> &
+  ([NonNullable<O>] extends [never] ? unknown : Omit<NonNullable<O>, keyof D>)
+
+export function mergeWithDefault<D extends object, O extends { [K in keyof D]?: D[K] | undefined } | undefined>(
+  defaults: D,
+  overrides?: O,
+): MergeWithDefault<D, O> {
+  if (!overrides) return defaults as MergeWithDefault<D, O>
+
+  const result = { ...defaults } as Record<string, unknown>
+  const source = overrides as Record<string, unknown>
+
+  for (const key in source) {
+    const value = source[key]
+    if (value !== undefined) result[key] = value
+  }
+
+  return result as MergeWithDefault<D, O>
+}

@@ -33,7 +33,7 @@ import {
   scaleSize,
   subtractPoints,
   ZERO_POINT,
-} from "./image-cropper.utils"
+} from "./utils/crop"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
@@ -55,30 +55,6 @@ export const machine = createMachine<ImageCropperSchema>({
       nudgeStepShift: 10,
       nudgeStepCtrl: 50,
       ...props,
-      translations: {
-        rootLabel: "Image cropper",
-        rootRoleDescription: "Image cropper",
-        previewLoading: "Image cropper preview loading",
-        previewDescription({ crop, zoom, rotation }) {
-          const zoomText = zoom != null && Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
-          const rotationText =
-            rotation != null && Number.isFinite(rotation)
-              ? `${Math.round(rotation)} degrees rotation`
-              : "0 degrees rotation"
-          return `Image cropper preview, ${zoomText}, ${rotationText}. Crop positioned at ${crop.x}px from the left and ${crop.y}px from the top with a size of ${crop.width}px by ${crop.height}px.`
-        },
-        selectionLabel: ({ shape }) => `Crop selection area (${shape === "circle" ? "circle" : "rectangle"})`,
-        selectionRoleDescription: "2d slider",
-        selectionInstructions:
-          "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
-        selectionValueText({ shape, x, y, width, height }) {
-          if (shape === "circle") {
-            return `Position X ${x}px, Y ${y}px. Diameter ${width}px.`
-          }
-          return `Position X ${x}px, Y ${y}px. Size ${width}px by ${height}px.`
-        },
-        ...props.translations,
-      },
     }
   },
 
@@ -238,6 +214,10 @@ export const machine = createMachine<ImageCropperSchema>({
         NUDGE_MOVE_CROP: {
           guard: "hasViewportRect",
           actions: ["nudgeMoveCrop"],
+        },
+        NUDGE_PAN: {
+          guard: "hasViewportRect",
+          actions: ["nudgePan"],
         },
       },
     },
@@ -733,6 +713,27 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextCrop = computeMoveCrop(crop, delta, viewportRect)
 
         context.set("crop", nextCrop)
+      },
+
+      nudgePan({ context, event, prop }) {
+        const { key, shiftKey, ctrlKey, metaKey } = event
+        const zoom = context.get("zoom")
+        const rotation = context.get("rotation")
+        const viewportRect = context.get("viewportRect")
+
+        const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
+        const delta = getKeyboardMoveDelta(key, step)
+
+        const nextOffset = clampOffset({
+          zoom,
+          rotation,
+          viewportSize: viewportRect,
+          offset: addPoints(context.get("offset"), delta),
+          fixedCropArea: prop("fixedCropArea"),
+          crop: context.get("crop"),
+        })
+
+        context.set("offset", nextOffset)
       },
 
       resizeViewport({ context, prop, scope, send }) {

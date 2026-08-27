@@ -80,19 +80,19 @@ export interface IntlTranslations {
   clearTriggerLabel?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  control: string
-  input: string
-  content: string
-  trigger: string
-  clearTrigger: string
-  item: (id: string, index?: number) => string
-  positioner: string
-  itemGroup: (id: string | number) => string
-  itemGroupLabel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  control?: string | undefined
+  input?: string | undefined
+  content?: string | undefined
+  trigger?: string | undefined
+  clearTrigger?: string | undefined
+  item?: ((id: string, index?: number) => string) | undefined
+  positioner?: string | undefined
+  itemGroup?: ((id: string | number) => string) | undefined
+  itemGroupLabel?: ((id: string | number) => string) | undefined
+}
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
@@ -296,7 +296,6 @@ type PropsWithDefault =
   | "collection"
   | "selectionBehavior"
   | "closeOnSelect"
-  | "translations"
   | "positioning"
   | "defaultValue"
   | "defaultInputValue"

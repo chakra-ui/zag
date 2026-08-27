@@ -11,18 +11,6 @@ export const machine = createMachine<PaginationSchema>({
       type: "button",
       count: 1,
       ...props,
-      translations: {
-        rootLabel: "pagination",
-        firstTriggerLabel: "first page",
-        prevTriggerLabel: "previous page",
-        nextTriggerLabel: "next page",
-        lastTriggerLabel: "last page",
-        itemLabel({ page, totalPages }) {
-          const isLastPage = totalPages > 1 && page === totalPages
-          return `${isLastPage ? "last page, " : ""}page ${page}`
-        },
-        ...props.translations,
-      },
     }
   },
 

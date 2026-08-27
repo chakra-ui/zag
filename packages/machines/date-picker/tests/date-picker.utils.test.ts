@@ -1,6 +1,37 @@
 import { parseDate } from "@internationalized/date"
 import { describe, expect, test } from "vitest"
-import { adjustStartAndEndDate, getVisibleRangeText, isDateWithinRange, sortDates } from "../src/date-picker.utils"
+import type { DayTableCellState } from "../src/date-picker.types"
+import {
+  adjustStartAndEndDate,
+  defaultTranslations,
+  getNextView,
+  getVisibleRangeText,
+  isDateWithinRange,
+  sortDates,
+} from "../src/date-picker.utils"
+
+function createDayCellState(overrides: Partial<DayTableCellState> = {}): DayTableCellState {
+  return {
+    focused: false,
+    selectable: true,
+    selected: false,
+    valueText: "June 15, 2024",
+    inRange: false,
+    firstInRange: false,
+    lastInRange: false,
+    inHoveredRange: false,
+    firstInHoveredRange: false,
+    lastInHoveredRange: false,
+    value: parseDate("2024-06-15"),
+    outsideRange: false,
+    disabled: false,
+    invalid: false,
+    unavailable: false,
+    today: false,
+    weekend: false,
+    ...overrides,
+  }
+}
 
 describe("DatePicker Utils", () => {
   describe("sortDates", () => {
@@ -146,6 +177,67 @@ describe("DatePicker Utils", () => {
       const value = [null, null]
 
       expect(isDateWithinRange(date, value)).toBe(false)
+    })
+  })
+
+  describe("getNextView", () => {
+    test("should go from day to month", () => {
+      expect(getNextView("day", "day", "year")).toBe("month")
+    })
+
+    test("should go from month to year", () => {
+      expect(getNextView("month", "day", "year")).toBe("year")
+    })
+
+    test("should stay at year when already at maxView", () => {
+      expect(getNextView("year", "day", "year")).toBe("year")
+    })
+
+    test("should stay at maxView when constrained below the default", () => {
+      expect(getNextView("month", "month", "month")).toBe("month")
+    })
+  })
+
+  describe("defaultTranslations.viewTrigger", () => {
+    test("should describe switching to the resolved next view", () => {
+      expect(defaultTranslations.viewTrigger("day", "month")).toBe("Switch to month view")
+      expect(defaultTranslations.viewTrigger("month", "year")).toBe("Switch to year view")
+    })
+
+    test("should fall back to naming the current view when there is no next view", () => {
+      expect(defaultTranslations.viewTrigger("year", undefined)).toBe("year view")
+    })
+  })
+
+  describe("defaultTranslations.dayCell", () => {
+    test("should announce unavailable dates first, regardless of other state", () => {
+      const state = createDayCellState({ unavailable: true, selected: true, inRange: true })
+      expect(defaultTranslations.dayCell(state)).toBe("Not available. June 15, 2024")
+    })
+
+    test("should announce the start of a range", () => {
+      const state = createDayCellState({ firstInRange: true, inRange: true })
+      expect(defaultTranslations.dayCell(state)).toBe("Starting range from June 15, 2024")
+    })
+
+    test("should announce the end of a range", () => {
+      const state = createDayCellState({ lastInRange: true, inRange: true })
+      expect(defaultTranslations.dayCell(state)).toBe("Range ending at June 15, 2024")
+    })
+
+    test("should announce dates strictly between a range's start and end", () => {
+      const state = createDayCellState({ inRange: true })
+      expect(defaultTranslations.dayCell(state)).toBe("In range. June 15, 2024")
+    })
+
+    test("should announce a selected date outside of a range", () => {
+      const state = createDayCellState({ selected: true })
+      expect(defaultTranslations.dayCell(state)).toBe("Selected date. June 15, 2024")
+    })
+
+    test("should fall back to a plain choice for an unselected date", () => {
+      const state = createDayCellState()
+      expect(defaultTranslations.dayCell(state)).toBe("Choose June 15, 2024")
     })
   })
 

@@ -29,18 +29,18 @@ export interface AnchorPositionDetails {
   boundaryRect: DOMRect | null
 }
 
-export type ElementIds = Partial<{
-  trigger: string
-  positioner: string
-  content: string
-  title: string
-  header: string
-}>
+export interface ElementIds {
+  trigger?: string | undefined
+  positioner?: string | undefined
+  content?: string | undefined
+  title?: string | undefined
+  header?: string | undefined
+}
 
 export interface IntlTranslations {
-  minimize: string
-  maximize: string
-  restore: string
+  minimize?: string | undefined
+  maximize?: string | undefined
+  restore?: string | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
   onStageChange?: ((details: StageChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" | "resizable" | "id" | "translations"
+type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" | "resizable" | "id"
 
 interface PrivateContext {
   /**
@@ -206,6 +206,10 @@ interface PrivateContext {
    * Whether the panel is topmost in the panel stack
    */
   isTopmost?: boolean | undefined
+  /**
+   * The index of the panel in the panel stack, or `-1` when not stacked
+   */
+  stackIndex: number
   /**
    * The size of the panel
    */

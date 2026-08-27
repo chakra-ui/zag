@@ -14,14 +14,14 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  thumb: string
-  hiddenInput: string
-  control: string
-  valueText: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  thumb?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  valueText?: string | undefined
+  label?: string | undefined
+}
 
 export interface AngleSliderProps extends DirectionProperty, CommonProperties {
   /**

@@ -1,5 +1,35 @@
 # @zag-js/types
 
+## 1.43.3
+
+### Patch Changes
+
+- [`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Write optional properties as explicit `?: T | undefined` instead
+  of wrapping them in `Partial` from `@zag-js/types`.
+
+  That export shadowed the built-in `Partial`, which changed what `Partial<T>` meant in every file importing it and
+  broke `@vue/compiler-sfc` on `interface X extends Partial<Y>`. Types like `IntlTranslations` and `ElementIds` are now
+  plain interfaces. Passing a single translation key still works.
+
+## 1.43.2
+
+### Patch Changes
+
+- [`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every `IntlTranslations`
+  message. You can pass one key and the rest fall back to the defaults (fixes
+  [#3287](https://github.com/chakra-ui/zag/issues/3287)).
+
+  `@zag-js/types` now exports a `Partial` that allows `undefined` on optional keys, matching
+  `exactOptionalPropertyTypes`.
+
+## 1.43.1
+
+## 1.43.0
+
+## 1.42.0
+
 ## 1.41.2
 
 ## 1.41.1

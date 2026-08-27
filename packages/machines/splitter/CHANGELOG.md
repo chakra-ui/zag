@@ -1,5 +1,88 @@
 # @zag-js/splitter
 
+## 1.43.3
+
+### Patch Changes
+
+- [`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Write optional properties as explicit `?: T | undefined` instead
+  of wrapping them in `Partial` from `@zag-js/types`.
+
+  That export shadowed the built-in `Partial`, which changed what `Partial<T>` meant in every file importing it and
+  broke `@vue/compiler-sfc` on `interface X extends Partial<Y>`. Types like `IntlTranslations` and `ElementIds` are now
+  plain interfaces. Passing a single translation key still works.
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/anatomy@1.43.3
+  - @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/anatomy@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [`e4c020f`](https://github.com/chakra-ui/zag/commit/e4c020fac64aa73c1bfb65d7856fd157c677d830) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the element from `getResizeTriggerProps()` matching
+  `:focus-visible` after a pointer drag. It still takes focus, so keyboard resizing keeps working, but no longer shows
+  the focus ring.
+- Updated dependencies [[`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21),
+  [`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/core@1.43.1
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/anatomy@1.43.1
+  - @zag-js/types@1.43.1
+  - @zag-js/utils@1.43.1
+
+## 1.43.0
+
+### Patch Changes
+
+- [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Compose `data-ownedby` values when merging props, match owners as
+  tokens in DOM queries, and expose `isOwnedBy` for membership checks.
+
+- [#3180](https://github.com/chakra-ui/zag/pull/3180)
+  [`504476e`](https://github.com/chakra-ui/zag/commit/504476e485b72b915ee6cc33d5d131cbd4c9c2e4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix collapsible panel CSS so collapsed panels honor
+  `collapsedSize` instead of `minSize`.
+
+- [#3226](https://github.com/chakra-ui/zag/pull/3226)
+  [`6d457de`](https://github.com/chakra-ui/zag/commit/6d457de34d0e67eeec4ac20af4bbca9ed9200636) Thanks
+  [@aose-yuu](https://github.com/aose-yuu)! - Fix keyboard resizing when a resize trigger receives focus while hovered.
+
+- Updated dependencies [[`0d23ef3`](https://github.com/chakra-ui/zag/commit/0d23ef3b607dc0954de9158db30d18ad236c80d2),
+  [`4e06700`](https://github.com/chakra-ui/zag/commit/4e067000907a18d0c77295bf29acf59ff424ca71),
+  [`53944e0`](https://github.com/chakra-ui/zag/commit/53944e02589f410f0d4540560b0cf0faa2843b04)]:
+  - @zag-js/dom-query@1.43.0
+  - @zag-js/core@1.43.0
+  - @zag-js/anatomy@1.43.0
+  - @zag-js/types@1.43.0
+  - @zag-js/utils@1.43.0
+
+## 1.42.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.42.0
+  - @zag-js/core@1.42.0
+  - @zag-js/types@1.42.0
+  - @zag-js/utils@1.42.0
+  - @zag-js/dom-query@1.42.0
+
 ## 1.41.2
 
 ### Patch Changes

@@ -1,5 +1,6 @@
 "use client"
 
+import { AnnouncementBanner } from "components/announcement-banner"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
 import {
@@ -62,6 +63,11 @@ export default function Home() {
       <Box as="header" position="relative">
         <Section>
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
+            <Box mb="6">
+              <AnnouncementBanner href="/utilities/hotkeys">
+                Hotkeys: add keyboard shortcuts in any framework
+              </AnnouncementBanner>
+            </Box>
             <styled.h1 textStyle="display.2xl">
               UI components powered by Finite State Machines
             </styled.h1>
