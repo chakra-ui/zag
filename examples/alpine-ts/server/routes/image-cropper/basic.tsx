@@ -30,7 +30,7 @@ export default defineHandler((event) => {
               const amount = this.resizeStep * multiplier;
               $imageCropper().resize(this.selectedHandle, amount);
             },
-            handleExportImage: async (output) => {
+            async handleExportImage(output) {
               this.isExporting = true;
               try {
                 const result = await $imageCropper().getCroppedImage({ output });
@@ -49,7 +49,7 @@ export default defineHandler((event) => {
                 this.isExporting = false;
               }
             },
-            handleDownloadImage: async () => {
+            async handleDownloadImage() {
               this.isExporting = true
               try {
                 const blob = await $imageCropper().getCroppedImage({ type: 'image/png' });
@@ -57,16 +57,16 @@ export default defineHandler((event) => {
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = url;
-                  link.download = `cropped-image-${Date.now()}.png`
-                  document.body.appendChild(link)
-                  link.click()
-                  document.body.removeChild(link)
-                  URL.revokeObjectURL(url)
+                  link.download = `cropped-image-${Date.now()}.png`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
                 }
               } catch (error) {
-                console.error('Failed to download image:', error)
+                console.error('Failed to download image:', error);
               } finally {
-                this.isExporting = false
+                this.isExporting = false;
               }
             }
           }"
@@ -159,7 +159,7 @@ export default defineHandler((event) => {
               </label>
               <label>
                 Resize step (px):
-                <input data-testid="resize-step-input" type="number" min={1} x-model="resizeStep" />
+                <input data-testid="resize-step-input" type="number" min={1} {...{ "x-model.number": "resizeStep" }} />
               </label>
               <div>
                 <button type="button" data-testid="grow-button" x-on:click="applyResize('grow')">
@@ -201,11 +201,11 @@ export default defineHandler((event) => {
                 <template x-if="croppedImageUrl">
                   <button
                     type="button"
-                    x-in:click="() => {
+                    x-on:click="() => {
                       if (croppedImageUrl.startsWith('blob:')) {
                         URL.revokeObjectURL(croppedImageUrl)
                       }
-                      setCroppedImageUrl(null)
+                      croppedImageUrl = null;
                     }"
                   >
                     Clear Preview
