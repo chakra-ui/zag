@@ -15,12 +15,12 @@ export interface CheckedChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  hiddenInput: string
-  control: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  label?: string | undefined
+}
 
 export interface CheckboxProps extends DirectionProperty, CommonProperties {
   /**

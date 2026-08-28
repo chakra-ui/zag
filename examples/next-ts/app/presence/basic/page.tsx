@@ -7,7 +7,15 @@ import "@styles/presence.css"
 
 export default function Page() {
   const [present, setPresent] = useState(false)
-  const service = useMachine(presence.machine, { present })
+  const service = useMachine(presence.machine, {
+    present,
+    onEnterComplete() {
+      console.log("enter complete")
+    },
+    onExitComplete() {
+      console.log("exit complete")
+    },
+  })
   const api = presence.connect(service, normalizeProps)
 
   return (

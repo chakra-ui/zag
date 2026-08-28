@@ -13,10 +13,10 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  item: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  item?: ((value: string) => string) | undefined
+}
 
 export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
   /**

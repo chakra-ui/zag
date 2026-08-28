@@ -1,12 +1,18 @@
 import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./marquee.anatomy"
 import { dom } from "./marquee.dom"
-import type { ContentProps, ContentState, MarqueeApi, MarqueeService } from "./marquee.types"
+import type { ContentProps, ContentState, IntlTranslations, MarqueeApi, MarqueeService } from "./marquee.types"
 import { getEdgePositionStyles, getMarqueeTranslate } from "./marquee.utils"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  root: "Marquee content",
+}
 
 export function connect<T extends PropTypes>(service: MarqueeService, normalize: NormalizeProps<T>): MarqueeApi<T> {
   const { scope, send, context, computed, prop } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const side = prop("side")
 
@@ -62,7 +68,7 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
         role: "region",
         "aria-roledescription": "marquee",
         "aria-live": "off",
-        "aria-label": prop("translations").root,
+        "aria-label": translations.root,
         "data-state": paused ? "paused" : "idle",
         "data-orientation": orientation,
         "data-paused": dataAttr(paused),

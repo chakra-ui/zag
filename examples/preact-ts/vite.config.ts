@@ -10,4 +10,8 @@ export default defineConfig({
       "@styles": fileURLToPath(new URL("../styles", import.meta.url)),
     },
   },
+  server: {
+    port: Number(process.env.PORT) || 3004,
+    strictPort: true,
+  },
 })

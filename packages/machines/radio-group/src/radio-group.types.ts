@@ -9,15 +9,15 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  indicator: string
-  item: (value: string) => string
-  itemLabel: (value: string) => string
-  itemControl: (value: string) => string
-  itemHiddenInput: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  indicator?: string | undefined
+  item?: ((value: string) => string) | undefined
+  itemLabel?: ((value: string) => string) | undefined
+  itemControl?: ((value: string) => string) | undefined
+  itemHiddenInput?: ((value: string) => string) | undefined
+}
 
 export interface RadioGroupProps extends DirectionProperty, CommonProperties {
   /**

@@ -17,10 +17,6 @@ export const machine = createMachine<PopoverSchema>({
       modal: false,
       restoreFocus: true,
       ...props,
-      translations: {
-        closeTriggerLabel: "close",
-        ...props.translations,
-      },
       positioning: {
         placement: "bottom",
         ...props.positioning,

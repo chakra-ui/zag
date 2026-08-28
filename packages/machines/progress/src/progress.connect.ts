@@ -1,7 +1,29 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./progress.anatomy"
 import * as dom from "./progress.dom"
-import type { ProgressApi, ProgressService, ProgressState, ViewProps, ViewState } from "./progress.types"
+import type {
+  IntlTranslations,
+  ProgressApi,
+  ProgressService,
+  ProgressState,
+  ViewProps,
+  ViewState,
+} from "./progress.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  value: ({ value, percent, formatter }) => {
+    if (value === null) return "loading..."
+
+    if (formatter) {
+      const formatOptions = formatter.resolvedOptions()
+      const num = formatOptions.style === "percent" ? percent / 100 : value
+      return formatter.format(num)
+    }
+
+    return value.toString()
+  },
+}
 
 export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
   const { context, computed, prop, send, scope } = service
@@ -12,11 +34,11 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
   const min = prop("min")
 
   const orientation = prop("orientation")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const indeterminate = computed("isIndeterminate")
 
   const value = context.get("value")
-  const valueAsString = translations?.value({ value, max, percent, min, formatter: computed("formatter") }) ?? ""
+  const valueAsString = translations.value({ value, max, percent, min, formatter: computed("formatter") })
   const progressState = getProgressState(value, max)
 
   const progressbarProps = {

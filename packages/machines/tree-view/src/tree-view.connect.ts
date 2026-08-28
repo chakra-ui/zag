@@ -11,11 +11,12 @@ import {
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, match, uniq } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { add, match, mergeWithDefault, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type {
+  IntlTranslations,
   NodeIndicatorProps,
   NodeProps,
   NodeState,
@@ -25,13 +26,18 @@ import type {
 } from "./tree-view.types"
 import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  treeLabel: "Tree View",
+  renameInputLabel: "Rename tree item",
+}
+
 export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   service: TreeViewService<V>,
   normalize: NormalizeProps<T>,
 ): TreeViewApi<T, V> {
   const { context, scope, computed, prop, send } = service
   const collection = prop("collection")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))

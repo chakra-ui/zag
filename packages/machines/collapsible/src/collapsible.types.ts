@@ -9,11 +9,11 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export type ElementIds = Partial<{
-  root: string
-  content: string
-  trigger: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  content?: string | undefined
+  trigger?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

@@ -89,6 +89,7 @@ typings/
 
 # Next.js build output
 .next
+next-env.d.ts
 
 # Nuxt.js build / generate output
 .nuxt
@@ -194,3 +195,7 @@ styled-system-studio
 
 # Next.js — generated on every dev/build, contents vary by version
 next-env.d.ts
+
+# Next.js generated agent files
+website/AGENTS.md
+website/CLAUDE.md

@@ -44,29 +44,40 @@ jobs:
 
       - name: Publish packages
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
         with:
-          publish: pnpm release
-          commit: "ci(changesets): version packages"
+          publish-script: pnpm release
+          commit-message: "ci(changesets): version packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      # changesets/action pushes per-package tags concurrently via Promise.all,
-      # which intermittently hits GitHub's commit_refs ref-update contention.
-      # This step batches any missing tags into a single push as a safety net.
-      - name: Push tags (fallback)
-        if: always() && steps.changesets.outcome != 'skipped'
-        run: |
-          for i in 1 2 3 4 5; do
-            git push origin --tags && exit 0
-            echo "tag push failed (attempt $i), retrying in $((i*5))s..."
-            sleep $((i*5))
-          done
-          exit 1
 
       - name: Slack notification
         if: steps.changesets.outputs.published == 'true'
         run: pnpm slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Safety net for tags changesets/action failed to create due to ref contention.
+      # Compare by name: local tags are annotated, remote ones (github-api) are lightweight,
+      # so `git push --tags` would reject every tag as "already exists".
+      - name: Push tags (fallback)
+        if: always() && steps.changesets.outcome != 'skipped'
+        run: |
+          remote_tags=$(git ls-remote --tags origin | sed 's|.*refs/tags/||; s|\^{}$||' | sort -u)
+          missing=$(comm -23 <(git tag -l | sort -u) <(echo "$remote_tags"))
+
+          if [ -z "$missing" ]; then
+            echo "All local tags already exist on the remote"
+            exit 0
+          fi
+
+          echo "Pushing missing tags:"
+          echo "$missing"
+
+          for i in 1 2 3 4 5; do
+            echo "$missing" | xargs git push origin && exit 0
+            echo "tag push failed (attempt $i), retrying in $((i*5))s..."
+            sleep $((i*5))
+          done
+          exit 1

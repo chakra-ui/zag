@@ -107,6 +107,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
         ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
         role: "tab",
+        type: "button",
         dir: prop("dir"),
         tabIndex: !prop("linear") || itemState.current ? 0 : -1,
         "aria-selected": itemState.current,

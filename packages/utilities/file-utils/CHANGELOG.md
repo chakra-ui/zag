@@ -2,12 +2,30 @@
 
 ## 2.0.0-next.1
 
+## 1.43.3
+
 ### Patch Changes
 
 - Updated dependencies []:
   - @zag-js/i18n-utils@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/i18n-utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.43.1
 
 ## 1.43.0
 

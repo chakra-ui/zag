@@ -1,15 +1,20 @@
 import type { Service } from "@zag-js/core"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { match } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { match, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./timer.anatomy"
 import * as dom from "./timer.dom"
-import type { ActionTriggerProps, ActionTriggerState, TimerApi, TimerSchema } from "./timer.types"
+import type { ActionTriggerProps, ActionTriggerState, IntlTranslations, TimerApi, TimerSchema } from "./timer.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  areaLabel: (time, formattedTime) =>
+    `${time.days} days ${formattedTime.hours}:${formattedTime.minutes}:${formattedTime.seconds}`,
+}
 
 const validActions = new Set(["start", "pause", "resume", "reset", "restart"])
 
 export function connect<T extends PropTypes>(service: Service<TimerSchema>, normalize: NormalizeProps<T>): TimerApi<T> {
   const { state, send, computed, scope, prop } = service
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const running = state.matches("running")
   const paused = state.matches("paused")

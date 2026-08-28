@@ -10,9 +10,10 @@ import {
   isLeftClick,
   isOpeningInNewTab,
 } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { ensure, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
 import type {
@@ -20,12 +21,18 @@ import type {
   ComboboxApi,
   ComboboxService,
   ContentState,
+  IntlTranslations,
   ItemProps,
   ItemState,
   RootState,
   TriggerProps,
   TriggerState,
 } from "./combobox.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  triggerLabel: "Toggle suggestions",
+  clearTriggerLabel: "Clear value",
+}
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -34,7 +41,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const { context, prop, state, send, scope, computed, event } = service
   const layer = context.get("layer")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const collection = prop("collection")
 
   const disabled = !!prop("disabled")
@@ -455,15 +462,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-value": itemState.value,
         onPointerMove() {
           if (itemState.disabled) return
+          // keyboard-driven scroll fires pointermove on the item that slid under the cursor
+          if (getInteractionModality() !== "pointer") return
           if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value })
         },
         onPointerLeave() {
           if (props.persistFocus) return
           if (itemState.disabled) return
-          const prev = event.previous()
-          const mouseMoved = prev?.type.includes("POINTER")
-          if (!mouseMoved) return
+          // keyboard-driven scroll fires pointerleave without any pointer input
+          if (getInteractionModality() !== "pointer") return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onClick(event) {

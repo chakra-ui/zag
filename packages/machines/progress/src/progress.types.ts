@@ -20,15 +20,15 @@ export interface ValueChangeDetails {
 }
 
 export interface IntlTranslations {
-  value: (details: ValueTranslationDetails) => string
+  value?: ((details: ValueTranslationDetails) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  track: string
-  label: string
-  circle: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  track?: string | undefined
+  label?: string | undefined
+  circle?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -81,7 +81,7 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   locale?: string | undefined
 }
 
-type PropsWithDefault = "orientation" | "translations" | "min" | "max" | "formatOptions"
+type PropsWithDefault = "orientation" | "min" | "max" | "formatOptions"
 
 type Computed = Readonly<{
   isIndeterminate: boolean

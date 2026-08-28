@@ -1,9 +1,22 @@
 import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./pagination.anatomy"
 import * as dom from "./pagination.dom"
-import type { ItemProps, ItemState, PaginationService, PaginationApi } from "./pagination.types"
+import type { IntlTranslations, ItemProps, ItemState, PaginationService, PaginationApi } from "./pagination.types"
 import { getTransformedRange } from "./pagination.utils"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  rootLabel: "pagination",
+  firstTriggerLabel: "first page",
+  prevTriggerLabel: "previous page",
+  nextTriggerLabel: "next page",
+  lastTriggerLabel: "last page",
+  itemLabel({ page, totalPages }) {
+    const isLastPage = totalPages > 1 && page === totalPages
+    return `${isLastPage ? "last page, " : ""}page ${page}`
+  },
+}
 
 export function connect<T extends PropTypes>(
   service: PaginationService,
@@ -14,7 +27,7 @@ export function connect<T extends PropTypes>(
   const totalPages = computed("totalPages")
   const page = context.get("page")
   const pageSize = context.get("pageSize")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const count = prop("count")
   const getPageUrl = prop("getPageUrl")

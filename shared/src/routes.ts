@@ -192,6 +192,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "focus-trap", title: "Focus Trap" },
       { slug: "popover-inside", title: "Popover Inside" },
+      { slug: "stacking", title: "Stacking" },
     ],
   },
   {
@@ -432,6 +433,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Dialog",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "checkbox-focus-visible", title: "Checkbox Focus Visible" },
       { slug: "cloudinary", title: "Cloudinary" },
       { slug: "controlled", title: "Controlled" },
       { slug: "datepicker", title: "With Date Picker" },
@@ -709,6 +711,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "scopes", title: "Scopes" },
       { slug: "command-dialog", title: "Command Dialog" },
       { slug: "key-recorder", title: "Key Recorder" },
+      { slug: "targets", title: "Targets" },
     ],
   },
   {

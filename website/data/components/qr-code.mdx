@@ -126,7 +126,8 @@ const service = useMachine(qrCode.machine, {
 ### Adding an overlay logo
 
 To add a logo overlay to the QR code, render the image part. The logo will be
-automatically centered within the QR code.
+automatically centered within the QR code. Downloads and `getDataUrl` include
+the overlay when it is rendered.
 
 ```tsx {3}
 <div {...api.getRootProps()}>
@@ -157,7 +158,8 @@ To change the background color of the QR code, set the `background-color`
 
 ### Exporting the QR code
 
-To export the QR code as an image, use `api.getDataUrl`.
+To export the QR code as an image, use `api.getDataUrl`. If an overlay is
+rendered, it is included in the file.
 
 ```ts
 api.getDataUrl("image/png").then((url) => {
@@ -165,18 +167,12 @@ api.getDataUrl("image/png").then((url) => {
 })
 ```
 
+> Overlay images must be same-origin or served with CORS headers. If the image
+> cannot be read, the export falls back to the QR pattern.
+
 You can also use `api.getDownloadTriggerProps` to create a download button.
 
-```tsx
-<button
-  {...api.getDownloadTriggerProps({
-    mimeType: "image/png",
-    fileName: "qr-code",
-  })}
->
-  Download QR
-</button>
-```
+<CodeSnippet id="qr-code/download.mdx" />
 
 ## Styling guide
 

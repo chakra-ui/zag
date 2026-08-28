@@ -24,16 +24,6 @@ export const machine = createMachine<CarouselSchema>({
       inViewThreshold: 0.6,
       autoSize: false,
       ...props,
-      translations: {
-        nextTrigger: "Next slide",
-        prevTrigger: "Previous slide",
-        indicator: (index) => `Go to slide ${index + 1}`,
-        item: (index, count) => `${index + 1} of ${count}`,
-        autoplayStart: "Start slide rotation",
-        autoplayStop: "Stop slide rotation",
-        progressText: ({ page, totalPages }) => `${page} / ${totalPages}`,
-        ...props.translations,
-      },
     }
   },
 

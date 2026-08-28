@@ -35,18 +35,18 @@ export type { FileError }
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  dropzone: string
-  hiddenInput: string
-  trigger: string
-  label: string
-  item: (id: string) => string
-  itemName: (id: string) => string
-  itemSizeText: (id: string) => string
-  itemPreview: (id: string) => string
-  itemDeleteTrigger: (id: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  dropzone?: string | undefined
+  hiddenInput?: string | undefined
+  trigger?: string | undefined
+  label?: string | undefined
+  item?: ((id: string) => string) | undefined
+  itemName?: ((id: string) => string) | undefined
+  itemSizeText?: ((id: string) => string) | undefined
+  itemPreview?: ((id: string) => string) | undefined
+  itemDeleteTrigger?: ((id: string) => string) | undefined
+}
 
 export interface IntlTranslations {
   dropzone?: string | undefined
@@ -153,13 +153,7 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
-type PropsWithDefault =
-  | "minFileSize"
-  | "maxFileSize"
-  | "maxFiles"
-  | "preventDocumentDrop"
-  | "allowDrop"
-  | "translations"
+type PropsWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop"
 
 interface Context {
   /**

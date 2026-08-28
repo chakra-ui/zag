@@ -10,7 +10,28 @@ import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNav } from "components/nav/top-nav"
 import { usePathname } from "next/navigation"
+import { css } from "styled-system/css"
 import { Box, Flex, Spacer, styled } from "styled-system/jsx"
+
+const scrollbarStyles = css({
+  // Chrome 121+ and Firefox
+  scrollbarWidth: "thin",
+  scrollbarColor: "token(colors.border.bold) transparent",
+  // Safari
+  "&::-webkit-scrollbar": {
+    width: "10px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background: "transparent",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "border.bold",
+    borderRadius: "full",
+    // Inset the thumb so it floats like a pill
+    border: "3px solid transparent",
+    backgroundClip: "padding-box",
+  },
+})
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -48,6 +69,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             px="8"
             overflowY="auto"
             overscrollBehavior="contain"
+            className={scrollbarStyles}
           >
             <Box position="relative">
               <Box position="sticky" top="0" bg="bg.subtle" pb="8">

@@ -2,12 +2,35 @@
 
 ## 2.0.0-next.1
 
+## 1.43.3
+
 ### Patch Changes
 
 - Updated dependencies []:
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/dom-query@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [#3271](https://github.com/chakra-ui/zag/pull/3271)
+  [`cc6cc84`](https://github.com/chakra-ui/zag/commit/cc6cc84cf29d64f878a636e897994e843031845c) Thanks
+  [@bunlongheng](https://github.com/bunlongheng)! - Fix an XSS vector in `autoResizeInput()`. The hidden ghost element
+  used to measure width assigned the input's value with `innerHTML`, so a value containing markup was parsed and could
+  execute. It now uses `textContent`.
+- Updated dependencies [[`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/dom-query@1.43.1
 
 ## 1.43.0
 

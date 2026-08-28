@@ -37,15 +37,15 @@ export interface IntlTranslations {
   itemLabel?: ((details: ItemLabelDetails) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  ellipsis: (index: number) => string
-  firstTrigger: string
-  prevTrigger: string
-  nextTrigger: string
-  lastTrigger: string
-  item: (page: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  ellipsis?: ((index: number) => string) | undefined
+  firstTrigger?: string | undefined
+  prevTrigger?: string | undefined
+  nextTrigger?: string | undefined
+  lastTrigger?: string | undefined
+  item?: ((page: number) => string) | undefined
+}
 
 export interface PaginationProps extends DirectionProperty, CommonProperties {
   /**
@@ -110,14 +110,7 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
   getPageUrl?: ((details: PageUrlDetails) => string) | undefined
 }
 
-type PropsWithDefault =
-  | "defaultPageSize"
-  | "defaultPage"
-  | "siblingCount"
-  | "boundaryCount"
-  | "translations"
-  | "type"
-  | "count"
+type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "boundaryCount" | "type" | "count"
 
 interface PrivateContext {
   page: number

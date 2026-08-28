@@ -1,13 +1,18 @@
 import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./clipboard.anatomy"
 import type { ClipboardService, ClipboardApi, IndicatorProps, IndicatorState } from "./clipboard.types"
 import * as dom from "./clipboard.dom"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  triggerLabel: (copied) => (copied ? "Copied to clipboard" : "Copy to clipboard"),
+}
+
 export function connect<T extends PropTypes>(service: ClipboardService, normalize: NormalizeProps<T>): ClipboardApi<T> {
   const { state, send, context, scope, prop } = service
   const copied = state.matches("copied")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`

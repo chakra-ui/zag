@@ -14,6 +14,27 @@
 
 ## 2.0.0-next.0
 
+## 1.43.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/utils@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.43.1
+
 ## 1.43.0
 
 ### Patch Changes

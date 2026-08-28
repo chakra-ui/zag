@@ -35,6 +35,28 @@ test.describe("listbox", () => {
     await I.seeItemInViewport("Zimbabwe")
   })
 
+  test("should keep keyboard highlight when content scrolls under a resting pointer", async ({ page }) => {
+    await I.tabToContent()
+
+    const box = await I.getItem("Afghanistan").boundingBox()
+    if (!box) throw new Error("Expected Afghanistan item to be visible")
+    const x = Math.round(box.x + box.width / 2)
+    const y = Math.round(box.y + box.height / 2)
+
+    await page.mouse.move(x, y)
+    await I.seeItemIsHighlighted("Afghanistan")
+
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Zimbabwe")
+
+    // WebKit emits a move at the unchanged position when content scrolls under a resting cursor
+    await page.mouse.move(x, y)
+    await I.seeItemIsHighlighted("Zimbabwe")
+
+    await I.getItem("Zambia").hover()
+    await I.seeItemIsHighlighted("Zambia")
+  })
+
   test("[composition] controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
     await I.goto("/listbox/controlled-ignore")
     await I.clickItem("Vue")

@@ -4,6 +4,121 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.43.3](./#1.43.3) - 2026-08-20
+
+### Fixed
+
+- Fixed issue where the `Partial` type exported from `@zag-js/types` shadowed the built-in `Partial`, changing what
+  `Partial<T>` meant in every file that imported it and breaking `@vue/compiler-sfc` on
+  `interface X extends Partial<Y>`.
+
+  Optional properties are now written explicitly as `?: T | undefined`, so types like `IntlTranslations` and
+  `ElementIds` are plain interfaces. Passing a single translation key still works.
+
+## [1.43.2](./#1.43.2) - 2026-08-20
+
+### Added
+
+- **File Upload**: Add `data-invalid` to the label props so you can style the label when the file upload is invalid.
+
+- **Hotkeys**
+  - Add `target` option to scope a command to a DOM subtree. Pass an element or a function returning one, and the
+    command only fires for events inside it. Targeted commands win over global ones on the same hotkey, and the same
+    hotkey on different targets is no longer a conflict.
+
+    ```ts
+    store.register({
+      id: "grid.down",
+      hotkey: "ArrowDown",
+      action: moveDown,
+      options: { target: () => gridEl },
+    })
+    ```
+
+  - Add `normalizeHotkey`, which resolves equivalent hotkeys (`mod+k`, `Meta+K`) to one canonical string.
+  - Add Linux detection. `formatHotkey` now shows `Meta` as `Super` on Linux instead of `Win`.
+  - Export the `Platform` type.
+
+- **Presence**: Add `onEnterComplete`, called when the enter animation finishes. Without an enter animation, it fires on
+  the next frame after mount. It doesn't fire on the initial render.
+
+### Fixed
+
+- **Hotkeys**
+  - Fix `isPressed` returning `false` for bare modifiers like `"shift"` or `"mod"`.
+  - Fix commands registered with `enabled: false` never firing, even after `enable()` or `setEnabled(id, true)`.
+  - Fix `subscribe` not reporting `pressedKeys` until at least one command was registered.
+  - Fix commands with `capture: false` never firing if the store was already listening.
+  - Fix `HotkeyRecorder.stop()` clearing the previous value when nothing new was recorded.
+  - Fix `HotkeyRecorder.cancel()` keeping a partial recording instead of restoring the previous value.
+  - Fix `addScope`, `removeScope` and `toggleScope` not resetting in-progress sequences like `setScope` does.
+  - Fix `formatHotkey("meta+K")` showing `Win` instead of `Super` on Linux. Android still shows `Win`.
+
+- **Scroll Snap**: Fix `findSnapPoint` returning wrong positions for `center` and `end` aligned items and in RTL, which
+  broke carousel page detection.
+
+- **Translations**: Fix `translations` requiring every message. Override one message and the rest fall back to the
+  defaults. `@zag-js/types` now exports a `Partial` compatible with `exactOptionalPropertyTypes`. Affects Carousel, Date
+  Input, Date Picker, Editable, Floating Panel, Image Cropper, Marquee, Pin Input, Progress, Rating Group, Signature
+  Pad, and Tags Input.
+
+## [1.43.1](./#1.43.1) - 2026-08-16
+
+### Fixed
+
+- **Auto Resize**: Fix an XSS vector in `autoResizeInput()`. The hidden ghost element used to measure width assigned the
+  input's value with `innerHTML`, so a value containing markup was parsed and could execute. It now uses `textContent`.
+
+- **Cascade Select, Listbox**: Fix keyboard navigation losing the highlighted item when scrolling shifts content beneath
+  a resting pointer. The pointer events fired by that scroll were treated as a real hover and overrode the keyboard
+  highlight. Affects listboxes with `highlightOnHover` and cascade selects with `highlightTrigger: "hover"`.
+
+- **Combobox, Menu, Select**: Fix keyboard navigation clearing or moving the highlighted item while the mouse rests over
+  scrollable content. Scrolling the item into view moved the content under the cursor, and the resulting `pointerleave`
+  (or `pointermove` in Safari) was treated as a real hover.
+
+- **Core**: Fix `getExitEnterStates()` throwing during state transitions in browsers without `Array.prototype.at()`,
+  such as Safari below 15.4.
+
+- **Date Picker**
+  - Fix the `translations` prop requiring every message to be supplied. It's now typed as `Partial<IntlTranslations>`,
+    so you can override a single message and let the rest fall back to the defaults.
+  - Fix the `aria-label` from `getViewTriggerProps()` naming the wrong view. In day view it announced "Switch to year
+    view" while the trigger actually switches to month view. `translations.viewTrigger` now receives the resolved next
+    view, and the trigger disables itself once there's no further view to switch to.
+  - Fix `translations.dayCell()` announcing the generic "Choose" label for dates between a selected range's start and
+    end. It now announces "In range".
+
+- **Dismissable**: Fix `Escape` being ignored right after a dismissable layer opens. `trackDismissableElement` deferred
+  handler registration to the next animation frame, so a dialog, popover or menu was painted and focus-trapped while its
+  layer was not yet on the stack. Under CPU load that gap grew well past one frame and swallowed the keypress. Handlers
+  now register as soon as the node commits.
+
+- **Drawer, Navigation Menu, Steps, Tour**: Add `type="button"` to `getTriggerProps()` (steps, navigation-menu) and
+  `getCloseTriggerProps()` (drawer, tour). Without it these buttons defaulted to `type="submit"` and submitted an
+  ancestor form on click.
+
+- **Floating Panel**
+  - Fix closing a panel not removing it from the stack, so the next panel now becomes topmost.
+  - Fix stack order not applying to the positioner, so focusing a panel raises it above its siblings.
+
+- **Focus Visible**
+  - Fix the interaction modality being reported as `pointer` when content scrolls under a resting cursor. Safari emits
+    move events at an unchanged position in that case.
+  - Fix `trackFocusVisible()` classifying pointer focus as virtual when activating a label briefly moves focus to an
+    overlay container. Clicking a checkbox, radio or switch label added `data-focus-visible` to the control.
+
+- **Image Cropper**: Fix `fixedCropArea: true` disabling all keyboard interaction on the crop selection. It removed the
+  element from the tab order and ignored every key, including the `+`/`-` zoom shortcuts that still apply in fixed mode.
+  The selection is now always focusable. Arrow keys pan the image, since there's nothing to move or resize, and
+  `Alt+Arrow` is a no-op.
+
+- **QR Code**: Include the rendered overlay in `getDataUrl()` and in the file produced by `getDownloadTriggerProps()`.
+  The export previously contained only the QR matrix, so a logo or badge placed over the code was dropped.
+
+- **Splitter**: Fix the element from `getResizeTriggerProps()` matching `:focus-visible` after a pointer drag. It still
+  takes focus, so keyboard resizing keeps working, but no longer shows the focus ring.
+
 ## [1.43.0](./#1.43.0) - 2026-07-28
 
 ### Added

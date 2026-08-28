@@ -2,6 +2,7 @@ import { DateFormatter } from "@internationalized/date"
 import { memo } from "@zag-js/core"
 import type { DateValue } from "@zag-js/date-utils"
 import { getDecadeRange } from "@zag-js/date-utils"
+import type { Required } from "@zag-js/types"
 import { clampValue, match } from "@zag-js/utils"
 import type { DateView, IntlTranslations, SelectionMode, VisibleRangeText } from "./date-picker.types"
 
@@ -51,23 +52,21 @@ export const isValidDate = (value: DateValue) => {
   return !Number.isNaN(value.day) && !Number.isNaN(value.month) && !Number.isNaN(value.year)
 }
 
-export const defaultTranslations: IntlTranslations = {
+export const defaultTranslations: Required<IntlTranslations> = {
   dayCell(state) {
     if (state.unavailable) return `Not available. ${state.valueText}`
     if (state.firstInRange) return `Starting range from ${state.valueText}`
     if (state.lastInRange) return `Range ending at ${state.valueText}`
+    if (state.inRange) return `In range. ${state.valueText}`
     if (state.selected) return `Selected date. ${state.valueText}`
     return `Choose ${state.valueText}`
   },
   trigger(open) {
     return open ? "Close calendar" : "Open calendar"
   },
-  viewTrigger(view) {
-    return match(view, {
-      year: "Switch to month view",
-      month: "Switch to day view",
-      day: "Switch to year view",
-    })
+  viewTrigger(view, nextView) {
+    if (!nextView) return `${view} view`
+    return `Switch to ${nextView} view`
   },
   presetTrigger(value) {
     const [start = "", end = ""] = value

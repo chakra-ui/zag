@@ -1,13 +1,42 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { isBottomHandle, isLeftHandle, isRightHandle, isTopHandle, isVisibleSize, roundRect } from "@zag-js/rect-utils"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { ImageCropperApi, ImageCropperService, ImageState, RootState, SelectionState } from "./image-cropper.types"
+import type {
+  ImageCropperApi,
+  ImageCropperService,
+  ImageState,
+  IntlTranslations,
+  RootState,
+  SelectionState,
+} from "./image-cropper.types"
 import { isEqualFlip, normalizeFlipState } from "./utils/crop"
 import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  rootLabel: "Image cropper",
+  rootRoleDescription: "Image cropper",
+  previewLoading: "Image cropper preview loading",
+  previewDescription({ crop, zoom, rotation }) {
+    const zoomText = zoom != null && Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
+    const rotationText =
+      rotation != null && Number.isFinite(rotation) ? `${Math.round(rotation)} degrees rotation` : "0 degrees rotation"
+    return `Image cropper preview, ${zoomText}, ${rotationText}. Crop positioned at ${crop.x}px from the left and ${crop.y}px from the top with a size of ${crop.width}px by ${crop.height}px.`
+  },
+  selectionLabel: ({ shape }) => `Crop selection area (${shape === "circle" ? "circle" : "rectangle"})`,
+  selectionRoleDescription: "2d slider",
+  selectionInstructions:
+    "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
+  selectionValueText({ shape, x, y, width, height }) {
+    if (shape === "circle") {
+      return `Position X ${x}px, Y ${y}px. Diameter ${width}px.`
+    }
+    return `Position X ${x}px, Y ${y}px. Size ${width}px by ${height}px.`
+  },
+}
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -18,7 +47,7 @@ export function connect<T extends PropTypes>(
   const dragging = state.matches("dragging")
   const panning = state.matches("panning")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const fixedCropArea = prop("fixedCropArea")
   const cropShape = prop("cropShape")
 
@@ -333,6 +362,7 @@ export function connect<T extends PropTypes>(
             event.preventDefault()
             return
           }
+
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
@@ -348,7 +378,19 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (altKey && (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")) {
+          const isArrowKey = key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight"
+          if (!isArrowKey) return
+
+          // In fixed crop mode there's nothing to resize or move, plain arrow keys pan the image instead.
+          // Alt+Arrow keeps meaning "resize", which doesn't apply here, so it's a no-op.
+          if (selectionState.disabled) {
+            if (altKey) return
+            send({ type: "NUDGE_PAN", key, src, shiftKey, ctrlKey, metaKey })
+            event.preventDefault()
+            return
+          }
+
+          if (altKey) {
             const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
             send({
               type: "NUDGE_RESIZE_CROP",
@@ -363,26 +405,8 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowDown() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowLeft() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowRight() {
-              send({ type: "NUDGE_MOVE_CROP", key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
-            },
-          }
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          send({ type: "NUDGE_MOVE_CROP", key, src, shiftKey, ctrlKey, metaKey })
+          event.preventDefault()
         },
       })
     },

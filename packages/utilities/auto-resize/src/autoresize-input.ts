@@ -23,7 +23,7 @@ export function autoResizeInput(input: HTMLInputElement | null) {
 
   function resize() {
     win.requestAnimationFrame(() => {
-      ghost.innerHTML = input!.value
+      ghost.textContent = input!.value
       const rect = win.getComputedStyle(ghost)
       input?.style.setProperty("width", rect.width)
     })

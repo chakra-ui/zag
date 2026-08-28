@@ -42,23 +42,23 @@ export interface FormatChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  control: string
-  trigger: string
-  label: string
-  input: string
-  hiddenInput: string
-  content: string
-  area: string
-  areaGradient: string
-  positioner: string
-  formatSelect: string
-  areaThumb: string
-  channelInput: (id: string) => string
-  channelSliderTrack: (id: ColorChannel) => string
-  channelSliderThumb: (id: ColorChannel) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  control?: string | undefined
+  trigger?: string | undefined
+  label?: string | undefined
+  input?: string | undefined
+  hiddenInput?: string | undefined
+  content?: string | undefined
+  area?: string | undefined
+  areaGradient?: string | undefined
+  positioner?: string | undefined
+  formatSelect?: string | undefined
+  areaThumb?: string | undefined
+  channelInput?: ((id: string) => string) | undefined
+  channelSliderTrack?: ((id: ColorChannel) => string) | undefined
+  channelSliderThumb?: ((id: ColorChannel) => string) | undefined
+}
 
 export interface ColorPickerProps extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
   /**

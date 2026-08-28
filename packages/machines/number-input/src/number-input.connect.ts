@@ -12,10 +12,11 @@ import {
   setCaretToEnd,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { roundToDpr, toPx } from "@zag-js/utils"
+import { mergeWithDefault, roundToDpr, toPx } from "@zag-js/utils"
 import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
+import { defaultTranslations } from "./number-input.translations"
 import type {
   DecrementTriggerState,
   IncrementTriggerState,
@@ -43,7 +44,7 @@ export function connect<T extends PropTypes>(
   const isIncrementDisabled = disabled || !computed("canIncrement") || readOnly
   const isDecrementDisabled = disabled || !computed("canDecrement") || readOnly
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`

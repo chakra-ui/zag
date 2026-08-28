@@ -11,10 +11,11 @@ export interface ValueChangeDetails {
   value: string
 }
 
-export type ElementIds = Partial<{
-  root: string
-  frame: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  frame?: string | undefined
+  overlay?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -101,7 +102,7 @@ export interface QrCodeApi<T extends PropTypes = PropTypes> {
    */
   setValue: (value: string) => void
   /**
-   * Returns the data URL of the qr code.
+   * Returns the data URL of the qr code. Includes the overlay when present.
    */
   getDataUrl: (type: DataUrlType, quality?: number) => Promise<string>
 

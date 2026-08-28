@@ -1,6 +1,6 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { match, toPx } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { match, mergeWithDefault, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
 import type {
@@ -8,6 +8,7 @@ import type {
   ControlState,
   FloatingPanelApi,
   FloatingPanelService,
+  IntlTranslations,
   ResizeTriggerProps,
   ResizeTriggerState,
   StageTriggerProps,
@@ -16,6 +17,12 @@ import type {
 } from "./floating-panel.types"
 import { getResizePlacementStyle } from "./get-resize-placement-style"
 
+const defaultTranslations: Required<IntlTranslations> = {
+  minimize: "Minimize window",
+  maximize: "Maximize window",
+  restore: "Restore window",
+}
+
 const validStages = new Set(["minimized", "maximized", "default"])
 
 export function connect<T extends PropTypes>(
@@ -23,6 +30,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): FloatingPanelApi<T> {
   const { state, send, scope, prop, computed, context } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const open = state.hasTag("open")
 
@@ -30,6 +38,7 @@ export function connect<T extends PropTypes>(
   const resizing = state.matches("open.resizing")
 
   const isTopmost = context.get("isTopmost")
+  const stackIndex = context.get("stackIndex")
   const size = context.get("size")
   const position = context.get("position")
 
@@ -135,9 +144,12 @@ export function connect<T extends PropTypes>(
           "--height": toPx(size?.height),
           "--x": toPx(position?.x),
           "--y": toPx(position?.y),
+          "--z-index": stackIndex > -1 ? stackIndex + 1 : undefined,
           position: prop("strategy"),
+          isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
+          zIndex: "var(--z-index)",
         },
       })
     },
@@ -222,7 +234,7 @@ export function connect<T extends PropTypes>(
     getStageTriggerProps(props) {
       const stageTriggerState = getStageTriggerState(props)
 
-      const translations = prop("translations")
+      const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
       const ariaLabel = match(props.stage, {
         minimized: () => translations.minimize,

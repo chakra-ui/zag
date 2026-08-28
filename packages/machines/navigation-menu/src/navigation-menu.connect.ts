@@ -187,6 +187,8 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
+        type: "button",
+        "data-uid": prop("id"),
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
         disabled: triggerState.disabled,

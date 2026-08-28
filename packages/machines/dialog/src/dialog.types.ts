@@ -25,15 +25,15 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  positioner: string
-  backdrop: string
-  content: string
-  closeTrigger: string
-  title: string
-  description: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  positioner?: string | undefined
+  backdrop?: string | undefined
+  content?: string | undefined
+  closeTrigger?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+}
 
 export interface DialogProps
   extends DirectionProperty, CommonProperties, DismissableElementHandlers, PersistentElementOptions {

@@ -15,10 +15,6 @@ export const machine = createMachine({
       type: "numeric",
       defaultValue: fill([], props.count!),
       ...props,
-      translations: {
-        inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
-        ...props.translations,
-      },
     }
   },
 

@@ -1,14 +1,20 @@
 import { ariaAttr, dataAttr, isLeftClick } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./password-input.anatomy"
 import * as dom from "./password-input.dom"
 import type {
   InputState,
+  IntlTranslations,
   PasswordInputApi,
   PasswordInputService,
   RootState,
   VisibilityTriggerState,
 } from "./password-input.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  visibilityTrigger: (visible) => (visible ? "Hide password" : "Show password"),
+}
 
 export function connect<T extends PropTypes>(
   service: PasswordInputService,
@@ -22,7 +28,7 @@ export function connect<T extends PropTypes>(
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const interactive = !(readOnly || disabled)
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`

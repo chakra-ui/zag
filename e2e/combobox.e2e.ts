@@ -492,3 +492,28 @@ test.describe("combobox / multiple", () => {
     await I.seeValueText("Malawi")
   })
 })
+
+test.describe("combobox / scroll under resting cursor", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto()
+  })
+
+  test("on end key, keep highlight when scroll moves content under the cursor", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Canada")
+    await I.seeItemIsHighlighted("Canada")
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Tunisia")
+    await I.seeItemInViewport("Tunisia")
+  })
+
+  test("after keyboard scroll, hover still moves the highlight", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Canada")
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Tunisia")
+    await I.hoverItem("Tonga")
+    await I.seeItemIsHighlighted("Tonga")
+  })
+})

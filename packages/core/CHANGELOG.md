@@ -2,6 +2,8 @@
 
 ## 2.0.0-next.1
 
+## 1.43.3
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -9,6 +11,28 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/dom-query@1.43.3
+- @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [`c42b1d9`](https://github.com/chakra-ui/zag/commit/c42b1d99f22207f9d1958b58a073e79025a0ca21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `getExitEnterStates()` throwing during state transitions in
+  browsers without `Array.prototype.at()`, such as Safari below 15.4.
+- Updated dependencies [[`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/dom-query@1.43.1
+  - @zag-js/utils@1.43.1
 
 ## 1.43.0
 

@@ -1,5 +1,6 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
@@ -427,9 +428,11 @@ export function connect<T extends PropTypes, V = TreeNode>(
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", value: itemState.value, indexPath })
         },
-        onPointerEnter(event) {
+        onPointerMove(event) {
           if (!interactive) return
-          if (itemState.disabled) return
+          if (itemState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
+          if (isEqual(itemState.value, highlightedValue)) return
           send({
             type: "ITEM.POINTER_ENTER",
             value: itemState.value,
@@ -442,9 +445,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
           if (!interactive) return
           if (itemState.disabled) return
           if (event.pointerType !== "mouse") return
-
-          const pointerMoved = service.event.previous()?.type.includes("POINTER")
-          if (!pointerMoved) return
+          if (getInteractionModality() !== "pointer") return
 
           send({
             type: "ITEM.POINTER_LEAVE",

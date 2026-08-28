@@ -74,6 +74,7 @@ export const routes: RouteDefinition[] = [
   { path: "/floating-panel/controlled", component: lazy(() => import("./pages/floating-panel/controlled")) },
   { path: "/floating-panel/focus-trap", component: lazy(() => import("./pages/floating-panel/focus-trap")) },
   { path: "/floating-panel/popover-inside", component: lazy(() => import("./pages/floating-panel/popover-inside")) },
+  { path: "/floating-panel/stacking", component: lazy(() => import("./pages/floating-panel/stacking")) },
   { path: "/tour/basic", component: lazy(() => import("./pages/tour/basic")) },
   { path: "/tour/wait-step", component: lazy(() => import("./pages/tour/wait-step")) },
   { path: "/tour/wait-for-input-event", component: lazy(() => import("./pages/tour/wait-for-input-event")) },
@@ -280,6 +281,7 @@ export const routes: RouteDefinition[] = [
   { path: "/hotkeys/scopes", component: lazy(() => import("./pages/hotkeys/scopes")) },
   { path: "/hotkeys/command-dialog", component: lazy(() => import("./pages/hotkeys/command-dialog")) },
   { path: "/hotkeys/key-recorder", component: lazy(() => import("./pages/hotkeys/key-recorder")) },
+  { path: "/hotkeys/targets", component: lazy(() => import("./pages/hotkeys/targets")) },
   {
     path: "/:component",
     component: lazy(() => import("./pages/component")),

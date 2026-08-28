@@ -138,14 +138,14 @@ export interface IntlTranslations {
   skip?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  content: string
-  title: string
-  description: string
-  positioner: string
-  backdrop: string
-  arrow: string
-}>
+export interface ElementIds {
+  content?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+  positioner?: string | undefined
+  backdrop?: string | undefined
+  arrow?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -215,7 +215,6 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
 type PropsWithDefault =
   | "spotlightOffset"
   | "spotlightRadius"
-  | "translations"
   | "closeOnInteractOutside"
   | "closeOnEscape"
   | "keyboardNavigation"

@@ -1,8 +1,8 @@
 import { contains, dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getFileEntries } from "@zag-js/file-utils"
 import { formatBytes } from "@zag-js/i18n-utils"
-import { type NormalizeProps, type PropTypes } from "@zag-js/types"
-import { flatArray } from "@zag-js/utils"
+import { type NormalizeProps, type PropTypes, type Required } from "@zag-js/types"
+import { flatArray, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
 import type {
@@ -18,6 +18,12 @@ import type {
   TriggerState,
 } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  dropzone: "dropzone",
+  itemPreview: (file) => `preview of ${file.name}`,
+  deleteFile: (file) => `delete file ${file.name}`,
+}
 
 const DEFAULT_ITEM_TYPE: ItemType = "accepted"
 
@@ -39,7 +45,7 @@ export function connect<T extends PropTypes>(
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const allowDrop = prop("allowDrop")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const dragging = state.matches("dragging")
   const focused = state.matches("focused") && !disabled
@@ -373,6 +379,7 @@ export function connect<T extends PropTypes>(
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-required": dataAttr(required),
       })
     },

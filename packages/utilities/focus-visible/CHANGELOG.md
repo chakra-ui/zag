@@ -2,12 +2,42 @@
 
 ## 2.0.0-next.1
 
+## 1.43.3
+
 ### Patch Changes
 
 - Updated dependencies []:
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/dom-query@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.43.2
+
+## 1.43.1
+
+### Patch Changes
+
+- [`96f21cd`](https://github.com/chakra-ui/zag/commit/96f21cd0d1fe556ff3b8e3f2b7d4a564054162eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix keyboard navigation clearing or moving the highlighted item
+  while the mouse rests over scrollable content. Scrolling the item into view moved the content under the cursor, and
+  the resulting `pointerleave` (or `pointermove` in Safari) was treated as a real hover.
+
+  Fix the interaction modality being reported as `pointer` when content scrolls under a resting cursor. Safari emits
+  move events at an unchanged position in that case.
+
+- [`11926f0`](https://github.com/chakra-ui/zag/commit/11926f0724f1be2ff26df18c1d498fd8742f3b00) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `trackFocusVisible()` classifying pointer focus as virtual
+  when activating a label briefly moves focus to an overlay container. Clicking a checkbox, radio or switch label added
+  `data-focus-visible` to the control.
+- Updated dependencies [[`9a9381d`](https://github.com/chakra-ui/zag/commit/9a9381d2dff80116623cb408a45f6622d04766b6)]:
+  - @zag-js/dom-query@1.43.1
 
 ## 1.43.0
 

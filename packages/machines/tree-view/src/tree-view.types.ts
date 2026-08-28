@@ -134,12 +134,12 @@ export interface IntlTranslations {
   renameInputLabel?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  tree: string
-  label: string
-  node: (value: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  tree?: string | undefined
+  label?: string | undefined
+  node?: ((value: string) => string) | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -271,7 +271,6 @@ type PropsWithDefault =
   | "typeahead"
   | "defaultExpandedValue"
   | "defaultSelectedValue"
-  | "translations"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 

@@ -303,7 +303,6 @@ type PropsWithDefault =
   | "collection"
   | "selectionBehavior"
   | "closeOnSelect"
-  | "translations"
   | "positioning"
   | "defaultValue"
   | "defaultInputValue"

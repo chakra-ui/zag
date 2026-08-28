@@ -35,7 +35,7 @@ export default function Page() {
           <div {...api.getContentProps()}>
             <ul {...api.getListProps()}>
               {selectData.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
+                <li key={item.value} {...api.getItemProps({ item, highlightOnHover: true })}>
                   <span {...api.getItemTextProps({ item })}>{item.label}</span>
                   <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </li>

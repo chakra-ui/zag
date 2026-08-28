@@ -15,6 +15,7 @@ import {
   isEditableElement,
   isOpeningInNewTab,
 } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./listbox.anatomy"
@@ -258,6 +259,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onPointerMove(event) {
           if (!props.highlightOnHover) return
           if (itemState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
           if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },

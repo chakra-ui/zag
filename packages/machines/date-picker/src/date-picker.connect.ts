@@ -34,7 +34,7 @@ import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dism
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk, isValueWithinRange } from "@zag-js/utils"
+import { chunk, isValueWithinRange, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {
@@ -55,6 +55,7 @@ import {
   adjustStartAndEndDate,
   defaultTranslations,
   getInputPlaceholder,
+  getNextView,
   getRoleDescription,
   isDateWithinRange,
 } from "./date-picker.utils"
@@ -104,7 +105,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = { ...defaultTranslations, ...prop("translations") }
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -476,6 +477,7 @@ export function connect<T extends PropTypes>(
         "data-index": index,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
       })
     },
 
@@ -485,6 +487,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-placeholder-shown": dataAttr(empty),
+        "data-invalid": dataAttr(invalid),
       })
     },
 
@@ -940,14 +943,18 @@ export function connect<T extends PropTypes>(
 
     getViewTriggerProps(props = {}) {
       const { view = "day" } = props
+      const nextView = getNextView(view, prop("minView"), prop("maxView"))
+      const hasNextView = nextView !== view
+      const isDisabled = disabled || !hasNextView
       return normalize.button({
         ...parts.viewTrigger.attrs(scope.id),
         "data-view": view,
         dir: prop("dir"),
         id: dom.getViewTriggerId(scope, view),
         type: "button",
-        disabled,
-        "aria-label": translations.viewTrigger(view),
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
+        "aria-label": translations.viewTrigger(view, hasNextView ? nextView : undefined),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return

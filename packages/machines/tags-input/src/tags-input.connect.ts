@@ -1,9 +1,11 @@
 import type { Service } from "@zag-js/core"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
 import type { ItemProps, ItemState, RootState, TagsInputApi, TagsInputSchema } from "./tags-input.types"
+import { defaultTranslations } from "./tags-input.translations"
 
 export function connect<T extends PropTypes>(
   service: Service<TagsInputSchema>,
@@ -17,7 +19,7 @@ export function connect<T extends PropTypes>(
   const required = !!prop("required")
   const invalid = prop("invalid") || computed("isOverflowing")
 
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const focused = state.hasTag("focused")
   const editingTag = state.matches("editing:tag")
@@ -275,7 +277,7 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         ...parts.itemInput.attrs(scope.id),
         dir: prop("dir"),
-        "aria-label": translations?.tagEdited?.(props.value),
+        "aria-label": translations.tagEdited(props.value),
         disabled: disabled,
         id: dom.getItemInputId(scope, props),
         tabIndex: -1,
@@ -323,7 +325,7 @@ export function connect<T extends PropTypes>(
         "data-highlighted": dataAttr(itemState.highlighted),
         type: "button",
         disabled: itemState.disabled,
-        "aria-label": translations?.deleteTagTriggerLabel?.(props.value),
+        "aria-label": translations.deleteTagTriggerLabel(props.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
@@ -354,7 +356,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         "data-readonly": dataAttr(readOnly),
         disabled: disabled,
-        "aria-label": translations?.clearTriggerLabel,
+        "aria-label": translations.clearTriggerLabel,
         hidden: empty,
         onClick() {
           if (!interactive) return

@@ -17,10 +17,10 @@ export interface IntlTranslations {
   areaLabel?: ((time: Time, formattedTime: Time<string>) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  area: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  area?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -76,7 +76,7 @@ export interface TimerProps extends CommonProperties {
   onComplete?: (() => void) | undefined
 }
 
-type PropsWithDefault = "interval" | "startMs" | "translations"
+type PropsWithDefault = "interval" | "startMs"
 
 interface Context {
   /**

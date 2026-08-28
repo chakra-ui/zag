@@ -77,12 +77,12 @@ export interface ExpandCollapseDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  resizeTrigger: (id: string) => string
-  label: (id: string) => string
-  panel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  resizeTrigger?: ((id: string) => string) | undefined
+  label?: ((id: string) => string) | undefined
+  panel?: ((id: string | number) => string) | undefined
+}
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**

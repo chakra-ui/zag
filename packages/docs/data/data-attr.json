@@ -552,12 +552,14 @@
       "data-state": "\"open\" | \"closed\"",
       "data-index": "The index of the item",
       "data-disabled": "Present when disabled",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
     },
     "Control": {
       "data-date-picker-control": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-placeholder-shown": "Present when placeholder is shown"
+      "data-placeholder-shown": "Present when placeholder is shown",
+      "data-invalid": "Present when invalid"
     },
     "Content": {
       "data-date-picker-content": "<uid>",
@@ -692,7 +694,8 @@
     },
     "ViewTrigger": {
       "data-date-picker-view-trigger": "<uid>",
-      "data-view": "The view of the viewtrigger"
+      "data-view": "The view of the viewtrigger",
+      "data-disabled": "Present when disabled"
     },
     "ViewControl": {
       "data-date-picker-view-control": "<uid>",
@@ -883,6 +886,7 @@
     "Label": {
       "data-file-upload-label": "<uid>",
       "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
       "data-required": "Present when required"
     },
     "ClearTrigger": {

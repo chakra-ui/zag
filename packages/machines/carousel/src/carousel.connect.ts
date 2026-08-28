@@ -1,6 +1,6 @@
 import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, throttle } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { clampValue, mergeWithDefault, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
 import type {
@@ -8,9 +8,20 @@ import type {
   CarouselService,
   IndicatorProps,
   IndicatorState,
+  IntlTranslations,
   ItemProps,
   ItemState,
 } from "./carousel.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  nextTrigger: "Next slide",
+  prevTrigger: "Previous slide",
+  indicator: (index) => `Go to slide ${index + 1}`,
+  item: (index, count) => `${index + 1} of ${count}`,
+  autoplayStart: "Start slide rotation",
+  autoplayStop: "Stop slide rotation",
+  progressText: ({ page, totalPages }) => `${page} / ${totalPages}`,
+}
 
 export function connect<T extends PropTypes>(service: CarouselService, normalize: NormalizeProps<T>): CarouselApi<T> {
   const { state, context, computed, send, scope, prop } = service
@@ -29,7 +40,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const slidesPerPage = prop("slidesPerPage")
 
   const itemSpacing = prop("itemSpacing")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`

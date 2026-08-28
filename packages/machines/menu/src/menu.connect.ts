@@ -16,6 +16,7 @@ import {
   contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
+import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, hasProp } from "@zag-js/utils"
@@ -137,6 +138,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       onPointerMove(event) {
         if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
+        // keyboard-driven scroll fires pointermove on the item that slid under the cursor
+        if (getInteractionModality() !== "pointer") return
         const target = event.currentTarget
         if (itemState.highlighted) return
         const point = getEventPoint(event)
@@ -146,8 +149,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
 
-        const pointerMoved = service.event.previous()?.type.includes("POINTER")
-        if (!pointerMoved) return
+        // keyboard-driven scroll fires pointerleave without any pointer input
+        if (getInteractionModality() !== "pointer") return
 
         const target = event.currentTarget
         send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
@@ -163,7 +166,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", target, id, closeOnSelect })
+        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect })
       },
     })
   }
@@ -563,7 +566,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", target, option, closeOnSelect })
+            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect })
           },
         }),
       }

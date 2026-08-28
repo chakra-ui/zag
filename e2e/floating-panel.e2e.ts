@@ -203,4 +203,37 @@ test.describe("floating-panel", () => {
     await I.page.getByRole("button", { name: "API set size: 440x300" }).click()
     await I.seeContentHasSize(440, 300, 10)
   })
+
+  test("closing the topmost panel promotes the next panel to topmost", async ({ page }) => {
+    await I.goto("/floating-panel/stacking")
+
+    await page.getByTestId("trigger-A").click()
+    await page.getByTestId("trigger-B").click()
+
+    await expect(page.getByTestId("content-B")).toHaveAttribute("data-topmost", "")
+    await expect(page.getByTestId("content-A")).toHaveAttribute("data-behind", "")
+
+    await page.getByTestId("close-B").click()
+
+    await expect(page.getByTestId("content-A")).toHaveAttribute("data-topmost", "")
+    await expect(page.getByTestId("content-B")).not.toHaveAttribute("data-topmost", "")
+  })
+
+  test("focusing a panel raises its positioner above the other panels", async ({ page }) => {
+    await I.goto("/floating-panel/stacking")
+
+    const zIndex = (name: string) =>
+      page.getByTestId(`positioner-${name}`).evaluate((el) => Number(getComputedStyle(el).zIndex))
+
+    await page.getByTestId("trigger-A").click()
+    await page.getByTestId("trigger-B").click()
+
+    await expect(page.getByTestId("content-B")).toHaveAttribute("data-topmost", "")
+    expect(await zIndex("B")).toBeGreaterThan(await zIndex("A"))
+
+    await page.getByTestId("content-A").focus()
+
+    await expect(page.getByTestId("content-A")).toHaveAttribute("data-topmost", "")
+    expect(await zIndex("A")).toBeGreaterThan(await zIndex("B"))
+  })
 })

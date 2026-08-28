@@ -18,16 +18,16 @@ export interface HoverChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  ratingValueText: (index: number) => string
+  ratingValueText?: ((index: number) => string) | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  hiddenInput: string
-  control: string
-  item: (id: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  item?: ((id: string) => string) | undefined
+}
 
 export interface RatingGroupProps extends DirectionProperty, CommonProperties {
   /**
@@ -90,7 +90,7 @@ export interface RatingGroupProps extends DirectionProperty, CommonProperties {
   onHoverChange?: ((details: HoverChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "count" | "translations"
+type PropsWithDefault = "count"
 
 type ComputedContext = Readonly<{
   /**

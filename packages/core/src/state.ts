@@ -228,7 +228,7 @@ export function getExitEnterStates<T extends MachineSchema>(
   let exiting = prevChain.slice(commonIndex).reverse()
   let entering = nextChain.slice(commonIndex)
 
-  const sameLeaf = prevChain.at(-1)?.path === nextChain.at(-1)?.path
+  const sameLeaf = prevChain[prevChain.length - 1]?.path === nextChain[nextChain.length - 1]?.path
 
   if (reenter && sameLeaf) {
     exiting = prevChain.slice().reverse()

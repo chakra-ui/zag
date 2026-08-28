@@ -52,11 +52,6 @@ export const machine = createMachine({
         sameWidth: true,
         ...props.positioning,
       },
-      translations: {
-        triggerLabel: "Toggle suggestions",
-        clearTriggerLabel: "Clear value",
-        ...props.translations,
-      },
     }
   },
 

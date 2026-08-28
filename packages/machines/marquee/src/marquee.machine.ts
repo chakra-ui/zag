@@ -16,9 +16,6 @@ export const machine = createMachine<MarqueeSchema>({
       pauseOnInteraction: false,
       reverse: false,
       defaultPaused: false,
-      translations: {
-        root: "Marquee content",
-      },
       ...props,
     }
   },

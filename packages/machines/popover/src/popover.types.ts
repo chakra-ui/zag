@@ -30,16 +30,16 @@ export interface IntlTranslations {
   closeTriggerLabel?: string | undefined
 }
 
-export type ElementIds = Partial<{
-  anchor: string
-  trigger: string | ((value?: string) => string)
-  content: string
-  title: string
-  description: string
-  closeTrigger: string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  anchor?: string | undefined
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+  closeTrigger?: string | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 export interface PopoverProps
   extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {
@@ -179,7 +179,7 @@ export interface TriggerProps {
   /**
    * The value that identifies this specific trigger
    */
-  value?: string
+  value?: string | undefined
 }
 
 export interface TriggerState {

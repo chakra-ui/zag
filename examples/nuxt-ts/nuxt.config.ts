@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url"
 export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: "2025-01-07",
+  devServer: {
+    port: Number(process.env.PORT) || 3001,
+  },
   alias: {
     "@styles": fileURLToPath(new URL("../styles", import.meta.url)),
   },

@@ -1,8 +1,20 @@
 import { ariaAttr, dataAttr, getEventKey, getEventPoint, getRelativePoint, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import { mergeWithDefault } from "@zag-js/utils"
 import * as dom from "./rating-group.dom"
 import { parts } from "./rating-group.anatomy"
-import type { ControlState, ItemProps, ItemState, RatingGroupApi, RatingGroupService } from "./rating-group.types"
+import type {
+  ControlState,
+  IntlTranslations,
+  ItemProps,
+  ItemState,
+  RatingGroupApi,
+  RatingGroupService,
+} from "./rating-group.types"
+
+const defaultTranslations: Required<IntlTranslations> = {
+  ratingValueText: (index) => `${index} stars`,
+}
 
 export function connect<T extends PropTypes>(
   service: RatingGroupService,
@@ -16,7 +28,7 @@ export function connect<T extends PropTypes>(
   const required = !!prop("required")
   const value = context.get("value")
   const hoveredValue = context.get("hoveredValue")
-  const translations = prop("translations")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`

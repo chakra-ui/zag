@@ -19,9 +19,11 @@ import {
   isValueAtMin,
   isValueWithinRange,
   snapValueToStep,
+  mergeWithDefault,
 } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
+import { defaultTranslations } from "./number-input.translations"
 import type { HintValue, NumberInputSchema, ValueChangeReason } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
 
@@ -51,11 +53,6 @@ export const machine = createMachine({
       ...props,
       largeStep: props.largeStep ?? 10 * step,
       smallStep: props.smallStep ?? step / 10,
-      translations: {
-        incrementLabel: "increment value",
-        decrementLabel: "decrease value",
-        ...props.translations,
-      },
     }
   },
 
@@ -101,7 +98,8 @@ export const machine = createMachine({
     canDecrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMin"),
     // Only useful when the display differs from `aria-valuenow`, as with currency or percent.
     valueText: ({ prop, context, computed }) => {
-      const custom = prop("translations").valueText?.(context.get("value"))
+      const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+      const custom = translations.valueText?.(context.get("value"))
       if (custom) return custom
       if (computed("isValueEmpty")) return undefined
       const formatted = computed("formattedValue")

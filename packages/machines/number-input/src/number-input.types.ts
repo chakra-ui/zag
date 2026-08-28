@@ -227,7 +227,6 @@ type PropsWithDefault =
   | "allowOverflow"
   | "inputMode"
   | "pattern"
-  | "translations"
   | "step"
   | "largeStep"
   | "smallStep"

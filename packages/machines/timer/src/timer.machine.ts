@@ -9,11 +9,6 @@ export const machine = createMachine<TimerSchema>({
       interval: 1000,
       startMs: 0,
       ...props,
-      translations: {
-        areaLabel: (time, formattedTime) =>
-          `${time.days} days ${formattedTime.hours}:${formattedTime.minutes}:${formattedTime.seconds}`,
-        ...props.translations,
-      },
     }
   },
 

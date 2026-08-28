@@ -43,16 +43,16 @@ export interface DataUrlOptions {
   quality?: number | undefined
 }
 
-export type ElementIds = Partial<{
-  root: string
-  control: string
-  hiddenInput: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  control?: string | undefined
+  hiddenInput?: string | undefined
+  label?: string | undefined
+}
 
 export interface IntlTranslations {
-  clearTrigger: string
-  control: string
+  clearTrigger?: string | undefined
+  control?: string | undefined
 }
 
 export type { StrokeOptions }
@@ -111,7 +111,7 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
   paths?: string[] | undefined
 }
 
-type PropsWithDefault = "drawing" | "translations"
+type PropsWithDefault = "drawing"
 
 interface PrivateContext {
   /**

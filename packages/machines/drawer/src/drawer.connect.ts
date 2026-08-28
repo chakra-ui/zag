@@ -338,6 +338,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs(scope.id),
+        type: "button",
         onClick() {
           send({ type: "CLOSE" })
         },

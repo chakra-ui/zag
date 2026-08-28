@@ -47,15 +47,15 @@ export interface NavigateDetails {
   href: string
 }
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  contextTrigger: string | ((value?: string) => string)
-  content: string
-  groupLabel: (id: string) => string
-  group: (id: string) => string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  contextTrigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  groupLabel?: ((id: string) => string) | undefined
+  group?: ((id: string) => string) | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
