@@ -704,6 +704,7 @@ export namespace JSX {
     draggable?: Booleanish | undefined
     hidden?: boolean | undefined
     id?: string | undefined
+    inert?: boolean | undefined
     lang?: string | undefined
     placeholder?: string | undefined
     slot?: string | undefined
