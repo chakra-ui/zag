@@ -109,6 +109,9 @@ body {
 
 .page main {
   flex: auto;
+  /* Without this, wide content sets an automatic min-width that pushes the row wider and
+     squeezes the sidebar instead of scrolling here. */
+  min-width: 0;
   display: flex;
   gap: 10px;
   position: relative;
@@ -122,6 +125,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 292px;
+  flex-shrink: 0;
   border-right: solid 1px #d7e0da;
   overflow-y: scroll;
 }
@@ -179,6 +183,7 @@ a[aria-current="page"] {
 .toolbar {
   border-left: solid 1px #d7e0da;
   width: 400px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
 }
@@ -220,6 +225,8 @@ a[aria-current="page"] {
   padding-left: 14px;
   flex: 1;
   overflow: auto;
+  /* Reserve the scrollbar gutter so the panel does not jitter as the state grows. */
+  scrollbar-gutter: stable;
   border-bottom: solid 1px #d7e0da;
 }
 

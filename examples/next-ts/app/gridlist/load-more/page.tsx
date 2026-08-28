@@ -1,11 +1,11 @@
 "use client"
 
 import * as gridlist from "@zag-js/gridlist"
+import * as infiniteScroll from "@zag-js/infinite-scroll"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { CheckIcon } from "lucide-react"
-import { useId, useMemo, useRef } from "react"
+import { useId, useMemo } from "react"
 import { useAsyncList } from "@/hooks/use-async-list"
-import { useLoadMoreSentinel } from "@/hooks/use-load-more-sentinel"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/gridlist.css"
@@ -16,8 +16,6 @@ interface Pokemon {
 }
 
 export default function Page() {
-  const sentinelRef = useRef<HTMLDivElement>(null)
-
   const listApi = useAsyncList<Pokemon>({
     autoReload: true,
     async load({ signal, cursor }) {
@@ -28,14 +26,14 @@ export default function Page() {
     },
   })
 
-  // Re-create the observer whenever new items are appended so cascading loads
-  // keep firing until the viewport is full.
-  useLoadMoreSentinel(sentinelRef, {
-    collectionKey: listApi.items,
-    onLoadMore() {
-      if (listApi.hasMore && !listApi.isLoading) listApi.loadMore()
-    },
+  const scrollService = useMachine(infiniteScroll.machine, {
+    id: useId(),
+    count: listApi.items.length,
+    hasMore: listApi.hasMore,
+    loading: listApi.isLoading,
+    onLoadMore: () => listApi.loadMore(),
   })
+  const scrollApi = infiniteScroll.connect(scrollService, normalizeProps)
 
   const collection = useMemo(
     () =>
@@ -89,8 +87,7 @@ export default function Page() {
                 </div>
               ))}
 
-              {/* Sentinel — observed by useLoadMoreSentinel. */}
-              <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+              <div {...scrollApi.getSentinelProps()} />
 
               {isLoadingMore && (
                 <div role="status" aria-live="polite" style={{ padding: "12px 14px", color: "#71717a" }}>

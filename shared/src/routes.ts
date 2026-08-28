@@ -117,6 +117,18 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "infinite-scroll",
+    label: "Infinite Scroll",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "chat-reverse", title: "Chat (reversed)" },
+      { slug: "controlled", title: "Controlled loading" },
+      { slug: "horizontal", title: "Horizontal" },
+      { slug: "load-more-trigger", title: "Load more trigger" },
+      { slug: "window-scroll", title: "Window scroll" },
+    ],
+  },
+  {
     slug: "listbox",
     label: "Listbox",
     examples: [

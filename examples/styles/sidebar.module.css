@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 240px;
+  flex-shrink: 0;
   border-right: solid 1px #d7e0da;
   font-size: 13px;
   color: #1f2933;

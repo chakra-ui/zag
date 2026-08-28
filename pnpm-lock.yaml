@@ -230,6 +230,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/machines/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -549,6 +552,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/machines/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -853,6 +859,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/machines/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -1175,6 +1184,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/machines/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -1461,6 +1473,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../../packages/machines/infinite-scroll
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -2782,6 +2797,31 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/infinite-scroll:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

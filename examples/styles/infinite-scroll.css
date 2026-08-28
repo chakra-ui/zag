@@ -1,0 +1,56 @@
+/* The scroll container is the consumer's: the machine only observes the sentinel inside it. */
+.infinite-scroll .scroller {
+  /* Both axes must be constrained or it grows to its content and never scrolls. */
+  width: 100%;
+  height: 20rem;
+  overflow-y: auto;
+  border: 1px solid hsl(219, 1%, 72%);
+  border-radius: 8px;
+
+  &.horizontal {
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+.infinite-scroll ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.infinite-scroll li {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid hsl(219, 1%, 88%);
+}
+
+.infinite-scroll li:last-child {
+  border-bottom: none;
+}
+
+.infinite-scroll .card {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 8rem;
+  height: 6rem;
+  border: 1px solid hsl(219, 1%, 72%);
+  border-radius: 6px;
+}
+
+[data-infinite-scroll-indicator] {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: hsl(219, 1%, 42%);
+}
+
+.infinite-scroll .footer {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
