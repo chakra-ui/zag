@@ -32,6 +32,11 @@ const service = useMachine(
 )
 
 const api = computed(() => field.connect(service, normalizeProps))
+
+function onReset() {
+  clearTimeout(timer)
+  calls.value = 0
+}
 </script>
 
 <template>
@@ -51,15 +56,7 @@ const api = computed(() => field.connect(service, normalizeProps))
       <span data-testid="validate-calls">Checks: {{ calls }}</span>
       <div class="actions">
         <button type="submit">Submit</button>
-        <button
-          type="reset"
-          @click="
-            clearTimeout(timer)
-            calls = 0
-          "
-        >
-          Reset
-        </button>
+        <button type="reset" @click="onReset">Reset</button>
       </div>
     </form>
   </main>
