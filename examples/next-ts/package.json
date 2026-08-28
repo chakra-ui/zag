@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.12.2",
+    "@internationalized/date": "3.12.3",
     "@tanstack/react-virtual": "3.13.25",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
