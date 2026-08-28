@@ -176,7 +176,9 @@ export const machine = createMachine<AsyncListSchema<any, any, any, any>>({
         const seq = refs.get("seq") + 1
         refs.set("seq", seq)
 
-        const isLoadingMore = context.get("isLoadingMore")
+        // Entry actions run before React's bindable settles, so the context flag is stale here.
+        // `LOAD_MORE` is the only path into this state that appends.
+        const isLoadingMore = event.type === "LOAD_MORE"
 
         const loadFn = prop("load")
         loadFn({
