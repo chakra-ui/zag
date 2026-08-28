@@ -2746,6 +2746,250 @@
       }
     }
   },
+  "field": {
+    "api": {
+      "ids": {
+        "type": "ResolvedElementIds",
+        "description": "The resolved element ids, for composition with other components."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the field is disabled (including inherited fieldset disabled state)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the field is invalid."
+      },
+      "valid": {
+        "type": "boolean | null",
+        "description": "Committed validity: `null` until validation has run."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the field is required."
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the field is read-only."
+      },
+      "focused": {
+        "type": "boolean",
+        "description": "Whether the control is focused."
+      },
+      "touched": {
+        "type": "boolean",
+        "description": "Whether the control has been blurred at least once."
+      },
+      "dirty": {
+        "type": "boolean",
+        "description": "Whether the value differs from the initial value."
+      },
+      "filled": {
+        "type": "boolean",
+        "description": "Whether the control has a non-empty value."
+      },
+      "validating": {
+        "type": "boolean",
+        "description": "Whether an async validation is in flight."
+      },
+      "errors": {
+        "type": "string[]",
+        "description": "The committed error messages."
+      },
+      "validity": {
+        "type": "ValiditySnapshot | null",
+        "description": "The committed validity snapshot, `null` until validation has run."
+      },
+      "ariaDescribedby": {
+        "type": "string | undefined",
+        "description": "The composed `aria-describedby`, for wiring custom controls."
+      },
+      "validate": {
+        "type": "VoidFunction",
+        "description": "Runs validation now, surfacing `valueMissing` even on a pristine field."
+      },
+      "clearErrors": {
+        "type": "VoidFunction",
+        "description": "Clears committed errors and returns validity to the pristine (unvalidated) state."
+      },
+      "reset": {
+        "type": "VoidFunction",
+        "description": "Resets interaction state and validity to pristine."
+      },
+      "getItemControlId": {
+        "type": "(item: string) => string",
+        "description": "The control id for a field item (`{id}:item:{item}`)."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getLabelState": {
+        "type": "() => LabelState",
+        "description": "Returns the state of the label."
+      },
+      "getLabelProps": {
+        "type": "(props?: ItemProps) => T[\"label\"]",
+        "description": "Root label points at the tracked control (`target`). Pass `item` to point at a sibling."
+      },
+      "getControlState": {
+        "type": "() => ControlState",
+        "description": "Returns the state of the control (input, textarea, select, or a custom host)."
+      },
+      "getControlProps": {
+        "type": "(props?: ItemProps) => T[\"element\"]",
+        "description": "Shared control props (id, ARIA, data attrs, listeners) for custom or composed controls.\nPrefer `getInputProps`, `getTextareaProps`, or `getSelectProps` for native elements.\nPass `item` in a multi-control field; the tracked item (`target`) keeps listeners."
+      },
+      "getInputProps": {
+        "type": "(props?: ItemProps) => T[\"input\"]",
+        "description": "Native input props. Pass `item` in a multi-control field."
+      },
+      "getTextareaProps": {
+        "type": "(props?: ItemProps) => T[\"textarea\"]",
+        "description": "Native textarea props. Pass `item` in a multi-control field."
+      },
+      "getSelectProps": {
+        "type": "(props?: ItemProps) => T[\"select\"]",
+        "description": "Native select props. Pass `item` in a multi-control field."
+      },
+      "getHelperTextState": {
+        "type": "() => HelperTextState",
+        "description": "Returns the state of the helper text."
+      },
+      "getErrorTextState": {
+        "type": "(props?: ErrorTextProps) => ErrorTextState",
+        "description": "Returns the state of the error text."
+      },
+      "getIndicatorState": {
+        "type": "(props: IndicatorProps) => IndicatorState",
+        "description": "Returns the state of the indicator."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether the field is disabled. Also inherited from a surrounding native `<fieldset disabled>`.",
+        "defaultValue": "false"
+      },
+      "invalid": {
+        "type": "boolean | undefined",
+        "description": "Whether the field is invalid, regardless of computed validity.\nUse for app-level errors (e.g. server errors) the machine cannot compute itself."
+      },
+      "dirty": {
+        "type": "boolean | undefined",
+        "description": "Whether the field's value has been changed from its initial value.\nUseful when the field state is controlled by an external library."
+      },
+      "touched": {
+        "type": "boolean | undefined",
+        "description": "Whether the field has been touched.\nUseful when the field state is controlled by an external library."
+      },
+      "readOnly": {
+        "type": "boolean | undefined",
+        "description": "Whether the field is read-only.",
+        "defaultValue": "false"
+      },
+      "required": {
+        "type": "boolean | undefined",
+        "description": "Whether the field is required.",
+        "defaultValue": "false"
+      },
+      "target": {
+        "type": "string | undefined",
+        "description": "The item whose control the field tracks, for fields composed of multiple controls.\nThe tracked control id (and the root label's `htmlFor`) become `{id}:item:{target}`.\n`ids.control` overrides this."
+      },
+      "validate": {
+        "type": "((details: ValidateDetails) => ValidateResult | Promise<ValidateResult>) | undefined",
+        "description": "Custom validation, run against the value and the native validity snapshot.\nMay return a promise; a newer validation run supersedes an in-flight one."
+      },
+      "validationMode": {
+        "type": "ValidationMode | undefined",
+        "description": "When validation results become visible.",
+        "defaultValue": "\"onSubmit\""
+      },
+      "onValidityChange": {
+        "type": "((details: ValidityChangeDetails) => void) | undefined",
+        "description": "Called when the committed validity changes."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "fieldset": {
+    "api": {
+      "ids": {
+        "type": "ResolvedElementIds",
+        "description": "The resolved element ids, for composition with other components."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the fieldset is disabled (including inherited ancestor fieldset state)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the fieldset is invalid."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
+      },
+      "getLegendState": {
+        "type": "() => LegendState",
+        "description": "Returns the state of the legend."
+      },
+      "getHelperTextState": {
+        "type": "() => HelperTextState",
+        "description": "Returns the state of the helper text."
+      },
+      "getErrorTextState": {
+        "type": "() => ErrorTextState",
+        "description": "Returns the state of the error text."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether the fieldset is disabled. Native `<fieldset disabled>` semantics\ncarry the disabled state to all descendant form controls.",
+        "defaultValue": "false"
+      },
+      "invalid": {
+        "type": "boolean | undefined",
+        "description": "Whether the fieldset is invalid. Not inherited by descendant fields.",
+        "defaultValue": "false"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "file-upload": {
     "api": {
       "dragging": {

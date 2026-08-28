@@ -244,6 +244,26 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "field",
+    label: "Field",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "validation", title: "Validation" },
+      { slug: "debounced-validation", title: "Debounced Validation" },
+      { slug: "custom-messages", title: "Custom Messages" },
+      { slug: "select", title: "Select" },
+      { slug: "item", title: "Item" },
+      { slug: "textarea-autoresize", title: "Textarea Autoresize" },
+      { slug: "react-hook-form", title: "Hook Form" },
+    ],
+  },
+  {
+    slug: "fieldset",
+    label: "Fieldset",
+    examples: [{ slug: "basic", title: "Basic" }],
+  },
+  {
     slug: "file-upload",
     label: "File Upload",
     examples: [

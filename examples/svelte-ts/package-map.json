@@ -27,6 +27,8 @@
   "@zag-js/dom-query": "../../packages/utilities/dom-query/src",
   "@zag-js/drawer": "../../packages/machines/drawer/src",
   "@zag-js/editable": "../../packages/machines/editable/src",
+  "@zag-js/field": "../../packages/machines/field/src",
+  "@zag-js/fieldset": "../../packages/machines/fieldset/src",
   "@zag-js/file-upload": "../../packages/machines/file-upload/src",
   "@zag-js/file-utils": "../../packages/utilities/file-utils/src",
   "@zag-js/floating-panel": "../../packages/machines/floating-panel/src",

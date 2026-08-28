@@ -1,0 +1,129 @@
+[data-field-root] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  max-width: 24rem;
+}
+
+[data-field-label] {
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
+}
+
+[data-field-control] {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(219, 1%, 72%);
+  border-radius: 6px;
+  font: inherit;
+
+  &[data-focus] {
+    outline: 2px solid hsl(211, 81%, 56%);
+    outline-offset: 1px;
+  }
+
+  &[data-invalid] {
+    border-color: hsl(0, 72%, 51%);
+  }
+
+  &[data-valid] {
+    border-color: hsl(142, 71%, 35%);
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+textarea[data-field-control] {
+  resize: none;
+  min-height: 3rem;
+}
+
+[data-field-helper-text] {
+  font-size: 0.8125rem;
+  color: hsl(219, 1%, 42%);
+}
+
+[data-field-error-text] {
+  font-size: 0.8125rem;
+  color: hsl(0, 72%, 51%);
+}
+
+[data-field-indicator][data-type="required"] {
+  color: hsl(0, 72%, 51%);
+}
+
+[data-field-indicator][data-type="valid"] {
+  font-size: 0.8125rem;
+  color: hsl(142, 71%, 35%);
+}
+
+[data-fieldset-root] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 28rem;
+  padding: 1rem;
+  border: 1px solid hsl(219, 1%, 72%);
+  border-radius: 8px;
+
+  &[data-invalid] {
+    border-color: hsl(0, 72%, 51%);
+  }
+
+  &[data-disabled] {
+    opacity: 0.6;
+  }
+}
+
+[data-fieldset-legend] {
+  font-weight: 600;
+  padding-inline: 0.25rem;
+}
+
+[data-fieldset-helper-text] {
+  font-size: 0.8125rem;
+  color: hsl(219, 1%, 42%);
+}
+
+[data-fieldset-error-text] {
+  font-size: 0.8125rem;
+  color: hsl(0, 72%, 51%);
+}
+
+.field-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.field-page .actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.field-page .options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.field-page .field-item-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.field-page .field-item-row select[data-field-control] {
+  flex: 0 0 5.5rem;
+}
+
+.field-page .field-item-row input[data-field-control] {
+  flex: 1;
+}
