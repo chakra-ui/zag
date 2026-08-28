@@ -37,6 +37,7 @@ const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
 
 const defaultTranslations: Required<IntlTranslations> = {
   clearTriggerLabel: "Clear value",
+  itemAnnouncement: ({ label, selected }) => (selected ? `${label}, selected` : label),
 }
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
