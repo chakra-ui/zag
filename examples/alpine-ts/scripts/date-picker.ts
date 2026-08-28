@@ -1,4 +1,4 @@
-import { PersianCalendar } from "@internationalized/date"
+import { CalendarDate, PersianCalendar } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
@@ -15,6 +15,7 @@ function createCalendar(identifier: string) {
   }
 }
 
+Alpine.magic("CalendarDate", () => CalendarDate)
 Alpine.magic("createCalendar", () => createCalendar)
 Alpine.magic("parse", () => datePicker.parse)
 Alpine.data("datePicker", useControls(datePickerControls))
