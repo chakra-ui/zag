@@ -27,7 +27,7 @@ export default defineHandler((event) => {
               <label x-listbox:label>Label</label>
               <ul x-listbox:content>
                 <template x-for="item in $selectData" x-bind:key="item.value">
-                  <li x-listbox:item="{ item }">
+                  <li x-listbox:item="{ item, highlightOnHover: true }">
                     <span x-listbox:item-text="{ item }" x-text="item.label"></span>
                     <span x-listbox:item-indicator="{ item }">✓</span>
                   </li>
