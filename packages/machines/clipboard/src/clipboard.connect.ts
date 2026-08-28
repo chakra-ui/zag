@@ -2,7 +2,13 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./clipboard.anatomy"
-import type { ClipboardService, ClipboardApi, IndicatorProps, IndicatorState } from "./clipboard.types"
+import type {
+  ClipboardApi,
+  ClipboardService,
+  IndicatorProps,
+  IndicatorState,
+  IntlTranslations,
+} from "./clipboard.types"
 import * as dom from "./clipboard.dom"
 
 const defaultTranslations: Required<IntlTranslations> = {

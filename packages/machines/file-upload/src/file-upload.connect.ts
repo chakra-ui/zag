@@ -9,6 +9,7 @@ import type {
   DropzoneState,
   FileUploadApi,
   FileUploadService,
+  IntlTranslations,
   ItemGroupProps,
   ItemGroupState,
   ItemProps,
