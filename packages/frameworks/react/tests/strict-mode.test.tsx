@@ -2,6 +2,7 @@ import { act, render } from "@testing-library/react"
 import { createMachine, type Machine } from "@zag-js/core"
 import { StrictMode, useImperativeHandle, useRef } from "react"
 import { useMachine } from "../src"
+import { flush } from "./render"
 
 interface TestHandle {
   send: (event: any) => void
@@ -31,14 +32,6 @@ function renderStrict(machine: Machine<any>) {
     </StrictMode>,
   )
   return { ...utils, handle }
-}
-
-async function flushMicrotasks() {
-  // The machine startup is wrapped in queueMicrotask; a couple of awaited promises let
-  // both Strict Mode mount passes finish booting.
-  await Promise.resolve()
-  await Promise.resolve()
-  await Promise.resolve()
 }
 
 describe("React Strict Mode", () => {
@@ -74,14 +67,14 @@ describe("React Strict Mode", () => {
     })
 
     const { handle } = renderStrict(machine)
-    await flushMicrotasks()
+    await flush()
 
     // Strict Mode invokes the layout effect twice, so the entry effect runs twice.
     expect(setupSpy).toHaveBeenCalledTimes(2)
     expect(cleanupSpy).not.toHaveBeenCalled()
 
     await act(async () => handle.current!.send({ type: "CLOSE" }))
-    await flushMicrotasks()
+    await flush()
 
     // Every setup must have a matching cleanup. Before the fix, only the second cleanup
     // would fire because Map#set clobbered the first.
@@ -122,13 +115,13 @@ describe("React Strict Mode", () => {
     })
 
     const { handle } = renderStrict(machine)
-    await flushMicrotasks()
+    await flush()
 
     expect(document.body.hasAttribute(ATTR)).toBe(true)
     expect(lockCount).toBe(2)
 
     await act(async () => handle.current!.send({ type: "CLOSE" }))
-    await flushMicrotasks()
+    await flush()
 
     expect(lockCount).toBe(0)
     expect(document.body.hasAttribute(ATTR)).toBe(false)
@@ -159,12 +152,12 @@ describe("React Strict Mode", () => {
     })
 
     const { unmount } = renderStrict(machine)
-    await flushMicrotasks()
+    await flush()
 
     expect(lockCount).toBe(2)
 
     await act(async () => unmount())
-    await flushMicrotasks()
+    await flush()
 
     expect(lockCount).toBe(0)
   })
@@ -192,12 +185,12 @@ describe("React Strict Mode", () => {
     })
 
     const { unmount } = renderStrict(machine)
-    await flushMicrotasks()
+    await flush()
 
     expect(setupSpy).toHaveBeenCalledTimes(2)
 
     await act(async () => unmount())
-    await flushMicrotasks()
+    await flush()
 
     expect(cleanupSpy).toHaveBeenCalledTimes(2)
   })

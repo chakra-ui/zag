@@ -1,5 +1,5 @@
 import { isEqual } from "@zag-js/utils"
-import { toValue, watch } from "vue"
+import { shallowRef, toValue, watch, watchEffect } from "vue"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {
   watch(
@@ -17,4 +17,16 @@ export const useTrack = (deps: any[], effect: VoidFunction) => {
       }
     },
   )
+}
+
+/** Vue does not re-render, so `notify` bumps a version to re-subscribe when the effect set changes. */
+export const useEffectSync = (reconcile: VoidFunction): VoidFunction => {
+  const version = shallowRef(0)
+  watchEffect(() => {
+    version.value
+    reconcile()
+  })
+  return () => {
+    version.value++
+  }
 }

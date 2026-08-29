@@ -1,3 +1,5 @@
+import type { DepFn, WatchEffect, WatchEffectFn } from "./watch-effect"
+
 type Dict = Record<string, any>
 
 interface ComputedParams<T extends Dict> {
@@ -28,8 +30,8 @@ export interface ComputedFn<T extends Dict> {
   <K extends keyof T["computed"]>(key: K): T["computed"][K]
 }
 
-type AnyFunction = () => string | number | boolean | null | undefined
-type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
+/** Runs an action when any of `deps` change. Received from `watch`. */
+export type TrackFn = (deps: DepFn[], fn: VoidFunction) => void
 
 export interface BindableParams<T> {
   defaultValue?: T | undefined
@@ -116,6 +118,12 @@ export interface Params<T extends Dict> {
   guard: (key: T["guard"] | GuardFn<T>) => boolean | undefined
 }
 
+export interface EffectParams<T extends Dict> extends Params<T> {
+  watchEffect: WatchEffectFn
+}
+
+export type EffectResult = void | VoidFunction | WatchEffect
+
 export type GuardFn<T extends Dict> = (params: Params<T>) => boolean
 
 type TopLevelState<S extends string> = S extends `${infer Top}.${string}` ? Top : S
@@ -131,8 +139,7 @@ type StateIdTarget = `#${string}`
 
 // Bare name targets resolve to siblings (children of the source's parent, or root-level states)
 type SiblingStateTarget<S extends string, Source extends string> =
-  | TopLevelState<S>
-  | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
+  TopLevelState<S> | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
 
 // Dot-prefixed targets resolve to children of the source (e.g. ".idle" from "open" → "open.idle")
 type ChildStateTarget<S extends string, Source extends string> = `.${ChildStateKey<S, Source>}`
@@ -233,7 +240,7 @@ export interface Machine<T extends Dict> {
           | undefined
         effects?:
           | {
-              [K in T["effect"]]: (params: Params<T>) => void | VoidFunction
+              [K in T["effect"]]: (params: EffectParams<T>) => EffectResult
             }
           | undefined
       }

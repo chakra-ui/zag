@@ -1,5 +1,5 @@
 import { isEqual, isFunction } from "@zag-js/utils"
-import { createEffect } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 
 function access<T>(v: T | (() => T)): T {
   if (isFunction(v)) return v()
@@ -27,4 +27,14 @@ export const createTrack = (deps: any[], effect: VoidFunction) => {
       effect()
     }
   })
+}
+
+/** Solid does not re-render, so `notify` bumps a signal to re-subscribe when the effect set changes. */
+export const createEffectSync = (reconcile: VoidFunction): VoidFunction => {
+  const [version, setVersion] = createSignal(0)
+  createEffect(() => {
+    version()
+    reconcile()
+  })
+  return () => setVersion((n) => n + 1)
 }
