@@ -7,8 +7,9 @@ import type {
   BindableRefs,
   ChooseFn,
   ComputedFn,
-  EffectsOrFn,
   EffectParams,
+  EffectRecord,
+  EffectsOrFn,
   GuardFn,
   Machine,
   MachineSchema,
@@ -397,14 +398,4 @@ function flush(fn: VoidFunction) {
   queueMicrotask(() => {
     flushSync(() => fn())
   })
-}
-
-interface EffectRecord {
-  id: number
-  path: string
-  cleanup: VoidFunction | undefined
-  deps?: Array<() => any> | undefined
-  values?: any[] | undefined
-  pending?: boolean | undefined
-  setup?: (() => VoidFunction | void) | undefined
 }

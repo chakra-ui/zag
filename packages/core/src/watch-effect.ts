@@ -32,6 +32,21 @@ export function watchEffect(deps: WatchEffectDeps, setup: WatchEffectSetup): Wat
   return { [$watchEffect]: true, deps, setup }
 }
 
+/**
+ * One running effect, as tracked by an adapter. Keyed per invocation rather than per state path,
+ * so a re-entered path keeps every setup's own cleanup.
+ */
+export interface EffectRecord {
+  id: number
+  path: string
+  cleanup: VoidFunction | undefined
+  deps?: WatchEffectDeps | undefined
+  values?: any[] | undefined
+  /** Set while a restart is queued, so several dep changes in one tick coalesce. */
+  pending?: boolean | undefined
+  setup?: WatchEffectSetup | undefined
+}
+
 export function isWatchEffect(value: unknown): value is WatchEffect {
   return typeof value === "object" && value !== null && $watchEffect in value
 }

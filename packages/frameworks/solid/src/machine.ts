@@ -1,15 +1,16 @@
 import type {
   ActionsOrFn,
+  BindableContext,
+  ChooseFn,
+  ComputedFn,
+  EffectParams,
+  EffectRecord,
+  EffectsOrFn,
   GuardFn,
   Machine,
   MachineSchema,
-  Service,
-  ChooseFn,
-  ComputedFn,
-  EffectsOrFn,
-  EffectParams,
-  BindableContext,
   Params,
+  Service,
 } from "@zag-js/core"
 import {
   createScope,
@@ -372,14 +373,4 @@ function createProp<T>(value: Accessor<T>) {
   return function get<K extends keyof T>(key: K): T[K] {
     return value()[key]
   }
-}
-
-interface EffectRecord {
-  id: number
-  path: string
-  cleanup: VoidFunction | undefined
-  deps?: Array<() => any> | undefined
-  values?: any[] | undefined
-  pending?: boolean | undefined
-  setup?: (() => VoidFunction | void) | undefined
 }
