@@ -92,7 +92,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={toastControls} />
+            <Controls config={toastControls} slot="controls" />
             <StateVisualizer label="toast-group" />
           </Toolbar>
         </div>
