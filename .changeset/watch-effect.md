@@ -5,6 +5,7 @@
 "@zag-js/solid": minor
 "@zag-js/svelte": minor
 "@zag-js/vue": minor
+"@zag-js/vanilla": minor
 ---
 
 Add `watchEffect(deps, setup)` to effect implementations, so an effect can re-run when the props or context it depends

@@ -5,6 +5,8 @@ import type {
   BindableRefs,
   ChooseFn,
   ComputedFn,
+  EffectParams,
+  EffectRecord,
   EffectsOrFn,
   GuardFn,
   Machine,
@@ -16,6 +18,8 @@ import type {
   Transition,
 } from "@zag-js/core"
 import {
+  isWatchEffect,
+  watchEffect,
   createScope,
   findTransition,
   getExitEnterStates,
@@ -26,18 +30,7 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import {
-  callAll,
-  compact,
-  ensure,
-  identity,
-  isEqual,
-  isFunction,
-  isString,
-  runIfFn,
-  toArray,
-  warn,
-} from "@zag-js/utils"
+import { compact, ensure, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
@@ -53,7 +46,8 @@ export class VanillaMachine<T extends MachineSchema> {
   private event: T["event"] = { type: "" } as T["event"]
   private previousEvent: T["event"] = { type: "" } as T["event"]
 
-  private effects = new Map<string, VoidFunction>()
+  private effects = new Map<number, EffectRecord>()
+  private effectId = 0
   private transition: Transition<T> | null = null
 
   private cleanups: VoidFunction[] = []
@@ -169,9 +163,7 @@ export class VanillaMachine<T extends MachineSchema> {
         const { exiting, entering } = getExitEnterStates(this.machine, prevState, nextState, this.transition?.reenter)
 
         exiting.forEach((item) => {
-          const exitEffects = this.effects.get(item.path)
-          exitEffects?.()
-          this.effects.delete(item.path)
+          this.stopEffects(item.path)
         })
 
         exiting.forEach((item) => {
@@ -181,20 +173,12 @@ export class VanillaMachine<T extends MachineSchema> {
         this.action(this.transition?.actions)
 
         entering.forEach((item) => {
-          const cleanup = this.effect(item.state?.effects)
-          if (cleanup) {
-            const existing = this.effects.get(item.path)
-            this.effects.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
-          }
+          this.startEffects(item.path, item.state?.effects)
         })
 
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
-          const cleanup = this.effect(machine.effects)
-          if (cleanup) {
-            const existing = this.effects.get(INIT_STATE)
-            this.effects.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
-          }
+          this.startEffects(INIT_STATE, machine.effects)
         }
 
         entering.forEach((item) => {
@@ -276,20 +260,57 @@ export class VanillaMachine<T extends MachineSchema> {
     return fn?.(this.getParams())
   }
 
-  private effect = (keys: EffectsOrFn<T> | undefined) => {
+  private startEffects = (path: string, keys: EffectsOrFn<T> | undefined) => {
     const strs = isFunction(keys) ? keys(this.getParams()) : keys
     if (!strs) return
-    const fns = strs.map((s) => {
-      const fn = this.machine.implementations?.effects?.[s]
-      if (!fn) warn(`[zag-js] No implementation found for effect "${JSON.stringify(s)}"`)
-      return fn
-    })
-    const cleanups: VoidFunction[] = []
-    for (const fn of fns) {
-      const cleanup = fn?.(this.getParams())
-      if (cleanup) cleanups.push(cleanup)
+
+    for (const name of strs) {
+      const fn = this.machine.implementations?.effects?.[name]
+      if (!fn) {
+        warn(`[zag-js] No implementation found for effect "${JSON.stringify(name)}"`)
+        continue
+      }
+
+      const result = fn({ ...this.getParams(), watchEffect } as EffectParams<T>)
+
+      // one record per invocation, so a re-entered path keeps every setup's own cleanup
+      const id = ++this.effectId
+      const record: EffectRecord = { id, path, cleanup: undefined }
+
+      if (isWatchEffect(result)) {
+        record.deps = result.deps
+        record.setup = result.setup
+        const cleanup = result.setup()
+        record.cleanup = isFunction(cleanup) ? cleanup : undefined
+        // snapshot after setup, so a dep that setup itself touches cannot loop
+        record.values = result.deps.map((d) => d())
+      } else if (isFunction(result)) {
+        record.cleanup = result
+      }
+
+      this.effects.set(id, record)
     }
-    return () => cleanups.forEach((fn) => fn?.())
+  }
+
+  private stopEffects = (path: string) => {
+    for (const [id, record] of this.effects) {
+      if (record.path !== path) continue
+      record.cleanup?.()
+      this.effects.delete(id)
+    }
+  }
+
+  private reconcileEffects = () => {
+    for (const record of this.effects.values()) {
+      const deps = record.deps
+      if (!deps) continue
+      const next = deps.map((d) => d())
+      if (!next.some((value, index) => !isEqual(record.values![index], value))) continue
+      record.values = next
+      record.cleanup?.()
+      const cleanup = record.setup!()
+      record.cleanup = isFunction(cleanup) ? cleanup : undefined
+    }
   }
 
   private choose: ChooseFn<T> = (transitions) => {
@@ -310,7 +331,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
   stop() {
     // run exit effects
-    this.effects.forEach((fn) => fn?.())
+    this.effects.forEach((record) => record.cleanup?.())
     this.effects.clear()
     this.transition = null
     this.action(this.machine.exit)
@@ -350,6 +371,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private publish = () => {
     this.callTrackers()
+    this.reconcileEffects()
     this.subscriptions.forEach((fn) => fn(this.service))
   }
 
