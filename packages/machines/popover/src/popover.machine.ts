@@ -159,36 +159,34 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      trackDismissableElement({ send, prop, scope, watchEffect }) {
-        return watchEffect([() => prop("modal")], () => {
-          const getContentEl = () => dom.getContentEl(scope)
-          let restoreFocus = true
-          return trackDismissableElement(getContentEl, {
-            type: "popover",
-            pointerBlocking: prop("modal"),
-            exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
-            defer: true,
-            onEscapeKeyDown(event) {
-              prop("onEscapeKeyDown")?.(event)
-              if (prop("closeOnEscape")) return
+      trackDismissableElement({ send, prop, scope }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        let restoreFocus = true
+        return trackDismissableElement(getContentEl, {
+          type: "popover",
+          pointerBlocking: prop("modal"),
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
+          defer: true,
+          onEscapeKeyDown(event) {
+            prop("onEscapeKeyDown")?.(event)
+            if (prop("closeOnEscape")) return
+            event.preventDefault()
+          },
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            if (event.defaultPrevented) return
+            restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+            if (!prop("closeOnInteractOutside")) {
               event.preventDefault()
-            },
-            onInteractOutside(event) {
-              prop("onInteractOutside")?.(event)
-              if (event.defaultPrevented) return
-              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-              if (!prop("closeOnInteractOutside")) {
-                event.preventDefault()
-              }
-            },
-            onPointerDownOutside: prop("onPointerDownOutside"),
-            onFocusOutside: prop("onFocusOutside"),
-            persistentElements: prop("persistentElements"),
-            onRequestDismiss: prop("onRequestDismiss"),
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
-            },
-          })
+            }
+          },
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onFocusOutside: prop("onFocusOutside"),
+          persistentElements: prop("persistentElements"),
+          onRequestDismiss: prop("onRequestDismiss"),
+          onDismiss() {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          },
         })
       },
 

@@ -126,35 +126,33 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
-      trackDismissableElement({ scope, send, prop, watchEffect }) {
-        return watchEffect([() => prop("modal")], () => {
-          const getContentEl = () => dom.getContentEl(scope)
-          return trackDismissableElement(getContentEl, {
-            type: "dialog",
-            defer: true,
-            pointerBlocking: prop("modal"),
-            layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
-            exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
-            onInteractOutside(event) {
-              prop("onInteractOutside")?.(event)
-              if (!prop("closeOnInteractOutside")) {
-                event.preventDefault()
-              }
-            },
-            persistentElements: prop("persistentElements"),
-            onFocusOutside: prop("onFocusOutside"),
-            onPointerDownOutside: prop("onPointerDownOutside"),
-            onRequestDismiss: prop("onRequestDismiss"),
-            onEscapeKeyDown(event) {
-              prop("onEscapeKeyDown")?.(event)
-              if (!prop("closeOnEscape")) {
-                event.preventDefault()
-              }
-            },
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
-            },
-          })
+      trackDismissableElement({ scope, send, prop }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        return trackDismissableElement(getContentEl, {
+          type: "dialog",
+          defer: true,
+          pointerBlocking: prop("modal"),
+          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            if (!prop("closeOnInteractOutside")) {
+              event.preventDefault()
+            }
+          },
+          persistentElements: prop("persistentElements"),
+          onFocusOutside: prop("onFocusOutside"),
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
+          onEscapeKeyDown(event) {
+            prop("onEscapeKeyDown")?.(event)
+            if (!prop("closeOnEscape")) {
+              event.preventDefault()
+            }
+          },
+          onDismiss() {
+            send({ type: "CLOSE", src: "interact-outside" })
+          },
         })
       },
 
