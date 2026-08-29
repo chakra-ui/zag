@@ -7,7 +7,14 @@ import {
 } from "@zag-js/interact-outside"
 import { warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
+import {
+  isPointerBlocking,
+  layerStack,
+  type Layer,
+  type LayerDismissEvent,
+  type LayerStyleTarget,
+  type LayerType,
+} from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
@@ -48,7 +55,7 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   /**
    * Whether to block pointer events outside the dismissable element
    */
-  pointerBlocking?: boolean | undefined
+  pointerBlocking?: boolean | (() => boolean) | undefined
   /**
    * Function called when the dismissable element is dismissed
    */
@@ -136,7 +143,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   const cleanups = [
-    pointerBlocking ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
+    isPointerBlocking(layer) ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
     trackEscapeKeydown(node, onEscapeKeyDown),
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]

@@ -6,3 +6,4 @@ export type {
 } from "@zag-js/interact-outside"
 export * from "./dismissable-layer"
 export type { LayerStyleTarget, LayerType } from "./layer-stack"
+export { syncPointerEvents } from "./pointer-event-outside"

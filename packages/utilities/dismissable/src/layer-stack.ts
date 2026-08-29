@@ -17,12 +17,18 @@ export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
   type: LayerType
-  pointerBlocking?: boolean | undefined
+  pointerBlocking?: boolean | (() => boolean) | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
   styleTargets?: LayerStyleTarget[] | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
+
+/** Resolved on read, so a layer's blocking can change without re-registering it. */
+export function isPointerBlocking(layer: Pick<Layer, "pointerBlocking">): boolean {
+  const value = layer.pointerBlocking
+  return typeof value === "function" ? value() : !!value
+}
 
 export const layerStack = {
   layers: [] as Layer[],
@@ -32,7 +38,7 @@ export const layerStack = {
     return this.layers.length
   },
   pointerBlockingLayers(): Layer[] {
-    return this.layers.filter((layer) => layer.pointerBlocking)
+    return this.layers.filter(isPointerBlocking)
   },
   topMostPointerBlockingLayer(): Layer | undefined {
     return [...this.pointerBlockingLayers()].slice(-1)[0]
