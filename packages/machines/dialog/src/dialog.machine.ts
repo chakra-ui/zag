@@ -126,79 +126,90 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
-      trackDismissableElement({ scope, send, prop }) {
-        const getContentEl = () => dom.getContentEl(scope)
-        return trackDismissableElement(getContentEl, {
-          type: "dialog",
-          defer: true,
-          pointerBlocking: prop("modal"),
-          layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
-          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
-          onInteractOutside(event) {
-            prop("onInteractOutside")?.(event)
-            if (!prop("closeOnInteractOutside")) {
-              event.preventDefault()
-            }
-          },
-          persistentElements: prop("persistentElements"),
-          onFocusOutside: prop("onFocusOutside"),
-          onPointerDownOutside: prop("onPointerDownOutside"),
-          onRequestDismiss: prop("onRequestDismiss"),
-          onEscapeKeyDown(event) {
-            prop("onEscapeKeyDown")?.(event)
-            if (!prop("closeOnEscape")) {
-              event.preventDefault()
-            }
-          },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside" })
-          },
+      trackDismissableElement({ scope, send, prop, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          const getContentEl = () => dom.getContentEl(scope)
+          return trackDismissableElement(getContentEl, {
+            type: "dialog",
+            defer: true,
+            pointerBlocking: prop("modal"),
+            layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
+            exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
+            onInteractOutside(event) {
+              prop("onInteractOutside")?.(event)
+              if (!prop("closeOnInteractOutside")) {
+                event.preventDefault()
+              }
+            },
+            persistentElements: prop("persistentElements"),
+            onFocusOutside: prop("onFocusOutside"),
+            onPointerDownOutside: prop("onPointerDownOutside"),
+            onRequestDismiss: prop("onRequestDismiss"),
+            onEscapeKeyDown(event) {
+              prop("onEscapeKeyDown")?.(event)
+              if (!prop("closeOnEscape")) {
+                event.preventDefault()
+              }
+            },
+            onDismiss() {
+              send({ type: "CLOSE", src: "interact-outside" })
+            },
+          })
         })
       },
 
-      preventScroll({ scope, prop }) {
-        if (!prop("preventScroll")) return
-        return preventBodyScroll(scope.getDoc())
-      },
-
-      trapFocus({ scope, prop, context }) {
-        if (!prop("trapFocus")) return
-        const contentEl = () => dom.getContentEl(scope)
-        return trapFocus(contentEl, {
-          preventScroll: true,
-          returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: () =>
-            getInitialFocus({
-              root: dom.getContentEl(scope),
-              getInitialEl: prop("initialFocusEl"),
-            }),
-          setReturnFocus: (el) => {
-            // If finalFocusEl is provided, use it
-            const finalFocusEl = prop("finalFocusEl")?.()
-            if (finalFocusEl) return finalFocusEl
-
-            // If there's an active trigger, focus it
-            const triggerValue = context.get("triggerValue")
-            if (triggerValue) {
-              const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
-              if (activeTriggerEl) return activeTriggerEl
-            }
-
-            // Fallback: try first available trigger
-            const fallbackTrigger = dom.getTriggerEls(scope)[0]
-            if (fallbackTrigger) return fallbackTrigger
-
-            // Otherwise, use default behavior
-            return el
-          },
-          getShadowRoot: true,
+      preventScroll({ scope, prop, watchEffect }) {
+        return watchEffect([() => prop("preventScroll")], () => {
+          if (!prop("preventScroll")) return
+          return preventBodyScroll(scope.getDoc())
         })
       },
 
-      hideContentBelow({ scope, prop }) {
-        if (!prop("modal")) return
-        const getElements = () => [dom.getContentEl(scope)]
-        return ariaHidden(getElements, { defer: true })
+      trapFocus({ scope, prop, context, watchEffect }) {
+        return watchEffect([() => prop("trapFocus")], () => {
+          if (!prop("trapFocus")) return
+
+          const contentEl = () => dom.getContentEl(scope)
+          const destroy = trapFocus(contentEl, {
+            preventScroll: true,
+            returnFocusOnDeactivate: !!prop("restoreFocus"),
+            initialFocus: () =>
+              getInitialFocus({
+                root: dom.getContentEl(scope),
+                getInitialEl: prop("initialFocusEl"),
+              }),
+            setReturnFocus: (el) => {
+              // If finalFocusEl is provided, use it
+              const finalFocusEl = prop("finalFocusEl")?.()
+              if (finalFocusEl) return finalFocusEl
+
+              // If there's an active trigger, focus it
+              const triggerValue = context.get("triggerValue")
+              if (triggerValue) {
+                const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
+                if (activeTriggerEl) return activeTriggerEl
+              }
+
+              // Fallback: try first available trigger
+              const fallbackTrigger = dom.getTriggerEls(scope)[0]
+              if (fallbackTrigger) return fallbackTrigger
+
+              // Otherwise, use default behavior
+              return el
+            },
+            getShadowRoot: true,
+          })
+
+          return () => destroy({ returnFocus: !!prop("restoreFocus") && !!prop("trapFocus") })
+        })
+      },
+
+      hideContentBelow({ scope, prop, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          if (!prop("modal")) return
+          const getElements = () => [dom.getContentEl(scope)]
+          return ariaHidden(getElements, { defer: true })
+        })
       },
     },
 
