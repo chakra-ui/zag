@@ -101,15 +101,22 @@ export default defineHandler((event) => {
                           </template>
                         </tr>
                       </thead>
-                      <tbody x-date-picker:table-body>
-                        <template
-                          x-for="week in $datePicker().getOffset({months: 1}).weeks"
-                          x-bind:key="week.at(0).toString()"
-                        >
+                      <tbody
+                        x-date-picker:table-body
+                        x-data="{
+                          get offset() {
+                            return $datePicker().getOffset({months: 1});
+                          }
+                        }"
+                      >
+                        <template x-for="week in offset.weeks" x-bind:key="week.at(0).toString()">
                           <tr x-date-picker:table-row>
                             <template x-for="value in week" x-bind:key="value.day">
-                              <td x-date-picker:day-table-cell="{ value }">
-                                <div x-date-picker:day-table-cell-trigger="{ value }" x-text="value.day"></div>
+                              <td x-date-picker:day-table-cell="{value, visibleRange: offset.visibleRange}">
+                                <div
+                                  x-date-picker:day-table-cell-trigger="{value, visibleRange: offset.visibleRange}"
+                                  x-text="value.day"
+                                ></div>
                               </td>
                             </template>
                           </tr>
