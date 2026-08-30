@@ -93,7 +93,7 @@
     0 8px 24px rgba(15, 23, 42, 0.08),
     0 2px 6px rgba(15, 23, 42, 0.04);
   overflow: hidden;
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2 + 1);
 }
 
 .treePanel {

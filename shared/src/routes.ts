@@ -442,6 +442,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
       { slug: "non-modal", title: "Non-Modal" },
       { slug: "popover-nested", title: "Popover Nested" },
+      { slug: "reactive-props", title: "Reactive Props" },
       { slug: "scroll-outside", title: "Scroll Outside" },
       { slug: "search-params", title: "Search Params" },
     ],

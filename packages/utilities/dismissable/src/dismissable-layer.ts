@@ -5,9 +5,16 @@ import {
   type InteractOutsideHandlers,
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
-import { warn, type MaybeFunction } from "@zag-js/utils"
+import { warn, type MaybeFunction, type TeardownReason } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { layerStack, type Layer, type LayerDismissEvent, type LayerSnapshot, type LayerType } from "./layer-stack"
+import {
+  isPointerBlocking,
+  layerStack,
+  type Layer,
+  type LayerDismissEvent,
+  type LayerSnapshot,
+  type LayerType,
+} from "./layer-stack"
 import { disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
@@ -46,7 +53,7 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   /**
    * Whether to block pointer events outside the dismissable element
    */
-  pointerBlocking?: boolean | undefined
+  pointerBlocking?: boolean | (() => boolean) | undefined
   /**
    * Function called when the dismissable element is dismissed
    */
@@ -133,13 +140,14 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   const cleanups = [
-    pointerBlocking ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
+    isPointerBlocking(layer) ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
     trackEscapeKeydown(node, onEscapeKeyDown),
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]
 
-  return () => {
-    layerStack.remove(node!)
+  // A "restart" teardown detaches the layer only to re-add it, so descendants are kept.
+  return (reason?: TeardownReason) => {
+    layerStack.remove(node!, { reattach: reason === "restart" })
     cleanups.forEach((fn) => fn?.())
   }
 }
@@ -148,7 +156,7 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   const { warnOnMissingNode = true } = options
   // `defer` gates node resolution only — escape dismissal is dead until the layer is on
   // the stack, so registration must not wait a frame longer than the node does.
-  return whenNode(nodeOrFn, (node) => trackDismissableElementImpl(node, options), {
+  return whenNode<HTMLElement, [TeardownReason?]>(nodeOrFn, (node) => trackDismissableElementImpl(node, options), {
     defer: options.defer,
     onMissing: warnOnMissingNode ? () => warn("[@zag-js/dismissable] node is `null` or `undefined`") : undefined,
   })

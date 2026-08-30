@@ -2,7 +2,7 @@
   background-color: rgba(0, 0, 0, 0.44);
   position: fixed;
   inset: 0px;
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2);
 }
 
 [data-dialog-positioner] {
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2 + 1);
 }
 
 [data-dialog-title] {
@@ -41,7 +41,7 @@
   max-height: 85vh;
   padding: 24px;
   position: relative;
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2 + 1);
   transition: transform 0.2s ease-in-out;
 
   &[data-has-nested] {

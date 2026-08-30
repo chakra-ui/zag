@@ -23,10 +23,14 @@ export interface LayerSnapshot {
 }
 
 export interface Layer {
+  /** Assigned on first registration. */
+  id?: string | undefined
+  /** The layer this one opened inside. Captured once and kept across re-registration. */
+  parentId?: string | undefined
   dismiss: VoidFunction
   node: HTMLElement
   type: LayerType
-  pointerBlocking?: boolean | undefined
+  pointerBlocking?: boolean | (() => boolean) | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
   onLayerChange?: ((snapshot: LayerSnapshot) => void) | undefined
   snapshot?: LayerSnapshot | undefined
@@ -34,15 +38,24 @@ export interface Layer {
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
 
+let layerId = 0
+
+/** Resolved on read, so a layer's blocking can change without re-registering it. */
+export function isPointerBlocking(layer: Pick<Layer, "pointerBlocking">): boolean {
+  const value = layer.pointerBlocking
+  return typeof value === "function" ? value() : !!value
+}
+
 export const layerStack = {
   layers: [] as Layer[],
   branches: [] as HTMLElement[],
   recentlyRemoved: new Set<HTMLElement>(),
+  pendingReattach: new Map<HTMLElement, { id: string | undefined; parentId: string | undefined; index: number }>(),
   count(): number {
     return this.layers.length
   },
   pointerBlockingLayers(): Layer[] {
-    return this.layers.filter((layer) => layer.pointerBlocking)
+    return this.layers.filter(isPointerBlocking)
   },
   topMostPointerBlockingLayer(): Layer | undefined {
     return [...this.pointerBlockingLayers()].slice(-1)[0]
@@ -61,24 +74,57 @@ export const layerStack = {
     const layer = this.layers[this.count() - 1]
     return layer?.node === node
   },
+  layerFor(node: HTMLElement | null): Layer | undefined {
+    return this.layers.find((layer) => layer.node === node)
+  },
+  isDescendantOf(layer: Layer, ancestorId: string | undefined): boolean {
+    if (!ancestorId) return false
+    // `seen` guards against a malformed chain; a cycle would otherwise spin forever
+    const seen = new Set<string>()
+    let parentId = layer.parentId
+    while (parentId && !seen.has(parentId)) {
+      if (parentId === ancestorId) return true
+      seen.add(parentId)
+      parentId = this.layers.find((l) => l.id === parentId)?.parentId
+    }
+    return false
+  },
+  depthOf(layer: Layer): number {
+    const seen = new Set<string>()
+    let depth = 0
+    let parentId = layer.parentId
+    while (parentId && !seen.has(parentId)) {
+      depth++
+      seen.add(parentId)
+      parentId = this.layers.find((l) => l.id === parentId)?.parentId
+    }
+    return depth
+  },
+  /** Descendants, shallowest first, so a cascade dismisses parents before their own children. */
   getNestedLayers(node: HTMLElement) {
-    return Array.from(this.layers).slice(this.indexOf(node) + 1)
+    const id = this.layerFor(node)?.id
+    if (!id) return []
+    return this.layers
+      .filter((layer) => this.isDescendantOf(layer, id))
+      .sort((a, b) => this.depthOf(a) - this.depthOf(b))
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
   },
   getNestedLayersByType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index === -1) return []
-    return this.layers.slice(index + 1).filter((layer) => layer.type === type)
+    return this.getNestedLayers(node).filter((layer) => layer.type === type)
   },
   getParentLayerOfType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index <= 0) return undefined
-    return this.layers
-      .slice(0, index)
-      .reverse()
-      .find((layer) => layer.type === type)
+    const seen = new Set<string>()
+    let parentId = this.layerFor(node)?.parentId
+    while (parentId && !seen.has(parentId)) {
+      const parent = this.layers.find((l) => l.id === parentId)
+      if (!parent) return undefined
+      if (parent.type === type) return parent
+      seen.add(parentId)
+      parentId = parent.parentId
+    }
+    return undefined
   },
   countNestedLayersOfType(node: HTMLElement, type: LayerType) {
     return this.getNestedLayersByType(node, type).length
@@ -102,34 +148,61 @@ export const layerStack = {
     // Idempotent per DOM node: React Strict Mode (and similar races) can register
     // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
     const existingIndex = this.indexOf(layer.node)
+    const existing = existingIndex !== -1 ? this.layers[existingIndex] : undefined
+
+    const pending = this.pendingReattach.get(layer.node)
+
+    if (existing) {
+      // re-registering keeps its identity and parent, so reconfiguring cannot reparent it.
+      // assigned rather than defaulted: `undefined` is a real value meaning "top level"
+      layer.id ??= existing.id
+      layer.parentId = existing.parentId
+    } else if (pending) {
+      layer.id ??= pending.id
+      layer.parentId = pending.parentId
+    } else {
+      layer.id ??= `layer-${++layerId}`
+      layer.parentId ??= this.layers[this.count() - 1]?.id
+    }
+
     if (existingIndex !== -1) {
       this.layers.splice(existingIndex, 1)
     }
-    this.layers.push(layer)
+
+    if (pending) {
+      this.pendingReattach.delete(layer.node)
+      // back where it was, so `isTopMost` and pointer-blocking order are unchanged
+      this.layers.splice(Math.min(pending.index, this.count()), 0, layer)
+    } else {
+      this.layers.push(layer)
+    }
+
     this.syncLayers()
   },
   addBranch(node: HTMLElement) {
     this.branches.push(node)
   },
-  remove(node: HTMLElement) {
+  remove(node: HTMLElement, options?: { reattach?: boolean }) {
     const index = this.indexOf(node)
     if (index < 0) return
 
     const layer = this.layers[index]
 
-    // Track this node as recently removed to handle focus race conditions
-    // during layer cleanup. This prevents parent layers from incorrectly
-    // dismissing when focus moves from a closing nested layer.
-    this.recentlyRemoved.add(node)
+    if (options?.reattach) {
+      // detached only to be re-added; keep descendants and skip the focus race guard
+      this.pendingReattach.set(node, { id: layer.id, parentId: layer.parentId, index })
+    } else {
+      // Track this node as recently removed to handle focus race conditions
+      // during layer cleanup. This prevents parent layers from incorrectly
+      // dismissing when focus moves from a closing nested layer.
+      this.recentlyRemoved.add(node)
 
-    // Schedule cleanup after two frames to ensure it outlasts any deferred
-    // focusin handlers (which also use requestAnimationFrame)
-    nextTick(() => this.recentlyRemoved.delete(node))
+      // Schedule cleanup after two frames to ensure it outlasts any deferred
+      // focusin handlers (which also use requestAnimationFrame)
+      nextTick(() => this.recentlyRemoved.delete(node))
 
-    // dismiss nested layers
-    if (index < this.count() - 1) {
-      const _layers = this.getNestedLayers(node)
-      _layers.forEach((layer) => layerStack.dismiss(layer.node, node))
+      // dismiss nested layers
+      this.getNestedLayers(node).forEach((nested) => layerStack.dismiss(nested.node, node))
     }
 
     // remove this layer
