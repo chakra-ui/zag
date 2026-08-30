@@ -25,15 +25,15 @@ export interface WhenNodeOptions {
  * `fn` is never called without a node; use `onMissing` to handle that case.
  * Returns a cleanup that cancels any pending work and runs the cleanup `fn` returned.
  */
-export function whenNode<T extends Element = HTMLElement>(
+export function whenNode<T extends Element = HTMLElement, Args extends any[] = []>(
   nodeOrFn: MaybeFn<T | null>,
-  fn: (node: T) => VoidFunction | void,
+  fn: (node: T) => ((...args: Args) => void) | VoidFunction | void,
   options: WhenNodeOptions = {},
-): VoidFunction {
+): (...args: Args) => void {
   const { defer, onMissing } = options
 
   const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
-  const cleanups: (VoidFunction | undefined | void)[] = []
+  const cleanups: (((...args: Args) => void) | VoidFunction | undefined | void)[] = []
 
   const setup = (node: T | null) => {
     if (!node) return onMissing?.()
@@ -68,7 +68,8 @@ export function whenNode<T extends Element = HTMLElement>(
     })
   }
 
-  return () => {
-    cleanups.forEach((fn) => fn?.())
+  // arguments are forwarded, so a caller can pass teardown intent through to the inner cleanup
+  return (...args: Args) => {
+    cleanups.forEach((fn) => (fn as ((...a: Args) => void) | undefined)?.(...args))
   }
 }

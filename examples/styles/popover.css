@@ -14,7 +14,7 @@
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
   width: 260px;
   transform-origin: var(--transform-origin);
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2 + 1);
 
   &[data-fullscreen] {
     position: fixed;

@@ -4,6 +4,8 @@ import type {
   BindableRefs,
   ChooseFn,
   ComputedFn,
+  EffectParams,
+  EffectRecord,
   EffectsOrFn,
   GuardFn,
   Machine,
@@ -18,16 +20,18 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  isWatchEffect,
   MachineStatus,
   matchesState,
   resolveStateValue,
+  watchEffect,
 } from "@zag-js/core"
-import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
 import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
 import { useRefs } from "./refs"
-import { useTrack } from "./track"
+import { useEffectSync, useTrack } from "./track"
 
 export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
@@ -81,7 +85,10 @@ export function useMachine<T extends MachineSchema>(
     },
   }
 
-  const effects = useRef(new Map<string, VoidFunction>())
+  const effects = useRef(new Map<number, EffectRecord>())
+  const effectId = useRef(0)
+
+  let notify: VoidFunction = noop
   const transitionRef = useRef<any>(null)
 
   const previousEventRef = useRef<any>(null)
@@ -147,20 +154,78 @@ export function useMachine<T extends MachineSchema>(
     return fn?.(getParams())
   }
 
-  const effect = (keys: EffectsOrFn<T> | undefined) => {
+  const startEffects = (path: string, keys: EffectsOrFn<T> | undefined) => {
     const strs = isFunction(keys) ? keys(getParams()) : keys
     if (!strs) return
-    const fns = strs.map((s) => {
-      const fn = machine.implementations?.effects?.[s]
-      if (!fn) warn(`[zag-js] No implementation found for effect "${JSON.stringify(s)}"`)
-      return fn
-    })
-    const cleanups: VoidFunction[] = []
-    for (const fn of fns) {
-      const cleanup = fn?.(getParams())
-      if (cleanup) cleanups.push(cleanup)
+
+    for (const name of strs) {
+      const fn = machine.implementations?.effects?.[name]
+      if (!fn) {
+        warn(`[zag-js] No implementation found for effect "${JSON.stringify(name)}"`)
+        continue
+      }
+
+      const result = fn({ ...getParams(), watchEffect } as EffectParams<T>)
+
+      // one record per invocation, so a re-entered path keeps every setup's own cleanup
+      const id = ++effectId.current
+      const record: EffectRecord = { id, path, cleanup: undefined }
+
+      if (isWatchEffect(result)) {
+        record.deps = result.deps
+        record.setup = result.setup
+        const cleanup = result.setup()
+        record.cleanup = isFunction(cleanup) ? cleanup : undefined
+        // snapshot after setup, so a dep that setup itself touches cannot loop
+        record.values = result.deps.map((d) => d())
+      } else if (isFunction(result)) {
+        record.cleanup = result
+      }
+
+      effects.current.set(id, record)
     }
-    return () => cleanups.forEach((fn) => fn?.())
+
+    notify()
+  }
+
+  const stopEffects = (path: string) => {
+    for (const [id, record] of effects.current) {
+      if (record.path !== path) continue
+      record.cleanup?.("exit")
+      effects.current.delete(id)
+    }
+    notify()
+  }
+
+  const reconcileEffects = () => {
+    if (statusRef.current !== MachineStatus.Started) return
+
+    let stale: EffectRecord[] | undefined
+
+    for (const record of effects.current.values()) {
+      const deps = record.deps
+      if (!deps) continue
+      const next = deps.map((d) => d())
+      if (!next.some((value, index) => !isEqual(record.values![index], value))) continue
+      record.values = next
+      // setup() reads live values, so an already-queued restart covers this change too
+      if (record.pending) continue
+      record.pending = true
+      ;(stale ??= []).push(record)
+    }
+
+    if (!stale) return
+
+    // restart off the tracked scope, so setup()'s reads don't subscribe the reconciler
+    queueMicrotask(() => {
+      for (const record of stale) {
+        record.pending = false
+        if (!effects.current.has(record.id)) continue
+        record.cleanup?.("restart")
+        const cleanup = record.setup!()
+        record.cleanup = isFunction(cleanup) ? cleanup : undefined
+      }
+    })
   }
 
   const choose: ChooseFn<T> = (transitions) => {
@@ -192,9 +257,7 @@ export function useMachine<T extends MachineSchema>(
       const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef.current?.reenter)
 
       exiting.forEach((item) => {
-        const exitEffects = effects.current.get(item.path)
-        exitEffects?.()
-        effects.current.delete(item.path)
+        stopEffects(item.path)
       })
 
       exiting.forEach((item) => {
@@ -204,20 +267,12 @@ export function useMachine<T extends MachineSchema>(
       action(transitionRef.current?.actions)
 
       entering.forEach((item) => {
-        const cleanup = effect(item.state?.effects)
-        if (cleanup) {
-          const existing = effects.current.get(item.path)
-          effects.current.set(item.path, existing ? callAll(existing, cleanup) : cleanup)
-        }
+        startEffects(item.path, item.state?.effects)
       })
 
       if (prevState === INIT_STATE) {
         action(machine.entry)
-        const cleanup = effect(machine.effects)
-        if (cleanup) {
-          const existing = effects.current.get(INIT_STATE)
-          effects.current.set(INIT_STATE, existing ? callAll(existing, cleanup) : cleanup)
-        }
+        startEffects(INIT_STATE, machine.effects)
       }
 
       entering.forEach((item) => {
@@ -247,7 +302,7 @@ export function useMachine<T extends MachineSchema>(
       hydratedStateRef.current = currentState
       statusRef.current = MachineStatus.Stopped
 
-      fns.forEach((fn) => fn?.())
+      fns.forEach((record) => record.cleanup?.("exit"))
       effects.current = new Map()
       transitionRef.current = null
 
@@ -291,6 +346,8 @@ export function useMachine<T extends MachineSchema>(
   }
 
   machine.watch?.(getParams())
+
+  notify = useEffectSync(reconcileEffects)
 
   return {
     state: getState(),

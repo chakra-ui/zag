@@ -1,3 +1,5 @@
+import type { DepFn, Teardown, WatchEffect, WatchEffectFn } from "./watch-effect"
+
 type Dict = Record<string, any>
 
 interface ComputedParams<T extends Dict> {
@@ -28,8 +30,8 @@ export interface ComputedFn<T extends Dict> {
   <K extends keyof T["computed"]>(key: K): T["computed"][K]
 }
 
-type AnyFunction = () => string | number | boolean | null | undefined
-type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
+/** Runs an action when any of `deps` change. Received from `watch`. */
+export type TrackFn = (deps: DepFn[], fn: VoidFunction) => void
 
 export interface BindableParams<T> {
   defaultValue?: T | undefined
@@ -118,6 +120,12 @@ export interface Params<T extends Dict> {
   choose: ChooseFn<T>
   guard: (key: T["guard"] | GuardFn<T>) => boolean | undefined
 }
+
+export interface EffectParams<T extends Dict> extends Params<T> {
+  watchEffect: WatchEffectFn
+}
+
+export type EffectResult = void | VoidFunction | Teardown | WatchEffect
 
 export type GuardFn<T extends Dict> = (params: Params<T>) => boolean
 
@@ -240,7 +248,7 @@ export interface Machine<T extends Dict> {
           | undefined
         effects?:
           | {
-              [K in T["effect"]]: (params: Params<T>) => void | VoidFunction
+              [K in T["effect"]]: (params: EffectParams<T>) => EffectResult
             }
           | undefined
       }

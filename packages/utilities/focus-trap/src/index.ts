@@ -1,6 +1,6 @@
 import { getDocument, raf } from "@zag-js/dom-query"
 import { FocusTrap } from "./focus-trap"
-import type { FocusTrapOptions } from "./types"
+import type { DeactivateOptions, FocusTrapOptions } from "./types"
 
 type ElementOrGetter = HTMLElement | null | (() => HTMLElement | null)
 type ElementsOrGetter = ElementOrGetter | ElementOrGetter[]
@@ -35,10 +35,11 @@ export function trapFocus(el: ElementsOrGetter, options: TrapFocusOptions = {}) 
     } catch {}
   })
 
-  return function destroy() {
-    trap?.deactivate()
+  // `options` lets a caller deactivate without returning focus
+  return function destroy(options?: DeactivateOptions) {
+    trap?.deactivate(options)
     cleanup()
   }
 }
 
-export { FocusTrap, type FocusTrapOptions }
+export { FocusTrap, type DeactivateOptions, type FocusTrapOptions }

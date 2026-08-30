@@ -7,7 +7,7 @@
   background-color: white;
   margin: 0;
   border: 1px solid lightgray;
-  z-index: var(--layer-index);
+  z-index: calc(var(--layer-index) * 2 + 1);
 }
 
 [data-combobox-list] {

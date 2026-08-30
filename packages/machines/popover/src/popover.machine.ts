@@ -157,102 +157,118 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      trackDismissableElement({ send, prop, scope, context }) {
-        const getContentEl = () => dom.getContentEl(scope)
-        let restoreFocus = true
-        return trackDismissableElement(getContentEl, {
-          type: "popover",
-          pointerBlocking: prop("modal"),
-          onLayerChange(layer) {
-            context.set("layer", layer)
-          },
-          exclude: dom.getTriggerEls(scope),
-          defer: true,
-          onEscapeKeyDown(event) {
-            prop("onEscapeKeyDown")?.(event)
-            if (prop("closeOnEscape")) return
-            event.preventDefault()
-          },
-          onInteractOutside(event) {
-            prop("onInteractOutside")?.(event)
-            if (event.defaultPrevented) return
-            restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-            if (!prop("closeOnInteractOutside")) {
+      trackDismissableElement({ send, prop, scope, context, watchEffect }) {
+        // pointerBlocking is read at setup, so `modal` has to re-run this
+        return watchEffect([() => prop("modal")], () => {
+          const getContentEl = () => dom.getContentEl(scope)
+          let restoreFocus = true
+          return trackDismissableElement(getContentEl, {
+            type: "popover",
+            pointerBlocking: prop("modal"),
+            onLayerChange(layer) {
+              context.set("layer", layer)
+            },
+            exclude: dom.getTriggerEls(scope),
+            defer: true,
+            onEscapeKeyDown(event) {
+              prop("onEscapeKeyDown")?.(event)
+              if (prop("closeOnEscape")) return
               event.preventDefault()
-            }
-          },
-          onPointerDownOutside: prop("onPointerDownOutside"),
-          onFocusOutside: prop("onFocusOutside"),
-          persistentElements: prop("persistentElements"),
-          onRequestDismiss: prop("onRequestDismiss"),
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
-          },
-        })
-      },
-
-      proxyTabFocus({ prop, scope, context }) {
-        if (prop("modal")) return
-        const getContentEl = () => dom.getContentEl(scope)
-        let cleanup: VoidFunction | undefined
-        const rafCleanup = raf(() => {
-          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-          const contentEl = getContentEl()
-          // only proxy when content is portalled out of the trigger's subtree (else it traps focus)
-          if (!triggerEl || !contentEl || contains(triggerEl.parentElement, contentEl)) return
-          cleanup = proxyTabFocus(getContentEl, {
-            triggerElement: triggerEl,
-            getShadowRoot: true,
-            onFocus(el) {
-              el.focus({ preventScroll: true })
+            },
+            onInteractOutside(event) {
+              prop("onInteractOutside")?.(event)
+              if (event.defaultPrevented) return
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+              if (!prop("closeOnInteractOutside")) {
+                event.preventDefault()
+              }
+            },
+            onPointerDownOutside: prop("onPointerDownOutside"),
+            onFocusOutside: prop("onFocusOutside"),
+            persistentElements: prop("persistentElements"),
+            onRequestDismiss: prop("onRequestDismiss"),
+            onDismiss() {
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         })
-        return () => {
-          rafCleanup()
-          cleanup?.()
-        }
       },
 
-      hideContentBelow({ prop, scope, context }) {
-        if (!prop("modal")) return
-        const getElements = () => [dom.getContentEl(scope), dom.getActiveTriggerEl(scope, context.get("triggerValue"))]
-        return ariaHidden(getElements, { defer: true })
+      proxyTabFocus({ prop, scope, context, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          if (prop("modal")) return
+          const getContentEl = () => dom.getContentEl(scope)
+          let cleanup: VoidFunction | undefined
+          const rafCleanup = raf(() => {
+            const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+            const contentEl = getContentEl()
+            // only proxy when content is portalled out of the trigger's subtree (else it traps focus)
+            if (!triggerEl || !contentEl || contains(triggerEl.parentElement, contentEl)) return
+            cleanup = proxyTabFocus(getContentEl, {
+              triggerElement: triggerEl,
+              getShadowRoot: true,
+              onFocus(el) {
+                el.focus({ preventScroll: true })
+              },
+            })
+          })
+          return () => {
+            rafCleanup()
+            cleanup?.()
+          }
+        })
       },
 
-      preventScroll({ prop, scope }) {
-        if (!prop("modal")) return
-        return preventBodyScroll(scope.getDoc())
+      hideContentBelow({ prop, scope, context, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          if (!prop("modal")) return
+          const getElements = () => [
+            dom.getContentEl(scope),
+            dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+          ]
+          return ariaHidden(getElements, { defer: true })
+        })
       },
 
-      trapFocus({ prop, scope, context }) {
-        if (!prop("modal")) return
-        const contentEl = () => dom.getContentEl(scope)
-        return trapFocus(contentEl, {
-          preventScroll: true,
-          returnFocusOnDeactivate: !!prop("restoreFocus"),
-          initialFocus: () =>
-            getInitialFocus({
-              root: dom.getContentEl(scope),
-              getInitialEl: prop("initialFocusEl"),
-              enabled: prop("autoFocus"),
-            }),
-          setReturnFocus: (el) => {
-            const finalFocusEl = prop("finalFocusEl")?.()
-            if (finalFocusEl) return finalFocusEl
+      preventScroll({ prop, scope, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          if (!prop("modal")) return
+          return preventBodyScroll(scope.getDoc())
+        })
+      },
 
-            const triggerValue = context.get("triggerValue")
-            if (triggerValue) {
-              const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
-              if (activeTriggerEl) return activeTriggerEl
-            }
+      trapFocus({ prop, scope, context, watchEffect }) {
+        return watchEffect([() => prop("modal")], () => {
+          if (!prop("modal")) return
+          const contentEl = () => dom.getContentEl(scope)
+          const destroy = trapFocus(contentEl, {
+            preventScroll: true,
+            returnFocusOnDeactivate: !!prop("restoreFocus"),
+            initialFocus: () =>
+              getInitialFocus({
+                root: dom.getContentEl(scope),
+                getInitialEl: prop("initialFocusEl"),
+                enabled: prop("autoFocus"),
+              }),
+            setReturnFocus: (el) => {
+              const finalFocusEl = prop("finalFocusEl")?.()
+              if (finalFocusEl) return finalFocusEl
 
-            const fallbackTrigger = dom.getTriggerEls(scope)[0]
-            if (fallbackTrigger) return fallbackTrigger
+              const triggerValue = context.get("triggerValue")
+              if (triggerValue) {
+                const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
+                if (activeTriggerEl) return activeTriggerEl
+              }
 
-            return el
-          },
-          getShadowRoot: true,
+              const fallbackTrigger = dom.getTriggerEls(scope)[0]
+              if (fallbackTrigger) return fallbackTrigger
+
+              return el
+            },
+            getShadowRoot: true,
+          })
+
+          return () => destroy({ returnFocus: !!prop("restoreFocus") && !!prop("modal") })
         })
       },
     },

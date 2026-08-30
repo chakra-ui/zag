@@ -7,3 +7,4 @@ export type {
 export * from "./dismissable-layer"
 export * from "./layer-props"
 export type { LayerSnapshot, LayerType } from "./layer-stack"
+export { syncPointerEvents } from "./pointer-event-outside"

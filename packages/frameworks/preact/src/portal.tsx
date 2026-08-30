@@ -1,12 +1,6 @@
 import type { JSX } from "preact"
-import {
-  Children,
-  createPortal,
-  useLayoutEffect,
-  useReducer,
-  type PropsWithChildren,
-  type RefObject,
-} from "preact/compat"
+import { Children, createPortal, type PropsWithChildren, type RefObject } from "preact/compat"
+import { useLayoutEffect, useReducer } from "preact/hooks"
 
 export interface PortalProps {
   disabled?: boolean | undefined
