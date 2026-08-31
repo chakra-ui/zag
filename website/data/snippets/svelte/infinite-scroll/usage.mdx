@@ -1,0 +1,60 @@
+```svelte
+<script>
+  import * as asyncList from "@zag-js/async-list"
+  import * as infiniteScroll from "@zag-js/infinite-scroll"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const PAGE_SIZE = 20
+  const TOTAL = 100
+
+  const loadPage = (page) =>
+    new Promise((resolve) => {
+      const start = (page - 1) * PAGE_SIZE
+      setTimeout(() => {
+        resolve(
+          Array.from(
+            { length: Math.min(PAGE_SIZE, TOTAL - start) },
+            (_, i) => `Item ${start + i + 1}`,
+          ),
+        )
+      }, 400)
+    })
+
+  const listService = useMachine(asyncList.machine, {
+    autoReload: true,
+    async load({ cursor }) {
+      const page = cursor ? Number(cursor) : 1
+      const items = await loadPage(page)
+      return {
+        items,
+        cursor: page * PAGE_SIZE < TOTAL ? String(page + 1) : undefined,
+      }
+    },
+  })
+  const list = $derived(asyncList.connect(listService))
+
+  const id = $props.id()
+  const service = useMachine(infiniteScroll.machine, () => ({
+    id,
+    count: list.items.length,
+    hasMore: list.hasMore,
+    loading: list.isLoading,
+    onLoadMore: () => list.loadMore(),
+  }))
+  const api = $derived(infiniteScroll.connect(service, normalizeProps))
+</script>
+
+<div>
+  <p>Loaded {list.items.length} / {TOTAL}</p>
+  <div class="scroller" tabindex="0">
+    <ul>
+      {#each list.items as item (item)}
+        <li>{item}</li>
+      {/each}
+    </ul>
+    <div {...api.getSentinelProps()}></div>
+    <div {...api.getIndicatorProps({ type: "loading" })}>Loading…</div>
+    <div {...api.getIndicatorProps({ type: "complete" })}>You're all caught up</div>
+  </div>
+</div>
+```

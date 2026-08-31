@@ -1,0 +1,229 @@
+---
+title: Infinite Scroll
+description: Load the next page when the user scrolls near the edge.
+package: "@zag-js/infinite-scroll"
+---
+
+Infinite scroll is not a data loader. It watches a sentinel and calls
+`onLoadMore` when that sentinel approaches the scroll edge.
+
+You own the fetch. Pair it with [`async-list`](/utilities/async-list) for
+cursors, abort, and `hasMore`. Infinite scroll owns the observer, the growth
+guard, and the loading indicators.
+
+<Resources pkg="@zag-js/infinite-scroll" />
+
+<Showcase id="InfiniteScroll" />
+
+**Features**
+
+- Sentinel trigger via IntersectionObserver, not scroll events
+- Growth guard: a load that added nothing cannot fire the next one
+- Autofill when the first page is shorter than the viewport
+- `edge: "start"` for chat threads, with scroll anchoring
+- Horizontal and RTL
+- Promise-derived or controlled `loading`
+- Screen reader announcements for loaded and complete
+
+## Installation
+
+<CodeSnippet id="infinite-scroll/installation.mdx" />
+
+## Usage with async-list
+
+`async-list` fetches and appends pages. Infinite scroll decides when. Wire four
+values and put the sentinel at the edge you want to load from.
+
+<CodeSnippet id="infinite-scroll/usage.mdx" />
+
+`list.loadMore()` is synchronous. It starts async-list's next fetch and returns
+void. Pass `loading: list.isLoading` so the indicator stays visible until that
+fetch settles. If you omit `loading` and return void from `onLoadMore`, the
+machine treats the load as done on the same tick.
+
+`count` is `list.items.length`. After a load, automatic loading waits until that
+number has increased. A page that returns zero items cannot start an unbounded
+fetch loop.
+
+`autoReload: true` loads the first page on mount. Infinite scroll handles every
+page after that.
+
+### Sentinel and indicators
+
+`getSentinelProps()` is a 1px, inert node. It does not participate in layout or
+keyboard navigation. Put it after the items for a feed (`edge: "end"`, the
+default). Put it before the items for a chat thread (`edge: "start"`).
+
+`getIndicatorProps({ type })` hides itself unless `status` matches. `type` is
+`"loading"` or `"complete"`.
+
+### Why not a scroll listener
+
+A `scrollTop + clientHeight >= scrollHeight` check fires more than once per
+page, including while a request is in flight. An IntersectionObserver with no
+growth check will refetch forever if the first page is empty or shorter than the
+viewport.
+
+This machine tears the observer down while a load is in flight. It will not arm
+the next load until `count` has increased. If the first page does not fill the
+viewport, the sentinel is still intersecting, so it loads again
+(`reason: "autofill"`) until the list can scroll or `hasMore` is false.
+
+## Chat and the start edge
+
+Set `edge: "start"` and put the sentinel above the messages. The machine
+snapshots the scroll position before the load and corrects it after `count`
+grows, so prepending does not jump the message you are reading.
+
+`async-list` still appends each page. Render the list reversed so the oldest
+message sits at the top.
+
+```tsx
+const service = useMachine(infiniteScroll.machine, {
+  id: useId(),
+  edge: "start",
+  count: list.items.length,
+  hasMore: list.hasMore,
+  loading: list.isLoading,
+  onLoadMore: () => list.loadMore(),
+})
+```
+
+```tsx
+<div className="scroller" tabIndex={0}>
+  <div {...api.getSentinelProps()} />
+  <div {...api.getIndicatorProps({ type: "loading" })}>
+    Loading older messages…
+  </div>
+  <ul>
+    {[...list.items].reverse().map((message) => (
+      <li key={message}>{message}</li>
+    ))}
+  </ul>
+</div>
+```
+
+## Loading without async-list
+
+Omit `loading` and return a promise from `onLoadMore`. The machine stays in
+`loading` until that promise settles.
+
+```tsx
+const service = useMachine(infiniteScroll.machine, {
+  id: useId(),
+  count: items.length,
+  hasMore: items.length < TOTAL,
+  async onLoadMore() {
+    const page = await loadPage(items.length)
+    setItems((current) => [...current, ...page])
+  },
+})
+```
+
+Pass `loading` yourself when the fetch already lives in other state (a query
+library, a cache). The machine then only reacts to that boolean.
+
+## Manual load and reset
+
+`api.loadMore()` bypasses the scroll trigger, the growth guard, and `disabled`.
+Use it for a "Load more" button. It is a no-op when `hasMore` is false or a load
+is already in flight.
+
+`disabled` pauses automatic loading only. The button still works.
+
+```tsx
+<button type="button" onClick={api.loadMore} disabled={api.loading}>
+  {api.loading ? "Loading…" : "Load more"}
+</button>
+```
+
+`api.reset()` clears the growth guard and re-arms the sentinel. Call it after
+replacing the list in place, or to retry a load that added nothing.
+
+## Offset and orientation
+
+`offset` defaults to `1`, one viewport ahead of the edge. A number is a ratio of
+the viewport. A string is any CSS length (`"200px"`).
+
+```tsx
+useMachine(infiniteScroll.machine, {
+  offset: 0.5,
+  // or: offset: "200px",
+})
+```
+
+Set `orientation: "horizontal"` for a sideways scroller. RTL uses `dir: "rtl"`
+so the start edge stays on the correct side.
+
+## The scroll container
+
+The observer uses the nearest scrolling ancestor of the sentinel. Make that
+element keyboard-reachable: `tabIndex={0}`, or put focusable content inside it.
+Widgets that already own keyboard navigation (listbox, menu, grid, tree) are
+exempt. The machine warns once in development if the container cannot be reached
+by keyboard.
+
+If the nearest scroller is the wrong element, pass `scrollEl`.
+
+```tsx
+useMachine(infiniteScroll.machine, {
+  scrollEl: () => document.getElementById("feed"),
+})
+```
+
+For window scroll, do not wrap the list in an `overflow: auto` container. The
+page is the scroller. Put `tabIndex={0}` on the page root if nothing else inside
+it is focusable.
+
+## Accessibility
+
+A polite live region announces `"N more items loaded"` and `"All items loaded"`.
+Override with `translations`. Return an empty string to suppress one of them.
+
+```tsx
+useMachine(infiniteScroll.machine, {
+  translations: {
+    itemsLoaded: (count) => `${count} more stories`,
+    complete: "End of feed",
+  },
+})
+```
+
+## Styling guide
+
+Each part has a component-scoped data attribute.
+
+```css
+[data-infinite-scroll-sentinel] {
+  /* 1px trigger. Leave it visually empty. */
+}
+
+[data-infinite-scroll-indicator][data-type="loading"] {
+  /* shown while status is loading */
+}
+
+[data-infinite-scroll-indicator][data-type="complete"] {
+  /* shown when hasMore is false */
+}
+```
+
+The sentinel also has `data-edge`. The indicator has `data-state` matching
+`status`: `idle`, `loading`, or `complete`.
+
+## Methods and Properties
+
+### Machine Context
+
+<ContextTable name="infinite-scroll" />
+
+### Machine API
+
+<ApiTable name="infinite-scroll" />
+
+### Data Attributes
+
+<DataAttrTable name="infinite-scroll" />
+
+Same four props work inside a
+[menu](/components/menu#async-loading-with-infinite-scroll), select, or listbox.
+Mount the sentinel only while the list is open.

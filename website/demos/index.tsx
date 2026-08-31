@@ -21,6 +21,7 @@ import { Fieldset } from "./fieldset"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
+import { InfiniteScroll } from "./infinite-scroll"
 import { Menu } from "./menu"
 import { MenuAsync } from "./menu-async"
 import { Menubar } from "./menubar"
@@ -668,6 +669,13 @@ const components = {
   ),
   Virtualizer: () => (
     <Playground name="virtualizer" component={Virtualizer} hideControls />
+  ),
+  InfiniteScroll: () => (
+    <Playground
+      name="infinite-scroll"
+      component={InfiniteScroll}
+      hideControls
+    />
   ),
 }
 

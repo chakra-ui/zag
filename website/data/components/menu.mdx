@@ -230,8 +230,8 @@ const service = useMachine(menu.machine, {
 ### Async loading with infinite scroll
 
 Compose menu with [`async-list`](/utilities/async-list) and
-`@zag-js/infinite-scroll` to load pages on open and fetch the next page as the
-user scrolls.
+[`infinite-scroll`](/utilities/infinite-scroll) to load pages on open and fetch
+the next page as the user scrolls.
 
 - Keep `autoReload: false` so nothing fetches until the menu opens.
 - Call `listApi.reload()` once from `onOpenChange` on the first open.

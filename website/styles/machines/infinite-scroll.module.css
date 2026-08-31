@@ -1,0 +1,50 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(100%, 360px);
+  }
+
+  .Meta {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--colors-fg-muted);
+  }
+
+  .Scroller {
+    width: 100%;
+    height: 320px;
+    overflow: auto;
+    border: 1px solid var(--colors-border);
+    background: var(--colors-bg-subtle);
+  }
+
+  .List {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .Item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--colors-border);
+    background: var(--colors-bg-popover);
+    box-sizing: border-box;
+  }
+
+  .Item:nth-child(even) {
+    background: var(--colors-bg-subtle);
+  }
+
+  .Indicator {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+    text-align: center;
+    color: var(--colors-fg-muted);
+  }
+}
