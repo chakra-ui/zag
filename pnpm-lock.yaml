@@ -4098,6 +4098,12 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../packages/machines/editable
+      '@zag-js/field':
+        specifier: workspace:*
+        version: link:../packages/machines/field
+      '@zag-js/fieldset':
+        specifier: workspace:*
+        version: link:../packages/machines/fieldset
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../packages/machines/file-upload

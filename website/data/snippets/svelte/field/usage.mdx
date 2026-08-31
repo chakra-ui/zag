@@ -1,0 +1,20 @@
+```svelte
+<script lang="ts">
+  import * as field from "@zag-js/field"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(field.machine, { id, required: true })
+
+  const api = $derived(field.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>
+    Email <span {...api.getIndicatorProps({ type: "required" })}>*</span>
+  </label>
+  <input {...api.getInputProps()} type="email" placeholder="you@example.com" />
+  <span {...api.getHelperTextProps()}>We never share your email.</span>
+  <span {...api.getErrorTextProps()}>{api.errors[0]}</span>
+</div>
+```

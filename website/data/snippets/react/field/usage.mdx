@@ -1,0 +1,29 @@
+```tsx
+import * as field from "@zag-js/field"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function Field() {
+  const service = useMachine(field.machine, {
+    id: useId(),
+    required: true,
+  })
+
+  const api = field.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>
+        Email <span {...api.getIndicatorProps({ type: "required" })}>*</span>
+      </label>
+      <input
+        {...api.getInputProps()}
+        type="email"
+        placeholder="you@example.com"
+      />
+      <span {...api.getHelperTextProps()}>We never share your email.</span>
+      <span {...api.getErrorTextProps()}>{api.errors[0]}</span>
+    </div>
+  )
+}
+```

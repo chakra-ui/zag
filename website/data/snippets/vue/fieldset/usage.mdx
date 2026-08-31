@@ -1,0 +1,22 @@
+```html
+<script setup>
+  import * as fieldset from "@zag-js/fieldset"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, useId } from "vue"
+
+  const service = useMachine(fieldset.machine, { id: useId() })
+  const api = computed(() => fieldset.connect(service, normalizeProps))
+</script>
+
+<template>
+  <fieldset v-bind="api.getRootProps()">
+    <legend v-bind="api.getLegendProps()">Contact details</legend>
+    <span v-bind="api.getHelperTextProps()">How can we reach you?</span>
+    <label>
+      Phone
+      <input type="tel" name="phone" />
+    </label>
+    <span v-bind="api.getErrorTextProps()">Contact details are incomplete</span>
+  </fieldset>
+</template>
+```

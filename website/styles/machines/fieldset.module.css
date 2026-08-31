@@ -1,0 +1,110 @@
+@layer recipes {
+  .Form {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    border-width: 1px;
+    border-radius: 8px;
+
+    &[data-invalid] {
+      border-color: #e53e3e;
+    }
+
+    &[data-disabled] {
+      opacity: 0.6;
+    }
+  }
+
+  .Legend {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding-inline: 0.25rem;
+  }
+
+  .HelperText {
+    font-size: 0.8125rem;
+    color: var(--colors-fg-muted);
+  }
+
+  .ErrorText {
+    font-size: 0.8125rem;
+    color: #e53e3e;
+  }
+
+  .Field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .Input {
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+    width: 100%;
+    height: 40px;
+    font-size: 0.9375rem;
+    padding-inline: 0.75rem;
+
+    &:focus {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &[data-invalid] {
+      border-color: #e53e3e;
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .Required {
+    color: #e53e3e;
+  }
+
+  .FieldError {
+    font-size: 0.8125rem;
+    color: #e53e3e;
+  }
+
+  .Submit {
+    width: 100%;
+    margin-block-start: 0.25rem;
+    height: 40px;
+    padding-inline: 1rem;
+    border-radius: 6px;
+    background: var(--colors-bg-primary-bold);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -1,0 +1,555 @@
+---
+title: Field
+description: Label, describe, and validate a form control from one machine.
+package: "@zag-js/field"
+---
+
+<Resources pkg="@zag-js/field" />
+
+<Showcase id="Field" />
+
+**Features**
+
+- Wires label, helper text, and error text to a native input, textarea, or
+  select
+- Reads the browser
+  [constraint validation API](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#the-constraint-validation-api)
+  (`ValidityState`)
+- Supports sync and async custom validation
+- Three validation modes: `onSubmit` (default), `onBlur`, `onChange`
+- Suppresses the native browser error bubble and surfaces your own UI
+- Tracks `touched`, `dirty`, `filled`, and `focused` from the control
+- Lets a form library own those flags when you pass them as props
+- Inherits `disabled` from a parent `<fieldset disabled>`
+- Supports multi-control fields (amount + currency) via `target` and `item`
+
+## Installation
+
+Install the field package:
+
+<CodeSnippet id="field/installation.mdx" />
+
+## Anatomy
+
+To set up the field correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a component-scoped data attribute to help identify it in
+> the DOM.
+
+<Anatomy id="field" />
+
+## Usage
+
+Import the field package:
+
+```tsx
+import * as field from "@zag-js/field"
+```
+
+The field package exports two key functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="field/usage.mdx" />
+
+The field does **not** own the control's `name` or `value`. Put those on the
+native element yourself. Wrap the field in a `<form>` when you want submit and
+reset to work.
+
+### Making the field required
+
+Set `required` to mark the control as required and show a required indicator.
+
+```tsx {3}
+const service = useMachine(field.machine, {
+  id: useId(),
+  required: true,
+})
+```
+
+```tsx
+<label {...api.getLabelProps()}>
+  Email <span {...api.getIndicatorProps({ type: "required" })}>*</span>
+</label>
+<input {...api.getInputProps()} type="email" />
+```
+
+An empty required field stays quiet until the user edits it or the form is
+submitted. That matches how most form libraries treat `valueMissing`.
+
+### Disabling the field
+
+Set `disabled` to disable the control and mute validation UI.
+
+```tsx {3}
+const service = useMachine(field.machine, {
+  id: useId(),
+  disabled: true,
+})
+```
+
+A field inside `<fieldset disabled>` (or `@zag-js/fieldset` with `disabled`)
+picks that up from the DOM. You do not need to thread the prop yourself.
+
+### Making the field read only
+
+Set `readOnly` on the machine. It is applied to `getInputProps` and
+`getTextareaProps`. Native `<select>` has no `readOnly`, so `getSelectProps`
+does not set it.
+
+```tsx {3}
+const service = useMachine(field.machine, {
+  id: useId(),
+  readOnly: true,
+})
+```
+
+### Choosing when validation shows
+
+Set `validationMode` to control when committed errors become visible.
+
+| Mode       | Behavior                                                            |
+| ---------- | ------------------------------------------------------------------- |
+| `onSubmit` | Errors show after the first submit attempt, then update as you type |
+| `onBlur`   | Errors show when the control blurs                                  |
+| `onChange` | Errors show on every change                                         |
+
+```tsx {3}
+const service = useMachine(field.machine, {
+  id: useId(),
+  validationMode: "onBlur",
+})
+```
+
+The browser still runs constraint validation on submit in every mode. The field
+listens for the control's `invalid` event, prevents the native tooltip, and
+commits your error UI instead.
+
+### Adding custom validation
+
+Pass `validate` to run your own rules. Return a string (or array of strings) for
+errors, or `null` / `undefined` when the value is fine.
+
+```tsx {3-7}
+const service = useMachine(field.machine, {
+  id: useId(),
+  validate({ value, validity }) {
+    if (value === "taken@example.com") return "This email is already taken"
+    if (validity.typeMismatch) return "Enter a valid email"
+  },
+})
+```
+
+`validity` is the native `ValidityState` snapshot **before** your custom result
+is applied. Custom errors are mirrored with `setCustomValidity`, so the browser
+still blocks submit while your UI stays in charge of messaging.
+
+### Validating asynchronously
+
+Return a `Promise` from `validate`. While it is in flight, `api.validating` is
+`true`. A newer run cancels the previous one, so a fast typist does not see a
+stale error.
+
+```tsx {3-8}
+const service = useMachine(field.machine, {
+  id: useId(),
+  async validate({ value }) {
+    const available = await checkUsername(value)
+    return available ? null : "Username is taken"
+  },
+})
+```
+
+Debounce by delaying the Promise. The machine drops resolutions whose sequence
+number is no longer current:
+
+```tsx
+validate({ value }) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(value.length < 3 ? "Too short" : null)
+    }, 300)
+  })
+}
+```
+
+### Mapping native failures to custom messages
+
+Render several error texts and point each at a `ValidityState` key with `match`.
+
+```tsx
+<input {...api.getInputProps()} type="url" required />
+<span {...api.getErrorTextProps({ match: "valueMissing" })}>
+  A URL is required
+</span>
+<span {...api.getErrorTextProps({ match: "typeMismatch" })}>
+  Enter a full URL, including https://
+</span>
+```
+
+`match` options:
+
+- a key like `"valueMissing"` or `"typeMismatch"`: show when that flag is set
+- `true`: always show (useful when a form library owns the message)
+- omitted: show whenever the field is invalid
+
+Only visible error ids are referenced from `aria-describedby`.
+
+### Showing state indicators
+
+`getIndicatorProps` keeps the element mounted and toggles `hidden`, so CSS
+transitions still run.
+
+```tsx
+<span {...api.getIndicatorProps({ type: "required" })}>*</span>
+<span {...api.getIndicatorProps({ type: "validating" })}>Checking…</span>
+<span {...api.getIndicatorProps({ type: "valid" })}>Looks good</span>
+<span {...api.getIndicatorProps({ type: "invalid" })}>!</span>
+```
+
+`api.valid` is tri-state: `null` until validation has run, then `true` or
+`false`. The valid indicator stays hidden while `valid` is `null`.
+
+### Using a select or textarea
+
+Use the matching props getter. Behavior is the same as with an input.
+
+```tsx
+<select {...api.getSelectProps()} name="country" required>
+  <option value="">Select a country</option>
+  <option value="ng">Nigeria</option>
+  <option value="us">United States</option>
+</select>
+```
+
+```tsx
+<textarea {...api.getTextareaProps()} name="bio" rows={4} />
+```
+
+Pair a textarea with `@zag-js/auto-resize` when you want it to grow with
+content.
+
+### Building a multi-control field
+
+When one label covers several controls (amount + currency), set `target` to the
+item the field should track for dirty, filled, and validity. Pass `{ item }` to
+each control getter.
+
+```tsx {3}
+const service = useMachine(field.machine, {
+  id: useId(),
+  target: "amount",
+  required: true,
+})
+```
+
+```tsx
+<label {...api.getLabelProps()}>Amount</label>
+<select {...api.getSelectProps({ item: "currency" })} name="currency">
+  <option value="USD">USD</option>
+  <option value="EUR">EUR</option>
+</select>
+<input {...api.getInputProps({ item: "amount" })} name="amount" />
+```
+
+Only the tracked control gets focus, blur, and change listeners. Sibling
+controls still share `aria-invalid` and `disabled` when the field is invalid or
+disabled. Changing a sibling does not mark the field dirty.
+
+### Controlling dirty, touched, and invalid
+
+Pass `dirty`, `touched`, or `invalid` when a parent or form library already owns
+those flags. User input will not overwrite them.
+
+```tsx {3-5}
+const service = useMachine(field.machine, {
+  id: useId(),
+  dirty: formState.dirtyFields.email,
+  touched: formState.touchedFields.email,
+  invalid: !!formState.errors.email,
+})
+```
+
+`invalid` is the right place for server errors and library-owned validation. It
+forces the invalid UI even when the machine has no messages of its own. Put the
+message in your error text node:
+
+```tsx
+<span {...api.getErrorTextProps()}>
+  {formState.errors.email?.message ?? api.errors[0]}
+</span>
+```
+
+### Integrating with React Hook Form
+
+Let the library own validation. Mirror its state into the field, and merge the
+field's input props with `register` (or a `Controller` render prop).
+
+```tsx
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { useForm } from "react-hook-form"
+
+const {
+  register,
+  formState: { errors, dirtyFields, touchedFields },
+  handleSubmit,
+} = useForm<{ username: string }>()
+
+const service = useMachine(field.machine, {
+  id: useId(),
+  required: true,
+  invalid: !!errors.username,
+  dirty: !!dirtyFields.username,
+  touched: !!touchedFields.username,
+})
+
+const api = field.connect(service, normalizeProps)
+
+<form onSubmit={handleSubmit(onSubmit)} noValidate>
+  <div {...api.getRootProps()}>
+    <label {...api.getLabelProps()}>Username</label>
+    <input
+      {...mergeProps(
+        api.getInputProps(),
+        register("username", {
+          required: "Username is required",
+          minLength: { value: 3, message: "Use at least 3 characters" },
+        }),
+      )}
+    />
+    <span {...api.getErrorTextProps()}>{errors.username?.message}</span>
+  </div>
+</form>
+```
+
+`noValidate` turns off the browser's native bubbles so React Hook Form and the
+field share one error surface.
+
+### Integrating with TanStack Form
+
+Same idea: mirror `invalid`, `dirty`, and `touched`, and bind the control's
+value through the form field API. Keep `useMachine` in its own component so
+hooks stay at the top level.
+
+```tsx
+import { useForm } from "@tanstack/react-form"
+
+const form = useForm({
+  defaultValues: { username: "" },
+})
+
+function UsernameField({ formField }) {
+  const service = useMachine(field.machine, {
+    id: useId(),
+    invalid: formField.state.meta.errors.length > 0,
+    dirty: formField.state.meta.isDirty,
+    touched: formField.state.meta.isTouched,
+  })
+  const api = field.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Username</label>
+      <input
+        {...api.getInputProps()}
+        value={formField.state.value}
+        onChange={(e) => formField.handleChange(e.currentTarget.value)}
+        onBlur={formField.handleBlur}
+      />
+      <span {...api.getErrorTextProps()}>
+        {formField.state.meta.errors.join(", ")}
+      </span>
+    </div>
+  )
+}
+
+;<form.Field
+  name="username"
+  validators={{
+    onChange: ({ value }) =>
+      value.length < 3 ? "Use at least 3 characters" : undefined,
+  }}
+>
+  {(formField) => <UsernameField formField={formField} />}
+</form.Field>
+```
+
+### Composing with other Zag machines
+
+Field is a wrapper around a control, not a parent context other machines
+subscribe to. For a Zag checkbox, switch, or select:
+
+1. Keep the field's label, helper text, and error text.
+2. Put `api.ids.control` (or merge `api.getControlProps()`) on the element that
+   should receive the label's `htmlFor`.
+3. Mirror `disabled`, `invalid`, and `required` onto the other machine as props
+   when you need matching data attributes.
+
+```tsx
+const fieldApi = field.connect(fieldService, normalizeProps)
+const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
+
+<div {...fieldApi.getRootProps()}>
+  <label {...fieldApi.getLabelProps()}>Accept terms</label>
+  <label>
+    <div {...checkboxApi.getRootProps()}>
+      <input
+        {...mergeProps(checkboxApi.getHiddenInputProps(), {
+          id: fieldApi.ids.control,
+          "aria-describedby": fieldApi.ariaDescribedby,
+        })}
+      />
+      <div {...checkboxApi.getControlProps()}>
+        <span {...checkboxApi.getIndicatorProps()}>
+          <CheckIcon />
+        </span>
+      </div>
+    </div>
+  </label>
+  <span {...fieldApi.getHelperTextProps()}>Required to continue</span>
+  <span {...fieldApi.getErrorTextProps()}>{fieldApi.errors[0]}</span>
+</div>
+```
+
+For a plain custom control that is not another Zag machine, prefer
+`api.getControlProps()` on the focusable element.
+
+### Validating, clearing, and resetting from code
+
+```tsx
+api.validate() // commit validity now (surfaces valueMissing even if pristine)
+api.clearErrors() // drop committed errors and customValidity
+api.reset() // clear interaction state and re-baseline dirty from the control
+```
+
+Form `reset` events are tracked automatically. After the browser restores
+default values, the field re-reads the control and returns to a pristine state.
+
+### Listening for validity changes
+
+```tsx {3-6}
+const service = useMachine(field.machine, {
+  id: useId(),
+  onValidityChange(details) {
+    // details => { valid, errors, validity, value }
+    console.log(details.errors)
+  },
+})
+```
+
+## Styling guide
+
+Each part includes a component-scoped data attribute you can target in CSS.
+
+```css
+[data-field-root] {
+  /* styles for the root part */
+}
+
+[data-field-label] {
+  /* styles for the label part */
+}
+
+[data-field-control] {
+  /* styles for the input, textarea, or select */
+}
+
+[data-field-helper-text] {
+  /* styles for the helper text part */
+}
+
+[data-field-error-text] {
+  /* styles for the error text part */
+}
+
+[data-field-indicator] {
+  /* styles for required / valid / invalid / validating indicators */
+}
+```
+
+### Invalid and valid
+
+`data-invalid` is present when the field is invalid. `data-valid` is present
+only when `api.valid === true` (not while it is still `null`).
+
+```css
+[data-field-control][data-invalid] {
+  border-color: red;
+}
+
+[data-field-control][data-valid] {
+  border-color: green;
+}
+```
+
+### Touched, dirty, filled, focus
+
+```css
+[data-field-root][data-touched] {
+  /* user has blurred the control */
+}
+
+[data-field-root][data-dirty] {
+  /* value differs from the baseline */
+}
+
+[data-field-control][data-filled] {
+  /* control has a non-empty value */
+}
+
+[data-field-control][data-focus] {
+  /* control is focused */
+}
+```
+
+### Disabled, required, readonly
+
+```css
+[data-field-root][data-disabled] {
+  opacity: 0.5;
+}
+
+[data-field-label][data-required] {
+  /* required field label */
+}
+
+[data-field-control][data-readonly] {
+  /* read-only input or textarea */
+}
+```
+
+### Indicators
+
+```css
+[data-field-indicator][data-type="required"] {
+  color: red;
+}
+
+[data-field-indicator][data-type="validating"] {
+  /* async validate in flight */
+}
+
+[data-field-indicator][hidden] {
+  display: none;
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The field machine exposes the following context properties:
+
+<ContextTable name="field" />
+
+### Machine API
+
+The field `api` exposes the following methods:
+
+<ApiTable name="field" />

@@ -381,31 +381,14 @@ export interface FieldApi<T extends PropTypes = PropTypes> {
    * Returns the state of the label.
    */
   getLabelState: () => LabelState
-  /**
-   * Root label points at the tracked control (`target`). Pass `item` to point at a sibling.
-   */
   getLabelProps: (props?: ItemProps) => T["label"]
   /**
    * Returns the state of the control (input, textarea, select, or a custom host).
    */
   getControlState: () => ControlState
-  /**
-   * Shared control props (id, ARIA, data attrs, listeners) for custom or composed controls.
-   * Prefer `getInputProps`, `getTextareaProps`, or `getSelectProps` for native elements.
-   * Pass `item` in a multi-control field; the tracked item (`target`) keeps listeners.
-   */
   getControlProps: (props?: ItemProps) => T["element"]
-  /**
-   * Native input props. Pass `item` in a multi-control field.
-   */
   getInputProps: (props?: ItemProps) => T["input"]
-  /**
-   * Native textarea props. Pass `item` in a multi-control field.
-   */
   getTextareaProps: (props?: ItemProps) => T["textarea"]
-  /**
-   * Native select props. Pass `item` in a multi-control field.
-   */
   getSelectProps: (props?: ItemProps) => T["select"]
   /**
    * Returns the state of the helper text.

@@ -36,6 +36,8 @@
     "@zag-js/docs": "workspace:*",
     "@zag-js/drawer": "workspace:*",
     "@zag-js/editable": "workspace:*",
+    "@zag-js/field": "workspace:*",
+    "@zag-js/fieldset": "workspace:*",
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/hover-card": "workspace:*",

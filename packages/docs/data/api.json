@@ -2828,29 +2828,9 @@
         "type": "() => LabelState",
         "description": "Returns the state of the label."
       },
-      "getLabelProps": {
-        "type": "(props?: ItemProps) => T[\"label\"]",
-        "description": "Root label points at the tracked control (`target`). Pass `item` to point at a sibling."
-      },
       "getControlState": {
         "type": "() => ControlState",
         "description": "Returns the state of the control (input, textarea, select, or a custom host)."
-      },
-      "getControlProps": {
-        "type": "(props?: ItemProps) => T[\"element\"]",
-        "description": "Shared control props (id, ARIA, data attrs, listeners) for custom or composed controls.\nPrefer `getInputProps`, `getTextareaProps`, or `getSelectProps` for native elements.\nPass `item` in a multi-control field; the tracked item (`target`) keeps listeners."
-      },
-      "getInputProps": {
-        "type": "(props?: ItemProps) => T[\"input\"]",
-        "description": "Native input props. Pass `item` in a multi-control field."
-      },
-      "getTextareaProps": {
-        "type": "(props?: ItemProps) => T[\"textarea\"]",
-        "description": "Native textarea props. Pass `item` in a multi-control field."
-      },
-      "getSelectProps": {
-        "type": "(props?: ItemProps) => T[\"select\"]",
-        "description": "Native select props. Pass `item` in a multi-control field."
       },
       "getHelperTextState": {
         "type": "() => HelperTextState",
@@ -3761,6 +3741,94 @@
       }
     }
   },
+  "infinite-scroll": {
+    "api": {
+      "status": {
+        "type": "Status",
+        "description": "The current status of the list."
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Whether a load is in flight."
+      },
+      "hasMore": {
+        "type": "boolean",
+        "description": "Whether more items are available."
+      },
+      "loadMore": {
+        "type": "VoidFunction",
+        "description": "Loads the next page, bypassing the scroll trigger, the growth guard, and `disabled`.\nNo-op when `hasMore` is false or a load is already in flight."
+      },
+      "reset": {
+        "type": "VoidFunction",
+        "description": "Clears the growth guard and re-arms the sentinel. Call after replacing the list in place,\nor to retry once a load that added nothing has blocked automatic loading."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "onLoadMore": {
+        "type": "((details: LoadMoreDetails) => void | Promise<void>) | undefined",
+        "description": "Called when the sentinel approaches the leading edge of the scroller.\nIf it returns a promise, the loading state is derived from it."
+      },
+      "hasMore": {
+        "type": "boolean | undefined",
+        "description": "Whether more items are available.",
+        "defaultValue": "true"
+      },
+      "count": {
+        "type": "number",
+        "description": "The number of items currently loaded.\n\nThis is the growth signal: a load is only allowed when it has increased since the last one,\nwhich is what makes an unbounded fetch loop impossible."
+      },
+      "loading": {
+        "type": "boolean | undefined",
+        "description": "Whether a load is in flight. When omitted, it is derived from the promise\nreturned by `onLoadMore`."
+      },
+      "edge": {
+        "type": "Edge | undefined",
+        "description": "Which edge of the scroller triggers loading. Use `start` for reversed layouts.",
+        "defaultValue": "\"end\""
+      },
+      "orientation": {
+        "type": "Orientation | undefined",
+        "description": "The scroll axis.",
+        "defaultValue": "\"vertical\""
+      },
+      "offset": {
+        "type": "number | string | undefined",
+        "description": "How far ahead of the edge to trigger. A number is a ratio of the viewport size\n(`1` = one viewport ahead); a string is any CSS length.",
+        "defaultValue": "1"
+      },
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether automatic loading is paused.",
+        "defaultValue": "false"
+      },
+      "scrollEl": {
+        "type": "(() => HTMLElement | null) | undefined",
+        "description": "Returns the scroll container. Use when the nearest scrolling ancestor of the sentinel\nis not the right element, e.g. an external scroll area."
+      },
+      "translations": {
+        "type": "IntlTranslations | undefined",
+        "description": "Specifies the localized strings that represent the element state."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "listbox": {
     "api": {
       "empty": {
@@ -4473,12 +4541,12 @@
       },
       "transformTiming": {
         "type": "TimingOptions | undefined",
-        "description": "The timing of layout transitions - slots and static parts entering/exiting.",
+        "description": "The timing of layout transitions - segments entering/exiting.",
         "defaultValue": "{ duration: \"500ms\", easing: \"cubic-bezier(0.4, 0, 0.2, 1)\" }"
       },
       "stagger": {
         "type": "string | undefined",
-        "description": "A CSS `<time>` delay applied between adjacent digit slots, e.g. `\"25ms\"`.",
+        "description": "A CSS `<time>` delay applied between adjacent digits, e.g. `\"25ms\"`.",
         "defaultValue": "undefined"
       },
       "respectMotionPreference": {

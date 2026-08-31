@@ -1,0 +1,22 @@
+```jsx
+import * as fieldset from "@zag-js/fieldset"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Fieldset() {
+  const service = useMachine(fieldset.machine, { id: createUniqueId() })
+  const api = createMemo(() => fieldset.connect(service, normalizeProps))
+
+  return (
+    <fieldset {...api().getRootProps()}>
+      <legend {...api().getLegendProps()}>Contact details</legend>
+      <span {...api().getHelperTextProps()}>How can we reach you?</span>
+      <label>
+        Phone
+        <input type="tel" name="phone" />
+      </label>
+      <span {...api().getErrorTextProps()}>Contact details are incomplete</span>
+    </fieldset>
+  )
+}
+```

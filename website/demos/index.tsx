@@ -16,6 +16,8 @@ import { DateInput } from "./date-input"
 import { DatePicker } from "./date-picker"
 import { Dialog } from "./dialog"
 import { Editable } from "./editable"
+import { Field } from "./field"
+import { Fieldset } from "./fieldset"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
@@ -226,6 +228,28 @@ const components = {
           options: ["enter", "blur", "none", "both"],
           default: "enter",
         },
+      }}
+    />
+  ),
+  Field: () => (
+    <Playground
+      name="field"
+      component={Field}
+      defaultProps={{
+        disabled: false,
+        invalid: false,
+        required: true,
+        readOnly: false,
+      }}
+    />
+  ),
+  Fieldset: () => (
+    <Playground
+      name="fieldset"
+      component={Fieldset}
+      defaultProps={{
+        disabled: false,
+        invalid: false,
       }}
     />
   ),

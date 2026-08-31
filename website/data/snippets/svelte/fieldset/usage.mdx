@@ -1,0 +1,21 @@
+```svelte
+<script lang="ts">
+  import * as fieldset from "@zag-js/fieldset"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(fieldset.machine, { id })
+
+  const api = $derived(fieldset.connect(service, normalizeProps))
+</script>
+
+<fieldset {...api.getRootProps()}>
+  <legend {...api.getLegendProps()}>Contact details</legend>
+  <span {...api.getHelperTextProps()}>How can we reach you?</span>
+  <label>
+    Phone
+    <input type="tel" name="phone" />
+  </label>
+  <span {...api.getErrorTextProps()}>Contact details are incomplete</span>
+</fieldset>
+```
