@@ -4053,6 +4053,9 @@ importers:
       '@zag-js/angle-slider':
         specifier: workspace:*
         version: link:../packages/machines/angle-slider
+      '@zag-js/async-list':
+        specifier: workspace:*
+        version: link:../packages/machines/async-list
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../packages/machines/avatar
@@ -4119,6 +4122,9 @@ importers:
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../packages/machines/image-cropper
+      '@zag-js/infinite-scroll':
+        specifier: workspace:*
+        version: link:../packages/machines/infinite-scroll
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../packages/machines/listbox

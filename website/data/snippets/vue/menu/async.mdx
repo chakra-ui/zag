@@ -1,0 +1,93 @@
+```html
+<script setup>
+  import * as asyncList from "@zag-js/async-list"
+  import * as infiniteScroll from "@zag-js/infinite-scroll"
+  import * as menu from "@zag-js/menu"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, defineComponent, ref, useId } from "vue"
+
+  // Owns the infinite-scroll machine. Mount only while the menu is open.
+  const LoadMore = defineComponent({
+    props: {
+      count: { type: Number, required: true },
+      hasMore: { type: Boolean, required: true },
+      loading: { type: Boolean, required: true },
+      loadMore: { type: Function, required: true },
+    },
+    setup(props) {
+      const id = useId()
+      const service = useMachine(
+        infiniteScroll.machine,
+        computed(() => ({
+          id,
+          count: props.count,
+          hasMore: props.hasMore,
+          loading: props.loading,
+          onLoadMore: () => props.loadMore(),
+        })),
+      )
+      const api = computed(() =>
+        infiniteScroll.connect(service, normalizeProps),
+      )
+      return { api }
+    },
+    template: `
+      <li role="presentation">
+        <div v-bind="api.getSentinelProps()" />
+        <div v-bind="api.getIndicatorProps({ type: 'loading' })">
+          Loading more…
+        </div>
+      </li>
+    `,
+  })
+
+  const hasOpened = ref(false)
+
+  const listService = useMachine(asyncList.machine, {
+    autoReload: false,
+    async load({ signal, cursor }) {
+      const res = await fetch(cursor || "/api/people", { signal })
+      const json = await res.json()
+      return { items: json.results, cursor: json.next }
+    },
+  })
+  const listApi = computed(() => asyncList.connect(listService))
+
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onOpenChange({ open }) {
+      if (open && !hasOpened.value) {
+        hasOpened.value = true
+        listApi.value.reload()
+      }
+    },
+  })
+  const api = computed(() => menu.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <button v-bind="api.getTriggerProps()">Characters</button>
+    <div v-if="api.open" v-bind="api.getPositionerProps()">
+      <ul
+        v-bind="api.getContentProps()"
+        style="max-height: 240px; overflow-y: auto"
+      >
+        <li
+          v-for="item in listApi.items"
+          :key="item.name"
+          v-bind="api.getItemProps({ value: item.name })"
+        >
+          {{ item.name }}
+        </li>
+        <LoadMore
+          :count="listApi.items.length"
+          :has-more="listApi.hasMore"
+          :loading="listApi.isLoading"
+          :load-more="() => listApi.loadMore()"
+        />
+      </ul>
+    </div>
+  </div>
+</template>
+```

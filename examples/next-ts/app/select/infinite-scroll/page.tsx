@@ -1,39 +1,15 @@
 "use client"
 
-import * as infiniteScroll from "@zag-js/infinite-scroll"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { useId, useMemo } from "react"
+import { LoadMore } from "@/components/load-more"
 import { useAsyncList } from "@/hooks/use-async-list"
 import "@styles/select.css"
 
 interface Pokemon {
   name: string
   url: string
-}
-
-interface LoadMoreProps {
-  count: number
-  hasMore: boolean
-  loading: boolean
-  onLoadMore: () => void
-}
-
-/**
- * Owns the sentinel and the machine that observes it, so both share one lifetime. Rendering it
- * only while the select is open is all it takes to scope loading to when the list is visible.
- */
-function LoadMore(props: LoadMoreProps) {
-  const service = useMachine(infiniteScroll.machine, { id: useId(), ...props })
-  const api = infiniteScroll.connect(service, normalizeProps)
-  return (
-    <>
-      <div {...api.getSentinelProps()} />
-      <div {...api.getIndicatorProps({ type: "loading" })} style={{ padding: "8px 12px" }}>
-        Loading more...
-      </div>
-    </>
-  )
 }
 
 export default function Page() {
@@ -94,7 +70,9 @@ export default function Page() {
                     hasMore={listApi.hasMore}
                     loading={listApi.isLoading}
                     onLoadMore={() => listApi.loadMore()}
-                  />
+                  >
+                    Loading more...
+                  </LoadMore>
                 </div>
               </div>
             </div>

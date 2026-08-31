@@ -22,6 +22,7 @@ import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { MenuAsync } from "./menu-async"
 import { Menubar } from "./menubar"
 import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
@@ -282,6 +283,9 @@ const components = {
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
+  MenuAsync: () => (
+    <Playground name="menu-async" component={MenuAsync} hideControls />
+  ),
   Menubar: () => (
     <Playground
       name="menubar"

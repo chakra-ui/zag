@@ -1,0 +1,84 @@
+```tsx
+import * as asyncList from "@zag-js/async-list"
+import * as infiniteScroll from "@zag-js/infinite-scroll"
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For, Show } from "solid-js"
+
+// Owns the infinite-scroll machine. Mount only while the menu is open.
+function LoadMore(props: {
+  count: number
+  hasMore: boolean
+  loading: boolean
+  onLoadMore: () => void
+}) {
+  const id = createUniqueId()
+  const service = useMachine(infiniteScroll.machine, () => ({
+    id,
+    count: props.count,
+    hasMore: props.hasMore,
+    loading: props.loading,
+    onLoadMore: () => props.onLoadMore(),
+  }))
+  const api = createMemo(() => infiniteScroll.connect(service, normalizeProps))
+  return (
+    <li role="presentation">
+      <div {...api().getSentinelProps()} />
+      <div {...api().getIndicatorProps({ type: "loading" })}>Loading more…</div>
+    </li>
+  )
+}
+
+export function AsyncMenu() {
+  let hasOpened = false
+
+  const listService = useMachine(asyncList.machine, {
+    autoReload: false,
+    async load({ signal, cursor }) {
+      const res = await fetch(cursor || "/api/people", { signal })
+      const json = await res.json()
+      return { items: json.results, cursor: json.next }
+    },
+  })
+  const listApi = createMemo(() => asyncList.connect(listService))
+
+  const service = useMachine(menu.machine, {
+    id: createUniqueId(),
+    onOpenChange({ open }) {
+      if (open && !hasOpened) {
+        hasOpened = true
+        listApi().reload()
+      }
+    },
+  })
+  const api = createMemo(() => menu.connect(service, normalizeProps))
+
+  return (
+    <div>
+      <button {...api().getTriggerProps()}>Characters</button>
+      <Show when={api().open}>
+        <div {...api().getPositionerProps()}>
+          <ul
+            {...api().getContentProps()}
+            style={{ "max-height": "240px", "overflow-y": "auto" }}
+          >
+            <For each={listApi().items}>
+              {(item) => (
+                <li {...api().getItemProps({ value: item.name })}>
+                  {item.name}
+                </li>
+              )}
+            </For>
+            <LoadMore
+              count={listApi().items.length}
+              hasMore={listApi().hasMore}
+              loading={listApi().isLoading}
+              onLoadMore={() => listApi().loadMore()}
+            />
+          </ul>
+        </div>
+      </Show>
+    </div>
+  )
+}
+```

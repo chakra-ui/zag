@@ -1,0 +1,56 @@
+```svelte
+<script lang="ts">
+  import * as asyncList from "@zag-js/async-list"
+  import * as menu from "@zag-js/menu"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  // Child that owns infinite-scroll.machine — mount only while the menu is open
+  import LoadMore from "./load-more.svelte"
+
+  let hasOpened = false
+
+  const listService = useMachine(asyncList.machine, {
+    autoReload: false,
+    async load({ signal, cursor }) {
+      const res = await fetch(cursor || "/api/people", { signal })
+      const json = await res.json()
+      return { items: json.results, cursor: json.next }
+    },
+  })
+  const listApi = $derived(asyncList.connect(listService))
+
+  const id = $props.id()
+  const service = useMachine(menu.machine, {
+    id,
+    onOpenChange({ open }) {
+      if (open && !hasOpened) {
+        hasOpened = true
+        listApi.reload()
+      }
+    },
+  })
+  const api = $derived(menu.connect(service, normalizeProps))
+</script>
+
+<div>
+  <button {...api.getTriggerProps()}>Characters</button>
+  {#if api.open}
+    <div {...api.getPositionerProps()}>
+      <ul
+        {...api.getContentProps()}
+        style="max-height: 240px; overflow-y: auto"
+      >
+        {#each listApi.items as item (item.name)}
+          <li {...api.getItemProps({ value: item.name })}>{item.name}</li>
+        {/each}
+        <LoadMore
+          as="li"
+          count={listApi.items.length}
+          hasMore={listApi.hasMore}
+          loading={listApi.isLoading}
+          onLoadMore={() => listApi.loadMore()}
+        />
+      </ul>
+    </div>
+  {/if}
+</div>
+```

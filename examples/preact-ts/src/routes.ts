@@ -195,6 +195,7 @@ export const routes: RouteDefinition[] = [
   { path: "/menu/overflow", component: lazy(() => import("./pages/menu/overflow")) },
   { path: "/menu/nested", component: lazy(() => import("./pages/menu/nested")) },
   { path: "/menu/options", component: lazy(() => import("./pages/menu/options")) },
+  { path: "/menu/async", component: lazy(() => import("./pages/menu/async")) },
   { path: "/menu/combobox", component: lazy(() => import("./pages/menu/combobox")) },
   { path: "/menu/in-dialog", component: lazy(() => import("./pages/menu/in-dialog")) },
   { path: "/menu/lazy-mounted", component: lazy(() => import("./pages/menu/lazy-mounted")) },

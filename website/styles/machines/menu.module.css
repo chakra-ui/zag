@@ -47,6 +47,23 @@
     }
   }
 
+  .ScrollableContent {
+    width: 14rem;
+    max-height: 15rem;
+    overflow-y: auto;
+  }
+
+  .Status {
+    padding-inline: 0.5rem;
+    padding-block: 0.35rem;
+    font-size: 0.8125rem;
+    opacity: 0.7;
+
+    & output {
+      display: block;
+    }
+  }
+
   .Item,
   .TriggerItem {
     padding-inline: 0.5rem;

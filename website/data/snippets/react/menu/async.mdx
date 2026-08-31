@@ -1,0 +1,75 @@
+```tsx
+import * as asyncList from "@zag-js/async-list"
+import * as infiniteScroll from "@zag-js/infinite-scroll"
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId, useRef } from "react"
+
+// Owns the infinite-scroll machine. Mount only while the menu is open.
+function LoadMore(props: {
+  count: number
+  hasMore: boolean
+  loading: boolean
+  onLoadMore: () => void
+}) {
+  const service = useMachine(infiniteScroll.machine, { id: useId(), ...props })
+  const api = infiniteScroll.connect(service, normalizeProps)
+  return (
+    <li role="presentation">
+      <div {...api.getSentinelProps()} />
+      <div {...api.getIndicatorProps({ type: "loading" })}>Loading more…</div>
+    </li>
+  )
+}
+
+export function AsyncMenu() {
+  const hasOpened = useRef(false)
+
+  const listService = useMachine(asyncList.machine, {
+    autoReload: false,
+    async load({ signal, cursor }) {
+      const res = await fetch(cursor || "/api/people", { signal })
+      const json = await res.json()
+      return { items: json.results, cursor: json.next }
+    },
+  })
+  const listApi = asyncList.connect(listService)
+
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onOpenChange({ open }) {
+      if (open && !hasOpened.current) {
+        hasOpened.current = true
+        listApi.reload()
+      }
+    },
+  })
+  const api = menu.connect(service, normalizeProps)
+
+  return (
+    <div>
+      <button {...api.getTriggerProps()}>Characters</button>
+      {api.open && (
+        <div {...api.getPositionerProps()}>
+          <ul
+            {...api.getContentProps()}
+            style={{ maxHeight: 240, overflowY: "auto" }}
+          >
+            {listApi.items.map((item) => (
+              <li key={item.name} {...api.getItemProps({ value: item.name })}>
+                {item.name}
+              </li>
+            ))}
+            <LoadMore
+              count={listApi.items.length}
+              hasMore={listApi.hasMore}
+              loading={listApi.isLoading}
+              onLoadMore={() => listApi.loadMore()}
+            />
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+```
