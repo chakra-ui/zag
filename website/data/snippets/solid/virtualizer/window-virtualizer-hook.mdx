@@ -1,0 +1,41 @@
+```tsx
+import {
+  WindowVirtualizer,
+  type WindowVirtualizerOptions,
+} from "@zag-js/virtualizer"
+import { useSyncExternalStore } from "@zag-js/solid"
+import { onCleanup, onMount } from "solid-js"
+
+export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
+  const virtualizer = new WindowVirtualizer(options)
+  const snapshot = useSyncExternalStore(
+    virtualizer.subscribe,
+    virtualizer.getSnapshot,
+  )
+
+  let scrollElement: HTMLElement | null = null
+  let mounted = false
+
+  onMount(() => {
+    mounted = true
+    if (scrollElement) virtualizer.init(scrollElement)
+  })
+
+  onCleanup(() => virtualizer.destroy())
+
+  const store = new Proxy(virtualizer, {
+    get(target, prop, receiver) {
+      snapshot()
+      const value = Reflect.get(target, prop, receiver)
+      return typeof value === "function" ? value.bind(target) : value
+    },
+  })
+
+  const ref = (el: HTMLElement | null) => {
+    scrollElement = el
+    if (mounted && el) virtualizer.init(el)
+  }
+
+  return { virtualizer: store, ref }
+}
+```

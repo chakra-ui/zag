@@ -183,6 +183,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   init(scrollElement: HTMLElement): void {
+    this.isDestroyed = false
     this.scrollElement = scrollElement
     this.rtlScrollBehavior = null
     if (isHTMLElement(scrollElement)) {

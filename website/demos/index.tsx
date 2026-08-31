@@ -75,6 +75,7 @@ import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
+import { Virtualizer } from "./virtualizer"
 
 const components = {
   Accordion: () => (
@@ -664,6 +665,9 @@ const components = {
         },
       }}
     />
+  ),
+  Virtualizer: () => (
+    <Playground name="virtualizer" component={Virtualizer} hideControls />
   ),
 }
 

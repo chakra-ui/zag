@@ -1,0 +1,41 @@
+```svelte
+<script lang="ts">
+  let { items }: { items: { id: string; label: string }[] } = $props()
+
+  const { virtualizer, init } = useWindowVirtualizer({
+    count: items.length,
+    estimatedSize: () => 48,
+    overscan: 8,
+    initialRect: { width: 1024, height: 720 },
+    indexToKey: (index) => items[index].id,
+  })
+
+  virtualizer.updateOptions({ count: items.length })
+
+  let rootEl = $state<HTMLDivElement | null>(null)
+
+  $effect(() => {
+    init(rootEl)
+  })
+</script>
+
+<div
+  bind:this={rootEl}
+  {...virtualizer.getContainerAriaAttrs()}
+  style="position: relative; width: 100%"
+>
+  <div style="height: {virtualizer.getTotalSize()}px; position: relative">
+    {#each virtualizer.getVirtualItems() as virtualItem (virtualItem.key)}
+      {@const style = virtualizer.getItemStyle(virtualItem)}
+      <div
+        data-index={virtualItem.index}
+        use:virtualItem.measureElement
+        {...virtualizer.getItemAriaAttrs(virtualItem.index)}
+        style="position: {style.position}; top: 0; left: 0; width: 100%; transform: {style.transform}"
+      >
+        {items[virtualItem.index].label}
+      </div>
+    {/each}
+  </div>
+</div>
+```

@@ -9,35 +9,50 @@ import { remarkAdmonition } from "./lib/remark-utils"
 import { rehypeSvelte } from "./lib/svelte-highlight"
 import siteConfig from "./site.config"
 
-// Transform Velite TOC to legacy Contentlayer format
+function resolvePackageSource(packageSlug: string) {
+  const candidates = [
+    `packages/utilities/${packageSlug}`,
+    `packages/machines/${packageSlug}`,
+  ]
+  const roots = [process.cwd(), join(process.cwd(), "..")]
+  const sourceDir =
+    candidates.find((dir) =>
+      roots.some((root) => fs.existsSync(join(root, dir))),
+    ) ?? `packages/utilities/${packageSlug}`
+
+  return {
+    sourceUrl: `${siteConfig.repo.treeUrl}/${sourceDir}`,
+    visualizeUrl: sourceDir.startsWith("packages/machines/")
+      ? `https://zag-visualizer.vercel.app/${packageSlug}`
+      : "",
+  }
+}
+
+// Flatten Velite's heading tree. Docs pages have no H1 in the body, so the
+// top-level entries are already H2s. Skipping them left H2-only pages (like
+// Virtualizer) with an empty TOC.
 function transformTocToLegacyFormat(
   toc: any[],
 ): Array<{ content: string; slug: string; lvl: number }> {
   const result: Array<{ content: string; slug: string; lvl: number }> = []
 
-  function processTocItems(items: any[], level: number = 2) {
+  function processTocItems(items: any[], level: number) {
     for (const item of items) {
       if (item.title && item.url) {
         result.push({
           content: item.title,
-          slug: item.url.replace(/^#/, ""), // Remove # prefix
+          slug: item.url.replace(/^#/, ""),
           lvl: level,
         })
 
-        if (item.items && item.items.length > 0) {
+        if (item.items?.length) {
           processTocItems(item.items, level + 1)
         }
       }
     }
   }
 
-  // Skip the top-level items (h1) and start from their children (h2)
-  for (const topLevelItem of toc) {
-    if (topLevelItem.items && topLevelItem.items.length > 0) {
-      processTocItems(topLevelItem.items, 2)
-    }
-  }
-
+  processTocItems(toc, 2)
   return result
 }
 
@@ -216,8 +231,7 @@ const utilities = defineCollection({
         npmUrl: data.package
           ? `https://www.npmjs.com/package/${data.package}`
           : "",
-        sourceUrl: `${siteConfig.repo.treeUrl}/packages/machines/${packageSlug}`,
-        visualizeUrl: `https://zag-visualizer.vercel.app/${packageSlug}`,
+        ...resolvePackageSource(packageSlug ?? ""),
         version: (() => {
           if (!data.package) return ""
           try {

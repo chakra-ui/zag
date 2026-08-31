@@ -1,0 +1,26 @@
+```tsx
+import {
+  GridVirtualizer,
+  type GridVirtualizerOptions,
+} from "@zag-js/virtualizer"
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+
+export function useGridVirtualizer(options: GridVirtualizerOptions) {
+  const [virtualizer] = useState(() => new GridVirtualizer(options))
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+
+  const ref = useCallback(
+    (el: HTMLElement | null) => {
+      if (!el) return
+      virtualizer.init(el)
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => {
+    return () => virtualizer.destroy()
+  }, [virtualizer])
+
+  return { virtualizer, ref }
+}
+```

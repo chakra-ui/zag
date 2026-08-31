@@ -1,0 +1,41 @@
+```svelte
+<script lang="ts">
+  let { items }: { items: { id: string; label: string }[] } = $props()
+
+  const { virtualizer, init } = useListVirtualizer({
+    count: items.length,
+    estimatedSize: () => 48,
+    overscan: 5,
+    indexToKey: (index) => items[index].id,
+  })
+
+  virtualizer.updateOptions({ count: items.length })
+
+  let scrollEl = $state<HTMLDivElement | null>(null)
+
+  $effect(() => {
+    init(scrollEl)
+  })
+</script>
+
+<div
+  bind:this={scrollEl}
+  onscroll={virtualizer.handleScroll}
+  {...virtualizer.getContainerAriaAttrs()}
+  style="height: 400px; overflow: auto; position: relative"
+>
+  <div style="height: {virtualizer.getTotalSize()}px; position: relative">
+    {#each virtualizer.getVirtualItems() as virtualItem (virtualItem.key)}
+      {@const style = virtualizer.getItemStyle(virtualItem)}
+      <div
+        data-index={virtualItem.index}
+        use:virtualItem.measureElement
+        {...virtualizer.getItemAriaAttrs(virtualItem.index)}
+        style="position: {style.position}; top: 0; left: 0; width: 100%; transform: {style.transform}"
+      >
+        {items[virtualItem.index].label}
+      </div>
+    {/each}
+  </div>
+</div>
+```

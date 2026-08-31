@@ -121,6 +121,33 @@ body {
   overflow-y: auto;
 }
 
+/* Window virtualizer: document is the scrollport, not `.page main`.
+   Keep html/body `overflow: visible` so the library binds to `window`
+   (`overflow: auto` on body makes body the scroller and its clientHeight
+   grows with the list, so every item looks visible). */
+html:has(.window-list-virtualizer),
+body:has(.window-list-virtualizer) {
+  overflow: visible;
+  height: auto;
+}
+
+.page:has(.window-list-virtualizer) {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.page:has(.window-list-virtualizer) main {
+  overflow: visible;
+}
+
+.page:has(.window-list-virtualizer) aside {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+}
+
 .nav {
   display: flex;
   flex-direction: column;

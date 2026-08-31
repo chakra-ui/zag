@@ -1,4 +1,8 @@
-import { components as allComponents, snippets as allSnippets } from ".velite"
+import {
+  components as allComponents,
+  snippets as allSnippets,
+  utilities as allUtilities,
+} from ".velite"
 import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
@@ -72,9 +76,11 @@ const components: Record<string, FC<any>> = {
     )
   },
   Resources(props) {
-    const comp = allComponents.find((c) => c.package === props.pkg)
-    if (!comp) return null
-    return <ResourceLinkGroup item={comp} />
+    const item =
+      allComponents.find((c) => c.package === props.pkg) ??
+      allUtilities.find((u) => u.package === props.pkg)
+    if (!item) return null
+    return <ResourceLinkGroup item={item} />
   },
   blockquote(props) {
     return <Blockquote {...props} />

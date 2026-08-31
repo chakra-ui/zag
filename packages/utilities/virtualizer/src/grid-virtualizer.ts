@@ -144,6 +144,7 @@ export class GridVirtualizer {
   }
 
   init(scrollElement: HTMLElement): void {
+    this.isDestroyed = false
     this.scrollElement = scrollElement
     this.rtlScrollBehavior = null
 

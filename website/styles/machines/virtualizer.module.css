@@ -1,0 +1,37 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(100%, 360px);
+  }
+
+  .Meta {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--colors-fg-muted);
+  }
+
+  .Viewport {
+    width: 100%;
+    height: 320px;
+    overflow: auto;
+    border: 1px solid var(--colors-border);
+    background: var(--colors-bg-subtle);
+  }
+
+  .Item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--colors-border);
+    background: var(--colors-bg-popover);
+    box-sizing: border-box;
+  }
+
+  .ItemAlt {
+    background: var(--colors-bg-subtle);
+  }
+}

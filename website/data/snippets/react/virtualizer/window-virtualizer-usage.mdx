@@ -1,0 +1,38 @@
+```tsx
+function WindowList({ items }: { items: { id: string; label: string }[] }) {
+  const { virtualizer, ref } = useWindowVirtualizer({
+    count: items.length,
+    estimatedSize: () => 48,
+    overscan: 8,
+    initialRect: { width: 1024, height: 720 },
+    indexToKey: (index) => items[index].id,
+  })
+
+  virtualizer.updateOptions({ count: items.length })
+
+  return (
+    <div
+      ref={ref}
+      {...virtualizer.getContainerAriaAttrs()}
+      style={virtualizer.getContainerStyle()}
+    >
+      <div style={virtualizer.getContentStyle()}>
+        {virtualizer.getVirtualItems().map((virtualItem) => {
+          const item = items[virtualItem.index]
+          return (
+            <div
+              key={virtualItem.key}
+              data-index={virtualItem.index}
+              ref={virtualItem.measureElement}
+              {...virtualizer.getItemAriaAttrs(virtualItem.index)}
+              style={virtualizer.getItemStyle(virtualItem)}
+            >
+              {item.label}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+```

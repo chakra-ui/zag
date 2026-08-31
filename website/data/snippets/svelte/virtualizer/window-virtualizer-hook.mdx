@@ -1,0 +1,33 @@
+```ts
+import {
+  WindowVirtualizer,
+  type WindowVirtualizerOptions,
+} from "@zag-js/virtualizer"
+import { useSyncExternalStore } from "@zag-js/svelte"
+import { onDestroy } from "svelte"
+
+export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
+  const virtualizer = new WindowVirtualizer(options)
+  const snapshot = useSyncExternalStore(
+    virtualizer.subscribe,
+    virtualizer.getSnapshot,
+  )
+
+  onDestroy(() => virtualizer.destroy())
+
+  const store = new Proxy(virtualizer, {
+    get(target, prop, receiver) {
+      snapshot()
+      const value = Reflect.get(target, prop, receiver)
+      return typeof value === "function" ? value.bind(target) : value
+    },
+  })
+
+  const init = (element: HTMLElement | null) => {
+    if (!element) return
+    virtualizer.init(element)
+  }
+
+  return { virtualizer: store, init }
+}
+```

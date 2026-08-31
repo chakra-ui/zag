@@ -4113,6 +4113,12 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../packages/machines/floating-panel
+      '@zag-js/focus-trap':
+        specifier: workspace:*
+        version: link:../packages/utilities/focus-trap
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../packages/machines/hover-card
@@ -4227,6 +4233,9 @@ importers:
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../packages/machines/tree-view
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../packages/utilities/virtualizer
       hastscript:
         specifier: 9.0.1
         version: 9.0.1

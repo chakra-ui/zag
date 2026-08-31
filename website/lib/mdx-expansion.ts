@@ -171,9 +171,13 @@ export function expandResources(content: string, component: any): string {
   const resources = [
     "## Resources\n\n",
     `[Latest version: v${component.version}](${component.npmUrl})`,
-    `[Logic Visualizer](${component.visualizeUrl})`,
+    component.visualizeUrl
+      ? `[Logic Visualizer](${component.visualizeUrl})`
+      : "",
     `[Source Code](${component.sourceUrl})`,
-  ].join("\n")
+  ]
+    .filter(Boolean)
+    .join("\n")
 
   return content.replace(RESOURCES_REGEX, resources)
 }

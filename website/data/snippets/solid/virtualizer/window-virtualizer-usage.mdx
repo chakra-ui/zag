@@ -1,0 +1,41 @@
+```tsx
+import { Index } from "solid-js"
+
+function WindowList(props: { items: { id: string; label: string }[] }) {
+  const { virtualizer, ref } = useWindowVirtualizer({
+    count: props.items.length,
+    estimatedSize: () => 48,
+    overscan: 8,
+    initialRect: { width: 1024, height: 720 },
+    indexToKey: (index) => props.items[index].id,
+  })
+
+  virtualizer.updateOptions({ count: props.items.length })
+
+  return (
+    <div
+      ref={ref}
+      {...virtualizer.getContainerAriaAttrs()}
+      style={virtualizer.getContainerStyle()}
+    >
+      <div style={virtualizer.getContentStyle()}>
+        <Index each={virtualizer.getVirtualItems()}>
+          {(virtualItem) => {
+            const item = props.items[virtualItem().index]
+            return (
+              <div
+                data-index={virtualItem().index}
+                ref={virtualItem().measureElement}
+                {...virtualizer.getItemAriaAttrs(virtualItem().index)}
+                style={virtualizer.getItemStyle(virtualItem())}
+              >
+                {item.label}
+              </div>
+            )
+          }}
+        </Index>
+      </div>
+    </div>
+  )
+}
+```

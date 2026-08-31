@@ -1,0 +1,56 @@
+```html
+<script setup>
+  const props = defineProps({
+    rowCount: { type: Number, required: true },
+    columnCount: { type: Number, required: true },
+    getCell: { type: Function, required: true },
+  })
+
+  const { virtualizer, init } = useGridVirtualizer({
+    rowCount: props.rowCount,
+    columnCount: props.columnCount,
+    estimatedRowSize: () => 40,
+    estimatedColumnSize: () => 120,
+    overscan: 3,
+  })
+
+  virtualizer.updateOptions({
+    rowCount: props.rowCount,
+    columnCount: props.columnCount,
+  })
+</script>
+
+<template>
+  <div
+    :ref="init"
+    v-bind="virtualizer.getContainerAriaAttrs()"
+    @scroll="virtualizer.handleScroll"
+    :style="{ ...virtualizer.getContainerStyle(), height: '400px' }"
+  >
+    <div
+      :style="{
+        position: 'relative',
+        width: `${virtualizer.getTotalWidth()}px`,
+        height: `${virtualizer.getTotalHeight()}px`,
+      }"
+    >
+      <div
+        v-for="virtualRow in virtualizer.getVirtualRows()"
+        :key="virtualRow.row"
+        :ref="virtualRow.measureRow"
+        v-bind="virtualizer.getRowAriaAttrs(virtualRow.row)"
+        :style="virtualizer.getRowStyle(virtualRow)"
+      >
+        <div
+          v-for="column in virtualRow.columns"
+          :key="column.column"
+          v-bind="virtualizer.getCellAriaAttrs(virtualRow.row, column.column)"
+          :style="virtualizer.getCellStyleInRow(column)"
+        >
+          {{ props.getCell(virtualRow.row, column.column) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```

@@ -1,7 +1,7 @@
 "use client"
 
 import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "@tanstack/react-virtual"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import { ClientOnly } from "@/components/client-only"
 import { useWindowVirtualizer } from "@/hooks/use-virtualizer"
 
@@ -13,35 +13,6 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
   label: `Item ${i + 1}`,
   description: `Description for item ${i + 1}`,
 }))
-
-/**
- * Override the shared layout CSS that blocks window scrolling.
- * Restores original styles on unmount.
- */
-function useWindowScrollOverride() {
-  useEffect(() => {
-    const body = document.body
-    const page = document.querySelector<HTMLElement>(".page")
-
-    const origBody = body.style.overflow
-    const origPageOverflow = page?.style.overflow ?? ""
-    const origPageHeight = page?.style.height ?? ""
-
-    body.style.overflow = "auto"
-    if (page) {
-      page.style.overflow = "visible"
-      page.style.height = "auto"
-    }
-
-    return () => {
-      body.style.overflow = origBody
-      if (page) {
-        page.style.overflow = origPageOverflow
-        page.style.height = origPageHeight
-      }
-    }
-  }, [])
-}
 
 // =============================================
 // Zag WindowVirtualizer
@@ -355,14 +326,12 @@ function StickyHeader({
 type ActiveView = "zag" | "tanstack"
 
 function PerfContent() {
-  useWindowScrollOverride()
-
   const [activeView, setActiveView] = useState<ActiveView>("zag")
   const [zagMetrics, setZagMetrics] = useState<Metrics | null>(null)
   const [tanstackMetrics, setTanstackMetrics] = useState<Metrics | null>(null)
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 20px 80px" }}>
+    <div className="window-list-virtualizer" style={{ maxWidth: 960, margin: "0 auto", padding: "0 20px 80px" }}>
       <StickyHeader
         activeView={activeView}
         setActiveView={setActiveView}

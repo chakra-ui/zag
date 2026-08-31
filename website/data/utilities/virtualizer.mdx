@@ -1,0 +1,168 @@
+---
+title: Virtualizer
+description: Build smooth virtualized lists, grids, and window views.
+package: "@zag-js/virtualizer"
+---
+
+The virtualizer package renders large data sets without mounting every item at
+once. You control markup and measurement; the virtualizer keeps the visible
+range in sync.
+
+<Resources pkg="@zag-js/virtualizer" />
+
+<Showcase id="Virtualizer" />
+
+**Features**
+
+- List, grid, and window virtualizers
+- Estimated sizes first, measured sizes after mount
+- Scroll-to-index with optional smooth scrolling
+- Stable keys for prepend/chat flows
+
+## Installation
+
+```bash
+npm install @zag-js/virtualizer
+```
+
+## Lifecycle
+
+The same loop applies to every virtualizer:
+
+1. Create the instance with a realistic estimate.
+2. Call `init(element)` when the scroll container mounts.
+3. Render the visible window inside a spacer (`getContentStyle()`).
+4. Measure mounted items when size is dynamic.
+5. Call `updateOptions` when `count` or other inputs change.
+6. Call `destroy()` on unmount.
+
+Subscribe with `virtualizer.subscribe` and `virtualizer.getSnapshot` (stable
+class fields, so they work with `useSyncExternalStore`).
+
+When `count` (or `rowCount` / `columnCount`) changes, sync it during render.
+`useEffect` is one frame too late. Keep callbacks like `estimatedSize` stable;
+`updateOptions` compares by reference.
+
+```tsx
+virtualizer.updateOptions({ count: items.length })
+```
+
+## List virtualizer
+
+Use `ListVirtualizer` for feeds, logs, and chat timelines.
+
+<CodeSnippet id="virtualizer/list-virtualizer-hook.mdx" />
+
+<CodeSnippet id="virtualizer/list-virtualizer-usage.mdx" />
+
+`getVirtualItems()` returns `index`, `key`, `start`, `end`, `size`, `isVisible`,
+and `measureElement`. Horizontal lists use `orientation: "horizontal"` and
+`dir: "ltr" | "rtl"`.
+
+**Measurement.** Pass `ref={virtualItem.measureElement}` for dynamic rows, or
+`measureItem(index, size)` when you already know the size. Keep estimates close
+to reality. Set `observeScrollElementSize: true` if the scrollport can resize.
+
+**Scrolling.**
+
+```ts
+virtualizer.scrollToIndex(120, { align: "center" })
+virtualizer.scrollToIndex(0, { smooth: true })
+virtualizer.scrollToOffset(2400)
+virtualizer.getVisibleRange()
+```
+
+`align` is `"start"`, `"center"`, `"end"`, or `"auto"`. Non-smooth scrolls
+settle after the target measures. `scrollPaddingStart` / `scrollPaddingEnd`
+reserve space for sticky chrome; `scrollMargin` offsets a list that sits below
+other content in the same scroll container.
+
+**Sticky headers.** Pass `groups` and read `getStickyGroupHeader()` while
+scrolling. `translateY` pushes the current header up as the next group
+approaches.
+
+```ts
+const virtualizer = new ListVirtualizer({
+  count: items.length,
+  estimatedSize: () => 32,
+  groups: [
+    { id: "a", startIndex: 0, headerSize: 32 },
+    { id: "b", startIndex: 50, headerSize: 32 },
+  ],
+})
+
+virtualizer.getStickyGroupHeader()
+// { group, headerSize, translateY, offset }
+```
+
+**Prepend / chat.** Provide `indexToKey` and `keyToIndex`, then call
+`prependItems(addedCount)` (or `updateOptions({ count })` with
+`preserveScrollAnchor: true`). Use `shouldAdjustScrollOnSizeChange` when a size
+change above the viewport should keep the user pinned.
+
+## Grid virtualizer
+
+Use `GridVirtualizer` when both rows and columns need windowing. It virtualizes
+**rows** and renders cells inside each visible row.
+
+<CodeSnippet id="virtualizer/grid-virtualizer-hook.mdx" />
+
+<CodeSnippet id="virtualizer/grid-virtualizer-usage.mdx" />
+
+Jump with `scrollToCell(row, column)` or `scrollToRow(row)`. The range reports
+`startRow` / `endRow` and `startColumn` / `endColumn`.
+
+## Window virtualizer
+
+Use `WindowVirtualizer` when the page (`window`) is the scroll container. `init`
+still receives the list root so the virtualizer can measure its offset from the
+window. Do not attach `handleScroll` to that root.
+
+<CodeSnippet id="virtualizer/window-virtualizer-hook.mdx" />
+
+<CodeSnippet id="virtualizer/window-virtualizer-usage.mdx" />
+
+The item loop matches `ListVirtualizer`. Seed `initialRect` for the first paint.
+
+## SSR
+
+Seed the first paint to avoid hydration jumps:
+
+```ts
+new ListVirtualizer({
+  count: items.length,
+  estimatedSize: () => 56,
+  initialRect: { width: 1024, height: 720 },
+  initialOffset: 0,
+  initialMeasurements: cachedMeasurements,
+})
+```
+
+`initialMeasurements` accepts a `Map` or object (by key or index).
+`disableScrollOnInit` leaves scroll restoration to the browser.
+
+## Composition
+
+Render virtual rows inside a machine list and forward keyboard scroll:
+
+```tsx
+virtualizer.updateOptions({ count: options.length })
+
+const service = useMachine(combobox.machine, {
+  collection,
+  scrollToIndexFn(details) {
+    virtualizer.scrollToIndex(details.index, { align: "center" })
+  },
+})
+```
+
+Put `ref` and `onScroll={virtualizer.handleScroll}` on `getListProps()`. Spread
+`getItemProps({ item })` onto each row and merge `getItemStyle(virtualItem)`.
+Same pattern for select, listbox, menu, and tree view.
+
+## Pitfalls
+
+- `transform: scale(...)` on the scroll container is unsupported.
+- Always call `destroy()` to release observers and listeners.
+- Don't measure a node that is `display: none`.
+- Prefer `getContentStyle()` so `pointer-events` disable during scroll.

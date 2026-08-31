@@ -1,0 +1,26 @@
+```tsx
+import {
+  WindowVirtualizer,
+  type WindowVirtualizerOptions,
+} from "@zag-js/virtualizer"
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+
+export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
+  const [virtualizer] = useState(() => new WindowVirtualizer(options))
+  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+
+  const ref = useCallback(
+    (el: HTMLElement | null) => {
+      if (!el) return
+      virtualizer.init(el)
+    },
+    [virtualizer],
+  )
+
+  useEffect(() => {
+    return () => virtualizer.destroy()
+  }, [virtualizer])
+
+  return { virtualizer, ref }
+}
+```

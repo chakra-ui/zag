@@ -40,7 +40,7 @@ function ResourceLink(props: ResourceLinkProps) {
 interface ResourceLinkItem {
   npmUrl: string
   version: string
-  visualizeUrl: string
+  visualizeUrl?: string
   sourceUrl: string
 }
 
@@ -55,9 +55,15 @@ export function ResourceLinkGroup(props: ResourceLinkGroupProps) {
       <ResourceLink icon={RiNpmjsFill} href={item.npmUrl} data-id="npm">
         {item.version} (latest)
       </ResourceLink>
-      <ResourceLink icon={ImMagicWand} href={item.visualizeUrl} data-id="logic">
-        Visualize Logic
-      </ResourceLink>
+      {item.visualizeUrl ? (
+        <ResourceLink
+          icon={ImMagicWand}
+          href={item.visualizeUrl}
+          data-id="logic"
+        >
+          Visualize Logic
+        </ResourceLink>
+      ) : null}
       <ResourceLink icon={HiOutlineCode} href={item.sourceUrl} data-id="source">
         View Source
       </ResourceLink>

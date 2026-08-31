@@ -1,0 +1,57 @@
+```tsx
+function Grid({
+  rowCount,
+  columnCount,
+  getCell,
+}: {
+  rowCount: number
+  columnCount: number
+  getCell: (row: number, column: number) => string
+}) {
+  const { virtualizer, ref } = useGridVirtualizer({
+    rowCount,
+    columnCount,
+    estimatedRowSize: () => 40,
+    estimatedColumnSize: () => 120,
+    overscan: 3,
+  })
+
+  virtualizer.updateOptions({ rowCount, columnCount })
+
+  return (
+    <div
+      ref={ref}
+      onScroll={virtualizer.handleScroll}
+      {...virtualizer.getContainerAriaAttrs()}
+      style={{ ...virtualizer.getContainerStyle(), height: 400 }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: virtualizer.getTotalWidth(),
+          height: virtualizer.getTotalHeight(),
+        }}
+      >
+        {virtualizer.getVirtualRows().map((virtualRow) => (
+          <div
+            key={virtualRow.row}
+            ref={virtualRow.measureRow}
+            {...virtualizer.getRowAriaAttrs(virtualRow.row)}
+            style={virtualizer.getRowStyle(virtualRow)}
+          >
+            {virtualRow.columns.map((column) => (
+              <div
+                key={column.column}
+                {...virtualizer.getCellAriaAttrs(virtualRow.row, column.column)}
+                style={virtualizer.getCellStyleInRow(column)}
+              >
+                {getCell(virtualRow.row, column.column)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```

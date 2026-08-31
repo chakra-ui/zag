@@ -26,6 +26,11 @@ const nextConfig = {
       destination: "https://discord.gg/ww6HE5xaZ2",
       permanent: true,
     },
+    {
+      source: "/guides/virtualizer",
+      destination: "/utilities/virtualizer",
+      permanent: true,
+    },
   ],
 }
 

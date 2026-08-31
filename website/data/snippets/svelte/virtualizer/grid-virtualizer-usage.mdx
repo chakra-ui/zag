@@ -1,0 +1,59 @@
+```svelte
+<script lang="ts">
+  let {
+    rowCount,
+    columnCount,
+    getCell,
+  }: {
+    rowCount: number
+    columnCount: number
+    getCell: (row: number, column: number) => string
+  } = $props()
+
+  const { virtualizer, init } = useGridVirtualizer({
+    rowCount,
+    columnCount,
+    estimatedRowSize: () => 40,
+    estimatedColumnSize: () => 120,
+    overscan: 3,
+  })
+
+  virtualizer.updateOptions({ rowCount, columnCount })
+
+  let scrollEl = $state<HTMLDivElement | null>(null)
+
+  $effect(() => {
+    init(scrollEl)
+  })
+</script>
+
+<div
+  bind:this={scrollEl}
+  onscroll={virtualizer.handleScroll}
+  {...virtualizer.getContainerAriaAttrs()}
+  style="height: 400px; overflow: auto; position: relative"
+>
+  <div
+    style="position: relative; width: {virtualizer.getTotalWidth()}px; height: {virtualizer.getTotalHeight()}px"
+  >
+    {#each virtualizer.getVirtualRows() as virtualRow (`row-${virtualRow.row}`)}
+      {@const rowStyle = virtualizer.getRowStyle(virtualRow)}
+      <div
+        use:virtualRow.measureRow
+        {...virtualizer.getRowAriaAttrs(virtualRow.row)}
+        style="position: {rowStyle.position}; top: 0; left: 0; width: 100%; height: {rowStyle.height}px; transform: {rowStyle.transform}"
+      >
+        {#each virtualRow.columns as column (`${virtualRow.row}-${column.column}`)}
+          {@const cellStyle = virtualizer.getCellStyleInRow(column)}
+          <div
+            {...virtualizer.getCellAriaAttrs(virtualRow.row, column.column)}
+            style="position: {cellStyle.position}; top: 0; left: 0; width: {cellStyle.width}px; height: 100%; transform: {cellStyle.transform}"
+          >
+            {getCell(virtualRow.row, column.column)}
+          </div>
+        {/each}
+      </div>
+    {/each}
+  </div>
+</div>
+```
