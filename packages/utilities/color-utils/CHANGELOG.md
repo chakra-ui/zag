@@ -1,5 +1,13 @@
 # @zag-js/color-utils
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 1.43.3

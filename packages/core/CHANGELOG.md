@@ -1,5 +1,80 @@
 # @zag-js/core
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the
+  props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps
+    defaultPropKey: PropsWithDefault
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work
+  unchanged.
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Improved performance of state machine hot paths, and
+  fixed an equality bug that could leave derived values stale.
+
+  - Cached state chains and tag lookups per machine config, so nested state transitions and `hasTag` no longer rebuild
+    the chain on every call.
+  - Made `isEqual` cheaper by comparing arrays in place instead of copying them.
+  - Fixed issue where a value that lost a key compared equal to its wider previous value. Removing a key from an object
+    now correctly invalidates memoized values and restarts `watchEffect` effects that depend on it.
+  - Fixed issue where the date input rebuilt its segments on every render when a `translations` object was passed
+    inline.
+
+  `isEqual` now compares functions by reference rather than by source text, and only considers an object's own
+  properties. Values that relied on the previous behavior (a function recreated inline, or a property inherited from a
+  prototype) now compare as unequal.
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `watchEffect(deps, setup)` to effect implementations, so an
+  effect can re-run when the props or context it depends on change, without re-entering the state that owns it. It
+  mirrors `track` in `watch`, which runs an action rather than an effect.
+
+  ```ts
+  effects: {
+    trapFocus({ prop, watchEffect }) {
+      return watchEffect([() => prop("trapFocus")], () => {
+        if (!prop("trapFocus")) return
+        return trapFocus(/* ... */)
+      })
+    },
+  }
+  ```
+
+  Only the declared effect restarts, sibling effects and entry actions are untouched, and anything outside the call runs
+  once. Deps must return a primitive, the same constraint `track` has, so use `context.hash()` for anything else. Unlike
+  Vue's similarly named API, they are explicit rather than auto-tracked.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 1.43.3

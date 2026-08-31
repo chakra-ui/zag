@@ -1,5 +1,30 @@
 # @zag-js/dom-query
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `getCaretPosition`, which measures the caret position in an
+  input or textarea, returning `{ left, top, height }` relative to the element's bounding client rect. Useful for
+  anchoring a popup (e.g. a mention menu) to the caret.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`,
+  despite it being handled at runtime. On `dialog` and `drawer` it was listed as a prop with a default, which stripped
+  `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)`
+    returns.
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Forward arguments from the cleanup `whenNode` returns to the
+  cleanup `fn` returned, so callers can pass teardown intent through. Existing calls are unchanged.
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f)]:
+  - @zag-js/types@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes

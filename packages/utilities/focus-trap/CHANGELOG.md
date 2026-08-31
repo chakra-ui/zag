@@ -1,5 +1,23 @@
 # @zag-js/focus-trap
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Apply `trapFocus`, `preventScroll` and `modal` while the dialog or
+  drawer is open, and `modal` while the popover is open. They were read once on entry, so the only way to change them
+  was a remount, which is unusable for content that cannot be recreated such as media playback or a running timer.
+
+  Releasing the focus trap no longer pulls focus back to the trigger. Focus is restored only when the component closes.
+  `trapFocus()` forwards deactivate options to make this possible.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ## 1.43.3

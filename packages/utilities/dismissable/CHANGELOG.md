@@ -1,5 +1,39 @@
 # @zag-js/dismissable
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix removed dismissable layers retaining stack data
+  attributes and CSS variables when their elements remain mounted. This clears `data-nested`, `data-has-nested`,
+  `--layer-index`, `--nested-layer-count`, and the derived `--z-index` after removal, including when a layer has nested
+  children.
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Track layer nesting by an explicit parent instead of stack
+  position, so a re-registered layer keeps its place and cannot claim unrelated layers as descendants.
+
+  - Fixed `getNestedLayers` treating every layer as nested inside an unregistered node.
+  - Cascade dismissal now runs shallowest first.
+
+  Add a `reattach` option to `remove`. It keeps the layer's identity and position for the next `add` and leaves its
+  descendants open, so a layer can be reconfigured without dismissing what is inside it.
+
+  Allow `pointerBlocking` to be a getter, matching `exclude` and `persistentElements`. Call the new `syncPointerEvents`
+  after its value changes.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/interact-outside@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Major Changes

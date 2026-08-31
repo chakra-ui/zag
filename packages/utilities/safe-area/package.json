@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/safe-area",
-  "version": "2.0.0-next.1",
+  "version": "2.0.0-next.2",
   "description": "Track whether the pointer is travelling within the safe area between a trigger and its overlay",
   "keywords": [
     "js",

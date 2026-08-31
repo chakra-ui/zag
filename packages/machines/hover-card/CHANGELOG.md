@@ -1,5 +1,79 @@
 # @zag-js/hover-card
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`45451e9`](https://github.com/chakra-ui/zag/commit/45451e9c03b072020fbdf355c5182ed96b281776) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add a `reason` to `onOpenChange`, describing what caused
+  the change.
+
+  - Added `reason` to `onOpenChange` details: `trigger-hover`, `trigger-focus`, `trigger-blur`, `pointer-leave`,
+    `interact-outside`, `escape-key` or `script`. `api.setOpen` accepts a reason as its second argument, defaulting to
+    `script`.
+  - Fixed issue where dismissing with the `Escape` key was reported the same way as pressing outside.
+  - Fixed issue where leaving the trigger before the open delay elapsed fired `onOpenChange` with `open: false`, even
+    though the hover card had never opened.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add inline positioning for references that wrap across
+  lines.
+
+  - Fixed issue where a hover card anchored to a trigger spanning multiple lines was positioned against the box covering
+    every line, landing far from the pointer instead of under the line being hovered.
+  - Fixed issue where the hover card stayed over the previous trigger when the active trigger changed, showing the new
+    trigger's content in the old position.
+  - Added `inline` and `getInlineRectCoords` to `@zag-js/popper`, alongside a `positioning.middleware` option for
+    supplying extra Floating UI middleware. The middleware is only bundled by machines that import it.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Add `@zag-js/safe-area` and use it in the hover card to
+  track the pointer travelling between the trigger and the content.
+
+  - Fixed issue where the hover card closed while the pointer was still on its way to the content. Moving diagonally, or
+    pausing for longer than `closeDelay`, no longer dismisses it.
+  - Fixed issue where a hover card opened programmatically or by keyboard was dismissed by pointer movement anywhere on
+    the page.
+
+  The `open` and `closing` states are now `open.idle` and `open.closing`. `state.matches("open")` still works, but code
+  matching the literal state `"closing"` should use `"open.closing"`.
+
+  The tooltip uses it too when `interactive` is set, so the pointer can reach a hoverable tooltip without it closing on
+  the way (WCAG 1.4.13). Non-interactive tooltips are unchanged.
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`f7f9abf`](https://github.com/chakra-ui/zag/commit/f7f9abfd3f751f667ccd1a8339166f03e9b76c5a) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the hover card opened on focus that
+  followed a pointer interaction, such as a dialog restoring focus to the trigger. It now opens only for keyboard and
+  assistive-technology focus, matching `@zag-js/tooltip`.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`82692cd`](https://github.com/chakra-ui/zag/commit/82692cd7307923c9648ece5ff4532b31108cf9f8),
+  [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7),
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`d402e9c`](https://github.com/chakra-ui/zag/commit/d402e9c6fee7e159b0a5fae1e228c9b31572db22),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/focus-visible@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/safe-area@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes

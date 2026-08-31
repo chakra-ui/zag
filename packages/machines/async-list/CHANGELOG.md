@@ -1,5 +1,20 @@
 # @zag-js/async-list
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`7388392`](https://github.com/chakra-ui/zag/commit/7388392ade3342d45499f8cc2ce1b7647e3529b3) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix `loadMore` requests being treated as initial loads.
+  The load entry action read `isLoadingMore` from context before it had settled, so the flag was always stale.
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
