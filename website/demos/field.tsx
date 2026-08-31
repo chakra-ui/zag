@@ -1,11 +1,11 @@
 import * as field from "@zag-js/field"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
-import { useId, type JSX } from "react"
+import { useId } from "react"
 import styles from "../styles/machines/field.module.css"
 
 interface FieldProps extends Omit<field.Props, "id"> {}
 
-export function Field(props: FieldProps): JSX.Element {
+export function Field(props: FieldProps) {
   const service = useMachine(field.machine, {
     id: useId(),
     required: true,

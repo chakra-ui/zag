@@ -1,7 +1,7 @@
 import * as field from "@zag-js/field"
 import * as fieldset from "@zag-js/fieldset"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
-import { useId, type ComponentProps, type JSX } from "react"
+import { useId, type ComponentProps } from "react"
 import styles from "../styles/machines/fieldset.module.css"
 
 interface FieldsetProps extends Omit<fieldset.Props, "id"> {}
@@ -50,7 +50,7 @@ function DemoField({
   )
 }
 
-export function Fieldset(props: FieldsetProps): JSX.Element {
+export function Fieldset(props: FieldsetProps) {
   const fieldsetService = useMachine(fieldset.machine, {
     id: useId(),
     ...props,

@@ -15,6 +15,7 @@
     },
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
+    "declaration": false,
     "plugins": [
       {
         "name": "next"
