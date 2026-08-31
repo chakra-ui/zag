@@ -380,6 +380,12 @@ describe("state utilities", () => {
     expect(chain.map((item) => item.path)).toEqual(["dialog", "dialog.open", "dialog.open.idle"])
   })
 
+  test("getStateChain returns the same array for the same state", () => {
+    const first = getStateChain(machine, "dialog.open.idle")
+    const second = getStateChain(machine, "dialog.open.idle")
+    expect(first).toBe(second)
+  })
+
   test("getStateDefinition returns the leaf state definition", () => {
     const definition = getStateDefinition(machine, "dialog.open")
     expect(definition?.tags).toEqual(["open"])
@@ -409,6 +415,20 @@ describe("state utilities", () => {
     const result = getExitEnterStates(machine, "dialog.open.idle", "dialog.open.idle", true)
     expect(result.exiting.map((item) => item.path)).toEqual(["dialog.open.idle", "dialog.open", "dialog"])
     expect(result.entering.map((item) => item.path)).toEqual(["dialog", "dialog.open", "dialog.open.idle"])
+  })
+
+  test("getExitEnterStates reenter does not mutate the cached chain", () => {
+    const chain = getStateChain(machine, "dialog.open.idle")
+    const result = getExitEnterStates(machine, "dialog.open.idle", "dialog.open.idle", true)
+
+    expect(getStateChain(machine, "dialog.open.idle")).toBe(chain)
+
+    // entering/exiting must be copies: mutating them must not reverse the cache
+    result.entering.reverse()
+    result.exiting.reverse()
+
+    expect(getStateChain(machine, "dialog.open.idle")).toBe(chain)
+    expect(chain.map((item) => item.path)).toEqual(["dialog", "dialog.open", "dialog.open.idle"])
   })
 
   test("matchesState checks exact and descendant state matches", () => {

@@ -607,10 +607,8 @@ describe("preact: dep value semantics", () => {
     expect(await probe([{ a: 1 }, { a: 1, b: 2 }])).toHaveBeenCalledTimes(2)
   })
 
-  test("KNOWN QUIRK: removing a key from an object dep does not restart", async () => {
-    // object deps are outside what `DepFn` allows; isEqual() only walks the keys of its second
-    // argument, so a shrinking object compares equal. pinned because the runtime still allows it
-    expect(await probe([{ a: 1, b: 2 }, { a: 1 }])).toHaveBeenCalledTimes(1)
+  test("removing a key from an object dep restarts", async () => {
+    expect(await probe([{ a: 1, b: 2 }, { a: 1 }])).toHaveBeenCalledTimes(2)
   })
 })
 

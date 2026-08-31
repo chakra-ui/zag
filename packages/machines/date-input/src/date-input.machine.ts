@@ -21,7 +21,7 @@ import {
   resolvedHourCycle,
 } from "./utils/incomplete-date"
 import { updateSegmentValue } from "./utils/input"
-import { defaultTranslations } from "./utils/placeholders"
+import { defaultTranslations, hashTranslations } from "./utils/placeholders"
 import { parse } from "./date-input.parse"
 import { getFormatterOptions, getSegmentLabel, processSegments, resolveAllSegments } from "./utils/segments"
 import {
@@ -173,7 +173,7 @@ export const machine = createMachine<DateInputSchema>({
         context.hash("displayValues"),
         prop("allSegments"),
         prop("timeZone"),
-        prop("translations"),
+        hashTranslations(prop("translations"), prop("locale")),
         prop("granularity"),
         JSON.stringify(prop("formatter").resolvedOptions()),
         prop("locale"),

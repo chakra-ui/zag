@@ -137,3 +137,11 @@ export const defaultTranslations: Required<IntlTranslations> = {
     } as Record<EditableSegmentType, string>
   },
 }
+
+// Hash the resolved placeholders so an inline `translations` object doesn't bust the segments memo.
+export function hashTranslations(translations: IntlTranslations | undefined, locale: string) {
+  const placeholder = translations?.placeholder?.(locale)
+  if (!placeholder) return ""
+  // Sorted replacer keeps the hash stable regardless of key order.
+  return JSON.stringify(placeholder, Object.keys(placeholder).sort())
+}

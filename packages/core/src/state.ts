@@ -1,10 +1,15 @@
-import { ensure, invariant } from "@zag-js/utils"
+import { ensure, invariant, isDev } from "@zag-js/utils"
 import type { Machine, MachineSchema, MachineState, TransitionMatch, TransitionMap } from "./types"
 
 const STATE_DELIMITER = "."
 const ABSOLUTE_PREFIX = "#"
+type StateChain<T extends MachineSchema> = Array<{ path: string; state: MachineState<T> }>
+const EMPTY_CHAIN: StateChain<any> = []
+Object.freeze(EMPTY_CHAIN)
 const stateIndexCache = new WeakMap<object, Map<string, MachineState<any>>>()
 const stateIdIndexCache = new WeakMap<object, Map<string, string>>()
+const chainCache = new WeakMap<object, Map<string, StateChain<any>>>()
+const tagCache = new WeakMap<object, Map<string, ReadonlySet<unknown>>>()
 
 function joinStatePath(parts: string[]) {
   return parts.join(STATE_DELIMITER)
@@ -89,13 +94,7 @@ function toSegments(value: string | undefined) {
   return String(value).split(STATE_DELIMITER).filter(Boolean)
 }
 
-type StateChain<T extends MachineSchema> = Array<{ path: string; state: MachineState<T> }>
-
-export function getStateChain<T extends MachineSchema>(
-  machine: Machine<T>,
-  state: T["state"] | undefined,
-): StateChain<T> {
-  if (!state) return []
+function buildStateChain<T extends MachineSchema>(machine: Machine<T>, state: T["state"]): StateChain<T> {
   const stateIndex = ensureStateIndex(machine)
   const segments = toSegments(state)
 
@@ -111,6 +110,22 @@ export function getStateChain<T extends MachineSchema>(
     chain.push({ path, state: current })
   }
 
+  if (isDev()) Object.freeze(chain)
+  return chain
+}
+
+export function getStateChain<T extends MachineSchema>(
+  machine: Machine<T>,
+  state: T["state"] | undefined,
+): StateChain<T> {
+  if (!state) return EMPTY_CHAIN as StateChain<T>
+  let byState = chainCache.get(machine)
+  if (!byState) chainCache.set(machine, (byState = new Map()))
+  let chain = byState.get(state as string) as StateChain<T> | undefined
+  if (!chain) {
+    chain = buildStateChain(machine, state)
+    byState.set(state as string, chain)
+  }
   return chain
 }
 
@@ -232,7 +247,7 @@ export function getExitEnterStates<T extends MachineSchema>(
 
   if (reenter && sameLeaf) {
     exiting = prevChain.slice().reverse()
-    entering = nextChain
+    entering = nextChain.slice()
   }
 
   return { exiting, entering }
@@ -243,6 +258,22 @@ export function matchesState(current: string | undefined, value: string) {
   return current === value || current.startsWith(`${value}${STATE_DELIMITER}`)
 }
 
+function tagsFor<T extends MachineSchema>(machine: Machine<T>, state: T["state"]): ReadonlySet<T["tag"]> {
+  let byState = tagCache.get(machine)
+  if (!byState) tagCache.set(machine, (byState = new Map()))
+  let tags = byState.get(state as string) as ReadonlySet<T["tag"]> | undefined
+  if (!tags) {
+    const set = new Set<T["tag"]>()
+    for (const item of getStateChain(machine, state)) {
+      const list = item.state.tags
+      if (list) for (const tag of list) set.add(tag)
+    }
+    tags = set
+    byState.set(state as string, tags)
+  }
+  return tags
+}
+
 export function hasTag<T extends MachineSchema>(machine: Machine<T>, state: T["state"], tag: T["tag"]) {
-  return getStateChain(machine, state).some((item) => item.state.tags?.includes(tag))
+  return tagsFor(machine, state).has(tag)
 }
