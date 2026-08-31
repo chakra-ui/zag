@@ -1,5 +1,49 @@
 # @zag-js/popover
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `initialFocusEl` rejected `null`,
+  despite it being handled at runtime. On `dialog` and `drawer` it was listed as a prop with a default, which stripped
+  `null | undefined` from its public type.
+  - Fixed issue where `Portal`'s `container` rejected the `RefObject<T | null>` that React 19's `useRef<T>(null)`
+    returns.
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Apply `trapFocus`, `preventScroll` and `modal` while the dialog or
+  drawer is open, and `modal` while the popover is open. They were read once on entry, so the only way to change them
+  was a remount, which is unusable for content that cannot be recreated such as media playback or a running timer.
+
+  Releasing the focus trap no longer pulls focus back to the trigger. Focus is restored only when the component closes.
+  `trapFocus()` forwards deactivate options to make this possible.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`021c599`](https://github.com/chakra-ui/zag/commit/021c599ef5011efc97f2e4bacc55c0a05791d5bf),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`afdeee4`](https://github.com/chakra-ui/zag/commit/afdeee4f44e8ffc8e05cb4a4e76a770e303086f7),
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/focus-trap@2.0.0-next.2
+  - @zag-js/dismissable@2.0.0-next.2
+  - @zag-js/popper@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/aria-hidden@2.0.0-next.2
+  - @zag-js/remove-scroll@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Major Changes

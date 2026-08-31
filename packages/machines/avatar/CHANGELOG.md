@@ -1,5 +1,61 @@
 # @zag-js/avatar
 
+## 2.0.0-next.2
+
+### Major Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`121207e`](https://github.com/chakra-ui/zag/commit/121207ee4672b16b973b2d3931ada88ea9572f26) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Remove `api.setSrc`.
+
+  You own the image `src`, the machine observes the rendered image and owns its loading lifecycle. `setSrc` wrote the
+  `src` attribute of the image you rendered, making it the only API method in the library that mutates a
+  consumer-rendered element. It also left `srcSet` and `<picture>` untouched, so the displayed image did not always
+  change.
+
+  ### Migration
+
+  **Setting the source:** update `src` on the image you render. The machine reacts the same way, resetting to `loading`
+  and then to `loaded` or `error`.
+
+  ```diff
+  - api.setSrc(nextSrc)
+  + setSrc(nextSrc) // your own state, applied to the image you render
+  ```
+
+  ```tsx
+  const [src, setSrc] = useState(initialSrc)
+
+  <img alt="" src={src} {...api.getImageProps()} />
+  ```
+
+  **Without framework state,** set it on the element directly. This is what `setSrc` did, and it works for `srcSet` and
+  `<picture>` too:
+
+  ```diff
+  - api.setSrc(nextSrc)
+  + imageEl.src = nextSrc
+  ```
+
+  **Unchanged:** `api.setLoaded()` and `api.setError()`, for images loaded by something that does not fire `load` and
+  `error` on the element itself.
+
+### Patch Changes
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes

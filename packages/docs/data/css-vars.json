@@ -113,6 +113,11 @@
       "--image-offset-y": "The offset position for image"
     }
   },
+  "listbox": {
+    "List": {
+      "--column-count": "The column count value for the List"
+    }
+  },
   "marquee": {
     "Root": {
       "--marquee-duration": "The marquee duration value for the Root",
@@ -120,11 +125,6 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
-    }
-  },
-  "listbox": {
-    "List": {
-      "--column-count": "The column count value for the List"
     }
   },
   "navigation-menu": {
@@ -215,11 +215,6 @@
       "--percent": "The percent value for the Root"
     }
   },
-  "timer": {
-    "Item": {
-      "--value": "The current value"
-    }
-  },
   "tabs": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -227,6 +222,11 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
+    }
+  },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
     }
   },
   "toc": {
@@ -328,31 +328,6 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "date-picker": {
-    "Arrow": {
-      "--arrow-size": "The size of the arrow",
-      "--arrow-size-half": "Half the size of the arrow",
-      "--arrow-background": "Use this variable to style the arrow background",
-      "--arrow-offset": "The offset position of the arrow"
-    },
-    "Positioner": {
-      "--reference-width": "The width of the reference element",
-      "--reference-height": "The height of the root",
-      "--available-width": "The available width in viewport",
-      "--available-height": "The available height in viewport",
-      "--x": "The x position for transform",
-      "--y": "The y position for transform",
-      "--z-index": "The z-index value",
-      "--transform-origin": "The transform origin for animations"
-    },
-    "Content": {
-      "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested date-pickers"
-    },
-    "Backdrop": {
-      "--layer-index": "The index of the dismissable in the layer stack"
-    }
-  },
   "combobox": {
     "Arrow": {
       "--arrow-size": "The size of the arrow",
@@ -373,6 +348,31 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested comboboxs"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "date-picker": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--reference-width": "The width of the reference element",
+      "--reference-height": "The height of the root",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--transform-origin": "The transform origin for animations"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested date-pickers"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"

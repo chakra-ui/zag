@@ -1,5 +1,61 @@
 # @zag-js/number-input
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`c5786c1`](https://github.com/chakra-ui/zag/commit/c5786c19ef72ab5db9636403b9722e413c7a3a6e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Added `reason` to `onValueChange` and `onValueCommit`
+  details, describing what caused the change: `input-change`, `input-blur`, `keyboard`, `increment-press`,
+  `decrement-press`, `wheel`, `scrub` or `script`.
+  - Fixed issue where `onValueCommit` did not fire for a released stepper, a finished scrub, `api.setValue` or
+    `api.clearValue`. It now fires once per settled interaction, including a scrub that streams many steps.
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`c5786c1`](https://github.com/chakra-ui/zag/commit/c5786c19ef72ab5db9636403b9722e413c7a3a6e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `onFocusChange` reported focus the
+  input never received. Pressing a stepper or the scrubber reported `focused: true` even when `focusInputOnChange` was
+  `false` and nothing was focused. Focus is now reported from the input's own focus event.
+  - Fixed issue where pressing `Enter` reported `onFocusChange({ focused: false })` while the input kept focus.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`c5786c1`](https://github.com/chakra-ui/zag/commit/c5786c19ef72ab5db9636403b9722e413c7a3a6e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where a cancelled pointer left the value
+  stepping on its own. A hold interrupted by touch scrolling or a re-render never ended, and the repeat interval kept
+  running.
+  - Fixed issue where holding a stepper on touch could raise the context menu and interrupt the repeat.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`c5786c1`](https://github.com/chakra-ui/zag/commit/c5786c19ef72ab5db9636403b9722e413c7a3a6e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `onValueInvalid` reported the wrong
+  value and reason. With `max: 1000`, typing `5000` and blurring reported `rangeUnderflow` for the clamped value `1000`,
+  which is in range. It now reports `rangeOverflow` and `5000`.
+  - Changed when `onValueInvalid` fires: as the out-of-range value is entered rather than on blur, and no longer when
+    clamping brings the value back into range.
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`c5786c1`](https://github.com/chakra-ui/zag/commit/c5786c19ef72ab5db9636403b9722e413c7a3a6e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fixed issue where `PageUp` and `PageDown` did not step
+  the value. They now step by `largeStep`, matching `Shift + ArrowUp` and `Shift + ArrowDown`.
+  - Fixed issue where `aria-valuetext` was only set via `translations.valueText`, so a value formatted as `$500.00` was
+    announced as "500" by screen readers. It now falls back to the formatted value.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`06ddeb3`](https://github.com/chakra-ui/zag/commit/06ddeb3a01fb418cdfcb583b5e7e2308cc378b05),
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/dom-query@2.0.0-next.2
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+  - @zag-js/anatomy@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Minor Changes

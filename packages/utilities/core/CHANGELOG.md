@@ -1,5 +1,32 @@
 # @zag-js/utils
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Improved performance of state machine hot paths, and
+  fixed an equality bug that could leave derived values stale.
+
+  - Cached state chains and tag lookups per machine config, so nested state transitions and `hasTag` no longer rebuild
+    the chain on every call.
+  - Made `isEqual` cheaper by comparing arrays in place instead of copying them.
+  - Fixed issue where a value that lost a key compared equal to its wider previous value. Removing a key from an object
+    now correctly invalidates memoized values and restarts `watchEffect` effects that depend on it.
+  - Fixed issue where the date input rebuilt its segments on every render when a `translations` object was passed
+    inline.
+
+  `isEqual` now compares functions by reference rather than by source text, and only considers an object's own
+  properties. Values that relied on the previous behavior (a function recreated inline, or a property inherited from a
+  prototype) now compare as unequal.
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `Teardown` and `TeardownReason`. A `Teardown` receives
+  `"restart"` when it is about to be set up again, or `"exit"` when it is torn down for good. Plain `VoidFunction`
+  cleanups still work.
+
 ## 2.0.0-next.1
 
 ## 2.0.0-next.0

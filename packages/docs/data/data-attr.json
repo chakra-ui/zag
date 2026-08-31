@@ -827,6 +827,29 @@
       "data-autoresize": ""
     }
   },
+  "field": {},
+  "fieldset": {
+    "Root": {
+      "data-fieldset-root": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
+    },
+    "Legend": {
+      "data-fieldset-legend": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
+    },
+    "HelperText": {
+      "data-fieldset-helper-text": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
+    },
+    "ErrorText": {
+      "data-fieldset-error-text": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
+    }
+  },
   "file-upload": {
     "Root": {
       "data-file-upload-root": "<uid>",
@@ -1068,6 +1091,17 @@
       "data-panning": ""
     }
   },
+  "infinite-scroll": {
+    "Sentinel": {
+      "data-infinite-scroll-sentinel": "<uid>",
+      "data-edge": ""
+    },
+    "Indicator": {
+      "data-infinite-scroll-indicator": "<uid>",
+      "data-type": "The type of the item",
+      "data-state": ""
+    }
+  },
   "listbox": {
     "Root": {
       "data-listbox-root": "<uid>",
@@ -1245,6 +1279,7 @@
     },
     "Trigger": {
       "data-navigation-menu-trigger": "<uid>",
+      "data-uid": "",
       "data-trigger-proxy-id": "",
       "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",

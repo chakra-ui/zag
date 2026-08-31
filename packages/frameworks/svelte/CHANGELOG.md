@@ -1,5 +1,64 @@
 # @zag-js/svelte
 
+## 2.0.0-next.2
+
+### Minor Changes
+
+- [#3252](https://github.com/chakra-ui/zag/pull/3252)
+  [`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Separate the props you pass to `useMachine` from the
+  props the machine sees after defaults are applied.
+
+  - Fixed issue where omitting a required prop type-checked and then failed at runtime with
+    `[zag-js] missing required props`. Affects `async-list`, `carousel`, `dnd`, `gridlist`, `listbox`, `pin-input`,
+    `select`, `splitter`, `toast` and `toc`, whose required props were reported as optional.
+  - Fixed issue where a prop listed as having a default lost `null` from its public type, so props that accept `null`
+    rejected it.
+
+  Machine schemas now declare the public props type plus a `defaultPropKey` union naming the props the machine fills in:
+
+  ```ts
+  export interface DialogSchema {
+    props: DialogProps
+    defaultPropKey: PropsWithDefault
+  }
+  ```
+
+  Schemas that do not declare `defaultPropKey` keep the previous behaviour, so custom machines continue to work
+  unchanged.
+
+### Patch Changes
+
+- [#3304](https://github.com/chakra-ui/zag/pull/3304)
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `watchEffect(deps, setup)` to effect implementations, so an
+  effect can re-run when the props or context it depends on change, without re-entering the state that owns it. It
+  mirrors `track` in `watch`, which runs an action rather than an effect.
+
+  ```ts
+  effects: {
+    trapFocus({ prop, watchEffect }) {
+      return watchEffect([() => prop("trapFocus")], () => {
+        if (!prop("trapFocus")) return
+        return trapFocus(/* ... */)
+      })
+    },
+  }
+  ```
+
+  Only the declared effect restarts, sibling effects and entry actions are untouched, and anything outside the call runs
+  once. Deps must return a primitive, the same constraint `track` has, so use `context.hash()` for anything else. Unlike
+  Vue's similarly named API, they are explicit rather than auto-tracked.
+
+- Updated dependencies [[`6d57458`](https://github.com/chakra-ui/zag/commit/6d57458038a2e05a93a162948c0260d423560f17),
+  [`734b5e8`](https://github.com/chakra-ui/zag/commit/734b5e8e43f03402f5c3d0c283a79d4615e4868b),
+  [`e8b99d2`](https://github.com/chakra-ui/zag/commit/e8b99d2af940821a1ff34d086d5f0910c187ec4f),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb),
+  [`2859ef6`](https://github.com/chakra-ui/zag/commit/2859ef675d0b58fc485ef83f040c5feb6ec216bb)]:
+  - @zag-js/core@2.0.0-next.2
+  - @zag-js/types@2.0.0-next.2
+  - @zag-js/utils@2.0.0-next.2
+
 ## 2.0.0-next.1
 
 ### Patch Changes
