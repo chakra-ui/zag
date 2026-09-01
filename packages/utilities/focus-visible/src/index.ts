@@ -2,7 +2,16 @@
  * Credit: Huge props to the team at Adobe for inspiring this implementation.
  * https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/interactions/src/useFocusVisible.ts
  */
-import { getActiveElement, getDocument, getEventTarget, getWindow, isMac, isVirtualClick } from "@zag-js/dom-query"
+import {
+  getActiveElement,
+  getDocument,
+  getEventTarget,
+  getWindow,
+  isDocument,
+  isMac,
+  isVirtualClick,
+  isWindow,
+} from "@zag-js/dom-query"
 
 function isValidKey(e: KeyboardEvent) {
   return !(
@@ -150,18 +159,19 @@ function handleClickEvent(e: MouseEvent) {
 }
 
 function handleFocusEvent(e: FocusEvent) {
-  // Firefox fires two extra focus events when the user first clicks into an iframe:
-  // first on the window, then on the document. We ignore these events so they don't
-  // cause keyboard focus rings to appear.
   const target = getEventTarget(e)
   const isLabelActivationFocus = target === pendingLabelControl
 
-  if (
-    target === getWindow(target as Element) ||
-    target === getDocument(target as Element) ||
-    ignoreFocusEvent ||
-    !e.isTrusted
-  ) {
+  if (ignoreFocusEvent) return
+
+  // Safari fires this pair twice on tab return; re-arm so the second focus is not virtual.
+  if (isWindow(target)) {
+    hasBlurredWindowRecently = true
+    return
+  }
+
+  // Firefox iframe extras (window, then document) and untrusted synthetic focus.
+  if (isDocument(target) || !e.isTrusted) {
     return
   }
 
