@@ -9,7 +9,7 @@ import type { Point } from "@zag-js/types"
 import * as dom from "./dnd.dom"
 import type { DndSchema, DropPlacement, IntlTranslations } from "./dnd.types"
 import { createAutoScroll } from "./utils/auto-scroll"
-import { closestEdge, closestGrid } from "./utils/collision"
+import { closestEdge, closestGrid, midpointPlacement } from "./utils/collision"
 
 type ActionParams = Params<DndSchema>
 
@@ -448,7 +448,7 @@ export const machine = createMachine<DndSchema>({
         const isMultiDrag = dragValues.size > 1
         const entries = isMultiDrag ? allEntries.filter((e) => !dragValues.has(e.value)) : allEntries
 
-        const result =
+        let result =
           isGrid && !prop("collisionStrategy")
             ? (() => {
                 const dragRect = refs.get("dragRect")
@@ -469,14 +469,22 @@ export const machine = createMachine<DndSchema>({
               })
 
         if (result) {
-          if (dragValues.has(result.value) && (isMultiDrag || result.placement === "on")) return
-          if (!isMultiDrag && result.value === source) {
+          let hit = result
+          if (dragValues.has(hit.value) && (isMultiDrag || hit.placement === "on")) return
+          if (!isMultiDrag && hit.value === source) {
             clearDropTarget(context)
             return
           }
 
           const canDrop = prop("canDrop")
-          if (canDrop && !canDrop(source, result.value, result.placement)) return
+          if (canDrop && !canDrop(source, hit.value, hit.placement)) {
+            if (hit.placement !== "on") return
+            const entry = entries.find((item) => item.value === hit.value)
+            if (!entry) return
+            const fallback = midpointPlacement(event.point, entry.rect, prop("orientation"))
+            if (!canDrop(source, hit.value, fallback)) return
+            hit = { value: hit.value, placement: fallback }
+          }
 
           const stickyTimer = refs.get("stickyTimer")
           if (stickyTimer) {
@@ -493,21 +501,21 @@ export const machine = createMachine<DndSchema>({
           if (
             prevTarget &&
             prevPlacement &&
-            result.value !== prevTarget &&
-            result.placement !== "on" &&
-            !dragValues.has(result.value) &&
+            hit.value !== prevTarget &&
+            hit.placement !== "on" &&
+            !dragValues.has(hit.value) &&
             !dragValues.has(prevTarget)
           ) {
             const prevIdx = entries.findIndex((e) => e.value === prevTarget)
-            const nextIdx = entries.findIndex((e) => e.value === result.value)
+            const nextIdx = entries.findIndex((e) => e.value === hit.value)
             const isAdjacentFlip =
-              (prevPlacement === "after" && result.placement === "before" && nextIdx === prevIdx + 1) ||
-              (prevPlacement === "before" && result.placement === "after" && nextIdx === prevIdx - 1)
+              (prevPlacement === "after" && hit.placement === "before" && nextIdx === prevIdx + 1) ||
+              (prevPlacement === "before" && hit.placement === "after" && nextIdx === prevIdx - 1)
             if (isAdjacentFlip) return
           }
 
-          context.set("dropTarget", result.value)
-          context.set("dropPlacement", result.placement)
+          context.set("dropTarget", hit.value)
+          context.set("dropPlacement", hit.placement)
         } else {
           // No collision — start sticky timeout if we had a target
           const currentTarget = context.get("dropTarget")

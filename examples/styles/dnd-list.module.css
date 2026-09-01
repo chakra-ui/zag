@@ -3,6 +3,10 @@
   max-width: 540px;
 }
 
+.wide {
+  max-width: 760px;
+}
+
 .root {
   --dnd-border: #d4d4d8;
   --dnd-item-bg: #ffffff;
@@ -166,4 +170,39 @@
 .virtualRowInner {
   position: relative;
   height: 100%;
+}
+
+.folderMeta {
+  margin-left: auto;
+  font-size: 12px;
+  color: #71717a;
+}
+
+.folderChildren {
+  margin: 4px 0 0 28px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #52525b;
+}
+
+.rootDrop {
+  min-height: 140px;
+  padding: 8px;
+  border: 2px dashed var(--dnd-border, #d4d4d8);
+  border-radius: 8px;
+  background: #fafafa;
+
+  &[data-drop-target][data-drop-placement="on"] {
+    border-color: var(--dnd-drop-on, #3b82f6);
+    background: #eff6ff;
+  }
+}
+
+.rootDropEmpty {
+  display: grid;
+  place-items: center;
+  min-height: 120px;
+  color: #71717a;
+  font-size: 14px;
 }

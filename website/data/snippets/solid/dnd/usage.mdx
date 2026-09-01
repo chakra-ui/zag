@@ -1,0 +1,76 @@
+```jsx
+import { ListCollection } from "@zag-js/collection"
+import * as dnd from "@zag-js/dnd"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
+
+const initial = [
+  { id: "apple", name: "Apple" },
+  { id: "banana", name: "Banana" },
+  { id: "cherry", name: "Cherry" },
+]
+
+function createList(items) {
+  return new ListCollection({
+    items,
+    itemToValue: (item) => item.id,
+    itemToString: (item) => item.name,
+  })
+}
+
+export function SortableList() {
+  const [list, setList] = createSignal(createList(initial))
+
+  const service = useMachine(dnd.machine, {
+    id: createUniqueId(),
+    orientation: "vertical",
+    getValueText: (value) => list().stringify(value) ?? value,
+    onDrop({ values, target, placement }) {
+      if (placement === "on") return
+      setList((current) =>
+        placement === "after"
+          ? current.moveAfter(target, ...values)
+          : current.moveBefore(target, ...values),
+      )
+    },
+  })
+
+  const api = createMemo(() => dnd.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <ul>
+        <For each={list().items}>
+          {(item) => (
+            <li style={{ position: "relative" }}>
+              <div
+                {...api().getDropIndicatorProps({
+                  value: item.id,
+                  placement: "before",
+                })}
+              />
+              <div
+                {...mergeProps(
+                  api().getDraggableProps({ value: item.id }),
+                  api().getDropTargetProps({ value: item.id }),
+                )}
+              >
+                <span {...api().getDragHandleProps({ value: item.id })}>
+                  ::
+                </span>
+                {item.name}
+              </div>
+              <div
+                {...api().getDropIndicatorProps({
+                  value: item.id,
+                  placement: "after",
+                })}
+              />
+            </li>
+          )}
+        </For>
+      </ul>
+    </div>
+  )
+}
+```

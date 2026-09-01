@@ -1,0 +1,283 @@
+---
+title: Drag and Drop
+description: Sort, move, and nest items. You own the data.
+package: "@zag-js/dnd"
+---
+
+You own the items. The machine owns pointer collision, the keyboard session, and
+the live region.
+
+There is no ListView and no `onInsert`. `onDrop` gives you `source`, `values`,
+`target`, and `placement`. You write the mutation.
+
+<Resources pkg="@zag-js/dnd" />
+
+**Features**
+
+- Pointer, keyboard, and screen reader drag
+- `before`, `after`, and `on` drop placements
+- Drag handles, drop indicators, and a custom preview
+- Multi-item drag via `selectedValues`
+- Auto-scroll near container edges
+- Grid collision when you set `columnCount`
+
+## Installation
+
+<CodeSnippet id="dnd/installation.mdx" />
+
+Pair it with [`ListCollection`](/guides/collection) when you want
+`insertBefore`, `moveAfter`, `append`, and `remove` instead of splicing arrays
+by hand.
+
+## Usage
+
+Import the package and create a service:
+
+```ts
+import * as dnd from "@zag-js/dnd"
+```
+
+- `machine` is the behavior.
+- `connect` returns state and the prop getters you spread onto your markup.
+
+<CodeSnippet id="dnd/usage.mdx" />
+
+Each item is a string `value`. The machine never stores your objects. Look them
+up with `list.find(value)` or `list.findMany(values)`.
+
+## Anatomy
+
+Spread these getters. You choose the elements.
+
+- `getRootProps()` on the list container. Sets `data-dragging` while a drag is
+  active.
+- `getDraggableProps({ value })` on the row you can pick up.
+- `getDragHandleProps({ value })` on the grip. Optional. Keyboard grab starts
+  here.
+- `getDropTargetProps({ value })` on anything that can receive a drop. A row can
+  be both draggable and a drop target. A folder, an empty inbox, or a column can
+  be drop-only.
+- `getDropIndicatorProps({ value, placement })` on the line that shows `before`
+  or `after`. Hidden until `data-active` is set.
+- `getDragPreviewProps()` on the floating preview you render while dragging.
+
+## Drop placements
+
+`placement` is `"before"`, `"after"`, or `"on"`.
+
+- `before` / `after` insert relative to a row. This is reorder and between-list
+  insert.
+- `on` drops onto the target itself. A folder, a column, or the collection root.
+
+The default `dropPlacements` is `["before", "after"]`. The whole row is then
+split at the midpoint, so the line indicator follows the pointer.
+
+Add `"on"` when something should accept a drop on its body:
+
+```ts
+useMachine(dnd.machine, {
+  dropPlacements: ["before", "after", "on"],
+  canDrop(source, target, placement) {
+    if (placement === "on") return list.find(target)?.kind === "folder"
+    return list.has(target)
+  },
+})
+```
+
+When `"on"` is enabled, only a thin strip at each edge is `before` / `after`
+(5px, `edgeThreshold`). The middle of the row is `"on"`. If `canDrop` rejects
+that `"on"` hit, the machine falls back to the midpoint split so a file still
+shows a between-indicator.
+
+`canDrop` is how you decide which placements are legal. Passing a handler does
+not enable a placement. `dropPlacements` does.
+
+## Updating your data
+
+`onDrop` is the only mutation hook you need:
+
+```ts
+onDrop({ source, values, target, placement }) {
+  // source: the value the user grabbed
+  // values: source, or every selected value on a multi-item drag
+  // target: the drop target value
+  // placement: "before" | "after" | "on"
+}
+```
+
+Keep a `ListCollection` in state. The methods match the placements:
+
+```ts
+onDrop({ values, target, placement }) {
+  const moved = list.findMany(values)
+  if (moved.length === 0) return
+
+  if (target === "inbox") {
+    setList((current) => current.append(...moved))
+    return
+  }
+
+  if (placement === "on") {
+    const folder = list.find(target)
+    if (folder?.kind !== "folder") return
+    setList((current) =>
+      current.update(target, {
+        ...folder,
+        children: [...folder.children, ...moved],
+      }),
+    )
+    return
+  }
+
+  setList((current) =>
+    placement === "after"
+      ? current.moveAfter(target, ...values)
+      : current.moveBefore(target, ...values),
+  )
+}
+```
+
+For a raw array, `dnd.reorder` does the same insert:
+
+```ts
+setItems((items) =>
+  dnd.reorder(items, { ...details, itemToValue: (item) => item.id }),
+)
+```
+
+`onDragStart`, `onDragOver`, and `onDragEnd` are for UI and announcements, not
+for writing the list. `onDragEnd` includes `dropped: boolean` so you can tell
+cancel from a completed drop.
+
+## Allowing and blocking drops
+
+```ts
+canDrag: (value) => source.has(value),
+canDrop: (source, target, placement) => {
+  if (target === source) return false
+  if (placement === "on") return dest.find(target)?.kind === "folder"
+  return dest.has(target)
+},
+```
+
+`getValueText` labels values for the live region. Use
+`list.stringify(value) ?? value` so "Dropped Adobe Photoshop on Apps" is what
+the screen reader hears, not the raw id.
+
+## Multiple lists
+
+One machine can cover a source list and a destination list. Give every item a
+unique value. On drop, take from one collection and insert into the other:
+
+```ts
+onDrop({ values, target, placement }) {
+  const moved = source.findMany(values)
+  setSource((list) => list.remove(...values))
+  setDest((list) =>
+    placement === "after"
+      ? list.insertAfter(target, ...moved)
+      : list.insertBefore(target, ...moved),
+  )
+}
+```
+
+Copy instead of move by skipping `remove` and giving the copies new ids.
+
+## Keyboard and screen readers
+
+Focus a drag handle. `Enter` or `Space` starts a session. `Tab` moves to the
+next valid drop target. Arrow keys move within the list (or across a grid when
+`columnCount` is set). `Enter` drops. `Escape` cancels.
+
+`getDragHandleProps` and `getDraggableProps` set `aria-description` from
+`translations.instructions`. Override `translations` to change pickup, drag
+over, drop, and cancel announcements.
+
+## Multi-item drag
+
+Pass the current selection:
+
+```ts
+useMachine(dnd.machine, {
+  selectedValues: selected,
+  onDrop(details) {
+    // details.values is every selected id when the grab is in the selection
+  },
+})
+```
+
+Grabbing an unselected item drags only that item.
+
+## Drag preview
+
+Render a preview when `api.getDragPreviewState().visible` is true. Spread
+`getDragPreviewProps()` on it. The machine positions it from
+`api.pointerPosition`. You decide what it looks like.
+
+## Collision and grids
+
+Default collision is `closestEdge`: nearest item, then a placement from the
+pointer.
+
+Set `columnCount` for a wrapping grid. The machine switches to grid collision
+and four-direction keyboard movement.
+
+You can pass `collisionStrategy` if you need something else. The package exports
+`closestEdge`, `closestCenter`, `closestGrid`, and `pointerWithin`.
+
+Near a scrollable edge the list auto-scrolls. `scrollThreshold` (default 20) is
+the margin in pixels. Set it to `0` to turn that off.
+
+## Styling
+
+The machine is unstyled. Hook CSS to the data attributes:
+
+```css
+[data-dragging] {
+  opacity: 0.5;
+}
+
+[data-drop-target][data-drop-placement="on"] {
+  outline: 2px solid royalblue;
+}
+
+[data-placement] {
+  opacity: 0;
+}
+
+[data-placement][data-active] {
+  opacity: 1;
+}
+```
+
+Indicators are `position: absolute` siblings of the row. Give the row
+`position: relative`. See the full attribute list below.
+
+## What this package does not do
+
+It does not speak HTML5 `DataTransfer`. Values are strings, not mime types.
+Dropping a Finder folder onto a list is
+[`file-upload`](/components/file-upload), not this machine.
+
+It does not name `onInsert`, `onItemDrop`, `onRootDrop`, or `onReorder`. Those
+are per-collection aliases for the same `onDrop`. Branch on `placement` and
+whether `list.has(target)`.
+
+It does not ship a styled collection. Tree, grid, and kanban are examples you
+compose, not widgets the hook mounts.
+
+Start with a `ListCollection` and one `onDrop`. Placement is the API.
+
+## Methods and Properties
+
+### Machine Context
+
+<ContextTable name="dnd" />
+
+### Machine API
+
+<ApiTable name="dnd" />
+
+### Data attributes
+
+<DataAttrTable name="dnd" />

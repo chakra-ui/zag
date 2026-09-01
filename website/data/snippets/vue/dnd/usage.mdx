@@ -1,0 +1,62 @@
+```html
+<script setup>
+  import { ListCollection } from "@zag-js/collection"
+  import * as dnd from "@zag-js/dnd"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, ref } from "vue"
+
+  const initial = [
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+    { id: "cherry", name: "Cherry" },
+  ]
+
+  function createList(items) {
+    return new ListCollection({
+      items,
+      itemToValue: (item) => item.id,
+      itemToString: (item) => item.name,
+    })
+  }
+
+  const list = ref(createList(initial))
+
+  const service = useMachine(dnd.machine, {
+    id: "sortable",
+    orientation: "vertical",
+    getValueText: (value) => list.value.stringify(value) ?? value,
+    onDrop({ values, target, placement }) {
+      if (placement === "on") return
+      list.value =
+        placement === "after"
+          ? list.value.moveAfter(target, ...values)
+          : list.value.moveBefore(target, ...values)
+    },
+  })
+
+  const api = computed(() => dnd.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <ul>
+      <li v-for="item in list.items" :key="item.id" style="position: relative">
+        <div
+          v-bind="api.getDropIndicatorProps({ value: item.id, placement: 'before' })"
+        />
+        <div
+          v-bind="
+            mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }))
+          "
+        >
+          <span v-bind="api.getDragHandleProps({ value: item.id })">::</span>
+          {{ item.name }}
+        </div>
+        <div
+          v-bind="api.getDropIndicatorProps({ value: item.id, placement: 'after' })"
+        />
+      </li>
+    </ul>
+  </div>
+</template>
+```

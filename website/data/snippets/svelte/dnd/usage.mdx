@@ -1,0 +1,51 @@
+```svelte
+<script>
+  import { ListCollection } from "@zag-js/collection"
+  import * as dnd from "@zag-js/dnd"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const initial = [
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+    { id: "cherry", name: "Cherry" },
+  ]
+
+  function createList(items) {
+    return new ListCollection({
+      items,
+      itemToValue: (item) => item.id,
+      itemToString: (item) => item.name,
+    })
+  }
+
+  const id = $props.id()
+  let list = $state(createList(initial))
+
+  const service = useMachine(dnd.machine, {
+    id,
+    orientation: "vertical",
+    getValueText: (value) => list.stringify(value) ?? value,
+    onDrop({ values, target, placement }) {
+      if (placement === "on") return
+      list = placement === "after" ? list.moveAfter(target, ...values) : list.moveBefore(target, ...values)
+    },
+  })
+
+  const api = $derived(dnd.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <ul>
+    {#each list.items as item (item.id)}
+      <li style="position: relative">
+        <div {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}></div>
+        <div {...mergeProps(api.getDraggableProps({ value: item.id }), api.getDropTargetProps({ value: item.id }))}>
+          <span {...api.getDragHandleProps({ value: item.id })}>::</span>
+          {item.name}
+        </div>
+        <div {...api.getDropIndicatorProps({ value: item.id, placement: "after" })}></div>
+      </li>
+    {/each}
+  </ul>
+</div>
+```

@@ -209,3 +209,16 @@ function getEdgePosition(pointer: Point, rect: Rect, opts: EdgePositionOptions):
 
   return "on"
 }
+
+/** Midpoint split used when `"on"` is computed but `canDrop` rejects it. */
+export function midpointPlacement(
+  pointer: Point,
+  rect: Rect,
+  orientation: "vertical" | "horizontal",
+): Exclude<DropPlacement, "on"> {
+  const isVertical = orientation === "vertical"
+  const start = isVertical ? rect.minY : rect.minX
+  const end = isVertical ? rect.maxY : rect.maxX
+  const pos = isVertical ? pointer.y : pointer.x
+  return pos < start + (end - start) / 2 ? "before" : "after"
+}

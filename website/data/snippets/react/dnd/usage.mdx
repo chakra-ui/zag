@@ -1,0 +1,71 @@
+```tsx
+import { ListCollection } from "@zag-js/collection"
+import * as dnd from "@zag-js/dnd"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { useId, useState } from "react"
+
+const initial = [
+  { id: "apple", name: "Apple" },
+  { id: "banana", name: "Banana" },
+  { id: "cherry", name: "Cherry" },
+]
+
+function createList(items: { id: string; name: string }[]) {
+  return new ListCollection({
+    items,
+    itemToValue: (item) => item.id,
+    itemToString: (item) => item.name,
+  })
+}
+
+export function SortableList() {
+  const [list, setList] = useState(() => createList(initial))
+
+  const service = useMachine(dnd.machine, {
+    id: useId(),
+    orientation: "vertical",
+    getValueText: (value) => list.stringify(value) ?? value,
+    onDrop({ values, target, placement }) {
+      if (placement === "on") return
+      setList((current) =>
+        placement === "after"
+          ? current.moveAfter(target, ...values)
+          : current.moveBefore(target, ...values),
+      )
+    },
+  })
+  const api = dnd.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <ul>
+        {list.items.map((item) => (
+          <li key={item.id} style={{ position: "relative" }}>
+            <div
+              {...api.getDropIndicatorProps({
+                value: item.id,
+                placement: "before",
+              })}
+            />
+            <div
+              {...mergeProps(
+                api.getDraggableProps({ value: item.id }),
+                api.getDropTargetProps({ value: item.id }),
+              )}
+            >
+              <span {...api.getDragHandleProps({ value: item.id })}>::</span>
+              {item.name}
+            </div>
+            <div
+              {...api.getDropIndicatorProps({
+                value: item.id,
+                placement: "after",
+              })}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```

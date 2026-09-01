@@ -1,6 +1,6 @@
 import { createRect } from "@zag-js/rect-utils"
 import { describe, expect, test } from "vitest"
-import { closestGrid } from "./collision"
+import { closestGrid, midpointPlacement } from "./collision"
 import type { DropEntry } from "../dnd.types"
 
 function createGridEntries(): DropEntry[] {
@@ -86,5 +86,19 @@ describe("closestGrid", () => {
         orientation: "horizontal",
       }),
     ).toEqual({ value: "2", placement: "before" })
+  })
+})
+
+describe("midpointPlacement", () => {
+  const rect = createRect({ x: 0, y: 0, width: 100, height: 40 })
+
+  test("splits a vertical target at the midpoint", () => {
+    expect(midpointPlacement({ x: 50, y: 10 }, rect, "vertical")).toBe("before")
+    expect(midpointPlacement({ x: 50, y: 30 }, rect, "vertical")).toBe("after")
+  })
+
+  test("splits a horizontal target at the midpoint", () => {
+    expect(midpointPlacement({ x: 20, y: 20 }, rect, "horizontal")).toBe("before")
+    expect(midpointPlacement({ x: 80, y: 20 }, rect, "horizontal")).toBe("after")
   })
 })
