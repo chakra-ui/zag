@@ -6,6 +6,10 @@
     "**/.xstate": true
   },
   "biome.enabled": false,
+  "prettier.enable": false,
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "oxc.enable.oxfmt": true,
+  "oxc.fmt.configPath": ".oxfmtrc.json"
 }
