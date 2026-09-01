@@ -1,0 +1,24 @@
+```svelte
+<script lang="ts">
+  import * as meter from "@zag-js/meter"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(meter.machine, {
+    id,
+    defaultValue: 70,
+    low: 60,
+    high: 85,
+    optimum: 10,
+  })
+  const api = $derived(meter.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <div {...api.getLabelProps()}>Storage used</div>
+  <div {...api.getValueTextProps()}>{api.valueAsString}</div>
+  <div {...api.getTrackProps()}>
+    <div {...api.getIndicatorProps()}></div>
+  </div>
+</div>
+```

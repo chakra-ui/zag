@@ -127,6 +127,11 @@
       "--marquee-translate": "The marquee translate value for the Root"
     }
   },
+  "meter": {
+    "Root": {
+      "--percent": "The percent value for the Root"
+    }
+  },
   "navigation-menu": {
     "Root": {
       "--trigger-width": "The width of the Root",

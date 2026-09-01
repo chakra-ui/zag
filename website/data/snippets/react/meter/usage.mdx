@@ -1,0 +1,27 @@
+```tsx
+import * as meter from "@zag-js/meter"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+function Meter() {
+  const service = useMachine(meter.machine, {
+    id: useId(),
+    defaultValue: 70,
+    low: 60,
+    high: 85,
+    optimum: 10,
+  })
+
+  const api = meter.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <div {...api.getLabelProps()}>Storage used</div>
+      <div {...api.getValueTextProps()}>{api.valueAsString}</div>
+      <div {...api.getTrackProps()}>
+        <div {...api.getIndicatorProps()} />
+      </div>
+    </div>
+  )
+}
+```

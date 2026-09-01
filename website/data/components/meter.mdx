@@ -1,0 +1,224 @@
+---
+title: Meter
+description: Using the meter machine in your project.
+package: "@zag-js/meter"
+---
+
+A meter shows a scalar measurement inside a known range: storage used, battery
+left, a score. Use [`progress`](/components/linear-progress) when the value is
+how far a running task has gone.
+
+`low`, `high`, and `optimum` follow the HTML `<meter>` algorithm. The machine
+exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
+`least-optimal`.
+
+<Resources pkg="@zag-js/meter" />
+
+<Showcase id="Meter" />
+
+**Features**
+
+- Supports controlled and uncontrolled values
+- Supports minimum and maximum values
+- Computes HTML `low` / `high` / `optimum` regions
+- Supports horizontal and vertical orientation
+- Localized value formatting
+
+## Installation
+
+Install the meter package:
+
+<CodeSnippet id="meter/installation.mdx" />
+
+## Usage
+
+Import the meter package:
+
+```tsx
+import * as meter from "@zag-js/meter"
+```
+
+The meter package exports two key functions:
+
+- `machine` — State machine logic.
+- `connect` — Maps machine state to JSX props and event handlers.
+
+> Pass a unique `id` to `useMachine` so the label id used by `aria-labelledby`
+> stays unique. Override it with `ids.label` when the label lives outside the
+> machine.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="meter/usage.mdx" />
+
+The root carries `role="meter"`, `aria-valuemin`, `aria-valuemax`,
+`aria-valuenow`, `aria-valuetext`, and `aria-labelledby`. The visible value text
+is `aria-hidden` because assistive tech already reads `aria-valuetext`.
+
+### Setting the value
+
+Use `defaultValue` for uncontrolled state, or `value` for controlled state. When
+neither is passed, the value defaults to the midpoint of `min` and `max`.
+
+```tsx {2}
+const service = useMachine(meter.machine, {
+  defaultValue: 70,
+})
+```
+
+Use `api.setValue`, `api.setToMin`, and `api.setToMax` to update it.
+
+```tsx
+api.setValue(40)
+api.setToMin()
+api.setToMax()
+```
+
+### Listening for value changes
+
+Use `onValueChange` to react to updates.
+
+```tsx
+const service = useMachine(meter.machine, {
+  onValueChange(details) {
+    // details => { value: number }
+    console.log(details.value)
+  },
+})
+```
+
+### Setting the minimum and maximum values
+
+By default the meter uses `min` `0` and `max` `100`.
+
+```tsx {2-3}
+const service = useMachine(meter.machine, {
+  min: 0,
+  max: 1000,
+})
+```
+
+### Thresholds
+
+Pass `low`, `high`, and `optimum`. They default the same way the HTML element
+does: `low` to `min`, `high` to `max`, `optimum` to the midpoint.
+
+- If `optimum` is below `low`, a smaller value is better (disk usage).
+- If `optimum` is above `high`, a larger value is better (battery).
+- If `optimum` sits between `low` and `high`, that band is preferred.
+
+```tsx
+const service = useMachine(meter.machine, {
+  defaultValue: 70,
+  low: 60,
+  high: 85,
+  optimum: 10,
+})
+```
+
+Style the fill with `data-state`:
+
+```css
+[data-meter-indicator][data-state="optimal"] {
+  background: green;
+}
+
+[data-meter-indicator][data-state="suboptimal"] {
+  background: gold;
+}
+
+[data-meter-indicator][data-state="least-optimal"] {
+  background: red;
+}
+```
+
+### Customizing value text
+
+Use `translations.value` when the formatted number is not enough for assistive
+tech.
+
+```tsx
+const service = useMachine(meter.machine, {
+  translations: {
+    value: ({ value, max }) => `${value} of ${max} gigabytes used`,
+  },
+})
+```
+
+Render the `valueText` part if you also want that string on screen.
+
+```tsx
+<div {...api.getValueTextProps()}>{api.valueAsString}</div>
+```
+
+### Localizing percentage formatting
+
+`formatOptions` defaults to `{ style: "percent" }`. Pass a different
+`Intl.NumberFormat` style when the raw value should be shown.
+
+```tsx
+const service = useMachine(meter.machine, {
+  locale: "fr-FR",
+  formatOptions: { style: "unit", unit: "gigabyte" },
+})
+```
+
+### Vertical orientation
+
+Set `orientation` to `vertical` for a vertical meter.
+
+```tsx
+const service = useMachine(meter.machine, {
+  orientation: "vertical",
+})
+```
+
+## Styling guide
+
+Each part includes a component-scoped data attribute you can target in CSS.
+
+```css
+[data-meter-root] {
+  /* Styles for the root part */
+}
+
+[data-meter-label] {
+  /* Styles for the label part */
+}
+
+[data-meter-track] {
+  /* Styles for the track part */
+}
+
+[data-meter-indicator] {
+  /* Styles for the indicator part */
+}
+
+[data-meter-value-text] {
+  /* Styles for the value text part */
+}
+```
+
+The root, track, and indicator also have `data-orientation` and `data-state`.
+
+## Methods and Properties
+
+### Machine Context
+
+The meter machine exposes the following context properties:
+
+<ContextTable name="meter" />
+
+### Machine API
+
+The meter `api` exposes the following methods:
+
+<ApiTable name="meter" />
+
+### Data Attributes
+
+<DataAttrTable name="meter" />
+
+### CSS Variables
+
+<CssVarTable name="meter" />

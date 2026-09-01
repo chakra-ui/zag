@@ -48,6 +48,7 @@
   "@zag-js/marquee": "../../packages/machines/marquee/src",
   "@zag-js/menu": "../../packages/machines/menu/src",
   "@zag-js/menubar": "../../packages/machines/menubar/src",
+  "@zag-js/meter": "../../packages/machines/meter/src",
   "@zag-js/navigation-menu": "../../packages/machines/navigation-menu/src",
   "@zag-js/number-flow": "../../packages/machines/number-flow/src",
   "@zag-js/number-input": "../../packages/machines/number-input/src",

@@ -1,0 +1,70 @@
+[data-meter-root] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 50%;
+}
+
+[data-meter-root][data-orientation="vertical"] {
+  max-width: 80px;
+  height: 200px;
+}
+
+[data-meter-label] {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+[data-meter-track] {
+  height: 8px;
+  background-color: #ebebeb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+[data-meter-track][data-orientation="vertical"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 8px;
+  height: 100%;
+}
+
+[data-meter-indicator] {
+  height: 100%;
+  border-radius: 8px;
+  transition:
+    width 0.2s ease-in-out,
+    height 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+}
+
+[data-meter-indicator][data-orientation="vertical"] {
+  width: 100%;
+  align-self: flex-end;
+}
+
+[data-meter-indicator][data-state="optimal"] {
+  background-color: #22c55e;
+}
+
+[data-meter-indicator][data-state="suboptimal"] {
+  background-color: #eab308;
+}
+
+[data-meter-indicator][data-state="least-optimal"] {
+  background-color: #ef4444;
+}
+
+[data-meter-value-text] {
+  font-size: 13px;
+  color: #555;
+}
+
+.meter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}

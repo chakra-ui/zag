@@ -25,6 +25,7 @@ import { InfiniteScroll } from "./infinite-scroll"
 import { Menu } from "./menu"
 import { MenuAsync } from "./menu-async"
 import { Menubar } from "./menubar"
+import { Meter } from "./meter"
 import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
@@ -338,6 +339,19 @@ const components = {
         },
         blurOnComplete: false,
         mask: false,
+      }}
+    />
+  ),
+  Meter: () => (
+    <Playground
+      name="meter"
+      component={Meter}
+      defaultProps={{
+        min: 0,
+        max: 100,
+        low: 60,
+        high: 85,
+        optimum: 10,
       }}
     />
   ),

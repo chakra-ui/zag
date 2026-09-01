@@ -245,6 +245,14 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
+    slug: "meter",
+    label: "Meter",
+    examples: [
+      { slug: "basic", title: "Storage (low is better)" },
+      { slug: "battery", title: "Battery (high is better)" },
+    ],
+  },
+  {
     slug: "field",
     label: "Field",
     examples: [

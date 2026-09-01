@@ -1252,6 +1252,28 @@
       "data-has-open-menu": "Present when a menu in the menubar is open"
     }
   },
+  "meter": {
+    "Root": {
+      "data-meter-root": "<uid>",
+      "data-value": "The value of the item",
+      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\"",
+      "data-orientation": "The orientation of the meter"
+    },
+    "Label": {
+      "data-meter-label": "<uid>",
+      "data-orientation": "The orientation of the label"
+    },
+    "Track": {
+      "data-meter-track": "<uid>",
+      "data-orientation": "The orientation of the track",
+      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\""
+    },
+    "Indicator": {
+      "data-meter-indicator": "<uid>",
+      "data-orientation": "The orientation of the indicator",
+      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\""
+    }
+  },
   "navigation-menu": {
     "Root": {
       "data-navigation-menu-root": "<uid>",

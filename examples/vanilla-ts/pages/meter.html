@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meter</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Meter</h1>
+
+    <div class="meter-demo">
+      <div class="meter">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <span class="meter-label">Storage used</span>
+          <span class="meter-value-text"></span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-indicator"></div>
+        </div>
+      </div>
+
+      <p>
+        Optimum is below <code>low</code>, so a smaller value is better. 10 is optimal, 70 is suboptimal, 95 is
+        least-optimal.
+      </p>
+
+      <div class="meter-actions">
+        <button data-testid="set-10" type="button">Set 10%</button>
+        <button data-testid="set-70" type="button">Set 70%</button>
+        <button data-testid="set-95" type="button">Set 95%</button>
+      </div>
+    </div>
+
+    <script type="module" src="./meter.ts"></script>
+  </body>
+</html>

@@ -63,6 +63,7 @@
     "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/menubar": "workspace:*",
+    "@zag-js/meter": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-flow": "workspace:*",
     "@zag-js/number-input": "workspace:*",

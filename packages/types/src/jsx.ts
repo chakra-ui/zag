@@ -650,6 +650,7 @@ export namespace JSX {
     | "marquee"
     | "math"
     | "menu"
+    | "meter"
     | "menubar"
     | "menuitem"
     | "menuitemcheckbox"
