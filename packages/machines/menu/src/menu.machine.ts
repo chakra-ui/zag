@@ -594,7 +594,11 @@ export const machine = createMachine<MenuSchema>({
           refs.set("menubarCloseReason", "sibling-open")
           // Don't restore focus to this trigger — the sibling menu takes focus. Restoring
           // here would refocus this trigger and reset the menubar's active value.
-          send({ type: "CLOSE", src: "menubar-sibling-open", restoreFocus: false })
+          send({
+            type: "CLOSE",
+            src: "menubar-sibling-open",
+            restoreFocus: false,
+          })
         })
       },
       waitForOpenDelay({ send }) {
@@ -739,7 +743,10 @@ export const machine = createMachine<MenuSchema>({
       dispatchMenubarOpen({ scope, prop }) {
         const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
         if (!menubarEl) return
-        const detail = { menuId: scope.id, triggerId: dom.getTriggerEl(scope)?.id }
+        const detail = {
+          menuId: scope.id,
+          triggerId: dom.getTriggerEl(scope)?.id,
+        }
         dom.dispatchMenubarEvent(menubarEl, "menu:open", detail)
       },
       dispatchMenubarClose({ scope, prop, refs }) {
@@ -747,7 +754,10 @@ export const machine = createMachine<MenuSchema>({
         if (!menubarEl) return
         const reason = refs.get("menubarCloseReason") ?? "close"
         refs.set("menubarCloseReason", null)
-        dom.dispatchMenubarEvent(menubarEl, "menu:close", { menuId: scope.id, reason })
+        dom.dispatchMenubarEvent(menubarEl, "menu:close", {
+          menuId: scope.id,
+          reason,
+        })
       },
       setAnchorPoint({ context, event }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
@@ -798,7 +808,11 @@ export const machine = createMachine<MenuSchema>({
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+          prop("navigate")?.({
+            value: highlightedValue!,
+            node: itemEl,
+            href: itemEl.href,
+          })
         } else {
           queueMicrotask(() => itemEl.click())
         }
