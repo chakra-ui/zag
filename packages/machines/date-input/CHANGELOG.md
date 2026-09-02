@@ -1,5 +1,47 @@
 # @zag-js/date-input
 
+## 1.43.3
+
+### Patch Changes
+
+- [`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Write optional properties as explicit `?: T | undefined` instead
+  of wrapping them in `Partial` from `@zag-js/types`.
+
+  That export shadowed the built-in `Partial`, which changed what `Partial<T>` meant in every file importing it and
+  broke `@vue/compiler-sfc` on `interface X extends Partial<Y>`. Types like `IntlTranslations` and `ElementIds` are now
+  plain interfaces. Passing a single translation key still works.
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/anatomy@1.43.3
+  - @zag-js/utils@1.43.3
+  - @zag-js/date-utils@1.43.3
+  - @zag-js/live-region@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- [`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix the `translations` prop requiring every `IntlTranslations`
+  message. You can pass one key and the rest fall back to the defaults (fixes
+  [#3287](https://github.com/chakra-ui/zag/issues/3287)).
+
+  `@zag-js/types` now exports a `Partial` that allows `undefined` on optional keys, matching
+  `exactOptionalPropertyTypes`.
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/anatomy@1.43.2
+  - @zag-js/date-utils@1.43.2
+  - @zag-js/live-region@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes

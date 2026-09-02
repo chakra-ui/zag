@@ -3,7 +3,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -39,23 +39,23 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  clearTriggerLabel: string
-}>
+export interface IntlTranslations {
+  clearTriggerLabel?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  content: string
-  control: string
-  trigger: string
-  clearTrigger: string
-  label: string
-  hiddenSelect: string
-  positioner: string
-  item: (id: string | number) => string
-  itemGroup: (id: string | number) => string
-  itemGroupLabel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  content?: string | undefined
+  control?: string | undefined
+  trigger?: string | undefined
+  clearTrigger?: string | undefined
+  label?: string | undefined
+  hiddenSelect?: string | undefined
+  positioner?: string | undefined
+  item?: ((id: string | number) => string) | undefined
+  itemGroup?: ((id: string | number) => string) | undefined
+  itemGroupLabel?: ((id: string | number) => string) | undefined
+}
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {

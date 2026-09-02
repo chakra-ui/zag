@@ -1,5 +1,35 @@
 # @zag-js/tabs
 
+## 1.43.3
+
+### Patch Changes
+
+- [`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Write optional properties as explicit `?: T | undefined` instead
+  of wrapping them in `Partial` from `@zag-js/types`.
+
+  That export shadowed the built-in `Partial`, which changed what `Partial<T>` meant in every file importing it and
+  broke `@vue/compiler-sfc` on `interface X extends Partial<Y>`. Types like `IntlTranslations` and `ElementIds` are now
+  plain interfaces. Passing a single translation key still works.
+
+- Updated dependencies [[`49ef963`](https://github.com/chakra-ui/zag/commit/49ef96354bb412690feacdb7ce7ba0a001b15c13)]:
+  - @zag-js/types@1.43.3
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/core@1.43.3
+  - @zag-js/anatomy@1.43.3
+  - @zag-js/utils@1.43.3
+
+## 1.43.2
+
+### Patch Changes
+
+- Updated dependencies [[`3d019ee`](https://github.com/chakra-ui/zag/commit/3d019eede4ddd578be08f4d097e063b50481224f)]:
+  - @zag-js/types@1.43.2
+  - @zag-js/utils@1.43.2
+  - @zag-js/dom-query@1.43.2
+  - @zag-js/core@1.43.2
+  - @zag-js/anatomy@1.43.2
+
 ## 1.43.1
 
 ### Patch Changes

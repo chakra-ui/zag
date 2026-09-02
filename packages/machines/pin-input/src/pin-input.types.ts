@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -19,17 +19,17 @@ export interface ValueInvalidDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  inputLabel: (index: number, length: number) => string
-}>
+export interface IntlTranslations {
+  inputLabel?: ((index: number, length: number) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  hiddenInput: string
-  label: string
-  control: string
-  input: (id: string) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  hiddenInput?: string | undefined
+  label?: string | undefined
+  control?: string | undefined
+  input?: ((id: string) => string) | undefined
+}
 
 export interface PinInputProps extends DirectionProperty, CommonProperties {
   /**

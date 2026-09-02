@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -34,18 +34,18 @@ export interface ValidateArgs {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  clearTriggerLabel: string
-  deleteTagTriggerLabel: (value: string) => string
-  tagSelected: (value: string) => string
-  tagAdded: (value: string) => string
-  tagsPasted: (value: string[]) => string
-  tagEdited: (value: string) => string
-  tagUpdated: (value: string) => string
-  tagDeleted: (value: string) => string
-  noTagsSelected: string
-  inputLabel: (count: number) => string
-}>
+export interface IntlTranslations {
+  clearTriggerLabel?: string | undefined
+  deleteTagTriggerLabel?: ((value: string) => string) | undefined
+  tagSelected?: ((value: string) => string) | undefined
+  tagAdded?: ((value: string) => string) | undefined
+  tagsPasted?: ((value: string[]) => string) | undefined
+  tagEdited?: ((value: string) => string) | undefined
+  tagUpdated?: ((value: string) => string) | undefined
+  tagDeleted?: ((value: string) => string) | undefined
+  noTagsSelected?: string | undefined
+  inputLabel?: ((count: number) => string) | undefined
+}
 
 type Log =
   | { type: "add" | "update" | "delete" | "select"; value: string }
@@ -53,17 +53,17 @@ type Log =
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
 
-export type ElementIds = Partial<{
-  root: string
-  input: string
-  hiddenInput: string
-  clearBtn: string
-  label: string
-  control: string
-  item: (opts: ItemProps) => string
-  itemDeleteTrigger: (opts: ItemProps) => string
-  itemInput: (opts: ItemProps) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  input?: string | undefined
+  hiddenInput?: string | undefined
+  clearBtn?: string | undefined
+  label?: string | undefined
+  control?: string | undefined
+  item?: ((opts: ItemProps) => string) | undefined
+  itemDeleteTrigger?: ((opts: ItemProps) => string) | undefined
+  itemInput?: ((opts: ItemProps) => string) | undefined
+}
 
 export interface TagsInputProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**

@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -32,14 +32,14 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  content: string
-  label: string
-  item: (id: string | number) => string
-  itemGroup: (id: string | number) => string
-  itemGroupLabel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  content?: string | undefined
+  label?: string | undefined
+  item?: ((id: string | number) => string) | undefined
+  itemGroup?: ((id: string | number) => string) | undefined
+  itemGroupLabel?: ((id: string | number) => string) | undefined
+}
 
 export interface ListboxProps<T extends CollectionItem = CollectionItem> extends DirectionProperty, CommonProperties {
   /**

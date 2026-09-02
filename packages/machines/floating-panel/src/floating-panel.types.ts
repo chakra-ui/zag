@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Point, Size } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -29,19 +29,19 @@ export interface AnchorPositionDetails {
   boundaryRect: DOMRect | null
 }
 
-export type ElementIds = Partial<{
-  trigger: string
-  positioner: string
-  content: string
-  title: string
-  header: string
-}>
+export interface ElementIds {
+  trigger?: string | undefined
+  positioner?: string | undefined
+  content?: string | undefined
+  title?: string | undefined
+  header?: string | undefined
+}
 
-export type IntlTranslations = Partial<{
-  minimize: string
-  maximize: string
-  restore: string
-}>
+export interface IntlTranslations {
+  minimize?: string | undefined
+  maximize?: string | undefined
+  restore?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

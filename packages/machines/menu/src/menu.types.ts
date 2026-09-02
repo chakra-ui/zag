@@ -3,7 +3,7 @@ import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -47,15 +47,15 @@ export interface NavigateDetails {
   href: string
 }
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  contextTrigger: string | ((value?: string) => string)
-  content: string
-  groupLabel: (id: string) => string
-  group: (id: string) => string
-  positioner: string
-  arrow: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  contextTrigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  groupLabel?: ((id: string) => string) | undefined
+  group?: ((id: string) => string) | undefined
+  positioner?: string | undefined
+  arrow?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

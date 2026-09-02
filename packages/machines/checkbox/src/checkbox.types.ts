@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -15,12 +15,12 @@ export interface CheckedChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  hiddenInput: string
-  control: string
-  label: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  label?: string | undefined
+}
 
 export interface CheckboxProps extends DirectionProperty, CommonProperties {
   /**

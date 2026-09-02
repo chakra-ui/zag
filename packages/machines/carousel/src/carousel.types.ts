@@ -1,12 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type {
-  CommonProperties,
-  DirectionProperty,
-  OrientationProperty,
-  Partial,
-  PropTypes,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -38,25 +31,25 @@ export interface ProgressTextDetails {
   totalPages: number
 }
 
-export type IntlTranslations = Partial<{
-  nextTrigger: string
-  prevTrigger: string
-  indicator: (index: number) => string
-  item: (index: number, count: number) => string
-  autoplayStart: string
-  autoplayStop: string
-  progressText: (details: ProgressTextDetails) => string
-}>
+export interface IntlTranslations {
+  nextTrigger?: string | undefined
+  prevTrigger?: string | undefined
+  indicator?: ((index: number) => string) | undefined
+  item?: ((index: number, count: number) => string) | undefined
+  autoplayStart?: string | undefined
+  autoplayStop?: string | undefined
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  item: (index: number) => string
-  itemGroup: string
-  nextTrigger: string
-  prevTrigger: string
-  indicatorGroup: string
-  indicator: (index: number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  item?: ((index: number) => string) | undefined
+  itemGroup?: string | undefined
+  nextTrigger?: string | undefined
+  prevTrigger?: string | undefined
+  indicatorGroup?: string | undefined
+  indicator?: ((index: number) => string) | undefined
+}
 
 export interface CarouselProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**

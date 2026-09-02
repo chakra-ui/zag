@@ -163,6 +163,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         // { type: "doc", label: "I18n", id: "i18n" },
         { type: "doc", label: "Async List", id: "async-list" },
         { type: "doc", label: "Focus Trap", id: "focus-trap" },
+        { type: "doc", label: "Hotkeys", id: "hotkeys", new: true },
       ],
     },
   ],

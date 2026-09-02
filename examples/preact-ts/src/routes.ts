@@ -249,6 +249,7 @@ export const routes: RouteDefinition[] = [
   { path: "/hotkeys/scopes", component: lazy(() => import("./pages/hotkeys/scopes")) },
   { path: "/hotkeys/command-dialog", component: lazy(() => import("./pages/hotkeys/command-dialog")) },
   { path: "/hotkeys/key-recorder", component: lazy(() => import("./pages/hotkeys/key-recorder")) },
+  { path: "/hotkeys/targets", component: lazy(() => import("./pages/hotkeys/targets")) },
   {
     path: "/:component",
     component: lazy(() => import("./pages/component")),

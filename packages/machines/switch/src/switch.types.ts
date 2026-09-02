@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -13,13 +13,13 @@ export interface CheckedChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  hiddenInput: string
-  control: string
-  label: string
-  thumb: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  hiddenInput?: string | undefined
+  control?: string | undefined
+  label?: string | undefined
+  thumb?: string | undefined
+}
 
 export interface SwitchProps extends DirectionProperty, CommonProperties {
   /**

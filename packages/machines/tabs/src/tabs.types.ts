@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -23,17 +23,17 @@ export interface NavigateDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type IntlTranslations = Partial<{
-  listLabel: string
-}>
+export interface IntlTranslations {
+  listLabel?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  trigger: (value: string) => string
-  list: string
-  content: (value: string) => string
-  indicator: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  trigger?: ((value: string) => string) | undefined
+  list?: string | undefined
+  content?: ((value: string) => string) | undefined
+  indicator?: string | undefined
+}
 
 export interface TabsProps extends DirectionProperty, CommonProperties {
   /**

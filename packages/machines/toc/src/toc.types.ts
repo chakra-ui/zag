@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -42,14 +42,14 @@ export interface ScrollToDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  title: string
-  list: string
-  item: (value: string) => string
-  link: (value: string) => string
-  indicator: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  title?: string | undefined
+  list?: string | undefined
+  item?: ((value: string) => string) | undefined
+  link?: ((value: string) => string) | undefined
+  indicator?: string | undefined
+}
 
 export interface TocProps extends DirectionProperty, CommonProperties {
   /**

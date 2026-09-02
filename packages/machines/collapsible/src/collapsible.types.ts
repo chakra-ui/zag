@@ -1,5 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Partial, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,11 +9,11 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export type ElementIds = Partial<{
-  root: string
-  content: string
-  trigger: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  content?: string | undefined
+  trigger?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

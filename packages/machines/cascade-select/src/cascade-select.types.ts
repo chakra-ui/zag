@@ -1,7 +1,7 @@
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 
@@ -33,21 +33,21 @@ export interface ScrollToIndexDetails {
   depth: number
 }
 
-export type ElementIds = Partial<{
-  root: string
-  label: string
-  control: string
-  trigger: string
-  indicator: string
-  clearTrigger: string
-  positioner: string
-  content: string
-  hiddenInput: string
+export interface ElementIds {
+  root?: string | undefined
+  label?: string | undefined
+  control?: string | undefined
+  trigger?: string | undefined
+  indicator?: string | undefined
+  clearTrigger?: string | undefined
+  positioner?: string | undefined
+  content?: string | undefined
+  hiddenInput?: string | undefined
   /** Value path of the parent whose children this list displays (e.g. "asia,india") */
-  list(valuePath: string): string
+  list?: ((valuePath: string) => string) | undefined
   /** Value path of the item (e.g. "asia,india,haryana") */
-  item(valuePath: string): string
-}>
+  item?: ((valuePath: string) => string) | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

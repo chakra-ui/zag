@@ -4,7 +4,6 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
-  Partial,
   PropTypes,
   RequiredBy,
 } from "@zag-js/types"
@@ -27,16 +26,16 @@ export interface ValueChangeDetails {
   value: number | null
 }
 
-export type IntlTranslations = Partial<{
-  value: (details: ValueTranslationDetails) => string
-}>
+export interface IntlTranslations {
+  value?: ((details: ValueTranslationDetails) => string) | undefined
+}
 
-export type ElementIds = Partial<{
-  root: string
-  track: string
-  label: string
-  circle: string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  track?: string | undefined
+  label?: string | undefined
+  circle?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

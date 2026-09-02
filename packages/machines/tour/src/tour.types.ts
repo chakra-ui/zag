@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { Point, Rect, Size } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
@@ -130,22 +130,22 @@ export interface ProgressTextDetails {
   total: number
 }
 
-export type IntlTranslations = Partial<{
-  progressText: (details: ProgressTextDetails) => string
-  nextStep: string
-  prevStep: string
-  close: string
-  skip: string
-}>
+export interface IntlTranslations {
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
+  nextStep?: string | undefined
+  prevStep?: string | undefined
+  close?: string | undefined
+  skip?: string | undefined
+}
 
-export type ElementIds = Partial<{
-  content: string
-  title: string
-  description: string
-  positioner: string
-  backdrop: string
-  arrow: string
-}>
+export interface ElementIds {
+  content?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
+  positioner?: string | undefined
+  backdrop?: string | undefined
+  arrow?: string | undefined
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context

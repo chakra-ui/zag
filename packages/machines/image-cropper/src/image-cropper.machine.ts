@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, getEventPoint, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
-import type { Partial, Point, Rect, Size } from "@zag-js/types"
+import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, clampValue } from "@zag-js/utils"
 import * as dom from "./image-cropper.dom"
 import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"

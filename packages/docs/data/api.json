@@ -1778,7 +1778,7 @@
         "description": "A function that creates a Calendar object for a given calendar identifier.\nEnables non-Gregorian calendar support (Persian, Buddhist, Islamic, etc.)\nwithout bundling all calendars by default."
       },
       "translations": {
-        "type": "Partial<IntlTranslations> | undefined",
+        "type": "IntlTranslations | undefined",
         "description": "The localized messages to use."
       },
       "ids": {
@@ -4376,6 +4376,10 @@
       "onExitComplete": {
         "type": "VoidFunction | undefined",
         "description": "Function called when the animation ends in the closed state"
+      },
+      "onEnterComplete": {
+        "type": "VoidFunction | undefined",
+        "description": "Function called when the animation ends in the open state"
       },
       "immediate": {
         "type": "boolean | undefined",

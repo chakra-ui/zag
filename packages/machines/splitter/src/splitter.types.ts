@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { SplitterRegistry } from "./utils/registry"
 
 /* -----------------------------------------------------------------------------
@@ -77,12 +77,12 @@ export interface ExpandCollapseDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  resizeTrigger: (id: string) => string
-  label: (id: string) => string
-  panel: (id: string | number) => string
-}>
+export interface ElementIds {
+  root?: string | undefined
+  resizeTrigger?: ((id: string) => string) | undefined
+  label?: ((id: string) => string) | undefined
+  panel?: ((id: string | number) => string) | undefined
+}
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**

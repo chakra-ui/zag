@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Partial, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -25,12 +25,12 @@ export interface TriggerValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  trigger: string | ((value?: string) => string)
-  content: string
-  arrow: string
-  positioner: string
-}>
+export interface ElementIds {
+  trigger?: (string | ((value?: string) => string)) | undefined
+  content?: string | undefined
+  arrow?: string | undefined
+  positioner?: string | undefined
+}
 
 export interface TooltipProps extends DirectionProperty, CommonProperties {
   /**
