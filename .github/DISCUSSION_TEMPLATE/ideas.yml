@@ -1,0 +1,36 @@
+title: "🚀 Feature request: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an idea 😄! Please search open discussions before posting — someone might have asked the same thing before 😉.
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🧱 Problem statement / justification
+      description: Why should this be added? If it's related to a problem you've noticed, mention that too.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: ✅ Proposed solution or API
+      description: Code snippets, gists, or links to the ideal design or API.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: ↩️ Alternatives
+      description: What alternative solutions have you considered before making this request?
+  - type: input
+    id: team
+    attributes:
+      label: 🧢 Your company/team
+      description: "Optional: which company or team would benefit from this feature? (e.g., Acme/Dashboard)"
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📝 Additional information
+      description: What resources (links, screenshots, etc.) do you have to assist this effort?
