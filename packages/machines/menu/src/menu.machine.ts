@@ -660,6 +660,17 @@ export const machine = createMachine<MenuSchema>({
         const doc = scope.getDoc()
 
         return addDomEvent(doc, "pointermove", (e) => {
+          // `intentPolygon` is captured once, from the submenu's rect at the moment the
+          // pointer crossed the trigger item. While the submenu is still animating in or
+          // being repositioned, that snapshot no longer describes where the content is, so
+          // the polygon test misses and the submenu closes under the pointer. The pointer
+          // cannot have moved away from the submenu while it is still over the submenu
+          // itself, or over the trigger item that owns it.
+          const target = getEventTarget<Element>(e)
+          if (contains(dom.getContentEl(scope), target) || contains(dom.getTriggerEl(scope), target)) {
+            return
+          }
+
           const isMovingToSubmenu = isWithinPolygon(context.get("intentPolygon"), {
             x: e.clientX,
             y: e.clientY,
