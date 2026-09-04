@@ -1,5 +1,16 @@
 # @zag-js/hotkeys
 
+## 1.43.4
+
+### Patch Changes
+
+- [`99e1175`](https://github.com/chakra-ui/zag/commit/99e1175fdd87241fc2c21d3cd90dc04bcfb309b3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export `getPlatform`, which resolves the current platform to
+  `"mac" | "windows" | "linux"`, useful when formatting hotkeys for display. Also export the `SequenceStep` type, the
+  element type of `ParsedHotkey.sequenceSteps`.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4)]:
+  - @zag-js/dom-query@1.43.4
+
 ## 1.43.3
 
 ### Patch Changes

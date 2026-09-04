@@ -1,5 +1,15 @@
 # @zag-js/focus-visible
 
+## 1.43.4
+
+### Patch Changes
+
+- [`82692cd`](https://github.com/chakra-ui/zag/commit/82692cd7307923c9648ece5ff4532b31108cf9f8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ignore same-position pointer moves only for trusted events so
+  synthetic clicks still restore pointer modality.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4)]:
+  - @zag-js/dom-query@1.43.4
+
 ## 1.43.3
 
 ### Patch Changes
