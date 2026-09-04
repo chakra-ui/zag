@@ -6,6 +6,13 @@ body:
       value: |
         Thanks for suggesting an idea 😄! Please search open discussions before posting — someone might have asked the same thing before 😉.
   - type: textarea
+    id: description
+    attributes:
+      label: 📋 Description
+      description: A clear and concise description of the feature you'd like to see.
+    validations:
+      required: true
+  - type: textarea
     id: problem
     attributes:
       label: 🧱 Problem statement / justification
