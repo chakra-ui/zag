@@ -365,6 +365,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -3337,6 +3340,31 @@ importers:
         version: 2.2.0
 
   packages/machines/tree-view:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/wheel-picker:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*

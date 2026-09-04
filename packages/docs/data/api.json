@@ -6845,5 +6845,153 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
+  },
+  "wheel-picker": {
+    "api": {
+      "value": {
+        "type": "string | null",
+        "description": "The selected value."
+      },
+      "selectedItem": {
+        "type": "T | null",
+        "description": "The selected item."
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The selected item's display string."
+      },
+      "index": {
+        "type": "number",
+        "description": "The selected index in the original collection."
+      },
+      "focused": {
+        "type": "boolean",
+        "description": "Whether the wheel is focused."
+      },
+      "dragging": {
+        "type": "boolean",
+        "description": "Whether the wheel is being dragged."
+      },
+      "scrolling": {
+        "type": "boolean",
+        "description": "Whether the wheel is settling to an item."
+      },
+      "items": {
+        "type": "WheelPickerRenderItem<T>[]",
+        "description": "The visual items to render on the 3D wheel."
+      },
+      "highlightItems": {
+        "type": "WheelPickerRenderItem<T>[]",
+        "description": "The items to render in the clipped highlight layer."
+      },
+      "setValue": {
+        "type": "(value: string | null) => void",
+        "description": "Set the value immediately."
+      },
+      "scrollToIndex": {
+        "type": "(index: number) => void",
+        "description": "Smoothly scroll to a collection index."
+      },
+      "getItemState": {
+        "type": "(props: ItemProps<T>) => ItemState",
+        "description": "Get the derived state for a visual item."
+      }
+    },
+    "context": {
+      "collection": {
+        "type": "ListCollection<T>",
+        "description": "The item collection."
+      },
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements in the wheel picker. Useful for composition."
+      },
+      "value": {
+        "type": "string | null | undefined",
+        "description": "The controlled value of the wheel picker."
+      },
+      "defaultValue": {
+        "type": "string | null | undefined",
+        "description": "The initial value of the wheel picker when rendered."
+      },
+      "onValueChange": {
+        "type": "((details: ValueChangeDetails<T>) => void) | undefined",
+        "description": "Function called when the selected value changes."
+      },
+      "onValueChangeEnd": {
+        "type": "((details: ValueChangeDetails<T>) => void) | undefined",
+        "description": "Function called when scrolling to a value finishes."
+      },
+      "infinite": {
+        "type": "boolean | undefined",
+        "description": "Whether the wheel should loop infinitely.",
+        "defaultValue": "false"
+      },
+      "visibleCount": {
+        "type": "number | undefined",
+        "description": "The number of items on the circular ring. Values are rounded down to a multiple of 4.",
+        "defaultValue": "20"
+      },
+      "dragSensitivity": {
+        "type": "number | undefined",
+        "description": "The deceleration applied after a drag.",
+        "defaultValue": "3"
+      },
+      "scrollSensitivity": {
+        "type": "number | undefined",
+        "description": "The speed of step-based scrolling.",
+        "defaultValue": "5"
+      },
+      "optionItemHeight": {
+        "type": "number | undefined",
+        "description": "The height of each item in pixels.",
+        "defaultValue": "30"
+      },
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether the wheel picker is disabled."
+      },
+      "readOnly": {
+        "type": "boolean | undefined",
+        "description": "Whether the wheel picker is read-only."
+      },
+      "invalid": {
+        "type": "boolean | undefined",
+        "description": "Whether the wheel picker is invalid."
+      },
+      "required": {
+        "type": "boolean | undefined",
+        "description": "Whether a value is required for form submission."
+      },
+      "name": {
+        "type": "string | undefined",
+        "description": "The name of the form field."
+      },
+      "form": {
+        "type": "string | undefined",
+        "description": "The id of the form that owns the hidden select."
+      },
+      "aria-label": {
+        "type": "string | undefined",
+        "description": "The accessible label for the wheel picker."
+      },
+      "aria-labelledby": {
+        "type": "string | undefined",
+        "description": "The id of the element that labels the wheel picker."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
   }
 }

@@ -95,6 +95,11 @@
       "--z-index": "The z-index value"
     }
   },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
+    }
+  },
   "image-cropper": {
     "Root": {
       "--crop-width": "The width of the Root",
@@ -105,20 +110,6 @@
       "--image-rotation": "The image rotation value for the Root",
       "--image-offset-x": "The offset position for image",
       "--image-offset-y": "The offset position for image"
-    }
-  },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
-    }
-  },
-  "marquee": {
-    "Root": {
-      "--marquee-duration": "The marquee duration value for the Root",
-      "--marquee-spacing": "The marquee spacing value for the Root",
-      "--marquee-delay": "The marquee delay value for the Root",
-      "--marquee-loop-count": "The marquee loop count value for the Root",
-      "--marquee-translate": "The marquee translate value for the Root"
     }
   },
   "navigation-menu": {
@@ -146,19 +137,13 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "progress": {
+  "marquee": {
     "Root": {
-      "--percent": "The percent value for the root",
-      "--radius": "The border radius value",
-      "--circumference": "The circumference value for the root",
-      "--offset": "The offset position of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
+      "--marquee-duration": "The marquee duration value for the Root",
+      "--marquee-spacing": "The marquee spacing value for the Root",
+      "--marquee-delay": "The marquee delay value for the Root",
+      "--marquee-loop-count": "The marquee loop count value for the Root",
+      "--marquee-translate": "The marquee translate value for the Root"
     }
   },
   "radio-group": {
@@ -168,6 +153,21 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
+  "progress": {
+    "Root": {
+      "--percent": "The percent value for the root",
+      "--radius": "The border radius value",
+      "--circumference": "The circumference value for the root",
+      "--offset": "The offset position of the element"
     }
   },
   "scroll-area": {

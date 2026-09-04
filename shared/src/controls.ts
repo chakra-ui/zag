@@ -112,6 +112,18 @@ export const numberInputControls = defineControls({
   },
 })
 
+export const wheelPickerControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  invalid: { type: "boolean", defaultValue: false },
+  infinite: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  visibleCount: { type: "number", defaultValue: 20, min: 4 },
+  optionItemHeight: { type: "number", defaultValue: 30, min: 1 },
+  dragSensitivity: { type: "number", defaultValue: 3, min: 1 },
+  scrollSensitivity: { type: "number", defaultValue: 5, min: 1 },
+})
+
 export const pinInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   mask: { type: "boolean", defaultValue: false },
