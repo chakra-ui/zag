@@ -1,7 +1,13 @@
-import { test } from "@playwright/test"
+import { test, type Page } from "@playwright/test"
 import { CarouselModel } from "./models/carousel.model"
 
 let I: CarouselModel
+
+const setDocumentVisibility = (page: Page, visibilityState: DocumentVisibilityState) =>
+  page.evaluate((visibilityState) => {
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: visibilityState })
+    document.dispatchEvent(new Event("visibilitychange"))
+  }, visibilityState)
 
 test.describe("carousel", () => {
   test.beforeEach(async ({ page }) => {
@@ -43,6 +49,25 @@ test.describe("carousel", () => {
 
     await page.clock.fastForward(5000)
     await I.seeIndicatorIsActive(1)
+  })
+
+  test("resumes autoplay after the document becomes visible", async ({ page }) => {
+    await I.goto()
+    await page.getByTestId("autoplay").check()
+    await I.seeAutoplayIsOn()
+
+    await setDocumentVisibility(page, "hidden")
+    await I.seeAutoplayIsOff()
+
+    await setDocumentVisibility(page, "visible")
+    await I.seeAutoplayIsOn()
+
+    await I.clickAutoplayTrigger()
+    await I.seeAutoplayIsOff()
+
+    await setDocumentVisibility(page, "hidden")
+    await setDocumentVisibility(page, "visible")
+    await I.seeAutoplayIsOff()
   })
 
   test("clicking indicator scrolls to correct slide", async () => {

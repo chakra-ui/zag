@@ -81,9 +81,12 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
   slidesPerMove?: number | "auto" | undefined
   /**
    * Whether to scroll automatically. The default delay is 4000ms.
+   *
+   * Set `resumeOnVisibilityChange` to `true` to resume autoplay when the
+   * document becomes visible after being hidden.
    * @default false
    */
-  autoplay?: boolean | { delay: number } | undefined
+  autoplay?: boolean | { delay: number; resumeOnVisibilityChange?: boolean } | undefined
   /**
    * Whether to allow scrolling via dragging with mouse
    * @default false
@@ -182,6 +185,7 @@ export interface CarouselSchema {
   computed: ComputedContext
   refs: {
     timeoutRef: any
+    autoplayPausedByVisibility: boolean
   }
   state: "idle" | "dragging" | "settling" | "autoplay" | "userScroll" | "focus"
   effect: string

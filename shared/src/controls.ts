@@ -274,6 +274,14 @@ export const carouselControls = defineControls({
     },
   },
   loop: { type: "boolean", defaultValue: false },
+  autoplay: {
+    type: "boolean",
+    defaultValue: false,
+    label: "resume on visibility change",
+    transformValue(value) {
+      return value ? { delay: 4000, resumeOnVisibilityChange: true } : false
+    },
+  },
 })
 
 export const colorPickerControls = defineControls({
