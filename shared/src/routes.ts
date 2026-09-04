@@ -290,6 +290,15 @@ export const componentRoutes: ComponentRoute[] = [
     ],
   },
   {
+    slug: "wheel-picker",
+    label: "Wheel Picker",
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "multiple", title: "Multiple" },
+    ],
+  },
+  {
     slug: "accordion",
     label: "Accordion",
     examples: [{ slug: "basic", title: "Basic" }],

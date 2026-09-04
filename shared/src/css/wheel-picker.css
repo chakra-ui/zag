@@ -1,0 +1,67 @@
+.wheel-picker {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.wheel-picker > [data-scope="wheel-picker"][data-part="root"] {
+  width: 240px;
+  border: 1px solid #d4d4d8;
+  background: white;
+}
+
+.wheel-picker-group {
+  display: flex;
+  width: 336px;
+  overflow: hidden;
+  border: 1px solid #d4d4d8;
+  background: white;
+}
+
+.wheel-picker-group > [data-part="root"] {
+  min-width: 0;
+  flex: 1;
+}
+
+.wheel-picker-group > [data-part="root"]:not(:last-child) {
+  border-inline-end: 1px solid #e4e4e7;
+}
+
+.wheel-picker [data-part="control"] {
+  height: 192px;
+  cursor: default;
+  outline: none;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+.wheel-picker [data-part="item"] {
+  color: black;
+  font-size: 14px;
+}
+
+.wheel-picker [data-part="highlight"] {
+  background: blue;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.wheel-picker [data-part="highlight"][data-focus] {
+  box-shadow: inset 0 0 0 2px #a1a1aa;
+}
+
+.wheel-picker [data-part="item"][data-disabled],
+.wheel-picker [data-part="highlight-item"][data-disabled] {
+  opacity: 0.35;
+}
+
+.wheel-picker output {
+  color: #52525b;
+  font-size: 14px;
+}
+
+.wheel-picker-actions {
+  display: flex;
+  gap: 8px;
+}
