@@ -1867,6 +1867,7 @@
       "data-part": "panel",
       "data-orientation": "The orientation of the panel",
       "data-dragging": "Present when in the dragging state",
+      "data-collapsed": "Present when collapsed",
       "data-id": "",
       "data-index": "The index of the item"
     },
