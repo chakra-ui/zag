@@ -131,7 +131,6 @@ type PropsWithDefault =
   | "autoFocus"
   | "restoreFocus"
   | "positioning"
-  | "translations"
 
 interface PrivateContext {
   /**

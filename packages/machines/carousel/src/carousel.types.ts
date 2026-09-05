@@ -156,7 +156,6 @@ type PropsWithDefault =
   | "autoPlay"
   | "allowMouseDrag"
   | "inViewThreshold"
-  | "translations"
   | "count"
   | "autoSize"
 

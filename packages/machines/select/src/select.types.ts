@@ -206,7 +206,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   popupType?: "listbox" | "dialog" | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupType" | "collection" | "translations"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupType" | "collection" | "defaultValue"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"

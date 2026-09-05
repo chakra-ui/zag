@@ -63,7 +63,7 @@ export interface ClipboardProps extends CommonProperties {
 export interface ClipboardSchema {
   state: "idle" | "copied"
   props: ClipboardProps
-  defaultPropKey: "timeout" | "translations"
+  defaultPropKey: "timeout" | "defaultValue"
   context: {
     value: string
   }
