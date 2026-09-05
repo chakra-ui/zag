@@ -1256,7 +1256,7 @@
     "Root": {
       "data-meter-root": "<uid>",
       "data-value": "The value of the item",
-      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\"",
+      "data-state": "",
       "data-orientation": "The orientation of the meter"
     },
     "Label": {
@@ -1266,12 +1266,12 @@
     "Track": {
       "data-meter-track": "<uid>",
       "data-orientation": "The orientation of the track",
-      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\""
+      "data-state": ""
     },
     "Indicator": {
       "data-meter-indicator": "<uid>",
       "data-orientation": "The orientation of the indicator",
-      "data-state": "\"optimal\" | \"suboptimal\" | \"least-optimal\""
+      "data-state": ""
     }
   },
   "navigation-menu": {
