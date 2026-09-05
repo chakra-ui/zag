@@ -930,7 +930,7 @@ export const machine = createMachine<SelectSchema>({
         const label = collection.stringifyItem(collection.find(value))
         if (!label) return
         const selected = context.get("value").includes(value)
-        const formatter = prop("translations").itemAnnouncement
+        const formatter = prop("translations")?.itemAnnouncement
         const message = formatter ? formatter({ value, label, selected }) : selected ? `${label}, selected` : label
         refs.get("liveRegion")?.announce(message)
       },
