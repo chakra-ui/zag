@@ -22,7 +22,7 @@ function trackValue(el: HTMLTextAreaElement) {
 
   Object.defineProperty(el, "value", {
     configurable: true,
-    enumerable: nativeValueDescriptor.enumerable,
+    enumerable: !!nativeValueDescriptor.enumerable,
     get() {
       return nativeValueDescriptor.get!.call(this)
     },

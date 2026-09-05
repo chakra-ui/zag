@@ -15,7 +15,7 @@ describe("getControlId", () => {
   })
 
   test("ids.control overrides target", () => {
-    const custom = { id: "f1", ids: { control: "custom-control" } } as Scope
+    const custom = { id: "f1", ids: { control: "custom-control" } } as unknown as Scope
     expect(getControlId(custom, "amount")).toBe("custom-control")
   })
 })

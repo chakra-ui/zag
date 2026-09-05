@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { compact, splitProps } from "../src"
+import { compact, mergeWithDefault, splitProps } from "../src"
 
 describe("compact()", () => {
   test("should compact object", () => {
@@ -70,5 +70,22 @@ describe("splitProps()", () => {
     const [result, rest] = splitProps(props, [symA, "c"])
     expect(result).toEqual({ [symA]: 1, c: 3 })
     expect(rest).toEqual({ [symB]: 2 })
+  })
+})
+
+describe("mergeWithDefault()", () => {
+  test("keeps defaults when overrides are omitted", () => {
+    const result = mergeWithDefault({ timeout: 3000, label: "Copy" }, undefined)
+    expect(result).toEqual({ timeout: 3000, label: "Copy" })
+  })
+
+  test("does not let undefined wipe a default", () => {
+    const result = mergeWithDefault({ timeout: 3000, label: "Copy" }, { timeout: undefined, label: "Copied" })
+    expect(result).toEqual({ timeout: 3000, label: "Copied" })
+  })
+
+  test("keeps override keys that are not in the defaults", () => {
+    const result = mergeWithDefault({ loopFocus: false }, { loopFocus: true, id: "select", disabled: undefined })
+    expect(result).toEqual({ loopFocus: true, id: "select" })
   })
 })

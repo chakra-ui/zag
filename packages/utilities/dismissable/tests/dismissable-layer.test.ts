@@ -37,7 +37,7 @@ describe("trackDismissableElement", () => {
     const onDismiss = vi.fn()
 
     // `defer: true` is what every machine passes (dialog, popover, menu, ...)
-    const cleanup = trackDismissableElement(node, { defer: true, onDismiss })
+    const cleanup = trackDismissableElement(node, { defer: true, onDismiss, onLayerChange: noop })
 
     // no frame has passed — the dialog is painted and interactive at this point
     pressEscape()
@@ -49,7 +49,7 @@ describe("trackDismissableElement", () => {
   test("adds the layer to the stack synchronously when the node is already available", () => {
     const node = mountNode()
 
-    const cleanup = trackDismissableElement(node, { defer: true, onDismiss: noop })
+    const cleanup = trackDismissableElement(node, { defer: true, onDismiss: noop, onLayerChange: noop })
 
     expect(layerStack.isTopMost(node)).toBe(true)
 
@@ -65,6 +65,7 @@ describe("trackDismissableElement", () => {
     const cleanup = trackDismissableElement(() => node, {
       defer: true,
       onDismiss,
+      onLayerChange: noop,
       warnOnMissingNode: false,
     })
 
@@ -84,6 +85,7 @@ describe("trackDismissableElement", () => {
     const cleanup = trackDismissableElement(() => node, {
       defer: true,
       onDismiss,
+      onLayerChange: noop,
       warnOnMissingNode: false,
     })
 
@@ -104,6 +106,7 @@ describe("trackDismissableElement", () => {
     const cleanup = trackDismissableElement(() => node, {
       defer: true,
       onDismiss,
+      onLayerChange: noop,
       warnOnMissingNode: false,
     })
     cleanup()
@@ -121,7 +124,7 @@ describe("trackDismissableElement", () => {
     const node = mountNode()
     const onDismiss = vi.fn()
 
-    const cleanup = trackDismissableElement(node, { defer: true, onDismiss })
+    const cleanup = trackDismissableElement(node, { defer: true, onDismiss, onLayerChange: noop })
     cleanup()
     await raf()
 
