@@ -16,7 +16,7 @@
     "contributors:gen": "all-contributors generate"
   },
   "dependencies": {
-    "@internationalized/date": "3.12.3",
+    "@internationalized/date": "3.12.4",
     "@stackblitz/sdk": "^1.11.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -76,7 +76,7 @@
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
     "match-sorter": "8.3.0",
-    "next": "16.3.1",
+    "next": "16.3.4",
     "next-seo": "7.3.0",
     "next-themes": "^0.4.6",
     "plop": "4.0.5",
@@ -89,12 +89,12 @@
     "velite": "^0.4.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.3.1",
+    "@next/eslint-plugin-next": "16.3.4",
     "@pandacss/dev": "^1.12.0",
     "@types/react": "^19.2.18",
     "all-contributors-cli": "6.26.1",
     "eslint": "^10.1.0",
-    "eslint-config-next": "16.3.1",
+    "eslint-config-next": "16.3.4",
     "prettier": "3.9.6",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",

@@ -35,8 +35,8 @@
     "@sveltejs/vite-plugin-svelte": "7.3.0",
     "clean-package": "2.2.0",
     "clsx": "^2.1.1",
-    "svelte": "5.56.9",
-    "vitest": "4.1.10"
+    "svelte": "5.57.0",
+    "vitest": "4.1.11"
   },
   "peerDependencies": {
     "svelte": ">=5"

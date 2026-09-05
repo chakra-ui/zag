@@ -73,14 +73,14 @@
   },
   "dependencies": {
     "@axe-core/playwright": "4.13.0",
-    "@changesets/changelog-github": "1.0.0",
-    "@changesets/cli": "3.0.1",
+    "@changesets/changelog-github": "1.0.1",
+    "@changesets/cli": "3.0.2",
     "@commitlint/cli": "21.2.2",
     "@commitlint/config-conventional": "21.2.2",
     "@eslint/js": "^10.0.1",
-    "@internationalized/date": "3.12.3",
-    "@playwright/test": "1.62.1",
-    "@swc/core": "1.16.0",
+    "@internationalized/date": "3.12.4",
+    "@playwright/test": "1.63.0",
+    "@swc/core": "1.16.2",
     "@types/jsdom": "^30.0.0",
     "@types/node": "25.9.5",
     "@types/signale": "1.4.7",
@@ -88,12 +88,12 @@
     "cross-env": "^10.1.0",
     "dotenv": "17.4.2",
     "esbuild-plugin-file-path-extensions": "^2.1.4",
-    "eslint": "10.8.1",
+    "eslint": "10.10.0",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "globals": "^17.11.0",
     "husky": "9.1.7",
-    "lint-staged": "17.3.0",
+    "lint-staged": "17.5.0",
     "node-fetch": "3.3.2",
     "plop": "4.0.5",
     "prettier": "3.9.6",
@@ -102,14 +102,14 @@
     "signale": "1.4.0",
     "ts-morph": "28.0.0",
     "tsup": "8.5.1",
-    "tsx": "4.23.12",
+    "tsx": "4.23.13",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.67.0",
-    "vite": "8.2.1",
-    "vitest": "4.1.10"
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@11.22.0"
+  "packageManager": "pnpm@11.25.0"
 }
