@@ -1,5 +1,31 @@
 # @zag-js/select
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [`869293e`](https://github.com/chakra-ui/zag/commit/869293ec6e4994c8c9445743fdea337e44a9b8b0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where `translations` was typed as always-defined on
+  the machine service.
+
+  - `prop("translations")` now correctly reflects that it may be `undefined`, since the machine does not fill it in.
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`c108f47`](https://github.com/chakra-ui/zag/commit/c108f4793ae8149c8340305239289cb7c14865b9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Don't throw in `announceHighlightedItem` when
+  `translations` is omitted, so highlighting an item no longer unmounts the select.
+- Updated dependencies [[`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11)]:
+  - @zag-js/focus-visible@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/collection@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/live-region@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

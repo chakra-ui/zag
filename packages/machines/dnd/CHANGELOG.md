@@ -1,5 +1,23 @@
 # @zag-js/dnd
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`77d1531`](https://github.com/chakra-ui/zag/commit/77d1531be350ff697e167f47bb4014a61526290d) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fall back to `before` / `after` when `canDrop` rejects an
+  `"on"` hit so between-item indicators still show.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/aria-hidden@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/live-region@2.0.0-next.3
+  - @zag-js/rect-utils@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

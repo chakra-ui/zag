@@ -1,5 +1,17 @@
 # @zag-js/number-flow
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/i18n-utils@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Minor Changes
