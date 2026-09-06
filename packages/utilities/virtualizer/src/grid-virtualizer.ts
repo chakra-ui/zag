@@ -575,7 +575,7 @@ export class GridVirtualizer {
       top: 0,
       left: 0,
       width: "100%",
-      height: virtualRow.height,
+      height: `${virtualRow.height}px`,
       transform: `translate3d(0, ${virtualRow.y}px, 0)`,
     }
   }
@@ -590,7 +590,7 @@ export class GridVirtualizer {
       position: "absolute",
       top: 0,
       left: 0,
-      width: column.width,
+      width: `${column.width}px`,
       height: "100%",
       transform: `translate3d(${x}px, 0, 0)`,
     }
@@ -730,8 +730,8 @@ export class GridVirtualizer {
   getContentStyle(): CSSProperties {
     return {
       position: "relative",
-      width: this.getTotalWidth(),
-      height: this.getTotalHeight(),
+      width: `${this.getTotalWidth()}px`,
+      height: `${this.getTotalHeight()}px`,
       pointerEvents: this.isScrolling ? "none" : "auto",
     }
   }

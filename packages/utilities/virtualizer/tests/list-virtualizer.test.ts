@@ -212,7 +212,7 @@ describe("ListVirtualizer", () => {
     })
 
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
-    expect(virtualizer.getContentStyle()).toMatchObject({ width: 100, height: "100%" })
+    expect(virtualizer.getContentStyle()).toMatchObject({ width: "100px", height: "100%" })
     expect(virtualizer.scrollToIndex(5, { align: "start" })).toEqual({ scrollLeft: 50, scrollTop: 0 })
     expect(virtualizer.getScrollState()).toMatchObject({
       offset: { x: 50, y: 0 },

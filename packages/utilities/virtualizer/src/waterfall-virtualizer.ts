@@ -208,7 +208,7 @@ export class WaterfallVirtualizer extends Virtualizer<WaterfallVirtualizerOption
       position: "absolute",
       top: 0,
       left: 0,
-      width: this.resolvedColumnWidth,
+      width: `${this.resolvedColumnWidth}px`,
       transform: `translate3d(${laneOffset}px, ${y}px, 0)`,
     }
   }

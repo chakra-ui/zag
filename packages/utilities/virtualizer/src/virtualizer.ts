@@ -329,8 +329,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     return {
       position: "relative",
-      width: horizontal ? totalSize : "100%",
-      height: horizontal ? "100%" : totalSize,
+      width: horizontal ? `${totalSize}px` : "100%",
+      height: horizontal ? "100%" : `${totalSize}px`,
       pointerEvents: this.isScrolling ? "none" : "auto",
     }
   }
@@ -1136,7 +1136,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         if (!rangeNotified) {
           this.options.onRangeChange?.({ range: this.range, reason: "measurement" })
         }
-        this.measureCacheDirtyFrom = Infinity
         this.notifyStore()
       })
     }
@@ -1219,7 +1218,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     // Reset dirty floor AFTER notification — React subscribers re-render while
     // measureCacheDirtyFrom must still be set so getMeasurement misses stale cache until then
-    this.measureCacheDirtyFrom = Infinity
     this.notifyStore()
   }
 

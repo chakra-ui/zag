@@ -243,8 +243,8 @@ export class WindowVirtualizer extends ListVirtualizer {
     return {
       ...baseStyle,
       position: "relative",
-      marginTop: this.isHorizontal ? 0 : windowOffset,
-      marginLeft: this.isHorizontal ? windowOffset : 0,
+      marginTop: this.isHorizontal ? 0 : `${windowOffset}px`,
+      marginLeft: this.isHorizontal ? `${windowOffset}px` : 0,
     }
   }
 
