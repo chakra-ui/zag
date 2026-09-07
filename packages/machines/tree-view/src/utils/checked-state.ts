@@ -9,6 +9,8 @@ export function getCheckedState(collection: TreeCollection, node: TreeNode, chec
   }
 
   const childValues = collection.getDescendantValues(value)
+  if (childValues.length === 0) return false
+
   const allChecked = childValues.every((v) => checkedValue.includes(v))
   const someChecked = childValues.some((v) => checkedValue.includes(v))
   return allChecked ? true : someChecked ? "indeterminate" : false
