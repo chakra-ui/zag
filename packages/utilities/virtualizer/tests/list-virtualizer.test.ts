@@ -220,6 +220,17 @@ describe("ListVirtualizer", () => {
     })
   })
 
+  test("content style opts out of flex shrink so a flex-column scroll container keeps its scrollable size", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 10,
+      estimatedSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+    })
+
+    expect(virtualizer.getContentStyle()).toMatchObject({ height: "100px", flexShrink: 0 })
+  })
+
   test("uses dir for horizontal RTL positioning and rangeExtractor direction", () => {
     vi.useFakeTimers()
     vi.setSystemTime(0)

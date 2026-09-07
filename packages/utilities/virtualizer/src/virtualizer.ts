@@ -331,6 +331,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       position: "relative",
       width: horizontal ? `${totalSize}px` : "100%",
       height: horizontal ? "100%" : `${totalSize}px`,
+      flexShrink: 0,
       pointerEvents: this.isScrolling ? "none" : "auto",
     }
   }

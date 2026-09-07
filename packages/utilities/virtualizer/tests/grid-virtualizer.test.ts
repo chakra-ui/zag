@@ -99,6 +99,11 @@ describe("GridVirtualizer", () => {
     expect(rows[0]?.columns.map((column) => column.column)).toEqual([0, 1, 2])
   })
 
+  test("content style opts out of flex shrink so a flex-column scroll container keeps its scrollable size", () => {
+    const virtualizer = createVirtualizer()
+    expect(virtualizer.getContentStyle()).toMatchObject({ height: "60px", flexShrink: 0 })
+  })
+
   test("applies initialMeasurements seeds to rows before first range calculation", () => {
     const virtualizer = new GridVirtualizer({
       rowCount: 5,

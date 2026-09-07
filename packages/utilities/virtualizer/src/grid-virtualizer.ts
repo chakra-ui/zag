@@ -732,6 +732,7 @@ export class GridVirtualizer {
       position: "relative",
       width: `${this.getTotalWidth()}px`,
       height: `${this.getTotalHeight()}px`,
+      flexShrink: 0,
       pointerEvents: this.isScrolling ? "none" : "auto",
     }
   }

@@ -55,6 +55,11 @@ describe("WaterfallVirtualizer", () => {
     vi.restoreAllMocks()
   })
 
+  test("content style opts out of flex shrink so a flex-column scroll container keeps its scrollable size", () => {
+    const virtualizer = createVirtualizer()
+    expect(virtualizer.getContentStyle()).toMatchObject({ flexShrink: 0 })
+  })
+
   test("places items in the shortest column", () => {
     const sizes = [100, 60, 80, 70, 90, 50]
     const virtualizer = createVirtualizer({
