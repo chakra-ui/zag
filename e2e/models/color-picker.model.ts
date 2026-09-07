@@ -13,6 +13,10 @@ export class ColorPickerModel extends Model {
     return this.page.goto("/color-picker/basic")
   }
 
+  gotoInline() {
+    return this.page.goto("/color-picker/inline")
+  }
+
   private get trigger() {
     return this.page.locator(part("trigger"))
   }
@@ -103,6 +107,14 @@ export class ColorPickerModel extends Model {
 
   seeChannelThumbIsFocused(channel: Channel) {
     return expect(this.channelThumb(channel)).toBeFocused()
+  }
+
+  seeAreaThumbIsDisabled() {
+    return expect(this.areaThumb).toHaveAttribute("aria-disabled", "true")
+  }
+
+  seeChannelThumbIsDisabled(channel: Channel) {
+    return expect(this.channelThumb(channel)).toHaveAttribute("aria-disabled", "true")
   }
 
   clickFirstSwatch() {

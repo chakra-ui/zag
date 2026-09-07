@@ -153,3 +153,19 @@ test.describe("color-picker", () => {
     await I.seeColorPicker()
   })
 })
+
+test.describe("color-picker / disabled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ColorPickerModel(page)
+    await I.gotoInline()
+    await I.controls.bool("disabled")
+  })
+
+  test("[disabled] area thumb should expose aria-disabled", async () => {
+    await I.seeAreaThumbIsDisabled()
+  })
+
+  test("[disabled] channel slider thumb should expose aria-disabled", async () => {
+    await I.seeChannelThumbIsDisabled("hue")
+  })
+})
