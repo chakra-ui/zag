@@ -162,6 +162,9 @@ export function connect<T extends PropTypes>(
         },
         onBeforeInput(event) {
           try {
+            const evt = getNativeEvent(event)
+            if (evt.inputType?.startsWith("delete")) return
+
             const value = getBeforeInputValue(event)
             const isValid = isValidValue(value, prop("type"), prop("pattern"))
             if (!isValid) {

@@ -214,11 +214,10 @@ test.describe("pin input", () => {
   // --- Cut ---
 
   test("cut: should splice and shift values left (no holes)", async () => {
-    await I.fillInput(1, "1")
-    await I.fillInput(2, "2")
-    await I.fillInput(3, "3")
+    await I.clickInput(1)
+    await I.fillAll("1", "2", "3")
 
-    await I.focusInput(2)
+    await I.clickInput(2)
     await I.pressKey("ControlOrMeta+a")
     await I.pressKey("ControlOrMeta+x")
 
