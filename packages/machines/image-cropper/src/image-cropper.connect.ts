@@ -322,11 +322,10 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.selection.attrs(scope.id),
         id: dom.getSelectionId(scope),
-        tabIndex: selectionState.disabled ? undefined : 0,
+        tabIndex: 0,
         role: "slider",
         "aria-label": translations.selectionLabel({ shape: cropShape }),
         "aria-roledescription": translations.selectionRoleDescription,
-        "aria-disabled": selectionState.disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": isVisibleSize(viewportRect)
           ? Math.max(0, Math.round(viewportRect.width - crop.width))
@@ -358,11 +357,6 @@ export function connect<T extends PropTypes>(
           send({ type: "POINTER_DOWN", point })
         },
         onKeyDown(event) {
-          if (selectionState.disabled) {
-            event.preventDefault()
-            return
-          }
-
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
