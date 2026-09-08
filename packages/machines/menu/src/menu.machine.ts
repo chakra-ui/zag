@@ -634,6 +634,7 @@ export const machine = createMachine<MenuSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
           defer: true,
           onComplete(data) {
@@ -783,6 +784,7 @@ export const machine = createMachine<MenuSchema>({
         const triggerValue = event.value ?? context.get("triggerValue")
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
         getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
           defer: true,
           getAnchorRect,

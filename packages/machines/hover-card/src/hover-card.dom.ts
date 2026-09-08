@@ -16,6 +16,7 @@ export const getArrowId = (scope: Scope) => scope.ids?.arrow ?? `${scope.id}:arr
 export const getTriggerEl = (scope: Scope) => scope.query(scope.selector(parts.trigger))
 export const getContentEl = (scope: Scope) => scope.query(scope.selector(parts.content))
 export const getPositionerEl = (scope: Scope) => scope.query(scope.selector(parts.positioner))
+export const getArrowEl = (scope: Scope) => scope.query(scope.selector(parts.arrow))
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] => scope.queryAll<HTMLElement>(scope.selector(parts.trigger))
 

@@ -316,6 +316,7 @@ export const machine = createMachine<TooltipSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
           ...event.options,
           listeners: false,
@@ -331,6 +332,7 @@ export const machine = createMachine<TooltipSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
         return getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -404,6 +406,7 @@ export const machine = createMachine<TooltipSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
           defer: true,
           onComplete(data) {

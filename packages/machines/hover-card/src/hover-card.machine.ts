@@ -301,6 +301,7 @@ export const machine = createMachine<HoverCardSchema>({
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         const positioning = prop("positioning")
         return getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
           // Triggers are links in prose, which wrap.
           middleware: [inline({ getCoords: () => refs.get("inlineCoords") }), ...(positioning.middleware ?? [])],
@@ -356,6 +357,7 @@ export const machine = createMachine<HoverCardSchema>({
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         const positioning = { ...prop("positioning"), ...event.options }
         getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
           middleware: [inline({ getCoords: () => refs.get("inlineCoords") }), ...(positioning.middleware ?? [])],
           defer: true,

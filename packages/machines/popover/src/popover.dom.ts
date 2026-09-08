@@ -29,6 +29,7 @@ export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElem
 }
 export const getContentEl = (scope: Scope) => scope.query(scope.selector(parts.content))
 export const getPositionerEl = (scope: Scope) => scope.query(scope.selector(parts.positioner))
+export const getArrowEl = (scope: Scope) => scope.query(scope.selector(parts.arrow))
 export const getTitleEl = (scope: Scope) => scope.query(scope.selector(parts.title))
 export const getDescriptionEl = (scope: Scope) => scope.query(scope.selector(parts.description))
 

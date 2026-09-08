@@ -539,6 +539,7 @@ export const machine = createMachine<TourSchema>({
 
         const positionerEl = () => dom.getPositionerEl(scope)
         return getPlacement(context.get("resolvedTarget"), positionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           defer: true,
           placement: step.placement ?? "bottom",
           strategy: "absolute",

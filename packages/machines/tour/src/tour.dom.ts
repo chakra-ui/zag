@@ -13,6 +13,7 @@ export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `${ctx.id}:bac
 // Element lookups — use querySelector with merged data attributes
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
+export const getArrowEl = (ctx: Scope) => ctx.query(ctx.selector(parts.arrow))
 export const getBackdropEl = (ctx: Scope) => ctx.query(ctx.selector(parts.backdrop))
 
 export function syncZIndex(scope: Scope) {

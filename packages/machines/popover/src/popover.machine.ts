@@ -149,6 +149,7 @@ export const machine = createMachine<PopoverSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
@@ -279,6 +280,7 @@ export const machine = createMachine<PopoverSchema>({
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         getPlacement(getTriggerEl, getPositionerEl, {
+          getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
           ...event.options,
           defer: true,

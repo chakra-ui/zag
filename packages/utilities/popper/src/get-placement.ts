@@ -237,16 +237,17 @@ function getPlacementImpl(
 
   let middleware: (Middleware | undefined)[] = []
   let cachedMiddlewareFloating: HTMLElement | null = null
+  let cachedArrowEl: HTMLElement | null = null
   let restoreFloatingStyles: VoidFunction | undefined
   let restoreArrowStyles: VoidFunction | undefined
 
-  function rebuildMiddlewareForFloating(floating: HTMLElement) {
+  function rebuildMiddlewareForFloating(floating: HTMLElement, arrowEl: HTMLElement | null) {
     restoreFloatingStyles?.()
     restoreArrowStyles?.()
 
     cachedMiddlewareFloating = floating
+    cachedArrowEl = arrowEl
     restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
-    const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
     restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
     middleware = [
@@ -304,8 +305,9 @@ function getPlacementImpl(
     const floating = resolveFloating()
     if (!floating) return
 
-    if (floating !== cachedMiddlewareFloating) {
-      rebuildMiddlewareForFloating(floating)
+    const arrowEl = options.getArrowElement?.() ?? null
+    if (floating !== cachedMiddlewareFloating || arrowEl !== cachedArrowEl) {
+      rebuildMiddlewareForFloating(floating, arrowEl)
       zIndexComputed = false
     }
 

@@ -125,6 +125,10 @@ export interface PositioningOptions {
    */
   getAnchorElement?: (() => HTMLElement | VirtualElement | null) | undefined
   /**
+   * Function that returns the arrow element.
+   */
+  getArrowElement?: (() => HTMLElement | null) | undefined
+  /**
    *  Function that returns the anchor rect
    * @deprecated Use `getAnchorElement` instead
    */
