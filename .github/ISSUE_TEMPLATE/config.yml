@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Request a feature or enhancement
+    url: https://github.com/chakra-ui/zag/discussions/new?category=ideas
+    about: Please post feature requests in GitHub Discussions
   - name: Chat with other community members
     url: https://zagjs.com/discord
     about: The Zag Discord community

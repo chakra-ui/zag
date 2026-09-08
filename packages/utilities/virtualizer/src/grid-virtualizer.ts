@@ -730,6 +730,7 @@ export class GridVirtualizer {
   getContentStyle(): CSSProperties {
     return {
       position: "relative",
+      flexShrink: 0,
       width: `${this.getTotalWidth()}px`,
       height: `${this.getTotalHeight()}px`,
       pointerEvents: this.isScrolling ? "none" : "auto",

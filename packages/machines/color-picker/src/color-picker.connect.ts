@@ -8,7 +8,7 @@ import {
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
-import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
@@ -391,6 +391,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         role: "slider",
+        "aria-disabled": ariaAttr(disabled),
         "aria-valuemin": 0,
         "aria-valuemax": 100,
         "aria-valuenow": xValue,
@@ -571,7 +572,7 @@ export function connect<T extends PropTypes>(
         "data-channel": channel,
         "data-disabled": dataAttr(disabled),
         "data-orientation": orientation,
-        "aria-disabled": dataAttr(disabled),
+        "aria-disabled": ariaAttr(disabled),
         "aria-orientation": orientation,
         "aria-valuemax": channelRange.maxValue,
         "aria-valuemin": channelRange.minValue,
