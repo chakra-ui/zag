@@ -12,6 +12,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import {
+  createReplaceTracker,
   createScope,
   findTransition,
   getExitEnterStates,
@@ -258,8 +259,13 @@ export function useMachine<T extends MachineSchema>(
     return currentStateRef.current
   }
 
+  const replaceTracker = useMemo(createReplaceTracker, [])
+
   const send = (event: any) => {
+    const key = event.replaces
+    const token = key ? replaceTracker.claim(key) : undefined
     queueMicrotask(() => {
+      if (key && token && replaceTracker.isReplaced(key, token)) return
       if (statusRef.current !== MachineStatus.Started) return
 
       previousEventRef.current = eventRef.current

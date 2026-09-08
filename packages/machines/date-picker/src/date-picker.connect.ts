@@ -369,9 +369,7 @@ export function connect<T extends PropTypes>(
     },
     setOpen(nextOpen) {
       if (prop("inline")) return
-      const open = state.matches("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     focusMonth,
     focusYear,

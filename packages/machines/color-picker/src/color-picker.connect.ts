@@ -1,5 +1,12 @@
 import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
-import { getEventKey, getEventPoint, getEventStep, isComposingEvent, isLeftClick, isModifierKey } from "@zag-js/dom-query"
+import {
+  getEventKey,
+  getEventPoint,
+  getEventStep,
+  isComposingEvent,
+  isLeftClick,
+  isModifierKey,
+} from "@zag-js/dom-query"
 import { ariaAttr, dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
@@ -72,9 +79,7 @@ export function connect<T extends PropTypes>(
     inline: !!prop("inline"),
     setOpen(nextOpen) {
       if (prop("inline")) return
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })

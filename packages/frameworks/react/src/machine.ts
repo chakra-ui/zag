@@ -15,6 +15,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import {
+  createReplaceTracker,
   createScope,
   findTransition,
   getExitEnterStates,
@@ -114,36 +115,45 @@ export function useMachine<T extends MachineSchema>(
 
   const refs: BindableRefs<T> = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
+  const transition = useStableFn<Service<T>["send"]>((event) => {
+    if (statusRef.current !== MachineStatus.Started) return
+
+    previousEventRef.current = eventRef.current
+    eventRef.current = event
+
+    const currentState = getCurrentState()
+
+    const { transitions, source } = findTransition(machine, currentState, event.type as string)
+    const selectedTransition = choose(transitions)
+    if (!selectedTransition) return
+
+    // save current transition
+    transitionRef.current = selectedTransition
+    const target = resolveStateValue(machine, selectedTransition.target ?? currentState, source)
+
+    debug("transition", event.type, selectedTransition.target || currentState, `(${selectedTransition.actions})`)
+
+    const changed = target !== currentState
+    if (changed) {
+      // state change is high priority
+      flushSync(() => state.set(target))
+    } else if (selectedTransition.reenter) {
+      // reenter will re-invoke the current state
+      state.invoke(currentState, currentState)
+    } else {
+      // call transition actions
+      action(selectedTransition.actions ?? [])
+    }
+  })
+
+  const replaceTracker = useConst(createReplaceTracker)
+
   const send = useStableFn<Service<T>["send"]>((event) => {
+    const key = event.replaces
+    const token = key ? replaceTracker.claim(key) : undefined
     queueMicrotask(() => {
-      if (statusRef.current !== MachineStatus.Started) return
-
-      previousEventRef.current = eventRef.current
-      eventRef.current = event
-
-      const currentState = getCurrentState()
-
-      const { transitions, source } = findTransition(machine, currentState, event.type as string)
-      const transition = choose(transitions)
-      if (!transition) return
-
-      // save current transition
-      transitionRef.current = transition
-      const target = resolveStateValue(machine, transition.target ?? currentState, source)
-
-      debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
-
-      const changed = target !== currentState
-      if (changed) {
-        // state change is high priority
-        flushSync(() => state.set(target))
-      } else if (transition.reenter) {
-        // reenter will re-invoke the current state
-        state.invoke(currentState, currentState)
-      } else {
-        // call transition actions
-        action(transition.actions ?? [])
-      }
+      if (key && token && replaceTracker.isReplaced(key, token)) return
+      transition(event)
     })
   })
 

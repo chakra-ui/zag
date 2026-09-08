@@ -33,9 +33,7 @@ export function connect<P extends PropTypes>(
   return {
     open: open,
     setOpen(nextOpen) {
-      const open = state.matches("open", "closing")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "open" : "close" })
+      send({ type: nextOpen ? "open" : "close", replaces: "open" })
     },
 
     triggerValue,

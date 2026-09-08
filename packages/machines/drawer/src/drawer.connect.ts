@@ -84,18 +84,14 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     open,
     dragging,
     setOpen(nextOpen) {
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
 
     snapPoints: prop("snapPoints"),
     swipeDirection,
     snapPoint,
     setSnapPoint(snapPoint) {
-      const currentSnapPoint = context.get("snapPoint")
-      if (currentSnapPoint === snapPoint) return
-      send({ type: "SNAP_POINT.SET", snapPoint })
+      send({ type: "SNAP_POINT.SET", snapPoint, replaces: "snapPoint" })
     },
 
     getOpenPercentage() {
