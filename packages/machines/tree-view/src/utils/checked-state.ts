@@ -3,6 +3,7 @@ import { add, remove, uniq } from "@zag-js/utils"
 import type { CheckedValueMap } from "../tree-view.types"
 
 export function getCheckedState(collection: TreeCollection, node: TreeNode, checkedValue: string[]) {
+  if (checkedValue.length === 0) return false
   const value = collection.getNodeValue(node)
   if (!collection.isBranchNode(node)) {
     return checkedValue.includes(value)

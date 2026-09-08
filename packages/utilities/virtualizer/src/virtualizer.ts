@@ -329,6 +329,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     return {
       position: "relative",
+      flexShrink: 0,
       width: horizontal ? `${totalSize}px` : "100%",
       height: horizontal ? "100%" : `${totalSize}px`,
       flexShrink: 0,
