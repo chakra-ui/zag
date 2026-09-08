@@ -1,0 +1,21 @@
+---
+description: Record before and after videos when fixing bugs or adding features
+alwaysApply: true
+---
+
+# Before / after recordings
+
+When fixing a bug or adding a user-visible feature:
+
+1. Record the affected interaction **before** changing code.
+2. Apply the change.
+3. Record the **same** interaction after.
+
+Requirements:
+
+- Real UI interaction (click, type, keyboard). A screenshot is not enough.
+- Output H.264 `.mp4`, not `.webm`.
+- Paths: `e2e/evidence/<issue-or-feature>/before-*.mp4` and `after-*.mp4`.
+- Playwright `recordVideo` writes WebM; convert with `ffmpeg -c:v libx264 -pix_fmt yuv420p -movflags +faststart`.
+- Do not commit recordings unless asked.
+- If recording is unavailable, say so. Do not imply a video exists.

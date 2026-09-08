@@ -26,6 +26,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
 
 ### Non-obvious caveats
 
+- **Always record before and after**: When fixing a bug or adding a user-visible feature, record the same interaction twice: once before the change, once after. Drive the real UI (keyboard/mouse), not a static screenshot. Save H.264 `.mp4` files (not `.webm`) under `e2e/evidence/<issue-or-feature>/` as `before-*.mp4` and `after-*.mp4`. Playwright `recordVideo` outputs WebM; convert with `ffmpeg -c:v libx264 -pix_fmt yuv420p -movflags +faststart`. Do not commit recordings unless asked. If recording is unavailable, say so explicitly.
 - **Always browser-test new examples**: When you add or modify an example under `examples/next-ts/pages/**`, drive a real browser (Playwright MCP, Chrome DevTools MCP, or equivalent) and step through the example before reporting it as done. Visually verify the layout, typing flow, and any locale/timezone-specific output. E2E tests are a strong complement but not a substitute — they cover behavior, not rendering. If browser tooling is unavailable in the current session, say so explicitly rather than implying visual verification.
 - **Build before dev server**: `pnpm build` must complete before running any example dev servers or E2E tests, since workspace packages use `workspace:*` references and need compiled `dist/` output.
 - **Build is slow**: The full `pnpm build` takes ~2 minutes across all packages. It only needs to run once unless package source changes.

@@ -72,6 +72,7 @@ See `.claude/docs/commands.md` for the complete list.
 3. Update documentation for API changes
 4. Test accessibility thoroughly
 5. Keep PRs focused on single features/components
+6. Record before and after `.mp4` videos for bug fixes and user-visible features (see `AGENTS.md`)
 
 Remember: Zag.js prioritizes accessibility, simplicity, and framework-agnostic design. Always consider how changes
 affect all supported frameworks and ensure robust accessibility support.
