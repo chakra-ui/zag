@@ -77,4 +77,50 @@ test.describe("wheel-picker examples", () => {
     await expect(page.getByRole("spinbutton", { name: "Meridiem" })).toBeFocused()
     await expect(page.getByTestId("value")).toHaveText("Selected time: 10:42 PM")
   })
+
+  test("keeps a time input and composed wheel pickers in sync", async ({ page }) => {
+    await page.goto("/wheel-picker/time-input")
+    await page.waitForLoadState("networkidle")
+
+    const dateInputSegment = (type: string) =>
+      page.locator(`[data-scope=date-input][data-part=segment][data-type=${type}]`)
+
+    await dateInputSegment("hour").click()
+    await page.keyboard.type("01")
+    await dateInputSegment("minute").click()
+    await page.keyboard.type("25")
+    await dateInputSegment("dayPeriod").click()
+    await page.keyboard.press("p")
+    await page.getByRole("button", { name: "Open time picker" }).click()
+
+    const wheelPickerGroup = page.getByRole("group", { name: "Time picker" })
+    const hourWheel = wheelPickerGroup.getByRole("spinbutton", { name: "Hour" })
+
+    await expect(hourWheel).toHaveAttribute("aria-valuetext", "01")
+    await expect(wheelPickerGroup.getByRole("spinbutton", { name: "Minute" })).toHaveAttribute("aria-valuetext", "25")
+    await expect(wheelPickerGroup.getByRole("spinbutton", { name: "Day period" })).toHaveAttribute(
+      "aria-valuetext",
+      "PM",
+    )
+
+    await hourWheel.focus()
+    await page.keyboard.press("ArrowDown")
+
+    await expect(dateInputSegment("hour")).toHaveText("02")
+    await expect(dateInputSegment("minute")).toHaveText("25")
+    await expect(dateInputSegment("dayPeriod")).toHaveText("PM")
+    await expect(page.getByTestId("value")).toHaveText("Selected time: 02:25 PM")
+  })
+
+  test("uses locale-specific time columns", async ({ page }) => {
+    await page.goto("/wheel-picker/time-input")
+    await page.waitForLoadState("networkidle")
+
+    await page.locator("select").selectOption("en-GB")
+    await page.getByRole("button", { name: "Open time picker" }).click()
+
+    const wheelPickerGroup = page.getByRole("group", { name: "Time picker" })
+    await expect(wheelPickerGroup.getByRole("spinbutton", { name: "Hour" })).toHaveAttribute("aria-valuemax", "23")
+    await expect(wheelPickerGroup.getByRole("spinbutton", { name: "Day period" })).toHaveCount(0)
+  })
 })

@@ -4,6 +4,7 @@ export const anatomy = createAnatomy("wheel-picker").parts(
   "root",
   "label",
   "control",
+  "viewport",
   "itemGroup",
   "item",
   "highlight",

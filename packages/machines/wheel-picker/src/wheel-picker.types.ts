@@ -14,6 +14,7 @@ export interface ElementIds {
   root?: string | undefined
   label?: string | undefined
   control?: string | undefined
+  viewport?: string | undefined
   itemGroup?: string | undefined
   item?: ((index: number) => string) | undefined
   highlight?: string | undefined
@@ -152,6 +153,7 @@ export interface WheelPickerApi<P extends PropTypes = PropTypes, T extends Colle
   getRootProps: () => P["element"]
   getLabelProps: () => P["label"]
   getControlProps: () => P["element"]
+  getViewportProps: () => P["element"]
   getItemGroupProps: () => P["element"]
   getItemProps: (props: ItemProps<T>) => P["element"]
   getHighlightProps: () => P["element"]

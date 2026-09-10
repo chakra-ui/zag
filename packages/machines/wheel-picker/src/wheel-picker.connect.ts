@@ -75,8 +75,6 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
         "data-readonly": dataAttr(readOnly),
         style: {
           position: "relative",
-          overflow: "hidden",
-          perspective: "2000px",
           userSelect: "none",
           WebkitUserSelect: "none",
         },
@@ -125,7 +123,6 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
         "data-scrolling": dataAttr(state.matches("scrolling")),
         style: {
           position: "relative",
-          overflow: "hidden",
           touchAction: "none",
         },
         onFocus() {
@@ -180,6 +177,21 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
             send({ type: "CONTROL.TYPEAHEAD", key: event.key })
             event.preventDefault()
           }
+        },
+      })
+    },
+
+    getViewportProps() {
+      return normalize.element({
+        ...parts.viewport.attrs,
+        id: dom.getViewportId(scope),
+        role: "presentation",
+        dir: prop("dir"),
+        style: {
+          position: "relative",
+          overflow: "hidden",
+          height: "100%",
+          perspective: "2000px",
         },
       })
     },

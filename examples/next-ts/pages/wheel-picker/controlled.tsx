@@ -35,22 +35,24 @@ export default function Page() {
           <label {...api.getLabelProps()}>Framework</label>
 
           <div {...api.getControlProps()}>
-            <ul {...api.getItemGroupProps()}>
-              {api.items.map(({ item, index, key }) => (
-                <li key={key} {...api.getItemProps({ item, index })}>
-                  {item.label}
-                </li>
-              ))}
-            </ul>
-
-            <div {...api.getHighlightProps()}>
-              <ul {...api.getHighlightItemGroupProps()}>
-                {api.highlightItems.map(({ item, index, key }) => (
-                  <li key={key} {...api.getHighlightItemProps({ item, index })}>
+            <div {...api.getViewportProps()}>
+              <ul {...api.getItemGroupProps()}>
+                {api.items.map(({ item, index, key }) => (
+                  <li key={key} {...api.getItemProps({ item, index })}>
                     {item.label}
                   </li>
                 ))}
               </ul>
+
+              <div {...api.getHighlightProps()}>
+                <ul {...api.getHighlightItemGroupProps()}>
+                  {api.highlightItems.map(({ item, index, key }) => (
+                    <li key={key} {...api.getHighlightItemProps({ item, index })}>
+                      {item.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

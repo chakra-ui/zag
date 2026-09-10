@@ -3,6 +3,7 @@ import type { Scope } from "@zag-js/core"
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `wheel-picker:${ctx.id}`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `wheel-picker:${ctx.id}:label`
 export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `wheel-picker:${ctx.id}:control`
+export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `wheel-picker:${ctx.id}:viewport`
 export const getItemGroupId = (ctx: Scope) => ctx.ids?.itemGroup ?? `wheel-picker:${ctx.id}:item-group`
 export const getItemId = (ctx: Scope, index: number) => ctx.ids?.item?.(index) ?? `wheel-picker:${ctx.id}:item:${index}`
 export const getHighlightId = (ctx: Scope) => ctx.ids?.highlight ?? `wheel-picker:${ctx.id}:highlight`

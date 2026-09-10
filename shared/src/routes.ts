@@ -296,6 +296,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "multiple", title: "Multiple" },
+      { slug: "time-input", title: "Time Input" },
     ],
   },
   {
