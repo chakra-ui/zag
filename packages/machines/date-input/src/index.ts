@@ -22,6 +22,8 @@ export type {
   FormatDateDetails,
   HiddenInputProps,
   HourCycle,
+  MaxGranularity,
+  ResolvedHourCycle,
   IntlTranslations,
   LabelProps,
   PlaceholderChangeDetails,
