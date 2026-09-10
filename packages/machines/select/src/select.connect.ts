@@ -70,6 +70,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
   const aligned = context.get("aligned")
+  const alignStyles = context.get("alignStyles")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
   const isTypingAhead = computed("isTypingAhead")
@@ -508,6 +509,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         style: {
           ...popperStyles.floating,
           transform: aligned ? "none" : popperStyles.floating.transform,
+          ...(alignStyles ?? {}),
           ...getDismissableLayerStyle(layer, { zIndex: true }),
         },
       })

@@ -31,6 +31,7 @@ type ContentStyleKey = (typeof CONTENT_STYLE_KEYS)[number]
 const EMPTY_RESULT: AlignItemWithTriggerReturn = {
   cleanup: noop,
   transformOrigin: "50% 50%",
+  styles: {},
 }
 
 /* -----------------------------------------------------------------------------
@@ -58,6 +59,7 @@ interface AlignItemWithTriggerOptions {
 interface AlignItemWithTriggerReturn {
   cleanup: () => void
   transformOrigin: string
+  styles: Record<string, string>
 }
 
 interface TrackAlignItemOptions {
@@ -65,8 +67,8 @@ interface TrackAlignItemOptions {
   positioning: PositioningOptions
   /** Called when placement changes (fallback mode only). */
   onPlacementChange?: ((placement: Placement) => void) | undefined
-  /** Called after each successful alignment pass. */
-  onAligned?: VoidFunction | undefined
+  /** Called after each successful alignment pass, with the styles the alignment resolved to. */
+  onAligned?: ((styles: Record<string, string>) => void) | undefined
 
   dir?: "ltr" | "rtl" | undefined
   minHeight?: number | undefined
@@ -216,10 +218,13 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
   const restorePositioner = captureStyles<PositionerStyleKey>(positionerEl, POSITIONER_STYLE_KEYS)
   const restoreContent = captureStyles<ContentStyleKey>(contentEl, CONTENT_STYLE_KEYS)
 
+  positionerEl.style.setProperty("--reference-width", toPx(triggerRect.width)!)
   positionerEl.style.position = "fixed"
   positionerEl.style.left = toPx(clampedLeft)!
   positionerEl.style.height = toPx(height)!
-  positionerEl.style.maxHeight = "auto"
+  // `none`, not the invalid `auto`: the explicit height has to govern in align mode
+  // rather than being clamped by a max-height from the consumer's CSS
+  positionerEl.style.maxHeight = "none"
   positionerEl.style.marginTop = toPx(marginTop)!
   positionerEl.style.marginBottom = toPx(marginBottom)!
   contentEl.style.height = "100%"
@@ -252,15 +257,46 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
     // compensating for the content being offset inside the positioner.
     const adjustedHeight = Math.max(0, height - contentOffsetTop)
     positionerEl.style.height = toPx(adjustedHeight)!
-    scroller.scrollTop = Math.max(0, scrollHeight - adjustedHeight)
+    // Pin to the end of the *resized* scroller. The original used the positioner height as a
+    // stand-in for the scroller's, which is smaller once padding and the overlaid scroll
+    // arrows are accounted for, leaving mid-list items short of the trigger.
+    scroller.scrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight)
   } else {
     positionerEl.style.top = "auto"
-    positionerEl.style.bottom = "0px"
+    // `height` is the space beneath the trigger, which can far exceed the content it holds --
+    // a nine item list can end up a viewport tall with the tail empty. Trim it to what the
+    // content needs and raise the bottom edge by the same amount, so the popup shrinks
+    // without moving the item that is aligned to the trigger.
+    const naturalHeight = positionerRect.height - scrollerRect.height + scrollHeight
+    if (naturalHeight < height) {
+      positionerEl.style.bottom = toPx(height - naturalHeight)!
+      positionerEl.style.height = toPx(naturalHeight)!
+    } else {
+      positionerEl.style.bottom = "0px"
+    }
     scroller.scrollTop = scrollTopTarget
+  }
+
+  const styles: Record<string, string> = {}
+  const resolved: [string, string][] = [
+    ["--reference-width", toPx(triggerRect.width)!],
+    ["position", positionerEl.style.position],
+    ["left", positionerEl.style.left],
+    ["top", positionerEl.style.top],
+    ["bottom", positionerEl.style.bottom],
+    ["height", positionerEl.style.height],
+    ["maxHeight", positionerEl.style.maxHeight],
+    ["marginTop", positionerEl.style.marginTop],
+    ["marginBottom", positionerEl.style.marginBottom],
+  ]
+  // an empty value serializes to an invalid declaration in frameworks that stringify the style object
+  for (const [key, value] of resolved) {
+    if (value !== "" && value != null) styles[key] = value
   }
 
   return {
     transformOrigin,
+    styles,
     cleanup() {
       restoreContent()
       restorePositioner()
@@ -321,8 +357,14 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
     const marginTop = parseFloat(positionerStyles.marginTop) || 0
     const marginBottom = parseFloat(positionerStyles.marginBottom) || 0
     const viewportMax = win.document.documentElement.clientHeight - marginTop - marginBottom
-    const contentMaxHeight = parseFloat(getComputedStyle(scroller).maxHeight)
-    const maxAvailableHeight = contentMaxHeight > 0 ? Math.min(viewportMax, contentMaxHeight) : viewportMax
+    // The popup's height can be capped on the list or on the content, depending on where the
+    // consumer puts it. Growing past the tighter of the two leaves a tall empty popup wrapped
+    // around a list that is still scrolling, so honour whichever constrains it.
+    const readMaxHeight = (el: HTMLElement) => {
+      const value = parseFloat(getComputedStyle(el).maxHeight)
+      return Number.isFinite(value) && value > 0 ? value : Number.POSITIVE_INFINITY
+    }
+    const maxAvailableHeight = Math.min(viewportMax, readMaxHeight(scroller), readMaxHeight(contentEl))
 
     const scrollTop = scroller.scrollTop
     const maxScrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight)
@@ -400,7 +442,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
 
     currentCleanup = result.cleanup
     dom.getContentEl(scope)?.style.setProperty(TRANSFORM_ORIGIN_VAR, result.transformOrigin)
-    onAligned?.()
+    onAligned?.(result.styles)
   }
 
   // --- Scroll/resize re-alignment ---

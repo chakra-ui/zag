@@ -225,6 +225,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     selectedItemMap: Map<string, T>
     scrollArrowVisibility: "none" | "top" | "bottom" | "both"
     aligned: boolean
+    alignStyles: Record<string, string> | null
   }
   computed: {
     hasSelectedItems: boolean

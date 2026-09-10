@@ -115,6 +115,9 @@ export const machine = createMachine<SelectSchema>({
       aligned: bindable(() => ({
         defaultValue: false,
       })),
+      alignStyles: bindable<Record<string, string> | null>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
@@ -536,7 +539,11 @@ export const machine = createMachine<SelectSchema>({
           dir: prop("dir"),
           positioning,
           onPlacementChange,
-          onAligned() {
+          onAligned(styles) {
+            // hand the resolved styles to the connect layer rather than relying on the
+            // imperative writes surviving; the re-render this triggers would otherwise
+            // reapply the positioner style and undo them
+            context.set("alignStyles", styles)
             context.set("aligned", true)
           },
         })
@@ -821,6 +828,7 @@ export const machine = createMachine<SelectSchema>({
       clearPlacementState({ context }) {
         context.set("currentPlacement", undefined)
         context.set("aligned", false)
+        context.set("alignStyles", null)
       },
 
       startAutoScroll({ refs, scope, prop, event }) {
