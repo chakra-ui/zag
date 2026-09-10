@@ -1,4 +1,11 @@
 {
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
+    }
+  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",
@@ -7,13 +14,6 @@
     "Marker": {
       "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
       "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
-    }
-  },
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -95,11 +95,6 @@
       "--z-index": "The z-index value"
     }
   },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
-    }
-  },
   "image-cropper": {
     "Root": {
       "--crop-width": "The width of the Root",
@@ -110,6 +105,20 @@
       "--image-rotation": "The image rotation value for the Root",
       "--image-offset-x": "The offset position for image",
       "--image-offset-y": "The offset position for image"
+    }
+  },
+  "marquee": {
+    "Root": {
+      "--marquee-duration": "The marquee duration value for the Root",
+      "--marquee-spacing": "The marquee spacing value for the Root",
+      "--marquee-delay": "The marquee delay value for the Root",
+      "--marquee-loop-count": "The marquee loop count value for the Root",
+      "--marquee-translate": "The marquee translate value for the Root"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
     }
   },
   "navigation-menu": {
@@ -137,22 +146,12 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "marquee": {
+  "progress": {
     "Root": {
-      "--marquee-duration": "The marquee duration value for the Root",
-      "--marquee-spacing": "The marquee spacing value for the Root",
-      "--marquee-delay": "The marquee delay value for the Root",
-      "--marquee-loop-count": "The marquee loop count value for the Root",
-      "--marquee-translate": "The marquee translate value for the Root"
-    }
-  },
-  "radio-group": {
-    "Indicator": {
-      "--transition-property": "The transition property value for the Indicator",
-      "--left": "The left position value",
-      "--top": "The top position value",
-      "--width": "The width of the element",
-      "--height": "The height of the element"
+      "--percent": "The percent value for the root",
+      "--radius": "The border radius value",
+      "--circumference": "The circumference value for the root",
+      "--offset": "The offset position of the element"
     }
   },
   "qr-code": {
@@ -162,12 +161,13 @@
       "--qrcode-height": "The height of the Root"
     }
   },
-  "progress": {
-    "Root": {
-      "--percent": "The percent value for the root",
-      "--radius": "The border radius value",
-      "--circumference": "The circumference value for the root",
-      "--offset": "The offset position of the element"
+  "radio-group": {
+    "Indicator": {
+      "--transition-property": "The transition property value for the Indicator",
+      "--left": "The left position value",
+      "--top": "The top position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
     }
   },
   "scroll-area": {
