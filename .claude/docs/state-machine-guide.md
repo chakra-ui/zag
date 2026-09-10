@@ -22,31 +22,19 @@ export const machine = createMachine<ComponentSchema>({
   refs() {
     /* ... */
   },
-  computed: {
-    /* ... */
-  },
+  computed: {/* ... */},
   watch({ track, action, prop }) {
     /* ... */
   },
   initialState({ prop }) {
     /* ... */
   },
-  on: {
-    /* global event handlers */
-  },
-  states: {
-    /* state definitions */
-  },
+  on: {/* global event handlers */},
+  states: {/* state definitions */},
   implementations: {
-    guards: {
-      /* ... */
-    },
-    actions: {
-      /* ... */
-    },
-    effects: {
-      /* ... */
-    },
+    guards: {/* ... */},
+    actions: {/* ... */},
+    effects: {/* ... */},
   },
 })
 ```
@@ -407,7 +395,66 @@ OPEN: [
 ]
 ```
 
-### 6. Accessibility First
+### 6. Imperative Setters Use `replaces`
+
+`send` is asynchronous in the React, Solid, Preact and Vanilla adapters (it defers the transition to a microtask).
+Anything that reads committed state to decide whether to send is therefore reading a value that has not caught up with
+events already queued in the same tick.
+
+This is why `setOpen` must not guard on state:
+
+```typescript
+// wrong - `state.matches("open")` has not seen the OPEN queued a line earlier,
+// so setOpen(true); setOpen(false) drops the CLOSE and leaves the dialog open
+setOpen(nextOpen) {
+  const open = state.matches("open")
+  if (open === nextOpen) return
+  send({ type: nextOpen ? "OPEN" : "CLOSE" })
+}
+
+// right - send unconditionally, tagged so the newest call wins
+setOpen(nextOpen) {
+  send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+}
+```
+
+`replaces` names a slot holding at most one queued event. When a later event claims the same slot, the earlier one is
+dropped before it runs (`createReplaceTracker` in `@zag-js/core`). A setter is declarative, so the last call in a tick
+is the one that means something, the same way `setState(1); setState(2)` renders once with `2`.
+
+Two rules when adding it to a machine:
+
+- **Only tag events from the public API.** Internal sends (escape, interact-outside, delays) must stay untagged, or a
+  dismissal can be swallowed by an unrelated API call in the same tick.
+- **Declare the event only in states that can act on it.** Dropping the guard means a redundant `CLOSE` now reaches the
+  machine, so a state that handles it will fire callbacks spuriously. Most machines already handle `OPEN` only in closed
+  states and `CLOSE` only in open states, so a redundant event matches nothing and is discarded.
+
+Menu was the exception: it declared `OPEN`/`CLOSE` at the root, so `CLOSE` while already closed still fired
+`invokeOnClose`. The fix is structural, not a guard. Put the transition in the states that have something to open or
+close, the same way `CONTROLLED.OPEN`/`CONTROLLED.CLOSE` already are:
+
+```typescript
+const closeTransitions: Transition<MenuSchema>[] = [
+  { guard: "isOpenControlled", actions: ["invokeOnClose"] },
+  { target: "closed", actions: ["invokeOnClose"] },
+]
+
+states: {
+  idle:    { on: { OPEN: openTransitions } },                          // resting, nothing to close
+  opening: { on: { OPEN: openTransitions, CLOSE: closeTransitions } }, // pending open to cancel
+  open:    { on: { CLOSE: closeTransitions } },                        // nothing to open
+}
+```
+
+Resist reaching for a guard like `canClose: ({ state }) => !state.matches("idle", "closed")`. Enumerating states
+negatively duplicates what the chart already encodes, and it drifts the moment a state is added. Share the transition
+array if the repetition bothers you.
+
+Verify with: `setOpen(true); setOpen(false)` ends closed, `setOpen(true)` five times fires one callback, and
+`setOpen(false)` while closed fires none.
+
+### 7. Accessibility First
 
 Always include:
 
@@ -416,7 +463,7 @@ Always include:
 - Focus management (trapFocus, restoreFocus)
 - Screen reader announcements
 
-### 7. Clean Up Effects
+### 8. Clean Up Effects
 
 Always return cleanup functions from effects:
 
@@ -436,7 +483,7 @@ trackPointerMove({ scope, send }) {
 }
 ```
 
-### 8. Type Safety
+### 9. Type Safety
 
 Define comprehensive TypeScript schemas:
 

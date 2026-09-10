@@ -1922,6 +1922,9 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      vitest:
+        specifier: ^4.1.2
+        version: 4.1.10(@types/node@25.9.5)(jsdom@30.0.1)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/frameworks/solid:
     dependencies:
@@ -2513,6 +2516,9 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
+      vitest:
+        specifier: ^4.1.2
+        version: 4.1.10(@types/node@25.9.5)(jsdom@30.0.1)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/machines/floating-panel:
     dependencies:
@@ -3499,6 +3505,9 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
+      vitest:
+        specifier: ^4.1.2
+        version: 4.1.10(@types/node@25.9.5)(jsdom@30.0.1)(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/utilities/focus-trap:
     dependencies:

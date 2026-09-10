@@ -32,6 +32,38 @@ const getAttributeName = (node: Element, attrName: string): string => {
   return shouldPreserveCase ? attrName : attrName.toLowerCase()
 }
 
+const toCssProperty = (key: string) =>
+  key.startsWith("--") ? key : key.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
+
+// Patches inline styles property by property (like the react adapter) so that styles written
+// directly to the element by other code - popper's `--x`/`--y`, the layer stack's `--layer-index` -
+// are not wiped when an unrelated style property changes.
+const applyStyle = (node: Element, prevStyle: unknown, nextStyle: unknown): void => {
+  // a raw string means the caller owns the whole attribute
+  if (typeof nextStyle === "string") {
+    node.setAttribute("style", nextStyle)
+    return
+  }
+
+  if (nextStyle == null && typeof prevStyle === "string") {
+    node.removeAttribute("style")
+    return
+  }
+
+  const style = (node as HTMLElement).style
+  if (style == null) return
+
+  for (const key in prevStyle as Attrs) {
+    if ((nextStyle as Attrs)?.[key] == null) style.removeProperty(toCssProperty(key))
+  }
+
+  for (const key in nextStyle as Attrs) {
+    const value = (nextStyle as Attrs)[key]
+    if (value == null) style.removeProperty(toCssProperty(key))
+    else style.setProperty(toCssProperty(key), String(value))
+  }
+}
+
 export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
   const scopeKey = machineId || "default"
 
@@ -71,6 +103,12 @@ export function spreadProps(node: Element, attrs: Attrs, machineId?: string): ()
       return
     }
 
+    // Handle style as individual properties (never as a whole attribute)
+    if (attrName === "style") {
+      applyStyle(node, oldValue, value)
+      return
+    }
+
     // Handle DOM properties (value, checked, etc.) - must come before boolean check
     if (assignableProps.has(attrName)) {
       ;(node as any)[attrName] = value ?? ""
@@ -103,6 +141,8 @@ export function spreadProps(node: Element, attrs: Attrs, machineId?: string): ()
     if (attrs[key] == null) {
       if (key === "class") {
         ;(node as HTMLElement).className = ""
+      } else if (key === "style") {
+        applyStyle(node, oldAttrs[key], undefined)
       } else if (assignableProps.has(key)) {
         ;(node as any)[key] = ""
       } else {
