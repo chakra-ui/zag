@@ -180,7 +180,8 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
   granularity?: DateGranularity | undefined
   /**
    * Determines the largest unit that is displayed in the date input.
-   * Set this to `"hour"` to create a time-only input.
+   * To create a time-only input, set this to `"hour"` and set `granularity`
+   * to `"hour"`, `"minute"`, or `"second"`.
    * @default "year"
    */
   maxGranularity?: MaxGranularity | undefined
