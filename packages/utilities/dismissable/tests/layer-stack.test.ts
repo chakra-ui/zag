@@ -26,6 +26,11 @@ function createLayer(
   })
 }
 
+/** Let queued MutationObserver callbacks run (they are delivered as microtasks) */
+function drainMicrotasks() {
+  return new Promise<void>((resolve) => setTimeout(resolve, 0))
+}
+
 /** Drain the double-rAF used by `nextTick` in `layerStack.remove` */
 function nextTick() {
   return new Promise<void>((resolve) => {
@@ -137,6 +142,53 @@ describe("layerStack", () => {
       )
 
       expect(node.style.getPropertyValue("--layer-index")).toBe("0")
+    })
+
+    // https://github.com/chakra-ui/zag/issues/3148
+    test("restores mirrored metadata after a framework rewrite of the style attribute", async () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(
+        createLayer(primary, {
+          styleTargets: [() => backdrop],
+        }),
+      )
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
+
+      // a framework re-render replaces the whole inline style, e.g. the drawer
+      // machine updating `--drawer-swipe-progress` on its backdrop during a drag
+      backdrop.setAttribute("style", "--drawer-swipe-progress: 0.5")
+
+      await drainMicrotasks()
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
+      expect(backdrop.style.getPropertyValue("--nested-layer-count")).toBe("0")
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe(getComputedStyle(primary).zIndex)
+      expect(backdrop.style.getPropertyValue("--drawer-swipe-progress")).toBe("0.5")
+    })
+
+    test("does not restore mirrored metadata after the layer is removed", async () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(
+        createLayer(primary, {
+          styleTargets: [() => backdrop],
+        }),
+      )
+
+      layerStack.remove(primary)
+
+      backdrop.setAttribute("style", "--drawer-swipe-progress: 0.5")
+
+      await drainMicrotasks()
+
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
     })
   })
 
