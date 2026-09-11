@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`c14c405`](https://github.com/chakra-ui/zag/commit/c14c4056d1c624b977ae217d21a8ef57d8834dfc) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix `aria-disabled` on the color area thumb and channel
+  slider thumb so assistive technology reports both `role="slider"` elements as disabled when `disabled` is set.
+- Updated dependencies [[`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5)]:
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/color-utils@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

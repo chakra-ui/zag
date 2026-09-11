@@ -1,5 +1,16 @@
 # @zag-js/virtualizer
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`aa2b456`](https://github.com/chakra-ui/zag/commit/aa2b45686df65373557eabbfac967ae1e7ac090f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where `getContentStyle()` and related style
+  helpers returned unitless numbers that browsers ignore as CSS.
+- Updated dependencies []:
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

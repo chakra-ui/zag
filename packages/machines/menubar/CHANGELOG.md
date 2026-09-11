@@ -1,5 +1,23 @@
 # @zag-js/menubar
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where a trigger disabled with the native `disabled`
+  attribute stayed in the arrow key and typeahead rotation:
+
+  - Navigating onto it swallowed the keypress and left focus on the previous trigger.
+  - It could hold the roving `tabIndex=0`, taking the menubar out of the tab order.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

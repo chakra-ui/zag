@@ -1,5 +1,16 @@
 # @zag-js/focus-visible
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Keep pointer modality when returning to a Safari tab
+  after a click.
+- Updated dependencies []:
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

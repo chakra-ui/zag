@@ -1,5 +1,53 @@
 # @zag-js/select
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`869293e`](https://github.com/chakra-ui/zag/commit/869293ec6e4994c8c9445743fdea337e44a9b8b0) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where `translations` was typed as
+  always-defined on the machine service.
+
+  - `prop("translations")` now correctly reflects that it may be `undefined`, since the machine does not fill it in.
+
+- [`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix three problems with screen reader announcements.
+
+  **The region is now created up front and kept.** It used to be removed and rebuilt on every `announce()`, with the
+  text written in a `setTimeout(0)` right after. Screen readers only announce a change to a region they already know
+  about, so a region created in the same tick is unreliable — VoiceOver in particular misses it, which is the platform
+  combobox announces on at all (`isApple()`).
+
+  **Announcements are cleared after 7s.** Nothing ever removed the text, so the last thing announced stayed in the
+  accessibility tree indefinitely as readable page content. A `timeout` option overrides the delay, and a new `clear()`
+  drops the current announcement immediately.
+
+  **Combobox and select clear instead of going stale.** Both bailed out when nothing was highlighted, leaving the
+  previous announcement in place — filter a combobox down to no results and the region still described an option that
+  was gone.
+
+  Also adds `aria-atomic="true"` so multi-word messages are read whole, and gives each level its own region so a polite
+  announcer cannot inherit an assertive region left by another machine on the page.
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`c108f47`](https://github.com/chakra-ui/zag/commit/c108f4793ae8149c8340305239289cb7c14865b9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Don't throw in `announceHighlightedItem` when
+  `translations` is omitted, so highlighting an item no longer unmounts the select.
+- Updated dependencies [[`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11),
+  [`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932),
+  [`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5)]:
+  - @zag-js/focus-visible@2.0.0-next.3
+  - @zag-js/live-region@2.0.0-next.3
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/collection@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

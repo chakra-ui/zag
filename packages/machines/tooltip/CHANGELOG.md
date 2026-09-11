@@ -1,5 +1,19 @@
 # @zag-js/tooltip
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- Updated dependencies [[`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11)]:
+  - @zag-js/focus-visible@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+  - @zag-js/safe-area@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Minor Changes

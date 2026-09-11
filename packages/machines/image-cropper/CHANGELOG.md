@@ -1,5 +1,21 @@
 # @zag-js/image-cropper
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`c14c405`](https://github.com/chakra-ui/zag/commit/c14c4056d1c624b977ae217d21a8ef57d8834dfc) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Keep the crop selection focusable when `fixedCropArea` is
+  set, and pan the image with arrow keys instead of treating the selection as disabled.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/rect-utils@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes
