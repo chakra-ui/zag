@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs"
-import { join } from "path"
+import { basename, join } from "path"
 import { ModuleResolutionKind, Node, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
 import { getMachinePackages } from "./get-packages"
 import { pascalCase } from "scule"
@@ -73,7 +73,7 @@ async function main() {
   const machines = await getMachinePackages()
 
   for (const { dir } of machines) {
-    const baseDir = dir.split("/").pop()!
+    const baseDir = basename(dir)
     const glob = `${dir}/src/**/*.ts`
 
     const typesFilePath = `${dir}/src/${baseDir}.types.ts`
