@@ -930,7 +930,10 @@ export const machine = createMachine<SelectSchema>({
 
       announceHighlightedItem({ context, prop, refs, scope }) {
         const value = context.get("highlightedValue")
-        if (value == null) return
+        if (value == null) {
+          refs.get("liveRegion")?.clear()
+          return
+        }
         // Skip on non-Apple platforms when list is focused — activedescendant is announced natively.
         const listFocused = scope.isActiveElement(dom.getListEl(scope))
         if (listFocused && !isApple()) return

@@ -1058,7 +1058,12 @@ export const machine = createMachine({
         if (!isApple()) return
         const value = context.get("highlightedValue")
         const optionText = value ? prop("collection").stringifyItem(prop("collection").find(value)) : null
-        if (!optionText) return
+        // nothing is highlighted anymore (the results emptied, say), so drop the
+        // last announcement rather than leave it describing an item that is gone
+        if (!optionText) {
+          refs.get("liveRegion")?.clear()
+          return
+        }
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
