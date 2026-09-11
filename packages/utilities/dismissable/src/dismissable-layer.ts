@@ -74,6 +74,8 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
    * The type of layer being tracked
    */
   type?: LayerType | undefined
+  /** Groups this layer with its peers, so closing one does not dismiss the other. */
+  group?: string | undefined
 }
 
 function trackDismissableElementImpl(node: HTMLElement, options: DismissableElementOptions) {
@@ -84,6 +86,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     exclude: excludeContainers,
     debug,
     type = "dialog",
+    group,
     onLayerChange,
   } = options
 
@@ -91,6 +94,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     dismiss: onDismiss,
     node,
     type,
+    group,
     pointerBlocking,
     requestDismiss: onRequestDismiss,
     onLayerChange,

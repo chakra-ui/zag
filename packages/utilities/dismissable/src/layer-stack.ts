@@ -27,6 +27,8 @@ export interface Layer {
   id?: string | undefined
   /** The layer this one opened inside. Captured once and kept across re-registration. */
   parentId?: string | undefined
+  /** Layers sharing a group are peers, not ancestors. Used by menubar menus. */
+  group?: string | undefined
   dismiss: VoidFunction
   node: HTMLElement
   type: LayerType
@@ -76,6 +78,13 @@ export const layerStack = {
   },
   layerFor(node: HTMLElement | null): Layer | undefined {
     return this.layers.find((layer) => layer.node === node)
+  },
+  /** The most recently added layer in the same group, if any. */
+  peerFor(group: string): Layer | undefined {
+    for (let i = this.count() - 1; i >= 0; i--) {
+      if (this.layers[i].group === group) return this.layers[i]
+    }
+    return undefined
   },
   isDescendantOf(layer: Layer, ancestorId: string | undefined): boolean {
     if (!ancestorId) return false
@@ -162,7 +171,9 @@ export const layerStack = {
       layer.parentId = pending.parentId
     } else {
       layer.id ??= `layer-${++layerId}`
-      layer.parentId ??= this.layers[this.count() - 1]?.id
+      // a peer still on the stack is a sibling, not an ancestor, so inherit its parent
+      const peer = layer.group ? this.peerFor(layer.group) : undefined
+      layer.parentId = peer ? peer.parentId : (layer.parentId ?? this.layers[this.count() - 1]?.id)
     }
 
     if (existingIndex !== -1) {

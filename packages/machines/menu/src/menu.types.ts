@@ -191,6 +191,8 @@ export interface MenuSchema {
     isSubmenu: boolean
     triggerValue: string | null
     pointerRoutingMode: "interactive" | "locked"
+    /** Whether the open/close came from swapping between menubar menus. Exposed as `data-instant`. */
+    instant: boolean
   }
   computed: {
     isRtl: boolean

@@ -97,6 +97,9 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingMode: bindable<"interactive" | "locked">(() => ({
         defaultValue: "interactive",
       })),
+      instant: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -346,7 +349,7 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint", "dispatchMenubarClose"],
+      entry: ["setInstant", "clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint", "dispatchMenubarClose"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -424,7 +427,7 @@ export const machine = createMachine<MenuSchema>({
         "scrollToHighlightedItem",
         "trackMenubarSiblings",
       ],
-      entry: ["focusMenu", "unlockParentOnOpen", "dispatchMenubarOpen"],
+      entry: ["setInstant", "focusMenu", "unlockParentOnOpen", "dispatchMenubarOpen"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -557,8 +560,9 @@ export const machine = createMachine<MenuSchema>({
   implementations: {
     guards: {
       closeOnSelect: ({ prop, event }) => !!(event?.closeOnSelect ?? prop("closeOnSelect")),
-      // whether the trigger is also a menu item
-      isTriggerItem: ({ event }) => dom.isTriggerItem(event.target),
+      // whether the trigger is also a menu item. menubar triggers look the same in the DOM,
+      // but must toggle closed on click
+      isTriggerItem: ({ event, computed }) => !computed("isInMenubar") && dom.isTriggerItem(event.target),
       // whether the trigger item is the active item
       isTriggerItemHighlighted: ({ event, scope, computed }) => {
         const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
@@ -582,7 +586,7 @@ export const machine = createMachine<MenuSchema>({
         if (!menubarEl) return
         const triggerId = dom.getTriggerId(scope)
         return addDomEvent(menubarEl, "menubar:open-request", (event: any) => {
-          if (event.detail?.triggerId === triggerId) send({ type: "OPEN" })
+          if (event.detail?.triggerId === triggerId) send({ type: "OPEN", instant: true })
         })
       },
       // When coordinated by a menubar, close this menu if a sibling menu opens.
@@ -598,6 +602,7 @@ export const machine = createMachine<MenuSchema>({
             type: "CLOSE",
             src: "menubar-sibling-open",
             restoreFocus: false,
+            instant: true,
           })
         })
       },
@@ -653,6 +658,8 @@ export const machine = createMachine<MenuSchema>({
 
         return trackDismissableElement(getContentEl, {
           type: "menu",
+          // menubar menus open while a sibling is still registered, so group them to avoid nesting
+          group: prop("menubar")?.rootId,
           onLayerChange(layer) {
             context.set("layer", layer)
           },
@@ -1011,6 +1018,10 @@ export const machine = createMachine<MenuSchema>({
       setTriggerValue({ context, event }) {
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
+      },
+      // runs on every open/closed entry, so any non-swap transition clears the flag
+      setInstant({ context, event }) {
+        context.set("instant", !!event.instant)
       },
     },
   },

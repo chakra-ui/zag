@@ -15,8 +15,10 @@ export const getTriggerEls = (ctx: Scope): HTMLElement[] => {
   const rootEl = getRootEl(ctx)
   if (!rootEl) return []
   const els = rootEl.querySelectorAll<HTMLElement>("[role=menuitem]")
+  // a natively disabled trigger can't be focused, so skip it too
   return Array.from(els).filter(
-    (el) => !el.hasAttribute("data-disabled") && el.getAttribute("aria-disabled") !== "true",
+    (el) =>
+      !el.hasAttribute("data-disabled") && !el.hasAttribute("disabled") && el.getAttribute("aria-disabled") !== "true",
   )
 }
 

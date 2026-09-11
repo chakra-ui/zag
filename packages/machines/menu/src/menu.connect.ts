@@ -44,6 +44,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
   const isSubmenu = context.get("isSubmenu")
   const isInMenubar = computed("isInMenubar")
+  const instant = context.get("instant")
   const menubarDisabled = computed("menubarDisabled")
   const menubarActiveId = prop("menubar")?.activeId
   const menubarRootId = prop("menubar")?.rootId
@@ -325,7 +326,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           if (dom.isTargetDisabled(event.currentTarget)) return
           // Hover-to-open: once a sibling menu is open, hovering this trigger switches to it.
           if (dom.getMenubarEl(scope, menubarRootId)?.dataset.hasOpenMenu === "true") {
-            send({ type: "OPEN" })
+            send({ type: "OPEN", instant: true })
           }
         },
         onBlur() {
@@ -381,6 +382,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
+        "data-instant": dataAttr(instant),
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
@@ -414,6 +416,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "aria-label": prop("aria-label"),
         hidden: !contentState.open,
         "data-state": contentState.open ? "open" : "closed",
+        "data-instant": dataAttr(instant),
         role: composite ? "menu" : "dialog",
         tabIndex: 0,
         dir: prop("dir"),
