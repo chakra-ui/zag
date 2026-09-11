@@ -267,6 +267,91 @@ export class DatePickerModel extends Model {
     return expect(this.page.locator(".date-output")).toContainText(`Focused: ${value}`)
   }
 
+  private cellsForView(view: "day" | "month" | "year") {
+    return this.page.locator(`${part("table-cell-trigger")}[data-view=${view}]`)
+  }
+
+  private getCellByValue(view: "day" | "month" | "year", value: number) {
+    return this.page.locator(`${part("table-cell-trigger")}[data-view=${view}][data-value="${value}"]`)
+  }
+
+  /** The values rendered for a view, in DOM order. Hidden views are excluded. */
+  private getVisibleCellValues(view: "day" | "month" | "year") {
+    return this.page.evaluate(
+      (v) =>
+        [...document.querySelectorAll(`[data-part="table-cell-trigger"][data-view="${v}"]`)]
+          .filter((el) => (el as HTMLElement).offsetParent !== null)
+          .map((el) => Number(el.getAttribute("data-value"))),
+      view,
+    )
+  }
+
+  /** The values carrying `attr`, in DOM order. */
+  private getCellValuesWithAttr(view: "day" | "month" | "year", attr: string) {
+    return this.page.evaluate(
+      ({ v, name }) =>
+        [...document.querySelectorAll(`[data-part="table-cell-trigger"][data-view="${v}"]`)]
+          .filter((el) => el.hasAttribute(name))
+          .map((el) => Number(el.getAttribute("data-value"))),
+      { v: view, name: attr },
+    )
+  }
+
+  /** The next trigger carries no `data-view`, only an id suffix. */
+  private clickNextFor(view: "month" | "year") {
+    return this.page.locator(`${part("next-trigger")}[id$="next:${view}"]`).click()
+  }
+
+  // ---- year view
+
+  getYearCellByValue(year: number) {
+    return this.getCellByValue("year", year)
+  }
+
+  getVisibleYears() {
+    return this.getVisibleCellValues("year")
+  }
+
+  clickYearCell(year: number) {
+    return this.getYearCellByValue(year).click()
+  }
+
+  hoverYearCell(year: number) {
+    return this.getYearCellByValue(year).hover()
+  }
+
+  focusFirstYearCell() {
+    return this.cellsForView("year").first().focus()
+  }
+
+  clickNextDecade() {
+    return this.clickNextFor("year")
+  }
+
+  seeYearCellIsFocused(year: number) {
+    return expect(this.getYearCellByValue(year)).toHaveAttribute("data-focus", "")
+  }
+
+  seeYearCellIsDisabled(year: number) {
+    return expect(this.getYearCellByValue(year)).toHaveAttribute("data-disabled", "")
+  }
+
+  dontSeeYearCellIsDisabled(year: number) {
+    return expect(this.getYearCellByValue(year)).not.toHaveAttribute("data-disabled", "")
+  }
+
+  seeYearCellIsOutsideRange(year: number) {
+    return expect(this.getYearCellByValue(year)).toHaveAttribute("data-outside-range", "")
+  }
+
+  async seeNoDisabledYearCells() {
+    expect(await this.getCellValuesWithAttr("year", "data-disabled")).toEqual([])
+  }
+
+  async seeYearsInHoverRange(years: number[]) {
+    expect(await this.getCellValuesWithAttr("year", "data-in-hover-range")).toEqual(years)
+  }
+
   getDayCellByValue(value: string) {
     return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${value}"]`)
   }
