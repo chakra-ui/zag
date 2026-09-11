@@ -9,6 +9,7 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  ScrollChangeDetails,
   ValueChangeDetails,
   WheelPickerApi as Api,
   WheelPickerMachine as Machine,

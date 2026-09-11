@@ -19,6 +19,7 @@ export const props = createProps<WheelPickerProps>()([
   "name",
   "onValueChange",
   "onValueChangeEnd",
+  "onScrollChange",
   "optionItemHeight",
   "readOnly",
   "required",

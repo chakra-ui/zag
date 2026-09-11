@@ -10,6 +10,10 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   item: T | null
 }
 
+export interface ScrollChangeDetails<T extends CollectionItem = CollectionItem> extends ValueChangeDetails<T> {
+  index: number
+}
+
 export interface ElementIds {
   root?: string | undefined
   label?: string | undefined
@@ -37,6 +41,8 @@ export interface WheelPickerProps<T extends CollectionItem = CollectionItem>
   onValueChange?: ((details: ValueChangeDetails<T>) => void) | undefined
   /** Function called when scrolling to a value finishes. */
   onValueChangeEnd?: ((details: ValueChangeDetails<T>) => void) | undefined
+  /** Function called when the centered item changes while scrolling. */
+  onScrollChange?: ((details: ScrollChangeDetails<T>) => void) | undefined
   /** Whether the wheel should loop infinitely. @default false */
   infinite?: boolean | undefined
   /** The number of items on the circular ring. Values are rounded down to a multiple of 4. @default 20 */
@@ -92,6 +98,7 @@ export interface WheelPickerSchema<T extends CollectionItem = CollectionItem> {
     lastWheelTime: number
     scrollDirection: 1 | -1
     scrollDuration: number
+    scrollIndex: number
     scrollPosition: number
     scrollTarget: number
     typeahead: TypeaheadState

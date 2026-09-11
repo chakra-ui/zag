@@ -6931,6 +6931,10 @@
         "type": "((details: ValueChangeDetails<T>) => void) | undefined",
         "description": "Function called when scrolling to a value finishes."
       },
+      "onScrollChange": {
+        "type": "((details: ScrollChangeDetails<T>) => void) | undefined",
+        "description": "Function called when the centered item changes while scrolling."
+      },
       "infinite": {
         "type": "boolean | undefined",
         "description": "Whether the wheel should loop infinitely.",

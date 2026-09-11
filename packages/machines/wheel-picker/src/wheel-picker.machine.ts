@@ -83,6 +83,7 @@ export const machine = createMachine<WheelPickerSchema>({
       lastWheelTime: -Infinity,
       scrollDirection: 1,
       scrollDuration: 0,
+      scrollIndex: 0,
       scrollPosition: 0,
       scrollTarget: 0,
       typeahead: { ...getByTypeahead.defaultOptions },
@@ -235,7 +236,7 @@ export const machine = createMachine<WheelPickerSchema>({
         const duration = reduceMotion ? 0 : refs.get("scrollDuration")
 
         if (start === target || duration === 0) {
-          refs.set("scrollPosition", applyScroll(scope, prop, target))
+          refs.set("scrollPosition", applyScroll(scope, refs, prop, target, true))
           const timer = win.setTimeout(() => send({ type: "SCROLL.END" }), 0)
           return () => win.clearTimeout(timer)
         }
@@ -247,7 +248,7 @@ export const machine = createMachine<WheelPickerSchema>({
         const tick = (time: number) => {
           const progress = Math.min((time - startTime) / duration, 1)
           const eased = Math.pow(progress - 1, 3) + 1
-          refs.set("scrollPosition", applyScroll(scope, prop, start + eased * distance))
+          refs.set("scrollPosition", applyScroll(scope, refs, prop, start + eased * distance, true))
 
           if (progress < 1) {
             frameId = win.requestAnimationFrame(tick)
@@ -318,7 +319,7 @@ export const machine = createMachine<WheelPickerSchema>({
           moved: drag.moved || Math.abs(event.point.y - drag.startY) > DRAG_THRESHOLD,
           samples,
         })
-        refs.set("scrollPosition", applyScroll(scope, prop, nextScroll))
+        refs.set("scrollPosition", applyScroll(scope, refs, prop, nextScroll, true))
       },
       prepareDragEndScroll({ refs, event, prop, scope }) {
         const drag = refs.get("drag")
@@ -410,7 +411,7 @@ export const machine = createMachine<WheelPickerSchema>({
         const value = prop("collection").getItemValue(item)
         if (value == null) return
 
-        refs.set("scrollPosition", applyScroll(scope, prop, normalizedIndex))
+        refs.set("scrollPosition", applyScroll(scope, refs, prop, normalizedIndex))
         context.set("index", normalizedIndex)
         context.set("value", value)
         prop("onValueChangeEnd")?.({ value, item })
@@ -423,7 +424,7 @@ export const machine = createMachine<WheelPickerSchema>({
         if (event.value == null) {
           context.set("value", null)
           context.set("index", 0)
-          refs.set("scrollPosition", applyScroll(scope, prop, 0))
+          refs.set("scrollPosition", applyScroll(scope, refs, prop, 0))
           return
         }
 
@@ -439,7 +440,7 @@ export const machine = createMachine<WheelPickerSchema>({
 
         context.set("value", value)
         context.set("index", resolvedIndex)
-        refs.set("scrollPosition", applyScroll(scope, prop, resolvedIndex))
+        refs.set("scrollPosition", applyScroll(scope, refs, prop, resolvedIndex))
       },
       syncValueFromCollection({ context, prop }) {
         const value = context.get("value")
@@ -515,17 +516,29 @@ function syncScrollPosition(context: PickerContext, refs: PickerRefs, prop: Pick
   const nextIndex = Math.max(0, resolvedIndex)
 
   context.set("index", nextIndex)
+  refs.set("scrollIndex", nextIndex)
   refs.set("scrollPosition", nextIndex)
   refs.set("scrollTarget", nextIndex)
-  raf(() => applyScroll(scope, prop, nextIndex))
+  raf(() => applyScroll(scope, refs, prop, nextIndex))
 }
 
-function applyScroll(scope: Scope, prop: PickerProp, scroll: number) {
+function applyScroll(scope: Scope, refs: PickerRefs, prop: PickerProp, scroll: number, feedback = false) {
   const items = getItems(prop("collection"), prop("infinite"), prop("visibleCount"))
   if (items.length === 0) return 0
 
   const geometry = getWheelGeometry(prop("visibleCount"), prop("optionItemHeight"))
   const normalizedScroll = prop("infinite") ? normalizeScroll(scroll, items.length) : scroll
+  const scrollIndex = prop("infinite")
+    ? normalizeScroll(Math.round(normalizedScroll), items.length)
+    : clamp(Math.round(normalizedScroll), 0, items.length - 1)
+
+  if (feedback && scrollIndex !== refs.get("scrollIndex")) {
+    const item = items[scrollIndex] ?? null
+    const value = prop("collection").getItemValue(item)
+    prop("onScrollChange")?.({ index: prop("collection").indexOf(value), value, item })
+  }
+  refs.set("scrollIndex", scrollIndex)
+
   const itemGroupEl = dom.getItemGroupEl(scope)
 
   if (itemGroupEl) {
