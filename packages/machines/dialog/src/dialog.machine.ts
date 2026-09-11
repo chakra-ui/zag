@@ -197,7 +197,10 @@ export const machine = createMachine<DialogSchema>({
 
       hideContentBelow({ scope, prop }) {
         if (!prop("modal")) return
-        const getElements = () => [dom.getContentEl(scope)]
+        const getElements = () => [
+          dom.getContentEl(scope),
+          ...(prop("persistentElements")?.map((fn) => fn() as HTMLElement | null) ?? []),
+        ]
         return ariaHidden(getElements, { defer: true })
       },
     },
