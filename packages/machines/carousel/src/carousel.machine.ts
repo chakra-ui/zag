@@ -30,6 +30,7 @@ export const machine = createMachine<CarouselSchema>({
   refs() {
     return {
       timeoutRef: undefined,
+      autoplayPausedByVisibility: false,
     }
   },
 
@@ -114,9 +115,12 @@ export const machine = createMachine<CarouselSchema>({
     "PAGE.SCROLL": {
       actions: ["scrollToPage"],
     },
+    "AUTOPLAY.PAUSE": {
+      actions: ["clearAutoplayPausedByVisibility"],
+    },
   },
 
-  effects: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
+  effects: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize", "trackDocumentVisibility"],
 
   entry: ["setSnapPoints", "setPage"],
 
@@ -223,7 +227,7 @@ export const machine = createMachine<CarouselSchema>({
     },
 
     autoplay: {
-      effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
+      effects: ["trackScroll", "autoUpdateSlide"],
       exit: ["invokeAutoplayEnd"],
       on: {
         "AUTOPLAY.TICK": {
@@ -235,6 +239,7 @@ export const machine = createMachine<CarouselSchema>({
         },
         "AUTOPLAY.PAUSE": {
           target: "idle",
+          actions: ["setAutoplayPausedByVisibility"],
         },
       },
     },
@@ -364,10 +369,20 @@ export const machine = createMachine<CarouselSchema>({
         }
       },
 
-      trackDocumentVisibility({ scope, send }) {
+      trackDocumentVisibility({ scope, send, prop, refs }) {
         const doc = scope.getDoc()
         const onVisibilityChange = () => {
-          if (doc.visibilityState === "visible") return
+          if (doc.visibilityState === "visible") {
+            const autoplay = prop("autoplay")
+            const resumeOnVisibilityChange = isObject(autoplay) && autoplay.resumeOnVisibilityChange
+
+            if (!resumeOnVisibilityChange || !refs.get("autoplayPausedByVisibility")) return
+
+            refs.set("autoplayPausedByVisibility", false)
+            send({ type: "AUTOPLAY.START", src: "doc.visible" })
+            return
+          }
+
           send({ type: "AUTOPLAY.PAUSE", src: "doc.hidden" })
         }
         return addDomEvent(doc, "visibilitychange", onVisibilityChange)
@@ -411,10 +426,16 @@ export const machine = createMachine<CarouselSchema>({
     },
 
     actions: {
+      clearAutoplayPausedByVisibility({ refs }) {
+        refs.set("autoplayPausedByVisibility", false)
+      },
       clearScrollEndTimer({ refs }) {
         if (refs.get("timeoutRef") == null) return
         clearTimeout(refs.get("timeoutRef"))
         refs.set("timeoutRef", undefined)
+      },
+      setAutoplayPausedByVisibility({ event, refs }) {
+        refs.set("autoplayPausedByVisibility", event.src === "doc.hidden")
       },
       scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"
