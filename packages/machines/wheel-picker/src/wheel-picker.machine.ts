@@ -13,12 +13,12 @@ import * as dom from "./wheel-picker.dom"
 import type { WheelPickerSchema } from "./wheel-picker.types"
 import {
   DRAG_THRESHOLD,
-  MAX_VELOCITY,
   OVERSCROLL_RESISTANCE,
   WHEEL_THROTTLE,
   clamp,
   findItemIndex,
   getClickedStep,
+  getDragVelocity,
   getExpandedItems,
   getInertiaTarget,
   getStepDuration,
@@ -345,16 +345,7 @@ export const machine = createMachine<WheelPickerSchema>({
           return
         }
 
-        const samples = [...drag.samples, { time: event.timestamp, y: event.point.y }].slice(-5)
-        const latest = samples.at(-1)
-        const previous = samples.at(-2)
-        let velocity = 0
-
-        if (latest && previous && latest.time - previous.time > 0 && event.timestamp - latest.time < 100) {
-          velocity =
-            (((previous.y - latest.y) / Math.max(1, prop("optionItemHeight"))) * 1000) / (latest.time - previous.time)
-          velocity = clamp(velocity, -MAX_VELOCITY, MAX_VELOCITY)
-        }
+        const velocity = getDragVelocity(drag.samples, event.timestamp, prop("optionItemHeight"))
 
         const direction = velocity === 0 ? refs.get("scrollDirection") : velocity > 0 ? 1 : -1
         const inertia = getInertiaTarget({

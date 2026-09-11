@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest"
 import {
   findNearestEnabledIndex,
   getClickedStep,
+  getDragVelocity,
   getExpandedItems,
   getHighlightItems,
   getInertiaTarget,
@@ -89,5 +90,16 @@ describe("wheel picker utilities", () => {
     expect(
       getInertiaTarget({ current: 2, dragSensitivity: 3, infinite: true, itemCount: 5, velocity: 30 }).target,
     ).toBeGreaterThan(4)
+  })
+
+  test("calculates drag velocity from recent movement samples", () => {
+    const samples = [
+      { time: 0, y: 100 },
+      { time: 50, y: 70 },
+    ]
+
+    expect(getDragVelocity(samples, 60, 30)).toBe(20)
+    expect(getDragVelocity(samples, 150, 30)).toBe(0)
+    expect(getDragVelocity([{ time: 0, y: 100 }], 10, 30)).toBe(0)
   })
 })

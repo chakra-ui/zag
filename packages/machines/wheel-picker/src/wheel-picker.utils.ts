@@ -6,6 +6,11 @@ export const MAX_VELOCITY = 30
 export const OVERSCROLL_RESISTANCE = 0.3
 export const WHEEL_THROTTLE = 100
 
+export interface DragSample {
+  time: number
+  y: number
+}
+
 export interface WheelGeometry {
   containerHeight: number
   halfItemHeight: number
@@ -178,6 +183,17 @@ export function getClickedStep(clientY: number, top: number, geometry: WheelGeom
 export function getStepDuration(distance: number, scrollSensitivity: number) {
   if (distance === 0) return 0
   return Math.sqrt(distance / Math.max(0.001, scrollSensitivity)) * 1000
+}
+
+export function getDragVelocity(samples: DragSample[], releaseTime: number, itemHeight: number) {
+  const latest = samples.at(-1)
+  if (!latest || releaseTime - latest.time >= 100) return 0
+
+  const previous = samples.find((sample) => sample.time < latest.time && latest.time - sample.time <= 100)
+  if (!previous) return 0
+
+  const velocity = (((previous.y - latest.y) / Math.max(1, itemHeight)) * 1000) / (latest.time - previous.time)
+  return clamp(velocity, -MAX_VELOCITY, MAX_VELOCITY)
 }
 
 export interface InertiaTargetOptions {

@@ -50,6 +50,19 @@ test.describe("wheel-picker", () => {
     await mouseSwipe(page, control, "up", 90, 300)
     await expect(control).toHaveAttribute("aria-valuetext", /Svelte|Solid|Preact|Qwik|Lit/)
   })
+
+  test("continues scrolling with momentum after a fast drag", async ({ page }) => {
+    const control = page.locator(part("control"))
+    const itemGroup = page.locator(part("item-group"))
+
+    await mouseSwipe(page, control, "up", 30, 50, false)
+    const transformAtRelease = await itemGroup.evaluate((element) => getComputedStyle(element).transform)
+    await page.mouse.up()
+
+    await expect
+      .poll(() => itemGroup.evaluate((element) => getComputedStyle(element).transform))
+      .not.toBe(transformAtRelease)
+  })
 })
 
 test.describe("wheel-picker examples", () => {
