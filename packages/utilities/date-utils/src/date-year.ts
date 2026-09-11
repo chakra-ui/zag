@@ -35,11 +35,10 @@ export function normalizeYear(year: string | null | undefined) {
   return year
 }
 
-export function getDecadeRange(year: number, opts?: { strict?: boolean }) {
-  const chunkSize = opts?.strict ? 10 : 12
+export function getDecadeRange(year: number) {
   const computedYear = year - (year % 10)
   const years: number[] = []
-  for (let i = 0; i < chunkSize; i += 1) {
+  for (let i = 0; i < 10; i += 1) {
     const value = computedYear + i
     years.push(value)
   }

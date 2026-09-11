@@ -61,14 +61,14 @@ describe("normalizeProps", () => {
   })
 
   describe("style objects", () => {
-    test("converts style object to CSS string", () => {
+    test("passes style object through untouched", () => {
       const result = normalize({
         style: {
           backgroundColor: "red",
           fontSize: "16px",
         },
       })
-      expect(result.style).toBe("background-color:red;font-size:16px;")
+      expect(result.style).toEqual({ backgroundColor: "red", fontSize: "16px" })
     })
 
     test("preserves CSS custom properties", () => {
@@ -78,10 +78,10 @@ describe("normalizeProps", () => {
           color: "red",
         },
       })
-      expect(result.style).toBe("--my-var:blue;color:red;")
+      expect(result.style).toEqual({ "--my-var": "blue", color: "red" })
     })
 
-    test("filters null and undefined style values", () => {
+    test("leaves null and undefined style values to spreadProps", () => {
       // @ts-expect-error - null is allowed
       const result = normalize({
         style: {
@@ -90,7 +90,7 @@ describe("normalizeProps", () => {
           fontSize: undefined,
         },
       })
-      expect(result.style).toBe("color:red;")
+      expect(result.style).toEqual({ color: "red", backgroundColor: null, fontSize: undefined })
     })
   })
 
@@ -165,7 +165,7 @@ describe("normalizeProps", () => {
         class: "input-class",
         for: "label-id",
         oninput: onClick,
-        style: "color:blue;",
+        style: { color: "blue" },
         "data-testid": "test",
         viewBox: "0 0 24 24",
       })

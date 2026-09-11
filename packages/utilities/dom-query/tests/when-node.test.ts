@@ -14,13 +14,32 @@ function mountNode() {
 }
 
 describe("whenNode", () => {
-  test("runs synchronously when the node is already committed", () => {
+  test("runs synchronously when defer is off", () => {
     const node = mountNode()
     const fn = vi.fn()
 
-    whenNode(node, fn, { defer: true })
+    whenNode(node, fn)
 
     expect(fn).toHaveBeenCalledWith(node)
+  })
+
+  test("waits for the commit even when a node already exists", async () => {
+    // a node read at call time may be the one the framework is about to replace
+    const doomed = mountNode()
+    doomed.id = "doomed"
+    let node: HTMLElement = doomed
+    const fn = vi.fn()
+
+    whenNode(() => node, fn, { defer: true })
+    expect(fn).not.toHaveBeenCalled()
+
+    doomed.remove()
+    node = mountNode()
+    node.id = "committed"
+    await Promise.resolve()
+
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn.mock.calls[0][0].id).toBe("committed")
   })
 
   test("runs on the microtask tick when the node commits after the call", async () => {
@@ -88,11 +107,12 @@ describe("whenNode", () => {
     expect(fn).not.toHaveBeenCalled()
   })
 
-  test("cleanup runs the cleanup returned by fn", () => {
+  test("cleanup runs the cleanup returned by fn", async () => {
     const node = mountNode()
     const inner = vi.fn()
 
     const cleanup = whenNode(node, () => inner, { defer: true })
+    await Promise.resolve()
     expect(inner).not.toHaveBeenCalled()
 
     cleanup()

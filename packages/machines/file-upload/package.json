@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "test": "vitest",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
@@ -43,7 +44,8 @@
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "clean-package": "2.2.0"
+    "clean-package": "2.2.0",
+    "vitest": "^4.1.2"
   },
   "clean-package": "./clean-package.config.json"
 }

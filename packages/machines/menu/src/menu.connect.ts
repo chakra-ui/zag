@@ -131,9 +131,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     highlightedValue,
     open,
     setOpen(nextOpen) {
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     triggerValue,
     setTriggerValue(value) {

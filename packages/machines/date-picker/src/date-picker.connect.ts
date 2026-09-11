@@ -144,7 +144,7 @@ export function connect<T extends PropTypes>(
     const { value, disabled } = props
     const dateValue = focusedValue.set({ year: value })
 
-    const decadeYears = getDecadeRange(startValue.year, { strict: true })
+    const decadeYears = getDecadeRange(startValue.year)
     const isOutsideVisibleRange = !decadeYears.includes(value)
     const isWithinMinMax = isValueWithinRange(value, min?.year, max?.year)
 
@@ -160,7 +160,7 @@ export function connect<T extends PropTypes>(
 
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: !isOutsideVisibleRange && isWithinMinMax,
+      selectable: isWithinMinMax,
       outsideRange: isOutsideVisibleRange,
       selected: !!selectedValue.find((date) => date && date.year === value),
       valueText: value.toString(),
@@ -369,9 +369,7 @@ export function connect<T extends PropTypes>(
     },
     setOpen(nextOpen) {
       if (prop("inline")) return
-      const open = state.matches("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     focusMonth,
     focusYear,
@@ -379,7 +377,7 @@ export function connect<T extends PropTypes>(
     getMonths,
     getYearsGrid(props = {}) {
       const { columns = 1 } = props
-      const years = getDecadeRange(startValue.year, { strict: true }).map((year) => ({
+      const years = getDecadeRange(startValue.year).map((year) => ({
         label: year.toString(),
         value: year,
         disabled: !isValueWithinRange(year, min?.year, max?.year),
@@ -387,7 +385,7 @@ export function connect<T extends PropTypes>(
       return chunk(years, columns)
     },
     getDecade() {
-      const years = getDecadeRange(startValue.year, { strict: true })
+      const years = getDecadeRange(startValue.year)
       return { start: years.at(0), end: years.at(-1) }
     },
     getMonthsGrid(props = {}) {
@@ -800,7 +798,7 @@ export function connect<T extends PropTypes>(
         onPointerMove: isRangePicker
           ? (event) => {
               if (event.pointerType === "touch") return
-              if (!cellState.selectable) return
+              if (!cellState.selectable || cellState.outsideRange) return
               const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && cellState.value && isEqualYear(cellState.value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "year", value: cellState.value, focus })

@@ -47,9 +47,7 @@ export function connect<T extends PropTypes>(
     resizable: prop("resizable"),
     draggable: prop("draggable"),
     setOpen(nextOpen) {
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     dragging,
     resizing,

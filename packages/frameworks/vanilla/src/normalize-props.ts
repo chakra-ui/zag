@@ -18,6 +18,7 @@ export const propMap: AttrMap = {
 // SVG attributes that should preserve their case
 const caseSensitiveSvgAttrs = new Set<string>(["viewBox", "preserveAspectRatio"])
 
+// Kept for callers that render props into an HTML string rather than through `spreadProps`
 export const toStyleString = (style: any) => {
   let string = ""
   for (let key in style) {
@@ -35,11 +36,6 @@ export const normalizeProps = createNormalizer((props: any) => {
 
     if (key in propMap) {
       key = propMap[key]
-    }
-
-    if (key === "style" && typeof value === "object") {
-      acc.style = toStyleString(value)
-      return acc
     }
 
     // Preserve case for SVG attributes, lowercase everything else
