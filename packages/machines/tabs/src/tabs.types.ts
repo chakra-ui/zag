@@ -6,7 +6,7 @@ import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy }
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string
+  value: string | null // null when deselected
 }
 
 export interface FocusChangeDetails {
