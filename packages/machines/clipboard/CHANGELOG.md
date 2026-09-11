@@ -1,5 +1,23 @@
 # @zag-js/clipboard
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`869293e`](https://github.com/chakra-ui/zag/commit/869293ec6e4994c8c9445743fdea337e44a9b8b0) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where `translations` was typed as
+  always-defined on the machine service.
+
+  - `prop("translations")` now correctly reflects that it may be `undefined`, since the machine does not fill it in.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

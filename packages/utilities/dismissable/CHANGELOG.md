@@ -1,5 +1,24 @@
 # @zag-js/dismissable
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issues when switching between menubar menus by arrowing or
+  hovering:
+
+  - The incoming menu was dismissed by the outgoing one closing. `trackDismissableElement` now accepts a `group` option
+    that registers layers as peers instead of nesting them.
+  - The swap replayed the open and close animations. Positioner and content now set `data-instant` during a swap so
+    styles can skip the transition.
+  - Clicking an open menubar trigger did not close its menu.
+
+- Updated dependencies []:
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/interact-outside@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

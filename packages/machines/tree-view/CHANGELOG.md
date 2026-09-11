@@ -1,5 +1,22 @@
 # @zag-js/tree-view
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3326](https://github.com/chakra-ui/zag/pull/3326)
+  [`f4ca6a3`](https://github.com/chakra-ui/zag/commit/f4ca6a3f00a0659aaf4a3b1c980fb56f09648cbe) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Fixed issue where a branch node with no descendants (e.g. an
+  async branch whose children haven't loaded) reported a checked state of `true`. An empty descendant list made
+  `[].every(...)` return `true`, so the branch looked fully checked. It now reports `false` when it has no descendants.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/collection@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes
