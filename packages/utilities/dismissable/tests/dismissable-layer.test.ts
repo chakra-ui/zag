@@ -32,25 +32,29 @@ describe("trackDismissableElement", () => {
     document.body.innerHTML = ""
   })
 
-  test("registers escape handler synchronously when the node is already available", () => {
+  test("registers escape handler on the microtask when the node is already available", async () => {
     const node = mountNode()
     const onDismiss = vi.fn()
 
     // `defer: true` is what every machine passes (dialog, popover, menu, ...)
     const cleanup = trackDismissableElement(node, { defer: true, onDismiss })
 
-    // no frame has passed — the dialog is painted and interactive at this point
+    // registration is always deferred to the microtask so a re-parented node is
+    // re-resolved after commit — still before any frame, so Escape works pre-paint
+    await Promise.resolve()
+
     pressEscape()
     expect(onDismiss).toHaveBeenCalledTimes(1)
 
     cleanup()
   })
 
-  test("adds the layer to the stack synchronously when the node is already available", () => {
+  test("adds the layer to the stack on the microtask when the node is already available", async () => {
     const node = mountNode()
 
     const cleanup = trackDismissableElement(node, { defer: true, onDismiss: noop })
 
+    await Promise.resolve()
     expect(layerStack.isTopMost(node)).toBe(true)
 
     cleanup()
