@@ -168,6 +168,13 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   closeOnSelect?: boolean | undefined
   /**
+   * Whether to restore focus to the trigger when the picker is dismissed
+   * by interacting outside. When not set, focus is restored only if the
+   * outside interaction target is not focusable.
+   * Closing via the keyboard always restores focus.
+   */
+  restoreFocus?: boolean | undefined
+  /**
    * Whether to open the calendar when the input is clicked.
    * @default false
    */
@@ -344,10 +351,6 @@ interface PrivateContext {
    */
   currentPlacement?: Placement | undefined
   /**
-   * Whether the calendar should restore focus to the input when it closes.
-   */
-  restoreFocus?: boolean | undefined
-  /**
    * The selected date(s).
    */
   value: DateValue[]
@@ -401,6 +404,10 @@ type Refs = {
    * The live region to announce changes
    */
   announcer?: LiveRegion | undefined
+  /**
+   * Whether to restore focus when the picker closes.
+   */
+  restoreFocus: boolean
 }
 
 export interface DatePickerSchema {
