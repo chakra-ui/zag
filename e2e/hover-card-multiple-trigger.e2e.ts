@@ -61,6 +61,24 @@ test.describe("hover-card / multiple triggers", () => {
     await expect(page.locator(content)).toContainText("Alice Johnson")
   })
 
+  test("should remain open after pointer leaves the focused active trigger", async ({ page }) => {
+    await page.waitForLoadState("networkidle")
+    await page.locator(trigger(2)).focus()
+    await expect(page.locator(trigger(2))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Bob Smith")
+
+    await page.hover(trigger(2))
+    await page.mouse.move(0, 0)
+    await page.waitForTimeout(500)
+    await expect(page.locator(trigger(2))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Bob Smith")
+
+    await page.locator(trigger(2)).evaluate((element) => element.blur())
+    await expect(page.locator(content)).toBeHidden()
+  })
+
   test("should close hover card on escape", async ({ page }) => {
     await page.hover(trigger(1))
     await expect(page.locator(content)).toBeVisible()
