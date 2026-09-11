@@ -352,6 +352,52 @@ export class DatePickerModel extends Model {
     expect(await this.getCellValuesWithAttr("year", "data-in-hover-range")).toEqual(years)
   }
 
+  // ---- month view
+
+  getMonthCellByValue(month: number) {
+    return this.getCellByValue("month", month)
+  }
+
+  getVisibleMonths() {
+    return this.getVisibleCellValues("month")
+  }
+
+  clickMonthCell(month: number) {
+    return this.getMonthCellByValue(month).click()
+  }
+
+  hoverMonthCell(month: number) {
+    return this.getMonthCellByValue(month).hover()
+  }
+
+  focusFirstMonthCell() {
+    return this.cellsForView("month").first().focus()
+  }
+
+  clickNextYear() {
+    return this.clickNextFor("month")
+  }
+
+  seeMonthCellIsFocused(month: number) {
+    return expect(this.getMonthCellByValue(month)).toHaveAttribute("data-focus", "")
+  }
+
+  seeMonthCellIsDisabled(month: number) {
+    return expect(this.getMonthCellByValue(month)).toHaveAttribute("data-disabled", "")
+  }
+
+  dontSeeMonthCellIsDisabled(month: number) {
+    return expect(this.getMonthCellByValue(month)).not.toHaveAttribute("data-disabled", "")
+  }
+
+  async seeNoDisabledMonthCells() {
+    expect(await this.getCellValuesWithAttr("month", "data-disabled")).toEqual([])
+  }
+
+  async seeMonthsInHoverRange(months: number[]) {
+    expect(await this.getCellValuesWithAttr("month", "data-in-hover-range")).toEqual(months)
+  }
+
   getDayCellByValue(value: string) {
     return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${value}"]`)
   }
