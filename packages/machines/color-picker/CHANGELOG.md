@@ -1,5 +1,36 @@
 # @zag-js/color-picker
 
+## 1.44.0
+
+### Patch Changes
+
+- [#3307](https://github.com/chakra-ui/zag/pull/3307)
+  [`d00485b`](https://github.com/chakra-ui/zag/commit/d00485b0bf2e4c8011a550ad0dd782acdccdc2a0) Thanks
+  [@dylanpulver](https://github.com/dylanpulver)! - Fix `aria-disabled` on the color area thumb and channel slider thumb
+  so assistive technology reports both `role="slider"` elements as disabled when `disabled` is set. The channel slider
+  thumb emitted `aria-disabled=""`, which browsers map to the `false` default, and the area thumb omitted the attribute
+  entirely.
+
+- [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `api.setOpen` ignoring a second call made in the same tick.
+  `setOpen(true)` immediately followed by `setOpen(false)` left the component open instead of closed, and only worked if
+  you awaited a microtask between the two calls.
+
+  The last call in a tick now wins, and calling `setOpen` repeatedly with the same value still invokes `onOpenChange`
+  once. Drawer's `api.setSnapPoint` had the same problem and behaves the same way now.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/dismissable@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/popper@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/color-utils@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes

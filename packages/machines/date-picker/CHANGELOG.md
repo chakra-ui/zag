@@ -1,5 +1,47 @@
 # @zag-js/date-picker
 
+## 1.44.0
+
+### Patch Changes
+
+- [`c806d33`](https://github.com/chakra-ui/zag/commit/c806d331aa7c0c2f066d1ffea08542ca2eff3f91) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-invalid` to `getLabelProps()` and `getControlProps()` so
+  the label and control can be styled when `invalid` is set.
+
+- [`ac82db1`](https://github.com/chakra-ui/zag/commit/ac82db13c5db8dce8547f0582e38bf2cc7b62ec0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix year cells being disabled when they fall outside the decade
+  currently in view, even with no `min` or `max` set. Only `min` and `max` decide whether a year can be selected now.
+  Cells outside the visible decade still get `data-outside-range` for styling, and remain excluded from the hovered
+  range in a year range picker.
+
+  Also fix `End` in the year view focusing two years past the last cell in the grid.
+
+  **Breaking:** `getDecadeRange` from `@zag-js/date-utils` no longer accepts the `{ strict }` option and always returns
+  the ten years of the decade. It previously returned twelve by default, which is what put `End` out of bounds. Drop the
+  option if you were passing `{ strict: true }`; there is no replacement for the twelve-year form.
+
+- [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `api.setOpen` ignoring a second call made in the same tick.
+  `setOpen(true)` immediately followed by `setOpen(false)` left the component open instead of closed, and only worked if
+  you awaited a microtask between the two calls.
+
+  The last call in a tick now wins, and calling `setOpen` repeatedly with the same value still invokes `onOpenChange`
+  once. Drawer's `api.setSnapPoint` had the same problem and behaves the same way now.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`ac82db1`](https://github.com/chakra-ui/zag/commit/ac82db13c5db8dce8547f0582e38bf2cc7b62ec0),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/date-utils@1.44.0
+  - @zag-js/dismissable@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/popper@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+  - @zag-js/live-region@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
