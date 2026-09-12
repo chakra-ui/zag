@@ -94,6 +94,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "form-serialize": "0.7.2",
     "image-conversion": "2.1.1",
     "lucide-react": "1.16.0",
