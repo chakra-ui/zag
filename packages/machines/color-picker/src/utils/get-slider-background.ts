@@ -21,8 +21,6 @@ interface SliderBackgroundProps extends Required<ChannelProps> {
 export const getSliderBackground = (props: SliderBackgroundProps) => {
   const { channel, value, dir, orientation } = props
   const bgDirection = getSliderBackgroundDirection(orientation, dir)
-  const { minValue, maxValue } = value.getChannelRange(channel)
-
   const fmt = value.getFormat()
 
   switch (channel) {
@@ -34,6 +32,7 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
       }
       return `linear-gradient(to ${bgDirection}, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%)`
     case "lightness": {
+      const { minValue, maxValue } = value.getChannelRange(channel)
       let start = value.withChannelValue(channel, minValue).toString("css")
       let middle = value.withChannelValue(channel, (maxValue - minValue) / 2).toString("css")
       let end = value.withChannelValue(channel, maxValue).toString("css")
@@ -48,6 +47,7 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
     case "a":
     case "b":
     case "chroma": {
+      const { minValue, maxValue } = value.getChannelRange(channel)
       let start = value.withChannelValue(channel, minValue).toString("css")
       let end = value.withChannelValue(channel, maxValue).toString("css")
       if (fmt === "oklab" && (channel === "a" || channel === "b")) {
