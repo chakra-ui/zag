@@ -44,6 +44,10 @@ export type SelectionMode = "single" | "range"
 
 export type HourCycle = 12 | 24
 
+export type MaxGranularity = "year" | "month" | DateGranularity
+
+export type ResolvedHourCycle = "h11" | "h12" | "h23" | "h24"
+
 export interface IntlTranslations {
   placeholder?: ((locale: string) => Record<EditableSegmentType, string>) | undefined
 }
@@ -175,6 +179,13 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   granularity?: DateGranularity | undefined
   /**
+   * Determines the largest unit that is displayed in the date input.
+   * To create a time-only input, set this to `"hour"` and set `granularity`
+   * to `"hour"`, `"minute"`, or `"second"`.
+   * @default "year"
+   */
+  maxGranularity?: MaxGranularity | undefined
+  /**
    * Whether to always show leading zeros in month, day, and hour fields.
    * When false, formatting follows the locale default (e.g. "1" instead of "01").
    * @default false
@@ -199,6 +210,7 @@ type PropsWithDefault =
   | "locale"
   | "timeZone"
   | "granularity"
+  | "maxGranularity"
   | "shouldForceLeadingZeros"
   | "formatter"
   | "allSegments"
@@ -364,6 +376,10 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    * Whether the date input is invalid
    */
   invalid: boolean
+  /**
+   * The resolved hour cycle used by the date input formatter.
+   */
+  resolvedHourCycle: ResolvedHourCycle
   /**
    * The selected date(s).
    */
