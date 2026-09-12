@@ -70,7 +70,8 @@ async function main() {
 
   const result: Record<string, any> = {}
 
-  const machines = await getMachinePackages()
+  // sorted: package discovery order follows the filesystem, and it decides the key order of api.json
+  const machines = (await getMachinePackages()).sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0))
 
   for (const { dir } of machines) {
     const baseDir = basename(dir)

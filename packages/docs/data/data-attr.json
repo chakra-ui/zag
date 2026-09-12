@@ -2139,22 +2139,6 @@
       "data-active": "Present when active or pressed"
     }
   },
-  "toggle": {
-    "Root": {
-      "data-scope": "toggle",
-      "data-part": "root",
-      "data-state": "\"on\" | \"off\"",
-      "data-pressed": "Present when pressed",
-      "data-disabled": "Present when disabled"
-    },
-    "Indicator": {
-      "data-scope": "toggle",
-      "data-part": "indicator",
-      "data-disabled": "Present when disabled",
-      "data-pressed": "Present when pressed",
-      "data-state": "\"on\" | \"off\""
-    }
-  },
   "toggle-group": {
     "Root": {
       "data-scope": "toggle-group",
@@ -2169,6 +2153,22 @@
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the item",
+      "data-state": "\"on\" | \"off\""
+    }
+  },
+  "toggle": {
+    "Root": {
+      "data-scope": "toggle",
+      "data-part": "root",
+      "data-state": "\"on\" | \"off\"",
+      "data-pressed": "Present when pressed",
+      "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-scope": "toggle",
+      "data-part": "indicator",
+      "data-disabled": "Present when disabled",
+      "data-pressed": "Present when pressed",
       "data-state": "\"on\" | \"off\""
     }
   },

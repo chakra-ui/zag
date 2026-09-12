@@ -202,7 +202,8 @@ async function main() {
     },
   })
 
-  const files = fg.globSync("packages/machines/*/src/*.connect.ts")
+  // sorted: glob order follows the filesystem, and it decides the key order of the emitted JSON
+  const files = fg.globSync("packages/machines/*/src/*.connect.ts").sort()
 
   const json: Record<string, any> = {}
 

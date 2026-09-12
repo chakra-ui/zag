@@ -429,7 +429,7 @@ function formatPartName(part: string): string {
 }
 
 async function findComponentsUsingDependency(dependencyName: string): Promise<string[]> {
-  const packageFiles = await glob("packages/machines/*/package.json")
+  const packageFiles = (await glob("packages/machines/*/package.json")).sort()
   const components: string[] = []
 
   for (const packageFile of packageFiles) {
@@ -462,7 +462,8 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   const tempVariables: CSSVariable[] = []
 
   // Extract from .connect.ts files
-  const connectFiles = await glob("packages/machines/*/src/*.connect.ts")
+  // sorted: glob order follows the filesystem, and it decides the key order of the emitted JSON
+  const connectFiles = (await glob("packages/machines/*/src/*.connect.ts")).sort()
   for (const file of connectFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromConnect(filePath, project)
@@ -470,7 +471,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   }
 
   // Extract from .style.ts files
-  const styleFiles = await glob("packages/machines/*/src/*.style.ts")
+  const styleFiles = (await glob("packages/machines/*/src/*.style.ts")).sort()
   for (const file of styleFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromStyle(filePath, project)
@@ -478,7 +479,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   }
 
   // Extract from utility packages
-  const utilityFiles = await glob("packages/utilities/*/src/*.ts")
+  const utilityFiles = (await glob("packages/utilities/*/src/*.ts")).sort()
   for (const file of utilityFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromUtility(filePath, project)
