@@ -1,4 +1,4 @@
-import { resolve } from "node:path"
+import { basename, dirname, resolve } from "node:path"
 import { writeFileSync, readFileSync } from "node:fs"
 import { glob } from "fast-glob"
 import { Project, Node, SyntaxKind } from "ts-morph"
@@ -223,7 +223,7 @@ function extractCSSVariablesFromConnect(filePath: string, project: Project): CSS
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const component = filePath.split("/").slice(-3, -2)[0] // Extract component name from path
+  const component = basename(dirname(dirname(filePath)))
 
   sourceFile.forEachDescendant((node) => {
     if (Node.isPropertyAssignment(node) && node.getName() === "style") {
@@ -284,7 +284,7 @@ function extractCSSVariablesFromStyle(filePath: string, project: Project): CSSVa
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const component = filePath.split("/").slice(-3, -2)[0]
+  const component = basename(dirname(dirname(filePath)))
 
   sourceFile.forEachDescendant((node) => {
     if (Node.isObjectLiteralExpression(node)) {
@@ -326,8 +326,7 @@ function extractCSSVariablesFromUtility(filePath: string, project: Project): CSS
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const pathParts = filePath.split("/")
-  const utilityName = pathParts[pathParts.indexOf("utilities") + 1] // e.g., "popper", "dismissable"
+  const utilityName = basename(dirname(dirname(filePath))) // e.g., "popper", "dismissable"
 
   sourceFile.forEachDescendant((node) => {
     // Look for regular object literals with CSS variables
