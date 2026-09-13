@@ -1,5 +1,25 @@
 # @zag-js/dom-query
 
+## 1.44.0
+
+### Patch Changes
+
+- [`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `getCaretPosition`, which measures the caret position in an
+  input or textarea, returning `{ left, top, height }` relative to the element's bounding client rect. Useful for
+  anchoring a popup (e.g. a mention menu) to the caret.
+
+- [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix popups dismissing themselves right after opening when their
+  content is kept mounted while closed and re-parented on open. The layer captured the element that was about to be
+  detached, so interactions inside the live content counted as outside clicks.
+
+  `defer: true` now always waits for the framework to commit, instead of resolving synchronously when an element happens
+  to already be there.
+
+- Updated dependencies []:
+  - @zag-js/types@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
