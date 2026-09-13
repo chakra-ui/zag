@@ -493,6 +493,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     getColumnHeadersProps() {
       return normalize.element({
         ...parts.columnHeaders.attrs(scope.id),
+        id: dom.getColumnHeadersId(scope),
         role: "row",
       })
     },
@@ -513,7 +514,19 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         ...parts.grid.attrs(scope.id),
         id: dom.getGridId(scope),
         role: "grid",
+        "aria-colcount": visibleDays.length,
+        "aria-label": visibleRangeText.formatted,
+        // the header row renders outside the grid so it can stick above the scroller
+        "aria-owns": `${dom.getColumnHeadersId(scope)} ${dom.getGridRowId(scope)}`,
         "data-view": view,
+      })
+    },
+
+    getGridRowProps() {
+      return normalize.element({
+        ...parts.gridRow.attrs(scope.id),
+        id: dom.getGridRowId(scope),
+        role: "row",
       })
     },
 
@@ -534,7 +547,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     getTimeGutterProps() {
       return normalize.element({
         ...parts.timeGutter.attrs(scope.id),
-        "aria-hidden": "true",
+        role: "rowheader",
       })
     },
 

@@ -183,6 +183,8 @@ export interface SchedulerTranslations {
 export type ElementIds = Partial<{
   root: string
   grid: string
+  gridRow: string
+  columnHeaders: string
   event: (id: string) => string
   timeSlot: (key: string) => string
   dayColumn: (key: string) => string
@@ -867,6 +869,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getColumnHeadersProps: () => T["element"]
   getColumnHeaderProps: (props: DayColumnProps) => T["element"]
   getGridProps: () => T["element"]
+  getGridRowProps: () => T["element"]
   getAllDayRowProps: () => T["element"]
   getAllDayLabelProps: () => T["element"]
   getTimeSlotProps: (props: TimeSlotProps) => T["element"]

@@ -4,6 +4,8 @@ import type { Scope } from "@zag-js/core"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `scheduler:${ctx.id}`
 export const getGridId = (ctx: Scope) => ctx.ids?.grid ?? `scheduler:${ctx.id}:grid`
+export const getGridRowId = (ctx: Scope) => ctx.ids?.gridRow ?? `scheduler:${ctx.id}:grid-row`
+export const getColumnHeadersId = (ctx: Scope) => ctx.ids?.columnHeaders ?? `scheduler:${ctx.id}:column-headers`
 export const getEventId = (ctx: Scope, eventId: string) =>
   ctx.ids?.event?.(eventId) ?? `scheduler:${ctx.id}:event:${eventId}`
 export const getTimeSlotId = (ctx: Scope, key: string) => ctx.ids?.timeSlot?.(key) ?? `scheduler:${ctx.id}:slot:${key}`

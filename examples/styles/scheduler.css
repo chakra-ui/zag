@@ -49,10 +49,15 @@
 }
 
 [data-scheduler-grid] {
-  display: grid;
-  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
   position: relative;
   height: var(--scheduler-grid-height, calc(var(--scheduler-hour-count, 12) * var(--scheduler-hour-height, 56px)));
+}
+
+/* the row carries the column layout so the grid element stays the positioning context */
+[data-scheduler-grid-row] {
+  display: grid;
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
+  height: 100%;
 }
 
 .scheduler-time-grid-wrapper {

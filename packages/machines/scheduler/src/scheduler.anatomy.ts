@@ -12,6 +12,7 @@ export const anatomy = createAnatomy("scheduler").parts(
   "columnHeaders",
   "columnHeader",
   "grid",
+  "gridRow",
   "allDayRow",
   "allDayLabel",
   "timeSlot",

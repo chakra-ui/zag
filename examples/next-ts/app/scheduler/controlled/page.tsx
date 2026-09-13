@@ -106,34 +106,36 @@ export default function Page() {
 
             <div className="scheduler-time-grid-scroll">
               <div {...api.getGridProps()}>
-                <div {...api.getTimeGutterProps()}>
-                  {api.hourRange.hours.map((hour) => (
-                    <div key={hour.value} {...api.getHourLabelProps({ hour })}>
-                      {hour.label}
+                <div {...api.getGridRowProps()}>
+                  <div {...api.getTimeGutterProps()}>
+                    {api.hourRange.hours.map((hour) => (
+                      <div key={hour.value} {...api.getHourLabelProps({ hour })}>
+                        {hour.label}
+                      </div>
+                    ))}
+                  </div>
+
+                  {api.visibleDays.map((date) => (
+                    <div key={date.toString()} {...api.getDayColumnProps({ date })}>
+                      {api.hourRange.hours.map((hour) => (
+                        <div key={hour.value} {...api.getHourLineProps({ hour })} />
+                      ))}
+                      <div {...api.getCurrentTimeIndicatorProps({ date })} />
+                      {api.getEventsForDay(date).map((event) => (
+                        <div key={event.id} {...api.getEventProps({ event })}>
+                          <div className="scheduler-event-title">{event.title}</div>
+                          <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
+                            <div className="scheduler-resize-grip" />
+                          </div>
+                        </div>
+                      ))}
+                      <div {...api.getDragOriginProps({ date })} />
+                      <div {...api.getDragPreviewProps({ date })}>
+                        <div className="scheduler-event-title">{api.dragState?.event.title}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
-
-                {api.visibleDays.map((date) => (
-                  <div key={date.toString()} {...api.getDayColumnProps({ date })}>
-                    {api.hourRange.hours.map((hour) => (
-                      <div key={hour.value} {...api.getHourLineProps({ hour })} />
-                    ))}
-                    <div {...api.getCurrentTimeIndicatorProps({ date })} />
-                    {api.getEventsForDay(date).map((event) => (
-                      <div key={event.id} {...api.getEventProps({ event })}>
-                        <div className="scheduler-event-title">{event.title}</div>
-                        <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
-                          <div className="scheduler-resize-grip" />
-                        </div>
-                      </div>
-                    ))}
-                    <div {...api.getDragOriginProps({ date })} />
-                    <div {...api.getDragPreviewProps({ date })}>
-                      <div className="scheduler-event-title">{api.dragState?.event.title}</div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
