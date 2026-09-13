@@ -1,5 +1,26 @@
 # @zag-js/file-upload
 
+## 1.44.0
+
+### Patch Changes
+
+- [`c3a98a8`](https://github.com/chakra-ui/zag/commit/c3a98a8d2129818c780f2f3eb4796e67786719b2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dropping a large directory freezing the tab. Duplicate
+  detection compared every incoming file against every file accepted so far, and the `accept` list was re-parsed for
+  every file, so a folder with tens of thousands of files took tens of seconds before `onFileAccept` or `onFileReject`
+  fired. Ingesting 50,000 files now takes milliseconds.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`c3a98a8`](https://github.com/chakra-ui/zag/commit/c3a98a8d2129818c780f2f3eb4796e67786719b2),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/file-utils@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/i18n-utils@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
