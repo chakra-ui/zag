@@ -395,8 +395,8 @@
         "defaultValue": "\"auto\""
       },
       "autoplay": {
-        "type": "boolean | { delay: number } | undefined",
-        "description": "Whether to scroll automatically. The default delay is 4000ms.",
+        "type": "boolean | { delay: number; resumeOnVisibilityChange?: boolean } | undefined",
+        "description": "Whether to scroll automatically. The default delay is 4000ms.\n\nSet `resumeOnVisibilityChange` to `true` to resume autoplay when the\ndocument becomes visible after being hidden.",
         "defaultValue": "false"
       },
       "allowMouseDrag": {

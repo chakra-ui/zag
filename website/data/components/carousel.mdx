@@ -221,6 +221,22 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+### Resuming autoplay when the page becomes visible
+
+Autoplay pauses when the document is hidden. Set `resumeOnVisibilityChange` to
+`true` to restart it when the document becomes visible again. This only resumes
+autoplay that was paused because the document was hidden; it does not override a
+manual pause.
+
+```tsx {3-4}
+const service = useMachine(carousel.machine, {
+  autoplay: {
+    delay: 4000,
+    resumeOnVisibilityChange: true,
+  },
+})
+```
+
 ### Customizing accessibility messages
 
 Use `translations` to customize localized trigger, item, and progress text.
