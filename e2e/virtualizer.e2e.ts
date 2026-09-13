@@ -35,16 +35,16 @@ test.describe("virtualizer examples", () => {
       await I.checkAccessibility("main")
 
       if (path === "/virtualizer/window") {
-        // Layout uses `main { overflow-y: auto }` — scroll the main element, not the window.
-        const main = page.locator("main")
-        await main.evaluate((el) => {
-          el.scrollTop = 400
+        // the window virtualizer grows `main` to the full content height and scrolls the document
+        const scrollTop = () => page.evaluate(() => document.documentElement.scrollTop)
+        await page.evaluate(() => {
+          document.documentElement.scrollTop = 400
         })
-        await expect.poll(async () => main.evaluate((el) => el.scrollTop)).toBeGreaterThan(0)
+        await expect.poll(scrollTop).toBeGreaterThan(0)
 
         // Verify a scroll-to button works (triggers smooth scroll on the real scroll target).
         await page.getByRole("button", { name: "Scroll to top" }).click()
-        await expect.poll(async () => main.evaluate((el) => el.scrollTop), { timeout: 5000 }).toBeLessThan(10)
+        await expect.poll(scrollTop, { timeout: 5000 }).toBeLessThan(10)
       } else {
         const overflow = page.locator("main").locator("div[style*='overflow']").first()
         if ((await overflow.count()) > 0) {

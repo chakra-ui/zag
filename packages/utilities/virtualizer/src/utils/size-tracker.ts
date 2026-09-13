@@ -12,6 +12,8 @@ export class SizeTracker {
   private gap: number
   private estimateFn: (index: number) => number
   private initialized = false
+  /** Bumped on any change that shifts item offsets, so derived caches can detect staleness. */
+  version = 0
 
   constructor(count: number, gap: number, estimateFn: (index: number) => number) {
     this.count = count
@@ -64,6 +66,7 @@ export class SizeTracker {
     if (currentSize === size) return false
 
     this.measuredSizes.set(index, size)
+    this.version++
 
     if (this.initialized) {
       const delta = size - this.sizes[index]
@@ -104,6 +107,7 @@ export class SizeTracker {
     this.fenwick = new FenwickTree(count)
     this.sizes = new Float64Array(count)
     this.initialized = false
+    this.version++
   }
 
   /**
@@ -131,6 +135,7 @@ export class SizeTracker {
     this.fenwick = new FenwickTree(newCount)
     this.sizes = new Float64Array(newCount)
     this.initialized = false
+    this.version++
   }
 
   /**
@@ -138,6 +143,7 @@ export class SizeTracker {
    */
   clearMeasurements(): void {
     this.measuredSizes.clear()
+    this.version++
     // Don't reset fenwick tree - keep structure
   }
 

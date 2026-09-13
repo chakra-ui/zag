@@ -144,6 +144,9 @@ export class GridVirtualizer {
   }
 
   init(scrollElement: HTMLElement): void {
+    // destroy() releases the size trackers, so rebuild them when the instance is reused
+    const reused = this.isDestroyed
+    if (reused) this.resetMeasurements()
     this.isDestroyed = false
     this.scrollElement = scrollElement
     this.rtlScrollBehavior = null
@@ -154,6 +157,8 @@ export class GridVirtualizer {
 
     this.measure()
     this.applyInitialScrollOffset()
+    // measure() only notifies when a tracked row changed, so a reused instance needs its own
+    if (reused) this.notifyStore()
   }
 
   /** Class field — stable reference for `useSyncExternalStore(virtualizer.subscribe, …)`. */

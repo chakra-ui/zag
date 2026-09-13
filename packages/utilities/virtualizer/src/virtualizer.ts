@@ -72,6 +72,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   // Measurements — lazy invalidation via dirty floor instead of Map iteration
   protected measureCache: Map<number, ItemMeasurement> = new Map()
+  /** Size-tracker version the measureCache entries were computed from. */
+  protected measureCacheVersion = -1
   protected itemSizeCache: Map<number, number> = new Map()
   protected measureCacheDirtyFrom = Infinity
 
@@ -434,10 +436,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.cachedRangeEnd = endIndex
     this.cachedVisibleRangeStart = visibleRange.startIndex
     this.cachedVisibleRangeEnd = visibleRange.endIndex
-
-    // Reset dirty floor — all visible items have been recomputed from the Fenwick tree.
-    // Subsequent calls can use the measureCache until the next measurement invalidation.
-    this.measureCacheDirtyFrom = Infinity
 
     return newVirtualItems
   }
@@ -1217,8 +1215,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.options.onRangeChange?.({ range: this.range, reason: "measurement" })
     }
 
-    // Reset dirty floor AFTER notification — React subscribers re-render while
-    // measureCacheDirtyFrom must still be set so getMeasurement misses stale cache until then
     this.notifyStore()
   }
 

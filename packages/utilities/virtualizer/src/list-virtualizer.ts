@@ -84,11 +84,16 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected getMeasurement(index: number): ItemMeasurement {
-    // Use cache if entry is below the dirty floor (unaffected by recent measurements)
-    if (index < this.measureCacheDirtyFrom) {
-      const cached = this.measureCache.get(index)
-      if (cached) return cached
+    // The cache is derived from the size tracker, so it is only valid for the version it was
+    // built from. A dirty-floor index cannot express which entries a measurement invalidated.
+    const version = this.sizeTracker.version
+    if (version !== this.measureCacheVersion) {
+      this.measureCache.clear()
+      this.measureCacheVersion = version
     }
+
+    const cached = this.measureCache.get(index)
+    if (cached) return cached
 
     const { paddingStart } = this.options
     const size = this.getItemSize(index)
