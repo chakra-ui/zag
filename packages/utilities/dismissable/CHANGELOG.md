@@ -46,20 +46,32 @@
   **Breaking:** `trackDismissableElement` now requires `onLayerChange`. Apply the emitted snapshot's layer index,
   nesting metadata, and pointer blocking state to the registered element through your framework's render output.
 
+## 1.44.0
+
+### Patch Changes
+
+- [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix popups dismissing themselves right after opening when their
+  content is kept mounted while closed and re-parented on open. The layer captured the element that was about to be
+  detached, so interactions inside the live content counted as outside clicks.
+
+  `defer: true` now always waits for the framework to commit, instead of resolving synchronously when an element happens
+  to already be there.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/interact-outside@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
 
 - Updated dependencies []:
-  - @zag-js/utils@2.0.0-next.1
-  - @zag-js/dom-query@2.0.0-next.1
-  - @zag-js/interact-outside@2.0.0-next.1
-
-## 2.0.0-next.0
-
-- @zag-js/dom-query@1.43.3
-- @zag-js/interact-outside@1.43.3
-- @zag-js/utils@1.43.3
+  - @zag-js/dom-query@1.43.3
+  - @zag-js/interact-outside@1.43.3
+  - @zag-js/utils@1.43.3
 
 ## 1.43.2
 
@@ -109,9 +121,21 @@
 ### Patch Changes
 
 - Updated dependencies []:
-  - @zag-js/dom-query@2.0.0-next.0
-  - @zag-js/interact-outside@2.0.0-next.0
-  - @zag-js/utils@2.0.0-next.0
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+  - @zag-js/interact-outside@1.41.2
+
+## 1.41.1
+
+### Patch Changes
+
+- [`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix layer `pointer-events` being wiped by frameworks (Svelte, Vue)
+  whose spread updates rewrite the entire `style` attribute.
+- Updated dependencies []:
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/interact-outside@1.41.1
 
 ## 1.41.0
 

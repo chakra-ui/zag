@@ -122,8 +122,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
     },
 
     setOpen(nextOpen) {
-      if (nextOpen === open) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
 
     setHighlightValue(value) {

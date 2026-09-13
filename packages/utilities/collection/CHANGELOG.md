@@ -22,6 +22,13 @@
 
 ## 2.0.0-next.0
 
+## 1.44.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
@@ -62,7 +69,14 @@
 ### Patch Changes
 
 - Updated dependencies []:
-  - @zag-js/utils@2.0.0-next.0
+  - @zag-js/utils@1.41.2
+
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.41.1
 
 ## 1.41.0
 

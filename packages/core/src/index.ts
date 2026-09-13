@@ -1,5 +1,6 @@
 export * from "./merge-props"
 export * from "./memo"
+export * from "./replace-tracker"
 export * from "./create-machine"
 export * from "./state"
 export * from "./types"

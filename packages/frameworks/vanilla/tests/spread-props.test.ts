@@ -258,12 +258,90 @@ describe("spreadProps", () => {
     })
   })
 
-  describe("style attribute", () => {
-    test("sets style string", () => {
+  describe("style prop", () => {
+    test("applies style object as individual properties", () => {
+      const div = document.createElement("div")
+      spreadProps(div, { style: { color: "red", fontSize: "16px" } })
+
+      expect(div.style.color).toBe("red")
+      expect(div.style.fontSize).toBe("16px")
+    })
+
+    test("applies css custom properties", () => {
+      const div = document.createElement("div")
+      spreadProps(div, { style: { "--layer-index": 2, "--slide-spacing": "8px" } })
+
+      expect(div.style.getPropertyValue("--layer-index")).toBe("2")
+      expect(div.style.getPropertyValue("--slide-spacing")).toBe("8px")
+    })
+
+    test("skips null and undefined values", () => {
+      const div = document.createElement("div")
+      spreadProps(div, { style: { color: "red", fontSize: null, backgroundColor: undefined } })
+
+      expect(div.style.color).toBe("red")
+      expect(div.style.fontSize).toBe("")
+      expect(div.style.backgroundColor).toBe("")
+    })
+
+    test("removes properties that are no longer present", () => {
+      const div = document.createElement("div")
+      spreadProps(div, { style: { color: "red", fontSize: "16px" } })
+
+      spreadProps(div, { style: { color: "red" } })
+      expect(div.style.color).toBe("red")
+      expect(div.style.fontSize).toBe("")
+    })
+
+    test("removes all applied properties when style is dropped from attrs", () => {
+      const div = document.createElement("div")
+      spreadProps(div, { style: { color: "red" } })
+      expect(div.style.color).toBe("red")
+
+      spreadProps(div, {})
+      expect(div.style.color).toBe("")
+    })
+
+    test("does not clobber inline styles set outside of spreadProps", () => {
+      const div = document.createElement("div")
+
+      // e.g. popper or the layer stack writing to the positioner directly
+      div.style.setProperty("--layer-index", "1")
+
+      spreadProps(div, { style: { pointerEvents: "none" } })
+      expect(div.style.getPropertyValue("--layer-index")).toBe("1")
+
+      // a re-render where the machine's own style changes (e.g. a dialog opening)
+      spreadProps(div, { style: {} })
+      expect(div.style.getPropertyValue("--layer-index")).toBe("1")
+      expect(div.style.pointerEvents).toBe("")
+
+      spreadProps(div, {})
+      expect(div.style.getPropertyValue("--layer-index")).toBe("1")
+    })
+
+    test("scopes applied properties per machineId", () => {
+      const div = document.createElement("div")
+
+      spreadProps(div, { style: { color: "red" } }, "machine-a")
+      spreadProps(div, { style: { fontSize: "16px" } }, "machine-b")
+
+      expect(div.style.color).toBe("red")
+      expect(div.style.fontSize).toBe("16px")
+
+      spreadProps(div, {}, "machine-a")
+      expect(div.style.color).toBe("")
+      expect(div.style.fontSize).toBe("16px")
+    })
+
+    test("sets the whole attribute when style is a raw string", () => {
       const div = document.createElement("div")
       spreadProps(div, { style: "color:red;font-size:16px;" })
 
       expect(div.getAttribute("style")).toBe("color:red;font-size:16px;")
+
+      spreadProps(div, {})
+      expect(div.hasAttribute("style")).toBe(false)
     })
   })
 })

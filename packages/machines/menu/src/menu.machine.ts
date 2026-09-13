@@ -1,4 +1,4 @@
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -30,6 +30,30 @@ import {
 } from "./menu.utils"
 
 const { not, and, or } = createGuards<MenuSchema>()
+
+// `OPEN`/`CLOSE` come from `api.setOpen`. They are declared per state rather than at the root so each
+// state says whether it has anything to open or close, the same way `CONTROLLED.OPEN`/`CONTROLLED.CLOSE` are.
+const openTransitions: Transition<MenuSchema>[] = [
+  {
+    guard: "isOpenControlled",
+    actions: ["setTriggerValue", "invokeOnOpen"],
+  },
+  {
+    target: "open",
+    actions: ["setTriggerValue", "invokeOnOpen"],
+  },
+]
+
+const closeTransitions: Transition<MenuSchema>[] = [
+  {
+    guard: "isOpenControlled",
+    actions: ["invokeOnClose", "releaseParentRoutingLock"],
+  },
+  {
+    target: "closed",
+    actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
+  },
+]
 
 export const machine = createMachine<MenuSchema>({
   props({ props }) {
@@ -148,16 +172,6 @@ export const machine = createMachine<MenuSchema>({
     "CHILD.SET": {
       actions: ["setChildMenu"],
     },
-    OPEN: [
-      {
-        guard: "isOpenControlled",
-        actions: ["setTriggerValue", "invokeOnOpen"],
-      },
-      {
-        target: "open",
-        actions: ["setTriggerValue", "invokeOnOpen"],
-      },
-    ],
     OPEN_AUTOFOCUS: [
       {
         guard: "isOpenControlled",
@@ -167,16 +181,6 @@ export const machine = createMachine<MenuSchema>({
         // internal: true,
         target: "open",
         actions: ["setTriggerValue", "highlightFirstItem", "invokeOnOpen"],
-      },
-    ],
-    CLOSE: [
-      {
-        guard: "isOpenControlled",
-        actions: ["invokeOnClose", "releaseParentRoutingLock"],
-      },
-      {
-        target: "closed",
-        actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
       },
     ],
     "HIGHLIGHTED.RESTORE": {
@@ -200,6 +204,7 @@ export const machine = createMachine<MenuSchema>({
         "CONTROLLED.CLOSE": {
           target: "closed",
         },
+        OPEN: openTransitions,
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
           actions: ["setAnchorPoint", "setTriggerValue"],
@@ -239,6 +244,8 @@ export const machine = createMachine<MenuSchema>({
       tags: ["closed"],
       effects: ["waitForLongPress"],
       on: {
+        OPEN: openTransitions,
+        CLOSE: closeTransitions,
         "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
         "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
         CONTEXT_MENU_CANCEL: [
@@ -268,6 +275,8 @@ export const machine = createMachine<MenuSchema>({
       tags: ["closed"],
       effects: ["waitForOpenDelay"],
       on: {
+        OPEN: openTransitions,
+        CLOSE: closeTransitions,
         "CONTROLLED.OPEN": {
           target: "open",
         },
@@ -312,6 +321,8 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackPointerMove", "trackInteractOutside", "waitForCloseDelay"],
       on: {
+        OPEN: openTransitions,
+        CLOSE: closeTransitions,
         "CONTROLLED.OPEN": {
           target: "open",
         },
@@ -351,6 +362,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["closed"],
       entry: ["setInstant", "clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint", "dispatchMenubarClose"],
       on: {
+        OPEN: openTransitions,
         "CONTROLLED.OPEN": [
           {
             guard: or("isOpenAutoFocusEvent", "isArrowDownEvent"),
@@ -429,6 +441,7 @@ export const machine = createMachine<MenuSchema>({
       ],
       entry: ["setInstant", "focusMenu", "unlockParentOnOpen", "dispatchMenubarOpen"],
       on: {
+        CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
           {
             target: "closed",

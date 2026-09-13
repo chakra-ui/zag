@@ -136,9 +136,7 @@ export function connect<T extends PropTypes>(
     inline: !!prop("inline"),
     setOpen(nextOpen) {
       if (prop("inline")) return
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })

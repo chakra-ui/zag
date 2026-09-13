@@ -69,10 +69,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
   return {
     open: open,
     setOpen(nextOpen, reason = "script") {
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
       if (prop("disabled")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     triggerValue,
     setTriggerValue(value) {

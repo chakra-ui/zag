@@ -79,6 +79,31 @@
 
 ## 2.0.0-next.0
 
+## 1.44.0
+
+### Patch Changes
+
+- [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `api.setOpen` ignoring a second call made in the same tick.
+  `setOpen(true)` immediately followed by `setOpen(false)` left the component open instead of closed, and only worked if
+  you awaited a microtask between the two calls.
+
+  The last call in a tick now wins, and calling `setOpen` repeatedly with the same value still invokes `onOpenChange`
+  once. Drawer's `api.setSnapPoint` had the same problem and behaves the same way now.
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/dismissable@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/aria-hidden@1.44.0
+  - @zag-js/focus-trap@1.44.0
+  - @zag-js/remove-scroll@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
@@ -205,16 +230,45 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
-  - @zag-js/anatomy@2.0.0-next.0
-  - @zag-js/types@2.0.0-next.0
-  - @zag-js/dom-query@2.0.0-next.0
-  - @zag-js/core@2.0.0-next.0
-  - @zag-js/aria-hidden@2.0.0-next.0
-  - @zag-js/dismissable@2.0.0-next.0
-  - @zag-js/focus-trap@2.0.0-next.0
-  - @zag-js/remove-scroll@2.0.0-next.0
-  - @zag-js/utils@2.0.0-next.0
+- [`d5afd14`](https://github.com/chakra-ui/zag/commit/d5afd142e6ec43488109687df4dccb4bdad8fad4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix controlled drawer flickering when swiped or backdrop-closed
+  while the `open` setter is asynchronous (e.g. history API or a delayed state update).
+  - Keep nested-drawer layout metrics in machine state so swipe and backdrop-close transitions stay visually stable.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/aria-hidden@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dismissable@1.41.2
+  - @zag-js/dom-query@1.41.2
+  - @zag-js/focus-trap@1.41.2
+  - @zag-js/remove-scroll@1.41.2
+
+## 1.41.1
+
+### Patch Changes
+
+- [`f61de29`](https://github.com/chakra-ui/zag/commit/f61de29cdc4c04209e825fa24ebe1e1ac09513a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix controlled drawers snapping back to open before the close
+  animation when dismissed via swipe.
+  - Fix indent and indent-background snapping back into place after the close animation instead of transitioning in
+    sync.
+  - Fix `--drawer-swipe-progress` jumping to `1` at the start of a dismiss swipe; it now goes smoothly from `0` (at
+    rest) to `1` (fully dismissed).
+  - Fix drawer freezing mid-drag on release when its content mounts lazily which left snap points unmeasured.
+
+- Updated dependencies [[`b39524c`](https://github.com/chakra-ui/zag/commit/b39524c181ca435e304a02f146a121d0184baf1f)]:
+  - @zag-js/dismissable@1.41.1
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/aria-hidden@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/focus-trap@1.41.1
+  - @zag-js/remove-scroll@1.41.1
 
 ## 1.41.0
 

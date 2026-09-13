@@ -154,9 +154,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       dom.getInputEl(scope)?.focus()
     },
     setOpen(nextOpen, reason = "script") {
-      const open = state.hasTag("open")
-      if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
     getRootState,

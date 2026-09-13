@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs"
-import { join } from "path"
+import { basename, join } from "path"
 import { ModuleResolutionKind, Node, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
 import { getMachinePackages } from "./get-packages"
 import { pascalCase } from "scule"
@@ -70,10 +70,11 @@ async function main() {
 
   const result: Record<string, any> = {}
 
-  const machines = await getMachinePackages()
+  // sorted: package discovery order follows the filesystem, and it decides the key order of api.json
+  const machines = (await getMachinePackages()).sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0))
 
   for (const { dir } of machines) {
-    const baseDir = dir.split("/").pop()!
+    const baseDir = basename(dir)
     const glob = `${dir}/src/**/*.ts`
 
     const typesFilePath = `${dir}/src/${baseDir}.types.ts`

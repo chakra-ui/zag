@@ -1,6 +1,6 @@
 import type { Params } from "@zag-js/core"
 import { getEventTarget, getWindow } from "@zag-js/dom-query"
-import { isFileEqual, isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
+import { createFileTypeValidator, getFileKey, isValidFileSize, type FileError } from "@zag-js/file-utils"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
@@ -34,24 +34,34 @@ export function getEventFiles(
     rejectedFiles: currentRejectedFiles,
   }
 
+  const acceptedKeys = new Set(currentAcceptedFiles.map(getFileKey))
+
+  const isValidFileType = createFileTypeValidator(computed("acceptAttr"))
+  const minFileSize = prop("minFileSize")
+  const maxFileSize = prop("maxFileSize")
+  const validate = prop("validate")
+
   files.forEach((file) => {
-    const [accepted, acceptError] = isValidFileType(file, computed("acceptAttr"))
-    const [sizeMatch, sizeError] = isValidFileSize(file, prop("minFileSize"), prop("maxFileSize"))
+    const [accepted, acceptError] = isValidFileType(file)
+    const [sizeMatch, sizeError] = isValidFileSize(file, minFileSize, maxFileSize)
 
-    const isDuplicate =
-      currentAcceptedFiles.some((f) => isFileEqual(f, file)) || acceptedFiles.some((f) => isFileEqual(f, file))
+    const fileKey = getFileKey(file)
+    const isDuplicate = acceptedKeys.has(fileKey)
 
-    const validateErrors = prop("validate")?.(file, validateParams)
+    const validateErrors = validate?.(file, validateParams)
 
     const valid = validateErrors ? validateErrors.length === 0 : true
 
     if (accepted && sizeMatch && valid && !isDuplicate) {
       acceptedFiles.push(file)
+      acceptedKeys.add(fileKey)
     } else {
-      const errors = [acceptError, sizeError]
+      const errors: FileError[] = []
+      if (acceptError) errors.push(acceptError)
+      if (sizeError) errors.push(sizeError)
       if (isDuplicate) errors.push("FILE_EXISTS")
       if (!valid) errors.push(...(validateErrors ?? []))
-      rejectedFiles.push({ file, errors: errors.filter(Boolean) as FileError[] })
+      rejectedFiles.push({ file, errors })
     }
   })
 

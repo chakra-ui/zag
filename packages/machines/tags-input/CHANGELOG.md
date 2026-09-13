@@ -70,6 +70,22 @@
   - **Less surprise** — double-click to edit is a power-user feature that should be opted into
   - **Matches peers** — aligns with how other tag input libraries behave out of the box
 
+## 1.44.0
+
+### Patch Changes
+
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/auto-resize@1.44.0
+  - @zag-js/interact-outside@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+  - @zag-js/live-region@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
@@ -173,15 +189,29 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
-  - @zag-js/anatomy@2.0.0-next.0
-  - @zag-js/types@2.0.0-next.0
-  - @zag-js/dom-query@2.0.0-next.0
-  - @zag-js/core@2.0.0-next.0
-  - @zag-js/auto-resize@2.0.0-next.0
-  - @zag-js/interact-outside@2.0.0-next.0
-  - @zag-js/utils@2.0.0-next.0
-  - @zag-js/live-region@2.0.0-next.0
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/auto-resize@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+  - @zag-js/interact-outside@1.41.2
+  - @zag-js/live-region@1.41.2
+
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/auto-resize@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
+  - @zag-js/interact-outside@1.41.1
+  - @zag-js/live-region@1.41.1
 
 ## 1.41.0
 

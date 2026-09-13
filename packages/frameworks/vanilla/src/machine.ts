@@ -21,6 +21,7 @@ import type {
 import {
   isWatchEffect,
   watchEffect,
+  createReplaceTracker,
   createScope,
   findTransition,
   getExitEnterStates,
@@ -49,6 +50,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private effects = new Map<number, EffectRecord>()
   private effectId = 0
+  private replaceTracker = createReplaceTracker()
   private transition: Transition<T> | null = null
 
   private cleanups: VoidFunction[] = []
@@ -206,8 +208,12 @@ export class VanillaMachine<T extends MachineSchema> {
   send = (event: T["event"]) => {
     if (this.status !== MachineStatus.Started) return
 
+    const key = event?.replaces
+    const token = key ? this.replaceTracker.claim(key) : undefined
+
     queueMicrotask(() => {
       if (!event) return
+      if (key && token && this.replaceTracker.isReplaced(key, token)) return
 
       this.previousEvent = this.event
       this.event = event

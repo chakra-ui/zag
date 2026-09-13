@@ -64,6 +64,23 @@
   - **SSR-friendly** — count is available before hydration
   - **Consistent** — aligns with how carousel, rating, and pagination handle counts
 
+## 1.44.0
+
+### Patch Changes
+
+- [`efee7ba`](https://github.com/chakra-ui/zag/commit/efee7ba341d4b194f0598cc0153ef45fb847f293) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix cut (`Ctrl/Meta+X`) being blocked on non-React frameworks.
+  Deletion `beforeinput` events are no longer treated as invalid typed values, so the input handler can splice and shift
+  remaining digits.
+- Updated dependencies [[`2668edc`](https://github.com/chakra-ui/zag/commit/2668edc73d4179656b0f56e3cb91c5d009be2ee4),
+  [`de9aeaa`](https://github.com/chakra-ui/zag/commit/de9aeaaf89ab8a6cc8e693fb068870a6f3d55205),
+  [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/dom-query@1.44.0
+  - @zag-js/core@1.44.0
+  - @zag-js/anatomy@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes
@@ -146,12 +163,27 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`5820feb`](https://github.com/chakra-ui/zag/commit/5820febc81934f3d8d17e01f085aafe6dd81fc73)]:
-  - @zag-js/anatomy@2.0.0-next.0
-  - @zag-js/types@2.0.0-next.0
-  - @zag-js/dom-query@2.0.0-next.0
-  - @zag-js/core@2.0.0-next.0
-  - @zag-js/utils@2.0.0-next.0
+- [`b4d75ed`](https://github.com/chakra-ui/zag/commit/b4d75ed219f68d53ab288bf734fad3f2ea0eec71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-filled` was incorrectly set on every input
+  on first render.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.2
+  - @zag-js/core@1.41.2
+  - @zag-js/types@1.41.2
+  - @zag-js/utils@1.41.2
+  - @zag-js/dom-query@1.41.2
+
+## 1.41.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.41.1
+  - @zag-js/core@1.41.1
+  - @zag-js/types@1.41.1
+  - @zag-js/utils@1.41.1
+  - @zag-js/dom-query@1.41.1
 
 ## 1.41.0
 

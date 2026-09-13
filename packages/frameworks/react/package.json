@@ -40,7 +40,8 @@
     "clean-package": "2.2.0",
     "jsdom": "^30.0.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "vitest": "^4.1.2"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

@@ -167,7 +167,7 @@ export const getVisibleRangeText = memo(
     const { startValue, endValue, locale, timeZone, selectionMode } = opts
 
     if (view === "year") {
-      const years = getDecadeRange(startValue.year, { strict: true })
+      const years = getDecadeRange(startValue.year)
       const start = years.at(0)!.toString()
       const end = years.at(-1)!.toString()
       return { start, end, formatted: `${start} - ${end}` }
