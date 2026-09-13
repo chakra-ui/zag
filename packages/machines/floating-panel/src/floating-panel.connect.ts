@@ -232,8 +232,6 @@ export function connect<T extends PropTypes>(
     getStageTriggerProps(props) {
       const stageTriggerState = getStageTriggerState(props)
 
-      const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-
       const ariaLabel = match(props.stage, {
         minimized: () => translations.minimize,
         maximized: () => translations.maximize,
