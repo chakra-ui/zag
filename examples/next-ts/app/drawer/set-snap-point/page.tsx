@@ -1,8 +1,10 @@
+"use client"
+
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
-import { Presence } from "../../components/presence"
-import styles from "../../../shared/styles/drawer.module.css"
+import { Presence } from "@/components/presence"
+import styles from "@styles/drawer.module.css"
 
 export default function Page() {
   const [log, setLog] = useState<(string | number | null)[]>([])

@@ -6,7 +6,7 @@ const snapPointLog = "[data-testid=snap-point-log]"
 test.describe("drawer / setSnapPoint", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/drawer/set-snap-point")
-    await page.click('[data-scope="drawer"][data-part="trigger"]')
+    await page.click("[data-drawer-trigger]")
     await expect(page.locator("[data-testid=open-state]")).toHaveText("true")
     await page.click("[data-testid=reset]")
   })

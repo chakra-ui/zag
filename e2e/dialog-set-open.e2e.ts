@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-const content = '[data-scope="dialog"][data-part="content"]'
+const content = "[data-dialog-content]"
 const openState = "[data-testid=open-state]"
 const openChangeLog = "[data-testid=open-change-log]"
 

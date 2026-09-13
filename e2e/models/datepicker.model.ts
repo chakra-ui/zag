@@ -275,7 +275,7 @@ export class DatePickerModel extends Model {
   private getVisibleCellValues(view: "day" | "month" | "year") {
     return this.page.evaluate(
       (v) =>
-        [...document.querySelectorAll(`[data-part="table-cell-trigger"][data-view="${v}"]`)]
+        [...document.querySelectorAll(`[data-date-picker-table-cell-trigger][data-view="${v}"]`)]
           .filter((el) => (el as HTMLElement).offsetParent !== null)
           .map((el) => Number(el.getAttribute("data-value"))),
       view,
@@ -286,7 +286,7 @@ export class DatePickerModel extends Model {
   private getCellValuesWithAttr(view: "day" | "month" | "year", attr: string) {
     return this.page.evaluate(
       ({ v, name }) =>
-        [...document.querySelectorAll(`[data-part="table-cell-trigger"][data-view="${v}"]`)]
+        [...document.querySelectorAll(`[data-date-picker-table-cell-trigger][data-view="${v}"]`)]
           .filter((el) => el.hasAttribute(name))
           .map((el) => Number(el.getAttribute("data-value"))),
       { v: view, name: attr },

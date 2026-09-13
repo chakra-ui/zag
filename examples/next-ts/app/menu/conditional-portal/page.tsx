@@ -1,3 +1,5 @@
+"use client"
+
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useState, type ReactNode } from "react"
