@@ -109,6 +109,13 @@ export const layerStack = {
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
+        const { zIndex } = getComputedStyle(target)
+        if (zIndex && zIndex !== "auto") {
+          // Freeze the resolved stacking order so it survives clearing the layer vars while the
+          // node stays mounted for its exit animation (#3207). `syncLayers` drops it if the same
+          // node is reactivated, handing the stacking order back to the layer-var mechanism.
+          target.style.setProperty("z-index", zIndex)
+        }
         clearLayerStyleMirror(target)
       }
     })
@@ -142,6 +149,7 @@ export const layerStack = {
       layer.styleTargets?.forEach((getTarget) => {
         const target = getTarget()
         if (!target || target === layer.node) return
+        target.style.removeProperty("z-index")
         applyLayerStackMetadata(layer, index, target)
         const { zIndex } = getComputedStyle(layer.node)
         target.style.setProperty("--z-index", zIndex)
