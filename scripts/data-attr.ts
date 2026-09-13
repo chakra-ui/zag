@@ -133,8 +133,7 @@ function getTenaryValues(literal: StringLiteral) {
   return tenaryValues
 }
 
-// `"data-state": valueState` carries its values in the declared type rather than inline,
-// so fall back to the string literals the type resolves to.
+// a non-ternary `data-state` carries its values in the declared type, not inline
 function getTypeValues(literal: StringLiteral) {
   const initializer = literal.getParentIfKind(SyntaxKind.PropertyAssignment)?.getInitializer()
   if (!initializer) return []
