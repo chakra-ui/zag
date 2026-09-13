@@ -98,7 +98,7 @@ async function main() {
 
   const outPath = join(process.cwd(), "packages", "docs", "data", "api.json")
 
-  writeFileSync(outPath, JSON.stringify(result, null, 2))
+  writeFileSync(outPath, JSON.stringify(result, null, 2) + "\n")
 }
 
 main()

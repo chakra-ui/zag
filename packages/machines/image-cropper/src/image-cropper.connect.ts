@@ -1,6 +1,6 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { isBottomHandle, isLeftHandle, isRightHandle, isTopHandle, isVisibleSize, roundRect } from "@zag-js/rect-utils"
-import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault, toPx } from "@zag-js/utils"
 import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"

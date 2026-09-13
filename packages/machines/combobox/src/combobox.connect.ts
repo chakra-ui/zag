@@ -38,7 +38,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
   normalize: NormalizeProps<T>,
 ): ComboboxApi<T, V> {
-  const { context, prop, state, send, scope, computed, event } = service
+  const { context, prop, state, send, scope, computed } = service
   const layer = context.get("layer")
 
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))

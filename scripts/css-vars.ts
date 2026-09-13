@@ -588,7 +588,7 @@ async function main() {
   const allVariables = await extractAllCSSVariables()
 
   const outputPath = resolve("packages/docs/data/css-vars.json")
-  writeFileSync(outputPath, JSON.stringify(allVariables, null, 2))
+  writeFileSync(outputPath, JSON.stringify(allVariables, null, 2) + "\n")
 
   const totalComponents = Object.keys(allVariables).length
   const totalVariables = Object.values(allVariables).reduce(

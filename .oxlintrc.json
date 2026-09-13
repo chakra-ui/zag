@@ -65,7 +65,8 @@
         "react/no-unescaped-entities": "off",
         "react/exhaustive-deps": "off",
         "nextjs/no-img-element": "off",
-        "jsx-a11y/label-has-associated-control": "off"
+        "jsx-a11y/label-has-associated-control": "off",
+        "jsx-a11y/no-noninteractive-tabindex": "warn"
       }
     },
     {

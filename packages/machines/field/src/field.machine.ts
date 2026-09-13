@@ -250,7 +250,7 @@ interface CommitOptions {
 }
 
 function commitValidation(params: FieldParams, options: CommitOptions = {}) {
-  const { prop, context, refs, scope, send } = params
+  const { prop, context, refs, send } = params
 
   const controlEl = getTrackedControlEl(params)
   if (!controlEl) return
@@ -296,7 +296,7 @@ interface ApplyOptions {
 }
 
 function applyValidation(params: FieldParams, options: ApplyOptions) {
-  const { context, prop, scope } = params
+  const { context, prop } = params
   const { errors, validity } = resolveValidation(options)
 
   // mirror custom errors so native `:invalid` and submit gating agree
@@ -321,7 +321,7 @@ function applyValidation(params: FieldParams, options: ApplyOptions) {
  * while the error stays hidden until the mode's commit point.
  */
 function silentValidate(params: FieldParams, value: string) {
-  const { prop, refs, scope } = params
+  const { prop, refs } = params
   const validate = prop("validate")
   if (!validate) return
 
