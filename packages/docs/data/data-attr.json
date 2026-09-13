@@ -68,7 +68,7 @@
     "Marker": {
       "data-angle-slider-marker": "<uid>",
       "data-value": "The value of the item",
-      "data-state": "",
+      "data-state": "\"under-value\" | \"over-value\" | \"at-value\"",
       "data-disabled": "Present when disabled"
     }
   },
@@ -167,10 +167,17 @@
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid"
     },
+    "Positioner": {
+      "data-cascade-select-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-cascade-select-content": "<uid>",
       "data-activedescendant": "The id the active descendant of the content",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-nested": "Present when the content is nested within another {{widget}}",
+      "data-has-nested": "Present when the content has nested {{widget}}s"
     },
     "List": {
       "data-cascade-select-list": "<uid>",
@@ -344,6 +351,11 @@
       "data-state": "\"open\" | \"closed\"",
       "data-focus": "Present when focused"
     },
+    "Positioner": {
+      "data-color-picker-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-color-picker-content": "<uid>",
       "data-placement": "The placement of the content",
@@ -448,6 +460,11 @@
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid"
+    },
+    "Positioner": {
+      "data-combobox-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
     "Input": {
       "data-combobox-input": "<uid>",
@@ -707,6 +724,11 @@
       "data-state": "\"open\" | \"closed\"",
       "data-placeholder-shown": "Present when placeholder is shown",
       "data-invalid": "Present when invalid"
+    },
+    "Positioner": {
+      "data-date-picker-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
     }
   },
   "dialog": {
@@ -718,7 +740,14 @@
     },
     "Backdrop": {
       "data-dialog-backdrop": "<uid>",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-nested": "Present when the backdrop is nested within another {{widget}}",
+      "data-has-nested": "Present when the backdrop has nested {{widget}}s"
+    },
+    "Positioner": {
+      "data-dialog-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
     "Content": {
       "data-dialog-content": "<uid>",
@@ -767,7 +796,9 @@
     "Positioner": {
       "data-drawer-positioner": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-swipe-direction": ""
+      "data-swipe-direction": "",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
     "Content": {
       "data-drawer-content": "<uid>",
@@ -777,7 +808,9 @@
       "data-swiping": "",
       "data-dragging": "Present when in the dragging state",
       "data-nested-drawer-open": "",
-      "data-nested-drawer-swiping": ""
+      "data-nested-drawer-swiping": "",
+      "data-nested": "Present when the content is nested within another {{widget}}",
+      "data-has-nested": "Present when the content has nested {{widget}}s"
     },
     "Trigger": {
       "data-drawer-trigger": "<uid>",
@@ -788,7 +821,9 @@
     "Backdrop": {
       "data-drawer-backdrop": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-swiping": ""
+      "data-swiping": "",
+      "data-nested": "Present when the backdrop is nested within another {{widget}}",
+      "data-has-nested": "Present when the backdrop has nested {{widget}}s"
     },
     "SwipeArea": {
       "data-drawer-swipe-area": "<uid>",
@@ -1043,6 +1078,11 @@
       "data-current": "Present when current",
       "data-state": "\"open\" | \"closed\""
     },
+    "Positioner": {
+      "data-hover-card-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-hover-card-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
@@ -1099,7 +1139,7 @@
     "Indicator": {
       "data-infinite-scroll-indicator": "<uid>",
       "data-type": "The type of the item",
-      "data-state": ""
+      "data-state": "\"idle\" | \"loading\" | \"complete\""
     }
   },
   "listbox": {
@@ -1207,9 +1247,16 @@
       "data-menu-indicator": "<uid>",
       "data-state": "\"open\" | \"closed\""
     },
+    "Positioner": {
+      "data-menu-positioner": "<uid>",
+      "data-instant": "",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-menu-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
+      "data-instant": "",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
       "data-nested": "menu",
@@ -1321,7 +1368,9 @@
       "data-navigation-menu-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the content",
-      "data-value": "The value of the item"
+      "data-value": "The value of the item",
+      "data-nested": "Present when the content is nested within another {{widget}}",
+      "data-has-nested": "Present when the content has nested {{widget}}s"
     },
     "ViewportPositioner": {
       "data-navigation-menu-viewport-positioner": "<uid>",
@@ -1332,7 +1381,9 @@
       "data-navigation-menu-viewport": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the viewport",
-      "data-align": ""
+      "data-align": "",
+      "data-nested": "Present when the viewport is nested within another {{widget}}",
+      "data-has-nested": "Present when the viewport has nested {{widget}}s"
     },
     "ItemIndicator": {
       "data-navigation-menu-item-indicator": "<uid>",
@@ -1524,6 +1575,11 @@
       "data-popover-indicator": "<uid>",
       "data-state": "\"open\" | \"closed\""
     },
+    "Positioner": {
+      "data-popover-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-popover-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
@@ -1540,7 +1596,7 @@
       "data-progress-root": "<uid>",
       "data-max": "",
       "data-value": "The value of the item",
-      "data-state": "",
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\"",
       "data-orientation": "The orientation of the progress"
     },
     "Label": {
@@ -1551,18 +1607,18 @@
       "data-progress-track": "<uid>",
       "data-max": "",
       "data-orientation": "The orientation of the track",
-      "data-state": ""
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\""
     },
     "Range": {
       "data-progress-range": "<uid>",
       "data-orientation": "The orientation of the range",
-      "data-state": ""
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\""
     },
     "Circle": {
       "data-progress-circle": "<uid>",
       "data-max": "",
       "data-orientation": "The orientation of the circle",
-      "data-state": ""
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\""
     },
     "CircleTrack": {
       "data-progress-circle-track": "<uid>",
@@ -1570,11 +1626,11 @@
     },
     "CircleRange": {
       "data-progress-circle-range": "<uid>",
-      "data-state": ""
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\""
     },
     "View": {
       "data-progress-view": "<uid>",
-      "data-state": ""
+      "data-state": "\"indeterminate\" | \"loading\" | \"complete\""
     }
   },
   "qr-code": {},
@@ -1863,6 +1919,11 @@
       "data-placement": "The placement of the scrollarrow",
       "data-state": "\"visible\" | \"hidden\""
     },
+    "Positioner": {
+      "data-select-positioner": "<uid>",
+      "data-nested": "Present when the positioner is nested within another {{widget}}",
+      "data-has-nested": "Present when the positioner has nested {{widget}}s"
+    },
     "Content": {
       "data-select-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
@@ -1962,7 +2023,7 @@
       "data-orientation": "The orientation of the marker",
       "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
-      "data-state": ""
+      "data-state": "\"under-value\" | \"over-value\" | \"at-value\""
     },
     "DraggingIndicator": {
       "data-slider-dragging-indicator": "<uid>",
@@ -2225,18 +2286,6 @@
       "data-active": "Present when active or pressed"
     }
   },
-  "toggle": {
-    "Root": {
-      "data-toggle-root": "<uid>",
-      "data-pressed": "Present when pressed",
-      "data-disabled": "Present when disabled"
-    },
-    "Indicator": {
-      "data-toggle-indicator": "<uid>",
-      "data-disabled": "Present when disabled",
-      "data-pressed": "Present when pressed"
-    }
-  },
   "toggle-group": {
     "Root": {
       "data-toggle-group-root": "<uid>",
@@ -2249,6 +2298,18 @@
       "data-pressed": "Present when pressed",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the item"
+    }
+  },
+  "toggle": {
+    "Root": {
+      "data-toggle-root": "<uid>",
+      "data-pressed": "Present when pressed",
+      "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-toggle-indicator": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-pressed": "Present when pressed"
     }
   },
   "toolbar": {

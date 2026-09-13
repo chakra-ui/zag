@@ -133,6 +133,26 @@ function getTenaryValues(literal: StringLiteral) {
   return tenaryValues
 }
 
+// `"data-state": valueState` carries its values in the declared type rather than inline,
+// so fall back to the string literals the type resolves to.
+function getTypeValues(literal: StringLiteral) {
+  const initializer = literal.getParentIfKind(SyntaxKind.PropertyAssignment)?.getInitializer()
+  if (!initializer) return []
+
+  const type = initializer.getType()
+  const members = type.isUnion() ? type.getUnionTypes() : [type]
+
+  const values: string[] = []
+  for (const member of members) {
+    // undefined is an absent attribute, not a state
+    if (member.isUndefined() || member.isNull()) continue
+    if (!member.isStringLiteral()) return []
+    values.push(member.getLiteralValue() as string)
+  }
+
+  return values
+}
+
 /* -----------------------------------------------------------------------------
  * Reference resolution
  *
@@ -209,8 +229,9 @@ function extractDataAttrs(node: Node, opts: ExtractOptions) {
     let desc = docsMap[name as keyof typeof docsMap]?.replace("{{widget}}", rep.toLowerCase()) ?? ""
 
     if (name === "data-state") {
-      const tenaryValues = getTenaryValues(literal)
-      desc = `${tenaryValues.map((x) => JSON.stringify(x)).join(" | ")}`
+      const values = getTenaryValues(literal)
+      if (!values.length) values.push(...getTypeValues(literal))
+      desc = `${values.map((x) => JSON.stringify(x)).join(" | ")}`
     }
 
     visit({ name, desc })
@@ -231,7 +252,7 @@ type DataAttrMap = Record<string, string>
 async function main() {
   const project = new Project({
     compilerOptions: {
-      moduleResolution: ModuleResolutionKind.NodeNext,
+      moduleResolution: ModuleResolutionKind.Bundler,
     },
   })
 
@@ -305,7 +326,7 @@ async function main() {
   })
 
   const outPath = join(process.cwd(), "packages", "docs", "data", "data-attr.json")
-  writeFileSync(outPath, JSON.stringify(json, null, 2))
+  writeFileSync(outPath, JSON.stringify(json, null, 2) + "\n")
 }
 
 main()
