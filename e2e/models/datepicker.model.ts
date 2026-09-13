@@ -264,11 +264,11 @@ export class DatePickerModel extends Model {
   }
 
   private cellsForView(view: "day" | "month" | "year") {
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=${view}]`)
+    return this.page.locator(`${part("date-picker", "table-cell-trigger")}[data-view=${view}]`)
   }
 
   private getCellByValue(view: "day" | "month" | "year", value: number) {
-    return this.page.locator(`${part("table-cell-trigger")}[data-view=${view}][data-value="${value}"]`)
+    return this.page.locator(`${part("date-picker", "table-cell-trigger")}[data-view=${view}][data-value="${value}"]`)
   }
 
   /** The values rendered for a view, in DOM order. Hidden views are excluded. */
@@ -295,7 +295,7 @@ export class DatePickerModel extends Model {
 
   /** The next trigger carries no `data-view`, only an id suffix. */
   private clickNextFor(view: "month" | "year") {
-    return this.page.locator(`${part("next-trigger")}[id$="next:${view}"]`).click()
+    return this.page.locator(`${part("date-picker", "next-trigger")}[id$="next:${view}"]`).click()
   }
 
   // ---- year view

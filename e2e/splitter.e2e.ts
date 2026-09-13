@@ -50,7 +50,7 @@ test.describe("splitter", () => {
   })
 
   test("should keep pointer focus without showing keyboard focus styles", async ({ page }) => {
-    const trigger = page.locator(part("resize-trigger")).first()
+    const trigger = page.locator(part("splitter", "resize-trigger")).first()
     const box = await trigger.boundingBox()
     if (!box) throw new Error("Resize trigger is not visible")
 
