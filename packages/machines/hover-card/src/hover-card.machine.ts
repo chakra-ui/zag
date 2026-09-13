@@ -112,6 +112,10 @@ export const machine = createMachine<HoverCardSchema>({
         },
         POINTER_LEAVE: [
           {
+            guard: "isTriggerFocused",
+            actions: ["clearIsPointer"],
+          },
+          {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
             actions: ["invokeOnClose", "toggleVisibility"],
@@ -161,9 +165,15 @@ export const machine = createMachine<HoverCardSchema>({
         POINTER_ENTER: {
           actions: ["setIsPointer"],
         },
-        POINTER_LEAVE: {
-          target: "closing",
-        },
+        POINTER_LEAVE: [
+          {
+            guard: "isTriggerFocused",
+            actions: ["clearIsPointer"],
+          },
+          {
+            target: "closing",
+          },
+        ],
         CLOSE: [
           {
             guard: "isOpenControlled",
@@ -231,6 +241,8 @@ export const machine = createMachine<HoverCardSchema>({
   implementations: {
     guards: {
       isPointer: ({ context }) => !!context.get("isPointer"),
+      isTriggerFocused: ({ context, scope }) =>
+        scope.isActiveElement(dom.getActiveTriggerEl(scope, context.get("triggerValue"))),
       isOpenControlled: ({ prop }) => prop("open") != null,
     },
 
