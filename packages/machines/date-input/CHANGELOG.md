@@ -1,5 +1,18 @@
 # @zag-js/date-input
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- Updated dependencies [[`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932)]:
+  - @zag-js/live-region@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/date-utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes
