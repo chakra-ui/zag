@@ -521,7 +521,8 @@ export const machine = createMachine<TourSchema>({
         })
       },
 
-      trackPlacement({ context, computed, scope, prop }) {
+      trackPlacement(params) {
+        const { context, computed, scope, prop } = params
         const step = computed("step")
         if (step == null) return
 
@@ -538,7 +539,23 @@ export const machine = createMachine<TourSchema>({
         }
 
         const positionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(context.get("resolvedTarget"), positionerEl, {
+
+        // Resolve the target on every update instead of once, when the step opened: the element a
+        // step points at can be replaced while the tour is running — a sticky header moving its
+        // buttons into a portal, a responsive branch swapping one node for another — and the
+        // machine would stay anchored to a node that is no longer in the document. A detached node
+        // measures zero, so the card, the spotlight and the backdrop's cut-out all collapse into
+        // the top-left corner of the page.
+        const anchorEl = () => {
+          const el = step.target?.()
+          if (el && el !== context.get("resolvedTarget")) {
+            context.set("resolvedTarget", el)
+            syncTargetAttrsFromContext(params)
+          }
+          return context.get("resolvedTarget")
+        }
+
+        return getPlacement(anchorEl, positionerEl, {
           defer: true,
           placement: step.placement ?? "bottom",
           strategy: "absolute",
