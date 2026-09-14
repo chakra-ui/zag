@@ -145,6 +145,7 @@ export default function Page() {
   const popoverService = useMachine(popover.machine, {
     id: `${id}:popover`,
     positioning: { placement: "bottom" },
+    modal: true,
   })
   const hourService = useMachine(wheelPicker.machine, {
     id: `${id}:hour`,
