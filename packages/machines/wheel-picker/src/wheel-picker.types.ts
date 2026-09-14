@@ -87,6 +87,7 @@ export interface WheelPickerSchema<T extends CollectionItem = CollectionItem> {
   context: {
     fieldsetDisabled: boolean
     focused: boolean
+    focusVisible: boolean
     index: number
     value: string | null
   }

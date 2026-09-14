@@ -9,6 +9,7 @@ import {
   trackFormControl,
   trackPointerMove,
 } from "@zag-js/dom-query"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { callAll } from "@zag-js/utils"
 import { collection } from "./wheel-picker.collection"
 import * as dom from "./wheel-picker.dom"
@@ -61,6 +62,7 @@ export const machine = createMachine<WheelPickerSchema>({
     return {
       fieldsetDisabled: bindable(() => ({ defaultValue: false })),
       focused: bindable(() => ({ defaultValue: false })),
+      focusVisible: bindable(() => ({ defaultValue: false })),
       index: bindable(() => ({
         defaultValue: Math.max(0, prop("collection").indexOf(value ?? null)),
       })),
@@ -98,7 +100,7 @@ export const machine = createMachine<WheelPickerSchema>({
 
   entry: ["syncValueFromCollection", "syncScrollPosition", "syncSelectElement"],
 
-  effects: ["trackFormControlState", "trackWheelEvent", "trackTouchEvents"],
+  effects: ["trackFormControlState", "trackFocusVisible", "trackWheelEvent", "trackTouchEvents"],
 
   watch({ track, action, context, prop }) {
     track([() => context.get("value")], () => {
@@ -120,10 +122,10 @@ export const machine = createMachine<WheelPickerSchema>({
 
   on: {
     "CONTROL.FOCUS": {
-      actions: ["setFocused"],
+      actions: ["setFocused", "setFocusVisible"],
     },
     "CONTROL.BLUR": {
-      actions: ["clearFocused", "clearTypeahead"],
+      actions: ["clearFocused", "clearFocusVisible", "clearTypeahead"],
     },
     "CONTROL.POINTER_DOWN": {
       guard: "canInteract",
@@ -218,6 +220,9 @@ export const machine = createMachine<WheelPickerSchema>({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackPointerMove({ scope, send }) {
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point, event }) {
@@ -345,6 +350,12 @@ export const machine = createMachine<WheelPickerSchema>({
       },
       clearFocused({ context }) {
         context.set("focused", false)
+      },
+      setFocusVisible({ context, event }) {
+        context.set("focusVisible", event.focusVisible)
+      },
+      clearFocusVisible({ context }) {
+        context.set("focusVisible", false)
       },
       clearTypeahead({ refs }) {
         const typeahead = refs.get("typeahead")

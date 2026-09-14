@@ -8,6 +8,7 @@ import {
   isLeftClick,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./wheel-picker.anatomy"
 import * as dom from "./wheel-picker.dom"
@@ -118,6 +119,7 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
         "data-disabled": dataAttr(disabled),
         "data-dragging": dataAttr(state.matches("dragging")),
         "data-focus": dataAttr(context.get("focused")),
+        "data-focus-visible": dataAttr(context.get("focusVisible")),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         "data-scrolling": dataAttr(state.matches("scrolling")),
@@ -126,10 +128,10 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
           touchAction: "none",
         },
         onFocus() {
-          send({ type: "CONTROL.FOCUS" })
+          send({ type: "CONTROL.FOCUS", focusVisible: isFocusVisible() })
         },
         onBlur() {
-          send({ type: "CONTROL.BLUR" })
+          send({ type: "CONTROL.BLUR", focusVisible: false })
         },
         onPointerDown(event) {
           if (!interactive || event.pointerType === "touch" || !isLeftClick(event)) return

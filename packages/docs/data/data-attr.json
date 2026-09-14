@@ -2358,6 +2358,7 @@
       "data-disabled": "Present when disabled",
       "data-dragging": "Present when in the dragging state",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-invalid": "Present when invalid",
       "data-readonly": "Present when read-only",
       "data-scrolling": "Present when scrolling"
