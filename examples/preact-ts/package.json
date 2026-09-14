@@ -86,6 +86,7 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",

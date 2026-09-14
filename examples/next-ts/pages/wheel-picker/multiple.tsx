@@ -1,8 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as wheelPicker from "@zag-js/wheel-picker"
 import { useId } from "react"
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
 
 interface WheelPickerOption {
   label: string
@@ -105,10 +103,6 @@ export default function Page() {
           Selected time: {hourApi.valueAsString}:{minuteApi.valueAsString} {meridiemApi.valueAsString}
         </output>
       </main>
-
-      <Toolbar>
-        <StateVisualizer state={hourService} />
-      </Toolbar>
     </>
   )
 }

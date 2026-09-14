@@ -32,6 +32,7 @@
     "@zag-js/color-utils": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/date-input": "workspace:*",
     "@zag-js/date-picker": "workspace:*",
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
@@ -88,6 +89,7 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
@@ -95,7 +97,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-solid": "1.7.0",
-    "solid-js": "1.9.13",
+    "solid-js": "1.9.14",
     "vinxi": "0.5.11"
   },
   "engines": {
