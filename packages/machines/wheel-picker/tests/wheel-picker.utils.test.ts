@@ -98,8 +98,7 @@ describe("wheel picker utilities", () => {
       { time: 50, y: 70 },
     ]
 
-    expect(getDragVelocity(samples, 60, 30)).toBe(20)
-    expect(getDragVelocity(samples, 150, 30)).toBe(0)
-    expect(getDragVelocity([{ time: 0, y: 100 }], 10, 30)).toBe(0)
+    expect(getDragVelocity(samples, 30)).toBe(20)
+    expect(getDragVelocity([{ time: 0, y: 100 }], 30)).toBe(0)
   })
 })

@@ -25,6 +25,20 @@ test.describe("wheel-picker", () => {
     await expect(output).toHaveText("Selected: Svelte")
   })
 
+  test("captures wheel scrolling while hovered without requiring focus", async ({ page }) => {
+    const control = page.locator(part("control"))
+    await page.evaluate(() => (document.body.style.minHeight = "200vh"))
+
+    await control.hover()
+    await expect(control).not.toBeFocused()
+
+    const scrollY = await page.evaluate(() => window.scrollY)
+    await page.mouse.wheel(0, 100)
+
+    await expect(control).toHaveAttribute("aria-valuetext", "Vue")
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollY)
+  })
+
   test("supports home, end, and typeahead", async ({ page }) => {
     const control = page.locator(part("control"))
     const output = page.getByTestId("value")
@@ -61,6 +75,43 @@ test.describe("wheel-picker", () => {
 
     await expect
       .poll(() => itemGroup.evaluate((element) => getComputedStyle(element).transform))
+      .not.toBe(transformAtRelease)
+  })
+
+  test("preserves touch inertia when touchend is delayed", async ({ page }) => {
+    const control = page.locator(part("control"))
+    const itemGroupSelector = part("item-group")
+
+    const transformAtRelease = await control.evaluate(async (element, selector) => {
+      const rect = element.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      const dispatchTouch = (type: string, y: number) => {
+        const touch = { clientX: x, clientY: y }
+        const event = new Event(type, { bubbles: true, cancelable: true })
+        Object.defineProperties(event, {
+          changedTouches: { value: [touch] },
+          touches: { value: type === "touchend" ? [] : [touch] },
+        })
+        element.dispatchEvent(event)
+      }
+
+      const delay = (duration: number) => new Promise((resolve) => window.setTimeout(resolve, duration))
+
+      dispatchTouch("touchstart", centerY + 30)
+      await delay(16)
+      dispatchTouch("touchmove", centerY)
+      await delay(16)
+      dispatchTouch("touchmove", centerY - 30)
+      await delay(150)
+      dispatchTouch("touchend", centerY - 30)
+
+      return getComputedStyle(document.querySelector(selector)!).transform
+    }, itemGroupSelector)
+
+    await expect
+      .poll(() => page.locator(itemGroupSelector).evaluate((element) => getComputedStyle(element).transform))
       .not.toBe(transformAtRelease)
   })
 })

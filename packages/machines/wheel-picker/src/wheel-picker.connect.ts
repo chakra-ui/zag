@@ -132,14 +132,9 @@ export function connect<P extends PropTypes, T extends CollectionItem = Collecti
           send({ type: "CONTROL.BLUR" })
         },
         onPointerDown(event) {
-          if (!interactive || !isLeftClick(event)) return
+          if (!interactive || event.pointerType === "touch" || !isLeftClick(event)) return
           const point = getEventPoint(event)
           send({ type: "CONTROL.POINTER_DOWN", point, timestamp: event.timeStamp })
-          event.preventDefault()
-        },
-        onWheel(event) {
-          if (!interactive || !event.deltaY) return
-          send({ type: "CONTROL.WHEEL", deltaY: event.deltaY, timestamp: event.timeStamp })
           event.preventDefault()
         },
         onKeyDown(event) {

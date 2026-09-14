@@ -185,9 +185,9 @@ export function getStepDuration(distance: number, scrollSensitivity: number) {
   return Math.sqrt(distance / Math.max(0.001, scrollSensitivity)) * 1000
 }
 
-export function getDragVelocity(samples: DragSample[], releaseTime: number, itemHeight: number) {
+export function getDragVelocity(samples: DragSample[], itemHeight: number) {
   const latest = samples.at(-1)
-  if (!latest || releaseTime - latest.time >= 100) return 0
+  if (!latest) return 0
 
   const previous = samples.find((sample) => sample.time < latest.time && latest.time - sample.time <= 100)
   if (!previous) return 0

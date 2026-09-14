@@ -1,6 +1,7 @@
 import type { CollectionItem, ListCollection } from "@zag-js/collection"
 import { createMachine, type BindableContext, type BindableRefs, type PropFn, type Scope } from "@zag-js/core"
 import {
+  addDomEvent,
   getByTypeahead,
   markAsInternalChangeEvent,
   raf,
@@ -8,6 +9,7 @@ import {
   trackFormControl,
   trackPointerMove,
 } from "@zag-js/dom-query"
+import { callAll } from "@zag-js/utils"
 import { collection } from "./wheel-picker.collection"
 import * as dom from "./wheel-picker.dom"
 import type { WheelPickerSchema } from "./wheel-picker.types"
@@ -96,7 +98,7 @@ export const machine = createMachine<WheelPickerSchema>({
 
   entry: ["syncValueFromCollection", "syncScrollPosition", "syncSelectElement"],
 
-  effects: ["trackFormControlState"],
+  effects: ["trackFormControlState", "trackWheelEvent", "trackTouchEvents"],
 
   watch({ track, action, context, prop }) {
     track([() => context.get("value")], () => {
@@ -219,13 +221,77 @@ export const machine = createMachine<WheelPickerSchema>({
       trackPointerMove({ scope, send }) {
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point, event }) {
+            if (event.pointerType === "touch") return
             if (event.cancelable) event.preventDefault()
             send({ type: "POINTER.MOVE", point, timestamp: event.timeStamp })
           },
           onPointerUp({ point, event }) {
+            if (event.pointerType === "touch") return
             send({ type: "POINTER.UP", point, timestamp: event.timeStamp })
           },
         })
+      },
+
+      trackWheelEvent({ scope, send, computed, prop }) {
+        const controlEl = dom.getControlEl(scope)
+        if (!controlEl) return
+
+        function onWheel(event: WheelEvent) {
+          if (!computed("interactive") || prop("collection").size === 0 || !event.deltaY) return
+          if (event.cancelable) event.preventDefault()
+          send({ type: "CONTROL.WHEEL", deltaY: event.deltaY, timestamp: event.timeStamp })
+        }
+
+        return addDomEvent(controlEl, "wheel", onWheel, { passive: false })
+      },
+
+      trackTouchEvents({ scope, send, computed, prop }) {
+        const controlEl = dom.getControlEl(scope)
+        if (!controlEl) return
+
+        let active = false
+
+        function getPoint(event: TouchEvent) {
+          const touch = event.touches[0] ?? event.changedTouches[0]
+          return touch ? { x: touch.clientX, y: touch.clientY } : null
+        }
+
+        function onTouchStart(event: TouchEvent) {
+          if (!computed("interactive") || prop("collection").size === 0 || event.touches.length !== 1) return
+          const point = getPoint(event)
+          if (!point) return
+
+          active = true
+          if (event.cancelable) event.preventDefault()
+          send({ type: "CONTROL.POINTER_DOWN", point, timestamp: event.timeStamp })
+        }
+
+        function onTouchMove(event: TouchEvent) {
+          if (!active) return
+          const point = getPoint(event)
+          if (!point) return
+
+          if (event.cancelable) event.preventDefault()
+          send({ type: "POINTER.MOVE", point, timestamp: event.timeStamp })
+        }
+
+        function onTouchEnd(event: TouchEvent) {
+          if (!active) return
+          active = false
+
+          const point = getPoint(event)
+          if (!point) return
+
+          if (event.cancelable) event.preventDefault()
+          send({ type: "POINTER.UP", point, timestamp: event.timeStamp })
+        }
+
+        return callAll(
+          addDomEvent(controlEl, "touchstart", onTouchStart, { passive: false }),
+          addDomEvent(controlEl, "touchmove", onTouchMove, { passive: false }),
+          addDomEvent(controlEl, "touchend", onTouchEnd, { passive: false }),
+          addDomEvent(controlEl, "touchcancel", onTouchEnd, { passive: false }),
+        )
       },
 
       animateScroll({ scope, refs, prop, send }) {
@@ -345,7 +411,7 @@ export const machine = createMachine<WheelPickerSchema>({
           return
         }
 
-        const velocity = getDragVelocity(drag.samples, event.timestamp, prop("optionItemHeight"))
+        const velocity = getDragVelocity(drag.samples, prop("optionItemHeight"))
 
         const direction = velocity === 0 ? refs.get("scrollDirection") : velocity > 0 ? 1 : -1
         const inertia = getInertiaTarget({
