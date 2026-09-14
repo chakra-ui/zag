@@ -1,5 +1,15 @@
 # @zag-js/date-utils
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`ae4d6d9`](https://github.com/chakra-ui/zag/commit/ae4d6d9ac5b68a7e7f77e3aa108c501e673b3498) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the alignment, pagination and
+  week/month helpers widened their return type to `DateValue`, so a caller passing a `CalendarDateTime` got back a value
+  it had to re-narrow. They are now generic and return the type they were given.
+
 ## 2.0.0-next.3
 
 ## 2.0.0-next.2
