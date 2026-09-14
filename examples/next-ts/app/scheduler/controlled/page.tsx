@@ -77,7 +77,7 @@ export default function Page() {
             <div {...api.getViewSelectProps()}>
               {(["day", "week"] as scheduler.ViewType[]).map((v) => (
                 <button key={v} {...api.getViewItemProps({ view: v })}>
-                  {v}
+                  {api.getViewText(v)}
                 </button>
               ))}
             </div>

@@ -1,56 +1,87 @@
-import { CalendarDateTime, toCalendarDate, type DateValue } from "@internationalized/date"
-import { getDaysBetween } from "./time"
+import { CalendarDateTime, toCalendarDate } from "@internationalized/date"
+import type { DragState, SchedulerEvent, SchedulerPayload } from "../scheduler.types"
+import { getDaysBetween, getMinutesSinceMidnight, type DayBounds, type TimeRange } from "./time"
 
-/**
- * Convert a pointer position to a DateValue.
- * gridRect is the bounding rect of the time-grid element.
- * referenceDate is any date in the visible range — used to determine the
- * calendar system (Gregorian, Buddhist, etc.)
- */
-export function pointToDateTime(
-  point: { x: number; y: number },
-  gridRect: { left: number; top: number; width: number; height: number },
-  visibleRange: { start: DateValue; end: DateValue },
-  dayStartHour: number,
-  dayEndHour: number,
-  slotInterval: number,
-): DateValue {
-  const totalDays = getDaysBetween(visibleRange.start, visibleRange.end) + 1
-
-  const relX = Math.max(0, Math.min(point.x - gridRect.left, gridRect.width - 1))
-  const dayIndex = Math.floor((relX / gridRect.width) * totalDays)
-  const targetDate = visibleRange.start.add({ days: dayIndex })
-
-  const totalMinutes = (dayEndHour - dayStartHour) * 60
-  const relY = Math.max(0, Math.min(point.y - gridRect.top, gridRect.height - 1))
-  const rawMinutes = (relY / gridRect.height) * totalMinutes
-  const snapped = Math.round(rawMinutes / slotInterval) * slotInterval
-  const hour = Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1)
-  const minute = snapped % 60
-
-  const base = toCalendarDate(targetDate)
-  return new CalendarDateTime(base.year, base.month, base.day, hour, minute)
+interface SnapParams extends DayBounds {
+  slotInterval: number
 }
 
-/**
- * Convert a pointer Y position to a time-only DateValue within the given reference date.
- * Used for resize operations where the day does not change.
- */
-export function pointToTimeOnDay(
-  pointY: number,
-  gridTop: number,
-  gridHeight: number,
-  dayStartHour: number,
-  dayEndHour: number,
-  slotInterval: number,
-  referenceDate: DateValue,
-): DateValue {
+function snapOffsetToTime(offset: number, height: number, params: SnapParams) {
+  const { dayStartHour, dayEndHour, slotInterval } = params
   const totalMinutes = (dayEndHour - dayStartHour) * 60
-  const relY = Math.max(0, Math.min(pointY - gridTop, gridHeight - 1))
-  const rawMinutes = (relY / gridHeight) * totalMinutes
-  const snapped = Math.round(rawMinutes / slotInterval) * slotInterval
-  const hour = Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1)
-  const minute = snapped % 60
-  const base = toCalendarDate(referenceDate)
-  return new CalendarDateTime(base.year, base.month, base.day, hour, minute)
+  const relY = Math.max(0, Math.min(offset, height - 1))
+  const snapped = Math.round(((relY / height) * totalMinutes) / slotInterval) * slotInterval
+  return {
+    hour: Math.min(dayStartHour + Math.floor(snapped / 60), dayEndHour - 1),
+    minute: snapped % 60,
+  }
+}
+
+/** Rebuilt rather than `.set()` so the calendar system (Gregorian, Buddhist, …) survives. */
+function atTime(date: CalendarDateTime, time: { hour: number; minute: number }): CalendarDateTime {
+  const base = toCalendarDate(date)
+  return new CalendarDateTime(base.year, base.month, base.day, time.hour, time.minute)
+}
+
+export interface PointToDateTimeParams extends SnapParams {
+  point: { x: number; y: number }
+  rect: { left: number; top: number; width: number; height: number }
+  range: TimeRange
+}
+
+export function pointToDateTime(params: PointToDateTimeParams): CalendarDateTime {
+  const { point, rect, range } = params
+
+  const totalDays = getDaysBetween(range.start, range.end) + 1
+  const relX = Math.max(0, Math.min(point.x - rect.left, rect.width - 1))
+  const dayIndex = Math.floor((relX / rect.width) * totalDays)
+
+  return atTime(range.start.add({ days: dayIndex }), snapOffsetToTime(point.y - rect.top, rect.height, params))
+}
+
+export interface PointToTimeOnDayParams extends SnapParams {
+  y: number
+  rect: { top: number; height: number }
+  referenceDate: CalendarDateTime
+}
+
+/** Resize keeps the day fixed, so only the time comes from the pointer. */
+export function pointToTimeOnDay(params: PointToTimeOnDayParams): CalendarDateTime {
+  const { y, rect, referenceDate } = params
+  return atTime(referenceDate, snapOffsetToTime(y - rect.top, rect.height, params))
+}
+
+export interface DragStateParams<E extends SchedulerPayload> {
+  isDragging: boolean
+  isResizing: boolean
+  liveDrag: { eventId: string; start: CalendarDateTime; end: CalendarDateTime; allDay: boolean } | null
+  /** Where the gesture started, captured on pointer-down. */
+  snapshot: TimeRange | null
+  eventsById: Map<string, SchedulerEvent<E>>
+}
+
+/** Null unless a gesture is in flight and everything it refers to is still present. */
+export function getDragState<E extends SchedulerPayload>(params: DragStateParams<E>): DragState<E> | null {
+  const { isDragging, isResizing, liveDrag, snapshot, eventsById } = params
+  if (!(isDragging || isResizing) || !liveDrag) return null
+
+  const event = eventsById.get(liveDrag.eventId)
+  if (!event || !snapshot) return null
+
+  return {
+    kind: isResizing ? "resize" : "drag",
+    event,
+    start: liveDrag.start,
+    end: liveDrag.end,
+    origin: snapshot,
+    allDay: liveDrag.allDay,
+  }
+}
+
+/** How far a drop moved an event, split into whole days plus a time-of-day shift. */
+export function getDropDelta(from: CalendarDateTime, to: CalendarDateTime) {
+  return {
+    days: getDaysBetween(from, to),
+    minutes: getMinutesSinceMidnight(to) - getMinutesSinceMidnight(from),
+  }
 }

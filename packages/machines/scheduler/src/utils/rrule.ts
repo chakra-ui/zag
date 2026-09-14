@@ -1,6 +1,6 @@
-import { CalendarDate, CalendarDateTime, type DateValue } from "@internationalized/date"
+import { CalendarDate, CalendarDateTime, toCalendarDateTime, type DateValue } from "@internationalized/date"
 import type { RecurrenceExpander, SchedulerEvent, SchedulerPayload } from "../scheduler.types"
-import { getDurationMinutes } from "../scheduler.utils"
+import { getMinutesBetween } from "./time"
 
 /* -----------------------------------------------------------------------------
  * Parser
@@ -31,10 +31,8 @@ const WEEKDAY_MAP: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4,
 const SIMPLE_KEYS = new Set(["FREQ", "INTERVAL", "COUNT", "UNTIL", "BYDAY", "BYMONTHDAY"])
 
 /**
- * Parse the subset of RFC5545 RRULE strings the machine expands natively.
- * Supports: FREQ, INTERVAL, COUNT, UNTIL, BYDAY (weekly & monthly positional),
- * BYMONTHDAY. Returns null for anything else (BYSETPOS, BYMONTH, BYWEEKNO,
- * etc.) so caller falls back to a user expander.
+ * Parses the RRULE subset expanded natively: FREQ, INTERVAL, COUNT, UNTIL, BYDAY, BYMONTHDAY.
+ * Null for anything else, so the caller falls back to a user expander.
  */
 export function parseSimpleRRule(rrule: string): ParsedRRule | null {
   const body = rrule.replace(/^RRULE:/i, "")
@@ -67,7 +65,6 @@ export function parseSimpleRRule(rrule: string): ParsedRRule | null {
   const bymonthday = entries.BYMONTHDAY ? parseBymonthday(entries.BYMONTHDAY) : undefined
   if (entries.BYMONTHDAY && !bymonthday) return null
 
-  // Reject combinations we can't correctly expand
   if (byday && freq !== "weekly" && freq !== "monthly") return null
   if (bymonthday && freq !== "monthly") return null
   if (byday && freq === "monthly" && byday.some((b) => b.position == null)) return null
@@ -174,9 +171,9 @@ function resolveMonthlyByday(monthAnchor: DateValue, weekday: number, position: 
 function expandSimpleRecurrence<T extends SchedulerPayload>(
   event: SchedulerEvent<T>,
   parsed: ParsedRRule,
-  range: { start: DateValue; end: DateValue },
+  range: { start: CalendarDateTime; end: CalendarDateTime },
 ): SchedulerEvent<T>[] {
-  const durationMinutes = getDurationMinutes(event.start, event.end)
+  const durationMinutes = getMinutesBetween(event.start, event.end)
   const anchor = event.recurrence?.dtstart ?? event.start
   const exdate = event.recurrence?.exdate ?? []
   const max = parsed.count ?? Infinity
@@ -188,16 +185,17 @@ function expandSimpleRecurrence<T extends SchedulerPayload>(
     if (candidate.compare(anchor) < 0) return "skip"
     if (candidate.compare(range.start) < 0) return "skip"
     if (exdate.some((d) => d.compare(candidate) === 0)) return "skip"
+    // an RRULE value may be DATE-only, which RFC5545 reads as midnight
+    const start = toCalendarDateTime(candidate)
     out.push({
       ...event,
       id: `${event.id}:${out.length}`,
-      start: candidate,
-      end: candidate.add({ minutes: durationMinutes }),
+      start,
+      end: start.add({ minutes: durationMinutes }),
     })
     return out.length >= max ? "done" : "ok"
   }
 
-  // Weekly + BYDAY: iterate weeks, emit each listed weekday relative to anchor's week.
   if (parsed.freq === "weekly" && parsed.byday?.length) {
     const anchorDow = getDayOfWeek(anchor)
     let weekAnchor = anchor
@@ -216,7 +214,6 @@ function expandSimpleRecurrence<T extends SchedulerPayload>(
     return out
   }
 
-  // Monthly + BYDAY (positional) or BYMONTHDAY: iterate months, collect candidates, emit sorted.
   if (parsed.freq === "monthly" && (parsed.byday?.length || parsed.bymonthday?.length)) {
     let monthAnchor = anchor
     for (let i = 0; i < MAX_ITERATIONS; i++) {
@@ -246,7 +243,6 @@ function expandSimpleRecurrence<T extends SchedulerPayload>(
     return out
   }
 
-  // Plain FREQ without BY-modifiers.
   const step = FREQ_STEP[parsed.freq]
   let cur = anchor
   for (let i = 0; i < MAX_ITERATIONS; i++) {
@@ -260,24 +256,21 @@ function expandSimpleRecurrence<T extends SchedulerPayload>(
 
 export interface ExpandRecurringEventsParams<T extends SchedulerPayload = SchedulerPayload> {
   events: SchedulerEvent<T>[]
-  range: { start: DateValue; end: DateValue }
+  range: { start: CalendarDateTime; end: CalendarDateTime }
   /**
    * Cap on total expanded instances across all events.
    * @default 2000
    */
   limit?: number | undefined
   /**
-   * Called for events whose rrule uses features beyond the native subset
-   * (e.g. `BYSETPOS`, `BYMONTH`). Wire up `rrule.js` here.
+   * Called for events whose rrule uses features beyond the native subset. Wire up `rrule.js` here.
    */
   expander?: RecurrenceExpander<T> | undefined
 }
 
 /**
- * Expand recurring events within a date range. Non-recurring events pass
- * through unchanged. Mirrors the machine's internal expansion — use when
- * you need the same set outside the scheduler (server-side rendering, lists,
- * feeds, tests).
+ * Expands recurring events within a range; non-recurring ones pass through. Mirrors what the
+ * machine does internally, for when you need the same set outside the scheduler.
  */
 export function expandRecurringEvents<T extends SchedulerPayload = SchedulerPayload>(
   params: ExpandRecurringEventsParams<T>,

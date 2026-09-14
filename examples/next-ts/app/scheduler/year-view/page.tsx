@@ -19,7 +19,7 @@ const INITIAL: scheduler.SchedulerEvent[] = Array.from({ length: 12 }, (_, m) =>
   color: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][m % 5],
 }))
 
-function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
+function MiniMonth({ api, month, weekDays }: { api: scheduler.Api; month: number; weekDays: scheduler.WeekDay[] }) {
   const reference = api.date.set({ month, day: 1 })
   const weeks = api.getMonthGrid(reference)
   return (
@@ -27,7 +27,7 @@ function MiniMonth({ api, month }: { api: scheduler.Api; month: number }) {
       <h3 className="scheduler-mini-month-title">{api.getMonthName(reference)}</h3>
       <div {...api.getMonthGridProps({ date: reference })}>
         <div {...api.getWeekdayHeaderRowProps()} className="scheduler-mini-weekdays">
-          {api.weekDays.map((day) => (
+          {weekDays.map((day) => (
             <div key={day.long} {...api.getWeekdayHeaderCellProps({ day })}>
               {day.narrow}
             </div>
@@ -74,6 +74,7 @@ export default function Page() {
   })
 
   const api = scheduler.connect(service, normalizeProps)
+  const weekDays = api.getWeekDays()
 
   return (
     <>
@@ -93,8 +94,8 @@ export default function Page() {
           </div>
 
           <div className="scheduler-year-grid">
-            {api.monthNames.map((_, i) => (
-              <MiniMonth key={i} api={api} month={i + 1} />
+            {api.getMonthNames().map((_, i) => (
+              <MiniMonth key={i} api={api} month={i + 1} weekDays={weekDays} />
             ))}
           </div>
         </div>

@@ -56,8 +56,22 @@
 /* the row carries the column layout so the grid element stays the positioning context */
 [data-scheduler-grid-row] {
   display: grid;
-  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-columns, 7), minmax(0, 1fr));
   height: 100%;
+}
+
+[data-scheduler-day-column][data-resource] {
+  border-left: 2px solid var(--resource-color, transparent);
+}
+
+[data-scheduler-column-header][data-resource] {
+  color: var(--resource-color, inherit);
+}
+
+[data-scheduler-day-column][data-disabled],
+[data-scheduler-column-header][data-disabled] {
+  background: repeating-linear-gradient(45deg, #fafafa, #fafafa 6px, #f1f1f1 6px, #f1f1f1 12px);
+  cursor: not-allowed;
 }
 
 .scheduler-time-grid-wrapper {
@@ -71,7 +85,7 @@
 
 [data-scheduler-column-headers] {
   display: grid;
-  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-columns, 7), minmax(0, 1fr));
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
@@ -228,6 +242,11 @@
   cursor: grabbing;
   opacity: 0.25;
   transition: opacity 80ms ease-out;
+
+  /* an all-day bar is its own preview — it tracks the pointer, so it stays fully visible */
+  &[data-all-day] {
+    opacity: 1;
+  }
 }
 
 [data-scheduler-root][data-dragging] [data-scheduler-event]:not([data-dragging]) {
@@ -300,6 +319,18 @@
   z-index: 20;
   overflow: hidden;
   transform: translateZ(0);
+
+  /* in the all-day row the preview mirrors the chip: same type and padding, laid over it so the
+     row never resizes and the text doesn't appear to change weight */
+  &[data-all-day] {
+    inset: 4px 4px auto;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .scheduler-dialog-backdrop {
@@ -365,6 +396,11 @@
   background: color-mix(in srgb, var(--event-color, #3b82f6) 6%, transparent);
   pointer-events: none;
   z-index: 19;
+
+  &[data-all-day] {
+    inset: 4px 4px auto;
+    height: 17px;
+  }
 }
 
 [data-scheduler-current-time-indicator] {
@@ -513,9 +549,61 @@
   color: #374151;
 }
 
+[data-scheduler-event][data-all-day] {
+  display: flex;
+  align-items: center;
+  background: var(--event-color, #3b82f6);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: grab;
+  height: calc(var(--scheduler-all-day-bar-height, 19px) - 2px);
+
+  /* a clipped end runs off the edge of the range, so square it off to read as continuing */
+  &[data-clip-start] {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    margin-inline-start: 0;
+  }
+
+  &[data-clip-end] {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    margin-inline-end: 0;
+  }
+
+  &[data-dragging] {
+    cursor: grabbing;
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.22),
+      0 0 0 2px rgba(255, 255, 255, 0.7);
+  }
+
+  & > [data-scheduler-event-resize-handle] {
+    position: absolute;
+    inset-block: 0;
+    width: 6px;
+    height: auto;
+    cursor: ew-resize;
+
+    &[data-edge="start"] {
+      inset-inline: 0 auto;
+    }
+
+    &[data-edge="end"] {
+      inset-inline: auto 0;
+    }
+  }
+}
+
 [data-scheduler-all-day-row] {
   display: grid;
-  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-visible-days, 7), 1fr);
+  grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-columns, 7), minmax(0, 1fr));
   border-bottom: 1px solid #e5e7eb;
   background: #fafafa;
   min-height: 32px;
@@ -532,22 +620,27 @@
 [data-scheduler-day-cell][data-all-day] {
   padding: 4px;
   border-left: 1px solid #f3f4f6;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  /* anchors the bars, which start here and overflow across the days they cover */
+  position: relative;
+  overflow: visible;
 }
 
-[data-scheduler-event][data-all-day] {
-  background: var(--event-color, #3b82f6);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: grab;
+/* all-day chips resize sideways: the handles sit on the inline edges, not the block ones */
+[data-scheduler-event][data-all-day] > [data-scheduler-event-resize-handle] {
+  position: absolute;
+  inset-block: 0;
+  width: 6px;
+  cursor: ew-resize;
+
+  /* the base rule sets `inset-inline: 0`; each edge must release the opposite side or both
+     handles resolve to the same spot and the later one swallows every press */
+  &[data-edge="start"] {
+    inset-inline: 0 auto;
+  }
+
+  &[data-edge="end"] {
+    inset-inline: auto 0;
+  }
 }
 
 .scheduler-mobile-month {
@@ -879,4 +972,109 @@
 }
 .scheduler-event-popover-actions [data-close] {
   margin-inline-start: auto;
+}
+
+[data-scheduler-event][data-invalid] {
+  outline: 2px dashed #ef4444;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------------------
+ * Timeline — time runs horizontally, resources are lanes
+ * ------------------------------------------------------------------------- */
+
+[data-scheduler-timeline] {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+[data-scheduler-timeline-header],
+[data-scheduler-timeline-row] {
+  display: grid;
+  grid-template-columns: var(--scheduler-timeline-label-width, 120px) 1fr;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+[data-scheduler-timeline-row]:last-child {
+  border-bottom: none;
+}
+
+.scheduler-timeline-corner,
+[data-scheduler-timeline-row-header] {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-right: 1px solid #e5e7eb;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  color: var(--resource-color, inherit);
+}
+
+.scheduler-timeline-axis {
+  position: relative;
+  height: 32px;
+}
+
+[data-scheduler-timeline-slot] {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #6b7280;
+  border-left: 1px solid #f3f4f6;
+}
+
+[data-scheduler-timeline-slot][data-today] {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+[data-scheduler-timeline-track] {
+  height: 44px;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent,
+    transparent calc(100% / var(--scheduler-timeline-slots, 7) - 1px),
+    #f3f4f6 calc(100% / var(--scheduler-timeline-slots, 7) - 1px),
+    #f3f4f6 calc(100% / var(--scheduler-timeline-slots, 7))
+  );
+}
+
+[data-scheduler-timeline-track] [data-scheduler-event] {
+  top: 6px;
+  bottom: 6px;
+  height: auto;
+  border-radius: 6px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--event-color, var(--resource-color, #e5edff));
+  color: #fff;
+  font-size: 12px;
+}
+
+.scheduler-backlog {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.scheduler-backlog button {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: grab;
 }

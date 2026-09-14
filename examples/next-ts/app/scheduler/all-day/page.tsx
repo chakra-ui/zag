@@ -48,13 +48,19 @@ const INITIAL: scheduler.SchedulerEvent[] = [
 export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(INITIAL)
+  const [dropLog, setDropLog] = useState("")
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
     events,
-    onEventDrop: (d) =>
-      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventDrop(d) {
+      // the machine reports the region it landed in; converting the event is the consumer's call
+      setDropLog(`${d.event.id} allDay:${d.allDay} ${d.newStart} → ${d.newEnd} Δ${d.delta.days}d${d.delta.minutes}m`)
+      setEvents((prev) =>
+        prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd, allDay: d.allDay } : e)),
+      )
+    },
     onEventResize: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
   })
@@ -64,6 +70,7 @@ export default function Page() {
   return (
     <>
       <main className="scheduler">
+        <output data-testid="drop-log">{dropLog}</output>
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>
@@ -89,21 +96,36 @@ export default function Page() {
 
             <div {...api.getAllDayRowProps()}>
               <div {...api.getAllDayLabelProps()}>All day</div>
-              {api.visibleDays.map((date) => {
-                const allDayEvents = api.getEventsForDay(date).filter((e) => e.allDay)
-                return (
-                  <div key={date.toString()} {...api.getDayCellProps({ date, allDay: true })}>
-                    {allDayEvents.map((event) => (
-                      <div key={event.id} {...api.getEventProps({ event })}>
-                        {event.title}
+              {api.visibleDays.map((date, index) => (
+                <div
+                  key={date.toString()}
+                  {...api.getDayCellProps({ date, allDay: true })}
+                  // a bar overflows to the right, so earlier cells must paint above later ones
+                  style={{ zIndex: api.visibleDays.length - index }}
+                >
+                  {/* a bar lives in the cell it starts on and overflows across the ones it covers */}
+                  {api
+                    .getAllDaySegments()
+                    .filter((segment) => segment.column === index)
+                    .map((segment) => (
+                      <div
+                        key={segment.event.id}
+                        {...api.getEventProps({ event: segment.event, layout: "all-day", segment })}
+                      >
+                        {segment.isStart && (
+                          <div {...api.getEventResizeHandleProps({ event: segment.event, edge: "start" })} />
+                        )}
+                        <span className="scheduler-event-title">{segment.event.title}</span>
+                        {segment.isEnd && (
+                          <div {...api.getEventResizeHandleProps({ event: segment.event, edge: "end" })} />
+                        )}
                       </div>
                     ))}
-                  </div>
-                )
-              })}
+                </div>
+              ))}
             </div>
 
-            <div className="scheduler-time-grid-scroll">
+            <div className="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
               <div {...api.getGridProps()}>
                 <div {...api.getGridRowProps()}>
                   <div {...api.getTimeGutterProps()}>
@@ -113,6 +135,7 @@ export default function Page() {
                       </div>
                     ))}
                   </div>
+
                   {api.visibleDays.map((date) => (
                     <div key={date.toString()} {...api.getDayColumnProps({ date })}>
                       {api.hourRange.hours.map((hour) => (

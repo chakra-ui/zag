@@ -1,11 +1,8 @@
-import { endOfMonth, endOfWeek, startOfMonth, startOfWeek, type DateValue } from "@internationalized/date"
+import { endOfMonth, endOfWeek, startOfMonth, startOfWeek, type CalendarDateTime } from "@internationalized/date"
 import type { ViewType } from "../scheduler.types"
+import type { TimeRange } from "./time"
 
-/**
- * Identifier tokens consumed by `@internationalized/date`'s startOfWeek/endOfWeek
- * `firstDay` parameter. NOT display labels — those come from Intl.DateTimeFormat
- * via `getWeekDays`, which is locale/RTL aware.
- */
+// Tokens for `startOfWeek`/`endOfWeek`, not display labels — those come from `getWeekDays`.
 const DAY_NAMES = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const
 type DayOfWeek = (typeof DAY_NAMES)[number]
 
@@ -17,18 +14,21 @@ function toDayOfWeek(n?: number): DayOfWeek | undefined {
   return toDayOfWeekToken(n)
 }
 
-export function getVisibleRange(
-  view: ViewType,
-  date: DateValue,
-  locale: string,
-  firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6,
-): { start: DateValue; end: DateValue } {
+export function getVisibleRange(params: {
+  view: ViewType
+  date: CalendarDateTime
+  locale: string
+  firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined
+}): TimeRange {
+  const { view, date, locale, firstDay } = params
   const wsd = toDayOfWeek(firstDay)
   switch (view) {
     case "day":
       return { start: date, end: date }
 
+    // the timeline lays a week out horizontally, so it shares the week's range
     case "week":
+    case "timeline":
       return {
         start: startOfWeek(date, locale, wsd),
         end: endOfWeek(date, locale, wsd),
@@ -57,11 +57,12 @@ export function getVisibleRange(
   }
 }
 
-export function getNextDate(view: ViewType, date: DateValue): DateValue {
+export function getNextDate(view: ViewType, date: CalendarDateTime): CalendarDateTime {
   switch (view) {
     case "day":
       return date.add({ days: 1 })
     case "week":
+    case "timeline":
       return date.add({ weeks: 1 })
     case "month":
       return date.add({ months: 1 })
@@ -72,11 +73,12 @@ export function getNextDate(view: ViewType, date: DateValue): DateValue {
   }
 }
 
-export function getPrevDate(view: ViewType, date: DateValue): DateValue {
+export function getPrevDate(view: ViewType, date: CalendarDateTime): CalendarDateTime {
   switch (view) {
     case "day":
       return date.subtract({ days: 1 })
     case "week":
+    case "timeline":
       return date.subtract({ weeks: 1 })
     case "month":
       return date.subtract({ months: 1 })

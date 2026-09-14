@@ -13,30 +13,42 @@ function normalizeFirstDayOfWeek(firstDayOfWeek?: number): DaysOfTheWeek | undef
   return firstDayOfWeek != null ? daysOfTheWeek[firstDayOfWeek] : undefined
 }
 
-export function getStartOfWeek(date: DateValue, locale: string, firstDayOfWeek?: number) {
+export function getStartOfWeek<T extends DateValue>(date: T, locale: string, firstDayOfWeek?: number): T {
   const firstDay = normalizeFirstDayOfWeek(firstDayOfWeek)
-  return startOfWeek(date, locale, firstDay)
+  return startOfWeek(date, locale, firstDay) as T
 }
 
-export function getEndOfWeek(date: DateValue, locale: string, firstDayOfWeek = 0) {
+export function getEndOfWeek<T extends DateValue>(date: T, locale: string, firstDayOfWeek = 0): T {
   const firstDay = normalizeFirstDayOfWeek(firstDayOfWeek)
-  return endOfWeek(date, locale, firstDay)
+  return endOfWeek(date, locale, firstDay) as T
 }
 
-export function getDaysInWeek(weekIndex: number, from: DateValue, locale: string, firstDayOfWeek?: number) {
+// Generic so a caller that hands in a date-time gets date-times back. Every step
+// below preserves the concrete type; only the annotation used to widen it.
+export function getDaysInWeek<T extends DateValue>(
+  weekIndex: number,
+  from: T,
+  locale: string,
+  firstDayOfWeek?: number,
+): T[] {
   const weekDate = from.add({ weeks: weekIndex })
-  const dates: DateValue[] = []
-  let date = getStartOfWeek(weekDate, locale, firstDayOfWeek)
+  const dates: T[] = []
+  let date = getStartOfWeek(weekDate, locale, firstDayOfWeek) as T
   while (dates.length < 7) {
     dates.push(date)
-    let nextDate = date.add({ days: 1 })
+    let nextDate = date.add({ days: 1 }) as T
     if (isSameDay(date, nextDate)) break
     date = nextDate
   }
   return dates
 }
 
-export function getMonthDays(from: DateValue, locale: string, numOfWeeks?: number, firstDayOfWeek?: number) {
+export function getMonthDays<T extends DateValue>(
+  from: T,
+  locale: string,
+  numOfWeeks?: number,
+  firstDayOfWeek?: number,
+): T[][] {
   const firstDay = normalizeFirstDayOfWeek(firstDayOfWeek)
   const monthWeeks = numOfWeeks ?? getWeeksInMonth(from, locale, firstDay)
   const weeks = [...new Array(monthWeeks).keys()]

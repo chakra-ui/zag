@@ -1723,7 +1723,8 @@
       "data-view": "The view of the scheduler",
       "data-dragging": "Present when in the dragging state",
       "data-resizing": "",
-      "data-selecting-slot": ""
+      "data-selecting-slot": "",
+      "data-drop-invalid": ""
     },
     "ViewItem": {
       "data-scheduler-view-item": "<uid>",
@@ -1733,12 +1734,32 @@
     "ColumnHeader": {
       "data-scheduler-column-header": "<uid>",
       "data-date": "",
+      "data-resource": "",
+      "data-disabled": "Present when disabled",
       "data-today": "Present when the date represents today",
       "data-weekend": "Present when is a weekend day"
     },
     "Grid": {
       "data-scheduler-grid": "<uid>",
       "data-view": "The view of the grid"
+    },
+    "TimelineSlot": {
+      "data-scheduler-timeline-slot": "<uid>",
+      "data-date": "",
+      "data-today": "Present when the date represents today"
+    },
+    "TimelineRow": {
+      "data-scheduler-timeline-row": "<uid>",
+      "data-resource": "",
+      "data-disabled": "Present when disabled"
+    },
+    "TimelineRowHeader": {
+      "data-scheduler-timeline-row-header": "<uid>",
+      "data-resource": ""
+    },
+    "TimelineTrack": {
+      "data-scheduler-timeline-track": "<uid>",
+      "data-resource": ""
     },
     "HourLabel": {
       "data-scheduler-hour-label": "<uid>",
@@ -1751,6 +1772,8 @@
     "DayColumn": {
       "data-scheduler-day-column": "<uid>",
       "data-date": "",
+      "data-resource": "",
+      "data-disabled": "Present when disabled",
       "data-drop-target": ""
     },
     "DayCell": {
@@ -1760,7 +1783,8 @@
       "data-outside": "",
       "data-weekend": "Present when is a weekend day",
       "data-selected": "Present when selected",
-      "data-all-day": ""
+      "data-all-day": "",
+      "data-drop-target": ""
     },
     "DayCellTrigger": {
       "data-scheduler-day-cell-trigger": "<uid>",
@@ -1777,8 +1801,11 @@
       "data-focused": "",
       "data-selected": "Present when selected",
       "data-conflict": "",
+      "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-all-day": ""
+      "data-all-day": "",
+      "data-clip-start": "",
+      "data-clip-end": ""
     },
     "EventResizeHandle": {
       "data-scheduler-event-resize-handle": "<uid>",

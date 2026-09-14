@@ -88,7 +88,7 @@ export default function Page() {
             <div {...api.getViewSelectProps()}>
               {(["day", "week", "month"] as scheduler.ViewType[]).map((v) => (
                 <button key={v} {...api.getViewItemProps({ view: v })}>
-                  {v}
+                  {api.getViewText(v)}
                 </button>
               ))}
             </div>
@@ -97,7 +97,7 @@ export default function Page() {
           {api.view === "month" ? (
             <div className="scheduler-month-grid">
               <div className="scheduler-month-header">
-                {api.weekDays.map((day, i) => (
+                {api.getWeekDays().map((day, i) => (
                   <div key={i} className="scheduler-month-weekday">
                     {day.short}
                   </div>

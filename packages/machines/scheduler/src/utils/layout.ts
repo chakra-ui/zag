@@ -1,6 +1,12 @@
-import { toCalendarDate, type DateValue } from "@internationalized/date"
+import { toCalendarDate, toCalendarDateTime, type CalendarDateTime } from "@internationalized/date"
 import type { EventPosition, SchedulerEvent, SchedulerPayload } from "../scheduler.types"
-import { getHourMinute, rangesOverlap } from "./time"
+import { getMinutesSinceMidnight, rangesOverlap, type DayBounds, type TimeRange } from "./time"
+
+/** An all-day event fills its lane; nothing positions it vertically. */
+export const ALL_DAY_POSITION: EventPosition = { top: 0, height: 1, left: 0, width: 1, column: 0, totalColumns: 1 }
+
+/** Stand-in for an event the layout never placed — renders as a zero-height box. */
+export const UNPLACED_POSITION: EventPosition = { top: 0, height: 0, left: 0, width: 1, column: 0, totalColumns: 1 }
 
 interface LayoutAssignment {
   column: number
@@ -61,10 +67,9 @@ function computeColumnLayout<E extends SchedulerPayload = SchedulerPayload>(
 }
 
 export function getEventLayout<E extends SchedulerPayload = SchedulerPayload>(
-  events: SchedulerEvent<E>[],
-  dayStartHour: number,
-  dayEndHour: number,
+  params: { events: SchedulerEvent<E>[] } & DayBounds,
 ): Map<string, EventPosition> {
+  const { events, dayStartHour, dayEndHour } = params
   const result = new Map<string, EventPosition>()
   if (events.length === 0) return result
 
@@ -73,20 +78,25 @@ export function getEventLayout<E extends SchedulerPayload = SchedulerPayload>(
   const timed: SchedulerEvent<E>[] = []
   for (const e of events) {
     if (e.allDay) {
-      result.set(e.id, { top: 0, height: 1, left: 0, width: 1, column: 0, totalColumns: 1 })
+      result.set(e.id, ALL_DAY_POSITION)
     } else {
       timed.push(e)
     }
   }
 
-  const columns = computeColumnLayout(timed)
+  // pack within a resource only, so two resources' events each stay full width
+  const columns = new Map<string, { column: number; totalColumns: number }>()
+  for (const group of groupByResource(timed)) {
+    for (const [id, assignment] of computeColumnLayout(group)) {
+      columns.set(id, assignment)
+    }
+  }
 
   for (const event of timed) {
     const assignment = columns.get(event.id) ?? { column: 0, totalColumns: 1 }
-    const { hour: sh, minute: sm } = getHourMinute(event.start)
-    const { hour: eh, minute: em } = getHourMinute(event.end)
-    const startMins = Math.max(0, (sh - dayStartHour) * 60 + sm)
-    const endMins = Math.min(totalMinutes, (eh - dayStartHour) * 60 + em)
+    const dayStartMins = dayStartHour * 60
+    const startMins = Math.max(0, getMinutesSinceMidnight(event.start) - dayStartMins)
+    const endMins = Math.min(totalMinutes, getMinutesSinceMidnight(event.end) - dayStartMins)
 
     result.set(event.id, {
       top: startMins / totalMinutes,
@@ -101,45 +111,34 @@ export function getEventLayout<E extends SchedulerPayload = SchedulerPayload>(
   return result
 }
 
-/**
- * Filter events whose range overlaps `[visibleRange.start, visibleRange.end)`.
- * `visibleRange.end` is midnight of the day after the last visible day, so the
- * interval is half-open and correctly includes events on the final day.
- */
+/** `end` is exclusive, so it's pushed a day out to include the last visible day. */
 export function getVisibleEvents<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
-  visibleRange: { start: DateValue; end: DateValue },
+  visibleRange: TimeRange,
 ): SchedulerEvent<E>[] {
-  const rangeEnd = visibleRange.end.add({ days: 1 })
-  return events.filter((e) => rangesOverlap(e.start, e.end, visibleRange.start, rangeEnd))
+  const range = { start: visibleRange.start, end: visibleRange.end.add({ days: 1 }) }
+  return events.filter((e) => rangesOverlap(e, range))
 }
 
-/**
- * Group events by their start-day into sorted buckets. Each group is a day
- * with its events sorted by start time. Groups themselves are ordered
- * chronologically. Used by the agenda view.
- */
+/** Day buckets in chronological order, each sorted by start time. Used by the agenda view. */
 export function getAgendaGroups<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
-): { date: DateValue; events: SchedulerEvent<E>[] }[] {
-  const byKey = new Map<string, { date: DateValue; events: SchedulerEvent<E>[] }>()
+): { date: CalendarDateTime; events: SchedulerEvent<E>[] }[] {
+  const byKey = new Map<string, { date: CalendarDateTime; events: SchedulerEvent<E>[] }>()
   const sorted = [...events].sort((a, b) => a.start.compare(b.start))
   for (const e of sorted) {
     const cal = toCalendarDate(e.start)
     const key = cal.toString()
     const bucket = byKey.get(key)
     if (bucket) bucket.events.push(e)
-    else byKey.set(key, { date: cal, events: [e] })
+    else byKey.set(key, { date: toCalendarDateTime(cal), events: [e] })
   }
   const groups = [...byKey.values()]
   groups.sort((a, b) => a.date.compare(b.date))
   return groups
 }
 
-/**
- * Bucket events by the calendar-date key of each day they span. A multi-day
- * event lands in every day bucket between `start` and `end` (inclusive).
- */
+/** A multi-day event lands in every day bucket it spans, inclusive. */
 export function groupEventsByDay<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
 ): Map<string, SchedulerEvent<E>[]> {
@@ -158,36 +157,45 @@ export function groupEventsByDay<E extends SchedulerPayload = SchedulerPayload>(
   return result
 }
 
-/**
- * Sweep-line detection of overlapping timed events. Returns the set of event
- * ids that conflict with at least one other event. Ignores `allDay` events.
- */
+/** Ids of timed events overlapping at least one other. `allDay` events never conflict. */
+/** Events only collide within a resource. Without resources everything lands in one group. */
+function groupByResource<E extends SchedulerPayload = SchedulerPayload>(
+  events: SchedulerEvent<E>[],
+): SchedulerEvent<E>[][] {
+  const groups = new Map<string, SchedulerEvent<E>[]>()
+  for (const event of events) {
+    const key = event.resourceId ?? ""
+    const group = groups.get(key)
+    if (group) group.push(event)
+    else groups.set(key, [event])
+  }
+  return [...groups.values()]
+}
+
 export function getEventConflicts<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
 ): Set<string> {
   const conflictIds = new Set<string>()
-  const timed = events.filter((e) => !e.allDay).sort((a, b) => a.start.compare(b.start))
-  let active: SchedulerEvent<E>[] = []
-  for (const e of timed) {
-    active = active.filter((a) => a.end.compare(e.start) > 0)
-    if (active.length > 0) {
-      conflictIds.add(e.id)
-      for (const a of active) conflictIds.add(a.id)
+  for (const group of groupByResource(events)) {
+    const timed = group.filter((e) => !e.allDay).sort((a, b) => a.start.compare(b.start))
+    let active: SchedulerEvent<E>[] = []
+    for (const e of timed) {
+      active = active.filter((a) => a.end.compare(e.start) > 0)
+      if (active.length > 0) {
+        conflictIds.add(e.id)
+        for (const a of active) conflictIds.add(a.id)
+      }
+      active.push(e)
     }
-    active.push(e)
   }
   return conflictIds
 }
 
 export function getEventPosition<E extends SchedulerPayload = SchedulerPayload>(
-  event: SchedulerEvent<E>,
-  events: SchedulerEvent<E>[],
-  dayStartHour: number,
-  dayEndHour: number,
+  params: { event: SchedulerEvent<E>; events: SchedulerEvent<E>[] } & DayBounds,
 ): EventPosition {
-  if (event.allDay) {
-    return { top: 0, height: 1, left: 0, width: 1, column: 0, totalColumns: 1 }
-  }
-  const map = getEventLayout(events, dayStartHour, dayEndHour)
-  return map.get(event.id) ?? { top: 0, height: 0, left: 0, width: 1, column: 0, totalColumns: 1 }
+  const { event, ...layoutParams } = params
+  if (event.allDay) return ALL_DAY_POSITION
+  const map = getEventLayout(layoutParams)
+  return map.get(event.id) ?? UNPLACED_POSITION
 }

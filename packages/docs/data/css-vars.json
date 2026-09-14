@@ -198,7 +198,12 @@
     "Root": {
       "--scheduler-visible-days": "The scheduler visible days value for the Root",
       "--scheduler-day-count": "The scheduler day count value for the Root",
+      "--scheduler-columns": "The scheduler columns value for the Root",
       "--scheduler-hour-count": "The scheduler hour count value for the Root"
+    },
+    "Timeline": {
+      "--scheduler-timeline-slots": "The scheduler timeline slots value for the Timeline",
+      "--scheduler-timeline-rows": "The scheduler timeline rows value for the Timeline"
     }
   },
   "scroll-area": {

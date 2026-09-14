@@ -4,24 +4,26 @@ import { alignEnd, alignStart, constrainStart, constrainValue } from "./constrai
 import { getEndDate, getUnitDuration } from "./duration"
 import type { DateValue } from "./types"
 
-export interface AdjustDateParams {
-  startDate: DateValue
-  focusedDate: DateValue
+export interface AdjustDateParams<T extends DateValue = DateValue> {
+  startDate: T
+  focusedDate: T
 }
 
-export interface AdjustDateReturn extends AdjustDateParams {
-  endDate: DateValue
+export interface AdjustDateReturn<T extends DateValue = DateValue> extends AdjustDateParams<T> {
+  endDate: T
 }
 
+// Generic throughout so paging a date-time returns date-times. Every operation already
+// preserves the concrete type; only the annotations used to widen it.
 export function getAdjustedDateFn(
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
   maxValue?: DateValue,
 ) {
-  return function getDate(options: AdjustDateParams): AdjustDateReturn {
+  return function getDate<T extends DateValue>(options: AdjustDateParams<T>): AdjustDateReturn<T> {
     const { startDate, focusedDate } = options
-    const endDate = getEndDate(startDate, visibleDuration)
+    const endDate = getEndDate(startDate, visibleDuration) as T
 
     // If the focused date was moved to an invalid value, it can't be focused, so constrain it.
     if (isDateOutsideRange(focusedDate, minValue, maxValue)) {
@@ -60,19 +62,19 @@ export function getAdjustedDateFn(
  *  Get next and previous page (for date range)
  * -----------------------------------------------------------------------------*/
 
-export function getNextPage(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getNextPage<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
   maxValue?: DateValue,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
-  const start = startDate.add(visibleDuration)
+  const start = startDate.add(visibleDuration) as T
 
   return adjust({
-    focusedDate: focusedDate.add(visibleDuration),
+    focusedDate: focusedDate.add(visibleDuration) as T,
     startDate: alignStart(
       constrainStart(focusedDate, start, visibleDuration, locale, minValue, maxValue),
       visibleDuration,
@@ -81,19 +83,19 @@ export function getNextPage(
   })
 }
 
-export function getPreviousPage(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getPreviousPage<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
   maxValue?: DateValue,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
-  let start = startDate.subtract(visibleDuration)
+  let start = startDate.subtract(visibleDuration) as T
 
   return adjust({
-    focusedDate: focusedDate.subtract(visibleDuration),
+    focusedDate: focusedDate.subtract(visibleDuration) as T,
     startDate: alignStart(
       constrainStart(focusedDate, start, visibleDuration, locale, minValue, maxValue),
       visibleDuration,
@@ -106,9 +108,9 @@ export function getPreviousPage(
  * Get the next and previous row (for date range)
  * -----------------------------------------------------------------------------*/
 
-export function getNextRow(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getNextRow<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
@@ -122,15 +124,15 @@ export function getNextRow(
 
   if (visibleDuration.weeks || visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: focusedDate.add({ weeks: 1 }),
+      focusedDate: focusedDate.add({ weeks: 1 }) as T,
       startDate,
     })
   }
 }
 
-export function getPreviousRow(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getPreviousRow<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
@@ -144,7 +146,7 @@ export function getPreviousRow(
 
   if (visibleDuration.weeks || visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: focusedDate.subtract({ weeks: 1 }),
+      focusedDate: focusedDate.subtract({ weeks: 1 }) as T,
       startDate,
     })
   }
@@ -154,9 +156,9 @@ export function getPreviousRow(
  * Get start and end date for a date section
  * -----------------------------------------------------------------------------*/
 
-export function getSectionStart(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getSectionStart<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
@@ -173,29 +175,29 @@ export function getSectionStart(
 
   if (visibleDuration.weeks) {
     return adjust({
-      focusedDate: startOfWeek(focusedDate, locale),
+      focusedDate: startOfWeek(focusedDate, locale) as T,
       startDate,
     })
   }
 
   if (visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: startOfMonth(focusedDate),
+      focusedDate: startOfMonth(focusedDate) as T,
       startDate,
     })
   }
 }
 
-export function getSectionEnd(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getSectionEnd<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
   maxValue?: DateValue,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
-  const endDate = getEndDate(startDate, visibleDuration)
+  const endDate = getEndDate(startDate, visibleDuration) as T
 
   if (visibleDuration.days) {
     return adjust({
@@ -206,22 +208,22 @@ export function getSectionEnd(
 
   if (visibleDuration.weeks) {
     return adjust({
-      focusedDate: endOfWeek(focusedDate, locale),
+      focusedDate: endOfWeek(focusedDate, locale) as T,
       startDate,
     })
   }
 
   if (visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: endOfMonth(focusedDate),
+      focusedDate: endOfMonth(focusedDate) as T,
       startDate,
     })
   }
 }
 
-export function getNextSection(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getNextSection<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   larger: boolean,
   visibleDuration: DateDuration,
   locale: string,
@@ -232,7 +234,7 @@ export function getNextSection(
 
   if (!larger && !visibleDuration.days) {
     return adjust({
-      focusedDate: focusedDate.add(getUnitDuration(visibleDuration)),
+      focusedDate: focusedDate.add(getUnitDuration(visibleDuration)) as T,
       startDate,
     })
   }
@@ -243,22 +245,22 @@ export function getNextSection(
 
   if (visibleDuration.weeks) {
     return adjust({
-      focusedDate: focusedDate.add({ months: 1 }),
+      focusedDate: focusedDate.add({ months: 1 }) as T,
       startDate,
     })
   }
 
   if (visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: focusedDate.add({ years: 1 }),
+      focusedDate: focusedDate.add({ years: 1 }) as T,
       startDate,
     })
   }
 }
 
-export function getPreviousSection(
-  focusedDate: DateValue,
-  startDate: DateValue,
+export function getPreviousSection<T extends DateValue>(
+  focusedDate: T,
+  startDate: T,
   larger: boolean,
   visibleDuration: DateDuration,
   locale: string,
@@ -269,7 +271,7 @@ export function getPreviousSection(
 
   if (!larger && !visibleDuration.days) {
     return adjust({
-      focusedDate: focusedDate.subtract(getUnitDuration(visibleDuration)),
+      focusedDate: focusedDate.subtract(getUnitDuration(visibleDuration)) as T,
       startDate,
     })
   }
@@ -280,14 +282,14 @@ export function getPreviousSection(
 
   if (visibleDuration.weeks) {
     return adjust({
-      focusedDate: focusedDate.subtract({ months: 1 }),
+      focusedDate: focusedDate.subtract({ months: 1 }) as T,
       startDate,
     })
   }
 
   if (visibleDuration.months || visibleDuration.years) {
     return adjust({
-      focusedDate: focusedDate.subtract({ years: 1 }),
+      focusedDate: focusedDate.subtract({ years: 1 }) as T,
       startDate,
     })
   }

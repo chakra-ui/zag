@@ -84,7 +84,7 @@ export default function Page() {
 
           <div className="scheduler-mobile-month">
             <div className="scheduler-mobile-weekdays">
-              {api.weekDays.map((day, i) => (
+              {api.getWeekDays().map((day, i) => (
                 <div key={i}>{day.short}</div>
               ))}
             </div>

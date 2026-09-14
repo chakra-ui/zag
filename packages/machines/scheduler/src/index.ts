@@ -1,7 +1,7 @@
 export { anatomy } from "./scheduler.anatomy"
 export { connect } from "./scheduler.connect"
 export { machine } from "./scheduler.machine"
-export { getToday, getDurationMinutes } from "./scheduler.utils"
+export { getToday, getMinutesBetween, formatDuration } from "./utils/time"
 export { expandRecurringEvents } from "./utils/rrule"
 export type { ExpandRecurringEventsParams } from "./utils/rrule"
 export * from "./scheduler.props"
@@ -19,6 +19,13 @@ export type {
   SlotDoubleClickDetails,
   ViewChangeDetails,
   SchedulerEvent,
+  SchedulerResource,
+  EventReceiveDetails,
+  TimelineRow,
+  TimelineSlot,
+  TimelineState,
+  SchedulerColumn,
+  GroupBy,
   SchedulerPayload,
   SchedulerTranslations,
   ElementIds,
@@ -27,6 +34,7 @@ export type {
   DayCellProps,
   DayCellTriggerProps,
   DayColumnProps,
+  AllDaySegment,
   DayColumnState,
   EventPosition,
   EventProps,

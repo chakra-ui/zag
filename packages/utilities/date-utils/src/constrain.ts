@@ -1,4 +1,5 @@
 import {
+  type CalendarDate,
   type DateDuration,
   type DateValue,
   maxDate,
@@ -9,17 +10,25 @@ import {
   toCalendarDate,
 } from "@internationalized/date"
 
+// Replaces the calendar portion of a date, keeping whatever time/zone it already carries.
+function withCalendarDate<T extends DateValue>(date: T, next: CalendarDate): T {
+  return date.set({ year: next.year, month: next.month, day: next.day }) as T
+}
+
 /* -----------------------------------------------------------------------------
  * Align date to start, end, or center of a duration
  * -----------------------------------------------------------------------------*/
 
-export function alignCenter(
-  date: DateValue,
+// Every function below is generic so a caller that hands in a date-time gets date-times back.
+// The operations already preserve the concrete type; only the annotations used to widen it.
+
+export function alignCenter<T extends DateValue>(
+  date: T,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-): DateValue {
+): T {
   const halfDuration: DateDuration = {}
 
   for (let prop in duration) {
@@ -35,38 +44,38 @@ export function alignCenter(
     }
   }
 
-  const aligned = alignStart(date, duration, locale).subtract(halfDuration)
+  const aligned = alignStart(date, duration, locale).subtract(halfDuration) as T
 
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 
-export function alignStart(
-  date: DateValue,
+export function alignStart<T extends DateValue>(
+  date: T,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-): DateValue {
+): T {
   // align to the start of the largest unit
   let aligned = date
   if (duration.years) {
-    aligned = startOfYear(date)
+    aligned = startOfYear(date) as T
   } else if (duration.months) {
-    aligned = startOfMonth(date)
+    aligned = startOfMonth(date) as T
   } else if (duration.weeks) {
-    aligned = startOfWeek(date, locale)
+    aligned = startOfWeek(date, locale) as T
   }
 
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 
-export function alignEnd(
-  date: DateValue,
+export function alignEnd<T extends DateValue>(
+  date: T,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-): DateValue {
+): T {
   let d: DateDuration = { ...duration }
   // subtract 1 from the smallest unit
   if (d.days) {
@@ -79,7 +88,7 @@ export function alignEnd(
     d.years--
   }
 
-  let aligned = alignStart(date, duration, locale).subtract(d)
+  let aligned = alignStart(date, duration, locale).subtract(d) as T
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 
@@ -87,27 +96,33 @@ export function alignEnd(
  * Constrain a date to a min/max range
  * -----------------------------------------------------------------------------*/
 
-export function constrainStart(
+export function constrainStart<T extends DateValue>(
   date: DateValue,
-  aligned: DateValue,
+  aligned: T,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-): DateValue {
+): T {
+  // Bounds are aligned and compared date-only so a stray time component can't shift the
+  // alignment, then written back onto `aligned` so its own time/zone survives the clamp.
+  let result = aligned
+
   if (min && date.compare(min) >= 0) {
-    // Ensure consistent date types by converting min to CalendarDate for alignment operations
-    // This prevents time-component comparison issues in alignment calculations
-    aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))!
+    const lower = alignStart(toCalendarDate(min), duration, locale)
+    if (toCalendarDate(result).compare(lower) < 0) {
+      result = withCalendarDate(result, lower)
+    }
   }
 
   if (max && date.compare(max) <= 0) {
-    // Ensure consistent date types by converting max to CalendarDate for alignment operations
-    // This prevents time-component comparison issues in alignment calculations
-    aligned = minDate(aligned, alignEnd(toCalendarDate(max), duration, locale))!
+    const upper = alignEnd(toCalendarDate(max), duration, locale)
+    if (toCalendarDate(result).compare(upper) > 0) {
+      result = withCalendarDate(result, upper)
+    }
   }
 
-  return aligned
+  return result
 }
 
 export function constrainValue<T extends DateValue>(date: T, minValue?: DateValue, maxValue?: DateValue): T {
@@ -132,18 +147,7 @@ export function constrainValue<T extends DateValue>(date: T, minValue?: DateValu
     return date
   }
 
-  // Date changed - apply the date portion while preserving time if present
-  // Check if original date has time components (CalendarDateTime or ZonedDateTime)
-  if ("hour" in date) {
-    return date.set({
-      year: constrainedDateOnly.year,
-      month: constrainedDateOnly.month,
-      day: constrainedDateOnly.day,
-    }) as T
-  }
-
-  // Original was CalendarDate, return the constrained CalendarDate
-  return constrainedDateOnly as T
+  return withCalendarDate(date, constrainedDateOnly)
 }
 
 // Clamp only the out-of-range date segments, preserving later segments when possible.
@@ -182,9 +186,5 @@ export function constrainSegments<T extends DateValue>(date: T, minValue?: DateV
     return date
   }
 
-  if ("hour" in date) {
-    return date.set({ year: result.year, month: result.month, day: result.day }) as T
-  }
-
-  return result as T
+  return withCalendarDate(date, result)
 }

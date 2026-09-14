@@ -14,6 +14,7 @@ import type {
 export const props = createProps<SchedulerProps>()([
   "canDragEvent",
   "canResizeEvent",
+  "canDropEvent",
   "date",
   "dayEndHour",
   "dayStartHour",
@@ -22,11 +23,13 @@ export const props = createProps<SchedulerProps>()([
   "dir",
   "disabled",
   "events",
+  "groupBy",
   "expandRecurrence",
   "getRootNode",
   "id",
   "ids",
   "locale",
+  "resources",
   "onDateChange",
   "onEventClick",
   "onEventDrop",
@@ -34,6 +37,8 @@ export const props = createProps<SchedulerProps>()([
   "onDayActivate",
   "onSlotDoubleClick",
   "onSlotSelect",
+  "onEventReceive",
+  "dataTransferFormat",
   "onViewChange",
   "maxRecurrenceInstances",
   "showCurrentTime",
@@ -52,13 +57,13 @@ export const splitProps = createSplitProps<Partial<SchedulerProps>>(props)
 export const timeSlotProps = createProps<TimeSlotProps>()(["start", "end"])
 export const splitTimeSlotProps = createSplitProps<TimeSlotProps>(timeSlotProps)
 
-export const dayColumnProps = createProps<DayColumnProps>()(["date"])
+export const dayColumnProps = createProps<DayColumnProps>()(["date", "resource"])
 export const splitDayColumnProps = createSplitProps<DayColumnProps>(dayColumnProps)
 
 export const dayCellProps = createProps<DayCellProps>()(["date", "referenceDate", "allDay"])
 export const splitDayCellProps = createSplitProps<DayCellProps>(dayCellProps)
 
-export const eventProps = createProps<EventProps>()(["event", "layout"])
+export const eventProps = createProps<EventProps>()(["event", "layout", "segment"])
 export const splitEventProps = createSplitProps<EventProps>(eventProps)
 
 export const eventResizeHandleProps = createProps<EventResizeHandleProps>()(["event", "edge"])
