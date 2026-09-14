@@ -78,18 +78,36 @@ describe("wheel picker utilities", () => {
   })
 
   test("projects and clamps inertia targets", () => {
-    expect(getInertiaTarget({ current: 2, dragSensitivity: 3, infinite: false, itemCount: 5, velocity: 30 })).toEqual({
+    expect(getInertiaTarget({ current: 2, dragSensitivity: 5, infinite: false, itemCount: 5, velocity: 30 })).toEqual({
       duration: expect.any(Number),
       target: 4,
     })
 
-    expect(getInertiaTarget({ current: -0.5, dragSensitivity: 3, infinite: false, itemCount: 5, velocity: 0 })).toEqual(
+    expect(getInertiaTarget({ current: -0.5, dragSensitivity: 5, infinite: false, itemCount: 5, velocity: 0 })).toEqual(
       { duration: expect.any(Number), target: 0 },
     )
 
     expect(
-      getInertiaTarget({ current: 2, dragSensitivity: 3, infinite: true, itemCount: 5, velocity: 30 }).target,
+      getInertiaTarget({ current: 2, dragSensitivity: 5, infinite: true, itemCount: 5, velocity: 30 }).target,
     ).toBeGreaterThan(4)
+
+    const lowSensitivity = getInertiaTarget({
+      current: 0,
+      dragSensitivity: 1,
+      infinite: true,
+      itemCount: 5,
+      velocity: 10,
+    })
+    const highSensitivity = getInertiaTarget({
+      current: 0,
+      dragSensitivity: 6,
+      infinite: true,
+      itemCount: 5,
+      velocity: 10,
+    })
+
+    expect(highSensitivity.target).toBeGreaterThan(lowSensitivity.target)
+    expect(highSensitivity.duration).toBeGreaterThan(lowSensitivity.duration)
   })
 
   test("calculates drag velocity from recent movement samples", () => {

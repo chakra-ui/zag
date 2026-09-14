@@ -208,7 +208,9 @@ export function getInertiaTarget(options: InertiaTargetOptions) {
   const { current, itemCount, infinite } = options
   const maxIndex = Math.max(0, itemCount - 1)
   const velocity = clamp(options.velocity, -MAX_VELOCITY, MAX_VELOCITY)
-  const decelerationMagnitude = Math.max(0.001, options.dragSensitivity * 10)
+  const sensitivity = Math.max(0.001, Number.isFinite(options.dragSensitivity) ? options.dragSensitivity : 5)
+  // Preserve the default deceleration (30) at sensitivity 5 while making a higher sensitivity coast farther.
+  const decelerationMagnitude = 150 / sensitivity
 
   if (!infinite && (current < 0 || current > maxIndex)) {
     const target = clamp(current, 0, maxIndex)

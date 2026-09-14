@@ -173,13 +173,13 @@ const service = useMachine(wheelPicker.machine, {
 
 ### Adjusting scroll behavior
 
-Use `dragSensitivity` to control drag deceleration and `scrollSensitivity` to
-control step-based scrolling speed. `optionItemHeight` must match the rendered
-height of each item.
+Use `dragSensitivity` to control how far the wheel coasts after a drag and
+`scrollSensitivity` to control step-based scrolling speed. `optionItemHeight`
+must match the rendered height of each item.
 
 ```tsx
 const service = useMachine(wheelPicker.machine, {
-  dragSensitivity: 3,
+  dragSensitivity: 5,
   scrollSensitivity: 5,
   optionItemHeight: 30,
 })

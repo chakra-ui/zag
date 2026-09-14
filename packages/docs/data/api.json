@@ -6947,12 +6947,12 @@
       },
       "dragSensitivity": {
         "type": "number | undefined",
-        "description": "The deceleration applied after a drag.",
-        "defaultValue": "3"
+        "description": "The distance the wheel coasts after a drag. Higher values increase the coast distance; lower positive values reduce it.",
+        "defaultValue": "5"
       },
       "scrollSensitivity": {
         "type": "number | undefined",
-        "description": "The speed of step-based scrolling.",
+        "description": "The speed of step-based scrolling. Higher values make scrolling settle faster; lower positive values make it settle more slowly.",
         "defaultValue": "5"
       },
       "optionItemHeight": {

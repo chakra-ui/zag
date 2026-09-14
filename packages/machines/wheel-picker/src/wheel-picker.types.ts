@@ -47,9 +47,9 @@ export interface WheelPickerProps<T extends CollectionItem = CollectionItem>
   infinite?: boolean | undefined
   /** The number of items on the circular ring. Values are rounded down to a multiple of 4. @default 20 */
   visibleCount?: number | undefined
-  /** The deceleration applied after a drag. @default 3 */
+  /** The distance the wheel coasts after a drag. Higher values increase the coast distance; lower positive values reduce it. @default 5 */
   dragSensitivity?: number | undefined
-  /** The speed of step-based scrolling. @default 5 */
+  /** The speed of step-based scrolling. Higher values make scrolling settle faster; lower positive values make it settle more slowly. @default 5 */
   scrollSensitivity?: number | undefined
   /** The height of each item in pixels. @default 30 */
   optionItemHeight?: number | undefined

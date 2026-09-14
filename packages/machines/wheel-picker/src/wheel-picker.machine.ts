@@ -44,7 +44,7 @@ export const machine = createMachine<WheelPickerSchema>({
 
     return {
       dir: "ltr",
-      dragSensitivity: 3,
+      dragSensitivity: 5,
       infinite: false,
       optionItemHeight: 30,
       scrollSensitivity: 5,

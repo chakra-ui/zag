@@ -560,7 +560,7 @@ const components = {
         infinite: false,
         readOnly: false,
         scrollSensitivity: 5,
-        dragSensitivity: 3,
+        dragSensitivity: 5,
         optionItemHeight: 30,
         visibleCount: 20,
       }}
