@@ -70,6 +70,7 @@ import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
+import { WheelPicker } from "./wheel-picker"
 
 const components = {
   Accordion: () => (
@@ -547,6 +548,21 @@ const components = {
           default: "single",
           options: ["multiple", "single"],
         },
+      }}
+    />
+  ),
+  WheelPicker: () => (
+    <Playground
+      name="wheel-picker"
+      component={WheelPicker}
+      defaultProps={{
+        disabled: false,
+        infinite: false,
+        readOnly: false,
+        scrollSensitivity: 5,
+        dragSensitivity: 5,
+        optionItemHeight: 30,
+        visibleCount: 20,
       }}
     />
   ),

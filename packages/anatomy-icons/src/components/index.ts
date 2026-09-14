@@ -42,8 +42,10 @@ import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
+import { WheelPickerAnatomy } from "./wheel-picker"
 
 export const allComponents = {
+  "wheel-picker": WheelPickerAnatomy,
   "date-input": DateInputAnatomy,
   toc: TocAnatomy,
   "scroll-area": ScrollAreaAnatomy,

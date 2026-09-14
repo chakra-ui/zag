@@ -1,0 +1,283 @@
+---
+title: Wheel Picker
+description:
+  Build wheel pickers with smooth inertia scrolling, precise snapping, and
+  infinite loop support.
+package: "@zag-js/wheel-picker"
+status: beta
+---
+
+A wheel picker provides a fluid way to select from a vertically arranged
+collection, with smooth inertia scrolling, precise item snapping, and optional
+infinite looping. Users can drag, scroll, or step through the available options.
+
+<Resources pkg="@zag-js/wheel-picker" />
+
+<Showcase id="WheelPicker" />
+
+**Features**
+
+- Mouse, touch, wheel, keyboard, and typeahead interactions
+- Smooth inertia scrolling with precise item snapping
+- Optional infinite looping
+- Disabled item support
+- Controlled and uncontrolled values
+- Form integration through a hidden native select
+- Right-to-left direction support
+
+## Installation
+
+Install the wheel-picker package:
+
+<CodeSnippet id="wheel-picker/installation.mdx" />
+
+## Anatomy
+
+Check the wheel-picker anatomy and part names.
+
+> Each part includes a `data-part` attribute to help identify it in the DOM.
+
+<Anatomy id="wheel-picker" />
+
+## Usage
+
+Import the package:
+
+```tsx
+import * as wheelPicker from "@zag-js/wheel-picker"
+```
+
+The wheel-picker package exports these key functions:
+
+- `collection` - Creates the item collection used by the picker.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+
+> Pass a unique `id` to `useMachine` so generated element ids remain
+> predictable.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="wheel-picker/usage.mdx" />
+
+### Creating the collection
+
+Create a collection with a `label` and `value` for each item. Items can also be
+disabled.
+
+```tsx
+const frameworks = wheelPicker.collection({
+  items: [
+    { label: "React", value: "react" },
+    { label: "Vue", value: "vue" },
+    { label: "Angular", value: "angular", disabled: true },
+  ],
+})
+```
+
+Pass the collection to the machine:
+
+```tsx {2}
+const service = useMachine(wheelPicker.machine, {
+  collection: frameworks,
+})
+```
+
+### Rendering the wheel
+
+The wheel uses two synchronized item layers. `api.items` renders the rotating 3D
+wheel, while `api.highlightItems` renders the selected row inside the clipped
+highlight.
+
+```tsx
+<div {...api.getControlProps()}>
+  <div {...api.getViewportProps()}>
+    <ul {...api.getItemGroupProps()}>
+      {api.items.map(({ item, index, key }) => (
+        <li key={key} {...api.getItemProps({ item, index })}>
+          {item.label}
+        </li>
+      ))}
+    </ul>
+
+    <div {...api.getHighlightProps()}>
+      <ul {...api.getHighlightItemGroupProps()}>
+        {api.highlightItems.map(({ item, index, key }) => (
+          <li key={key} {...api.getHighlightItemProps({ item, index })}>
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+### Setting the initial value
+
+Set `defaultValue` to define the initially selected item.
+
+```tsx {2}
+const service = useMachine(wheelPicker.machine, {
+  defaultValue: "react",
+})
+```
+
+### Controlling the value
+
+Use `value` and `onValueChange` to control the selected value externally.
+
+```tsx
+const [value, setValue] = useState("react")
+
+const service = useMachine(wheelPicker.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+You can also update the value or smoothly scroll to an item through the API.
+
+```tsx
+api.setValue("vue")
+api.scrollToIndex(2)
+```
+
+### Listening for scroll changes
+
+Use `onScrollChange` when the centered item changes during scrolling. Use
+`onValueChangeEnd` when scrolling has settled and the final value is committed.
+
+```tsx
+const service = useMachine(wheelPicker.machine, {
+  onScrollChange(details) {
+    console.log("centered item:", details.value)
+  },
+  onValueChangeEnd(details) {
+    console.log("final value:", details.value)
+  },
+})
+```
+
+### Enabling infinite scrolling
+
+Set `infinite` to repeat the collection continuously in either direction.
+
+```tsx {2}
+const service = useMachine(wheelPicker.machine, {
+  infinite: true,
+})
+```
+
+### Adjusting scroll behavior
+
+Use `dragSensitivity` to control how far the wheel coasts after a drag and
+`scrollSensitivity` to control step-based scrolling speed. `optionItemHeight`
+must match the rendered height of each item.
+
+```tsx
+const service = useMachine(wheelPicker.machine, {
+  dragSensitivity: 5,
+  scrollSensitivity: 5,
+  optionItemHeight: 30,
+})
+```
+
+### Disabled and read-only states
+
+Set `disabled` to prevent interaction and form submission. Set `readOnly` to
+prevent changes while keeping the control focusable.
+
+```tsx
+const service = useMachine(wheelPicker.machine, {
+  disabled: false,
+  readOnly: true,
+})
+```
+
+### Using the picker in forms
+
+Set `name` and render the hidden select with one option for every original
+collection item.
+
+```tsx
+<select {...api.getHiddenSelectProps()}>
+  {frameworks.items.map((item) => (
+    <option key={item.value} value={item.value} disabled={item.disabled}>
+      {item.label}
+    </option>
+  ))}
+</select>
+```
+
+## Styling guide
+
+Each part includes a `data-part` attribute you can target in CSS.
+
+```css
+[data-scope="wheel-picker"][data-part="control"] {
+  height: 192px;
+}
+
+[data-scope="wheel-picker"][data-part="viewport"] {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20% 80%,
+    transparent
+  );
+}
+
+[data-scope="wheel-picker"][data-part="highlight"] {
+  background: blue;
+  color: white;
+}
+```
+
+The root and control expose state attributes for styling disabled, invalid,
+read-only, focused, dragging, and scrolling states.
+
+```css
+[data-part="control"][data-focus] {
+  outline: 2px solid blue;
+}
+
+[data-part="control"][data-dragging] {
+  cursor: grabbing;
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The wheel-picker machine exposes the following context properties:
+
+<ContextTable name="wheel-picker" />
+
+### Machine API
+
+The wheel-picker `api` exposes the following methods and properties:
+
+<ApiTable name="wheel-picker" />
+
+### Data Attributes
+
+<DataAttrTable name="wheel-picker" />
+
+## Accessibility
+
+The control uses the `spinbutton` role and exposes the current item through
+`aria-valuenow` and `aria-valuetext`. Provide an accessible name with a visible
+label, `aria-label`, or `aria-labelledby`.
+
+### Keyboard interactions
+
+- **Arrow Up** — Selects the previous enabled item.
+- **Arrow Down** — Selects the next enabled item.
+- **Arrow Left / Arrow Right** — Moves focus between sibling wheel pickers.
+- **Home** — Selects the first enabled item when infinite scrolling is off.
+- **End** — Selects the last enabled item when infinite scrolling is off.
+- **Character keys** — Select an item using typeahead.

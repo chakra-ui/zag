@@ -369,6 +369,19 @@ const service = useMachine(dateInput.machine, {
 
 By default, this is determined by the locale.
 
+### Time-only input
+
+Set `maxGranularity` to `"hour"` to display only time segments. The hour cycle
+and day period are determined by the locale unless `hourCycle` is provided.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  locale: "en-US",
+  maxGranularity: "hour",
+  granularity: "minute",
+})
+```
+
 ### Custom formatter
 
 Provide a `formatter` to customize how dates are parsed and formatted.

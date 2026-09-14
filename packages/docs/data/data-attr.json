@@ -2337,5 +2337,51 @@
       "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\"",
       "data-disabled": "Present when disabled"
     }
+  },
+  "wheel-picker": {
+    "Root": {
+      "data-scope": "wheel-picker",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-scope": "wheel-picker",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
+    },
+    "Control": {
+      "data-scope": "wheel-picker",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-dragging": "Present when in the dragging state",
+      "data-focus": "Present when focused",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only",
+      "data-scrolling": "Present when scrolling"
+    },
+    "Item": {
+      "data-scope": "wheel-picker",
+      "data-part": "item",
+      "data-disabled": "Present when disabled",
+      "data-index": "The index of the item",
+      "data-selected": "Present when selected",
+      "data-value": "The value of the item"
+    },
+    "Highlight": {
+      "data-scope": "wheel-picker",
+      "data-part": "highlight",
+      "data-focus": "Present when focused"
+    },
+    "HighlightItem": {
+      "data-scope": "wheel-picker",
+      "data-part": "highlight-item",
+      "data-disabled": "Present when disabled",
+      "data-index": "The index of the item",
+      "data-selected": "Present when selected",
+      "data-value": "The value of the item"
+    }
   }
 }

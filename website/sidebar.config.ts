@@ -152,6 +152,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Tooltip", id: "tooltip" },
         { type: "doc", label: "Tour", id: "tour" },
         { type: "doc", label: "Tree View", id: "tree-view" },
+        { type: "doc", label: "Wheel Picker", id: "wheel-picker", beta: true },
       ],
     },
     {
