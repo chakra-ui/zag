@@ -1,6 +1,6 @@
 import { toCalendarDate, toCalendarDateTime, type CalendarDateTime } from "@internationalized/date"
 import type { EventPosition, SchedulerEvent, SchedulerPayload } from "../scheduler.types"
-import { getMinutesSinceMidnight, rangesOverlap, type DayBounds, type TimeRange } from "./time"
+import { getMinutesSinceMidnight, type DayBounds, type TimeRange } from "./time"
 
 /** An all-day event fills its lane; nothing positions it vertically. */
 export const ALL_DAY_POSITION: EventPosition = { top: 0, height: 1, left: 0, width: 1, column: 0, totalColumns: 1 }
@@ -111,16 +111,30 @@ export function getEventLayout<E extends SchedulerPayload = SchedulerPayload>(
   return result
 }
 
-/** `end` is exclusive, so it's pushed a day out to include the last visible day. */
+/** The days an event occupies, inclusive of both ends. */
+export function getEventDaySpan<E extends SchedulerPayload = SchedulerPayload>(event: SchedulerEvent<E>) {
+  const start = toCalendarDate(event.start)
+  let end = toCalendarDate(event.end)
+  if (!event.allDay && getMinutesSinceMidnight(event.end) === 0 && end.compare(start) > 0) {
+    end = end.subtract({ days: 1 })
+  }
+  return { start, end }
+}
+
+/** Events touching any visible day. */
 export function getVisibleEvents<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
   visibleRange: TimeRange,
 ): SchedulerEvent<E>[] {
-  const range = { start: visibleRange.start, end: visibleRange.end.add({ days: 1 }) }
-  return events.filter((e) => rangesOverlap(e, range))
+  const rangeStart = toCalendarDate(visibleRange.start)
+  const rangeEnd = toCalendarDate(visibleRange.end)
+  return events.filter((event) => {
+    const span = getEventDaySpan(event)
+    return span.end.compare(rangeStart) >= 0 && span.start.compare(rangeEnd) <= 0
+  })
 }
 
-/** Day buckets in chronological order, each sorted by start time. Used by the agenda view. */
+/** Day buckets in chronological order, each sorted by start time. */
 export function getAgendaGroups<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
 ): { date: CalendarDateTime; events: SchedulerEvent<E>[] }[] {
@@ -144,8 +158,8 @@ export function groupEventsByDay<E extends SchedulerPayload = SchedulerPayload>(
 ): Map<string, SchedulerEvent<E>[]> {
   const result = new Map<string, SchedulerEvent<E>[]>()
   for (const e of events) {
-    let cur = toCalendarDate(e.start)
-    const stop = toCalendarDate(e.end)
+    const { start: from, end: stop } = getEventDaySpan(e)
+    let cur = from
     while (cur.compare(stop) <= 0) {
       const key = cur.toString()
       const bucket = result.get(key)
@@ -157,8 +171,8 @@ export function groupEventsByDay<E extends SchedulerPayload = SchedulerPayload>(
   return result
 }
 
-/** Ids of timed events overlapping at least one other. `allDay` events never conflict. */
-/** Events only collide within a resource. Without resources everything lands in one group. */
+/** Ids of timed events overlapping at least one other. */
+/** Events only collide within a resource. */
 function groupByResource<E extends SchedulerPayload = SchedulerPayload>(
   events: SchedulerEvent<E>[],
 ): SchedulerEvent<E>[][] {

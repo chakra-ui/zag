@@ -104,7 +104,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
   const events = expandRecurringEvents({
     events: prop("events"),
-    range: visibleRange,
+    // `visibleRange.end` is midnight starting the last day, so expansion must run past it
+    range: { start: visibleRange.start, end: visibleRange.end.add({ days: 1 }) },
     limit: prop("maxRecurrenceInstances"),
     expander: prop("expandRecurrence"),
   })
@@ -169,7 +170,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
   const liveSlot = context.get("liveSlot")
   const activeSlot = liveSlot ?? selectedSlot
 
-  // State getters are pure and serializable — independent of `normalize`.
   function getRootState(): RootState {
     return { view, dragging: isDragging, resizing: isResizing, selectingSlot: isSelectingSlot }
   }
@@ -184,8 +184,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     columns,
     resources,
     getTimelineState: timeline.getState,
-    getAllDaySegments() {
-      return getAllDaySegments({ events: visibleEvents, days: visibleDays, live: liveDrag })
+    getAllDaySegments(days = visibleDays) {
+      return getAllDaySegments({ events: visibleEvents, days, live: liveDrag })
     },
     formatTime(d) {
       return formatters.time.format(d.toDate(timeZone))
@@ -267,8 +267,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     },
 
     getDragPreviewProps({ date, resource }) {
-      // every resource column shares a date, so the preview must also match the lane.
-      // an all-day gesture moves its own bar, so the hour grid stays out of it.
+      // a date is shared across resource columns, and an all-day gesture moves its own bar
       const active = !!dragState && !dragState.allDay && isSameDay(dragState.start, date) && ownsDraggedEvent(resource)
       return normalize.element({
         ...parts.dragGhost.attrs(scope.id),
@@ -318,7 +317,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       const focused = focusedEventId === id
       const selected = selectedEventId === id
       const conflict = conflictIds.has(id)
-      // only the event under the gesture can be in an invalid position
       const invalid = (draggingThis || resizingThis) && !!liveDrag?.invalid
       return { dragging: draggingThis, resizing: resizingThis, focused, selected, conflict, invalid }
     },
@@ -660,7 +658,6 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     },
 
     getDayColumnState({ date }) {
-      // a gesture aimed at the all-day row leaves the hour grid alone, in both directions:
       // the preview follows the pointer's region, the origin follows where the event started
       const inGrid = !!dragState && !dragState.allDay
       return {
@@ -885,8 +882,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-clip-end": dataAttr(!!bar && !bar.isEnd),
         style: bar
           ? {
-              // rendered inside the cell it starts on and allowed to overflow across the rest, so
-              // the all-day row keeps a valid `row` > `gridcell` structure
+              // overflows out of its starting cell, so the row keeps a valid `row` > `gridcell`
               position: "absolute",
               insetInlineStart: 0,
               width: `calc(${bar.span} * 100% + ${bar.span - 1}px)`,

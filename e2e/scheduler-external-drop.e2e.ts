@@ -22,7 +22,7 @@ test.describe("scheduler / external drop", () => {
     await I.dragBacklogItemToGrid("b1")
 
     await expect(I.getEvent("b1")).toBeVisible()
-    await expect(I.getEvent("b1")).toContainText("Design review")
+    await expect(I.getEvent("b1")).toContainText("Write RFC")
     // the item leaves the backlog once scheduled
     await expect(I.getBacklogItem("b1")).toHaveCount(0)
     await expect(I.backlogItems).toHaveCount(2)

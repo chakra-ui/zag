@@ -7,13 +7,9 @@ import { getMinutesBetween } from "./time"
  * -----------------------------------------------------------------------------*/
 
 export interface BydayToken {
-  /**
-   * 0=Sun, 1=Mon, …, 6=Sat
-   */
+  /** 0=Sun, 1=Mon, …, 6=Sat */
   day: number
-  /**
-   * Positional: `1MO` = first Monday, `-1FR` = last Friday. Undefined = every occurrence.
-   */
+  /** Positional: `1MO` = first Monday, `-1FR` = last Friday. */
   position?: number
 }
 
@@ -30,10 +26,7 @@ const FREQ_MAP = { DAILY: "daily", WEEKLY: "weekly", MONTHLY: "monthly", YEARLY:
 const WEEKDAY_MAP: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 }
 const SIMPLE_KEYS = new Set(["FREQ", "INTERVAL", "COUNT", "UNTIL", "BYDAY", "BYMONTHDAY"])
 
-/**
- * Parses the RRULE subset expanded natively: FREQ, INTERVAL, COUNT, UNTIL, BYDAY, BYMONTHDAY.
- * Null for anything else, so the caller falls back to a user expander.
- */
+/** Parses the RRULE subset expanded natively: FREQ, INTERVAL, COUNT, UNTIL, BYDAY, BYMONTHDAY. */
 export function parseSimpleRRule(rrule: string): ParsedRRule | null {
   const body = rrule.replace(/^RRULE:/i, "")
   const entries: Record<string, string> = {}
@@ -262,16 +255,11 @@ export interface ExpandRecurringEventsParams<T extends SchedulerPayload = Schedu
    * @default 2000
    */
   limit?: number | undefined
-  /**
-   * Called for events whose rrule uses features beyond the native subset. Wire up `rrule.js` here.
-   */
+  /** Called for events whose rrule uses features beyond the native subset. */
   expander?: RecurrenceExpander<T> | undefined
 }
 
-/**
- * Expands recurring events within a range; non-recurring ones pass through. Mirrors what the
- * machine does internally, for when you need the same set outside the scheduler.
- */
+/** Expands recurring events within a range; non-recurring ones pass through. */
 export function expandRecurringEvents<T extends SchedulerPayload = SchedulerPayload>(
   params: ExpandRecurringEventsParams<T>,
 ): SchedulerEvent<T>[] {

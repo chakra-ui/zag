@@ -56,7 +56,7 @@ export function getDaysBetween(start: CalendarDateTime, end: CalendarDateTime): 
 export const minDateTime = (a: CalendarDateTime, b: CalendarDateTime) => (a.compare(b) <= 0 ? a : b)
 export const maxDateTime = (a: CalendarDateTime, b: CalendarDateTime) => (a.compare(b) >= 0 ? a : b)
 
-/** Midnight on the date's own day. All-day events sit at midnight on both ends. */
+/** Midnight on the date's own day. */
 export function startOfDay(date: CalendarDateTime): CalendarDateTime {
   return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 }
@@ -66,7 +66,7 @@ export function getToday(timeZone?: string): CalendarDateTime {
   return toCalendarDateTime(today(timeZone ?? getLocalTimeZone()))
 }
 
-/** e.g. `1h 30m`. Clamped at zero for inverted ranges. */
+/** e.g. */
 export function formatDuration(start: CalendarDateTime, end: CalendarDateTime): string {
   const diff = Math.max(0, getMinutesBetween(start, end))
   const h = Math.floor(diff / 60)

@@ -9,10 +9,7 @@ export interface AllDaySegmentParams<E extends SchedulerPayload> {
 }
 
 /**
- * One bar per event rather than one chip per day, so a multi-day event reads as a single
- * continuous range and only its true ends carry resize handles.
- *
- * Bars are packed into levels: an event takes the first level free for every column it covers.
+ * One bar per event rather than one chip per day, so a multi-day event reads as a single continuous range and only its true ends carry resize handles.
  */
 export function getAllDaySegments<E extends SchedulerPayload>(params: AllDaySegmentParams<E>): AllDaySegment<E>[] {
   const { events, days, live } = params

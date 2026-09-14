@@ -3,7 +3,7 @@
 import { startOfWeek } from "@internationalized/date"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerAnchor } from "@zag-js/shared"
+import { schedulerAnchor, schedulerBacklog } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -12,15 +12,9 @@ import "@styles/scheduler.css"
 const TODAY = schedulerAnchor
 const WEEK = startOfWeek(TODAY, "en-US")
 
-const BACKLOG = [
-  { id: "b1", title: "Design review" },
-  { id: "b2", title: "1:1" },
-  { id: "b3", title: "Retro" },
-]
-
 export default function Page() {
   const [events, setEvents] = useState<scheduler.SchedulerEvent[]>([])
-  const [backlog, setBacklog] = useState(BACKLOG)
+  const [backlog, setBacklog] = useState(schedulerBacklog)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),

@@ -1078,3 +1078,33 @@
   font-size: 13px;
   cursor: grab;
 }
+
+/* month grid: an all-day bar spans the days it covers, clipped at the week edge */
+.scheduler-month-cell {
+  position: relative;
+}
+
+.scheduler-month-bar {
+  position: relative;
+  display: block;
+  margin-block-end: 2px;
+  background: var(--event-color, #3b82f6);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &[data-clip-start] {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  &[data-clip-end] {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+}

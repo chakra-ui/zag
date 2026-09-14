@@ -173,41 +173,6 @@ export const schedulerAllDayEvents: SchedulerEvent[] = [...allDay, ...routine.sl
 
 export const schedulerRecurringEvents: SchedulerEvent[] = recurring
 
-/**
- * Days when the clock shifts, which is where timezone handling breaks if it is going to. Absolute
- * rather than anchor-relative, because the whole point is the specific real date.
- */
-export const schedulerDstEvents: SchedulerEvent[] = [
-  {
-    id: "dst-start-us",
-    title: "DST starts (America)",
-    start: new CalendarDateTime(2024, 3, 10, 1, 30),
-    end: new CalendarDateTime(2024, 3, 10, 3, 30),
-    color: "#f59e0b",
-  },
-  {
-    id: "dst-end-us",
-    title: "DST ends (America)",
-    start: new CalendarDateTime(2024, 11, 3, 1, 0),
-    end: new CalendarDateTime(2024, 11, 3, 2, 0),
-    color: "#f97316",
-  },
-  {
-    id: "dst-start-eu",
-    title: "DST starts (Europe)",
-    start: new CalendarDateTime(2024, 3, 31, 1, 30),
-    end: new CalendarDateTime(2024, 3, 31, 3, 30),
-    color: "#0ea5e9",
-  },
-  {
-    id: "dst-end-eu",
-    title: "DST ends (Europe)",
-    start: new CalendarDateTime(2024, 10, 27, 1, 0),
-    end: new CalendarDateTime(2024, 10, 27, 2, 0),
-    color: "#0284c7",
-  },
-]
-
 /** Unscheduled items for the external-drop example. */
 export const schedulerBacklog = [
   { id: "b1", title: "Write RFC" },

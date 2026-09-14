@@ -21,8 +21,7 @@ export const getEventEl = (ctx: Scope, eventId: string) => ctx.getById(getEventI
 
 export const getFocusedDayCellTriggerEl = (ctx: Scope) => {
   const base = `[data-scheduler-day-cell-trigger="${ctx.id}"][data-focus]`
-  // A date can appear in two mini-grids (Mar 31 is in-month in March, outside in April), so
-  // prefer the in-month one.
+  // a date can appear in two mini-grids, so prefer the in-month one
   return ctx.query<HTMLElement>(`${base}[data-in-month]`) ?? ctx.query<HTMLElement>(base)
 }
 
@@ -38,7 +37,7 @@ export const getContentRect = (ctx: Scope) => {
 
 export const getAllDayRowEl = (ctx: Scope) => ctx.query<HTMLElement>(`[data-scheduler-all-day-row="${ctx.id}"]`)
 
-/** Which region a drag is over. Absent all-day row means every point is a time-grid point. */
+/** Which region a drag is over. */
 export const isPointInAllDayRow = (ctx: Scope, point: { y: number }) => {
   const rect = getAllDayRowEl(ctx)?.getBoundingClientRect()
   if (!rect) return false
@@ -46,9 +45,7 @@ export const isPointInAllDayRow = (ctx: Scope, point: { y: number }) => {
 }
 
 /**
- * The date of the all-day cell under a point, hit-tested rather than derived from the grid's
- * geometry — a scrollbar on the time grid leaves the two column tracks slightly out of step.
- * Null when the point isn't over the row.
+ * The date of the all-day cell under a point, hit-tested rather than derived from the grid's geometry — a scrollbar on the time grid leaves the two column tracks slightly out of step.
  */
 export const getAllDayCellDateAt = (ctx: Scope, point: { x: number; y: number }) => {
   const row = getAllDayRowEl(ctx)

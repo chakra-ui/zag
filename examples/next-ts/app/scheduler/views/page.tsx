@@ -65,36 +65,52 @@ export default function Page() {
                 ))}
               </div>
               <div className="scheduler-month-body">
-                {api.getMonthGrid(api.date).map((week, weekIndex) => (
-                  <div key={weekIndex} className="scheduler-month-week">
-                    {week.map((date) => {
-                      const dayEvents = api.getEventsForDay(date)
-                      return (
-                        <div
-                          key={date.toString()}
-                          {...api.getDayCellProps({ date, referenceDate: api.date })}
-                          className="scheduler-month-cell"
-                        >
-                          <div className="scheduler-month-day-number">{date.day}</div>
-                          {dayEvents.slice(0, 3).map((event) => (
-                            <div
-                              key={event.id}
-                              {...api.getEventProps({ event, layout: "list" })}
-                              className="scheduler-month-event"
-                            >
-                              {event.title}
-                            </div>
-                          ))}
-                          {dayEvents.length > 3 && (
-                            <button {...api.getMoreEventsProps({ date, count: dayEvents.length - 3 })}>
-                              +{dayEvents.length - 3} more
-                            </button>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                ))}
+                {api.getMonthGrid(api.date).map((week, weekIndex) => {
+                  // segments are asked for one row at a time, so a bar clips at the week edge
+                  const bars = api.getAllDaySegments(week)
+                  return (
+                    <div key={weekIndex} className="scheduler-month-week">
+                      {week.map((date, dayIndex) => {
+                        const timed = api.getEventsForDay(date).filter((e) => !e.allDay)
+                        return (
+                          <div
+                            key={date.toString()}
+                            {...api.getDayCellProps({ date, referenceDate: api.date })}
+                            className="scheduler-month-cell"
+                            style={{ zIndex: week.length - dayIndex }}
+                          >
+                            <div className="scheduler-month-day-number">{date.day}</div>
+                            {bars
+                              .filter((segment) => segment.column === dayIndex)
+                              .map((segment) => (
+                                <div
+                                  key={segment.event.id}
+                                  {...api.getEventProps({ event: segment.event, layout: "all-day", segment })}
+                                  className="scheduler-month-bar"
+                                >
+                                  {segment.event.title}
+                                </div>
+                              ))}
+                            {timed.slice(0, 2).map((event) => (
+                              <div
+                                key={event.id}
+                                {...api.getEventProps({ event, layout: "list" })}
+                                className="scheduler-month-event"
+                              >
+                                {event.title}
+                              </div>
+                            ))}
+                            {timed.length > 2 && (
+                              <button {...api.getMoreEventsProps({ date, count: timed.length - 2 })}>
+                                +{timed.length - 2} more
+                              </button>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           ) : (
@@ -109,7 +125,36 @@ export default function Page() {
                 ))}
               </div>
 
-              <div className="scheduler-time-grid-scroll">
+              <div {...api.getAllDayRowProps()}>
+                <div {...api.getAllDayLabelProps()}>All day</div>
+                {api.visibleDays.map((date, index) => (
+                  <div
+                    key={`ad-${date.toString()}`}
+                    {...api.getDayCellProps({ date, allDay: true })}
+                    style={{ zIndex: api.visibleDays.length - index }}
+                  >
+                    {api
+                      .getAllDaySegments()
+                      .filter((segment) => segment.column === index)
+                      .map((segment) => (
+                        <div
+                          key={segment.event.id}
+                          {...api.getEventProps({ event: segment.event, layout: "all-day", segment })}
+                        >
+                          {segment.isStart && (
+                            <div {...api.getEventResizeHandleProps({ event: segment.event, edge: "start" })} />
+                          )}
+                          <span className="scheduler-event-title">{segment.event.title}</span>
+                          {segment.isEnd && (
+                            <div {...api.getEventResizeHandleProps({ event: segment.event, edge: "end" })} />
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                ))}
+              </div>
+
+              <div className="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
                 <div {...api.getGridProps()}>
                   <div {...api.getGridRowProps()}>
                     <div {...api.getTimeGutterProps()}>
@@ -121,7 +166,7 @@ export default function Page() {
                     </div>
 
                     {api.visibleDays.map((date) => {
-                      const dayEvents = api.getEventsForDay(date)
+                      const dayEvents = api.getEventsForDay(date).filter((e) => !e.allDay)
 
                       return (
                         <div key={date.toString()} {...api.getDayColumnProps({ date })}>

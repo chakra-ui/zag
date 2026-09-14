@@ -389,8 +389,7 @@ export const machine = createMachine<SchedulerSchema>({
         const cursorTime = pointToDateTime({ point: event.point, ...dragParams })
         const dragOrigin = refs.get("dragOrigin")
 
-        // The region under the pointer decides what the event becomes — an all-day drop keeps
-        // it in the all-day row, a grid drop gives it a time. Reported, never applied.
+        // the region under the pointer decides what the event becomes. Reported, never applied.
         const allDay = dom.isPointInAllDayRow(scope, event.point)
         const wasAllDay = !!findEvent(prop("events"), prev.eventId)?.allDay
 
@@ -398,8 +397,7 @@ export const machine = createMachine<SchedulerSchema>({
         let newEnd: CalendarDateTime
 
         if (allDay) {
-          // Whole-day move: shift both ends by the same number of columns, so midnight stays
-          // midnight and the day span survives without any minute arithmetic.
+          // shifting both ends by the same columns keeps midnight and the span, with no minutes
           const dayDelta = getDaysBetween(
             dayAtPoint(scope, dragOrigin ?? event.point, dragParams),
             dayAtPoint(scope, event.point, dragParams),
@@ -477,9 +475,7 @@ export const machine = createMachine<SchedulerSchema>({
         let end: CalendarDateTime
 
         if (findEvent(prop("events"), prev.eventId)?.allDay) {
-          // Whole-day resize: the dragged edge snaps to the day under the pointer. Both ends stay
-          // at midnight, and the edge stops at the other one — `end` is inclusive, so the floor is
-          // a single day rather than an empty range.
+          // `end` is inclusive, so the floor is a single day rather than an empty range
           const day = startOfDay(dayAtPoint(scope, event.point, params))
           start = edge === "start" ? minDateTime(day, snapshot.end) : snapshot.start
           end = edge === "start" ? snapshot.end : maxDateTime(day, snapshot.start)
@@ -536,10 +532,7 @@ interface PointParams {
   slotInterval: number
 }
 
-/**
- * The day under a point. Over the all-day row the cell under the pointer wins; the grid's column
- * track can be a few pixels out of step with it once the time grid has a scrollbar.
- */
+/** The day under a point. */
 function dayAtPoint(scope: Scope, point: { x: number; y: number }, params: PointParams) {
   const cellDate = dom.getAllDayCellDateAt(scope, point)
   return cellDate ? parseDateTime(cellDate) : pointToDateTime({ point, ...params })

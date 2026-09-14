@@ -78,7 +78,7 @@ export default function Page() {
               ))}
             </div>
 
-            <div className="scheduler-time-grid-scroll">
+            <div className="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
               <div {...api.getGridProps()}>
                 <div {...api.getGridRowProps()}>
                   <div {...api.getTimeGutterProps()}>

@@ -121,6 +121,22 @@ export class SchedulerModel extends Model {
     await this.page.mouse.up()
   }
 
+  /** Expanded instances of a recurring series, as `<id>:<n>`. */
+  instanceIdsOf(baseId: string) {
+    return this.page
+      .locator(`[data-scheduler-event][data-event-id^='${baseId}:']`)
+      .evaluateAll((els) => els.map((e) => e.getAttribute("data-event-id")!))
+  }
+
+  /** The days a recurring series lands on, in column order. */
+  instanceDaysOf(baseId: string) {
+    return this.page
+      .locator(`[data-scheduler-event][data-event-id^='${baseId}:']`)
+      .evaluateAll((els) =>
+        els.map((e) => e.closest("[data-scheduler-day-column]")!.getAttribute("data-date")!.slice(0, 10)).sort(),
+      )
+  }
+
   get columnHeaders() {
     return this.page.locator("[data-scheduler-column-header]")
   }
