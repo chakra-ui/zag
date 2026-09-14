@@ -1,0 +1,56 @@
+```tsx
+import * as wheelPicker from "@zag-js/wheel-picker"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+const frameworks = wheelPicker.collection({
+  items: [
+    { label: "React", value: "react" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte" },
+    { label: "Solid", value: "solid" },
+  ],
+})
+
+export function WheelPicker() {
+  const service = useMachine(wheelPicker.machine, {
+    id: createUniqueId(),
+    collection: frameworks,
+    defaultValue: "react",
+  })
+  const api = createMemo(() => wheelPicker.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Framework</label>
+      <div {...api().getControlProps()}>
+        <div {...api().getViewportProps()}>
+          <ul {...api().getItemGroupProps()}>
+            <For each={api().items}>
+              {({ item, index }) => (
+                <li {...api().getItemProps({ item, index })}>{item.label}</li>
+              )}
+            </For>
+          </ul>
+          <div {...api().getHighlightProps()}>
+            <ul {...api().getHighlightItemGroupProps()}>
+              <For each={api().highlightItems}>
+                {({ item, index }) => (
+                  <li {...api().getHighlightItemProps({ item, index })}>
+                    {item.label}
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <select {...api().getHiddenSelectProps()}>
+        <For each={frameworks.items}>
+          {(item) => <option value={item.value}>{item.label}</option>}
+        </For>
+      </select>
+    </div>
+  )
+}
+```

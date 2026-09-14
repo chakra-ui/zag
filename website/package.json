@@ -73,6 +73,7 @@
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
     "match-sorter": "8.3.0",

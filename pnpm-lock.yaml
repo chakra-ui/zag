@@ -4068,6 +4068,9 @@ importers:
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../packages/machines/tree-view
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../packages/machines/wheel-picker
       hastscript:
         specifier: 9.0.1
         version: 9.0.1

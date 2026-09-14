@@ -1,0 +1,76 @@
+@layer recipes {
+  .Root {
+    display: grid;
+    gap: 0.75rem;
+    width: 15rem;
+
+    &[data-disabled] {
+      opacity: 0.5;
+    }
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .Control {
+    height: 12rem;
+    overflow: hidden;
+    cursor: grab;
+    border: 1px solid var(--colors-border-bold);
+    border-radius: 0.5rem;
+    background: var(--colors-bg-subtle);
+    outline: none;
+
+    &[data-dragging] {
+      cursor: grabbing;
+    }
+
+    &[data-focus] {
+      outline: 2px solid var(--colors-border-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Viewport {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 20%,
+      black 80%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 20%,
+      black 80%,
+      transparent 100%
+    );
+  }
+
+  .Item,
+  .HighlightItem {
+    font-size: 0.875rem;
+
+    &[data-disabled] {
+      opacity: 0.35;
+    }
+  }
+
+  .Item {
+    color: var(--colors-text-muted);
+  }
+
+  .Highlight {
+    color: var(--colors-text-inverse);
+    background: var(--colors-bg-primary-bold);
+    font-weight: 600;
+  }
+
+  .Output {
+    color: var(--colors-text-muted);
+    font-size: 0.875rem;
+  }
+}
