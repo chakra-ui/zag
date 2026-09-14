@@ -559,6 +559,10 @@ const components = {
         disabled: false,
         infinite: false,
         readOnly: false,
+        scrollSensitivity: 5,
+        dragSensitivity: 3,
+        optionItemHeight: 30,
+        visibleCount: 20,
       }}
     />
   ),
