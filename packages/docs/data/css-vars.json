@@ -204,6 +204,9 @@
     "Timeline": {
       "--scheduler-timeline-slots": "The scheduler timeline slots value for the Timeline",
       "--scheduler-timeline-rows": "The scheduler timeline rows value for the Timeline"
+    },
+    "AllDayRow": {
+      "--scheduler-all-day-rows": "The scheduler all day rows value for the AllDayRow"
     }
   },
   "scroll-area": {

@@ -131,9 +131,11 @@ export interface DateChangeDetails {
 }
 
 export interface EventReceiveDetails<T extends SchedulerPayload = SchedulerPayload> {
-  /** Slot the item was dropped on, snapped to `slotInterval`. */
+  /** Slot the item was dropped on, snapped to `slotInterval`, or the whole day for an all-day drop. */
   start: CalendarDateTime
   end: CalendarDateTime
+  /** Whether the item landed on the all-day row rather than a timed slot. */
+  allDay: boolean
   /** The resource whose column received the drop, when grouping by resource. */
   resource?: SchedulerResource<T> | undefined
   /** Whatever the drag carried. */
@@ -326,6 +328,8 @@ export interface SchedulerProps<T extends SchedulerPayload = SchedulerPayload>
    * @default true
    */
   showCurrentTime?: boolean | undefined
+  /** Levels of all-day bars to show before the rest collapse into per-day counts. Unbounded when unset. */
+  maxAllDayRows?: number | undefined
   /**
    * Upper bound on expanded recurring instances per visible range.
    * @default 2000
@@ -609,6 +613,8 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getTimelineState: () => TimelineState<P>
   /** All-day events as continuous bars across a row of days, one per event. */
   getAllDaySegments: (days?: CalendarDateTime[]) => AllDaySegment<P>[]
+  /** Bars `maxAllDayRows` hid, counted per day, for rendering a "+N more" affordance. */
+  getAllDayOverflow: (days?: CalendarDateTime[]) => { date: CalendarDateTime; count: number }[]
   /** The resources passed in, or an empty array. */
   resources: SchedulerResource<P>[]
   /** Locale/timezone-aware hour+minute label, e.g. "09:30" / "9:30 AM". */

@@ -169,10 +169,20 @@ test.describe("scheduler / all-day", () => {
     await I.page.mouse.up()
   })
 
-  test("[pointer] the drag never resizes the all-day row", async () => {
-    const before = await I.allDayRow.boundingBox()
+  test("[pointer] no bar escapes the row, at rest or mid-drag", async () => {
+    // the row is free to deepen when a drag stacks another bar; what it must never do is let one
+    // spill into the time grid below
+    const escapes = async () => {
+      const row = await I.allDayRow.boundingBox()
+      const lowest = await I.page
+        .locator("[data-scheduler-event][data-all-day]")
+        .evaluateAll((els) => Math.max(...els.map((e) => e.getBoundingClientRect().bottom)))
+      return lowest > row!.y + row!.height
+    }
+
+    expect(await escapes()).toBe(false)
     await I.dragEventToAllDayCell("holiday", anchorDay(3), false)
-    expect((await I.allDayRow.boundingBox())!.height).toBe(before!.height)
+    expect(await escapes()).toBe(false)
     await I.page.mouse.up()
   })
 
@@ -205,5 +215,24 @@ test.describe("scheduler / all-day", () => {
   test("[pointer] dropping a timed event in the all-day row reports an all-day drop", async () => {
     await I.dragEventToAllDayCell("standup-wed", anchorDay(0))
     await expect(I.dropLog).toHaveText(`standup-wed allDay:true ${anchorDay(0)} → ${anchorDay(0)} Δ0d-540m`)
+  })
+
+  test("the all-day row grows to fit the stacked bars", async () => {
+    // `offsite` and `conference` overlap in the anchor week, so the row needs two levels
+    expect(await I.allDayRowLevels()).toBe(2)
+    const row = await I.allDayRow.boundingBox()
+    const lowest = await I.page
+      .locator("[data-scheduler-event][data-all-day]")
+      .evaluateAll((els) => Math.max(...els.map((e) => e.getBoundingClientRect().bottom)))
+    // a bar escaping the row would spill into the time grid below
+    expect(lowest).toBeLessThanOrEqual(row!.y + row!.height)
+  })
+
+  test("[pointer] capping the rows collapses the rest into per-day counts", async () => {
+    await I.page.getByTestId("cap-rows").check()
+
+    expect(await I.allDayRowLevels()).toBe(1)
+    await expect(I.allDayMoreButtons).toHaveCount(2)
+    await expect(I.allDayMoreButtons.first()).toHaveText("+1 more")
   })
 })

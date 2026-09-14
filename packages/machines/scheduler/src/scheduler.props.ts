@@ -40,6 +40,7 @@ export const props = createProps<SchedulerProps>()([
   "onEventReceive",
   "dataTransferFormat",
   "onViewChange",
+  "maxAllDayRows",
   "maxRecurrenceInstances",
   "showCurrentTime",
   "showWeekNumbers",

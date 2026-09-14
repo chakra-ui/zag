@@ -16,6 +16,9 @@ export interface TimelineLayout<E extends SchedulerPayload> {
   getState(): TimelineState<E>
 }
 
+/** The lane a timeline falls back to when no resources are configured. */
+const UNGROUPED_ROWS: TimelineRow<any>[] = [{ id: "all", title: "All" }]
+
 export interface TimelineLayoutParams<E extends SchedulerPayload> {
   range: TimeRange
   resources: SchedulerResource<E>[]
@@ -36,7 +39,7 @@ export function createTimelineLayout<E extends SchedulerPayload>(params: Timelin
   let state: TimelineState<E> | undefined
 
   const buildRows = (): TimelineRow<E>[] => {
-    if (!resources.length) return [{ id: "all", title: "All" }]
+    if (!resources.length) return UNGROUPED_ROWS
     return resources.map((resource) => ({ id: resource.id, title: resource.title, resource }))
   }
 

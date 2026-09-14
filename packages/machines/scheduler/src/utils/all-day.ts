@@ -6,14 +6,26 @@ export interface AllDaySegmentParams<E extends SchedulerPayload> {
   days: CalendarDateTime[]
   /** Live gesture, so the dragged bar tracks the pointer instead of snapping on release. */
   live?: { eventId: string; start: CalendarDateTime; end: CalendarDateTime } | null
+  /** Levels to show before the rest become per-day overflow counts. Unbounded when absent. */
+  maxRows?: number | undefined
+}
+
+export interface AllDayLayout<E extends SchedulerPayload> {
+  segments: AllDaySegment<E>[]
+  /** Levels the visible segments occupy, so the row can size itself. */
+  rows: number
+  /** Bars the cap hid, counted per day. */
+  overflow: { date: CalendarDateTime; count: number }[]
 }
 
 /**
  * One bar per event rather than one chip per day, so a multi-day event reads as a single continuous range and only its true ends carry resize handles.
  */
-export function getAllDaySegments<E extends SchedulerPayload>(params: AllDaySegmentParams<E>): AllDaySegment<E>[] {
-  const { events, days, live } = params
-  if (!days.length) return []
+const EMPTY_LAYOUT: AllDayLayout<any> = { segments: [], rows: 0, overflow: [] }
+
+export function getAllDayLayout<E extends SchedulerPayload>(params: AllDaySegmentParams<E>): AllDayLayout<E> {
+  const { events, days, live, maxRows } = params
+  if (!days.length) return EMPTY_LAYOUT
 
   const dayKeys = days.map((d) => toCalendarDate(d))
 
@@ -56,5 +68,26 @@ export function getAllDaySegments<E extends SchedulerPayload>(params: AllDaySegm
     segment.level = level
   }
 
-  return segments
+  if (maxRows == null) {
+    return { segments, rows: levelEnds.length, overflow: [] }
+  }
+
+  // past the cap a bar becomes a count on each day it would have covered, the way both
+  // FullCalendar's `dayMaxEvents` and react-big-calendar's `allDayMaxRows` do it
+  const visible = segments.filter((s) => s.level < maxRows)
+  const hidden = segments.filter((s) => s.level >= maxRows)
+  const counts = new Map<number, number>()
+  for (const segment of hidden) {
+    for (let i = segment.column; i < segment.column + segment.span; i++) {
+      counts.set(i, (counts.get(i) ?? 0) + 1)
+    }
+  }
+
+  return {
+    segments: visible,
+    rows: Math.min(levelEnds.length, maxRows),
+    overflow: [...counts.entries()]
+      .sort((a, b) => a[0] - b[0])
+      .map(([index, count]) => ({ date: days[index]!, count })),
+  }
 }

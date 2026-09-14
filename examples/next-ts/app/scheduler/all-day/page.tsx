@@ -14,11 +14,13 @@ export default function Page() {
   const controls = useControls(schedulerControls)
   const [events, setEvents] = useState(schedulerAllDayEvents)
   const [dropLog, setDropLog] = useState("")
+  const [maxAllDayRows, setMaxAllDayRows] = useState<number | undefined>(undefined)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
     defaultDate: schedulerAnchor,
+    maxAllDayRows,
     events,
     onEventDrop(d) {
       // the machine reports the region it landed in; converting the event is the consumer's call
@@ -37,6 +39,15 @@ export default function Page() {
     <>
       <main className="scheduler">
         <output data-testid="drop-log">{dropLog}</output>
+        <label>
+          <input
+            type="checkbox"
+            data-testid="cap-rows"
+            checked={maxAllDayRows === 1}
+            onChange={(e) => setMaxAllDayRows(e.target.checked ? 1 : undefined)}
+          />
+          Cap the all-day row at one level
+        </label>
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
             <button {...api.getPrevTriggerProps()}>
@@ -69,6 +80,18 @@ export default function Page() {
                   // a bar overflows to the right, so earlier cells must paint above later ones
                   style={{ zIndex: api.visibleDays.length - index }}
                 >
+                  {api
+                    .getAllDayOverflow()
+                    .filter((entry) => entry.date.compare(date) === 0)
+                    .map((entry) => (
+                      <button
+                        key="more"
+                        {...api.getMoreEventsProps({ date, count: entry.count })}
+                        className="scheduler-all-day-more"
+                      >
+                        +{entry.count} more
+                      </button>
+                    ))}
                   {/* a bar lives in the cell it starts on and overflows across the ones it covers */}
                   {api
                     .getAllDaySegments()

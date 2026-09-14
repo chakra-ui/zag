@@ -603,10 +603,11 @@
 
 [data-scheduler-all-day-row] {
   display: grid;
+  /* grows with the stack; the machine reports how many levels the bars occupy */
+  min-height: calc(var(--scheduler-all-day-rows, 1) * var(--scheduler-all-day-bar-height, 19px) + 8px);
   grid-template-columns: var(--scheduler-time-gutter-width, 60px) repeat(var(--scheduler-columns, 7), minmax(0, 1fr));
   border-bottom: 1px solid #e5e7eb;
   background: #fafafa;
-  min-height: 32px;
 }
 
 [data-scheduler-all-day-label] {
@@ -1107,4 +1108,17 @@
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }
+}
+
+.scheduler-all-day-more {
+  position: absolute;
+  inset-inline: 2px;
+  bottom: 1px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: start;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }

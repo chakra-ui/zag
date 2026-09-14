@@ -29,7 +29,14 @@ export default function Page() {
       setBacklog((prev) => prev.filter((b) => b.id !== item.id))
       setEvents((prev) => [
         ...prev,
-        { id: item.id, title: item.title, start: details.start, end: details.end, color: "#3b82f6" },
+        {
+          id: item.id,
+          title: item.title,
+          start: details.start,
+          end: details.end,
+          allDay: details.allDay,
+          color: details.allDay ? "#8b5cf6" : "#3b82f6",
+        },
       ])
     },
   })
@@ -67,6 +74,29 @@ export default function Page() {
               ))}
             </div>
 
+            <div {...api.getAllDayRowProps()}>
+              <div {...api.getAllDayLabelProps()}>All day</div>
+              {api.visibleDays.map((date, index) => (
+                <div
+                  key={`ad-${date.toString()}`}
+                  {...api.getDayCellProps({ date, allDay: true })}
+                  style={{ zIndex: api.visibleDays.length - index }}
+                >
+                  {api
+                    .getAllDaySegments()
+                    .filter((segment) => segment.column === index)
+                    .map((segment) => (
+                      <div
+                        key={segment.event.id}
+                        {...api.getEventProps({ event: segment.event, layout: "all-day", segment })}
+                      >
+                        {segment.event.title}
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </div>
+
             <div className="scheduler-time-grid-scroll" tabIndex={0} aria-label="Schedule grid">
               <div {...api.getGridProps()}>
                 <div {...api.getGridRowProps()}>
@@ -83,11 +113,14 @@ export default function Page() {
                       {api.hourRange.hours.map((hour) => (
                         <div key={hour.value} {...api.getHourLineProps({ hour })} />
                       ))}
-                      {api.getEventsForColumn(column).map((event) => (
-                        <div key={event.id} {...api.getEventProps({ event })}>
-                          <div className="scheduler-event-title">{event.title}</div>
-                        </div>
-                      ))}
+                      {api
+                        .getEventsForColumn(column)
+                        .filter((e) => !e.allDay)
+                        .map((event) => (
+                          <div key={event.id} {...api.getEventProps({ event })}>
+                            <div className="scheduler-event-title">{event.title}</div>
+                          </div>
+                        ))}
                       <div {...api.getDragOriginProps(column)} />
                       <div {...api.getDragPreviewProps(column)}>
                         <div className="scheduler-event-title">{api.dragState?.event.title}</div>

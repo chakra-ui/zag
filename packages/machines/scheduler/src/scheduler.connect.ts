@@ -6,6 +6,7 @@ import {
   startOfMonth,
   toCalendarDate,
   toCalendarDateTime,
+  type CalendarDateTime,
 } from "@internationalized/date"
 import type { Service } from "@zag-js/core"
 import { getMonthDays, getMonthNames, getWeekDays } from "@zag-js/date-utils"
@@ -34,7 +35,7 @@ import type {
   VisibleRangeText,
   WeekDay,
 } from "./scheduler.types"
-import { getAllDaySegments } from "./utils/all-day"
+import { getAllDayLayout } from "./utils/all-day"
 import { getColumns, getVisibleDays } from "./utils/column"
 import { getDragState } from "./utils/drag"
 import { findEvent } from "./utils/event"
@@ -138,6 +139,23 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
   const formatters = computed("formatters")
 
+  // the consumer calls this once per cell, so pack each row of days only once
+  const allDayCache = new Map<string, ReturnType<typeof getAllDayLayout<E>>>()
+  const allDayLayout = (days: CalendarDateTime[]) => {
+    const key = days.length ? `${days[0]!.toString()}/${days.length}` : "empty"
+    let layout = allDayCache.get(key)
+    if (!layout) {
+      layout = getAllDayLayout<E>({
+        events: visibleEvents,
+        days,
+        live: liveDrag,
+        maxRows: prop("maxAllDayRows"),
+      })
+      allDayCache.set(key, layout)
+    }
+    return layout
+  }
+
   const timeline = createTimelineLayout({
     range: visibleRange,
     resources,
@@ -185,7 +203,10 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     resources,
     getTimelineState: timeline.getState,
     getAllDaySegments(days = visibleDays) {
-      return getAllDaySegments({ events: visibleEvents, days, live: liveDrag })
+      return allDayLayout(days).segments
+    },
+    getAllDayOverflow(days = visibleDays) {
+      return allDayLayout(days).overflow
     },
     formatTime(d) {
       return formatters.time.format(d.toDate(timeZone))
@@ -609,6 +630,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         ...parts.allDayRow.attrs(scope.id),
         id: dom.getAllDayRowId(scope),
         role: "row",
+        // the row has to grow with the stack, or bars past the first level escape it
+        style: { "--scheduler-all-day-rows": Math.max(1, allDayLayout(visibleDays).rows) },
       })
     },
 
@@ -746,7 +769,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           const format = prop("dataTransferFormat") ?? "text/plain"
           const data = event.dataTransfer?.getData(format) ?? ""
           const { start, end } = slotFromClientY(target, event.clientY)
-          onReceive({ start, end, resource: resource as SchedulerResource<E> | undefined, data })
+          onReceive({ start, end, allDay: false, resource: resource as SchedulerResource<E> | undefined, data })
         },
       })
     },
@@ -774,6 +797,23 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-drop-target": dataAttr(dropTarget),
         "aria-current": todayCell ? "date" : undefined,
         "aria-selected": selected || undefined,
+        onDragOver(event) {
+          if (!allDay || !prop("onEventReceive")) return
+          event.preventDefault()
+        },
+        onDrop(event) {
+          const onReceive = prop("onEventReceive")
+          if (!allDay || !onReceive) return
+          event.preventDefault()
+          const format = prop("dataTransferFormat") ?? "text/plain"
+          // an all-day cell has no time axis, so the drop is the whole day, `end` inclusive
+          onReceive({
+            start: date,
+            end: date,
+            allDay: true,
+            data: event.dataTransfer?.getData(format) ?? "",
+          })
+        },
         onClick(event) {
           if (!isLeftClick(event)) return
           context.set("selectedSlot", { start, end })

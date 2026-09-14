@@ -39,4 +39,19 @@ test.describe("scheduler / external drop", () => {
     const second = await I.getEvent("b2").boundingBox()
     expect(second!.y).toBeGreaterThan(first!.y)
   })
+
+  test("[pointer] dropping a backlog item on the all-day row creates an all-day event", async () => {
+    const accepted = await I.dragBacklogItemTo("b1", I.allDayCells.first())
+    // the browser only allows the drop when the target prevented `dragover`
+    expect(accepted).toBe(true)
+
+    await expect(I.getEvent("b1")).toHaveAttribute("data-all-day", "")
+    await expect(I.allDayCells.first().locator("[data-event-id='b1']")).toBeVisible()
+    await expect(I.backlogItems).toHaveCount(2)
+  })
+
+  test("the time grid and the all-day row both accept external drops", async () => {
+    await expect(I.allDayCells.first()).toBeVisible()
+    await expect(I.page.locator("[data-scheduler-day-column]").first()).toBeVisible()
+  })
 })

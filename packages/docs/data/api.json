@@ -5912,6 +5912,10 @@
         "type": "(days?: CalendarDateTime[]) => AllDaySegment<P>[]",
         "description": "All-day events as continuous bars across a row of days, one per event."
       },
+      "getAllDayOverflow": {
+        "type": "(days?: CalendarDateTime[]) => { date: CalendarDateTime; count: number }[]",
+        "description": "Bars `maxAllDayRows` hid, counted per day, for rendering a \"+N more\" affordance."
+      },
       "resources": {
         "type": "SchedulerResource<P>[]",
         "description": "The resources passed in, or an empty array."
@@ -6216,6 +6220,10 @@
         "type": "boolean | undefined",
         "description": "Show a line at the current time in day/week views.",
         "defaultValue": "true"
+      },
+      "maxAllDayRows": {
+        "type": "number | undefined",
+        "description": "Levels of all-day bars to show before the rest collapse into per-day counts. Unbounded when unset."
       },
       "maxRecurrenceInstances": {
         "type": "number | undefined",

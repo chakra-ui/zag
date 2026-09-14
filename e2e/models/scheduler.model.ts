@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test"
+import { expect, type Locator, type Page } from "@playwright/test"
 import { a11y } from "../_utils"
 import { Model } from "./model"
 
@@ -135,6 +135,36 @@ export class SchedulerModel extends Model {
       .evaluateAll((els) =>
         els.map((e) => e.closest("[data-scheduler-day-column]")!.getAttribute("data-date")!.slice(0, 10)).sort(),
       )
+  }
+
+  /** Native HTML5 drag from the backlog onto a target. The browser only permits the drop when
+   *  `dragover` was prevented, so the return value reports whether the target accepted it. */
+  async dragBacklogItemTo(id: string, target: Locator) {
+    return target.evaluate((el, itemId) => {
+      const item = document.querySelector(`[data-testid=backlog-${itemId}]`)!
+      const dt = new DataTransfer()
+      item.dispatchEvent(new DragEvent("dragstart", { bubbles: true, dataTransfer: dt }))
+      dt.setData("text/plain", itemId)
+      const over = new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: dt })
+      el.dispatchEvent(over)
+      el.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: dt }))
+      return over.defaultPrevented
+    }, id)
+  }
+
+  get allDayMoreButtons() {
+    return this.page.locator("[data-scheduler-day-cell][data-all-day] [data-scheduler-more-events]")
+  }
+
+  /** Levels the all-day row reports, which is what sizes it. */
+  allDayRowLevels() {
+    return this.allDayRow.evaluate((el) =>
+      Number(getComputedStyle(el).getPropertyValue("--scheduler-all-day-rows").trim()),
+    )
+  }
+
+  get allDayCells() {
+    return this.page.locator("[data-scheduler-day-cell][data-all-day]")
   }
 
   get columnHeaders() {

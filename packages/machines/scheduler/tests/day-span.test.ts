@@ -62,13 +62,13 @@ describe("groupEventsByDay", () => {
 
 describe("getAllDaySegments row awareness", () => {
   test("a bar is clipped at the row edge, so a month week never spans two rows", async () => {
-    const { getAllDaySegments } = await import("../src/utils/all-day")
+    const { getAllDayLayout } = await import("../src/utils/all-day")
     const week1 = [12, 13, 14, 15, 16, 17, 18].map((d) => dt(d))
     const week2 = [19, 20, 21, 22, 23, 24, 25].map((d) => dt(d))
     // straddles the boundary: May 17 -> May 21
     const events = [{ id: "conf", title: "c", start: dt(17), end: dt(21), allDay: true }] as any
 
-    const a = getAllDaySegments({ events, days: week1 })[0]!
+    const a = getAllDayLayout({ events, days: week1 }).segments[0]!
     expect({ column: a.column, span: a.span, isStart: a.isStart, isEnd: a.isEnd }).toEqual({
       column: 5,
       span: 2,
@@ -76,12 +76,47 @@ describe("getAllDaySegments row awareness", () => {
       isEnd: false,
     })
 
-    const b = getAllDaySegments({ events, days: week2 })[0]!
+    const b = getAllDayLayout({ events, days: week2 }).segments[0]!
     expect({ column: b.column, span: b.span, isStart: b.isStart, isEnd: b.isEnd }).toEqual({
       column: 0,
       span: 3,
       isStart: false,
       isEnd: true,
     })
+  })
+})
+
+describe("all-day row capping", () => {
+  const week = [12, 13, 14, 15, 16, 17, 18].map((d) => dt(d))
+  const stacked = [
+    { id: "a", title: "a", start: dt(12), end: dt(18), allDay: true },
+    { id: "b", title: "b", start: dt(13), end: dt(15), allDay: true },
+    { id: "c", title: "c", start: dt(14), end: dt(16), allDay: true },
+  ] as any
+
+  test("reports the level count so the row can size itself", async () => {
+    const { getAllDayLayout } = await import("../src/utils/all-day")
+    expect(getAllDayLayout({ events: stacked, days: week }).rows).toBe(3)
+  })
+
+  test("a cap hides the deeper levels and counts them per day", async () => {
+    const { getAllDayLayout } = await import("../src/utils/all-day")
+    const { segments, rows, overflow } = getAllDayLayout({ events: stacked, days: week, maxRows: 2 })
+
+    expect(rows).toBe(2)
+    expect(segments.map((s) => s.event.id)).toEqual(["a", "b"])
+    // `c` covers May 14-16, so each of those days reports one hidden bar
+    expect(overflow.map((o) => [o.date.toString().slice(0, 10), o.count])).toEqual([
+      ["2024-05-14", 1],
+      ["2024-05-15", 1],
+      ["2024-05-16", 1],
+    ])
+  })
+
+  test("no cap means nothing is hidden", async () => {
+    const { getAllDayLayout } = await import("../src/utils/all-day")
+    const { segments, overflow } = getAllDayLayout({ events: stacked, days: week })
+    expect(segments).toHaveLength(3)
+    expect(overflow).toEqual([])
   })
 })
