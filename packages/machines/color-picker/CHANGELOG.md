@@ -1,5 +1,29 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`dcc17c9`](https://github.com/chakra-ui/zag/commit/dcc17c98be751679f2a17cd1081b88fbc55fe615) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the channel slider track threw
+  `Unknown color channel: hue` whenever the picker held an RGB color, which a hex `defaultValue` produces.
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`c14c405`](https://github.com/chakra-ui/zag/commit/c14c4056d1c624b977ae217d21a8ef57d8834dfc) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fix `aria-disabled` on the color area thumb and channel
+  slider thumb so assistive technology reports both `role="slider"` elements as disabled when `disabled` is set.
+- Updated dependencies [[`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5),
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de)]:
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/color-utils@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

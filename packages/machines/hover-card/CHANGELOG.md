@@ -1,5 +1,30 @@
 # @zag-js/hover-card
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the arrow was left unpositioned when it
+  mounted after the popup or was swapped for another element.
+
+  - Added a `getArrowElement` option to `@zag-js/popper` so the arrow is resolved by the machine, and the middleware
+    rebuilds when it changes.
+
+- Updated dependencies [[`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11),
+  [`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5),
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de)]:
+  - @zag-js/focus-visible@2.0.0-next.3
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/safe-area@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Minor Changes

@@ -1,5 +1,26 @@
 # @zag-js/virtualizer
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`2233444`](https://github.com/chakra-ui/zag/commit/22334447b60d1640c004f088a828e9de39d48de2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where a grid virtualizer reused after
+  `destroy()` reported a total size of zero, leaving the scroller with nothing to scroll (React Strict Mode remount).
+  `init()` now rebuilds the size trackers `destroy()` released, and notifies subscribers so they re-render with the
+  restored size.
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`aa2b456`](https://github.com/chakra-ui/zag/commit/aa2b45686df65373557eabbfac967ae1e7ac090f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issues with the generated style helpers.
+
+  - Fixed issue where `getContentStyle()` and related helpers returned unitless numbers that browsers ignore as CSS.
+  - Fixed issue where the content element shrank inside a flex scroller. `getContentStyle()` now sets `flex-shrink: 0`.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

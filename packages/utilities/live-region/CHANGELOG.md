@@ -1,5 +1,20 @@
 # @zag-js/live-region
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issues with screen reader announcements.
+
+  - Fixed issue where the region was rebuilt on every `announce()`, so screen readers missed it — VoiceOver in
+    particular.
+  - Fixed issue where announcements were never cleared and stayed in the accessibility tree. Added a `timeout` option
+    and a `clear()` method.
+  - Fixed issue where combobox and select left a stale announcement in place when nothing was highlighted.
+  - Added `aria-atomic="true"` and a separate region per level, so a polite announcer cannot inherit an assertive one.
+
 ## 2.0.0-next.2
 
 ## 2.0.0-next.1

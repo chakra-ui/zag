@@ -1,5 +1,35 @@
 # @zag-js/combobox
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issues with screen reader announcements.
+
+  - Fixed issue where the region was rebuilt on every `announce()`, so screen readers missed it — VoiceOver in
+    particular.
+  - Fixed issue where announcements were never cleared and stayed in the accessibility tree. Added a `timeout` option
+    and a `clear()` method.
+  - Fixed issue where combobox and select left a stale announcement in place when nothing was highlighted.
+  - Added `aria-atomic="true"` and a separate region per level, so a polite announcer cannot inherit an assertive one.
+
+- Updated dependencies [[`f832098`](https://github.com/chakra-ui/zag/commit/f8320988711fd54b13aef8f28c0d7038e92d3a11),
+  [`76af82f`](https://github.com/chakra-ui/zag/commit/76af82f18e4897c7efd20ed298e0203b36b09932),
+  [`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5),
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de)]:
+  - @zag-js/focus-visible@2.0.0-next.3
+  - @zag-js/live-region@2.0.0-next.3
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/collection@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes

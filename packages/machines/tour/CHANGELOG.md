@@ -1,5 +1,29 @@
 # @zag-js/tour
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- [#3308](https://github.com/chakra-ui/zag/pull/3308)
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where the arrow was left unpositioned when it
+  mounted after the popup or was swapped for another element.
+
+  - Added a `getArrowElement` option to `@zag-js/popper` so the arrow is resolved by the machine, and the middleware
+    rebuilds when it changes.
+
+- Updated dependencies [[`f2f2900`](https://github.com/chakra-ui/zag/commit/f2f290078da5058947f020f17311a475abf6cbd5),
+  [`5a6c68f`](https://github.com/chakra-ui/zag/commit/5a6c68f390c2535b9da0423597e32e1a5a9eb1de)]:
+  - @zag-js/dismissable@2.0.0-next.3
+  - @zag-js/popper@2.0.0-next.3
+  - @zag-js/anatomy@2.0.0-next.3
+  - @zag-js/core@2.0.0-next.3
+  - @zag-js/types@2.0.0-next.3
+  - @zag-js/utils@2.0.0-next.3
+  - @zag-js/dom-query@2.0.0-next.3
+  - @zag-js/focus-trap@2.0.0-next.3
+  - @zag-js/interact-outside@2.0.0-next.3
+
 ## 2.0.0-next.2
 
 ### Patch Changes
