@@ -2,7 +2,7 @@
 
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAllDayEvents, schedulerAnchor, schedulerControls } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -10,49 +10,15 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
-
-const INITIAL: scheduler.SchedulerEvent[] = [
-  {
-    id: "conf",
-    title: "DevConf 2026",
-    start: TODAY.subtract({ days: 3 }),
-    end: TODAY.subtract({ days: 1 }),
-    allDay: true,
-    color: "#6366f1",
-  },
-  {
-    id: "holiday",
-    title: "Company holiday",
-    start: TODAY,
-    end: TODAY,
-    allDay: true,
-    color: "#ef4444",
-  },
-  {
-    id: "standup",
-    title: "Team standup",
-    start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
-    end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
-    color: "#3b82f6",
-  },
-  {
-    id: "demo",
-    title: "Sprint demo",
-    start: TODAY.subtract({ days: 2 }).set({ hour: 14, minute: 0 }),
-    end: TODAY.subtract({ days: 2 }).set({ hour: 15, minute: 0 }),
-    color: "#10b981",
-  },
-]
-
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const [events, setEvents] = useState(INITIAL)
+  const [events, setEvents] = useState(schedulerAllDayEvents)
   const [dropLog, setDropLog] = useState("")
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop(d) {
       // the machine reports the region it landed in; converting the event is the consumer's call

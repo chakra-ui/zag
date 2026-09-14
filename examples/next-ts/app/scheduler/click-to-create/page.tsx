@@ -3,7 +3,7 @@
 import * as popover from "@zag-js/popover"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-react"
 import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -12,23 +12,12 @@ import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 import "@styles/popover.css"
 
-const TODAY = scheduler.getToday()
 const PALETTE = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
-
-const INITIAL: scheduler.SchedulerEvent[] = [
-  {
-    id: "1",
-    title: "Team standup",
-    start: TODAY.set({ hour: 9, minute: 0 }),
-    end: TODAY.set({ hour: 9, minute: 30 }),
-    color: "#3b82f6",
-  },
-]
 
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const [events, setEvents] = useState(INITIAL)
-  const nextIdRef = useRef(INITIAL.length)
+  const [events, setEvents] = useState(schedulerEvents)
+  const nextIdRef = useRef(schedulerEvents.length)
   const [title, setTitle] = useState("")
 
   const popoverService = useMachine(popover.machine, {
@@ -50,6 +39,7 @@ export default function Page() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),

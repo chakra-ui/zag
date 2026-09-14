@@ -14,20 +14,20 @@ test.describe("scheduler / timeline", () => {
   })
 
   test("renders one lane per resource and one slot per day", async () => {
-    await expect(I.timelineRows).toHaveCount(3)
+    await expect(I.timelineRows).toHaveCount(4)
     await expect(I.timelineSlots).toHaveCount(7)
-    await expect(I.getTimelineRow("studio-a")).toBeVisible()
+    await expect(I.getTimelineRow("amelia")).toBeVisible()
   })
 
   test("scopes each event to its resource lane", async () => {
-    await expect(I.getTimelineRow("studio-a").locator("[data-event-id='1']")).toBeVisible()
-    await expect(I.getTimelineRow("studio-b").locator("[data-event-id='2']")).toBeVisible()
-    await expect(I.getTimelineRow("studio-a").locator("[data-event-id='2']")).toHaveCount(0)
+    await expect(I.getTimelineRow("amelia").locator("[data-event-id='r-1']")).toBeVisible()
+    await expect(I.getTimelineRow("brooke").locator("[data-event-id='r-2']")).toBeVisible()
+    await expect(I.getTimelineRow("amelia").locator("[data-event-id='r-2']")).toHaveCount(0)
   })
 
   test("a multi-day event spans proportionally to its duration", async () => {
     // "Maintenance" runs Thu 08:00 -> Sat 12:00 across a 7 day range
-    const span = await I.getTimelineSpan("3")
+    const span = await I.getTimelineSpan("r-maintenance")
     expect(span.size).toBeGreaterThan(1 / 7)
     expect(span.size).toBeLessThan(3 / 7)
     // and it starts in the back half of the week
@@ -35,9 +35,9 @@ test.describe("scheduler / timeline", () => {
   })
 
   test("a shorter event spans less than a longer one", async () => {
-    const mixing = await I.getTimelineSpan("2")
-    const maintenance = await I.getTimelineSpan("3")
-    expect(mixing.size).toBeLessThan(maintenance.size)
+    const consult = await I.getTimelineSpan("r-2")
+    const maintenance = await I.getTimelineSpan("r-maintenance")
+    expect(consult.size).toBeLessThan(maintenance.size)
   })
 
   test("[pointer] next and prev move the range by a week", async () => {

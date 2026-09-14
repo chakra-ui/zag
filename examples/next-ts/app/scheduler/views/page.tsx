@@ -3,60 +3,21 @@
 import * as scheduler from "@zag-js/scheduler"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
-
-const INITIAL_EVENTS: scheduler.SchedulerEvent[] = [
-  {
-    id: "1",
-    title: "Team standup",
-    start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
-    end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
-    color: "#3b82f6",
-  },
-  {
-    id: "2",
-    title: "Design review",
-    start: TODAY.subtract({ days: 2 }).set({ hour: 10, minute: 0 }),
-    end: TODAY.subtract({ days: 2 }).set({ hour: 11, minute: 30 }),
-    color: "#10b981",
-  },
-  {
-    id: "3",
-    title: "Lunch",
-    start: TODAY.set({ hour: 12, minute: 0 }),
-    end: TODAY.set({ hour: 13, minute: 0 }),
-    color: "#f59e0b",
-  },
-  {
-    id: "4",
-    title: "Overlap A",
-    start: TODAY.set({ hour: 9, minute: 15 }),
-    end: TODAY.set({ hour: 10, minute: 15 }),
-    color: "#ef4444",
-  },
-  {
-    id: "5",
-    title: "Overlap B",
-    start: TODAY.set({ hour: 9, minute: 30 }),
-    end: TODAY.set({ hour: 10, minute: 0 }),
-    color: "#8b5cf6",
-  },
-]
-
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const [events, setEvents] = useState(INITIAL_EVENTS)
+  const [events, setEvents] = useState(schedulerEvents)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),

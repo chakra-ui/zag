@@ -2,7 +2,7 @@
 
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -18,7 +18,7 @@ interface MeetingPayload {
 
 type Event = scheduler.SchedulerEvent<MeetingPayload>
 
-const TODAY = scheduler.getToday()
+const TODAY = schedulerAnchor
 
 const INITIAL: Event[] = [
   {
@@ -59,6 +59,7 @@ export default function Page() {
   const service = useMachine(scheduler.machine as scheduler.Machine<MeetingPayload>, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop: (d) =>
       setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),

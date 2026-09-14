@@ -4,8 +4,10 @@
   "main": "src/index.ts",
   "private": true,
   "dependencies": {
+    "@internationalized/date": "^3.12.3",
+    "@zag-js/date-input": "workspace:*",
     "@zag-js/image-cropper": "workspace:*",
-    "@zag-js/tour": "workspace:*",
-    "@zag-js/date-input": "workspace:*"
+    "@zag-js/scheduler": "workspace:*",
+    "@zag-js/tour": "workspace:*"
   }
 }

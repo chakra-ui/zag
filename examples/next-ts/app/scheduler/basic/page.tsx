@@ -1,9 +1,8 @@
 "use client"
 
-import { startOfWeek } from "@internationalized/date"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -11,49 +10,14 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
-// anchor to the week: TODAY-relative events fall out of view near a week boundary
-const WEEK = startOfWeek(TODAY, "en-US")
-
-const INITIAL: scheduler.SchedulerEvent[] = [
-  {
-    id: "1",
-    title: "Team standup",
-    start: WEEK.add({ days: 2 }).set({ hour: 9, minute: 0 }),
-    end: WEEK.add({ days: 2 }).set({ hour: 9, minute: 30 }),
-    color: "#3b82f6",
-  },
-  {
-    id: "2",
-    title: "Design review",
-    start: WEEK.add({ days: 3 }).set({ hour: 10, minute: 0 }),
-    end: WEEK.add({ days: 3 }).set({ hour: 11, minute: 30 }),
-    color: "#10b981",
-  },
-  {
-    id: "3",
-    title: "Lunch",
-    start: WEEK.add({ days: 4 }).set({ hour: 12, minute: 0 }),
-    end: WEEK.add({ days: 4 }).set({ hour: 13, minute: 0 }),
-    color: "#f59e0b",
-  },
-  // overlaps "Team standup" so both render side-by-side
-  {
-    id: "4",
-    title: "Pairing",
-    start: WEEK.add({ days: 2 }).set({ hour: 9, minute: 15 }),
-    end: WEEK.add({ days: 2 }).set({ hour: 9, minute: 45 }),
-    color: "#a855f7",
-  },
-]
-
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const [events, setEvents] = useState(INITIAL)
+  const [events, setEvents] = useState(schedulerEvents)
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventClick: (d) => console.log("event clicked", d),
     onEventDrop: (d) => {

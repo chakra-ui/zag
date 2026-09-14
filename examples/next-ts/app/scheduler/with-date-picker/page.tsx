@@ -4,7 +4,7 @@ import { CalendarDate, CalendarDateTime, type DateValue } from "@internationaliz
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -13,39 +13,13 @@ import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 import "@styles/date-picker.css"
 
-const TODAY = scheduler.getToday()
-
-const INITIAL: scheduler.SchedulerEvent[] = [
-  {
-    id: "1",
-    title: "Team standup",
-    start: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 0 }),
-    end: TODAY.subtract({ days: 4 }).set({ hour: 9, minute: 30 }),
-    color: "#3b82f6",
-  },
-  {
-    id: "2",
-    title: "Design review",
-    start: TODAY.subtract({ days: 2 }).set({ hour: 10, minute: 0 }),
-    end: TODAY.subtract({ days: 2 }).set({ hour: 11, minute: 30 }),
-    color: "#10b981",
-  },
-  {
-    id: "3",
-    title: "Lunch",
-    start: TODAY.set({ hour: 12, minute: 0 }),
-    end: TODAY.set({ hour: 13, minute: 0 }),
-    color: "#f59e0b",
-  },
-]
-
-const toCalDate = (d: DateValue) => new CalendarDate(d.year, d.month, d.day)
+const toCalDate = (d: CalendarDateTime) => new CalendarDate(d.year, d.month, d.day)
 const toCalDateTime = (d: DateValue) => new CalendarDateTime(d.year, d.month, d.day, 0, 0)
 
 export default function Page() {
   const controls = useControls(schedulerControls)
-  const [date, setDate] = useState<DateValue>(TODAY)
-  const [events, setEvents] = useState(INITIAL)
+  const [date, setDate] = useState<CalendarDateTime>(schedulerAnchor)
+  const [events, setEvents] = useState(schedulerEvents)
 
   const dpService = useMachine(datePicker.machine, {
     id: useId(),
@@ -68,6 +42,7 @@ export default function Page() {
     view: "week",
     ...controls.context,
     date,
+    defaultDate: schedulerAnchor,
     events,
     onDateChange: (d) => setDate(d.date),
     onEventDrop: (d) =>

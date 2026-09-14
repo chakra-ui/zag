@@ -3,12 +3,13 @@
 import { startOfWeek, toCalendarDateTime } from "@internationalized/date"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
+import { schedulerAnchor } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
+const TODAY = schedulerAnchor
 const WEEK = startOfWeek(TODAY, "en-US")
 
 const BUSINESS_START = 9

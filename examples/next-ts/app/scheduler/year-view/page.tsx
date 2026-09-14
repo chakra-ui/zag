@@ -3,6 +3,7 @@
 import { CalendarDateTime } from "@internationalized/date"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
+import { schedulerAnchor } from "@zag-js/shared"
 import { schedulerControls } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId } from "react"
@@ -14,8 +15,8 @@ import "@styles/scheduler.css"
 const INITIAL: scheduler.SchedulerEvent[] = Array.from({ length: 12 }, (_, m) => ({
   id: `evt-${m}`,
   title: `Meeting ${m + 1}`,
-  start: new CalendarDateTime(2026, m + 1, 10 + (m % 15), 10, 0),
-  end: new CalendarDateTime(2026, m + 1, 10 + (m % 15), 11, 0),
+  start: new CalendarDateTime(schedulerAnchor.year, m + 1, 10 + (m % 15), 10, 0),
+  end: new CalendarDateTime(schedulerAnchor.year, m + 1, 10 + (m % 15), 11, 0),
   color: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][m % 5],
 }))
 

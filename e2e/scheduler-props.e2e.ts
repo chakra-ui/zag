@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test"
+import { schedulerAnchor } from "@zag-js/shared"
 import { SchedulerModel } from "./models/scheduler.model"
+
+/** The anchor is a Wednesday, so its week runs Sun -2 … Sat +3. */
+const anchorDay = (offset: number) => schedulerAnchor.add({ days: offset }).toString()
+/** Column index of an anchor-relative day within the anchor week. */
+const anchorColumn = (offset: number) => offset + 3
 
 let I: SchedulerModel
 
@@ -125,36 +131,37 @@ test.describe("scheduler / all-day", () => {
   })
 
   test("a multi-day event renders as one bar, not one chip per day", async () => {
-    await I.clickPrev()
-    // DevConf runs Sep 11 -> Sep 13, clipped by the Sep 6-12 week
-    await expect(I.getEvent("conf")).toHaveCount(1)
-    expect(await I.barPlacement("conf")).toEqual({ column: 5, span: 2 })
-    await expect(I.getEvent("conf")).toHaveAttribute("data-clip-end", "")
+    // `offsite` runs anchor+1 -> anchor+3, wholly inside the anchor week
+    await expect(I.getEvent("offsite")).toHaveCount(1)
+    expect(await I.barPlacement("offsite")).toEqual({ column: anchorColumn(1), span: 3 })
+    await expect(I.getEvent("offsite")).not.toHaveAttribute("data-clip-end", "")
   })
 
-  test("a clipped end carries no resize handle", async () => {
-    await I.clickPrev()
-    await expect(I.getResizeHandle("conf", "start")).toHaveCount(1)
-    await expect(I.getResizeHandle("conf", "end")).toHaveCount(0)
+  test("a bar clipped by the range carries no handle on that end", async () => {
+    // `conference` runs anchor+4 -> anchor+8, so the week cuts it short
+    await I.clickNext()
+    await expect(I.getEvent("conference")).toHaveAttribute("data-clip-start", "")
+    await expect(I.getResizeHandle("conference", "start")).toHaveCount(0)
+    await expect(I.getResizeHandle("conference", "end")).toHaveCount(1)
   })
 
   test("[pointer] dragging moves the bar by whole days", async () => {
-    expect(await I.barPlacement("holiday")).toEqual({ column: 1, span: 1 })
-    await I.dragEventToAllDayCell("holiday", "2026-09-16T00:00:00")
-    await expect(I.dropLog).toHaveText("holiday allDay:true 2026-09-16T00:00:00 → 2026-09-16T00:00:00 Δ2d0m")
-    expect(await I.barPlacement("holiday")).toEqual({ column: 3, span: 1 })
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(0), span: 1 })
+    await I.dragEventToAllDayCell("holiday", anchorDay(2))
+    await expect(I.dropLog).toHaveText(`holiday allDay:true ${anchorDay(2)} → ${anchorDay(2)} Δ2d0m`)
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(2), span: 1 })
   })
 
   test("[pointer] the bar itself tracks the pointer, with no overlay in the time grid", async () => {
-    await I.dragEventToAllDayCell("holiday", "2026-09-15T00:00:00", false)
-    expect(await I.barPlacement("holiday")).toEqual({ column: 2, span: 1 })
+    await I.dragEventToAllDayCell("holiday", anchorDay(1), false)
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(1), span: 1 })
     await expect(I.gridDragPreviews).toHaveCount(0)
     await expect(I.gridDragOrigins).toHaveCount(0)
     await I.page.mouse.up()
   })
 
   test("[pointer] the dragged bar stays visible — it is its own preview", async () => {
-    await I.dragEventToAllDayCell("holiday", "2026-09-16T00:00:00", false)
+    await I.dragEventToAllDayCell("holiday", anchorDay(2), false)
     const bar = I.getEvent("holiday").first()
     await expect(bar).toBeVisible()
     await expect(bar).toHaveText("Company holiday")
@@ -164,27 +171,27 @@ test.describe("scheduler / all-day", () => {
 
   test("[pointer] the drag never resizes the all-day row", async () => {
     const before = await I.allDayRow.boundingBox()
-    await I.dragEventToAllDayCell("holiday", "2026-09-17T00:00:00", false)
+    await I.dragEventToAllDayCell("holiday", anchorDay(3), false)
     expect((await I.allDayRow.boundingBox())!.height).toBe(before!.height)
     await I.page.mouse.up()
   })
 
   test("[pointer] resizing the end extends the bar by whole days", async () => {
-    await I.resizeAllDayTo("holiday", "end", "2026-09-17T00:00:00")
-    expect(await I.barPlacement("holiday")).toEqual({ column: 1, span: 4 })
+    await I.resizeAllDayTo("holiday", "end", anchorDay(3))
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(0), span: 4 })
   })
 
   test("[pointer] resizing the start pulls the bar forward", async () => {
-    await I.resizeAllDayTo("holiday", "end", "2026-09-17T00:00:00")
-    await I.resizeAllDayTo("holiday", "start", "2026-09-16T00:00:00")
-    expect(await I.barPlacement("holiday")).toEqual({ column: 3, span: 2 })
+    await I.resizeAllDayTo("holiday", "end", anchorDay(3))
+    await I.resizeAllDayTo("holiday", "start", anchorDay(2))
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(2), span: 2 })
   })
 
   test("[pointer] an edge dragged past the other clamps to a single day", async () => {
-    await I.resizeAllDayTo("holiday", "end", "2026-09-17T00:00:00")
+    await I.resizeAllDayTo("holiday", "end", anchorDay(3))
     // `end` is inclusive, so one day is the floor rather than an inverted range
-    await I.resizeAllDayTo("holiday", "end", "2026-09-13T00:00:00")
-    expect(await I.barPlacement("holiday")).toEqual({ column: 1, span: 1 })
+    await I.resizeAllDayTo("holiday", "end", anchorDay(-2))
+    expect(await I.barPlacement("holiday")).toEqual({ column: anchorColumn(0), span: 1 })
   })
 
   test("[pointer] dropping an all-day event in the grid reports a timed drop", async () => {
@@ -196,8 +203,7 @@ test.describe("scheduler / all-day", () => {
   })
 
   test("[pointer] dropping a timed event in the all-day row reports an all-day drop", async () => {
-    await I.clickPrev()
-    await I.dragEventToAllDayCell("standup", "2026-09-10T00:00:00")
-    await expect(I.dropLog).toHaveText("standup allDay:true 2026-09-10T00:00:00 → 2026-09-10T00:00:00 Δ0d-540m")
+    await I.dragEventToAllDayCell("standup-wed", anchorDay(0))
+    await expect(I.dropLog).toHaveText(`standup-wed allDay:true ${anchorDay(0)} → ${anchorDay(0)} Δ0d-540m`)
   })
 })

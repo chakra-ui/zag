@@ -1,59 +1,25 @@
 "use client"
 
-import { startOfWeek } from "@internationalized/date"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
+import { schedulerAnchor, schedulerResourceEvents, schedulerResources } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
-// anchor to the week: TODAY-relative events fall out of view near a week boundary
-const WEEK = startOfWeek(TODAY, "en-US")
-
-const RESOURCES: scheduler.SchedulerResource[] = [
-  { id: "amelia", title: "Amelia", color: "#3b82f6" },
-  { id: "brooke", title: "Brooke", color: "#10b981" },
-  { id: "cass", title: "Cass", color: "#f59e0b", disabled: true },
-]
-
-const INITIAL: scheduler.SchedulerEvent[] = [
-  {
-    id: "1",
-    title: "Intake",
-    resourceId: "amelia",
-    start: WEEK.add({ days: 2 }).set({ hour: 9, minute: 0 }),
-    end: WEEK.add({ days: 2 }).set({ hour: 10, minute: 0 }),
-  },
-  {
-    id: "2",
-    title: "Fitting",
-    resourceId: "brooke",
-    start: WEEK.add({ days: 2 }).set({ hour: 9, minute: 30 }),
-    end: WEEK.add({ days: 2 }).set({ hour: 11, minute: 0 }),
-  },
-  {
-    id: "3",
-    title: "Blocked",
-    resourceId: "cass",
-    start: WEEK.add({ days: 2 }).set({ hour: 13, minute: 0 }),
-    end: WEEK.add({ days: 2 }).set({ hour: 14, minute: 0 }),
-  },
-]
-
 export default function Page() {
-  const [events, setEvents] = useState(INITIAL)
+  const [events, setEvents] = useState(schedulerResourceEvents)
   const [log, setLog] = useState<string[]>([])
 
   const service = useMachine(scheduler.machine, {
     id: useId(),
     defaultView: "day",
-    defaultDate: WEEK.add({ days: 2 }),
     dayStartHour: 8,
     dayEndHour: 18,
-    resources: RESOURCES,
+    resources: schedulerResources,
     groupBy: "resource",
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop(details) {
       setLog((prev) => [...prev, `drop:${details.event.id}:${details.resource?.id ?? "none"}`])

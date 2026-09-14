@@ -2,7 +2,7 @@
 
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
-import { schedulerControls } from "@zag-js/shared"
+import { schedulerAnchor, schedulerControls } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -10,7 +10,7 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/scheduler.css"
 
-const TODAY = scheduler.getToday()
+const TODAY = schedulerAnchor
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6", "#f97316"]
 
 function seededRandom(seed: number) {
@@ -53,6 +53,7 @@ export default function Page() {
   const service = useMachine(scheduler.machine, {
     id: useId(),
     ...controls.context,
+    defaultDate: schedulerAnchor,
     events,
     onEventDrop: (d) => {
       // Mutate in place + bump tick — parent re-renders with a fresh event

@@ -2,8 +2,9 @@ import type { StepDetails } from "@zag-js/tour"
 import type { HandlePosition } from "@zag-js/image-cropper"
 
 import { countryList } from "./country-list"
-export { paginationData } from "./pagination-data"
-export { cascadeSelectData } from "./cascade-select-data"
+export { paginationData } from "./pagination"
+export { cascadeSelectData } from "./cascade-select"
+export * from "./scheduler"
 
 export const selectData = countryList.map((country) => ({
   label: `${country.name} (${country.code})`,
@@ -380,7 +381,7 @@ export const tocData = [
   { value: "troubleshooting", depth: 2, label: "Troubleshooting" },
 ]
 
-export * as commandData from "./command"
+export * as commandData from "../command"
 
 // JSON Tree test data
 const testArray = [1, 2, 3, 4, 5]
