@@ -198,27 +198,30 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const win = getWindow(root)
   const doc = getDocument(root)
 
-  let focus = win.HTMLElement.prototype.focus
-  function patchedFocus(this: HTMLElement) {
-    // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
-    // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
-    // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
-    // When `options.focusVisible` is supported in most browsers, we can remove this.
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
-    hasEventBeforeFocus = true
-    focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
-  }
-
+  // Reading `focus` can throw: tooling like Storybook's instrumenter redefines it as an accessor
+  // that dereferences `this`, and reading it off the prototype runs that getter with the prototype
+  // as `this`. Keep the read inside the try so a throw costs the patch, not the listeners below.
   // Overwrite via assignment does not work in happy dom:
   // https://github.com/capricorn86/happy-dom/issues/1214
   try {
+    const focus = win.HTMLElement.prototype.focus
+    function patchedFocus(this: HTMLElement) {
+      // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
+      // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
+      // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
+      // When `options.focusVisible` is supported in most browsers, we can remove this.
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
+      hasEventBeforeFocus = true
+      focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
+    }
+
     Object.defineProperty(win.HTMLElement.prototype, "focus", {
       configurable: true,
       value: patchedFocus,
     })
   } catch {
-    // Failed to patch - property may be non-configurable or already patched
-    // The focus tracking will still work via keyboard/pointer event listeners
+    // Failed to read or patch - the property may be non-configurable, already patched, or an
+    // accessor that throws. The focus tracking still works via keyboard/pointer event listeners
   }
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
