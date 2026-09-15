@@ -152,6 +152,7 @@ export const machine = createMachine<DatePickerSchema>({
   refs() {
     return {
       announcer: undefined,
+      restoreFocus: false,
     }
   },
 
@@ -210,9 +211,6 @@ export const machine = createMachine<DatePickerSchema>({
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
-      })),
-      restoreFocus: bindable<boolean | undefined>(() => ({
-        defaultValue: false,
       })),
     }
   },
@@ -419,7 +417,7 @@ export const machine = createMachine<DatePickerSchema>({
 
     open: {
       tags: ["open"],
-      entry: ["resumeRangeSelection"],
+      entry: ["resumeRangeSelection", "clearRestoreFocus"],
       effects: ["trackDismissableElement", "trackPositioning"],
       exit: ["clearHoveredDate"],
       on: {
@@ -737,7 +735,7 @@ export const machine = createMachine<DatePickerSchema>({
         // Block if we've reached the maximum
         return existingValues.length < maxSelectedDates
       },
-      shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
+      shouldRestoreFocus: ({ refs }) => !!refs.get("restoreFocus"),
       isSelectingEndDate: ({ context }) => context.get("activeIndex") === 1,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
       isOpenControlled: ({ prop }) => prop("open") != undefined || !!prop("inline"),
@@ -771,7 +769,7 @@ export const machine = createMachine<DatePickerSchema>({
         return () => refs.get("announcer")?.destroy?.()
       },
 
-      trackDismissableElement({ scope, send, context, prop }) {
+      trackDismissableElement({ scope, send, prop, refs }) {
         if (prop("inline")) return
 
         const getContentEl = () => dom.getContentEl(scope)
@@ -781,7 +779,7 @@ export const machine = createMachine<DatePickerSchema>({
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
-            context.set("restoreFocus", !event.detail.focusable)
+            refs.set("restoreFocus", prop("restoreFocus") ?? !event.detail.focusable)
           },
           onDismiss() {
             send({ type: "INTERACT_OUTSIDE" })
@@ -806,8 +804,11 @@ export const machine = createMachine<DatePickerSchema>({
       setView({ context, event }) {
         context.set("view", event.view)
       },
-      setRestoreFocus({ context }) {
-        context.set("restoreFocus", true)
+      setRestoreFocus({ refs }) {
+        refs.set("restoreFocus", true)
+      },
+      clearRestoreFocus({ refs }) {
+        refs.set("restoreFocus", false)
       },
       announceValueText({ context, prop, refs }) {
         const value = context.get("value")

@@ -25,6 +25,31 @@ test.describe("datepicker [single]", () => {
     await I.seeTodayCellIsFocused()
   })
 
+  test("outside click dismissal restores focus to the trigger on every cycle", async () => {
+    // cycle 1
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickOutsideToBlur()
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
+
+    // cycle 2 must behave identically to cycle 1
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickOutsideToBlur()
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
+  })
+
+  test("restoreFocus=false keeps focus where the user clicked on outside dismissal", async () => {
+    await I.goto("/date-picker/restore-focus")
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickOutsideToBlur()
+    await I.dontSeeContent()
+    await I.dontSeeTriggerIsFocused()
+  })
+
   test("closes the calendar on esc", async () => {
     await I.clickTrigger()
     await I.seeContent()
