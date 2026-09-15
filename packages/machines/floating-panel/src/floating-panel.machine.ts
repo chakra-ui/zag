@@ -599,7 +599,9 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       setInitialFocus({ scope, prop }) {
         raf(() => {
-          const element = prop("initialFocusEl")?.() ?? dom.getContentEl(scope)
+          const initialEl = prop("initialFocusEl")?.()
+          if (initialEl === false) return
+          const element = initialEl ?? dom.getContentEl(scope)
           element?.focus({ preventScroll: true })
         })
       },
