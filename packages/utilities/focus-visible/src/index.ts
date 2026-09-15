@@ -72,7 +72,8 @@ let currentModality: Modality | null = null
 let changeHandlers = new Set<Handler>()
 
 interface GlobalListenerData {
-  focus: VoidFunction
+  /** Unset when the prototype's `focus` could not be read, so there is nothing to restore. */
+  focus: VoidFunction | undefined
 }
 
 export let listenerMap = new Map<Window, GlobalListenerData>()
@@ -201,10 +202,15 @@ function setupGlobalFocusEvents(root?: RootNode) {
   // Reading `focus` can throw: tooling like Storybook's instrumenter redefines it as an accessor
   // that dereferences `this`, and reading it off the prototype runs that getter with the prototype
   // as `this`. Keep the read inside the try so a throw costs the patch, not the listeners below.
+  // `originalFocus` carries it back out for teardown; leaving it unset means there is nothing to
+  // restore, and a bare `focus` here would silently resolve to the global `window.focus`.
+  let originalFocus: VoidFunction | undefined
+
   // Overwrite via assignment does not work in happy dom:
   // https://github.com/capricorn86/happy-dom/issues/1214
   try {
     const focus = win.HTMLElement.prototype.focus
+    originalFocus = focus
     function patchedFocus(this: HTMLElement) {
       // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
       // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
@@ -250,7 +256,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
     { once: true },
   )
 
-  listenerMap.set(win, { focus })
+  listenerMap.set(win, { focus: originalFocus })
 }
 
 const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
@@ -266,13 +272,15 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     return
   }
 
-  try {
-    Object.defineProperty(win.HTMLElement.prototype, "focus", {
-      configurable: true,
-      value: listenerData.focus,
-    })
-  } catch {
-    // Failed to restore - ignore silently
+  if (listenerData.focus) {
+    try {
+      Object.defineProperty(win.HTMLElement.prototype, "focus", {
+        configurable: true,
+        value: listenerData.focus,
+      })
+    } catch {
+      // Failed to restore - ignore silently
+    }
   }
 
   doc.removeEventListener("keydown", handleKeyboardEvent, true)
