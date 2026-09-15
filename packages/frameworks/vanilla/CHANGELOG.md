@@ -1,5 +1,32 @@
 # @zag-js/vanilla
 
+## 1.44.0
+
+### Minor Changes
+
+- [`83afd32`](https://github.com/chakra-ui/zag/commit/83afd32b2037c36abf431368f0a8d2f4c429bc58) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `spreadProps` replacing the whole `style` attribute, which
+  wiped inline styles set on the element by other code (like the layer stack's `--layer-index` or popper's `--x`/`--y`).
+
+  `normalizeProps` and `mergeProps` now return `style` as an object instead of a CSS string, and `spreadProps` applies
+  it property by property. Use the exported `toStyleString` if you need the string form.
+
+### Patch Changes
+
+- [`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `api.setOpen` ignoring a second call made in the same tick.
+  `setOpen(true)` immediately followed by `setOpen(false)` left the component open instead of closed, and only worked if
+  you awaited a microtask between the two calls.
+
+  The last call in a tick now wins, and calling `setOpen` repeatedly with the same value still invokes `onOpenChange`
+  once. Drawer's `api.setSnapPoint` had the same problem and behaves the same way now.
+
+- Updated dependencies [[`06be915`](https://github.com/chakra-ui/zag/commit/06be9152837570cfed4037985fb285e30ffef2c5)]:
+  - @zag-js/core@1.44.0
+  - @zag-js/store@1.44.0
+  - @zag-js/types@1.44.0
+  - @zag-js/utils@1.44.0
+
 ## 1.43.3
 
 ### Patch Changes

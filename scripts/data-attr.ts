@@ -1,6 +1,6 @@
 import { ModuleResolutionKind, Node, Project, StringLiteral, SyntaxKind, type ObjectLiteralElementLike } from "ts-morph"
 import * as fg from "fast-glob"
-import { join, sep } from "path"
+import { basename, dirname, join } from "path"
 import { writeFileSync, readFileSync } from "fs"
 
 const docsMap = {
@@ -202,12 +202,13 @@ async function main() {
     },
   })
 
-  const files = fg.globSync("packages/machines/*/src/*.connect.ts")
+  // sorted: glob order follows the filesystem, and it decides the key order of the emitted JSON
+  const files = fg.globSync("packages/machines/*/src/*.connect.ts").sort()
 
   const json: Record<string, any> = {}
 
   files.forEach((file) => {
-    const widget = file.split(sep)[2]
+    const widget = basename(dirname(dirname(file)))
     project.addSourceFileAtPath(file)
 
     const hasDismissable = hasDismissableDependency(widget)

@@ -1,4 +1,4 @@
-import { join } from "path"
+import { basename, join } from "path"
 import {
   EnumDeclaration,
   InterfaceDeclaration,
@@ -190,7 +190,7 @@ async function main() {
   let totalIssues = 0
 
   for (const { dir } of machines) {
-    const machineName = dir.split("/").pop()!
+    const machineName = basename(dir)
     const result = checkMachine(project, dir, machineName)
 
     if (result.issues.length > 0) {

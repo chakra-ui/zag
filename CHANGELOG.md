@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.44.0](./#1.44.0) - 2026-09-12
+
+### Added
+
+- **Date Picker**: Add `data-invalid` to label and control so they can be styled when `invalid`.
+
+- **DOM Query**: Add `getCaretPosition` for anchoring a popup, like a mention menu, to the caret.
+
+- **Hotkeys**: Export `getPlatform` and `SequenceStep` type.
+
+### Fixed
+
+- **Color Picker**: Fix screen readers offering the color area and channel slider thumbs as adjustable when disabled.
+
+- **Date Picker**
+  - Fix every year cell rendering as disabled outside the decade in view, even with no `min` or `max` set. Selectability
+    is `min`/`max` only now; outside cells keep `data-outside-range`.
+  - Fix `End` in the year view moving focus two years past the last cell.
+
+- **Dismissable**: Fix popups closing themselves the instant they open when their content is kept mounted and
+  re-parented on open. `whenNode`'s `defer: true` now always waits for the commit.
+
+- **File Upload**: Fix dropping a large folder freezing the tab. A directory with tens of thousands of files took tens
+  of seconds to process; 50,000 files now takes milliseconds.
+
+- **Focus Visible**: Fix a programmatic click leaving `:focus-visible` styling in place. Same-position pointer moves are
+  now ignored only for trusted events, so synthetic clicks restore pointer modality.
+
+- **General**: Fix `api.setOpen` applying only the first of several calls made in the same tick, so opening then closing
+  from one handler left the component open. The last call now wins, as it does for Drawer's `api.setSnapPoint`.
+
+- **Menu**: Fix `onSelect` reporting the highlighted item rather than the one clicked, so clicking while another item
+  was highlighted selected the wrong value.
+
+- **Pin Input**: Fix `Ctrl/Meta+X` not cutting on non-React frameworks. Deletion is no longer treated as an invalid
+  typed character, so cutting shifts the remaining digits.
+
+- **Vanilla**: Fix `spreadProps` replacing the whole `style` attribute, wiping inline styles set by other code like the
+  layer stack's `--layer-index` or popper's `--x`/`--y`.
+
+### Changed
+
+- **Date Utils**: `getDecadeRange` no longer accepts `{ strict }` and always returns ten years, not twelve. Drop the
+  option if you passed `{ strict: true }`; the twelve-year form is gone.
+
+- **Vanilla**: `normalizeProps` and `mergeProps` now return `style` as an object, not a CSS string, and `spreadProps`
+  applies it per property. Use `toStyleString` for the string form.
+
 ## [1.43.3](./#1.43.3) - 2026-08-20
 
 ### Fixed

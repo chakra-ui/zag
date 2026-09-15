@@ -1,4 +1,4 @@
-import { resolve } from "node:path"
+import { basename, dirname, resolve } from "node:path"
 import { writeFileSync, readFileSync } from "node:fs"
 import { glob } from "fast-glob"
 import { Project, Node, SyntaxKind } from "ts-morph"
@@ -223,7 +223,7 @@ function extractCSSVariablesFromConnect(filePath: string, project: Project): CSS
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const component = filePath.split("/").slice(-3, -2)[0] // Extract component name from path
+  const component = basename(dirname(dirname(filePath)))
 
   sourceFile.forEachDescendant((node) => {
     if (Node.isPropertyAssignment(node) && node.getName() === "style") {
@@ -284,7 +284,7 @@ function extractCSSVariablesFromStyle(filePath: string, project: Project): CSSVa
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const component = filePath.split("/").slice(-3, -2)[0]
+  const component = basename(dirname(dirname(filePath)))
 
   sourceFile.forEachDescendant((node) => {
     if (Node.isObjectLiteralExpression(node)) {
@@ -326,8 +326,7 @@ function extractCSSVariablesFromUtility(filePath: string, project: Project): CSS
   if (!sourceFile) return []
 
   const variables: CSSVariable[] = []
-  const pathParts = filePath.split("/")
-  const utilityName = pathParts[pathParts.indexOf("utilities") + 1] // e.g., "popper", "dismissable"
+  const utilityName = basename(dirname(dirname(filePath))) // e.g., "popper", "dismissable"
 
   sourceFile.forEachDescendant((node) => {
     // Look for regular object literals with CSS variables
@@ -430,7 +429,7 @@ function formatPartName(part: string): string {
 }
 
 async function findComponentsUsingDependency(dependencyName: string): Promise<string[]> {
-  const packageFiles = await glob("packages/machines/*/package.json")
+  const packageFiles = (await glob("packages/machines/*/package.json")).sort()
   const components: string[] = []
 
   for (const packageFile of packageFiles) {
@@ -463,7 +462,8 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   const tempVariables: CSSVariable[] = []
 
   // Extract from .connect.ts files
-  const connectFiles = await glob("packages/machines/*/src/*.connect.ts")
+  // sorted: glob order follows the filesystem, and it decides the key order of the emitted JSON
+  const connectFiles = (await glob("packages/machines/*/src/*.connect.ts")).sort()
   for (const file of connectFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromConnect(filePath, project)
@@ -471,7 +471,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   }
 
   // Extract from .style.ts files
-  const styleFiles = await glob("packages/machines/*/src/*.style.ts")
+  const styleFiles = (await glob("packages/machines/*/src/*.style.ts")).sort()
   for (const file of styleFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromStyle(filePath, project)
@@ -479,7 +479,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   }
 
   // Extract from utility packages
-  const utilityFiles = await glob("packages/utilities/*/src/*.ts")
+  const utilityFiles = (await glob("packages/utilities/*/src/*.ts")).sort()
   for (const file of utilityFiles) {
     const filePath = resolve(file)
     const variables = extractCSSVariablesFromUtility(filePath, project)
