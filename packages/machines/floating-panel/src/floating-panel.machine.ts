@@ -1,5 +1,12 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  getOverflowAncestors,
+  isHTMLElement,
+  raf,
+  resizeObserverBorderBox,
+  trackPointerMove,
+} from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,
@@ -12,6 +19,7 @@ import {
   resizeRect,
   subtractPoints,
   type Point,
+  type RectInit,
   type Size,
 } from "@zag-js/rect-utils"
 import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
@@ -273,35 +281,48 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       trackBoundaryRect({ context, scope, prop, computed }) {
         const win = scope.getWin()
+        const readRect = () => dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
-        // ResizeObserver fires immediately on init, so we need to skip the first call
-        let skip = true
+        let prevRect = readRect()
 
-        const exec = () => {
-          if (skip) {
-            skip = false
-            return
-          }
+        const syncPosition = (rect: RectInit) => {
+          // absolute panels already move with their offset parent
+          if (prop("strategy") !== "fixed") return
+          const dx = rect.x - prevRect.x
+          const dy = rect.y - prevRect.y
+          if (dx === 0 && dy === 0) return
+          const position = context.get("position")
+          context.set("position", { x: position.x + dx, y: position.y + dy })
+        }
 
-          const boundaryEl = prop("getBoundaryEl")?.()
-          let boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
+        const syncSize = (rect: RectInit) => {
+          if (rect.width === prevRect.width && rect.height === prevRect.height) return
+          const panelRect = { ...context.get("position"), ...context.get("size") }
+          const nextRect = computed("isMaximized") ? rect : constrainRect(panelRect, rect)
+          context.set("size", pick(nextRect, ["width", "height"]))
+          context.set("position", pick(nextRect, ["x", "y"]))
+        }
 
-          if (!computed("isMaximized")) {
-            const rect = { ...context.get("position"), ...context.get("size") }
-            boundaryRect = constrainRect(rect, boundaryRect)
-          }
-
-          context.set("size", pick(boundaryRect, ["width", "height"]))
-          context.set("position", pick(boundaryRect, ["x", "y"]))
+        const sync = () => {
+          const rect = readRect()
+          syncPosition(rect)
+          syncSize(rect)
+          prevRect = rect
         }
 
         const boundaryEl = prop("getBoundaryEl")?.()
 
-        if (isHTMLElement(boundaryEl)) {
-          return resizeObserverBorderBox.observe(boundaryEl, exec)
+        if (!isHTMLElement(boundaryEl)) {
+          return addDomEvent(win, "resize", sync)
         }
 
-        return addDomEvent(win, "resize", exec)
+        // scoped to the boundary's scroll ancestors, so scrolling elsewhere costs nothing
+        const cleanups = [
+          resizeObserverBorderBox.observe(boundaryEl, sync),
+          ...getOverflowAncestors(boundaryEl).map((ancestor) => addDomEvent(ancestor, "scroll", sync)),
+        ]
+
+        return () => cleanups.forEach((fn) => fn?.())
       },
 
       trackPanelStack({ context, scope }) {
