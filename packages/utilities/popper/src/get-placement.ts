@@ -172,7 +172,7 @@ const floatingStyleProps = [
   "pointer-events",
   "--x",
   "--y",
-  "--z-index",
+  "z-index",
   "--reference-width",
   "--reference-height",
   "--available-width",
@@ -348,7 +348,10 @@ function getPlacementImpl(
     if (!zIndexComputed) {
       const contentEl = floating.firstElementChild
       if (contentEl) {
-        floating.style.setProperty("--z-index", getComputedStyle(contentEl).zIndex)
+        // only hoist a real stacking level. writing `auto` inline would win over any
+        // stylesheet rule targeting the positioner, leaving the popper unstackable
+        const zIndex = getComputedStyle(contentEl).zIndex
+        if (zIndex !== "auto") floating.style.setProperty("z-index", zIndex)
         zIndexComputed = true
       }
     }

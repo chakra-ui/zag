@@ -51,7 +51,6 @@ export function getPlacementStyles(
       left: "0px",
       // move off-screen if placement is not defined
       transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
-      zIndex: "var(--z-index)",
     } as const,
   }
 }
