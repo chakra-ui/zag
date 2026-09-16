@@ -432,7 +432,7 @@ export const machine = createMachine<TourSchema>({
         const doc = scope.getDoc()
 
         const onResize = () => {
-          const width = visualViewport?.width ?? win.innerWidth
+          const width = win.visualViewport?.width ?? win.innerWidth
           const height = doc.documentElement.scrollHeight
           context.set("boundarySize", { width, height })
         }
