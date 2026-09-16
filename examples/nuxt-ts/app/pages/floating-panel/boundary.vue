@@ -4,11 +4,17 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
 
 const boundaryRef = ref<HTMLElement | null>(null)
+const strategy = ref<"fixed" | "absolute">("fixed")
 
-const service = useMachine(floatingPanel.machine, {
-  id: useId(),
-  getBoundaryEl: () => boundaryRef.value,
-})
+const id = useId()
+const service = useMachine(
+  floatingPanel.machine,
+  computed(() => ({
+    id,
+    getBoundaryEl: () => boundaryRef.value,
+    strategy: strategy.value,
+  })),
+)
 
 const api = computed(() => floatingPanel.connect(service, normalizeProps))
 </script>
@@ -17,6 +23,8 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
   <main class="floating-panel">
     <div class="scroll-area" data-testid="scroller">
       <p>Scroll this area. The panel stays inside the dashed boundary.</p>
+      <button @click="strategy = strategy === 'fixed' ? 'absolute' : 'fixed'">Toggle strategy</button>
+      <p>strategy: {{ strategy }}</p>
       <div class="scroll-spacer" />
       <div class="boundary" ref="boundaryRef" data-testid="boundary">
         <button v-bind="api.getTriggerProps()">Toggle Panel</button>

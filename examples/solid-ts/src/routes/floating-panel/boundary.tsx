@@ -1,15 +1,18 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-solid"
-import { For, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 
 export default function Page() {
   let boundaryRef: HTMLDivElement | undefined
+  const [strategy, setStrategy] = createSignal<"fixed" | "absolute">("fixed")
 
-  const service = useMachine(floatingPanel.machine, {
-    id: createUniqueId(),
+  const id = createUniqueId()
+  const service = useMachine(floatingPanel.machine, () => ({
+    id,
     getBoundaryEl: () => boundaryRef ?? null,
-  })
+    strategy: strategy(),
+  }))
 
   const api = createMemo(() => floatingPanel.connect(service, normalizeProps))
 
@@ -17,6 +20,8 @@ export default function Page() {
     <main class="floating-panel">
       <div class="scroll-area" data-testid="scroller">
         <p>Scroll this area. The panel stays inside the dashed boundary.</p>
+        <button onClick={() => setStrategy((s) => (s === "fixed" ? "absolute" : "fixed"))}>Toggle strategy</button>
+        <p>strategy: {strategy()}</p>
         <div class="scroll-spacer" />
         <div class="boundary" ref={boundaryRef} data-testid="boundary">
           <button {...api().getTriggerProps()}>Toggle Panel</button>

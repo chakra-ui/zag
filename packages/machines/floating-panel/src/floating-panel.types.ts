@@ -187,6 +187,11 @@ type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" 
 
 interface PrivateContext {
   /**
+   * The origin to subtract when rendering, for `absolute` panels whose top/left
+   * resolve against an offset parent rather than the viewport. Always `0,0` for `fixed`.
+   */
+  offsetOrigin: Point
+  /**
    * The last position of the mouse event
    */
   lastEventPosition: Point | null

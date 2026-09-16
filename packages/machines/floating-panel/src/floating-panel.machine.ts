@@ -80,6 +80,10 @@ export const machine = createMachine<FloatingPanelSchema>({
           prop("onStageChange")?.({ stage: value })
         },
       })),
+      offsetOrigin: bindable<Point>(() => ({
+        defaultValue: { x: 0, y: 0 },
+        isEqual: isPointEqual,
+      })),
       lastEventPosition: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
@@ -108,12 +112,16 @@ export const machine = createMachine<FloatingPanelSchema>({
   },
 
   watch({ track, context, action, prop }) {
-    track([() => context.hash("position")], () => {
+    track([() => context.hash("position"), () => context.hash("offsetOrigin")], () => {
       action(["setPositionStyle"])
     })
 
     track([() => context.hash("size")], () => {
       action(["setSizeStyle"])
+    })
+
+    track([() => prop("strategy")], () => {
+      action(["setOffsetOrigin"])
     })
 
     track([() => prop("open")], () => {
@@ -141,7 +149,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
+          actions: ["setOffsetOrigin", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
         },
         OPEN: [
           {
@@ -150,7 +158,14 @@ export const machine = createMachine<FloatingPanelSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
+            actions: [
+              "invokeOnOpen",
+              "setOffsetOrigin",
+              "setAnchorPosition",
+              "setPositionStyle",
+              "setSizeStyle",
+              "setInitialFocus",
+            ],
           },
         ],
       },
@@ -286,8 +301,6 @@ export const machine = createMachine<FloatingPanelSchema>({
         let prevRect = readRect()
 
         const syncPosition = (rect: RectInit) => {
-          // absolute panels already move with their offset parent
-          if (prop("strategy") !== "fixed") return
           const dx = rect.x - prevRect.x
           const dy = rect.y - prevRect.y
           if (dx === 0 && dy === 0) return
@@ -303,24 +316,30 @@ export const machine = createMachine<FloatingPanelSchema>({
           context.set("position", pick(nextRect, ["x", "y"]))
         }
 
+        const syncOffsetOrigin = () => {
+          context.set("offsetOrigin", dom.getOffsetOrigin(scope, prop("strategy")))
+        }
+
         const sync = () => {
           const rect = readRect()
+          syncOffsetOrigin()
           syncPosition(rect)
           syncSize(rect)
           prevRect = rect
         }
 
         const boundaryEl = prop("getBoundaryEl")?.()
+        const cleanups = [raf(syncOffsetOrigin)]
 
-        if (!isHTMLElement(boundaryEl)) {
-          return addDomEvent(win, "resize", sync)
+        if (isHTMLElement(boundaryEl)) {
+          cleanups.push(resizeObserverBorderBox.observe(boundaryEl, sync))
+          // scoped to the boundary's scroll ancestors, so scrolling elsewhere costs nothing
+          for (const ancestor of getOverflowAncestors(boundaryEl)) {
+            cleanups.push(addDomEvent(ancestor, "scroll", sync))
+          }
+        } else {
+          cleanups.push(addDomEvent(win, "resize", sync))
         }
-
-        // scoped to the boundary's scroll ancestors, so scrolling elsewhere costs nothing
-        const cleanups = [
-          resizeObserverBorderBox.observe(boundaryEl, sync),
-          ...getOverflowAncestors(boundaryEl).map((ancestor) => addDomEvent(ancestor, "scroll", sync)),
-        ]
 
         return () => cleanups.forEach((fn) => fn?.())
       },
@@ -421,11 +440,20 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("position", position)
       },
 
+      setOffsetOrigin({ scope, context, prop }) {
+        const apply = () => context.set("offsetOrigin", dom.getOffsetOrigin(scope, prop("strategy")))
+        // on a strategy change the element still carries the old `position`, so offsetParent is unresolved
+        const unresolved = prop("strategy") === "absolute" && !dom.getPositionerEl(scope)?.offsetParent
+        if (unresolved) raf(apply)
+        else apply()
+      },
+
       setPositionStyle({ scope, context }) {
         const el = dom.getPositionerEl(scope)
         const position = context.get("position")
-        el?.style.setProperty("--x", `${position.x}px`)
-        el?.style.setProperty("--y", `${position.y}px`)
+        const origin = context.get("offsetOrigin")
+        el?.style.setProperty("--x", `${position.x - origin.x}px`)
+        el?.style.setProperty("--y", `${position.y - origin.y}px`)
       },
 
       resetRect({ context, prop }) {

@@ -4,12 +4,14 @@
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
 
   let boundaryEl = $state<HTMLElement | null>(null)
+  let strategy = $state<"fixed" | "absolute">("fixed")
 
   const id = $props.id()
-  const service = useMachine(floatingPanel.machine, {
+  const service = useMachine(floatingPanel.machine, () => ({
     id,
     getBoundaryEl: () => boundaryEl,
-  })
+    strategy,
+  }))
 
   const api = $derived(floatingPanel.connect(service, normalizeProps))
 </script>
@@ -17,6 +19,8 @@
 <main class="floating-panel">
   <div class="scroll-area" data-testid="scroller">
     <p>Scroll this area. The panel stays inside the dashed boundary.</p>
+    <button onclick={() => (strategy = strategy === "fixed" ? "absolute" : "fixed")}>Toggle strategy</button>
+    <p>strategy: {strategy}</p>
     <div class="scroll-spacer"></div>
     <div class="boundary" bind:this={boundaryEl} data-testid="boundary">
       <button {...api.getTriggerProps()}>Toggle Panel</button>
