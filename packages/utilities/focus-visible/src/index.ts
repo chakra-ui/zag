@@ -189,6 +189,39 @@ function handleWindowBlur() {
 }
 
 /**
+ * Patch `HTMLElement.prototype.focus` to mark focus as programmatic, and return the native method
+ * for teardown to restore. Returns `undefined` when the patch could not be applied - the read itself
+ * can throw when tooling has replaced `focus` with an accessor that dereferences `this` (Storybook's
+ * instrumenter does), and losing the patch must not take the caller's setup down with it.
+ */
+function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undefined {
+  try {
+    const nativeFocus = win.HTMLElement.prototype.focus
+
+    function patchedFocus(this: HTMLElement) {
+      // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
+      // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
+      // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
+      // When `options.focusVisible` is supported in most browsers, we can remove this.
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
+      hasEventBeforeFocus = true
+      nativeFocus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
+    }
+
+    // Overwrite via assignment does not work in happy dom:
+    // https://github.com/capricorn86/happy-dom/issues/1214
+    Object.defineProperty(win.HTMLElement.prototype, "focus", {
+      configurable: true,
+      value: patchedFocus,
+    })
+
+    return nativeFocus
+  } catch {
+    return undefined
+  }
+}
+
+/**
  * Setup global event listeners to control when keyboard focus style should be visible.
  */
 function setupGlobalFocusEvents(root?: RootNode) {
@@ -199,36 +232,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const win = getWindow(root)
   const doc = getDocument(root)
 
-  // Reading `focus` can throw: tooling like Storybook's instrumenter redefines it as an accessor
-  // that dereferences `this`, and reading it off the prototype runs that getter with the prototype
-  // as `this`. Keep the read inside the try so a throw costs the patch, not the listeners below.
-  // `originalFocus` carries it back out for teardown; leaving it unset means there is nothing to
-  // restore, and a bare `focus` here would silently resolve to the global `window.focus`.
-  let originalFocus: VoidFunction | undefined
-
-  // Overwrite via assignment does not work in happy dom:
-  // https://github.com/capricorn86/happy-dom/issues/1214
-  try {
-    const focus = win.HTMLElement.prototype.focus
-    originalFocus = focus
-    function patchedFocus(this: HTMLElement) {
-      // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
-      // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
-      // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
-      // When `options.focusVisible` is supported in most browsers, we can remove this.
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
-      hasEventBeforeFocus = true
-      focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
-    }
-
-    Object.defineProperty(win.HTMLElement.prototype, "focus", {
-      configurable: true,
-      value: patchedFocus,
-    })
-  } catch {
-    // Failed to read or patch - the property may be non-configurable, already patched, or an
-    // accessor that throws. The focus tracking still works via keyboard/pointer event listeners
-  }
+  const nativeFocus = patchFocusMethod(win)
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
@@ -256,7 +260,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
     { once: true },
   )
 
-  listenerMap.set(win, { focus: originalFocus })
+  listenerMap.set(win, { focus: nativeFocus })
 }
 
 const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
