@@ -107,6 +107,9 @@ export const machine = createMachine({
       typeahead: { ...getByTypeahead.defaultOptions },
       focusVisible: false,
       inputState: { autoHighlight: false, focused: false },
+      // range selection anchor, deliberately kept out of `highlightedValue` which hover overwrites
+      anchorValue: null,
+      currentValue: null,
     }
   },
 
@@ -159,10 +162,10 @@ export const machine = createMachine({
       actions: ["clearItem"],
     },
     "VALUE.SET": {
-      actions: ["setSelectedItems"],
+      actions: ["setSelectedItems", "clearRangeEnd"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearSelectedItems"],
+      actions: ["clearSelectedItems", "clearRangeEnd"],
     },
     "HIGHLIGHT.FIRST": {
       actions: ["highlightFirstValue"],
@@ -278,35 +281,44 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectHighlightedItem({ context, prop, event, computed }) {
+      selectHighlightedItem({ context, prop, event, computed, refs }) {
         const value = event.value ?? context.get("highlightedValue")
 
         const collection = prop("collection")
         if (value == null || !collection.has(value)) return
 
         const selection = computed("selection")
+        const anchorValue = refs.get("anchorValue")
 
-        if (event.shiftKey && computed("multiple") && event.anchorValue) {
-          const next = selection.extendSelection(collection, event.anchorValue, value)
+        if (event.shiftKey && computed("multiple") && anchorValue != null) {
+          const next = selection.extendSelection(collection, anchorValue, value, refs.get("currentValue"))
           invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
+          refs.set("currentValue", value)
         } else {
           const next = selection.select(collection, value, event.metaKey)
           invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
+          refs.set("anchorValue", value)
+          refs.set("currentValue", value)
         }
       },
 
-      selectWithKeyboard({ context, prop, event, computed }) {
+      selectWithKeyboard({ context, prop, event, computed, refs }) {
         const selection = computed("selection")
         const collection = prop("collection")
+        const anchorValue = refs.get("anchorValue")
 
-        if (event.shiftKey && computed("multiple") && event.anchorValue) {
-          const next = selection.extendSelection(collection, event.anchorValue, event.value)
+        if (event.shiftKey && computed("multiple") && anchorValue != null) {
+          const next = selection.extendSelection(collection, anchorValue, event.value, refs.get("currentValue"))
           invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
+          refs.set("currentValue", event.value)
           return
         }
+
+        refs.set("anchorValue", event.value)
+        refs.set("currentValue", event.value)
 
         if (prop("selectOnHighlight")) {
           const next = selection.replaceSelection(collection, event.value)
@@ -383,6 +395,11 @@ export const machine = createMachine({
         context.set("highlightedValue", null)
       },
 
+      // keep the anchor so shift+click still extends, but drop the stale range end
+      clearRangeEnd({ refs }) {
+        refs.set("currentValue", null)
+      },
+
       selectItem({ context, prop, event, computed }) {
         const collection = prop("collection")
         const selection = computed("selection")
@@ -427,6 +444,12 @@ export const machine = createMachine({
         const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
         const { autoHighlight } = refs.get("inputState")
+
+        const anchorValue = refs.get("anchorValue")
+        if (anchorValue != null && !collection.has(anchorValue)) {
+          refs.set("anchorValue", null)
+          refs.set("currentValue", null)
+        }
 
         // when autoHighlight is enabled, always highlight first item on collection change
         if (autoHighlight) {

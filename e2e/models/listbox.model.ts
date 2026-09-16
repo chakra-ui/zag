@@ -2,6 +2,9 @@ import { expect, type Page } from "@playwright/test"
 import { a11y, isInViewport } from "../_utils"
 import { Model } from "./model"
 
+/** An item, addressed either by its visible label or by its exact value. */
+type ItemRef = string | { value: string }
+
 export class ListboxModel extends Model {
   constructor(public page: Page) {
     super(page)
@@ -23,8 +26,12 @@ export class ListboxModel extends Model {
     return this.page.locator("[data-scope=listbox][data-part=input]")
   }
 
-  getItem = (text: string) => {
-    return this.page.locator(`[data-scope=listbox][data-part=item]`, { hasText: text })
+  getItem = (item: ItemRef) => {
+    // `hasText` is a substring match, so address by value where exact identity matters
+    if (typeof item !== "string") {
+      return this.page.locator(`[data-scope=listbox][data-part=item][data-value="${item.value}"]`)
+    }
+    return this.page.locator(`[data-scope=listbox][data-part=item]`, { hasText: item })
   }
 
   get content() {
@@ -41,28 +48,42 @@ export class ListboxModel extends Model {
     return this.input.pressSequentially(value)
   }
 
-  clickItem(value: string) {
-    return this.getItem(value).click()
+  clickItem(item: ItemRef, options?: { modifiers?: Array<"Shift" | "ControlOrMeta"> }) {
+    return this.getItem(item).click(options)
   }
 
-  seeItemIsHighlighted(value: string) {
-    return expect(this.getItem(value)).toHaveAttribute("data-highlighted", "")
+  hoverItem(item: ItemRef) {
+    return this.getItem(item).hover()
+  }
+
+  seeSelectedValues(values: string[]) {
+    return expect
+      .poll(() =>
+        this.content
+          .locator("[data-part=item][data-selected]")
+          .evaluateAll((els) => els.map((el) => el.getAttribute("data-value"))),
+      )
+      .toEqual(values)
+  }
+
+  seeItemIsHighlighted(item: ItemRef) {
+    return expect(this.getItem(item)).toHaveAttribute("data-highlighted", "")
   }
 
   seeNoItemIsHighlighted() {
     return expect(this.content.locator(`[data-highlighted]`).all()).toHaveLength(0)
   }
 
-  seeItemIsSelected(value: string) {
-    return expect(this.getItem(value)).toHaveAttribute("data-selected", "")
+  seeItemIsSelected(item: ItemRef) {
+    return expect(this.getItem(item)).toHaveAttribute("data-selected", "")
   }
 
   seeNoItemIsSelected() {
     return expect(this.content.locator(`[data-selected]`).all()).toHaveLength(0)
   }
 
-  seeItemInViewport = async (text: string) => {
-    const item = this.getItem(text)
+  seeItemInViewport = async (ref: ItemRef) => {
+    const item = this.getItem(ref)
     expect(await isInViewport(this.content, item)).toBe(true)
   }
 }
