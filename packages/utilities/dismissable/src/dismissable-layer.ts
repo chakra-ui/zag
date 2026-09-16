@@ -5,7 +5,7 @@ import {
   type InteractOutsideHandlers,
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
-import { warn, type MaybeFunction } from "@zag-js/utils"
+import { toArray, warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
@@ -82,6 +82,16 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     layerStyleTargets,
   } = options
 
+  function getExcludeContainers(): HTMLElement[] {
+    const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
+    return toArray(containers).filter(isHTMLElement)
+  }
+
+  function getExcludedElements(): HTMLElement[] {
+    const persistentElements = options.persistentElements?.map((fn) => fn()) ?? []
+    return [...getExcludeContainers(), ...persistentElements.filter(isHTMLElement)]
+  }
+
   const layer: Layer = {
     dismiss: onDismiss,
     node,
@@ -89,6 +99,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     pointerBlocking,
     requestDismiss: onRequestDismiss,
     styleTargets: layerStyleTargets,
+    triggerElements: getExcludeContainers,
   }
 
   layerStack.add(layer)
@@ -128,11 +139,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   function exclude(target: Element) {
-    const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
-    const _containers = Array.isArray(containers) ? containers : [containers]
-    const persistentElements = options.persistentElements?.map((fn) => fn()).filter(isHTMLElement)
-    if (persistentElements) _containers.push(...persistentElements)
-    return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)
+    return getExcludedElements().some((el) => contains(el, target)) || layerStack.isInNestedLayer(node, target)
   }
 
   const cleanups = [

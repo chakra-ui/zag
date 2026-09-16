@@ -13,9 +13,10 @@ function createLayer(
     dismiss?: VoidFunction
     requestDismiss?: (event: LayerDismissEvent) => void
     styleTargets?: LayerStyleTarget[]
+    triggerElements?: () => Element[]
   } = {},
 ): Layer {
-  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets } = options
+  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets, triggerElements } = options
   return compact({
     type,
     node,
@@ -23,6 +24,7 @@ function createLayer(
     dismiss,
     requestDismiss,
     styleTargets,
+    triggerElements,
   })
 }
 
@@ -174,6 +176,163 @@ describe("layerStack", () => {
       layerStack.remove(parent)
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("dismisses the whole subtree, not only direct children", () => {
+      const [first, second, third] = ["div", "div", "div"].map((tag) => document.createElement(tag))
+      const secondTrigger = document.createElement("button")
+      const thirdTrigger = document.createElement("button")
+      first.append(secondTrigger)
+      second.append(thirdTrigger)
+      document.body.append(first, second, third)
+
+      const secondDismiss = vi.fn()
+      const thirdDismiss = vi.fn()
+      layerStack.add(createLayer(first))
+      layerStack.add(createLayer(second, { dismiss: secondDismiss, triggerElements: () => [secondTrigger] }))
+      layerStack.add(createLayer(third, { dismiss: thirdDismiss, triggerElements: () => [thirdTrigger] }))
+
+      layerStack.remove(first)
+
+      expect(secondDismiss).toHaveBeenCalledTimes(1)
+      expect(thirdDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    // re-registering a layer moves it to the top of the stack, so a parent can sit above the
+    // child it dismisses — the child's removal must not shift the parent out from under itself
+    test("removes a layer that sits above its own child in the stack", () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      const childTrigger = document.createElement("button")
+      parent.append(childTrigger)
+      document.body.append(parent, child)
+
+      const parentLayer = createLayer(parent)
+      layerStack.add(parentLayer)
+      // mirrors a machine closing on dismiss: the CLOSE transition tears the effect down
+      layerStack.add(
+        createLayer(child, { dismiss: () => layerStack.remove(child), triggerElements: () => [childTrigger] }),
+      )
+      layerStack.add(parentLayer)
+
+      layerStack.remove(parent)
+
+      expect(layerStack.count()).toBe(0)
+    })
+
+    test("hands a surviving child over to the removed layer's parent", () => {
+      const root = document.createElement("div")
+      const middle = document.createElement("div")
+      const middleTrigger = document.createElement("button")
+      const leaf = document.createElement("div")
+      const leafTrigger = document.createElement("button")
+      root.append(middleTrigger)
+      middle.append(leafTrigger)
+      document.body.append(root, middle, leaf)
+
+      const leafDismiss = vi.fn()
+      layerStack.add(createLayer(root))
+      layerStack.add(createLayer(middle, { triggerElements: () => [middleTrigger] }))
+      const leafLayer = createLayer(leaf, {
+        dismiss: leafDismiss,
+        triggerElements: () => [leafTrigger],
+        requestDismiss: (event) => {
+          if (event.detail.targetLayer === middle) event.preventDefault()
+        },
+      })
+      layerStack.add(leafLayer)
+
+      layerStack.remove(middle)
+
+      expect(leafDismiss).not.toHaveBeenCalled()
+      expect(leafLayer.parent).toBe(root)
+
+      layerStack.remove(root)
+
+      expect(leafDismiss).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("nesting", () => {
+    test("nests a layer under the layer holding its trigger, even when its node is portalled", () => {
+      const parent = document.createElement("div")
+      const trigger = document.createElement("button")
+      const child = document.createElement("div")
+      const inner = document.createElement("button")
+      parent.append(trigger)
+      child.append(inner)
+      document.body.append(parent, child)
+
+      const childDismiss = vi.fn()
+      layerStack.add(createLayer(parent))
+      layerStack.add(createLayer(child, { dismiss: childDismiss, triggerElements: () => [trigger] }))
+
+      expect(parent.getAttribute("data-has-nested")).toBe("dialog")
+      expect(child.getAttribute("data-nested")).toBe("dialog")
+      expect(layerStack.isInNestedLayer(parent, inner)).toBe(true)
+
+      layerStack.remove(parent)
+
+      expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("nests a layer rendered inside another layer, whatever its trigger says", () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      const trigger = document.createElement("button")
+      parent.append(child)
+      document.body.append(parent, trigger)
+
+      const childDismiss = vi.fn()
+      layerStack.add(createLayer(parent))
+      layerStack.add(createLayer(child, { dismiss: childDismiss, triggerElements: () => [trigger] }))
+
+      expect(child.getAttribute("data-nested")).toBe("dialog")
+
+      layerStack.remove(parent)
+
+      expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("keeps a layer whose trigger sits outside every layer independent of the stack below it", () => {
+      const first = document.createElement("div")
+      const firstTrigger = document.createElement("button")
+      const second = document.createElement("div")
+      const secondTrigger = document.createElement("button")
+      const inner = document.createElement("button")
+      second.append(inner)
+      document.body.append(firstTrigger, first, secondTrigger, second)
+
+      const secondDismiss = vi.fn()
+      layerStack.add(createLayer(first, { triggerElements: () => [firstTrigger] }))
+      layerStack.add(createLayer(second, { dismiss: secondDismiss, triggerElements: () => [secondTrigger] }))
+
+      expect(first.hasAttribute("data-has-nested")).toBe(false)
+      expect(second.hasAttribute("data-nested")).toBe(false)
+      expect(layerStack.isInNestedLayer(first, inner)).toBe(false)
+
+      layerStack.remove(first)
+
+      expect(secondDismiss).not.toHaveBeenCalled()
+      expect(layerStack.isTopMost(second)).toBe(true)
+    })
+
+    test("never nests a re-registered layer inside a layer it already owns", () => {
+      const first = document.createElement("div")
+      const second = document.createElement("div")
+      const firstTrigger = document.createElement("button")
+      second.append(firstTrigger)
+      document.body.append(first, second)
+
+      const firstLayer = createLayer(first, { type: "listbox", triggerElements: () => [firstTrigger] })
+      layerStack.add(firstLayer)
+      layerStack.add(createLayer(second, { type: "popover" }))
+      // `second` nests in `first`, and re-registering `first` resolves it against a stack that
+      // still holds `second` — whose node contains the trigger `first` is opened from
+      layerStack.add(firstLayer)
+
+      expect(firstLayer.parent).toBeUndefined()
+      expect(layerStack.getChildLayers(first).map((layer) => layer.node)).toEqual([second])
     })
   })
 
