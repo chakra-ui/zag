@@ -149,6 +149,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "wait-for-input-event", title: "Wait for Input" },
       { slug: "step-types", title: "Step Types" },
       { slug: "conditional", title: "Conditional" },
+      { slug: "layout-shift", title: "Layout Shift" },
     ],
   },
   {

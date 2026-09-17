@@ -403,3 +403,30 @@ export const marqueeData = [
   { name: "Cherry", logo: "🍒" },
   { name: "Grape", logo: "🍇" },
 ]
+
+export const tourLayoutShiftData: StepDetails[] = [
+  {
+    type: "tooltip",
+    id: "first",
+    title: "Resizing the target",
+    description: "Resize the target while this step is open. The spotlight should follow it without sliding.",
+    target: () => document.getElementById("layout-target"),
+    actions: [{ label: "Next", action: "next" }],
+  },
+  {
+    type: "tooltip",
+    id: "same-target",
+    title: "Same target again",
+    description: "This step points at the same element, so nothing should animate on the way in.",
+    target: () => document.getElementById("layout-target"),
+    actions: [{ label: "Next", action: "next" }],
+  },
+  {
+    type: "tooltip",
+    id: "other-target",
+    title: "A different target",
+    description: "The spotlight animates across to this one, then snaps for any layout change after that.",
+    target: () => document.getElementById("other-target"),
+    actions: [{ label: "Prev", action: "prev" }],
+  },
+]

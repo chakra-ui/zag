@@ -234,6 +234,11 @@ interface PrivateContext {
    */
   boundarySize: Size
   /**
+   * Whether to pin the spotlight to its new rect instead of transitioning to it.
+   * Set for repositions that are not step changes, like a resize or scroll.
+   */
+  suppressSpotlightTransition: boolean
+  /**
    * The resolved target element
    */
   resolvedTarget: HTMLElement | null
@@ -256,19 +261,27 @@ interface Refs {
   /**
    * The function to cleanup the target attributes
    */
-  _targetCleanup?: VoidFunction | undefined
+  targetCleanup?: VoidFunction | undefined
   /**
    * The function to cleanup the step effects
    */
-  _effectCleanup?: StepEffectCleanup | undefined
+  effectCleanup?: StepEffectCleanup | undefined
   /**
    * Flag to skip the watch when stepId is changed internally
    */
-  _internalChange?: boolean | undefined
+  internalChange?: boolean | undefined
   /**
    * The previous target element to detect changes
    */
-  _prevTarget?: HTMLElement | null | undefined
+  prevTarget?: HTMLElement | null | undefined
+  /**
+   * The step the spotlight was last positioned for, to tell a step change from a reposition
+   */
+  prevSpotlightStepId?: string | null | undefined
+  /**
+   * The last positioned rect, including updates not yet rendered by the framework
+   */
+  prevSpotlightRect?: Rect | undefined
 }
 
 type ComputedContext = Readonly<{

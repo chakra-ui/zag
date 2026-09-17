@@ -2,6 +2,7 @@
 "@zag-js/tour": patch
 ---
 
-Fix a `ReferenceError` when a tour mounts in an environment without a global `visualViewport`, such as
-jsdom. The boundary size was read from the bare global instead of the scope's window, and optional
-chaining does not guard an undeclared identifier.
+- Fix the backdrop leaving part of the page undimmed, and the spotlight sliding to its new position, when the window
+  resizes or content loads in. The spotlight now only animates between steps.
+- Fix tours in an iframe or custom root measuring the outer page, and crashing on mount in environments without
+  `visualViewport`, such as jsdom.
