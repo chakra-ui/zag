@@ -1,25 +1,15 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { tourReplacedTargetData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { X } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
-const steps: tour.StepDetails[] = [
-  {
-    id: "step-1",
-    type: "tooltip",
-    title: "Step 1",
-    description: "This step follows its target, even when the page replaces the element.",
-    target: () => document.querySelector<HTMLElement>("#target"),
-    actions: [{ label: "Done", action: "dismiss" }],
-  },
-]
-
 export default function Page() {
   const [replaced, setReplaced] = useState(false)
 
-  const service = useMachine(tour.machine, { id: useId(), steps })
+  const service = useMachine(tour.machine, { id: useId(), steps: tourReplacedTargetData })
   const api = tour.connect(service, normalizeProps)
 
   return (
@@ -30,8 +20,7 @@ export default function Page() {
           <button onClick={() => setReplaced(true)}>Replace target</button>
 
           <div className="steps__container">
-            {/* The same target, carried by one node or the other — what a sticky header does when it
-                moves its buttons into a portal on scroll. */}
+            {/* The same target id, carried by one node or the other */}
             {!replaced && <h3 id="target">Original target</h3>}
             <div className="h-200px" />
             {replaced && <h3 id="target">Replacement target</h3>}

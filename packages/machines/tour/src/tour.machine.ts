@@ -551,12 +551,7 @@ export const machine = createMachine<TourSchema>({
 
         const positionerEl = () => dom.getPositionerEl(scope)
 
-        // Resolve the target on every update instead of once, when the step opened: the element a
-        // step points at can be replaced while the tour is running — a sticky header moving its
-        // buttons into a portal, a responsive branch swapping one node for another — and the
-        // machine would stay anchored to a node that is no longer in the document. A detached node
-        // measures zero, so the card, the spotlight and the backdrop's cut-out all collapse into
-        // the top-left corner of the page.
+        // Re-resolved per update: the target can be replaced mid-tour, and a detached node measures zero
         const anchorEl = () => {
           const el = step.target?.()
           if (el && el !== context.get("resolvedTarget")) {
@@ -584,8 +579,7 @@ export const machine = createMachine<TourSchema>({
             const stepId = context.get("stepId")
             const prevStepId = refs.get("prevSpotlightStepId")
 
-            // Decide on every move, since identical rects and canceled transitions fire no end
-            // event. The last rect is a ref because context lags a render behind.
+            // Ref, not context: context lags a render. Decided per move since no-op moves fire no transitionend
             if (!isEqual(refs.get("prevSpotlightRect"), rects.reference)) {
               context.set("suppressSpotlightTransition", prevStepId == null || prevStepId === stepId)
             }

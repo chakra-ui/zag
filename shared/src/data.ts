@@ -430,3 +430,14 @@ export const tourLayoutShiftData: StepDetails[] = [
     actions: [{ label: "Prev", action: "prev" }],
   },
 ]
+
+export const tourReplacedTargetData: StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    title: "Step 1",
+    description: "This step follows its target, even when the page replaces the element.",
+    target: () => document.querySelector<HTMLElement>("#target"),
+    actions: [{ label: "Done", action: "dismiss" }],
+  },
+]
