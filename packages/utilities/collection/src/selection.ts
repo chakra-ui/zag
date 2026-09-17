@@ -65,7 +65,12 @@ export class Selection extends Set<string> {
     return lastValue
   }
 
-  extendSelection = (collection: ListCollection, anchorValue: string, targetValue: string): Selection => {
+  extendSelection = (
+    collection: ListCollection,
+    anchorValue: string,
+    targetValue: string,
+    currentValue?: string | null,
+  ): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
@@ -76,8 +81,9 @@ export class Selection extends Set<string> {
 
     const selection = this.copy()
 
-    const lastSelected = Array.from(this).pop()
-    for (let key of collection.getValueRange(anchorValue, lastSelected ?? targetValue)) {
+    // clear the previous range so the extension replaces it instead of accumulating
+    const rangeEnd = currentValue ?? Array.from(this).pop()
+    for (let key of collection.getValueRange(anchorValue, rangeEnd ?? targetValue)) {
       selection.delete(key)
     }
 

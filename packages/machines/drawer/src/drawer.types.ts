@@ -116,8 +116,9 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
   modal?: boolean | undefined
   /**
    * Element to receive focus when the sheet is opened.
+   * Return `false` to skip moving focus, or `null` to use the default.
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement | false) | undefined
   /**
    * Element to receive focus when the sheet is closed.
    */

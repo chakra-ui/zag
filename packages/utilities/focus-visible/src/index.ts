@@ -72,7 +72,8 @@ let currentModality: Modality | null = null
 let changeHandlers = new Set<Handler>()
 
 interface GlobalListenerData {
-  focus: VoidFunction
+  /** Unset when the prototype's `focus` could not be read, so there is nothing to restore. */
+  focus: VoidFunction | undefined
 }
 
 export let listenerMap = new Map<Window, GlobalListenerData>()
@@ -188,6 +189,39 @@ function handleWindowBlur() {
 }
 
 /**
+ * Patch `HTMLElement.prototype.focus` to mark focus as programmatic, and return the native method
+ * for teardown to restore. Returns `undefined` when the patch could not be applied - the read itself
+ * can throw when tooling has replaced `focus` with an accessor that dereferences `this` (Storybook's
+ * instrumenter does), and losing the patch must not take the caller's setup down with it.
+ */
+function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undefined {
+  try {
+    const nativeFocus = win.HTMLElement.prototype.focus
+
+    function patchedFocus(this: HTMLElement) {
+      // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
+      // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
+      // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
+      // When `options.focusVisible` is supported in most browsers, we can remove this.
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
+      hasEventBeforeFocus = true
+      nativeFocus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
+    }
+
+    // Overwrite via assignment does not work in happy dom:
+    // https://github.com/capricorn86/happy-dom/issues/1214
+    Object.defineProperty(win.HTMLElement.prototype, "focus", {
+      configurable: true,
+      value: patchedFocus,
+    })
+
+    return nativeFocus
+  } catch {
+    return undefined
+  }
+}
+
+/**
  * Setup global event listeners to control when keyboard focus style should be visible.
  */
 function setupGlobalFocusEvents(root?: RootNode) {
@@ -198,28 +232,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const win = getWindow(root)
   const doc = getDocument(root)
 
-  let focus = win.HTMLElement.prototype.focus
-  function patchedFocus(this: HTMLElement) {
-    // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
-    // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
-    // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
-    // When `options.focusVisible` is supported in most browsers, we can remove this.
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
-    hasEventBeforeFocus = true
-    focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
-  }
-
-  // Overwrite via assignment does not work in happy dom:
-  // https://github.com/capricorn86/happy-dom/issues/1214
-  try {
-    Object.defineProperty(win.HTMLElement.prototype, "focus", {
-      configurable: true,
-      value: patchedFocus,
-    })
-  } catch {
-    // Failed to patch - property may be non-configurable or already patched
-    // The focus tracking will still work via keyboard/pointer event listeners
-  }
+  const nativeFocus = patchFocusMethod(win)
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
@@ -247,7 +260,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
     { once: true },
   )
 
-  listenerMap.set(win, { focus })
+  listenerMap.set(win, { focus: nativeFocus })
 }
 
 const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
@@ -263,13 +276,15 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     return
   }
 
-  try {
-    Object.defineProperty(win.HTMLElement.prototype, "focus", {
-      configurable: true,
-      value: listenerData.focus,
-    })
-  } catch {
-    // Failed to restore - ignore silently
+  if (listenerData.focus) {
+    try {
+      Object.defineProperty(win.HTMLElement.prototype, "focus", {
+        configurable: true,
+        value: listenerData.focus,
+      })
+    } catch {
+      // Failed to restore - ignore silently
+    }
   }
 
   doc.removeEventListener("keydown", handleKeyboardEvent, true)

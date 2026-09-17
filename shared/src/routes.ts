@@ -133,6 +133,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Floating Panel",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "boundary", title: "Boundary" },
       { slug: "controlled", title: "Controlled" },
       { slug: "focus-trap", title: "Focus Trap" },
       { slug: "popover-inside", title: "Popover Inside" },
