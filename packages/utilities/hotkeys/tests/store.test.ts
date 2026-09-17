@@ -13,6 +13,67 @@ describe("HotkeyStore", () => {
     vi.unstubAllGlobals()
   })
 
+  describe.each([true, false])("invalid events (capture: %s)", (capture) => {
+    it.each(["keydown", "keyup"] as const)("ignores invalid keys with %s commands", (eventType) => {
+      const store = createHotkeyStore({ target: document })
+      const action = vi.fn()
+      const onError = vi.fn((event: ErrorEvent) => event.preventDefault())
+      window.addEventListener("error", onError)
+      store.register({ id: "f", hotkey: "f", action, options: { capture, eventType, requireReset: true } })
+
+      const dispatchKey = (type: string) =>
+        document.dispatchEvent(new KeyboardEvent(type, { key: "f", code: "KeyF", bubbles: true }))
+
+      try {
+        dispatchKey("keydown")
+        const calls = action.mock.calls.length
+
+        for (const type of ["keydown", "keyup"]) {
+          document.dispatchEvent(new Event(type, { bubbles: true }))
+          for (const key of [undefined, null, 42, ""]) {
+            const event = new KeyboardEvent(type, { code: "KeyF", bubbles: true })
+            Object.defineProperty(event, "key", { value: key })
+            document.dispatchEvent(event)
+          }
+        }
+
+        expect(onError).not.toHaveBeenCalled()
+        expect(action).toHaveBeenCalledTimes(calls)
+        expect(store.getCurrentlyPressed()).toEqual(["F"])
+        expect(store.getPressedCodes()).toEqual(["KeyF"])
+
+        // Invalid keyup events must not reset commands that require a real release.
+        dispatchKey("keydown")
+        expect(action).toHaveBeenCalledTimes(calls)
+        dispatchKey("keyup")
+        expect(store.getCurrentlyPressed()).toEqual([])
+        expect(store.getPressedCodes()).toEqual([])
+        expect(action).toHaveBeenCalledTimes(1)
+
+        dispatchKey("keydown")
+        dispatchKey("keyup")
+        expect(action).toHaveBeenCalledTimes(2)
+      } finally {
+        store.destroy()
+        window.removeEventListener("error", onError)
+      }
+    })
+
+    it("still accepts the space key", () => {
+      const store = createHotkeyStore({ target: document })
+      const action = vi.fn()
+      store.register({ id: "space", hotkey: "Space", action, options: { capture } })
+      try {
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: " ", code: "Space", bubbles: true }))
+        expect(action).toHaveBeenCalledTimes(1)
+        document.dispatchEvent(new KeyboardEvent("keyup", { key: " ", code: "Space", bubbles: true }))
+        expect(store.getCurrentlyPressed()).toEqual([])
+      } finally {
+        store.destroy()
+      }
+    })
+  })
+
   describe("default options", () => {
     it("applies store-level default options during registration", () => {
       const store = createHotkeyStore({

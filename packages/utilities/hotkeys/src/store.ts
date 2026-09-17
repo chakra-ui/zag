@@ -520,6 +520,8 @@ export class HotkeyStore {
   }
 
   private handleKeyUp(event: KeyboardEvent, capture: boolean): void {
+    if (typeof event.key !== "string" || event.key.length === 0) return
+
     // Execute keyup commands BEFORE removing the key from pressed state
     if (this.hasKeyupCommands) {
       this.executeMatchingCommands(event, capture, "keyup")
@@ -546,6 +548,7 @@ export class HotkeyStore {
   }
 
   private executeMatchingCommands(event: KeyboardEvent, capture: boolean, eventType: "keydown" | "keyup"): void {
+    if (typeof event.key !== "string" || event.key.length === 0) return
     if (event.key === "Dead") return
 
     const eventKey = normalizeKey(event.key)
