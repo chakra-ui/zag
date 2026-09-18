@@ -439,12 +439,20 @@ export const machine = createMachine({
         })
       },
       syncInputElement({ context, event, computed, scope }) {
-        const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
+        const isChange = event.type.endsWith("CHANGE")
+        const value = isChange ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
         const sel = event.selection ?? recordCursor(inputEl, scope)
         raf(() => {
+          // Another keystroke landed before this frame, so `value` and `sel` both predate it and
+          // writing them back would undo it. That keystroke queued a sync of its own.
+          //
+          // Asked of the context rather than of the input: on frameworks that normalize
+          // `defaultValue` to a live `value` binding, the renderer writes the formatted text to the
+          // input between the event and this frame, and that write is not a keystroke.
+          if (isChange && context.get("value") !== value) return
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })
