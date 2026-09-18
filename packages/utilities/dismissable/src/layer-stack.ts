@@ -20,6 +20,8 @@ export interface Layer {
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
   styleTargets?: LayerStyleTarget[] | undefined
+  triggerElements?: (() => Element[]) | undefined
+  parent?: HTMLElement | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
@@ -51,31 +53,36 @@ export const layerStack = {
     const layer = this.layers[this.count() - 1]
     return layer?.node === node
   },
-  getNestedLayers(node: HTMLElement) {
-    return Array.from(this.layers).slice(this.indexOf(node) + 1)
+  getChildLayers(node: HTMLElement) {
+    const nodes = new Set([node])
+    let size = 0
+    while (size !== nodes.size) {
+      size = nodes.size
+      for (const layer of this.layers) {
+        if (layer.parent && nodes.has(layer.parent)) nodes.add(layer.node)
+      }
+    }
+    return this.layers.filter((layer) => layer.node !== node && nodes.has(layer.node))
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
   },
-  getNestedLayersByType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index === -1) return []
-    return this.layers.slice(index + 1).filter((layer) => layer.type === type)
-  },
   getParentLayerOfType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index <= 0) return undefined
-    return this.layers
-      .slice(0, index)
-      .reverse()
-      .find((layer) => layer.type === type)
+    let parent = this.layers[this.indexOf(node)]?.parent
+    while (parent) {
+      const layer = this.layers[this.indexOf(parent)]
+      if (!layer) return undefined
+      if (layer.type === type) return layer
+      parent = layer.parent
+    }
+    return undefined
   },
   countNestedLayersOfType(node: HTMLElement, type: LayerType) {
-    return this.getNestedLayersByType(node, type).length
+    return this.getChildLayers(node).filter((layer) => layer.type === type).length
   },
   isInNestedLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
     // Check active nested layers
-    const inNested = this.getNestedLayers(node).some((layer) => contains(layer.node, target))
+    const inNested = this.getChildLayers(node).some((layer) => contains(layer.node, target))
     if (inNested) return true
 
     // During layer removal, treat all focus events as "inside" to prevent cascading dismissals.
@@ -88,6 +95,36 @@ export const layerStack = {
   isInBranch(target: HTMLElement | EventTarget | null) {
     return Array.from(this.branches).some((branch) => contains(branch, target))
   },
+  resolveParent(layer: Layer): HTMLElement | undefined {
+    const parent = this.findParentNode(layer)
+    // re-registering a layer resolves it against a stack that already holds its children, and a
+    // layer nested in its own child would make the two each other's parent — an endless chain
+    const ownsParent = this.getChildLayers(layer.node).some((child) => child.node === parent)
+    return ownsParent ? undefined : parent
+  },
+  findParentNode(layer: Layer): HTMLElement | undefined {
+    const containingNode = this.findLayerContaining(layer.node)
+    if (containingNode) return containingNode
+
+    const triggerElements = layer.triggerElements?.() ?? []
+    if (triggerElements.length) {
+      // Nested layers are commonly portalled, so the node alone says nothing about nesting.
+      // What does is where the layer was opened from: a trigger inside another layer makes
+      // this layer part of it, a trigger outside every layer makes it a sibling.
+      return this.findLayerContaining(...triggerElements)
+    }
+
+    // Nothing points at an owner (a layer opened without a rendered trigger, say), so fall
+    // back to reading the stack as a stack.
+    return this.layers[this.count() - 1]?.node
+  },
+  findLayerContaining(...elements: Array<Element | null>): HTMLElement | undefined {
+    for (let index = this.count() - 1; index >= 0; index--) {
+      const { node } = this.layers[index]
+      if (elements.some((el) => contains(node, el))) return node
+    }
+    return undefined
+  },
   add(layer: Layer) {
     // Idempotent per DOM node: React Strict Mode (and similar races) can register
     // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
@@ -95,6 +132,7 @@ export const layerStack = {
     if (existingIndex !== -1) {
       this.layers.splice(existingIndex, 1)
     }
+    layer.parent = this.resolveParent(layer)
     this.layers.push(layer)
     this.syncLayers()
   },
@@ -123,13 +161,18 @@ export const layerStack = {
     nextTick(() => this.recentlyRemoved.delete(node))
 
     // dismiss nested layers
-    if (index < this.count() - 1) {
-      const _layers = this.getNestedLayers(node)
-      _layers.forEach((layer) => layerStack.dismiss(layer.node, node))
-    }
+    this.getChildLayers(node).forEach((child) => layerStack.dismiss(child.node, node))
 
-    // remove this layer
-    this.layers.splice(index, 1)
+    // a child that outlives this layer (its dismissal was prevented, or is still animating out)
+    // is handed over to this layer's own parent, so an ancestor still dismisses it
+    this.layers.forEach((child) => {
+      if (child.parent === node) child.parent = layer.parent
+    })
+
+    // remove this layer. dismissing a child can synchronously remove other layers, so the
+    // index is re-read rather than reused
+    const currentIndex = this.indexOf(node)
+    if (currentIndex !== -1) this.layers.splice(currentIndex, 1)
     this.syncLayers()
   },
   removeBranch(node: HTMLElement) {
@@ -175,7 +218,9 @@ export const layerStack = {
     this.syncLayers()
   },
   clear() {
-    this.remove(this.layers[0].node)
+    while (this.count() > 0) {
+      this.remove(this.layers[0].node)
+    }
   },
 }
 
