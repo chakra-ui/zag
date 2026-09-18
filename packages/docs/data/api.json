@@ -1393,6 +1393,10 @@
         "type": "boolean",
         "description": "Whether the date input is invalid"
       },
+      "resolvedHourCycle": {
+        "type": "ResolvedHourCycle",
+        "description": "The resolved hour cycle used by the date input formatter."
+      },
       "value": {
         "type": "DateValue[]",
         "description": "The selected date(s)."
@@ -1539,6 +1543,11 @@
         "type": "DateGranularity | undefined",
         "description": "Determines the smallest unit that is displayed in the date input.",
         "defaultValue": "\"day\""
+      },
+      "maxGranularity": {
+        "type": "MaxGranularity | undefined",
+        "description": "Determines the largest unit that is displayed in the date input.\nTo create a time-only input, set this to `\"hour\"` and set `granularity`\nto `\"hour\"`, `\"minute\"`, or `\"second\"`.",
+        "defaultValue": "\"year\""
       },
       "shouldForceLeadingZeros": {
         "type": "boolean | undefined",
