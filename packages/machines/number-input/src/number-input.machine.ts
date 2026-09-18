@@ -19,7 +19,7 @@ import {
   isValueWithinRange,
   mergeWithDefault,
 } from "@zag-js/utils"
-import { recordCursor, restoreCursor } from "./cursor"
+import { hasTypedSince, recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import { defaultTranslations } from "./number-input.translations"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
@@ -439,12 +439,16 @@ export const machine = createMachine({
         })
       },
       syncInputElement({ context, event, computed, scope }) {
-        const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
+        const isChange = event.type.endsWith("CHANGE")
+        const value = isChange ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
         const sel = event.selection ?? recordCursor(inputEl, scope)
         raf(() => {
+          // Another keystroke landed before this frame, so `value` and `sel` both predate it and
+          // writing them back would undo it. That keystroke queued a sync of its own.
+          if (isChange && hasTypedSince(inputEl, sel)) return
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })
