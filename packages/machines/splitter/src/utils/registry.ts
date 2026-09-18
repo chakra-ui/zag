@@ -251,7 +251,7 @@ export class SplitterRegistry {
     let styleEl = doc.getElementById(this.globalCursorId) as HTMLStyleElement | null
     const textContent = `* { cursor: ${cursor} !important; }`
     if (styleEl) {
-      styleEl.textContent = textContent
+      if (styleEl.textContent !== textContent) styleEl.textContent = textContent
     } else {
       styleEl = doc.createElement("style")
       styleEl.id = this.globalCursorId
