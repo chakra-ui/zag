@@ -205,7 +205,11 @@ export const machine = createMachine<PopoverSchema>({
 
       hideContentBelow({ prop, scope, context }) {
         if (!prop("modal")) return
-        const getElements = () => [dom.getContentEl(scope), dom.getActiveTriggerEl(scope, context.get("triggerValue"))]
+        const getElements = () => [
+          dom.getContentEl(scope),
+          dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+          ...(prop("persistentElements")?.map((fn) => fn() as HTMLElement | null) ?? []),
+        ]
         return ariaHidden(getElements, { defer: true })
       },
 
