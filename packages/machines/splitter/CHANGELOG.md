@@ -1,5 +1,21 @@
 # @zag-js/splitter
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3353](https://github.com/chakra-ui/zag/pull/3353)
+  [`53327ac`](https://github.com/chakra-ui/zag/commit/53327acb58fedbd12b1a5702f7c51baf4aa3c6b0) Thanks
+  [@JosipVuk](https://github.com/JosipVuk)! - Fix slow dragging in large documents. The global cursor style was
+  rewritten on every pointer move, forcing a document-wide style recalculation each time. It is now only written when
+  the cursor actually changes.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+  - @zag-js/utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

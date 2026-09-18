@@ -1,5 +1,27 @@
 # @zag-js/dom-query
 
+## 1.45.0
+
+### Minor Changes
+
+- [`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where there was no way to open a dialog without moving
+  focus.
+
+  - `initialFocusEl` can now return `false` to skip moving focus. Returning `null` uses the default.
+  - Fixed issue where the popover's `autoFocus={false}` was ignored for modal popovers.
+
+  ```jsx
+  const service = useMachine(dialog.machine, {
+    initialFocusEl: () => false,
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

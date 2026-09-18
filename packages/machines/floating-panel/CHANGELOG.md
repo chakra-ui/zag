@@ -1,5 +1,52 @@
 # @zag-js/floating-panel
 
+## 1.45.0
+
+### Patch Changes
+
+- [`264fc2f`](https://github.com/chakra-ui/zag/commit/264fc2f4ae15bd7cf5afcb4e2b0f0c8295501285) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where `strategy: "absolute"` positioned the panel
+  outside its boundary. The machine computes viewport coordinates, which `absolute` resolves against the offset parent
+  instead. Absolute panels are now placed correctly, and are clipped by a scrolling boundary as expected.
+
+  ```jsx
+  const service = useMachine(floatingPanel.machine, {
+    strategy: "absolute",
+    getBoundaryEl: () => boundaryRef.current,
+  })
+  ```
+
+- [`4fada6f`](https://github.com/chakra-ui/zag/commit/4fada6fb046d9f3ec66d36e05fe4020b955ae8ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where the panel did not follow its boundary element
+  when an ancestor scrolled, leaving it visually outside the boundary until it was moved.
+
+  ```jsx
+  const service = useMachine(floatingPanel.machine, {
+    getBoundaryEl: () => boundaryRef.current,
+  })
+  ```
+
+- [`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where there was no way to open a dialog without moving
+  focus.
+
+  - `initialFocusEl` can now return `false` to skip moving focus. Returning `null` uses the default.
+  - Fixed issue where the popover's `autoFocus={false}` was ignored for modal popovers.
+
+  ```jsx
+  const service = useMachine(dialog.machine, {
+    initialFocusEl: () => false,
+  })
+  ```
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/rect-utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes
