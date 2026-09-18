@@ -19,7 +19,7 @@ import {
   isValueWithinRange,
   mergeWithDefault,
 } from "@zag-js/utils"
-import { hasTypedSince, recordCursor, restoreCursor } from "./cursor"
+import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import { defaultTranslations } from "./number-input.translations"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
@@ -448,7 +448,11 @@ export const machine = createMachine({
         raf(() => {
           // Another keystroke landed before this frame, so `value` and `sel` both predate it and
           // writing them back would undo it. That keystroke queued a sync of its own.
-          if (isChange && hasTypedSince(inputEl, sel)) return
+          //
+          // Asked of the context rather than of the input: on frameworks that normalize
+          // `defaultValue` to a live `value` binding, the renderer writes the formatted text to the
+          // input between the event and this frame, and that write is not a keystroke.
+          if (isChange && context.get("value") !== value) return
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { getNextCursorPosition, hasTypedSince } from "../src/cursor"
+import { getNextCursorPosition } from "../src/cursor"
 
 describe("getNextCursorPosition", () => {
   describe("value unchanged", () => {
@@ -126,30 +126,5 @@ describe("getNextCursorPosition", () => {
       // "ab|cd" -> "XXXX|XXXX" - no match, uses 50% ratio (2/4 = 4/8)
       expect(getNextCursorPosition("abcd", "XXXXXXXX", 2)).toBe(4)
     })
-  })
-})
-
-describe("hasTypedSince", () => {
-  const input = (value: string) => ({ value }) as HTMLInputElement
-
-  test("value unchanged since it was recorded", () => {
-    expect(hasTypedSince(input("5."), { start: 2, end: 2, value: "5." })).toBe(false)
-  })
-
-  test("a character was typed since it was recorded", () => {
-    // "5|" was recorded, then "." landed before the frame ran
-    expect(hasTypedSince(input("5."), { start: 1, end: 1, value: "5" })).toBe(true)
-  })
-
-  test("a character was deleted since it was recorded", () => {
-    expect(hasTypedSince(input("5"), { start: 2, end: 2, value: "5." })).toBe(true)
-  })
-
-  test("no selection was recorded", () => {
-    expect(hasTypedSince(input("5"), undefined)).toBe(false)
-  })
-
-  test("no input element", () => {
-    expect(hasTypedSince(null, { start: 1, end: 1, value: "5" })).toBe(false)
   })
 })

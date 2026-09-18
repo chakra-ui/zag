@@ -19,17 +19,6 @@ export function recordCursor(inputEl: HTMLInputElement | null, scope: Scope): Se
   }
 }
 
-/**
- * Whether the input has been typed into since `selection` was recorded.
- *
- * A sync queued before that keystroke carries the text and cursor from before it, so writing either
- * back would undo the keystroke. The keystroke has queued a sync of its own.
- */
-export function hasTypedSince(inputEl: HTMLInputElement | null, selection: Selection | undefined): boolean {
-  if (!inputEl || !selection) return false
-  return inputEl.value !== selection.value
-}
-
 export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selection | undefined, scope: Scope) {
   if (!inputEl || !scope.isActiveElement(inputEl)) return
 
