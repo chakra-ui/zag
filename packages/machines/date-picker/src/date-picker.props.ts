@@ -41,6 +41,7 @@ export const props = createProps<DatePickerProps>()([
   "defaultOpen",
   "positioning",
   "readOnly",
+  "restoreFocus",
   "required",
   "selectionMode",
   "showWeekNumbers",
