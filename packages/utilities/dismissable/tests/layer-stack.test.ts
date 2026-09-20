@@ -126,6 +126,80 @@ describe("layerStack", () => {
       expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
     })
 
+    // https://github.com/chakra-ui/zag/issues/3207
+    test("freezes the resolved z-index on the target while it stays mounted for its exit animation", () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(
+        createLayer(primary, {
+          styleTargets: [() => backdrop],
+        }),
+      )
+      // stand in for the browser having resolved a concrete stacking order on the target: in prod
+      // it comes from `z-index: calc(... var(--layer-index))`, but jsdom has no CSS cascade, so we
+      // pin an inline value that is present at removal time (after the metadata sync ran on add)
+      backdrop.style.setProperty("z-index", "50")
+      layerStack.remove(primary)
+      // vars are cleared, but the resolved z-index is pinned inline so the closing layer keeps
+      // its stacking order until the exit animation finishes and the node unmounts
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
+      expect(backdrop.style.getPropertyValue("z-index")).toBe("50")
+    })
+
+    test("drops the frozen z-index when the same node is reactivated", () => {
+      const primary = document.createElement("div")
+      const backdrop = document.createElement("div")
+      document.body.append(primary, backdrop)
+
+      layerStack.add(createLayer(primary, { styleTargets: [() => backdrop] }))
+      backdrop.style.setProperty("z-index", "50")
+
+      layerStack.remove(primary)
+      expect(backdrop.style.getPropertyValue("z-index")).toBe("50")
+
+      // reopening the same node reactivates it: the stale freeze is dropped so the live
+      // layer-var mechanism owns the stacking order again
+      layerStack.add(createLayer(primary, { styleTargets: [() => backdrop] }))
+
+      expect(backdrop.style.getPropertyValue("z-index")).toBe("")
+      expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
+    })
+
+    // https://github.com/chakra-ui/zag/issues/3207
+    test("keeps the closing layer's frozen z-index while lower stacked layers stay active", () => {
+      const d1 = document.createElement("div")
+      const d1Target = document.createElement("div")
+      const d2 = document.createElement("div")
+      const d2Target = document.createElement("div")
+      const d3 = document.createElement("div")
+      const d3Target = document.createElement("div")
+      document.body.append(d1, d1Target, d2, d2Target, d3, d3Target)
+
+      layerStack.add(createLayer(d1, { styleTargets: [() => d1Target] }))
+      layerStack.add(createLayer(d2, { styleTargets: [() => d2Target] }))
+      layerStack.add(createLayer(d3, { styleTargets: [() => d3Target] }))
+
+      d1Target.style.setProperty("z-index", "10")
+      d2Target.style.setProperty("z-index", "20")
+      d3Target.style.setProperty("z-index", "30")
+
+      layerStack.remove(d3)
+
+      // closing top target stays pinned above the remaining stack even though remove()
+      // re-syncs lower layers (the bug: sync cleared stacking on the exiting node)
+      expect(d3Target.style.getPropertyValue("z-index")).toBe("30")
+      expect(d3Target.style.getPropertyValue("--layer-index")).toBe("")
+
+      // D1 / D2 remain live; nested metadata still reflects the two-layer stack
+      expect(layerStack.count()).toBe(2)
+      expect(d1Target.style.getPropertyValue("--layer-index")).toBe("0")
+      expect(d1Target.style.getPropertyValue("--nested-layer-count")).toBe("1")
+      expect(d2Target.style.getPropertyValue("--layer-index")).toBe("1")
+      expect(d2Target.style.getPropertyValue("--nested-layer-count")).toBe("0")
+    })
+
     test("skips mirroring when target is the same node as the layer", () => {
       const node = document.createElement("div")
       document.body.append(node)
