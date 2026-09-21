@@ -4,6 +4,7 @@ import {
   dataAttr,
   getEventKey,
   getEventTarget,
+  isAnchorElement,
   isComposingEvent,
   isOpeningInNewTab,
   isSafari,
@@ -23,6 +24,20 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const isVertical = prop("orientation") === "vertical"
   const isHorizontal = prop("orientation") === "horizontal"
   const composite = prop("composite")
+
+  function sendKeyboardEvent(type: string, key?: string) {
+    send({
+      type,
+      key,
+      src: "keyboard",
+      onActivate(value: string) {
+        const node = dom.getTriggerEl(scope, value)
+        if (!isAnchorElement(node) || prop("navigate") === null) return false
+        node.click()
+        return true
+      },
+    })
+  }
 
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
@@ -90,25 +105,25 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           const keyMap: EventKeyMap = {
             ArrowDown() {
               if (isHorizontal) return
-              send({ type: "ARROW_NEXT", key: "ArrowDown" })
+              sendKeyboardEvent("ARROW_NEXT", "ArrowDown")
             },
             ArrowUp() {
               if (isHorizontal) return
-              send({ type: "ARROW_PREV", key: "ArrowUp" })
+              sendKeyboardEvent("ARROW_PREV", "ArrowUp")
             },
             ArrowLeft() {
               if (isVertical) return
-              send({ type: "ARROW_PREV", key: "ArrowLeft" })
+              sendKeyboardEvent("ARROW_PREV", "ArrowLeft")
             },
             ArrowRight() {
               if (isVertical) return
-              send({ type: "ARROW_NEXT", key: "ArrowRight" })
+              sendKeyboardEvent("ARROW_NEXT", "ArrowRight")
             },
             Home() {
-              send({ type: "HOME" })
+              sendKeyboardEvent("HOME")
             },
             End() {
-              send({ type: "END" })
+              sendKeyboardEvent("END")
             },
           }
 
@@ -168,7 +183,13 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           if (isSafari()) {
             event.currentTarget.focus()
           }
-          send({ type: "TAB_CLICK", value })
+          const navigate = prop("navigate")
+          const node = event.currentTarget
+          const onNavigate =
+            navigate && isAnchorElement(node) ? () => navigate({ value, node, href: node.href }) : undefined
+
+          if (onNavigate) event.preventDefault()
+          send({ type: "TAB_CLICK", value, onNavigate })
         },
       })
     },
