@@ -19,14 +19,31 @@ const ownedBy = (...args: (string | undefined)[]) =>
     ),
   ).join(" ")
 
-const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([^;]*)/g
+const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([\s\S]*)/
 
 const serialize = (style: string): Record<string, string> => {
   const res: Record<string, string> = {}
-  let match: RegExpExecArray | null
-  while ((match = CSS_REGEX.exec(style))) {
-    res[match[1]!] = match[2]!
+  const add = (declaration: string) => {
+    const match = CSS_REGEX.exec(declaration)
+    if (match) res[match[1]!] = match[2]!
   }
+  let start = 0
+  let depth = 0
+  let quote = ""
+  for (let i = 0; i < style.length; i++) {
+    const char = style[i]
+    if (char === "\\") i++
+    else if (quote) {
+      if (char === quote) quote = ""
+    } else if (char === '"' || char === "'") quote = char
+    else if (char === "(") depth++
+    else if (char === ")" && depth) depth--
+    else if (char === ";" && !depth) {
+      add(style.slice(start, i))
+      start = i + 1
+    }
+  }
+  add(style.slice(start))
   return res
 }
 
