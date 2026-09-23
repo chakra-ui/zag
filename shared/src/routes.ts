@@ -133,6 +133,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Floating Panel",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "boundary", title: "Boundary" },
       { slug: "controlled", title: "Controlled" },
       { slug: "focus-trap", title: "Focus Trap" },
       { slug: "popover-inside", title: "Popover Inside" },
@@ -148,6 +149,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "wait-for-input-event", title: "Wait for Input" },
       { slug: "step-types", title: "Step Types" },
       { slug: "conditional", title: "Conditional" },
+      { slug: "layout-shift", title: "Layout Shift" },
+      { slug: "replaced-target", title: "Replaced Target" },
     ],
   },
   {

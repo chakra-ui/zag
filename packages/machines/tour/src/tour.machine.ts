@@ -67,6 +67,9 @@ export const machine = createMachine<TourSchema>({
       boundarySize: bindable<Size>(() => ({
         defaultValue: { width: 0, height: 0 },
       })),
+      suppressSpotlightTransition: bindable<boolean>(() => ({
+        defaultValue: true,
+      })),
       currentPlacement: bindable<StepPlacement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -90,11 +93,11 @@ export const machine = createMachine<TourSchema>({
   },
 
   // Watch for external stepId changes (via sync: true bindable).
-  // Internal changes set _internalChange flag to skip this.
+  // Internal changes set internalChange flag to skip this.
   watch({ track, context, refs, send }) {
     track([() => context.get("stepId")], () => {
-      if (refs.get("_internalChange")) {
-        refs.set("_internalChange", false)
+      if (refs.get("internalChange")) {
+        refs.set("internalChange", false)
         return
       }
       // External change: resolve target and route
@@ -106,8 +109,6 @@ export const machine = createMachine<TourSchema>({
       })
     })
   },
-
-  effects: ["trackBoundarySize"],
 
   exit: ["cleanupAll"],
 
@@ -231,6 +232,7 @@ export const machine = createMachine<TourSchema>({
           entry: ["scrollToTarget"],
           effects: [
             "waitForScrollEnd",
+            "trackBoundarySize",
             "trapFocus",
             "trackPlacement",
             "trackDismissableBranch",
@@ -251,6 +253,7 @@ export const machine = createMachine<TourSchema>({
         active: {
           tags: ["open"],
           effects: [
+            "trackBoundarySize",
             "trapFocus",
             "trackPlacement",
             "trackDismissableBranch",
@@ -288,15 +291,18 @@ export const machine = createMachine<TourSchema>({
         performStepTransition(params, idx)
       },
       clearStep({ context, refs }) {
-        refs.get("_targetCleanup")?.()
-        refs.set("_targetCleanup", undefined)
+        refs.get("targetCleanup")?.()
+        refs.set("targetCleanup", undefined)
 
         context.set("targetRect", { width: 0, height: 0, x: 0, y: 0 })
         context.set("resolvedTarget", null)
         context.set("currentPlacement", undefined)
         context.set("floatingOffset", null)
+        context.set("suppressSpotlightTransition", true)
+        refs.set("prevSpotlightStepId", undefined)
+        refs.set("prevSpotlightRect", undefined)
 
-        refs.set("_internalChange", true)
+        refs.set("internalChange", true)
         context.set("stepId", null)
       },
       setInitialStep(params) {
@@ -356,16 +362,16 @@ export const machine = createMachine<TourSchema>({
         context.set("resolvedTarget", node ?? null)
       },
       cleanupAll({ refs }) {
-        refs.get("_targetCleanup")?.()
-        refs.set("_targetCleanup", undefined)
-        refs.set("_prevTarget", undefined)
+        refs.get("targetCleanup")?.()
+        refs.set("targetCleanup", undefined)
+        refs.set("prevTarget", undefined)
 
-        refs.get("_effectCleanup")?.()
-        refs.set("_effectCleanup", undefined)
+        refs.get("effectCleanup")?.()
+        refs.set("effectCleanup", undefined)
       },
       cleanupStepEffect({ refs }) {
-        refs.get("_effectCleanup")?.()
-        refs.set("_effectCleanup", undefined)
+        refs.get("effectCleanup")?.()
+        refs.set("effectCleanup", undefined)
       },
       validateSteps({ context }) {
         const ids = new Set()
@@ -427,21 +433,27 @@ export const machine = createMachine<TourSchema>({
         }
       },
 
-      trackBoundarySize({ context, scope }) {
+      trackBoundarySize({ context, scope, computed }) {
+        if (!isTooltipStep(computed("step"))) return
+
         const win = scope.getWin()
         const doc = scope.getDoc()
+        let frameId: number
 
-        const onResize = () => {
-          const width = visualViewport?.width ?? win.innerWidth
+        // Polled: overflow can change without resizing the root's border box (e.g. height: 100%)
+        const update = () => {
+          const width = win.visualViewport?.width ?? win.innerWidth
           const height = doc.documentElement.scrollHeight
-          context.set("boundarySize", { width, height })
+          const size = context.get("boundarySize")
+          if (size.width !== width || size.height !== height) {
+            context.set("boundarySize", { width, height })
+          }
+          frameId = win.requestAnimationFrame(update)
         }
 
-        onResize()
+        update()
 
-        const viewport = win.visualViewport ?? win
-        viewport.addEventListener("resize", onResize)
-        return () => viewport.removeEventListener("resize", onResize)
+        return () => win.cancelAnimationFrame(frameId)
       },
 
       trackEscapeKeydown({ scope, send, prop }) {
@@ -521,24 +533,35 @@ export const machine = createMachine<TourSchema>({
         })
       },
 
-      trackPlacement({ context, computed, scope, prop }) {
+      trackPlacement(params) {
+        const { context, computed, scope, prop, refs } = params
         const step = computed("step")
         if (step == null) return
 
         context.set("currentPlacement", step.placement ?? "bottom")
 
-        if (isDialogStep(step)) {
-          context.set("floatingOffset", null)
-          return dom.syncZIndex(scope)
-        }
-
+        // the spotlight is hidden for these, so it should snap when it comes back
         if (!isTooltipStep(step)) {
+          refs.set("prevSpotlightStepId", undefined)
+          refs.set("prevSpotlightRect", undefined)
+          context.set("suppressSpotlightTransition", true)
           context.set("floatingOffset", null)
-          return
+          return isDialogStep(step) ? dom.syncZIndex(scope) : undefined
         }
 
         const positionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(context.get("resolvedTarget"), positionerEl, {
+
+        // Re-resolved per update: the target can be replaced mid-tour, and a detached node measures zero
+        const anchorEl = () => {
+          const el = step.target?.()
+          if (el && el !== context.get("resolvedTarget")) {
+            context.set("resolvedTarget", el)
+            syncTargetAttrsFromContext(params)
+          }
+          return context.get("resolvedTarget")
+        }
+
+        return getPlacement(anchorEl, positionerEl, {
           defer: true,
           placement: step.placement ?? "bottom",
           strategy: "absolute",
@@ -553,6 +576,17 @@ export const machine = createMachine<TourSchema>({
           },
           onComplete(data) {
             const { rects } = data.middlewareData
+            const stepId = context.get("stepId")
+            const prevStepId = refs.get("prevSpotlightStepId")
+
+            // Ref, not context: context lags a render. Decided per move since no-op moves fire no transitionend
+            if (!isEqual(refs.get("prevSpotlightRect"), rects.reference)) {
+              context.set("suppressSpotlightTransition", prevStepId == null || prevStepId === stepId)
+            }
+
+            refs.set("prevSpotlightStepId", stepId)
+            refs.set("prevSpotlightRect", rects.reference)
+
             context.set("currentPlacement", data.placement)
             context.set("targetRect", rects.reference)
             context.set("floatingOffset", { x: data.x, y: data.y })
@@ -578,15 +612,15 @@ function syncTargetAttrsFromContext(params: {
 }) {
   const { context, refs, prop } = params
   const targetEl = context.get("resolvedTarget")
-  const prevTarget = refs.get("_prevTarget")
+  const prevTarget = refs.get("prevTarget")
 
   if (targetEl !== prevTarget) {
-    refs.get("_targetCleanup")?.()
-    refs.set("_targetCleanup", undefined)
+    refs.get("targetCleanup")?.()
+    refs.set("targetCleanup", undefined)
   }
 
   if (!targetEl) {
-    refs.set("_prevTarget", null)
+    refs.set("prevTarget", null)
     return
   }
 
@@ -595,11 +629,11 @@ function syncTargetAttrsFromContext(params: {
   if (prop?.("preventInteraction")) targetEl.inert = true
   targetEl.setAttribute("data-tour-highlighted", "")
 
-  refs.set("_targetCleanup", () => {
+  refs.set("targetCleanup", () => {
     if (prop?.("preventInteraction")) targetEl.inert = false
     targetEl.removeAttribute("data-tour-highlighted")
   })
-  refs.set("_prevTarget", targetEl)
+  refs.set("prevTarget", targetEl)
 }
 
 function performStepTransition(params: Params<TourSchema>, idx: number) {
@@ -608,7 +642,7 @@ function performStepTransition(params: Params<TourSchema>, idx: number) {
   const step = steps[idx]
 
   if (!step) {
-    refs.set("_internalChange", true)
+    refs.set("internalChange", true)
     context.set("stepId", null)
     return
   }
@@ -618,11 +652,11 @@ function performStepTransition(params: Params<TourSchema>, idx: number) {
   }
 
   // Cleanup previous step effects and target attributes
-  refs.get("_effectCleanup")?.()
-  refs.set("_effectCleanup", undefined)
+  refs.get("effectCleanup")?.()
+  refs.set("effectCleanup", undefined)
 
-  refs.get("_targetCleanup")?.()
-  refs.set("_targetCleanup", undefined)
+  refs.get("targetCleanup")?.()
+  refs.set("targetCleanup", undefined)
 
   if (step.effect) {
     executeStepEffect(params, step, idx)
@@ -632,7 +666,7 @@ function performStepTransition(params: Params<TourSchema>, idx: number) {
   // Resolve target, set context, sync attrs, then route via STEP.ROUTE
   const resolvedTarget = step.target?.() ?? null
   context.set("resolvedTarget", resolvedTarget)
-  refs.set("_internalChange", true)
+  refs.set("internalChange", true)
   context.set("stepId", step.id)
   syncTargetAttrsFromContext(params)
   send({ type: "STEP.ROUTE" })
@@ -647,7 +681,7 @@ function createEffectUtilities(params: Params<TourSchema>, step: StepDetails, id
       // Resolve target and route via STEP.ROUTE (no effect cleanup)
       const resolvedTarget = step.target?.() ?? null
       context.set("resolvedTarget", resolvedTarget)
-      refs.set("_internalChange", true)
+      refs.set("internalChange", true)
       context.set("stepId", step.id)
       syncTargetAttrsFromContext(params)
       send({ type: "STEP.ROUTE" })
@@ -688,7 +722,7 @@ function executeStepEffect(params: Params<TourSchema>, step: StepDetails, idx: n
     return
   }
 
-  refs.set("_effectCleanup", cleanup)
+  refs.set("effectCleanup", cleanup)
 
   if (isWaitStep(step)) {
     utilities.show()

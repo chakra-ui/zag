@@ -79,3 +79,24 @@
     height: 10px;
   }
 }
+
+main.floating-panel {
+  .scroll-area {
+    height: 420px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background: #fafafa;
+  }
+
+  .scroll-spacer {
+    height: 120px;
+  }
+
+  .boundary {
+    position: relative;
+    height: 320px;
+    margin: 24px;
+    border: 2px dashed #e53e3e;
+    background: white;
+  }
+}

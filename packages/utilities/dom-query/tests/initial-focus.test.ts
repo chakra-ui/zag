@@ -32,11 +32,49 @@ describe("getInitialFocus", () => {
     document.body.innerHTML = ""
   })
 
-  it("returns undefined when disabled", () => {
+  it("returns false when disabled", () => {
     const root = createRoot()
     root.append(createButton("One"))
 
-    expect(getInitialFocus({ root, enabled: false })).toBeUndefined()
+    expect(getInitialFocus({ root, enabled: false })).toBe(false)
+  })
+
+  it("returns false when getInitialEl opts out", () => {
+    const root = createRoot()
+    root.append(createButton("One"))
+
+    expect(getInitialFocus({ root, getInitialEl: () => false })).toBe(false)
+  })
+
+  it("does not coerce the opt-out into the data-autofocus target", () => {
+    const root = createRoot()
+    const input = markVisible(document.createElement("input"))
+    input.setAttribute("data-autofocus", "")
+    root.append(createButton("One"), input)
+
+    expect(getInitialFocus({ root, getInitialEl: () => false })).toBe(false)
+  })
+
+  it("does not coerce the opt-out into the root fallback", () => {
+    const root = createRoot()
+
+    expect(getInitialFocus({ root, getInitialEl: () => false })).toBe(false)
+  })
+
+  it("still falls through when getInitialEl returns null", () => {
+    const root = createRoot()
+    const one = createButton("One")
+    root.append(one)
+
+    expect(getInitialFocus({ root, getInitialEl: () => null })).toBe(one)
+  })
+
+  it("honors data-autofocus on the root itself", () => {
+    const root = createRoot()
+    root.setAttribute("data-autofocus", "")
+    root.append(createButton("One"))
+
+    expect(getInitialFocus({ root })).toBe(root)
   })
 
   it("prefers getInitialEl when provided", () => {

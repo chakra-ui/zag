@@ -57,9 +57,10 @@ export interface DialogProps
    */
   modal?: boolean | undefined
   /**
-   * Element to receive focus when the dialog is opened
+   * Element to receive focus when the dialog is opened.
+   * Return `false` to skip moving focus, or `null` to use the default.
    */
-  initialFocusEl?: (() => MaybeElement) | undefined
+  initialFocusEl?: (() => MaybeElement | false) | undefined
   /**
    * Element to receive focus when the dialog is closed
    */
