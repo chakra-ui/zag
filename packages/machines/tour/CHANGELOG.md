@@ -1,5 +1,32 @@
 # @zag-js/tour
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3341](https://github.com/chakra-ui/zag/pull/3341)
+  [`dae9054`](https://github.com/chakra-ui/zag/commit/dae9054ab698fb7034e574aa3ac02cff0df7c7ce) Thanks
+  [@moczolaszlo](https://github.com/moczolaszlo)! - Fix the step card, spotlight and backdrop collapsing into the
+  top-left corner when the element a step points at is replaced while the tour is running.
+
+- [#3340](https://github.com/chakra-ui/zag/pull/3340)
+  [`a34b233`](https://github.com/chakra-ui/zag/commit/a34b233d37047019140d2c7c4ad08615e05ffa84) Thanks
+  [@moczolaszlo](https://github.com/moczolaszlo)! - - Fix the backdrop leaving part of the page undimmed, and the
+  spotlight sliding to its new position, when the window resizes or content loads in. The spotlight now only animates
+  between steps.
+  - Fix tours in an iframe or custom root measuring the outer page, and crashing on mount in environments without
+    `visualViewport`, such as jsdom.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/dismissable@1.45.0
+  - @zag-js/focus-trap@1.45.0
+  - @zag-js/interact-outside@1.45.0
+  - @zag-js/popper@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+  - @zag-js/utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

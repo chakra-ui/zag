@@ -1,5 +1,31 @@
 # @zag-js/pagination
 
+## 1.45.0
+
+### Minor Changes
+
+- [#3361](https://github.com/chakra-ui/zag/pull/3361)
+  [`bd430dc`](https://github.com/chakra-ui/zag/commit/bd430dc351dfa34f540d35bc2ad5fa0363097ffb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Added `api.type` and `api.getPageUrl(page)`. Adapters and custom
+  components can now tell whether the controls are buttons or links, and build a page's URL without re-reading the
+  machine props.
+
+  ```jsx
+  const api = pagination.connect(service, normalizeProps)
+
+  api.type // "button" | "link"
+  api.getPageUrl(3) // "/page/3", or `undefined` when `getPageUrl` is not provided
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+  - @zag-js/utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes
