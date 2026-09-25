@@ -1,5 +1,19 @@
 # @zag-js/presence
 
+## 1.45.0
+
+### Patch Changes
+
+- [`3a7d79d`](https://github.com/chakra-ui/zag/commit/3a7d79dbebbef207945df5f8ba9092e438a7f558) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where an element with an exit animation could stay
+  mounted forever in WebKit. The exit animation can finish before the machine starts listening for `animationend`,
+  leaving a closed, invisible element in the DOM that still intercepts clicks. The machine now checks whether the
+  animation is still running before waiting for it.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes
