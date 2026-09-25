@@ -714,6 +714,8 @@ export const isSameSize = (a: Size, b: Size): boolean => {
 
 export const isEqualRect = (a: Rect, b: Rect): boolean => a.x === b.x && a.y === b.y && isSameSize(a, b)
 
+export const isValidRect = (rect: Rect): boolean => [rect.x, rect.y, rect.width, rect.height].every(Number.isFinite)
+
 /* -----------------------------------------------------------------------------
  * Point Utilities
  * ---------------------------------------------------------------------------*/

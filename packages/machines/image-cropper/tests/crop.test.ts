@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { clampOffset, computeMoveCrop, computeResizeCrop, constrainCrop } from "../src/utils/crop"
+import { clampOffset, computeMoveCrop, computeResizeCrop, constrainCrop, isValidRect } from "../src/utils/crop"
 
 describe("@zag-js/image-cropper crop utils", () => {
   test("computeMoveCrop keeps the crop inside the viewport", () => {
@@ -58,6 +58,12 @@ describe("@zag-js/image-cropper crop utils", () => {
       width: 300,
       height: 200,
     })
+  })
+
+  test("isValidRect rejects non-finite values", () => {
+    expect(isValidRect({ x: 0, y: 0, width: 100, height: 50 })).toBe(true)
+    expect(isValidRect({ x: Number.NaN, y: 0, width: 100, height: 50 })).toBe(false)
+    expect(isValidRect({ x: 0, y: 0, width: Infinity, height: 50 })).toBe(false)
   })
 
   test("clampOffset accounts for the rotated image bounds", () => {
