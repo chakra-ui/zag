@@ -199,8 +199,16 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
         dir: prop("dir"),
-        hidden: !tooltipPositioned,
-        style: tooltipPositioned ? popperStyles.arrow : undefined,
+        style: {
+          // Styled from the first frame, and only kept out of sight until the content is placed.
+          // The offset middleware derives the content's distance from the anchor from the arrow's
+          // `clientHeight`, and an arrow that is `display: none` — or simply has no size yet,
+          // since its width and height come from these very styles — measures 0, leaving the
+          // content half an arrow too close to its target. Every other machine applies
+          // `popperStyles.arrow` unconditionally.
+          ...popperStyles.arrow,
+          ...(tooltipPositioned ? undefined : { visibility: "hidden" }),
+        },
         opacity: hasTarget ? undefined : 0,
       })
     },
