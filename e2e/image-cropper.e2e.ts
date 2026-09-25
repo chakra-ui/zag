@@ -326,6 +326,29 @@ test.describe("image-cropper / resizable", () => {
     expect(rect.y).toBe(initialRect.y)
   })
 
+  test("[keyboard] should maintain aspect ratio when resizing with Alt+Arrow keys", async () => {
+    await I.controls.num("aspectRatio", "1")
+    await I.wait(100)
+
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, shift: true })
+
+    let rect = await I.getSelectionRect()
+    expect(rect.width).toBe(initialRect.width - 10)
+    expect(rect.height).toBe(rect.width)
+    expect(rect.x).toBe(initialRect.x)
+
+    const prevRect = rect
+    await I.pressKeyWithModifiers("ArrowUp", { alt: true, shift: true })
+
+    rect = await I.getSelectionRect()
+    expect(rect.height).toBe(prevRect.height - 10)
+    expect(rect.width).toBe(rect.height)
+    expect(rect.y).toBe(prevRect.y)
+  })
+
   test("[keyboard] should use larger step with shift modifier when resizing", async () => {
     const initialRect = await I.getSelectionRect()
 
@@ -813,6 +836,18 @@ test.describe("image-cropper / circle", () => {
     const newRect = await I.getSelectionRect()
 
     expect(newRect.width).toEqual(newRect.height)
+  })
+
+  test("should keep the crop area in 1:1 aspect ratio when resizing with the keyboard", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, shift: true })
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 10)
+    expect(newRect.height).toEqual(newRect.width)
   })
 })
 

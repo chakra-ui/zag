@@ -696,8 +696,20 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
         const { minSize, maxSize } = getCropSizeLimits(prop)
+        const aspectRatio = resolveCropAspectRatio(prop("cropShape"), prop("aspectRatio"))
 
-        const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
+        const nextCrop =
+          aspectRatio === undefined
+            ? computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
+            : computeResizeCrop({
+                cropStart: crop,
+                handlePosition,
+                delta: getKeyboardMoveDelta(key, step),
+                viewportRect,
+                minSize,
+                maxSize,
+                aspectRatio,
+              })
 
         context.set("crop", nextCrop)
       },
