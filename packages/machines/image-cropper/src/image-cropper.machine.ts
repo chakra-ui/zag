@@ -11,7 +11,6 @@ import {
   clampOffset,
   clampPoint,
   computeDefaultCropDimensions,
-  computeKeyboardCrop,
   computeMoveCrop,
   computeResizeCrop,
   getCenterPoint,
@@ -698,18 +697,15 @@ export const machine = createMachine<ImageCropperSchema>({
         const { minSize, maxSize } = getCropSizeLimits(prop)
         const aspectRatio = resolveCropAspectRatio(prop("cropShape"), prop("aspectRatio"))
 
-        const nextCrop =
-          aspectRatio === undefined
-            ? computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
-            : computeResizeCrop({
-                cropStart: crop,
-                handlePosition,
-                delta: getKeyboardMoveDelta(key, step),
-                viewportRect,
-                minSize,
-                maxSize,
-                aspectRatio,
-              })
+        const nextCrop = computeResizeCrop({
+          cropStart: crop,
+          handlePosition,
+          delta: getKeyboardMoveDelta(key, step),
+          viewportRect,
+          minSize,
+          maxSize,
+          aspectRatio,
+        })
 
         context.set("crop", nextCrop)
       },
