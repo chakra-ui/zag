@@ -56,6 +56,10 @@ export function connect<T extends PropTypes>(
     previousPage,
     nextPage,
     pageRange,
+    type,
+    getPageUrl(page) {
+      return getPageUrl?.({ page, pageSize })
+    },
     slice(data) {
       return data.slice(pageRange.start, pageRange.end)
     },
