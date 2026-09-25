@@ -2967,6 +2967,10 @@
         "type": "(handlePosition: HandlePosition, delta: number) => void",
         "description": "Function to resize the crop area from a handle programmatically."
       },
+      "setCrop": {
+        "type": "(crop: Rect) => void",
+        "description": "Function to set the crop area in viewport coordinates, constrained like `initialCrop`\n(min/max size, aspect ratio and viewport bounds). Zoom, rotation, flip and pan are kept.\nDoes nothing when `fixedCropArea` is set or before the viewport is measured."
+      },
       "reset": {
         "type": "() => void",
         "description": "Function to reset the cropper to its initial state."

@@ -817,6 +817,67 @@ test.describe("image-cropper / resize API", () => {
   })
 })
 
+test.describe("image-cropper / setCrop API", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[api] should place the selection at the given rect", async () => {
+    await I.dragSelection(-60, -40)
+    const initialRect = await I.getSelectionRect()
+
+    await I.clickCenterCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect.width).toBe(initialRect.width)
+    expect(rect.height).toBe(initialRect.height)
+    expect(rect.x - viewport.x).toBeCloseTo((viewport.width - rect.width) / 2, 0)
+    expect(rect.y - viewport.y).toBeCloseTo((viewport.height - rect.height) / 2, 0)
+  })
+
+  test("[api] should fill the viewport without an aspect ratio", async () => {
+    await I.clickFillCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect).toEqual(viewport)
+  })
+
+  test("[api] should constrain the rect to the aspect ratio", async () => {
+    await I.controls.num("aspectRatio", "1")
+    await I.wait(100)
+
+    await I.clickFillCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect.width).toBe(rect.height)
+    expect(rect.height).toBe(viewport.height)
+    expect(rect.x).toBe(viewport.x)
+    expect(rect.y).toBe(viewport.y)
+  })
+
+  test("[api] should keep zoom and pan", async () => {
+    await I.zoomWithWheel(-100)
+    await I.wait(100)
+    await I.panImage(50, 30)
+    await I.wait(100)
+
+    const initialTransform = await I.getImageTransform()
+
+    await I.dragSelection(-60, -40)
+    await I.clickCenterCrop()
+
+    expect(await I.getImageTransform()).toBe(initialTransform)
+  })
+})
+
 test.describe("image-cropper / circle", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)

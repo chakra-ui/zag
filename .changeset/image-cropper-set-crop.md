@@ -1,6 +1,9 @@
 ---
-"@zag-js/image-cropper": patch
+"@zag-js/image-cropper": minor
 ---
 
-Add `api.setCrop(rect)` to set the crop area programmatically. It is constrained like `initialCrop`, and unlike
-`reset()` it keeps the current zoom, rotation, flip and pan.
+Added `api.setCrop(rect)` to place the crop area programmatically, in viewport coordinates.
+
+- The rect is constrained like `initialCrop`: min/max size, `aspectRatio` or `cropShape: "circle"`, and the viewport
+  bounds.
+- Unlike `api.reset()`, it keeps the current zoom, rotation, flip, and pan.
