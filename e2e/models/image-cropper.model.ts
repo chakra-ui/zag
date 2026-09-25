@@ -241,12 +241,8 @@ export class ImageCropperModel extends Model {
   }
 
   async waitForImageLoad() {
-    await this.image.evaluate((img: HTMLImageElement) => {
-      if (img.complete) return
-      return new Promise((resolve) => {
-        img.onload = () => resolve(true)
-      })
-    })
+    // `data-ready` is set by the running machine, so it also waits for hydration (SSR images load before it)
+    await expect(this.image).toHaveAttribute("data-ready", "")
   }
 
   async focusSelection() {
