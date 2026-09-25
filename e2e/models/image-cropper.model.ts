@@ -306,6 +306,14 @@ export class ImageCropperModel extends Model {
     await this.shrinkButton.click()
   }
 
+  async clickCenterCrop() {
+    await this.page.getByTestId("center-crop-button").click()
+  }
+
+  async clickFillCrop() {
+    await this.page.getByTestId("fill-crop-button").click()
+  }
+
   async resizeViewport(width: number, height: number) {
     await this.viewport.evaluate(
       (el, { width, height }) => {

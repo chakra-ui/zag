@@ -32,6 +32,20 @@
   )
 
   const api = $derived(imageCropper.connect(service, normalizeProps))
+
+  const centerCrop = () => {
+    const { crop, viewportRect } = api
+    api.setCrop({
+      ...crop,
+      x: (viewportRect.width - crop.width) / 2,
+      y: (viewportRect.height - crop.height) / 2,
+    })
+  }
+
+  const fillViewport = () => {
+    const { viewportRect } = api
+    api.setCrop({ x: 0, y: 0, width: viewportRect.width, height: viewportRect.height })
+  }
 </script>
 
 <main class="image-cropper">
@@ -71,6 +85,10 @@
       oninput={(e) => api.setRotation(Number(e.currentTarget.value))}
     />
   </label>
+  <div>
+    <button type="button" data-testid="center-crop-button" onclick={centerCrop}>Center selection</button>
+    <button type="button" data-testid="fill-crop-button" onclick={fillViewport}>Fill viewport</button>
+  </div>
 </main>
 
 <Toolbar {controls}>

@@ -139,6 +139,11 @@ export function connect<T extends PropTypes>(
       send({ type: "RESIZE_CROP", handlePosition, delta: { x: deltaX, y: deltaY } })
     },
 
+    setCrop(nextCrop) {
+      if (fixedCropArea) return
+      send({ type: "SET_CROP", crop: nextCrop, replaces: "crop" })
+    },
+
     reset() {
       send({ type: "RESET" })
     },

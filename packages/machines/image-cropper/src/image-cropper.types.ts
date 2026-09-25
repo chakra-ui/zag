@@ -406,6 +406,12 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    */
   resize: (handlePosition: HandlePosition, delta: number) => void
   /**
+   * Function to set the crop area in viewport coordinates, constrained like `initialCrop`
+   * (min/max size, aspect ratio and viewport bounds). Zoom, rotation, flip and pan are kept.
+   * Does nothing when `fixedCropArea` is set or before the viewport is measured.
+   */
+  setCrop: (crop: Rect) => void
+  /**
    * Function to reset the cropper to its initial state.
    */
   reset: () => void

@@ -481,6 +481,33 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   }
 }
 
+interface ConstrainCropOptions {
+  crop: Rect
+  viewportRect: Size
+  minSize: Size
+  maxSize: Size
+  aspectRatio?: number | undefined
+}
+
+export function constrainCrop(options: ConstrainCropOptions): Rect {
+  const { crop, viewportRect, minSize, maxSize, aspectRatio } = options
+
+  const { width, height } = computeResizeCrop({
+    cropStart: { x: 0, y: 0, width: crop.width, height: crop.height },
+    handlePosition: "se",
+    delta: ZERO_POINT,
+    viewportRect,
+    minSize,
+    maxSize,
+    aspectRatio,
+  })
+
+  const maxPoint = getMaxBounds({ width, height }, viewportRect)
+  const { x, y } = clampPoint(crop, ZERO_POINT, maxPoint)
+
+  return { x, y, width, height }
+}
+
 /* -----------------------------------------------------------------------------
  * Crop Movement Utilities
  * ---------------------------------------------------------------------------*/
@@ -684,6 +711,8 @@ export const centerCropOnPoint = (cropSize: Size, center: Point, viewportSize: S
 export const isSameSize = (a: Size, b: Size): boolean => {
   return a.width === b.width && a.height === b.height
 }
+
+export const isEqualRect = (a: Rect, b: Rect): boolean => a.x === b.x && a.y === b.y && isSameSize(a, b)
 
 /* -----------------------------------------------------------------------------
  * Point Utilities
