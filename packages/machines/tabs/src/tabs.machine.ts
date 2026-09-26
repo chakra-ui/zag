@@ -62,7 +62,7 @@ export const machine = createMachine({
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["syncIndicatorRect"])
@@ -100,14 +100,14 @@ export const machine = createMachine({
         },
         TAB_CLICK: {
           target: "focused",
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue", "navigateIfNeeded"],
         },
       },
     },
     focused: {
       on: {
         TAB_CLICK: {
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue", "navigateIfNeeded"],
         },
         ARROW_PREV: [
           {
@@ -162,13 +162,21 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectFocusedTab({ context, prop }) {
+      selectFocusedTab({ context, prop, event, scope }) {
         raf(() => {
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const nullable = prop("deselectable") && context.get("value") === focusedValue
           const value = nullable ? null : focusedValue
+          if (context.get("value") === value) return
           context.set("value", value)
+          // follow the trigger link only on user keyboard activation,
+          // not when selection comes from the selectNext/selectPrev APIs
+          if (event.src != null || value == null) return
+          const triggerEl = dom.getTriggerEl(scope, value)
+          if (isAnchorElement(triggerEl)) {
+            prop("navigate")?.({ value, node: triggerEl, href: triggerEl.href })
+          }
         })
       },
       setFocusedValue({ context, event, flush }) {
@@ -309,14 +317,20 @@ export const machine = createMachine({
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },
-      navigateIfNeeded({ context, prop, scope }) {
-        const value = context.get("value")
-        if (!value) return
+      navigateIfNeeded({ context, prop, scope, event }) {
+        const requested = event.value
+        if (!requested) return
+        // read the value after the event batch commits, and only follow the
+        // link when the selection actually landed on the clicked tab (a
+        // controlled parent may reject the change)
+        queueMicrotask(() => {
+          if (context.get("value") !== requested) return
 
-        const triggerEl = dom.getTriggerEl(scope, value)
-        if (isAnchorElement(triggerEl)) {
-          prop("navigate")?.({ value, node: triggerEl, href: triggerEl.href })
-        }
+          const triggerEl = dom.getTriggerEl(scope, requested)
+          if (isAnchorElement(triggerEl)) {
+            prop("navigate")?.({ value: requested, node: triggerEl, href: triggerEl.href })
+          }
+        })
       },
     },
   },
