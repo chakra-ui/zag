@@ -1,4 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
+import { SvelteMap } from "svelte/reactivity"
 import { renderMachine } from "./render"
 
 describe("basic", () => {
@@ -399,6 +400,61 @@ describe("edge cases", () => {
     await cleanup()
 
     vi.useRealTimers()
+  })
+
+  test("prop and context read after stop return the values at stop", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const values = new SvelteMap([
+      ["label", "stopped"],
+      ["value", "controlled"],
+    ])
+    let reads: unknown[] = []
+
+    const machine = createMachine<any>({
+      props({ props }) {
+        return props
+      },
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+      },
+      context({ bindable, prop }) {
+        return { value: bindable(() => ({ defaultValue: "default", value: prop("value") })) }
+      },
+      exit: ["readLater"],
+      implementations: {
+        actions: {
+          // like a focus trap that restores focus, this timer outlives the component
+          readLater({ prop, context }) {
+            setTimeout(() => {
+              reads = [prop("label"), context.get("value")]
+            })
+          },
+        },
+      },
+    })
+
+    const { cleanup } = renderMachine(machine, {
+      get label() {
+        return values.get("label")
+      },
+      get value() {
+        return values.get("value")
+      },
+    })
+    await Promise.resolve()
+    await cleanup()
+
+    values.set("label", "changed")
+    values.set("value", "changed")
+    await new Promise((resolve) => setTimeout(resolve))
+    const warnings = [...warn.mock.calls]
+    warn.mockRestore()
+
+    expect(reads).toEqual(["stopped", "controlled"])
+    expect(warnings).toEqual([])
   })
 
   test("state.matches() helper", async () => {

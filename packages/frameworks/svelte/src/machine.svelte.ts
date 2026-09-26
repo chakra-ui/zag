@@ -45,7 +45,9 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const props: any = $derived(machine.props?.({ props: compact(access(userProps)), scope }) ?? access(userProps))
-  const prop = useProp(() => props)
+  // Timers can call a stopped machine; they read the props kept at stop, not a destroyed derived
+  let stoppedProps: any
+  const prop = useProp(() => stoppedProps ?? props)
 
   const context: any = machine.context?.({
     prop,
@@ -241,6 +243,7 @@ export function useMachine<T extends MachineSchema>(
     if (status !== MachineStatus.Started) return
 
     debug("unmounting...")
+    stoppedProps = props
     status = MachineStatus.Stopped
 
     effects.forEach((fn) => fn?.())
