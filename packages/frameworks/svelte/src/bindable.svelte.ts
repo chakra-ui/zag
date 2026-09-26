@@ -7,13 +7,14 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const eq = props().isEqual ?? Object.is
 
   let value = $state(initial)
-  const controlled = $derived(props().value !== undefined)
+  // A function, not a derived: timers can call get and set after the component is destroyed
+  const controlled = () => props().value !== undefined
 
   let valueRef = { current: untrack(() => value) }
   let prevValue = { current: undefined as T | undefined }
 
   $effect.pre(() => {
-    const v = controlled ? props().value : value
+    const v = controlled() ? props().value : value
     valueRef = { current: v }
     prevValue = { current: v as T }
   })
@@ -25,14 +26,14 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled) value = next
+    if (!controlled()) value = next
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }
   }
 
   function get(): T {
-    return (controlled ? props().value : value) as T
+    return (controlled() ? props().value : value) as T
   }
 
   return {
