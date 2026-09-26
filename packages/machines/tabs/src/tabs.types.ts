@@ -119,7 +119,13 @@ export type TabsSchema = {
   action: string
   guard: string
   effect: string
-  event: EventObject
+  event: EventObject & {
+    src?: "keyboard" | "selectNext" | "selectPrev" | undefined
+    /** Returns true when the connector handles link activation. */
+    onActivate?: ((value: string) => boolean) | undefined
+    /** Requests custom navigation after the selection change callback. */
+    onNavigate?: VoidFunction | undefined
+  }
 }
 
 export type TabsService = Service<TabsSchema>
