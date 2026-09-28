@@ -1,7 +1,12 @@
 import { expect, test, type Page } from "@playwright/test"
 
 async function goto(page: Page, url: string) {
-  await page.goto(url)
+  const href = new URL(url, "http://localhost")
+  if (!href.searchParams.has("manual")) href.searchParams.set("automatic", "true")
+  if (!href.searchParams.has("custom") && !href.searchParams.has("noNavigate")) {
+    href.searchParams.set("native", "true")
+  }
+  await page.goto(`${href.pathname}${href.search}${href.hash}`)
   await expect(page.locator("main.tabs")).toHaveAttribute("data-ready", "true")
 }
 
@@ -11,7 +16,7 @@ test.describe("tabs with links", () => {
   for (const controlled of [false, true]) {
     test.describe(controlled ? "controlled" : "uncontrolled", () => {
       test.beforeEach(async ({ page }) => {
-        await goto(page, `/tabs/links${controlled ? "?controlled=true" : ""}`)
+        await goto(page, `/tabs/with-link${controlled ? "?controlled=true" : ""}`)
       })
 
       test("API selection does not click or navigate", async ({ page }) => {
@@ -19,7 +24,7 @@ test.describe("tabs with links", () => {
         await page
           .getByRole("tab")
           .nth(1)
-          .evaluate((el) => el.setAttribute("href", "/tabs/links?destination=agnes"))
+          .evaluate((el) => el.setAttribute("href", "/tabs/with-link?destination=agnes"))
         await page.getByRole("button", { name: "Select Agnes with API" }).click()
         await expect(page.getByTestId("value")).toHaveText("agnes")
         await expect(page.getByRole("tab").nth(1)).toHaveAttribute("aria-selected", "true")
@@ -66,7 +71,7 @@ test.describe("tabs with links", () => {
   }
 
   test("controlled prop sync after keyboard activation does not navigate", async ({ page }) => {
-    await goto(page, "/tabs/links?controlled=true")
+    await goto(page, "/tabs/with-link?controlled=true")
     await page.getByRole("tab").first().focus()
     await page.keyboard.press("ArrowRight")
     await expect(page).toHaveURL(/#agnes$/)
@@ -78,7 +83,7 @@ test.describe("tabs with links", () => {
 
   for (const activation of ["pointer", "keyboard"]) {
     test(`${activation} navigation can be canceled by a delegated handler`, async ({ page }) => {
-      await goto(page, "/tabs/links?cancel=true")
+      await goto(page, "/tabs/with-link?cancel=true")
       const url = page.url()
       if (activation === "pointer") {
         await page.getByRole("tab").nth(1).click()
@@ -93,7 +98,7 @@ test.describe("tabs with links", () => {
   }
 
   test("manual activation only follows the link on Enter", async ({ page }) => {
-    await goto(page, "/tabs/links?manual=true")
+    await goto(page, "/tabs/with-link?manual=true")
     const url = page.url()
     await page.getByRole("tab").first().focus()
     await page.keyboard.press("ArrowRight")
@@ -107,7 +112,7 @@ test.describe("tabs with links", () => {
   })
 
   test("keyboard activation does not toggle deselectable tabs twice", async ({ page }) => {
-    await goto(page, "/tabs/links?deselectable=true")
+    await goto(page, "/tabs/with-link?deselectable=true")
     await page.getByRole("tab").first().focus()
     await page.keyboard.press("ArrowRight")
     await expect(page.getByTestId("value")).toHaveText("agnes")
@@ -118,7 +123,7 @@ test.describe("tabs with links", () => {
   })
 
   test("navigate=null selects with the keyboard without following the link", async ({ page }) => {
-    await goto(page, "/tabs/links?noNavigate=true")
+    await goto(page, "/tabs/with-link?noNavigate=true")
     const url = page.url()
     await page.getByRole("tab").first().focus()
     await page.keyboard.press("ArrowRight")
@@ -128,7 +133,7 @@ test.describe("tabs with links", () => {
   })
 
   test("focusing the selected link does not activate it again", async ({ page }) => {
-    await goto(page, "/tabs/links")
+    await goto(page, "/tabs/with-link")
     const url = page.url()
     await page.getByRole("tab").first().focus()
     await page.keyboard.press("Home")
@@ -139,7 +144,7 @@ test.describe("tabs with links", () => {
   })
 
   test("custom navigation runs once per activation, never for state sync", async ({ page }) => {
-    await goto(page, "/tabs/links?custom=true&controlled=true")
+    await goto(page, "/tabs/with-link?custom=true&controlled=true")
     const url = page.url()
     await page.getByRole("button", { name: "Select Agnes with API" }).click()
     await expect(page.getByTestId("value")).toHaveText("agnes")
@@ -161,7 +166,7 @@ test.describe("tabs with links", () => {
   test("a failed custom navigation does not fall back to browser navigation", async ({ page }) => {
     const errors: string[] = []
     page.on("pageerror", (error) => errors.push(error.message))
-    await goto(page, "/tabs/links?custom=true&throwNavigate=true")
+    await goto(page, "/tabs/with-link?custom=true&throwNavigate=true")
     const url = page.url()
     await page.getByRole("tab").nth(1).click()
     await expect(page.getByTestId("value")).toHaveText("agnes")
