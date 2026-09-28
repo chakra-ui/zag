@@ -20,6 +20,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
   const isPlaying = state.matches("autoplay")
   const isDragging = state.matches("dragging")
+  const isSettling = state.matches("settling")
 
   const canScrollNext = computed("canScrollNext")
   const canScrollPrev = computed("canScrollPrev")
@@ -135,7 +136,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         style: {
           display: autoSize ? "flex" : "grid",
           gap: "var(--slide-spacing)",
-          scrollSnapType: [horizontal ? "x" : "y", prop("snapType")].join(" "),
+          scrollSnapType: isDragging || isSettling ? "none" : [horizontal ? "x" : "y", prop("snapType")].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
           scrollbarWidth: "none",
           overscrollBehaviorX: "contain",

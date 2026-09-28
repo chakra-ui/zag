@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { CarouselModel } from "./models/carousel.model"
 
 let I: CarouselModel
@@ -70,8 +70,13 @@ test.describe("carousel", () => {
 
     await I.swipeCarousel("left", 20, 120, false)
     await I.holdDrag(40)
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "none")
+
     await I.releaseDrag()
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "none")
+
     await I.waitForScrollSettle()
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "x mandatory")
 
     await I.seeIndicatorIsActive(0)
     await I.seeItemInView(0)
