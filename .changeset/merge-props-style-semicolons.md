@@ -3,6 +3,5 @@
 "@zag-js/svelte": patch
 ---
 
-Fix `mergeProps` truncating style string values that contain a semicolon, such as `--label: "a;b"` or
-`url("data:image/svg+xml;base64,...")`. Semicolons inside quoted values and functions like `url()` no longer split the
-declaration (fixes #3359).
+Fix `mergeProps` truncating inline style values that contain semicolons, including quoted CSS custom properties and data
+URLs.
