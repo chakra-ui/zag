@@ -30,11 +30,24 @@ const serialize = (style: string): Record<string, string> => {
   let start = 0
   let depth = 0
   let quote = ""
+  let comment = false
+
   for (let i = 0; i < style.length; i++) {
     const char = style[i]
-    if (char === "\\") i++
-    else if (quote) {
+
+    if (comment) {
+      if (char === "*" && style[i + 1] === "/") {
+        comment = false
+        i++
+      }
+    } else if (quote) {
+      if (char === "\\") i++
       if (char === quote) quote = ""
+    } else if (char === "\\") {
+      i++
+    } else if (char === "/" && style[i + 1] === "*") {
+      comment = true
+      i++
     } else if (char === '"' || char === "'") quote = char
     else if (char === "(") depth++
     else if (char === ")" && depth) depth--

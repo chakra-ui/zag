@@ -58,4 +58,14 @@ describe("mergeProps", () => {
       display: "block",
     })
   })
+
+  test("ignores separators inside comments", () => {
+    const props = mergeProps({ style: 'color: red; /* ;(" */ display: block' }, { style: { padding: "4px" } })
+
+    expect(props.style).toEqual({
+      color: "red",
+      display: "block",
+      padding: "4px",
+    })
+  })
 })
