@@ -7,7 +7,7 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const eq = props().isEqual ?? Object.is
 
   let value = $state(initial)
-  // A function, not a derived: timers can call get and set after the component is destroyed
+  // Avoid a component-owned derived because bindables may be read during deferred cleanup.
   const controlled = () => props().value !== undefined
 
   let valueRef = { current: untrack(() => value) }

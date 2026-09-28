@@ -1,5 +1,4 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { SvelteMap } from "svelte/reactivity"
 import { renderMachine } from "./render"
 
 describe("basic", () => {
@@ -404,16 +403,11 @@ describe("edge cases", () => {
 
   test("prop and context read after stop return the values at stop", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
-    const values = new SvelteMap([
-      ["label", "stopped"],
-      ["value", "controlled"],
-    ])
-    let reads: unknown[] = []
+    let label = "stopped"
+    let value = "controlled"
+    let readAfterStop!: () => unknown[]
 
     const machine = createMachine<any>({
-      props({ props }) {
-        return props
-      },
       initialState() {
         return "idle"
       },
@@ -423,14 +417,11 @@ describe("edge cases", () => {
       context({ bindable, prop }) {
         return { value: bindable(() => ({ defaultValue: "default", value: prop("value") })) }
       },
-      exit: ["readLater"],
+      exit: ["captureRead"],
       implementations: {
         actions: {
-          // like a focus trap that restores focus, this timer outlives the component
-          readLater({ prop, context }) {
-            setTimeout(() => {
-              reads = [prop("label"), context.get("value")]
-            })
+          captureRead({ prop, context }) {
+            readAfterStop = () => [prop("label"), context.get("value")]
           },
         },
       },
@@ -438,23 +429,23 @@ describe("edge cases", () => {
 
     const { cleanup } = renderMachine(machine, {
       get label() {
-        return values.get("label")
+        return label
       },
       get value() {
-        return values.get("value")
+        return value
       },
     })
     await Promise.resolve()
     await cleanup()
 
-    values.set("label", "changed")
-    values.set("value", "changed")
-    await new Promise((resolve) => setTimeout(resolve))
+    label = "changed"
+    value = "changed"
+    const valuesAtStop = readAfterStop()
     const warnings = [...warn.mock.calls]
     warn.mockRestore()
 
-    expect(reads).toEqual(["stopped", "controlled"])
-    expect(warnings).toEqual([])
+    expect(valuesAtStop).toEqual(["stopped", "controlled"])
+    expect(warnings).toHaveLength(0)
   })
 
   test("state.matches() helper", async () => {
