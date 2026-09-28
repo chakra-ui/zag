@@ -153,6 +153,8 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     typeahead: TypeaheadState
     focusVisible: boolean
     inputState: { autoHighlight: boolean; focused: boolean }
+    anchorValue: string | null
+    currentValue: string | null
   }
   action: string
   guard: string

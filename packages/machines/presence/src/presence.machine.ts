@@ -137,7 +137,8 @@ export const machine = createMachine<PresenceSchema>({
             animationName === "none" ||
             animationName === context.get("prevAnimationName") ||
             refs.get("styles")?.display === "none" ||
-            refs.get("styles")?.animationDuration === "0s"
+            refs.get("styles")?.animationDuration === "0s" ||
+            !hasRunningAnimation(refs.get("node"), animationName)
           ) {
             send({ type: "UNMOUNT", src: "presence.changed" })
           } else {
@@ -245,4 +246,14 @@ export const machine = createMachine<PresenceSchema>({
 
 function getAnimationName(styles?: CSSStyleDeclaration | null) {
   return styles?.animationName || "none"
+}
+
+function hasRunningAnimation(node: HTMLElement | null, animationName: string) {
+  // assume it is running where the Web Animations API is unavailable
+  if (!node || typeof node.getAnimations !== "function") return true
+  const names = animationName.split(",").map((name) => name.trim())
+  return node.getAnimations().some((animation) => {
+    const name = (animation as CSSAnimation).animationName
+    return animation.playState === "running" && (name == null || names.includes(name))
+  })
 }

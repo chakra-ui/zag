@@ -3,21 +3,25 @@ import { getTabbableEdges, getTabbables } from "./tabbable"
 
 export interface InitialFocusOptions {
   root: HTMLElement | null
-  getInitialEl?: (() => HTMLElement | null) | undefined
+  getInitialEl?: (() => HTMLElement | null | false) | undefined
   enabled?: boolean | undefined
   filter?: ((el: HTMLElement) => boolean) | undefined
 }
 
-export function getInitialFocus(options: InitialFocusOptions): HTMLElement | undefined {
+export function getInitialFocus(options: InitialFocusOptions): HTMLElement | false | undefined {
   const { root, getInitialEl, filter, enabled = true } = options
 
-  if (!enabled) return
+  // `false` is focus-trap's opt-out sentinel. `undefined` reads as "unset" and gets a fallback.
+  if (!enabled) return false
 
   // 1. explicit override (e.g. alertdialog → close button)
-  let node: HTMLElement | null | undefined = typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
+  let node: HTMLElement | null | undefined | false = typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
+  if (node === false) return false
 
   // 2. opt-in wins over skip
-  node ||= root?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")
+  node ||= root?.matches("[data-autofocus],[autofocus]")
+    ? root
+    : root?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")
 
   // 3. first tabbable that isn't opted out of autofocus
   if (!node) {

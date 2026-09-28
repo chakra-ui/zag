@@ -615,7 +615,8 @@ export const machine = createMachine<ColorPickerSchema>({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
           })
-          element?.focus({ preventScroll: true })
+          if (!element) return
+          element.focus({ preventScroll: true })
         })
       },
       setReturnFocus({ scope }) {

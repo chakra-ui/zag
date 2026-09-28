@@ -36,6 +36,11 @@ export function connect<T extends PropTypes>(
   const size = context.get("size")
   const position = context.get("position")
 
+  // `position` is viewport-space public API; `absolute` renders against its offset parent
+  const offsetOrigin = context.get("offsetOrigin")
+  const renderX = position.x - offsetOrigin.x
+  const renderY = position.y - offsetOrigin.y
+
   const isMaximized = computed("isMaximized")
   const isMinimized = computed("isMinimized")
   const isStaged = computed("isStaged")
@@ -96,8 +101,8 @@ export function connect<T extends PropTypes>(
         style: {
           "--width": toPx(size?.width),
           "--height": toPx(size?.height),
-          "--x": toPx(position?.x),
-          "--y": toPx(position?.y),
+          "--x": toPx(renderX),
+          "--y": toPx(renderY),
           "--z-index": stackIndex > -1 ? stackIndex + 1 : undefined,
           position: prop("strategy"),
           isolation: "isolate",

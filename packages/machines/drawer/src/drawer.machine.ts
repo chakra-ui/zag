@@ -475,7 +475,8 @@ export const machine = createMachine<DrawerSchema>({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
           })
-          element?.focus({ preventScroll: true })
+          if (!element) return
+          element.focus({ preventScroll: true })
         })
       },
 

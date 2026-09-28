@@ -28,6 +28,20 @@ export default function Page() {
 
   const api = createMemo(() => imageCropper.connect(service, normalizeProps))
 
+  const centerCrop = () => {
+    const { crop, viewportRect } = api()
+    api().setCrop({
+      ...crop,
+      x: (viewportRect.width - crop.width) / 2,
+      y: (viewportRect.height - crop.height) / 2,
+    })
+  }
+
+  const fillViewport = () => {
+    const { viewportRect } = api()
+    api().setCrop({ x: 0, y: 0, width: viewportRect.width, height: viewportRect.height })
+  }
+
   return (
     <>
       <main class="image-cropper">
@@ -72,6 +86,12 @@ export default function Page() {
         <div>
           <button type="button" data-testid="reset-button" onClick={() => api().reset()}>
             Reset
+          </button>
+          <button type="button" data-testid="center-crop-button" onClick={centerCrop}>
+            Center selection
+          </button>
+          <button type="button" data-testid="fill-crop-button" onClick={fillViewport}>
+            Fill viewport
           </button>
         </div>
       </main>

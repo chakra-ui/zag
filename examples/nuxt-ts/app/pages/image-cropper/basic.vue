@@ -25,6 +25,20 @@ const service = useMachine(
 )
 
 const api = computed(() => imageCropper.connect(service, normalizeProps))
+
+const centerCrop = () => {
+  const { crop, viewportRect } = api.value
+  api.value.setCrop({
+    ...crop,
+    x: (viewportRect.width - crop.width) / 2,
+    y: (viewportRect.height - crop.height) / 2,
+  })
+}
+
+const fillViewport = () => {
+  const { viewportRect } = api.value
+  api.value.setCrop({ x: 0, y: 0, width: viewportRect.width, height: viewportRect.height })
+}
 </script>
 
 <template>
@@ -65,6 +79,8 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
     </label>
     <div>
       <button type="button" data-testid="reset-button" @click="api.reset()">Reset</button>
+      <button type="button" data-testid="center-crop-button" @click="centerCrop">Center selection</button>
+      <button type="button" data-testid="fill-crop-button" @click="fillViewport">Fill viewport</button>
     </div>
   </main>
 

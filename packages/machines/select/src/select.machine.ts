@@ -584,7 +584,8 @@ export const machine = createMachine<SelectSchema>({
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
           })
-          element?.focus({ preventScroll: true })
+          if (!element) return
+          element.focus({ preventScroll: true })
         })
       },
 

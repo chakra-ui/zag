@@ -813,7 +813,8 @@ export const machine = createMachine<MenuSchema>({
               return !node.role?.startsWith("menuitem")
             },
           })
-          initialFocusEl?.focus({ preventScroll: true })
+          if (!initialFocusEl) return
+          initialFocusEl.focus({ preventScroll: true })
         })
       },
       highlightFirstItem({ context, scope }) {

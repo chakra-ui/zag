@@ -63,6 +63,21 @@ To control what receives focus on open, pass `initialFocusEl`.
 
 <CodeSnippet id="dialog/initial-focus.mdx" />
 
+Return `false` to open the dialog without moving focus. `Tab` and `Escape` still
+work.
+
+```tsx
+const service = useMachine(dialog.machine, {
+  id: useId(),
+  initialFocusEl: () => false,
+})
+```
+
+> In a modal dialog, content outside is `aria-hidden`. Leaving focus there means
+> screen readers announce nothing on open. Use it for dialogs that appear without
+> user intent, and prefer `data-autofocus` on an element inside when you only want
+> to redirect focus.
+
 To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
 ### Dialog vs non-modal dialog

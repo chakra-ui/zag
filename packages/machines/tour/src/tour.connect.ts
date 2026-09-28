@@ -36,6 +36,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
+  const suppressTransition = context.get("suppressSpotlightTransition")
   const floatingOffset = context.get("floatingOffset")
   const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
 
@@ -158,6 +159,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
           top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
+          transitionDuration: suppressTransition ? "0ms" : undefined,
+          transitionDelay: suppressTransition ? "0ms" : undefined,
         },
       })
     },

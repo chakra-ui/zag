@@ -481,6 +481,33 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   }
 }
 
+interface ConstrainCropOptions {
+  crop: Rect
+  viewportRect: Size
+  minSize: Size
+  maxSize: Size
+  aspectRatio?: number | undefined
+}
+
+export function constrainCrop(options: ConstrainCropOptions): Rect {
+  const { crop, viewportRect, minSize, maxSize, aspectRatio } = options
+
+  const { width, height } = computeResizeCrop({
+    cropStart: { x: 0, y: 0, width: crop.width, height: crop.height },
+    handlePosition: "se",
+    delta: ZERO_POINT,
+    viewportRect,
+    minSize,
+    maxSize,
+    aspectRatio,
+  })
+
+  const maxPoint = getMaxBounds({ width, height }, viewportRect)
+  const { x, y } = clampPoint(crop, ZERO_POINT, maxPoint)
+
+  return { x, y, width, height }
+}
+
 /* -----------------------------------------------------------------------------
  * Crop Movement Utilities
  * ---------------------------------------------------------------------------*/
@@ -541,166 +568,6 @@ export function clampOffset(params: ClampOffsetParams): Point {
   const maxPoint = { x: extraWidth / 2, y: extraHeight / 2 }
 
   return clampPoint(offset, minPoint, maxPoint)
-}
-
-/* -----------------------------------------------------------------------------
- * Keyboard Crop Utilities
- * ---------------------------------------------------------------------------*/
-
-const expandLeft = (crop: Rect, step: number, maxWidth: number): { x: number; width: number } => {
-  const newX = max(0, crop.x - step)
-  const newWidth = crop.width + (crop.x - newX)
-  if (newWidth <= maxWidth) {
-    return { x: newX, width: newWidth }
-  }
-  return { x: crop.x + crop.width - maxWidth, width: maxWidth }
-}
-
-const expandTop = (crop: Rect, step: number, maxHeight: number): { y: number; height: number } => {
-  const newY = max(0, crop.y - step)
-  const newHeight = crop.height + (crop.y - newY)
-  if (newHeight <= maxHeight) {
-    return { y: newY, height: newHeight }
-  }
-  return { y: crop.y + crop.height - maxHeight, height: maxHeight }
-}
-
-const shrinkFromLeft = (crop: Rect, step: number, minWidth: number): { x: number; width: number } => {
-  const newX = min(crop.x + step, crop.x + crop.width - minWidth)
-  return { x: newX, width: crop.width - (newX - crop.x) }
-}
-
-const shrinkFromTop = (crop: Rect, step: number, minHeight: number): { y: number; height: number } => {
-  const newY = min(crop.y + step, crop.y + crop.height - minHeight)
-  return { y: newY, height: crop.height - (newY - crop.y) }
-}
-
-export function computeKeyboardCrop(
-  key: string,
-  handlePosition: HandlePosition,
-  step: number,
-  crop: Rect,
-  viewportRect: Size,
-  minSize: Size,
-  maxSize: Size,
-): Rect {
-  const nextCrop = { ...crop }
-
-  const { minWidth, minHeight, maxWidth, maxHeight } = resolveSizeLimits({
-    minSize,
-    maxSize,
-    viewportSize: viewportRect,
-  })
-
-  const isCorner = isCornerHandle(handlePosition)
-
-  if (key === "ArrowLeft") {
-    if (isLeftHandle(handlePosition)) {
-      const expanded = expandLeft(crop, step, maxWidth)
-      nextCrop.x = expanded.x
-      nextCrop.width = expanded.width
-
-      if (isCorner && isTopHandle(handlePosition)) {
-        const expandedY = expandTop(crop, step, maxHeight)
-        nextCrop.y = expandedY.y
-        nextCrop.height = expandedY.height
-      } else if (isCorner && isBottomHandle(handlePosition)) {
-        const newHeight = nextCrop.height + step
-        nextCrop.height = min(viewportRect.height - nextCrop.y, min(maxHeight, newHeight))
-      }
-    } else if (isRightHandle(handlePosition)) {
-      nextCrop.width = max(minWidth, nextCrop.width - step)
-
-      if (isCorner && isTopHandle(handlePosition)) {
-        const shrunk = shrinkFromTop(crop, step, minHeight)
-        nextCrop.y = shrunk.y
-        nextCrop.height = shrunk.height
-      } else if (isCorner && isBottomHandle(handlePosition)) {
-        nextCrop.height = max(minHeight, nextCrop.height - step)
-      }
-    }
-  } else if (key === "ArrowRight") {
-    if (isLeftHandle(handlePosition)) {
-      const shrunk = shrinkFromLeft(crop, step, minWidth)
-      nextCrop.x = shrunk.x
-      nextCrop.width = shrunk.width
-
-      if (isCorner && isTopHandle(handlePosition)) {
-        const shrunkY = shrinkFromTop(crop, step, minHeight)
-        nextCrop.y = shrunkY.y
-        nextCrop.height = shrunkY.height
-      } else if (isCorner && isBottomHandle(handlePosition)) {
-        nextCrop.height = max(minHeight, nextCrop.height - step)
-      }
-    } else if (isRightHandle(handlePosition)) {
-      const newWidth = nextCrop.width + step
-      nextCrop.width = min(viewportRect.width - nextCrop.x, min(maxWidth, newWidth))
-
-      if (isCorner && isTopHandle(handlePosition)) {
-        const expanded = expandTop(crop, step, maxHeight)
-        nextCrop.y = expanded.y
-        nextCrop.height = expanded.height
-      } else if (isCorner && isBottomHandle(handlePosition)) {
-        const newHeight = nextCrop.height + step
-        nextCrop.height = min(viewportRect.height - nextCrop.y, min(maxHeight, newHeight))
-      }
-    }
-  }
-
-  if (key === "ArrowUp") {
-    if (isTopHandle(handlePosition)) {
-      const expanded = expandTop(crop, step, maxHeight)
-      nextCrop.y = expanded.y
-      nextCrop.height = expanded.height
-
-      if (isCorner && isLeftHandle(handlePosition)) {
-        const expandedX = expandLeft(crop, step, maxWidth)
-        nextCrop.x = expandedX.x
-        nextCrop.width = expandedX.width
-      } else if (isCorner && isRightHandle(handlePosition)) {
-        const newWidth = nextCrop.width + step
-        nextCrop.width = min(viewportRect.width - nextCrop.x, min(maxWidth, newWidth))
-      }
-    } else if (isBottomHandle(handlePosition)) {
-      nextCrop.height = max(minHeight, nextCrop.height - step)
-
-      if (isCorner && isLeftHandle(handlePosition)) {
-        const shrunk = shrinkFromLeft(crop, step, minWidth)
-        nextCrop.x = shrunk.x
-        nextCrop.width = shrunk.width
-      } else if (isCorner && isRightHandle(handlePosition)) {
-        nextCrop.width = max(minWidth, nextCrop.width - step)
-      }
-    }
-  } else if (key === "ArrowDown") {
-    if (isTopHandle(handlePosition)) {
-      const shrunk = shrinkFromTop(crop, step, minHeight)
-      nextCrop.y = shrunk.y
-      nextCrop.height = shrunk.height
-
-      if (isCorner && isLeftHandle(handlePosition)) {
-        const shrunkX = shrinkFromLeft(crop, step, minWidth)
-        nextCrop.x = shrunkX.x
-        nextCrop.width = shrunkX.width
-      } else if (isCorner && isRightHandle(handlePosition)) {
-        nextCrop.width = max(minWidth, nextCrop.width - step)
-      }
-    } else if (isBottomHandle(handlePosition)) {
-      const newHeight = nextCrop.height + step
-      nextCrop.height = min(viewportRect.height - nextCrop.y, min(maxHeight, newHeight))
-
-      if (isCorner && isLeftHandle(handlePosition)) {
-        const expanded = expandLeft(crop, step, maxWidth)
-        nextCrop.x = expanded.x
-        nextCrop.width = expanded.width
-      } else if (isCorner && isRightHandle(handlePosition)) {
-        const newWidth = nextCrop.width + step
-        nextCrop.width = min(viewportRect.width - nextCrop.x, min(maxWidth, newWidth))
-      }
-    }
-  }
-
-  return nextCrop
 }
 
 export function getKeyboardMoveDelta(key: string, step: number): Point {
@@ -844,6 +711,10 @@ export const centerCropOnPoint = (cropSize: Size, center: Point, viewportSize: S
 export const isSameSize = (a: Size, b: Size): boolean => {
   return a.width === b.width && a.height === b.height
 }
+
+export const isEqualRect = (a: Rect, b: Rect): boolean => a.x === b.x && a.y === b.y && isSameSize(a, b)
+
+export const isValidRect = (rect: Rect): boolean => [rect.x, rect.y, rect.width, rect.height].every(Number.isFinite)
 
 /* -----------------------------------------------------------------------------
  * Point Utilities

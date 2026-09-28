@@ -285,7 +285,8 @@ export const machine = createMachine<PopoverSchema>({
             getInitialEl: prop("initialFocusEl"),
             enabled: prop("autoFocus"),
           })
-          element?.focus({ preventScroll: true })
+          if (!element) return
+          element.focus({ preventScroll: true })
         })
       },
 

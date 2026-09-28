@@ -52,6 +52,7 @@ export const routes: RouteDefinition[] = [
   { path: "/signature-pad/basic", component: lazy(() => import("./pages/signature-pad/basic")) },
   { path: "/signature-pad/controlled", component: lazy(() => import("./pages/signature-pad/controlled")) },
   { path: "/floating-panel/basic", component: lazy(() => import("./pages/floating-panel/basic")) },
+  { path: "/floating-panel/boundary", component: lazy(() => import("./pages/floating-panel/boundary")) },
   { path: "/floating-panel/controlled", component: lazy(() => import("./pages/floating-panel/controlled")) },
   { path: "/floating-panel/focus-trap", component: lazy(() => import("./pages/floating-panel/focus-trap")) },
   { path: "/floating-panel/popover-inside", component: lazy(() => import("./pages/floating-panel/popover-inside")) },

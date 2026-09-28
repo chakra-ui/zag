@@ -1,6 +1,7 @@
 ---
 title: Tour
-description: Headless product tour and onboarding component for React, Vue, Solid, and Svelte. Step-by-step overlays with tooltip, dialog, and floating steps.
+description:
+  Used to onboard users with a guided, step-by-step walkthrough of your product.
 package: "@zag-js/tour"
 ---
 
@@ -114,6 +115,16 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+### Resolving a step's target
+
+`target` is called on every position update, so a step keeps up when the page
+swaps its element. Keep it cheap and return a stable reference, since it runs on
+scroll and resize. Returning `null` keeps the last resolved element.
+
+```tsx
+target: () => document.querySelector("#target-1")
+```
+
 ### Configuring actions
 
 Every step supports a list of actions that are rendered in the step footer. Use
@@ -124,8 +135,8 @@ function:
 
 - `next`: Move to the next step.
 - `prev`: Move to the previous step.
-- `dismiss`: End the tour. Use this when the user is unlikely to want to see
-  the tour again.
+- `dismiss`: End the tour. Use this when the user is unlikely to want to see the
+  tour again.
 - `skip`: End the tour, similar to `dismiss`, but semantically intended for
   cases where the user might want to resume or restart the tour later.
 - A custom function `(actionMap) => void`, which receives the same

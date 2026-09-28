@@ -68,7 +68,7 @@ export const setupGlobalCursor = (ctx: Scope, state: CursorState, x: boolean, no
   const styleEl = getGlobalCursorEl(ctx)
   const textContent = `* { cursor: ${getCursor(state, x)} !important; }`
   if (styleEl) {
-    styleEl.textContent = textContent
+    if (styleEl.textContent !== textContent) styleEl.textContent = textContent
   } else {
     const style = ctx.getDoc().createElement("style")
     if (nonce) style.nonce = nonce
