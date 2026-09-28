@@ -26,17 +26,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const composite = prop("composite")
 
   function sendKeyboardEvent(type: string, key?: string) {
-    send({
-      type,
-      key,
-      src: "keyboard",
-      onActivate(value: string) {
-        const node = dom.getTriggerEl(scope, value)
-        if (!isAnchorElement(node) || prop("navigate") === null) return false
-        node.click()
-        return true
-      },
-    })
+    send({ type, key, src: "keyboard" })
   }
 
   function getTriggerState(props: TriggerProps): TriggerState {
@@ -183,13 +173,11 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           if (isSafari()) {
             event.currentTarget.focus()
           }
-          const navigate = prop("navigate")
           const node = event.currentTarget
-          const onNavigate =
-            navigate && isAnchorElement(node) ? () => navigate({ value, node, href: node.href }) : undefined
+          const shouldNavigate = prop("navigate") != null && isAnchorElement(node)
 
-          if (onNavigate) event.preventDefault()
-          send({ type: "TAB_CLICK", value, onNavigate })
+          if (shouldNavigate) event.preventDefault()
+          send({ type: "TAB_CLICK", value })
         },
       })
     },

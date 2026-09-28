@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { getFocusables, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -159,7 +159,7 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectFocusedTab({ context, prop, event }) {
+      selectFocusedTab({ context, prop, event, scope }) {
         raf(() => {
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
@@ -167,9 +167,13 @@ export const machine = createMachine({
           const value = nullable ? null : focusedValue
           if (context.get("value") === value) return
 
-          // Keyboard activation follows the same click path as pointer activation.
-          // The selectNext/selectPrev APIs only update selection.
-          if (event.src === "keyboard" && event.onActivate?.(focusedValue)) return
+          if (event.src === "keyboard") {
+            const triggerEl = dom.getTriggerEl(scope, focusedValue)
+            if (isAnchorElement(triggerEl) && prop("navigate") !== null) {
+              triggerEl.click()
+              return
+            }
+          }
 
           context.set("value", value)
         })
@@ -312,8 +316,14 @@ export const machine = createMachine({
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },
-      requestNavigation({ event }) {
-        event.onNavigate?.()
+      requestNavigation({ event, prop, scope }) {
+        const navigate = prop("navigate")
+        if (!navigate || event.value == null) return
+
+        const node = dom.getTriggerEl(scope, event.value)
+        if (!isAnchorElement(node)) return
+
+        navigate({ value: event.value, node, href: node.href })
       },
     },
   },
