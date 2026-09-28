@@ -35,6 +35,8 @@ export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
   userProps: Partial<T["props"]> | (() => Partial<T["props"]>),
 ): Service<T> {
+  let status = MachineStatus.NotStarted
+
   const scope = $derived.by(() => {
     const { id, ids, getRootNode } = access(userProps) as any
     return createScope({ id, ids, getRootNode })
@@ -45,7 +47,8 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const props: any = $derived(machine.props?.({ props: compact(access(userProps)), scope }) ?? access(userProps))
-  const prop = useProp(() => props)
+  let propsAtStop: any
+  const prop = useProp(() => (status === MachineStatus.Stopped ? propsAtStop : props))
 
   const context: any = machine.context?.({
     prop,
@@ -228,8 +231,6 @@ export function useMachine<T extends MachineSchema>(
     },
   }))
 
-  let status = MachineStatus.NotStarted
-
   onMount(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
@@ -241,6 +242,7 @@ export function useMachine<T extends MachineSchema>(
     if (status !== MachineStatus.Started) return
 
     debug("unmounting...")
+    propsAtStop = { ...props }
     status = MachineStatus.Stopped
 
     effects.forEach((fn) => fn?.())
