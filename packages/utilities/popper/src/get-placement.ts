@@ -349,10 +349,7 @@ function getPlacementImpl(
     if (!zIndexComputed) {
       const contentEl = floating.firstElementChild
       if (contentEl) {
-        // only hoist a real stacking level. writing `auto` inline would win over any
-        // stylesheet rule targeting the positioner, leaving the popper unstackable.
-        // the `var(--z-index)` indirection stays so that `@zag-js/dismissable`'s
-        // `syncLayers` can keep re-pointing the variable as the layer stack shifts
+        // Preserve stylesheet control for `auto` and keep layer updates live.
         const zIndex = getComputedStyle(contentEl).zIndex
         if (zIndex === "auto") {
           floating.style.removeProperty("z-index")
