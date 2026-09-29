@@ -105,7 +105,18 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 
 ### Solid
 
-**Location:** `packages/frameworks/solid/src/`
+**Location:**
+
+- `packages/frameworks/solid/v1/src/`: `@zag-js/solid`, bindings for Solid 1.x
+- `packages/frameworks/solid/v2/src/`: `@zag-js/solid-v2`, bindings for Solid 2.0
+
+Both packages expose the same API. Changes to one usually apply to the other. Solid 2 specifics in `v2`:
+
+- Signal writes are batched until the next microtask. Machine transitions and bindable writes use `flush()` so reads see
+  them right away, except inside `onSettled` or effect callbacks where Solid forbids flushing (see `src/flush.ts`)
+- Setup runs in `untrack` so initial prop reads don't trigger strict-read warnings
+- Solid 2 removes attributes set to `false`, so `normalizeProps` stringifies booleans for `aria-*`, `data-*`,
+  `draggable`, `spellCheck`, and `contentEditable`
 
 **Key Exports:**
 
