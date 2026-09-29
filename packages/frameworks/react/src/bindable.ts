@@ -32,7 +32,10 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled) setValue(next)
+    if (!controlled) {
+      valueRef.current = next
+      setValue(next)
+    }
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }

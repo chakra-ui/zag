@@ -225,6 +225,11 @@ test.describe("number input", () => {
     await I.seeInputHasValue("$5,555.00")
   })
 
+  test("should keep every character typed within one frame", async () => {
+    await I.typeWithinOneFrame("123456789")
+    await I.seeInputHasValue("123456789")
+  })
+
   test("should not allow non-numeric characters", async () => {
     await I.focusInput()
     await I.typeSequentially("abc")

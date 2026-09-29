@@ -44,6 +44,31 @@ export class NumberInputModel extends Model {
     return this.input.pressSequentially(value, options)
   }
 
+  /**
+   * Types one character at a time from inside the page, the way `@testing-library/user-event` does.
+   * `pressSequentially` awaits a round trip per key, which is always longer than a frame, so it can
+   * never put two keystrokes in the same one — the interval this covers.
+   *
+   * The yield between keystrokes is the whole point: it hands the browser a turn, so a frame can
+   * fall between two characters. Dispatching them in one synchronous run instead lets every queued
+   * write land back to back, which is the case that was never at risk.
+   */
+  async typeWithinOneFrame(value: string) {
+    await this.input.focus()
+    await this.page.evaluate(async (text) => {
+      const input = document.querySelector<HTMLInputElement>("[data-testid=input]")!
+      const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!
+      for (const character of text) {
+        const start = input.selectionStart ?? input.value.length
+        const end = input.selectionEnd ?? start
+        setValue.call(input, input.value.slice(0, start) + character + input.value.slice(end))
+        input.setSelectionRange(start + 1, start + 1)
+        input.dispatchEvent(new InputEvent("input", { bubbles: true, data: character, inputType: "insertText" }))
+        await new Promise((resolve) => setTimeout(resolve))
+      }
+    }, value)
+  }
+
   async seeInputHasValue(value: string) {
     await expect(this.input).toHaveValue(value)
   }
