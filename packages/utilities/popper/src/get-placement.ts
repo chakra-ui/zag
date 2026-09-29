@@ -183,6 +183,33 @@ const floatingStyleProps = [
 
 const arrowStyleProps = ["top", "right", "bottom", "left"]
 
+const managedZIndex = new WeakSet<HTMLElement>()
+
+function syncZIndex(floating: HTMLElement, content: Element) {
+  const inlineZIndex = floating.style.getPropertyValue("z-index")
+  const isManaged = managedZIndex.has(floating)
+  const ownsZIndex = isManaged && inlineZIndex === "var(--z-index)"
+
+  if (isManaged && !ownsZIndex) {
+    managedZIndex.delete(floating)
+  }
+
+  const zIndex = getComputedStyle(content).zIndex
+  if (zIndex === "auto") {
+    if (ownsZIndex) {
+      floating.style.removeProperty("z-index")
+      managedZIndex.delete(floating)
+    }
+    return
+  }
+
+  if (inlineZIndex && !ownsZIndex) return
+
+  floating.style.setProperty("--z-index", zIndex)
+  floating.style.setProperty("z-index", "var(--z-index)")
+  managedZIndex.add(floating)
+}
+
 function createStyleCleanup(el: HTMLElement | null, props: string[]) {
   if (!el) return noop
 
@@ -246,7 +273,15 @@ function getPlacementImpl(
     restoreArrowStyles?.()
 
     cachedMiddlewareFloating = floating
-    restoreFloatingStyles = options.restoreStyles ? createStyleCleanup(floating, floatingStyleProps) : undefined
+    if (options.restoreStyles) {
+      const restoreStyles = createStyleCleanup(floating, floatingStyleProps)
+      restoreFloatingStyles = () => {
+        restoreStyles()
+        managedZIndex.delete(floating)
+      }
+    } else {
+      restoreFloatingStyles = undefined
+    }
     const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
     restoreArrowStyles = options.restoreStyles ? createStyleCleanup(arrowEl, arrowStyleProps) : undefined
 
@@ -349,14 +384,7 @@ function getPlacementImpl(
     if (!zIndexComputed) {
       const contentEl = floating.firstElementChild
       if (contentEl) {
-        // Preserve stylesheet control for `auto` and keep layer updates live.
-        const zIndex = getComputedStyle(contentEl).zIndex
-        if (zIndex === "auto") {
-          floating.style.removeProperty("z-index")
-        } else {
-          floating.style.setProperty("--z-index", zIndex)
-          floating.style.setProperty("z-index", "var(--z-index)")
-        }
+        syncZIndex(floating, contentEl)
         zIndexComputed = true
       }
     }
