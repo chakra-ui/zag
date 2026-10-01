@@ -42,6 +42,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
+    applyStyles: false,
     placement: tooltipPositioned && isTooltipPlacement(placement) ? placement : undefined,
   })
 
