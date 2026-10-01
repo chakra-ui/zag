@@ -35,9 +35,9 @@ export const machine = createMachine<ScrollAreaSchema>({
       })),
       hiddenState: bindable<ScrollbarHiddenState>(() => ({
         defaultValue: {
-          scrollbarYHidden: false,
-          scrollbarXHidden: false,
-          cornerHidden: false,
+          scrollbarYHidden: true,
+          scrollbarXHidden: true,
+          cornerHidden: true,
         },
         hash(a) {
           return `Y:${a.scrollbarYHidden} X:${a.scrollbarXHidden} C:${a.cornerHidden}`
