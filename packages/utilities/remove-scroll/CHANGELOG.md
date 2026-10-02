@@ -1,5 +1,12 @@
 # @zag-js/remove-scroll
 
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

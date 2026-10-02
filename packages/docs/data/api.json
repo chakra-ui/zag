@@ -1024,8 +1024,8 @@
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
-        "description": "The initial focus element when the color picker is opened."
+        "type": "(() => HTMLElement | null | false) | undefined",
+        "description": "The initial focus element when the color picker is opened.\nReturn `false` to skip moving focus, or `null` to use the default."
       },
       "open": {
         "type": "boolean | undefined",
@@ -2000,8 +2000,8 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => MaybeElement) | undefined",
-        "description": "Element to receive focus when the dialog is opened"
+        "type": "(() => MaybeElement | false) | undefined",
+        "description": "Element to receive focus when the dialog is opened.\nReturn `false` to skip moving focus, or `null` to use the default."
       },
       "finalFocusEl": {
         "type": "(() => MaybeElement) | undefined",
@@ -2142,8 +2142,8 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => MaybeElement) | undefined",
-        "description": "Element to receive focus when the sheet is opened."
+        "type": "(() => MaybeElement | false) | undefined",
+        "description": "Element to receive focus when the sheet is opened.\nReturn `false` to skip moving focus, or `null` to use the default."
       },
       "finalFocusEl": {
         "type": "(() => MaybeElement) | undefined",
@@ -2736,8 +2736,8 @@
         "description": "The boundary of the panel. Useful for recalculating the boundary rect when\nthe it is resized."
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
-        "description": "Element to receive focus when the panel is opened.\nBy default, the first focusable element in the content is focused."
+        "type": "(() => HTMLElement | null | false) | undefined",
+        "description": "Element to receive focus when the panel is opened. Defaults to the panel content.\nReturn `false` to skip moving focus, or `null` to use the default."
       },
       "finalFocusEl": {
         "type": "(() => HTMLElement | null) | undefined",
@@ -3889,6 +3889,14 @@
         "type": "PageRange",
         "description": "The page range. Represented as an object with `start` and `end` properties."
       },
+      "type": {
+        "type": "\"button\" | \"link\"",
+        "description": "The type of the pagination controls."
+      },
+      "getPageUrl": {
+        "type": "(page: number) => string | undefined",
+        "description": "Returns the url for the given page, or `undefined` when `getPageUrl` is not provided."
+      },
       "slice": {
         "type": "<V>(data: V[]) => V[]",
         "description": "Function to slice an array of data based on the current page."
@@ -4288,8 +4296,8 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "(() => HTMLElement | null) | undefined",
-        "description": "The element to focus on when the popover is opened."
+        "type": "(() => HTMLElement | null | false) | undefined",
+        "description": "The element to focus on when the popover is opened.\nReturn `false` to skip moving focus, or `null` to use the default."
       },
       "finalFocusEl": {
         "type": "(() => MaybeElement) | undefined",
