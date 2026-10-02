@@ -16,6 +16,40 @@ test.describe("pin input", () => {
     await I.seeInputIsFocused(3)
   })
 
+  test("required: should focus a visible input after native validation blocks submission", async () => {
+    await I.requireValue()
+    await I.submitForm()
+    await I.seeInputIsFocused(1)
+
+    await I.fillAll("1", "2", "3")
+    await I.seeValues("1", "2", "3")
+    await I.seeFormValue("123")
+    await I.submitForm()
+    await I.seeInConsole("test")
+  })
+
+  test("hidden input focus: should keep edits in sync with the visible fields", async () => {
+    await I.fillInput(1, "1")
+    await I.seeInputIsFocused(2)
+    await I.focusHiddenInput()
+    await I.seeInputIsFocused(1)
+
+    await I.pressKey("9")
+    await I.seeValues("9", "", "")
+    await I.seeFormValue("9")
+  })
+
+  test("required: should accept a pasted code after blocked submission", async ({ context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    await I.requireValue()
+    await I.submitForm()
+    await I.seeInputIsFocused(1)
+    await I.paste("123")
+
+    await I.seeValues("1", "2", "3")
+    await I.seeFormValue("123")
+  })
+
   test("on type: should not allow multiple keys at once", async () => {
     await I.fillInput(1, "12")
     await I.seeInputHasValue(1, "2")

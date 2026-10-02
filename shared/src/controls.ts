@@ -114,6 +114,7 @@ export const numberInputControls = defineControls({
 
 export const pinInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  required: { type: "boolean", defaultValue: false },
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
