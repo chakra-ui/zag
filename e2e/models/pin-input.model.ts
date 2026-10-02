@@ -29,6 +29,23 @@ export class PinInputModel extends Model {
     await this.getInput(index).fill(value)
   }
 
+  async submitForm() {
+    await this.page.locator("main form").evaluate((form: HTMLFormElement) => form.requestSubmit())
+  }
+
+  async requireValue() {
+    await this.controls.bool("required")
+    await expect(this.page.locator("input[name=test]")).toHaveAttribute("required", "")
+  }
+
+  async focusHiddenInput() {
+    await this.page.locator("input[name=test]").focus()
+  }
+
+  async seeFormValue(value: string) {
+    await expect(this.page.locator("input[name=test]")).toHaveValue(value)
+  }
+
   async focusInput(index: number) {
     await this.getInput(index).focus()
   }
