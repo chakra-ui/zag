@@ -16,6 +16,15 @@ test.describe("tour", () => {
     await I.seeContentIsCentered()
   })
 
+  test("action triggers are named by their label", async ({ page }) => {
+    await I.clickStart()
+    await I.seeContent()
+
+    // the visible label is the accessible name — not the translation behind the action
+    await expect(page.getByRole("button", { name: "Next", exact: true })).toBeVisible()
+    await expect(page.locator("[data-part=action-trigger][data-type=next]")).not.toHaveAttribute("aria-label")
+  })
+
   test("should close on escape", async () => {
     await I.clickStart()
     await I.seeContent()
