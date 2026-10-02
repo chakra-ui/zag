@@ -90,7 +90,6 @@ export function connect<T extends PropTypes>(
       }
       return normalize.element({
         ...parts.viewport.attrs,
-        role: "presentation",
         "data-ownedby": dom.getRootId(scope),
         id: dom.getViewportId(scope),
         "data-at-top": dataAttr(atSides.top),
@@ -99,7 +98,7 @@ export function connect<T extends PropTypes>(
         "data-at-right": dataAttr(atSides.right),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
-        tabIndex: hiddenState.scrollbarXHidden || hiddenState.scrollbarYHidden ? undefined : 0,
+        tabIndex: hiddenState.scrollbarXHidden && hiddenState.scrollbarYHidden ? undefined : 0,
         style: {
           overflow: "auto",
         },
