@@ -1,5 +1,17 @@
 # @zag-js/focus-visible
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3343](https://github.com/chakra-ui/zag/pull/3343)
+  [`8a204a3`](https://github.com/chakra-ui/zag/commit/8a204a33f1e7074ea5aab394bd4682745e7125ed) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - Fix `Illegal invocation` thrown during setup when another tool has
+  replaced `HTMLElement.prototype.focus` with an accessor that dereferences `this`. The throw escaped the machine's
+  effect setup, taking the remaining effects down with it.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

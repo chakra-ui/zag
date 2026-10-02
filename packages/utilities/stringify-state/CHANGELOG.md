@@ -1,5 +1,7 @@
 # @zag-js/stringify-state
 
+## 1.45.0
+
 ## 1.44.0
 
 ## 1.43.3
