@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { PinInputModel } from "./models/pin-input.model"
 
 let I: PinInputModel
@@ -459,5 +459,86 @@ test.describe("pin input / transform paste", () => {
     await I.paste("1-2-3")
 
     await I.seeValues("1", "2", "3")
+  })
+})
+
+test.describe("pin input / native form validation", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+    await I.clickControls()
+    await expect(async () => {
+      await I.focusInput(1)
+      await I.pressKey("0")
+      await expect(page.getByTestId("input-2")).toBeFocused({ timeout: 250 })
+    }).toPass({ timeout: 10_000 })
+    await I.clickClear()
+    await I.seeValues("", "", "")
+    await I.trackFormEvents()
+  })
+
+  test("enter: validates an empty required PIN", async () => {
+    await I.controls.bool("required", true)
+    await I.focusInput(1)
+    await I.pressKey("Enter")
+    await I.seeFormEvents(0, true)
+  })
+
+  test("enter: validates a partially filled required PIN", async () => {
+    await I.controls.bool("required", true)
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents(0, true)
+    await I.seeInputIsFocused(2)
+  })
+
+  test("submit button: validates a partially filled required PIN", async () => {
+    await I.controls.bool("required", true)
+    await I.fillInput(1, "1")
+    await I.submitForm()
+    await I.seeFormEvents(0, true)
+    await I.seeInputIsFocused(2)
+  })
+
+  test("enter: submits a complete required PIN once", async () => {
+    await I.controls.bool("required", true)
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.pressKey("Enter")
+    await I.seeFormEvents(1, false)
+  })
+
+  test("enter: submits an empty optional PIN", async () => {
+    await I.focusInput(1)
+    await I.pressKey("Enter")
+    await I.seeFormEvents(1, false)
+  })
+
+  test("enter: submits a partially filled optional PIN", async () => {
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents(1, false)
+  })
+
+  test("enter: validates other required form fields", async () => {
+    await I.addRequiredField()
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents(0, true)
+  })
+
+  test("enter: does not validate a readonly PIN", async () => {
+    await I.controls.bool("required", true)
+    await I.controls.bool("readOnly", true)
+    await I.focusInput(1)
+    await I.pressKey("Enter")
+    await I.seeFormEvents(1, false)
+  })
+
+  test("submit button: does not validate a disabled PIN", async () => {
+    await I.controls.bool("required", true)
+    await I.controls.bool("disabled", true)
+    await I.submitForm()
+    await I.seeFormEvents(1, false)
   })
 })
