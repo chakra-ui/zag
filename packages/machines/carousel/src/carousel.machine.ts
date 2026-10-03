@@ -258,8 +258,14 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const win = scope.getWin()
+        let items = dom.getItemEls(scope)
         const observer = new win.MutationObserver(() => {
-          send({ type: "SNAP.REFRESH", src: "slide.mutation" })
+          const nextItems = dom.getItemEls(scope)
+          const slidesChanged =
+            nextItems.length !== items.length || nextItems.some((item, index) => item !== items[index])
+          items = nextItems
+          // Content updates still affect keyboard access, but should not interrupt scrolling.
+          if (slidesChanged) send({ type: "SNAP.REFRESH", src: "slide.mutation" })
           dom.syncTabIndex(scope)
         })
         dom.syncTabIndex(scope)
