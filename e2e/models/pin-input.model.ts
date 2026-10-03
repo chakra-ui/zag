@@ -52,6 +52,42 @@ export class PinInputModel extends Model {
     }
   }
 
+  async trackFormEvents() {
+    await this.page.locator("main form").evaluate((form) => {
+      form.setAttribute("data-submissions", "0")
+      form.setAttribute("data-invalid-events", "0")
+      form.addEventListener("submit", (event) => {
+        event.preventDefault()
+        form.setAttribute("data-submissions", String(Number(form.getAttribute("data-submissions")) + 1))
+      })
+      form.addEventListener("invalid", () => form.setAttribute("data-invalid-events", "1"), true)
+      const submit = document.createElement("button")
+      submit.type = "submit"
+      submit.textContent = "Submit PIN"
+      form.append(submit)
+    })
+  }
+
+  async submitForm() {
+    await this.page.getByRole("button", { name: "Submit PIN" }).click()
+  }
+
+  async addRequiredField() {
+    await this.page.locator("main form").evaluate((form) => {
+      const input = document.createElement("input")
+      input.required = true
+      input.name = "email"
+      input.setAttribute("aria-label", "Email")
+      form.append(input)
+    })
+  }
+
+  async seeFormEvents(submissions: number, invalid: boolean) {
+    const form = this.page.locator("main form")
+    await expect(form).toHaveAttribute("data-submissions", String(submissions))
+    await expect(form).toHaveAttribute("data-invalid-events", invalid ? "1" : "0")
+  }
+
   // --- Assertions ---
 
   async seeInputIsFocused(index: number) {

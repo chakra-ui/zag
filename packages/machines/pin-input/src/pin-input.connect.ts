@@ -124,6 +124,8 @@ export function connect<T extends PropTypes>(
         ...parts.input.attrs,
         dir: prop("dir"),
         disabled,
+        required,
+        form: prop("form"),
         tabIndex: index === tabbableIndex ? 0 : -1,
         "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
