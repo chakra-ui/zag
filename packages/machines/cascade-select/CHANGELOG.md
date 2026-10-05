@@ -1,5 +1,26 @@
 # @zag-js/cascade-select
 
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`8a204a3`](https://github.com/chakra-ui/zag/commit/8a204a33f1e7074ea5aab394bd4682745e7125ed),
+  [`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c),
+  [`9a21994`](https://github.com/chakra-ui/zag/commit/9a21994abaa44bfec4e3afbe942da6bf6eddba68),
+  [`647e225`](https://github.com/chakra-ui/zag/commit/647e225e087f3646a1dffdb02594ca6a11548641),
+  [`6688282`](https://github.com/chakra-ui/zag/commit/668828229eb47730be2a9da78956ff3fd01317fb)]:
+  - @zag-js/focus-visible@1.45.0
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/collection@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/popper@1.45.0
+  - @zag-js/dismissable@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+  - @zag-js/rect-utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

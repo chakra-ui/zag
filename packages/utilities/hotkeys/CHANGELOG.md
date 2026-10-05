@@ -1,5 +1,16 @@
 # @zag-js/hotkeys
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3351](https://github.com/chakra-ui/zag/pull/3351)
+  [`ef6b822`](https://github.com/chakra-ui/zag/commit/ef6b822e5658c1a278cda574acc87a6f8efb0312) Thanks
+  [@CrazyBucket](https://github.com/CrazyBucket)! - Fix an unhandled `TypeError` when a `keyup` event without a valid
+  `key` is dispatched at `document`. Events without a string `key` are now ignored instead of crashing the handler.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631)]:
+  - @zag-js/dom-query@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes
