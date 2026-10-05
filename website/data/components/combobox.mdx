@@ -415,6 +415,9 @@ Set `composite` to `false` when the content holds other widgets, like the input
 or tabs. The content becomes a `dialog`, and the list takes over the `listbox`
 role. In this mode, `getListProps()` is required.
 
+When the input moves into the content, open the combobox from a trigger and pass
+`focusable: true` so the trigger can receive focus.
+
 ```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
@@ -424,14 +427,22 @@ const service = useMachine(combobox.machine, {
 
 // ...
 
-<div {...api.getContentProps()}>
-  <input {...api.getInputProps()} />
-  <div {...api.getListProps()}>
-    {collection.items.map((item) => (
-      <div key={item.value} {...api.getItemProps({ item })}>
-        {item.label}
-      </div>
-    ))}
+<div {...api.getControlProps()}>
+  <button {...api.getTriggerProps({ focusable: true })}>
+    {api.valueAsString || "Select a country"}
+  </button>
+</div>
+
+<div {...api.getPositionerProps()}>
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getListProps()}>
+      {collection.items.map((item) => (
+        <div key={item.value} {...api.getItemProps({ item })}>
+          {item.label}
+        </div>
+      ))}
+    </div>
   </div>
 </div>
 ```
