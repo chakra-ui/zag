@@ -193,6 +193,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "cover", title: "Cover" },
       { slug: "react-hook-form", title: "Hook Form" },
       { slug: "transform", title: "Transform" },
+      { slug: "nested-label", title: "Nested Label" },
     ],
   },
   {

@@ -97,3 +97,41 @@ test.describe("file-upload", () => {
     expect(tracker.count).toBe(1)
   })
 })
+
+test.describe("file-upload [nested-label]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new FileUploadModel(page)
+    await I.goto("/file-upload/nested-label")
+  })
+
+  test("should open file picker once when clicking label text inside dropzone", async () => {
+    const inputClicks = await I.trackHiddenInputClicks()
+    const tracker = I.trackFileChooserEvents()
+
+    const fileChooser = await I.openFilePickerViaLabelText()
+    expect(fileChooser).toBeDefined()
+
+    await I.waitForNextFrame()
+    await I.waitForNextFrame()
+
+    expect(await inputClicks.count()).toBe(1)
+    expect(tracker.count).toBe(1)
+  })
+
+  test("should upload file via label text click", async () => {
+    const fileChooser = await I.openFilePickerViaLabelText()
+    await fileChooser.setFiles(path.join(__dirname, "fixtures/text.txt"))
+
+    await I.seeFileDetails("text.txt")
+  })
+
+  test("should open file picker once when clicking trigger inside label", async () => {
+    const inputClicks = await I.trackHiddenInputClicks()
+
+    await I.openFilePicker()
+    await I.waitForNextFrame()
+    await I.waitForNextFrame()
+
+    expect(await inputClicks.count()).toBe(1)
+  })
+})

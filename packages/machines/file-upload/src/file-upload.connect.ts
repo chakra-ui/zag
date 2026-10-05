@@ -22,7 +22,10 @@ const INTERACTIVE_SELECTOR =
 function isInteractiveTarget(element: HTMLElement | null, container: HTMLElement): boolean {
   if (!element || element.getAttribute("type") === "file") return false
   const interactive = element.closest(INTERACTIVE_SELECTOR)
-  return interactive != container && contains(container, interactive)
+  if (interactive != container && contains(container, interactive)) return true
+  // a label with a control activates it natively (e.g. the hidden input), so the dropzone must not open the picker again
+  const label = element.closest("label")
+  return label != container && contains(container, label) && !!label?.control
 }
 
 export function connect<T extends PropTypes>(

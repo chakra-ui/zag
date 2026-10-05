@@ -78,6 +78,7 @@ export const routes: RouteDefinition[] = [
   { path: "/file-upload/cover", component: lazy(() => import("./pages/file-upload/cover")) },
   { path: "/file-upload/react-hook-form", component: lazy(() => import("./pages/file-upload/react-hook-form")) },
   { path: "/file-upload/transform", component: lazy(() => import("./pages/file-upload/transform")) },
+  { path: "/file-upload/nested-label", component: lazy(() => import("./pages/file-upload/nested-label")) },
   { path: "/presence/basic", component: lazy(() => import("./pages/presence/basic")) },
   { path: "/avatar/basic", component: lazy(() => import("./pages/avatar/basic")) },
   { path: "/color-picker/basic", component: lazy(() => import("./pages/color-picker/basic")) },

@@ -9,12 +9,16 @@ export class FileUploadModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto("/file-upload/basic")
+  goto(url = "/file-upload/basic") {
+    return this.page.goto(url)
   }
 
   getDropzone() {
     return this.page.locator(part("dropzone"))
+  }
+
+  getLabel() {
+    return this.page.locator(part("label"))
   }
 
   getTrigger() {
@@ -92,6 +96,24 @@ export class FileUploadModel extends Model {
         return count
       },
     }
+  }
+
+  async trackHiddenInputClicks() {
+    await this.getHiddenInput().evaluate((input) => {
+      input.dataset.clickCount = "0"
+      input.addEventListener("click", () => {
+        input.dataset.clickCount = String(Number(input.dataset.clickCount) + 1)
+      })
+    })
+    return {
+      count: async () => Number(await this.getHiddenInput().getAttribute("data-click-count")),
+    }
+  }
+
+  async openFilePickerViaLabelText() {
+    const fileChooserPromise = this.page.waitForEvent("filechooser")
+    await this.getLabel().click({ position: { x: 4, y: 4 } })
+    return await fileChooserPromise
   }
 
   async uploadFile(filePath: string) {
