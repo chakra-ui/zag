@@ -459,6 +459,28 @@ test.describe("datepicker [controlled open]", () => {
   })
 })
 
+test.describe("datepicker [controlled open + openOnClick]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/controlled")
+  })
+
+  test("clicking the input opens the calendar but keeps focus in the input", async () => {
+    await I.clickInput()
+    await I.seeContent()
+    // let the focus raf settle before asserting, otherwise focus could still be stolen
+    await I.waitForCalendarRender()
+    await I.seeInputIsFocused()
+  })
+
+  test("clicking the trigger opens the calendar and focuses the active cell", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForCalendarRender()
+    await I.seeTodayCellIsFocused()
+  })
+})
+
 test.describe("datepicker [min-view]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DatePickerModel(page)
