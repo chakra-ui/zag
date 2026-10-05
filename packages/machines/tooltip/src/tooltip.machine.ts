@@ -422,7 +422,14 @@ export const machine = createMachine<TooltipSchema>({
             }
           })
         })
-        return () => cleanup?.()
+        return () => {
+          cleanup?.()
+          // unmounting while open would otherwise leave this id in the store,
+          // making every tooltip opened afterwards skip its open delay
+          if (store.get("id") === prop("id")) {
+            store.update({ id: null, prevId: null, instant: false })
+          }
+        }
       },
 
       trackEscapeKey: ({ send, prop }) => {
