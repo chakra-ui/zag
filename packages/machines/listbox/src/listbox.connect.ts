@@ -277,7 +277,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             type: "ITEM.CLICK",
             value: itemState.value,
             shiftKey: event.shiftKey,
-            anchorValue: highlightedValue,
             metaKey: isCtrlOrMetaKey(event),
           })
         },
@@ -362,7 +361,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               if (!nextValue) return
 
               event.preventDefault()
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
 
             ArrowDown(event) {
@@ -379,7 +378,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
               if (!nextValue) return
               event.preventDefault()
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
 
             ArrowLeft() {
@@ -390,7 +389,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               }
               if (!nextValue) return
               event.preventDefault()
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
 
             ArrowRight() {
@@ -401,20 +400,20 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               }
               if (!nextValue) return
               event.preventDefault()
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
 
             Home(event) {
               if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.firstValue
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
             End(event) {
               if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.lastValue
-              send({ type: "NAVIGATE", value: nextValue, shiftKey, anchorValue: highlightedValue })
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
             Enter() {
               send({ type: "ITEM.CLICK", value: highlightedValue })

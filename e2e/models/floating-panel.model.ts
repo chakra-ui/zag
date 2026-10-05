@@ -27,6 +27,18 @@ export class FloatingPanelModel extends Model {
     return this.page.locator(part("content"))
   }
 
+  get positioner() {
+    return this.page.locator(part("positioner"))
+  }
+
+  get boundary() {
+    return this.page.locator("[data-testid=boundary]")
+  }
+
+  get scroller() {
+    return this.page.locator("[data-testid=scroller]")
+  }
+
   get dragTrigger() {
     return this.page.locator(part("drag-trigger"))
   }
@@ -150,6 +162,48 @@ export class FloatingPanelModel extends Model {
     await this.page.mouse.down()
     await this.page.mouse.move(box.midX + offset.x, box.midY + offset.y, { steps: 10 })
     await this.page.mouse.up()
+  }
+
+  seeStrategy(value: "fixed" | "absolute") {
+    return expect(this.positioner).toHaveCSS("position", value)
+  }
+
+  /** The panel's offset from its boundary, which should survive scrolling. */
+  async getOffsetInBoundary() {
+    const [panel, boundary] = await Promise.all([rect(this.positioner), rect(this.boundary)])
+    return { top: Math.round(panel.y - boundary.y), left: Math.round(panel.x - boundary.x) }
+  }
+
+  async seeOffsetInBoundary(offset: { top: number; left: number }) {
+    await expect.poll(() => this.getOffsetInBoundary()).toEqual(offset)
+  }
+
+  async seeCenteredInBoundary() {
+    await expect
+      .poll(async () => {
+        const [panel, boundary] = await Promise.all([rect(this.positioner), rect(this.boundary)])
+        return {
+          top: Math.round(panel.y - boundary.y) === Math.round((boundary.height - panel.height) / 2),
+          left: Math.round(panel.x - boundary.x) === Math.round((boundary.width - panel.width) / 2),
+        }
+      })
+      .toEqual({ top: true, left: true })
+  }
+
+  /** Scrolls by a fraction of the available range, so it never overscrolls. */
+  scrollBoundaryTo(ratio: number) {
+    return this.scroller.evaluate((el, r) => {
+      el.scrollTop = (el.scrollHeight - el.clientHeight) * r
+    }, ratio)
+  }
+
+  async seeContainedInBoundary() {
+    await expect
+      .poll(async () => {
+        const [panel, boundary] = await Promise.all([rect(this.positioner), rect(this.boundary)])
+        return panel.y >= boundary.y - 1 && panel.maxY <= boundary.maxY + 1
+      })
+      .toBe(true)
   }
 
   seeTriggerIsFocused() {

@@ -89,4 +89,11 @@ describe("isEqual", () => {
     expect(isEqual(null, undefined)).toBe(false)
     expect(isEqual({ a: 1 }, null)).toBe(false)
   })
+
+  test("should return false when either object has extra keys", () => {
+    const narrow = { style: "percent" }
+    const wide = { style: "percent", maximumFractionDigits: 2 }
+    expect(isEqual(wide, narrow)).toBe(false)
+    expect(isEqual(narrow, wide)).toBe(false)
+  })
 })

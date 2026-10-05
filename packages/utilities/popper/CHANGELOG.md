@@ -64,6 +64,19 @@
 
 ## 2.0.0-next.0
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3344](https://github.com/chakra-ui/zag/pull/3344)
+  [`6688282`](https://github.com/chakra-ui/zag/commit/668828229eb47730be2a9da78956ff3fd01317fb) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - Fix popper-based components ignoring a stylesheet `z-index` set on
+  the positioner when the content has no stacking level.
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

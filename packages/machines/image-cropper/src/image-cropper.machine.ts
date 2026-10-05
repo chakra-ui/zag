@@ -12,6 +12,7 @@ import {
   getCenterPoint,
   getKeyboardResizeDelta,
   getMidpoint,
+  isRectEqual,
   isSizeEqual,
   isVisibleSize,
   scaleRect,
@@ -27,6 +28,7 @@ import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from
 import {
   clampOffset,
   computeDefaultCropDimensions,
+  constrainCrop,
   getCropSizeLimits,
   getMaxBounds,
   getViewportCenter,
@@ -163,6 +165,10 @@ export const machine = createMachine<ImageCropperSchema>({
     RESIZE_CROP: {
       guard: "canResizeCrop",
       actions: ["resizeCrop"],
+    },
+    SET_CROP: {
+      guard: "canResizeCrop",
+      actions: ["setCrop"],
     },
     VIEWPORT_RESIZE: {
       actions: ["resizeViewport"],
@@ -317,18 +323,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const initialCrop = prop("initialCrop")
         if (initialCrop) {
-          const { width, height } = constrainCropSize(
-            { x: 0, y: 0, width: initialCrop.width, height: initialCrop.height },
-            viewportRect,
-            minSize,
-            maxSize,
-            aspectRatio,
-          )
-
-          const max = getMaxBounds({ width, height }, viewportRect)
-          const { x, y } = clampPointInRange(initialCrop, ZERO_POINT, max)
-
-          context.set("crop", { x, y, width, height })
+          context.set("crop", constrainCrop({ crop: initialCrop, viewportRect, minSize, maxSize, aspectRatio }))
           return
         }
 
@@ -678,12 +673,26 @@ export const machine = createMachine<ImageCropperSchema>({
         const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
         const { minSize, maxSize } = getCropSizeLimits(prop)
 
+        const aspectRatio = resolveCropAspectRatio(prop("cropShape"), prop("aspectRatio"))
+
         const delta = getKeyboardResizeDelta(key, handlePosition, step)
         const nextCrop = applyResize(crop, delta, handlePosition, {
           boundary: toRectBoundary(viewportRect),
           minSize,
           maxSize,
+          aspectRatio,
         })
+
+        context.set("crop", nextCrop)
+      },
+
+      setCrop({ context, event, prop }) {
+        const viewportRect = context.get("viewportRect")
+        const aspectRatio = resolveCropAspectRatio(prop("cropShape"), prop("aspectRatio"))
+        const { minSize, maxSize } = getCropSizeLimits(prop)
+
+        const nextCrop = constrainCrop({ crop: event.crop, viewportRect, minSize, maxSize, aspectRatio })
+        if (isRectEqual(nextCrop, context.get("crop"))) return
 
         context.set("crop", nextCrop)
       },

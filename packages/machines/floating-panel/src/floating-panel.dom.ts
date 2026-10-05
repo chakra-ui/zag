@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { isHTMLElement } from "@zag-js/dom-query"
-import { createRect, getElementRect, getWindowRect, type Rect } from "@zag-js/rect-utils"
+import { createRect, getElementRect, getWindowRect, type Point, type Rect } from "@zag-js/rect-utils"
 import { pick } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 
@@ -16,6 +16,15 @@ export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getHeaderEl = (ctx: Scope) => ctx.query(ctx.selector(parts.header))
+
+const NO_OFFSET: Point = { x: 0, y: 0 }
+
+export const getOffsetOrigin = (ctx: Scope, strategy: "absolute" | "fixed" | undefined): Point => {
+  if (strategy !== "absolute") return NO_OFFSET
+  const offsetParent = getPositionerEl(ctx)?.offsetParent
+  if (!isHTMLElement(offsetParent)) return NO_OFFSET
+  return pick(getElementRect(offsetParent, { excludeBorders: true }), ["x", "y"])
+}
 
 export const getBoundaryRect = (ctx: Scope, boundaryEl: HTMLElement | undefined | null, allowOverflow: boolean) => {
   let boundaryRect: Rect

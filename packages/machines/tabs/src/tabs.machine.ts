@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { clickIfLink, getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -14,9 +14,6 @@ export const machine = createMachine({
       orientation: "horizontal",
       activationMode: "automatic",
       loopFocus: true,
-      navigate(details) {
-        clickIfLink(details.node)
-      },
       defaultValue: null,
       ...props,
     }
@@ -61,7 +58,7 @@ export const machine = createMachine({
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["syncIndicatorRect"])
@@ -99,14 +96,14 @@ export const machine = createMachine({
         },
         TAB_CLICK: {
           target: "focused",
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue", "requestNavigation"],
         },
       },
     },
     focused: {
       on: {
         TAB_CLICK: {
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue", "requestNavigation"],
         },
         ARROW_PREV: [
           {
@@ -161,12 +158,22 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectFocusedTab({ context, prop }) {
+      selectFocusedTab({ context, prop, event, scope }) {
         raf(() => {
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const nullable = prop("deselectable") && context.get("value") === focusedValue
           const value = nullable ? null : focusedValue
+          if (context.get("value") === value) return
+
+          if (event.src === "keyboard") {
+            const triggerEl = dom.getTriggerEl(scope, focusedValue)
+            if (isAnchorElement(triggerEl) && prop("navigate") !== null) {
+              triggerEl.click()
+              return
+            }
+          }
+
           context.set("value", value)
         })
       },
@@ -312,14 +319,14 @@ export const machine = createMachine({
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },
-      navigateIfNeeded({ context, prop, scope }) {
-        const value = context.get("value")
-        if (!value) return
+      requestNavigation({ event, prop, scope }) {
+        const navigate = prop("navigate")
+        if (!navigate || event.value == null) return
 
-        const triggerEl = dom.getTriggerEl(scope, value)
-        if (isAnchorElement(triggerEl)) {
-          prop("navigate")?.({ value, node: triggerEl, href: triggerEl.href })
-        }
+        const node = dom.getTriggerEl(scope, event.value)
+        if (!isAnchorElement(node)) return
+
+        navigate({ value: event.value, node, href: node.href })
       },
     },
   },

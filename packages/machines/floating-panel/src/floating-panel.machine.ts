@@ -1,5 +1,12 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  getOverflowAncestors,
+  isHTMLElement,
+  raf,
+  resizeObserverBorderBox,
+  trackPointerMove,
+} from "@zag-js/dom-query"
 import {
   applyMove,
   applyResize,
@@ -13,6 +20,7 @@ import {
   isSizeEqual,
   subtractPoints,
   type Point,
+  type RectInit,
   type Size,
 } from "@zag-js/rect-utils"
 import { clampValue, ensureProps, pick } from "@zag-js/utils"
@@ -73,6 +81,10 @@ export const machine = createMachine<FloatingPanelSchema>({
           prop("onStageChange")?.({ stage: value })
         },
       })),
+      offsetOrigin: bindable<Point>(() => ({
+        defaultValue: { x: 0, y: 0 },
+        isEqual: isPointEqual,
+      })),
       lastEventPosition: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
@@ -101,12 +113,16 @@ export const machine = createMachine<FloatingPanelSchema>({
   },
 
   watch({ track, context, action, prop }) {
-    track([() => context.hash("position")], () => {
+    track([() => context.hash("position"), () => context.hash("offsetOrigin")], () => {
       action(["setPositionStyle"])
     })
 
     track([() => context.hash("size")], () => {
       action(["setSizeStyle"])
+    })
+
+    track([() => prop("strategy")], () => {
+      action(["setOffsetOrigin"])
     })
 
     track([() => prop("open")], () => {
@@ -134,7 +150,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
+          actions: ["setOffsetOrigin", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
         },
         OPEN: [
           {
@@ -143,7 +159,14 @@ export const machine = createMachine<FloatingPanelSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "setInitialFocus"],
+            actions: [
+              "invokeOnOpen",
+              "setOffsetOrigin",
+              "setAnchorPosition",
+              "setPositionStyle",
+              "setSizeStyle",
+              "setInitialFocus",
+            ],
           },
         ],
       },
@@ -274,35 +297,52 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       trackBoundaryRect({ context, scope, prop, computed }) {
         const win = scope.getWin()
+        const readRect = () => dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
-        // ResizeObserver fires immediately on init, so we need to skip the first call
-        let skip = true
+        let prevRect = readRect()
 
-        const exec = () => {
-          if (skip) {
-            skip = false
-            return
-          }
+        const syncPosition = (rect: RectInit) => {
+          const dx = rect.x - prevRect.x
+          const dy = rect.y - prevRect.y
+          if (dx === 0 && dy === 0) return
+          const position = context.get("position")
+          context.set("position", { x: position.x + dx, y: position.y + dy })
+        }
 
-          const boundaryEl = prop("getBoundaryEl")?.()
-          let boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
+        const syncSize = (rect: RectInit) => {
+          if (rect.width === prevRect.width && rect.height === prevRect.height) return
+          const panelRect = { ...context.get("position"), ...context.get("size") }
+          const nextRect = computed("isMaximized") ? rect : constrainRect(panelRect, rect)
+          context.set("size", pick(nextRect, ["width", "height"]))
+          context.set("position", pick(nextRect, ["x", "y"]))
+        }
 
-          if (!computed("isMaximized")) {
-            const rect = { ...context.get("position"), ...context.get("size") }
-            boundaryRect = constrainRect(rect, boundaryRect)
-          }
+        const syncOffsetOrigin = () => {
+          context.set("offsetOrigin", dom.getOffsetOrigin(scope, prop("strategy")))
+        }
 
-          context.set("size", pick(boundaryRect, ["width", "height"]))
-          context.set("position", pick(boundaryRect, ["x", "y"]))
+        const sync = () => {
+          const rect = readRect()
+          syncOffsetOrigin()
+          syncPosition(rect)
+          syncSize(rect)
+          prevRect = rect
         }
 
         const boundaryEl = prop("getBoundaryEl")?.()
+        const cleanups = [raf(syncOffsetOrigin)]
 
         if (isHTMLElement(boundaryEl)) {
-          return resizeObserverBorderBox.observe(boundaryEl, exec)
+          cleanups.push(resizeObserverBorderBox.observe(boundaryEl, sync))
+          // scoped to the boundary's scroll ancestors, so scrolling elsewhere costs nothing
+          for (const ancestor of getOverflowAncestors(boundaryEl)) {
+            cleanups.push(addDomEvent(ancestor, "scroll", sync))
+          }
+        } else {
+          cleanups.push(addDomEvent(win, "resize", sync))
         }
 
-        return addDomEvent(win, "resize", exec)
+        return () => cleanups.forEach((fn) => fn?.())
       },
 
       trackPanelStack({ context, scope }) {
@@ -397,11 +437,20 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("position", pick(result, ["x", "y"]))
       },
 
+      setOffsetOrigin({ scope, context, prop }) {
+        const apply = () => context.set("offsetOrigin", dom.getOffsetOrigin(scope, prop("strategy")))
+        // on a strategy change the element still carries the old `position`, so offsetParent is unresolved
+        const unresolved = prop("strategy") === "absolute" && !dom.getPositionerEl(scope)?.offsetParent
+        if (unresolved) raf(apply)
+        else apply()
+      },
+
       setPositionStyle({ scope, context }) {
         const el = dom.getPositionerEl(scope)
         const position = context.get("position")
-        el?.style.setProperty("--x", `${position.x}px`)
-        el?.style.setProperty("--y", `${position.y}px`)
+        const origin = context.get("offsetOrigin")
+        el?.style.setProperty("--x", `${position.x - origin.x}px`)
+        el?.style.setProperty("--y", `${position.y - origin.y}px`)
       },
 
       resetRect({ context, prop }) {
@@ -584,7 +633,9 @@ export const machine = createMachine<FloatingPanelSchema>({
 
       setInitialFocus({ scope, prop }) {
         raf(() => {
-          const element = prop("initialFocusEl")?.() ?? dom.getContentEl(scope)
+          const initialEl = prop("initialFocusEl")?.()
+          if (initialEl === false) return
+          const element = initialEl ?? dom.getContentEl(scope)
           element?.focus({ preventScroll: true })
         })
       },

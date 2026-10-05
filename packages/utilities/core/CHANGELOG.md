@@ -33,6 +33,16 @@
 
 ## 2.0.0-next.0
 
+## 1.45.0
+
+### Patch Changes
+
+- [#3372](https://github.com/chakra-ui/zag/pull/3372)
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - Fix `isEqual` treating an object as equal to one with extra keys
+  when the extra keys are on the first argument. `memo` deps compared this way, so a progress instance whose
+  `formatOptions` were a subset of the previous instance's reused that instance's formatter.
+
 ## 1.44.0
 
 ## 1.43.3

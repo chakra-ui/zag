@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@internationalized/date"],
+      include: ["@internationalized/date", "@zag-js/stringify-state > json-format-highlight"],
     },
   },
 })

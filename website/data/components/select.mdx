@@ -462,6 +462,42 @@ function Demo() {
 }
 ```
 
+### Wrapping items in a list
+
+By default, `getContentProps()` renders the `listbox` role, so items can sit
+directly inside the content. `getListProps()` is optional here and only acts as
+a layout wrapper.
+
+Set `composite` to `false` when the content holds other widgets, like tabs. The
+content becomes a `dialog`, and the list takes over the `listbox` role. In this
+mode, `getListProps()` is required.
+
+```tsx
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  composite: false,
+})
+
+// ...
+
+<div {...api.getContentProps()}>
+  {/* tabs or other widgets */}
+  <div {...api.getListProps()}>
+    {collection.items.map((item) => (
+      <div key={item.value} {...api.getItemProps({ item })}>
+        {item.label}
+      </div>
+    ))}
+  </div>
+</div>
+```
+
+For a select with a search input, use a
+[combobox](/components/combobox#wrapping-items-in-a-list) with `composite` set
+to `false` instead. The select content handles keys like `Space` itself, so a
+plain input inside it can't take every keystroke.
+
 ### Usage within dialog
 
 When using select in a dialog, avoid rendering it in a `Portal` or `Teleport`

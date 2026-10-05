@@ -126,7 +126,9 @@ export type TabsSchema = {
   action: string
   guard: string
   effect: string
-  event: EventObject
+  event: EventObject & {
+    src?: "keyboard" | "selectNext" | "selectPrev" | undefined
+  }
 }
 
 export type TabsService = Service<TabsSchema>
