@@ -22,7 +22,7 @@ year, etc.) with validation and keyboard navigation.
 - Supports `single` and `range` selection modes
 - Keyboard navigation and auto-advance between segments
 - Placeholder management with visual distinction
-- Customizable granularity (day, month, hour, minute, second)
+- Customizable granularity (day, hour, minute, second)
 - Optional leading zeros in numeric fields
 - Works with localization and timezone
 - Full accessibility with keyboard and screen reader support
@@ -186,12 +186,11 @@ Set `granularity` to control the smallest unit displayed in the input.
 
 ```tsx
 const service = useMachine(dateInput.machine, {
-  granularity: "day", // "month" | "day" | "year" | "hour" | "minute" | "second"
+  granularity: "day", // "day" | "hour" | "minute" | "second"
 })
 ```
 
-The available granularities are: `"month"`, `"day"`, `"year"`, `"hour"`, `"minute"`, and
-`"second"`.
+The available granularities are: `"day"`, `"hour"`, `"minute"`, and `"second"`.
 
 ### Forcing leading zeros
 
