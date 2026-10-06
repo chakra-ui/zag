@@ -106,11 +106,28 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
   }
 
   deep(parentNode)
+
+  // Reveal ancestors of the targets that were hidden by a previous lock (e.g. nested dialogs)
+  const revealedNodes: Element[] = []
+  elementsToKeep.forEach((node) => {
+    if (node === parentNode || !parentNode.contains(node)) return
+    const el = node as Element
+    if (!markerCounter.get(el) || uncontrolledNodes.has(el)) return
+    el.removeAttribute(controlAttribute)
+    revealedNodes.push(el)
+  })
+
   elementsToKeep.clear()
 
   lockCount++
 
   return () => {
+    revealedNodes.forEach((node) => {
+      if (markerCounter.get(node)) {
+        node.setAttribute(controlAttribute, explicitBooleanValue ? "true" : "")
+      }
+    })
+
     hiddenNodes.forEach((node) => {
       const counterValue = counterMap.get(node)! - 1
       const markerValue = markerCounter.get(node)! - 1
