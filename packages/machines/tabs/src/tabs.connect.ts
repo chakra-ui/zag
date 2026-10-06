@@ -4,6 +4,7 @@ import {
   dataAttr,
   getEventKey,
   getEventTarget,
+  isAnchorElement,
   isComposingEvent,
   isOpeningInNewTab,
   isSafari,
@@ -27,6 +28,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
+
+  function sendKeyboardEvent(type: string, key?: string) {
+    send({ type, key, src: "keyboard" })
+  }
 
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
@@ -100,25 +105,25 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           const keyMap: EventKeyMap = {
             ArrowDown() {
               if (isHorizontal) return
-              send({ type: "ARROW_NEXT", key: "ArrowDown" })
+              sendKeyboardEvent("ARROW_NEXT", "ArrowDown")
             },
             ArrowUp() {
               if (isHorizontal) return
-              send({ type: "ARROW_PREV", key: "ArrowUp" })
+              sendKeyboardEvent("ARROW_PREV", "ArrowUp")
             },
             ArrowLeft() {
               if (isVertical) return
-              send({ type: "ARROW_PREV", key: "ArrowLeft" })
+              sendKeyboardEvent("ARROW_PREV", "ArrowLeft")
             },
             ArrowRight() {
               if (isVertical) return
-              send({ type: "ARROW_NEXT", key: "ArrowRight" })
+              sendKeyboardEvent("ARROW_NEXT", "ArrowRight")
             },
             Home() {
-              send({ type: "HOME" })
+              sendKeyboardEvent("HOME")
             },
             End() {
-              send({ type: "END" })
+              sendKeyboardEvent("END")
             },
           }
 
@@ -177,6 +182,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           if (isSafari()) {
             event.currentTarget.focus()
           }
+          const node = event.currentTarget
+          const shouldNavigate = prop("navigate") != null && isAnchorElement(node)
+
+          if (shouldNavigate) event.preventDefault()
           send({ type: "TAB_CLICK", value })
         },
       })

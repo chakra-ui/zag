@@ -1,8 +1,7 @@
 ---
 title: Tour
 description:
-  Headless product tour and onboarding component for React, Vue, Solid, and
-  Svelte. Step-by-step overlays with tooltip, dialog, and floating steps.
+  Used to onboard users with a guided, step-by-step walkthrough of your product.
 package: "@zag-js/tour"
 ---
 
@@ -115,6 +114,16 @@ const steps: tour.StepDetails[] = [
     },
   },
 ]
+```
+
+### Resolving a step's target
+
+`target` is called on every position update, so a step keeps up when the page
+swaps its element. Keep it cheap and return a stable reference, since it runs on
+scroll and resize. Returning `null` keeps the last resolved element.
+
+```tsx
+target: () => document.querySelector("#target-1")
 ```
 
 ### Configuring actions

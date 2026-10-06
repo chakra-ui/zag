@@ -13,7 +13,7 @@ import type {
   RootState,
   SelectionState,
 } from "./image-cropper.types"
-import { isEqualFlip, normalizeFlipState } from "./utils/crop"
+import { isEqualFlip, isValidRect, normalizeFlipState } from "./utils/crop"
 import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
 
 const defaultTranslations: Required<IntlTranslations> = {
@@ -168,6 +168,12 @@ export function connect<T extends PropTypes>(
       }
 
       send({ type: "RESIZE_CROP", handlePosition, delta: { x: deltaX, y: deltaY } })
+    },
+
+    setCrop(nextCrop) {
+      if (fixedCropArea) return
+      if (!isValidRect(nextCrop)) return
+      send({ type: "SET_CROP", crop: nextCrop, replaces: "crop" })
     },
 
     reset() {

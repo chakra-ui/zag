@@ -70,8 +70,9 @@ export interface PopoverProps
   autoFocus?: boolean | undefined
   /**
    * The element to focus on when the popover is opened.
+   * Return `false` to skip moving focus, or `null` to use the default.
    */
-  initialFocusEl?: (() => HTMLElement | null) | null | undefined
+  initialFocusEl?: (() => HTMLElement | null | false) | null | undefined
   /**
    * Element to receive focus when the popover is closed.
    */

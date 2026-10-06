@@ -64,6 +64,17 @@ describe("mergeProps for Svelte", () => {
     expect(propsFromString.style).toBe(result)
   })
 
+  it("keeps semicolons inside quoted values and url() when combining styles", () => {
+    const props = mergeProps(
+      { style: '--label:"a;b";background-image:url("data:image/svg+xml;base64,PHN2Zy8+")' },
+      { style: "mask-image:url(data:image/png;base64,AAA);color:red" },
+    )
+
+    expect(props.style).toBe(
+      '--label:"a;b";background-image:url("data:image/svg+xml;base64,PHN2Zy8+");mask-image:url(data:image/png;base64,AAA);color:red;',
+    )
+  })
+
   it("last value overwrites the event listeners", () => {
     const mockFn = vi.fn()
     const message1 = "click1"

@@ -1,5 +1,5 @@
 import type { PropFn } from "@zag-js/core"
-import { clampPointInRange, getCenterPoint } from "@zag-js/rect-utils"
+import { applyResize, clampPointInRange, getCenterPoint, ZERO_POINT } from "@zag-js/rect-utils"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { isBoolean } from "@zag-js/utils"
 import type { FlipState, ImageCropperProps, ImageCropperSchema } from "../image-cropper.types"
@@ -10,6 +10,28 @@ export const getMaxBounds = (cropSize: Size, viewportSize: Size): Point => ({
   x: max(0, viewportSize.width - cropSize.width),
   y: max(0, viewportSize.height - cropSize.height),
 })
+
+interface ConstrainCropOptions {
+  crop: Rect
+  viewportRect: Size
+  minSize: Size
+  maxSize: Size
+  aspectRatio?: number | undefined
+}
+
+export function constrainCrop(options: ConstrainCropOptions): Rect {
+  const { crop, viewportRect, minSize, maxSize, aspectRatio } = options
+  const { width, height } = applyResize({ x: 0, y: 0, width: crop.width, height: crop.height }, ZERO_POINT, "se", {
+    boundary: { x: 0, y: 0, width: viewportRect.width, height: viewportRect.height },
+    minSize,
+    maxSize,
+    aspectRatio,
+  })
+  const { x, y } = clampPointInRange(crop, ZERO_POINT, getMaxBounds({ width, height }, viewportRect))
+  return { x, y, width, height }
+}
+
+export const isValidRect = (rect: Rect): boolean => [rect.x, rect.y, rect.width, rect.height].every(Number.isFinite)
 
 export const getViewportCenter = (size: Size): Point => getCenterPoint({ x: 0, y: 0, ...size })
 

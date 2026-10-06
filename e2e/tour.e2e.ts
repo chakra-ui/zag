@@ -117,3 +117,42 @@ test.describe("tour", () => {
     expect(selection).toContain("Step 1")
   })
 })
+
+test.describe("tour / replaced target", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TourModel(page)
+    await page.goto("/tour/replaced-target")
+  })
+
+  test("should follow a target that is replaced while its step is open", async ({ page }) => {
+    await I.clickStart()
+    await I.seeSpotlight()
+
+    const originalRect = await I.getTargetRect()
+
+    // dispatched rather than clicked: the tour dims the page, so the backdrop is what a real click
+    // would land on. In an app the swap is not a click at all — a sticky header does it on scroll.
+    await page.getByRole("button", { name: "Replace target" }).dispatchEvent("click")
+
+    // the highlight moves to the element now carrying the target, and nothing is left on the old one
+    await expect(page.locator("[data-tour-highlighted]")).toHaveCount(1)
+    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute(
+      "data-tour-highlighted",
+      "",
+    )
+
+    // and the spotlight follows it rather than staying on a node that has left the document.
+    // Polled, because the position is recomputed asynchronously, on the next update.
+    await expect
+      .poll(async () => {
+        const targetRect = await I.getTargetRect()
+        const spotlightRect = await I.getSpotlightRect()
+        return (
+          targetRect.y !== originalRect.y &&
+          spotlightRect.width > targetRect.width &&
+          spotlightRect.height > targetRect.height
+        )
+      })
+      .toBe(true)
+  })
+})

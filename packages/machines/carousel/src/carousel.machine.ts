@@ -168,7 +168,6 @@ export const machine = createMachine<CarouselSchema>({
 
     dragging: {
       effects: ["trackPointerMove"],
-      entry: ["disableScrollSnap"],
       on: {
         DRAGGING: {
           actions: ["scrollSlides", "invokeDragging"],
@@ -489,13 +488,6 @@ export const machine = createMachine<CarouselSchema>({
         const index = clampValue(context.get("page"), 0, pageSnapPoints.length - 1)
         context.set("page", index)
       },
-      disableScrollSnap({ scope }) {
-        const el = dom.getItemGroupEl(scope)
-        if (!el) return
-        const styles = getComputedStyle(el)
-        el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
-        el.style.setProperty("scroll-snap-type", "none")
-      },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
         el?.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
@@ -523,12 +515,6 @@ export const machine = createMachine<CarouselSchema>({
             top: isHorizontal ? el.scrollTop : closest,
             behavior: "smooth",
           })
-
-          const scrollSnapType = el.dataset.scrollSnapType
-          if (scrollSnapType) {
-            el.style.setProperty("scroll-snap-type", scrollSnapType)
-            delete el.dataset.scrollSnapType
-          }
         })
       },
       focusIndicatorEl({ context, event, scope }) {

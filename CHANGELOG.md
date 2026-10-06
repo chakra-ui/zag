@@ -4,6 +4,85 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.45.0](./#1.45.0) - 2026-10-05
+
+### Added
+
+- **Initial Focus**: `initialFocusEl` can now return `false` to open without moving focus. Returning `null` still uses
+  the default.
+
+  ```jsx
+  const service = useMachine(dialog.machine, {
+    initialFocusEl: () => false,
+  })
+  ```
+
+  > Affected Components: Color Picker, Dialog, Drawer, Floating Panel, Popover.
+
+- **Image Cropper**: Add `api.setCrop(rect)` to place the crop area programmatically, in viewport coordinates. The rect
+  is constrained like `initialCrop`, and unlike `api.reset()` it keeps the current zoom, rotation, flip, and pan.
+
+- **Pagination**: Add `api.type` and `api.getPageUrl(page)`, so custom components can tell whether the controls are
+  buttons or links and build a page's URL without re-reading the machine props.
+
+  ```jsx
+  api.type // "button" | "link"
+  api.getPageUrl(3) // "/page/3", or `undefined` when `getPageUrl` is not provided
+  ```
+
+### Fixed
+
+- **Carousel**: Fix `allowMouseDrag` advancing a full page per pointer move in Vue.
+
+- **Floating Panel**
+  - Fix `strategy: "absolute"` placing the panel outside its boundary. Absolute panels are now positioned against their
+    offset parent and clipped by a scrolling boundary.
+  - Fix the panel not following its boundary element when an ancestor scrolls.
+
+- **Focus Visible**: Fix `Illegal invocation` thrown during setup when another tool has replaced
+  `HTMLElement.prototype.focus` with an accessor.
+
+- **Hotkeys**: Fix an unhandled `TypeError` when a `keyup` event without a valid `key` reaches `document`.
+
+- **Image Cropper**: Fix `Alt+Arrow` resizing ignoring `aspectRatio` and `cropShape: "circle"`.
+
+- **Listbox**: Fix range selection anchoring on the highlighted item instead of the one you clicked.
+  - Shift+click with `highlightOnHover` now selects the full range.
+  - Successive shift+clicks extend from the originally clicked item, so a range can shrink as well as grow.
+  - Shift+arrow can reverse direction without leaving items behind.
+
+- **Merge Props**: Fix inline style values containing semicolons being truncated, such as quoted CSS custom properties
+  and data URLs.
+
+- **Popover**: Fix `autoFocus={false}` being ignored for modal popovers.
+
+- **Popper**: Fix popper-based components ignoring a stylesheet `z-index` on the positioner when the content has no
+  stacking level.
+
+- **Presence**: Fix an element with an exit animation staying mounted forever in WebKit, invisible but still
+  intercepting clicks.
+
+- **Progress**: Fix the formatter not updating when `formatOptions` changes to a subset of the previous options.
+
+- **Splitter**: Fix slow dragging in large documents. The global cursor style is now only written when the cursor
+  changes.
+
+- **Svelte**: Fix `derived_inert` warnings when deferred machine cleanup runs after a component unmounts.
+
+- **Tabs**: Fix programmatic tab selection triggering link navigation. Keyboard link activation now bubbles and can be
+  canceled by your click handlers.
+
+- **TOC**: Fix `onActiveChange` reporting the previous `activeIds` and `activeItems`, which kept a controlled TOC stuck
+  on the old section.
+
+- **Tour**
+  - Fix the step card, spotlight and backdrop collapsing into the top-left corner when the step's target element is
+    replaced.
+  - Fix the backdrop leaving part of the page undimmed on resize or when content loads in. The spotlight now only
+    animates between steps.
+  - Fix tours in an iframe or custom root measuring the outer page, and crashing on mount without `visualViewport` (e.g.
+    jsdom).
+
 ## [1.44.0](./#1.44.0) - 2026-09-12
 
 ### Added
