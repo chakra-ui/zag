@@ -210,8 +210,11 @@ function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undef
 
     // Overwrite via assignment does not work in happy dom:
     // https://github.com/capricorn86/happy-dom/issues/1214
+    // Keep it writable: replacing an accessor (e.g. Storybook's) with a data property
+    // would otherwise make it read-only, breaking libraries that later assign `focus`.
     Object.defineProperty(win.HTMLElement.prototype, "focus", {
       configurable: true,
+      writable: true,
       value: patchedFocus,
     })
 
@@ -280,6 +283,7 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     try {
       Object.defineProperty(win.HTMLElement.prototype, "focus", {
         configurable: true,
+        writable: true,
         value: listenerData.focus,
       })
     } catch {
