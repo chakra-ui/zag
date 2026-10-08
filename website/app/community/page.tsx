@@ -1,12 +1,7 @@
 import { Footer } from "components/footer"
 import { TopNav } from "components/nav/top-nav"
 import { Section } from "components/ui/section"
-import {
-  communityLinks,
-  communityProjects,
-  recordings,
-  sampleCommunityProjects,
-} from "lib/community"
+import { communityLinks, communityProjects, recordings } from "lib/community"
 import { createPageMetadata } from "lib/seo"
 import { FaGithub, FaNpm } from "react-icons/fa6"
 import { Box, Flex, Grid, HStack, Stack, styled } from "styled-system/jsx"
@@ -37,10 +32,6 @@ function SectionHeading(props: { title: string; description: string }) {
   )
 }
 
-// samples stand in on local and preview builds until real entries exist, never in production
-const showSamples =
-  communityProjects.length === 0 && process.env.VERCEL_ENV !== "production"
-const projects = showSamples ? sampleCommunityProjects : communityProjects
 const addProjectHref =
   "https://github.com/chakra-ui/zag/issues/new?title=Add%20community%20project%3A%20"
 
@@ -150,19 +141,6 @@ export default async function CommunityPage() {
           </styled.p>
         </Stack>
         <Stack gap="4" mb="6" maxW="3xl">
-          <Box
-            px="4"
-            py="3"
-            rounded="lg"
-            borderWidth="1px"
-            borderColor="border.subtle"
-            bg="bg.subtle"
-            fontSize="sm"
-            color="fg.muted"
-          >
-            Community projects are built and maintained by third-party
-            developers. Review the code before you use them.
-          </Box>
           <styled.p fontSize="sm" color="fg.muted">
             Built something on Zag?{" "}
             <styled.a
@@ -178,8 +156,8 @@ export default async function CommunityPage() {
             .
           </styled.p>
         </Stack>
-        {projects.length > 0 ? (
-          <CommunityProjects projects={projects} sample={showSamples} />
+        {communityProjects.length > 0 ? (
+          <CommunityProjects projects={communityProjects} />
         ) : (
           <Box
             p="8"

@@ -20,30 +20,17 @@ export interface Recording {
   duration?: string
 }
 
-export type CommunityProjectKind = "adapter" | "package" | "tool"
-
-export type CommunityProjectStatus =
-  "stable" | "beta" | "experimental" | "unmaintained"
-
 export interface CommunityProject {
   name: string
   description: string
-  kind: CommunityProjectKind
-  /** Where the row links to: docs, homepage or repo */
+  /** Docs, homepage or repo */
   href: string
-  author: { name: string; github?: string }
-  /** Adapters only: the framework it targets */
+  /** GitHub username */
+  author: string
+  /** Lives in `public/community/`, never hotlinked */
+  logo: string
+  /** Adapters only */
   framework?: string
-  /** Which major version of Zag it targets */
-  zag?: "v1" | "v2"
-  status?: CommunityProjectStatus
-  /**
-   * A single logo, or one per theme. Lives in `public/community/`, never
-   * hotlinked. Without one, the tile shows the name's initials.
-   */
-  logo?: string | { light: string; dark: string }
-  /** Brand color for the logo tile. Text color is picked for contrast */
-  brand?: string
 }
 
 export const communityLinks: CommunityLink[] = [
@@ -179,112 +166,3 @@ export const recordings: Recording[] = [
 ]
 
 export const communityProjects: CommunityProject[] = []
-
-/**
- * Placeholder entries, one per tile variant and edge case. Shown only outside
- * production while `communityProjects` is empty, so the section can be reviewed.
- */
-export const sampleCommunityProjects: CommunityProject[] = [
-  {
-    name: "zag-lit",
-    kind: "adapter",
-    framework: "Lit",
-    zag: "v2",
-    status: "beta",
-    description:
-      "Lit adapter for Zag machines, with reactive controllers for each machine.",
-    href: "https://github.com/chakra-ui/zag/pull/2698",
-    author: { name: "sample-author" },
-    logo: {
-      light: "/community/samples/mark-light.svg",
-      dark: "/community/samples/mark-dark.svg",
-    },
-  },
-  {
-    name: "alpine-zag",
-    kind: "adapter",
-    framework: "Alpine.js",
-    zag: "v2",
-    status: "experimental",
-    description:
-      "Connects Zag machines to Alpine through a plugin and x-bind spreads.",
-    href: "https://github.com/chakra-ui/zag/pull/2870",
-    author: { name: "sample-author" },
-    brand: "#2d3441",
-    logo: "/community/samples/mark-brand.svg",
-  },
-  {
-    name: "juris-zag",
-    kind: "adapter",
-    framework: "Juris",
-    zag: "v2",
-    description: "Wrappers to consume Zag machines in Juris apps.",
-    href: "https://jurisjs.com",
-    author: { name: "sample-author" },
-  },
-  {
-    name: "zag-angular-signals-adapter-for-standalone-components",
-    kind: "adapter",
-    framework: "Angular",
-    zag: "v1",
-    status: "stable",
-    description:
-      "Angular integration built on signals, with directives for every part, a provider for machine services, SSR-safe ids, and a schematic that scaffolds a component from any machine.",
-    href: "https://angular.dev",
-    author: { name: "a-very-long-github-username-here" },
-  },
-  {
-    name: "zag-ripple",
-    kind: "package",
-    status: "stable",
-    description: "",
-    href: "https://github.com/chakra-ui/zag",
-    author: { name: "sample-author" },
-  },
-  {
-    name: "zag-devtools",
-    kind: "tool",
-    status: "unmaintained",
-    description:
-      "Browser extension that visualizes machine state and transitions.",
-    href: "https://github.com/chakra-ui/zag",
-    author: { name: "sample-author" },
-    brand: "#f6d84a",
-  },
-  {
-    name: "zag-qwik",
-    kind: "adapter",
-    framework: "Qwik",
-    zag: "v2",
-    status: "experimental",
-    description: "Qwik bindings for Zag machines with resumable state.",
-    href: "https://qwik.dev",
-    author: { name: "sample-author", github: "chakra-ui" },
-  },
-  {
-    name: "zag-stencil",
-    kind: "adapter",
-    framework: "Stencil",
-    zag: "v1",
-    description: "Web components for Zag machines, built with Stencil.",
-    href: "https://stenciljs.com",
-    author: { name: "sample-author" },
-  },
-  {
-    name: "zag-motion",
-    kind: "package",
-    status: "beta",
-    description:
-      "Presence and layout animations wired to machine state changes.",
-    href: "https://github.com/chakra-ui/zag",
-    author: { name: "sample-author" },
-    brand: "#6d28d9",
-  },
-  {
-    name: "zag-inspector",
-    kind: "tool",
-    description: "A VS Code extension that previews machine states inline.",
-    href: "https://github.com/chakra-ui/zag",
-    author: { name: "sample-author" },
-  },
-]
