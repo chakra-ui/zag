@@ -16,19 +16,21 @@
 </script>
 
 <template>
-  <nav v-bind="api.getRootProps()">
-    <h5 v-bind="api.getTitleProps()">On this page</h5>
-    <ul v-bind="api.getListProps()">
-      <li
-        v-for="item in api.items"
-        :key="item.value"
-        v-bind="api.getItemProps({ item })"
-      >
-        <a :href="`#${item.value}`" v-bind="api.getLinkProps({ item })">
-          {{ item.value }}
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <div v-bind="api.getRootProps()">
+    <nav v-bind="api.getNavProps()">
+      <h5 v-bind="api.getTitleProps()">On this page</h5>
+      <ul v-bind="api.getListProps()">
+        <li
+          v-for="item in api.items"
+          :key="item.value"
+          v-bind="api.getItemProps({ item })"
+        >
+          <a :href="`#${item.value}`" v-bind="api.getLinkProps({ item })">
+            {{ item.value }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 ```

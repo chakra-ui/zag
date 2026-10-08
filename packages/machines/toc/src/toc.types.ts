@@ -44,6 +44,7 @@ export interface ScrollToDetails {
 
 export interface ElementIds {
   root?: string | undefined
+  nav?: string | undefined
   title?: string | undefined
   list?: string | undefined
   item?: ((value: string) => string) | undefined
@@ -189,6 +190,7 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getItemState(props: ItemProps): ItemState
 
   getRootProps(): T["element"]
+  getNavProps(): T["element"]
   getTitleProps(): T["element"]
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
