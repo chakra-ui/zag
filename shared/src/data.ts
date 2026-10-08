@@ -235,7 +235,10 @@ export const tourData: StepDetails[] = [
     id: "step-0",
     title: "Centered tour (no target)",
     description: "This is the center of the world. Ready to start the tour?",
-    actions: [{ label: "Next", action: "next" }],
+    actions: [
+      { label: "Skip", action: "skip" },
+      { label: "Next", action: "next" },
+    ],
   },
   {
     type: "tooltip",
