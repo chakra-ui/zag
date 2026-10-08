@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { TabsModel } from "./models/tabs.model"
 
 let I: TabsModel
@@ -135,5 +135,32 @@ test.describe("tabs", () => {
 
     await I.waitForIndicatorToUpdate("agnes")
     await I.seeIndicatorMovedWithTab("agnes", agnesTabBefore, indicatorBefore)
+  })
+})
+
+test.describe("tabs / change details", () => {
+  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
+  test.beforeEach(async ({ page }) => {
+    I = new TabsModel(page)
+    await I.goto()
+  })
+
+  test("onValueChange reports null when a tab is deselected", async ({ page }) => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTab("agnes")
+    await expect(page.getByTestId("value-details")).toHaveText('{"value":"agnes"}')
+
+    await I.clickTab("agnes")
+    await expect(page.getByTestId("value-details")).toHaveText('{"value":null}')
+  })
+
+  test("onFocusChange reports null when focus leaves the tab list", async ({ page }) => {
+    await I.clickTab("agnes")
+    await expect(page.getByTestId("focus-details")).toHaveText('{"focusedValue":"agnes"}')
+
+    await page.getByTestId("agnes-tab-panel").getByPlaceholder("Agnes").focus()
+    await expect(page.getByTestId("focus-details")).toHaveText('{"focusedValue":null}')
   })
 })

@@ -29,14 +29,14 @@ export const machine = createMachine({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value) {
-          prop("onValueChange")?.({ value: value! })
+          prop("onValueChange")?.({ value })
         },
       })),
       focusedValue: bindable(() => ({
         defaultValue: prop("value") || prop("defaultValue"),
         sync: true,
         onChange(value) {
-          prop("onFocusChange")?.({ focusedValue: value! })
+          prop("onFocusChange")?.({ focusedValue: value })
         },
       })),
       ssr: bindable(() => ({ defaultValue: true })),

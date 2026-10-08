@@ -18,7 +18,7 @@ function PageContent() {
     native: searchParams.has("native"),
     cancel: searchParams.has("cancel"),
   }
-  const [value, setValue] = useState("nils")
+  const [value, setValue] = useState<string | null>("nils")
 
   const service = useMachine(tabs.machine, {
     id: useId(),
