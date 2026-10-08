@@ -321,6 +321,12 @@ export default defineConfig({
   outdir: "styled-system",
 
   globalCss: {
+    // smooth in-page #hash jumps; Next pauses it during route changes (data-scroll-behavior on <html>)
+    html: {
+      "@media (prefers-reduced-motion: no-preference)": {
+        scrollBehavior: "smooth",
+      },
+    },
     body: {
       fontFamily: "body",
       textRendering: "geometricprecision",

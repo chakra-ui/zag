@@ -10,7 +10,7 @@ import siteConfig from "site.config"
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
 
-  const staticRoutes = ["", "/community", "/showcase"].map((path) => ({
+  const staticRoutes = ["", "/community", "/team", "/showcase"].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified,
   }))
