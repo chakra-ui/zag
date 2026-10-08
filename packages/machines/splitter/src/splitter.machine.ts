@@ -730,6 +730,7 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
   const onResizeEnd = prop("onResizeEnd")
 
   const panelIdToLastNotifiedSizeMap = refs.get("panelIdToLastNotifiedSizeMap")
+  const prevSizes = context.get("size")
 
   // Check if this is a programmatic resize (not user interaction)
   const dragState = context.get("dragState")
@@ -766,7 +767,8 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
 
     const { collapsedSize = 0, collapsible, id: panelId } = panelData
 
-    const lastNotifiedSize = panelIdToLastNotifiedSizeMap.get(panelId)
+    // Fall back to the current size so the first change can still notify
+    const lastNotifiedSize = panelIdToLastNotifiedSizeMap.get(panelId) ?? prevSizes[index]
     if (lastNotifiedSize == null || size !== lastNotifiedSize) {
       panelIdToLastNotifiedSizeMap.set(panelId, size)
 
