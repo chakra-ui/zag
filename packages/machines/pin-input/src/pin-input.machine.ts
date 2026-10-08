@@ -138,7 +138,6 @@ export const machine = createMachine({
           },
         ],
         "INPUT.ENTER": {
-          guard: "isValueComplete",
           actions: ["requestFormSubmit"],
         },
         "VALUE.INVALID": {
@@ -152,7 +151,6 @@ export const machine = createMachine({
     guards: {
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       hasValue: ({ context, computed }) => computed("_value")[context.get("focusedIndex")] !== "",
-      isValueComplete: ({ computed }) => computed("isValueComplete"),
       hasIndex: ({ event }) => event.index !== undefined,
     },
 
@@ -296,10 +294,10 @@ export const machine = createMachine({
           dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
         })
       },
-      requestFormSubmit({ computed, prop, scope }) {
-        if (!prop("name") || !computed("isValueComplete")) return
-        const inputEl = dom.getHiddenInputEl(scope)
-        inputEl?.form?.requestSubmit()
+      requestFormSubmit({ scope }) {
+        // Submit regardless of completeness so native validation can report it
+        const form = dom.getHiddenInputEl(scope)?.form ?? dom.getFirstInputEl(scope)?.form
+        form?.requestSubmit()
       },
       autoSubmitIfNeeded({ computed, prop, scope }) {
         if (!prop("autoSubmit") || !computed("isValueComplete")) return

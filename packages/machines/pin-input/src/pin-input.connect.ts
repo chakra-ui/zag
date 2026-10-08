@@ -35,6 +35,9 @@ export function connect<T extends PropTypes>(
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const focusedIndex = context.get("focusedIndex")
 
+  const valueLength = computed("valueLength")
+  const tabbableIndex = focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
+
   function focus() {
     dom.getFirstInputEl(scope)?.focus()
   }
@@ -101,8 +104,15 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         form: prop("form"),
         style: visuallyHiddenStyle,
-        maxLength: computed("valueLength"),
+        minLength: valueLength,
+        maxLength: valueLength,
+        // `minLength` is skipped for script-set values, so `pattern` enforces completeness
+        pattern: `.{${valueLength}}`,
         defaultValue: computed("valueAsString"),
+        onFocus() {
+          // Native validation may focus this input; hand it to a visible slot
+          dom.getInputElAtIndex(scope, tabbableIndex)?.focus()
+        },
       })
     },
 
@@ -117,9 +127,6 @@ export function connect<T extends PropTypes>(
     getInputProps(props) {
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
-      const valueLength = computed("valueLength")
-      const tabbableIndex =
-        focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -139,6 +146,7 @@ export function connect<T extends PropTypes>(
         type: prop("mask") ? "password" : inputType,
         defaultValue: computed("_value")[index] || "",
         readOnly,
+        required,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : prop("placeholder"),
