@@ -15,7 +15,7 @@ import { invariant, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
 import * as dom from "./pin-input.dom"
 import type { IntlTranslations, PinInputApi, PinInputSchema } from "./pin-input.types"
-import { isValidValue } from "./pin-input.utils"
+import { getHiddenInputPattern, isValidValue } from "./pin-input.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
   inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -107,7 +107,7 @@ export function connect<T extends PropTypes>(
         minLength: valueLength,
         maxLength: valueLength,
         // `minLength` is skipped for script-set values, so `pattern` enforces completeness
-        pattern: `.{${valueLength}}`,
+        pattern: getHiddenInputPattern(valueLength, prop("type"), prop("pattern")),
         defaultValue: computed("valueAsString"),
         onFocus() {
           // Native validation may focus this input; hand it to a visible slot
