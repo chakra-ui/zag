@@ -280,14 +280,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     },
 
     getActionTriggerProps(props) {
-      const { action, attrs, label } = props.action
-
-      // The action's `label` is what the trigger renders, so it is already its accessible name.
-      // Labelling it again from the translations makes the two disagree — a trigger reading
-      // "Got it" announced as "close tour" — which fails WCAG 2.5.3 (Label in Name) and leaves
-      // voice control without a working command. The translations stay as the fallback for a
-      // trigger rendered without visible text.
-      const ariaLabel = (translation: string) => (label ? undefined : translation)
+      const { action, attrs } = props.action
 
       let actionProps: Record<string, any> = {}
 
@@ -297,7 +290,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": ariaLabel(translations.nextStep),
             onClick: actionMap.next,
           }
           break
@@ -307,7 +299,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "prev",
             disabled: !hasPrevStep,
             "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": ariaLabel(translations.prevStep),
             onClick: actionMap.prev,
           }
           break
@@ -315,7 +306,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": ariaLabel(translations.close),
             onClick: actionMap.dismiss,
           }
           break
@@ -323,7 +313,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "skip":
           actionProps = {
             "data-type": "skip",
-            "aria-label": ariaLabel(translations.skip),
             onClick: actionMap.skip,
           }
           break
@@ -343,8 +332,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.button({
         ...parts.actionTrigger.attrs,
         type: "button",
-        ...attrs,
         ...actionProps,
+        ...attrs,
       })
     },
   }

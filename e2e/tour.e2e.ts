@@ -20,7 +20,6 @@ test.describe("tour", () => {
     await I.clickStart()
     await I.seeContent()
 
-    // the visible label is the accessible name — not the translation behind the action
     await expect(page.getByRole("button", { name: "Next", exact: true })).toBeVisible()
     await expect(page.locator("[data-part=action-trigger][data-type=next]")).not.toHaveAttribute("aria-label")
   })
@@ -145,10 +144,7 @@ test.describe("tour / replaced target", () => {
 
     // the highlight moves to the element now carrying the target, and nothing is left on the old one
     await expect(page.locator("[data-tour-highlighted]")).toHaveCount(1)
-    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute(
-      "data-tour-highlighted",
-      "",
-    )
+    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute("data-tour-highlighted", "")
 
     // and the spotlight follows it rather than staying on a node that has left the document.
     // Polled, because the position is recomputed asynchronously, on the next update.
