@@ -15,7 +15,7 @@ import { invariant, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
 import * as dom from "./pin-input.dom"
 import type { IntlTranslations, PinInputApi, PinInputSchema } from "./pin-input.types"
-import { isValidValue } from "./pin-input.utils"
+import { getPattern, isValidValue } from "./pin-input.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
   inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -34,6 +34,9 @@ export function connect<T extends PropTypes>(
   const required = !!prop("required")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const focusedIndex = context.get("focusedIndex")
+
+  const valueLength = computed("valueLength")
+  const tabbableIndex = focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
 
   function focus() {
     dom.getFirstInputEl(scope)?.focus()
@@ -101,8 +104,15 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         form: prop("form"),
         style: visuallyHiddenStyle,
-        maxLength: computed("valueLength"),
+        minLength: valueLength,
+        maxLength: valueLength,
+        // `minLength` is skipped for script-set values, so `pattern` enforces completeness
+        pattern: getPattern(valueLength, prop("type"), prop("pattern")),
         defaultValue: computed("valueAsString"),
+        onFocus() {
+          // Native validation may focus this input; hand it to a visible slot
+          dom.getInputElAtIndex(scope, tabbableIndex)?.focus()
+        },
       })
     },
 
@@ -117,9 +127,6 @@ export function connect<T extends PropTypes>(
     getInputProps(props) {
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
-      const valueLength = computed("valueLength")
-      const tabbableIndex =
-        focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -139,6 +146,7 @@ export function connect<T extends PropTypes>(
         type: prop("mask") ? "password" : inputType,
         defaultValue: computed("_value")[index] || "",
         readOnly,
+        required,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : prop("placeholder"),

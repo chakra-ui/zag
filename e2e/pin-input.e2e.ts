@@ -395,6 +395,42 @@ test.describe("pin input", () => {
     await I.pressKey("ArrowLeft")
     await I.seeInputIsFocused(3)
   })
+
+  // --- Form validation ---
+
+  test("enter: should report an incomplete required value", async () => {
+    await I.controls.bool("required")
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 0, invalid: true })
+    await I.seeInputIsFocused(2)
+  })
+
+  test("enter: should submit a complete value", async () => {
+    await I.controls.bool("required")
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 1, invalid: false })
+  })
+
+  test("enter: should submit an empty optional value", async () => {
+    await I.trackFormEvents()
+    await I.focusInput(1)
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 1, invalid: false })
+  })
+
+  test("enter: should report an incomplete optional value", async () => {
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 0, invalid: true })
+    await I.seeInputIsFocused(2)
+  })
 })
 
 // --- Controlled ---
