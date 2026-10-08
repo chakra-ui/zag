@@ -1,3 +1,5 @@
+import type { ShowcaseItem } from "lib/showcase"
+
 export interface CommunityLink {
   title: string
   description: string
@@ -20,15 +22,10 @@ export interface Recording {
   duration?: string
 }
 
-export interface CommunityProject {
-  name: string
-  description: string
-  /** Docs, homepage or repo */
-  href: string
+/** Same shape as a showcase entry, plus who made it. `image` lives in `public/community/` */
+export interface CommunityProject extends ShowcaseItem {
   /** GitHub username */
   author: string
-  /** Lives in `public/community/`, never hotlinked */
-  logo: string
 }
 
 export const communityLinks: CommunityLink[] = [

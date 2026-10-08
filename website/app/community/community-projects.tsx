@@ -4,90 +4,13 @@ import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import type { CommunityProject } from "lib/community"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { ShowcaseCard } from "components/showcase-card"
 import { useId } from "react"
-import {
-  LuArrowUpRight,
-  LuChevronLeft,
-  LuChevronRight,
-  LuSearch,
-} from "react-icons/lu"
+import { LuChevronLeft, LuChevronRight, LuSearch } from "react-icons/lu"
 import { cva } from "styled-system/css"
-import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { Grid, HStack, Stack, styled } from "styled-system/jsx"
 
 const PAGE_SIZE = 10
-
-function ProjectRow({ project }: { project: CommunityProject }) {
-  return (
-    <HStack
-      as="li"
-      gap="4"
-      alignItems="flex-start"
-      py="5"
-      borderTopWidth="1px"
-      borderColor="border.subtle"
-      _first={{ borderTopWidth: "0" }}
-    >
-      <Box
-        boxSize="10"
-        flexShrink="0"
-        rounded="lg"
-        display="grid"
-        placeItems="center"
-        borderWidth="1px"
-        borderColor="border.subtle"
-        bg="bg.subtle"
-      >
-        <styled.img src={project.logo} alt="" boxSize="6" objectFit="contain" />
-      </Box>
-      <Stack gap="1.5" flex="1" minW="0">
-        <HStack gap="2" flexWrap="wrap" rowGap="1">
-          <styled.span fontWeight="semibold" wordBreak="break-word">
-            {project.name}
-          </styled.span>
-        </HStack>
-        <styled.p fontSize="sm" color="fg.muted" maxW="65ch">
-          {project.description}
-        </styled.p>
-        <styled.span fontSize="xs" color="fg.subtle">
-          by{" "}
-          <styled.a
-            href={`https://github.com/${project.author}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            _hover={{ color: "fg" }}
-          >
-            {project.author}
-          </styled.a>
-        </styled.span>
-      </Stack>
-      <styled.a
-        href={project.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Visit ${project.name}`}
-        flexShrink="0"
-        display="inline-flex"
-        alignItems="center"
-        gap="1.5"
-        h="8"
-        px="3"
-        rounded="md"
-        borderWidth="1px"
-        borderColor="border.subtle"
-        fontSize="xs"
-        fontWeight="medium"
-        _hover={{ bg: "bg.subtle", borderColor: "border.emphasized" }}
-        _focusVisible={{
-          outline: "2px solid",
-          outlineColor: "green.500",
-          outlineOffset: "2px",
-        }}
-      >
-        Visit <LuArrowUpRight />
-      </styled.a>
-    </HStack>
-  )
-}
 
 const pageButton = cva({
   base: {
@@ -211,11 +134,15 @@ export function CommunityProjects(props: { projects: CommunityProject[] }) {
         />
       </HStack>
       {items.length > 0 ? (
-        <styled.ul listStyle="none">
+        <Grid gap="6" columns={{ base: 1, sm: 2, lg: 3 }}>
           {items.map((project) => (
-            <ProjectRow key={project.name} project={project} />
+            <ShowcaseCard key={project.href} item={project}>
+              <styled.span fontSize="xs" color="fg.subtle">
+                by {project.author}
+              </styled.span>
+            </ShowcaseCard>
           ))}
-        </styled.ul>
+        </Grid>
       ) : (
         <styled.p py="10" textAlign="center" color="fg.muted" fontSize="sm">
           Nothing matches “{query}”.
