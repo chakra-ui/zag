@@ -332,8 +332,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.button({
         ...parts.actionTrigger.attrs,
         type: "button",
-        ...actionProps,
         ...attrs,
+        ...actionProps,
       })
     },
   }
