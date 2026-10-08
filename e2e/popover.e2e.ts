@@ -148,3 +148,26 @@ test.describe("popover", () => {
     await I.dontSeeContent()
   })
 })
+
+test.describe("popover / lazy mount", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PopoverModel(page)
+    await I.goto("/popover/lazy-mount")
+  })
+
+  test("should label the content by its title and description", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeContentIsLabelled()
+  })
+
+  test("should label the content after reopening", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickClose()
+    await I.dontSeeContent()
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeContentIsLabelled()
+  })
+})
