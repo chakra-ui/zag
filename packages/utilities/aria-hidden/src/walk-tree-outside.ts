@@ -40,9 +40,12 @@ const isIgnoredNode = (node: Element) => {
   return node.matches("[data-live-announcer]")
 }
 
-export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
+const applyAttributeToOthers = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
   const { parentNode, markerName, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
   const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
+
+  // Without a target, the walk would hide every child of the parent node
+  if (!targets.length) return () => {}
 
   markerMap[markerName] ||= new WeakMap()
   const markerCounter = markerMap[markerName]
@@ -63,6 +66,8 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     if (followControlledElements && isHTMLElement(target)) {
       findControlledElements(target, (controlledElement) => {
         keep(controlledElement)
+        // Like a target, its own content stays untouched
+        elementsToStop.add(controlledElement)
       })
     }
   })
@@ -140,4 +145,79 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
       markerMap = {}
     }
   }
+}
+
+interface Lock {
+  pause: VoidFunction
+  resume: VoidFunction
+}
+
+// Only the topmost lock is applied, like nested modal dialogs in the browser.
+// An earlier lock would otherwise keep hiding the portal of a lock opened after it.
+function createLockStack() {
+  const locks: Lock[] = []
+  return {
+    add(lock: Lock) {
+      locks[locks.length - 1]?.pause()
+      locks.push(lock)
+      lock.resume()
+    },
+    remove(lock: Lock) {
+      const index = locks.indexOf(lock)
+      if (index === -1) return
+      const isTop = index === locks.length - 1
+      locks.splice(index, 1)
+      // A lock below the top is already paused
+      if (!isTop) return
+      lock.pause()
+      locks[locks.length - 1]?.resume()
+    },
+  }
+}
+
+const lockStack = createLockStack()
+
+export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
+  const { parentNode, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
+  const hiddenSelector = explicitBooleanValue ? `[${controlAttribute}="true"]` : `[${controlAttribute}]`
+
+  let undo: VoidFunction | undefined
+  let observer: MutationObserver | undefined
+
+  const apply = () => {
+    // Apply before undoing, so nodes hidden by both walks keep their attribute
+    const prevUndo = undo
+    undo = applyAttributeToOthers(originalTarget, props)
+    prevUndo?.()
+  }
+
+  const release = () => {
+    undo?.()
+    undo = undefined
+  }
+
+  // A controller inside hidden content can't reveal anything
+  const isVisibleController = (record: MutationRecord) => !(record.target as Element).closest(hiddenSelector)
+
+  const lock: Lock = {
+    pause() {
+      observer?.disconnect()
+      observer = undefined
+      release()
+    },
+    resume() {
+      apply()
+      if (!followControlledElements) return
+      // Re-walk when a controller expands or collapses, so popups opened from inside the targets stay visible
+      const win = parentNode.ownerDocument.defaultView
+      if (!win?.MutationObserver) return
+      observer = new win.MutationObserver((records) => {
+        if (records.some(isVisibleController)) apply()
+      })
+      observer.observe(parentNode, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true })
+    },
+  }
+
+  lockStack.add(lock)
+  return () => lockStack.remove(lock)
 }
