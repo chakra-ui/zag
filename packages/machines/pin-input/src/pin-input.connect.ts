@@ -103,6 +103,9 @@ export function connect<T extends PropTypes>(
         style: visuallyHiddenStyle,
         maxLength: computed("valueLength"),
         defaultValue: computed("valueAsString"),
+        onFocus() {
+          focus()
+        },
       })
     },
 
