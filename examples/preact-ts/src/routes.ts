@@ -137,6 +137,7 @@ export const routes: RouteDefinition[] = [
   { path: "/select/virtualized", component: lazy(() => import("./pages/select/virtualized")) },
   { path: "/accordion/basic", component: lazy(() => import("./pages/accordion/basic")) },
   { path: "/checkbox/basic", component: lazy(() => import("./pages/checkbox/basic")) },
+  { path: "/checkbox/indeterminate", component: lazy(() => import("./pages/checkbox/indeterminate")) },
   { path: "/combobox/basic", component: lazy(() => import("./pages/combobox/basic")) },
   { path: "/combobox/async", component: lazy(() => import("./pages/combobox/async")) },
   { path: "/combobox/controlled-ignore", component: lazy(() => import("./pages/combobox/controlled-ignore")) },
