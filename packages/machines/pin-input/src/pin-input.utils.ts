@@ -23,7 +23,7 @@ export function isValidValue(value: string, type: PinInputType, pattern?: string
   return regex.test(value)
 }
 
-export function getHiddenInputPattern(length: number, type: PinInputType, pattern?: string) {
+export function getPattern(length: number, type: PinInputType, pattern?: string) {
   // A custom per-character `pattern` can't be safely repeated, so only enforce length
   const char = pattern ? "." : (CHAR_PATTERN[type] ?? ".")
   return `${char}{${length}}`
