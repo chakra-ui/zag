@@ -6,11 +6,13 @@ import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string | null // null when deselected
+  /** `null` when a `deselectable` tab is deselected */
+  value: string | null
 }
 
 export interface FocusChangeDetails {
-  focusedValue: string
+  /** `null` when focus leaves the tab list */
+  focusedValue: string | null
 }
 
 export interface NavigateDetails {
