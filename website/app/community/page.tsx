@@ -3,6 +3,7 @@ import { TopNav } from "components/nav/top-nav"
 import { Section } from "components/ui/section"
 import { communityLinks, communityProjects, recordings } from "lib/community"
 import { createPageMetadata } from "lib/seo"
+import { Suspense } from "react"
 import { FaGithub, FaNpm } from "react-icons/fa6"
 import { Box, Flex, Grid, HStack, Stack, styled } from "styled-system/jsx"
 import { CommunityLink } from "./community-link"
@@ -157,7 +158,9 @@ export default async function CommunityPage() {
           </styled.p>
         </Stack>
         {communityProjects.length > 0 ? (
-          <CommunityProjects projects={communityProjects} />
+          <Suspense>
+            <CommunityProjects projects={communityProjects} />
+          </Suspense>
         ) : (
           <Box
             p="8"

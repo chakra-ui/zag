@@ -29,8 +29,6 @@ export interface CommunityProject {
   author: string
   /** Lives in `public/community/`, never hotlinked */
   logo: string
-  /** Adapters only */
-  framework?: string
 }
 
 export const communityLinks: CommunityLink[] = [
