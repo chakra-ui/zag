@@ -207,3 +207,25 @@ test.describe("tree view / expand all + collapse all", () => {
     await I.seeAllBranchesAreCollapsed()
   })
 })
+
+test.describe("tree view / rename", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/rename")
+  })
+
+  test("F2 focuses the rename input with the node label", async () => {
+    await I.clickItem("README.md")
+    await I.pressKey("F2")
+    await I.seeRenameInputIsFocused("README.md")
+  })
+
+  test("typing a new name and pressing Enter renames the node", async ({ page }) => {
+    await I.clickItem("README.md")
+    await I.pressKey("F2")
+    await I.seeRenameInputIsFocused("README.md")
+    await page.keyboard.type("CHANGELOG.md")
+    await I.pressKey("Enter")
+    await I.seeItem("CHANGELOG.md")
+  })
+})
