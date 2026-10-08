@@ -39,6 +39,8 @@ export const machine = createMachine<TooltipSchema>({
 
   effects: ["trackFocusVisible", "trackStore"],
 
+  exit: ["clearGlobalId"],
+
   context: ({ bindable, prop, scope }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
     hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),
@@ -422,14 +424,7 @@ export const machine = createMachine<TooltipSchema>({
             }
           })
         })
-        return () => {
-          cleanup?.()
-          // unmounting while open would otherwise leave this id in the store,
-          // making every tooltip opened afterwards skip its open delay
-          if (store.get("id") === prop("id")) {
-            store.update({ id: null, prevId: null, instant: false })
-          }
-        }
+        return () => cleanup?.()
       },
 
       trackEscapeKey: ({ send, prop }) => {
