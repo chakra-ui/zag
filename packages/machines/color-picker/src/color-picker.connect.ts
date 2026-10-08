@@ -96,8 +96,7 @@ export function connect<T extends PropTypes>(
     },
     format: context.get("format"),
     setFormat(format) {
-      const formatValue = value.toFormat(format)
-      send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
+      send({ type: "FORMAT.SET", format, src: "set-format" })
     },
     alpha: value.getChannelValue("alpha"),
     setAlpha(alphaValue) {
