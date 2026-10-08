@@ -40,9 +40,10 @@ const isIgnoredNode = (node: Element) => {
   return node.matches("[data-live-announcer]")
 }
 
-const applyAttributeToOthers = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
+const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOptions): VoidFunction => {
   const { parentNode, markerName, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
-  const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
+  // A target can be removed while its lock is paused
+  const targets = allTargets.filter((target) => parentNode.contains(target))
 
   // Without a target, the walk would hide every child of the parent node
   if (!targets.length) return () => {}
@@ -175,10 +176,27 @@ function createLockStack() {
   }
 }
 
-const lockStack = createLockStack()
+type LockStack = ReturnType<typeof createLockStack>
+
+// One stack per document, so a modal in another document (e.g. an iframe) doesn't pause this one
+const lockStacks = new WeakMap<Document, LockStack>()
+
+const getLockStack = (doc: Document) => {
+  let stack = lockStacks.get(doc)
+  if (!stack) {
+    stack = createLockStack()
+    lockStacks.set(doc, stack)
+  }
+  return stack
+}
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
   const { parentNode, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
+  const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
+
+  // An invalid target must not pause the active lock
+  if (!targets.length) return () => {}
+
   const hiddenSelector = explicitBooleanValue ? `[${controlAttribute}="true"]` : `[${controlAttribute}]`
 
   let undo: VoidFunction | undefined
@@ -187,7 +205,7 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
   const apply = () => {
     // Apply before undoing, so nodes hidden by both walks keep their attribute
     const prevUndo = undo
-    undo = applyAttributeToOthers(originalTarget, props)
+    undo = applyAttributeToOthers(targets, props)
     prevUndo?.()
   }
 
@@ -218,6 +236,7 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     },
   }
 
+  const lockStack = getLockStack(parentNode.ownerDocument)
   lockStack.add(lock)
   return () => lockStack.remove(lock)
 }

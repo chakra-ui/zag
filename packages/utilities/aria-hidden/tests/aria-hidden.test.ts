@@ -208,6 +208,40 @@ describe("hideOthers", () => {
     expect(document.querySelectorAll("[aria-hidden]")).toHaveLength(0)
     undo?.()
   })
+
+  test("keeps the active lock when a detached target is pushed", () => {
+    const get = setup()
+    const detached = get("dialog-2")
+    detached.remove()
+
+    const undo1 = hideOthers(get("dialog-1"))!
+    const undo2 = hideOthers(detached)!
+    expect(visibleIds()).toEqual(["portal-1"])
+
+    undo2()
+    expect(visibleIds()).toEqual(["portal-1"])
+    undo1()
+  })
+
+  test("keeps locks in different documents independent", () => {
+    const get = setup()
+    const iframe = document.createElement("iframe")
+    document.body.appendChild(iframe)
+    const frameDoc = iframe.contentDocument!
+    frameDoc.body.innerHTML = `<main id="frame-main"></main><div id="frame-dialog"></div>`
+
+    const undo1 = hideOthers(get("dialog-1"))!
+    const undo2 = hideOthers(frameDoc.getElementById("frame-dialog")!)!
+
+    expect(isHidden(get("main"))).toBe(true)
+    expect(isHidden(frameDoc.getElementById("frame-main")!)).toBe(true)
+
+    undo2()
+    expect(isHidden(get("main"))).toBe(true)
+
+    undo1()
+    expect(isHidden(get("main"))).toBe(false)
+  })
 })
 
 describe("inertOthers", () => {

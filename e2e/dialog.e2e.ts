@@ -58,6 +58,8 @@ test.describe("dialog", () => {
 })
 
 test.describe("dialog / nested premounted", () => {
+  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/dialog/nested-premounted")
   })
