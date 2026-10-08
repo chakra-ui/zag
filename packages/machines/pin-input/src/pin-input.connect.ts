@@ -222,6 +222,16 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
 
           if (isComposingEvent(event)) return
+
+          const key = getEventKey(event, { dir: prop("dir"), orientation: "horizontal" })
+
+          // Ctrl/Cmd + Arrow jumps to the first or last input
+          if ((event.ctrlKey || event.metaKey) && !event.altKey && (key === "ArrowLeft" || key === "ArrowRight")) {
+            event.preventDefault()
+            send({ type: key === "ArrowLeft" ? "INPUT.HOME" : "INPUT.END" })
+            return
+          }
+
           if (isModifierKey(event)) return
 
           // Same key already in slot: advance focus without changing value
@@ -253,15 +263,15 @@ export function connect<T extends PropTypes>(
             End() {
               send({ type: "INPUT.END" })
             },
+            ArrowUp() {
+              send({ type: "INPUT.HOME" })
+            },
+            ArrowDown() {
+              send({ type: "INPUT.END" })
+            },
           }
 
-          const exec =
-            keyMap[
-              getEventKey(event, {
-                dir: prop("dir"),
-                orientation: "horizontal",
-              })
-            ]
+          const exec = keyMap[key]
 
           if (exec) {
             exec(event)

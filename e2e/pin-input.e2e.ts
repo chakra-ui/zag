@@ -148,6 +148,31 @@ test.describe("pin input", () => {
     await I.seeInputIsFocused(2)
   })
 
+  test("ctrl/meta + arrow: should navigate to first and last", async () => {
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ControlOrMeta+ArrowLeft")
+    await I.seeInputIsFocused(1)
+
+    await I.pressKey("ControlOrMeta+ArrowRight")
+    await I.seeInputIsFocused(3)
+    await I.seeValues("1", "2", "3")
+  })
+
+  test("arrow up/down: should navigate to first and last", async () => {
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ArrowUp")
+    await I.seeInputIsFocused(1)
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputIsFocused(3)
+  })
+
   // --- No-holes splice+shift ---
 
   test("delete: should splice and shift values left (no holes)", async () => {
@@ -393,6 +418,19 @@ test.describe("pin input", () => {
     await I.pressKey("ArrowRight")
     await I.seeInputIsFocused(2)
     await I.pressKey("ArrowLeft")
+    await I.seeInputIsFocused(3)
+  })
+
+  test("rtl: ctrl/meta + arrow should be reversed", async () => {
+    await I.controls.select("dir", "rtl")
+
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ControlOrMeta+ArrowRight")
+    await I.seeInputIsFocused(1)
+    await I.pressKey("ControlOrMeta+ArrowLeft")
     await I.seeInputIsFocused(3)
   })
 
