@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test, type Page } from "@playwright/test"
 import { TourModel } from "./models/tour.model"
 
 let I: TourModel
@@ -16,12 +16,67 @@ test.describe("tour", () => {
     await I.seeContentIsCentered()
   })
 
-  test("action triggers are named by their label", async ({ page }) => {
-    await I.clickStart()
-    await I.seeContent()
+  test.describe("action triggers", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route("https://api.github.com/**", (route) => route.fulfill({ json: { name: "Step 1. Welcome" } }))
+    })
 
-    await expect(page.getByRole("button", { name: "Next", exact: true })).toBeVisible()
-    await expect(page.locator("[data-part=action-trigger][data-type=next]")).not.toHaveAttribute("aria-label")
+    const button = (page: Page, name: string) => page.getByRole("button", { name, exact: true })
+
+    async function goToStep(page: Page, stepId: string) {
+      const order = ["step-0", "step-1", "step-2", "step-2a", "step-3", "step-4", "step-5"]
+      await I.clickStart()
+      for (const id of order.slice(1, order.indexOf(stepId) + 1)) {
+        await button(page, "Next").click()
+        await I.seeStep(id)
+      }
+    }
+
+    test("next and skip are named by their label", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await expect(button(page, "Next")).not.toHaveAttribute("aria-label")
+      await expect(button(page, "Skip")).not.toHaveAttribute("aria-label")
+    })
+
+    test("prev is named by its label", async ({ page }) => {
+      await goToStep(page, "step-1")
+      await expect(button(page, "Prev")).not.toHaveAttribute("aria-label")
+    })
+
+    test("dismiss is named by its label", async ({ page }) => {
+      await goToStep(page, "step-5")
+      await expect(button(page, "Finish")).not.toHaveAttribute("aria-label")
+    })
+
+    test("close trigger keeps its translated name", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await expect(button(page, "close tour")).toBeVisible()
+    })
+
+    test("prev by label goes back", async ({ page }) => {
+      await goToStep(page, "step-1")
+      await button(page, "Prev").click()
+      await I.seeStep("step-0")
+    })
+
+    test("skip by label ends the tour", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await button(page, "Skip").click()
+      await I.dontSeeContent()
+    })
+
+    test("dismiss by label ends the tour", async ({ page }) => {
+      await goToStep(page, "step-5")
+      await button(page, "Finish").click()
+      await I.dontSeeContent()
+    })
+
+    test("keyboard activates a trigger found by its label", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await button(page, "Next").focus()
+      await page.keyboard.press("Enter")
+      await I.seeStep("step-1")
+    })
   })
 
   test("should close on escape", async () => {
