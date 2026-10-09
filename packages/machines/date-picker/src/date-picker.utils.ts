@@ -27,24 +27,13 @@ export function sortDates(values: Array<DateValue | null | undefined>) {
     .sort((a, b) => a.compare(b))
 }
 
-export function getRoleDescription(view: DateView) {
-  return match(view, {
-    year: "calendar decade",
-    month: "calendar year",
-    day: "calendar month",
-  })
-}
-
-const PLACEHOLDERS: Record<string, string> = {
-  day: "dd",
-  month: "mm",
-  year: "yyyy",
-}
-
-export function getInputPlaceholder(locale: string) {
+export function getInputPlaceholder(
+  locale: string,
+  placeholder: ReturnType<Required<IntlTranslations>["placeholder"]>,
+) {
   return new DateFormatter(locale)
     .formatToParts(new Date())
-    .map((item) => PLACEHOLDERS[item.type] ?? item.value)
+    .map((item) => placeholder[item.type as keyof typeof placeholder] ?? item.value)
     .join("")
 }
 
@@ -91,6 +80,14 @@ export const defaultTranslations: Required<IntlTranslations> = {
     return { day: "dd", month: "mm", year: "yyyy" }
   },
   content: "calendar",
+  contentRoleDescription: "datepicker",
+  tableRoleDescription(view) {
+    return match(view, {
+      year: "calendar decade",
+      month: "calendar year",
+      day: "calendar month",
+    })
+  },
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",

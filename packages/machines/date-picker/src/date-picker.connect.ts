@@ -56,7 +56,6 @@ import {
   defaultTranslations,
   getInputPlaceholder,
   getNextView,
-  getRoleDescription,
   isDateWithinRange,
 } from "./date-picker.utils"
 
@@ -510,7 +509,7 @@ export function connect<T extends PropTypes>(
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "application",
-        "aria-roledescription": "datepicker",
+        "aria-roledescription": translations.contentRoleDescription,
         "aria-label": translations.content,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
@@ -524,7 +523,7 @@ export function connect<T extends PropTypes>(
         ...parts.table.attrs(scope.id),
         role: "grid",
         "data-columns": columns,
-        "aria-roledescription": getRoleDescription(view),
+        "aria-roledescription": translations.tableRoleDescription(view),
         id: dom.getTableId(scope, uid),
         "aria-readonly": ariaAttr(readOnly),
         "aria-disabled": ariaAttr(disabled),
@@ -991,7 +990,7 @@ export function connect<T extends PropTypes>(
         required: prop("required"),
         "aria-invalid": ariaAttr(inputState.invalid),
         "data-invalid": dataAttr(inputState.invalid),
-        placeholder: prop("placeholder") || getInputPlaceholder(locale),
+        placeholder: prop("placeholder") || getInputPlaceholder(locale, translations.placeholder(locale)),
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)

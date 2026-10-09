@@ -74,6 +74,8 @@ export interface IntlTranslations {
   clearTrigger?: string | undefined
   trigger?: ((open: boolean) => string) | undefined
   content?: string | undefined
+  contentRoleDescription?: string | undefined
+  tableRoleDescription?: ((view: DateView) => string) | undefined
   placeholder?: ((locale: string) => { year: string; month: string; day: string }) | undefined
   weekColumnHeader?: string | undefined
   weekNumberCell?: ((weekNumber: number) => string) | undefined
