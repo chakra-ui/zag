@@ -113,6 +113,27 @@ export const menuData = [
   ],
 ]
 
+export const menuFilterData = {
+  actions: [
+    { label: "New file", value: "new-file" },
+    { label: "Open file", value: "open-file" },
+    { label: "Save", value: "save" },
+    { label: "Save as", value: "save-as" },
+    { label: "Rename", value: "rename" },
+    { label: "Duplicate", value: "duplicate" },
+    { label: "Download a copy", value: "download" },
+    { label: "Delete", value: "delete" },
+  ],
+  folders: [
+    { label: "Inbox", value: "inbox" },
+    { label: "Projects", value: "projects" },
+    { label: "Archive", value: "archive" },
+    { label: "Design reviews", value: "design-reviews" },
+    { label: "Personal", value: "personal" },
+    { label: "Receipts", value: "receipts" },
+  ],
+}
+
 export const menuOptionData = {
   order: [
     { label: "Ascending", value: "asc" },
