@@ -1,4 +1,4 @@
-import { createComputed, createRoot, createSignal, mergeProps as _mergeProps } from "solid-js"
+import { createComputed, createRoot, createSignal, mergeProps as _mergeProps, splitProps } from "solid-js"
 import { mergeProps } from "../src"
 
 describe("mergeProps", () => {
@@ -192,4 +192,34 @@ describe("mergeProps", () => {
       dispose()
     })
   })
+
+  it("picks up keys a source adds or drops after creation", () =>
+    createRoot((dispose) => {
+      const [submenu, setSubmenu] = createSignal(false)
+      const props = mergeProps(() => (submenu() ? { "data-trigger-item": "" } : { "data-trigger": "" }), { id: "x" })
+
+      expect(Object.keys(props)).toEqual(["data-trigger", "id"])
+
+      setSubmenu(true)
+      expect(Object.keys(props)).toEqual(["data-trigger-item", "id"])
+      expect("data-trigger" in props).toBe(false)
+      expect({ ...props }).toEqual({ "data-trigger-item": "", id: "x" })
+
+      dispose()
+    }))
+
+  it("stays dynamic through Solid's mergeProps and splitProps", () =>
+    createRoot((dispose) => {
+      const [extra, setExtra] = createSignal(false)
+      const props = mergeProps(() => (extra() ? { "aria-label": "menu" } : {}), { id: "x" })
+      const merged = _mergeProps(props, { class: "a" })
+      const [local, rest] = splitProps(merged, ["class"])
+
+      setExtra(true)
+      expect(merged["aria-label"]).toBe("menu")
+      expect(Object.keys(rest)).toContain("aria-label")
+      expect(local.class).toBe("a")
+
+      dispose()
+    }))
 })
