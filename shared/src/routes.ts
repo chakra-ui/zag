@@ -486,6 +486,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
       { slug: "nested", title: "Nested" },
+      { slug: "filtering", title: "Filtering" },
+      { slug: "filtering-submenu", title: "Filtering Submenu" },
       { slug: "options", title: "With options" },
       { slug: "async", title: "Async + Infinite Scroll" },
       { slug: "combobox", title: "With Combobox" },
