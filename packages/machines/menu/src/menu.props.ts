@@ -5,6 +5,7 @@ import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, OptionItemProps, M
 export const props = createProps<MenuProps>()([
   "anchorPoint",
   "aria-label",
+  "autoHighlight",
   "closeOnSelect",
   "composite",
   "defaultHighlightedValue",

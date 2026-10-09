@@ -18,6 +18,8 @@ export const getContextTriggerId = (ctx: Scope, value?: string) => {
 }
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
 export const getArrowId = (ctx: Scope) => ctx.ids?.arrow ?? `${ctx.id}:arrow`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
+export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `${ctx.id}:positioner`
 export const getGroupId = (ctx: Scope, id: string) => ctx.ids?.group?.(id) ?? `${ctx.id}:group:${id}`
 
@@ -30,6 +32,7 @@ export const getGroupLabelId = (ctx: Scope, id: string) => ctx.ids?.groupLabel?.
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
+export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
 
 // The menu is told its menubar's root id via the `menubar` prop; coordination events
 // are dispatched on that element. (No DOM sniffing — the relationship is declared.)
@@ -146,4 +149,23 @@ export function isTargetWithinMenuTree(target: EventTarget | null, children: Rec
     if (Object.keys(nested).length > 0 && isTargetWithinMenuTree(target, nested)) return true
   }
   return false
+}
+
+// Whether `target` is the trigger of an open submenu that holds focus, so the pointer crossing the
+// trigger leaves that focus in place.
+export function isFocusHeldBySubmenuOf(target: EventTarget | null, children: Record<string, MenuService>): boolean {
+  if (!isHTMLElement(target)) return false
+  for (const id in children) {
+    const child = children[id]
+    if (target.id !== getTriggerId(child.scope)) continue
+    if (!child.state.hasTag("open")) return false
+    return isTargetWithinMenuTree(child.scope.getActiveElement(), { [id]: child })
+  }
+  return false
+}
+
+export function dispatchClickWithModifiers(el: HTMLElement, event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "shiftKey" | "altKey">) {
+  const win = getWindow(el)
+  const { ctrlKey, metaKey, shiftKey, altKey } = event
+  el.dispatchEvent(new win.MouseEvent("click", { bubbles: true, cancelable: true, ctrlKey, metaKey, shiftKey, altKey }))
 }
