@@ -118,7 +118,7 @@ test.describe("datepicker [single]", () => {
     await I.clickTrigger()
     await expect(page.getByRole("grid", { name: format(currentDate) })).toBeVisible()
 
-    await I.nextTrigger.click()
+    await page.getByRole("button", { name: "Switch to next month" }).click()
     const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
     await expect(page.getByRole("grid", { name: format(next) })).toBeVisible()
   })
@@ -134,7 +134,9 @@ test.describe("datepicker [single]", () => {
   test("does not set a role description", async () => {
     await I.clickTrigger()
     await expect(I.content).not.toHaveAttribute("aria-roledescription")
-    await expect(I.table).not.toHaveAttribute("aria-roledescription")
+    for (const view of ["day", "month", "year"] as const) {
+      await expect(I.tableForView(view)).not.toHaveAttribute("aria-roledescription")
+    }
   })
 
   test("keyboard selection + re-selection", async () => {
