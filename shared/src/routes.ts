@@ -300,7 +300,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "checkbox",
     label: "Checkbox",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "indeterminate", title: "Indeterminate" },
+    ],
   },
   {
     slug: "combobox",
