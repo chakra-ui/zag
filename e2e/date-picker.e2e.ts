@@ -113,6 +113,30 @@ test.describe("datepicker [single]", () => {
     await I.seeSelectedValue("28. 02. 2024")
   })
 
+  test("names the grid with the visible month", async ({ page }) => {
+    const format = (date: Date) => date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    await I.clickTrigger()
+    await expect(page.getByRole("grid", { name: format(currentDate) })).toBeVisible()
+
+    await I.nextTrigger.click()
+    const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    await expect(page.getByRole("grid", { name: format(next) })).toBeVisible()
+  })
+
+  test("localizes the grid name", async ({ page }) => {
+    await I.clickControls()
+    await I.controls.select("locale", "de-DE")
+    await I.clickTrigger()
+    const name = currentDate.toLocaleDateString("de-DE", { month: "long", year: "numeric" })
+    await expect(page.getByRole("grid", { name })).toBeVisible()
+  })
+
+  test("does not set a role description", async () => {
+    await I.clickTrigger()
+    await expect(I.content).not.toHaveAttribute("aria-roledescription")
+    await expect(I.table).not.toHaveAttribute("aria-roledescription")
+  })
+
   test("keyboard selection + re-selection", async () => {
     await I.type(`02/28/${year}`)
     await I.pressKey("Enter")
