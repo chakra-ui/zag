@@ -1,48 +1,5 @@
 import { mergeProps as zagMergeProps } from "@zag-js/core"
-import { toStyleString } from "./normalize-props"
-
-const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([\s\S]*)/
-
-type CSSObject = Record<string, string>
-
-const serialize = (style: string): CSSObject => {
-  const res: Record<string, string> = {}
-  const add = (declaration: string) => {
-    const match = CSS_REGEX.exec(declaration)
-    if (match) res[match[1]!] = match[2]!
-  }
-  let start = 0
-  let depth = 0
-  let quote = ""
-  let comment = false
-
-  for (let i = 0; i < style.length; i++) {
-    const char = style[i]
-
-    if (comment) {
-      if (char === "*" && style[i + 1] === "/") {
-        comment = false
-        i++
-      }
-    } else if (quote) {
-      if (char === "\\") i++
-      if (char === quote) quote = ""
-    } else if (char === "\\") {
-      i++
-    } else if (char === "/" && style[i + 1] === "*") {
-      comment = true
-      i++
-    } else if (char === '"' || char === "'") quote = char
-    else if (char === "(") depth++
-    else if (char === ")" && depth) depth--
-    else if (char === ";" && !depth) {
-      add(style.slice(start, i))
-      start = i + 1
-    }
-  }
-  add(style.slice(start))
-  return res
-}
+import { getAttachedStyle, parseStyleString, STYLE_KEY, type StyleObject, toCssNames, toStyleProps } from "./style"
 
 export function mergeProps(...args: Record<string | symbol, any>[]) {
   // Collect all class values (as-is, without conversion)
@@ -59,6 +16,15 @@ export function mergeProps(...args: Record<string | symbol, any>[]) {
     }
   }
 
+  // Styles arrive as strings (consumers) or as style attachments (normalized machine props). Later sources win.
+  const styles: StyleObject[] = []
+  for (const props of args) {
+    if (!props) continue
+    const attached = getAttachedStyle(props[STYLE_KEY])
+    if (attached) styles.push(attached)
+    if (props.style != null) styles.push(typeof props.style === "string" ? parseStyleString(props.style) : props.style)
+  }
+
   const merged = zagMergeProps(...args)
 
   // Override class with our collected values
@@ -67,12 +33,11 @@ export function mergeProps(...args: Record<string | symbol, any>[]) {
     merged.class = classNames.length === 1 ? classNames[0] : classNames
   }
 
-  if ("style" in merged) {
-    if (typeof merged.style === "string") {
-      merged.style = serialize(merged.style)
-    }
-    merged.style = toStyleString(merged.style)
+  if (styles.length > 0) {
+    delete merged.style
+    Object.assign(merged, toStyleProps(Object.assign({}, ...styles.map(toCssNames))))
   }
 
   return merged
 }
+
