@@ -1,12 +1,13 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
-  raf,
-  trackFormControl,
-  observeAttributes,
-  scrollIntoView,
   dispatchInputValueEvent,
+  observeAttributes,
+  raf,
+  scrollIntoView,
   setElementValue,
+  trackFormControl,
+  whenNode,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -606,6 +607,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
@@ -919,10 +921,13 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
 
       setInitialFocus({ scope }) {
-        raf(() => {
-          const contentEl = dom.getContentEl(scope)
-          contentEl?.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            contentEl.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
       focusTriggerEl({ event, scope }) {
         if (!restoreFocusFn(event)) return

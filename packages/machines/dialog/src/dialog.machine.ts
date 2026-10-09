@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, raf, whenNode } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -205,14 +205,18 @@ export const machine = createMachine<DialogSchema>({
     actions: {
       setInitialFocus({ prop, scope }) {
         if (prop("trapFocus")) return
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-            getInitialEl: prop("initialFocusEl"),
-          })
-          if (!element) return
-          element.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const element = getInitialFocus({
+              root: contentEl,
+              getInitialEl: prop("initialFocusEl"),
+            })
+            if (!element) return
+            element.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
 
       checkRenderedElements({ context, scope }) {

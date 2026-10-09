@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, proxyTabFocus, raf, whenNode } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
@@ -168,6 +168,7 @@ export const machine = createMachine<PopoverSchema>({
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (prop("closeOnEscape")) return
@@ -280,15 +281,19 @@ export const machine = createMachine<PopoverSchema>({
       setInitialFocus({ prop, scope }) {
         // handoff to `trapFocus` activity for initial focus
         if (prop("modal")) return
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-            getInitialEl: prop("initialFocusEl"),
-            enabled: prop("autoFocus"),
-          })
-          if (!element) return
-          element.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const element = getInitialFocus({
+              root: contentEl,
+              getInitialEl: prop("initialFocusEl"),
+              enabled: prop("autoFocus"),
+            })
+            if (!element) return
+            element.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
 
       setFinalFocus({ event, prop, scope, context }) {

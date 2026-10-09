@@ -6,6 +6,7 @@ import {
   raf,
   resizeObserverBorderBox,
   trackPointerMove,
+  whenNode,
 } from "@zag-js/dom-query"
 import {
   addPoints,
@@ -647,12 +648,16 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setInitialFocus({ scope, prop }) {
-        raf(() => {
-          const initialEl = prop("initialFocusEl")?.()
-          if (initialEl === false) return
-          const element = initialEl ?? dom.getContentEl(scope)
-          element?.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const initialEl = prop("initialFocusEl")?.()
+            if (initialEl === false) return
+            const element = initialEl ?? contentEl
+            element?.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
 
       toggleVisibility({ send, prop, event }) {

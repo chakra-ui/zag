@@ -9,6 +9,7 @@ import {
   setElementValue,
   trackFormControl,
   trackPointerMove,
+  whenNode,
 } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Orientation } from "@zag-js/types"
@@ -394,6 +395,7 @@ export const machine = createMachine<ColorPickerSchema>({
           type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (event.defaultPrevented) return
@@ -610,14 +612,18 @@ export const machine = createMachine<ColorPickerSchema>({
       },
       setInitialFocus({ prop, scope }) {
         if (!prop("openAutoFocus")) return
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-            getInitialEl: prop("initialFocusEl"),
-          })
-          if (!element) return
-          element.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const element = getInitialFocus({
+              root: contentEl,
+              getInitialEl: prop("initialFocusEl"),
+            })
+            if (!element) return
+            element.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
       setReturnFocus({ scope }) {
         raf(() => {

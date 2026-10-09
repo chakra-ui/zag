@@ -1,6 +1,6 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
-import { getComputedStyle, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getWindow, isHTMLElement, whenNode } from "@zag-js/dom-query"
 import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
 import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
@@ -415,14 +415,11 @@ export function getPlacement(
   opts: PositioningOptions & { defer?: boolean | undefined } = {},
 ) {
   const { defer, ...options } = opts
-  const func = defer ? raf : (v: any) => v()
-  const cleanups: (VoidFunction | undefined)[] = []
-  cleanups.push(
-    func(() => {
-      cleanups.push(getPlacementImpl(referenceOrFn, floatingOrFn, options))
-    }),
-  )
-  return () => {
-    cleanups.forEach((fn) => fn?.())
-  }
+  if (!defer) return getPlacementImpl(referenceOrFn, floatingOrFn, options)
+  // A lazily mounted positioner can commit after the next frame, so wait for it
+  const getFloating = () => (typeof floatingOrFn === "function" ? floatingOrFn() : floatingOrFn) ?? null
+  return whenNode(getFloating, () => getPlacementImpl(referenceOrFn, floatingOrFn, options), {
+    defer: true,
+    frame: true,
+  })
 }

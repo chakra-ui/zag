@@ -8,6 +8,7 @@ import {
   raf,
   scrollIntoView,
   trackFormControl,
+  whenNode,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -466,6 +467,7 @@ export const machine = createMachine<SelectSchema>({
         return trackDismissableElement(contentEl, {
           type: "listbox",
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
@@ -580,13 +582,17 @@ export const machine = createMachine<SelectSchema>({
       },
 
       setInitialFocus({ scope }) {
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-          })
-          if (!element) return
-          element.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const element = getInitialFocus({
+              root: contentEl,
+            })
+            if (!element) return
+            element.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
 
       focusTriggerEl({ event, scope }) {

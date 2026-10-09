@@ -12,6 +12,7 @@ import {
   observeAttributes,
   raf,
   scrollIntoView,
+  whenNode,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
@@ -626,6 +627,7 @@ export const machine = createMachine<MenuSchema>({
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
           onRequestDismiss: prop("onRequestDismiss"),
@@ -804,18 +806,21 @@ export const machine = createMachine<MenuSchema>({
         context.set("highlightedValue", null)
       },
       focusMenu({ scope }) {
-        raf(() => {
-          const contentEl = dom.getContentEl(scope)
-          const initialFocusEl = getInitialFocus({
-            root: contentEl,
-            enabled: !contains(contentEl, scope.getActiveElement()),
-            filter(node) {
-              return !node.role?.startsWith("menuitem")
-            },
-          })
-          if (!initialFocusEl) return
-          initialFocusEl.focus({ preventScroll: true })
-        })
+        whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const initialFocusEl = getInitialFocus({
+              root: contentEl,
+              enabled: !contains(contentEl, scope.getActiveElement()),
+              filter(node) {
+                return !node.role?.startsWith("menuitem")
+              },
+            })
+            if (!initialFocusEl) return
+            initialFocusEl.focus({ preventScroll: true })
+          },
+          { defer: true, frame: true },
+        )
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted
