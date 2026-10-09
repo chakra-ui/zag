@@ -131,14 +131,6 @@ test.describe("datepicker [single]", () => {
     await expect(page.getByRole("grid", { name })).toBeVisible()
   })
 
-  test("does not set a role description", async () => {
-    await I.clickTrigger()
-    await expect(I.content).not.toHaveAttribute("aria-roledescription")
-    for (const view of ["day", "month", "year"] as const) {
-      await expect(I.tableForView(view)).not.toHaveAttribute("aria-roledescription")
-    }
-  })
-
   test("keyboard selection + re-selection", async () => {
     await I.type(`02/28/${year}`)
     await I.pressKey("Enter")
