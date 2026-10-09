@@ -1,6 +1,9 @@
 import { clsx } from "clsx"
 import { describe, expect, it, vi } from "vitest"
-import { mergeProps } from "../src"
+import { mergeProps, normalizeProps } from "../src"
+import { getAttachedStyle, STYLE_KEY, toStyleString } from "../src/style"
+
+const attach = (props: any, el: Element) => props[STYLE_KEY](el)
 
 describe("mergeProps for Svelte", () => {
   it("handles one argument", () => {
@@ -60,8 +63,41 @@ describe("mergeProps for Svelte", () => {
     const result =
       'margin:10px;padding:2;background-image:url("http://example.com/image.png");border:1px solid #123456;--x:123;font-size:2rem;'
 
-    expect(propsFromObj.style).toBe(result)
-    expect(propsFromString.style).toBe(result)
+    // In the browser the merged style is applied through an attachment rather than the `style` attribute
+    expect(propsFromObj.style).toBeUndefined()
+    expect(toStyleString(getAttachedStyle(propsFromObj[STYLE_KEY])!)).toBe(result)
+    expect(toStyleString(getAttachedStyle(propsFromString[STYLE_KEY])!)).toBe(result)
+  })
+
+  it("applies styles per property, keeping properties written to the element directly", () => {
+    const el = document.createElement("div")
+    const props = normalizeProps.element({ style: { position: "absolute", "--layer": 0 } })
+    attach(props, el)
+
+    // e.g. the positioning utility writing its variables
+    el.style.setProperty("--x", "10px")
+
+    const next = normalizeProps.element({ style: { position: "absolute", "--layer": 1 } })
+    attach(next, el)
+
+    expect(el.style.getPropertyValue("--layer")).toBe("1")
+    expect(el.style.getPropertyValue("--x")).toBe("10px")
+  })
+
+  it("removes properties a later style drops", () => {
+    const el = document.createElement("div")
+    attach(normalizeProps.element({ style: { pointerEvents: "none", zIndex: 1 } }), el)
+    attach(normalizeProps.element({ style: { zIndex: 2 } }), el)
+
+    expect(el.style.getPropertyValue("pointer-events")).toBe("")
+    expect(el.style.getPropertyValue("z-index")).toBe("2")
+  })
+
+  it("merges machine styles with consumer style strings", () => {
+    const machine = normalizeProps.element({ style: { position: "absolute", top: "0px" } })
+    const merged = mergeProps(machine, { style: "top:4px;color:red" })
+
+    expect(getAttachedStyle(merged[STYLE_KEY])).toEqual({ position: "absolute", top: "4px", color: "red" })
   })
 
   it("keeps semicolons inside quoted values and url() when combining styles", () => {
@@ -70,7 +106,7 @@ describe("mergeProps for Svelte", () => {
       { style: "mask-image:url(data:image/png;base64,AAA);color:red" },
     )
 
-    expect(props.style).toBe(
+    expect(toStyleString(getAttachedStyle(props[STYLE_KEY])!)).toBe(
       '--label:"a;b";background-image:url("data:image/svg+xml;base64,PHN2Zy8+");mask-image:url(data:image/png;base64,AAA);color:red;',
     )
   })
