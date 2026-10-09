@@ -8,7 +8,6 @@ import {
   raf,
   scrollIntoView,
   trackFormControl,
-  whenNode,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -582,17 +581,13 @@ export const machine = createMachine<SelectSchema>({
       },
 
       setInitialFocus({ scope }) {
-        whenNode(
-          () => dom.getContentEl(scope),
-          (contentEl) => {
-            const element = getInitialFocus({
-              root: contentEl,
-            })
-            if (!element) return
-            element.focus({ preventScroll: true })
-          },
-          { defer: true, frame: true },
-        )
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+          })
+          if (!element) return
+          element.focus({ preventScroll: true })
+        })
       },
 
       focusTriggerEl({ event, scope }) {

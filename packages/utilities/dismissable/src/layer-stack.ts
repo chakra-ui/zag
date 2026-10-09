@@ -201,7 +201,7 @@ function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {
 function clearLayerStyleMirror(el: HTMLElement) {
   el.style.removeProperty("--layer-index")
   el.style.removeProperty("--nested-layer-count")
-  // Keep `--z-index`: popper positioners read it, and dropping it mid exit-animation drops the stacking
+  // Preserve stacking while the removed layer animates out.
   el.removeAttribute("data-nested")
   el.removeAttribute("data-has-nested")
 }

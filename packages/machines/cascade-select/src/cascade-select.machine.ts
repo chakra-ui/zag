@@ -1,13 +1,12 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
-  dispatchInputValueEvent,
-  observeAttributes,
   raf,
-  scrollIntoView,
-  setElementValue,
   trackFormControl,
-  whenNode,
+  observeAttributes,
+  scrollIntoView,
+  dispatchInputValueEvent,
+  setElementValue,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -921,13 +920,10 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
 
       setInitialFocus({ scope }) {
-        whenNode(
-          () => dom.getContentEl(scope),
-          (contentEl) => {
-            contentEl.focus({ preventScroll: true })
-          },
-          { defer: true, frame: true },
-        )
+        raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          contentEl?.focus({ preventScroll: true })
+        })
       },
       focusTriggerEl({ event, scope }) {
         if (!restoreFocusFn(event)) return

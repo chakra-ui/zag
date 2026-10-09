@@ -107,8 +107,9 @@ describe("layerStack", () => {
       expect(backdrop.hasAttribute("data-has-nested")).toBe(false)
     })
 
-    test("clears mirrored layer metadata but keeps --z-index when the layer is removed", () => {
+    test("clears mirrored layer metadata but preserves exit animation stacking", () => {
       const primary = document.createElement("div")
+      primary.style.zIndex = "1302"
       const backdrop = document.createElement("div")
       document.body.append(primary, backdrop)
 
@@ -119,13 +120,11 @@ describe("layerStack", () => {
       )
 
       expect(backdrop.style.getPropertyValue("--layer-index")).toBe("0")
-      const zIndex = backdrop.style.getPropertyValue("--z-index")
 
       layerStack.remove(primary)
 
       expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
-      // kept so a positioner stays stacked while its content animates out
-      expect(backdrop.style.getPropertyValue("--z-index")).toBe(zIndex)
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe("1302")
     })
 
     test("skips mirroring when target is the same node as the layer", () => {

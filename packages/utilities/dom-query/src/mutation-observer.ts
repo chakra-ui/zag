@@ -1,7 +1,5 @@
+import { raf } from "./raf"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
-import { whenNode } from "./when-node"
-
-const noop = () => {}
 
 export interface ObserveAttributeOptions {
   attributes: string[]
@@ -25,9 +23,18 @@ function observeAttributesImpl(node: MaybeElement, options: ObserveAttributeOpti
 }
 
 export function observeAttributes(nodeOrFn: MaybeElementOrFn, options: ObserveAttributeOptions) {
-  const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn) ?? null
-  if (!options.defer) return observeAttributesImpl(getNode(), options) ?? noop
-  return whenNode(getNode, (node) => observeAttributesImpl(node, options), { defer: true, frame: true })
+  const { defer } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+  cleanups.push(
+    func(() => {
+      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
+      cleanups.push(observeAttributesImpl(node, options))
+    }),
+  )
+  return () => {
+    cleanups.forEach((fn) => fn?.())
+  }
 }
 
 export interface ObserveChildrenOptions {
@@ -45,7 +52,16 @@ function observeChildrenImpl(node: MaybeElement, options: ObserveChildrenOptions
 }
 
 export function observeChildren(nodeOrFn: MaybeElementOrFn, options: ObserveChildrenOptions) {
-  const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn) ?? null
-  if (!options.defer) return observeChildrenImpl(getNode(), options) ?? noop
-  return whenNode(getNode, (node) => observeChildrenImpl(node, options), { defer: true, frame: true })
+  const { defer } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+  cleanups.push(
+    func(() => {
+      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
+      cleanups.push(observeChildrenImpl(node, options))
+    }),
+  )
+  return () => {
+    cleanups.forEach((fn) => fn?.())
+  }
 }

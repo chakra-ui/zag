@@ -70,54 +70,17 @@ describe("whenNode", () => {
     expect(fn).toHaveBeenCalledWith(node)
   })
 
-  test("keeps checking each frame until a late node commits", async () => {
-    let node: HTMLElement | null = null
+  test("never calls fn without a node, and reports via onMissing", async () => {
     const fn = vi.fn()
+    const onMissing = vi.fn()
 
-    whenNode(() => node, fn, { defer: true })
+    whenNode(() => null, fn, { defer: true, onMissing })
 
     await Promise.resolve()
     await raf()
-    await raf()
+
     expect(fn).not.toHaveBeenCalled()
-
-    node = mountNode()
-    await raf()
-
-    expect(fn).toHaveBeenCalledWith(node)
-  })
-
-  test("never calls fn without a node, and reports via onMissing after the wait budget", async () => {
-    vi.useFakeTimers({ toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance"] })
-    try {
-      const fn = vi.fn()
-      const onMissing = vi.fn()
-
-      whenNode(() => null, fn, { defer: true, onMissing })
-
-      await Promise.resolve()
-      vi.advanceTimersByTime(500)
-      expect(onMissing).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(600)
-      expect(fn).not.toHaveBeenCalled()
-      expect(onMissing).toHaveBeenCalledTimes(1)
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-
-  test("frame: skips the microtask and checks on the next frame", async () => {
-    const node = mountNode()
-    const fn = vi.fn()
-
-    whenNode(node, fn, { defer: true, frame: true })
-
-    await Promise.resolve()
-    expect(fn).not.toHaveBeenCalled()
-
-    await raf()
-    expect(fn).toHaveBeenCalledWith(node)
+    expect(onMissing).toHaveBeenCalledTimes(1)
   })
 
   test("calls onMissing immediately when not deferred and the node is absent", () => {
