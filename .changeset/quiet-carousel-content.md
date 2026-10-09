@@ -2,4 +2,4 @@
 "@zag-js/carousel": patch
 ---
 
-Keep carousel scrolling uninterrupted when slide content changes (#3374).
+Fixed issue where content or size changes inside a slide cut a drag or smooth scroll short.

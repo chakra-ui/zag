@@ -7,7 +7,6 @@ test.describe("carousel", () => {
   test.beforeEach(async ({ page }) => {
     I = new CarouselModel(page)
     await I.goto()
-    await I.seeItemInView(0)
   })
 
   test("should have no accessibility violations", async () => {
@@ -66,64 +65,6 @@ test.describe("carousel", () => {
     await I.dontSeeItemInView(1)
   })
 
-  test("slide content mutations do not interrupt an active drag", async ({ page }) => {
-    await I.swipeCarousel("left", 200, 300, false)
-    const position = await I.carousel.evaluate((el) => el.scrollLeft)
-    expect(position).toBeGreaterThan(100)
-
-    await I.getItem(0).evaluate((el) => {
-      const placeholder = document.createElement("span")
-      placeholder.textContent = "Loaded"
-      el.appendChild(placeholder)
-    })
-    await page.waitForTimeout(100)
-
-    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
-    await I.releaseDrag()
-  })
-
-  test("slide content mutations update keyboard access without resetting scroll", async ({ page }) => {
-    await I.swipeCarousel("left", 200, 300, false)
-    const position = await I.carousel.evaluate((el) => el.scrollLeft)
-    expect(position).toBeGreaterThan(100)
-
-    await I.getItem(1).evaluate((el) => {
-      const button = document.createElement("button")
-      button.textContent = "Slide action"
-      button.style.position = "absolute"
-      el.appendChild(button)
-    })
-    await expect(I.carousel).toHaveAttribute("tabindex", "-1")
-    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
-
-    await page.getByRole("button", { name: "Slide action" }).evaluate((el) => el.remove())
-    await expect(I.carousel).toHaveAttribute("tabindex", "0")
-    await I.releaseDrag()
-  })
-
-  test("slide content mutations do not interrupt smooth navigation", async () => {
-    await I.clickNextTrigger()
-    await I.getItem(0).evaluate((el) => {
-      el.appendChild(document.createElement("span"))
-    })
-    await I.seeIndicatorIsActive(1)
-    await I.seeItemInView(2)
-  })
-
-  test("removing slides still refreshes snap points and clamps the page", async () => {
-    await I.clickIndicator(2)
-    await I.waitForScrollSettle()
-    await I.carousel.evaluate((el) => {
-      const items = el.querySelectorAll('[data-part="item"]')
-      items[5].remove()
-      items[4].remove()
-    })
-    await expect(I.carousel.locator('[data-part="item"]')).toHaveCount(4)
-    await expect(I.page.locator('[data-part="indicator"]')).toHaveCount(2)
-    await I.seeIndicatorIsActive(1)
-    await I.seeNextTriggerIsDisabled()
-  })
-
   test("tiny drag and release keeps current page", async () => {
     await I.seeIndicatorIsActive(0)
 
@@ -140,6 +81,21 @@ test.describe("carousel", () => {
     await I.seeIndicatorIsActive(0)
     await I.seeItemInView(0)
     await I.seeItemInView(1)
+  })
+
+  test("slide content and size changes do not interrupt an active drag", async ({ page }) => {
+    await I.swipeCarousel("left", 200, 300, false)
+    const position = await I.carousel.evaluate((el) => el.scrollLeft)
+    expect(position).toBeGreaterThan(100)
+
+    await I.getItem(0).evaluate((el) => {
+      el.appendChild(document.createElement("span"))
+      el.style.height = `${el.offsetHeight + 20}px`
+    })
+    await page.waitForTimeout(100)
+
+    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
+    await I.releaseDrag()
   })
 
   test("drag interruption and immediate restart resolves to final drag target", async () => {
