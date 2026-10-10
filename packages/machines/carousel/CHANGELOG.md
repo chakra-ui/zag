@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3382](https://github.com/chakra-ui/zag/pull/3382)
+  [`d884be2`](https://github.com/chakra-ui/zag/commit/d884be2bde03fe219505613ea37349b3130ccbca) Thanks
+  [@minwookshin](https://github.com/minwookshin)! - Fixed issue where content or size changes inside a slide cut a drag
+  or smooth scroll short.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/scroll-snap@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3422](https://github.com/chakra-ui/zag/pull/3422)
+  [`062621a`](https://github.com/chakra-ui/zag/commit/062621a149d3bf9471b28ca4549ac148f0cfdb2c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where the calendar grid had no accessible name. It
+  is now labelled with the visible month, formatted in the picker's `locale`.
+  - Removed the English-only `aria-roledescription` from the content and table parts.
+  - Fixed issue where `translations.placeholder` was ignored by the input placeholder.
+- Updated dependencies [[`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/date-utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/live-region@1.46.0
+  - @zag-js/popper@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

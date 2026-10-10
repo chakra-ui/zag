@@ -1,5 +1,19 @@
 # @zag-js/aria-hidden
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3406](https://github.com/chakra-ui/zag/pull/3406)
+  [`44445ae`](https://github.com/chakra-ui/zag/commit/44445ae6b038d2d737bb3ca5b9d02d697c29cc07) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where an open nested dialog, drawer, or modal
+  popover was hidden from screen readers when its portal was in the DOM before the parent opened (Solid's `Portal`, or
+  content mounted while closed).
+  - Fixed issue where a menu, select, or other popup opened from inside a modal was hidden from screen readers when its
+    portal was in the DOM before the modal opened.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

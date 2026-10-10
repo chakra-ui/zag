@@ -1966,6 +1966,10 @@
         "type": "boolean",
         "description": "Whether the dialog is open"
       },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether the dialog is modal"
+      },
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the dialog"
@@ -2075,6 +2079,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the drawer is open."
+      },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether the drawer is modal."
       },
       "dragging": {
         "type": "boolean",
@@ -6089,11 +6097,11 @@
       },
       "create": {
         "type": "(data: Options<V>) => string",
-        "description": "Create a new toast with the given options"
+        "description": "Create a toast or update an existing toast with the same ID.\nCalls targeting closing toasts are ignored."
       },
       "update": {
-        "type": "(id: string, data: Partial<ToastProps<V>>) => string",
-        "description": "Update an existing toast with new properties"
+        "type": "(id: string, data: MaybeFunction<Partial<ToastProps<V>>, Partial<ToastProps<V>>>) => string",
+        "description": "Update a toast with new properties or a function of its current properties.\nUpdates to closing toasts are ignored.\nFunctional updates are also ignored when the toast does not exist."
       },
       "remove": {
         "type": "(id?: string) => void",

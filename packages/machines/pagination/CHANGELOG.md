@@ -1,5 +1,22 @@
 # @zag-js/pagination
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3409](https://github.com/chakra-ui/zag/pull/3409)
+  [`4d13a23`](https://github.com/chakra-ui/zag/commit/4d13a23131959ca47e6d4e892de6638b80bff8a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed the first, previous, next and last triggers under
+  `type="link"` when they can't move to another page. They now drop the `href` and set `role="link"` and
+  `aria-disabled="true"`, so assistive technology announces them as disabled. The first and last triggers no longer link
+  to the page that is already open.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Minor Changes
