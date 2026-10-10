@@ -130,6 +130,7 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     } else {
       subscribers.forEach((subscriber) => subscriber({ id, dismiss: true }))
       toasts = toasts.filter((toast) => toast.id !== id)
+      toastQueue = toastQueue.filter((toast) => toast.id !== id)
       processQueue()
     }
     return id
@@ -221,8 +222,21 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     return { id, unwrap }
   }
 
-  const update = (id: string, data: Omit<Options, "id">) => {
-    return create({ id, ...data })
+  const update: ToastStore<V>["update"] = (id, data) => {
+    if (typeof data !== "function") return create({ id, ...data })
+
+    const current = toasts.find((toast) => toast.id === id) ?? toastQueue.find((toast) => toast.id === id)
+    if (!current) return id
+
+    const next = { ...data({ ...current }), id }
+
+    // The updater may remove, update, or promote its toast. Read the store again.
+    if (toasts.some((toast) => toast.id === id)) return create(next)
+    if (!toastQueue.some((toast) => toast.id === id)) return id
+
+    // Updating a queued toast must not publish it or move it into the visible list.
+    toastQueue = toastQueue.map((toast) => (toast.id === id ? { ...toast, ...next } : toast))
+    return id
   }
 
   const pause = (id?: string) => {

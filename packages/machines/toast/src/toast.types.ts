@@ -294,9 +294,10 @@ export interface ToastStore<V = any> {
    */
   create: (data: Options<V>) => string
   /**
-   * Update an existing toast with new properties
+   * Update a toast with new properties or a function of its current properties.
+   * Functional updates are ignored when the toast does not exist.
    */
-  update: (id: string, data: Partial<ToastProps<V>>) => string
+  update: (id: string, data: MaybeFunction<Partial<ToastProps<V>>, Partial<ToastProps<V>>>) => string
   /**
    * Remove a toast by its ID
    */

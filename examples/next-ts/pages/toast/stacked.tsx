@@ -67,6 +67,16 @@ export default function ToastGroup() {
             Update Latest
           </button>
           <button
+            onClick={() => {
+              if (!id.current) return
+              toaster.update(id.current, (prev) => ({
+                title: `${prev.title} (updated)`,
+              }))
+            }}
+          >
+            Append to Latest
+          </button>
+          <button
             className="toast-button"
             onClick={() => {
               const promise = new Promise<{ name: string }>((resolve) => {
