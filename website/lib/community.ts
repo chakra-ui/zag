@@ -160,4 +160,12 @@ export const recordings: Recording[] = [
   },
 ]
 
-export const communityProjects: CommunityProject[] = []
+export const communityProjects: CommunityProject[] = [
+  {
+    name: "zag-ripple",
+    description: "Zag.js adapter for Ripple",
+    href: "https://github.com/anubra266/zag-ripple",
+    image: "/community/zag-ripple.png",
+    author: "anubra266",
+  },
+]

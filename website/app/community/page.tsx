@@ -9,14 +9,13 @@ import { Box, Flex, Grid, HStack, Stack, styled } from "styled-system/jsx"
 import { CommunityLink } from "./community-link"
 import { CommunityProjects } from "./community-projects"
 import { CommunityStat } from "./community-stat"
-import { Eyebrow } from "./eyebrow"
 import { RecordingItem } from "./recording-item"
 import { getCommunityStats } from "./stats"
 
 export const metadata = createPageMetadata({
   title: "Community",
   description:
-    "Connect with the Zag.js community, discover community projects, and watch recordings.",
+    "Connect with the Zag.js community, watch recordings, and discover ecosystem projects.",
   path: "/community",
 })
 
@@ -37,8 +36,8 @@ const addProjectHref =
   "https://github.com/chakra-ui/zag/issues/new?title=Add%20community%20project%3A%20"
 
 const jumpLinks = [
-  { label: "Community projects", href: "#projects" },
   { label: "Recordings", href: "#recordings" },
+  { label: "Ecosystem", href: "#ecosystem" },
   { label: "Meet the team →", href: "/team" },
 ]
 
@@ -54,8 +53,8 @@ export default async function CommunityPage() {
           <Stack gap="3" my="4">
             <styled.h1 textStyle="display.xl">Community</styled.h1>
             <styled.p textStyle="text.md" color="fg.muted" maxW="60ch">
-              Connect with other builders, find projects made on top of Zag, and
-              catch up on recordings.
+              Connect with other builders, catch up on recordings, and find
+              projects made on top of Zag.
             </styled.p>
             <HStack
               as="nav"
@@ -132,10 +131,25 @@ export default async function CommunityPage() {
         </Grid>
       </Section>
 
-      <Section id="projects" scrollMarginTop="20" py={{ base: "8", md: "12" }}>
+      <Section
+        id="recordings"
+        scrollMarginTop="20"
+        py={{ base: "8", md: "12" }}
+      >
+        <SectionHeading
+          title="Recordings"
+          description="Watch talks and recordings from the Zag.js journey."
+        />
+        <Grid columns={{ base: 1, md: 2 }} gap="6">
+          {recordings.map((video) => (
+            <RecordingItem key={video.href} video={video} />
+          ))}
+        </Grid>
+      </Section>
+
+      <Section id="ecosystem" scrollMarginTop="20" py={{ base: "8", md: "12" }}>
         <Stack mb={{ base: "8", md: "10" }} gap="3">
-          <Eyebrow>Ecosystem</Eyebrow>
-          <styled.h2 textStyle="display.lg">Community projects</styled.h2>
+          <styled.h2 textStyle="display.lg">Ecosystem</styled.h2>
           <styled.p textStyle="text.md" color="fg.muted" maxW="3xl">
             Adapters and packages built by the community on top of Zag machines.
             They're maintained by their authors, not the Zag team.
@@ -174,22 +188,6 @@ export default async function CommunityPage() {
             No community projects listed yet. Be the first to add one.
           </Box>
         )}
-      </Section>
-
-      <Section
-        id="recordings"
-        scrollMarginTop="20"
-        py={{ base: "8", md: "12" }}
-      >
-        <SectionHeading
-          title="Recordings"
-          description="Watch talks and recordings from the Zag.js journey."
-        />
-        <Grid columns={{ base: 1, md: 2 }} gap="6">
-          {recordings.map((video) => (
-            <RecordingItem key={video.href} video={video} />
-          ))}
-        </Grid>
       </Section>
 
       <Footer />
