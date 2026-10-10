@@ -1,6 +1,7 @@
 import { AnnouncementBanner } from "components/announcement-banner"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
+import { ComponentCategories, WhatsNew } from "components/home-sections"
 import {
   AccessibilityIcon,
   ArrowRightIcon,
@@ -62,8 +63,8 @@ export default function Home() {
         <Section>
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
             <Box mb="6">
-              <AnnouncementBanner href="/utilities/hotkeys">
-                Hotkeys: add keyboard shortcuts in any framework
+              <AnnouncementBanner href="/guides/migration" badge="v2">
+                Zag v2 is in pre-release: see what changed
               </AnnouncementBanner>
             </Box>
             <styled.h1 textStyle="display.2xl">
@@ -160,6 +161,10 @@ export default function Home() {
         </Box>
       </Section>
 
+      <WhatsNew />
+
+      <ComponentCategories />
+
       <Section my={{ base: "20", md: "32" }}>
         <Flex
           gap="64px"
@@ -227,7 +232,7 @@ export default function Home() {
           </styled.h2>
           <styled.p textStyle="text.lg" maxW="560px" mt="6">
             Finite state machines for building accessible design systems and UI
-            components. Works with React, Vue and Solid.
+            components. Works with React, Vue, Solid and Svelte.
           </styled.p>
         </Box>
 
