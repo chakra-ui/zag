@@ -2,17 +2,15 @@
 
 import { CopyPageWidget } from "components/copy-page-widget"
 import { DocsTabBar } from "components/docs-tab-bar"
-import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
 import { EditPageLink } from "components/mdx/edit-page-link"
-import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
 import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNav } from "components/nav/top-nav"
 import { usePathname } from "next/navigation"
 import { css } from "styled-system/css"
-import { Box, Flex, Spacer, styled } from "styled-system/jsx"
+import { Box, Flex, styled } from "styled-system/jsx"
 
 const scrollbarStyles = css({
   // Chrome 121+ and Firefox
@@ -54,7 +52,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
       <Box position="sticky" top="0" zIndex="50">
-        <TopNav docs />
+        <TopNav />
         <DocsTabBar />
       </Box>
       <styled.div pt="10">
@@ -75,13 +73,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             overscrollBehavior="contain"
             className={scrollbarStyles}
           >
-            <Box position="relative">
-              <Box position="sticky" top="0" bg="bg.subtle" pb="8">
-                <Spacer height="10" bg="transparent" />
-                <Search />
-                <Spacer mt="px" height="5" bg="transparent" />
-                <FrameworkSelect />
-              </Box>
+            <Box pt="10">
               <Sidebar />
             </Box>
           </Box>

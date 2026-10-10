@@ -7,7 +7,7 @@ import { tabs, type SidebarTab } from "sidebar.config"
 import { css } from "styled-system/css"
 import { Box, Flex, HStack } from "styled-system/jsx"
 import { useFramework } from "./framework"
-import { VersionSelect } from "./nav/version-select"
+import { FrameworkSelect } from "./framework-select"
 import { Icon } from "./ui/icon"
 
 const tabLink = css({
@@ -79,7 +79,7 @@ export function DocsTabBar() {
           ))}
         </HStack>
         <HStack>
-          <VersionSelect />
+          <FrameworkSelect />
         </HStack>
       </Flex>
     </Box>
