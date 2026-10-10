@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { observeChildren, raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -35,6 +35,10 @@ export const machine = createMachine<ToastSchema>({
       })),
       initialHeight: bindable<number>(() => ({
         defaultValue: 0,
+      })),
+      rendered: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
+        isEqual: (a, b) => a.title === b?.title && a.description === b?.description,
       })),
     }
   },
@@ -103,7 +107,7 @@ export const machine = createMachine<ToastSchema>({
 
   entry: ["setMounted", "measureHeight", "invokeOnVisible"],
 
-  effects: ["trackHeight"],
+  effects: ["trackHeight", "trackRenderedElements"],
 
   states: {
     "visible:updating": {
@@ -206,6 +210,20 @@ export const machine = createMachine<ToastSchema>({
         })
 
         return () => cleanup?.()
+      },
+
+      trackRenderedElements({ context, scope }) {
+        const syncRenderedElements = () => {
+          context.set("rendered", {
+            title: !!dom.getTitleEl(scope),
+            description: !!dom.getDescriptionEl(scope),
+          })
+        }
+
+        return raf(() => {
+          syncRenderedElements()
+          return observeChildren(dom.getRootEl(scope), { callback: syncRenderedElements })
+        })
       },
     },
 

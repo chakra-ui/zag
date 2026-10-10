@@ -7,4 +7,6 @@ export const getRootId = (ctx: Scope) => `toast:${ctx.id}`
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getTitleId = (ctx: Scope) => `toast:${ctx.id}:title`
 export const getDescriptionId = (ctx: Scope) => `toast:${ctx.id}:description`
+export const getTitleEl = (ctx: Scope) => ctx.getById(getTitleId(ctx))
+export const getDescriptionEl = (ctx: Scope) => ctx.getById(getDescriptionId(ctx))
 export const getCloseTriggerId = (ctx: Scope) => `toast${ctx.id}:close`
