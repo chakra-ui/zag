@@ -1,176 +1,208 @@
-import { AiOutlineCompass, AiOutlineBook, AiOutlineTool } from "react-icons/ai"
-import { HiOutlineViewGrid } from "react-icons/hi"
-import { IconType } from "react-icons/lib"
+import type { IconType } from "react-icons/lib"
+import { LuBlocks, LuBookOpen, LuCompass, LuWrench } from "react-icons/lu"
 import siteConfig from "site.config"
 
-interface CategoryItem {
-  type: "category"
-  icon?: IconType
-  id: string
-  label: string
-  collapsible?: boolean
-  collapsed?: boolean
-  items: SidebarItem[]
-}
+/** The URL section a page lives under: `/{section}/...` */
+export type Section = "overview" | "guides" | "components" | "utilities"
 
-interface DocItem {
-  type: "doc"
+export interface SidebarDoc {
   id: string
   label: string
+  section: Section
   new?: boolean
   beta?: boolean
+  /** external link instead of a docs page */
   href?: string
 }
 
-interface LinkItem {
-  type: "link"
-  id: string
+export interface SidebarGroup {
   label: string
-  href: string
+  items: SidebarDoc[]
 }
 
-type SidebarItem = CategoryItem | DocItem | LinkItem
+export interface SidebarTab {
+  id: string
+  label: string
+  icon: IconType
+  groups: SidebarGroup[]
+}
 
-const sidebar: Record<"docs", SidebarItem[]> = {
-  docs: [
-    {
-      type: "category",
-      label: "Overview",
-      icon: AiOutlineCompass,
-      id: "overview",
-      items: [
-        { type: "doc", label: "Introduction", id: "introduction" },
-        { type: "doc", label: "Installation", id: "installation" },
-        { type: "doc", label: "FAQ", id: "faq" },
-        {
-          type: "doc",
-          label: "Changelog",
-          id: "changelogs",
-          href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
-        },
-        { type: "doc", label: "LLMs.txt", id: "llms-txt" },
-      ],
-    },
-    {
-      type: "category",
-      label: "Guides",
-      icon: AiOutlineBook,
-      id: "guides",
-      items: [
-        { type: "doc", label: "Styling", id: "styling" },
-        { type: "doc", label: "Composition", id: "composition" },
-        { type: "doc", label: "Collection", id: "collection" },
-        {
-          type: "doc",
-          label: "Programmatic Control",
-          id: "programmatic-control",
-        },
-        { type: "doc", label: "Building Machines", id: "building-machines" },
-        {
-          type: "doc",
-          label: "Framework Adapters",
-          id: "framework-adapters",
-        },
-        { type: "doc", label: "Migration", id: "migration" },
-      ],
-    },
-    {
-      type: "category",
-      label: "Components",
-      icon: HiOutlineViewGrid,
-      id: "components",
-      items: [
-        { type: "doc", label: "Accordion", id: "accordion" },
-        { type: "doc", label: "Angle Slider", id: "angle-slider" },
-        { type: "doc", label: "Avatar", id: "avatar" },
-        { type: "doc", label: "Carousel", id: "carousel" },
-        { type: "doc", label: "Cascade Select", id: "cascade-select" },
-        { type: "doc", label: "Checkbox", id: "checkbox" },
-        { type: "doc", label: "Clipboard", id: "clipboard" },
-        { type: "doc", label: "Collapsible", id: "collapsible" },
-        { type: "doc", label: "ColorPicker", id: "color-picker" },
-        { type: "doc", label: "Combobox", id: "combobox" },
-        { type: "doc", label: "Date Input", id: "date-input" },
-        { type: "doc", label: "Date Picker", id: "date-picker" },
-        { type: "doc", label: "Dialog", id: "dialog" },
-        { type: "doc", label: "Drawer", id: "drawer" },
-        { type: "doc", label: "Editable", id: "editable" },
-        { type: "doc", label: "Field", id: "field" },
-        { type: "doc", label: "Fieldset", id: "fieldset" },
-        { type: "doc", label: "File Upload", id: "file-upload" },
-        { type: "doc", label: "Floating Panel", id: "floating-panel" },
-        { type: "doc", label: "Hover Card", id: "hover-card" },
-        { type: "doc", label: "Image Cropper", id: "image-cropper" },
-        { type: "doc", label: "Listbox", id: "listbox" },
-        { type: "doc", label: "Marquee", id: "marquee" },
-        { type: "doc", label: "Menu", id: "menu" },
-        { type: "doc", label: "Menu (Nested)", id: "nested-menu" },
-        { type: "doc", label: "Menubar", id: "menubar" },
-        { type: "doc", label: "Meter", id: "meter" },
-        { type: "doc", label: "Context Menu", id: "context-menu" },
-        { type: "doc", label: "Navigation Menu", id: "navigation-menu" },
-        { type: "doc", label: "Number Flow", id: "number-flow" },
-        { type: "doc", label: "Number Input", id: "number-input" },
-        { type: "doc", label: "Pagination", id: "pagination" },
-        {
-          type: "doc",
-          label: "Password Input",
-          id: "password-input",
-        },
-        { type: "doc", label: "Pin Input", id: "pin-input" },
-        { type: "doc", label: "Popover", id: "popover" },
-        { type: "doc", label: "Presence", id: "presence" },
-        {
-          type: "doc",
-          label: "Progress (Linear)",
-          id: "linear-progress",
-        },
-        {
-          type: "doc",
-          label: "Progress (Circular)",
-          id: "circular-progress",
-        },
-        { type: "doc", label: "QR Code", id: "qr-code" },
-        { type: "doc", label: "Radio Group", id: "radio-group" },
-        { type: "doc", label: "Rating Group", id: "rating-group" },
-        { type: "doc", label: "Scroll Area", id: "scroll-area" },
-        { type: "doc", label: "Segmented Control", id: "segmented-control" },
-        { type: "doc", label: "Select", id: "select" },
-        { type: "doc", label: "Signature Pad", id: "signature-pad" },
+const docs = (section: Section, items: Omit<SidebarDoc, "section">[]) =>
+  items.map((item) => ({ ...item, section }))
 
-        { type: "doc", label: "Slider", id: "slider" },
-        { type: "doc", label: "Slider (Range)", id: "range-slider" },
+export const tabs: SidebarTab[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    icon: LuCompass,
+    groups: [
+      {
+        label: "Get Started",
+        items: docs("overview", [
+          { label: "Introduction", id: "introduction" },
+          { label: "Installation", id: "installation" },
+          { label: "FAQ", id: "faq" },
+          {
+            label: "Changelog",
+            id: "changelogs",
+            href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
+          },
+          { label: "LLMs.txt", id: "llms-txt" },
+        ]),
+      },
+    ],
+  },
+  {
+    id: "guides",
+    label: "Guides",
+    icon: LuBookOpen,
+    groups: [
+      {
+        label: "Guides",
+        items: docs("guides", [
+          { label: "Styling", id: "styling" },
+          { label: "Composition", id: "composition" },
+          { label: "Collection", id: "collection" },
+          { label: "Programmatic Control", id: "programmatic-control" },
+          { label: "Building Machines", id: "building-machines" },
+          { label: "Framework Adapters", id: "framework-adapters" },
+          { label: "Migration", id: "migration" },
+        ]),
+      },
+    ],
+  },
+  {
+    id: "components",
+    label: "Components",
+    icon: LuBlocks,
+    groups: [
+      {
+        label: "Forms & Inputs",
+        items: docs("components", [
+          { label: "Angle Slider", id: "angle-slider" },
+          { label: "Cascade Select", id: "cascade-select" },
+          { label: "Checkbox", id: "checkbox" },
+          { label: "Color Picker", id: "color-picker" },
+          { label: "Combobox", id: "combobox" },
+          { label: "Date Input", id: "date-input" },
+          { label: "Date Picker", id: "date-picker" },
+          { label: "Editable", id: "editable" },
+          { label: "Field", id: "field" },
+          { label: "Fieldset", id: "fieldset" },
+          { label: "File Upload", id: "file-upload" },
+          { label: "Image Cropper", id: "image-cropper" },
+          { label: "Listbox", id: "listbox" },
+          { label: "Number Input", id: "number-input" },
+          { label: "Password Input", id: "password-input" },
+          { label: "Pin Input", id: "pin-input" },
+          { label: "Radio Group", id: "radio-group" },
+          { label: "Rating Group", id: "rating-group" },
+          { label: "Segmented Control", id: "segmented-control" },
+          { label: "Select", id: "select" },
+          { label: "Signature Pad", id: "signature-pad" },
+          { label: "Slider", id: "slider" },
+          { label: "Slider (Range)", id: "range-slider" },
+          { label: "Switch", id: "switch" },
+          { label: "Tags Input", id: "tags-input" },
+          { label: "Toggle", id: "toggle" },
+          { label: "Toggle Group", id: "toggle-group" },
+        ]),
+      },
+      {
+        label: "Data Display",
+        items: docs("components", [
+          { label: "Avatar", id: "avatar" },
+          { label: "Carousel", id: "carousel" },
+          { label: "Clipboard", id: "clipboard" },
+          { label: "Marquee", id: "marquee" },
+          { label: "Meter", id: "meter" },
+          { label: "Number Flow", id: "number-flow" },
+          { label: "QR Code", id: "qr-code" },
+          { label: "Scroll Area", id: "scroll-area" },
+          { label: "Splitter", id: "splitter" },
+          { label: "Timer", id: "timer" },
+        ]),
+      },
+      {
+        label: "Overlays",
+        items: docs("components", [
+          { label: "Context Menu", id: "context-menu" },
+          { label: "Dialog", id: "dialog" },
+          { label: "Drawer", id: "drawer" },
+          { label: "Floating Panel", id: "floating-panel" },
+          { label: "Hover Card", id: "hover-card" },
+          { label: "Menu", id: "menu" },
+          { label: "Menu (Nested)", id: "nested-menu" },
+          { label: "Popover", id: "popover" },
+          { label: "Tooltip", id: "tooltip" },
+          { label: "Tour", id: "tour" },
+        ]),
+      },
+      {
+        label: "Navigation",
+        items: docs("components", [
+          { label: "Accordion", id: "accordion" },
+          { label: "Collapsible", id: "collapsible" },
+          { label: "Menubar", id: "menubar" },
+          { label: "Navigation Menu", id: "navigation-menu" },
+          { label: "Pagination", id: "pagination" },
+          { label: "Steps", id: "steps" },
+          { label: "Tabs", id: "tabs" },
+          { label: "Tree View", id: "tree-view" },
+        ]),
+      },
+      {
+        label: "Feedback",
+        items: docs("components", [
+          { label: "Progress (Circular)", id: "circular-progress" },
+          { label: "Progress (Linear)", id: "linear-progress" },
+          { label: "Toast", id: "toast" },
+        ]),
+      },
+    ],
+  },
+  {
+    id: "utilities",
+    label: "Utilities",
+    icon: LuWrench,
+    groups: [
+      {
+        label: "Utilities",
+        items: [
+          ...docs("utilities", [
+            { label: "Async List", id: "async-list" },
+            { label: "Drag and Drop", id: "dnd" },
+            { label: "Focus Trap", id: "focus-trap" },
+            { label: "Hotkeys", id: "hotkeys" },
+            { label: "Infinite Scroll", id: "infinite-scroll" },
+          ]),
+          // a building block for the others, so it sits here; its URL stays under /components
+          ...docs("components", [{ label: "Presence", id: "presence" }]),
+          ...docs("utilities", [{ label: "Virtualizer", id: "virtualizer" }]),
+        ],
+      },
+    ],
+  },
+]
 
-        { type: "doc", label: "Splitter", id: "splitter" },
-        { type: "doc", label: "Steps", id: "steps" },
-        { type: "doc", label: "Switch", id: "switch" },
-        { type: "doc", label: "Tabs", id: "tabs" },
-        { type: "doc", label: "Tags Input", id: "tags-input" },
-        { type: "doc", label: "Timer", id: "timer" },
-        { type: "doc", label: "Toast", id: "toast" },
-        { type: "doc", label: "Toggle", id: "toggle" },
-        { type: "doc", label: "Toggle Group", id: "toggle-group" },
-        { type: "doc", label: "Tooltip", id: "tooltip" },
-        { type: "doc", label: "Tour", id: "tour" },
-        { type: "doc", label: "Tree View", id: "tree-view" },
-      ],
-    },
-    {
-      type: "category",
-      label: "Utilities",
-      icon: AiOutlineTool,
-      id: "utilities",
-      items: [
-        // { type: "doc", label: "I18n", id: "i18n" },
-        { type: "doc", label: "Async List", id: "async-list" },
-        { type: "doc", label: "Drag and Drop", id: "dnd" },
-        { type: "doc", label: "Focus Trap", id: "focus-trap" },
-        { type: "doc", label: "Hotkeys", id: "hotkeys" },
-        { type: "doc", label: "Infinite Scroll", id: "infinite-scroll" },
-        { type: "doc", label: "Virtualizer", id: "virtualizer" },
-      ],
-    },
-  ],
+const sectionLabels: Record<Section, string> = {
+  overview: "Overview",
+  guides: "Guides",
+  components: "Components",
+  utilities: "Utilities",
+}
+
+/** Every page grouped by URL section, in sidebar order. Used by the llms.txt routes. */
+const sidebar = {
+  docs: (Object.keys(sectionLabels) as Section[]).map((section) => ({
+    type: "category" as const,
+    id: section,
+    label: sectionLabels[section],
+    items: tabs
+      .flatMap((tab) => tab.groups.flatMap((group) => group.items))
+      .filter((item) => item.section === section)
+      .map((item) => ({ type: "doc" as const, ...item })),
+  })),
 }
 
 export default sidebar

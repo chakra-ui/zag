@@ -1,6 +1,7 @@
 "use client"
 
 import { CopyPageWidget } from "components/copy-page-widget"
+import { DocsTabBar } from "components/docs-tab-bar"
 import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
 import { EditPageLink } from "components/mdx/edit-page-link"
@@ -52,7 +53,10 @@ export default function DocsLayout(props: DocsLayoutProps) {
   return (
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
-      <TopNav />
+      <Box position="sticky" top="0" zIndex="50">
+        <TopNav docs />
+        <DocsTabBar />
+      </Box>
       <styled.div pt="10">
         <SkipNavContent />
         <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
@@ -61,7 +65,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             position="fixed"
             zIndex={20}
             bottom="0"
-            top="4rem"
+            top="7rem"
             left="max(0px, calc(50% - 45rem - calc(var(--scrollbar-width, 0px) / 2)))"
             right="auto"
             width="19.5rem"
@@ -115,7 +119,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             px="8"
             overflowY="auto"
             position="fixed"
-            top="3.8rem"
+            top="6.8rem"
             bottom="0"
             right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
             display={{ base: "none", xl: "block" }}
