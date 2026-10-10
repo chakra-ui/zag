@@ -10,6 +10,7 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         {...props}
         ref={ref}
         type="button"
+        aria-label="Search the docs"
         width="full"
         display="flex"
         alignItems="center"
@@ -26,8 +27,14 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         rounded="sm"
       >
         <Icon as={HiOutlineSearch} fontSize="md" />
-        Quick search...
-        <styled.span ml="auto" flex="none" fontWeight="semibold" fontSize="xs">
+        <styled.span hideBelow="md">Quick search...</styled.span>
+        <styled.span
+          hideBelow="md"
+          ml="auto"
+          flex="none"
+          fontWeight="semibold"
+          fontSize="xs"
+        >
           ⌘K
         </styled.span>
       </styled.button>

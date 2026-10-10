@@ -1,6 +1,7 @@
 "use client"
 
 import { GithubIcon, HeartIcon } from "components/icons"
+import { Search } from "components/search-dialog"
 import { ThemeToggle } from "components/theme-toggle"
 import siteConfig from "site.config"
 import { Box, Flex, HStack } from "styled-system/jsx"
@@ -10,8 +11,7 @@ import { MobileNav } from "./mobile-nav"
 import { NavLinks } from "./nav-links"
 import { VersionSelect } from "./version-select"
 
-/** `docs` moves the version select into the docs tab bar */
-export function TopNav(props: { docs?: boolean }) {
+export function TopNav() {
   return (
     <Box
       bg="bg.subtle"
@@ -26,22 +26,33 @@ export function TopNav(props: { docs?: boolean }) {
       borderBottomColor="border.subtle"
       overflowX="hidden"
     >
+      {/* search sits in the middle and gives up width before either side does */}
       <Flex
+        display={{ base: "flex", md: "grid" }}
+        gridTemplateColumns={{
+          md: "minmax(max-content, 1fr) minmax(12rem, 28rem) minmax(max-content, 1fr)",
+        }}
         alignItems="center"
         justifyContent="space-between"
+        gap={{ base: "3", md: "6" }}
         maxW="8xl"
         w="full"
         mx="auto"
         px={{ base: "4", sm: "6", md: "8" }}
       >
-        <HStack gap="3">
-          <LogoWithLink />
-          {!props.docs && <VersionSelect />}
-        </HStack>
-        <HStack gap="4">
-          <HStack as="nav" hideBelow="md" gap="6" me="6">
+        <HStack gap="6">
+          <HStack gap="3">
+            <LogoWithLink />
+            <VersionSelect />
+          </HStack>
+          <HStack as="nav" hideBelow="lg" gap="6">
             <NavLinks />
           </HStack>
+        </HStack>
+        <Box ms={{ base: "auto", md: "0" }}>
+          <Search />
+        </Box>
+        <HStack gap="4" justifySelf="end">
           <HStack gap="4">
             <IconLink
               variant="solid"
