@@ -1,4 +1,7 @@
-import { components as allComponents, overviews as allOverviews } from ".velite"
+import {
+  components as allComponents,
+  overviews as allOverviews,
+} from "./source"
 
 export type SearchMetaItem = {
   content: string
@@ -19,7 +22,7 @@ export type SearchMetaResult = SearchMetaItem[]
 type TOC = {
   content: string
   slug: string
-  lvl: 1 | 2 | 3
+  lvl: number
 }
 
 function getSearchMeta() {
@@ -44,7 +47,6 @@ function getSearchMeta() {
       },
     })
 
-    // The TOC is now already flattened by our transformation in velite.config.ts
     if (toc && Array.isArray(toc)) {
       toc.forEach((item: TOC, index: number) => {
         result.push({

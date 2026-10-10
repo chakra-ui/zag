@@ -3,7 +3,7 @@ import {
   getGuidePaths,
   getOverviewPaths,
   getUtilityPaths,
-} from "lib/contentlayer-utils"
+} from "lib/source"
 import type { MetadataRoute } from "next"
 import siteConfig from "site.config"
 

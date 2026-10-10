@@ -1,8 +1,10 @@
+"use client"
+
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
+import type { ReactNode } from "react"
 import { Box, HStack, Stack, styled, VStack } from "styled-system/jsx"
 import { NumberInput } from "../demos/number-input"
-import { CodeArea } from "./code-area"
 import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "./icons"
 import { Playground } from "./playground"
 
@@ -25,7 +27,9 @@ const FrameworkButton = styled("button", {
   },
 })
 
-export function MultiframeworkTabs() {
+export function MultiframeworkTabs(props: {
+  snippets: Record<"react" | "vue" | "solid" | "svelte", ReactNode>
+}) {
   const service = useMachine(tabs.machine, {
     id: "m2",
     defaultValue: "react",
@@ -71,16 +75,16 @@ export function MultiframeworkTabs() {
           bg="bg.code.block"
         >
           <Box {...api.getContentProps({ value: "react" })}>
-            <CodeArea slug="react/number-input/usage" />
+            {props.snippets.react}
           </Box>
           <Box {...api.getContentProps({ value: "vue" })}>
-            <CodeArea slug="vue/number-input/usage" />
+            {props.snippets.vue}
           </Box>
           <Box {...api.getContentProps({ value: "solid" })}>
-            <CodeArea slug="solid/number-input/usage" />
+            {props.snippets.solid}
           </Box>
           <Box {...api.getContentProps({ value: "svelte" })}>
-            <CodeArea slug="svelte/number-input/usage" />
+            {props.snippets.svelte}
           </Box>
         </Box>
         <Box

@@ -3,12 +3,8 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import {
-  searchData,
-  type SearchMetaItem,
-  type SearchMetaResult,
-} from "./search-meta"
+import { useEffect, useMemo, useRef, useState } from "react"
+import type { SearchMetaItem, SearchMetaResult } from "./search-meta"
 import { useUpdateEffect } from "./use-update-effect"
 
 interface UseSearchReturn {
@@ -24,7 +20,18 @@ export function useSearch(): UseSearchReturn {
 
   const dialog_api = dialog.connect(dialog_service, normalizeProps)
 
-  const [results, setResults] = useState<SearchMetaResult>(searchData)
+  const [results, setResults] = useState<SearchMetaResult>([])
+
+  // the index is served from /search.json and loaded the first time search opens
+  const searchData = useRef<SearchMetaResult>([])
+  useEffect(() => {
+    if (!dialog_api.open || searchData.current.length) return
+    fetch("/search.json")
+      .then((res) => res.json())
+      .then((data: SearchMetaResult) => {
+        searchData.current = data
+      })
+  }, [dialog_api.open])
 
   const collection = useMemo(
     () =>
@@ -59,7 +66,7 @@ export function useSearch(): UseSearchReturn {
     },
     onInputValueChange({ inputValue }) {
       if (inputValue.length < 3) return
-      const results = matchSorter(searchData, inputValue, {
+      const results = matchSorter(searchData.current, inputValue, {
         keys: ["hierarchy.lvl1", "hierarchy.lvl2", "hierarchy.lvl3", "content"],
       })
       setResults(results.slice(0, 10))

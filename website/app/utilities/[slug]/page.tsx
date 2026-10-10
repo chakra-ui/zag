@@ -1,7 +1,7 @@
-import { getUtilityDoc, getUtilityPaths } from "lib/contentlayer-utils"
+import { getUtilityDoc, getUtilityPaths } from "lib/source"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import UtilityPageClient from "./client"
+import { DocPage } from "components/doc-page"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -30,5 +30,5 @@ export default async function UtilityPage({ params }: PageProps) {
   const { slug } = await params
   const doc = getUtilityDoc(slug)
 
-  return <UtilityPageClient doc={doc} />
+  return <DocPage category="utilities" doc={doc} />
 }

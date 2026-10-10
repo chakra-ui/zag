@@ -1,5 +1,3 @@
-"use client"
-
 import { AnnouncementBanner } from "components/announcement-banner"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
@@ -233,7 +231,14 @@ export default function Home() {
           </styled.p>
         </Box>
 
-        <MultiframeworkTabs />
+        <MultiframeworkTabs
+          snippets={{
+            react: <CodeArea slug="react/number-input/usage" />,
+            vue: <CodeArea slug="vue/number-input/usage" />,
+            solid: <CodeArea slug="solid/number-input/usage" />,
+            svelte: <CodeArea slug="svelte/number-input/usage" />,
+          }}
+        />
       </Section>
 
       <Section my="10">

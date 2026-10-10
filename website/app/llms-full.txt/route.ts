@@ -1,5 +1,7 @@
 import { getFullComponentsText } from "lib/component-llm"
 
+export const dynamic = "force-static"
+
 export function GET() {
   const text = getFullComponentsText()
 

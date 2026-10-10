@@ -1,11 +1,8 @@
-import {
-  extractParams,
-  getComponentDoc,
-  getComponentPaths,
-} from "lib/contentlayer-utils"
+import { extractParams, getComponentDoc, getComponentPaths } from "lib/source"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import ComponentPageClient from "./client"
+import { DocPage } from "components/doc-page"
+import { FrameworkProvider } from "components/framework"
 
 type PageProps = {
   params: Promise<{ slug: string[] }>
@@ -38,5 +35,9 @@ export default async function ComponentPage({ params }: PageProps) {
   const { framework, slug: componentSlug } = extractParams(slug)
   const doc = getComponentDoc(componentSlug)
 
-  return <ComponentPageClient doc={doc} framework={framework} />
+  return (
+    <FrameworkProvider value={framework}>
+      <DocPage category="components" doc={doc} />
+    </FrameworkProvider>
+  )
 }
