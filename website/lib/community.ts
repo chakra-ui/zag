@@ -1,3 +1,5 @@
+import type { ShowcaseItem } from "lib/showcase"
+
 export interface CommunityLink {
   title: string
   description: string
@@ -20,11 +22,10 @@ export interface Recording {
   duration?: string
 }
 
-export interface EcosystemItem {
-  name: string
-  description: string
-  href: string
-  tags?: string[]
+/** Same shape as a showcase entry, plus who made it. `image` lives in `public/community/` */
+export interface CommunityProject extends ShowcaseItem {
+  /** GitHub username */
+  author: string
 }
 
 export const communityLinks: CommunityLink[] = [
@@ -56,7 +57,7 @@ export const communityLinks: CommunityLink[] = [
 export const teamMembers: TeamMember[] = [
   {
     name: "Segun Adebayo",
-    role: "Active member",
+    role: "Creator & Lead Maintainer",
     avatar: "https://github.com/segunadebayo.png",
     links: [
       { label: "GitHub", href: "https://github.com/segunadebayo" },
@@ -64,26 +65,42 @@ export const teamMembers: TeamMember[] = [
     ],
   },
   {
-    name: "Esther",
-    role: "Active member",
-    avatar: "https://github.com/estheragbaje.png",
-    links: [{ label: "GitHub", href: "https://github.com/estheragbaje" }],
+    name: "Adebesin Tolulope",
+    role: "Maintainer",
+    avatar: "https://github.com/Adebesin-Cell.png",
+    links: [
+      { label: "GitHub", href: "https://github.com/Adebesin-Cell" },
+      { label: "X", href: "https://x.com/I_am_Lope" },
+    ],
   },
   {
+    name: "Esther",
+    role: "Developer Relations",
+    avatar: "https://github.com/estheragbaje.png",
+    links: [
+      { label: "GitHub", href: "https://github.com/estheragbaje" },
+      { label: "X", href: "https://x.com/_estheradebayo" },
+    ],
+  },
+]
+
+export const advisorMembers: TeamMember[] = [
+  {
     name: "Abraham",
-    role: "Active member",
+    role: "Creator, Tark UI",
     avatar: "https://github.com/anubra266.png",
     links: [{ label: "GitHub", href: "https://github.com/anubra266" }],
   },
   {
     name: "Christian Schroter",
-    role: "Active member",
+    role: "Creator, Park UI",
     avatar: "https://github.com/cschroeter.png",
     links: [{ label: "GitHub", href: "https://github.com/cschroeter" }],
   },
   {
     name: "Ivica Batinic",
-    role: "Active member",
+    role: "Advisor",
+    avatar: "https://github.com/isBatak.png",
     links: [{ label: "GitHub", href: "https://github.com/isBatak" }],
   },
 ]
@@ -143,30 +160,26 @@ export const recordings: Recording[] = [
   },
 ]
 
-export const ecosystemItems: EcosystemItem[] = [
+export const communityProjects: CommunityProject[] = [
   {
     name: "zag-ripple",
-    description:
-      "Community package for ripple interactions powered by Zag patterns.",
-    href: "https://www.npmjs.com/search?q=zag-ripple",
-    tags: ["Community", "Package"],
+    description: "Component library for Ripple JS through ZagJS",
+    href: "https://github.com/anubra266/zag-ripple",
+    image: "/community/zag-ripple.png",
+    author: "anubra266",
+  },
+  {
+    name: "zagjs-lit",
+    description: "Lit framework adapter for Zag state machines.",
+    href: "https://github.com/RampantDespair/ZagJs-Lit",
+    image: "/community/zagjs-lit.png",
+    author: "RampantDespair",
   },
   {
     name: "zag-angular",
-    description: "Community-led Angular integration for Zag machines.",
-    href: "https://www.npmjs.com/search?q=zag-angular",
-    tags: ["Angular", "Integration"],
-  },
-  {
-    name: "Ark UI",
-    description: "Headless UI components built on top of Zag.js.",
-    href: "https://ark-ui.com",
-    tags: ["Headless", "Components"],
-  },
-  {
-    name: "Park UI",
-    description: "A design system starter that uses Ark UI and Zag primitives.",
-    href: "https://park-ui.com",
-    tags: ["Design System", "Starter"],
+    description: "An Angular wrapper for zag",
+    href: "https://github.com/makuko/zag-angular",
+    image: "/community/zag-angular.png",
+    author: "makuko",
   },
 ]

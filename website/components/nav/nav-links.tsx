@@ -57,4 +57,9 @@ const navLinks: NavLink[] = [
     label: "Community",
     isActive: (pathname) => pathname.startsWith("/community"),
   },
+  {
+    href: "/team",
+    label: "Team",
+    isActive: (pathname) => pathname.startsWith("/team"),
+  },
 ]
