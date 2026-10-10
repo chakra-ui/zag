@@ -21,6 +21,7 @@ import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
 import { PropTable } from "./prop-table"
+import { SectionIndex } from "./section-index"
 
 const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
   const Body = getSnippetBody(snippet.key)
@@ -57,6 +58,7 @@ const components: Record<string, FC<any>> = {
     )
   },
   Showcase,
+  SectionIndex,
   Admonition(props) {
     return <div {...props} />
   },

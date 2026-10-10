@@ -42,6 +42,18 @@ export const tabs: SidebarTab[] = [
           { label: "Introduction", id: "introduction" },
           { label: "Installation", id: "installation" },
           { label: "FAQ", id: "faq" },
+        ]),
+      },
+      {
+        label: "Browse",
+        items: docs("overview", [
+          { label: "All Components", id: "components" },
+          { label: "All Utilities", id: "utilities" },
+        ]),
+      },
+      {
+        label: "Resources",
+        items: docs("overview", [
           {
             label: "Changelog",
             id: "changelogs",
@@ -58,16 +70,24 @@ export const tabs: SidebarTab[] = [
     icon: LuBookOpen,
     groups: [
       {
-        label: "Guides",
+        label: "Concepts",
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
           { label: "Collection", id: "collection" },
           { label: "Programmatic Control", id: "programmatic-control" },
+        ]),
+      },
+      {
+        label: "Advanced",
+        items: docs("guides", [
           { label: "Building Machines", id: "building-machines" },
           { label: "Framework Adapters", id: "framework-adapters" },
-          { label: "Migration", id: "migration" },
         ]),
+      },
+      {
+        label: "Upgrading",
+        items: docs("guides", [{ label: "Migration", id: "migration" }]),
       },
     ],
   },
@@ -167,19 +187,25 @@ export const tabs: SidebarTab[] = [
     icon: LuWrench,
     groups: [
       {
-        label: "Utilities",
-        items: [
-          ...docs("utilities", [
-            { label: "Async List", id: "async-list" },
-            { label: "Drag and Drop", id: "dnd" },
-            { label: "Focus Trap", id: "focus-trap" },
-            { label: "Hotkeys", id: "hotkeys" },
-            { label: "Infinite Scroll", id: "infinite-scroll" },
-          ]),
-          // a building block for the others, so it sits here; its URL stays under /components
-          ...docs("components", [{ label: "Presence", id: "presence" }]),
-          ...docs("utilities", [{ label: "Virtualizer", id: "virtualizer" }]),
-        ],
+        label: "Data",
+        items: docs("utilities", [
+          { label: "Async List", id: "async-list" },
+          { label: "Infinite Scroll", id: "infinite-scroll" },
+          { label: "Virtualizer", id: "virtualizer" },
+        ]),
+      },
+      {
+        label: "Interaction",
+        items: docs("utilities", [
+          { label: "Drag and Drop", id: "dnd" },
+          { label: "Focus Trap", id: "focus-trap" },
+          { label: "Hotkeys", id: "hotkeys" },
+        ]),
+      },
+      {
+        label: "Animation",
+        // a building block for the others, so it sits here; its URL stays under /components
+        items: docs("components", [{ label: "Presence", id: "presence" }]),
       },
     ],
   },
