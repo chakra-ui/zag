@@ -1,3 +1,5 @@
+"use client"
+
 import { type Framework } from "lib/framework-utils"
 import { createContext, useContext, useMemo, useState } from "react"
 

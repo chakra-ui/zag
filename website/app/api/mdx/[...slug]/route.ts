@@ -1,4 +1,4 @@
-import { components, guides, overviews, snippets, utilities } from ".velite"
+import { components, guides, overviews, snippets, utilities } from "lib/source"
 import { expandComponentContent } from "lib/mdx-expansion"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -19,7 +19,7 @@ const collections: Record<
   utilities: { data: utilities },
   snippets: {
     data: snippets,
-    findBy: (d, slug) => d.frontmatter?.slug === `/snippets/${slug}`,
+    findBy: (d, slug) => d.key === slug,
   },
 }
 
@@ -94,7 +94,7 @@ export async function GET(
     rawContent = expandComponentContent(rawContent, componentId, doc, framework)
   }
 
-  // Return all available data from velite
+  // Return the page data
   const response = {
     // Core fields
     slug: doc.slug,

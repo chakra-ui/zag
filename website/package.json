@@ -8,7 +8,7 @@
     "dev": "panda codegen && next dev",
     "start": "next start",
     "lint": "oxlint",
-    "typecheck": "panda codegen && tsc --noEmit",
+    "typecheck": "panda codegen && fumadocs-mdx && tsc --noEmit",
     "gen:snippet": "plop snippet",
     "gen:component": "plop component",
     "contributors:add": "all-contributors add",
@@ -82,6 +82,8 @@
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
+    "fumadocs-core": "16.17.1",
+    "fumadocs-mdx": "15.4.7",
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
     "match-sorter": "8.3.0",
@@ -95,12 +97,13 @@
     "refractor": "^5.0.0",
     "unist-util-visit": "5.1.0",
     "use-match-media-hook": "1.0.1",
-    "velite": "^0.4.0"
+    "zod": "4.5.4"
   },
   "devDependencies": {
     "@pandacss/dev": "^2.2.0",
     "@pandacss/preset-base": "2.2.0",
     "@pandacss/preset-panda": "2.2.0",
+    "@types/mdx": "^2.0.14",
     "@types/react": "^19.2.18",
     "all-contributors-cli": "6.26.1",
     "rehype": "13.0.2",

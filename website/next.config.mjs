@@ -1,3 +1,5 @@
+import { createMDX } from "fumadocs-mdx/next"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   agentRules: false,
@@ -15,6 +17,13 @@ const nextConfig = {
   },
   experimental: {
     externalDir: true,
+  },
+  // /api/mdx reads page sources and package versions at request time
+  outputFileTracingIncludes: {
+    "/api/mdx/[...slug]": [
+      "./data/**/*.mdx",
+      "./node_modules/@zag-js/*/package.json",
+    ],
   },
   redirects: async () => [
     {
@@ -35,22 +44,6 @@ const nextConfig = {
   ],
 }
 
-export default async function config() {
-  if (process.env.VELITE_STARTED) {
-    return nextConfig
-  }
+const withMDX = createMDX()
 
-  process.env.VELITE_STARTED = "1"
-  const { build } = await import("velite")
-
-  const isDev = process.env.NODE_ENV === "development"
-
-  if (isDev) {
-    console.log("Starting Velite in watch mode...")
-    build({ watch: true })
-  } else {
-    await build({ clean: true })
-  }
-
-  return nextConfig
-}
+export default withMDX(nextConfig)

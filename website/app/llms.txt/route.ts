@@ -3,6 +3,8 @@ import { formatUrl } from "lib/pagination-utils"
 import siteConfig from "site.config"
 import sidebar from "../../sidebar.config"
 
+export const dynamic = "force-static"
+
 function formatDocItem(categoryId: string, docItem: any, framework?: string) {
   const href = formatUrl(categoryId, docItem.id, framework)
   return `- [${docItem.label}](${siteConfig.url}${href})`
