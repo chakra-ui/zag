@@ -21,6 +21,7 @@ export async function generateMetadata({
     title: doc.title,
     description: doc.description,
     path: `/components/${componentSlug}`,
+    image: `/og/components/${componentSlug}.png`,
   })
 }
 

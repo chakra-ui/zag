@@ -69,6 +69,8 @@ export default function DocsLayout(props: DocsLayoutProps) {
             width="19.5rem"
             pb="10"
             px="8"
+            borderEndWidth="1px"
+            borderEndColor="border.subtle"
             overflowY="auto"
             overscrollBehavior="contain"
             className={scrollbarStyles}
@@ -116,6 +118,8 @@ export default function DocsLayout(props: DocsLayoutProps) {
             right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
             display={{ base: "none", xl: "block" }}
             width="19.5rem"
+            borderStartWidth="1px"
+            borderStartColor="border.subtle"
             visibility={hideToc ? "hidden" : undefined}
           >
             <TableOfContents

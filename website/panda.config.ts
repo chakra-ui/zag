@@ -380,7 +380,8 @@ export default defineConfig({
         listStyleType: "revert",
       },
       "& :is(h2, h3, h4)": {
-        scrollMarginTop: "24",
+        // clears the sticky top nav and docs tab bar
+        scrollMarginTop: "32",
         "&:hover": {
           "& a.anchor": { opacity: 1 },
         },
