@@ -1,5 +1,20 @@
 # @zag-js/splitter
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3413](https://github.com/chakra-ui/zag/pull/3413)
+  [`d89b09e`](https://github.com/chakra-ui/zag/commit/d89b09e9c463d8c8161e58e52a8019f0f2f11303) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where `onCollapse` and `onExpand` were not called on
+  the first collapse or expand after mount.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

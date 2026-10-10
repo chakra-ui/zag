@@ -1,5 +1,22 @@
 # @zag-js/tooltip
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3391](https://github.com/chakra-ui/zag/pull/3391)
+  [`36aaf7d`](https://github.com/chakra-ui/zag/commit/36aaf7d7485b8b6b35c1c1f16a1cb776e256da12) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - Fixed issue where unmounting an open tooltip made the next tooltip
+  skip its open delay.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/focus-visible@1.46.0
+  - @zag-js/popper@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes
