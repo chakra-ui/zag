@@ -76,6 +76,14 @@
   gap: 12px;
 }
 
+[data-scope="toast"][data-part="content"] {
+  transition: opacity 150ms;
+
+  [data-overlap][data-sibling] & {
+    opacity: 0;
+  }
+}
+
 [data-scope="toast"] .spinner {
   animation: spin 1s linear infinite;
 }

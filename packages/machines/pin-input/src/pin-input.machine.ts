@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
-import { isEqual, setValueAtIndex } from "@zag-js/utils"
+import { isEqual, setValueAtIndex, warn } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
@@ -138,7 +138,6 @@ export const machine = createMachine({
           },
         ],
         "INPUT.ENTER": {
-          guard: "isValueComplete",
           actions: ["requestFormSubmit"],
         },
         "VALUE.INVALID": {
@@ -152,7 +151,6 @@ export const machine = createMachine({
     guards: {
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       hasValue: ({ context, computed }) => computed("_value")[context.get("focusedIndex")] !== "",
-      isValueComplete: ({ computed }) => computed("isValueComplete"),
       hasIndex: ({ event }) => event.index !== undefined,
     },
 
@@ -162,9 +160,16 @@ export const machine = createMachine({
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
       setInputCount({ scope, context, prop }) {
-        if (prop("count")) return
         const inputEls = dom.getInputEls(scope)
-        context.set("count", inputEls.length)
+        const count = prop("count")
+        if (!count) {
+          context.set("count", inputEls.length)
+          return
+        }
+        warn(
+          inputEls.length > 0 && inputEls.length !== count,
+          `[zag-js/pin-input] \`count\` is ${count} but ${inputEls.length} inputs were rendered`,
+        )
       },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
@@ -296,10 +301,10 @@ export const machine = createMachine({
           dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
         })
       },
-      requestFormSubmit({ computed, prop, scope }) {
-        if (!prop("name") || !computed("isValueComplete")) return
-        const inputEl = dom.getHiddenInputEl(scope)
-        inputEl?.form?.requestSubmit()
+      requestFormSubmit({ scope }) {
+        // Submit regardless of completeness so native validation can report it
+        const form = dom.getHiddenInputEl(scope)?.form ?? dom.getFirstInputEl(scope)?.form
+        form?.requestSubmit()
       },
       autoSubmitIfNeeded({ computed, prop, scope }) {
         if (!prop("autoSubmit") || !computed("isValueComplete")) return

@@ -300,7 +300,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "checkbox",
     label: "Checkbox",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "indeterminate", title: "Indeterminate" },
+    ],
   },
   {
     slug: "combobox",
@@ -481,6 +484,10 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "toast",
     label: "Toast",
     examples: [
+      { slug: "deduplicated", title: "Deduplicated" },
+      { slug: "promise", title: "Promise" },
+      { slug: "queued", title: "Queued" },
+      { slug: "undo-action", title: "Undo Action" },
       { slug: "stacked", title: "Stacked" },
       { slug: "overlap", title: "Overlap" },
     ],

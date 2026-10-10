@@ -52,7 +52,22 @@ export class PinInputModel extends Model {
     }
   }
 
+  async trackFormEvents() {
+    await this.page.locator("main form").evaluate((form) => {
+      form.dataset.submits = "0"
+      form.dataset.invalid = "false"
+      form.addEventListener("submit", () => (form.dataset.submits = String(Number(form.dataset.submits) + 1)))
+      form.addEventListener("invalid", () => (form.dataset.invalid = "true"), true)
+    })
+  }
+
   // --- Assertions ---
+
+  async seeFormEvents({ submits, invalid }: { submits: number; invalid: boolean }) {
+    const form = this.page.locator("main form")
+    await expect(form).toHaveAttribute("data-submits", String(submits))
+    await expect(form).toHaveAttribute("data-invalid", String(invalid))
+  }
 
   async seeInputIsFocused(index: number) {
     await expect(this.getInput(index)).toBeFocused()

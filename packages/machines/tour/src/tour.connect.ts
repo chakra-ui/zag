@@ -291,7 +291,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": translations.nextStep,
             onClick: actionMap.next,
           }
           break
@@ -301,7 +300,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "prev",
             disabled: !hasPrevStep,
             "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": translations.prevStep,
             onClick: actionMap.prev,
           }
           break
@@ -309,7 +307,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": translations.close,
             onClick: actionMap.dismiss,
           }
           break
@@ -317,7 +314,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "skip":
           actionProps = {
             "data-type": "skip",
-            "aria-label": translations.skip,
             onClick: actionMap.skip,
           }
           break

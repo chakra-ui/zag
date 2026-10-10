@@ -31,7 +31,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
 - **Build before dev server**: `pnpm build` must complete before running any example dev servers or E2E tests, since workspace packages use `workspace:*` references and need compiled `dist/` output.
 - **Build is slow**: The full `pnpm build` takes ~2 minutes across all packages. It only needs to run once unless package source changes.
 - **Node version**: `.nvmrc` specifies Node 24, but Node 22 (pre-installed) works fine. The engine constraint is `>=18.0.0`.
-- **pnpm version**: `packageManager` field specifies `pnpm@10.33.0`. Corepack or the pre-installed pnpm handles this.
+- **pnpm version**: `packageManager` field specifies `pnpm@12.10.1`. Corepack or the pre-installed pnpm handles this.
 - **Husky hooks**: Pre-commit runs `lint-staged` (prettier on changed files). Commit-msg runs `commitlint` enforcing conventional commits. Both are non-blocking for development.
 - **E2E tests**: Playwright auto-starts the appropriate dev server. Set `FRAMEWORK` env var to target a specific framework (default: `react`). Playwright browsers must be installed first via `pnpm exec playwright install`.
 - **No secrets required**: No environment variables, API keys, or external services are needed for development.

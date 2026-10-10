@@ -1,6 +1,7 @@
 import type { Scope } from "@zag-js/core"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toc:${ctx.id}`
+export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `toc:${ctx.id}:nav`
 export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `toc:${ctx.id}:title`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `toc:${ctx.id}:list`
 export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `toc:${ctx.id}:item-${value}`

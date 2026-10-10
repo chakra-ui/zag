@@ -83,6 +83,10 @@ export const machine = createMachine<CarouselSchema>({
     track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
       action(["setSnapPoints", "scrollToPage"])
     })
+    // Realign only when the snap points move, so content or size changes don't interrupt a scroll
+    track([() => context.get("pageSnapPoints").join(",")], () => {
+      send({ type: "SNAP.CHANGE" })
+    })
     track([() => prop("slideCount")], () => {
       send({ type: "SNAP.REFRESH", src: "slide.count" })
     })
@@ -109,7 +113,7 @@ export const machine = createMachine<CarouselSchema>({
       actions: ["clearScrollEndTimer", "setMatchingPage"],
     },
     "SNAP.REFRESH": {
-      actions: ["setSnapPoints", "scrollToPageIfDrifted"],
+      actions: ["setSnapPoints"],
     },
     "PAGE.SCROLL": {
       actions: ["scrollToPage"],
@@ -125,6 +129,9 @@ export const machine = createMachine<CarouselSchema>({
   states: {
     idle: {
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "DRAGGING.START": {
           target: "dragging",
           actions: ["invokeDragStart"],
@@ -145,6 +152,9 @@ export const machine = createMachine<CarouselSchema>({
     focus: {
       effects: ["trackKeyboardScroll"],
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "VIEWPORT.BLUR": {
           target: "idle",
         },
@@ -225,6 +235,9 @@ export const machine = createMachine<CarouselSchema>({
       effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
       exit: ["invokeAutoplayEnd"],
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "AUTOPLAY.TICK": {
           actions: ["setNextPage", "invokeAutoplay"],
         },

@@ -83,6 +83,21 @@ test.describe("carousel", () => {
     await I.seeItemInView(1)
   })
 
+  test("slide content and size changes do not interrupt an active drag", async ({ page }) => {
+    await I.swipeCarousel("left", 200, 300, false)
+    const position = await I.carousel.evaluate((el) => el.scrollLeft)
+    expect(position).toBeGreaterThan(100)
+
+    await I.getItem(0).evaluate((el) => {
+      el.appendChild(document.createElement("span"))
+      el.style.height = `${el.offsetHeight + 20}px`
+    })
+    await page.waitForTimeout(100)
+
+    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
+    await I.releaseDrag()
+  })
+
   test("drag interruption and immediate restart resolves to final drag target", async () => {
     await I.swipeCarousel("left", 320, 300, false)
     await I.holdDrag(60)

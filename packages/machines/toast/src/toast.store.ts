@@ -1,5 +1,5 @@
 import type { Required } from "@zag-js/types"
-import { compact, runIfFn, uuid, warn } from "@zag-js/utils"
+import { compact, hasProp, runIfFn, uuid, warn } from "@zag-js/utils"
 import type {
   Options,
   ToastQueuePriority,
@@ -25,7 +25,8 @@ const priorities: Record<string, [ToastQueuePriority, ToastQueuePriority]> = {
 const DEFAULT_TYPE: Type = "info"
 
 const getPriorityForType = (type?: Type, hasAction?: boolean): ToastQueuePriority => {
-  const [actionable, nonActionable] = priorities[type ?? DEFAULT_TYPE]
+  const key = type ?? DEFAULT_TYPE
+  const [actionable, nonActionable] = hasProp(priorities, key) ? priorities[key] : priorities[DEFAULT_TYPE]
   return hasAction ? actionable : nonActionable
 }
 
@@ -53,17 +54,42 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
   let toasts: Partial<ToastProps<V>>[] = []
   let dismissedToasts = new Set<string>()
   let toastQueue: Partial<ToastProps<V>>[] = []
+  const closingToasts = new Set<string>()
+  const promiseTokens = new Map<string, symbol>()
+  let paused = false
 
   const subscribe = (subscriber: (...args: any[]) => void) => {
     subscribers.push(subscriber)
+
+    let active = true
+
     return () => {
+      if (!active) return
+      active = false
       const index = subscribers.indexOf(subscriber)
-      subscribers.splice(index, 1)
+      if (index !== -1) subscribers.splice(index, 1)
     }
   }
 
-  const publish = (data: Partial<ToastProps<V>>) => {
-    subscribers.forEach((subscriber) => subscriber(data))
+  const notifications: Partial<ToastProps<V>>[] = []
+  let publishing = false
+
+  const publish = (...data: Partial<ToastProps<V>>[]) => {
+    notifications.push(...data)
+
+    if (publishing) return data
+    publishing = true
+
+    try {
+      while (notifications.length) {
+        const next = notifications.shift()!
+        subscribers.slice().forEach((subscriber) => subscriber(next))
+      }
+    } finally {
+      publishing = false
+      notifications.length = 0
+    }
+
     return data
   }
 
@@ -72,35 +98,42 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
       toastQueue.push(data)
       return
     }
-    publish(data)
+
     toasts.unshift(data)
+    publish(data)
   }
 
   const processQueue = () => {
     toastQueue = sortToastsByPriority(toastQueue)
+
     while (toastQueue.length > 0 && toasts.length < attrs.max) {
       const nextToast = toastQueue.shift()
       if (nextToast) {
-        publish(nextToast)
-        toasts.unshift(nextToast)
+        const toast = { ...nextToast, paused: paused || nextToast.paused }
+        toasts.unshift(toast)
+        publish(toast)
       }
     }
   }
 
   const create = (data: Options<V>) => {
     const id = data.id ?? `toast:${uuid()}`
-    const exists = toasts.find((toast) => toast.id === id)
+    const exists = toasts.find((toast) => toast.id === id) ?? toastQueue.find((toast) => toast.id === id)
 
-    if (dismissedToasts.has(id)) dismissedToasts.delete(id)
+    if (closingToasts.has(id)) return id
+
+    if (hasProp(data, "promise") && data.promise !== exists?.promise) promiseTokens.delete(id)
+    dismissedToasts.delete(id)
 
     if (exists) {
-      toasts = toasts.map((toast) => {
-        if (toast.id === id) {
-          return publish({ ...toast, ...data, id })
-        }
+      const next = { ...exists, ...data, id }
 
-        return toast
-      })
+      if (toasts.some((toast) => toast.id === id)) {
+        toasts = toasts.map((toast) => (toast.id === id ? next : toast))
+        publish(next)
+      } else {
+        toastQueue = toastQueue.map((toast) => (toast.id === id ? next : toast))
+      }
     } else {
       const newToast = {
         id,
@@ -110,7 +143,9 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
         ...data,
         stacked: !attrs.overlap,
         gap: attrs.gap,
+        paused,
       }
+
       const priority = newToast.priority ?? getPriorityForType(newToast.type, !!newToast.action)
       addToast({ ...newToast, priority })
     }
@@ -119,19 +154,26 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
   }
 
   const remove = (id?: string) => {
-    dismissedToasts.add(id!)
+    const removed =
+      id == null ? [...toasts, ...toastQueue] : [...toasts, ...toastQueue].filter((toast) => toast.id === id)
+    const visible = id == null ? toasts : toasts.filter((toast) => toast.id === id)
 
-    if (!id) {
-      toasts.forEach((toast) => {
-        subscribers.forEach((subscriber) => subscriber({ id: toast.id, dismiss: true }))
-      })
-      toasts = []
-      toastQueue = []
-    } else {
-      subscribers.forEach((subscriber) => subscriber({ id, dismiss: true }))
-      toasts = toasts.filter((toast) => toast.id !== id)
-      processQueue()
-    }
+    removed.forEach((toast) => {
+      dismissedToasts.add(toast.id!)
+      closingToasts.delete(toast.id!)
+      promiseTokens.delete(toast.id!)
+    })
+
+    if (id != null) dismissedToasts.add(id)
+
+    toasts = id == null ? [] : toasts.filter((toast) => toast.id !== id)
+    toastQueue = id == null ? [] : toastQueue.filter((toast) => toast.id !== id)
+
+    // Commit removal before notifying subscribers or promoting queued toasts.
+    if (id != null && !visible.length) publish({ id, dismiss: true })
+    publish(...visible.map((toast) => ({ id: toast.id, dismiss: true })))
+    processQueue()
+
     return id
   }
 
@@ -180,6 +222,12 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
       type: "loading",
     })
 
+    const token = Symbol()
+    const current = toasts.find((toast) => toast.id === id) ?? toastQueue.find((toast) => toast.id === id)
+    if (current?.promise === promise && !closingToasts.has(id)) promiseTokens.set(id, token)
+
+    const isCurrent = () => promiseTokens.get(id) === token && !closingToasts.has(id)
+
     let removable = true
     let result: ["resolve", T] | ["reject", unknown]
 
@@ -190,12 +238,12 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
           //
           removable = false
           const errorOptions = runIfFn(options.error, `HTTP Error! status: ${response.status}`)
-          create({ ...shared, ...errorOptions, id, type: "error" })
+          if (isCurrent()) create({ ...shared, ...errorOptions, id, type: "error" })
           //
         } else if (options.success !== undefined) {
           removable = false
           const successOptions = runIfFn(options.success, response)
-          create({ ...shared, ...successOptions, id, type: successOptions.type ?? "success" })
+          if (isCurrent()) create({ ...shared, ...successOptions, id, type: successOptions.type ?? "success" })
         }
       })
       .catch(async (error) => {
@@ -203,13 +251,16 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
         if (options.error !== undefined) {
           removable = false
           const errorOptions = runIfFn(options.error, error)
-          create({ ...shared, ...errorOptions, id, type: "error" })
+          if (isCurrent()) create({ ...shared, ...errorOptions, id, type: "error" })
         }
       })
       .finally(() => {
-        if (removable) {
+        if (removable && isCurrent()) {
           remove(id)
         }
+
+        if (promiseTokens.get(id) === token) promiseTokens.delete(id)
+
         options.finally?.()
       })
 
@@ -221,41 +272,68 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     return { id, unwrap }
   }
 
-  const update = (id: string, data: Omit<Options, "id">) => {
-    return create({ id, ...data })
+  const update: ToastStore<V>["update"] = (id, data) => {
+    if (closingToasts.has(id)) return id
+    if (typeof data !== "function") return create({ ...data, id })
+
+    const current = toasts.find((toast) => toast.id === id) ?? toastQueue.find((toast) => toast.id === id)
+    if (!current) return id
+
+    const next = { ...data({ ...current }), id }
+
+    // The updater may remove, update, or promote its toast. Read the store again.
+    if (closingToasts.has(id)) return id
+    if (toasts.some((toast) => toast.id === id)) return create(next)
+    if (!toastQueue.some((toast) => toast.id === id)) return id
+
+    // Updating a queued toast must not publish it or move it into the visible list.
+    toastQueue = toastQueue.map((toast) => (toast.id === id ? { ...toast, ...next } : toast))
+    return id
+  }
+
+  const changeToasts = (data: Partial<ToastProps<V>>, id?: string) => {
+    const changed: Partial<ToastProps<V>>[] = []
+
+    toasts = toasts.map((toast) => {
+      if ((id != null && toast.id !== id) || closingToasts.has(toast.id!)) return toast
+
+      const next = { ...toast, ...data }
+      changed.push(next)
+
+      return next
+    })
+
+    toastQueue = toastQueue.map((toast) => (id == null || toast.id === id ? { ...toast, ...data } : toast))
+
+    publish(...changed)
   }
 
   const pause = (id?: string) => {
-    if (id != null) {
-      toasts = toasts.map((toast) => {
-        if (toast.id === id) return publish({ ...toast, message: "PAUSE" })
-        return toast
-      })
-    } else {
-      toasts = toasts.map((toast) => publish({ ...toast, message: "PAUSE" }))
-    }
+    if (id == null) paused = true
+
+    changeToasts({ paused: true }, id)
   }
 
   const resume = (id?: string) => {
-    if (id != null) {
-      toasts = toasts.map((toast) => {
-        if (toast.id === id) return publish({ ...toast, message: "RESUME" })
-        return toast
-      })
-    } else {
-      toasts = toasts.map((toast) => publish({ ...toast, message: "RESUME" }))
-    }
+    if (id == null) paused = false
+
+    changeToasts({ paused: false }, id)
   }
 
   const dismiss = (id?: string) => {
-    if (id != null) {
-      toasts = toasts.map((toast) => {
-        if (toast.id === id) return publish({ ...toast, message: "DISMISS" })
-        return toast
-      })
-    } else {
-      toasts = toasts.map((toast) => publish({ ...toast, message: "DISMISS" }))
-    }
+    const queued = toastQueue.filter((toast) => id == null || toast.id === id)
+    toastQueue = toastQueue.filter((toast) => id != null && toast.id !== id)
+
+    queued.forEach((toast) => {
+      dismissedToasts.add(toast.id!)
+      promiseTokens.delete(toast.id!)
+    })
+
+    const changed = toasts.filter((toast) => (id == null || toast.id === id) && !closingToasts.has(toast.id!))
+    changed.forEach((toast) => closingToasts.add(toast.id!))
+    toasts = toasts.map((toast) => (closingToasts.has(toast.id!) ? { ...toast, message: "DISMISS" } : toast))
+
+    publish(...changed.map((toast) => ({ ...toast, message: "DISMISS" })))
   }
 
   const isVisible = (id: string) => {
@@ -266,13 +344,9 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     return dismissedToasts.has(id)
   }
 
-  const expand = () => {
-    toasts = toasts.map((toast) => publish({ ...toast, stacked: true }))
-  }
+  const expand = () => changeToasts({ stacked: true })
 
-  const collapse = () => {
-    toasts = toasts.map((toast) => publish({ ...toast, stacked: false }))
-  }
+  const collapse = () => changeToasts({ stacked: false })
 
   return {
     attrs,

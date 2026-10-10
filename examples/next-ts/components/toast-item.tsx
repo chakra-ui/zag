@@ -19,14 +19,21 @@ export function ToastItem(props: ToastItemProps) {
     <div {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
-      <div {...api.getTitleProps()}>
-        {api.type === "loading" && "<...>"}
-        {api.title} {api.type}
+      <div
+        data-scope="toast"
+        data-part="content"
+        style={{ display: "grid", gap: "8px", width: "100%", paddingRight: "16px" }}
+      >
+        <div {...api.getTitleProps()}>
+          {api.type === "loading" && "<...>"}
+          {api.title}
+        </div>
+        <div {...api.getDescriptionProps()}>{api.description}</div>
+        {actor.action && <button {...api.getActionTriggerProps()}>{actor.action.label}</button>}
+        <button {...api.getCloseTriggerProps()}>
+          <XIcon />
+        </button>
       </div>
-      <div {...api.getDescriptionProps()}>{api.description}</div>
-      <button {...api.getCloseTriggerProps()}>
-        <XIcon />
-      </button>
       <span {...api.getGhostAfterProps()} />
     </div>
   )

@@ -121,6 +121,9 @@ power the logic behind UI components.
 
 ## Commands
 
+> This repo uses pnpm 12. If you're on pnpm 11, run `npm i -g pnpm@12` first, since pnpm 11 can fail to switch to v12
+> with an `ENOEXEC` error.
+
 ### Build commands
 
 Our build is managed with esbuild and turborepo to provide fast, concurrent builds across the packages.

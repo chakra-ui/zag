@@ -10,8 +10,8 @@ export class TreeViewModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto("/tree-view/basic")
+  goto(url = "/tree-view/basic") {
+    return this.page.goto(url)
   }
 
   private item(name: string) {
@@ -32,6 +32,19 @@ export class TreeViewModel extends Model {
 
   private button(name: string) {
     return this.page.getByRole("button", { name }).first()
+  }
+
+  private get renameInput() {
+    return this.page.locator("[data-part=node-rename-input]")
+  }
+
+  async seeRenameInputIsFocused(value: string) {
+    await expect(this.renameInput).toBeFocused()
+    await expect(this.renameInput).toHaveValue(value)
+  }
+
+  seeItem(name: string) {
+    return expect(this.item(name)).toBeVisible()
   }
 
   clickItem(name: string, options?: ClickOptions) {

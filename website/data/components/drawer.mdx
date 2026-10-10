@@ -175,6 +175,13 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+Use `api.modal` to skip the backdrop, since it would block interaction with the
+page.
+
+```tsx
+{api.modal && <div {...api.getBackdropProps()} />}
+```
+
 ### Swipe area
 
 Use `getSwipeAreaProps` to render a region outside the drawer that users can

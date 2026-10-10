@@ -20,8 +20,8 @@ export default function Page() {
   return (
     <>
       <main className="toc">
-        <div style={{ display: "flex", gap: "2rem" }}>
-          <nav {...api.getRootProps()}>
+        <div {...api.getRootProps()}>
+          <nav {...api.getNavProps()}>
             <h5 {...api.getTitleProps()}>On this page</h5>
             <ul {...api.getListProps()}>
               <div {...api.getIndicatorProps()} />
