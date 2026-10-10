@@ -182,12 +182,4 @@ export const communityProjects: CommunityProject[] = [
     image: "/community/zag-angular.png",
     author: "makuko",
   },
-  {
-    name: "@foliag/zag",
-    description:
-      "Zag.js adapter for Solid 2, with the same API as @zag-js/solid",
-    href: "https://github.com/foli-ag/zag",
-    image: "/community/foliag-zag.webp",
-    author: "foli-ag",
-  },
 ]
