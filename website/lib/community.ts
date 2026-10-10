@@ -168,4 +168,18 @@ export const communityProjects: CommunityProject[] = [
     image: "/community/zag-ripple.png",
     author: "anubra266",
   },
+  {
+    name: "zagjs-lit",
+    description: "Lit framework adapter for Zag state machines.",
+    href: "https://github.com/RampantDespair/ZagJs-Lit",
+    image: "/community/zagjs-lit.png",
+    author: "RampantDespair",
+  },
+  {
+    name: "zag-angular",
+    description: "An Angular wrapper for zag",
+    href: "https://github.com/makuko/zag-angular",
+    image: "/community/zag-angular.png",
+    author: "makuko",
+  },
 ]
