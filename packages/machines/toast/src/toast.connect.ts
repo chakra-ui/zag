@@ -42,11 +42,11 @@ export function connect<T extends PropTypes, O>(
     paused,
     closable: !!prop("closable"),
     pause() {
-      send({ type: "PAUSE" })
+      prop("parent").prop("store").pause(prop("id"))
     },
 
     resume() {
-      send({ type: "RESUME" })
+      prop("parent").prop("store").resume(prop("id"))
     },
 
     dismiss() {

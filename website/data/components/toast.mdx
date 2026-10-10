@@ -214,11 +214,12 @@ toaster.update(id, (prev) => ({
 }))
 ```
 
-Queued toasts are supported. Missing toasts skip the updater.
+Queued toasts are supported. Missing or closing toasts skip the updater.
 
 #### Pause and resume all toasts
 
-Call `pause()`/`resume()` without an `id` to affect all active toasts.
+Call `pause()`/`resume()` without an `id` to affect all toasts, including new
+and queued toasts.
 
 ```tsx
 toaster.pause()

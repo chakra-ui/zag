@@ -5,7 +5,7 @@ import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
-const { not } = createGuards<ToastSchema>()
+const { not, and } = createGuards<ToastSchema>()
 
 export const machine = createMachine<ToastSchema>({
   props({ props }) {
@@ -18,7 +18,9 @@ export const machine = createMachine<ToastSchema>({
   },
 
   initialState({ prop }) {
-    const persist = prop("type") === "loading" || prop("duration") === Infinity
+    if (prop("message") === "DISMISS") return "dismissing"
+
+    const persist = prop("type") === "loading" || prop("duration") === Infinity || prop("paused")
     return persist ? "visible:persist" : "visible"
   },
 
@@ -79,6 +81,10 @@ export const machine = createMachine<ToastSchema>({
       if (message) send({ type: message, src: "programmatic" })
     })
 
+    track([() => prop("paused")], () => {
+      send({ type: prop("paused") ? "PAUSE" : "RESUME" })
+    })
+
     track([() => prop("type"), () => prop("duration")], () => {
       send({ type: "UPDATE" })
     })
@@ -87,11 +93,12 @@ export const machine = createMachine<ToastSchema>({
   on: {
     UPDATE: [
       {
-        guard: "shouldPersist",
+        guard: and("isVisible", "shouldPause"),
         target: "visible:persist",
         actions: ["resetCloseTimer"],
       },
       {
+        guard: "isVisible",
         target: "visible:updating",
         actions: ["resetCloseTimer"],
       },
@@ -110,6 +117,12 @@ export const machine = createMachine<ToastSchema>({
       tags: ["visible", "updating"],
       effects: ["waitForNextTick"],
       on: {
+        DISMISS: {
+          target: "dismissing",
+        },
+        PAUSE: {
+          target: "visible:persist",
+        },
         SHOW: {
           target: "visible",
         },
@@ -120,7 +133,7 @@ export const machine = createMachine<ToastSchema>({
       tags: ["visible", "paused"],
       on: {
         RESUME: {
-          guard: not("isLoadingType"),
+          guard: not("shouldPause"),
           target: "visible",
           actions: ["setCloseTimer"],
         },
@@ -210,8 +223,8 @@ export const machine = createMachine<ToastSchema>({
     },
 
     guards: {
-      isLoadingType: ({ prop }) => prop("type") === "loading",
-      shouldPersist: ({ computed }) => computed("shouldPersist"),
+      isVisible: ({ state }) => state.hasTag("visible"),
+      shouldPause: ({ computed, prop }) => computed("shouldPersist") || !!prop("paused"),
     },
 
     actions: {
@@ -257,6 +270,7 @@ export const machine = createMachine<ToastSchema>({
         parent.send({ type: "TOAST.REMOVE", id: prop("id") })
       },
       invokeOnDismiss({ prop, event }) {
+        prop("parent").prop("store").dismiss(prop("id"))
         prop("onStatusChange")?.({ status: "dismissing", src: event.src })
       },
       invokeOnUnmount({ prop }) {

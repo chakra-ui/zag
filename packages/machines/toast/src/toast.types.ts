@@ -140,6 +140,11 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
    */
   message?: any | undefined
   /**
+   * @internal
+   * Whether the auto-dismiss timer is paused
+   */
+  paused?: boolean | undefined
+  /**
    * The gap of the toast
    */
   gap?: number | undefined
@@ -235,7 +240,7 @@ export interface ToastStoreProps {
   removeDelay?: number | undefined
   /**
    * Whether to pause toast when the user leaves the browser tab
-   * @default false
+   * @default true
    */
   pauseOnPageIdle?: boolean | undefined
 }
@@ -290,12 +295,14 @@ export interface ToastStore<V = any> {
    */
   subscribe: (subscriber: (...args: any[]) => void) => VoidFunction
   /**
-   * Create a new toast with the given options
+   * Create a toast or update an existing toast with the same ID.
+   * Calls targeting closing toasts are ignored.
    */
   create: (data: Options<V>) => string
   /**
    * Update a toast with new properties or a function of its current properties.
-   * Functional updates are ignored when the toast does not exist.
+   * Updates to closing toasts are ignored.
+   * Functional updates are also ignored when the toast does not exist.
    */
   update: (id: string, data: MaybeFunction<Partial<ToastProps<V>>, Partial<ToastProps<V>>>) => string
   /**
