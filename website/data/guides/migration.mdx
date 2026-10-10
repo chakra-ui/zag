@@ -1,400 +1,185 @@
 ---
 title: Migration Guide
-description: Migrating your project to v1
+description: Upgrading your project from Zag v1 to v2
 ---
 
-After years of refinement and iteration, we've cemented Zag to work seamlessly
-across major JavaScript frameworks.
+Most v2 changes are additive, so you can upgrade one machine at a time. This
+guide lists every breaking change by package. If a package you use isn't listed,
+it upgrades without code changes.
 
-Now, we're taking things to the next level by focusing on:
+> Still on v0? Follow the [v0 to v1 guide](https://zagjs.com/guides/migration)
+> first.
 
-- **Performance**: Improving the runtime and rendering performance of every
-  component
-- **Bundle Size**: Reducing the gross bundle size of each component + framework
-  adapters
+## Upgrade the packages
 
-We achieved this by **moving from an external store to native reactive
-primitives** provided by each framework.
+Update every `@zag-js/*` package together. Machines and framework adapters share
+one version, so mixing v1 and v2 packages isn't supported.
 
-Our rigorous performance testing, which involved stress-testing with 10,000
-instances of the same component, revealed roughly **1.5x - 4x** performance
-improvements across components. [View Breakdown](#performance)
+```bash
+npm install @zag-js/react@next @zag-js/dialog@next
+```
 
-## Changed
+## Select and Combobox
 
-The major changes are quite simple, and are listed below:
-
-### useMachine
-
-`useMachine` now returns a `service` object instead of a tuple of
-`[state, send]`.
-
-This change is the same across all components. Using "find and replace" will
-help you migrate faster.
-
-**Before**
+`role="listbox"` moves from the content part to a new `list` part. Wrap the
+items in `getListProps()` inside `getContentProps()`.
 
 ```tsx
-const [state, send] = useMachine(avatar.machine({ id: useId() }))
+<div {...api.getContentProps()}>
+  <div {...api.getListProps()}>{/* items */}</div>
+</div>
 ```
 
-**After**
+- `composite` is replaced by `popupType: "listbox" | "dialog"`. Migrate
+  `composite: false` to `popupType: "dialog"`.
+- Combobox: `scrollContentToTop` is renamed `scrollToTop`.
+- `aria-controls` now points to the list id.
+- Select: scroll arrows render inside the content instead of the positioner.
+
+## Listbox
+
+`role="listbox"` moves to a new `list` part, which is now the focus target and
+carries `aria-activedescendant`.
 
 ```tsx
-const service = useMachine(avatar.machine, { id: useId() })
+<div {...api.getContentProps()}>
+  <ul {...api.getListProps()}>{/* items */}</ul>
+</div>
 ```
 
-> Notice that `avatar.machine` is no longer a function, it is passed directly to
-> `useMachine`.
+If you virtualize the list, attach the scroll ref to the list element, since
+`scrollIntoView` now targets it.
 
-#### Caveats
+## Tabs
 
-Due to the switch from `<component>.machine()` as a function to
-`<component>.machine` as an object, the TS inference is limited for generic
-components like combobox and select.
+The `composite` prop is replaced by `virtualFocus`, and the boolean is inverted.
 
-To help with this, we've exported an equivalent `<component>.Machine` type to
-help with the casting.
-
-```ts
-useMachine(combobox.machine as combobox.Machine<Item>)
+```diff
+- tabs.machine({ composite: false })
++ tabs.machine({ virtualFocus: true })
 ```
 
-### Controlled vs Uncontrolled value
+## Popover
 
-Managing controlled and uncontrolled values is a fairly common need in most
-component libraries.
+The `portalled` prop and `api.portalled` are removed. Portalling is detected
+automatically.
 
-Previously, we handled this by providing initial and controlled context to the
-machine.
-
-```tsx
-///                                                    👇🏻 Default value
-const [state, send] = useMachine(numberInput.machine({ value: "10" }), {
-  context: {
-    // 👇🏻 Controlled value
-    value: "10",
-  },
-})
+```diff
+- const service = useMachine(popover.machine, { id, portalled: true })
+- const Wrapper = api.portalled ? Portal : Fragment
++ <Portal>
 ```
 
-This can be initially confusing to users and is error prone.
+## Pin Input
 
-Now, we've moved the logic to the machine itself. Allowing users to explicitly
-provide a default value and a controlled value.
+`count` is now required. The machine no longer counts the inputs in the DOM.
 
-```tsx
-const service = useMachine(numberInput.machine, {
-  // 👇🏻 Default value
-  defaultValue: "10",
-  // 👇🏻 Controlled value
-  value: "10",
-})
+```diff
+  pinInput.machine({
+    id: "pin",
++   count: 4,
+  })
 ```
 
-> This change applies all component with some form of `value` prop.
+## Tags Input
 
-### Controlled vs Uncontrolled open
+`editable` now defaults to `false`. Set it to keep inline editing of tags.
 
-Previously, we handled controlled and uncontrolled open states by providing
-initial `open` state and an additional `open.controlled` property.
-
-```tsx
-//                                                    👇🏻 Default value
-const [state, send] = useMachine(dialog.machine({ open: true }), {
-  context: {
-    // 👇🏻 Controlled value
-    open: true,
-    "open.controlled": true,
-  },
-})
+```diff
++   editable: true,
 ```
 
-Now, we've moved the logic to the machine itself. Allowing users to explicitly
-provide a default and controlled open state.
+## Avatar
 
-```tsx
-const service = useMachine(dialog.machine, {
-  // 👇🏻 Default value
-  defaultOpen: true,
-  // 👇🏻 Controlled value
-  open: true,
-})
+`api.setSrc` is removed. Update `src` on the image you render instead.
+`api.setLoaded()` and `api.setError()` are unchanged.
+
+```diff
+- api.setSrc(nextSrc)
++ imageEl.src = nextSrc
 ```
 
-### Typings
+## Carousel
 
-`<component>.Context` is now renamed to `<component>.Props`
+Three props are renamed.
 
-**Before**
+| v1           | v2            |
+| ------------ | ------------- |
+| `slideCount` | `count`       |
+| `autoplay`   | `autoPlay`    |
+| `padding`    | `itemSpacing` |
 
-```tsx
-import * as accordion from "@zag-js/accordion"
+## Tree View
 
-interface Props extends accordion.Context {}
+```diff
+- api.getCellProps(nodeProps)
++ api.getNodeCellProps(nodeProps)
 ```
 
-**After**
+## Toggle and Toggle Group
 
-```tsx
-import * as accordion from "@zag-js/accordion"
+- Toggle group uses toggle-button semantics in every mode: `role="group"` and
+  `aria-pressed`, with no radio roles and no `aria-checked`.
+- `data-state="on|off"` is removed from toggle and toggle group. Style with
+  `data-pressed`.
+- `data-focus` is removed from toggle group parts. Use `:focus-visible` and
+  `:focus-within`.
 
-interface Props extends accordion.Props {}
+```diff
+- screen.getByRole("radio", { checked: true })
++ screen.getByRole("button", { pressed: true })
 ```
 
-### Toast
+## Floating Panel and Image Cropper
 
-The toast component new requires that you create a toast store (or manager), and
-pass that store to the toast group machine.
+Handle naming is the same across both machines now.
 
-This store is to be used in userland to create and manage toasts.
+- Floating panel: `ResizeTriggerProps.axis` is `placement`, `data-axis` is
+  `data-placement`, and `resizeTriggerAxes` is `resizeTriggerPlacements`.
+  `ResizeTriggerAxis` is removed; use `HandlePosition`.
+- Image cropper: `HandleProps.position` is `placement`, `data-position` is
+  `data-placement`, and `handles` is `placements`.
 
-> Refer to the [toast](/components/react/toast) documentation for more details.
+## Async List
 
-**Before**
+Filter and sorting state are generic. The machine takes four type parameters,
+`Item, Filter, Sorting, Cursor`, instead of two.
 
-```tsx
-const [state, send] = useMachine(
-  toast.group.machine({
-    overlap: false,
-    placement: "bottom",
-  }),
-)
-
-const toaster = toast.group.connect(state, send, normalizeProps)
-
-// propagate the `toaster` via context and use it in your app.
-
-toaster.create({
-  title: "Hello",
-  description: "World",
-})
+```diff
+- asyncList.machine as asyncList.Machine<Item, string>
++ asyncList.machine as asyncList.Machine<Item, string, SortDescriptor<Item>, string>
+- async load({ signal, cursor, filterText, sortDescriptor }) {
++ async load({ signal, cursor, filter, sorting }) {
 ```
 
-**After**
-
-```tsx
-const toaster = toast.createStore({
-  overlap: false,
-  placement: "bottom",
-})
-
-const service = useMachine(toast.group.machine, {
-  store: toaster,
-})
-
-// use the `toaster` store to create and manage toasts. No need for context.
-
-toaster.create({
-  title: "Hello",
-  description: "World",
-})
-```
-
-For Solid.js users, we recommend using `<Key>` exported from `@zag-js/solid`
-when mapping over the toasts, instead of the `<For>` component.
-
-## Fixed
-
-- **Menu**: Fix issue where context menu doesn't update positioning on
-  subsequent right clicks.
-
-- **Avatar**: Fix issue where `api.setSrc` doesn't work.
-
-- **File Upload**: Fix issue where drag-and-drop doesn't work when `directory`
-  is `true`.
-
-- **Carousel**
-  - Fix issue where initial page is not working.
-  - Fix issue where pagination sync broken after using dots indicators.
-
-## Removed
-
-- General
-  - Removed `useActor` hook in favor of `useMachine` everywhere.
-  - Removed `open.controlled` in favor of `defaultOpen` and `open` props.
-
-- Pagination
-  - `api.setCount` is removed in favor of explicitly setting the `count` prop.
-
-- Select, Combobox
-  - `api.setCollection` is removed in favor of explicitly setting the
-    `collection` prop.
-
-## Performance
-
-We measured the mount performance of 10k instances of each component, and
-compared the before and after.
-
-### Avatar
-
-**Result**: ~27% faster mount time and ~99% faster update time
-
-#**Before**
-
-```sh
-{phase: 'mount', duration: 1007.3000000119209}
-{phase: 'update', duration: 890.4000000357628}
-```
-
-**#After:**
-
-```sh
-{phase: 'mount', duration: 736.9999999403954}
-{phase: 'update', duration: 1.899999976158142}
-```
-
-### Accordion
-
-**Result**: ~61% faster mount time and no update time
-
-**Before**
-
-```sh
-{phase: 'mount', duration: 2778.4999997913837}
-{phase: 'update', duration: 2.3000000715255737}
-```
-
-**After**
-
-```sh
-{phase: 'mount', duration: 1079.0000001490116}
-```
-
-### Collapsible
-
-**Result**: ~65% faster mount time and no update time
-
-**Before**
-
-```sh
-{phase: 'mount', duration: 834.4000000357628}
-{phase: 'update', duration: 2.1999999284744263}
-```
-
-**After**
-
-```sh
-{phase: 'mount', duration: 290.3000001013279}
-```
-
-### Dialog
-
-**Result**: ~80% faster mount time and no update time
-
-**Before**
-
-```sh
-{phase: 'mount', duration: 688.9000000357628}
-{phase: 'update', duration: 2.0000000298023224}
-```
-
-**After**
-
-```sh
-{phase: 'mount', duration: 135.50000008940697}
-```
-
-### Editable
-
-**Result**: ~56% faster mount time and no update time
-
-**Before**
-
-```sh
-{phase: 'mount', duration: 1679.500000089407}
-{phase: 'update', duration: 2.0000000298023224}
-```
-
-**After**
-
-```sh
-{phase: 'mount', duration: 737.5999999940395}
-```
-
-### Tooltip
-
-**Result**: ~82% faster mount time and no update time
-
-**Before**
-
-```sh
-{phase: 'mount', duration: 797.7999999821186}
-{phase: 'update', duration: 2.5999999940395355}
-```
-
-**After**
-
-```sh
-{phase: 'mount', duration: 139.9000000357628}
-```
-
-### Presence
-
-**Result**: ~64% faster mount time and eliminated update time
-
-**Before**
-
-```sh
-{ phase: "mount", duration: 1414 }
-{ phase: "update", duration: 0 }
-```
-
-**After**
-
-```sh
-{ phase: "mount", duration: 502 }
-```
-
-### Tabs
-
-**Result**: ~6% faster mount time
-
-**Before**
-
-```sh
-{ phase: "mount", duration: 4120 }
-{ phase: "update", duration: 2014 }
-```
-
-**After**
-
-```sh
-{ phase: "mount", duration: 3880 }
-{ phase: "nested-update", duration: 3179 }
-```
-
-## Bundle Size
-
-We've made significant strides in reducing the bundle size of the overall
-library. The core package powers all components. It is now less than 2KB
-minified, a whopping **98% reduction** in size.
-
-**Before**: 13.78 KB
-
-**After**: 1.52 KB
-
-## Contributors Notes
-
-- `activities` is now renamed to `effects`
-
-- `prop`, `context` and `refs` are now explicitly passed to the machine. Prior
-  to this everything was pass to the `context` object which was quite expensive
-  (performance wise).
-
-- The syntax for `watch` has changed significantly, refer to the new machines to
-  learn how it works. It is somewhat similar to how `useEffect` works in react.
-
-- `createMachine` is just an identity function, it doesn't do anything. The
-  machine work is now moved to the framework `useMachine` hook.
-
-## Thank you
-
-We'd like to thank the following contributors for their help in making this
-release possible:
-
-- [Segun Adebayo](https://github.com/segunadebayo) for leading the charge and
-  making such engineering feats possible.
-
-- [Christian Schroeter](https://github.com/cschroeter) for providing valuable
-  feedback and suggestions to improve the library.
+| v1                      | v2                 |
+| ----------------------- | ------------------ |
+| `initialFilterText`     | `initialFilter`    |
+| `initialSortDescriptor` | `initialSorting`   |
+| `api.setFilterText()`   | `api.setFilter()`  |
+| `api.sort()`            | `api.setSorting()` |
+| `api.filterText`        | `api.filter`       |
+| `api.sortDescriptor`    | `api.sorting`      |
+| `api.sorting` (boolean) | `api.isSorting`    |
+| `api.loading`           | `api.isLoading`    |
+| `api.empty`             | `api.isEmpty`      |
+
+## Behavior changes
+
+These aren't API changes, but code that relies on the old behavior needs a look.
+
+- **Hover Card:** the `closing` state is now `open.closing`.
+- **Number Input:** `onValueInvalid` fires as the out-of-range value is entered,
+  not on blur. The scrubber no longer creates its cursor element; render the
+  `scrubberCursor` part with `getScrubberCursorProps()`.
+- **Color Picker:** `getGamutOverlay()` replaces the `gamutOverlay` property.
+
+## For adapter and library authors
+
+- `@zag-js/dismissable`: `trackDismissableElement` requires `onLayerChange`.
+  Apply the emitted layer index, nesting and pointer-blocking state in your
+  render output.
+- `@zag-js/rect-utils`: `resizeRect`, `AffineTransform`, `compassDirectionMap`,
+  `oppositeDirectionMap` and `ScalingOptions` are removed.
+- `@zag-js/core`: `isEqual` compares functions by reference and only reads an
+  object's own properties.
