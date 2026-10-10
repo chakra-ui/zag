@@ -1,8 +1,8 @@
 import { extractParams, getComponentDoc, getComponentPaths } from "lib/source"
+import { isFramework } from "lib/framework-utils"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
 import { DocPage } from "components/doc-page"
-import { FrameworkProvider } from "components/framework"
 
 type PageProps = {
   params: Promise<{ slug: string[] }>
@@ -36,8 +36,10 @@ export default async function ComponentPage({ params }: PageProps) {
   const doc = getComponentDoc(componentSlug)
 
   return (
-    <FrameworkProvider value={framework}>
-      <DocPage category="components" doc={doc} />
-    </FrameworkProvider>
+    <DocPage
+      category="components"
+      doc={doc}
+      framework={isFramework(slug[0]) ? framework : undefined}
+    />
   )
 }

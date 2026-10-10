@@ -10,7 +10,8 @@ import { MobileNav } from "./mobile-nav"
 import { NavLinks } from "./nav-links"
 import { VersionSelect } from "./version-select"
 
-export function TopNav() {
+/** `docs` moves the version select into the docs tab bar */
+export function TopNav(props: { docs?: boolean }) {
   return (
     <Box
       bg="bg.subtle"
@@ -35,7 +36,7 @@ export function TopNav() {
       >
         <HStack gap="3">
           <LogoWithLink />
-          <VersionSelect />
+          {!props.docs && <VersionSelect />}
         </HStack>
         <HStack gap="4">
           <HStack as="nav" hideBelow="md" gap="6" me="6">
