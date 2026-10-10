@@ -39,7 +39,10 @@ export function SectionIndex(props: { tab: string }) {
               >
                 {item.label}
                 {item.new && (
-                  <span className={dot} role="img" aria-label="New" />
+                  <>
+                    <span className={dot} aria-hidden="true" />
+                    <styled.span srOnly>New</styled.span>
+                  </>
                 )}
               </Link>
             ))}
