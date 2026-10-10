@@ -13,7 +13,7 @@ export function MdxFooter(props: { editUrl?: string }) {
         borderColor="border.subtle"
       />
       {props.editUrl && (
-        <Box mt="10">
+        <Box mt="6">
           <EditPageLink href={props.editUrl} />
         </Box>
       )}
