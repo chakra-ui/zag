@@ -45,6 +45,32 @@ describe("focus visible", () => {
     expect(listenerMap.get(window)?.focus).not.toBe(window.focus)
   })
 
+  it("should keep the prototype's focus writable when it was an accessor", () => {
+    // Storybook's preview defines `focus` as an accessor with a setter. Redefining it as a
+    // data property without `writable` makes it read-only, so later assignments throw.
+    let current = HTMLElement.prototype.focus
+    Object.defineProperty(HTMLElement.prototype, "focus", {
+      configurable: true,
+      get: () => current,
+      set: (next) => {
+        current = next
+      },
+    })
+
+    trackFocusVisible()
+
+    const assignFocus = () => {
+      HTMLElement.prototype.focus = HTMLElement.prototype.focus
+    }
+    expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.writable).toBe(true)
+    expect(assignFocus).not.toThrow()
+
+    window.dispatchEvent(new Event("beforeunload"))
+
+    expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.writable).toBe(true)
+    expect(assignFocus).not.toThrow()
+  })
+
   it("should record no focus to restore when the prototype's focus cannot be read", () => {
     Object.defineProperty(HTMLElement.prototype, "focus", {
       configurable: true,
