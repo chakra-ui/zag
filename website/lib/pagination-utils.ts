@@ -42,11 +42,16 @@ type PaginationData = { framework: string; current: string }
 
 /** Prev/next links stay inside the current tab */
 export function paginate({ framework, current }: PaginationData) {
-  const data = tabItems(getActiveTab(current)).map((item) => ({
-    label: item.label,
-    url: docHref(item, framework),
-    current: isCurrentDoc(item, current),
-  }))
+  const data = getActiveTab(current).groups.flatMap((group) =>
+    group.items
+      .filter((item) => !item.href)
+      .map((item) => ({
+        label: item.label,
+        group: group.label,
+        url: docHref(item, framework),
+        current: isCurrentDoc(item, current),
+      })),
+  )
   const index = data.findIndex((item) => item.current)
   if (index === -1) return { prev: undefined, next: undefined }
   const prev = index > 0 ? data[index - 1] : undefined

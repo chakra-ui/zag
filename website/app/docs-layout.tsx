@@ -3,7 +3,7 @@
 import { CopyPageWidget } from "components/copy-page-widget"
 import { DocsTabBar } from "components/docs-tab-bar"
 import { MdxFooter } from "components/mdx-footer"
-import { EditPageLink } from "components/mdx/edit-page-link"
+import { FooterCredits } from "components/footer"
 import { Sidebar } from "components/sidebar"
 import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
@@ -52,84 +52,95 @@ export default function DocsLayout(props: DocsLayoutProps) {
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
       <Box position="sticky" top="0" zIndex="50">
-        <TopNav />
+        <TopNav fluid />
         <DocsTabBar />
       </Box>
-      <styled.div pt="10">
-        <SkipNavContent />
-        <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
+      <SkipNavContent />
+      {/* Same columns as the Panda docs: a sticky sidebar on the left edge, the
+          article centered at 4xl, and the TOC column always reserved so the
+          article sits in the same place with or without one. */}
+      <Flex position="relative">
+        <Box
+          as="aside"
+          hideBelow="lg"
+          flexShrink="0"
+          w="290px"
+          position="sticky"
+          top="7rem"
+          h="calc(100dvh - 7rem)"
+          borderEndWidth="1px"
+          borderEndColor="border.subtle"
+        >
           <Box
-            display={{ base: "none", lg: "block" }}
-            position="fixed"
-            zIndex={20}
-            bottom="0"
-            top="7rem"
-            left="max(0px, calc(50% - 45rem - calc(var(--scrollbar-width, 0px) / 2)))"
-            right="auto"
-            width="19.5rem"
-            pb="10"
-            px="8"
-            borderEndWidth="1px"
-            borderEndColor="border.subtle"
+            data-sidebar-scroll=""
+            h="full"
             overflowY="auto"
             overscrollBehavior="contain"
+            pt="10"
+            pb="10"
+            px="6"
             className={scrollbarStyles}
           >
-            <Box pt="10">
-              <Sidebar />
-            </Box>
+            <Sidebar />
           </Box>
+        </Box>
 
-          <Box
-            as="main"
-            className="mdx-content"
-            pl={{ lg: "19.5rem" }}
-            pt="4"
-            pr={{ xl: "16" }}
-          >
-            <Box mr={{ xl: "15.5rem" }}>
-              {doc?.title && (
-                <Flex alignItems="center" gap="4" mb="6">
-                  <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
-                    {doc.title}
-                  </styled.h1>
-                  {doc?.body?.raw && (
-                    <CopyPageWidget slug={pathname} title={doc.title} />
-                  )}
-                </Flex>
+        <Box
+          as="main"
+          className="mdx-content"
+          flex="1"
+          minW="0"
+          maxW="4xl"
+          mx="auto"
+          px={{ base: "4", sm: "6" }}
+          pt="10"
+          pb="16"
+        >
+          {doc?.title && (
+            <Flex alignItems="center" gap="4" mb="6">
+              <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
+                {doc.title}
+              </styled.h1>
+              {doc?.body?.raw && (
+                <CopyPageWidget slug={pathname} title={doc.title} />
               )}
-              {children}
-              {doc?.editUrl && (
-                <EditPageLink href={doc.editUrl}>
-                  Edit this page on GitHub
-                </EditPageLink>
-              )}
-              <MdxFooter />
-            </Box>
-          </Box>
+            </Flex>
+          )}
+          {children}
+          <MdxFooter editUrl={doc?.editUrl} />
+        </Box>
 
-          <Box
-            py="10"
-            px="8"
-            overflowY="auto"
-            position="fixed"
-            top="6.8rem"
-            bottom="0"
-            right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
-            display={{ base: "none", xl: "block" }}
-            width="19.5rem"
-            borderStartWidth="1px"
-            borderStartColor="border.subtle"
-            visibility={hideToc ? "hidden" : undefined}
-          >
+        <Box
+          hideBelow="xl"
+          flexShrink="0"
+          w="72"
+          position="sticky"
+          top="7rem"
+          alignSelf="flex-start"
+          maxH="calc(100dvh - 7rem)"
+          overflowY="auto"
+          pt="10"
+          pe="6"
+          className={scrollbarStyles}
+        >
+          {!hideToc && (
             <TableOfContents
               title={toc?.title}
               data={tableOfContent}
               getSlug={toc?.getSlug}
             />
-          </Box>
+          )}
         </Box>
-      </styled.div>
+      </Flex>
+      <Box
+        as="footer"
+        borderTopWidth="1px"
+        borderColor="border.subtle"
+        px={{ base: "4", md: "6" }}
+        py="6"
+      >
+        <FooterCredits />
+      </Box>
     </Box>
   )
 }

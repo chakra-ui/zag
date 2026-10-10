@@ -6,7 +6,6 @@ export default defineConfig({
   include: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
-    "./layouts/**/*.{js,jsx,ts,tsx}",
     "./demos/**/*.{js,jsx,ts,tsx}",
   ],
   exclude: [],

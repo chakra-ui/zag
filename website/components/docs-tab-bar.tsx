@@ -59,9 +59,7 @@ export function DocsTabBar() {
         as="nav"
         aria-label="Documentation sections"
         h="12"
-        maxW="8xl"
-        mx="auto"
-        px={{ base: "4", sm: "6", md: "8" }}
+        px={{ base: "4", md: "6" }}
         alignItems="stretch"
         justifyContent="space-between"
       >

@@ -42,9 +42,14 @@ const DocLink = (props: DocLinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null)
 
   useLayoutEffect(() => {
-    if (scrollIntoView && current && linkRef.current) {
-      linkRef.current.scrollIntoView({ block: "center" })
-    }
+    const link = linkRef.current
+    if (!scrollIntoView || !current || !link) return
+    // scroll only the sidebar column; scrollIntoView would also move the page
+    const container = link.closest<HTMLElement>("[data-sidebar-scroll]")
+    if (!container) return
+    const linkTop = link.getBoundingClientRect().top
+    const containerTop = container.getBoundingClientRect().top
+    container.scrollTop += linkTop - containerTop - container.clientHeight / 2
   }, [scrollIntoView, current, asPath])
 
   return (
