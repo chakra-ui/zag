@@ -94,7 +94,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
           mx="auto"
           px={{ base: "4", sm: "6" }}
           pt="10"
-          pb="16"
+          pb="10"
         >
           {doc?.title && (
             <Flex alignItems="center" gap="4" mb="6">
@@ -116,20 +116,27 @@ export default function DocsLayout(props: DocsLayoutProps) {
           w="72"
           position="sticky"
           top="7rem"
-          alignSelf="flex-start"
-          maxH="calc(100dvh - 7rem)"
-          overflowY="auto"
-          pt="10"
-          pe="6"
-          className={scrollbarStyles}
+          h="calc(100dvh - 7rem)"
+          borderStartWidth="1px"
+          borderStartColor="border.subtle"
         >
-          {!hideToc && (
-            <TableOfContents
-              title={toc?.title}
-              data={tableOfContent}
-              getSlug={toc?.getSlug}
-            />
-          )}
+          <Box
+            h="full"
+            overflowY="auto"
+            overscrollBehavior="contain"
+            pt="10"
+            pb="10"
+            px="6"
+            className={scrollbarStyles}
+          >
+            {!hideToc && (
+              <TableOfContents
+                title={toc?.title}
+                data={tableOfContent}
+                getSlug={toc?.getSlug}
+              />
+            )}
+          </Box>
         </Box>
       </Flex>
       <Box
