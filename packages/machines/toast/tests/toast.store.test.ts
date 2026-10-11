@@ -3,7 +3,7 @@ import { createToastStore } from "../src/toast.store"
 import type { ToastProps } from "../src/toast.types"
 
 describe("toast store updates", () => {
-  test("keeps object updates and their missing-ID creation behavior", () => {
+  test("object updates merge properties and create missing toasts", () => {
     const store = createToastStore<string>()
     const id = store.create({ title: "Original", description: "Keep me" })
 
@@ -130,6 +130,174 @@ describe("toast store updates", () => {
     expect(action).not.toHaveBeenCalled()
   })
 
+  test("only updates the requested toast and preserves its ID", () => {
+    const store = createToastStore<string>()
+    const id = store.create({ title: "Target" })
+    const otherId = store.create({ title: "Other" })
+
+    store.update(id, (prev) => ({ ...prev, id: "different", title: "Updated" }))
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: otherId, title: "Other" },
+      { id, title: "Updated" },
+    ])
+  })
+
+  test("ignores functional updates for a missing toast", () => {
+    const store = createToastStore()
+    const id = "missing"
+    const updater = vi.fn(() => ({ title: "Unexpected" }))
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    expect(store.update(id, updater)).toBe(id)
+    expect(updater).not.toHaveBeenCalled()
+    expect(subscriber).not.toHaveBeenCalled()
+    expect(store.getCount()).toBe(0)
+  })
+
+  test("ignores functional updates for a removed toast", () => {
+    const store = createToastStore()
+    const id = store.create({ title: "Removed" })
+    store.remove(id)
+    const updater = vi.fn(() => ({ title: "Unexpected" }))
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    expect(store.update(id, updater)).toBe(id)
+    expect(updater).not.toHaveBeenCalled()
+    expect(subscriber).not.toHaveBeenCalled()
+    expect(store.getCount()).toBe(0)
+  })
+})
+
+describe("toast store queued updates", () => {
+  test("updates a queued toast without publishing or promoting it", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const queuedId = store.create({ title: "Queued", meta: { count: 0 } })
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    store.update(queuedId, (prev) => ({ title: `${prev.title} updated`, meta: { count: prev.meta!.count + 1 } }))
+    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
+
+    expect(subscriber).not.toHaveBeenCalled()
+    expect(store.getVisibleToasts()).toMatchObject([{ id: visibleId, title: "Visible" }])
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Queued updated", meta: { count: 2 } }])
+  })
+
+  test("queued updates preserve identity, update priority, and leave other queued toasts alone", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const firstId = store.create({ title: "First queued", priority: 2 })
+    const targetId = store.create({ title: "Target queued", priority: 8 })
+    const lastId = store.create({ title: "Last queued", priority: 3 })
+
+    store.update(targetId, (prev) => ({ ...prev, id: "different", title: "Updated queued", priority: 1 }))
+
+    expect(store.getCount()).toBe(1)
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: targetId, title: "Updated queued", priority: 1 }])
+    store.remove(targetId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: firstId, title: "First queued", priority: 2 }])
+    store.remove(firstId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: lastId, title: "Last queued", priority: 3 }])
+    store.remove(lastId)
+
+    expect(store.getVisibleToasts()).toEqual([])
+  })
+
+  test("equal-priority queued updates preserve promotion order", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const firstId = store.create({ title: "First", priority: 2 })
+    const secondId = store.create({ title: "Second", priority: 2 })
+
+    store.update(firstId, (prev) => ({ title: `${prev.title} updated` }))
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: firstId, title: "First updated" }])
+    store.remove(firstId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: secondId, title: "Second" }])
+  })
+
+  test("a queued toast can still be updated after it becomes visible", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const queuedId = store.create({ title: "Queued", meta: { count: 0 } })
+
+    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
+    store.remove(visibleId)
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, meta: { count: 2 } }])
+    expect(subscriber).toHaveBeenCalledTimes(1)
+    expect(subscriber).toHaveBeenCalledWith(store.getVisibleToasts()[0])
+  })
+
+  test("removed queued toasts cannot be updated or promoted later", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const queuedId = store.create({ title: "Queued" })
+    store.remove(queuedId)
+    const updater = vi.fn(() => ({ title: "Unexpected" }))
+
+    expect(store.update(queuedId, updater)).toBe(queuedId)
+    expect(updater).not.toHaveBeenCalled()
+    store.remove(visibleId)
+
+    expect(store.getCount()).toBe(0)
+    expect(store.getVisibleToasts()).toEqual([])
+  })
+
+  test("removing all toasts also clears queued functional update targets", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const queuedId = store.create({ title: "Queued" })
+    store.remove()
+    const updater = vi.fn(() => ({ title: "Unexpected" }))
+
+    store.update(visibleId, updater)
+    store.update(queuedId, updater)
+
+    expect(updater).not.toHaveBeenCalled()
+    expect(store.getCount()).toBe(0)
+  })
+
+  test("object updates and duplicate creates update queued IDs in place", () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    const id = store.create({ title: "Queued" })
+    const subscriber = vi.fn()
+
+    store.subscribe(subscriber)
+    store.update(id, { title: "Updated" })
+    store.create({ id, description: "Retained" })
+    store.update(id, (prev) => ({ title: `${prev.title}!` }))
+
+    expect(subscriber).not.toHaveBeenCalled()
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id, title: "Updated!", description: "Retained" }])
+
+    store.remove(id)
+
+    expect(store.getCount()).toBe(0)
+  })
+})
+
+describe("toast store updater side effects", () => {
   test("preserves a toast created from inside an updater", () => {
     const store = createToastStore<string>()
     const id = store.create({ title: "Original" })
@@ -182,6 +350,7 @@ describe("toast store updates", () => {
     expect(subscriber).toHaveBeenCalledTimes(1)
     expect(subscriber).toHaveBeenCalledWith({ id, dismiss: true })
     store.remove(visibleId)
+
     expect(store.getCount()).toBe(0)
     expect(store.getVisibleToasts()).toEqual([])
   })
@@ -197,6 +366,7 @@ describe("toast store updates", () => {
 
     expect(store.getVisibleToasts()).toMatchObject([{ id, title: "Target updated", description: "Nested update" }])
     store.remove(id)
+
     expect(store.getCount()).toBe(0)
   })
 
@@ -211,8 +381,10 @@ describe("toast store updates", () => {
     })
 
     store.remove(visibleId)
+
     expect(store.getVisibleToasts()).toMatchObject([{ id, title: "Target updated", description: "Nested update" }])
     store.remove(id)
+
     expect(store.getCount()).toBe(0)
   })
 
@@ -228,140 +400,7 @@ describe("toast store updates", () => {
 
     expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Queued updated" }])
     store.remove(queuedId)
-    expect(store.getCount()).toBe(0)
-  })
 
-  test("only updates the requested toast and preserves its ID", () => {
-    const store = createToastStore<string>()
-    const id = store.create({ title: "Target" })
-    const otherId = store.create({ title: "Other" })
-
-    store.update(id, (prev) => ({ ...prev, id: "different", title: "Updated" }))
-
-    expect(store.getVisibleToasts()).toMatchObject([
-      { id: otherId, title: "Other" },
-      { id, title: "Updated" },
-    ])
-  })
-
-  test("ignores functional updates for a missing toast", () => {
-    const store = createToastStore()
-    const id = "missing"
-    const updater = vi.fn(() => ({ title: "Unexpected" }))
-    const subscriber = vi.fn()
-    store.subscribe(subscriber)
-
-    expect(store.update(id, updater)).toBe(id)
-    expect(updater).not.toHaveBeenCalled()
-    expect(subscriber).not.toHaveBeenCalled()
-    expect(store.getCount()).toBe(0)
-  })
-
-  test("ignores functional updates for a removed toast", () => {
-    const store = createToastStore()
-    const id = store.create({ title: "Removed" })
-    store.remove(id)
-    const updater = vi.fn(() => ({ title: "Unexpected" }))
-    const subscriber = vi.fn()
-    store.subscribe(subscriber)
-
-    expect(store.update(id, updater)).toBe(id)
-    expect(updater).not.toHaveBeenCalled()
-    expect(subscriber).not.toHaveBeenCalled()
-    expect(store.getCount()).toBe(0)
-  })
-
-  test("updates a queued toast without publishing or promoting it", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const queuedId = store.create({ title: "Queued", meta: { count: 0 } })
-    const subscriber = vi.fn()
-    store.subscribe(subscriber)
-
-    store.update(queuedId, (prev) => ({ title: `${prev.title} updated`, meta: { count: prev.meta!.count + 1 } }))
-    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
-
-    expect(subscriber).not.toHaveBeenCalled()
-    expect(store.getVisibleToasts()).toMatchObject([{ id: visibleId, title: "Visible" }])
-
-    store.remove(visibleId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Queued updated", meta: { count: 2 } }])
-  })
-
-  test("queued updates preserve identity, update priority, and leave other queued toasts alone", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const firstId = store.create({ title: "First queued", priority: 2 })
-    const targetId = store.create({ title: "Target queued", priority: 8 })
-    const lastId = store.create({ title: "Last queued", priority: 3 })
-
-    store.update(targetId, (prev) => ({ ...prev, id: "different", title: "Updated queued", priority: 1 }))
-
-    expect(store.getCount()).toBe(1)
-    store.remove(visibleId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: targetId, title: "Updated queued", priority: 1 }])
-    store.remove(targetId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: firstId, title: "First queued", priority: 2 }])
-    store.remove(firstId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: lastId, title: "Last queued", priority: 3 }])
-    store.remove(lastId)
-    expect(store.getVisibleToasts()).toEqual([])
-  })
-
-  test("equal-priority queued updates preserve promotion order", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const firstId = store.create({ title: "First", priority: 2 })
-    const secondId = store.create({ title: "Second", priority: 2 })
-
-    store.update(firstId, (prev) => ({ title: `${prev.title} updated` }))
-    store.remove(visibleId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: firstId, title: "First updated" }])
-    store.remove(firstId)
-    expect(store.getVisibleToasts()).toMatchObject([{ id: secondId, title: "Second" }])
-  })
-
-  test("a queued toast can still be updated after it becomes visible", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const queuedId = store.create({ title: "Queued", meta: { count: 0 } })
-
-    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
-    store.remove(visibleId)
-    const subscriber = vi.fn()
-    store.subscribe(subscriber)
-    store.update(queuedId, (prev) => ({ meta: { count: prev.meta!.count + 1 } }))
-
-    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, meta: { count: 2 } }])
-    expect(subscriber).toHaveBeenCalledTimes(1)
-    expect(subscriber).toHaveBeenCalledWith(store.getVisibleToasts()[0])
-  })
-
-  test("removed queued toasts cannot be updated or promoted later", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const queuedId = store.create({ title: "Queued" })
-    store.remove(queuedId)
-    const updater = vi.fn(() => ({ title: "Unexpected" }))
-
-    expect(store.update(queuedId, updater)).toBe(queuedId)
-    expect(updater).not.toHaveBeenCalled()
-    store.remove(visibleId)
-    expect(store.getCount()).toBe(0)
-    expect(store.getVisibleToasts()).toEqual([])
-  })
-
-  test("removing all toasts also clears queued functional update targets", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visibleId = store.create({ title: "Visible" })
-    const queuedId = store.create({ title: "Queued" })
-    store.remove()
-    const updater = vi.fn(() => ({ title: "Unexpected" }))
-
-    store.update(visibleId, updater)
-    store.update(queuedId, updater)
-
-    expect(updater).not.toHaveBeenCalled()
     expect(store.getCount()).toBe(0)
   })
 
@@ -383,6 +422,7 @@ describe("toast store updates", () => {
     store.update(queuedId, (prev) => ({ title: `${prev.title} updated` }))
     expect(subscriber).not.toHaveBeenCalled()
     store.remove(visibleId)
+
     expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Original queued updated" }])
   })
 
@@ -404,63 +444,41 @@ describe("toast store updates", () => {
   })
 })
 
-describe("toast store lifecycle", () => {
-  test("object updates and duplicate creates update queued IDs in place", () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visible = store.create({ title: "Visible" })
-    const id = store.create({ title: "Queued" })
-    const notify = vi.fn()
-
-    store.subscribe(notify)
-    store.update(id, { title: "Updated" })
-    store.create({ id, description: "Retained" })
-    store.update(id, (prev) => ({ title: `${prev.title}!` }))
-
-    expect(notify).not.toHaveBeenCalled()
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()).toMatchObject([{ id, title: "Updated!", description: "Retained" }])
-
-    store.remove(id)
-
-    expect(store.getCount()).toBe(0)
-  })
-
+describe("toast store dismissal", () => {
   test("dismissing a queued toast cancels it", () => {
     const store = createToastStore({ max: 1 })
-    const visible = store.create({})
-    const queued = store.create({})
+    const visibleId = store.create({})
+    const queuedId = store.create({})
 
-    store.dismiss(queued)
+    store.dismiss(queuedId)
 
     const updater = vi.fn(() => ({}))
 
-    store.update(queued, updater)
+    store.update(queuedId, updater)
 
     expect(updater).not.toHaveBeenCalled()
-    expect(store.isDismissed(queued)).toBe(true)
+    expect(store.isDismissed(queuedId)).toBe(true)
 
-    store.remove(visible)
+    store.remove(visibleId)
 
     expect(store.getCount()).toBe(0)
   })
 
   test("dismissing all toasts cancels queued toasts", () => {
     const store = createToastStore({ max: 1 })
-    const visible = store.create({})
-    const queued = store.create({})
+    const visibleId = store.create({})
+    const queuedId = store.create({})
 
     store.dismiss()
 
     const updater = vi.fn(() => ({}))
 
-    store.update(queued, updater)
+    store.update(queuedId, updater)
 
     expect(updater).not.toHaveBeenCalled()
-    expect(store.isDismissed(queued)).toBe(true)
+    expect(store.isDismissed(queuedId)).toBe(true)
 
-    store.remove(visible)
+    store.remove(visibleId)
 
     expect(store.getCount()).toBe(0)
   })
@@ -488,12 +506,14 @@ describe("toast store lifecycle", () => {
 
     expect(store.getVisibleToasts()[0].title).toBe("Explicit new toast")
   })
+})
 
+describe("toast store promise updates", () => {
   test("duplicate creates preserve visible promise success", async () => {
     const store = createToastStore<string>({ max: 1 })
     let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
     })
     const result = store.promise(pending, {
       loading: { title: "Loading" },
@@ -520,8 +540,8 @@ describe("toast store lifecycle", () => {
   test("duplicate creates preserve visible promise failure", async () => {
     const store = createToastStore<string>({ max: 1 })
     let reject!: (error: Error) => void
-    const pending = new Promise<string>((_, fail) => {
-      reject = fail
+    const pending = new Promise<string>((_, rejectPromise) => {
+      reject = rejectPromise
     })
     const result = store.promise(pending, {
       loading: { title: "Loading" },
@@ -545,77 +565,15 @@ describe("toast store lifecycle", () => {
     ])
   })
 
-  test("duplicate creates preserve queued promise success", async () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visible = store.create({ title: "Visible" })
-    let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
-    })
-    const result = store.promise(pending, {
-      loading: { title: "Loading" },
-      success: { title: "Success" },
-      error: { title: "Error" },
-    })!
-
-    store.create({ id: result.id, description: "Additional details" })
-    store.create({ id: result.id, promise: pending })
-
-    resolve("done")
-    await expect(result.unwrap()).resolves.toBe("done")
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()).toMatchObject([
-      {
-        id: result.id,
-        title: "Success",
-        type: "success",
-        description: "Additional details",
-      },
-    ])
-  })
-
-  test("duplicate creates preserve queued promise failure", async () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visible = store.create({ title: "Visible" })
-    let reject!: (error: Error) => void
-    const pending = new Promise<string>((_, fail) => {
-      reject = fail
-    })
-    const result = store.promise(pending, {
-      loading: { title: "Loading" },
-      success: { title: "Success" },
-      error: { title: "Error" },
-    })!
-
-    store.create({ id: result.id, description: "Additional details" })
-    store.create({ id: result.id, promise: pending })
-
-    reject(new Error("failed"))
-    await expect(result.unwrap()).rejects.toThrow("failed")
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()).toMatchObject([
-      {
-        id: result.id,
-        title: "Error",
-        type: "error",
-        description: "Additional details",
-      },
-    ])
-  })
-
-  test("replacing a pending promise ignores its settlement without clearing the replacement token", async () => {
+  test("a replacement promise stays active when the previous promise settles", async () => {
     const store = createToastStore<string>()
     let resolveFirst!: (value: string) => void
     let resolveSecond!: (value: string) => void
-    const first = new Promise<string>((done) => {
-      resolveFirst = done
+    const first = new Promise<string>((resolvePromise) => {
+      resolveFirst = resolvePromise
     })
-    const second = new Promise<string>((done) => {
-      resolveSecond = done
+    const second = new Promise<string>((resolvePromise) => {
+      resolveSecond = resolvePromise
     })
     const firstResult = store.promise(first, { loading: { title: "First loading" }, success: { title: "First done" } })!
     const secondResult = store.promise(
@@ -635,17 +593,275 @@ describe("toast store lifecycle", () => {
     expect(store.getVisibleToasts()).toMatchObject([{ id: firstResult.id, title: "Second done", type: "success" }])
   })
 
-  test("promise settlement cannot revive a toast after removal", async () => {
+  test("manual updates to a pending toast still allow its promise to settle", async () => {
     const store = createToastStore<string>()
     let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
     })
-    const finallyFn = vi.fn()
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Done" },
+    })!
+    const id = result.id!
+
+    store.update(id, { description: "Progress" })
+
+    resolve("done")
+    await result.unwrap()
+
+    expect(store.getVisibleToasts()[0]).toMatchObject({ title: "Done", description: "Progress", type: "success" })
+  })
+})
+
+describe("toast store queued promise updates", () => {
+  test("duplicate creates preserve queued promise success", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
     const result = store.promise(pending, {
       loading: { title: "Loading" },
       success: { title: "Success" },
-      finally: finallyFn,
+      error: { title: "Error" },
+    })!
+
+    store.create({ id: result.id, description: "Additional details" })
+    store.create({ id: result.id, promise: pending })
+
+    resolve("done")
+    await expect(result.unwrap()).resolves.toBe("done")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      {
+        id: result.id,
+        title: "Success",
+        type: "success",
+        description: "Additional details",
+      },
+    ])
+  })
+
+  test("duplicate creates preserve queued promise failure", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let reject!: (error: Error) => void
+    const pending = new Promise<string>((_, rejectPromise) => {
+      reject = rejectPromise
+    })
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Success" },
+      error: { title: "Error" },
+    })!
+
+    store.create({ id: result.id, description: "Additional details" })
+    store.create({ id: result.id, promise: pending })
+
+    reject(new Error("failed"))
+    await expect(result.unwrap()).rejects.toThrow("failed")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      {
+        id: result.id,
+        title: "Error",
+        type: "error",
+        description: "Additional details",
+      },
+    ])
+  })
+
+  test("clearing a queued promise with a functional update ignores its success", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Old success" },
+    })!
+    const queuedId = result.id!
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    store.update(queuedId, () => ({ promise: undefined, title: "Replacement", type: "info" }))
+
+    resolve("done")
+    await expect(result.unwrap()).resolves.toBe("done")
+
+    expect(subscriber).not.toHaveBeenCalled()
+    expect(store.getVisibleToasts()).toMatchObject([{ id: visibleId, title: "Visible" }])
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: queuedId, title: "Replacement", type: "info", promise: undefined },
+    ])
+  })
+
+  test("clearing a queued promise with a functional update ignores its failure", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let reject!: (error: Error) => void
+    const pending = new Promise<string>((_, rejectPromise) => {
+      reject = rejectPromise
+    })
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      error: { title: "Old error" },
+    })!
+    const queuedId = result.id!
+
+    store.update(queuedId, () => ({ promise: undefined, title: "Replacement", type: "info" }))
+
+    reject(new Error("failed"))
+    await expect(result.unwrap()).rejects.toThrow("failed")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: queuedId, title: "Replacement", type: "info", promise: undefined },
+    ])
+  })
+
+  test("replacing a queued promise with a functional update ignores its success", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
+    const replacement = Promise.resolve("replacement")
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Old success" },
+    })!
+    const queuedId = result.id!
+
+    store.update(queuedId, () => ({ promise: replacement, title: "Replacement", type: "info" }))
+
+    resolve("done")
+    await expect(result.unwrap()).resolves.toBe("done")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Replacement", type: "info" }])
+    expect(store.getVisibleToasts()[0].promise).toBe(replacement)
+  })
+
+  test("replacing a queued promise with a functional update ignores its failure", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let reject!: (error: Error) => void
+    const pending = new Promise<string>((_, rejectPromise) => {
+      reject = rejectPromise
+    })
+    const replacement = Promise.resolve("replacement")
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      error: { title: "Old error" },
+    })!
+    const queuedId = result.id!
+
+    store.update(queuedId, () => ({ promise: replacement, title: "Replacement", type: "info" }))
+
+    reject(new Error("failed"))
+    await expect(result.unwrap()).rejects.toThrow("failed")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: queuedId, title: "Replacement", type: "info" }])
+    expect(store.getVisibleToasts()[0].promise).toBe(replacement)
+  })
+
+  test("a queued functional update preserves settlement when it omits the promise", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Success" },
+    })!
+    const queuedId = result.id!
+
+    store.update(queuedId, () => ({ description: "Progress" }))
+
+    resolve("done")
+    await expect(result.unwrap()).resolves.toBe("done")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: queuedId, title: "Success", type: "success", description: "Progress" },
+    ])
+  })
+
+  test("a queued functional update preserves settlement when it returns the same promise", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({ title: "Visible" })
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Success" },
+    })!
+    const queuedId = result.id!
+
+    store.update(queuedId, (prev) => ({ promise: prev.promise, description: "Progress" }))
+
+    resolve("done")
+    await expect(result.unwrap()).resolves.toBe("done")
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: queuedId, title: "Success", type: "success", description: "Progress" },
+    ])
+  })
+
+  test("queued promises settle in place and promote only once", async () => {
+    const store = createToastStore<string>({ max: 1 })
+    const visibleId = store.create({})
+    const result = store.promise(Promise.resolve("done"), {
+      loading: { title: "Loading" },
+      success: { title: "Done" },
+    })!
+    await result.unwrap()
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()).toMatchObject([{ id: result.id, title: "Done", type: "success" }])
+
+    store.remove(result.id)
+
+    expect(store.getCount()).toBe(0)
+  })
+})
+
+describe("toast store promise cancellation", () => {
+  test("promise settlement cannot revive a toast after removal", async () => {
+    const store = createToastStore<string>()
+    let resolve!: (value: string) => void
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
+    })
+    const onFinally = vi.fn()
+    const result = store.promise(pending, {
+      loading: { title: "Loading" },
+      success: { title: "Success" },
+      finally: onFinally,
     })!
     const id = result.id!
     store.remove(id)
@@ -653,7 +869,7 @@ describe("toast store lifecycle", () => {
     resolve("done")
     await expect(result.unwrap()).resolves.toBe("done")
 
-    expect(finallyFn).toHaveBeenCalledTimes(1)
+    expect(onFinally).toHaveBeenCalledTimes(1)
     expect(store.getVisibleToasts().some((toast) => toast.title === "Success")).toBe(false)
     expect(store.getCount()).toBe(0)
   })
@@ -661,14 +877,14 @@ describe("toast store lifecycle", () => {
   test("promise settlement cannot revive a toast after dismissal", async () => {
     const store = createToastStore<string>()
     let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
     })
-    const finallyFn = vi.fn()
+    const onFinally = vi.fn()
     const result = store.promise(pending, {
       loading: { title: "Loading" },
       success: { title: "Success" },
-      finally: finallyFn,
+      finally: onFinally,
     })!
     const id = result.id!
     store.dismiss(id)
@@ -676,7 +892,7 @@ describe("toast store lifecycle", () => {
     resolve("done")
     await expect(result.unwrap()).resolves.toBe("done")
 
-    expect(finallyFn).toHaveBeenCalledTimes(1)
+    expect(onFinally).toHaveBeenCalledTimes(1)
     expect(store.getVisibleToasts().some((toast) => toast.title === "Success")).toBe(false)
     expect(store.getCount()).toBe(1)
   })
@@ -684,21 +900,21 @@ describe("toast store lifecycle", () => {
   test("promise settlement cannot revive a toast after removing all toasts", async () => {
     const store = createToastStore<string>()
     let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
     })
-    const finallyFn = vi.fn()
+    const onFinally = vi.fn()
     const result = store.promise(pending, {
       loading: { title: "Loading" },
       success: { title: "Success" },
-      finally: finallyFn,
+      finally: onFinally,
     })!
     store.remove()
 
     resolve("done")
     await expect(result.unwrap()).resolves.toBe("done")
 
-    expect(finallyFn).toHaveBeenCalledTimes(1)
+    expect(onFinally).toHaveBeenCalledTimes(1)
     expect(store.getVisibleToasts().some((toast) => toast.title === "Success")).toBe(false)
     expect(store.getCount()).toBe(0)
   })
@@ -706,14 +922,14 @@ describe("toast store lifecycle", () => {
   test("promise settlement cannot revive a toast after removal and ID reuse", async () => {
     const store = createToastStore<string>()
     let resolve!: (value: string) => void
-    const pending = new Promise<string>((done) => {
-      resolve = done
+    const pending = new Promise<string>((resolvePromise) => {
+      resolve = resolvePromise
     })
-    const finallyFn = vi.fn()
+    const onFinally = vi.fn()
     const result = store.promise(pending, {
       loading: { title: "Loading" },
       success: { title: "Success" },
-      finally: finallyFn,
+      finally: onFinally,
     })!
     const id = result.id!
     store.remove(id)
@@ -722,7 +938,7 @@ describe("toast store lifecycle", () => {
     resolve("done")
     await expect(result.unwrap()).resolves.toBe("done")
 
-    expect(finallyFn).toHaveBeenCalledTimes(1)
+    expect(onFinally).toHaveBeenCalledTimes(1)
     expect(store.getVisibleToasts().some((toast) => toast.title === "Success")).toBe(false)
     expect(store.getVisibleToasts()).toMatchObject([{ id, title: "Replacement" }])
   })
@@ -730,8 +946,8 @@ describe("toast store lifecycle", () => {
   test("rejected promises retain unwrap rejection without recreating removed toasts", async () => {
     const store = createToastStore<string>()
     let reject!: (error: Error) => void
-    const pending = new Promise<string>((_, fail) => {
-      reject = fail
+    const pending = new Promise<string>((_, rejectPromise) => {
+      reject = rejectPromise
     })
     const result = store.promise(pending, { loading: { title: "Loading" }, error: { title: "Error" } })!
 
@@ -743,30 +959,37 @@ describe("toast store lifecycle", () => {
     expect(store.getCount()).toBe(0)
   })
 
-  test("queued promises settle in place and promote only once", async () => {
-    const store = createToastStore<string>({ max: 1 })
-    const visible = store.create({})
+  test("removing the loading toast from its creation notification prevents resurrection", async () => {
+    const store = createToastStore<string>()
+
+    store.subscribe((toast) => {
+      if (toast.type === "loading") store.remove(toast.id)
+    })
     const result = store.promise(Promise.resolve("done"), {
       loading: { title: "Loading" },
       success: { title: "Done" },
     })!
     await result.unwrap()
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()).toMatchObject([{ id: result.id, title: "Done", type: "success" }])
-
-    store.remove(result.id)
 
     expect(store.getCount()).toBe(0)
   })
+})
 
-  test("notifications observe committed state and reentrant mutations survive", () => {
+describe("toast store subscriptions", () => {
+  test("subscribers see committed state and can create another toast", () => {
     const store = createToastStore<string>()
 
     store.subscribe((toast) => {
-      if (!toast.dismiss) expect(store.getVisibleToasts().find((item) => item.id === toast.id)).toEqual(toast)
-      else expect(store.isVisible(toast.id)).toBe(false)
-      if (toast.title === "Updated") store.create({ id: "nested", title: "Nested" })
+      if (toast.dismiss) {
+        expect(store.isVisible(toast.id)).toBe(false)
+      } else {
+        const current = store.getVisibleToasts().find((item) => item.id === toast.id)
+        expect(current).toEqual(toast)
+      }
+
+      if (toast.title === "Updated") {
+        store.create({ id: "nested", title: "Nested" })
+      }
     })
     const id = store.create({ title: "Original" })
 
@@ -785,81 +1008,19 @@ describe("toast store lifecycle", () => {
 
   test("unsubscribing twice does not remove another subscriber", () => {
     const store = createToastStore()
-    const first = vi.fn()
-    const second = vi.fn()
-    const unsubscribe = store.subscribe(first)
+    const firstSubscriber = vi.fn()
+    const secondSubscriber = vi.fn()
+    const unsubscribe = store.subscribe(firstSubscriber)
 
-    store.subscribe(second)
+    store.subscribe(secondSubscriber)
     unsubscribe()
     unsubscribe()
     store.create({})
 
-    expect(first).not.toHaveBeenCalled()
-    expect(second).toHaveBeenCalledTimes(1)
+    expect(firstSubscriber).not.toHaveBeenCalled()
+    expect(secondSubscriber).toHaveBeenCalledTimes(1)
   })
 
-  test("new and promoted toasts inherit the store pause state", () => {
-    const store = createToastStore({ max: 1 })
-
-    store.pause()
-    const visible = store.create({})
-    const queued = store.create({})
-
-    expect(store.getVisibleToasts()[0].paused).toBe(true)
-
-    store.resume()
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queued, paused: false })
-
-    store.pause(queued)
-    store.update(queued, { title: "Still paused" })
-
-    expect(store.getVisibleToasts()[0].paused).toBe(true)
-  })
-
-  test("custom toast type uses the info priority", () => {
-    const store = createToastStore({ max: 1 })
-    const visible = store.create({ type: "custom" })
-    const queued = store.create({ type: "custom", action: { label: "Undo", onClick: vi.fn() } })
-
-    expect(store.getVisibleToasts()[0].priority).toBe(8)
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queued, priority: 6 })
-  })
-})
-
-describe("toast store reentrancy", () => {
-  test("toString toast type uses the info priority", () => {
-    const store = createToastStore({ max: 1 })
-    const visible = store.create({ type: "toString" })
-    const queued = store.create({ type: "toString", action: { label: "Undo", onClick: vi.fn() } })
-
-    expect(store.getVisibleToasts()[0].priority).toBe(8)
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queued, priority: 6 })
-  })
-})
-
-describe("toast store reentrancy", () => {
-  test("__proto__ toast type uses the info priority", () => {
-    const store = createToastStore({ max: 1 })
-    const visible = store.create({ type: "__proto__" })
-    const queued = store.create({ type: "__proto__", action: { label: "Undo", onClick: vi.fn() } })
-
-    expect(store.getVisibleToasts()[0].priority).toBe(8)
-
-    store.remove(visible)
-
-    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queued, priority: 6 })
-  })
-})
-
-describe("toast store reentrancy", () => {
   test("nested notifications reach every subscriber in mutation order", () => {
     const store = createToastStore<string>()
     const id = store.create({ title: "Original" })
@@ -879,12 +1040,12 @@ describe("toast store reentrancy", () => {
 
   test("batch notifications precede nested mutations", () => {
     const store = createToastStore<string>()
-    const first = store.create({ title: "First" })
-    const second = store.create({ title: "Second" })
+    const firstId = store.create({ title: "First" })
+    const secondId = store.create({ title: "Second" })
 
     store.subscribe((toast) => {
-      if (toast.id === second && toast.paused && toast.title === "Second") {
-        store.update(first, { title: "Nested" })
+      if (toast.id === secondId && toast.paused && toast.title === "Second") {
+        store.update(firstId, { title: "Nested" })
       }
     })
 
@@ -896,51 +1057,76 @@ describe("toast store reentrancy", () => {
     expect(titles).toEqual(["Second", "First", "Nested"])
   })
 
-  test("duplicate registrations have independent idempotent cleanup", () => {
+  test("unsubscribing twice removes only one duplicate registration", () => {
     const store = createToastStore()
-    const notify = vi.fn()
-    const unsubscribe = store.subscribe(notify)
+    const subscriber = vi.fn()
+    const unsubscribe = store.subscribe(subscriber)
 
-    store.subscribe(notify)
+    store.subscribe(subscriber)
     unsubscribe()
     unsubscribe()
     store.create({})
 
-    expect(notify).toHaveBeenCalledTimes(1)
+    expect(subscriber).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe("toast store paused timers", () => {
+  test("new and promoted toasts inherit the store pause state", () => {
+    const store = createToastStore({ max: 1 })
+
+    store.pause()
+    const visibleId = store.create({})
+    const queuedId = store.create({})
+
+    expect(store.getVisibleToasts()[0].paused).toBe(true)
+
+    store.resume()
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, paused: false })
+
+    store.pause(queuedId)
+    store.update(queuedId, { title: "Still paused" })
+
+    expect(store.getVisibleToasts()[0].paused).toBe(true)
+  })
+})
+
+describe("toast store priority", () => {
+  test("custom toast type uses the info priority", () => {
+    const store = createToastStore({ max: 1 })
+    const visibleId = store.create({ type: "custom" })
+    const queuedId = store.create({ type: "custom", action: { label: "Undo", onClick: vi.fn() } })
+
+    expect(store.getVisibleToasts()[0].priority).toBe(8)
+
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, priority: 6 })
   })
 
-  test("removing the loading toast from its creation notification prevents resurrection", async () => {
-    const store = createToastStore<string>()
+  test("toString toast type uses the info priority", () => {
+    const store = createToastStore({ max: 1 })
+    const visibleId = store.create({ type: "toString" })
+    const queuedId = store.create({ type: "toString", action: { label: "Undo", onClick: vi.fn() } })
 
-    store.subscribe((toast) => {
-      if (toast.type === "loading") store.remove(toast.id)
-    })
-    const result = store.promise(Promise.resolve("done"), {
-      loading: { title: "Loading" },
-      success: { title: "Done" },
-    })!
-    await result.unwrap()
+    expect(store.getVisibleToasts()[0].priority).toBe(8)
 
-    expect(store.getCount()).toBe(0)
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, priority: 6 })
   })
 
-  test("manual updates to a pending toast still allow its promise to settle", async () => {
-    const store = createToastStore<string>()
-    let resolve!: (value: string) => void
-    const result = store.promise(
-      new Promise<string>((done) => {
-        resolve = done
-      }),
-      {
-        loading: { title: "Loading" },
-        success: { title: "Done" },
-      },
-    )!
-    store.update(result.id!, { description: "Progress" })
+  test("__proto__ toast type uses the info priority", () => {
+    const store = createToastStore({ max: 1 })
+    const visibleId = store.create({ type: "__proto__" })
+    const queuedId = store.create({ type: "__proto__", action: { label: "Undo", onClick: vi.fn() } })
 
-    resolve("done")
-    await result.unwrap()
+    expect(store.getVisibleToasts()[0].priority).toBe(8)
 
-    expect(store.getVisibleToasts()[0]).toMatchObject({ title: "Done", description: "Progress", type: "success" })
+    store.remove(visibleId)
+
+    expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, priority: 6 })
   })
 })

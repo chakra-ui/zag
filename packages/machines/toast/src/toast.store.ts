@@ -286,9 +286,7 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     if (toasts.some((toast) => toast.id === id)) return create(next)
     if (!toastQueue.some((toast) => toast.id === id)) return id
 
-    // Updating a queued toast must not publish it or move it into the visible list.
-    toastQueue = toastQueue.map((toast) => (toast.id === id ? { ...toast, ...next } : toast))
-    return id
+    return create(next)
   }
 
   const changeToasts = (data: Partial<ToastProps<V>>, id?: string) => {
