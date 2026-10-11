@@ -60,7 +60,8 @@ describe("focus visible", () => {
     trackFocusVisible()
 
     const assignFocus = () => {
-      HTMLElement.prototype.focus = HTMLElement.prototype.focus
+      const focus = HTMLElement.prototype.focus
+      HTMLElement.prototype.focus = focus
     }
     expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.writable).toBe(true)
     expect(assignFocus).not.toThrow()
