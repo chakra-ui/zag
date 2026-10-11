@@ -64,7 +64,11 @@ const applyStyle = (node: Element, prevStyle: unknown, nextStyle: unknown): void
   }
 }
 
-export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
+export function spreadProps(node: Element | null | undefined, attrs: Attrs, machineId?: string): () => void {
+  if (!node) {
+    return () => {}
+  }
+
   const scopeKey = machineId || "default"
 
   let machineMap = prevAttrsMap.get(node)

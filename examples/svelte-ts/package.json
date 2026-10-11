@@ -106,6 +106,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-svelte": "1.0.1"
   },

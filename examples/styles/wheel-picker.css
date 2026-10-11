@@ -1,0 +1,73 @@
+.wheel-picker {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.wheel-picker > [data-wheel-picker-root] {
+  width: 240px;
+}
+
+.wheel-picker > [data-wheel-picker-root] > [data-wheel-picker-control] {
+  border: 1px solid #d4d4d8;
+  background: white;
+}
+
+.wheel-picker-group {
+  display: flex;
+  width: 336px;
+  overflow: hidden;
+  border: 1px solid #d4d4d8;
+  background: white;
+}
+
+.wheel-picker-group > [data-wheel-picker-root] {
+  min-width: 0;
+  flex: 1;
+}
+
+.wheel-picker-group > [data-wheel-picker-root]:not(:last-child) {
+  border-inline-end: 1px solid #e4e4e7;
+}
+
+.wheel-picker [data-wheel-picker-control] {
+  height: 192px;
+  cursor: default;
+  outline: none;
+}
+
+.wheel-picker [data-wheel-picker-viewport] {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+.wheel-picker [data-wheel-picker-item] {
+  color: black;
+  font-size: 14px;
+}
+
+.wheel-picker [data-wheel-picker-highlight] {
+  background: blue;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.wheel-picker [data-wheel-picker-highlight][data-focus] {
+  box-shadow: inset 0 0 0 2px #a1a1aa;
+}
+
+.wheel-picker [data-wheel-picker-item][data-disabled],
+.wheel-picker [data-wheel-picker-highlight-item][data-disabled] {
+  opacity: 0.35;
+}
+
+.wheel-picker output {
+  color: #52525b;
+  font-size: 14px;
+}
+
+.wheel-picker-actions {
+  display: flex;
+  gap: 8px;
+}

@@ -78,6 +78,7 @@ import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
 import { Virtualizer } from "./virtualizer"
+import { WheelPicker } from "./wheel-picker"
 
 const components = {
   Accordion: () => (
@@ -689,6 +690,21 @@ const components = {
       name="infinite-scroll"
       component={InfiniteScroll}
       hideControls
+    />
+  ),
+  WheelPicker: () => (
+    <Playground
+      name="wheel-picker"
+      component={WheelPicker}
+      defaultProps={{
+        disabled: false,
+        infinite: false,
+        readOnly: false,
+        scrollSensitivity: 5,
+        dragSensitivity: 5,
+        optionItemHeight: 30,
+        visibleCount: 20,
+      }}
     />
   ),
 }

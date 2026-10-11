@@ -102,6 +102,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
     "@zag-js/vue": "workspace:*",
+    "@zag-js/wheel-picker": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "lucide-vue-next": "1.0.0",

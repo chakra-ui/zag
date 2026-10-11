@@ -1,0 +1,48 @@
+```svelte
+<script lang="ts">
+  import * as wheelPicker from "@zag-js/wheel-picker"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const frameworks = wheelPicker.collection({
+    items: [
+      { label: "React", value: "react" },
+      { label: "Vue", value: "vue" },
+      { label: "Svelte", value: "svelte" },
+      { label: "Solid", value: "solid" },
+    ],
+  })
+
+  const id = $props.id()
+  const service = useMachine(wheelPicker.machine, {
+    id,
+    collection: frameworks,
+    defaultValue: "react",
+  })
+  const api = $derived(wheelPicker.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Framework</label>
+  <div {...api.getControlProps()}>
+    <div {...api.getViewportProps()}>
+      <ul {...api.getItemGroupProps()}>
+        {#each api.items as { item, index, key } (key)}
+          <li {...api.getItemProps({ item, index })}>{item.label}</li>
+        {/each}
+      </ul>
+      <div {...api.getHighlightProps()}>
+        <ul {...api.getHighlightItemGroupProps()}>
+          {#each api.highlightItems as { item, index, key } (key)}
+            <li {...api.getHighlightItemProps({ item, index })}>{item.label}</li>
+          {/each}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <select {...api.getHiddenSelectProps()}>
+    {#each frameworks.items as item (item.value)}
+      <option value={item.value}>{item.label}</option>
+    {/each}
+  </select>
+</div>
+```

@@ -210,6 +210,13 @@ describe("spreadProps", () => {
     })
   })
 
+  describe("null node safety", () => {
+    test("ignores invalid nodes instead of crashing", () => {
+      expect(() => spreadProps(null as never, { id: "test" })).not.toThrow()
+      expect(() => spreadProps(undefined as never, { id: "test" })).not.toThrow()
+    })
+  })
+
   describe("boolean attributes", () => {
     test("sets truthy boolean as attribute", () => {
       const button = document.createElement("button")

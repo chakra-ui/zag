@@ -386,6 +386,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -714,6 +717,9 @@ importers:
       '@zag-js/vue':
         specifier: workspace:*
         version: link:../../packages/frameworks/vue
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       epic-spinners:
         specifier: 2.0.0
         version: 2.0.0(vue@3.5.34(typescript@6.0.3))
@@ -1027,6 +1033,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -1358,6 +1367,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -1656,6 +1668,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -1966,6 +1981,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/wheel-picker
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -3813,6 +3831,34 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/machines/wheel-picker:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/store:
     dependencies:
       proxy-compare:
@@ -4294,6 +4340,9 @@ importers:
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../packages/utilities/virtualizer
+      '@zag-js/wheel-picker':
+        specifier: workspace:*
+        version: link:../packages/machines/wheel-picker
       hastscript:
         specifier: 9.0.1
         version: 9.0.1
