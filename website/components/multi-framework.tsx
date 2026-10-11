@@ -94,7 +94,7 @@ export function MultiframeworkTabs(props: {
               marginY: "0",
               height: "full",
             },
-            "& [data-part=root]": {
+            "& [data-number-input-root]": {
               transform: "scale(1.5) translateY(40px)",
               marginTop: "-120px",
             },
