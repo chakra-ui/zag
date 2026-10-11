@@ -52,14 +52,15 @@ export default function DocsLayout(props: DocsLayoutProps) {
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
       <Box position="sticky" top="0" zIndex="50">
-        <TopNav fluid />
+        <TopNav />
         <DocsTabBar />
       </Box>
       <SkipNavContent />
-      {/* Same columns as the Panda docs: a sticky sidebar on the left edge, the
-          article centered at 4xl, and the TOC column always reserved so the
-          article sits in the same place with or without one. */}
-      <Flex position="relative">
+      {/* Same columns as the Panda docs: a sticky sidebar, the article centered
+          at 4xl, and the TOC column always reserved so the article sits in the
+          same place with or without one. The container matches the top nav, so
+          the logo doesn't move between the docs and the other pages. */}
+      <Flex position="relative" maxW="8xl" mx="auto" px={{ md: "8" }}>
         <Box
           as="aside"
           hideBelow="lg"
@@ -78,7 +79,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             overscrollBehavior="contain"
             pt="10"
             pb="10"
-            px="6"
+            pe="6"
             className={scrollbarStyles}
           >
             <Sidebar />
@@ -126,7 +127,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             overscrollBehavior="contain"
             pt="10"
             pb="10"
-            px="6"
+            ps="6"
             className={scrollbarStyles}
           >
             {!hideToc && (
@@ -139,14 +140,10 @@ export default function DocsLayout(props: DocsLayoutProps) {
           </Box>
         </Box>
       </Flex>
-      <Box
-        as="footer"
-        borderTopWidth="1px"
-        borderColor="border.subtle"
-        px={{ base: "4", md: "6" }}
-        py="6"
-      >
-        <FooterCredits />
+      <Box as="footer" borderTopWidth="1px" borderColor="border.subtle" py="6">
+        <Box maxW="8xl" mx="auto" px={{ base: "4", sm: "6", md: "8" }}>
+          <FooterCredits />
+        </Box>
       </Box>
     </Box>
   )

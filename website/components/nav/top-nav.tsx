@@ -11,8 +11,7 @@ import { MobileNav } from "./mobile-nav"
 import { NavLinks } from "./nav-links"
 import { VersionSelect } from "./version-select"
 
-/** `fluid` spans the full width, lining up with the docs columns */
-export function TopNav(props: { fluid?: boolean }) {
+export function TopNav() {
   return (
     <Box
       bg="bg.subtle"
@@ -36,12 +35,10 @@ export function TopNav(props: { fluid?: boolean }) {
         alignItems="center"
         justifyContent="space-between"
         gap={{ base: "3", md: "6" }}
-        maxW={props.fluid ? "none" : "8xl"}
+        maxW="8xl"
         w="full"
         mx="auto"
-        px={
-          props.fluid ? { base: "4", md: "6" } : { base: "4", sm: "6", md: "8" }
-        }
+        px={{ base: "4", sm: "6", md: "8" }}
       >
         <HStack gap="6">
           <HStack gap="3">
