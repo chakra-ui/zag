@@ -19,6 +19,32 @@ one version, so mixing v1 and v2 packages isn't supported.
 npm install @zag-js/react@next @zag-js/dialog@next
 ```
 
+## Data attributes
+
+Every part now renders one attribute, `data-{scope}-{part}`, in place of
+`data-scope`, `data-part` and `data-ownedby`. Its value is the machine's id.
+Update your CSS and DOM queries.
+
+```diff
+- [data-scope="dialog"][data-part="trigger"] { ... }
++ [data-dialog-trigger] { ... }
+
+- document.querySelector('[data-scope="dialog"][data-part="content"]')
++ document.querySelector("[data-dialog-content]")
+```
+
+State attributes like `data-state`, `data-focus` and `data-disabled` are
+unchanged.
+
+If you build on the anatomy API, `parts.X.attrs` is now a function that takes
+the machine id, and each part exposes the attribute name as `attr`.
+
+```diff
+- ...parts.trigger.attrs
+- "data-ownedby": scope.id,
++ ...parts.trigger.attrs(scope.id)
+```
+
 ## Select and Combobox
 
 `role="listbox"` moves from the content part to a new `list` part. Wrap the
