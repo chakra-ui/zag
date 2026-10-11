@@ -1,109 +1,105 @@
+import * as menu from "@zag-js/menu"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { frameworks, type Framework } from "lib/framework-utils"
 import { usePathname, useRouter } from "next/navigation"
-import { createElement, useEffect, useState } from "react"
+import { HiChevronDown } from "react-icons/hi"
 import { css } from "styled-system/css"
-import { HStack, styled } from "styled-system/jsx"
+import { HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
 import { Icon } from "./ui/icon"
 
-// A real <select>, styled with `appearance: base-select` where the browser
-// supports it, so the options can show the framework icons. Elsewhere it stays
-// the native select.
-const selectStyles = css({
-  fontSize: "sm",
-  fontWeight: "semibold",
-  color: "text.primary.bold",
-  "@supports (appearance: base-select)": {
-    "&, &::picker(select)": { appearance: "base-select" },
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "2",
-    px: "2.5",
-    py: "1",
-    rounded: "md",
-    borderWidth: "1px",
-    borderColor: "border.subtle",
-    bg: "bg",
-    cursor: "pointer",
-    _hover: { borderColor: "border.bold" },
-    _focusVisible: { outline: "2px solid", outlineColor: "green.500" },
-    "& selectedcontent": {
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "2",
-    },
-    "&::picker(select)": {
-      mt: "1",
-      p: "1",
-      rounded: "lg",
-      borderWidth: "1px",
-      borderColor: "border.subtle",
-      bg: "bg.popover",
-      boxShadow: "lg",
-    },
-    "& option": {
-      display: "flex",
-      alignItems: "center",
-      gap: "2",
-      px: "2.5",
-      py: "1.5",
-      rounded: "md",
-      fontWeight: "medium",
-      color: "text",
-      cursor: "pointer",
-    },
-    "& option:hover, & option:focus-visible": {
-      bg: "bg.muted",
-      outline: "none",
-    },
-    "& option:checked": { color: "text.primary.bold", fontWeight: "semibold" },
-    "& option::checkmark": { display: "none" },
-  },
-})
-
+// Same menu as the version switcher in the top nav
 export function FrameworkSelect() {
   const { framework, setFramework } = useFramework()
   const router = useRouter()
   const asPath = usePathname()
 
-  // The button and icons only render on the client: a browser without
-  // customizable select support drops them from the server HTML while parsing,
-  // which would break hydration.
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  const service = useMachine(menu.machine, {
+    id: "framework-select",
+    positioning: { strategy: "fixed", placement: "bottom-end" },
+    onSelect({ value }) {
+      const newFramework = value as Framework
+      setFramework?.(newFramework)
+      if (asPath.includes(framework) && newFramework !== framework) {
+        router.replace(asPath.replace(framework, newFramework))
+      }
+    },
+  })
+
+  const api = menu.connect(service, normalizeProps)
+  const current = frameworks[framework]
 
   return (
     <HStack>
-      <styled.label
-        fontWeight="medium"
-        htmlFor="framework-select"
+      <styled.span fontWeight="medium" fontSize="sm">
+        Framework:
+      </styled.span>
+      <styled.button
+        display="flex"
+        alignItems="center"
+        gap="1.5"
+        borderWidth="1px"
+        rounded="sm"
         fontSize="sm"
+        px="2"
+        py="1"
+        fontWeight="semibold"
+        cursor="pointer"
+        bg="bg"
+        color="text"
+        {...api.getTriggerProps()}
       >
-        Framework:{" "}
-      </styled.label>
-      <select
-        id="framework-select"
-        className={selectStyles}
-        value={framework}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-          const newFramework = event.currentTarget.value as Framework
-          setFramework?.(newFramework)
-          if (asPath.includes(framework) && newFramework !== framework) {
-            const url = asPath.replace(framework, newFramework)
-            router.replace(url)
-          }
-        }}
-      >
-        {mounted && (
-          <button type="button">{createElement("selectedcontent")}</button>
-        )}
-        {Object.entries(frameworks).map(([key, value]) => (
-          <option key={key} value={key}>
-            {mounted && <Icon as={value.icon} aria-hidden />}
-            {value.label}
-          </option>
-        ))}
-      </select>
+        <Icon as={current.icon} aria-hidden />
+        {current.label}
+        <Icon as={HiChevronDown} fontSize="md" />
+      </styled.button>
+
+      {api.open && (
+        <Portal>
+          <div {...api.getPositionerProps()}>
+            <Stack
+              width="180px"
+              zIndex="1000"
+              fontSize="sm"
+              bg="bg"
+              padding="2"
+              gap="0"
+              isolation="isolate"
+              listStyleType="none"
+              boxShadow="md"
+              outline="0"
+              {...api.getContentProps()}
+            >
+              {Object.entries(frameworks).map(([key, value]) => (
+                <div
+                  key={key}
+                  {...api.getOptionItemProps({
+                    type: "radio",
+                    value: key,
+                    checked: key === framework,
+                  })}
+                  className={css({
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2",
+                    px: "0.5rem",
+                    py: "0.25rem",
+                    cursor: "pointer",
+                    _checked: { fontWeight: "semibold" },
+                    _highlighted: {
+                      bg: "bg.primary.bold",
+                      color: "white",
+                    },
+                  })}
+                >
+                  <Icon as={value.icon} aria-hidden />
+                  {value.label}
+                </div>
+              ))}
+            </Stack>
+          </div>
+        </Portal>
+      )}
     </HStack>
   )
 }
