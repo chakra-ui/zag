@@ -693,7 +693,6 @@ describe("toast store lifecycle", () => {
       success: { title: "Success" },
       finally: finallyFn,
     })!
-    const id = result.id!
     store.remove()
 
     resolve("done")
