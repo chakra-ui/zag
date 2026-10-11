@@ -249,6 +249,39 @@ describe("inertOthers", () => {
     document.body.innerHTML = ""
   })
 
+  test("preserves an existing inert attribute with the value false", () => {
+    const get = setup()
+    const background = get("main")
+    background.setAttribute("inert", "false")
+
+    const undo = inertOthers(get("dialog-1"))!
+
+    expect(background.getAttribute("inert")).toBe("false")
+
+    undo()
+
+    expect(background.getAttribute("inert")).toBe("false")
+    expect(background.hasAttribute("data-inerted")).toBe(false)
+  })
+
+  test("preserves an existing empty inert attribute through nested locks", () => {
+    const get = setup()
+    const background = get("main")
+    background.setAttribute("inert", "")
+
+    const undo1 = inertOthers(get("dialog-1"))!
+    const undo2 = inertOthers(get("dialog-2"))!
+
+    expect(background.getAttribute("inert")).toBe("")
+
+    undo2()
+    expect(background.getAttribute("inert")).toBe("")
+
+    undo1()
+    expect(background.getAttribute("inert")).toBe("")
+    expect(background.hasAttribute("data-inerted")).toBe(false)
+  })
+
   test("applies only the topmost lock", () => {
     const get = setup()
     const isInert = (id: string) => get(id).hasAttribute("inert")

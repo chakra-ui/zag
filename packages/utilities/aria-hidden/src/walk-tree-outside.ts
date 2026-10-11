@@ -1,7 +1,7 @@
 // Based on https://github.com/theKashey/aria-hidden/blob/master/src/index.ts
 // Licensed under MIT
 
-import { findControlledElements, isHTMLElement } from "@zag-js/dom-query"
+import { findControlledElements, getWindow, isElement, isHTMLElement } from "@zag-js/dom-query"
 
 let counterMap = new WeakMap<Element, number>()
 let uncontrolledNodes = new WeakMap<Element, boolean>()
@@ -27,8 +27,7 @@ const correctTargets = (parent: HTMLElement, targets: Element[]): Element[] =>
 interface WalkTreeOutsideOptions {
   parentNode: HTMLElement
   markerName: string
-  controlAttribute: string
-  explicitBooleanValue: boolean
+  attribute: "aria-hidden" | "inert"
   followControlledElements?: boolean
 }
 
@@ -41,7 +40,9 @@ const isIgnoredNode = (node: Element) => {
 }
 
 const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOptions): VoidFunction => {
-  const { parentNode, markerName, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
+  const { parentNode, markerName, attribute, followControlledElements = true } = props
+  const attributeValue = attribute === "aria-hidden" ? "true" : ""
+
   // A target can be removed while its lock is paused
   const targets = allTargets.filter((target) => parentNode.contains(target))
 
@@ -84,8 +85,8 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
       } else {
         try {
           if (isIgnoredNode(node)) return
-          const attr = node.getAttribute(controlAttribute)
-          const alreadyHidden = explicitBooleanValue ? attr === "true" : attr !== null && attr !== "false"
+          const alreadyHidden =
+            attribute === "aria-hidden" ? node.getAttribute(attribute) === "true" : node.hasAttribute(attribute)
           const counterValue = (counterMap.get(node) || 0) + 1
           const markerValue = (markerCounter.get(node) || 0) + 1
 
@@ -102,7 +103,7 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
           }
 
           if (!alreadyHidden) {
-            node.setAttribute(controlAttribute, explicitBooleanValue ? "true" : "")
+            node.setAttribute(attribute, attributeValue)
           }
         } catch (e) {
           console.error("[zag-js > ariaHidden] cannot operate on ", node, e)
@@ -126,7 +127,7 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
 
       if (!counterValue) {
         if (!uncontrolledNodes.has(node)) {
-          node.removeAttribute(controlAttribute)
+          node.removeAttribute(attribute)
         }
         uncontrolledNodes.delete(node)
       }
@@ -140,7 +141,6 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
 
     if (!lockCount) {
       // clear
-      counterMap = new WeakMap()
       counterMap = new WeakMap()
       uncontrolledNodes = new WeakMap()
       markerMap = {}
@@ -191,13 +191,13 @@ const getLockStack = (doc: Document) => {
 }
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
-  const { parentNode, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
+  const { parentNode, attribute, followControlledElements = true } = props
   const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
 
   // An invalid target must not pause the active lock
   if (!targets.length) return () => {}
 
-  const hiddenSelector = explicitBooleanValue ? `[${controlAttribute}="true"]` : `[${controlAttribute}]`
+  const hiddenSelector = attribute === "aria-hidden" ? '[aria-hidden="true"]' : "[inert]"
 
   let undo: VoidFunction | undefined
   let observer: MutationObserver | undefined
@@ -214,9 +214,6 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     undo = undefined
   }
 
-  // A controller inside hidden content can't reveal anything
-  const isVisibleController = (record: MutationRecord) => !(record.target as Element).closest(hiddenSelector)
-
   const lock: Lock = {
     pause() {
       observer?.disconnect()
@@ -226,11 +223,13 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     resume() {
       apply()
       if (!followControlledElements) return
-      // Re-walk when a controller expands or collapses, so popups opened from inside the targets stay visible
-      const win = parentNode.ownerDocument.defaultView
-      if (!win?.MutationObserver) return
+
+      const win = getWindow(parentNode)
+
+      // Sync controlled popups when their controllers expand or collapse.
       observer = new win.MutationObserver((records) => {
-        if (records.some(isVisibleController)) apply()
+        // A controller inside hidden content can't reveal anything.
+        if (records.some(({ target }) => isElement(target) && !target.closest(hiddenSelector))) apply()
       })
       observer.observe(parentNode, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true })
     },
