@@ -208,10 +208,7 @@ function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undef
       nativeFocus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
     }
 
-    // Overwrite via assignment does not work in happy dom:
-    // https://github.com/capricorn86/happy-dom/issues/1214
-    // Keep it writable: replacing an accessor (e.g. Storybook's) with a data property
-    // would otherwise make it read-only, breaking libraries that later assign `focus`.
+    // Keep focus writable when replacing an accessor (e.g. Storybook's).
     Object.defineProperty(win.HTMLElement.prototype, "focus", {
       configurable: true,
       writable: true,
