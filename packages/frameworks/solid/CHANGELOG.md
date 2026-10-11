@@ -1,5 +1,18 @@
 # @zag-js/solid
 
+## 1.46.0
+
+### Patch Changes
+
+- [`e6336ed`](https://github.com/chakra-ui/zag/commit/e6336ed2a1b032a6d040101b5d730893b29e0954) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where consecutive state updates inside Solid's
+  `batch()` used stale values.
+- Updated dependencies []:
+  - @zag-js/core@1.46.0
+  - @zag-js/store@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

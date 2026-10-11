@@ -1,5 +1,22 @@
 # @zag-js/tree-view
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3397](https://github.com/chakra-ui/zag/pull/3397)
+  [`b7e72e4`](https://github.com/chakra-ui/zag/commit/b7e72e44b923bc9c35a48984053e89bba703134a) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Fixed the rename input not receiving focus when renaming starts
+  with `F2` in adapters that patch the DOM after the state change, such as Vue. The input value sync and focus now run
+  on the next frame, once the input is rendered.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/collection@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

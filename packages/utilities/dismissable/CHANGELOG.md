@@ -1,5 +1,19 @@
 # @zag-js/dismissable
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3426](https://github.com/chakra-ui/zag/pull/3426)
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix nested popups rendering behind their parent layer when using
+  `--layer-index` with `lazyMount` or `unmountOnExit`. Keep the positioner's z-index synchronized with its dismissable
+  layer and preserve it during exit animations.
+- Updated dependencies []:
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/interact-outside@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

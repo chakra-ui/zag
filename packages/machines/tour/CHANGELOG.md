@@ -1,5 +1,25 @@
 # @zag-js/tour
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3355](https://github.com/chakra-ui/zag/pull/3355)
+  [`df32b45`](https://github.com/chakra-ui/zag/commit/df32b45f689ec41113f50ee2c606df4fcb7167c6) Thanks
+  [@moczolaszlo](https://github.com/moczolaszlo)! - Fix action triggers being announced by the translation instead of
+  their visible label (e.g. "Got it" read as "close tour"). Pass `attrs: { "aria-label": ... }` on an action to name an
+  icon-only trigger.
+- Updated dependencies [[`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/focus-trap@1.46.0
+  - @zag-js/interact-outside@1.46.0
+  - @zag-js/popper@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

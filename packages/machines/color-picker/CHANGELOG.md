@@ -1,5 +1,30 @@
 # @zag-js/color-picker
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3407](https://github.com/chakra-ui/zag/pull/3407)
+  [`48595e6`](https://github.com/chakra-ui/zag/commit/48595e696b586e450222632f77a51afa6551e478) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed `api.setFormat` not changing the format. It converted the
+  value and sent it back through `VALUE.SET`, which converted it back to the current format, so the format never changed
+  and `onFormatChange` never fired.
+
+- [#3426](https://github.com/chakra-ui/zag/pull/3426)
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix nested popups rendering behind their parent layer when using
+  `--layer-index` with `lazyMount` or `unmountOnExit`. Keep the positioner's z-index synchronized with its dismissable
+  layer and preserve it during exit animations.
+- Updated dependencies [[`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/color-utils@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/popper@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes
