@@ -1,7 +1,6 @@
 import { AnnouncementBanner } from "components/announcement-banner"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
-import { ComponentCategories, WhatsNew } from "components/home-sections"
 import {
   AccessibilityIcon,
   ArrowRightIcon,
@@ -85,34 +84,45 @@ export default function Home() {
 
           <Illustration />
 
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            align={{ sm: "center" }}
-            mt="8"
-            mb="12"
-            gap="5"
-          >
+          <Stack direction={{ base: "column", sm: "row" }} mt="10" gap="3">
             <ButtonLink href="/overview/introduction" variant="green">
               <HStack gap="6">
                 <span>Get Started</span>
                 <Icon as={ArrowRightIcon} />
               </HStack>
             </ButtonLink>
+            <ButtonLink href="/overview/components" px="6">
+              Browse components
+            </ButtonLink>
+          </Stack>
+
+          <Flex
+            mt="14"
+            gap={{ base: "6", md: "10" }}
+            align="center"
+            flexWrap="wrap"
+            color="text.muted"
+          >
+            <HStack gap="6">
+              <styled.span textStyle="sm" fontWeight="medium">
+                Works with
+                <styled.span srOnly> React, Vue, Solid and Svelte</styled.span>
+              </styled.span>
+              <HStack gap="5" color="text" aria-hidden>
+                <ReactIcon />
+                <VueIcon />
+                <SolidIcon />
+                <SvelteIcon />
+              </HStack>
+            </HStack>
             <Image
               draggable={false}
               src="/oss-nominee.png"
               alt="GitNation React Nominee (2024)"
-              width={200}
-              height={64}
+              width={160}
+              height={51}
             />
-          </Stack>
-
-          <HStack gap="12">
-            <ReactIcon />
-            <VueIcon />
-            <SolidIcon />
-            <SvelteIcon />
-          </HStack>
+          </Flex>
         </Section>
       </Box>
 
@@ -160,10 +170,6 @@ export default function Home() {
           </Stack>
         </Box>
       </Section>
-
-      <WhatsNew />
-
-      <ComponentCategories />
 
       <Section my={{ base: "20", md: "32" }}>
         <Flex
