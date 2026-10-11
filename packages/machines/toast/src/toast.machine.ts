@@ -40,7 +40,6 @@ export const machine = createMachine<ToastSchema>({
       })),
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
-        isEqual: (a, b) => a.title === b?.title && a.description === b?.description,
       })),
     }
   },
