@@ -52,6 +52,7 @@ test("Escape closes select then child then parent and preserves exit stacking", 
 
 test("supports typeahead and clicking an option above the child dialog", async ({ page }) => {
   await page.getByTestId("select-trigger").click()
+  await expect(page.getByTestId("select-content")).toBeFocused()
   await page.keyboard.type("ch")
   await page.keyboard.press("Enter")
   await expect(page.getByTestId("select-trigger")).toHaveText("Cherry")
