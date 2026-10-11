@@ -22,6 +22,7 @@ export function connect<T extends PropTypes, O>(
   const paused = state.hasTag("paused")
 
   const mounted = context.get("mounted")
+  const rendered = context.get("rendered")
   const frontmost = computed("frontmost")
 
   const placement = prop("parent").computed("placement")
@@ -73,8 +74,8 @@ export function connect<T extends PropTypes, O>(
 
         role: "status",
         "aria-atomic": "true",
-        "aria-describedby": description ? dom.getDescriptionId(scope) : undefined,
-        "aria-labelledby": title ? dom.getTitleId(scope) : undefined,
+        "aria-describedby": description && rendered.description ? dom.getDescriptionId(scope) : undefined,
+        "aria-labelledby": title && rendered.title ? dom.getTitleId(scope) : undefined,
         tabIndex: 0,
         style: getPlacementStyle(service, visible),
         onKeyDown(event) {

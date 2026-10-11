@@ -38,6 +38,9 @@ export const machine = createMachine<ToastSchema>({
       initialHeight: bindable<number>(() => ({
         defaultValue: 0,
       })),
+      rendered: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
+      })),
     }
   },
 
@@ -110,7 +113,7 @@ export const machine = createMachine<ToastSchema>({
 
   entry: ["setMounted", "measureHeight", "invokeOnVisible"],
 
-  effects: ["trackHeight"],
+  effects: ["trackContent"],
 
   states: {
     "visible:updating": {
@@ -194,9 +197,8 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackHeight({ scope, prop }) {
-        let cleanup: VoidFunction | undefined
-        raf(() => {
+      trackContent({ scope, prop, context }) {
+        return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
@@ -206,19 +208,29 @@ export const machine = createMachine<ToastSchema>({
             setHeight(prop("parent"), item)
           }
 
+          const syncRenderedElements = () => {
+            context.set("rendered", {
+              title: !!dom.getTitleEl(scope),
+              description: !!dom.getDescriptionEl(scope),
+            })
+          }
+
+          syncRenderedElements()
+
           const win = scope.getWin()
 
-          const observer = new win.MutationObserver(syncHeight)
+          const observer = new win.MutationObserver(() => {
+            syncHeight()
+            syncRenderedElements()
+          })
           observer.observe(rootEl, {
             childList: true,
             subtree: true,
             characterData: true,
           })
 
-          cleanup = () => observer.disconnect()
+          return () => observer.disconnect()
         })
-
-        return () => cleanup?.()
       },
     },
 

@@ -11,7 +11,7 @@ export class ToastModel extends Model {
     return a11y(this.page)
   }
 
-  goto(type: "stacked" | "overlap") {
+  goto(type: "stacked" | "overlap" | "conditional-content") {
     return this.page.goto(`/toast/${type}`)
   }
 
@@ -23,28 +23,41 @@ export class ToastModel extends Model {
     return this.page.locator("[data-scope=toast][data-part=close-trigger]").nth(num)
   }
 
+  private getToast(num: number) {
+    return this.page.getByRole("status").nth(num)
+  }
+
+  async getToastHeight(num = 0) {
+    const box = await this.getToast(num).boundingBox()
+    return box?.height ?? 0
+  }
+
+  seeAccessibleName(value: string, num = 0) {
+    return expect(this.getToast(num)).toHaveAccessibleName(value)
+  }
+
+  seeAccessibleDescription(value: string, num = 0) {
+    return expect(this.getToast(num)).toHaveAccessibleDescription(value)
+  }
+
+  async dontSeeTitle(num = 0) {
+    const toast = this.getToast(num)
+    await expect(toast.locator("[data-part=title]")).toHaveCount(0)
+    await expect(toast).not.toHaveAttribute("aria-labelledby")
+  }
+
+  async dontSeeDescription(num = 0) {
+    const toast = this.getToast(num)
+    await expect(toast.locator("[data-part=description]")).toHaveCount(0)
+    await expect(toast).not.toHaveAttribute("aria-describedby")
+  }
+
   async clickLoadingToast(times = 1) {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Loading)" }).click())
   }
 
   async clickErrorToast(times = 1) {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Error)" }).click())
-  }
-
-  async clickUpdateLatest() {
-    return this.page.getByRole("button", { name: "Update Latest" }).click()
-  }
-
-  async clickCloseAll() {
-    return this.page.getByRole("button", { name: "Close All" }).click()
-  }
-
-  async clickPauseAll() {
-    return this.page.getByRole("button", { name: "Pause All" }).click()
-  }
-
-  async clickResumeAll() {
-    return this.page.getByRole("button", { name: "Resume All" }).click()
   }
 
   openDialog() {

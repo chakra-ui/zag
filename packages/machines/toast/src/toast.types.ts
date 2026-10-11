@@ -167,6 +167,7 @@ export type ToastSchema<O = any> = {
     mounted: boolean
     initialHeight: number
     remainingTime: number
+    rendered: { title: boolean; description: boolean }
   }
   computed: {
     height: number
