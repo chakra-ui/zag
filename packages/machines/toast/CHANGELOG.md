@@ -1,5 +1,36 @@
 # @zag-js/toast
 
+## 1.46.0
+
+### Minor Changes
+
+- [`8d58479`](https://github.com/chakra-ui/zag/commit/8d58479a3a82d05a93140a6f5a2867e681a8bb87) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add functional updates to `toaster.update(id, updater)` so updates
+  can derive new properties from the toast's current properties, including queued toasts.
+
+  Fix removing queued toasts by ID so they cannot be updated or promoted after removal.
+
+### Patch Changes
+
+- [#3423](https://github.com/chakra-ui/zag/pull/3423)
+  [`545fa96`](https://github.com/chakra-ui/zag/commit/545fa96f114b71cd28aae688aae41239f37b83fc) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fixed issue where toasts referenced missing title or description
+  elements.
+
+- [`e6336ed`](https://github.com/chakra-ui/zag/commit/e6336ed2a1b032a6d040101b5d730893b29e0954) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where queued toast updates and dismissal were not
+  applied correctly.
+  - Fixed issue where dismissed toasts could reappear after a promise settled.
+  - Fixed issue where newly created or updated toasts could lose paused timers.
+  - Fixed issue where subscription callbacks could cause lost toast updates.
+- Updated dependencies [[`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

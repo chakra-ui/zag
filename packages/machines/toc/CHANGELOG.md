@@ -1,5 +1,30 @@
 # @zag-js/toc
 
+## 1.46.0
+
+### Minor Changes
+
+- [#3403](https://github.com/chakra-ui/zag/pull/3403)
+  [`803909e`](https://github.com/chakra-ui/zag/commit/803909e72edbd811b5935fd9b25e9468d571dee0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added a `nav` part (`getNavProps()`) so the root can wrap the
+  page content without sharing the nav's id or label.
+  - Moved `aria-labelledby` from `getRootProps()` to `getNavProps()`.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <nav {...api.getNavProps()}>...</nav>
+  </div>
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

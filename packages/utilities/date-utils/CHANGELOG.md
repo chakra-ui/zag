@@ -1,5 +1,9 @@
 # @zag-js/date-utils
 
+## 1.46.0
+
+No changes in this release.
+
 ## 1.45.0
 
 ## 1.44.0

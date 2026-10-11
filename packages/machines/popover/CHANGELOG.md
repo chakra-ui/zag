@@ -1,5 +1,33 @@
 # @zag-js/popover
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3426](https://github.com/chakra-ui/zag/pull/3426)
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix nested popups rendering behind their parent layer when using
+  `--layer-index` with `lazyMount` or `unmountOnExit`. Keep the positioner's z-index synchronized with its dismissable
+  layer and preserve it during exit animations.
+
+- [#3398](https://github.com/chakra-ui/zag/pull/3398)
+  [`9a33b37`](https://github.com/chakra-ui/zag/commit/9a33b370b1336592d1a5448c634c73ebcc719ae5) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Fixed the popover content missing `aria-labelledby` and
+  `aria-describedby` when the content is rendered only while open (lazy mounting). The title and description are now
+  detected each time the popover opens.
+- Updated dependencies [[`44445ae`](https://github.com/chakra-ui/zag/commit/44445ae6b038d2d737bb3ca5b9d02d697c29cc07),
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/aria-hidden@1.46.0
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/focus-trap@1.46.0
+  - @zag-js/popper@1.46.0
+  - @zag-js/remove-scroll@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

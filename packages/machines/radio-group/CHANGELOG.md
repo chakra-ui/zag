@@ -1,5 +1,17 @@
 # @zag-js/radio-group
 
+## 1.46.0
+
+### Patch Changes
+
+- Updated dependencies [[`0afddfa`](https://github.com/chakra-ui/zag/commit/0afddfae6e4f9fea790d4321bf2d0bb37160f4a1)]:
+  - @zag-js/focus-visible@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

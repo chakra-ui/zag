@@ -1,5 +1,18 @@
 # @zag-js/focus-visible
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3396](https://github.com/chakra-ui/zag/pull/3396)
+  [`0afddfa`](https://github.com/chakra-ui/zag/commit/0afddfae6e4f9fea790d4321bf2d0bb37160f4a1) Thanks
+  [@BleedingDev](https://github.com/BleedingDev)! - Keep `HTMLElement.prototype.focus` writable when patching and
+  restoring it. When another tool had already defined `focus` as an accessor (for example Storybook's preview), the
+  redefined method became read-only, so later assignments (such as react-aria restoring `focus` on `beforeunload`) threw
+  `Cannot assign to read only property 'focus'`.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes
