@@ -48,6 +48,11 @@ const navLinks: NavLink[] = [
       pathname.startsWith("/utilities"),
   },
   {
+    href: "/blog",
+    label: "Blog",
+    isActive: (pathname) => pathname.startsWith("/blog"),
+  },
+  {
     href: "/showcase",
     label: "Showcase",
     isActive: (pathname) => pathname.startsWith("/showcase"),

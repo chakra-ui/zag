@@ -1,4 +1,5 @@
 import {
+  posts,
   getComponentPaths,
   getGuidePaths,
   getOverviewPaths,
@@ -12,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const lastModified = new Date()
 
-  const staticRoutes = ["", "/community", "/showcase"].map((path) => ({
+  const staticRoutes = ["", "/blog", "/community", "/showcase"].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified,
   }))
@@ -41,8 +42,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified,
   }))
 
+  const postRoutes = posts.map((post) => ({
+    url: `${siteConfig.url}/blog/${post.slug}`,
+    lastModified: post.date,
+  }))
+
   return [
     ...staticRoutes,
+    ...postRoutes,
     ...componentRoutes,
     ...overviewRoutes,
     ...guideRoutes,

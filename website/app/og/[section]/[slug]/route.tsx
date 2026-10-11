@@ -1,11 +1,12 @@
 import { renderOgImage } from "lib/og-image"
-import { components, guides, overviews, utilities } from "lib/source"
+import { components, guides, overviews, posts, utilities } from "lib/source"
 
 const sections = {
   overview: { label: "Overview", docs: overviews },
   guides: { label: "Guides", docs: guides },
   components: { label: "Components", docs: components },
   utilities: { label: "Utilities", docs: utilities },
+  blog: { label: "Blog", docs: posts },
 }
 
 export const dynamic = "force-static"

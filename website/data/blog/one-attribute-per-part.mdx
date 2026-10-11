@@ -1,0 +1,184 @@
+---
+title: One attribute per part
+description:
+  Why Zag v2 replaces data-scope and data-part with a single attribute, and what
+  it fixes when machines share an element.
+type: article
+date: 2026-10-11
+authors:
+  - name: Adebesin Tolulope
+    github: Adebesin-Cell
+---
+
+In Zag v2, this:
+
+```html
+<button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">
+  Open
+</button>
+```
+
+becomes this:
+
+```html
+<button data-dialog-trigger="dialog:1">Open</button>
+```
+
+It looks like a cosmetic rename, but it's the change most likely to touch your
+styles when you upgrade, so it deserves an explanation. This post covers what
+the old attributes did, where they broke down, and why one attribute fixes it.
+
+## What the attributes are for
+
+Every element a Zag machine renders gets attributes that say what it is. They
+serve three readers:
+
+- **Your styles.** You style a dialog's content with a selector, not a class
+  name Zag invents for you.
+- **The machine itself.** A machine finds its own elements in the DOM. An
+  accordion finds its item triggers to move focus between them with the arrow
+  keys.
+- **Your tests.** End-to-end tests query parts the same way your styles do.
+
+In v1, that took up to three attributes. `data-scope` named the machine,
+`data-part` named the part, and `data-ownedby` said which instance of the
+machine owned it.
+
+## Where it broke down
+
+### Two machines, one element
+
+The attribute names were shared by every machine. A dialog trigger and a tooltip
+trigger both wrote `data-part="trigger"`.
+
+That's fine until two machines need the same element. A common case is a button
+that opens a popover and also shows a tooltip:
+
+```tsx
+<button
+  {...mergeProps(popoverApi.getTriggerProps(), tooltipApi.getTriggerProps())}
+>
+  Share
+</button>
+```
+
+Both sets of props set `data-scope` and `data-part`, and only one value can win.
+The button ends up as `data-scope="tooltip"`, and every selector that looked for
+the popover trigger stops matching:
+
+```css
+/* no longer matches the share button */
+[data-scope="popover"][data-part="trigger"][data-state="open"] {
+  background: var(--accent);
+}
+```
+
+The styles break silently. Nothing errors. The button just stops looking pressed
+when the popover opens.
+
+### Nested machines
+
+Machines nest more than you'd expect: an accordion inside an accordion, a menu
+inside a dialog, tabs inside tabs.
+
+When an accordion looks for its triggers, it has to skip the triggers of any
+accordion nested inside it. `data-part="item-trigger"` matches both, so v1 added
+`data-ownedby` to the parts that could nest, in 16 machines, and to the queries
+that looked for them. That's a third attribute, and a condition each of those
+machines had to remember to add.
+
+### Long selectors
+
+Even when nothing went wrong, every selector named two attributes:
+
+```css
+[data-scope="slider"][data-part="thumb"][data-focus] {
+}
+```
+
+## One attribute
+
+In v2, the machine and the part are both in the attribute name, and the owner is
+its value:
+
+```html
+<button data-dialog-trigger="dialog:1">Open</button>
+```
+
+Each of the problems above goes away.
+
+**Two machines, one element.** The names no longer collide, so both survive:
+
+```html
+<button data-popover-trigger="popover:1" data-tooltip-trigger="tooltip:1">
+  Share
+</button>
+```
+
+Popover styles match the popover trigger, and tooltip styles match the tooltip
+trigger, on the same button.
+
+**Nested machines.** The value already says which instance owns the part, so
+there's no separate `data-ownedby`. An accordion finds its own triggers with one
+attribute:
+
+```ts
+const selector = `[${parts.itemTrigger.attr}='${CSS.escape(ownerId)}']`
+// [data-accordion-item-trigger='accordion:1']
+```
+
+Triggers of a nested accordion carry a different id, so they don't match.
+
+**Shorter selectors.** One attribute names the part:
+
+```css
+[data-slider-thumb][data-focus] {
+}
+```
+
+State attributes don't change. `data-state`, `data-focus`, `data-disabled` and
+the rest work exactly as before, so you only rewrite the part of each selector
+that named the part.
+
+## Upgrading your styles
+
+Replace `[data-scope="X"][data-part="Y"]` with `[data-X-Y]`:
+
+```diff
+- [data-scope="dialog"][data-part="content"] { ... }
++ [data-dialog-content] { ... }
+
+- [data-scope="slider"][data-part="thumb"][data-focus] { ... }
++ [data-slider-thumb][data-focus] { ... }
+```
+
+DOM queries change the same way:
+
+```diff
+- document.querySelector('[data-scope="dialog"][data-part="content"]')
++ document.querySelector("[data-dialog-content]")
+```
+
+Most of this is a search and replace. The names are the machine and part names
+in kebab case, so `close-trigger` on a dialog becomes
+`data-dialog-close-trigger`.
+
+If you build your own machines on the anatomy API, `parts.X.attrs` is now a
+function that takes the owner id, and each part exposes its attribute name as
+`attr`:
+
+```diff
+- ...parts.trigger.attrs,
+- "data-ownedby": scope.id,
++ ...parts.trigger.attrs(scope.id),
+```
+
+The [migration guide](/guides/migration#data-attributes) has the full list of v2
+changes.
+
+## The trade-off
+
+The cost is the upgrade. Every stylesheet that targeted Zag parts needs its
+selectors rewritten, and there's no way to keep the old attributes around
+without bringing back the collisions. We think a one-time search and replace is
+worth it for parts that compose, and selectors you can read at a glance.

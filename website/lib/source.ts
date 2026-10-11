@@ -4,6 +4,7 @@ import type { MDXComponents } from "mdx/types"
 import type { ComponentType, ReactNode } from "react"
 import siteConfig from "site.config"
 import {
+  blog as blogEntries,
   components as componentEntries,
   guides as guideEntries,
   overview as overviewEntries,
@@ -287,4 +288,45 @@ export function getUtilityPaths() {
 
 export function getUtilityDoc(slug: string | string[]) {
   return utilities.find((doc) => doc.slug === firstSlug(slug))
+}
+
+export interface Author {
+  name: string
+  github: string
+}
+
+export interface Post {
+  slug: string
+  title: string
+  description: string
+  date: Date
+  type: "article" | "release"
+  featured?: boolean
+  authors: Author[]
+  readingTime: number
+  toc: TocItem[]
+}
+
+/** Blog posts, newest first */
+export const posts: Post[] = blogEntries
+  .map((entry) => ({
+    slug: entry.info.path.replace(/\.mdx$/, ""),
+    title: entry.title,
+    description: entry.description,
+    date: entry.date,
+    type: entry.type,
+    featured: entry.featured,
+    authors: entry.authors,
+    // 200 words a minute, same as the Panda blog
+    readingTime: Math.max(
+      1,
+      Math.ceil(readRaw(entry).split(/\s+/).length / 200),
+    ),
+    toc: toToc(entry as unknown as Entry),
+  }))
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+
+export function getPostBody(slug: string) {
+  const entry = blogEntries.find((e) => e.info.path === `${slug}.mdx`)
+  return entry?.body as DocBody | undefined
 }
