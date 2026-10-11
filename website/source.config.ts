@@ -37,6 +37,19 @@ export const utilities = defineCollections({
   schema: docSchema,
 })
 
+export const blog = defineCollections({
+  type: "doc",
+  dir: "data/blog",
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    type: z.enum(["article", "release"]),
+    featured: z.boolean().optional(),
+    authors: z.array(z.object({ name: z.string(), github: z.string() })).min(1),
+  }),
+})
+
 export const snippets = defineCollections({
   type: "doc",
   dir: "data/snippets",

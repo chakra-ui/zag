@@ -1,0 +1,193 @@
+---
+title: Zag v2
+description:
+  One data attribute per part, eight new machines and utilities, typed props,
+  and machines that react to prop changes. Here's what's changing and how to
+  upgrade.
+type: release
+featured: true
+date: 2026-10-11
+authors:
+  - name: Adebesin Tolulope
+    github: Adebesin-Cell
+---
+
+Zag v2 is out as a pre-release.
+
+If you already use Zag, the way you write it barely changes. You still create a
+service with `useMachine`, call `connect`, and spread the props onto your
+elements. What changed is what those props render, how machines respond to your
+props, and how many machines there are.
+
+The short version:
+
+- **One attribute per part.** `data-dialog-trigger` replaces
+  `data-scope="dialog"` plus `data-part="trigger"`, so one element can belong to
+  several machines.
+- **New machines:** Field, Fieldset, Meter, Number Flow and Menubar.
+- **New utilities:** Drag and Drop, Infinite Scroll and Virtualizer.
+- **Props that stay live.** Effects re-run when the props they read change, so
+  options like `trapFocus` and `modal` update while a dialog is open.
+- **Stricter types.** Required props are checked at compile time instead of
+  failing at runtime.
+- **Part state getters** like `getTriggerState()` on every machine part that has
+  derived state.
+
+The rest of this post covers each change and what you need to do to upgrade.
+
+## One attribute per part
+
+In v1, every part rendered two or three attributes to identify itself:
+
+```html
+<button data-scope="dialog" data-part="trigger" data-ownedby="dialog:1">
+  Open
+</button>
+```
+
+In v2, it's one attribute. The name says which machine and part it is, and the
+value is the machine's id:
+
+```html
+<button data-dialog-trigger="dialog:1">Open</button>
+```
+
+Selectors get shorter:
+
+```diff
+- [data-scope="dialog"][data-part="trigger"] { ... }
++ [data-dialog-trigger] { ... }
+```
+
+More importantly, parts from different machines no longer fight over the same
+`data-part` attribute. A button can be a popover trigger and a tooltip trigger
+at the same time, and both sets of styles and queries keep working:
+
+```html
+<button data-popover-trigger="popover:1" data-tooltip-trigger="tooltip:1">
+  Share
+</button>
+```
+
+State attributes like `data-state`, `data-focus` and `data-disabled` don't
+change.
+
+This is the change most likely to break your styles, so the
+[migration guide](/guides/migration#data-attributes) covers it first.
+
+## New machines
+
+- [Field](/components/field) labels, describes and validates a native input,
+  textarea or select. It tracks touched, dirty and focused state, and validates
+  on submit, blur or change, with sync or async rules.
+- [Fieldset](/components/fieldset) groups related fields under a legend, with
+  helper and error text. Disabling the fieldset disables every field in it.
+- [Meter](/components/meter) shows a value within a known range, with low, high
+  and optimum regions like the HTML `<meter>` element.
+- [Number Flow](/components/number-flow) animates a number change by rolling
+  each digit to its new value, formatted with `Intl.NumberFormat`.
+- [Menubar](/components/menubar) implements the WAI-ARIA menubar pattern. Each
+  top-level item is a regular menu machine.
+
+## New utilities
+
+- [Drag and Drop](/utilities/dnd) sorts, moves and nests items. You own the
+  data; the machine tells you what moved where.
+- [Infinite Scroll](/utilities/infinite-scroll) loads the next page when the
+  user scrolls near an edge. It works from the start or end edge, horizontally,
+  and in RTL, and announces new content to screen readers.
+- [Virtualizer](/utilities/virtualizer) renders only the visible items in long
+  lists, grids and window-scrolled views.
+
+## Props that stay live
+
+In v1, some props were read once, when the machine entered a state. Changing
+`trapFocus` on an open dialog did nothing until the dialog closed and opened
+again.
+
+v2 adds `watchEffect` to the machine runtime. An effect declares the props it
+depends on and re-runs when they change, without restarting the state around it:
+
+```ts
+effects: {
+  trapFocus({ prop, watchEffect }) {
+    return watchEffect([() => prop("trapFocus")], () => {
+      if (!prop("trapFocus")) return
+      return trapFocus(/* ... */)
+    })
+  },
+}
+```
+
+Dialog, Drawer and Popover use it for `trapFocus`, `preventScroll` and `modal`,
+so toggling them while open takes effect right away. If you build your own
+machines, the same API is available to you.
+
+## Stricter types
+
+Machine props now declare which props have defaults. Two things follow from
+that:
+
+- A missing required prop, like Pin Input's `count`, is a type error instead of
+  a runtime failure.
+- Props with defaults keep `null` in their type where `null` is a meaningful
+  value.
+
+## Part state getters
+
+v1 had `getItemState()` on machines with items. v2 extends the convention to
+every part with derived state:
+
+```ts
+const triggerState = api.getTriggerState({ value: "confirm" })
+// { value: "confirm", current: true, open: true }
+```
+
+This saves you from recomputing state the machine already knows, for example
+when you style a trigger differently depending on which dialog it opens.
+
+## Improvements to existing machines
+
+- **Color Picker** supports the OKLab and OKLCH color formats, with an optional
+  overlay that marks the sRGB gamut boundary.
+- **Hover Card** positions correctly against triggers that wrap across lines,
+  and reports why it opened or closed.
+- **Number Input** reports a `reason` on change and commit, renders the scrubber
+  cursor as a part you can style, and adds `largeStep`, `smallStep` and
+  `snapOnStep`.
+- **Accordion** adds an `itemHeader` part and `loopFocus`.
+- **Select** adds `initialFocusEl` and announces the highlighted item to screen
+  readers.
+- **Positioning** no longer flashes at the top-left corner the first time a
+  popover opens.
+
+## Upgrading
+
+Install the pre-release with the `next` tag. Machines and adapters share one
+version, so update every `@zag-js/*` package together:
+
+```bash
+npm install @zag-js/react@next @zag-js/dialog@next
+```
+
+Most changes are additive, so you can upgrade one machine at a time. The
+breaking changes, besides data attributes:
+
+- Select, Combobox and Listbox move `role="listbox"` to a new `list` part, and
+  `composite` becomes `popupType`.
+- Tabs replace `composite` with `virtualFocus`.
+- Pin Input requires `count`, and Tags Input defaults `editable` to `false`.
+- Carousel, Tree View, Async List, Floating Panel and Image Cropper rename a few
+  props and methods.
+- Toggle Group uses toggle-button semantics in every mode.
+
+The [migration guide](/guides/migration) lists every change by package, with
+before and after code. If a package you use isn't listed there, it upgrades
+without code changes.
+
+## Feedback
+
+v2 is a pre-release, so APIs can still change before the stable release. If
+something breaks or feels off, open an issue on
+[GitHub](https://github.com/chakra-ui/zag/issues) or come say hi on
+[Discord](/discord).

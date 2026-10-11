@@ -41,6 +41,8 @@ const columns: FooterColumn[] = [
   {
     title: "Project",
     links: [
+      { title: "Blog", href: "/blog" },
+      { title: "RSS", href: "/blog/rss.xml" },
       { title: "Showcase", href: "/showcase" },
       { title: "Community", href: "/community" },
       { title: "Changelog", href: `${siteConfig.repo.blobUrl}/CHANGELOG.md` },

@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   metadataBase: new URL(siteConfig.url),
+  alternates: {
+    types: {
+      "application/rss+xml": [{ url: "/blog/rss.xml", title: "Zag blog" }],
+    },
+  },
   ...(siteConfig.noindex && { robots: { index: false, follow: false } }),
   openGraph: {
     type: "website",
