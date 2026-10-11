@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { observeChildren, raf } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -114,7 +114,7 @@ export const machine = createMachine<ToastSchema>({
 
   entry: ["setMounted", "measureHeight", "invokeOnVisible"],
 
-  effects: ["trackHeight", "trackRenderedElements"],
+  effects: ["trackContent"],
 
   states: {
     "visible:updating": {
@@ -198,9 +198,8 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackHeight({ scope, prop }) {
-        let cleanup: VoidFunction | undefined
-        raf(() => {
+      trackContent({ scope, prop, context }) {
+        return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
@@ -210,32 +209,28 @@ export const machine = createMachine<ToastSchema>({
             setHeight(prop("parent"), item)
           }
 
+          const syncRenderedElements = () => {
+            context.set("rendered", {
+              title: !!dom.getTitleEl(scope),
+              description: !!dom.getDescriptionEl(scope),
+            })
+          }
+
+          syncRenderedElements()
+
           const win = scope.getWin()
 
-          const observer = new win.MutationObserver(syncHeight)
+          const observer = new win.MutationObserver(() => {
+            syncHeight()
+            syncRenderedElements()
+          })
           observer.observe(rootEl, {
             childList: true,
             subtree: true,
             characterData: true,
           })
 
-          cleanup = () => observer.disconnect()
-        })
-
-        return () => cleanup?.()
-      },
-
-      trackRenderedElements({ context, scope }) {
-        const syncRenderedElements = () => {
-          context.set("rendered", {
-            title: !!dom.getTitleEl(scope),
-            description: !!dom.getDescriptionEl(scope),
-          })
-        }
-
-        return raf(() => {
-          syncRenderedElements()
-          return observeChildren(dom.getRootEl(scope), { callback: syncRenderedElements })
+          return () => observer.disconnect()
         })
       },
     },

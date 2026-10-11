@@ -57,6 +57,25 @@ test.describe("toast / conditional content", () => {
     await I.seeAccessibleDescription("All changes are up to date.")
   })
 
+  test("updates the toast height when optional content mounts and unmounts", async ({ page }) => {
+    await I.clickButton("Create toast")
+    await I.seeToast("Your draft is ready.")
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await showTitle(page, true)
+    await showDescription(page, true)
+    await I.seeAccessibleName("Draft saved")
+    await I.seeAccessibleDescription("All changes are up to date.")
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+
+    await showTitle(page, false)
+    await showDescription(page, false)
+    await I.dontSeeTitle()
+    await I.dontSeeDescription()
+    await expect.poll(() => I.getToastHeight()).toBeCloseTo(initialHeight, 0)
+  })
+
   test("updates the title reference when the title mounts, unmounts, and mounts again", async ({ page }) => {
     await showDescription(page, true)
     await I.clickButton("Create toast")

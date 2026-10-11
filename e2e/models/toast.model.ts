@@ -27,6 +27,11 @@ export class ToastModel extends Model {
     return this.page.getByRole("status").nth(num)
   }
 
+  async getToastHeight(num = 0) {
+    const box = await this.getToast(num).boundingBox()
+    return box?.height ?? 0
+  }
+
   seeAccessibleName(value: string, num = 0) {
     return expect(this.getToast(num)).toHaveAccessibleName(value)
   }
