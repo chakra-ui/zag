@@ -201,7 +201,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         dir: prop("dir"),
         style: {
           ...popperStyles.arrow,
-          // keep the arrow's size so the first placement accounts for it
           visibility: tooltipPositioned ? undefined : "hidden",
         },
         opacity: hasTarget ? undefined : 0,
