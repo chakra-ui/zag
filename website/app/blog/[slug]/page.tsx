@@ -1,6 +1,7 @@
 import { HiArrowLeft } from "react-icons/hi"
 import { AuthorLine, eyebrow } from "components/blog"
 import { Footer } from "components/footer"
+import { absoluteUrl, JsonLd } from "components/json-ld"
 import { mdxComponents } from "components/mdx-components"
 import { TopNav } from "components/nav/top-nav"
 import { TableOfContents } from "components/toc"
@@ -47,6 +48,21 @@ export default async function PostPage({ params }: PageProps) {
 
   return (
     <Box>
+      <JsonLd
+        data={{
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.description,
+          datePublished: post.date.toISOString(),
+          url: absoluteUrl(`/blog/${slug}`),
+          image: absoluteUrl(`/og/blog/${slug}.png`),
+          author: post.authors.map((author) => ({
+            "@type": "Person",
+            name: author.name,
+            url: `https://github.com/${author.github}`,
+          })),
+        }}
+      />
       <TopNav />
       <Box maxW="8xl" mx="auto" display="flex" position="relative">
         <Box
