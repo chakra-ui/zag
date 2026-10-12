@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
-import { ensureProps, isEqual, setValueAtIndex } from "@zag-js/utils"
+import { ensureProps, isEqual, setValueAtIndex, warn } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
@@ -51,8 +51,9 @@ export const machine = createMachine({
   entry: choose([
     {
       guard: "autoFocus",
-      actions: ["setFocusIndexToFirst"],
+      actions: ["warnOnCountMismatch", "setFocusIndexToFirst"],
     },
+    { actions: ["warnOnCountMismatch"] },
   ]),
 
   watch({ action, track, context, computed }) {
@@ -154,6 +155,14 @@ export const machine = createMachine({
       dispatchInputEvent({ computed, scope }) {
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
+      },
+      warnOnCountMismatch({ scope, prop }) {
+        const inputEls = dom.getInputEls(scope)
+        const count = prop("count")
+        warn(
+          inputEls.length > 0 && inputEls.length !== count,
+          `[zag-js/pin-input] \`count\` is ${count} but ${inputEls.length} inputs were rendered`,
+        )
       },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
