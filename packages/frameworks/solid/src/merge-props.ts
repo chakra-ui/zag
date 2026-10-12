@@ -15,13 +15,13 @@ const keyTraps = {
   },
   has(_: any, key: PropertyKey) {
     if (key === $PROXY) return true
-    return _.keys().includes(key)
+    return _.has(key)
   },
   ownKeys(_: any) {
     return _.keys()
   },
   getOwnPropertyDescriptor(_: any, key: PropertyKey) {
-    if (!_.keys().includes(key)) return undefined
+    if (!_.has(key)) return undefined
     return { configurable: true, enumerable: true, get: () => _.get(key) }
   },
   set: () => true,
@@ -58,9 +58,14 @@ export function mergeProps(...sources: any[]) {
           if (value !== undefined) return value
         }
       },
+      // Stops at the first source that has the key, so spreads don't rebuild the key set per key
+      has(key: PropertyKey) {
+        if (typeof key !== "string") return false
+        return sources.some((source) => Object.prototype.hasOwnProperty.call(resolve(source), key))
+      },
       keys() {
         const keys = new Set<string>()
-        for (const source of sources) for (const key in resolve(source)) keys.add(key)
+        for (const source of sources) for (const key of Object.getOwnPropertyNames(resolve(source))) keys.add(key)
         return [...keys]
       },
     },
