@@ -41,7 +41,7 @@ export function CommunityLink(props: CommunityLinkProps) {
       gap="3"
       transition="all 0.2s"
       _hover={{
-        borderColor: "border.emphasized",
+        borderColor: "border.bold",
         bg: "bg.subtle",
         shadow: "sm",
       }}

@@ -25,13 +25,13 @@ export function CommunityStat(props: CommunityStatProps) {
       rel="noopener noreferrer"
       textAlign={{ base: "left", md: "right" }}
       flex="1"
-      _hover={{ color: "fg" }}
+      _hover={{ color: "text" }}
     >
       <HStack
         gap="1.5"
         justifyContent={{ base: "flex-start", md: "flex-end" }}
         fontSize="xs"
-        color="fg.subtle"
+        color="text.subtle"
         fontFamily="mono"
         textTransform="uppercase"
         letterSpacing="0.1em"
@@ -49,7 +49,7 @@ export function CommunityStat(props: CommunityStatProps) {
       >
         {formatCompact(props.value)}
       </styled.p>
-      <styled.p fontSize="sm" color="fg.muted">
+      <styled.p fontSize="sm" color="text.muted">
         {props.subLabel}
       </styled.p>
     </styled.a>

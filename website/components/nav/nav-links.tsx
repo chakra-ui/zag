@@ -16,7 +16,7 @@ export function NavLinks() {
           className={css({
             fontWeight: "medium",
             textStyle: "sm",
-            _hover: { color: "fg" },
+            _hover: { color: "text" },
             _currentPage: {
               fontWeight: "semibold",
               textDecoration: "underline",

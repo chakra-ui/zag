@@ -41,7 +41,7 @@ export function RecordingItem(props: RecordingItemProps) {
       bg="bg"
       transition="border-color 0.2s, box-shadow 0.2s"
       overflow="hidden"
-      _hover={{ borderColor: "border.emphasized", shadow: "sm" }}
+      _hover={{ borderColor: "border.bold", shadow: "sm" }}
       _focusVisible={{
         outline: "2px solid",
         outlineColor: "green.500",
@@ -100,7 +100,7 @@ export function RecordingItem(props: RecordingItemProps) {
           <styled.h3 fontWeight="semibold" lineHeight="1.3" lineClamp="1">
             {video.title}
           </styled.h3>
-          <styled.p textStyle="xs" color="fg.muted" lineClamp="1">
+          <styled.p textStyle="xs" color="text.muted" lineClamp="1">
             {video.description}
           </styled.p>
         </Stack>
