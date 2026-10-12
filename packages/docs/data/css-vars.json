@@ -225,7 +225,7 @@
   },
   "steps": {
     "Root": {
-      "--percent": "The percent value for the Root"
+      "--steps-percent": "The steps percent value for the Root"
     }
   },
   "tabs": {

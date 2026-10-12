@@ -98,6 +98,7 @@ export const machine = createMachine<PopoverSchema>({
     },
 
     open: {
+      entry: ["checkRenderedElements"],
       effects: [
         "trapFocus",
         "preventScroll",
@@ -298,7 +299,7 @@ export const machine = createMachine<PopoverSchema>({
 
       checkRenderedElements({ context, scope }) {
         raf(() => {
-          Object.assign(context.get("renderedElements"), {
+          context.set("renderedElements", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
           })

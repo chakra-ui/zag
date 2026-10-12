@@ -7018,57 +7018,81 @@
   },
   "steps": {
     "api": {
-      "value": {
-        "type": "number",
-        "description": "The value of the stepper."
+      "items": {
+        "type": "V[]",
+        "description": "The steps in the flow, excluding disabled ones"
       },
-      "percent": {
+      "value": {
+        "type": "string | null",
+        "description": "The value of the current step, `COMPLETE` past the last step, or `null` when there are no steps"
+      },
+      "index": {
         "type": "number",
-        "description": "The percentage of the stepper."
+        "description": "The position of the current step in the flow"
+      },
+      "item": {
+        "type": "V | null",
+        "description": "The current step item"
       },
       "count": {
         "type": "number",
-        "description": "The total number of steps."
+        "description": "The number of steps in the flow, excluding disabled ones"
+      },
+      "percent": {
+        "type": "number",
+        "description": "The percentage of the stepper"
+      },
+      "complete": {
+        "type": "boolean",
+        "description": "Whether the stepper has moved past the last step"
+      },
+      "completedValues": {
+        "type": "string[]",
+        "description": "The values of the completed steps"
       },
       "hasNextStep": {
         "type": "boolean",
-        "description": "Whether the stepper has a next step."
+        "description": "Whether the stepper has a next step"
       },
       "hasPrevStep": {
         "type": "boolean",
-        "description": "Whether the stepper has a previous step."
+        "description": "Whether the stepper has a previous step"
       },
-      "isCompleted": {
+      "canSkip": {
         "type": "boolean",
-        "description": "Whether the stepper is completed."
+        "description": "Whether the current step is optional and can be skipped"
       },
-      "isStepValid": {
-        "type": "(index: number) => boolean",
-        "description": "Check if a specific step is valid (lazy evaluation)"
-      },
-      "isStepSkippable": {
-        "type": "(index: number) => boolean",
-        "description": "Check if a specific step can be skipped"
-      },
-      "setStep": {
-        "type": "(step: number) => void",
-        "description": "Function to set the value of the stepper."
-      },
-      "goToNextStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to the next step."
-      },
-      "goToPrevStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to the previous step."
-      },
-      "resetStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to reset the stepper."
+      "canComplete": {
+        "type": "boolean",
+        "description": "Whether `goToNextStep` would complete the stepper"
       },
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
-        "description": "Returns the state of the item at the given index."
+        "description": "Returns the state of the item with the given value"
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the value of the stepper"
+      },
+      "goToNextStep": {
+        "type": "VoidFunction",
+        "description": "Function to go to the next step"
+      },
+      "goToPrevStep": {
+        "type": "VoidFunction",
+        "description": "Function to go to the previous step"
+      },
+      "skipStep": {
+        "type": "VoidFunction",
+        "description": "Function to skip the current step. Only works when the step is optional."
+      },
+      "resetStep": {
+        "type": "VoidFunction",
+        "description": "Function to reset the stepper to its initial state"
+      },
+      "setCompletedValues": {
+        "type": "(values: string[]) => void",
+        "description": "Function to set the completed steps"
       }
     },
     "context": {
@@ -7076,21 +7100,45 @@
         "type": "ElementIds | undefined",
         "description": "The custom ids for the stepper elements"
       },
-      "step": {
-        "type": "number | undefined",
-        "description": "The controlled value of the stepper"
+      "translations": {
+        "type": "IntlTranslations | undefined",
+        "description": "The localized messages to use"
       },
-      "defaultStep": {
-        "type": "number | undefined",
+      "items": {
+        "type": "T[]",
+        "description": "The steps of the stepper"
+      },
+      "value": {
+        "type": "string | undefined",
+        "description": "The controlled value of the stepper. `COMPLETE` is the position past the last step."
+      },
+      "defaultValue": {
+        "type": "string | undefined",
         "description": "The initial value of the stepper when rendered.\nUse when you don't need to control the value of the stepper."
       },
-      "onStepChange": {
-        "type": "((details: StepChangeDetails) => void) | undefined",
+      "onValueChange": {
+        "type": "((details: ValueChangeDetails) => void) | undefined",
         "description": "Callback to be called when the value changes"
       },
-      "onStepComplete": {
-        "type": "VoidFunction | undefined",
-        "description": "Callback to be called when a step is completed"
+      "completedValues": {
+        "type": "string[] | undefined",
+        "description": "The controlled values of the completed steps"
+      },
+      "defaultCompletedValues": {
+        "type": "string[] | undefined",
+        "description": "The initial values of the completed steps when rendered.\nUse when you don't need to control the completed steps."
+      },
+      "onCompletedChange": {
+        "type": "((details: CompletedChangeDetails) => void) | undefined",
+        "description": "Callback to be called when the completed steps change.\nAlso fires on `goToNext`, which marks the step it leaves as completed."
+      },
+      "onNavigationBlocked": {
+        "type": "((details: NavigationBlockedDetails) => void) | undefined",
+        "description": "Callback to be called when navigation is blocked"
+      },
+      "onComplete": {
+        "type": "((details: CompleteDetails) => void) | undefined",
+        "description": "Callback to be called when the user moves past the last step.\nWith a controlled value, it fires on each request, whether or not you apply it."
       },
       "linear": {
         "type": "boolean | undefined",
@@ -7100,24 +7148,6 @@
         "type": "\"horizontal\" | \"vertical\" | undefined",
         "description": "The orientation of the stepper",
         "defaultValue": "\"horizontal\""
-      },
-      "count": {
-        "type": "number | undefined",
-        "description": "The total number of steps"
-      },
-      "isStepValid": {
-        "type": "((index: number) => boolean) | undefined",
-        "description": "Whether a step is valid. Invalid steps block forward navigation in linear mode.",
-        "defaultValue": "() => true"
-      },
-      "isStepSkippable": {
-        "type": "((index: number) => boolean) | undefined",
-        "description": "Whether a step can be skipped during navigation.\nSkippable steps are bypassed when using next/prev.",
-        "defaultValue": "() => false"
-      },
-      "onStepInvalid": {
-        "type": "((details: StepInvalidDetails) => void) | undefined",
-        "description": "Called when navigation is blocked due to an invalid step."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",

@@ -14,7 +14,7 @@
     steps.machine,
     controls.mergeProps<steps.Props>({
       id,
-      count: stepsData.length,
+      items: stepsData,
     }),
   )
 
@@ -24,29 +24,28 @@
 <main class="steps">
   <div {...api.getRootProps()}>
     <div {...api.getListProps()}>
-      {#each stepsData as step, index}
-        <div {...api.getItemProps({ index })}>
-          <button {...api.getTriggerProps({ index })}>
-            <div {...api.getIndicatorProps({ index })}>{index + 1}</div>
+      {#each stepsData as step, index (step.value)}
+        <div {...api.getItemProps({ value: step.value })}>
+          <button {...api.getTriggerProps({ value: step.value })}>
+            <div {...api.getIndicatorProps({ value: step.value })}>{index + 1}</div>
             <span>{step.title}</span>
           </button>
-          <div {...api.getSeparatorProps({ index })}></div>
+          <div {...api.getSeparatorProps({ value: step.value })}></div>
         </div>
       {/each}
     </div>
 
-    {#each stepsData as step, index}
-      <div {...api.getContentProps({ index })}>
+    {#each stepsData as step (step.value)}
+      <div {...api.getContentProps({ value: step.value })}>
         {step.title} - {step.description}
       </div>
     {/each}
 
-    <div {...api.getContentProps({ index: stepsData.length })}>
-      Steps Complete - Thank you for filling out the form!
-    </div>
+    <div {...api.getContentProps({ value: steps.COMPLETE })}>Steps Complete - Thank you for filling out the form!</div>
 
     <div>
       <button {...api.getPrevTriggerProps()}>Back</button>
+      <button {...api.getSkipTriggerProps()}>Skip</button>
       <button {...api.getNextTriggerProps()}>Next</button>
     </div>
   </div>

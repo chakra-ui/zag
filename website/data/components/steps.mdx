@@ -48,60 +48,148 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
+### Defining the steps
+
+Pass an array of items to the machine. Each item needs a unique `value`, which
+is how every part and API method addresses it.
+
+```tsx
+const service = useMachine(steps.machine, {
+  items: [
+    { value: "shipping", title: "Shipping", description: "Where to send it" },
+    { value: "payment", title: "Payment" },
+    { value: "review", title: "Review" },
+  ],
+})
+```
+
+`title` and `description` are optional. When the current step has a `title`, the
+progress bar announces it, for example "Step 2 of 3: Payment".
+
+Items carry four optional flags:
+
+- `disabled` — the step leaves the flow entirely. `next`/`prev` jump over it and
+  it is excluded from the progress. Use it for conditional steps.
+- `optional` — the step can be left without being completed, and a `skipTrigger`
+  becomes available.
+- `editable` — defaults to `true`. When `false`, a completed step cannot be
+  returned to.
+- `invalid` — the step fails validation and blocks forward navigation.
+
+### Rendering the steps
+
+`api.items` holds the steps still in the flow, so disabled steps drop out of the
+render without filtering. `api.index` and `api.count` use the same positions,
+which makes "Step 2 of 3" straightforward.
+
+```tsx
+{
+  api.items.map((item, index) => (
+    <div key={item.value} {...api.getItemProps({ value: item.value })}>
+      <button {...api.getTriggerProps({ value: item.value })}>
+        {index + 1}
+      </button>
+    </div>
+  ))
+}
+
+;<p>
+  Step {api.index + 1} of {api.count}
+</p>
+```
+
+Pass your item type to `connect` to keep any extra fields typed on `api.item`
+and `api.items`.
+
+```tsx
+interface Step extends steps.StepItem {
+  icon: string
+}
+
+const api = steps.connect<PropTypes, Step>(service, normalizeProps)
+api.item?.icon // string
+```
+
 ### Setting the initial step
 
-Set the initial step by passing `defaultStep` to the machine context.
-
-> The value of the `step` property is zero-based index.
+Set the initial step by passing `defaultValue` to the machine context.
 
 ```tsx {2}
 const service = useMachine(steps.machine, {
-  defaultStep: 1,
+  defaultValue: "payment",
 })
 ```
 
 ### Controlled current step
 
-Use `step` and `onStepChange` for controlled usage.
+Use `value` and `onValueChange` for controlled usage.
 
 ```tsx
 const service = useMachine(steps.machine, {
-  step,
-  onStepChange(details) {
-    setStep(details.step)
+  value,
+  onValueChange(details) {
+    // details => { value: string | null, index: number, previousValue: string | null }
+    setValue(details.value)
   },
 })
 ```
 
-### Listening for step change
-
-When the active step changes, the machine will invoke the `onStepChange` event
-
-```tsx {2-4}
-const service = useMachine(steps.machine, {
-  onStepChange(details) {
-    // details => { step: number }
-    console.log(`Step changed to ${details.step}`)
-  },
-})
-```
+The value is `null` when there is no current step, such as while `items` is
+still loading.
 
 ### Listening for steps completion
 
-When all steps are completed, the machine will invoke the `onStepComplete` event
+Moving past the last step sets the value to `steps.COMPLETE` and invokes
+`onComplete`. Render the terminal screen with
+`getContentProps({ value: steps.COMPLETE })`, and `goToPrevStep` returns to the
+last step.
+
+```tsx
+<div {...api.getContentProps({ value: steps.COMPLETE })}>All done</div>
+```
+
+The completed content is a focusable region, not a tab panel. Finishing moves
+focus to it, so the button the user pressed being disabled doesn't drop focus.
 
 ```tsx {2-4}
 const service = useMachine(steps.machine, {
-  onStepComplete() {
-    console.log("All steps are complete")
+  onComplete(details) {
+    console.log("All steps are complete", details.completedValues)
   },
 })
 ```
 
+Because completion is a value, the usual value props control it. Start on the
+completed screen with `defaultValue: steps.COMPLETE`, or set it from your own
+state when controlled. Completion history is not required: the machine only
+checks that the flow can complete when the user navigates.
+
+With a controlled value, `onComplete` fires on each request to finish, whether
+or not you apply it.
+
+> When you look up the current item from `value`, handle `steps.COMPLETE`.
+> Prefer `api.item`, which is `null` once complete.
+
+### Tracking completed steps
+
+Completion is its own controllable value, so it survives navigating backwards.
+
+```tsx
+const service = useMachine(steps.machine, {
+  completedValues,
+  onCompletedChange(details) {
+    setCompletedValues(details.completedValues)
+  },
+})
+```
+
+> `goToNextStep` marks the step it leaves as completed, so `onCompletedChange`
+> also fires on navigation.
+
 ### Enforcing linear steps
 
-To enforce linear steps, you can set the `linear` prop to `true` when creating
-the steps machine. This will prevent users from skipping steps.
+To enforce linear steps, set the `linear` prop to `true`. Every step before the
+one being navigated to must then be completed, optional, or disabled.
 
 ```tsx {2}
 const service = useMachine(steps.machine, {
@@ -109,33 +197,66 @@ const service = useMachine(steps.machine, {
 })
 ```
 
-### Validating steps in linear mode
+> An unvisited `optional` step satisfies this rule, so a jump past a run of
+> optional steps is allowed even in linear mode.
 
-Use `isStepValid` to block forward navigation when a step is incomplete.
+### Validating steps
+
+The machine does not validate anything itself. Derive `invalid` for each item
+from your form state, and the step blocks forward navigation and gets
+`data-invalid`.
 
 ```tsx
+const errors = validate(formData)
+
 const service = useMachine(steps.machine, {
-  linear: true,
-  isStepValid(index) {
-    return completedSteps.has(index)
-  },
-  onStepInvalid(details) {
-    // details => { step: number, action: "next" | "set", targetStep?: number }
-    console.log("blocked at step", details.step)
+  items: [
+    { value: "personal", invalid: errors.personal.length > 0 },
+    { value: "review" },
+  ],
+})
+```
+
+Error messages stay with your form. To show them only after the user tries to
+move on, record the step in `onNavigationBlocked` when `reason` is `"invalid"`.
+For asynchronous validation, keep the step `invalid` until the check resolves.
+
+### Reacting to blocked navigation
+
+When navigation is refused, `onNavigationBlocked` fires with the reason and the
+step responsible.
+
+```tsx {2-5}
+const service = useMachine(steps.machine, {
+  onNavigationBlocked(details) {
+    // reason => "disabled" | "locked" | "invalid" | "incomplete"
+    console.log(`blocked (${details.reason}) by ${details.blockedBy}`)
   },
 })
 ```
 
 ### Skipping optional steps
 
-Use `isStepSkippable` when some steps should be bypassed by next/prev
-navigation.
+Mark a step `optional` and render a `skipTrigger`. Unlike `next`, skipping
+ignores `invalid` and does not mark the step completed. It gets `skipped`
+instead.
 
 ```tsx
 const service = useMachine(steps.machine, {
-  isStepSkippable(index) {
-    return index === 2
-  },
+  items: [{ value: "shipping" }, { value: "gift-note", optional: true }],
+})
+
+// <button {...api.getSkipTriggerProps()}>Skip</button>
+```
+
+### Locking a completed step
+
+Set `editable: false` to stop a step being revisited once it is completed.
+`next` and `prev` pass over locked steps, so the user is never stranded.
+
+```tsx
+const service = useMachine(steps.machine, {
+  items: [{ value: "payment", editable: false }, { value: "review" }],
 })
 ```
 
@@ -156,10 +277,27 @@ const service = useMachine(steps.machine, {
 Use the API methods to move through the flow in code.
 
 ```tsx
-api.setStep(2)
+api.setValue("review")
 api.goToNextStep()
 api.goToPrevStep()
+api.skipStep()
 api.resetStep()
+```
+
+### Localizing the progress bar
+
+The progress bar is labelled "Progress" and announces its value as "Step 2 of 3:
+Payment", or "50% complete" when the step has no `title`. Pass `translations` to
+change either.
+
+```tsx
+const service = useMachine(steps.machine, {
+  translations: {
+    progressLabel: "Progression",
+    progressText: ({ index, count, percent, complete }) =>
+      complete ? "Terminé" : `Étape ${index + 1} sur ${count} (${percent}%)`,
+  },
+})
 ```
 
 ## Styling guide
@@ -233,6 +371,29 @@ To style the incomplete step, you can use the `data-incomplete` attribute.
   /* separator styles for the incomplete step */
 }
 ```
+
+### Skipped, invalid and locked steps
+
+```css
+[data-steps-item][data-skipped] {
+  /* the flow moved past this step without completing it */
+}
+
+[data-steps-item][data-invalid] {
+  /* the step fails validation */
+}
+
+[data-steps-item][data-locked] {
+  /* the step is completed and cannot be returned to */
+}
+
+[data-steps-item][data-optional] {
+  /* the step can be skipped */
+}
+```
+
+These are independent because several apply at once. A step can be completed and
+invalid, or current and invalid.
 
 ## Methods and Properties
 

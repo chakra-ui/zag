@@ -12,9 +12,9 @@ export function connect<T extends PropTypes>(
   service: ScrollAreaService,
   normalize: NormalizeProps<T>,
 ): ScrollAreaApi<T> {
-  const { state, send, context, prop, scope } = service
+  const { state, send, context, prop, scope, refs } = service
 
-  const dragging = state.matches("dragging")
+  const draggingOrientation = state.matches("dragging") ? refs.get("orientation") : null
   const hovering = context.get("hovering")
 
   const cornerSize = context.get("cornerSize")
@@ -27,10 +27,11 @@ export function connect<T extends PropTypes>(
   // -----------------------------------------------------------------------------
 
   function getScrollbarState(props: ScrollbarProps): ScrollbarState {
-    const horizontal = props.orientation === "horizontal"
+    const { orientation = "vertical" } = props
+    const horizontal = orientation === "horizontal"
     return {
       hovering,
-      dragging,
+      dragging: draggingOrientation === orientation,
       scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
       hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
     }

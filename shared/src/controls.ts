@@ -153,6 +153,7 @@ export const pinInputControls = defineControls({
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
   type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
 })
 
@@ -423,6 +424,7 @@ export const qrCodeControls = defineControls({
 export const stepsControls = defineControls({
   linear: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const tocControls = defineControls({

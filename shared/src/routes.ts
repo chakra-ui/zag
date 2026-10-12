@@ -176,7 +176,16 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "steps",
     label: "Steps",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "async-items", title: "Async Items" },
+      { slug: "validation", title: "Validation: Create Project" },
+      { slug: "conditional-steps", title: "Conditional & Optional Steps: Onboarding" },
+      { slug: "url-sync", title: "URL Sync: Checkout" },
+      { slug: "locked-steps", title: "Locked Steps: 2FA Setup" },
+      { slug: "persisted-progress", title: "Persisted Progress: Store Setup" },
+    ],
   },
   {
     slug: "qr-code",
@@ -414,7 +423,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "checkbox",
     label: "Checkbox",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "indeterminate", title: "Indeterminate" },
+    ],
   },
   {
     slug: "combobox",
@@ -650,6 +662,11 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "toast",
     label: "Toast",
     examples: [
+      { slug: "conditional-content", title: "Conditional Title and Description" },
+      { slug: "deduplicated", title: "Deduplicated" },
+      { slug: "promise", title: "Promise" },
+      { slug: "queued", title: "Queued" },
+      { slug: "undo-action", title: "Undo Action" },
       { slug: "stacked", title: "Stacked" },
       { slug: "overlap", title: "Overlap" },
     ],

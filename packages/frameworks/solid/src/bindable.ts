@@ -1,6 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { isFunction } from "@zag-js/utils"
-import { createEffect, createMemo, createSignal, type Accessor, onCleanup } from "solid-js"
+import { createEffect, createMemo, createSignal, type Accessor, onCleanup, untrack } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
@@ -11,17 +11,15 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
   const controlled = createMemo(() => props().value !== undefined)
 
   const valueRef = { current: value() }
-  const prevValue: Record<"current", T | undefined> = { current: undefined }
 
   createEffect(() => {
     const v = controlled() ? props().value : value()
-    prevValue.current = v
     valueRef.current = v as T
   })
 
   const set = (v: T | ((prev: T) => T)) => {
-    const prev = prevValue.current
-    const next = isFunction(v) ? v(valueRef.current as T) : v
+    const prev = untrack(() => (controlled() ? props().value : value())) as T
+    const next = isFunction(v) ? v(prev) : v
 
     if (props().debug) {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })

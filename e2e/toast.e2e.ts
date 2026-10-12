@@ -74,19 +74,19 @@ test.describe("toast / overlapping", () => {
     await I.clickErrorToast(2)
 
     // pause
-    await I.clickPauseAll()
+    await I.clickButton("Pause All")
     await I.seeToastArePaused()
 
     // resume
-    await I.clickResumeAll()
+    await I.clickButton("Resume All")
     await I.seeNumOfToasts(0)
   })
 
   test("close all", async () => {
     await I.clickErrorToast(2)
     // pause to make it actually works
-    await I.clickPauseAll()
-    await I.clickCloseAll()
+    await I.clickButton("Pause All")
+    await I.clickButton("Close All")
     await I.seeNumOfToasts(0)
   })
 

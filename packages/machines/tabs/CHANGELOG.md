@@ -2,6 +2,8 @@
 
 ## 2.0.0-next.3
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -86,6 +88,12 @@
   - `virtualFocus` is a well-known a11y concept (managing focus via state instead of DOM focus)
   - Self-documenting — no one knows what `composite` means without reading docs
   - Consistent with how `composite` was removed from select, menu, and combobox
+
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 

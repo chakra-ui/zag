@@ -280,7 +280,10 @@ export const tourData: StepDetails[] = [
     id: "step-0",
     title: "Centered tour (no target)",
     description: "This is the center of the world. Ready to start the tour?",
-    actions: [{ label: "Next", action: "next" }],
+    actions: [
+      { label: "Skip", action: "skip" },
+      { label: "Next", action: "next" },
+    ],
   },
   {
     type: "tooltip",
@@ -365,7 +368,7 @@ export const tourData: StepDetails[] = [
 
 export const stepsData = [
   { value: "first", title: "First", description: "Contact Info" },
-  { value: "second", title: "Second", description: "Date & Time" },
+  { value: "second", title: "Second", description: "Date & Time", optional: true },
   { value: "third", title: "Third", description: "Select Rooms" },
 ]
 

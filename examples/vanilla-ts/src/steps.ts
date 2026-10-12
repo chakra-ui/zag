@@ -1,12 +1,10 @@
 import * as steps from "@zag-js/steps"
-import { Component } from "./component"
 import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
+import { Component } from "./component"
 
 export class Steps extends Component<steps.Props, steps.Api> {
   initMachine(props: steps.Props) {
-    return new VanillaMachine(steps.machine, {
-      ...props,
-    })
+    return new VanillaMachine(steps.machine, { ...props })
   }
 
   initApi() {
@@ -14,47 +12,37 @@ export class Steps extends Component<steps.Props, steps.Api> {
   }
 
   syncSteps = () => {
-    const list = this.rootEl.querySelector<HTMLElement>(".steps-list")
-    if (!list) return
-
-    const items = Array.from(list.querySelectorAll<HTMLElement>(".steps-item"))
+    const items = Array.from(this.rootEl.querySelectorAll<HTMLElement>(".steps-item"))
 
     items.forEach((item, index) => {
-      const itemState = this.api.getItemState({ index })
-      this.spreadProps(item, this.api.getItemProps({ index }))
+      const value = item.dataset.value
+      if (!value) return
 
-      // Update indicator
+      this.spreadProps(item, this.api.getItemProps({ value }))
+
       const indicator = item.querySelector<HTMLElement>(".steps-indicator")
       if (indicator) {
-        this.spreadProps(indicator, this.api.getIndicatorProps({ index }))
+        this.spreadProps(indicator, this.api.getIndicatorProps({ value }))
         indicator.textContent = String(index + 1)
       }
 
-      // Update trigger
       const trigger = item.querySelector<HTMLElement>(".steps-trigger")
-      if (trigger) {
-        this.spreadProps(trigger, this.api.getTriggerProps({ index }))
-      }
+      if (trigger) this.spreadProps(trigger, this.api.getTriggerProps({ value }))
 
-      // Update separator
       const separator = item.querySelector<HTMLElement>(".steps-separator")
-      if (separator) {
-        this.spreadProps(separator, this.api.getSeparatorProps({ index }))
-      }
-
-      // Update data attributes for styling
-      item.setAttribute("data-current", String(itemState.current))
-      item.setAttribute("data-completed", String(itemState.completed))
-      item.setAttribute("data-incomplete", String(itemState.incomplete))
+      if (separator) this.spreadProps(separator, this.api.getSeparatorProps({ value }))
     })
   }
 
   syncContents = () => {
     const contents = Array.from(this.rootEl.querySelectorAll<HTMLElement>(".steps-content"))
-
-    contents.forEach((content, index) => {
-      this.spreadProps(content, this.api.getContentProps({ index }))
+    contents.forEach((content) => {
+      const value = content.dataset.value
+      if (value) this.spreadProps(content, this.api.getContentProps({ value }))
     })
+
+    const completed = this.rootEl.querySelector<HTMLElement>(".steps-completed-content")
+    if (completed) this.spreadProps(completed, this.api.getContentProps({ value: steps.COMPLETE }))
   }
 
   render() {
@@ -72,7 +60,6 @@ export class Steps extends Component<steps.Props, steps.Api> {
     const nextButton = this.rootEl.querySelector<HTMLButtonElement>(".steps-next-trigger")
     if (nextButton) this.spreadProps(nextButton, this.api.getNextTriggerProps())
 
-    // Sync steps and contents
     this.syncSteps()
     this.syncContents()
   }

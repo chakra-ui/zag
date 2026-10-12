@@ -286,7 +286,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
     },

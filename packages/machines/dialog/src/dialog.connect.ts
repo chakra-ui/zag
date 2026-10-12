@@ -52,6 +52,7 @@ export function connect<T extends PropTypes>(
 
   return {
     open,
+    modal: !!prop("modal"),
     setOpen(nextOpen) {
       send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },

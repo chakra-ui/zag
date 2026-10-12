@@ -2,6 +2,8 @@
 
 ## 2.0.0-next.3
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -91,6 +93,13 @@
   - Floating panel: `ResizeTriggerProps.axis` → `.placement`, `data-axis` → `data-placement`, `ResizeTriggerAxis`
     removed (use `HandlePosition`), `resizeTriggerAxes` → `resizeTriggerPlacements`
   - Image cropper: `HandleProps.position` → `.placement`, `data-position` → `data-placement`, `handles` → `placements`
+
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/rect-utils@1.46.0
 
 ## 1.45.0
 

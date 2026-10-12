@@ -234,6 +234,10 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * Whether the dialog is modal
+   */
+  modal: boolean
+  /**
    * Function to open or close the dialog
    */
   setOpen: (open: boolean) => void
