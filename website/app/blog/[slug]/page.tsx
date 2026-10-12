@@ -1,3 +1,4 @@
+import { HiArrowLeft } from "react-icons/hi"
 import { AuthorLine, eyebrow } from "components/blog"
 import { Footer } from "components/footer"
 import { mdxComponents } from "components/mdx-components"
@@ -34,6 +35,7 @@ export async function generateMetadata({
     description: post.description,
     path: `/blog/${slug}`,
     image: `/og/blog/${slug}.png`,
+    publishedTime: post.date,
   })
 }
 
@@ -59,13 +61,16 @@ export default async function PostPage({ params }: PageProps) {
               href="/blog"
               className={css({
                 display: "inline-flex",
+                alignItems: "center",
+                gap: "1.5",
                 fontSize: "sm",
                 color: "text.muted",
                 mb: "6",
                 _hover: { color: "text" },
               })}
             >
-              ← All posts
+              <HiArrowLeft aria-hidden />
+              All posts
             </Link>
 
             <Stack gap="3" mb="10">
