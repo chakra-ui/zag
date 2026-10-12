@@ -2,6 +2,7 @@
 "@zag-js/svelte": patch
 ---
 
-Apply machine styles one property at a time in the browser instead of rewriting the `style` attribute, so properties
-machines write to the element directly, such as positioning variables, survive re-renders. This fixes nested menus
-closing as soon as they open on hover. Server rendering still outputs a style string.
+Fixed issue where styles set by a component, such as popup positioning, were lost when the element re-rendered. This
+made nested menus close as soon as they opened on hover.
+
+- Raised the minimum `svelte` peer version to `5.29.0`

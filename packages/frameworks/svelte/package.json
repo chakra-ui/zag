@@ -39,7 +39,7 @@
     "vitest": "4.1.11"
   },
   "peerDependencies": {
-    "svelte": ">=5"
+    "svelte": ">=5.29.0"
   },
   "scripts": {
     "build": "svelte-package -i src",
