@@ -20,7 +20,6 @@ const StyledButton = styled("button", {
     bg: "bg.subtle",
     borderColor: "border.subtle",
     cursor: "pointer",
-    rounded: "sm",
     _hover: { bg: "bg.muted" },
   },
 })

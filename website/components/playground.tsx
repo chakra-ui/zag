@@ -49,7 +49,6 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
       fontSize="sm"
       px="2"
       py="1"
-      rounded="sm"
       borderWidth="1px"
       borderColor="border"
       cursor="pointer"

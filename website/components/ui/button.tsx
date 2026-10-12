@@ -9,7 +9,6 @@ const buttonRecipe = cva({
     justifyContent: "center",
     textAlign: "start",
     cursor: "pointer",
-    rounded: "sm",
     focusVisibleRing: "outside",
     focusRingColor: "blue.600",
   },
