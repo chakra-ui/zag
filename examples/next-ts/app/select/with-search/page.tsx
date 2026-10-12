@@ -1,10 +1,13 @@
 "use client"
 
+import { createFilter } from "@zag-js/i18n-utils"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import { useId, useMemo, useRef, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import "@styles/select.css"
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 interface Item {
   label: string
@@ -13,10 +16,9 @@ interface Item {
 
 export default function Page() {
   const [search, setSearch] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
 
   const collection = useMemo(() => {
-    const items = selectData.filter((item) => item.label.toLowerCase().includes(search.toLowerCase()))
+    const items = selectData.filter((item) => contains(item.label, search))
     return select.collection({ items })
   }, [search])
 
@@ -24,7 +26,6 @@ export default function Page() {
     id: useId(),
     collection,
     popupType: "dialog",
-    initialFocusEl: () => inputRef.current,
     onOpenChange(details) {
       if (!details.open) setSearch("")
     },
@@ -38,7 +39,7 @@ export default function Page() {
         <div {...api.getControlProps()}>
           <label {...api.getLabelProps()}>Country</label>
           <button {...api.getTriggerProps()}>
-            <span>{api.valueAsString || "Select country"}</span>
+            <span {...api.getValueTextProps()}>{api.valueAsString || "Select country"}</span>
             <span {...api.getIndicatorProps()}>▼</span>
           </button>
         </div>
@@ -47,16 +48,11 @@ export default function Page() {
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
               <input
-                ref={inputRef}
-                data-select-search=""
-                value={search}
+                {...api.getInputProps()}
+                aria-label="Filter countries"
                 placeholder="Filter…"
-                spellCheck={false}
-                autoComplete="off"
+                value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Home" || e.key === "End") e.stopPropagation()
-                }}
               />
 
               <div {...api.getListProps()}>
@@ -68,11 +64,7 @@ export default function Page() {
                 ))}
               </div>
 
-              {collection.size === 0 && (
-                <div data-select-empty="" role="status">
-                  No matches for "{search}"
-                </div>
-              )}
+              <div {...api.getEmptyProps()}>{collection.size === 0 && `No matches for "${search}"`}</div>
 
               <div data-select-footer="">
                 <span>
