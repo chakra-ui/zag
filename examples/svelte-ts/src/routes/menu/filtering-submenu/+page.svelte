@@ -37,9 +37,9 @@
     <div use:portal {...api.getPositionerProps()}>
       <div data-testid="menu" {...api.getContentProps()}>
         <input data-testid="input" aria-label="Filter actions" placeholder="Search actions..." {...inputProps} />
-        {#if actions.length === 0 && !showMoveTo}
-          <div data-menu-empty>No actions found</div>
-        {/if}
+        <div {...api.getEmptyProps()}>
+          {#if actions.length === 0 && !showMoveTo}No actions found{/if}
+        </div>
         <div {...api.getListProps()}>
           {#each actions as item (item.value)}
             <div data-testid={item.value} {...api.getItemProps({ value: item.value })}>{item.label}</div>

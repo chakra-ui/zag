@@ -41,7 +41,7 @@ onMounted(() => {
           :value="query"
           @input="query = ($event.target as HTMLInputElement).value"
         />
-        <div v-if="folders.length === 0" data-menu-empty>No folders found</div>
+        <div v-bind="api.getEmptyProps()"><template v-if="folders.length === 0">No folders found</template></div>
         <div v-bind="api.getListProps()">
           <div
             v-for="item in folders"

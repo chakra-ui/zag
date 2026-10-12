@@ -70,4 +70,8 @@
   padding: 6px 5px;
   font-size: 14px;
   color: gray;
+
+  &:empty {
+    display: none;
+  }
 }

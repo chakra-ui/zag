@@ -59,9 +59,7 @@ function FolderSubmenu(props: FolderSubmenuProps) {
               placeholder="Search folders..."
               {...inputProps}
             />
-            <Show when={folders().length === 0}>
-              <div data-menu-empty="">No folders found</div>
-            </Show>
+            <div {...api().getEmptyProps()}>{folders().length === 0 && "No folders found"}</div>
             <div {...api().getListProps()}>
               <For each={folders()}>
                 {(item) => (
@@ -119,9 +117,7 @@ export default function Page() {
                   placeholder="Search actions..."
                   {...inputProps}
                 />
-                <Show when={actions().length === 0 && !showMoveTo()}>
-                  <div data-menu-empty="">No actions found</div>
-                </Show>
+                <div {...api().getEmptyProps()}>{actions().length === 0 && !showMoveTo() && "No actions found"}</div>
                 <div {...api().getListProps()}>
                   <For each={actions()}>
                     {(item) => (

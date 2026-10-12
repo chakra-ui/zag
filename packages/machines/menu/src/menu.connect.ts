@@ -429,7 +429,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "data-state": contentState.open ? "open" : "closed",
         "data-instant": dataAttr(instant),
         role: composite ? "menu" : "dialog",
-        tabIndex: 0,
+        tabIndex: composite ? 0 : -1,
         dir: prop("dir"),
         "aria-activedescendant": (composite && computed("highlightedId")) || undefined,
         "aria-labelledby": labelledBy,
@@ -658,9 +658,18 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.list.attrs(scope.id),
         id: dom.getListId(scope),
         dir: prop("dir"),
-        // A dialog popup holds the input, so the list takes the menu role
         role: composite ? "presentation" : "menu",
         "aria-labelledby": composite ? undefined : labelledBy,
+      })
+    },
+
+    getEmptyProps() {
+      return normalize.element({
+        ...parts.empty.attrs(scope.id),
+        dir: prop("dir"),
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": true,
       })
     },
 

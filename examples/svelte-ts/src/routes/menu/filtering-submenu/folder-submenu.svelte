@@ -49,9 +49,9 @@
 <div use:portal {...api.getPositionerProps()}>
   <div data-testid="folders-submenu" {...api.getContentProps()}>
     <input data-testid="folders-input" aria-label="Filter folders" placeholder="Search folders..." {...inputProps} />
-    {#if folders.length === 0}
-      <div data-menu-empty>No folders found</div>
-    {/if}
+    <div {...api.getEmptyProps()}>
+      {#if folders.length === 0}No folders found{/if}
+    </div>
     <div {...api.getListProps()}>
       {#each folders as item (item.value)}
         <div data-testid={item.value} {...api.getItemProps({ value: item.value })}>{item.label}</div>

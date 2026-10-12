@@ -35,7 +35,7 @@ const items = computed(() => menuFilterData.actions.filter((item) => contains(it
               :value="query"
               @input="query = ($event.target as HTMLInputElement).value"
             />
-            <div v-if="items.length === 0" data-menu-empty>No actions found</div>
+            <div v-bind="api.getEmptyProps()"><template v-if="items.length === 0">No actions found</template></div>
             <div v-bind="api.getListProps()">
               <div
                 v-for="item in items"

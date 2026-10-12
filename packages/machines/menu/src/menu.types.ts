@@ -486,14 +486,9 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   getContentState: () => ContentState
   getContentProps: () => T["element"]
   getSeparatorProps: () => T["element"]
-  /**
-   * Props for a filter input that owns focus while its menu is open
-   */
   getInputProps: () => T["input"]
-  /**
-   * Props for the list that holds the items next to a filter input
-   */
   getListProps: () => T["element"]
+  getEmptyProps: () => T["element"]
   getItemProps: (options: ItemProps) => T["element"]
   getOptionItemProps: (option: OptionItemProps) => T["element"]
   getItemIndicatorProps: (option: ItemBaseProps) => T["element"]

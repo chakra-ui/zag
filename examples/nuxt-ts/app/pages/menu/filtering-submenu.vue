@@ -37,7 +37,9 @@ const showMoveTo = computed(() => contains("Move to folder", query.value))
               :value="query"
               @input="query = ($event.target as HTMLInputElement).value"
             />
-            <div v-if="actions.length === 0 && !showMoveTo" data-menu-empty>No actions found</div>
+            <div v-bind="api.getEmptyProps()">
+              <template v-if="actions.length === 0 && !showMoveTo">No actions found</template>
+            </div>
             <div v-bind="api.getListProps()">
               <div
                 v-for="item in actions"

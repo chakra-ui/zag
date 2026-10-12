@@ -56,7 +56,7 @@ function FolderSubmenu(props: FolderSubmenuProps) {
                 onChange: (event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value),
               })}
             />
-            {folders.length === 0 && <div data-menu-empty="">No folders found</div>}
+            <div {...api.getEmptyProps()}>{folders.length === 0 && "No folders found"}</div>
             <div {...api.getListProps()}>
               {folders.map((item) => (
                 <div key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
@@ -108,7 +108,7 @@ export default function Page() {
                     onChange: (event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value),
                   })}
                 />
-                {actions.length === 0 && !showMoveTo && <div data-menu-empty="">No actions found</div>}
+                <div {...api.getEmptyProps()}>{actions.length === 0 && !showMoveTo && "No actions found"}</div>
                 <div {...api.getListProps()}>
                   {actions.map((item) => (
                     <div key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>

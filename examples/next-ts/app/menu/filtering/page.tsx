@@ -45,7 +45,7 @@ export default function Page() {
                     onChange: (event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value),
                   })}
                 />
-                {items.length === 0 && <div data-menu-empty="">No actions found</div>}
+                <div {...api.getEmptyProps()}>{items.length === 0 && "No actions found"}</div>
                 <div {...api.getListProps()}>
                   {items.map((item) => (
                     <div key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>

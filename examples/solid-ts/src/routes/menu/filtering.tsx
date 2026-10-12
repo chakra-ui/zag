@@ -2,7 +2,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import * as menu from "@zag-js/menu"
 import { menuFilterData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -49,9 +49,7 @@ export default function Page() {
                   placeholder="Search actions..."
                   {...inputProps}
                 />
-                <Show when={items().length === 0}>
-                  <div data-menu-empty="">No actions found</div>
-                </Show>
+                <div {...api().getEmptyProps()}>{items().length === 0 && "No actions found"}</div>
                 <div {...api().getListProps()}>
                   <For each={items()}>
                     {(item) => (
