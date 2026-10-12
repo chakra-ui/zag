@@ -282,6 +282,10 @@ interface Refs {
    * The last positioned rect, including updates not yet rendered by the framework
    */
   prevSpotlightRect?: Rect | undefined
+  /**
+   * The element that had focus when the tour started, to restore focus when it ends
+   */
+  restoreFocusEl?: HTMLElement | null | undefined
 }
 
 type ComputedContext = Readonly<{
