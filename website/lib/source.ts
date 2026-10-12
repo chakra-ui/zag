@@ -201,6 +201,21 @@ export function getBody(category: Category, slug: string) {
   return entry?.body as DocBody | undefined
 }
 
+/**
+ * The first paragraph under each heading, keyed by heading id ("" for the
+ * intro), from the structured data fumadocs extracts at build time. Search uses it.
+ */
+export function getSectionText(category: Category | "blog", slug: string) {
+  const list = category === "blog" ? blogEntries : entries[category]
+  const entry = list.find((e) => e.info.path === `${slug}.mdx`)
+  const sections = new Map<string, string>()
+  for (const { heading = "", content } of entry?.structuredData.contents ??
+    []) {
+    if (!sections.has(heading)) sections.set(heading, content)
+  }
+  return sections
+}
+
 export function getSnippetBody(key: string) {
   const entry = snippetEntries.find((e) => e.info.path === `${key}.mdx`)
   return entry?.body as DocBody | undefined
