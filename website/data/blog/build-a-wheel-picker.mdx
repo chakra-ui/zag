@@ -1,0 +1,754 @@
+---
+title: Build a wheel picker with Zag
+description:
+  An iOS-style wheel picker from native scroll snapping and a few Zag utilities,
+  and how to package it for your design system.
+type: article
+date: 2026-10-12
+authors:
+  - name: Adebesin Tolulope
+    github: Adebesin-Cell
+---
+
+A wheel picker is the spinning column of options you see in iOS time and date
+pickers. You flick it, it spins with momentum, and it settles on one value.
+
+This post builds one without a state machine. The browser already does the hard
+part: scrolling, touch momentum and snapping. Zag fills in the rest, the
+keyboard, typeahead and accessibility, and gives the code a shape that scales
+from one component to a design system.
+
+<Showcase id="FrameworkWheel" />
+
+## Why there's no machine
+
+Most Zag components have behavior the browser can't give you, so a machine owns
+it. A wheel picker is different. Its feel comes from scrolling, and native
+scrolling is hard to beat:
+
+- **Momentum** on touch screens, tuned by the OS, with rubber-banding at the
+  ends.
+- **Snapping** with `scroll-snap-type`, so the wheel always lands on a row.
+- **Every input device**: touch, trackpad, mouse wheel and the scrollbar, with
+  no extra code.
+
+Rebuilding that in JavaScript means reimplementing physics that will never feel
+quite like the platform. And since most people use wheel pickers on their
+phones, that's where the native feel matters most.
+
+What the browser doesn't do is everything around the scrolling: which value is
+selected, keyboard support, typeahead, screen reader semantics and form
+integration. That's what this post adds, using Zag's utilities and conventions.
+
+## How it works
+
+The whole component rests on one idea: **the value is whichever row sits in the
+middle of the viewport.**
+
+- The viewport is a scroll container with `scroll-snap-type: y mandatory`, so
+  scrolling always stops with a row in the middle.
+- When scrolling stops, the row in the middle becomes the value.
+- To set the value from the keyboard or from your app, scroll that row into the
+  middle.
+
+Values flow from the scroll position, and the scroll position follows the value.
+There's no other state.
+
+## Anatomy
+
+| Part         | Element                  | Purpose                                                  |
+| ------------ | ------------------------ | -------------------------------------------------------- |
+| `root`       | `div`                    | Wraps everything and sets the CSS variables              |
+| `label`      | `span`                   | The visible label                                        |
+| `viewport`   | `div`, `role=spinbutton` | The scroll container. It's focusable and holds the value |
+| `item-group` | `div`                    | Holds the rows. Hidden from assistive tech               |
+| `item`       | `div`                    | One row                                                  |
+| `highlight`  | `div`                    | The band behind the selected row                         |
+| hidden input | `input type=hidden`      | Submits the value with a native form                     |
+
+Each part gets a data attribute named after it, like `data-wheel-viewport`. It's
+the same convention Zag v2 uses for every machine, so the wheel styles and
+queries like any other Zag component.
+
+## Step 1: snap rows to the middle
+
+The viewport is exactly `visibleCount` rows tall. Padding above and below lets
+the first and last rows reach the middle:
+
+```ts
+const pad = ((visibleCount - 1) / 2) * itemHeight
+
+const viewportStyle = {
+  height: `${itemHeight * visibleCount}px`,
+  overflowY: "auto",
+  scrollSnapType: "y mandatory",
+  scrollbarWidth: "none",
+  overscrollBehavior: "contain",
+  paddingBlock: `${pad}px`,
+}
+
+const itemStyle = {
+  height: `${itemHeight}px`,
+  scrollSnapAlign: "center",
+}
+```
+
+With that padding, row `i` sits in the middle exactly when
+`scrollTop === i * itemHeight`. That makes the rest of the math simple:
+
+```ts
+/** The row in the middle of the viewport */
+export function getCenterRow(props: WheelProps, el: HTMLElement) {
+  return Math.round(el.scrollTop / resolve(props).itemHeight)
+}
+
+export function scrollToRow(
+  props: WheelProps,
+  el: HTMLElement,
+  row: number,
+  behavior: ScrollBehavior,
+) {
+  el.scrollTo({ top: row * resolve(props).itemHeight, behavior })
+}
+```
+
+Keep `visibleCount` odd so one row is always in the middle. Rows have a fixed
+height, so nothing needs measuring.
+
+`overscroll-behavior: contain` stops a fling at the end of the wheel from
+scrolling the page behind it.
+
+## Step 2: read the value when scrolling stops
+
+Don't read the value while the wheel moves. Wait for the scroll, including any
+touch momentum, to come to rest:
+
+```ts
+/** Calls `onEnd` when a scroll, including touch momentum, comes to rest */
+export function trackScrollEnd(el: HTMLElement, onEnd: () => void) {
+  // Safari added `scrollend` in 26.2. Older browsers wait for scroll events to stop
+  if ("onscrollend" in window) {
+    el.addEventListener("scrollend", onEnd)
+    return () => el.removeEventListener("scrollend", onEnd)
+  }
+  let timer: ReturnType<typeof setTimeout>
+  const onScroll = () => {
+    clearTimeout(timer)
+    timer = setTimeout(onEnd, 120)
+  }
+  el.addEventListener("scroll", onScroll, { passive: true })
+  return () => {
+    clearTimeout(timer)
+    el.removeEventListener("scroll", onScroll)
+  }
+}
+```
+
+`scrollend` fires once the finger is up and the momentum has finished, which is
+exactly the moment the wheel has a value. The fallback waits for scroll events
+to stop for 120ms. Momentum keeps emitting scroll events, so it won't fire
+early.
+
+When the wheel comes to rest, `settle` reads the middle row and reports it:
+
+```ts
+export function settle(props: WheelProps, el: HTMLElement) {
+  const { items } = resolve(props)
+  const n = items.length
+  const row = getCenterRow(props, el)
+  const item = items[((row % n) + n) % n]
+
+  if (item.value !== props.value) props.onValueChange(item.value)
+}
+```
+
+The full version in step 6 also handles disabled rows and looping.
+
+## Step 3: move with the keyboard
+
+A spinbutton is expected to respond to these keys:
+
+| Key                     | Moves to                                     |
+| ----------------------- | -------------------------------------------- |
+| `ArrowDown` / `ArrowUp` | The next / previous enabled row              |
+| `PageDown` / `PageUp`   | One screen of rows further                   |
+| `Home` / `End`          | The first / last enabled row                 |
+| Letters and digits      | The next row that starts with what you typed |
+
+Keys don't set the value directly. They scroll the target row into the middle,
+and the value updates with it. That keeps one rule for everything: the middle
+row is the value.
+
+Moving by rows rather than by values matters for looping wheels, covered below.
+On an hour wheel, `ArrowUp` from 1 should spin back one row to 12, not forward
+through eleven others. `stepRow` walks rows in the direction of the key and
+skips disabled ones:
+
+```ts
+export function stepRow(props: WheelProps, fromRow: number, step: number) {
+  const { items, loop } = resolve(props)
+  const rowCount = loop ? items.length * COPIES : items.length
+  const dir = Math.sign(step)
+  let row = fromRow
+  let found = fromRow
+  let remaining = Math.abs(step)
+
+  while (remaining > 0) {
+    row += dir
+    if (row < 0 || row >= rowCount) break
+    if (items[row % items.length].disabled) continue
+    found = row
+    remaining--
+  }
+
+  return found
+}
+```
+
+Holding down `ArrowDown` sends key presses faster than the smooth scroll
+finishes. If each press started from the row currently in the middle, presses
+would get lost mid-animation. So the wheel remembers where it's heading, and the
+next press starts from there:
+
+```ts
+const pendingRows = new Map<string, number>()
+
+onKeyDown(event) {
+  const el = event.currentTarget as HTMLElement
+  const from = pendingRows.get(id) ?? getCenterRow(props, el)
+  // ...find the target row...
+  pendingRows.set(id, row)
+  scrollToRow(props, el, row, "smooth")
+}
+```
+
+`settle` clears the pending row when the scroll ends.
+
+### Typeahead
+
+Typing jumps to the next row whose label starts with what you typed, just like a
+native `select`. `getByTypeahead` from `@zag-js/dom-query` is the same helper
+Zag's Select, Menu and Listbox use. It buffers keys typed in quick succession,
+cycles through matches when you repeat a letter, and resets after a pause:
+
+```ts
+import { getByTypeahead, type TypeaheadState } from "@zag-js/dom-query"
+
+// The buffer has to outlive a render, so it's kept per wheel
+const typeaheads = new Map<string, TypeaheadState>()
+
+if (getByTypeahead.isValidEvent(event)) {
+  const searchable = items
+    .filter((item) => !item.disabled)
+    .map((item) => ({ id: item.value, textContent: item.label }))
+
+  const match = getByTypeahead(searchable, {
+    state: typeahead,
+    activeId: value,
+    key: event.key,
+  })
+
+  if (match) row = getRowOf(props, match.id, from)
+}
+```
+
+`getByTypeahead` works on anything with an `id` and `textContent`, so the items
+don't need to be DOM elements.
+
+## Step 4: make it accessible
+
+The viewport is the one element assistive tech needs to know about. It's a
+[spinbutton](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/): a control
+that holds one value from a range and changes it with the arrow keys.
+
+```ts
+{
+  role: "spinbutton",
+  tabIndex: 0,
+  "aria-label": label,
+  "aria-valuenow": index,
+  "aria-valuemin": 0,
+  "aria-valuemax": items.length - 1,
+  "aria-valuetext": items[index]?.label,
+}
+```
+
+- `aria-valuetext` is what screen readers announce, like "Svelte" or "09",
+  rather than the index.
+- The rows are `aria-hidden`. The spinbutton already announces the value, and a
+  looping wheel renders each label several times, which would read as
+  duplicates.
+- Give every wheel a name. A single wheel can use its visible label. In a time
+  picker, each column needs its own, like "Hour" and "Minute".
+- Show focus on the highlight, since that's where the eye goes:
+
+```css
+[data-wheel-viewport]:focus-visible + [data-wheel-highlight] {
+  outline: 2px solid var(--focus-ring-color);
+}
+```
+
+## Step 5: skip disabled rows
+
+Keyboard moves already skip disabled rows. A flick can still land on one, so
+`settle` moves on to the next enabled row, or back to the previous one at the
+end of the list:
+
+```ts
+if (item.disabled) {
+  let next = stepRow(props, row, 1)
+  if (next === row) next = stepRow(props, row, -1)
+  scrollToRow(props, el, next, "smooth")
+  return
+}
+```
+
+The smooth scroll ends with another `scrollend`, and `settle` runs again on the
+enabled row.
+
+## Step 6: loop forever
+
+Hours and minutes wrap around: after 59 comes 00. A scroll container has ends,
+so a looping wheel fakes it. It renders its items several times and keeps the
+user in the middle copy:
+
+```ts
+const COPIES = 7
+const MIDDLE = Math.floor(COPIES / 2)
+
+export function getRows(props: WheelProps) {
+  const { items, loop } = resolve(props)
+  const copies = loop ? COPIES : 1
+  return Array.from({ length: items.length * copies }, (_, row) => ({
+    row,
+    item: items[row % items.length],
+  }))
+}
+```
+
+When scrolling stops more than one copy away from the middle, the wheel jumps
+back by whole copies. Every copy looks identical, so nothing moves on screen:
+
+```ts
+if (loop && Math.abs(Math.floor(row / n) - MIDDLE) > 1) {
+  scrollToRow(props, el, getRowOf(props, item.value), "instant")
+}
+```
+
+Two details make this work:
+
+- **Only jump when scrolling has stopped.** Changing `scrollTop` from code in
+  the middle of a fling cancels the momentum on iOS. `scrollend` guarantees the
+  wheel is at rest.
+- **Find the nearest copy.** `getRowOf` picks the copy of a value closest to a
+  given row, so changing the value from your app spins the wheel the short way
+  around:
+
+```ts
+export function getRowOf(props: WheelProps, value: string, fromRow?: number) {
+  const { items, loop } = resolve(props)
+  const index = items.findIndex((item) => item.value === value)
+  if (index === -1) return -1
+  if (!loop) return index
+  const n = items.length
+  const start = fromRow ?? MIDDLE * n + index
+  const copy = Math.round((start - index) / n)
+  return copy * n + index
+}
+```
+
+Seven copies of 60 minutes is 420 rows, which is fine to render. For long lists,
+like a range of years, render the rows through
+[`ListVirtualizer`](/utilities/virtualizer) instead. Rows have a fixed height,
+so `estimatedSize` returns `itemHeight` and nothing needs measuring. Set
+`paddingStart` and `paddingEnd` to the same `pad` as the viewport.
+
+## Step 7: the drum effect
+
+Two CSS layers give the wheel its 3D look. A mask fades rows out toward the
+edges, and works everywhere:
+
+```css
+[data-wheel-frame] {
+  mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent);
+}
+```
+
+A
+[scroll-driven animation](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timeline/view)
+tilts each row as it moves away from the middle. `view()` tracks each row's
+position in the viewport, so the animation is at 50% exactly when the row is in
+the middle:
+
+```css
+[data-wheel-viewport] {
+  perspective: 400px;
+}
+
+@supports (animation-timeline: view()) {
+  [data-wheel-item] {
+    animation: wheel-tilt linear both;
+    animation-timeline: view();
+  }
+}
+
+@keyframes wheel-tilt {
+  0% {
+    transform: rotateX(-60deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(60deg);
+    opacity: 0.4;
+  }
+}
+```
+
+The animation runs on the compositor and costs no JavaScript. Browsers without
+scroll-driven animations skip it and keep the mask.
+
+The highlight sits behind the viewport, so the selected row reads on top of it:
+
+```css
+[data-wheel-frame] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-wheel-viewport] {
+  position: relative;
+  z-index: 1;
+}
+
+[data-wheel-highlight] {
+  z-index: 0;
+  border-radius: 8px;
+  background: var(--highlight-bg);
+}
+```
+
+## Step 8: forms
+
+A hidden input carries the value into native forms:
+
+```ts
+getHiddenInputProps() {
+  return normalize.input({ type: "hidden", name, value })
+}
+```
+
+## Put it together
+
+Everything above lives in one framework-agnostic `connect` function. It takes
+the wheel's props and Zag's `normalizeProps`, and returns a prop getter for each
+part, the same shape every Zag machine's `connect` returns:
+
+```ts
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+
+export function connect<T extends PropTypes>(
+  props: WheelProps,
+  normalize: NormalizeProps<T>,
+) {
+  return {
+    getRootProps() {},
+    getLabelProps() {},
+    getViewportProps() {},
+    getItemGroupProps() {},
+    getItemProps(row: number) {},
+    getHighlightProps() {},
+    getHiddenInputProps() {},
+  }
+}
+```
+
+The framework side only has two jobs: listen for `scrollend`, and scroll when
+the value changes. In React:
+
+```tsx
+import { normalizeProps } from "@zag-js/react"
+import { useEffect, useLayoutEffect, useRef } from "react"
+import * as wheel from "./wheel"
+
+export function useWheel(props: wheel.WheelProps) {
+  // The scroll listener outlives renders, so it reads the latest props from a ref
+  const propsRef = useRef(props)
+  propsRef.current = props
+  const mounted = useRef(false)
+
+  // Scrolling picks the value
+  useEffect(() => {
+    const el = wheel.getViewportEl(props.id)
+    if (!el) return
+    return wheel.trackScrollEnd(el, () => wheel.settle(propsRef.current, el))
+  }, [props.id])
+
+  // The value moves the scroll position: on mount, from the keyboard, or from outside
+  useLayoutEffect(() => {
+    const el = wheel.getViewportEl(props.id)
+    // A keyboard move already scrolled to the right copy of the row
+    if (!el || wheel.hasPendingRow(props.id)) return
+    const current = wheel.getCenterRow(propsRef.current, el)
+    const row = wheel.getRowOf(
+      propsRef.current,
+      props.value,
+      mounted.current ? current : undefined,
+    )
+    if (row !== current) {
+      wheel.scrollToRow(
+        propsRef.current,
+        el,
+        row,
+        mounted.current ? "smooth" : "instant",
+      )
+    }
+    mounted.current = true
+  }, [props.id, props.value])
+
+  return wheel.connect(props, normalizeProps)
+}
+```
+
+The first scroll is `instant` so the wheel doesn't spin into place on page load.
+After that, value changes scroll smoothly.
+
+Then spread the props:
+
+```tsx
+export function WheelPicker(props: WheelPickerProps) {
+  const wheelProps = { id: useId(), ...props }
+  const api = useWheel(wheelProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <span {...api.getLabelProps()}>{props.label}</span>
+      <div data-wheel-frame="">
+        <div {...api.getViewportProps()}>
+          <div {...api.getItemGroupProps()}>
+            {wheel.getRows(wheelProps).map(({ row, item }) => (
+              <div key={row} {...api.getItemProps(row)}>
+                {item.label}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div {...api.getHighlightProps()} />
+      </div>
+      <input {...api.getHiddenInputProps()} />
+    </div>
+  )
+}
+```
+
+```tsx
+const [value, setValue] = useState("svelte")
+
+<WheelPicker
+  label="Framework"
+  name="framework"
+  items={frameworks}
+  value={value}
+  onValueChange={setValue}
+/>
+```
+
+## Compose a time picker
+
+Multi-column pickers are several wheels side by side, each with its own value.
+There's no shared state to coordinate, so composing them is just layout:
+
+<Showcase id="TimeWheel" />
+
+Let the locale decide the columns. `Intl` knows whether a locale uses a 12- or
+24-hour clock, and what it calls AM and PM:
+
+```ts
+/** 12- or 24-hour columns, from the locale */
+function getHourCycle(locale: string) {
+  return (
+    new Intl.DateTimeFormat(locale, { hour: "numeric" }).resolvedOptions()
+      .hourCycle ?? "h23"
+  )
+}
+
+/** The locale's names for AM and PM */
+function getDayPeriods(locale: string) {
+  const format = new Intl.DateTimeFormat(locale, {
+    hour: "numeric",
+    hourCycle: "h12",
+  })
+  return [9, 21].map((hour) => {
+    const parts = format.formatToParts(new Date(2020, 0, 1, hour))
+    return parts.find((part) => part.type === "dayPeriod")?.value
+  })
+}
+```
+
+```tsx
+const twelveHour = getHourCycle(locale).startsWith("h1")
+
+<fieldset aria-label="Time">
+  <WheelPicker label="Hour" items={hours} value={hour} onValueChange={setHour} loop />
+  <WheelPicker label="Minute" items={minutes} value={minute} onValueChange={setMinute} loop />
+  {twelveHour && (
+    <WheelPicker label="AM/PM" items={periods} value={period} onValueChange={setPeriod} />
+  )}
+</fieldset>
+```
+
+- Hours and minutes loop. AM/PM doesn't, since two rows can't wrap convincingly.
+- A named `fieldset` tells screen readers the three spinbutton columns belong
+  together.
+- `Tab` moves between columns, the same as any other group of form controls.
+
+## Scale it into a design system
+
+The `connect` function is the reusable part. Everything framework- or
+style-specific sits on top of it, so the same core can power a one-off
+component, a headless library or a fully styled design system.
+
+### Other frameworks
+
+`connect` takes Zag's `normalizeProps`, so it already speaks every framework Zag
+supports. Vue, Solid and Svelte only need their own version of `useWheel`: one
+effect that calls `trackScrollEnd`, and one that scrolls when the value changes.
+The props come back in each framework's format:
+
+```ts
+import { normalizeProps } from "@zag-js/vue"
+
+const api = computed(() => wheel.connect(props, normalizeProps))
+```
+
+### A headless component library
+
+A library like [Ark UI](https://ark-ui.com) splits each component into parts
+that share state through context. Every part reads the API from context and
+merges its own props on top, so users can still pass `className`, handlers or
+refs:
+
+```tsx
+import { mergeProps } from "@zag-js/react"
+import { createContext, useContext } from "react"
+
+type WheelApi = ReturnType<typeof useWheel>
+const WheelContext = createContext<WheelApi | null>(null)
+
+const useWheelContext = () => {
+  const api = useContext(WheelContext)
+  if (!api) throw new Error("Wheel parts must be inside <Wheel.Root>")
+  return api
+}
+
+export function WheelRoot(props: WheelRootProps) {
+  const { items, value, onValueChange, label, loop, children, ...rest } = props
+  const api = useWheel({
+    id: useId(),
+    items,
+    value,
+    onValueChange,
+    label,
+    loop,
+  })
+  return (
+    <WheelContext.Provider value={api}>
+      <div {...mergeProps(api.getRootProps(), rest)}>{children}</div>
+    </WheelContext.Provider>
+  )
+}
+
+export function WheelViewport(props: React.ComponentProps<"div">) {
+  const api = useWheelContext()
+  return <div {...mergeProps(api.getViewportProps(), props)} />
+}
+```
+
+`mergeProps` chains event handlers and joins class names, so a user's
+`onKeyDown` runs alongside the wheel's instead of replacing it. Keep the part
+names from the anatomy (`Root`, `Label`, `Viewport`, `ItemGroup`, `Item`,
+`Highlight`, `HiddenInput`) so the wheel feels like the rest of your library.
+
+### A styled design system
+
+[Chakra UI](https://chakra-ui.com) styles each part of a component with a slot
+recipe. The slots match the anatomy, and the design tokens replace the raw
+values:
+
+```ts
+import { defineSlotRecipe } from "@chakra-ui/react"
+
+export const wheelSlotRecipe = defineSlotRecipe({
+  className: "wheel",
+  slots: ["root", "label", "frame", "viewport", "item", "highlight"],
+  base: {
+    frame: {
+      position: "relative",
+      isolation: "isolate",
+      maskImage:
+        "linear-gradient(transparent, black 35%, black 65%, transparent)",
+    },
+    viewport: { position: "relative", zIndex: "1", perspective: "400px" },
+    item: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontVariantNumeric: "tabular-nums",
+      _disabled: { color: "fg.subtle" },
+    },
+    highlight: { zIndex: "0", rounded: "l2", bg: "bg.muted" },
+  },
+  variants: {
+    size: {
+      sm: { item: { textStyle: "sm" } },
+      md: { item: { textStyle: "md" } },
+    },
+  },
+})
+```
+
+Size variants can also set `itemHeight` on the wheel itself. The root exposes it
+as `--wheel-item-height`, so styles that depend on the row height stay in sync.
+
+### Things to keep in your own version
+
+Whichever layer you build, a few decisions are worth keeping:
+
+- **Data attributes over class names** for state, like `data-selected` and
+  `data-disabled`, so any styling solution can target them.
+- **Controlled `value` and `onValueChange`.** Leave uncontrolled state and form
+  libraries to the layer above.
+- **No physics in JavaScript.** Let the platform own momentum and snapping. If a
+  design calls for click-and-drag on desktop, add a pointer handler that sets
+  `scrollTop` and let snapping finish the job on release.
+
+## Test on real devices
+
+The keyboard, typeahead, disabled rows and looping can all be tested with
+Playwright, like any other Zag component:
+
+```ts
+const wheel = page.getByRole("spinbutton", { name: "Framework" })
+
+await wheel.focus()
+await page.keyboard.press("ArrowDown")
+await expect(wheel).toHaveAttribute("aria-valuetext", "Solid")
+```
+
+Touch momentum can't be tested that way. Desktop browsers and touch emulation
+don't reproduce it. Check these on a real iPhone and Android phone:
+
+- A fast fling settles on a row, and the value updates once it stops.
+- On a looping wheel, flicking past several copies never shows a jump.
+- Scrolling the wheel never scrolls the page behind it.
+
+## Browser support
+
+- **Scroll snapping** works in every modern browser.
+- **`scrollend`** is in Chrome, Edge, Firefox and Safari 26.2. Older Safari
+  falls back to the debounced scroll listener.
+- **Scroll-driven animations** are in Chrome, Edge and Safari 26. Firefox shows
+  the mask without the tilt.
