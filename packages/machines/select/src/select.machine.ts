@@ -115,6 +115,9 @@ export const machine = createMachine<SelectSchema>({
       aligned: bindable(() => ({
         defaultValue: false,
       })),
+      inputFocused: bindable(() => ({
+        defaultValue: false,
+      })),
       alignStyles: bindable<Record<string, string> | null>(() => ({
         defaultValue: null,
       })),
@@ -128,8 +131,9 @@ export const machine = createMachine<SelectSchema>({
       autoScrollTop: null,
       autoScrollBottom: null,
       realignWithTrigger: null,
-      handleGrowth: null,
+      autoGrow: null,
       liveRegion: null,
+      alignedToTrigger: false,
     }
   },
 
@@ -175,6 +179,9 @@ export const machine = createMachine<SelectSchema>({
     },
     "HIGHLIGHTED_VALUE.CLEAR": {
       actions: ["clearHighlightedItem"],
+    },
+    "INPUT.FOCUS": {
+      actions: ["setInputFocused"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -350,7 +357,7 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState"],
+      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused"],
       effects: [
         "trackDismissableElement",
         "trackFocusVisible",
@@ -527,7 +534,8 @@ export const machine = createMachine<SelectSchema>({
           context.set("currentPlacement", placement)
         }
 
-        if (!prop("alignItemWithTrigger") || refs.get("openMethod") === "touch") {
+        // A dialog popup holds other widgets (such as a filter input) around the list, so it never overlaps the trigger
+        if (!prop("alignItemWithTrigger") || prop("popupType") === "dialog" || refs.get("openMethod") === "touch") {
           return getPlacement(
             () => dom.getTriggerEl(scope),
             () => dom.getPositionerEl(scope),
@@ -535,11 +543,14 @@ export const machine = createMachine<SelectSchema>({
           )
         }
 
+        refs.set("alignedToTrigger", false)
         const tracker = trackAlignItemWithTrigger(scope, {
           dir: prop("dir"),
           positioning,
           onPlacementChange,
           onAligned(styles) {
+            // `aligned` reaches the context on the next render, so the scroll-into-view below reads this instead
+            refs.set("alignedToTrigger", true)
             // hand the resolved styles to the connect layer rather than relying on the
             // imperative writes surviving; the re-render this triggers would otherwise
             // reapply the positioner style and undo them
@@ -549,7 +560,7 @@ export const machine = createMachine<SelectSchema>({
         })
 
         refs.set("realignWithTrigger", tracker.realign)
-        refs.set("handleGrowth", tracker.handleGrowth)
+        refs.set("autoGrow", tracker.autoGrow)
         return tracker.cleanup
       },
 
@@ -589,7 +600,7 @@ export const machine = createMachine<SelectSchema>({
         return () => liveRegion.destroy()
       },
 
-      scrollToHighlightedItem({ context, prop, scope }) {
+      scrollToHighlightedItem({ context, prop, scope, refs }) {
         const exec = (immediate: boolean) => {
           const highlightedValue = context.get("highlightedValue")
           if (highlightedValue == null) return
@@ -620,7 +631,8 @@ export const machine = createMachine<SelectSchema>({
         let attempts = 0
         let cleanupRaf: VoidFunction | undefined
         const scrollWhenScrollable = () => {
-          if (context.get("aligned")) return
+          // Alignment already scrolled the selected item to the trigger
+          if (context.get("aligned") || refs.get("alignedToTrigger")) return
           const el = dom.getListEl(scope)
           if (el && !isScrollable(el) && attempts++ < MAX_SCROLL_ATTEMPTS) {
             cleanupRaf = raf(scrollWhenScrollable)
@@ -765,6 +777,14 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", null)
       },
 
+      setInputFocused({ context }) {
+        context.set("inputFocused", true)
+      },
+
+      clearInputFocused({ context }) {
+        context.set("inputFocused", false)
+      },
+
       selectItem({ context, prop, event }) {
         prop("onSelect")?.({ value: event.value })
 
@@ -842,7 +862,7 @@ export const machine = createMachine<SelectSchema>({
             getScroller: () => dom.getListEl(scope),
             getItems: () => (prop("scrollToIndexFn") ? [] : dom.getItemEls(scope)),
             getWin: () => scope.getWin(),
-            onStep: () => refs.get("handleGrowth")?.(),
+            onStep: () => refs.get("autoGrow")?.(),
           })
           refs.set(key, handlers)
         }

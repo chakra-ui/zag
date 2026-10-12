@@ -8,6 +8,7 @@ import {
   getEventKey,
   getEventTarget,
   getNativeEvent,
+  isComposingEvent,
   isEditableElement,
   isInternalChangeEvent,
   isValidTabEvent,
@@ -77,6 +78,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const interactive = computed("isInteractive")
 
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
+  const inputFocused = context.get("inputFocused")
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -598,15 +600,75 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getInputProps() {
+      return normalize.input({
+        ...parts.input.attrs(scope.id),
+        id: dom.getInputId(scope),
+        type: "text",
+        role: "searchbox",
+        autoComplete: "off",
+        autoCorrect: "off",
+        spellCheck: "false",
+        dir: prop("dir"),
+        disabled,
+        "aria-autocomplete": "list",
+        "aria-controls": dom.getListId(scope),
+        "aria-activedescendant": ariaActiveDescendant,
+        onFocus() {
+          send({ type: "INPUT.FOCUS" })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented || isComposingEvent(event)) return
+          const hasValue = event.currentTarget.value !== ""
+          const modified = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
+
+          const keyMap: Record<string, (() => boolean) | undefined> = {
+            // Home and End move the caret unless the input is empty
+            Home() {
+              if (modified || hasValue) return false
+              send({ type: "CONTENT.HOME" })
+              return true
+            },
+            End() {
+              if (modified || hasValue) return false
+              send({ type: "CONTENT.END" })
+              return true
+            },
+            Tab() {
+              if (!event.shiftKey) return false
+              send({ type: "CLOSE" })
+              return true
+            },
+          }
+
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
+          if (exec?.()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+      })
+    },
+
+    getEmptyProps() {
+      return normalize.element({
+        ...parts.empty.attrs(scope.id),
+        dir: prop("dir"),
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": true,
+      })
+    },
+
     getListProps() {
       return normalize.element({
         ...parts.list.attrs(scope.id),
         id: dom.getListId(scope),
         role: "listbox",
-        tabIndex: 0,
+        tabIndex: inputFocused ? -1 : 0,
         dir: prop("dir"),
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-activedescendant": ariaActiveDescendant,
+        "aria-activedescendant": inputFocused ? undefined : ariaActiveDescendant,
         "aria-multiselectable": prop("multiple") ? true : undefined,
         "data-activedescendant": ariaActiveDescendant,
       })
