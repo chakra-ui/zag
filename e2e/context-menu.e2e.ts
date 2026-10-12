@@ -54,3 +54,16 @@ test.describe("context menu", () => {
     await I.seeMenuIsPositionedNear(point)
   })
 })
+
+test.describe("context menu / aria-label", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/context-menu/aria-label")
+  })
+
+  test("should name the menu with the aria-label prop", async () => {
+    await I.clickContextTrigger({ button: "right" })
+    await I.seeDropdown()
+    await I.seeDropdownHasName("Text actions")
+  })
+})

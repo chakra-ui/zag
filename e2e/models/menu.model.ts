@@ -79,6 +79,10 @@ export class MenuModel extends Model {
     await expect(this.content).not.toBeVisible()
   }
 
+  seeDropdownHasName = async (name: string) => {
+    await expect(this.page.getByRole("menu", { name, exact: true })).toBeVisible()
+  }
+
   seeItemIsHighlighted = async (text: string) => {
     const item = this.getItem(text)
     await expect(item).toHaveAttribute("data-highlighted", "")
