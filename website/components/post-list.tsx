@@ -188,7 +188,6 @@ const row = css({
   px: "4",
   transition: "background-color 150ms",
   position: "relative",
-  rounded: "sm",
   _hover: { bg: "bg.muted" },
   // one hairline between rows, inset to the text, none above the first
   "& + &::before": {
@@ -209,7 +208,6 @@ const trigger = css({
   minW: "12rem",
   h: "11",
   px: "4",
-  rounded: "sm",
   fontSize: "sm",
   fontWeight: "medium",
   bg: "bg",
