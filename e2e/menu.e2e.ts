@@ -76,6 +76,27 @@ test.describe("menu", () => {
   })
 })
 
+test.describe("menu / typeahead locale", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/typeahead-locale")
+  })
+
+  test("on typeahead, highlight items that start with a non-ASCII character", async () => {
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.typeKey("é")
+    await I.seeItemIsHighlighted("Éditer")
+  })
+
+  test("on typeahead, highlight items written in a non-Latin script", async () => {
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.typeKey("э")
+    await I.seeItemIsHighlighted("Экспорт")
+  })
+})
+
 test.describe("menu / overflow", () => {
   test.beforeEach(async ({ page }) => {
     I = new MenuModel(page)
