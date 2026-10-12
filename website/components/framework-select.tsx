@@ -88,7 +88,7 @@ export function FrameworkSelect() {
                     _checked: { fontWeight: "semibold" },
                     _highlighted: {
                       bg: "bg.primary.bold",
-                      color: "white",
+                      color: "text.inverse",
                     },
                   })}
                 >

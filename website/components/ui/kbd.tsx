@@ -9,7 +9,7 @@ export const Kbd = styled("kbd", {
     fontSize: "0.8em",
     fontWeight: "bold",
     bg: "bg.code.inline/50",
-    color: { base: "pink.600", _dark: "pink.400" },
+    color: { base: "pink.700", _dark: "pink.400" },
     borderWidth: "1px",
     borderBottomWidth: "2px",
     borderColor: "border.bold",

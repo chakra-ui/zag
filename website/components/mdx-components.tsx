@@ -36,7 +36,7 @@ const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
 
 const Anchor = styled("a", {
   base: {
-    color: "green.500",
+    color: "text.primary.bold",
     cursor: "pointer",
     fontWeight: "medium",
     textDecoration: "underline",

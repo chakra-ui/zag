@@ -8,7 +8,7 @@
   .Pattern {
     fill: black;
 
-    :global(.chakra-ui-dark) & {
+    :global(.dark) & {
       fill: white;
     }
   }
@@ -23,7 +23,7 @@
       height: 100%;
     }
 
-    :global(.chakra-ui-dark) & {
+    :global(.dark) & {
       outline-color: black;
     }
   }
