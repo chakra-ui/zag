@@ -7,8 +7,10 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  getNextTabbable,
   isAnchorElement,
   isEditableElement,
+  isWebKit,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -30,6 +32,38 @@ import {
 } from "./menu.utils"
 
 const { not, and, or } = createGuards<MenuSchema>()
+
+const keyboardEvents = new Set([
+  "ARROW_UP",
+  "ARROW_DOWN",
+  "ARROW_LEFT",
+  "ARROW_RIGHT",
+  "HOME",
+  "END",
+  "TYPEAHEAD",
+  "ENTER",
+  "INPUT.NAVIGATE",
+])
+const pointerEvents = new Set(["ITEM_POINTERMOVE", "ITEM_POINTERLEAVE", "ITEM_POINTERDOWN", "ITEM_CLICK"])
+
+function getHighlightReason(event: { type: string; previousEvent?: any } | undefined) {
+  const type = event?.type === "CONTROLLED.OPEN" ? event.previousEvent?.type : event?.type
+  if (keyboardEvents.has(type)) return "keyboard"
+  if (pointerEvents.has(type)) return "pointer"
+  return "programmatic"
+}
+
+type FocusSource = "hover" | "touch" | "pointer" | "other"
+
+// How the menu came to be focused: opened by hovering a submenu trigger, opened by a touch or pen
+// press, or moved over by the pointer.
+function getFocusSource(event: { type: string; pointerType?: string; previousEvent?: any }): FocusSource {
+  const evt = event.type === "CONTROLLED.OPEN" && event.previousEvent ? event.previousEvent : event
+  if (evt.type === "DELAY.OPEN") return "hover"
+  if (evt.pointerType === "touch" || evt.pointerType === "pen") return "touch"
+  if (evt.type === "ITEM_POINTERMOVE") return "pointer"
+  return "other"
+}
 
 // `OPEN`/`CLOSE` come from `api.setOpen`. They are declared per state rather than at the root so each
 // state says whether it has anything to open or close, the same way `CONTROLLED.OPEN`/`CONTROLLED.CLOSE` are.
@@ -78,7 +112,7 @@ export const machine = createMachine<MenuSchema>({
     return open ? "open" : "idle"
   },
 
-  context({ bindable, prop, scope }) {
+  context({ bindable, prop, scope, getEvent }) {
     return {
       layer: bindable<LayerSnapshot | null>(() => ({
         defaultValue: null,
@@ -87,11 +121,14 @@ export const machine = createMachine<MenuSchema>({
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
         onChange(value) {
-          prop("onHighlightChange")?.({ highlightedValue: value })
+          prop("onHighlightChange")?.({ highlightedValue: value, reason: getHighlightReason(getEvent()) })
         },
       })),
       lastHighlightedValue: bindable<string | null>(() => ({
         defaultValue: null,
+      })),
+      isWebKit: bindable<boolean>(() => ({
+        defaultValue: false,
       })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
@@ -135,6 +172,7 @@ export const machine = createMachine<MenuSchema>({
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
       menubarCloseReason: null,
+      pointerType: null,
     }
   },
 
@@ -147,6 +185,8 @@ export const machine = createMachine<MenuSchema>({
     menubarDisabled: ({ prop }) => prop("menubar")?.disabled ?? false,
   },
 
+  entry: ["setIsWebKit"],
+  exit: ["focusParentIfOrphaned"],
   effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
@@ -438,8 +478,16 @@ export const machine = createMachine<MenuSchema>({
         "trackPositioning",
         "scrollToHighlightedItem",
         "trackMenubarSiblings",
+        "trackItemsChange",
       ],
-      entry: ["setInstant", "focusMenu", "unlockParentOnOpen", "dispatchMenubarOpen"],
+      entry: [
+        "setInstant",
+        "focusMenu",
+        "unlockParentOnOpen",
+        "dispatchMenubarOpen",
+        "highlightFirstIfAlways",
+        "warnIfFilterInputComposite",
+      ],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -513,8 +561,20 @@ export const machine = createMachine<MenuSchema>({
           },
         ],
         ITEM_POINTERLEAVE: {
-          guard: and(not("isPointerRoutingLocked"), not("isTriggerItem")),
+          guard: and(not("isPointerRoutingLocked"), not("isTriggerItem"), not("isAutoHighlightAlways")),
           actions: ["clearHighlightedItem"],
+        },
+        "INPUT.NAVIGATE": {
+          actions: ["navigateFromInput"],
+        },
+        "INPUT.CHANGE": {
+          actions: ["syncInputHighlight"],
+        },
+        "ITEMS.CHANGE": {
+          actions: ["syncInputHighlight"],
+        },
+        "INPUT.TAB": {
+          actions: ["closeTreeAndTabForward"],
         },
         ITEM_CLICK: [
           // == grouped ==
@@ -582,6 +642,7 @@ export const machine = createMachine<MenuSchema>({
         return !!target?.hasAttribute("data-controls")
       },
       isSubmenu: ({ context }) => context.get("isSubmenu"),
+      isAutoHighlightAlways: ({ prop }) => prop("autoHighlight") === "always",
       isPointerRoutingLocked: ({ refs }) => refs.get("pointerRoutingLocked"),
       isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
@@ -603,6 +664,21 @@ export const machine = createMachine<MenuSchema>({
         })
       },
       // When coordinated by a menubar, close this menu if a sibling menu opens.
+      // The consumer re-renders the filtered items, sometimes without a keystroke (async results, a clear button),
+      // so the highlight is re-synced whenever the items change
+      trackItemsChange({ scope, send }) {
+        let observer: MutationObserver | undefined
+        const frame = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl || !dom.getInputEl(scope)) return
+          observer = new (scope.getWin().MutationObserver)(() => send({ type: "ITEMS.CHANGE" }))
+          observer.observe(contentEl, { childList: true, subtree: true })
+        })
+        return () => {
+          frame()
+          observer?.disconnect()
+        }
+      },
       trackMenubarSiblings({ scope, prop, send, refs }) {
         const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
         if (!menubarEl) return
@@ -695,7 +771,14 @@ export const machine = createMachine<MenuSchema>({
           },
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
-            if (context.get("isSubmenu")) event.preventDefault()
+            if (context.get("isSubmenu")) {
+              event.preventDefault()
+              // Escape from a submenu's filter input steps back to the parent, which keeps its own query
+              if (isEditableElement(getEventTarget(event))) {
+                send({ type: "ARROW_LEFT" })
+                return
+              }
+            }
             closeRootMenu({ parent: refs.get("parent") })
           },
           onPointerDownOutside(event) {
@@ -878,7 +961,87 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope }) {
+      // Read once the machine starts in the browser, so server and hydration markup leave it out
+      setIsWebKit({ context }) {
+        context.set("isWebKit", isWebKit())
+      },
+      highlightFirstIfAlways({ prop, scope, context }) {
+        if (prop("autoHighlight") !== "always") return
+        raf(() => {
+          if (!dom.getInputEl(scope) || context.get("highlightedValue") != null) return
+          const first = dom.getFirstEl(scope)
+          if (first) context.set("highlightedValue", dom.getItemValue(first))
+        })
+      },
+      warnIfFilterInputComposite({ prop, scope }) {
+        if (process.env.NODE_ENV === "production" || !prop("composite")) return
+        raf(() => {
+          if (!dom.getInputEl(scope)) return
+          console.warn("[@zag-js/menu] A menu with a filter input needs `composite: false` to render a dialog popup.")
+        })
+      },
+      // A submenu removed while it held focus (its trigger was filtered out) hands focus back to its parent.
+      // Some frameworks blur the focused element as they remove it, so check where focus ended up.
+      focusParentIfOrphaned({ refs, scope }) {
+        const parent = refs.get("parent")
+        if (!parent) return
+        queueMicrotask(() => {
+          const activeEl = scope.getActiveElement()
+          if (activeEl && activeEl !== scope.getDoc().body) return
+          parent.send({ type: "FOCUS_MENU" })
+        })
+      },
+      // Arrow keys from a filter input cycle through the input: past either end of the list the highlight
+      // returns to the input, unless `autoHighlight` keeps an item highlighted
+      navigateFromInput({ context, scope, event, prop }) {
+        const items = dom.getElements(scope)
+        const index = items.findIndex((el) => dom.getItemValue(el) === context.get("highlightedValue"))
+        const wrap = !!prop("autoHighlight")
+        const lastIndex = items.length - 1
+        let next: HTMLElement | null | undefined = null
+        if (event.key === "first") next = items[0]
+        else if (event.key === "last") next = items[lastIndex]
+        else if (event.key === "next") next = index === -1 ? items[0] : index < lastIndex ? items[index + 1] : wrap ? items[0] : null
+        else if (event.key === "prev") next = index === -1 ? items[lastIndex] : index > 0 ? items[index - 1] : wrap ? items[lastIndex] : null
+        context.set("highlightedValue", next ? dom.getItemValue(next) : null)
+      },
+      // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
+      syncInputHighlight({ context, scope, event, prop }) {
+        const queryChanged = event.type === "INPUT.CHANGE"
+        raf(() => {
+          const inputEl = dom.getInputEl(scope)
+          if (!inputEl) return
+          const items = dom.getElements(scope)
+          const autoHighlight = prop("autoHighlight")
+          const hasQuery = inputEl.value.trim() !== ""
+          const current = context.get("highlightedValue")
+          const isRendered = items.some((el) => dom.getItemValue(el) === current)
+          if (autoHighlight === "always" || (autoHighlight && hasQuery)) {
+            if (queryChanged || !isRendered) context.set("highlightedValue", items[0] ? dom.getItemValue(items[0]) : null)
+            return
+          }
+          if (autoHighlight && queryChanged) {
+            context.set("highlightedValue", null)
+            return
+          }
+          if (current != null && !isRendered) context.set("highlightedValue", null)
+        })
+      },
+      // Tab from a filter input closes the whole menu and moves focus past its trigger
+      closeTreeAndTabForward({ refs, send, scope }) {
+        let root = refs.get("parent")
+        while (root?.refs.get("parent")) root = root.refs.get("parent")
+        if (root) root.send({ type: "CLOSE" })
+        else send({ type: "CLOSE" })
+        const doc = scope.getDoc()
+        raf(() => {
+          const current = scope.getActiveElement() as HTMLElement | null
+          getNextTabbable(doc.body, { current })?.focus()
+        })
+      },
+      focusMenu({ scope, event, refs }) {
+        const source = getFocusSource(event)
+        const target = event.target
         raf(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
@@ -889,6 +1052,16 @@ export const machine = createMachine<MenuSchema>({
             },
           })
           if (!initialFocusEl) return
+          // A filter input is entered on purpose. Hovering a submenu open leaves focus where it is
+          // until the pointer moves onto an item, and a touch open keeps the on-screen keyboard down.
+          if (isEditableElement(initialFocusEl)) {
+            if (source === "hover") return
+            if (source === "touch") {
+              contentEl?.focus({ preventScroll: true })
+              return
+            }
+            if (source === "pointer" && dom.isFocusHeldBySubmenuOf(target, refs.get("children"))) return
+          }
           initialFocusEl.focus({ preventScroll: true })
         })
       },
