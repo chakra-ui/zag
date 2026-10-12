@@ -2,7 +2,7 @@ import type { Author } from "lib/source"
 import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 
-export const eyebrow = css({
+export const eyebrowStyles = css.raw({
   fontFamily: "mono",
   fontSize: "xs",
   fontWeight: "medium",
@@ -11,6 +11,8 @@ export const eyebrow = css({
   textTransform: "uppercase",
   color: "text.subtle",
 })
+
+export const eyebrow = css(eyebrowStyles)
 
 const avatarStyles = css({
   rounded: "full",

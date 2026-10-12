@@ -108,7 +108,7 @@ export function Sidebar(props: { tabId?: string }) {
                   {item.label}
                   {item.new && (
                     <styled.span
-                      bg="purple.500"
+                      bg="purple.600"
                       color="white"
                       ms="2"
                       px="1"
@@ -125,7 +125,7 @@ export function Sidebar(props: { tabId?: string }) {
                       bg="purple.50"
                       borderWidth="1px"
                       borderColor="purple.200"
-                      color="purple.500"
+                      color="purple.600"
                       ms="2"
                       px="1"
                       py="0.5"

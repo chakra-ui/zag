@@ -37,8 +37,8 @@
     }
 
     &[data-selected] {
-      background: #38a169;
-      color: #ffffff;
+      background: var(--colors-bg-primary-subtle);
+      color: var(--colors-text-inverse);
     }
 
     &[data-disabled] {

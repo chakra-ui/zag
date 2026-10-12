@@ -1,4 +1,4 @@
-import { AuthorLine, eyebrow } from "components/blog"
+import { AuthorLine, eyebrow, eyebrowStyles } from "components/blog"
 import { Footer } from "components/footer"
 import { TopNav } from "components/nav/top-nav"
 import { createPageMetadata } from "lib/seo"
@@ -72,11 +72,12 @@ export default function BlogPage() {
           >
             <HStack gap="3" mb="4" flexWrap="wrap">
               <styled.span
-                className={eyebrow}
-                bg="bg.primary.subtle"
-                color="white"
-                px="2"
-                py="1"
+                className={css(eyebrowStyles, {
+                  bg: "bg.primary.subtle",
+                  color: "text.inverse",
+                  px: "2",
+                  py: "1",
+                })}
               >
                 {featured.featured ? "Featured" : "Latest"}
               </styled.span>

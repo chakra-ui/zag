@@ -44,7 +44,7 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
     <HStack
       gap="1"
       as="button"
-      bg="#1574ef"
+      bg="blue.600"
       color="white"
       fontSize="sm"
       px="2"

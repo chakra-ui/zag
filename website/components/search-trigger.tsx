@@ -22,7 +22,7 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         pr="3"
         borderWidth="1px"
         borderColor="border"
-        color="gray.500"
+        color="text.muted"
         cursor="pointer"
         rounded="sm"
       >
