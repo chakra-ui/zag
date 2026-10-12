@@ -34,11 +34,17 @@ export interface SelectionDetails {
   value: string
 }
 
+export type HighlightChangeReason = "keyboard" | "pointer" | "programmatic"
+
 export interface HighlightChangeDetails {
   /**
    * The value of the highlighted menu item
    */
   highlightedValue: string | null
+  /**
+   * What caused the highlight to change
+   */
+  reason: HighlightChangeReason
 }
 
 export interface NavigateDetails {
@@ -55,6 +61,8 @@ export interface ElementIds {
   group?: ((id: string) => string) | undefined
   positioner?: string | undefined
   arrow?: string | undefined
+  input?: string | undefined
+  list?: string | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -124,7 +132,15 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   typeahead?: boolean | undefined
   /**
-   * Whether the menu is a composed with other composite widgets like a combobox or tabs
+   * Whether a filter input highlights the first item when its query changes.
+   * - `true`: highlight it while the query is not empty
+   * - `"always"`: highlight it even when the query is empty, and keep a highlight when the pointer leaves
+   * @default false
+   */
+  autoHighlight?: boolean | "always" | undefined
+  /**
+   * Whether the menu manages keyboard focus across its items.
+   * Set to `false` when another widget inside it, such as a filter input, keeps focus instead.
    * @default true
    */
   composite?: boolean | undefined
@@ -185,6 +201,7 @@ export interface MenuSchema {
     layer: LayerSnapshot | null
     highlightedValue: string | null
     lastHighlightedValue: string | null
+    isWebKit: boolean
     currentPlacement: Placement | undefined
     intentPolygon: Point[] | null
     anchorPoint: Point | null
@@ -208,6 +225,7 @@ export interface MenuSchema {
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
     menubarCloseReason: string | null
+    pointerType: string | null
   }
 
   action: string
@@ -421,7 +439,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the highlighted menuitem
    */
-  setHighlightedValue: (value: string) => void
+  setHighlightedValue: (value: string | null) => void
   /**
    * Function to register a parent menu. This is used for submenus
    */
@@ -468,6 +486,9 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   getContentState: () => ContentState
   getContentProps: () => T["element"]
   getSeparatorProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getListProps: () => T["element"]
+  getEmptyProps: () => T["element"]
   getItemProps: (options: ItemProps) => T["element"]
   getOptionItemProps: (option: OptionItemProps) => T["element"]
   getItemIndicatorProps: (option: ItemBaseProps) => T["element"]
