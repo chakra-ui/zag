@@ -1,39 +1,105 @@
-import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { fromLength } from "@zag-js/utils"
+import { dataAttr, getEventKey } from "@zag-js/dom-query"
+import { mergeWithDefault } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./steps.anatomy"
 import * as dom from "./steps.dom"
-import type { ItemProps, ItemState, StepsApi, StepsService } from "./steps.types"
+import {
+  COMPLETE,
+  type IntlTranslations,
+  type ItemProps,
+  type ItemState,
+  type StepItem,
+  type StepsApi,
+  type StepsService,
+} from "./steps.types"
+import {
+  findEffectiveIndex,
+  findItem,
+  findItemIndex,
+  findNavigableIndex,
+  getNextResult,
+  getReachability,
+  isCompletingResult,
+  isItemDisabled,
+  isItemInvalid,
+  isItemOptional,
+  type NavContext,
+} from "./utils"
 
-export function connect<T extends PropTypes>(service: StepsService, normalize: NormalizeProps<T>): StepsApi<T> {
+const defaultTranslations: Required<IntlTranslations> = {
+  progressLabel: "Progress",
+  progressText: ({ index, count, percent, title, complete }) =>
+    !complete && title ? `Step ${index + 1} of ${count}: ${title}` : `${percent}% complete`,
+}
+
+export function connect<T extends PropTypes, V extends StepItem = StepItem>(
+  service: StepsService<any>,
+  normalize: NormalizeProps<T>,
+): StepsApi<T, V> {
   const { context, send, computed, prop, scope } = service
 
-  const step = context.get("step")
-  const count = prop("count")
-  const percent = computed("percent")
-  const hasNextStep = computed("hasNextStep")
-  const hasPrevStep = computed("hasPrevStep")
+  const items = prop("items")
+  const value = context.get("value")
+  const completedValues = context.get("completedValues")
+  const orientation = prop("orientation")
+  const linear = prop("linear")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
-  const isStepValid = (index: number): boolean => {
-    return prop("isStepValid")?.(index) ?? true
+  const complete = value === COMPLETE
+  const currentIndex = findItemIndex(items, value)
+  const currentItem = findItem(items, value) as V | null
+  const effectiveItems = computed("effectiveItems") as V[]
+
+  const navContext: NavContext = { items, value, completedValues, linear }
+
+  const count = effectiveItems.length
+  const effectiveIndex = findEffectiveIndex(items, value)
+  const percent = count === 0 ? 0 : Math.round((Math.max(effectiveIndex, 0) / count) * 100)
+  const hasNextStep = !complete && currentIndex !== -1
+  const hasPrevStep = currentIndex !== -1 && findNavigableIndex(navContext, currentIndex, -1) !== -1
+  const canComplete = isCompletingResult(getNextResult(navContext))
+  const isReachable = (target: string) => getReachability(navContext, target).ok
+  const reachableItems = effectiveItems.filter((item) => isReachable(item.value))
+
+  // Keep one trigger tabbable in the completed view
+  const focusValue = complete ? (reachableItems[reachableItems.length - 1]?.value ?? null) : value
+
+  const canSkip = currentItem != null && isItemOptional(currentItem)
+
+  const getItemState = (props: ItemProps): ItemState => {
+    const item = findItem(items, props.value)
+    const index = findEffectiveIndex(items, props.value)
+    const position = findItemIndex(items, props.value)
+
+    const disabled = item != null && isItemDisabled(item)
+    const current = props.value === value
+    const completed = completedValues.includes(props.value)
+    const invalid = item != null && isItemInvalid(item)
+    const optional = item != null && isItemOptional(item)
+    const locked = item?.editable === false && completed && !current
+
+    const passed = currentIndex !== -1 && position !== -1 && position < currentIndex
+    const skipped = !disabled && !completed && !current && passed
+
+    return {
+      value: props.value,
+      index,
+      triggerId: dom.getTriggerId(scope, props.value),
+      contentId: dom.getContentId(scope, props.value),
+      current,
+      completed,
+      skipped,
+      invalid,
+      disabled,
+      optional,
+      locked,
+      reachable: isReachable(props.value),
+    }
   }
 
-  const isStepSkippable = (index: number): boolean => {
-    return prop("isStepSkippable")?.(index) ?? false
+  const setValue = (value: string) => {
+    send({ type: "VALUE.SET", value, src: "api.setValue" })
   }
-
-  const getItemState = (props: ItemProps): ItemState => ({
-    triggerId: dom.getTriggerId(scope, props.index),
-    contentId: dom.getContentId(scope, props.index),
-    current: props.index === step,
-    completed: props.index < step,
-    incomplete: props.index > step,
-    index: props.index,
-    first: props.index === 0,
-    last: props.index === count - 1,
-    skippable: isStepSkippable(props.index),
-    isValid: () => isStepValid(props.index),
-  })
 
   const goToNextStep = () => {
     send({ type: "STEP.NEXT", src: "next.trigger.click" })
@@ -43,50 +109,58 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
     send({ type: "STEP.PREV", src: "prev.trigger.click" })
   }
 
-  const resetStep = () => {
-    send({ type: "STEP.RESET", src: "reset.trigger.click" })
-  }
-
-  const setStep = (value: number) => {
-    send({ type: "STEP.SET", value, src: "api.setValue" })
+  const skipStep = () => {
+    send({ type: "STEP.SKIP", src: "skip.trigger.click" })
   }
 
   return {
-    value: step,
+    items: effectiveItems,
+    value,
+    index: effectiveIndex,
+    item: currentItem,
     count,
     percent,
+    complete,
+    completedValues,
     hasNextStep,
     hasPrevStep,
-    isCompleted: computed("completed"),
-    isStepValid,
-    isStepSkippable,
+    canSkip,
+    canComplete,
+    getItemState,
+    setValue,
     goToNextStep,
     goToPrevStep,
-    resetStep,
-    getItemState,
-    setStep,
+    skipStep,
+    resetStep() {
+      send({ type: "STEP.RESET", src: "api.resetStep" })
+    },
+    setCompletedValues(values) {
+      send({ type: "COMPLETED.SET", value: values, src: "api.setCompletedValues" })
+    },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs(scope.id),
+        id: dom.getRootId(scope),
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
+        "data-orientation": orientation,
+        "data-complete": dataAttr(complete),
         style: {
-          "--percent": `${percent}%`,
+          "--steps-percent": `${percent}%`,
         },
       })
     },
 
     getListProps() {
-      const arr = fromLength(count)
-      const triggerIds = arr.map((_, index) => dom.getTriggerId(scope, index))
+      const triggerIds = effectiveItems.map((item) => dom.getTriggerId(scope, item.value))
       return normalize.element({
         ...parts.list.attrs(scope.id),
+        id: dom.getListId(scope),
         dir: prop("dir"),
         role: "tablist",
         "aria-owns": triggerIds.join(" "),
-        "aria-orientation": prop("orientation"),
-        "data-orientation": prop("orientation"),
+        "aria-orientation": orientation,
+        "data-orientation": orientation,
       })
     },
 
@@ -95,48 +169,96 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
       return normalize.element({
         ...parts.item.attrs(scope.id),
         dir: prop("dir"),
-        "aria-current": itemState.current ? "step" : undefined,
-        "data-orientation": prop("orientation"),
-        "data-skippable": dataAttr(itemState.skippable),
+        role: "presentation",
+        "data-orientation": orientation,
+        ...itemStateAttrs(itemState),
       })
     },
 
     getTriggerProps(props) {
       const itemState = getItemState(props)
+      const unreachable = !itemState.reachable
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: itemState.triggerId,
         role: "tab",
         type: "button",
         dir: prop("dir"),
-        tabIndex: !prop("linear") || itemState.current ? 0 : -1,
+        tabIndex: props.value === focusValue ? 0 : -1,
+        disabled: unreachable,
         "aria-selected": itemState.current,
+        "aria-current": itemState.current ? "step" : undefined,
         "aria-controls": itemState.contentId,
         "data-state": itemState.current ? "open" : "closed",
-        "data-orientation": prop("orientation"),
-        "data-complete": dataAttr(itemState.completed),
-        "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(itemState.incomplete),
+        "data-orientation": orientation,
+        ...itemStateAttrs(itemState),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (prop("linear")) return
-          send({ type: "STEP.SET", value: props.index, src: "trigger.click" })
+          if (unreachable) return
+          send({ type: "VALUE.SET", value: props.value, src: "trigger.click" })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (event.altKey || event.ctrlKey || event.metaKey) return
+
+          const reachable = reachableItems
+          if (reachable.length === 0) return
+          const index = reachable.findIndex((item) => item.value === props.value)
+
+          // Manual activation: arrows move focus, Enter/Space activates
+          const goTo = (next: number) => {
+            event.preventDefault()
+            const target = reachable[next]
+            if (!target) return
+            scope.getById(dom.getTriggerId(scope, target.value))?.focus()
+          }
+
+          const keyMap: EventKeyMap = {
+            ArrowLeft() {
+              if (orientation === "vertical") return
+              goTo(Math.max(index - 1, 0))
+            },
+            ArrowRight() {
+              if (orientation === "vertical") return
+              goTo(Math.min(index + 1, reachable.length - 1))
+            },
+            ArrowUp() {
+              if (orientation === "horizontal") return
+              goTo(Math.max(index - 1, 0))
+            },
+            ArrowDown() {
+              if (orientation === "horizontal") return
+              goTo(Math.min(index + 1, reachable.length - 1))
+            },
+            Home() {
+              goTo(0)
+            },
+            End() {
+              goTo(reachable.length - 1)
+            },
+          }
+
+          const exec = keyMap[getEventKey(event, { dir: prop("dir"), orientation })]
+          exec?.(event)
         },
       })
     },
 
     getContentProps(props) {
       const itemState = getItemState(props)
+      const isComplete = props.value === COMPLETE
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: itemState.contentId,
-        role: "tabpanel",
-        tabIndex: 0,
+        role: isComplete ? undefined : "tabpanel",
+        tabIndex: isComplete ? -1 : 0,
         hidden: !itemState.current,
+        "data-value": itemState.value,
         "data-state": itemState.current ? "open" : "closed",
-        "data-orientation": prop("orientation"),
-        "aria-labelledby": itemState.triggerId,
+        "data-orientation": orientation,
+        "data-complete": dataAttr(isComplete ? complete : itemState.completed),
+        "aria-labelledby": isComplete ? undefined : itemState.triggerId,
       })
     },
 
@@ -146,9 +268,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
-        "data-complete": dataAttr(itemState.completed),
-        "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(itemState.incomplete),
+        "data-orientation": orientation,
+        ...itemStateAttrs(itemState),
       })
     },
 
@@ -157,10 +278,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
       return normalize.element({
         ...parts.separator.attrs(scope.id),
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
-        "data-complete": dataAttr(itemState.completed),
-        "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(itemState.incomplete),
+        "data-orientation": orientation,
+        ...itemStateAttrs(itemState),
       })
     },
 
@@ -179,8 +298,8 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
 
     getPrevTriggerProps() {
       return normalize.button({
-        dir: prop("dir"),
         ...parts.prevTrigger.attrs(scope.id),
+        dir: prop("dir"),
         type: "button",
         disabled: !hasPrevStep,
         onClick(event) {
@@ -190,17 +309,50 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
       })
     },
 
+    getSkipTriggerProps() {
+      return normalize.button({
+        ...parts.skipTrigger.attrs(scope.id),
+        dir: prop("dir"),
+        type: "button",
+        hidden: !canSkip,
+        disabled: !canSkip,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          skipStep()
+        },
+      })
+    },
+
     getProgressProps() {
       return normalize.element({
-        dir: prop("dir"),
         ...parts.progress.attrs(scope.id),
+        dir: prop("dir"),
         role: "progressbar",
         "aria-valuenow": percent,
         "aria-valuemin": 0,
         "aria-valuemax": 100,
-        "aria-valuetext": `${percent}% complete`,
+        "aria-label": translations.progressLabel,
+        "aria-valuetext": translations.progressText({
+          index: effectiveIndex,
+          count,
+          percent,
+          title: currentItem?.title,
+          complete,
+        }),
         "data-complete": dataAttr(percent === 100),
       })
     },
   }
 }
+
+const itemStateAttrs = (itemState: ItemState) => ({
+  "data-value": itemState.value,
+  "data-complete": dataAttr(itemState.completed),
+  "data-current": dataAttr(itemState.current),
+  "data-incomplete": dataAttr(!itemState.disabled && !itemState.completed && !itemState.current && !itemState.skipped),
+  "data-skipped": dataAttr(itemState.skipped),
+  "data-invalid": dataAttr(itemState.invalid),
+  "data-optional": dataAttr(itemState.optional),
+  "data-locked": dataAttr(itemState.locked),
+  "data-disabled": dataAttr(itemState.disabled),
+})

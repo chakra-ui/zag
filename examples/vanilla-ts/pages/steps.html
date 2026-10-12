@@ -37,11 +37,11 @@
         background: #e0e0e0;
         font-weight: bold;
       }
-      .steps-item[data-current="true"] .steps-indicator {
+      .steps-item[data-current] .steps-indicator {
         background: #007bff;
         color: white;
       }
-      .steps-item[data-completed="true"] .steps-indicator {
+      .steps-item[data-complete] .steps-indicator {
         background: #28a745;
         color: white;
       }
@@ -50,7 +50,7 @@
         height: 2px;
         background: #e0e0e0;
       }
-      .steps-item[data-completed="true"] .steps-separator {
+      .steps-item[data-complete] .steps-separator {
         background: #28a745;
       }
       .steps-content {
@@ -80,28 +80,28 @@
     <main class="steps">
       <div class="steps-root">
         <ol class="steps-list">
-          <li class="steps-item">
+          <li class="steps-item" data-value="account">
             <button class="steps-trigger">
               <div class="steps-indicator">1</div>
               <span>Account</span>
             </button>
             <div class="steps-separator"></div>
           </li>
-          <li class="steps-item">
+          <li class="steps-item" data-value="profile">
             <button class="steps-trigger">
               <div class="steps-indicator">2</div>
               <span>Profile</span>
             </button>
             <div class="steps-separator"></div>
           </li>
-          <li class="steps-item">
+          <li class="steps-item" data-value="review">
             <button class="steps-trigger">
               <div class="steps-indicator">3</div>
               <span>Review</span>
             </button>
             <div class="steps-separator"></div>
           </li>
-          <li class="steps-item">
+          <li class="steps-item" data-value="complete">
             <button class="steps-trigger">
               <div class="steps-indicator">4</div>
               <span>Complete</span>
@@ -111,27 +111,27 @@
 
         <div class="steps-progress"></div>
 
-        <div class="steps-content" data-index="0">
+        <div class="steps-content" data-value="account">
           <h3>Step 1: Account Information</h3>
           <p>Enter your account details here.</p>
         </div>
 
-        <div class="steps-content" data-index="1">
+        <div class="steps-content" data-value="profile">
           <h3>Step 2: Profile Setup</h3>
           <p>Complete your profile information.</p>
         </div>
 
-        <div class="steps-content" data-index="2">
+        <div class="steps-content" data-value="review">
           <h3>Step 3: Review</h3>
           <p>Review all your information before completing.</p>
         </div>
 
-        <div class="steps-content" data-index="3">
+        <div class="steps-content" data-value="complete">
           <h3>Step 4: Complete</h3>
           <p>Finalize your setup.</p>
         </div>
 
-        <div class="steps-content" data-index="4">
+        <div class="steps-completed-content">
           <h3>Steps Complete</h3>
           <p>Thank you for completing all the steps! Your setup is now finished.</p>
         </div>

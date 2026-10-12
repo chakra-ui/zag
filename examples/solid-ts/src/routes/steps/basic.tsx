@@ -1,5 +1,5 @@
-import { stepsControls, stepsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
+import { stepsControls, stepsData } from "@zag-js/shared"
 import * as steps from "@zag-js/steps"
 import { createMemo, createUniqueId, Index } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -14,7 +14,7 @@ export default function Page() {
     steps.machine,
     controls.mergeProps<steps.Props>({
       id: createUniqueId(),
-      count: stepsData.length,
+      items: stepsData,
     }),
   )
 
@@ -27,31 +27,32 @@ export default function Page() {
           <div {...api().getListProps()}>
             <Index each={stepsData}>
               {(step, index) => (
-                <div {...api().getItemProps({ index })}>
-                  <button {...api().getTriggerProps({ index })}>
-                    <div {...api().getIndicatorProps({ index })}>{index + 1}</div>
+                <div {...api().getItemProps({ value: step().value })}>
+                  <button {...api().getTriggerProps({ value: step().value })}>
+                    <div {...api().getIndicatorProps({ value: step().value })}>{index + 1}</div>
                     <span>{step().title}</span>
                   </button>
-                  <div {...api().getSeparatorProps({ index })} />
+                  <div {...api().getSeparatorProps({ value: step().value })} />
                 </div>
               )}
             </Index>
           </div>
 
           <Index each={stepsData}>
-            {(step, index) => (
-              <div {...api().getContentProps({ index })}>
+            {(step) => (
+              <div {...api().getContentProps({ value: step().value })}>
                 {step().title} - {step().description}
               </div>
             )}
           </Index>
 
-          <div {...api().getContentProps({ index: stepsData.length })}>
+          <div {...api().getContentProps({ value: steps.COMPLETE })}>
             Steps Complete - Thank you for filling out the form!
           </div>
 
           <div>
             <button {...api().getPrevTriggerProps()}>Back</button>
+            <button {...api().getSkipTriggerProps()}>Skip</button>
             <button {...api().getNextTriggerProps()}>Next</button>
           </div>
         </div>
