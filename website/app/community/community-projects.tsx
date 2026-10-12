@@ -4,11 +4,11 @@ import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import type { CommunityProject } from "lib/community"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ShowcaseCard } from "components/showcase-card"
+import Image from "next/image"
 import { useId } from "react"
 import { LuChevronLeft, LuChevronRight, LuSearch } from "react-icons/lu"
 import { cva } from "styled-system/css"
-import { Grid, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 
 const PAGE_SIZE = 10
 
@@ -80,6 +80,56 @@ function Pagination(props: {
   )
 }
 
+function ProjectRow(props: { project: CommunityProject }) {
+  const { project } = props
+  return (
+    <styled.a
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      display="flex"
+      alignItems="center"
+      gap="4"
+      p="4"
+      mx="-4"
+      rounded="sm"
+      transition="background 0.15s"
+      _hover={{ bg: "bg.muted" }}
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "green.500",
+        outlineOffset: "2px",
+      }}
+    >
+      <Box
+        position="relative"
+        flexShrink="0"
+        boxSize="14"
+        rounded="sm"
+        overflow="hidden"
+        bg="bg.muted"
+      >
+        <Image
+          src={project.image}
+          alt=""
+          fill
+          sizes="56px"
+          style={{ objectFit: "cover" }}
+        />
+      </Box>
+      <Stack gap="0.5" minW="0">
+        <styled.span fontWeight="semibold">{project.name}</styled.span>
+        <styled.span fontSize="sm" color="text.muted">
+          {project.description}
+        </styled.span>
+        <styled.span fontSize="xs" color="text.muted">
+          by {project.author}
+        </styled.span>
+      </Stack>
+    </styled.a>
+  )
+}
+
 // ?q=lit&page=2 lives in the URL, so a shared link or the back button lands on the same list
 export function CommunityProjects(props: { projects: CommunityProject[] }) {
   const router = useRouter()
@@ -136,13 +186,9 @@ export function CommunityProjects(props: { projects: CommunityProject[] }) {
         />
       </HStack>
       {items.length > 0 ? (
-        <Grid gap="6" columns={{ base: 1, sm: 2, lg: 3 }}>
+        <Grid columns={{ base: 1, md: 2 }} columnGap="10" rowGap="2">
           {items.map((project) => (
-            <ShowcaseCard key={project.href} item={project}>
-              <styled.span fontSize="xs" color="text.muted">
-                by {project.author}
-              </styled.span>
-            </ShowcaseCard>
+            <ProjectRow key={project.href} project={project} />
           ))}
         </Grid>
       ) : (

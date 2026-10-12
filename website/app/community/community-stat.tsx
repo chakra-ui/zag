@@ -23,13 +23,10 @@ export function CommunityStat(props: CommunityStatProps) {
       href={props.href}
       target="_blank"
       rel="noopener noreferrer"
-      textAlign={{ base: "left", md: "right" }}
-      flex="1"
       _hover={{ color: "text" }}
     >
       <HStack
         gap="1.5"
-        justifyContent={{ base: "flex-start", md: "flex-end" }}
         fontSize="xs"
         color="text.subtle"
         fontFamily="mono"
@@ -41,12 +38,7 @@ export function CommunityStat(props: CommunityStatProps) {
         </styled.span>
         <styled.span>{props.label}</styled.span>
       </HStack>
-      <styled.p
-        my="2"
-        fontSize={{ base: "4xl", md: "5xl" }}
-        lineHeight="1"
-        fontWeight="semibold"
-      >
+      <styled.p my="2" fontSize="3xl" lineHeight="1" fontWeight="semibold">
         {formatCompact(props.value)}
       </styled.p>
       <styled.p fontSize="sm" color="text.muted">
