@@ -365,7 +365,7 @@ export const tourData: StepDetails[] = [
 
 export const stepsData = [
   { value: "first", title: "First", description: "Contact Info" },
-  { value: "second", title: "Second", description: "Date & Time" },
+  { value: "second", title: "Second", description: "Date & Time", optional: true },
   { value: "third", title: "Third", description: "Select Rooms" },
 ]
 

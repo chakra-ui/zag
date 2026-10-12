@@ -2083,7 +2083,8 @@
   "steps": {
     "Root": {
       "data-steps-root": "<uid>",
-      "data-orientation": "The orientation of the steps"
+      "data-orientation": "The orientation of the steps",
+      "data-complete": "Present when the steps value is complete"
     },
     "List": {
       "data-steps-list": "<uid>",
@@ -2092,33 +2093,62 @@
     "Item": {
       "data-steps-item": "<uid>",
       "data-orientation": "The orientation of the item",
-      "data-skippable": ""
+      "data-value": "The value of the item",
+      "data-complete": "Present when the item value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": "Present when incomplete",
+      "data-skipped": "Present when the flow moved past it without completing it",
+      "data-invalid": "Present when invalid",
+      "data-optional": "Present when optional",
+      "data-locked": "Present when completed and it cannot be returned to",
+      "data-disabled": "Present when disabled"
     },
     "Trigger": {
       "data-steps-trigger": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the trigger",
+      "data-value": "The value of the item",
       "data-complete": "Present when the trigger value is complete",
       "data-current": "Present when current",
-      "data-incomplete": ""
+      "data-incomplete": "Present when incomplete",
+      "data-skipped": "Present when the flow moved past it without completing it",
+      "data-invalid": "Present when invalid",
+      "data-optional": "Present when optional",
+      "data-locked": "Present when completed and it cannot be returned to",
+      "data-disabled": "Present when disabled"
     },
     "Content": {
       "data-steps-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
-      "data-orientation": "The orientation of the content"
+      "data-orientation": "The orientation of the content",
+      "data-complete": "Present when the content value is complete"
     },
     "Indicator": {
       "data-steps-indicator": "<uid>",
+      "data-orientation": "The orientation of the indicator",
+      "data-value": "The value of the item",
       "data-complete": "Present when the indicator value is complete",
       "data-current": "Present when current",
-      "data-incomplete": ""
+      "data-incomplete": "Present when incomplete",
+      "data-skipped": "Present when the flow moved past it without completing it",
+      "data-invalid": "Present when invalid",
+      "data-optional": "Present when optional",
+      "data-locked": "Present when completed and it cannot be returned to",
+      "data-disabled": "Present when disabled"
     },
     "Separator": {
       "data-steps-separator": "<uid>",
       "data-orientation": "The orientation of the separator",
+      "data-value": "The value of the item",
       "data-complete": "Present when the separator value is complete",
       "data-current": "Present when current",
-      "data-incomplete": ""
+      "data-incomplete": "Present when incomplete",
+      "data-skipped": "Present when the flow moved past it without completing it",
+      "data-invalid": "Present when invalid",
+      "data-optional": "Present when optional",
+      "data-locked": "Present when completed and it cannot be returned to",
+      "data-disabled": "Present when disabled"
     },
     "Progress": {
       "data-steps-progress": "<uid>",

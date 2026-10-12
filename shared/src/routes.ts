@@ -176,7 +176,16 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "steps",
     label: "Steps",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "async-items", title: "Async Items" },
+      { slug: "validation", title: "Validation: Create Project" },
+      { slug: "conditional-steps", title: "Conditional & Optional Steps: Onboarding" },
+      { slug: "url-sync", title: "URL Sync: Checkout" },
+      { slug: "locked-steps", title: "Locked Steps: 2FA Setup" },
+      { slug: "persisted-progress", title: "Persisted Progress: Store Setup" },
+    ],
   },
   {
     slug: "qr-code",

@@ -4,17 +4,17 @@ import { useId } from "react"
 import styles from "../styles/machines/steps.module.css"
 
 const stepsData = [
-  { title: "Step 1" },
-  { title: "Step 2" },
-  { title: "Step 3" },
+  { value: "first", title: "Step 1" },
+  { value: "second", title: "Step 2" },
+  { value: "third", title: "Step 3" },
 ]
 
-interface StepsProps extends Omit<steps.Props, "id" | "count"> {}
+interface StepsProps extends Omit<steps.Props, "id" | "items"> {}
 
 export function Steps(props: StepsProps) {
   const service = useMachine(steps.machine, {
     id: useId(),
-    count: stepsData.length,
+    items: stepsData,
     ...props,
   })
 
@@ -26,16 +26,16 @@ export function Steps(props: StepsProps) {
         {stepsData.map((step, index) => (
           <div
             className={styles.Item}
-            key={index}
-            {...api.getItemProps({ index })}
+            key={step.value}
+            {...api.getItemProps({ value: step.value })}
           >
             <button
               className={styles.Trigger}
-              {...api.getTriggerProps({ index })}
+              {...api.getTriggerProps({ value: step.value })}
             >
               <div
                 className={styles.Indicator}
-                {...api.getIndicatorProps({ index })}
+                {...api.getIndicatorProps({ value: step.value })}
               >
                 {index + 1}
               </div>
@@ -43,17 +43,17 @@ export function Steps(props: StepsProps) {
             </button>
             <div
               className={styles.Separator}
-              {...api.getSeparatorProps({ index })}
+              {...api.getSeparatorProps({ value: step.value })}
             />
           </div>
         ))}
       </div>
 
-      {stepsData.map((step, index) => (
+      {stepsData.map((step) => (
         <div
           className={styles.Content}
-          key={index}
-          {...api.getContentProps({ index })}
+          key={step.value}
+          {...api.getContentProps({ value: step.value })}
         >
           {step.title}
         </div>
@@ -61,7 +61,7 @@ export function Steps(props: StepsProps) {
 
       <div
         className={styles.Content}
-        {...api.getContentProps({ index: stepsData.length })}
+        {...api.getContentProps({ value: steps.COMPLETE })}
       >
         Complete - Thank you 🎉
       </div>

@@ -1,22 +1,28 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { StepsProps } from "./steps.types"
+import type { ItemProps, StepsProps } from "./steps.types"
 
 export const props = createProps<StepsProps>()([
-  "count",
-  "defaultStep",
+  "completedValues",
+  "defaultCompletedValues",
+  "defaultValue",
   "dir",
   "getRootNode",
   "id",
   "ids",
-  "isStepSkippable",
-  "isStepValid",
+  "items",
   "linear",
-  "onStepChange",
-  "onStepComplete",
-  "onStepInvalid",
+  "onComplete",
+  "onCompletedChange",
+  "onNavigationBlocked",
+  "onValueChange",
   "orientation",
-  "step",
+  "translations",
+  "value",
 ])
 
 export const splitProps = createSplitProps<Partial<StepsProps>>(props)
+
+export const itemProps = createProps<ItemProps>()(["value"])
+
+export const splitItemProps = createSplitProps<ItemProps>(itemProps)
