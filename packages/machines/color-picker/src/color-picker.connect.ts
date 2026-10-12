@@ -152,8 +152,8 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
     format: context.get("format"),
-    setFormat(nextFormat) {
-      send({ type: "FORMAT.SET", format: nextFormat, src: "set-format" })
+    setFormat(format) {
+      send({ type: "FORMAT.SET", format, src: "set-format" })
     },
     alpha: value.getChannelValue("alpha"),
     setAlpha(alphaValue) {
@@ -249,7 +249,7 @@ export function connect<T extends PropTypes>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },

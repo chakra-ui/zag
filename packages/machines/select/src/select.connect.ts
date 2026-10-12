@@ -508,7 +508,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           ...popperStyles.floating,
           transform: aligned ? "none" : popperStyles.floating.transform,
           ...(alignStyles ?? {}),
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },

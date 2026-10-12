@@ -276,6 +276,7 @@ function getPlacementImpl(
   let lastX: number | undefined
   let lastY: number | undefined
   let zIndexComputed = false
+  let zIndexObserver: MutationObserver | undefined
 
   let lastAnchorForObserve: MaybeRectElement | null | undefined = undefined
   let lastFloatingForObserve: MaybeElement | undefined = undefined
@@ -309,6 +310,7 @@ function getPlacementImpl(
     if (floating !== cachedMiddlewareFloating || arrowEl !== cachedArrowEl) {
       rebuildMiddlewareForFloating(floating, arrowEl)
       zIndexComputed = false
+      if (options.applyStyles !== false && options.listeners) observeZIndex(floating)
     }
 
     const reference = resolveReference()
@@ -347,14 +349,38 @@ function getPlacementImpl(
       }
     }
 
-    // compute z-index only once to avoid forced reflow on every update
+    // compute z-index once here; later changes come through `observeZIndex`
     if (!zIndexComputed) {
-      const contentEl = floating.firstElementChild
-      if (contentEl) {
-        floating.style.setProperty("--z-index", getComputedStyle(contentEl).zIndex)
-        zIndexComputed = true
-      }
+      zIndexComputed = syncZIndex(floating)
     }
+  }
+
+  function syncZIndex(floating: HTMLElement) {
+    const contentEl = floating.firstElementChild
+    if (!contentEl) return false
+    const zIndex = getComputedStyle(contentEl).zIndex
+    if (floating.style.getPropertyValue("--z-index") !== zIndex) {
+      floating.style.setProperty("--z-index", zIndex)
+    }
+    return true
+  }
+
+  // The content's z-index can depend on layer metadata that renders after positioning starts (e.g. lazy mount)
+  function observeZIndex(floating: HTMLElement) {
+    zIndexObserver?.disconnect()
+    const win = getWindow(floating)
+    if (typeof win.MutationObserver === "undefined") return
+    let contentEl = floating.firstElementChild
+    const observer = new win.MutationObserver(() => {
+      if (floating.firstElementChild !== contentEl) {
+        contentEl = floating.firstElementChild
+        if (contentEl) observer.observe(contentEl, { attributes: true, attributeFilter: ["style", "class"] })
+      }
+      syncZIndex(floating)
+    })
+    observer.observe(floating, { childList: true })
+    if (contentEl) observer.observe(contentEl, { attributes: true, attributeFilter: ["style", "class"] })
+    zIndexObserver = observer
   }
 
   async function runUpdate() {
@@ -370,6 +396,8 @@ function getPlacementImpl(
 
   return () => {
     cancelAutoUpdate()
+    // Stop syncing so the last z-index holds through exit animations
+    zIndexObserver?.disconnect()
     restoreArrowStyles?.()
     restoreFloatingStyles?.()
     onPositioned?.({ placed: false })

@@ -72,13 +72,21 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
-        "aria-labelledby": dom.getTitleId(scope),
         style: {
           "--top": toPx(rect?.y),
           "--left": toPx(rect?.x),
           "--width": toPx(rect?.width),
           "--height": toPx(rect?.height),
         },
+      })
+    },
+
+    getNavProps() {
+      return normalize.element({
+        ...parts.nav.attrs(scope.id),
+        id: dom.getNavId(scope),
+        dir: prop("dir"),
+        "aria-labelledby": dom.getTitleId(scope),
       })
     },
 

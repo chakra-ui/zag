@@ -2,6 +2,8 @@
 
 ## 2.0.0-next.3
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -85,6 +87,12 @@
 - [`772046f`](https://github.com/chakra-ui/zag/commit/772046ffe214037838d4e55f306286fdc62041d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Expose the image loading status. Adds `api.status`
   (`loading | loaded | error`) and emits `loading` from `onStatusChange`, so you can render a distinct loading state.
+
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 

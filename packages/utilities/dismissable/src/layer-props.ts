@@ -10,8 +10,8 @@ export function getDismissableLayerAttrs(layer: LayerSnapshot | null | undefined
 export interface DismissableLayerStyleOptions {
   /**
    * Set `--z-index: var(--layer-index)` on the element that establishes the actual
-   * stacking context (backdrop / positioner). Content parts sit inside that stacking
-   * context already, so they don't need this.
+   * stacking context (e.g. a dialog's backdrop / positioner). Content parts sit inside that
+   * stacking context already. Popper positioners get `--z-index` from popper, which mirrors the content.
    */
   zIndex?: boolean
   /**

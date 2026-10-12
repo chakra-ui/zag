@@ -205,7 +205,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },

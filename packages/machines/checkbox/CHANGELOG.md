@@ -58,6 +58,22 @@
 
 ## 2.0.0-next.0
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3405](https://github.com/chakra-ui/zag/pull/3405)
+  [`d8ab733`](https://github.com/chakra-ui/zag/commit/d8ab7333453b703974f402e2c86dbe80db41ea6f) Thanks
+  [@maricastroc](https://github.com/maricastroc)! - Fixed issue where a checkbox that starts as `indeterminate` (via
+  `defaultChecked` or `checked`) left the hidden input's `indeterminate` property as `false` until the first change.
+- Updated dependencies [[`0afddfa`](https://github.com/chakra-ui/zag/commit/0afddfae6e4f9fea790d4321bf2d0bb37160f4a1)]:
+  - @zag-js/focus-visible@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

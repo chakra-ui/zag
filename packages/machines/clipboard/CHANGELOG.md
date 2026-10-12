@@ -47,6 +47,8 @@
   // { value: "confirm", current: true, open: true }
   ```
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -57,6 +59,12 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/anatomy@1.46.0
+- @zag-js/core@1.46.0
+- @zag-js/types@1.46.0
+- @zag-js/utils@1.46.0
+- @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 
