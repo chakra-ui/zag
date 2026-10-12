@@ -100,6 +100,14 @@ export class ComboboxModel extends Model {
     await expect(item).not.toHaveAttribute("data-state", "checked")
   }
 
+  seeItemIsSelected = async (text: string) => {
+    await expect(this.getItem(text)).toHaveAttribute("aria-selected", "true")
+  }
+
+  seeItemIsNotSelected = async (text: string) => {
+    await expect(this.getItem(text)).toHaveAttribute("aria-selected", "false")
+  }
+
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
     await expect.poll(() => isInViewport(this.content, item)).toBe(true)
