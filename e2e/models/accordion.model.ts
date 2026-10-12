@@ -27,8 +27,8 @@ export class AccordionModel extends Model {
     await this.getTrigger(id).focus()
   }
 
-  async clickTrigger(id: string) {
-    await this.getTrigger(id).click()
+  async clickTrigger(id: string, options?: { force?: boolean }) {
+    await this.getTrigger(id).click(options)
   }
 
   async seeTriggerIsFocused(id: string) {
@@ -41,5 +41,13 @@ export class AccordionModel extends Model {
 
   async dontSeeContent(id: string) {
     await expect(this.getContent(id)).not.toBeVisible()
+  }
+
+  async seeTriggerIsLocked(id: string) {
+    await expect(this.getTrigger(id)).toHaveAttribute("aria-disabled", "true")
+  }
+
+  async dontSeeTriggerIsLocked(id: string) {
+    await expect(this.getTrigger(id)).not.toHaveAttribute("aria-disabled")
   }
 }

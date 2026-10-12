@@ -48,7 +48,8 @@ test.describe("accordion", () => {
 
     test("then clicking the same trigger again: should not close the content", async () => {
       await I.clickTrigger("home")
-      await I.clickTrigger("home")
+      // the expanded trigger has aria-disabled, which playwright treats as not clickable
+      await I.clickTrigger("home", { force: true })
       await I.seeContent("home")
     })
 
@@ -58,6 +59,24 @@ test.describe("accordion", () => {
 
       await I.seeContent("about")
       await I.dontSeeContent("home")
+    })
+
+    test("expanded trigger that cannot collapse has aria-disabled", async () => {
+      await I.clickTrigger("home")
+      await I.seeTriggerIsLocked("home")
+      await I.dontSeeTriggerIsLocked("about")
+
+      await I.clickTrigger("about")
+      await I.seeTriggerIsLocked("about")
+      await I.dontSeeTriggerIsLocked("home")
+    })
+
+    test("[collapsible=true] expanded trigger has no aria-disabled", async () => {
+      await I.controls.bool("collapsible")
+
+      await I.clickTrigger("home")
+      await I.seeContent("home")
+      await I.dontSeeTriggerIsLocked("home")
     })
   })
 

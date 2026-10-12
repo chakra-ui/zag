@@ -1,4 +1,4 @@
-import { dataAttr, getEventKey, isSafari } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventKey, isSafari } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./accordion.anatomy"
@@ -91,6 +91,8 @@ export function connect<T extends PropTypes>(
     getItemTriggerProps(props) {
       const { value } = props
       const itemState = getItemState(props)
+      // an expanded item that cannot be collapsed is announced as disabled
+      const locked = itemState.expanded && !itemState.disabled && !prop("collapsible") && !multiple
 
       return normalize.button({
         ...parts.itemTrigger.attrs,
@@ -101,6 +103,7 @@ export function connect<T extends PropTypes>(
         "data-controls": dom.getItemContentId(scope, value),
         "aria-expanded": itemState.expanded,
         disabled: itemState.disabled,
+        "aria-disabled": ariaAttr(locked),
         "data-orientation": prop("orientation"),
         "data-state": itemState.expanded ? "open" : "closed",
         "data-focus": dataAttr(itemState.focused),
