@@ -121,11 +121,11 @@ clickable.
 ```tsx {2-7}
 const service = useMachine(tabs.machine, {
   onFocusChange(details) {
-    // details => { focusedValue: string }
+    // details => { focusedValue: string | null }
     console.log("focused tab:", details.focusedValue)
   },
   onValueChange(details) {
-    // details => { value: string }
+    // details => { value: string | null }
     console.log("selected tab:", details.value)
   },
 })
