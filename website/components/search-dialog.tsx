@@ -91,7 +91,7 @@ export function Search() {
                     const isLvl1 = item.type === "lvl1"
                     return (
                       <Link
-                        key={item.id}
+                        key={item.url}
                         href={item.url}
                         className={css({
                           px: "3",
