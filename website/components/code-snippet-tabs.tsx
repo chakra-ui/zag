@@ -42,7 +42,6 @@ export function CodeSnippetTabs(props: CodeSnippetTabsProps) {
             fontSize="sm"
             fontWeight="medium"
             borderBottom="2px solid transparent"
-            bg="bg.code.block"
             _selected={{
               borderColor: "border.primary.subtle",
               color: "text.primary.bold",
