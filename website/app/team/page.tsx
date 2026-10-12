@@ -8,7 +8,6 @@ import {
   type TeamMember,
 } from "lib/community"
 import { createPageMetadata } from "lib/seo"
-import { eyebrow } from "components/blog"
 import { Grid, Stack, styled } from "styled-system/jsx"
 import { ProfileItem } from "../community/profile-item"
 import { fetchContributors } from "./contributors"
@@ -26,7 +25,6 @@ function getGithubLogin(member: TeamMember) {
 
 function MemberSection(props: {
   id: string
-  eyebrow: string
   title: string
   description: string
   members: TeamMember[]
@@ -35,7 +33,6 @@ function MemberSection(props: {
   return (
     <Section id={props.id} scrollMarginTop="20" py={{ base: "8", md: "12" }}>
       <Stack mb={{ base: "8", md: "10" }} gap="3">
-        <span className={eyebrow}>{props.eyebrow}</span>
         <styled.h2 textStyle="display.md">{props.title}</styled.h2>
         <styled.p textStyle="text.md" color="text.muted" maxW="3xl">
           {props.description}
@@ -73,7 +70,6 @@ export default async function TeamPage() {
 
       <MemberSection
         id="maintainers"
-        eyebrow="Team"
         title="Maintainers"
         description="The maintainers and developer relations shaping Zag.js day to day."
         members={teamMembers}
@@ -81,15 +77,13 @@ export default async function TeamPage() {
 
       <MemberSection
         id="advisors"
-        eyebrow="Advisors"
         title="Advisors"
-        description="Builders who help guide where Zag.js goes next."
+        description="People who shaped Zag.js and the work it stands on, but don't maintain it day to day."
         members={advisorMembers}
       />
 
       <MemberSection
         id="alumni"
-        eyebrow="Alumni"
         title="Past Members"
         description="Contributors whose work helped shape the project."
         members={alumniMembers}
@@ -103,9 +97,6 @@ export default async function TeamPage() {
           py={{ base: "8", md: "12" }}
         >
           <Stack mb={{ base: "6", md: "8" }} gap="3">
-            <span className={eyebrow}>
-              Contributors · {contributors.length}
-            </span>
             <styled.h2 textStyle="display.md">Contributors</styled.h2>
             <styled.p textStyle="text.md" color="text.muted" maxW="3xl">
               Everyone who has shipped code to Zag.js.{" "}

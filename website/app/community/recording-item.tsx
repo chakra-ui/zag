@@ -35,7 +35,7 @@ export function RecordingItem(props: RecordingItemProps) {
       target="_blank"
       rel="noopener noreferrer"
       display="block"
-      rounded="xl"
+      rounded="lg"
       borderWidth="1px"
       borderColor="border.subtle"
       bg="bg"
@@ -52,7 +52,7 @@ export function RecordingItem(props: RecordingItemProps) {
         <Box
           position="relative"
           flexShrink={0}
-          w={{ base: "36", md: "44" }}
+          w={{ base: "28", md: "44" }}
           aspectRatio="16/9"
           overflow="hidden"
           className={css({
@@ -97,7 +97,7 @@ export function RecordingItem(props: RecordingItemProps) {
           minW="0"
           flex="1"
         >
-          <styled.h3 fontWeight="semibold" lineHeight="1.3" lineClamp="1">
+          <styled.h3 fontWeight="semibold" lineHeight="1.3" lineClamp="2">
             {video.title}
           </styled.h3>
           <styled.p textStyle="xs" color="text.muted" lineClamp="1">
@@ -105,7 +105,14 @@ export function RecordingItem(props: RecordingItemProps) {
           </styled.p>
         </Stack>
 
-        <Box ps="3" pe="6" display="grid" placeItems="center" flexShrink={0}>
+        <Box
+          hideBelow="sm"
+          ps="3"
+          pe="6"
+          display="grid"
+          placeItems="center"
+          flexShrink={0}
+        >
           <styled.span _icon={{ color: "text.primary.bold", boxSize: "5" }}>
             <FaYoutube />
           </styled.span>

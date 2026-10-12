@@ -5,7 +5,7 @@ import { communityLinks, communityProjects, recordings } from "lib/community"
 import { createPageMetadata } from "lib/seo"
 import { Suspense } from "react"
 import { FaGithub, FaNpm } from "react-icons/fa6"
-import { Box, Flex, Grid, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 import { CommunityLink } from "./community-link"
 import { CommunityProjects } from "./community-projects"
 import { CommunityStat } from "./community-stat"
@@ -35,12 +35,6 @@ function SectionHeading(props: { title: string; description: string }) {
 const addProjectHref =
   "https://github.com/chakra-ui/zag/issues/new?title=Add%20community%20project%3A%20"
 
-const jumpLinks = [
-  { label: "Recordings", href: "#recordings" },
-  { label: "Ecosystem", href: "#ecosystem" },
-  { label: "Meet the team", href: "/team" },
-]
-
 export default async function CommunityPage() {
   const stats = await getCommunityStats()
 
@@ -48,68 +42,54 @@ export default async function CommunityPage() {
     <Box>
       <TopNav />
 
-      <Section pt={{ base: "12", md: "16" }} pb={{ base: "8", md: "10" }}>
-        <Grid columns={{ base: 1, md: 2 }} gap={{ base: "6", md: "8" }}>
+      <Section pt={{ base: "12", md: "16" }} pb={{ base: "8", md: "12" }}>
+        <Grid
+          columns={{ base: 1, lg: 2 }}
+          gap={{ base: "10", lg: "16" }}
+          alignItems="start"
+        >
           <Stack gap="3" my="4">
             <styled.h1 textStyle="display.xl">Community</styled.h1>
             <styled.p textStyle="text.md" color="text.muted" maxW="60ch">
               Connect with other builders, catch up on recordings, and find
               projects made on top of Zag.
             </styled.p>
-            <HStack as="nav" aria-label="On this page" gap="5" mt="2">
-              {jumpLinks.map((link) => (
-                <styled.a
-                  key={link.href}
-                  href={link.href}
-                  fontSize="sm"
-                  fontWeight="medium"
-                  color="text.muted"
-                  _hover={{ color: "text" }}
-                >
-                  {link.label}
-                </styled.a>
-              ))}
-            </HStack>
+            {stats ? (
+              <HStack gap="10" mt="6">
+                <CommunityStat
+                  href="https://www.npmjs.com/package/@zag-js/core"
+                  label="Downloads"
+                  value={stats.npmTotalDownloads}
+                  subLabel="@zag-js/core"
+                  icon={<FaNpm size="24" />}
+                />
+                <CommunityStat
+                  href="https://github.com/chakra-ui/zag"
+                  label="Stars"
+                  value={stats.githubStars}
+                  subLabel="chakra-ui/zag"
+                  icon={<FaGithub size="16" />}
+                />
+              </HStack>
+            ) : null}
+            <styled.a
+              href="/team"
+              mt="6"
+              alignSelf="flex-start"
+              fontSize="sm"
+              fontWeight="medium"
+              color="text.primary.bold"
+              _hover={{ textDecoration: "underline" }}
+            >
+              Meet the team →
+            </styled.a>
           </Stack>
 
-          {stats ? (
-            <Flex
-              gap="4"
-              maxW={{ md: "md" }}
-              w="full"
-              justifySelf="flex-end"
-              alignItems={{ md: "center" }}
-            >
-              <CommunityStat
-                href="https://www.npmjs.com/package/@zag-js/core"
-                label="Downloads"
-                value={stats.npmTotalDownloads}
-                subLabel="@zag-js/core"
-                icon={<FaNpm size="24" />}
-              />
-              <CommunityStat
-                href="https://github.com/chakra-ui/zag"
-                label="Stars"
-                value={stats.githubStars}
-                subLabel="chakra-ui/zag"
-                icon={<FaGithub size="16" />}
-              />
-            </Flex>
-          ) : null}
-        </Grid>
-      </Section>
-
-      <Section py={{ base: "8", md: "12" }}>
-        <Stack gap="2" mb="4">
-          <styled.h2 textStyle="display.sm">Join the community</styled.h2>
-          <styled.p textStyle="text.md" color="text.muted">
-            Help shape the future of Zag.js, and stay updated.
-          </styled.p>
-        </Stack>
-        <Grid columns={{ base: 2, sm: 4 }} gap="3" mt="10">
-          {communityLinks.map((link) => (
-            <CommunityLink key={link.href} link={link} />
-          ))}
+          <Stack as="nav" aria-label="Join the community" gap="1">
+            {communityLinks.map((link) => (
+              <CommunityLink key={link.href} link={link} />
+            ))}
+          </Stack>
         </Grid>
       </Section>
 
