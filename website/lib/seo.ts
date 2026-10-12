@@ -7,6 +7,8 @@ type PageMetadataInput = {
   path: string
   /** a generated share image, e.g. `/og/components/dialog.png` */
   image?: string
+  /** set for blog posts, so shares and search show the publish date */
+  publishedTime?: Date
 }
 
 export function createPageMetadata({
@@ -14,6 +16,7 @@ export function createPageMetadata({
   description,
   path,
   image,
+  publishedTime,
 }: PageMetadataInput): Metadata {
   const url = new URL(path, siteConfig.url).toString()
 
@@ -24,7 +27,9 @@ export function createPageMetadata({
       canonical: path,
     },
     openGraph: {
-      type: "website",
+      ...(publishedTime
+        ? { type: "article", publishedTime: publishedTime.toISOString() }
+        : { type: "website" }),
       locale: "en_US",
       url,
       title,

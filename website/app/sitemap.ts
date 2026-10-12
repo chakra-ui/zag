@@ -11,11 +11,10 @@ import siteConfig from "site.config"
 export default function sitemap(): MetadataRoute.Sitemap {
   if (siteConfig.noindex) return []
 
-  const lastModified = new Date()
-
+  // Only posts carry a real date. A build timestamp would mark every page as
+  // changed on every deploy, so the rest leave lastModified out
   const staticRoutes = ["", "/blog", "/community", "/showcase"].map((path) => ({
     url: `${siteConfig.url}${path}`,
-    lastModified,
   }))
 
   // Prefer canonical component URLs (no framework prefix) for search engines.
@@ -24,22 +23,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((slug) => slug.length === 1)
     .map((slug) => ({
       url: `${siteConfig.url}/components/${slug[0]}`,
-      lastModified,
     }))
 
   const overviewRoutes = getOverviewPaths().map(({ slug }) => ({
     url: `${siteConfig.url}/overview/${slug}`,
-    lastModified,
   }))
 
   const guideRoutes = getGuidePaths().map(({ slug }) => ({
     url: `${siteConfig.url}/guides/${slug}`,
-    lastModified,
   }))
 
   const utilityRoutes = getUtilityPaths().map(({ slug }) => ({
     url: `${siteConfig.url}/utilities/${slug}`,
-    lastModified,
   }))
 
   const postRoutes = posts.map((post) => ({

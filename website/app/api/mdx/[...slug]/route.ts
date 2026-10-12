@@ -1,6 +1,27 @@
-import { components, guides, overviews, snippets, utilities } from "lib/source"
+import {
+  components,
+  getComponentPaths,
+  guides,
+  overviews,
+  snippets,
+  utilities,
+} from "lib/source"
 import { expandComponentContent } from "lib/mdx-expansion"
 import { NextRequest, NextResponse } from "next/server"
+
+// Every docs page is known at build time, so "Copy page" reads a static file
+export const dynamic = "force-static"
+
+export function generateStaticParams() {
+  return [
+    ...getComponentPaths().map(({ params }) => ({
+      slug: ["components", ...params.slug],
+    })),
+    ...overviews.map((doc) => ({ slug: ["overview", doc.slug] })),
+    ...guides.map((doc) => ({ slug: ["guides", doc.slug] })),
+    ...utilities.map((doc) => ({ slug: ["utilities", doc.slug] })),
+  ]
+}
 
 // Default finder function for most collections
 const defaultFindBy = (d: any, slug: string) => d.slug === slug
@@ -115,5 +136,7 @@ export async function GET(
     permalink: doc.permalink,
   }
 
-  return NextResponse.json(response)
+  return NextResponse.json(response, {
+    headers: { "X-Robots-Tag": "noindex" },
+  })
 }
