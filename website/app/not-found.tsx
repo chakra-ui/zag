@@ -16,39 +16,27 @@ export default function NotFound() {
         px="6"
         py={{ base: "20", md: "28" }}
       >
-        <styled.p
-          fontFamily="mono"
-          fontSize="sm"
-          fontWeight="semibold"
-          color="text.primary.bold"
-        >
+        <styled.p fontWeight="semibold" color="text.primary.bold">
           404
         </styled.p>
-        <styled.h1 textStyle="display.xl">
-          No transition for this page
-        </styled.h1>
+        <styled.h1 textStyle="display.xl">Page not found</styled.h1>
         <styled.p color="text.muted" maxW="lg">
-          The site got a <code>NAVIGATE</code> event for a page that isn't
-          there, so it stayed where it was.
+          We couldn't find this page. It may have moved, or the link might be
+          wrong.
         </styled.p>
 
         <Stack my="10" align="center">
           <MissingState />
         </Stack>
 
-        <styled.p fontSize="sm" color="text.muted">
-          These transitions still work:
-        </styled.p>
         <HStack gap="3" flexWrap="wrap" justify="center">
-          <ButtonLink href="/" variant="green" fontFamily="mono">
-            GO_HOME
+          <ButtonLink href="/" variant="green">
+            Go home
           </ButtonLink>
-          <ButtonLink href="/overview/introduction" fontFamily="mono">
-            OPEN_DOCS
-          </ButtonLink>
+          <ButtonLink href="/overview/introduction">Read the docs</ButtonLink>
         </HStack>
         <styled.p fontSize="sm" color="text.muted" mt="2">
-          Or try the search at the top of the page.
+          Or search for it at the top of the page.
         </styled.p>
       </Stack>
       <Footer />
