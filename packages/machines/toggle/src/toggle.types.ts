@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { PropTypes } from "@zag-js/types"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
 
-export interface ToggleProps {
+export interface ToggleProps extends CommonProperties {
   /**
    * Whether the toggle is disabled.
    */
