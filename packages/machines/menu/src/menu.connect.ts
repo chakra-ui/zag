@@ -431,7 +431,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         role: composite ? "menu" : "dialog",
         tabIndex: 0,
         dir: prop("dir"),
-        "aria-activedescendant": computed("highlightedId") || undefined,
+        "aria-activedescendant": (composite && computed("highlightedId")) || undefined,
         "aria-labelledby": labelledBy,
         "data-placement": contentState.placement,
         "data-side": contentState.side,

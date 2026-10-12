@@ -139,7 +139,8 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   autoHighlight?: boolean | "always" | undefined
   /**
-   * Whether the menu is a composed with other composite widgets like a combobox or tabs
+   * Whether the menu manages keyboard focus across its items.
+   * Set to `false` when another widget inside it, such as a filter input, keeps focus instead.
    * @default true
    */
   composite?: boolean | undefined
