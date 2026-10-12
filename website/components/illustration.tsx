@@ -11,7 +11,9 @@ export function Illustration(props: Props) {
       viewBox="0 0 731 481"
       fill="none"
       className={css({
-        color: { _light: "#D1E1DA", _dark: "#283E35" },
+        color: { _light: "#B4CCC1", _dark: "#283E35" },
+        // resting states: pastel pills wash out on white, so light mode dims less
+        "--zi-dim": { _light: "0.55", _dark: "0.25" },
         position: "absolute",
         bottom: 0,
         right: 0,
@@ -27,7 +29,7 @@ export function Illustration(props: Props) {
       <style>{`
         .zi-state {
           animation: zi-state 9s infinite;
-          opacity: 0.25;
+          opacity: var(--zi-dim);
           transform-box: fill-box;
           transform-origin: center;
         }
@@ -37,7 +39,7 @@ export function Illustration(props: Props) {
         @keyframes zi-state {
           0% { opacity: 1; transform: scale(1.1); }
           6%, 20% { opacity: 1; transform: scale(1); }
-          28%, 97% { opacity: 0.25; transform: scale(1); }
+          28%, 97% { opacity: var(--zi-dim); transform: scale(1); }
           100% { opacity: 1; transform: scale(1.1); }
         }
         .zi-token { animation: zi-token 9s infinite; opacity: 0; offset-rotate: 0deg; }
