@@ -3,11 +3,24 @@ import { Icon } from "components/ui/icon"
 import { useSearch } from "lib/use-search"
 import Link from "next/link"
 import { BiSearch } from "react-icons/bi"
-import { GrReturn } from "react-icons/gr"
 import { HiDocument, HiHashtag } from "react-icons/hi"
 import { css } from "styled-system/css"
-import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Stack, styled } from "styled-system/jsx"
 import { SearchTrigger } from "./search-trigger"
+
+const sectionLabels: Record<string, string> = {
+  overview: "Overview",
+  guides: "Guides",
+  components: "Components",
+  utilities: "Utilities",
+  blog: "Blog",
+}
+
+// secondary text, which follows the row's color once it's highlighted
+const dim = css({
+  color: "text.muted",
+  "[data-highlighted] &": { color: "inherit" },
+})
 
 export function Search() {
   const { dialog_api, combobox_api, results } = useSearch()
@@ -112,42 +125,37 @@ export function Search() {
                           opacity={0.4}
                         />
 
-                        <Box flex="1" ml="4">
+                        <Box flex="1" minW="0" ml="4">
                           {!isLvl1 && (
                             <Box
                               fontWeight="medium"
                               fontSize="xs"
-                              opacity={0.7}
+                              className={dim}
                             >
                               {item.hierarchy.lvl1}
                             </Box>
                           )}
                           <Box fontWeight="semibold">{item.content}</Box>
+                          {item.text && (
+                            <Box fontSize="sm" truncate className={dim}>
+                              {item.text}
+                            </Box>
+                          )}
                         </Box>
 
-                        <Icon
-                          opacity="0.4"
-                          as={GrReturn}
-                          css={{ "& path": { stroke: "currentColor" } }}
-                        />
+                        <Box
+                          flexShrink="0"
+                          ms="3"
+                          fontSize="xs"
+                          fontWeight="medium"
+                          className={dim}
+                        >
+                          {sectionLabels[item.url.split("/")[1]]}
+                        </Box>
                       </Link>
                     )
                   })}
                 </styled.div>
-
-                <HStack
-                  px="4"
-                  userSelect="none"
-                  minHeight="8"
-                  fontSize="xs"
-                  lineHeight="1"
-                  color="text.muted"
-                  gap="5"
-                  borderTopWidth={combobox_api.open ? "1px" : undefined}
-                >
-                  <HStack>↑↓ Navigate</HStack>
-                  <HStack>↵ Select</HStack>
-                </HStack>
               </Stack>
               <div />
             </styled.div>

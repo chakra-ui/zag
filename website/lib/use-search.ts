@@ -2,8 +2,9 @@ import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { matchSorter } from "match-sorter"
+import { matchSorter, rankings } from "match-sorter"
 import { useRouter } from "next/navigation"
+import { tabs } from "sidebar.config"
 import { useEffect, useMemo, useState } from "react"
 import type { SearchMetaItem, SearchMetaResult } from "./search-meta"
 import { useUpdateEffect } from "./use-update-effect"
@@ -30,6 +31,32 @@ export function loadSearchIndex() {
       throw error
     })
   return searchIndex
+}
+
+// Short queries match too loosely, so they keep showing the starting pages
+const MIN_QUERY = 3
+
+// Before there's a query, search lists the overview and guide pages in sidebar order
+const suggestedUrls = tabs
+  .filter((tab) => tab.id === "overview" || tab.id === "guides")
+  .flatMap((tab) => tab.groups.flatMap((group) => group.items))
+  .filter((item) => !item.href)
+  .map((item) => `/${item.section}/${item.id}`)
+
+const getSuggestions = (data: SearchMetaResult) =>
+  suggestedUrls.flatMap((url) => data.find((item) => item.url === url) ?? [])
+
+function rankResults(data: SearchMetaResult, query: string) {
+  return matchSorter(data, query, {
+    // a match on an entry's own title beats a match on its page, section or text
+    // no typo matching: on titles it turns "inert" into "keyboard interactions"
+    threshold: rankings.CONTAINS,
+    keys: ["content", "hierarchy.lvl1", "hierarchy.lvl2", "text"],
+    // on a tie, the page comes before its headings
+    baseSort: (a, b) =>
+      Number(b.item.type === "lvl1") - Number(a.item.type === "lvl1") ||
+      a.index - b.index,
+  }).slice(0, 10)
 }
 
 export const prefetchSearchIndex = () => {
@@ -78,9 +105,6 @@ export function useSearch(): UseSearchReturn {
     inputBehavior: "autohighlight",
     selectionBehavior: "clear",
     collection,
-    openOnChange({ inputValue }) {
-      return inputValue.length > 2
-    },
     navigate({ value }) {
       if (value) router.push(value)
     },
@@ -88,20 +112,15 @@ export function useSearch(): UseSearchReturn {
       dialog_api.setOpen(false)
     },
     onInputValueChange({ inputValue }) {
-      if (inputValue.length < 3) return
+      const query = inputValue.trim()
       // resolves right away once loaded, and waits if the user typed first
       loadSearchIndex().then(
-        (data) => {
-          const results = matchSorter(data, inputValue, {
-            keys: [
-              "hierarchy.lvl1",
-              "hierarchy.lvl2",
-              "hierarchy.lvl3",
-              "content",
-            ],
-          })
-          setResults(results.slice(0, 10))
-        },
+        (data) =>
+          setResults(
+            query.length < MIN_QUERY
+              ? getSuggestions(data)
+              : rankResults(data, query),
+          ),
         () => {},
       )
     },
@@ -124,11 +143,19 @@ export function useSearch(): UseSearchReturn {
 
   const isInputEmpty = combobox_api.inputValue.trim() === ""
 
-  useUpdateEffect(() => {
-    if (dialog_api.open && isInputEmpty) {
-      setResults([])
-    }
-  }, [dialog_api.open, isInputEmpty])
+  // opening search lists the starting pages right away
+  useEffect(() => {
+    if (!dialog_api.open) return
+    loadSearchIndex().then(
+      (data) => {
+        setResults(getSuggestions(data))
+        combobox_api.setOpen(true)
+      },
+      () => {},
+    )
+    // combobox_api is rebuilt every render, so only the open state drives this
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [dialog_api.open])
 
   useUpdateEffect(() => {
     if (!dialog_api.open && !isInputEmpty) {
