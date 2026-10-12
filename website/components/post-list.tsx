@@ -187,9 +187,18 @@ const row = css({
   py: "5",
   px: "4",
   transition: "background-color 150ms",
-  _hover: { bg: "bg.subtle" },
-  // one hairline between rows, none above the first
-  "& + &": { borderTopWidth: "1px", borderColor: "border" },
+  position: "relative",
+  rounded: "sm",
+  _hover: { bg: "bg.muted" },
+  // one hairline between rows, inset to the text, none above the first
+  "& + &::before": {
+    content: '""',
+    position: "absolute",
+    top: "0",
+    insetInline: "4",
+    borderTopWidth: "1px",
+    borderColor: "border",
+  },
 })
 
 const trigger = css({
@@ -200,7 +209,7 @@ const trigger = css({
   minW: "12rem",
   h: "11",
   px: "4",
-  rounded: "md",
+  rounded: "sm",
   fontSize: "sm",
   fontWeight: "medium",
   bg: "bg",

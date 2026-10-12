@@ -90,14 +90,7 @@ export default async function PostPage({ params }: PageProps) {
             </Link>
 
             <Stack gap="3" mb="10">
-              <styled.h1
-                fontSize={{ base: "3xl", md: "4xl" }}
-                fontWeight="bold"
-                lineHeight="tight"
-                letterSpacing="tight"
-              >
-                {post.title}
-              </styled.h1>
+              <styled.h1 textStyle="display.xl">{post.title}</styled.h1>
               <styled.p fontSize="lg" color="text.muted">
                 {post.description}
               </styled.p>

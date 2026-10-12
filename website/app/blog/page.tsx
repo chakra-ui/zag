@@ -25,14 +25,7 @@ export default function BlogPage() {
       <TopNav />
       <Box maxW="72rem" mx="auto" px="6" pt={{ base: "10", md: "14" }}>
         <HStack justify="space-between" alignItems="end" mb="8" gap="4">
-          <styled.h1
-            fontSize={{ base: "4xl", md: "5xl" }}
-            fontWeight="bold"
-            letterSpacing="tighter"
-            lineHeight="1.05"
-          >
-            Latest Updates
-          </styled.h1>
+          <styled.h1 textStyle="display.xl">Latest Updates</styled.h1>
           <Link
             href="/blog/rss.xml"
             prefetch={false}
