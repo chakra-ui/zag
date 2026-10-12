@@ -31,12 +31,6 @@ export interface CommunityProject extends ShowcaseItem {
 
 export const communityLinks: CommunityLink[] = [
   {
-    title: "Discord",
-    description:
-      "Ask questions, share what you're building, and chat with maintainers.",
-    href: siteConfig.discord.url,
-  },
-  {
     title: "GitHub Discussions",
     description:
       "Long-form community Q&A, ideas, and architecture conversations.",
@@ -52,6 +46,11 @@ export const communityLinks: CommunityLink[] = [
     title: "YouTube",
     description: "Recordings, talks, and walkthroughs related to Zag.js.",
     href: "https://www.youtube.com/results?search_query=zag.js",
+  },
+  {
+    title: "Discord",
+    description: "Chat with other people building with Zag.",
+    href: siteConfig.discord.url,
   },
 ]
 
