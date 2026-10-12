@@ -4,13 +4,13 @@ import { useId } from "react"
 import { RxFontBold } from "react-icons/rx"
 import styles from "../styles/machines/toggle.module.css"
 
-interface ToggleProps extends toggle.Props {}
+interface ToggleProps extends Omit<toggle.Props, "id"> {}
 
 export function Toggle(props: ToggleProps) {
   const service = useMachine(toggle.machine, {
     id: useId(),
     ...props,
-  } as toggle.Props & { id: string })
+  })
 
   const api = toggle.connect(service, normalizeProps)
 
