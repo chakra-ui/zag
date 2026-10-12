@@ -432,7 +432,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
           }
 
-          const exec = keyMap[getEventKey(event)]
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
 
           if (exec) {
             exec(event)
