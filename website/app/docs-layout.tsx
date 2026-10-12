@@ -65,12 +65,10 @@ export default function DocsLayout(props: DocsLayoutProps) {
           as="aside"
           hideBelow="lg"
           flexShrink="0"
-          w="290px"
+          w="240px"
           position="sticky"
           top="7rem"
           h="calc(100dvh - 7rem)"
-          borderEndWidth="1px"
-          borderEndColor="border.subtle"
         >
           <Box
             data-sidebar-scroll=""
@@ -118,8 +116,6 @@ export default function DocsLayout(props: DocsLayoutProps) {
           position="sticky"
           top="7rem"
           h="calc(100dvh - 7rem)"
-          borderStartWidth="1px"
-          borderStartColor="border.subtle"
         >
           <Box
             h="full"

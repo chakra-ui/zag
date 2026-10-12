@@ -26,12 +26,7 @@ export function TopNav() {
       borderBottomColor="border.subtle"
       overflowX="hidden"
     >
-      {/* search sits in the middle and gives up width before either side does */}
       <Flex
-        display={{ base: "flex", md: "grid" }}
-        gridTemplateColumns={{
-          md: "minmax(max-content, 1fr) minmax(12rem, 28rem) minmax(max-content, 1fr)",
-        }}
         alignItems="center"
         justifyContent="space-between"
         gap={{ base: "3", md: "6" }}
@@ -49,10 +44,10 @@ export function TopNav() {
             <NavLinks />
           </HStack>
         </HStack>
-        <Box ms={{ base: "auto", md: "0" }}>
-          <Search />
-        </Box>
-        <HStack gap="4" justifySelf="end">
+        <HStack gap="4" ms="auto">
+          <Box w={{ md: "56" }}>
+            <Search />
+          </Box>
           <HStack gap="4">
             <IconLink
               variant="solid"
