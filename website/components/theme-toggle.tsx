@@ -4,7 +4,7 @@ import { FaMoon, FaSun } from "react-icons/fa"
 import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   if (!mounted) return <Square size="8" bg="text.muted/20" animation="pulse" />
 
-  const isDark = theme === "dark"
+  const isDark = resolvedTheme === "dark"
   const text = isDark ? "light" : "dark"
   const SwitchIcon = isDark ? FaSun : FaMoon
   const toggleMode = () => setTheme(isDark ? "light" : "dark")
@@ -28,8 +28,8 @@ export function ThemeToggle() {
       bg="transparent"
       border="none"
       cursor="pointer"
-      color="gray.500"
-      _hover={{ color: "gray.600" }}
+      color="text.muted"
+      _hover={{ color: "text" }}
       onClick={toggleMode}
       _icon={{ fill: "currentcolor" }}
     >
