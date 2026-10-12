@@ -13,9 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Only posts carry a real date. A build timestamp would mark every page as
   // changed on every deploy, so the rest leave lastModified out
-  const staticRoutes = ["", "/blog", "/community", "/showcase"].map((path) => ({
-    url: `${siteConfig.url}${path}`,
-  }))
+  const staticRoutes = ["", "/blog", "/community", "/team", "/showcase"].map(
+    (path) => ({
+      url: `${siteConfig.url}${path}`,
+    }),
+  )
 
   // Prefer canonical component URLs (no framework prefix) for search engines.
   const componentRoutes = getComponentPaths()

@@ -49,7 +49,7 @@ export function ProfileItem({ member }: { member: TeamMember }) {
       transition="all 0.2s"
       h="full"
       _hover={{
-        borderColor: "border.emphasized",
+        borderColor: "border.bold",
         shadow: "sm",
         translateY: "-1px",
       }}
@@ -68,7 +68,7 @@ export function ProfileItem({ member }: { member: TeamMember }) {
           </styled.h3>
           <styled.p
             fontSize="xs"
-            color="fg.muted"
+            color="text.muted"
             textTransform="uppercase"
             letterSpacing="0.12em"
             fontWeight="medium"
@@ -90,10 +90,10 @@ export function ProfileItem({ member }: { member: TeamMember }) {
               alignItems="center"
               gap="2"
               fontSize="sm"
-              color="fg.muted"
+              color="text.muted"
               w="fit-content"
               transition="all 0.2s"
-              _hover={{ color: "fg" }}
+              _hover={{ color: "text" }}
               _focusVisible={{
                 outline: "2px solid",
                 outlineColor: "green.500",
@@ -102,12 +102,12 @@ export function ProfileItem({ member }: { member: TeamMember }) {
             >
               <styled.span
                 fontSize="xs"
-                color="fg.subtle"
+                color="text.subtle"
                 display="inline-flex"
               >
                 <PlatformIcon label={link.label} />
               </styled.span>
-              <styled.span fontFamily="mono" fontSize="xs" color="fg.subtle">
+              <styled.span fontFamily="mono" fontSize="xs" color="text.subtle">
                 {getHandle(link.href)}
               </styled.span>
             </styled.a>
