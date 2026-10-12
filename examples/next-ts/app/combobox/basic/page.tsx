@@ -38,7 +38,7 @@ export default function Page() {
     },
     onInputValueChange({ inputValue }) {
       const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-      setOptions(filtered.length > 0 ? filtered : comboboxData)
+      setOptions(filtered)
     },
     onValueChange({ items }) {
       setSelectedItems(items as Item[])
@@ -74,6 +74,7 @@ export default function Page() {
           </div>
           <div {...api.getPositionerProps()}>
             <div data-testid="combobox-content" {...api.getContentProps()}>
+              <div {...api.getEmptyProps()}>{options.length === 0 && "No results found"}</div>
               {options.length > 0 && (
                 <div {...api.getListProps()}>
                   {options.map((item) => (

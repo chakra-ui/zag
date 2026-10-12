@@ -40,7 +40,7 @@ export default function Page() {
       },
       onInputValueChange({ inputValue }) {
         const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
+        setOptions(filtered)
       },
     })),
   )
@@ -72,6 +72,7 @@ export default function Page() {
 
           <div {...api().getPositionerProps()}>
             <div data-testid="combobox-content" {...api().getContentProps()}>
+              <div {...api().getEmptyProps()}>{options().length === 0 && "No results found"}</div>
               <Show when={options().length > 0}>
                 <div {...api().getListProps()}>
                   <Index each={options()}>

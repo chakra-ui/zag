@@ -573,6 +573,7 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getClearTriggerProps: () => T["button"]
   getListProps: () => T["element"]
+  getEmptyProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]

@@ -35,8 +35,7 @@
       },
       onInputValueChange({ inputValue }) {
         const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-        const newOptions = filtered.length > 0 ? filtered : comboboxData
-        options = newOptions
+        options = filtered
       },
     }),
   )
@@ -62,6 +61,9 @@
     </div>
     <div {...api.getPositionerProps()}>
       <div data-testid="combobox-content" {...api.getContentProps()}>
+        <div {...api.getEmptyProps()}>
+          {#if options.length === 0}No results found{/if}
+        </div>
         {#if options.length > 0}
           <div {...api.getListProps()}>
             {#each options as item}

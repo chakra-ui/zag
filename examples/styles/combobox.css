@@ -3,70 +3,156 @@
   flex-direction: column;
 }
 
-[data-combobox-content] {
-  background-color: white;
-  margin: 0;
-  border: 1px solid lightgray;
-  z-index: calc(var(--layer-index) * 2 + 1);
-}
-
-[data-combobox-list] {
-  overscroll-behavior: contain;
-  max-height: 240px;
-  overflow: auto;
-  padding: 2px;
-}
-
-[data-combobox-item] {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  user-select: none;
-  user-select: none;
-  content-visibility: auto;
-
-  &[data-highlighted] {
-    background-color: blue;
-    color: white;
-  }
-
-  &[data-disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
 [data-combobox-label] {
   display: block;
   margin-top: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 [data-combobox-control] {
   display: inline-flex;
+  align-items: center;
+  gap: 4px;
   width: 300px;
+  padding: 0 4px 0 0;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  transition:
+    border-color 120ms,
+    box-shadow 120ms;
+
+  &:hover {
+    border-color: #9ca3af;
+  }
+
+  &:focus-within {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.25);
+  }
+
+  &[data-disabled] {
+    background: #f9fafb;
+  }
+
+  &[data-invalid] {
+    border-color: #dc2626;
+  }
 }
 
 [data-combobox-input] {
   flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
 }
 
+[data-combobox-trigger],
 [data-combobox-clear-trigger] {
   display: inline-flex;
-  font-size: 1.2em;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: default;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
   & svg {
     width: 1em;
     height: 1em;
   }
 }
 
-[data-combobox-item-group-label] {
-  user-select: none;
-  margin-top: 8px;
+[data-combobox-content] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  box-shadow:
+    0 10px 24px -6px rgb(0 0 0 / 0.15),
+    0 2px 6px rgb(0 0 0 / 0.06);
+  font-size: 14px;
+}
+
+[data-combobox-list] {
+  max-height: 240px;
+  padding: 4px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+[data-combobox-item] {
   display: flex;
   align-items: center;
-  padding: 0 8px 8px;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  color: #111827;
+  user-select: none;
+  content-visibility: auto;
+
+  &[data-highlighted] {
+    background: #eef2ff;
+    color: #3730a3;
+  }
+
+  &[data-state="checked"] {
+    font-weight: 500;
+  }
+
+  &[data-disabled] {
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+}
+
+[data-combobox-item-indicator] {
+  color: #4f46e5;
   font-size: 12px;
-  font-weight: 600;
+}
+
+[data-combobox-item-group-label] {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 6px 8px 4px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  user-select: none;
+}
+
+[data-combobox-empty] {
+  padding: 16px 12px;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
 }
