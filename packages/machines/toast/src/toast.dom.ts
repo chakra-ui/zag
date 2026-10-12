@@ -12,3 +12,5 @@ export const getCloseTriggerId = (ctx: Scope) => `${ctx.id}:close`
 // Element lookups — use querySelector with merged data attributes
 export const getRegionEl = (ctx: Scope, placement: Placement) => ctx.getById(`toast-group-${placement}`)
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getTitleEl = (ctx: Scope) => ctx.query(ctx.selector(parts.title))
+export const getDescriptionEl = (ctx: Scope) => ctx.query(ctx.selector(parts.description))

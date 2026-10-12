@@ -151,6 +151,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   return {
     open,
+    modal: !!prop("modal"),
     dragging,
     setOpen(nextOpen) {
       send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })

@@ -15,16 +15,18 @@
   const api = $derived(toc.connect(service, normalizeProps))
 </script>
 
-<nav {...api.getRootProps()}>
-  <h5 {...api.getTitleProps()}>On this page</h5>
-  <ul {...api.getListProps()}>
-    {#each api.items as item}
-      <li {...api.getItemProps({ item })}>
-        <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
-          {item.value}
-        </a>
-      </li>
-    {/each}
-  </ul>
-</nav>
+<div {...api.getRootProps()}>
+  <nav {...api.getNavProps()}>
+    <h5 {...api.getTitleProps()}>On this page</h5>
+    <ul {...api.getListProps()}>
+      {#each api.items as item}
+        <li {...api.getItemProps({ item })}>
+          <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
+            {item.value}
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </nav>
+</div>
 ```

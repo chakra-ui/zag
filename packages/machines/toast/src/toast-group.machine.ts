@@ -65,6 +65,12 @@ export const groupMachine = createMachine({
   exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearMouseEventTimer"],
 
   on: {
+    PAUSE_ALL: {
+      actions: ["pauseToasts"],
+    },
+    RESUME_ALL: {
+      actions: ["resumeToasts"],
+    },
     "DOC.HOTKEY": {
       actions: ["focusRegionEl"],
     },
@@ -172,7 +178,10 @@ export const groupMachine = createMachine({
       trackDocumentVisibility({ prop, send, scope }) {
         const { pauseOnPageIdle } = prop("store").attrs
         if (!pauseOnPageIdle) return
+
         const doc = scope.getDoc()
+        if (doc.visibilityState === "hidden") send({ type: "PAUSE_ALL" })
+
         return addDomEvent(doc, "visibilitychange", () => {
           const isHidden = doc.visibilityState === "hidden"
           send({ type: isHidden ? "PAUSE_ALL" : "RESUME_ALL" })
@@ -188,6 +197,7 @@ export const groupMachine = createMachine({
 
         if (!hasToasts) {
           refs.get("dismissableCleanup")?.()
+          refs.set("dismissableCleanup", undefined)
           return
         }
 
@@ -203,6 +213,7 @@ export const groupMachine = createMachine({
       },
       clearDismissableBranch({ refs }) {
         refs.get("dismissableCleanup")?.()
+        refs.set("dismissableCleanup", undefined)
       },
       focusRegionEl({ scope, computed }) {
         queueMicrotask(() => {
@@ -212,7 +223,12 @@ export const groupMachine = createMachine({
       pauseToasts({ prop }) {
         prop("store").pause()
       },
-      resumeToasts({ prop }) {
+      resumeToasts({ prop, refs, scope, event }) {
+        if (event.type === "REGION.BLUR") refs.set("isFocusWithin", false)
+
+        const idle = prop("store").attrs.pauseOnPageIdle && scope.getDoc().visibilityState === "hidden"
+        if (idle || refs.get("isPointerWithin") || refs.get("isFocusWithin")) return
+
         prop("store").resume()
       },
       expandToasts({ prop }) {
@@ -235,9 +251,10 @@ export const groupMachine = createMachine({
         send({ type: "REGION.OVERLAP" })
       },
       setLastFocusedEl({ refs, event }) {
-        if (refs.get("isFocusWithin") || !event.target) return
+        if (refs.get("isFocusWithin")) return
+
         refs.set("isFocusWithin", true)
-        refs.set("lastFocusedEl", event.target)
+        refs.set("lastFocusedEl", event.target ?? null)
       },
       restoreFocusIfPointerOut({ refs }) {
         if (!refs.get("lastFocusedEl") || refs.get("isPointerWithin")) return

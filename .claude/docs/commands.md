@@ -23,7 +23,7 @@ pnpm start-website      # Documentation website
 
 ```bash
 pnpm test               # Run all tests
-pnpm test-js            # Run JavaScript tests (utilities, core)
+pnpm test-js            # Run JavaScript tests (core, utilities, machines)
 pnpm test-react         # Run React-specific tests
 pnpm test-vue           # Run Vue-specific tests
 pnpm test-solid         # Run Solid-specific tests

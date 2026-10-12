@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { XIcon } from "lucide-solid"
-import { Accessor, createMemo } from "solid-js"
+import { Accessor, createMemo, Show } from "solid-js"
 
 interface ToastItemProps {
   actor: Accessor<toast.Options<any>>
@@ -21,17 +21,25 @@ export function ToastItem(props: ToastItemProps) {
 
   return (
     <div {...api().getRootProps()}>
-      <pre>{JSON.stringify(service.state.get(), null, 2)}</pre>
       <span {...api().getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
-      <div {...api().getTitleProps()}>
-        {api().type === "loading" && "<...>"}
-        {api().title}
+      <div
+        data-scope="toast"
+        data-part="content"
+        style={{ display: "grid", gap: "8px", width: "100%", "padding-right": "16px" }}
+      >
+        <div {...api().getTitleProps()}>
+          {api().type === "loading" && "<...>"}
+          {api().title}
+        </div>
+        <div {...api().getDescriptionProps()}>{api().description}</div>
+        <Show when={props.actor().action}>
+          {(action) => <button {...api().getActionTriggerProps()}>{action().label}</button>}
+        </Show>
+        <button {...api().getCloseTriggerProps()}>
+          <XIcon />{" "}
+        </button>
       </div>
-      <div {...api().getDescriptionProps()}>{api().description}</div>
-      <button {...api().getCloseTriggerProps()}>
-        <XIcon />{" "}
-      </button>
       <span {...api().getGhostAfterProps()} />
     </div>
   )

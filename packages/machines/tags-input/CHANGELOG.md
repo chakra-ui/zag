@@ -49,6 +49,8 @@
   // { value: "confirm", current: true, open: true }
   ```
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -83,6 +85,15 @@
   - **Simpler default** — most usages only need add/remove, not inline rename
   - **Less surprise** — double-click to edit is a power-user feature that should be opted into
   - **Matches peers** — aligns with how other tag input libraries behave out of the box
+
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/auto-resize@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/interact-outside@1.46.0
+  - @zag-js/live-region@1.46.0
 
 ## 1.45.0
 

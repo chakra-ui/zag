@@ -2,6 +2,8 @@
 
 ## 2.0.0-next.3
 
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -40,6 +42,8 @@
   - @zag-js/types@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/types@1.46.0
 
 ## 1.45.0
 

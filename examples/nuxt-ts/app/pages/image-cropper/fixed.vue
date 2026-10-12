@@ -6,6 +6,7 @@ import "@styles/image-cropper.css"
 
 const controls = useControls(imageCropperControls)
 
+const id = useId()
 const zoom = ref(1)
 const rotation = ref(0)
 
@@ -13,7 +14,7 @@ const service = useMachine(
   imageCropper.machine,
   computed(() => ({
     ...controls.context.value,
-    id: useId(),
+    id,
     zoom: zoom.value,
     onZoomChange(details) {
       zoom.value = details.zoom

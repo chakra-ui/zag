@@ -43,7 +43,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
   package source changes.
 - **Node version**: `.nvmrc` specifies Node 24, but Node 22 (pre-installed) works fine. The engine constraint is
   `>=18.0.0`.
-- **pnpm version**: `packageManager` field specifies `pnpm@10.33.0`. Corepack or the pre-installed pnpm handles this.
+- **pnpm version**: `packageManager` field specifies `pnpm@12.10.1`. Corepack or the pre-installed pnpm handles this.
 - **Husky hooks**: Pre-commit runs `lint-staged` (oxfmt on changed files). Commit-msg runs `commitlint` enforcing
   conventional commits. Both are non-blocking for development.
 - **E2E tests**: Playwright auto-starts the appropriate dev server. Set `FRAMEWORK` env var to target a specific

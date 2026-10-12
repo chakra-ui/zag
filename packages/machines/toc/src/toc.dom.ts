@@ -3,6 +3,7 @@ import { parts } from "./toc.anatomy"
 
 // ID generators — kept for ARIA attributes in connect
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
+export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `${ctx.id}:nav`
 export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `${ctx.id}:title`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
 export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `${ctx.id}:item:${value}`
