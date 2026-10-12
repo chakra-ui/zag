@@ -15,13 +15,11 @@ const StyledLink = styled("a", {
   base: {
     display: "flex",
     alignItems: "center",
-    gap: "1",
-    borderWidth: "1px",
-    px: "2",
-    py: "1",
+    gap: "1.5",
     fontSize: "sm",
     cursor: "pointer",
-    bg: "bg",
+    color: "text.muted",
+    _hover: { color: "text" },
   },
 })
 

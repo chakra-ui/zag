@@ -141,7 +141,7 @@ export default function Home() {
 
           <ButtonLink
             href="/overview/introduction"
-            variant="black"
+            variant="green"
             width={{ base: "full", md: "auto" }}
           >
             Get Started
@@ -324,7 +324,7 @@ export default function Home() {
           <Stack direction={{ base: "column", sm: "row" }} gap="5">
             <ButtonLink
               href="/overview/introduction"
-              variant="black"
+              variant="green"
               width={{ base: "full", md: "auto" }}
             >
               Get Started

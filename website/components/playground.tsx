@@ -44,12 +44,16 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
     <HStack
       gap="1"
       as="button"
-      bg="blue.600"
-      color="white"
+      bg="bg"
+      color="text"
       fontSize="sm"
       px="2"
       py="1"
-      shadow="inset 0 0 0 1px var(--colors-white-alpha-300)"
+      rounded="sm"
+      borderWidth="1px"
+      borderColor="border"
+      cursor="pointer"
+      _hover={{ bg: "bg.muted" }}
       onClick={() => {
         openInStackblitz(name, defaultProps)
       }}
