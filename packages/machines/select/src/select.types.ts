@@ -60,6 +60,7 @@ export type ElementIds = Partial<{
   root: string
   content: string
   list: string
+  input: string
   control: string
   trigger: string
   clearTrigger: string
@@ -226,6 +227,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     scrollArrowVisibility: "none" | "top" | "bottom" | "both"
     aligned: boolean
     alignStyles: Record<string, string> | null
+    inputFocused: boolean
   }
   computed: {
     hasSelectedItems: boolean
@@ -241,8 +243,9 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     autoScrollTop: AutoScrollHandlers | null
     autoScrollBottom: AutoScrollHandlers | null
     realignWithTrigger: VoidFunction | null
-    handleGrowth: VoidFunction | null
+    autoGrow: VoidFunction | null
     liveRegion: LiveRegion | null
+    alignedToTrigger: boolean
   }
   action: string
   guard: string
@@ -491,6 +494,8 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   getContentState: () => ContentState
   getContentProps: () => T["element"]
   getListProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getEmptyProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]

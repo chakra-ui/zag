@@ -113,6 +113,11 @@ function getScaledRect(el: HTMLElement, scale: Point) {
   }
 }
 
+/** Top of `el` within the scroller's content, independent of scroll position and transforms on ancestors. */
+function getOffsetInScroller(el: HTMLElement, scroller: HTMLElement, scale: Point) {
+  return getScaledRect(el, scale).top - getScaledRect(scroller, scale).top + scroller.scrollTop
+}
+
 /* -----------------------------------------------------------------------------
  * alignItemWithTrigger — core positioning (batched reads/writes)
  * -----------------------------------------------------------------------------*/
@@ -169,10 +174,13 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
 
   let valueRect: ScaledRect | undefined
   let selectedTextRect: ScaledRect | undefined
+  // The list may already be scrolled to the selected item, so measure it in content coordinates
+  let selectedOffset = 0
 
   if (valueTextEl && selectedItemTextEl && valueTextEl.isConnected && selectedItemTextEl.isConnected) {
     valueRect = getScaledRect(valueTextEl, scale)
     selectedTextRect = getScaledRect(selectedItemTextEl, scale)
+    selectedOffset = getOffsetInScroller(selectedItemTextEl, scroller, scale)
   }
 
   // ---- PHASE 2: compute (pure math, no DOM access) ----
@@ -186,7 +194,7 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
       (dir === "rtl" ? valueRect.right - selectedTextRect.right : valueRect.left - selectedTextRect.left)
 
     const valueCenterFromTriggerTop = valueRect.top - triggerRect.top + valueRect.height / 2
-    const selectedCenterFromPositionerTop = selectedTextRect.top - positionerRect.top + selectedTextRect.height / 2
+    const selectedCenterFromPositionerTop = contentOffsetTop + selectedOffset + selectedTextRect.height / 2
     verticalOffset = selectedCenterFromPositionerTop - valueCenterFromTriggerTop
   }
 
@@ -275,6 +283,11 @@ function alignItemWithTrigger(options: AlignItemWithTriggerOptions): AlignItemWi
       positionerEl.style.bottom = "0px"
     }
     scroller.scrollTop = scrollTopTarget
+    // The aligned width can re-wrap items above the selected one, so scroll by however far it moved
+    if (selectedTextRect && selectedItemTextEl?.isConnected) {
+      const drift = getOffsetInScroller(selectedItemTextEl, scroller, scale) - selectedOffset
+      if (Math.abs(drift) >= 1) scroller.scrollTop += drift
+    }
   }
 
   const styles: Record<string, string> = {}
@@ -313,7 +326,7 @@ export interface TrackAlignItemReturn {
   /** Re-run alignment (e.g., after collection changes). No-op if in fallback mode. */
   realign: VoidFunction
   /** Grow the popup to absorb scroll distance. Call from auto-scroll tick. */
-  handleGrowth: VoidFunction
+  autoGrow: VoidFunction
 }
 
 export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemOptions): TrackAlignItemReturn {
@@ -337,7 +350,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
   // On scroll, grow the positioner to absorb scroll distance instead of
   // moving content. Stops once viewport-max is reached.
 
-  const handleGrowth = () => {
+  const autoGrow = () => {
     if (disposed || fellBack || reachedMaxHeight) return
 
     const positionerEl = dom.getPositionerEl(scope)
@@ -492,7 +505,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
 
   return {
     realign: scheduleAlign,
-    handleGrowth,
+    autoGrow,
     cleanup() {
       disposed = true
       if (scheduleHandle != null) win.cancelAnimationFrame(scheduleHandle)
