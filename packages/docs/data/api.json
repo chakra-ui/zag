@@ -4269,7 +4269,7 @@
       },
       "composite": {
         "type": "boolean | undefined",
-        "description": "Whether the menu is a composed with other composite widgets like a combobox or tabs",
+        "description": "Whether the menu manages keyboard focus across its items.\nSet to `false` when another widget inside it, such as a filter input, keeps focus instead.",
         "defaultValue": "true"
       },
       "navigate": {
