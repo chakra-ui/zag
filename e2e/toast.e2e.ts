@@ -19,6 +19,18 @@ test.describe("toast / stacked", () => {
     await I.seeNumOfToasts(0)
   })
 
+  test("dismissing a focused toast with escape resumes the others", async () => {
+    await I.clickErrorToast(2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(1)
+    await I.seeButtonIsFocused("Notify (Error)")
+    await I.seeToastsAreNotPaused()
+  })
+
   test("interacting with toast does not close dialog", async () => {
     if (process.env.FRAMEWORK !== "react") return
     await I.clickLoadingToast()

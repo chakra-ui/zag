@@ -99,6 +99,17 @@ export class ToastModel extends Model {
     }
   }
 
+  async seeToastsAreNotPaused() {
+    const toasts = await this.page.getByRole("status").all()
+    for (const toast of toasts) {
+      await expect(toast).not.toHaveAttribute("data-paused")
+    }
+  }
+
+  seeButtonIsFocused(name: string) {
+    return expect(this.page.getByRole("button", { name })).toBeFocused()
+  }
+
   async seeToast(title: string) {
     const toast = this.page.locator(`[role="status"] >> text=${title}`).first()
     await expect(toast).toBeVisible()

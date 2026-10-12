@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
@@ -90,7 +90,7 @@ export const groupMachine = createMachine({
       },
     ],
     "TOAST.REMOVE": {
-      actions: ["removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
+      actions: ["moveFocusFromRemovedToast", "removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
     },
     "TOAST.PAUSE": {
       actions: ["pauseToasts"],
@@ -255,6 +255,18 @@ export const groupMachine = createMachine({
 
         refs.set("isFocusWithin", true)
         refs.set("lastFocusedEl", event.target ?? null)
+      },
+      moveFocusFromRemovedToast({ refs, scope, computed, event }) {
+        // Removing the focused toast drops focus to the body without a blur event,
+        // so the region would never resume. Move focus out before it unmounts.
+        const rootEl = scope.getById(`toast:${event.id}`)
+        if (!contains(rootEl, scope.getActiveElement())) return
+        const lastFocusedEl = refs.get("lastFocusedEl")
+        if (lastFocusedEl) {
+          lastFocusedEl.focus({ preventScroll: true })
+        } else {
+          dom.getRegionEl(scope, computed("placement"))?.focus({ preventScroll: true })
+        }
       },
       restoreFocusIfPointerOut({ refs }) {
         if (!refs.get("lastFocusedEl") || refs.get("isPointerWithin")) return
