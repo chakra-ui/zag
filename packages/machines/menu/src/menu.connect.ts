@@ -384,7 +384,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer),
+          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
     },

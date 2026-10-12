@@ -359,9 +359,9 @@ function getPlacementImpl(
     const contentEl = floating.firstElementChild
     if (!contentEl) return false
     const zIndex = getComputedStyle(contentEl).zIndex
-    if (floating.style.getPropertyValue("--z-index") !== zIndex) {
-      floating.style.setProperty("--z-index", zIndex)
-    }
+    // Leave it unset for unstyled content so consumers can supply a fallback
+    if (zIndex === "auto") floating.style.removeProperty("--z-index")
+    else if (floating.style.getPropertyValue("--z-index") !== zIndex) floating.style.setProperty("--z-index", zIndex)
     return true
   }
 

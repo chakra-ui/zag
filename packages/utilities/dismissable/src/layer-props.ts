@@ -11,9 +11,14 @@ export interface DismissableLayerStyleOptions {
   /**
    * Set `--z-index: var(--layer-index)` on the element that establishes the actual
    * stacking context (e.g. a dialog's backdrop / positioner). Content parts sit inside that
-   * stacking context already. Popper positioners get `--z-index` from popper, which mirrors the content.
+   * stacking context already, so they don't need this.
    */
   zIndex?: boolean
+  /**
+   * Set `z-index: var(--z-index, var(--layer-index))` on a popper positioner, where popper
+   * mirrors the content's z-index into `--z-index` and the layer index covers unstyled content.
+   */
+  zIndexFallback?: boolean
   /**
    * Set `pointer-events: none` while a pointer-blocking layer sits above this one.
    * Omit for elements (like popper positioners) that already manage their own
@@ -27,6 +32,7 @@ export interface DismissableLayerStyle {
   "--layer-index"?: string | undefined
   "--nested-layer-count"?: string | undefined
   "--z-index"?: string | undefined
+  zIndex?: string | undefined
   pointerEvents?: "none" | "auto" | undefined
 }
 
@@ -39,6 +45,10 @@ export function getDismissableLayerStyle(
     "--layer-index": active ? `${layer.index}` : undefined,
     "--nested-layer-count": active ? `${layer.nestedCount}` : undefined,
     "--z-index": options.zIndex && active ? "var(--layer-index)" : undefined,
+  }
+
+  if (options.zIndexFallback) {
+    style.zIndex = "var(--z-index, var(--layer-index))"
   }
 
   if (options.pointerEvents) {

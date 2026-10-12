@@ -151,7 +151,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer),
+          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
     },
