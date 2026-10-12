@@ -3,7 +3,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { tabsControls, tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
-import { useId, useState } from "react"
+import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
@@ -11,14 +11,10 @@ import "@styles/tabs.css"
 
 export default function Page() {
   const controls = useControls(tabsControls)
-  const [valueDetails, setValueDetails] = useState<tabs.ValueChangeDetails>()
-  const [focusDetails, setFocusDetails] = useState<tabs.FocusChangeDetails>()
 
   const service = useMachine(tabs.machine, {
     id: useId(),
     defaultValue: "nils",
-    onValueChange: setValueDetails,
-    onFocusChange: setFocusDetails,
     ...controls.context,
   })
 
@@ -43,8 +39,6 @@ export default function Page() {
             </div>
           ))}
         </div>
-        <output data-testid="value-details">{JSON.stringify(valueDetails)}</output>
-        <output data-testid="focus-details">{JSON.stringify(focusDetails)}</output>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} />
