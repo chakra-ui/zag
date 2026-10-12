@@ -145,6 +145,15 @@ test.describe("number input", () => {
     await I.seeInputHasValue("10")
   })
 
+  test("rtl: scrubbing should be mirrored", async () => {
+    await I.controls.select("dir", "rtl")
+    await I.type("50")
+    await I.scrubBy(10)
+    await I.seeInputValueIsApprox(40)
+    await I.scrubBy(-20)
+    await I.seeInputValueIsApprox(60)
+  })
+
   test.skip("inc longpress: should spin value upwards", async () => {
     await I.mousedownInc()
     await I.seeInputHasValue("1")
