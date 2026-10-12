@@ -1,0 +1,98 @@
+@layer recipes {
+  .Demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-block: 2rem;
+    padding: 2rem 1rem;
+    border: 1px solid var(--colors-border-subtle);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .Root {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .Label {
+    font-weight: 500;
+  }
+
+  /* Fades the rows out toward the top and bottom edges */
+  .Frame {
+    position: relative;
+    isolation: isolate;
+    min-width: 5rem;
+    mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent);
+  }
+
+  .Viewport {
+    position: relative;
+    z-index: 1;
+    perspective: 400px;
+    outline: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .Item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 1rem;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+
+    &[data-disabled] {
+      color: var(--colors-text-subtle);
+      text-decoration: line-through;
+    }
+  }
+
+  /* Tilts each row like a drum as it moves away from the middle */
+  @supports (animation-timeline: view()) {
+    .Item {
+      animation: wheel-tilt linear both;
+      animation-timeline: view();
+    }
+  }
+
+  .Highlight {
+    z-index: 0;
+    border-radius: 0.5rem;
+    background: var(--colors-bg-bold);
+  }
+
+  .Viewport:focus-visible + .Highlight {
+    outline: 2px solid var(--colors-bg-primary-bold);
+  }
+
+  .Group {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+}
+
+@keyframes wheel-tilt {
+  0% {
+    transform: rotateX(-60deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(60deg);
+    opacity: 0.4;
+  }
+}

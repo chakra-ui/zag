@@ -4305,6 +4305,9 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../packages/docs
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../packages/utilities/dom-query
       '@zag-js/drawer':
         specifier: workspace:*
         version: link:../packages/machines/drawer
@@ -4446,6 +4449,9 @@ importers:
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../packages/machines/tree-view
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../packages/utilities/virtualizer
