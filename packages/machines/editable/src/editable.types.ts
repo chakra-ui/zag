@@ -160,6 +160,7 @@ export interface EditableSchema {
   context: {
     value: string
     previousValue: string
+    labelRendered: boolean
   }
   computed: {
     isInteractive: boolean

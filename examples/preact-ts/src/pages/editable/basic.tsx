@@ -21,6 +21,7 @@ export default function Page() {
     <>
       <main className="editable">
         <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Display name</label>
           <div {...api.getAreaProps()}>
             <input data-testid="input" {...api.getInputProps()} />
             <span data-testid="preview" {...api.getPreviewProps()} />
