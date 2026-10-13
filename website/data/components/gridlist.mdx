@@ -1,0 +1,640 @@
+---
+title: Grid List
+description:
+  An interactive list whose rows can hold buttons, links, checkboxes, and other
+  focusable content, with selection and full keyboard navigation.
+package: "@zag-js/gridlist"
+---
+
+A grid list is a list of rows where each row can contain its own interactive
+content, like a mailbox list with a star button on every row, or a set of cards
+with links. It follows the WAI-ARIA grid pattern, so rows stay selectable and
+keyboard navigable without breaking the controls inside them.
+
+<Resources pkg="@zag-js/gridlist" />
+
+<Showcase id="Gridlist" />
+
+**Features**
+
+- No selection, single, or multiple selection, with `toggle` or `replace`
+  behavior.
+- Rows can contain buttons, links, and other focusable elements.
+- Full keyboard navigation: arrows, Home/End, Page Up/Down, typeahead, and
+  `Cmd/Ctrl + A`.
+- Item actions through `onAction`, and link rows through `href` and
+  `onNavigate`.
+- Checkbox helper for toggle selection.
+- Groups, 2D grid layouts, and virtualization.
+
+### Grid list or listbox?
+
+Both render a selectable list. Pick based on what goes inside each item.
+
+- Use [listbox](/components/listbox) when items are plain text or icons. Its
+  items use the `option` role, which can't contain interactive elements.
+- Use grid list when rows contain buttons, links, checkboxes, or need an action
+  (open, navigate) separate from selection. Rows use the `row` role and their
+  content sits in `gridcell`s, which may hold focusable elements.
+
+## Installation
+
+Install the grid list package:
+
+<CodeSnippet id="gridlist/installation.mdx" />
+
+## Usage
+
+Import the grid list package:
+
+```tsx
+import * as gridlist from "@zag-js/gridlist"
+```
+
+The grid list package exports these key functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `collection` - Creates a list collection from your items.
+- `gridCollection` - Creates a collection laid out in columns. See
+  [Grid layout](#grid-layout).
+
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+
+Create a collection, pass it to the machine, and spread the prop getters on your
+elements. Each row needs at least one cell.
+
+```tsx
+import * as gridlist from "@zag-js/gridlist"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+interface Mailbox {
+  id: string
+  name: string
+}
+
+const items: Mailbox[] = [
+  { id: "inbox", name: "Inbox" },
+  { id: "drafts", name: "Drafts" },
+  { id: "sent", name: "Sent" },
+]
+
+export function GridList() {
+  const collection = gridlist.collection({
+    items,
+    itemToValue: (item) => item.id,
+    itemToString: (item) => item.name,
+  })
+
+  const service = useMachine(gridlist.machine, {
+    id: useId(),
+    collection,
+    selectionMode: "single",
+  })
+
+  const api = gridlist.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Mailboxes</label>
+      <div {...api.getContentProps()}>
+        {items.map((item) => (
+          <div key={item.id} {...api.getItemProps({ item })}>
+            <div {...api.getCellProps()}>
+              <span {...api.getItemTextProps({ item })}>{item.name}</span>
+            </div>
+          </div>
+        ))}
+        <div {...api.getEmptyProps()}>No mailboxes</div>
+      </div>
+    </div>
+  )
+}
+```
+
+`selectionMode` defaults to `"none"`, so rows are only actionable until you set
+it to `"single"` or `"multiple"`. The empty part is always rendered and hidden
+while the collection has items.
+
+### Setting the initial selection
+
+Use `defaultValue` to set the selected rows on first render.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  selectionMode: "multiple",
+  defaultValue: ["inbox", "sent"],
+})
+```
+
+### Controlled selection
+
+Use `value` and `onValueChange` to control the selection.
+
+```tsx
+const [value, setValue] = useState<string[]>([])
+
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  selectionMode: "multiple",
+  value,
+  onValueChange(details) {
+    // details => { value: string[]; items: Mailbox[] }
+    setValue(details.value)
+  },
+})
+```
+
+### Choosing a selection behavior
+
+`selectionBehavior` controls how selection follows the user.
+
+- `toggle` (default): focus and selection are separate. Arrow keys move focus,
+  and `Space`, `Enter`, or a click toggles the focused row, like a checkbox.
+- `replace`: selection follows focus. Arrow keys select the row they move to,
+  like a file manager, and `Enter` triggers `onAction`. When `onAction` is set,
+  a plain click triggers it instead of selecting.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  selectionMode: "multiple",
+  selectionBehavior: "replace",
+})
+```
+
+In `multiple` mode, `Shift + Arrow` and `Shift + click` extend the selection
+from the focused row, and `Cmd/Ctrl + click` toggles a single row.
+
+### Showing a checkbox per row
+
+When `selectionMode` is not `"none"` and `selectionBehavior` is `"toggle"`,
+`api.hasCheckbox` is `true`. Render a checkbox with `getItemCheckboxProps` and a
+check mark with `getItemIndicatorProps`, which is hidden until the row is
+selected.
+
+```tsx
+<div {...api.getItemProps({ item })}>
+  <div {...api.getCellProps()}>
+    {api.hasCheckbox && (
+      <button {...api.getItemCheckboxProps({ item })}>
+        <CheckIcon {...api.getItemIndicatorProps({ item })} />
+      </button>
+    )}
+    <span {...api.getItemTextProps({ item })}>{item.name}</span>
+  </div>
+</div>
+```
+
+The checkbox carries `role="checkbox"` and `aria-checked`, and isn't a separate
+tab stop.
+
+### Listening for item actions
+
+Use `onAction` to run something when a row is activated, like opening a message.
+It always fires on double-click. It also fires on click and `Enter` when
+`selectionMode` is `"none"`, and on `Enter` when `selectionBehavior` is
+`"replace"`.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  onAction(details) {
+    // details => { value: string; item: Mailbox }
+    openMailbox(details.value)
+  },
+})
+```
+
+With `selectionBehavior: "replace"`, a plain click calls `onAction` instead of
+selecting. Arrow keys and `Cmd/Ctrl + click` still change the selection.
+
+### Rows with buttons and other controls
+
+Put buttons, links, or inputs inside a cell. Clicking them doesn't select the
+row.
+
+```tsx
+<div {...api.getItemProps({ item })}>
+  <div {...api.getCellProps()}>
+    <span {...api.getItemTextProps({ item })}>{item.name}</span>
+    <button type="button" onClick={() => edit(item)}>
+      Edit
+    </button>
+    <button type="button" onClick={() => remove(item)}>
+      Delete
+    </button>
+  </div>
+</div>
+```
+
+By default, `ArrowRight` / `ArrowLeft` move focus from the row into its controls
+and back. Set `keyboardNavigationBehavior` to `"tab"` to reach them with `Tab`
+instead.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  keyboardNavigationBehavior: "tab",
+})
+```
+
+For rows with more than one cell, pass `index` to `getCellProps` to set each
+cell's `aria-colindex`.
+
+```tsx
+<div {...api.getCellProps({ index: 0 })}>{item.name}</div>
+<div {...api.getCellProps({ index: 1 })}>{item.size}</div>
+```
+
+### Link rows
+
+Pass `href` to `getItemProps` to turn a row into a link. `target` and `rel` are
+used when the row opens in a new tab. Link rows call `onNavigate` instead of
+`onAction`.
+
+```tsx
+<div
+  {...api.getItemProps({
+    item,
+    href: item.href,
+    target: "_blank",
+    rel: "noreferrer",
+  })}
+>
+  <div {...api.getCellProps()}>
+    <span {...api.getItemTextProps({ item })}>{item.name}</span>
+  </div>
+</div>
+```
+
+Use `onNavigate` to route with your framework's router. Call
+`details.preventDefault()` to stop the default navigation.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  onNavigate(details) {
+    // details => { value: string; href: string; node: HTMLElement; preventDefault }
+    details.preventDefault()
+    router.push(details.href)
+  },
+})
+```
+
+### Grouping rows
+
+Pass `groupBy` to the collection, then render each group with
+`getItemGroupProps` and its heading with `getItemGroupLabelProps`. Keyboard
+navigation moves across groups as one list.
+
+```tsx
+const collection = gridlist.collection({
+  items,
+  itemToValue: (item) => item.id,
+  itemToString: (item) => item.name,
+  groupBy: (item) => item.category,
+})
+
+// ...
+
+<div {...api.getContentProps()}>
+  {api.collection.group().map(([group, items]) => (
+    <div key={group} {...api.getItemGroupProps({ id: group })}>
+      <div {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
+      {items.map((item) => (
+        <div key={item.id} {...api.getItemProps({ item })}>
+          <div {...api.getCellProps()}>
+            <span {...api.getItemTextProps({ item })}>{item.name}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
+```
+
+### Grid layout
+
+Use `gridCollection` with a `columnCount` to lay rows out as tiles. `ArrowLeft`
+/ `ArrowRight` move between columns, and `ArrowUp` / `ArrowDown` move by a full
+row.
+
+```tsx
+const collection = gridlist.gridCollection({
+  items,
+  columnCount: 4,
+  itemToValue: (item) => item.id,
+  itemToString: (item) => item.name,
+})
+```
+
+The content part sets `data-layout="grid"` and a `--column-count` variable you
+can use in CSS.
+
+```css
+[data-gridlist-content][data-layout="grid"] {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+}
+```
+
+In grid layout the arrow keys are used for columns, so they don't move into a
+row's controls. Use `keyboardNavigationBehavior: "tab"` if tiles contain
+buttons.
+
+### Loading more rows
+
+Rebuild the collection when new items arrive. If the focused row is removed,
+focus is cleared. Pair it with [`infinite-scroll`](/utilities/infinite-scroll)
+and place the sentinel inside the content.
+
+```tsx
+const collection = useMemo(
+  () =>
+    gridlist.collection({
+      items: list.items,
+      itemToValue: (item) => item.name,
+      itemToString: (item) => item.name,
+    }),
+  [list.items],
+)
+
+// ...
+
+<div {...api.getContentProps()}>
+  {list.items.map((item) => (
+    <div key={item.name} {...api.getItemProps({ item })}>
+      <div {...api.getCellProps()}>
+        <span {...api.getItemTextProps({ item })}>{item.name}</span>
+      </div>
+    </div>
+  ))}
+  <div {...scrollApi.getSentinelProps()} />
+</div>
+```
+
+### Virtualizing long lists
+
+For large lists, render only the visible rows with the
+[`virtualizer`](/utilities/virtualizer) and pass `scrollToIndexFn` so keyboard
+navigation can scroll rows that aren't mounted yet into view. The grid list then
+focuses the row once it renders.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  scrollToIndexFn(details) {
+    // details => { index: number; immediate?: boolean; getElement: () => HTMLElement | null }
+    virtualizer.scrollToIndex(details.index, { align: "auto" })
+  },
+})
+```
+
+Position each rendered row with your virtualizer's styles, and spread
+`getItemProps` on it as usual.
+
+### Drag to reorder
+
+Combine the grid list with [`dnd`](/utilities/dnd). Merge the dnd root props
+into the content, and the drop target props into each row, then reorder your
+items in `onDrop`.
+
+```tsx
+const dndService = useMachine(dnd.machine, {
+  id: useId(),
+  orientation: "vertical",
+  onDrop(details) {
+    setItems((prev) =>
+      dnd.reorder(prev, { ...details, itemToValue: (i) => i.id }),
+    )
+  },
+})
+const dndApi = dnd.connect(dndService, normalizeProps)
+
+// ...
+
+<div {...mergeProps(api.getContentProps(), dndApi.getRootProps())}>
+  {items.map((item) => (
+    <div
+      key={item.id}
+      {...mergeProps(
+        api.getItemProps({ item }),
+        dndApi.getDropTargetProps({ value: item.id }),
+      )}
+    >
+      <div {...api.getCellProps()}>
+        <span {...dndApi.getDragHandleProps({ value: item.id })}>⠿</span>
+        <span {...api.getItemTextProps({ item })}>{item.name}</span>
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+### Programmatic selection
+
+Use the `api` methods to change selection from outside the list.
+
+```tsx
+api.setValue(["inbox", "sent"]) // replace the selection
+api.selectValue("drafts") // select a row, like clicking it
+api.clearValue("sent") // deselect one row
+api.clearValue() // clear the selection
+api.selectAll() // select every row
+```
+
+`selectAll` throws unless `selectionMode` is `"multiple"`.
+
+### Controlling the focused row
+
+Use `focusedValue` and `onFocusChange` to track or set the focused row. Call
+`api.setFocusedValue(value)` to move focus programmatically.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  onFocusChange(details) {
+    // details => { focusedValue: string | null; focusedItem: Mailbox | null }
+    setFocused(details.focusedValue)
+  },
+})
+```
+
+Set `autoFocus` to `true` or `"first"` to focus the first row on mount, or
+`"last"` for the last row. Pass `focusOnHover: true` to `getItemProps` to move
+focus as the pointer hovers rows.
+
+### Disabling rows
+
+Use `isItemDisabled` on the collection to disable specific rows. Disabled rows
+are skipped by arrow-key navigation and can't be clicked or selected.
+
+```tsx
+const collection = gridlist.collection({
+  items,
+  itemToValue: (item) => item.id,
+  itemToString: (item) => item.name,
+  isItemDisabled: (item) => item.archived,
+})
+```
+
+Set `disabled` on the machine to disable the whole list.
+
+### Customizing keyboard behavior
+
+- `loopFocus`: wrap from the last row to the first. Defaults to `false`.
+- `pageSize`: how many rows Page Up / Page Down skip. Defaults to `10`.
+- `typeahead`: focus a row by typing its text. Defaults to `true`.
+- `escapeKeyBehavior`: `"clearSelection"` (default) clears the selection on
+  `Escape`. Set it to `"none"` to handle `Escape` yourself.
+- `disallowEmptySelection`: keep at least one row selected.
+
+```tsx
+const service = useMachine(gridlist.machine, {
+  id: useId(),
+  collection,
+  loopFocus: true,
+  pageSize: 5,
+  escapeKeyBehavior: "none",
+})
+```
+
+## Styling guide
+
+Each part includes a component-scoped data attribute you can target in CSS.
+
+```css
+[data-gridlist-root] {
+  /* styles for the root part */
+}
+
+[data-gridlist-label] {
+  /* styles for the label part */
+}
+
+[data-gridlist-content] {
+  /* styles for the content part (carries role=grid) */
+}
+
+[data-gridlist-item-group] {
+  /* styles for the item group part */
+}
+
+[data-gridlist-item-group-label] {
+  /* styles for the item group label part */
+}
+
+[data-gridlist-item] {
+  /* styles for the item part (carries role=row) */
+}
+
+[data-gridlist-cell] {
+  /* styles for the cell part (carries role=gridcell) */
+}
+
+[data-gridlist-item-text] {
+  /* styles for the item text part */
+}
+
+[data-gridlist-item-checkbox] {
+  /* styles for the item checkbox part */
+}
+
+[data-gridlist-item-indicator] {
+  /* styles for the item indicator part */
+}
+
+[data-gridlist-empty] {
+  /* styles for the empty part */
+}
+```
+
+### Focused state
+
+`data-focused` is set on the focused row. Use `data-focus-visible` to show a
+focus ring only for keyboard focus.
+
+```css
+[data-gridlist-item][data-focus-visible] {
+  /* styles for the keyboard-focused row */
+}
+```
+
+### Selected state
+
+```css
+[data-gridlist-item][data-selected] {
+  /* styles for the selected row */
+}
+
+[data-gridlist-item-checkbox][data-state="checked"] {
+  /* styles for a checked row checkbox */
+}
+```
+
+### Disabled state
+
+```css
+[data-gridlist-item][data-disabled] {
+  /* styles for a disabled row */
+}
+```
+
+### Link state
+
+```css
+[data-gridlist-item][data-link] {
+  /* styles for rows rendered with an href */
+}
+```
+
+### Layout
+
+The content and each row set `data-layout` to `"stack"` or `"grid"`. In grid
+layout, rows also get `data-row` and `data-column`.
+
+```css
+[data-gridlist-item][data-layout="grid"] {
+  /* styles for tiles */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The grid list machine exposes the following context properties:
+
+<ContextTable name="gridlist" />
+
+### Machine API
+
+The grid list `api` exposes the following methods:
+
+<ApiTable name="gridlist" />
+
+### Data Attributes
+
+<DataAttrTable name="gridlist" />
+
+## Accessibility
+
+Follows the
+[WAI-ARIA Grid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/). The
+list is a single tab stop: tabbing in focuses the last focused row, then the
+first selected row, then the first row.
+
+### Keyboard Interactions
+
+<KeyboardTable name="gridlist" />

@@ -1,0 +1,314 @@
+@layer recipes {
+  .Root {
+    --gutter-width: 60px;
+    --hour-height: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: calc(100% - 2rem);
+    max-width: 560px;
+    font-size: 0.8125rem;
+    outline: 0;
+  }
+
+  .Header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .Nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .Button,
+  .IconButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    border: 1px solid var(--colors-border);
+    border-radius: 6px;
+    background: var(--colors-bg-subtle);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Button {
+    padding-inline: 0.625rem;
+    font-weight: 500;
+  }
+
+  .IconButton {
+    width: 28px;
+  }
+
+  .Title {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .ViewSelect {
+    display: flex;
+    gap: 2px;
+    margin-inline-start: auto;
+    padding: 2px;
+    border-radius: 6px;
+    background: var(--colors-bg-bold);
+  }
+
+  .ViewItem {
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    color: var(--colors-text-subtle);
+    cursor: pointer;
+
+    &[data-active] {
+      background: var(--colors-bg-subtle);
+      color: var(--colors-text);
+      box-shadow: 0 1px 2px var(--colors-shadow);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 1px;
+    }
+  }
+
+  .Scroller {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--colors-border);
+    border-radius: 8px;
+    background: var(--colors-bg-subtle);
+    scrollbar-width: thin;
+  }
+
+  .ColumnHeaders,
+  .GridRow {
+    display: grid;
+    grid-template-columns: var(--gutter-width) repeat(
+        var(--scheduler-columns, 7),
+        minmax(0, 1fr)
+      );
+  }
+
+  .ColumnHeaders {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--colors-bg-subtle);
+    border-bottom: 1px solid var(--colors-border);
+  }
+
+  .Corner {
+    border-inline-end: 1px solid var(--colors-border);
+  }
+
+  .ColumnHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding-block: 6px;
+    color: var(--colors-text-subtle);
+    user-select: none;
+
+    &[data-today] {
+      color: var(--colors-text-primary-bold);
+    }
+
+    &[data-today] .DayNumber {
+      background: var(--colors-bg-primary-bold);
+      color: var(--colors-text-inverse);
+    }
+  }
+
+  .WeekDay {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .DayNumber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--colors-text);
+  }
+
+  .Grid {
+    position: relative;
+    height: calc(var(--scheduler-hour-count, 10) * var(--hour-height));
+  }
+
+  .GridRow {
+    height: 100%;
+  }
+
+  .TimeGutter {
+    position: relative;
+    border-inline-end: 1px solid var(--colors-border);
+  }
+
+  .HourLabel {
+    position: absolute;
+    inset-inline-end: 6px;
+    transform: translateY(-50%);
+    font-size: 0.625rem;
+    color: var(--colors-text-muted);
+    white-space: nowrap;
+    user-select: none;
+
+    &:first-child {
+      transform: none;
+    }
+
+    &:last-child {
+      display: none;
+    }
+  }
+
+  .DayColumn {
+    position: relative;
+    border-inline-start: 1px solid var(--colors-border-subtle);
+
+    &:nth-child(2) {
+      border-inline-start: 0;
+    }
+
+    &[data-drop-target] {
+      background: color-mix(
+        in srgb,
+        var(--colors-bg-primary-bold) 6%,
+        transparent
+      );
+    }
+  }
+
+  .HourLine {
+    position: absolute;
+    inset-inline: 0;
+    border-top: 1px solid var(--colors-border-subtle);
+    pointer-events: none;
+  }
+
+  .CurrentTime {
+    z-index: 4;
+    height: 2px;
+    background: #ef4444;
+    pointer-events: none;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: -4px;
+      top: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ef4444;
+    }
+  }
+
+  .Event {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-inline: 2px;
+    padding: 3px 5px;
+    overflow: hidden;
+    border-radius: 4px;
+    border-inline-start: 3px solid var(--event-color);
+    background: color-mix(in srgb, var(--event-color) 18%, var(--colors-bg));
+    color: color-mix(in srgb, var(--event-color) 55%, var(--colors-text));
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    cursor: grab;
+    z-index: 2;
+
+    &:hover {
+      background: color-mix(in srgb, var(--event-color) 26%, var(--colors-bg));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 1px;
+    }
+
+    &[data-selected] {
+      box-shadow: 0 0 0 1px var(--event-color);
+    }
+
+    &[data-dragging] {
+      opacity: 0.35;
+      cursor: grabbing;
+    }
+
+    &[data-disabled] {
+      cursor: default;
+      opacity: 0.6;
+    }
+  }
+
+  .EventTitle {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .EventTime {
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ResizeHandle {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 6px;
+    cursor: ns-resize;
+  }
+
+  .DragOrigin {
+    inset-inline: 2px;
+    border: 1px dashed var(--event-color);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .DragPreview {
+    inset-inline: 2px;
+    padding: 3px 5px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--event-color);
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 6;
+  }
+}
