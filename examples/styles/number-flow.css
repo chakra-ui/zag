@@ -1,17 +1,10 @@
 [data-number-flow-root] {
-  font-size: 3rem;
+  /* Page font with fixed-width figures, so digits don't shift while rolling */
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-weight: 600;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  color: #1a202c;
-  letter-spacing: -0.01em;
-
-  &[data-trend="up"] {
-    color: #2f855a;
-  }
-
-  &[data-trend="down"] {
-    color: #c53030;
-  }
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 [data-number-flow-symbol] {
@@ -31,32 +24,155 @@
 .number-flow {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 24px;
-}
-
-.number-flow__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   align-items: center;
+  gap: 20px;
 }
 
-.number-flow__actions button {
-  padding: 6px 14px;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
-  background: #f9fafb;
-  font-size: 14px;
-  cursor: pointer;
+/* Large standalone figure */
+.nf-hero {
+  font-size: 64px;
+}
 
-  &:hover {
-    background: #edf2f7;
+.nf-caption {
+  margin: 0;
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.nf-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 280px;
+  padding: 20px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-lg);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-sm);
+}
+
+.nf-card-title {
+  font-size: var(--z-text-sm);
+  font-weight: 500;
+  color: var(--z-fg-muted);
+}
+
+/* Round − / + steppers */
+.nf-stepper {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--z-radius-full);
+}
+
+/* Toggle built from pressed buttons, e.g. Monthly / Yearly */
+.nf-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--z-radius-full);
+  background: var(--z-bg-muted);
+
+  & button {
+    height: 28px;
+    padding-inline: 14px;
+    border-radius: var(--z-radius-full);
+    background: transparent;
+
+    &[aria-pressed="true"] {
+      background: var(--z-bg);
+      box-shadow: var(--z-shadow-xs);
+    }
   }
 }
 
-.number-flow__value {
-  font-size: 16px;
-  color: #4a5568;
+.nf-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 48px;
+
+  & small {
+    font-size: var(--z-text-md);
+    font-weight: 500;
+    color: var(--z-fg-muted);
+  }
+}
+
+.nf-ticker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 40px;
+}
+
+.nf-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--z-text-md);
+
+  & svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &[data-direction="up"] {
+    color: var(--z-green-600);
+  }
+
+  &[data-direction="down"] {
+    color: var(--z-red-600);
+  }
+}
+
+.nf-countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 56px;
+
+  & .nf-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .nf-unit small {
+    font-size: var(--z-text-xs);
+    font-weight: 500;
+    color: var(--z-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  & .nf-colon {
+    font-weight: 600;
+    color: var(--z-fg-subtle);
+  }
+}
+
+.nf-stats {
+  display: flex;
+  gap: 32px;
+
+  & div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & [data-number-flow-root] {
+    font-size: 32px;
+  }
+}
+
+.nf-like {
+  gap: 6px;
+
+  &[aria-pressed="true"] svg {
+    fill: var(--z-red-500);
+    stroke: var(--z-red-500);
+  }
 }

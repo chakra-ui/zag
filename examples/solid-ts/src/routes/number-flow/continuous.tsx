@@ -32,7 +32,7 @@ export default function Page() {
   return (
     <>
       <main class="number-flow">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class="nf-hero">
           <Key each={api().segments} by={(segment) => segment.key}>
             {(segment) => {
               // `Key` runs this once per key, so the getters must read `segment()` inside the
@@ -67,13 +67,19 @@ export default function Page() {
           <span {...api().getValueTextProps()}>{api().announcedValueText}</span>
         </div>
 
-        <div class="number-flow__actions">
+        {/* Continuous spins through every intermediate digit; default takes the short path */}
+        <div class="nf-toggle" role="group" aria-label="Roll mode">
+          <button aria-pressed={continuous()} onClick={() => setContinuous(true)}>
+            Continuous
+          </button>
+          <button aria-pressed={!continuous()} onClick={() => setContinuous(false)}>
+            Default
+          </button>
+        </div>
+
+        <div class="hstack">
           <button onClick={() => setPlaying((p) => !p)}>{playing() ? "Pause" : "Play"}</button>
           <button onClick={() => setValue(0)}>Reset</button>
-          <label>
-            <input type="checkbox" checked={continuous()} onChange={(e) => setContinuous(e.currentTarget.checked)} />
-            continuous (spin through intermediates)
-          </label>
         </div>
       </main>
 

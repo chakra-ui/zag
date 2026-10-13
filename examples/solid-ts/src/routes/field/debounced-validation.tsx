@@ -13,8 +13,9 @@ export default function Page() {
   const [calls, setCalls] = createSignal(0)
   let timer: ReturnType<typeof setTimeout> | undefined
 
-  const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+  const id = createUniqueId()
+  const service = useMachine(field.machine, (): field.Props => ({
+    id,
     required: true,
     validationMode: "onChange",
     // Debounce by returning a promise and resetting the timer. The machine drops stale resolutions.
