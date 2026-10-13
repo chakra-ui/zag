@@ -906,5 +906,101 @@
         "description": "Closes the open menu and returns focus to its trigger."
       }
     ]
+  },
+  "gridlist": {
+    "keyboard": [
+      {
+        "keys": ["ArrowDown", "ArrowUp"],
+        "description": "Moves focus to the next/previous row. In a grid layout, moves focus to the item in the next/previous row."
+      },
+      {
+        "keys": ["ArrowRight", "ArrowLeft"],
+        "description": "In a grid layout, moves focus to the next/previous item. In a list, moves focus into the focused row's buttons and links and back to the row."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "Moves focus to the first/last row."
+      },
+      {
+        "keys": ["PageUp", "PageDown"],
+        "description": "Moves focus up/down by `pageSize` rows."
+      },
+      {
+        "keys": ["Space"],
+        "description": "Toggles selection of the focused row."
+      },
+      {
+        "keys": ["Enter"],
+        "description": "Activates the focused row. Follows the link on link rows, calls `onAction` when set, and otherwise toggles selection."
+      },
+      {
+        "keys": ["Shift + ArrowDown", "Shift + ArrowUp"],
+        "description": "In multiple selection mode, extends the selection to the next/previous row."
+      },
+      {
+        "keys": ["Ctrl + A"],
+        "description": "In multiple selection mode, selects all rows."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Clears the selection, unless `escapeKeyBehavior` is `none` or `disallowEmptySelection` is set."
+      },
+      {
+        "keys": ["Tab"],
+        "description": "Moves focus into the list, landing on the last focused row, then the first selected row, then the first row."
+      }
+    ]
+  },
+  "scheduler": {
+    "keyboard": [
+      {
+        "keys": ["Enter", "Space"],
+        "description": "On a focused event, selects it and calls `onEventClick`. On a focused day in a month or year grid, calls `onDayActivate`."
+      },
+      {
+        "keys": ["ArrowLeft", "ArrowRight"],
+        "description": "In a month or year grid, moves focus to the previous/next day."
+      },
+      {
+        "keys": ["ArrowUp", "ArrowDown"],
+        "description": "In a month or year grid, moves focus to the same day in the previous/next week."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "In a month or year grid, moves focus to the first/last day of the week."
+      },
+      {
+        "keys": ["T"],
+        "description": "Jumps to today."
+      },
+      {
+        "keys": ["D", "W", "M", "Y"],
+        "description": "Switches to the day, week, month, or year view."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Cancels an in-progress drag, resize, or slot selection. Otherwise clears the selected event and slot."
+      }
+    ]
+  },
+  "toolbar": {
+    "keyboard": [
+      {
+        "keys": ["Tab"],
+        "description": "Moves focus into the toolbar, to the last focused item or the first item. Pressing Tab again moves focus out of the toolbar."
+      },
+      {
+        "keys": ["ArrowRight", "ArrowLeft"],
+        "description": "In a horizontal toolbar, moves focus to the next/previous item. Wraps around when `loopFocus` is true."
+      },
+      {
+        "keys": ["ArrowDown", "ArrowUp"],
+        "description": "In a vertical toolbar, moves focus to the next/previous item. Wraps around when `loopFocus` is true."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "Moves focus to the first/last item."
+      }
+    ]
   }
 }
