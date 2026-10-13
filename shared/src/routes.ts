@@ -702,7 +702,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "toggle-group",
     label: "Toggle Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "alignment", title: "Text Alignment" },
+      { slug: "view-switcher", title: "View Switcher" },
+      { slug: "vertical", title: "Vertical" },
+    ],
   },
   {
     slug: "toolbar",

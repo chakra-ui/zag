@@ -290,12 +290,6 @@ body:has(.window-list-virtualizer) {
   flex: 1;
 }
 
-.pg-actions {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
 .pg-segmented {
   display: inline-flex;
   gap: 2px;
