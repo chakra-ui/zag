@@ -2389,6 +2389,16 @@
       "data-disabled": "Present when disabled",
       "data-focusable-when-disabled": "",
       "data-orientation": "The orientation of the item"
+    },
+    "Link": {
+      "data-toolbar-link": "<uid>",
+      "data-orientation": "The orientation of the link"
+    },
+    "Input": {
+      "data-toolbar-input": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-focusable-when-disabled": "",
+      "data-orientation": "The orientation of the input"
     }
   },
   "tooltip": {

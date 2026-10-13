@@ -25,9 +25,6 @@ import { InfiniteScroll } from "./infinite-scroll"
 import { Menu } from "./menu"
 import { MenuAsync } from "./menu-async"
 import { Menubar } from "./menubar"
-import { Gridlist } from "./gridlist"
-import { Scheduler } from "./scheduler"
-import { Toolbar } from "./toolbar"
 import { Meter } from "./meter"
 import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
@@ -306,49 +303,6 @@ const components = {
     />
   ),
   ContextMenu: () => <Playground name="context-menu" component={ContextMenu} />,
-  Gridlist: () => (
-    <Playground
-      name="gridlist"
-      component={Gridlist}
-      defaultProps={{
-        disabled: false,
-        loopFocus: false,
-        selectionMode: {
-          default: "multiple",
-          options: ["none", "single", "multiple"],
-        },
-        selectionBehavior: {
-          default: "toggle",
-          options: ["toggle", "replace"],
-        },
-      }}
-    />
-  ),
-  Scheduler: () => (
-    <Playground
-      name="scheduler"
-      component={Scheduler}
-      defaultProps={{
-        workWeekOnly: false,
-        showCurrentTime: true,
-        disabled: false,
-      }}
-    />
-  ),
-  Toolbar: () => (
-    <Playground
-      name="toolbar"
-      component={Toolbar}
-      defaultProps={{
-        orientation: {
-          default: "horizontal",
-          options: ["horizontal", "vertical"],
-        },
-        loopFocus: true,
-        disabled: false,
-      }}
-    />
-  ),
   NestedMenu: () => <Playground name="nested-menu" component={NestedMenu} />,
   NumberInput: () => (
     <Playground
