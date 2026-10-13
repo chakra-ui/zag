@@ -41,6 +41,8 @@ export function useMachine<T extends MachineSchema>(
     const { id, ids, getRootNode } = access(userProps) as any
     return createScope({ id, ids, getRootNode })
   })
+  let scopeAtStop: any
+  const getScope = () => (status === MachineStatus.Stopped ? scopeAtStop : scope)
 
   const debug = (...args: any[]) => {
     if (machine.debug) console.log(...args)
@@ -54,7 +56,7 @@ export function useMachine<T extends MachineSchema>(
     prop,
     bindable: bindable,
     get scope() {
-      return scope
+      return getScope()
     },
     flush: flush,
     getContext() {
@@ -129,7 +131,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     flush,
-    scope,
+    scope: getScope(),
     choose,
   })
 
@@ -186,7 +188,7 @@ export function useMachine<T extends MachineSchema>(
       event: getEvent(),
       prop,
       refs,
-      scope,
+      scope: getScope(),
       computed: computed as any,
     })
   }
@@ -243,6 +245,7 @@ export function useMachine<T extends MachineSchema>(
 
     debug("unmounting...")
     propsAtStop = { ...props }
+    scopeAtStop = scope
     status = MachineStatus.Stopped
 
     effects.forEach((fn) => fn?.())
@@ -293,7 +296,7 @@ export function useMachine<T extends MachineSchema>(
     context: ctx,
     prop,
     get scope() {
-      return scope
+      return getScope()
     },
     refs,
     computed,

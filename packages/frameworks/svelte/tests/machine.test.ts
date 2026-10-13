@@ -1,4 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
+import { SvelteMap } from "svelte/reactivity"
 import { renderMachine } from "./render"
 
 describe("basic", () => {
@@ -445,6 +446,49 @@ describe("edge cases", () => {
     warn.mockRestore()
 
     expect(valuesAtStop).toEqual(["stopped", "controlled"])
+    expect(warnings).toHaveLength(0)
+  })
+
+  test("computed read after stop uses the scope at stop", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const values = new SvelteMap([["id", "stopped"]])
+    let readRootId!: () => unknown
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+      },
+      computed: {
+        rootId: ({ scope }) => scope.id,
+      },
+      entry: ["captureRead"],
+      implementations: {
+        actions: {
+          captureRead({ computed }) {
+            readRootId = () => computed("rootId")
+          },
+        },
+      },
+    })
+
+    const { cleanup } = renderMachine(machine, {
+      get id() {
+        return values.get("id")
+      },
+    })
+    await Promise.resolve()
+    expect(readRootId()).toBe("stopped")
+    await cleanup()
+
+    values.set("id", "changed")
+    const valueAtStop = readRootId()
+    const warnings = [...warn.mock.calls]
+    warn.mockRestore()
+
+    expect(valueAtStop).toBe("stopped")
     expect(warnings).toHaveLength(0)
   })
 
