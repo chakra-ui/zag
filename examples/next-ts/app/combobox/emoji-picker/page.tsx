@@ -2,538 +2,216 @@
 
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
-import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { memo, useEffect, useId, useMemo, useRef, useState } from "react"
-import { experimental_VGrid as VGrid } from "virtua"
-import { EmojiData, EmojiLoader, SkinTone, validateSkinTone } from "@/lib/emoji-loader"
-import "@styles/combobox.css"
-import "@styles/listbox.css"
-import "@styles/popover.css"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { useDeferredValue, useEffect, useId, useMemo, useState } from "react"
+import { useListVirtualizer } from "@/hooks/use-virtualizer"
+import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "@/lib/emoji-loader"
+import "@styles/emoji-picker.css"
 
 interface EmojiItem {
-  label: string
   value: string
-  emoji: string
+  label: string
   category: number
-  tags: string[]
-  skins?: Record<Exclude<SkinTone, "none">, string>
-}
-
-const EMOJI_CATEGORIES = [
-  { id: 0, label: "Smileys & Emotion", icon: "😀" },
-  { id: 1, label: "People & Body", icon: "👋" },
-  { id: 2, label: "Animals & Nature", icon: "🐱" },
-  { id: 3, label: "Food & Drink", icon: "🍎" },
-  { id: 4, label: "Travel & Places", icon: "🚗" },
-  { id: 5, label: "Activities", icon: "⚽" },
-  { id: 6, label: "Objects", icon: "📱" },
-  { id: 7, label: "Symbols", icon: "❤️" },
-  { id: 8, label: "Flags", icon: "🏳️" },
-]
-
-const getSkinToneEmoji = (skinTone: SkinTone): string => {
-  const skinToneEmojis = {
-    none: "🖐️",
-    light: "🖐🏻",
-    "medium-light": "🖐🏼",
-    medium: "🖐🏽",
-    "medium-dark": "🖐🏾",
-    dark: "🖐🏿",
-  }
-  return skinToneEmojis[skinTone]
-}
-
-interface SearchIndex {
-  emoji: EmojiItem
   searchText: string
+  /** Fills a category's last row so every category starts on a new row */
+  placeholder?: boolean
 }
 
-function useEmojiPicker() {
-  const [emojiData, setEmojiData] = useState<EmojiData | null>(null)
-  const [isEmojiLoading, setIsEmojiLoading] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
-  const [selectedSkinTone, setSelectedSkinTone] = useState<SkinTone>("none")
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null)
-  const searchIndexRef = useRef<SearchIndex[]>([])
+type Row = { type: "header"; label: string } | { type: "emojis"; start: number }
 
-  const emojiLoader = useMemo(() => new EmojiLoader({ locale: "en" }), [])
+const COLUMN_COUNT = 8
+const CELL_SIZE = 40
+const HEADER_SIZE = 32
 
+const loader = new EmojiLoader({ locale: "en" })
+
+function useEmojis() {
+  const [data, setData] = useState<EmojiData | null>(null)
   useEffect(() => {
-    const loadEmojis = async () => {
-      setIsEmojiLoading(true)
-      try {
-        const data = await emojiLoader.load()
-        setEmojiData(data)
-      } catch (error) {
-        console.error("Failed to load emoji data:", error)
-      } finally {
-        setIsEmojiLoading(false)
-      }
-    }
-    loadEmojis()
-  }, [emojiLoader])
+    loader.load().then(setData, (error) => console.error("Failed to load emojis", error))
+  }, [])
 
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery)
-    }, 150)
-    return () => clearTimeout(timer)
-  }, [searchQuery])
-
-  // Build search index when emoji data changes
-  const processedEmojis = useMemo(() => {
-    if (!emojiData) return []
-
-    const emojis: EmojiItem[] = []
-    const searchIndex: SearchIndex[] = []
-
-    for (const emoji of emojiData.emojis) {
-      let displayEmoji = emoji.emoji
-      if (selectedSkinTone !== "none" && emoji.skins && selectedSkinTone in emoji.skins) {
-        displayEmoji = emoji.skins[selectedSkinTone as Exclude<SkinTone, "none">]
-      }
-
-      const emojiItem: EmojiItem = {
+  const emojis = useMemo<EmojiItem[]>(
+    () =>
+      (data?.emojis ?? []).map((emoji) => ({
+        value: emoji.emoji,
         label: emoji.label,
-        value: displayEmoji,
-        emoji: displayEmoji,
         category: emoji.category,
-        tags: emoji.tags,
-        skins: emoji.skins,
-      }
+        searchText: `${emoji.label} ${emoji.tags.join(" ")}`.toLowerCase(),
+      })),
+    [data],
+  )
 
-      const searchText = `${emoji.label.toLowerCase()} ${emoji.tags.join(" ").toLowerCase()}`
-
-      emojis.push(emojiItem)
-      searchIndex.push({ emoji: emojiItem, searchText })
-    }
-
-    searchIndexRef.current = searchIndex
-    return emojis
-  }, [emojiData, selectedSkinTone])
-
-  const filteredEmojis = useMemo(() => {
-    if (!processedEmojis.length) return []
-
-    let emojis = processedEmojis
-
-    // Filter by category first (fastest)
-    if (selectedCategory !== null) {
-      emojis = emojis.filter((emoji) => emoji.category === selectedCategory)
-    }
-
-    // Filter by search using pre-built index with early termination
-    if (debouncedSearchQuery.trim()) {
-      const query = debouncedSearchQuery.toLowerCase()
-      const relevantEntries =
-        selectedCategory !== null
-          ? searchIndexRef.current.filter((entry) => entry.emoji.category === selectedCategory)
-          : searchIndexRef.current
-
-      const searchResults = new Set<EmojiItem>()
-
-      // Use for-loop for better performance and early termination possibility
-      for (let i = 0; i < relevantEntries.length; i++) {
-        const entry = relevantEntries[i]
-        if (entry.searchText.includes(query)) {
-          searchResults.add(entry.emoji)
-        }
-      }
-
-      return Array.from(searchResults)
-    }
-
-    return emojis
-  }, [processedEmojis, selectedCategory, debouncedSearchQuery])
-
-  const selectCategory = (categoryId: number) => {
-    setSelectedCategory(categoryId === selectedCategory ? null : categoryId)
-  }
-
-  const cycleCategory = (direction: "next" | "previous") => {
-    if (direction === "next") {
-      const currentIndex =
-        selectedCategory === null ? -1 : EMOJI_CATEGORIES.findIndex((cat) => cat.id === selectedCategory)
-      const nextIndex = currentIndex + 1
-      if (nextIndex < EMOJI_CATEGORIES.length) {
-        selectCategory(EMOJI_CATEGORIES[nextIndex].id)
-      } else {
-        // Wrap to first category
-        selectCategory(EMOJI_CATEGORIES[0].id)
-      }
-    } else {
-      const currentIndex =
-        selectedCategory === null ? -1 : EMOJI_CATEGORIES.findIndex((cat) => cat.id === selectedCategory)
-      const nextIndex = currentIndex - 1
-      if (nextIndex >= 0) {
-        selectCategory(EMOJI_CATEGORIES[nextIndex].id)
-      } else {
-        // Wrap to last category
-        selectCategory(EMOJI_CATEGORIES[EMOJI_CATEGORIES.length - 1].id)
-      }
-    }
-  }
-
-  const isSearching = searchQuery !== debouncedSearchQuery
-
-  return {
-    emojiData,
-    loading: isEmojiLoading,
-    searchQuery,
-    selectedCategory,
-    selectedSkinTone,
-    selectedEmoji,
-    filteredEmojis,
-    isSearching,
-    setSearchQuery,
-    setSelectedEmoji,
-    selectCategory,
-    setSelectedSkinTone,
-    getSkinToneEmoji,
-    cycleCategory,
-  }
+  const categories = useMemo(() => data?.categories ?? [], [data])
+  return { emojis, categories }
 }
 
-export type EmojiPickerApi = ReturnType<typeof useEmojiPicker>
+// Group by category: a header row, then emoji rows padded to full width
+function getLayout(emojis: EmojiItem[], categories: EmojiDataCategory[]) {
+  const items: EmojiItem[] = []
+  const rows: Row[] = []
+  // Grid row (in the collection) → visual row (with headers)
+  const gridRowToRow: number[] = []
+  // Sticky headers, one per category
+  const groups: { id: string; startIndex: number; headerSize: number }[] = []
 
-const EmojiPopover = memo((props: React.PropsWithChildren<{ selectedEmoji: string }>) => {
-  const { selectedEmoji, children } = props
-  const popoverService = useMachine(popover.machine, { id: useId() })
-  const popoverApi = popover.connect(popoverService, normalizeProps)
-
-  useEffect(() => {
-    const onEmojiSelect = () => {
-      popoverApi.setOpen(false)
+  categories.forEach(({ index: category, label }) => {
+    const group = emojis.filter((emoji) => emoji.category === category)
+    if (!group.length) return
+    groups.push({ id: label, startIndex: rows.length, headerSize: HEADER_SIZE })
+    rows.push({ type: "header", label })
+    const padding = (COLUMN_COUNT - (group.length % COLUMN_COUNT)) % COLUMN_COUNT
+    for (let i = 0; i < padding; i++) {
+      group.push({ value: `placeholder:${category}:${i}`, label: "", category, searchText: "", placeholder: true })
     }
-    document.addEventListener("emoji:select", onEmojiSelect)
-    return () => {
-      document.removeEventListener("emoji:select", onEmojiSelect)
+    for (let start = 0; start < group.length; start += COLUMN_COUNT) {
+      gridRowToRow.push(rows.length)
+      rows.push({ type: "emojis", start: items.length + start })
     }
-  }, [popoverApi])
+    items.push(...group)
+  })
 
-  return (
-    <>
-      <button {...popoverApi.getTriggerProps()} className="emoji-picker-trigger">
-        {selectedEmoji || "😀"} Pick Emoji
-      </button>
-      <Portal>
-        <div {...popoverApi.getPositionerProps()}>
-          <div
-            {...mergeProps(popoverApi.getContentProps(), {
-              style: { width: "100%" },
-            })}
-            className="emoji-picker-popover"
-          >
-            {children}
-          </div>
-        </div>
-      </Portal>
-    </>
+  return { items, rows, gridRowToRow, groups }
+}
+
+export default function Page() {
+  const { emojis, categories } = useEmojis()
+  const [query, setQuery] = useState("")
+  const [selected, setSelected] = useState<string | null>(null)
+
+  const deferredQuery = useDeferredValue(query.trim().toLowerCase())
+  const { items, rows, gridRowToRow, groups } = useMemo(
+    () =>
+      getLayout(
+        deferredQuery ? emojis.filter((emoji) => emoji.searchText.includes(deferredQuery)) : emojis,
+        categories,
+      ),
+    [emojis, categories, deferredQuery],
   )
-})
-
-const EmojiGrid = memo((props: { listboxApi: listbox.Api }) => {
-  const { listboxApi } = props
-  const items = listboxApi.collection.items
-  const columnCount = 8
-  const rowCount = Math.ceil(items.length / columnCount)
-
-  const getItemAtPosition = (rowIndex: number, colIndex: number) => {
-    const index = rowIndex * columnCount + colIndex
-    return items[index] || null
-  }
-
-  return (
-    <div
-      {...mergeProps(listboxApi.getContentProps(), { style: { padding: 0, textAlign: "center" } })}
-      className="emoji-grid-container"
-    >
-      <VGrid
-        style={{ height: "100%", width: "400px", padding: "4px" }}
-        row={rowCount}
-        col={columnCount}
-        cellHeight={46}
-        cellWidth={46}
-      >
-        {({ rowIndex, colIndex }) => {
-          const item = getItemAtPosition(rowIndex, colIndex)
-          if (!item) return <div className="emoji-item-empty" />
-          return (
-            <div
-              key={`${item.value}-${rowIndex}-${colIndex}`}
-              {...listboxApi.getItemProps({ item })}
-              className="emoji-item"
-              title={item.label}
-            >
-              <span {...listboxApi.getItemTextProps({ item })}>{item.emoji}</span>
-            </div>
-          )
-        }}
-      </VGrid>
-    </div>
-  )
-})
-
-const EmojiEmpty = memo((props: { listboxApi: listbox.Api; searchQuery: string; loading: boolean }) => {
-  const { listboxApi, searchQuery, loading } = props
-  return (
-    <>
-      {listboxApi.collection.size === 0 && !loading && (
-        <div className="emoji-picker-empty">{searchQuery ? "No emojis found" : "No emojis available"}</div>
-      )}
-    </>
-  )
-})
-
-const EmojiSearch = memo((props: { listboxApi: listbox.Api; emojiPicker: EmojiPickerApi }) => {
-  const { listboxApi, emojiPicker } = props
-  return (
-    <div className="emoji-picker-search">
-      <div className="search-input-container">
-        <input
-          type="text"
-          placeholder="Search emojis..."
-          value={emojiPicker.searchQuery}
-          onChange={(e) => emojiPicker.setSearchQuery(e.currentTarget.value)}
-          className={`emoji-search-input ${emojiPicker.isSearching ? "searching" : ""}`}
-          {...mergeProps(listboxApi.getInputProps({ autoHighlight: true }), {
-            onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-              if (event.key === "Tab") {
-                event.preventDefault()
-                emojiPicker.cycleCategory(event.shiftKey ? "previous" : "next")
-                event.currentTarget.focus()
-              }
-            },
-          })}
-        />
-        {emojiPicker.isSearching && <div className="search-indicator">⏳</div>}
-      </div>
-    </div>
-  )
-})
-
-const EmojiSkinToneSelector = memo((props: { emojiPicker: EmojiPickerApi }) => {
-  const { emojiPicker } = props
-  return (
-    <div className="emoji-skin-tone-selector">
-      {Object.keys(emojiPicker.emojiData?.skinTones || {}).map((skinTone) => (
-        <button
-          key={skinTone}
-          onClick={() => emojiPicker.setSelectedSkinTone(validateSkinTone(skinTone))}
-          className={`skin-tone-button ${emojiPicker.selectedSkinTone === skinTone ? "selected" : ""}`}
-          title={emojiPicker.emojiData?.skinTones[skinTone as SkinTone] || skinTone}
-        >
-          {getSkinToneEmoji(skinTone as SkinTone)}
-        </button>
-      ))}
-    </div>
-  )
-})
-
-const EmojiCategorySelector = memo((props: { emojiPicker: EmojiPickerApi }) => {
-  const { emojiPicker } = props
-  return (
-    <div className="emoji-picker-categories">
-      {EMOJI_CATEGORIES.map((category) => (
-        <div
-          key={category.id}
-          onClick={() => emojiPicker.selectCategory(category.id)}
-          className={`category-button ${emojiPicker.selectedCategory === category.id ? "selected" : ""}`}
-          title={category.label}
-        >
-          {category.icon}
-        </div>
-      ))}
-    </div>
-  )
-})
-
-export default function EmojiPicker() {
-  const emojiPicker = useEmojiPicker()
 
   const collection = useMemo(
     () =>
       listbox.gridCollection({
-        items: emojiPicker.filteredEmojis,
-        columnCount: 8,
+        items,
+        columnCount: COLUMN_COUNT,
+        isItemDisabled: (item) => !!item.placeholder,
       }),
-    [emojiPicker.filteredEmojis],
+    [items],
   )
 
+  const { virtualizer, ref: scrollRef } = useListVirtualizer({
+    count: rows.length,
+    estimatedSize: (index) => (rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
+    groups,
+    // Keep scrolled-to rows below the sticky header
+    scrollPaddingStart: HEADER_SIZE,
+    overscan: 4,
+    paddingEnd: 4,
+    observeScrollElementSize: true,
+  })
+
+  const popoverService = useMachine(popover.machine, { id: useId() })
+  const popoverApi = popover.connect(popoverService, normalizeProps)
+
   const listboxService = useMachine(listbox.machine, {
-    collection,
     id: useId(),
-    onSelect: (details) => {
-      emojiPicker.setSelectedEmoji(details.value)
-      document.dispatchEvent(new CustomEvent("emoji:select", { detail: details.value }))
+    collection,
+    // The item may not be rendered yet, so scroll its row into view
+    scrollToIndexFn({ index }) {
+      const row = gridRowToRow[Math.floor(index / COLUMN_COUNT)]
+      if (row != null) virtualizer.scrollToIndex(row, { align: "auto" })
+    },
+    onSelect({ value }) {
+      setSelected(value)
+      popoverApi.setOpen(false)
     },
   })
 
   const listboxApi = listbox.connect(listboxService, normalizeProps)
+  const active = listboxApi.highlightedItem as EmojiItem | null
+
+  // Virtual rows are absolutely positioned, so the sticky header is an overlay
+  const sticky = virtualizer.getStickyGroupHeader()
 
   return (
-    <main className="emoji-picker-container">
-      <EmojiPopover selectedEmoji={emojiPicker.selectedEmoji}>
-        <div className="emoji-picker-header">
-          <EmojiSearch listboxApi={listboxApi} emojiPicker={emojiPicker} />
-          <EmojiSkinToneSelector emojiPicker={emojiPicker} />
-        </div>
+    <main>
+      <button {...popoverApi.getTriggerProps()} className="emoji-picker-trigger">
+        <span>{selected ?? "😀"}</span> Pick emoji
+      </button>
 
-        {emojiPicker.loading ? (
-          <div className="emoji-picker-loading">Loading emojis...</div>
-        ) : (
-          <div {...listboxApi.getRootProps()} className="emoji-picker-listbox">
-            <EmojiGrid listboxApi={listboxApi} />
-            <EmojiEmpty listboxApi={listboxApi} searchQuery={emojiPicker.searchQuery} loading={emojiPicker.loading} />
+      <Portal>
+        <div {...popoverApi.getPositionerProps()}>
+          <div {...popoverApi.getContentProps()} className="emoji-picker">
+            <div {...listboxApi.getRootProps()} className="emoji-picker-body">
+              <input
+                {...listboxApi.getInputProps({ autoHighlight: true, keyboardPriority: "navigate" })}
+                className="emoji-search"
+                placeholder="Search…"
+                aria-label="Search emoji"
+                value={query}
+                onChange={(event) => setQuery(event.currentTarget.value)}
+              />
+
+              {/* The input forwards arrow keys to the list; the content handles them */}
+              <div {...listboxApi.getContentProps()} className="emoji-viewport">
+                {sticky && (
+                  <div
+                    className="emoji-category"
+                    data-sticky
+                    aria-hidden
+                    style={{ transform: `translateY(${sticky.translateY}px)` }}
+                  >
+                    {sticky.group.id}
+                  </div>
+                )}
+                <div {...listboxApi.getListProps()} ref={scrollRef} onScroll={virtualizer.handleScroll}>
+                  <div style={{ position: "relative", height: virtualizer.getTotalSize() }}>
+                    {virtualizer.getVirtualItems().map((virtualRow) => {
+                      const row = rows[virtualRow.index]
+                      if (!row) return null
+                      const style = virtualizer.getItemStyle(virtualRow)
+                      if (row.type === "header") {
+                        return (
+                          <div key={`header:${row.label}`} className="emoji-category" style={style}>
+                            {row.label}
+                          </div>
+                        )
+                      }
+                      return (
+                        <div key={row.start} className="emoji-row" style={style}>
+                          {items.slice(row.start, row.start + COLUMN_COUNT).map((item) =>
+                            item.placeholder ? (
+                              <div key={item.value} className="emoji-item" aria-hidden />
+                            ) : (
+                              <div key={item.value} {...listboxApi.getItemProps({ item })} className="emoji-item">
+                                <span {...listboxApi.getItemTextProps({ item })}>{item.value}</span>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {emojis.length === 0 && <p className="emoji-empty">Loading…</p>}
+                {emojis.length > 0 && items.length === 0 && <p className="emoji-empty">No emoji found</p>}
+              </div>
+            </div>
+
+            <div className="emoji-footer" aria-hidden>
+              {active ? (
+                <>
+                  <span className="emoji-footer-glyph">{active.value}</span>
+                  <span className="emoji-footer-label">{active.label}</span>
+                </>
+              ) : (
+                <span className="emoji-footer-label">Select an emoji…</span>
+              )}
+            </div>
           </div>
-        )}
-        <EmojiCategorySelector emojiPicker={emojiPicker} />
-      </EmojiPopover>
-
-      <style>{`
-        .emoji-picker-container {
-          position: relative;
-          display: inline-block;
-        }
-
-        .emoji-picker-popover {
-          background: white;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-          padding: 16px;
-          z-index: 1000;
-        }
-
-        .emoji-picker-header {
-          margin-bottom: 16px;
-        }
-
-        .search-input-container {
-          position: relative;
-          margin-bottom: 12px;
-        }
-
-        .emoji-search-input {
-          width: 100%;
-          padding: 8px 12px;
-          border: 1px solid #e2e8f0;
-          border-radius: 6px;
-          font-size: 14px;
-          padding-right: 40px;
-        }
-
-        .emoji-search-input.searching {
-          border-color: #3b82f6;
-        }
-
-        .search-indicator {
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          font-size: 16px;
-          pointer-events: none;
-        }
-
-        .emoji-skin-tone-selector {
-          display: flex;
-          gap: 4px;
-          justify-content: center;
-        }
-
-        .emoji-grid-container {
-          height: 300px;
-          width: 100%;
-          border: 1px solid #e2e8f0;
-          border-radius: 6px;
-          overflow: hidden;
-        }
-
-
-        .skin-tone-button {
-          width: 32px;
-          height: 32px;
-          border: 1px solid #e2e8f0;
-          border-radius: 6px;
-          background: white;
-          cursor: pointer;
-          font-size: 16px;
-        }
-
-        .skin-tone-button.selected {
-          border-color: #3b82f6;
-          background: #eff6ff;
-        }
-
-        .emoji-picker-categories {
-          display: flex;
-          gap: 4px;
-          margin-top: 16px;
-          overflow-x: auto;
-          padding-bottom: 4px;
-        }
-
-        .category-button {
-          min-width: 32px;
-          height: 32px;
-          border: 1px solid #e2e8f0;
-          border-radius: 6px;
-          background: white;
-          cursor: pointer;
-          font-size: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .category-button.selected {
-          border-color: #3b82f6;
-          background: #eff6ff;
-        }
-
-        .emoji-picker-loading,
-        .emoji-picker-empty {
-          text-align: center;
-          padding: 32px;
-          color: #6b7280;
-          font-size: 14px;
-        }
-
-        .emoji-item {
-          border: none;
-          border-radius: 4px;
-          background: transparent;
-          cursor: pointer;
-          font-size: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          transition: background-color 0.15s ease;
-          box-sizing: border-box;
-        }
-
-        .emoji-item:hover {
-          background: #f8fafc;
-        }
-
-        .emoji-item-empty {
-          width: 100%;
-          height: 100%;
-        }
-
-        .emoji-item[data-selected] {
-          background: #eff6ff;
-          outline: 2px solid #3b82f6;
-        }
-      `}</style>
+        </div>
+      </Portal>
     </main>
   )
 }
