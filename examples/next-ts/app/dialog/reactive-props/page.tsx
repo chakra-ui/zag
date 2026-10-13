@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useEffect, useId, useState } from "react"
 import "@styles/dialog.css"
 
@@ -83,7 +84,7 @@ export default function Page() {
                 {minimized ? "Maximize" : "Minimize"}
               </button>
               <button {...api.getCloseTriggerProps()} data-testid="close">
-                Close
+                <XIcon />
               </button>
             </div>
           </div>

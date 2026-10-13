@@ -3,122 +3,183 @@
 }
 
 [data-slider-root] {
-  max-width: 320px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-[data-slider-root][data-orientation="vertical"] {
-  height: 240px;
-}
-
-[data-slider-control] {
   --slider-thumb-size: 20px;
-  --slider-track-height: 4px;
+  --slider-track-size: 12px;
+  --slider-dot-size: 4px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-[data-slider-control][data-orientation="horizontal"] {
-  height: var(--slider-thumb-size);
-}
-
-[data-slider-control][data-orientation="vertical"] {
-  width: var(--slider-thumb-size);
-}
-
-[data-slider-thumb] {
-  all: unset;
-  width: var(--slider-thumb-size);
-  height: var(--slider-thumb-size);
-  border-radius: 999px;
-  background: white;
-  box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 10px;
-}
-
-[data-slider-thumb]:focus-visible {
-  box-shadow: rgb(0 0 0 / 22%) 0px 0px 0px 5px;
-}
-
-[data-slider-thumb]:hover:not([data-disabled]) {
-  background-color: rgb(245, 242, 255);
-}
-
-[data-slider-thumb][data-disabled] {
-  background-color: lightgray;
-}
-
-[data-slider-root] .control-area {
-  margin-top: 12px;
-  display: flex;
-}
-
-.slider [data-orientation="horizontal"] .control-area {
   flex-direction: column;
   width: 100%;
+  max-width: 320px;
+
+  &[data-orientation="vertical"] {
+    height: 240px;
+  }
+
+  & .control-area {
+    display: flex;
+    margin-top: 12px;
+  }
+
+  &[data-orientation="horizontal"] .control-area {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &[data-orientation="vertical"] .control-area {
+    flex-direction: row;
+    height: 100%;
+  }
 }
 
-.slider [data-orientation="vertical"] .control-area {
-  flex-direction: row;
-  height: 100%;
-}
-
-[data-slider-track] {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 9999px;
-}
-
-[data-slider-track][data-orientation="horizontal"] {
-  height: var(--slider-track-height);
-  width: 100%;
-}
-
-[data-slider-track][data-orientation="vertical"] {
-  height: 100%;
-  width: var(--slider-track-height);
-}
-
-[data-slider-range] {
-  background: magenta;
-  border-radius: inherit;
-}
-
-[data-slider-range][data-disabled] {
-  background: rgba(0, 0, 0, 0.4);
-}
-
-[data-slider-range][data-orientation="horizontal"] {
-  height: 100%;
-}
-
-[data-slider-range][data-orientation="vertical"] {
-  width: 100%;
+[data-slider-label] {
+  font-size: var(--z-text-md);
+  font-weight: 500;
 }
 
 [data-slider-value-text] {
-  margin-inline-start: 12px;
+  margin-inline-start: 8px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-md);
+  font-variant-numeric: tabular-nums;
 }
 
-[data-slider-marker-group][data-orientation="vertical"] {
-  height: 100%;
+[data-slider-control] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[data-orientation="horizontal"] {
+    height: var(--slider-thumb-size);
+  }
+
+  &[data-orientation="vertical"] {
+    width: var(--slider-thumb-size);
+  }
+}
+
+[data-slider-track] {
+  border-radius: var(--z-radius-full);
+  background: var(--z-bg-emphasis);
+
+  &[data-orientation="horizontal"] {
+    width: 100%;
+    height: var(--slider-track-size);
+  }
+
+  &[data-orientation="vertical"] {
+    width: var(--slider-track-size);
+    height: 100%;
+  }
+}
+
+[data-slider-range] {
+  border-radius: inherit;
+  background: var(--z-accent);
+
+  &[data-orientation="horizontal"] {
+    height: 100%;
+  }
+
+  &[data-orientation="vertical"] {
+    width: 100%;
+  }
+
+  &[data-disabled] {
+    background: var(--z-border-emphasis);
+  }
+}
+
+[data-slider-thumb] {
+  /* Above the step dots, which come later in the DOM */
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border: 2px solid var(--z-accent);
+  border-radius: var(--z-radius-full);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-md);
+  transition:
+    border-color var(--z-duration) var(--z-ease),
+    box-shadow var(--z-duration) var(--z-ease),
+    scale var(--z-duration) var(--z-ease);
+
+  /* Accent center dot */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: inherit;
+    background: var(--z-accent);
+  }
+
+  &:hover:not([data-disabled]),
+  &[data-dragging] {
+    border-color: var(--z-accent-hover);
+    box-shadow: var(--z-shadow-lg);
+  }
+
+  /* `scale`, not `transform`: the inline transform positions the thumb */
+  &:active:not([data-disabled]),
+  &[data-dragging] {
+    scale: 1.15;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      var(--z-shadow-md),
+      0 0 0 4px var(--z-ring);
+  }
+
+  &[data-disabled] {
+    border-color: var(--z-border-emphasis);
+    background: var(--z-bg-muted);
+    box-shadow: none;
+
+    &::after {
+      background: var(--z-border-emphasis);
+    }
+  }
+}
+
+/* Step dots sit inside the track: the group collapses and moves onto the track's centerline */
+[data-slider-marker-group] {
+  &[data-orientation="horizontal"] {
+    height: 0;
+    margin-top: calc((var(--slider-thumb-size) + var(--slider-dot-size)) / -2);
+  }
+
+  &[data-orientation="vertical"] {
+    width: 0;
+    height: 100%;
+    margin-left: calc((var(--slider-thumb-size) + var(--slider-dot-size)) / -2);
+  }
 }
 
 [data-slider-marker] {
-  color: lightgray;
+  width: var(--slider-dot-size);
+  height: var(--slider-dot-size);
+  overflow: hidden;
+  border-radius: var(--z-radius-full);
+  background: var(--z-fg-subtle);
+  font-size: 0;
+
+  &:is([data-state="under-value"], [data-state="at-value"]) {
+    background: rgb(255 255 255 / 0.7);
+  }
 }
 
-[data-slider-marker]:is([data-state="under-value"], [data-state="at-value"]) {
-  color: red;
-}
-
+/* The value bubble while dragging, styled like the tooltip */
 [data-slider-dragging-indicator] {
-  background: magenta;
-  border-radius: 4px;
-  padding: 2px 4px;
-  color: white;
+  padding: 2px 6px;
+  border-radius: var(--z-radius-xs);
+  background: var(--z-bg-inverted);
+  color: var(--z-fg-inverted);
+  font-size: var(--z-text-xs);
+  font-variant-numeric: tabular-nums;
+
   &[data-orientation="horizontal"] {
     top: calc(var(--slider-thumb-size) + 8px);
   }

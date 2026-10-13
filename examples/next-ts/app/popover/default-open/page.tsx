@@ -3,6 +3,7 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { popoverControls } from "@zag-js/shared"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "@/components/presence"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -50,7 +51,7 @@ export default function Page() {
                   </a>
                   <input data-testid="input" placeholder="input" />
                   <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
-                    X
+                    <XIcon />
                   </button>
                 </div>
               </Presence>

@@ -1,5 +1,5 @@
 import * as radio from "@zag-js/radio-group"
-import { radioControls, radioData } from "@zag-js/shared"
+import { segmentControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Index, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
@@ -8,7 +8,7 @@ import { useControls } from "~/hooks/use-controls"
 import "@styles/segmented-control.css"
 
 export default function Page() {
-  const controls = useControls(radioControls)
+  const controls = useControls(segmentControls)
 
   const service = useMachine(
     radio.machine,

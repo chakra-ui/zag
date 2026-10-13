@@ -57,13 +57,7 @@ const TreeNode = (props: TreeNodeProps) => {
       <div {...api.getNodeCellProps(nodeProps)}>
         {nodeState.isBranch && (
           <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
-            <ChevronRightIcon
-              size={16}
-              style={{
-                transform: nodeState.expanded ? "rotate(90deg)" : "rotate(0deg)",
-                transition: "transform 0.15s",
-              }}
-            />
+            <ChevronRightIcon size={16} />
           </span>
         )}
         {nodeState.isBranch ? <FolderIcon size={16} /> : <FileIcon size={16} />}

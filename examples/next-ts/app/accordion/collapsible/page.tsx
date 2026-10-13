@@ -1,11 +1,12 @@
 "use client"
 
-import "@styles/accordion.css"
-import "@styles/collapsible.css"
 import * as accordion from "@zag-js/accordion"
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { ArrowRight } from "lucide-react"
 import { useId } from "react"
+import "@styles/accordion.css"
+import "@styles/collapsible.css"
 
 const items = [
   {
@@ -61,17 +62,23 @@ export default function Page() {
   const api = accordion.connect(service, normalizeProps)
 
   return (
-    <main className="accordion" style={{ padding: "40px", maxWidth: "640px" }}>
-      <h1>Accordion / Collapsible</h1>
+    <main className="accordion">
       <div {...api.getRootProps()}>
         {items.map((item) => {
           const itemState = api.getItemState({ value: item.value })
           const { hidden: _, ...contentProps } = api.getItemContentProps({ value: item.value })
           return (
             <div key={item.value} {...api.getItemProps({ value: item.value })}>
-              <button {...api.getItemTriggerProps({ value: item.value })}>{item.title}</button>
+              <h3 {...api.getItemHeaderProps({ value: item.value })}>
+                <button {...api.getItemTriggerProps({ value: item.value })}>
+                  {item.title}
+                  <div {...api.getItemIndicatorProps({ value: item.value })}>
+                    <ArrowRight />
+                  </div>
+                </button>
+              </h3>
               <Collapsible {...contentProps} open={itemState.expanded}>
-                {item.description}
+                <p>{item.description}</p>
               </Collapsible>
             </div>
           )

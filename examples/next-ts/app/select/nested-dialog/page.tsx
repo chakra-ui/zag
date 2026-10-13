@@ -3,6 +3,7 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/select.css"
@@ -21,7 +22,10 @@ function Select() {
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>Fruit</label>
       <button {...api.getTriggerProps()} data-testid="select-trigger">
-        {api.valueAsString || "Select fruit"}
+        <span>{api.valueAsString || "Select fruit"}</span>
+        <span {...api.getIndicatorProps()}>
+          <ChevronsUpDownIcon />
+        </span>
       </button>
       <Portal>
         <Presence

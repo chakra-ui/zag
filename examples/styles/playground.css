@@ -1,0 +1,1228 @@
+/* -----------------------------------------------------------------------------
+ * Playground theme — palette tokens, then semantic tokens per mode
+ * -----------------------------------------------------------------------------*/
+
+:root {
+  /* Zag green (Chakra green) */
+  --green-50: #f0fff4;
+  --green-100: #c6f6d5;
+  --green-200: #9ae6b4;
+  --green-300: #68d391;
+  --green-400: #48bb78;
+  --green-500: #38a169;
+  --green-600: #2f855a;
+  --green-700: #276749;
+  --green-800: #22543d;
+  --green-900: #1c4532;
+  --green-950: #0d2818;
+  --green-brand: #00c65e;
+
+  /* Neutrals (zinc) */
+  --zinc-50: #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-850: #1f1f22;
+  --zinc-900: #18181b;
+  --zinc-950: #09090b;
+
+  --pg-font:
+    var(--font-sans, "Wix Madefor Text"), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+  --pg-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --pg-radius-sm: 6px;
+  --pg-radius: 8px;
+  --pg-radius-lg: 12px;
+  --pg-topbar-h: 48px;
+  --pg-inspector-w: 340px;
+  --pg-inspector-h: 280px;
+  --pg-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.pg,
+.pg-layer {
+  color-scheme: light;
+  --pg-bg: white;
+  --pg-bg-subtle: var(--zinc-50);
+  --pg-bg-muted: var(--zinc-100);
+  --pg-bg-emphasis: var(--zinc-200);
+  --pg-surface: white;
+  --pg-fg: var(--zinc-950);
+  --pg-fg-muted: var(--zinc-500);
+  --pg-fg-subtle: var(--zinc-400);
+  --pg-border: var(--zinc-200);
+  --pg-border-subtle: var(--zinc-100);
+  --pg-border-emphasis: var(--zinc-300);
+  --pg-accent: var(--green-500);
+  --pg-accent-hover: var(--green-600);
+  --pg-accent-fg: var(--green-600);
+  --pg-accent-contrast: white;
+  --pg-accent-subtle: var(--green-50);
+  --pg-accent-muted: var(--green-100);
+  --pg-ring: rgb(56 161 105 / 0.35);
+  --pg-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --pg-shadow-lg: 0 16px 40px -12px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.06);
+  --pg-overlay: rgb(9 9 11 / 0.28);
+}
+
+/* -----------------------------------------------------------------------------
+ * Shell
+ * -----------------------------------------------------------------------------*/
+
+html:has(.pg),
+body:has(.pg) {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pg {
+  --ring-color: var(--pg-accent);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--pg-bg);
+  color: var(--pg-fg);
+  font-family: var(--pg-font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+.pg-body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.pg-body > :not(div.toolbar, style, script) {
+  color-scheme: light;
+  position: relative;
+  /* Keeps the example's own layers (e.g. scheduler sticky headers) inside the canvas, so the
+     inspector after it paints on top, while portaled popups (later in <body>) still cover both */
+  isolation: isolate;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 40px;
+  overflow-y: auto;
+  background: white;
+  color: var(--zinc-950);
+  font-size: 14px;
+}
+
+/* Canvas layouts, like Storybook's */
+/* Saved prefs live on <html> (set before paint), so reloads don't shift */
+/* Centred: horizontally only, so content growing taller (e.g. an expanding accordion) doesn't shift it */
+:root:not([data-pg-layout="padded"]) .pg-body > :not(div.toolbar, style, script) {
+  align-items: center;
+}
+
+/* Full screen: hide the top bar and keep the chosen canvas layout */
+.pg[data-fullscreen] .pg-topbar {
+  display: none;
+}
+
+:root[data-pg-inspector="hidden"] .pg:not([data-fullscreen]) .pg-body > div.toolbar,
+.pg[data-fullscreen][data-inspector="hidden"] .pg-body > div.toolbar {
+  display: none;
+}
+
+.pg-floating-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  z-index: 90;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgb(9 9 11 / 0.82);
+  box-shadow: var(--pg-shadow-lg);
+  backdrop-filter: blur(8px);
+  opacity: 0.6;
+  transition: opacity 160ms var(--pg-ease);
+
+  &:hover,
+  &:focus-within {
+    opacity: 1;
+  }
+
+  & button {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    color: rgb(255 255 255 / 0.8);
+    font-family: var(--pg-font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+    transition:
+      background 120ms var(--pg-ease),
+      color 120ms var(--pg-ease);
+
+    &:hover,
+    &[aria-pressed="true"] {
+      background: rgb(255 255 255 / 0.12);
+      color: white;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--pg-ring);
+    }
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .pg-kbd {
+    background: rgb(255 255 255 / 0.14);
+    color: rgb(255 255 255 / 0.75);
+  }
+}
+
+/* Window virtualizer: the document is the scrollport */
+html:has(.window-list-virtualizer),
+body:has(.window-list-virtualizer) {
+  height: auto;
+  overflow: visible;
+}
+
+.pg:has(.window-list-virtualizer) {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+
+  .pg-body > :not(div.toolbar, style, script) {
+    overflow: visible;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Top bar
+ * -----------------------------------------------------------------------------*/
+
+/* No stacking context: example overlays (maximized panels, fixed layers) must render above it */
+.pg-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: var(--pg-topbar-h);
+  padding: 0 12px;
+  border-bottom: 1px solid var(--pg-border-subtle);
+  background: var(--pg-bg);
+  flex-shrink: 0;
+}
+
+/* Start / center / end, so search stays centred whatever sits beside it */
+.pg-topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.pg-topbar-start,
+.pg-topbar-end {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pg-topbar-end {
+  justify-content: flex-end;
+}
+
+.pg-topbar-center {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.pg-brand {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: var(--pg-radius-sm);
+  color: var(--pg-fg);
+  text-decoration: none;
+
+  & svg {
+    height: 15px;
+    width: auto;
+  }
+
+  &:hover {
+    background: var(--pg-bg-muted);
+  }
+}
+
+.pg-slash {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--pg-border-emphasis);
+  transform: rotate(18deg);
+  flex-shrink: 0;
+}
+
+.pg-spacer {
+  flex: 1;
+}
+
+.pg-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pg-segmented {
+  display: inline-flex;
+  gap: 2px;
+  margin-right: 8px;
+  padding: 2px;
+  border-radius: var(--pg-radius-sm);
+  background: var(--pg-bg-muted);
+}
+
+.pg-segmented-item {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  border-radius: 5px;
+  color: var(--pg-fg-muted);
+  cursor: default;
+  transition:
+    background 120ms var(--pg-ease),
+    color 120ms var(--pg-ease);
+
+  &:hover:not(:disabled) {
+    color: var(--pg-fg);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--pg-ring);
+  }
+
+  /* e.g. the inspector group on an example without one */
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--pg-bg);
+    color: var(--pg-fg);
+    box-shadow: var(--pg-shadow-sm);
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Buttons
+ * -----------------------------------------------------------------------------*/
+
+.pg-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: var(--pg-radius-sm);
+  color: var(--pg-fg);
+  font-family: var(--pg-font);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    background 120ms var(--pg-ease),
+    color 120ms var(--pg-ease);
+
+  &:hover {
+    background: var(--pg-bg-muted);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pg-ring);
+  }
+
+  &[data-variant="filled"] {
+    background: var(--pg-bg-muted);
+
+    &:hover {
+      background: var(--pg-bg-emphasis);
+    }
+  }
+
+  &[data-icon] {
+    width: 30px;
+    padding: 0;
+    color: var(--pg-fg-muted);
+
+    &:hover {
+      color: var(--pg-fg);
+    }
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--pg-bg-muted);
+    color: var(--pg-fg);
+  }
+
+  &[aria-disabled="true"] {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  & svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+}
+
+.pg-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--pg-bg-emphasis);
+  color: var(--pg-fg-muted);
+  font-family: var(--pg-font);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* -----------------------------------------------------------------------------
+ * Breadcrumb pickers (open the command palette)
+ * -----------------------------------------------------------------------------*/
+
+.pg-crumb {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 240px;
+  height: 30px;
+  padding: 0 8px 0 10px;
+  border-radius: var(--pg-radius-sm);
+  color: var(--pg-fg);
+  font-family: var(--pg-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: default;
+  transition: background 120ms var(--pg-ease);
+
+  &:hover {
+    background: var(--pg-bg-muted);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pg-ring);
+  }
+
+  & span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & [data-placeholder] {
+    color: var(--pg-fg-muted);
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--pg-fg-subtle);
+  }
+}
+
+.pg-search-trigger {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 240px;
+  height: 30px;
+  padding: 0 6px 0 10px;
+  border-radius: var(--pg-radius-sm);
+  background: var(--pg-bg-muted);
+  color: var(--pg-fg-muted);
+  font-family: var(--pg-font);
+  font-size: 13px;
+  cursor: text;
+  transition: background 120ms var(--pg-ease);
+
+  &:hover {
+    background: var(--pg-bg-emphasis);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--pg-ring);
+  }
+
+  & > span:first-of-type {
+    flex: 1;
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Command palette — zag dialog + combobox. Doubled class selectors win over the
+ * examples' global `[data-dialog-*]` / `[data-combobox-*]` rules.
+ * -----------------------------------------------------------------------------*/
+
+.pg-overlay.pg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(9 9 11 / 0.28);
+  animation: pg-fade-in 120ms var(--pg-ease);
+}
+
+.pg-palette-positioner.pg-palette-positioner {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 12vh 16px 0;
+}
+
+.pg-palette.pg-palette {
+  position: relative;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  max-height: min(70vh, 520px);
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--pg-radius-lg);
+  background: var(--pg-surface);
+  box-shadow:
+    var(--pg-shadow-lg),
+    0 0 0 1px rgb(9 9 11 / 0.06);
+  color: var(--pg-fg);
+  font-family: var(--pg-font);
+  font-size: 13px;
+  transform: none;
+  transition: none;
+  animation: pg-pop-in 160ms var(--pg-ease);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.pg-palette-root.pg-palette-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.pg-palette-control.pg-palette-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  padding: 0 14px;
+  border: none;
+  border-bottom: 1px solid var(--pg-border-subtle);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--pg-fg-subtle);
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--pg-border-subtle);
+    box-shadow: none;
+  }
+
+  & > svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.pg-palette-input.pg-palette-input {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--pg-fg);
+  font-family: var(--pg-font);
+  font-size: 14px;
+  outline: none;
+
+  &::placeholder {
+    color: var(--pg-fg-subtle);
+  }
+}
+
+.pg-palette-content.pg-palette-content {
+  position: static;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pg-palette-list.pg-palette-list {
+  flex: 1;
+  max-height: none;
+  padding: 0 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 32px 8px;
+}
+
+.pg-palette-group-label.pg-palette-group-label {
+  display: flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 10px 6px;
+  color: var(--pg-fg-subtle);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.pg-palette-item.pg-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--pg-radius-sm);
+  color: var(--pg-fg);
+  font-size: 13px;
+  font-weight: 400;
+  cursor: default;
+  user-select: none;
+  content-visibility: visible;
+
+  &[data-highlighted] {
+    background: var(--pg-bg-muted);
+    color: var(--pg-fg);
+  }
+}
+
+.pg-palette-item-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pg-palette-item-meta {
+  color: var(--pg-fg-subtle);
+  font-family: var(--pg-mono);
+  font-size: 11px;
+}
+
+.pg-palette-item-check {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--pg-accent-fg);
+}
+
+.pg-palette-empty.pg-palette-empty {
+  padding: 32px 12px;
+  color: var(--pg-fg-muted);
+  font-size: 13px;
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.pg-palette-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--pg-bg-subtle);
+  color: var(--pg-fg-muted);
+  font-size: 12px;
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+@keyframes pg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pg-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.pg-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * Inspector (Toolbar) — keeps `.toolbar nav > button` for the e2e helpers
+ * -----------------------------------------------------------------------------*/
+
+/* Overlays the canvas instead of taking a column, so showing or hiding it never reflows the example */
+.pg div.toolbar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  width: var(--pg-inspector-w);
+  border: none;
+  border-inline-start: 1px solid var(--pg-border);
+  background: var(--pg-bg-subtle);
+  color: var(--pg-fg);
+
+  & nav {
+    display: flex;
+    gap: 2px;
+    margin: 10px 12px;
+    padding: 3px;
+    border: none;
+    border-radius: var(--pg-radius);
+    background: var(--pg-bg-emphasis);
+  }
+
+  & nav button {
+    all: unset;
+    flex: 1;
+    box-sizing: border-box;
+    height: 26px;
+    border-radius: 6px;
+    color: var(--pg-fg-muted);
+    font-family: var(--pg-font);
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: default;
+    transition:
+      background 120ms var(--pg-ease),
+      color 120ms var(--pg-ease);
+
+    &:hover {
+      color: var(--pg-fg);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--pg-ring);
+    }
+
+    &[data-active] {
+      background: var(--pg-bg);
+      color: var(--pg-fg);
+      box-shadow: var(--pg-shadow-sm);
+    }
+  }
+
+  & > div {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  & [data-content] {
+    display: none;
+  }
+
+  & [data-content][data-active] {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+}
+
+/* Bottom dock: in flow under the canvas, so it takes height and never covers wide examples */
+:root[data-pg-dock="bottom"] {
+  & .pg-body {
+    flex-direction: column;
+  }
+
+  & .pg div.toolbar {
+    position: static;
+    flex-shrink: 0;
+    width: auto;
+    height: var(--pg-inspector-h);
+    border-inline-start: none;
+    border-block-start: 1px solid var(--pg-border);
+  }
+
+  /* Tabs keep their side-panel width instead of stretching across */
+  & .pg div.toolbar nav {
+    align-self: flex-start;
+    width: calc(var(--pg-inspector-w) - 24px);
+  }
+
+  /* Controls flow into as many columns as fit; switches sit level with the inputs beside them */
+  & .pg .controls-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    align-items: end;
+    column-gap: 24px;
+  }
+
+  /* Switch before its label (DOM order): a wide cell would otherwise push it far from the label */
+  /* Several visualizers sit side by side, each scrolling on its own, instead of splitting the height */
+  & .pg div.toolbar [data-content][data-active]:has(> .viz) {
+    flex-direction: row;
+    overflow: auto hidden;
+  }
+
+  & .pg div.toolbar .viz {
+    min-width: 300px;
+
+    & + .viz {
+      border-inline-start: 1px solid var(--pg-border);
+    }
+  }
+
+  & .pg .controls-container .checkbox {
+    /* Toggles (sorted last) start their own row */
+    .text + & {
+      grid-column-start: 1;
+    }
+
+    & input[type="checkbox"] {
+      order: 0;
+    }
+
+    & label {
+      flex: none;
+    }
+  }
+}
+
+/* Controls */
+
+.pg .controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px 16px;
+
+  & .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px;
+    padding: 0 4px;
+    border-radius: var(--pg-radius-sm);
+
+    &:hover {
+      background: var(--pg-bg-muted);
+    }
+
+    & label {
+      flex: 1;
+      color: var(--pg-fg);
+      font-size: 13px;
+      cursor: default;
+    }
+
+    & input[type="checkbox"] {
+      appearance: none;
+      position: relative;
+      width: 28px;
+      height: 16px;
+      margin: 0;
+      order: 1;
+      border-radius: 999px;
+      background: var(--pg-bg-emphasis);
+      cursor: default;
+      transition: background 140ms var(--pg-ease);
+      flex-shrink: 0;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: white;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+        transition: transform 140ms var(--pg-ease);
+      }
+
+      &:checked {
+        background: var(--pg-accent);
+
+        &::after {
+          transform: translateX(12px);
+        }
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--pg-ring);
+      }
+    }
+  }
+
+  & .text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 4px;
+
+    & label {
+      margin: 0 !important;
+      color: var(--pg-fg-muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    & input,
+    & select {
+      box-sizing: border-box;
+      width: 100%;
+      height: 32px;
+      padding: 0 10px;
+      border: none;
+      border-radius: var(--pg-radius-sm);
+      background-color: var(--pg-bg-emphasis);
+      color: var(--pg-fg);
+      font-family: var(--pg-font);
+      font-size: 13px;
+      outline: none;
+      transition:
+        background-color 120ms var(--pg-ease),
+        box-shadow 120ms var(--pg-ease);
+
+      &:hover {
+        background-color: var(--zinc-300);
+      }
+
+      &:focus-visible {
+        background-color: var(--pg-bg);
+        box-shadow:
+          0 0 0 1px var(--pg-accent),
+          0 0 0 4px var(--pg-ring);
+      }
+    }
+
+    & select {
+      appearance: none;
+      padding-right: 30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m7 15 5 5 5-5M7 9l5-5 5 5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 9px center;
+    }
+  }
+}
+
+/* State visualizer */
+
+.pg div.toolbar .viz {
+  flex: 1;
+  padding: 4px 12px 16px;
+  border: none;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  color: var(--pg-fg);
+  font-size: 12px;
+
+  & pre {
+    margin: 0;
+  }
+
+  & summary {
+    margin: 8px 0;
+    color: var(--pg-fg-muted);
+    font-family: var(--pg-font);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: default;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  & summary + div {
+    padding: 10px 12px;
+    border-radius: var(--pg-radius);
+    background: var(--pg-bg-muted);
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  & summary + div,
+  & summary + div * {
+    font-family: var(--pg-mono);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Home gallery
+ * -----------------------------------------------------------------------------*/
+
+.pg-home {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--pg-bg);
+}
+
+.pg-home-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+.pg-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+
+  & .pg-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+    padding: 3px 10px 3px 8px;
+    border-radius: 999px;
+    background: var(--pg-bg-muted);
+    color: var(--pg-fg-muted);
+    font-size: 12px;
+    font-weight: 500;
+
+    & i {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--pg-accent);
+      box-shadow: 0 0 0 3px var(--pg-accent-muted);
+    }
+  }
+
+  & h1 {
+    margin: 4px 0 0;
+    color: var(--pg-fg);
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  & p {
+    max-width: 560px;
+    margin: 0;
+    color: var(--pg-fg-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+.pg-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+  height: 36px;
+  margin-bottom: 24px;
+  padding: 0 12px;
+  border-radius: var(--pg-radius);
+  background: var(--pg-bg-muted);
+  color: var(--pg-fg-subtle);
+  transition:
+    background 120ms var(--pg-ease),
+    box-shadow 120ms var(--pg-ease);
+
+  &:hover {
+    background: var(--pg-bg-emphasis);
+  }
+
+  &:focus-within {
+    background: var(--pg-bg);
+    box-shadow:
+      0 0 0 1px var(--pg-accent),
+      0 0 0 4px var(--pg-ring);
+  }
+
+  & svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  & input {
+    all: unset;
+    flex: 1;
+    color: var(--pg-fg);
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    font-family: var(--pg-font);
+    font-size: 13px;
+
+    &::placeholder {
+      color: var(--pg-fg-subtle);
+    }
+  }
+}
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--pg-radius);
+  background: var(--pg-bg-subtle);
+  color: var(--pg-fg);
+  text-decoration: none;
+  transition: background 140ms var(--pg-ease);
+
+  &:hover {
+    background: var(--pg-bg-muted);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 1px var(--pg-accent),
+      0 0 0 4px var(--pg-ring);
+  }
+
+  & strong {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 500;
+
+    & svg {
+      width: 14px;
+      height: 14px;
+      color: var(--pg-fg-subtle);
+      transition:
+        transform 140ms var(--pg-ease),
+        color 140ms var(--pg-ease);
+    }
+  }
+
+  &:hover strong svg {
+    color: var(--pg-accent-fg);
+    transform: translateX(2px);
+  }
+
+  & span {
+    color: var(--pg-fg-muted);
+    font-size: 12px;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Focus: replace the global blue outline inside the shell
+ * -----------------------------------------------------------------------------*/
+
+.pg :is(.pg-topbar, div.toolbar, .pg-home) *:focus,
+.pg-palette *:focus {
+  outline: none;
+}
+
+.pg-home-empty {
+  color: var(--pg-fg-muted);
+  font-size: 13px;
+}

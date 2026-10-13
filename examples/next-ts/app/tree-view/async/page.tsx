@@ -2,7 +2,7 @@
 
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
-import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
+import { ChevronRightIcon, FileIcon, FolderIcon, LoaderCircleIcon } from "lucide-react"
 import { JSX, useId, useState } from "react"
 import "@styles/tree-view.css"
 
@@ -71,8 +71,9 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div {...api.getNodeProps(nodeProps)}>
         <div {...api.getNodeCellProps(nodeProps)}>
-          {nodeState.loading ? "..." : nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
           <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+          {nodeState.loading && <LoaderCircleIcon className="tree-view-spinner" aria-hidden />}
           {nodeState.isBranch && (
             <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
               <ChevronRightIcon />

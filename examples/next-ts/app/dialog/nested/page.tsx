@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useRef } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -38,7 +39,7 @@ export default function Page() {
                     Make changes to your profile here. Click save when you are done.
                   </p>
                   <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1">
-                    X
+                    <XIcon />
                   </button>
                   <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
                   <button data-testid="save-button-1">Save Changes</button>
@@ -54,7 +55,7 @@ export default function Page() {
                         <div {...childDialog.getContentProps()}>
                           <h2 {...childDialog.getTitleProps()}>Nested</h2>
                           <button {...childDialog.getCloseTriggerProps()} data-testid="close-2">
-                            X
+                            <XIcon />
                           </button>
                           <button onClick={() => parentDialog.setOpen(false)} data-testid="special-close">
                             Close Dialog 1

@@ -2,6 +2,7 @@
 
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -30,7 +31,7 @@ export default function Page() {
                   Popover Description
                 </div>
                 <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
-                  X
+                  <XIcon />
                 </button>
               </div>
             )}

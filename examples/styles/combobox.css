@@ -1,87 +1,73 @@
 [data-combobox-root] {
   display: inline-flex;
   flex-direction: column;
+  gap: 6px;
 }
 
 [data-combobox-label] {
-  display: block;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  color: #1f2937;
-  font-size: 14px;
+  font-size: var(--z-text-md);
   font-weight: 500;
 }
 
 [data-combobox-control] {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   width: 300px;
-  padding: 0 4px 0 0;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: white;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  height: var(--z-control-h);
+  padding-inline-end: 4px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-sm);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
   transition:
-    border-color 120ms,
-    box-shadow 120ms;
+    border-color var(--z-duration) var(--z-ease),
+    box-shadow var(--z-duration) var(--z-ease);
 
   &:hover {
-    border-color: #9ca3af;
+    border-color: var(--z-border-emphasis);
   }
 
   &:focus-within {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.25);
+    border-color: var(--z-accent);
+    box-shadow: 0 0 0 3px var(--z-ring);
   }
 
   &[data-disabled] {
-    background: #f9fafb;
+    opacity: var(--z-disabled-opacity);
   }
 
   &[data-invalid] {
-    border-color: #dc2626;
+    border-color: var(--z-danger);
   }
 }
 
 [data-combobox-input] {
   flex: 1;
   min-width: 0;
-  padding: 6px 10px;
+  height: 100%;
   border: none;
   background: transparent;
-  color: #111827;
-  font-size: 14px;
-  line-height: 20px;
-  outline: none;
+  box-shadow: none;
 
-  &::placeholder {
-    color: #9ca3af;
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 }
 
 [data-combobox-trigger],
 [data-combobox-clear-trigger] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
+  width: 24px;
   height: 24px;
-  padding: 0 4px;
-  border: none;
-  border-radius: 4px;
+  padding: 0;
+  border-radius: var(--z-radius-xs);
   background: transparent;
-  color: #6b7280;
-  font-size: 12px;
-  cursor: default;
+  color: var(--z-fg-muted);
 
-  &:hover {
-    background: #f3f4f6;
-  }
-
-  & svg {
-    width: 1em;
-    height: 1em;
+  &:hover:not(:disabled) {
+    background: var(--z-bg-muted);
   }
 }
 
@@ -89,13 +75,21 @@
   z-index: calc(var(--layer-index) * 2 + 1);
   margin: 0;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
-  box-shadow:
-    0 10px 24px -6px rgb(0 0 0 / 0.15),
-    0 2px 6px rgb(0 0 0 / 0.06);
-  font-size: 14px;
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-popover);
+  font-size: var(--z-text-md);
+}
+
+[data-combobox-content] > [data-combobox-input] {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: var(--z-control-h);
+  padding: 0 12px;
+  border-bottom: 1px solid var(--z-border);
+  border-radius: 0;
+  background: var(--z-bg);
 }
 
 [data-combobox-list] {
@@ -109,47 +103,38 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 32px;
   padding: 6px 8px;
-  border-radius: 5px;
-  color: #111827;
+  border-radius: var(--z-radius-sm);
   user-select: none;
   content-visibility: auto;
 
   &[data-highlighted] {
-    background: #eef2ff;
-    color: #3730a3;
-  }
-
-  &[data-state="checked"] {
-    font-weight: 500;
+    background: var(--z-highlight);
   }
 
   &[data-disabled] {
-    color: #9ca3af;
-    cursor: not-allowed;
+    opacity: var(--z-disabled-opacity);
   }
 }
 
 [data-combobox-item-indicator] {
-  color: #4f46e5;
-  font-size: 12px;
+  display: inline-flex;
+  color: var(--z-accent-fg);
 }
 
 [data-combobox-item-group-label] {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-  padding: 6px 8px 4px;
-  color: #6b7280;
-  font-size: 12px;
+  padding: 6px 8px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
   font-weight: 500;
   user-select: none;
 }
 
 [data-combobox-empty] {
   padding: 16px 12px;
-  color: #6b7280;
-  font-size: 13px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
   text-align: center;
 
   &:empty {

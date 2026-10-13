@@ -192,6 +192,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "QR Code",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "with-logo", title: "With Logo" },
+      { slug: "live-input", title: "Live Input" },
+      { slug: "error-correction", title: "Error Correction" },
+      { slug: "wifi", title: "Wi-Fi" },
       { slug: "download", title: "Download" },
     ],
   },
@@ -261,7 +265,14 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "progress",
     label: "Progress",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Linear" },
+      { slug: "circular", title: "Circular" },
+      { slug: "indeterminate", title: "Indeterminate" },
+      { slug: "vertical", title: "Vertical" },
+      { slug: "value-format", title: "Value Format" },
+      { slug: "simulated", title: "Simulated Upload" },
+    ],
   },
   {
     slug: "meter",
@@ -572,7 +583,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "pagination",
     label: "Pagination",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "first-last", title: "First and Last" },
+      { slug: "page-size", title: "Page Size" },
+      { slug: "compact", title: "Compact" },
+      { slug: "links", title: "Links" },
+    ],
   },
   {
     slug: "pin-input",
@@ -619,7 +636,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "rating-group",
     label: "Rating Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "read-only", title: "Read Only" },
+      { slug: "custom-icon", title: "Custom Icon" },
+      { slug: "sizes", title: "Sizes" },
+      { slug: "controlled", title: "Controlled" },
+    ],
   },
   {
     slug: "slider",
@@ -646,7 +669,6 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "editable", title: "Editable" },
-      { slug: "form", title: "Form" },
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },

@@ -3,6 +3,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { tagsInputControls } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -53,7 +54,7 @@ export default function Page() {
                       data-testid={`${toDashCase(value)}-close-button`}
                       {...api.getItemDeleteTriggerProps({ index, value })}
                     >
-                      &#x2715;
+                      <XIcon />
                     </button>
                   </div>
                   <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
@@ -61,7 +62,7 @@ export default function Page() {
               ))}
               <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
               <button type="button" {...api.getClearTriggerProps()}>
-                X
+                <XIcon />
               </button>
             </div>
             <input {...api.getHiddenInputProps()} />

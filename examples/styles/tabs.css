@@ -1,53 +1,73 @@
+/* The root positions the indicator, so trigger offsets are measured against it: don't position the list */
 [data-tabs-root] {
+  position: relative;
+  width: 100%;
   max-width: 32rem;
-  border: 1px solid hsl(219, 1%, 72%);
-  padding: 0.5rem;
-
-  &[data-orientation="vertical"] {
-    display: flex;
-  }
 }
 
 [data-tabs-list] {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding-inline: 0.3rem;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--z-radius);
+  background: var(--z-bg-muted);
+
+  /* Opt-in: fill the container and share the width equally */
+  &[data-stretch] {
+    display: flex;
+
+    & [data-tabs-trigger] {
+      flex: 1;
+      justify-content: center;
+    }
+  }
 }
 
 [data-tabs-trigger] {
-  display: inline-flex;
+  /* Above the indicator, which comes earlier in the DOM */
   position: relative;
-  margin: 0;
-  padding: 0.3rem 0.5rem;
-  flex: 1;
-  justify-content: center;
+  /* Triggers can be links (tabs/with-link), so don't rely on the button base styles */
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  font-size: var(--z-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0 12px;
+  border-radius: var(--z-radius-sm);
+  background: transparent;
+  color: var(--z-fg-muted);
+  transition: color var(--z-duration) var(--z-ease);
+
+  &:hover:not(:disabled) {
+    background: transparent;
+    color: var(--z-fg);
+  }
 
   &[data-selected] {
-    border-radius: 0;
-    background: blue;
-    color: white;
+    color: var(--z-fg);
   }
+}
+
+/* The sliding pill behind the selected trigger */
+[data-tabs-indicator] {
+  --transition-timing-function: var(--z-ease);
+  --transition-duration: 200ms;
+  top: var(--top);
+  left: var(--left);
+  width: var(--width);
+  height: var(--height);
+  border-radius: var(--z-radius-sm);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-sm);
 }
 
 [data-tabs-content] {
-  position: relative;
-  padding: 0.25rem 0.5rem;
-  margin-top: 4px;
-  background: white;
-}
+  padding-top: 12px;
+  font-size: var(--z-text-md);
+  line-height: 1.6;
 
-[data-tabs-indicator] {
-  background-color: red;
-  z-index: 10;
-
-  &[data-orientation="horizontal"] {
-    width: var(--width);
-    height: 4px;
-  }
-
-  &[data-orientation="vertical"] {
-    height: var(--height);
-    width: 4px;
+  & p {
+    margin: 0 0 12px;
   }
 }

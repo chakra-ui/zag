@@ -23,13 +23,13 @@ export default function Page() {
   return (
     <>
       <main className="qr-code">
-        <div {...api.getRootProps()}>
-          <svg {...api.getFrameProps()}>
-            <path {...api.getPatternProps()} />
-          </svg>
-          <div {...api.getOverlayProps()}>
-            <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+        <div className="vstack">
+          <div {...api.getRootProps()}>
+            <svg {...api.getFrameProps()}>
+              <path {...api.getPatternProps()} />
+            </svg>
           </div>
+          <span className="qr-caption">{api.value}</span>
         </div>
       </main>
 

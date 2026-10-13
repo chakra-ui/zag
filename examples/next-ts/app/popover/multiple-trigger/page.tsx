@@ -2,7 +2,7 @@
 
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { MoreVerticalIcon } from "lucide-react"
+import { MoreVerticalIcon, XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/popover.css"
@@ -127,7 +127,7 @@ export default function PopoverMultipleTrigger() {
                   fontSize: "16px",
                 }}
               >
-                ✕
+                <XIcon />
               </button>
             </div>
           </Presence>

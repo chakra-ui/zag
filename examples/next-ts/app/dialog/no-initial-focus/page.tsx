@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/dialog.css"
 
@@ -24,7 +25,9 @@ export default function Page() {
           <div {...api.getBackdropProps()} />
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
               <h2 {...api.getTitleProps()}>Special offer</h2>
               <p {...api.getDescriptionProps()}>Opened without moving focus. Tab and Escape still work.</p>
               <input placeholder="Enter name..." />

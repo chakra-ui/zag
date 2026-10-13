@@ -3,7 +3,7 @@
 import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import * as tabs from "@zag-js/tabs"
-import { GitBranchIcon, TagIcon } from "lucide-react"
+import { ChevronsUpDownIcon, GitBranchIcon, TagIcon } from "lucide-react"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import "@styles/select.css"
 import "@styles/tabs.css"
@@ -83,7 +83,9 @@ export default function Page() {
           <button {...selectApi.getTriggerProps()}>
             {selectedTab === "branch" ? <GitBranchIcon /> : <TagIcon />}
             <span>{selectApi.valueAsString || "Select option"}</span>
-            <span {...selectApi.getIndicatorProps()}>▼</span>
+            <span {...selectApi.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
           </button>
         </div>
 
@@ -92,6 +94,7 @@ export default function Page() {
             <div {...selectApi.getContentProps()}>
               <div {...tabApi.getRootProps()}>
                 <div
+                  data-stretch=""
                   {...mergeProps(tabApi.getListProps(), {
                     onKeyDown(event) {
                       if (event.key === "Home" || event.key === "End") {
@@ -119,7 +122,7 @@ export default function Page() {
                     >
                       {branchData.map((item) => (
                         <div key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
-                          {item.label}
+                          <span {...selectApi.getItemTextProps({ item })}>{item.label}</span>
                         </div>
                       ))}
                     </div>
@@ -141,7 +144,7 @@ export default function Page() {
                     >
                       {tagData.map((item) => (
                         <div key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
-                          {item.label}
+                          <span {...selectApi.getItemTextProps({ item })}>{item.label}</span>
                         </div>
                       ))}
                     </div>

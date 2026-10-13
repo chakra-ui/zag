@@ -1,84 +1,101 @@
+/* Options stack by default; horizontal wraps them into a row, with the label kept on its own line above */
 [data-radio-group-root] {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  /* :where keeps this overridable by scoped variants (e.g. segmented-control.css) */
+  &:where([data-orientation="horizontal"]) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 20px;
+
+    & [data-radio-group-label] {
+      flex-basis: 100%;
+    }
+  }
+}
+
+[data-radio-group-label] {
+  margin: 0 0 2px;
+  font-size: var(--z-text-md);
+  font-weight: 500;
 }
 
 [data-radio-group-item] {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  position: relative;
-  z-index: 2;
+  font-size: var(--z-text-md);
+  cursor: default;
+  user-select: none;
 
   &[data-disabled] {
-    cursor: not-allowed;
-  }
-
-  &[data-state="checked"][data-ssr] {
-    border-radius: 0.25rem;
-    box-shadow:
-      rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem,
-      rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
-    background-color: rgb(255, 255, 255);
+    opacity: var(--z-disabled-opacity);
   }
 }
 
+/* A classic radio: a ring that fills with an accent dot when checked */
 [data-radio-group-item-control] {
-  &[data-focus-visible] {
-    outline: 2px solid royalblue;
-  }
-}
-
-[data-radio-group-radio-label] {
-  &[data-disabled] {
-    opacity: 0.4;
-  }
-}
-
-[data-radio-group-item-control] {
-  height: 20px;
-  width: 20px;
-  background-color: #eee;
-  border: solid 2px grey;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &[data-hover] {
-    background-color: #ccc;
-  }
-
-  &[data-state="checked"] {
-    background-color: #2196f3;
-    border-color: #2196f3;
-    &::after {
-      display: initial;
-    }
-  }
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1px solid var(--z-border-emphasis);
+  border-radius: var(--z-radius-full);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
+  transition:
+    border-color var(--z-duration) var(--z-ease),
+    box-shadow var(--z-duration) var(--z-ease);
 
   &::after {
     content: "";
-    display: none;
-    width: 4px;
-    height: 9px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    position: relative;
-    top: -1px;
+    width: 8px;
+    height: 8px;
+    border-radius: inherit;
+    background: var(--z-accent);
+    scale: 0;
+    transition: scale var(--z-duration) var(--z-ease);
+  }
+
+  &[data-hover]:not([data-disabled]) {
+    border-color: var(--z-fg-subtle);
+  }
+
+  &[data-state="checked"] {
+    border-color: var(--z-accent);
+
+    &::after {
+      scale: 1;
+    }
+  }
+
+  &[data-focus-visible] {
+    box-shadow: var(--z-focus-ring);
+  }
+
+  &[data-invalid] {
+    border-color: var(--z-danger);
   }
 }
 
+/* The indicator has no look by default; segmented-control.css gives it one */
 [data-radio-group-indicator] {
-  height: 4px;
-  background-color: red;
   z-index: 1;
-  border-radius: 0.25rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem,
-    rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
-  background-color: rgb(255, 255, 255);
+}
+
+/* The radio examples use a fieldset only to disable the group, not as a box */
+.radio fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
 }

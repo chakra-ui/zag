@@ -85,15 +85,15 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <div {...api.getNodeGroupProps(nodeProps)}>
       <div {...api.getNodeProps(nodeProps)}>
         <div {...api.getNodeCellProps(nodeProps)}>
-          <TreeNodeCheckbox {...props} />
-        </div>
-        <div {...api.getNodeCellProps(nodeProps)}>
-          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
           {nodeState.isBranch && (
             <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
               <ChevronRightIcon />
             </span>
           )}
+          <TreeNodeCheckbox {...props} />
+        </div>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
         </div>
       </div>
       {nodeState.isBranch && (

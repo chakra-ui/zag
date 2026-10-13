@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/dialog.css"
 
@@ -18,7 +19,7 @@ export default function Page() {
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
               <button {...api.getCloseTriggerProps()} data-no-autofocus>
-                Close
+                <XIcon />
               </button>
               <button data-no-autofocus aria-label="Help">
                 ?

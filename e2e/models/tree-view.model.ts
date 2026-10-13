@@ -56,6 +56,14 @@ export class TreeViewModel extends Model {
     return this.node(name).click(options)
   }
 
+  clickNodeMenuTrigger(value: string) {
+    return this.node(value).locator("[data-menu-trigger]").click()
+  }
+
+  seeMenuIsOpen() {
+    return expect(this.page.locator("[data-menu-content]")).toBeVisible()
+  }
+
   focusItem(name: string) {
     return this.item(name).focus()
   }

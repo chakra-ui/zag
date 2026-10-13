@@ -30,7 +30,7 @@ export default function Page() {
             console.log(result)
           }}
         >
-          <fieldset disabled={false}>
+          <fieldset className="vstack gap-5" disabled={false}>
             <div {...api.getRootProps()}>
               <h3 {...api.getLabelProps()}>Fruits</h3>
               <div {...api.getIndicatorProps()} />
@@ -46,16 +46,18 @@ export default function Page() {
             </div>
 
             {/*  */}
-            <button type="reset">Reset</button>
-            <button type="button" onClick={() => api.clearValue()}>
-              Clear
-            </button>
-            <button type="button" onClick={() => api.setValue("mango")}>
-              Set to Mangoes
-            </button>
-            <button type="button" onClick={() => api.focus()}>
-              Focus
-            </button>
+            <div className="hstack">
+              <button type="reset">Reset</button>
+              <button type="button" onClick={() => api.clearValue()}>
+                Clear
+              </button>
+              <button type="button" onClick={() => api.setValue("mango")}>
+                Set to Mangoes
+              </button>
+              <button type="button" onClick={() => api.focus()}>
+                Focus
+              </button>
+            </div>
           </fieldset>
         </form>
       </main>

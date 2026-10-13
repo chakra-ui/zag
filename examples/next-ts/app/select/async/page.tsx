@@ -3,6 +3,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectControls } from "@zag-js/shared"
+import { ChevronsUpDownIcon, XIcon } from "lucide-react"
 import { useEffect, useId, useMemo, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -53,9 +54,15 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
-              <span>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>X</button>
+            <div className="select-indicator-group">
+              <button {...api.getClearTriggerProps()}>
+                <XIcon />
+              </button>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           <Portal>

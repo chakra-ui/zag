@@ -13,11 +13,14 @@ export function useControls<T extends ControlRecord>(config: T) {
     })
   }
 
+  // Toggles last, so they pack together instead of breaking up the inputs
+  const keys = Object.keys(config).sort((a, b) => Number(isBoolean(config[a])) - Number(isBoolean(config[b])))
+
   return {
     context,
     ui: () => (
       <div className="controls-container">
-        {Object.keys(config).map((key) => {
+        {keys.map((key) => {
           const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
           const value = deepGet(state, key)
           switch (type) {
@@ -124,3 +127,5 @@ export function useControls<T extends ControlRecord>(config: T) {
     ),
   }
 }
+
+const isBoolean = (control: ControlRecord[string] | undefined) => control?.type === "boolean"

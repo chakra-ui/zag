@@ -1,25 +1,55 @@
-.segmented-control [data-segmented-control-root] {
-  width: 100%;
-  padding: 4px;
-  background-color: #f1f3f5;
-  border-radius: 4px;
-  gap: 8px;
+/* A radio group styled as a segmented control: a muted strip with a pill sliding under the selected item */
+
+.segmented-control [data-radio-group-root] {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--z-radius);
+  background: var(--z-bg-muted);
 }
 
-.segmented-control [data-segmented-control-item] {
-  padding-left: 0;
-  padding: 8px;
-  width: 100%;
-  text-align: center;
-  align-items: center;
+.segmented-control [data-radio-group-item] {
   justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--z-radius-sm);
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+  font-weight: 500;
+  cursor: default;
+  user-select: none;
+  transition: color var(--z-duration) var(--z-ease);
+
+  &:hover:not([data-disabled]),
+  &[data-state="checked"] {
+    color: var(--z-fg);
+  }
 
   &[data-focus-visible] {
-    outline: 2px solid royalblue;
+    box-shadow: var(--z-focus-ring);
+  }
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
+
+  /* Before the indicator is measured, the selected item paints its own pill */
+  &[data-state="checked"][data-ssr] {
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg);
+    box-shadow: var(--z-shadow-sm);
   }
 }
 
-.segmented-control [data-segmented-control-indicator] {
+.segmented-control [data-radio-group-indicator] {
+  --transition-timing-function: var(--z-ease);
+  --transition-duration: 200ms;
+  top: var(--top);
+  left: var(--left);
   width: var(--width);
   height: var(--height);
+  border-radius: var(--z-radius-sm);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-sm);
 }

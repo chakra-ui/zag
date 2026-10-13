@@ -4,6 +4,7 @@ import * as dialog from "@zag-js/dialog"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon, XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/select.css"
 import "@styles/dialog.css"
@@ -26,9 +27,15 @@ function Select() {
           })}
         >
           <span>{api.valueAsString || "Select option"}</span>
-          <span>▼</span>
         </button>
-        <button {...api.getClearTriggerProps()}>X</button>
+        <div className="select-indicator-group">
+          <button {...api.getClearTriggerProps()}>
+            <XIcon />
+          </button>
+          <span {...api.getIndicatorProps()}>
+            <ChevronsUpDownIcon />
+          </span>
+        </div>
       </div>
       {api.open && (
         <Portal>

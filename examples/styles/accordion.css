@@ -30,6 +30,12 @@
   padding-block: 12px;
 }
 
+/* Collapsible-driven content: pad the child, not the animated element */
+.accordion [data-collapsible-content] > p {
+  margin: 0;
+  padding-block: 12px;
+}
+
 [data-accordion-item-indicator] {
   display: inline-flex;
 }

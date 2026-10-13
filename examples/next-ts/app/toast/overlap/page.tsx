@@ -33,7 +33,7 @@ export default function ToastGroup() {
     <>
       <main>
         <Dialog />
-        <div style={{ display: "flex", gap: "16px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", maxWidth: 640 }}>
           <button
             onClick={() => {
               toaster.create({

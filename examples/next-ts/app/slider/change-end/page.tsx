@@ -10,8 +10,10 @@ export default function Page() {
   const [endValue, setEndValue] = useState([50])
 
   const service = useMachine(slider.machine, {
+    thumbSize: 20,
     id: useId(),
     name: "quantity",
+    defaultValue: [50],
     onValueChange(details) {
       setValue(details.value)
     },
@@ -36,7 +38,7 @@ export default function Page() {
           ))}
         </div>
 
-        <div>
+        <div style={{ display: "flex", gap: "16px" }}>
           <output>Change: {value[0]}</output>
           <output>Change end: {endValue[0]}</output>
         </div>

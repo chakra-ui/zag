@@ -11,7 +11,7 @@ export default function Page() {
   const sliderService = useMachine(slider.machine, {
     id: useId(),
     name: "quantity",
-    thumbSize: { width: 20, height: 20 },
+    thumbSize: 20,
     ids: {
       thumb(index) {
         return `thumb-${index}`

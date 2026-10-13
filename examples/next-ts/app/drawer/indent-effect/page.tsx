@@ -1,10 +1,11 @@
 "use client"
 
+import styles from "@styles/drawer-indent-effect.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "@/components/presence"
-import styles from "@styles/drawer-indent-effect.module.css"
 
 const stack = drawer.createStack()
 
@@ -51,7 +52,7 @@ export default function Page() {
               </p>
               <div className={styles.actions}>
                 <button className={styles.close} {...api.getCloseTriggerProps()}>
-                  Close
+                  <XIcon />
                 </button>
               </div>
             </div>

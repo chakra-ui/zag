@@ -9,6 +9,7 @@ export default function Page() {
   const service = useMachine(slider.machine, {
     id: useId(),
     name: "quantity",
+    defaultValue: [50],
     onValueChange(details) {
       setValue(details.value)
     },
@@ -33,7 +34,7 @@ export default function Page() {
           ))}
         </div>
 
-        <div>
+        <div style={{ display: "flex", gap: "16px" }}>
           <output>Change: {value[0]}</output>
           <output>Change end: {endValue[0]}</output>
         </div>

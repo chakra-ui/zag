@@ -48,7 +48,7 @@ export default function Page() {
           <div>Time zone: {timeZone}</div>
         </output>
 
-        <label style={{ display: "block", marginTop: "12px" }}>
+        <label>
           <input
             type="checkbox"
             data-testid="hide-tz"
