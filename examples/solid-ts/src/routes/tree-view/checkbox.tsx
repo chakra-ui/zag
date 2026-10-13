@@ -54,6 +54,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <div {...api().getNodeGroupProps(nodeProps)}>
       <div {...api().getNodeProps(nodeProps)}>
         <div {...api().getNodeCellProps(nodeProps)}>
+          <Show when={nodeState().isBranch}>
+            <span {...api().getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          </Show>
           <span {...api().getNodeCheckboxProps(nodeProps)}>
             {nodeState().checked === true ? (
               <CheckSquareIcon />
@@ -66,11 +71,6 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
         </div>
         <div {...api().getNodeCellProps(nodeProps)}>
           <span {...api().getNodeTextProps(nodeProps)}>{node.name}</span>
-          <Show when={nodeState().isBranch}>
-            <span {...api().getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
-              <ChevronRightIcon />
-            </span>
-          </Show>
         </div>
       </div>
       <Show when={nodeState().isBranch}>

@@ -5,6 +5,7 @@ import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import "@styles/carousel.css"
+import { XIcon } from "lucide-solid"
 
 const SLIDE_COUNT = 30
 
@@ -73,7 +74,7 @@ export default function Page() {
             <p {...api().getDescriptionProps()}>Navigate past page 10 to test the fix.</p>
             <CarouselInDialog page={page()} onPageChange={setPage} />
             <button {...api().getCloseTriggerProps()} data-testid="close-dialog">
-              Close
+              <XIcon />
             </button>
           </Presence>
         </div>

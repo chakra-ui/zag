@@ -820,15 +820,6 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
-    slug: "sandbox",
-    label: "Sandbox",
-    examples: [
-      { slug: "basic", title: "Basic" },
-      { slug: "composable", title: "Composable" },
-      { slug: "nested-states", title: "Nested States" },
-    ],
-  },
-  {
     slug: "swap",
     label: "Swap",
     examples: [{ slug: "basic", title: "Basic" }],

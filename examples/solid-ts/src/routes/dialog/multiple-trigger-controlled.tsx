@@ -5,6 +5,7 @@ import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import { XIcon } from "lucide-solid"
 
 interface User {
   id: number
@@ -110,7 +111,9 @@ export default function DialogMultipleTriggerControlled() {
                     </select>
                   </div>
                 </div>
-                <button {...api().getCloseTriggerProps()}>Close</button>
+                <button {...api().getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </Show>
             </Presence>
           </div>

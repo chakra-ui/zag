@@ -10,7 +10,7 @@ import "@styles/date-picker.css"
 
 const format = (date: DateValue) => {
   if (!date) {
-    return undefined
+    return ""
   }
   const month = date?.month?.toString()?.padStart(2, "0")
   const year = date?.year?.toString()
@@ -29,16 +29,19 @@ const parse = (string: string) => {
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const service = useMachine(datePicker.machine, {
-    id: createUniqueId(),
-    locale: "en",
-    selectionMode: "range",
-    minView: "month",
-    defaultView: "month",
-    parse,
-    format,
-    placeholder: "mm/yyyy",
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id: createUniqueId(),
+      locale: "en",
+      selectionMode: "range",
+      minView: "month",
+      defaultView: "month",
+      parse,
+      format,
+      placeholder: "mm/yyyy",
+    }),
+  )
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 

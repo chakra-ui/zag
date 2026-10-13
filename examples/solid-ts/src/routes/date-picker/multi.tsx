@@ -9,11 +9,14 @@ import "@styles/date-picker.css"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const service = useMachine(datePicker.machine, {
-    id: createUniqueId(),
-    locale: "en",
-    selectionMode: "multiple",
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id: createUniqueId(),
+      locale: "en",
+      selectionMode: "multiple",
+    }),
+  )
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 

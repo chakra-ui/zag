@@ -11,7 +11,10 @@ import "@styles/hover-card.css"
 export default function Page() {
   const controls = useControls(hoverCardControls)
 
-  const service = useMachine(hoverCard.machine, { id: createUniqueId(), defaultOpen: true })
+  const service = useMachine(
+    hoverCard.machine,
+    controls.mergeProps<hoverCard.Props>({ id: createUniqueId(), defaultOpen: true }),
+  )
 
   const api = createMemo(() => hoverCard.connect(service, normalizeProps))
 

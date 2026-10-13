@@ -62,6 +62,14 @@ export default function Page() {
                         <span class="gridlist-item-description">{item.description}</span>
                       </div>
                       <span class="gridlist-item-badge">{item.badge}</span>
+                      <div class="gridlist-actions">
+                        <button type="button" onClick={() => setLastAction(`Edit ${item.name}`)}>
+                          Edit
+                        </button>
+                        <button type="button" onClick={() => setLastAction(`Delete ${item.name}`)}>
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

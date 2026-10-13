@@ -643,6 +643,8 @@ body:has(.window-list-virtualizer) {
   display: flex;
   align-items: flex-end;
   box-sizing: border-box;
+  /* Fills its GROUP_HEIGHT slot so the label sits on its items */
+  height: 30px;
   margin: 0;
   padding: 0 10px 6px;
   color: var(--pg-fg-subtle);

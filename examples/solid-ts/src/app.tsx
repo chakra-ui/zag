@@ -2,24 +2,24 @@ import { MetaProvider, Title } from "@solidjs/meta"
 import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
 import "@styles/global.css"
+import "@styles/playground.css"
 import { Suspense } from "solid-js"
-import { Sidebar } from "~/components/sidebar"
+import { Shell } from "~/components/shell/shell"
 
 export default function App() {
   return (
-    <div class="page">
-      <Router
-        preload
-        root={(props) => (
-          <MetaProvider>
-            <Title>Zag.js + Solid</Title>
-            <Sidebar />
+    <Router
+      preload
+      root={(props) => (
+        <MetaProvider>
+          <Title>Zag Playground</Title>
+          <Shell>
             <Suspense>{props.children}</Suspense>
-          </MetaProvider>
-        )}
-      >
-        <FileRoutes />
-      </Router>
-    </div>
+          </Shell>
+        </MetaProvider>
+      )}
+    >
+      <FileRoutes />
+    </Router>
   )
 }

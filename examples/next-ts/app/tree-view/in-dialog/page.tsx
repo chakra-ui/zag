@@ -223,7 +223,7 @@ export default function Page() {
                 <h2 {...dialogApi.getTitleProps()} style={{ margin: 0 }}>
                   Categories
                 </h2>
-                <button {...dialogApi.getCloseTriggerProps()} aria-label="Close">
+                <button {...dialogApi.getCloseTriggerProps()}>
                   <XIcon />
                 </button>
               </header>

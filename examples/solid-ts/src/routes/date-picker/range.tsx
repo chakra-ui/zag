@@ -9,13 +9,16 @@ import "@styles/date-picker.css"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const service = useMachine(datePicker.machine, {
-    id: createUniqueId(),
-    name: "date[]",
-    locale: "en",
-    numOfMonths: 2,
-    selectionMode: "range",
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id: createUniqueId(),
+      name: "date[]",
+      locale: "en",
+      numOfMonths: 2,
+      selectionMode: "range",
+    }),
+  )
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
   const offset = createMemo(() => api().getOffset({ months: 1 }))

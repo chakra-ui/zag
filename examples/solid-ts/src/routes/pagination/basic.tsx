@@ -1,7 +1,8 @@
 import * as pagination from "@zag-js/pagination"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
 import { paginationControls, paginationData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -9,12 +10,18 @@ import "@styles/pagination.css"
 
 export default function Page() {
   const controls = useControls(paginationControls)
+  const [details, setDetails] = createSignal({} as any)
 
-  const service = useMachine(pagination.machine, {
-    id: createUniqueId(),
-    count: paginationData.length,
-    onPageChange: console.log,
-  })
+  const service = useMachine(
+    pagination.machine,
+    controls.mergeProps<pagination.Props>({
+      id: createUniqueId(),
+      count: paginationData.length,
+      onPageChange(details) {
+        setDetails(details)
+      },
+    }),
+  )
 
   const api = createMemo(() => pagination.connect(service, normalizeProps))
 
@@ -23,59 +30,72 @@ export default function Page() {
   return (
     <>
       <main class="pagination">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>FIRST NAME</th>
-              <th>LAST NAME</th>
-              <th>EMAIL</th>
-              <th>PHONE</th>
-            </tr>
-          </thead>
-          <tbody>
-            <For each={data()}>
-              {(item) => (
-                <tr>
-                  <td>{item.id}</td>
-                  <td>{item.first_name}</td>
-                  <td>{item.last_name}</td>
-                  <td>{item.email}</td>
-                  <td>{item.phone}</td>
-                </tr>
-              )}
-            </For>
-          </tbody>
-        </table>
-        {api().totalPages > 1 && (
-          <nav {...api().getRootProps()}>
-            <ul>
-              <li>
-                <button {...api().getPrevTriggerProps()}>Previous</button>
-              </li>
-              <For each={api().pages}>
-                {(page, i) => {
-                  if (page.type === "page")
-                    return (
-                      <li>
-                        <button data-testid={`item-${page.value}`} {...api().getItemProps(page)}>
-                          {page.value}
-                        </button>
-                      </li>
-                    )
-                  return (
-                    <li>
-                      <span {...api().getEllipsisProps({ index: i() })}>&#8230;</span>
-                    </li>
-                  )
-                }}
+        <div class="pagination-layout">
+          <table class="pagination-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <For each={data()}>
+                {(item) => (
+                  <tr>
+                    <td>{item.id}</td>
+                    <td>
+                      {item.first_name} {item.last_name}
+                    </td>
+                    <td>{item.email}</td>
+                  </tr>
+                )}
               </For>
-              <li>
-                <button {...api().getNextTriggerProps()}>Next</button>
-              </li>
-            </ul>
-          </nav>
-        )}
+            </tbody>
+          </table>
+
+          <div class="pagination-bar">
+            <span class="pagination-summary">
+              {api().pageRange.start + 1}–{api().pageRange.end} of {api().count}
+            </span>
+            <Show when={api().totalPages > 1}>
+              <nav {...api().getRootProps()}>
+                <ul>
+                  <li>
+                    <button {...api().getPrevTriggerProps()}>
+                      <ChevronLeftIcon />
+                    </button>
+                  </li>
+                  <For each={api().pages}>
+                    {(page, i) =>
+                      page.type === "page" ? (
+                        <li>
+                          <button data-testid={`item-${page.value}`} {...api().getItemProps(page)}>
+                            {page.value}
+                          </button>
+                        </li>
+                      ) : (
+                        <li>
+                          <span {...api().getEllipsisProps({ index: i() })}>&#8230;</span>
+                        </li>
+                      )
+                    }
+                  </For>
+                  <li>
+                    <button {...api().getNextTriggerProps()}>
+                      <ChevronRightIcon />
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </Show>
+          </div>
+
+          <div class="output">
+            <p>Page change details</p>
+            <pre data-testid="output">{JSON.stringify(details(), null, 2)}</pre>
+          </div>
+        </div>
       </main>
 
       <Toolbar controls={controls}>

@@ -10,7 +10,7 @@ import "@styles/menu.css"
 
 export default function Page() {
   const controls = useControls(menuControls)
-  const service = useMachine(menu.machine, { id: createUniqueId() })
+  const service = useMachine(menu.machine, controls.mergeProps<menu.Props>({ id: createUniqueId() }))
 
   const api = createMemo(() => menu.connect(service, normalizeProps))
 

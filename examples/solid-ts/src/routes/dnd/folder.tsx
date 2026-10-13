@@ -77,8 +77,7 @@ export default function Page() {
         <div {...api().getRootProps()} class={styles.root}>
           <h3>Insert between items, or drop on a folder</h3>
           <p class={styles.helperText}>
-            Mirrors the Spectrum droppable-list example: move from the source list, insert between rows, or drop onto
-            Apps.
+            Droppable list: move from the source list, insert between rows, or drop onto Apps.
           </p>
           <div class={styles.transferLayout}>
             <div class={styles.transferColumn}>

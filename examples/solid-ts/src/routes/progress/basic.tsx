@@ -10,26 +10,25 @@ import "@styles/progress.css"
 export default function Page() {
   const controls = useControls(progressControls)
 
-  const service = useMachine(progress.machine, { id: createUniqueId() })
+  const service = useMachine(progress.machine, controls.mergeProps<progress.Props>({ id: createUniqueId() }))
 
   const api = createMemo(() => progress.connect(service, normalizeProps))
 
   return (
     <>
       <main class="progress">
-        <div {...api().getRootProps()}>
-          <div {...api().getLabelProps()}>Upload progress</div>
-
-          <svg {...api().getCircleProps()}>
-            <circle {...api().getCircleTrackProps()} />
-            <circle {...api().getCircleRangeProps()} />
-          </svg>
-
-          <div {...api().getTrackProps()}>
-            <div {...api().getRangeProps()} />
+        <div class="vstack gap-4">
+          <div {...api().getRootProps()}>
+            <div class="progress-header">
+              <span {...api().getLabelProps()}>Upload progress</span>
+              <span {...api().getValueTextProps()}>{api().valueAsString}</span>
+            </div>
+            <div {...api().getTrackProps()}>
+              <div {...api().getRangeProps()} />
+            </div>
           </div>
-          <div {...api().getValueTextProps()}>{api().valueAsString}</div>
-          <div>
+
+          <div class="hstack">
             <button onClick={() => api().setValue((api().value ?? 0) - 20)}>Decrease</button>
             <button onClick={() => api().setValue((api().value ?? 0) + 20)}>Increase</button>
             <button onClick={() => api().setValue(null)}>Indeterminate</button>

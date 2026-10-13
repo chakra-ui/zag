@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "@zag-js/shared"
+import { XIcon } from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -14,10 +15,13 @@ function toDashCase(str: string) {
 export default function Page() {
   const controls = useControls(tagsInputControls)
 
-  const service = useMachine(tagsInput.machine, {
-    id: createUniqueId(),
-    defaultValue: ["React", "Vue"],
-  })
+  const service = useMachine(
+    tagsInput.machine,
+    controls.mergeProps<tagsInput.Props>({
+      id: createUniqueId(),
+      defaultValue: ["React", "Vue"],
+    }),
+  )
 
   const api = createMemo(() => tagsInput.connect(service, normalizeProps))
 
@@ -44,7 +48,7 @@ export default function Page() {
                       data-testid={`${toDashCase(value)}-close-button`}
                       {...api().getItemDeleteTriggerProps({ index: index(), value })}
                     >
-                      &#x2715;
+                      <XIcon />
                     </button>
                   </div>
                   <input
@@ -55,7 +59,9 @@ export default function Page() {
               )}
             </For>
             <input data-testid="input" placeholder="add tag" {...api().getInputProps()} />
-            <button {...api().getClearTriggerProps()}>X</button>
+            <button {...api().getClearTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
           <input {...api().getHiddenInputProps()} />
         </div>

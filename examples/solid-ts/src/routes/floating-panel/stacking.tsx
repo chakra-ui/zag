@@ -11,7 +11,7 @@ interface PanelProps {
 function Panel(props: PanelProps) {
   const service = useMachine(floatingPanel.machine, {
     id: createUniqueId(),
-    defaultPosition: { x: 100 + props.offset, y: 100 + props.offset },
+    defaultPosition: { x: 100 + props.offset, y: 160 + props.offset },
   })
 
   const api = createMemo(() => floatingPanel.connect(service, normalizeProps))

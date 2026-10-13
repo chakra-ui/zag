@@ -4,6 +4,7 @@ import { createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer-nested.module.css"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const baseId = createUniqueId()
@@ -72,7 +73,7 @@ export default function Page() {
                   </button>
                 </div>
                 <button {...firstApi().getCloseTriggerProps()} class={styles.button}>
-                  Close
+                  <XIcon />
                 </button>
               </div>
             </div>
@@ -106,7 +107,7 @@ export default function Page() {
                     </button>
                   </div>
                   <button {...secondApi().getCloseTriggerProps()} class={styles.button}>
-                    Close
+                    <XIcon />
                   </button>
                 </div>
               </div>
@@ -132,7 +133,7 @@ export default function Page() {
                   <label class={styles.label} for="device-name">
                     Device name
                   </label>
-                  <input id="device-name" class={styles.input} defaultValue="Personal laptop" />
+                  <input id="device-name" class={styles.input} value="Personal laptop" />
                 </div>
 
                 <div class={styles.field}>
@@ -143,7 +144,7 @@ export default function Page() {
                     id="notes"
                     class={styles.textarea}
                     rows={3}
-                    defaultValue="Rotate recovery codes and revoke older sessions."
+                    value="Rotate recovery codes and revoke older sessions."
                   />
                 </div>
 

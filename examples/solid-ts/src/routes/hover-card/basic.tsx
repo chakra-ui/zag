@@ -11,7 +11,7 @@ import "@styles/hover-card.css"
 export default function Page() {
   const controls = useControls(hoverCardControls)
 
-  const service = useMachine(hoverCard.machine, { id: createUniqueId() })
+  const service = useMachine(hoverCard.machine, controls.mergeProps<hoverCard.Props>({ id: createUniqueId() }))
 
   const api = createMemo(() => hoverCard.connect(service, normalizeProps))
 
@@ -20,7 +20,7 @@ export default function Page() {
       <main class="hover-card">
         <div style={{ display: "flex", gap: "50px" }}>
           <a href="https://twitter.com/zag_js" target="_blank" {...api().getTriggerProps()}>
-            Twitter
+            @zag_js
           </a>
           <Show when={api().open}>
             <Portal>
@@ -29,10 +29,21 @@ export default function Page() {
                   <div {...api().getArrowProps()}>
                     <div {...api().getArrowTipProps()} />
                   </div>
-                  Twitter Preview
-                  <a href="https://twitter.com/zag_js" target="_blank">
-                    Twitter
-                  </a>
+                  <div class="profile">
+                    <span class="profile-avatar" aria-hidden="true">
+                      Z
+                    </span>
+                    <div class="profile-body">
+                      <span class="profile-name">Zag.js</span>
+                      <span class="profile-handle">@zag_js</span>
+                      <p class="profile-bio">
+                        UI components powered by finite state machines. Works with React, Solid, Vue and Svelte.
+                      </p>
+                      <a class="profile-meta" href="https://twitter.com/zag_js" target="_blank" rel="noreferrer">
+                        twitter.com/zag_js
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Portal>

@@ -1,0 +1,128 @@
+import { CalendarDate, DateValue } from "@internationalized/date"
+import * as datePicker from "@zag-js/date-picker"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { Index, createMemo, createUniqueId } from "solid-js"
+import { StateVisualizer } from "~/components/state-visualizer"
+import { Toolbar } from "~/components/toolbar"
+import "@styles/date-picker.css"
+
+const format = (date: DateValue) => {
+  const month = date.month.toString().padStart(2, "0")
+  const year = date.year.toString()
+  return `${month}/${year}`
+}
+
+const parse = (string: string) => {
+  // Handle full mm/yyyy format
+  const fullRegex = /^(\d{1,2})\/(\d{4})$/
+  const fullMatch = string.match(fullRegex)
+  if (fullMatch) {
+    const [_, month, year] = fullMatch.map(Number)
+    return new CalendarDate(year, month, 1)
+  }
+
+  return undefined
+}
+
+export default function Page() {
+  const service = useMachine(datePicker.machine, {
+    id: createUniqueId(),
+    locale: "en",
+    minView: "month",
+    placeholder: "mm/yyyy",
+    format,
+    parse,
+  })
+
+  const api = createMemo(() => datePicker.connect(service, normalizeProps))
+
+  return (
+    <>
+      <main class="date-picker">
+        <div>
+          <button>Outside Element</button>
+        </div>
+        <p>{`Visible range: ${api().visibleRangeText.formatted}`}</p>
+
+        <output class="date-output">
+          <div>Selected: {api().valueAsString ?? "-"}</div>
+          <div>Focused: {api().focusedValueAsString}</div>
+        </output>
+
+        <div {...api().getControlProps()}>
+          <input {...api().getInputProps()} />
+          <button {...api().getClearTriggerProps()}>❌</button>
+          <button {...api().getTriggerProps()}>🗓</button>
+        </div>
+
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>
+            <div style={{ display: "flex", gap: "40px" }}>
+              <div hidden={api().view !== "month"} style={{ width: "100%" }}>
+                <div {...api().getViewControlProps({ view: "month" })}>
+                  <button {...api().getPrevTriggerProps({ view: "month" })}>Prev</button>
+                  <button {...api().getViewTriggerProps({ view: "month" })}>{api().visibleRange.start.year}</button>
+                  <button {...api().getNextTriggerProps({ view: "month" })}>Next</button>
+                </div>
+
+                <table {...api().getTableProps({ view: "month", columns: 4 })}>
+                  <tbody {...api().getTableBodyProps({ view: "month" })}>
+                    <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+                      {(months) => (
+                        <tr {...api().getTableRowProps()}>
+                          <Index each={months()}>
+                            {(month) => (
+                              <td {...api().getMonthTableCellProps({ ...month(), columns: 4 })}>
+                                <div {...api().getMonthTableCellTriggerProps({ ...month(), columns: 4 })}>
+                                  {month().label}
+                                </div>
+                              </td>
+                            )}
+                          </Index>
+                        </tr>
+                      )}
+                    </Index>
+                  </tbody>
+                </table>
+              </div>
+
+              <div hidden={api().view !== "year"} style={{ width: "100%" }}>
+                <div {...api().getViewControlProps({ view: "year" })}>
+                  <button {...api().getPrevTriggerProps({ view: "year" })}>Prev</button>
+                  <span>
+                    {api().getDecade().start} - {api().getDecade().end}
+                  </span>
+                  <button {...api().getNextTriggerProps({ view: "year" })}>Next</button>
+                </div>
+
+                <table {...api().getTableProps({ view: "year", columns: 4 })}>
+                  <tbody {...api().getTableBodyProps()}>
+                    <Index each={api().getYearsGrid({ columns: 4 })}>
+                      {(years) => (
+                        <tr {...api().getTableRowProps({ view: "year" })}>
+                          <Index each={years()}>
+                            {(year) => (
+                              <td {...api().getYearTableCellProps({ ...year(), columns: 4 })}>
+                                <div {...api().getYearTableCellTriggerProps({ ...year(), columns: 4 })}>
+                                  {year().label}
+                                </div>
+                              </td>
+                            )}
+                          </Index>
+                        </tr>
+                      )}
+                    </Index>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <Toolbar viz>
+        <StateVisualizer state={service} omit={["weeks"]} />
+      </Toolbar>
+    </>
+  )
+}

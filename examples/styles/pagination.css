@@ -85,13 +85,12 @@ a:is([data-pagination-item], [data-pagination-prev-trigger], [data-pagination-ne
   font-variant-numeric: tabular-nums;
 }
 
-/* Summary on the left, controls on the right */
+/* Packed left so the controls never sit under the docked inspector */
 .pagination-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 12px 24px;
 }
 
 .pagination-table {
