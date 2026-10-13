@@ -13,7 +13,7 @@ function Panel(props: PanelProps) {
 
   const service = useMachine(floating.machine, {
     id: useId(),
-    defaultPosition: { x: 100 + offset, y: 100 + offset },
+    defaultPosition: { x: 100 + offset, y: 160 + offset },
   })
 
   const api = floating.connect(service, normalizeProps)

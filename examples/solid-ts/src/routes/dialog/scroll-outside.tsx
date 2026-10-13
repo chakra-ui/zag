@@ -2,6 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const service = useMachine(dialog.machine, { id: createUniqueId() })
@@ -112,7 +113,9 @@ export default function Page() {
               nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim
               veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
             </p>
-            <button {...api().getCloseTriggerProps()}>Close</button>
+            <button {...api().getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
         </div>
       </Portal>

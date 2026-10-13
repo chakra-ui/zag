@@ -1,7 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { MoveHorizontalIcon } from "lucide-solid"
+import { MinusIcon, MoveHorizontalIcon, PlusIcon } from "lucide-solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -29,11 +29,11 @@ export default function Page() {
           </label>
           <div {...api().getControlProps()}>
             <button data-testid="dec-button" {...api().getDecrementTriggerProps()}>
-              DEC
+              <MinusIcon />
             </button>
             <input data-testid="input" {...api().getInputProps()} />
             <button data-testid="inc-button" {...api().getIncrementTriggerProps()}>
-              INC
+              <PlusIcon />
             </button>
           </div>
         </div>

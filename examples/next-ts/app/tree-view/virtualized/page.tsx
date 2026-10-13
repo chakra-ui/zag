@@ -11,6 +11,8 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/tree-view.css"
 
+const estimateSize = () => ROW_HEIGHT
+
 interface Node {
   id: string
   name: string
@@ -57,13 +59,7 @@ const TreeNode = (props: TreeNodeProps) => {
       <div {...api.getNodeCellProps(nodeProps)}>
         {nodeState.isBranch && (
           <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
-            <ChevronRightIcon
-              size={16}
-              style={{
-                transform: nodeState.expanded ? "rotate(90deg)" : "rotate(0deg)",
-                transition: "transform 0.15s",
-              }}
-            />
+            <ChevronRightIcon size={16} />
           </span>
         )}
         {nodeState.isBranch ? <FolderIcon size={16} /> : <FileIcon size={16} />}
@@ -75,12 +71,6 @@ const TreeNode = (props: TreeNodeProps) => {
 
 export default function Page() {
   const controls = useControls(treeviewControls)
-
-  const { virtualizer, ref } = useListVirtualizer({
-    count: 0,
-    estimatedSize: () => ROW_HEIGHT,
-    overscan: 10,
-  })
 
   const service = useMachine(tree.machine, {
     id: useId(),
@@ -94,7 +84,11 @@ export default function Page() {
   const api = tree.connect(service, normalizeProps)
   const visibleNodes = api.getVisibleNodes()
 
-  virtualizer.updateOptions({ count: visibleNodes.length })
+  const { virtualizer, ref } = useListVirtualizer({
+    count: visibleNodes.length,
+    estimatedSize: estimateSize,
+    overscan: 10,
+  })
 
   return (
     <>
@@ -120,7 +114,9 @@ export default function Page() {
           >
             <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
               {virtualizer.getVirtualItems().map((vi) => {
-                const { node, indexPath } = visibleNodes[vi.index]
+                const visible = visibleNodes[vi.index]
+                if (!visible) return null
+                const { node, indexPath } = visible
                 return (
                   <div key={node.id} data-index={vi.index} style={virtualizer.getItemStyle(vi)}>
                     <TreeNode node={node} indexPath={indexPath} api={api} />

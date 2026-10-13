@@ -31,6 +31,8 @@ const steps: tour.StepDetails[] = [
   {
     id: "wait-action",
     type: "wait",
+    title: "",
+    description: "",
     effect({ next }) {
       const btn = document.querySelector<HTMLElement>("#continue-btn")
       if (!btn) return

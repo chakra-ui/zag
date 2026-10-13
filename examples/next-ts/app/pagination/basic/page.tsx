@@ -3,6 +3,7 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { paginationControls, paginationData } from "@zag-js/shared"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Print } from "@/components/print"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -30,60 +31,65 @@ export default function Page() {
   return (
     <>
       <main className="pagination">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>FIRST NAME</th>
-              <th>LAST NAME</th>
-              <th>EMAIL</th>
-              <th>PHONE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item) => {
-              return (
+        <div className="pagination-layout">
+          <table className="pagination-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
-                  <td>{item.first_name}</td>
-                  <td>{item.last_name}</td>
+                  <td>
+                    {item.first_name} {item.last_name}
+                  </td>
                   <td>{item.email}</td>
-                  <td>{item.phone}</td>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        {api.totalPages > 1 && (
-          <nav {...api.getRootProps()}>
-            <ul>
-              <li>
-                <button {...api.getPrevTriggerProps()}>Previous</button>
-              </li>
-              {api.pages.map((page, i) => {
-                if (page.type === "page")
-                  return (
-                    <li key={page.value}>
-                      <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
-                        {page.value}
-                      </button>
-                    </li>
-                  )
-                else
-                  return (
-                    <li key={`ellipsis-${i}`}>
-                      <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
-                    </li>
-                  )
-              })}
-              <li>
-                <button {...api.getNextTriggerProps()}>Next</button>
-              </li>
-            </ul>
-          </nav>
-        )}
+              ))}
+            </tbody>
+          </table>
 
-        <Print title="OpenChange Details" value={details} />
+          <div className="pagination-bar">
+            <span className="pagination-summary">
+              {api.pageRange.start + 1}–{api.pageRange.end} of {api.count}
+            </span>
+            {api.totalPages > 1 && (
+              <nav {...api.getRootProps()}>
+                <ul>
+                  <li>
+                    <button {...api.getPrevTriggerProps()}>
+                      <ChevronLeftIcon />
+                    </button>
+                  </li>
+                  {api.pages.map((page, i) =>
+                    page.type === "page" ? (
+                      <li key={page.value}>
+                        <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+                          {page.value}
+                        </button>
+                      </li>
+                    ) : (
+                      <li key={`ellipsis-${i}`}>
+                        <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+                      </li>
+                    ),
+                  )}
+                  <li>
+                    <button {...api.getNextTriggerProps()}>
+                      <ChevronRightIcon />
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </div>
+
+          <Print title="Page change details" value={details} />
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

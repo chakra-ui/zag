@@ -4,6 +4,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId, useMemo, useState } from "react"
 import "@styles/select.css"
 
@@ -40,7 +41,9 @@ export default function Page() {
           <label {...api.getLabelProps()}>Country</label>
           <button {...api.getTriggerProps()}>
             <span {...api.getValueTextProps()}>{api.valueAsString || "Select country"}</span>
-            <span {...api.getIndicatorProps()}>▼</span>
+            <span {...api.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
           </button>
         </div>
 

@@ -1,9 +1,7 @@
 [data-date-input-label] {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px;
   font-weight: 500;
-  color: #333;
 
   &[data-disabled] {
     opacity: 0.5;
@@ -21,52 +19,64 @@
 }
 
 [data-date-input-segment-group] {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  padding-block: 4px;
-  padding-inline: 6px;
-  border: 1px solid rgb(118, 118, 118);
-  border-radius: 4px;
-  background-color: #fff;
-  color: #333;
-  min-width: 154px;
+  min-width: 160px;
+  height: var(--z-control-h);
+  padding-inline: 11px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-sm);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
+  color: var(--z-fg);
+  transition:
+    border-color var(--z-duration) var(--z-ease),
+    box-shadow var(--z-duration) var(--z-ease);
+
+  &:hover:not([data-focus], [data-disabled]) {
+    border-color: var(--z-border-emphasis);
+  }
 
   &[data-focus] {
-    border-color: rgba(102, 175, 233, 0.8);
-    box-shadow: 0 0 0 1px rgba(102, 175, 233, 0.6);
+    border-color: var(--z-accent);
+    box-shadow: 0 0 0 3px var(--z-ring);
   }
 
   &[data-invalid] {
-    border-color: #e53e3e;
+    border-color: var(--z-danger);
   }
 
   &[data-disabled] {
-    background-color: #f5f5f5;
+    background: var(--z-bg-muted);
     cursor: not-allowed;
   }
 }
 
 [data-date-input-segment] {
+  padding-inline: 1px;
+  border-radius: var(--z-radius-xs);
   font-variant-numeric: tabular-nums;
   text-align: end;
-  font-size: 13.3333px;
-  border-radius: 2px;
-  padding-inline: 1px;
 
   &::selection {
-    background-color: transparent;
-  }
-
-  &:focus {
-    background-color: rgba(102, 175, 233, 0.6);
-    outline: none;
+    background: transparent;
   }
 
   &[data-placeholder-shown] {
-    color: #a0a0a0;
+    color: var(--z-fg-subtle);
   }
 
   &[data-readonly] {
-    color: #666;
+    color: var(--z-fg-muted);
+  }
+
+  /* The group shows focus; the segment only needs a highlight */
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+    background: var(--z-accent);
+    color: var(--z-accent-contrast);
   }
 }

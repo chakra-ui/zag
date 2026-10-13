@@ -1,29 +1,65 @@
+/* Set --rating-size and --rating-color on the root to restyle a rating */
+[data-rating-group-root] {
+  --rating-size: 24px;
+  --rating-color: var(--z-amber-500);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &[dir="rtl"] [data-half] svg {
+    transform: scale(-1, 1);
+  }
+}
+
+[data-rating-group-label] {
+  font-size: var(--z-text-md);
+  font-weight: 500;
+}
+
 [data-rating-group-control] {
   display: inline-flex;
+  gap: 4px;
 }
 
 [data-rating-group-item] {
-  width: 20px;
-  height: 20px;
-  padding: 1px;
+  display: inline-flex;
+  width: var(--rating-size);
+  height: var(--rating-size);
+  padding: calc(var(--rating-size) / 12);
+  border-radius: var(--z-radius-xs);
+  color: var(--z-border-emphasis);
+  outline: none;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &[data-highlighted] {
+    color: var(--rating-color);
+  }
+
+  &[data-highlighted][data-disabled] {
+    color: var(--z-fg-subtle);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--z-focus-ring);
+  }
+
+  /* The unfilled side of a half star */
+  & .star-empty-half {
+    fill: var(--z-border-emphasis);
+  }
 }
 
-[data-rating-group-item]:focus {
-  outline: 2px solid royalblue;
-}
+/* rating-group/read-only: the score and review count next to the stars */
+.rating-summary {
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-md);
 
-[data-rating-group-star] {
-  color: #bdbdbd;
-}
-
-[data-rating-group-item][data-highlighted] [data-rating-group-star] {
-  color: #ffb400;
-}
-
-[data-rating-group-item][data-highlighted][data-disabled] [data-rating-group-star] {
-  color: #a1a1a1;
-}
-
-[data-rating-group-root][dir="rtl"] [data-half] [data-rating-group-star] {
-  transform: scale(-1, 1);
+  & strong {
+    color: var(--z-fg);
+    font-weight: 600;
+  }
 }

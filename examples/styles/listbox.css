@@ -1,32 +1,61 @@
 [data-listbox-label] {
-  font-size: 14px;
-}
+  font-size: var(--z-text-md);
+  font-weight: 500;
 
-[data-listbox-label][data-disabled] {
-  cursor: default;
-  color: gray;
-}
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
 
-[data-listbox-label][data-invalid] {
-  color: red;
+  &[data-invalid] {
+    color: var(--z-danger-fg);
+  }
 }
 
 [data-listbox-content] {
-  width: 400px;
-  margin-top: 4px;
-  background: #efefef;
-  padding: 4px;
   position: relative;
+  width: 400px;
+  margin-top: 6px;
+  overflow: hidden;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  font-size: var(--z-text-md);
+
+  &:focus-within {
+    border-color: var(--z-accent);
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+}
+
+[data-listbox-input] {
+  width: 100%;
+  height: var(--z-control-h);
+  border: none;
+  border-bottom: 1px solid var(--z-border);
+  border-radius: 0;
+  box-shadow: none;
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--z-border);
+    box-shadow: none;
+  }
 }
 
 [data-listbox-list] {
-  padding: 0;
-  list-style: none;
-  margin: 0;
   max-height: 400px;
+  margin: 0;
+  padding: 4px;
   overflow-y: auto;
   overscroll-behavior: contain;
+  list-style: none;
   scroll-padding: 4px;
+
+  /* The content's ring and the highlighted item show focus */
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 
   &[data-layout="grid"] {
     display: grid;
@@ -36,43 +65,65 @@
 }
 
 [data-listbox-item] {
-  padding: 4px 8px;
-  cursor: default;
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  gap: 8px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border-radius: var(--z-radius-sm);
+  cursor: default;
+
+  &[data-highlighted] {
+    background: var(--z-highlight);
+  }
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
 
   &[data-layout="grid"] {
-    display: flex;
     flex-direction: column;
-    padding: 8px;
-    border-radius: 8px;
-    align-items: center;
     justify-content: center;
     min-height: 40px;
-    border: 1px solid #ccc;
     padding: 8px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius);
 
     > * {
       flex: 0 0 auto;
       display: inline;
     }
-  }
-}
 
-[data-listbox-item][data-disabled] {
-  color: #777;
+    &[data-state="checked"] {
+      border-color: var(--z-accent);
+      background: var(--z-accent-subtle);
+    }
+  }
 }
 
 [data-listbox-item-text] {
   flex: 1;
-  width: 100%;
 }
 
-[data-listbox-item][data-state="checked"] {
-  background: rgb(197, 197, 255);
+[data-listbox-item-indicator] {
+  display: inline-flex;
+  color: var(--z-accent-fg);
 }
 
-[data-listbox-item][data-highlighted] {
-  outline: 2px solid rgb(172, 172, 243);
+[data-listbox-item-group-label] {
+  padding: 6px 8px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+  font-weight: 500;
+}
+
+[data-listbox-empty] {
+  padding: 16px 12px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
 }

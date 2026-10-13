@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { Presence } from "@/components/presence"
 import "@styles/dialog.css"
 
@@ -41,7 +42,9 @@ export default function Page() {
               No backdrop, no focus trap, no scroll lock. The page behind stays fully interactive. Close with the button
               or Escape.
             </p>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </Presence>
         </div>
       </Portal>

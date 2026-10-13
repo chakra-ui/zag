@@ -13,7 +13,7 @@
   const id = $props.id()
   const service = useMachine(floatingPanel.machine, {
     id,
-    defaultPosition: { x: 100 + offset, y: 100 + offset },
+    defaultPosition: { x: 100 + offset, y: 160 + offset },
   })
 
   const api = $derived(floatingPanel.connect(service, normalizeProps))

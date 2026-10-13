@@ -3,6 +3,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useId } from "react"
 import "@styles/select.css"
@@ -23,7 +24,6 @@ function PageContent() {
   const service = useMachine(select.machine, {
     id: useId(),
     collection,
-    positioning: { placement: "right-end" },
     value: selectedCountry ? [selectedCountry] : undefined,
     onValueChange: (details) => {
       router.push(`${pathname}?country=${details.value[0]}`)
@@ -48,19 +48,26 @@ function PageContent() {
       <div {...api.getRootProps()}>
         <div {...api.getControlProps()}>
           <label {...api.getLabelProps()}>Label</label>
-          <button {...api.getTriggerProps()}>{api.valueAsString || "Select a country"}</button>
+          <button {...api.getTriggerProps()}>
+            <span>{api.valueAsString || "Select a country"}</span>
+            <span {...api.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
+          </button>
         </div>
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul {...api.getContentProps()}>
-              {selectData.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
-                  <span>{item.label}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              ))}
-            </ul>
+            <div {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                {selectData.map((item) => (
+                  <li key={item.value} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       </div>

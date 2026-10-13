@@ -1,84 +1,146 @@
-[data-tags-input-label] {
-  display: block;
-  margin-bottom: 8px;
+[data-tags-input-root] {
+  width: 100%;
+  max-width: 420px;
 }
 
+[data-tags-input-label] {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--z-text-md);
+  font-weight: 500;
+}
+
+/* Grows with its tags, so a min-height rather than the fixed control height */
 [data-tags-input-control] {
-  padding: 0 2px;
-  background: #fff;
-  border: 1px solid #ccc;
-  width: 40em;
-  border-radius: 2px;
-  position: relative;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--z-control-h);
+  padding: 4px 4px 4px 6px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-sm);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
+  transition:
+    border-color var(--z-duration) var(--z-ease),
+    box-shadow var(--z-duration) var(--z-ease);
+
+  &:hover:not([data-disabled], [data-focus]) {
+    border-color: var(--z-border-emphasis);
+  }
+
+  &[data-focus] {
+    border-color: var(--z-accent);
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+
+  &[data-invalid] {
+    border-color: var(--z-danger);
+  }
 
   &[data-disabled] {
-    background: #f9f9f9;
+    opacity: var(--z-disabled-opacity);
   }
+}
 
-  &[data-focus],
-  &:focus {
-    outline: 2px solid var(--ring-color);
-    outline-offset: 2px;
-  }
+[data-tags-input-item] {
+  display: inline-flex;
 }
 
 [data-tags-input-item-preview] {
-  background: #eee;
-  color: #444;
-  padding: 0 4px;
-  margin: 2px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 24px;
+  padding: 0 2px 0 8px;
+  border-radius: var(--z-radius-xs);
+  background: var(--z-bg-muted);
+  font-size: var(--z-text-sm);
   user-select: none;
-  display: inline-block;
 
   &[hidden] {
     display: none !important;
   }
 
   &[data-highlighted] {
-    background-color: #777;
-    border-color: #777;
-    color: #eee;
+    background: var(--z-bg-emphasis);
+    box-shadow: 0 0 0 2px var(--z-ring);
   }
 
   &[data-disabled] {
-    opacity: 0.6;
-    cursor: default;
-  }
-}
-
-[data-tags-input-input] {
-  appearance: none;
-  padding: 3px;
-  margin: 0;
-  background: none;
-  border: none;
-  box-shadow: none;
-  font: inherit;
-  font-size: 100%;
-  outline: none;
-  display: inline-block !important;
-
-  &[hidden] {
-    display: none !important;
-  }
-
-  &:disabled {
-    opacity: 0.6;
+    opacity: var(--z-disabled-opacity);
   }
 }
 
 [data-tags-input-item-delete-trigger] {
-  all: unset;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: var(--z-radius-xs);
+  background: transparent;
+  color: var(--z-fg-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-emphasis);
+    color: var(--z-fg);
+  }
+
+  & svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* Editing a tag: a compact field in place of the chip */
+[data-tags-input-item-input] {
+  height: 24px;
+  padding: 0 6px;
+  border-radius: var(--z-radius-xs);
+  font-size: var(--z-text-sm);
+  box-shadow: none;
+}
+
+[data-tags-input-input] {
+  flex: 1;
+  min-width: 80px;
+  height: 24px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &[hidden] {
+    display: none !important;
+  }
 }
 
 [data-tags-input-clear-trigger] {
-  position: absolute;
-  top: 0;
-  right: 0.5px;
-  bottom: 0;
-  scale: 0.8;
+  width: 24px;
+  height: 24px;
+  margin-inline-start: auto;
+  padding: 0;
+  border-radius: var(--z-radius-xs);
+  background: transparent;
+  color: var(--z-fg-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-muted);
+    color: var(--z-fg);
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &[hidden] {
+    display: none;
+  }
 }

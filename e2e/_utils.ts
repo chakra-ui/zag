@@ -79,7 +79,12 @@ export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value:
   node.dispatchEvent(event)
 }
 
-export const clickOutside = (page: Page) => page.click("body", { force: true })
+// The page center can land on a centered example's popup; the canvas padding corner is always empty
+export const clickOutside = async (page: Page) => {
+  const main = page.locator("main").first()
+  if (await main.count()) return main.click({ position: { x: 4, y: 4 }, force: true })
+  return page.click("body", { force: true })
+}
 
 export const rect = async (el: Locator) => {
   const bbox = await el.boundingBox()

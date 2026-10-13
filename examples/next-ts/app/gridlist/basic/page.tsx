@@ -62,22 +62,10 @@ export default function Page() {
                     </div>
                     <span className="gridlist-item-badge">{item.badge}</span>
                     <div className="gridlist-actions">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setLastAction(`Edit ${item.name}`)
-                        }}
-                      >
+                      <button type="button" onClick={() => setLastAction(`Edit ${item.name}`)}>
                         Edit
                       </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setLastAction(`Delete ${item.name}`)
-                        }}
-                      >
+                      <button type="button" onClick={() => setLastAction(`Delete ${item.name}`)}>
                         Delete
                       </button>
                     </div>

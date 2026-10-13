@@ -1,22 +1,25 @@
+import { Wix_Madefor_Text } from "next/font/google"
+import { prefsScript } from "@/components/shell/prefs"
+import { Shell } from "@/components/shell/shell"
 import "@styles/global.css"
+import "@styles/playground.css"
 
-import { Suspense } from "react"
-import { Sidebar, SidebarFallback } from "@/components/sidebar"
+// Same font as the website
+const sans = Wix_Madefor_Text({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata = {
-  title: "React Machines",
+  title: "Zag Playground",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // The prefs script sets data attributes on <html> before hydration
+    <html lang="en" className={sans.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: prefsScript }} />
+      </head>
       <body>
-        <div className="page">
-          <Suspense fallback={<SidebarFallback />}>
-            <Sidebar />
-          </Suspense>
-          {children}
-        </div>
+        <Shell>{children}</Shell>
       </body>
     </html>
   )

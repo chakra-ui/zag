@@ -1,8 +1,9 @@
 "use client"
 
-import { useId, useState } from "react"
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
+import { XIcon } from "lucide-react"
+import { useId, useState } from "react"
 import "@styles/popover.css"
 
 export default function Page() {
@@ -33,7 +34,9 @@ export function Popover() {
             <div {...api.getTitleProps()}>Presenters</div>
             <div {...api.getDescriptionProps()}>Description</div>
             <button>Action Button</button>
-            <button {...api.getCloseTriggerProps()}>X</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
         </div>
       </Portal>

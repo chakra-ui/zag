@@ -2,6 +2,7 @@
 
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/popover.css"
@@ -31,7 +32,7 @@ export default function Page() {
               </a>
               <input data-testid="input" placeholder="input" />
               <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
-                X
+                <XIcon />
               </button>
             </Presence>
           </div>

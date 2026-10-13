@@ -130,7 +130,10 @@ export default function Page() {
       <div {...comboboxApi.getPositionerProps()}>
         <div {...comboboxApi.getContentProps()}>
           <div {...mergeProps(tabApi.getRootProps(), { style: { position: "relative" } })}>
-            <div {...mergeProps(tabApi.getListProps(), { style: { position: "sticky", top: "0", insetInline: "0" } })}>
+            <div
+              data-stretch=""
+              {...mergeProps(tabApi.getListProps(), { style: { position: "sticky", top: "0", insetInline: "0" } })}
+            >
               {categories.map((category) => {
                 const currentItems = matches[category]
                 return (

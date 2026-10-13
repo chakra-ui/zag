@@ -58,12 +58,6 @@ export default function Page() {
     rangeExtractor,
   })
 
-  virtualizer.updateOptions({
-    count,
-    estimatedSize,
-    rangeExtractor,
-  })
-
   const virtualItems = virtualizer.getVirtualItems()
 
   useLoadMoreSentinel(loaderRef, {
@@ -108,6 +102,7 @@ export default function Page() {
           {virtualItems.map((virtualItem) => {
             const isLoader = virtualItem.index === loaderIndex
             const item = items[virtualItem.index]
+            if (!isLoader && !item) return null
 
             return (
               <div

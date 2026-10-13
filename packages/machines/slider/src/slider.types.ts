@@ -154,9 +154,9 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   thumbAlignment?: "contain" | "center" | undefined
   /**
-   * The slider thumbs dimensions
+   * The slider thumbs dimensions. A number sets both the width and height.
    */
-  thumbSize?: { width: number; height: number } | undefined
+  thumbSize?: number | { width: number; height: number } | undefined
   /**
    * Controls how thumbs behave when they collide during pointer interactions.
    * - `none` (default): Thumbs cannot move past each other; excess movement is ignored.

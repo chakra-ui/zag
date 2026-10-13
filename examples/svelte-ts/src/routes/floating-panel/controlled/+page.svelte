@@ -10,7 +10,7 @@
   const id = $props.id()
   let open = $state(false)
   let size = $state({ width: 360, height: 260 })
-  let position = $state({ x: 120, y: 120 })
+  let position = $state({ x: 120, y: 240 })
   let observedSize = $state({ width: 0, height: 0 })
 
   let observedEl = $state<HTMLDivElement | null>(null)
@@ -65,7 +65,7 @@
     <button
       onclick={() => {
         size = { width: 360, height: 260 }
-        position = { x: 120, y: 120 }
+        position = { x: 120, y: 240 }
       }}
     >
       Reset rect

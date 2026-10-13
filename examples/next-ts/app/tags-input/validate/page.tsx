@@ -2,6 +2,7 @@
 
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tagsInput from "@zag-js/tags-input"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -44,13 +45,17 @@ export default function Page() {
               <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
                 <div {...api.getItemPreviewProps({ index, value })}>
                   <span {...api.getItemTextProps({ index, value })}>{value} </span>
-                  <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+                  <button {...api.getItemDeleteTriggerProps({ index, value })}>
+                    <XIcon />
+                  </button>
                 </div>
                 <input {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
             <input placeholder="Try: svelte or React (rejected)" {...api.getInputProps()} />
-            <button {...api.getClearTriggerProps()}>Clear all</button>
+            <button {...api.getClearTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
           {invalidReason && <p style={{ marginTop: 8, fontSize: 14, color: "red" }}>Invalid: {invalidReason}</p>}
           <input {...api.getHiddenInputProps()} />

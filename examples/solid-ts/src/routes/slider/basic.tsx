@@ -2,7 +2,7 @@ import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
-import { For, createMemo, createUniqueId } from "solid-js"
+import { Index, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -16,6 +16,7 @@ export default function Page() {
     controls.mergeProps<slider.Props>({
       id: createUniqueId(),
       defaultValue: [0],
+      thumbSize: 20,
     }),
   )
 
@@ -45,13 +46,13 @@ export default function Page() {
                 <div data-testid="track" {...api().getTrackProps()}>
                   <div {...api().getRangeProps()} />
                 </div>
-                <For each={api().value}>
+                <Index each={api().value}>
                   {(_, index) => (
-                    <div {...api().getThumbProps({ index: index() })}>
-                      <input {...api().getHiddenInputProps({ index: index() })} />
+                    <div {...api().getThumbProps({ index })}>
+                      <input {...api().getHiddenInputProps({ index })} />
                     </div>
                   )}
-                </For>
+                </Index>
               </div>
               <div {...api().getMarkerGroupProps()}>
                 <span {...api().getMarkerProps({ value: 10 })}>*</span>

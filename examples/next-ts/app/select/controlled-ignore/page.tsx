@@ -2,6 +2,7 @@
 
 import * as select from "@zag-js/select"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId, useMemo } from "react"
 import "@styles/select.css"
 
@@ -50,12 +51,11 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select framework</label>
           <div {...mergeProps(api.getControlProps(), { style: { display: "flex", marginTop: "4px" } })}>
-            <button
-              data-testid="trigger"
-              {...mergeProps(api.getTriggerProps(), { style: { padding: "8px 12px", flex: 1 } })}
-            >
+            <button data-testid="trigger" {...mergeProps(api.getTriggerProps(), { style: { flex: 1 } })}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span style={{ marginLeft: "8px" }}>▼</span>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
             </button>
           </div>
 

@@ -5,7 +5,10 @@ import type { UseControlsReturn } from "~/hooks/use-controls"
 export function Controls({ store }: { store: UseControlsReturn }) {
   const { config, state, setState } = store
   const items = createMemo(() => {
-    const keys = Object.keys(store.config)
+    // Toggles last, so they pack together instead of breaking up the inputs
+    const keys = Object.keys(store.config).sort(
+      (a, b) => Number(config[a]?.type === "boolean") - Number(config[b]?.type === "boolean"),
+    )
     return keys.map((key) => {
       const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
       const value = createMemo(() => deepGet(state(), key))

@@ -4,7 +4,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, XIcon } from "lucide-react"
 import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -187,7 +187,7 @@ export default function Page() {
                       Delete
                     </button>
                     <button type="button" {...popoverApi.getCloseTriggerProps()} data-close>
-                      Close
+                      <XIcon />
                     </button>
                   </div>
                 </div>

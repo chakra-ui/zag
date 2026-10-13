@@ -406,6 +406,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getEmptyProps() {
+      return normalize.element({
+        ...parts.empty.attrs(scope.id),
+        dir: prop("dir"),
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": true,
+      })
+    },
+
     getListProps() {
       return normalize.element({
         ...parts.list.attrs(scope.id),

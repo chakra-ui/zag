@@ -3,6 +3,7 @@
 import * as dialog from "@zag-js/dialog"
 import * as menu from "@zag-js/menu"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -42,7 +43,7 @@ export default function Page() {
                 Actions
               </button>
               <button {...dialog1.getCloseTriggerProps()} data-testid="close-1">
-                Close
+                <XIcon />
               </button>
             </div>
           </div>
@@ -57,7 +58,7 @@ export default function Page() {
                 Open Dialog 3
               </button>
               <button {...dialog2.getCloseTriggerProps()} data-testid="close-2">
-                Close
+                <XIcon />
               </button>
             </div>
           </div>
@@ -69,7 +70,7 @@ export default function Page() {
             <div data-testid="content-3" {...dialog3.getContentProps()}>
               <h2 {...dialog3.getTitleProps()}>Dialog 3</h2>
               <button {...dialog3.getCloseTriggerProps()} data-testid="close-3">
-                Close
+                <XIcon />
               </button>
             </div>
           </div>

@@ -1,9 +1,10 @@
 "use client"
 
-import * as dialog from "@zag-js/dialog"
-import { useMachine, normalizeProps, Portal } from "@zag-js/react"
-import React, { useState } from "react"
 import "@styles/dialog.css"
+import * as dialog from "@zag-js/dialog"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
+import { useState } from "react"
 
 export default function Dialog() {
   const [open, setOpen] = useState(false)
@@ -33,7 +34,9 @@ export default function Dialog() {
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

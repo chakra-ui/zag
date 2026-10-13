@@ -23,6 +23,7 @@ import {
   normalizeValues,
   resolveThumbCollision,
   selectMovableThumb,
+  toThumbSize,
 } from "./slider.utils"
 
 const isEqualSize = (a: Size | null, b: Size | null) => {
@@ -74,7 +75,7 @@ export const machine = createMachine<SliderSchema>({
   context({ prop, bindable, getContext }) {
     return {
       thumbSize: bindable(() => ({
-        defaultValue: prop("thumbSize") || null,
+        defaultValue: toThumbSize(prop("thumbSize")),
       })),
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),

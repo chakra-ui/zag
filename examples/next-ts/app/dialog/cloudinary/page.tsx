@@ -35,7 +35,7 @@ export default function Page() {
               <CldUploadWidget
                 uploadPreset="ml_default"
                 onClose={() => {
-                  buttonRef.current.focus()
+                  buttonRef.current?.focus()
                 }}
               >
                 {({ open }) => {

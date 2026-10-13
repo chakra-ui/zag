@@ -1,12 +1,13 @@
 "use client"
 
+import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import styles from "@styles/drawer.module.css"
 
 interface User {
   id: number
@@ -95,7 +96,9 @@ export default function Page() {
                       <option value="Viewer">Viewer</option>
                     </select>
                   </div>
-                  <button {...api.getCloseTriggerProps()}>Close</button>
+                  <button {...api.getCloseTriggerProps()}>
+                    <XIcon />
+                  </button>
                 </div>
               </>
             ) : (

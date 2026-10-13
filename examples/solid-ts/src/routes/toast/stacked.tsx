@@ -24,7 +24,7 @@ export default function ToastGroup() {
     <main>
       {/* <pre>{JSON.stringify(service.context.get("toasts"), null, 2)}</pre> */}
 
-      <div style={{ display: "flex", gap: "16px" }}>
+      <div style={{ display: "flex", "flex-wrap": "wrap", gap: "16px", "max-width": "640px" }}>
         <button
           onClick={() => {
             toaster.create({

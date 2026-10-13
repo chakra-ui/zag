@@ -252,18 +252,14 @@ const service = useMachine(numberFlow.machine, {
 The machine sets the structural styles inline, so you do not need to write them.
 The digit gets `overflow: hidden` and a fixed `1lh` height, the track is a flex
 column, and each cell is `1lh` tall. That is what clips the strip to one line
-and keeps the roll aligned to the text baseline.
+and keeps the roll aligned to the text baseline. Digits and symbols are also
+single-column grids, which is how their width animates when they enter or exit.
 
 What is left to you is typography and color:
 
 ```css
 [data-number-flow-root] {
   font-variant-numeric: tabular-nums;
-}
-
-[data-number-flow-symbol] {
-  /* keeps literal spaces, e.g. the gap in "1 234,56 €" */
-  white-space: pre;
 }
 
 [data-number-flow-digit] {
@@ -279,6 +275,36 @@ What is left to you is typography and color:
 
 > Use a font with tabular figures. Proportional digits change width as they
 > roll, which makes the number jitter.
+
+### Fading the edges
+
+By default a rolling digit is cut off sharply at the top and bottom of its line.
+Add a mask to fade it out instead:
+
+```css
+[data-number-flow-digit] {
+  --mask-height: 0.15em;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--mask-height),
+    #000 calc(100% - var(--mask-height)),
+    transparent
+  );
+}
+```
+
+### Entering and Exiting State
+
+When the number gains or loses a digit or symbol (`999` to `1,000`), that
+segment grows or shrinks in place while it fades. Use `[data-entering]` and
+`[data-exiting]` to style it during that transition.
+
+```css
+[data-number-flow-digit][data-exiting] {
+  /* a digit on its way out */
+}
+```
 
 ### Rolling State
 

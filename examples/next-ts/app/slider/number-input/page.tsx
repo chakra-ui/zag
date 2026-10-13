@@ -69,6 +69,7 @@ export default function Page() {
   const [value, setValue] = useState([max / 4, max / 2])
 
   const service = useMachine(slider.machine, {
+    thumbSize: 20,
     id: useId(),
     name: "quantity",
     min,

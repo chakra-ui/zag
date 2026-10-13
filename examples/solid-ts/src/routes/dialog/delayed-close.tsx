@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const [open, setOpen] = createSignal(false)
@@ -37,7 +38,9 @@ export default function Page() {
             >
               Delayed close
             </button>
-            <button {...api().getCloseTriggerProps()}>Close</button>
+            <button {...api().getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </Presence>
         </div>
       </Portal>

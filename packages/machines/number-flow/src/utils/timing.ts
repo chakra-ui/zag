@@ -1,6 +1,4 @@
-/**
- * CSS `<time>` parsing for the settle fallback timeout (§9.5, §11 "Tab backgrounded").
- */
+/** CSS `<time>` parsing for the settle fallback timeout. */
 
 const DURATION_RE = /^(-?[\d.]+)(ms|s)?$/
 

@@ -8,6 +8,7 @@ import "@styles/popover.css"
 
 function RangeSlider() {
   const service = useMachine(slider.machine, {
+    thumbSize: 20,
     id: "1",
     name: "quantity",
     defaultValue: [10, 60],

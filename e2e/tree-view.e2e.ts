@@ -231,3 +231,16 @@ test.describe("tree view / rename", () => {
     await I.seeItem("CHANGELOG.md")
   })
 })
+
+test.describe("tree view / actions", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/actions")
+  })
+
+  test("clicking a nested button should not toggle the branch", async () => {
+    await I.clickNodeMenuTrigger("node_modules")
+    await I.seeMenuIsOpen()
+    await I.seeBranchIsCollapsed("node_modules")
+  })
+})

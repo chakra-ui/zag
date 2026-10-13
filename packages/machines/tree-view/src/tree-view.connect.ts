@@ -8,6 +8,7 @@ import {
   isAnchorElement,
   isComposingEvent,
   isEditableElement,
+  isInteractiveDescendant,
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
@@ -432,6 +433,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           if (nodeState.loading) return
           if (!isLeftClick(event)) return
           if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+          // A nested button (e.g. a row's actions menu) handles its own click
+          if (isInteractiveDescendant(event.currentTarget, getEventTarget(event))) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
           send({

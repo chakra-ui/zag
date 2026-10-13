@@ -2,6 +2,7 @@ import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
+import { ChevronsUpDownIcon, XIcon } from "lucide-solid"
 import { Index, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
@@ -27,13 +28,20 @@ export default function Page() {
     <>
       <main class="select">
         <div {...api().getRootProps()}>
+          <label {...api().getLabelProps()}>Label</label>
           {/* control */}
           <div {...api().getControlProps()}>
-            <label {...api().getLabelProps()}>Label</label>
             <button {...api().getTriggerProps()}>
-              {api().valueAsString || "Select option"}
-              <span {...api().getIndicatorProps()}>▼</span>
+              <span>{api().valueAsString || "Select option"}</span>
             </button>
+            <div class="select-indicator-group">
+              <button {...api().getClearTriggerProps()}>
+                <XIcon />
+              </button>
+              <span {...api().getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           <form

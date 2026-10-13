@@ -14,6 +14,7 @@ export default function Page() {
   const controls = useControls(sliderControls)
 
   const service = useMachine(slider.machine, {
+    thumbSize: 20,
     id: useId(),
     name: "quantity",
     defaultValue: [10, 60],

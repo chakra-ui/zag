@@ -4,6 +4,7 @@ import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import "@styles/popover.css"
+import { XIcon } from "lucide-solid"
 
 const items = Array.from({ length: 200 }, (_, i) => ({
   id: i,
@@ -103,7 +104,7 @@ export default function Page() {
                   background: "white",
                 }}
               >
-                Close
+                <XIcon />
               </button>
             </Presence>
           </div>

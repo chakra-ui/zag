@@ -2,6 +2,7 @@
 
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId } from "react"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/select.css"
@@ -57,7 +58,9 @@ function AlignedSelect({ label, defaultValue }: DemoProps) {
       <div {...api.getControlProps()}>
         <button {...api.getTriggerProps()}>
           <span {...api.getValueTextProps()}>{api.valueAsString || "Select a fruit"}</span>
-          <span {...api.getIndicatorProps()}>▼</span>
+          <span {...api.getIndicatorProps()}>
+            <ChevronsUpDownIcon />
+          </span>
         </button>
       </div>
 
@@ -89,7 +92,8 @@ export default function Page() {
       <main className="select">
         <div
           style={{
-            position: "fixed",
+            // Fill the canvas (below the playground top bar), not the viewport
+            position: "absolute",
             inset: 0,
             display: "flex",
             flexDirection: "column",

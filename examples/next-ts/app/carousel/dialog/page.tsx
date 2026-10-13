@@ -3,6 +3,7 @@
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/carousel.css"
@@ -69,7 +70,7 @@ export default function Page() {
             <p {...api.getDescriptionProps()}>Navigate past page 10 to test the fix.</p>
             <CarouselInDialog page={page} onPageChange={setPage} />
             <button {...api.getCloseTriggerProps()} data-testid="close-dialog">
-              Close
+              <XIcon />
             </button>
           </Presence>
         </div>

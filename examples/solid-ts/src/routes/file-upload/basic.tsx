@@ -10,7 +10,7 @@ import "@styles/file-upload.css"
 export default function Page() {
   const controls = useControls(fileUploadControls)
 
-  const service = useMachine(fileUpload.machine, { id: createUniqueId() })
+  const service = useMachine(fileUpload.machine, controls.mergeProps<fileUpload.Props>({ id: createUniqueId() }))
 
   const api = createMemo(() => fileUpload.connect(service, normalizeProps))
 

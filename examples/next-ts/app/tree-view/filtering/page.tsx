@@ -103,6 +103,8 @@ export default function Page() {
       <div {...api.getRootProps()}>
         <input
           type="text"
+          className="tree-view-search"
+          placeholder="Search files…"
           onChange={(e) => {
             if (e.target.value.length === 0) {
               setCollection(initialCollection)

@@ -13,6 +13,7 @@
  */
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/select.css"
 
@@ -74,7 +75,9 @@ export default function SelectAutofillPage() {
               }}
             >
               <span>{api.valueAsString || "Select state"}</span>
-              <span {...api.getIndicatorProps()}>▼</span>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
             </button>
           </div>
 
@@ -93,7 +96,7 @@ export default function SelectAutofillPage() {
                 <div {...api.getListProps()}>
                   {US_STATES.map((item) => (
                     <div key={item.value} {...api.getItemProps({ item })}>
-                      {item.label}
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
                     </div>
                   ))}
                 </div>

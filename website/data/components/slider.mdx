@@ -192,15 +192,18 @@ const service = useMachine(slider.machine, {
 })
 ```
 
-If you use `contain` alignment, you might need to set the thumb size to prevent
-any flickering.
+With `contain` alignment, the thumbs stay hidden until their size is measured,
+so they can flicker in on first render. Set `thumbSize` to match the size of the
+thumb in your styles to render them in place right away.
 
 ```tsx {3}
 const service = useMachine(slider.machine, {
   thumbAlignment: "contain",
-  thumbSize: { width: 20, height: 20 },
+  thumbSize: 20, // same as { width: 20, height: 20 }
 })
 ```
+
+Pass `{ width, height }` when the thumb isn't square.
 
 ### Thumb collision behavior
 

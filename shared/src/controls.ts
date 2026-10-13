@@ -166,6 +166,13 @@ export const popoverControls = defineControls({
 export const radioControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "vertical" },
+})
+
+// Segmented controls are always horizontal, so no orientation option
+export const segmentControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
 })
 
 export const sliderControls = defineControls({

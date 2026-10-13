@@ -9,14 +9,17 @@ import "@styles/date-picker.css"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const service = useMachine(datePicker.machine, {
-    id: createUniqueId(),
-    locale: "en",
-    selectionMode: "single",
-    inline: true,
-    defaultValue: [datePicker.parse(new Date())],
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id: createUniqueId(),
+      locale: "en",
+      selectionMode: "single",
+      inline: true,
+      defaultValue: [datePicker.parse(new Date())],
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    }),
+  )
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 

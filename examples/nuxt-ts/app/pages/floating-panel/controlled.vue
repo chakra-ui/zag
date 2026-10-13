@@ -7,7 +7,7 @@ import "@styles/floating-panel.css"
 
 const open = ref(false)
 const size = ref({ width: 360, height: 260 })
-const position = ref({ x: 120, y: 120 })
+const position = ref({ x: 120, y: 240 })
 const observedSize = ref({ width: 0, height: 0 })
 const observedEl = ref<HTMLElement | null>(null)
 const id = useId()
@@ -62,7 +62,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
         @click="
           () => {
             size = { width: 360, height: 260 }
-            position = { x: 120, y: 120 }
+            position = { x: 120, y: 240 }
           }
         "
       >

@@ -1,0 +1,101 @@
+/* -----------------------------------------------------------------------------
+ * Component tokens shared by every example (all frameworks)
+ * Palette: zag green (Chakra green) + zinc neutrals. Light mode only.
+ * -----------------------------------------------------------------------------*/
+
+:root {
+  /* Palette */
+  --z-green-50: #f0fff4;
+  --z-green-100: #c6f6d5;
+  --z-green-200: #9ae6b4;
+  --z-green-300: #68d391;
+  --z-green-400: #48bb78;
+  --z-green-500: #38a169;
+  --z-green-600: #2f855a;
+  --z-green-700: #276749;
+  --z-green-800: #22543d;
+
+  --z-zinc-50: #fafafa;
+  --z-zinc-100: #f4f4f5;
+  --z-zinc-200: #e4e4e7;
+  --z-zinc-300: #d4d4d8;
+  --z-zinc-400: #a1a1aa;
+  --z-zinc-500: #71717a;
+  --z-zinc-600: #52525b;
+  --z-zinc-700: #3f3f46;
+  --z-zinc-800: #27272a;
+  --z-zinc-900: #18181b;
+  --z-zinc-950: #09090b;
+
+  --z-red-50: #fef2f2;
+  --z-red-500: #e5484d;
+  --z-red-600: #dc2626;
+  --z-amber-500: #f59e0b;
+  --z-blue-500: #3b82f6;
+
+  /* Surfaces */
+  --z-bg: white;
+  --z-bg-subtle: var(--z-zinc-50);
+  --z-bg-muted: var(--z-zinc-100);
+  --z-bg-emphasis: var(--z-zinc-200);
+  --z-bg-inverted: var(--z-zinc-950);
+
+  /* Text */
+  --z-fg: var(--z-zinc-950);
+  --z-fg-muted: var(--z-zinc-500);
+  --z-fg-subtle: var(--z-zinc-400);
+  --z-fg-inverted: white;
+
+  /* Lines (use sparingly: prefer fills) */
+  --z-border: var(--z-zinc-200);
+  --z-border-subtle: var(--z-zinc-100);
+  --z-border-emphasis: var(--z-zinc-300);
+
+  /* Accent */
+  --z-accent: var(--z-green-500);
+  --z-accent-hover: var(--z-green-600);
+  --z-accent-fg: var(--z-green-600);
+  --z-accent-contrast: white;
+  --z-accent-subtle: var(--z-green-50);
+  --z-accent-muted: var(--z-green-100);
+
+  /* Status */
+  --z-danger: var(--z-red-500);
+  --z-danger-fg: var(--z-red-600);
+  --z-danger-subtle: var(--z-red-50);
+
+  /* Interaction */
+  --z-ring: rgb(56 161 105 / 0.35);
+  --z-focus-ring: 0 0 0 2px var(--z-bg), 0 0 0 4px var(--z-ring);
+  --z-highlight: var(--z-bg-muted);
+  --z-disabled-opacity: 0.5;
+
+  /* Shape */
+  --z-radius-xs: 4px;
+  --z-radius-sm: 6px;
+  --z-radius: 8px;
+  --z-radius-lg: 12px;
+  --z-radius-full: 999px;
+
+  /* Elevation */
+  --z-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
+  --z-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04);
+  --z-shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --z-shadow-lg: 0 16px 40px -12px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.06);
+  --z-shadow-popover: 0 10px 28px -6px rgb(0 0 0 / 0.16), 0 0 0 1px rgb(9 9 11 / 0.06);
+
+  /* Sizing */
+  --z-control-h: 34px;
+  --z-control-h-sm: 28px;
+  --z-font-sans:
+    var(--font-sans, "Wix Madefor Text"), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+  --z-font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --z-text-xs: 12px;
+  --z-text-sm: 13px;
+  --z-text-md: 14px;
+
+  /* Motion */
+  --z-ease: cubic-bezier(0.2, 0, 0, 1);
+  --z-duration: 140ms;
+}

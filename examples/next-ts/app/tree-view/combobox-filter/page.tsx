@@ -206,6 +206,9 @@ export default function Page() {
     onSelectionChange(details) {
       const value = details.selectedValue[0]
       if (!value) return
+      // Files only: a folder just expands or collapses
+      const node = sourceCollection.findNode(value)
+      if (node && sourceCollection.isBranchNode(node)) return
       const label = sourceCollection.stringify(value) ?? value
       comboboxApi.setValue([value])
       comboboxApi.setInputValue(label, "script")
@@ -220,63 +223,68 @@ export default function Page() {
 
   return (
     <>
-      <main className={styles.root}>
-        <div className={styles.header}>
-          <h3>Tree Picker</h3>
-          <p>Combobox input filters the tree popup. Branches auto-expand while searching.</p>
-        </div>
-
-        <div {...comboboxApi.getRootProps()}>
-          <label {...mergeProps(comboboxApi.getLabelProps(), { className: styles.label })}>File</label>
-          <div {...mergeProps(comboboxApi.getControlProps(), { className: styles.control })}>
-            <input
-              {...mergeProps(comboboxApi.getInputProps(), {
-                className: styles.input,
-                onKeyDown(event) {
-                  if (!comboboxApi.open) return
-                  if (event.key === "ArrowDown") {
-                    const first = visibleCollection.getFirstNode()
-                    if (first) {
-                      treeApi.focus(sourceCollection.getNodeValue(first))
-                      event.preventDefault()
-                    }
-                  }
-                },
-              })}
-            />
-            <button type="button" {...mergeProps(comboboxApi.getTriggerProps(), { className: styles.trigger })}>
-              <ChevronDownIcon />
-            </button>
-            <button
-              type="button"
-              {...mergeProps(comboboxApi.getClearTriggerProps(), { className: styles.clearTrigger })}
-            >
-              <XIcon />
-            </button>
+      <main>
+        <div className={styles.root}>
+          <div className={styles.header}>
+            <h3>Tree Picker</h3>
+            <p>Combobox input filters the tree popup. Branches auto-expand while searching.</p>
           </div>
-        </div>
 
-        <p className={styles.selection}>
-          Selected: <strong>{selectedLabel ?? "none"}</strong>
-        </p>
-
-        <Portal>
-          <div {...comboboxApi.getPositionerProps()}>
-            <div {...mergeProps(comboboxApi.getContentProps(), { className: styles.content })}>
-              <div className={styles.treePanel}>
-                {visibleCount === 0 ? (
-                  <div className={styles.empty}>No matches for &quot;{query.trim()}&quot;</div>
-                ) : (
-                  <div {...mergeProps(treeApi.getTreeProps(), { className: styles.tree })}>
-                    {visibleCollection.rootNode.children?.map((node, index) => (
-                      <TreeNode key={node.id} node={node} indexPath={[index]} api={treeApi} />
-                    ))}
-                  </div>
-                )}
-              </div>
+          <div {...comboboxApi.getRootProps()}>
+            <label {...mergeProps(comboboxApi.getLabelProps(), { className: styles.label })}>File</label>
+            <div {...mergeProps(comboboxApi.getControlProps(), { className: styles.control })}>
+              <input
+                {...mergeProps(comboboxApi.getInputProps(), {
+                  className: styles.input,
+                  onKeyDown(event) {
+                    if (!comboboxApi.open) return
+                    if (event.key === "ArrowDown") {
+                      const first = visibleCollection.getFirstNode()
+                      if (first) {
+                        treeApi.focus(sourceCollection.getNodeValue(first))
+                        event.preventDefault()
+                      }
+                    }
+                  },
+                })}
+              />
+              <button
+                type="button"
+                {...mergeProps(comboboxApi.getTriggerProps({ focusable: false }), { className: styles.trigger })}
+              >
+                <ChevronDownIcon />
+              </button>
+              <button
+                type="button"
+                {...mergeProps(comboboxApi.getClearTriggerProps(), { className: styles.clearTrigger })}
+              >
+                <XIcon />
+              </button>
             </div>
           </div>
-        </Portal>
+
+          <p className={styles.selection}>
+            Selected: <strong>{selectedLabel ?? "none"}</strong>
+          </p>
+
+          <Portal>
+            <div {...comboboxApi.getPositionerProps()}>
+              <div {...mergeProps(comboboxApi.getContentProps(), { className: styles.content })}>
+                <div className={styles.treePanel}>
+                  {visibleCount === 0 ? (
+                    <div className={styles.empty}>No matches for &quot;{query.trim()}&quot;</div>
+                  ) : (
+                    <div {...mergeProps(treeApi.getTreeProps(), { className: styles.tree })}>
+                      {visibleCollection.rootNode.children?.map((node, index) => (
+                        <TreeNode key={node.id} node={node} indexPath={[index]} api={treeApi} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Portal>
+        </div>
       </main>
 
       <Toolbar>

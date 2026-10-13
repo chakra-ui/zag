@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+import { getPresenceCounters, mergeSegments, settleSegments } from "../src/utils/presence"
 import {
   boundToStrip,
   computeCounters,
@@ -347,5 +348,71 @@ describe("computeCounters", () => {
     const next = roll({ prevCounters, value: 1134, prevValue: 1234, locale: "ar-EG" })
     expect(mod10(next.get(2)!)).toBe(1)
     expect([...next.values()].every(Number.isFinite)).toBe(true)
+  })
+})
+
+describe("presence", () => {
+  const keys = (segments: Segment[]) => segments.map((s) => `${s.key}${s.presence ? `(${s.presence})` : ""}`)
+  const render = (value: number) => getRenderResult({ value, locale: "en-US" }).segments
+
+  test("a shrinking value keeps removed places rendered as exiting, in place", () => {
+    expect(keys(mergeSegments(render(1234), render(5)))).toEqual([
+      "digit:3(exiting)",
+      "group:3(exiting)",
+      "digit:2(exiting)",
+      "digit:1(exiting)",
+      "digit:0",
+    ])
+  })
+
+  test("a growing value marks new places as entering", () => {
+    expect(keys(mergeSegments(render(999), render(1000)))).toEqual([
+      "digit:3(entering)",
+      "group:3(entering)",
+      "digit:2",
+      "digit:1",
+      "digit:0",
+    ])
+  })
+
+  test("a place that comes back while exiting is present again", () => {
+    const shrinking = mergeSegments(render(1234), render(5))
+    expect(keys(mergeSegments(shrinking, render(1234)))).toEqual([
+      "digit:3",
+      "group:3",
+      "digit:2",
+      "digit:1",
+      "digit:0",
+    ])
+  })
+
+  test("a segment stays entering until it is committed", () => {
+    const growing = mergeSegments(render(9), render(10))
+    expect(keys(mergeSegments(growing, render(11)))).toEqual(["digit:1(entering)", "digit:0"])
+  })
+
+  test("settled segments drop exiting ones and clear flags", () => {
+    expect(keys(settleSegments(mergeSegments(render(1234), render(5))))).toEqual(["digit:0"])
+  })
+})
+
+describe("presence counters", () => {
+  test("exiting digits hold their counter and entering ones start a cell off", () => {
+    const segments = mergeSegments(
+      getRenderResult({ value: 15, locale: "en-US" }).segments,
+      getRenderResult({ value: 105, locale: "en-US" }).segments,
+    )
+    const prev = new Map([
+      [1, 21],
+      [0, 25],
+    ])
+    const rolled = new Map([
+      [2, 21],
+      [1, 20],
+      [0, 25],
+    ])
+    const counters = getPresenceCounters(segments, prev, rolled, 1)
+    expect(counters.get(2)).toBe(20)
+    expect(counters.get(1)).toBe(20)
   })
 })

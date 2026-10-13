@@ -2,6 +2,7 @@
 
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { MinusIcon, PlusIcon } from "lucide-react"
 import { useId, useState } from "react"
 import "@styles/number-input.css"
 
@@ -123,11 +124,11 @@ export default function Page() {
           </label>
           <div {...api.getControlProps()}>
             <button data-testid="dec-button" {...api.getDecrementTriggerProps()}>
-              DEC
+              <MinusIcon />
             </button>
             <input data-testid="input" {...api.getInputProps()} />
             <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
-              INC
+              <PlusIcon />
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/tour.css"
 
@@ -41,7 +42,9 @@ export default function Tour(props: TourProps) {
           <div {...api.getSpotlightProps()} />
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <button {...api.getCloseTriggerProps()}>X</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
 
               {api.step.arrow && (
                 <div {...api.getArrowProps()}>

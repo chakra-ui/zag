@@ -26,7 +26,7 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <div {...api().getIndicatorProps()} />
 
-          <div {...api().getListProps()}>
+          <div data-stretch="" {...api().getListProps()}>
             <For each={tabsData}>
               {(item) => (
                 <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>

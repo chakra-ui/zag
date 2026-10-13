@@ -1,6 +1,7 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { numberFlowControls } from "@zag-js/shared"
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
+import { MinusIcon, PlusIcon } from "lucide-solid"
 import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -32,7 +33,7 @@ export default function Page() {
   return (
     <>
       <main class="number-flow">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class="nf-hero">
           <Key each={api().segments} by={(segment) => segment.key}>
             {(segment) => {
               // `Key` runs this once per key, so the getters must read `segment()` inside the
@@ -67,18 +68,20 @@ export default function Page() {
           <span {...api().getValueTextProps()}>{api().announcedValueText}</span>
         </div>
 
-        <div class="number-flow__actions">
-          <button onClick={() => api().setValue(api().value - randomDelta())}>Decrement</button>
-          <button onClick={() => api().setValue(api().value + randomDelta())}>Increment</button>
+        <div class="hstack">
+          <button class="nf-stepper" aria-label="Decrement" onClick={() => api().setValue(api().value - randomDelta())}>
+            <MinusIcon />
+          </button>
+          <button class="nf-stepper" aria-label="Increment" onClick={() => api().setValue(api().value + randomDelta())}>
+            <PlusIcon />
+          </button>
           <button onClick={() => api().setValue(Math.round(Math.random() * 99999))}>Randomize</button>
           <button onClick={() => api().setValue(0)}>Reset</button>
-          <span class="number-flow__value" data-testid="value">
-            value: {api().value} {api().animating ? "(rolling)" : ""}
-          </span>
-          <span class="number-flow__value" data-testid="animations">
-            animations: {animations().started} started / {animations().completed} completed
-          </span>
         </div>
+
+        <p class="nf-caption" data-testid="animations">
+          animations: {animations().started} started / {animations().completed} completed
+        </p>
       </main>
 
       <Toolbar controls={controls}>

@@ -87,8 +87,8 @@ export default function Page() {
         <div {...api.getRootProps()} className={styles.root}>
           <h3>Copy vs move</h3>
           <p className={styles.helperText}>
-            Spectrum drop operations without HTML5 DataTransfer: Library copies, Archive moves. Zag reports the target;
-            the app chooses the operation.
+            Drop operations without HTML5 DataTransfer: Library copies, Archive moves. Zag reports the target; the app
+            chooses the operation.
           </p>
           <div className={styles.transferLayout}>
             <div className={styles.transferColumn}>

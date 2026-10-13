@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { getFillRange, getOriginPercent } from "../src/slider.utils"
+import { getFillRange, getOriginPercent, toThumbSize } from "../src/slider.utils"
 
 /**
  * Legend for the track diagrams below (all in percent-space, 0 = start of track, 100 = end):
@@ -164,5 +164,19 @@ describe("regression: 'center' vs. a numeric origin on an asymmetric domain", ()
     //   ·······●█████████████○····················
     const wrongFill = getFillRange(valuePercent, getOriginPercent("center", min, max))
     expect(wrongFill.start + wrongFill.end).toBeLessThan(100)
+  })
+})
+
+describe("toThumbSize", () => {
+  test("a number sets both width and height", () => {
+    expect(toThumbSize(20)).toEqual({ width: 20, height: 20 })
+  })
+
+  test("a size object passes through", () => {
+    expect(toThumbSize({ width: 24, height: 16 })).toEqual({ width: 24, height: 16 })
+  })
+
+  test("no size is null, so the thumb gets measured", () => {
+    expect(toThumbSize(undefined)).toBeNull()
   })
 })

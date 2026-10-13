@@ -5,6 +5,7 @@ import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import styles from "@styles/drawer.module.css"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const service = useMachine(drawer.machine, () => ({
@@ -25,7 +26,9 @@ export default function Page() {
             </div>
             <div {...api().getTitleProps()}>Drawer</div>
             <p {...api().getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>
-            <button {...api().getCloseTriggerProps()}>Close</button>
+            <button {...api().getCloseTriggerProps()}>
+              <XIcon />
+            </button>
             <div class={styles.scrollable} data-testid="scrollable">
               <For each={Array.from({ length: 100 })}>{(_element, index) => <div>Item {index()}</div>}</For>
             </div>

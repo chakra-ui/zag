@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer.module.css"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const service = useMachine(drawer.machine, () => ({
@@ -48,7 +49,9 @@ export default function Page() {
             drag to dismiss, or Escape.
           </p>
           <div style={{ padding: "16px" }}>
-            <button {...api().getCloseTriggerProps()}>Close</button>
+            <button {...api().getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
         </Presence>
       </div>

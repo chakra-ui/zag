@@ -1,20 +1,66 @@
+/* The code sits on a card; its padding is the quiet zone scanners need. Theme with --qr-fg / --qr-bg */
+[data-qr-code-root] {
+  --qr-size: 168px;
+  --qr-fg: var(--z-fg);
+  --qr-bg: var(--z-bg);
+  display: inline-grid;
+  place-items: center;
+  padding: 16px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-lg);
+  background: var(--qr-bg);
+  box-shadow: var(--z-shadow-xs);
+}
+
 [data-qr-code-frame] {
-  width: 120px;
-  height: 120px;
-  background-color: white;
+  display: block;
+  width: var(--qr-size);
+  height: var(--qr-size);
 }
 
 [data-qr-code-pattern] {
-  fill: green;
+  fill: var(--qr-fg);
 }
 
+/* A logo needs ECC "H" so the covered modules can still be recovered */
 [data-qr-code-overlay] {
-  width: 25%;
-  height: 25%;
-  outline: 4px solid white;
+  display: grid;
+  place-items: center;
+  width: 24%;
+  height: 24%;
+  padding: 4px;
+  border-radius: var(--z-radius);
+  background: var(--qr-bg);
 
   & img {
     width: 100%;
     height: 100%;
+    border-radius: var(--z-radius-sm);
+  }
+}
+
+/* What the code holds, under the card */
+.qr-caption {
+  max-width: calc(var(--qr-size, 168px) + 32px);
+  overflow: hidden;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A labelled code in a row of codes (qr-code/error-correction) */
+.qr-tile {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  font-size: var(--z-text-sm);
+
+  & strong {
+    font-weight: 500;
+  }
+
+  & span {
+    color: var(--z-fg-muted);
   }
 }

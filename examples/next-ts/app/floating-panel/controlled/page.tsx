@@ -47,7 +47,7 @@ function AutoSizingContent() {
 export default function Page() {
   const [open, setOpen] = useState(false)
   const [size, setSize] = useState({ width: 360, height: 260 })
-  const [position, setPosition] = useState({ x: 120, y: 120 })
+  const [position, setPosition] = useState({ x: 120, y: 240 })
 
   const service = useMachine(floating.machine, {
     id: useId(),
@@ -79,7 +79,7 @@ export default function Page() {
         <button
           onClick={() => {
             setSize({ width: 360, height: 260 })
-            setPosition({ x: 120, y: 120 })
+            setPosition({ x: 120, y: 240 })
           }}
         >
           Reset rect

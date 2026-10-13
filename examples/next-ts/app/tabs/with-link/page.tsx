@@ -56,13 +56,13 @@ function PageContent() {
           <div {...api.getIndicatorProps()} />
           <div {...api.getListProps()}>
             {tabsData.map((data) => (
-              <a href={`#${data.id}`} {...(api.getTriggerProps({ value: data.id }) as any)} key={data.id}>
+              <a key={data.id} href={`#${data.id}`} {...(api.getTriggerProps({ value: data.id }) as any)}>
                 {data.label}
               </a>
             ))}
           </div>
           {tabsData.map((data) => (
-            <div {...api.getContentProps({ value: data.id })} key={data.id}>
+            <div key={data.id} {...api.getContentProps({ value: data.id })}>
               <p>{data.content}</p>
               {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
             </div>

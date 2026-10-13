@@ -30,7 +30,7 @@ const service = useMachine(
     },
     onInputValueChange({ inputValue }) {
       const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-      options.value = filtered.length > 0 ? filtered : comboboxData
+      options.value = filtered
     },
   }),
 )
@@ -60,6 +60,7 @@ const api = computed(() => combobox.connect(service, normalizeProps))
 
       <div v-bind="api.getPositionerProps()">
         <div data-testid="combobox-content" v-bind="api.getContentProps()">
+          <div v-bind="api.getEmptyProps()"><template v-if="options.length === 0">No results found</template></div>
           <div v-if="options.length > 0" v-bind="api.getListProps()">
             <div v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
               {{ item.label }}

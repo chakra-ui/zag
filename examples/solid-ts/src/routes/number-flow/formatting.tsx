@@ -83,7 +83,7 @@ export default function Page() {
   return (
     <>
       <main class="number-flow">
-        <div {...api().getRootProps()}>
+        <div {...api().getRootProps()} class="nf-hero">
           <Key each={api().segments} by={(segment) => segment.key}>
             {(segment) => {
               // `Key` runs this once per key, so the getters must read `segment()` inside the
@@ -118,7 +118,7 @@ export default function Page() {
           <span {...api().getValueTextProps()}>{api().announcedValueText}</span>
         </div>
 
-        <div class="number-flow__actions">
+        <div class="hstack">
           <select
             data-testid="preset"
             value={preset()}

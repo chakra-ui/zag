@@ -7,6 +7,7 @@ import {
   getValueRanges,
   snapValueToStep,
 } from "@zag-js/utils"
+import type { Size } from "@zag-js/types"
 import type { SliderOrigin, SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
@@ -256,4 +257,9 @@ export function getFillRange(valuePercent: number, originPercent: number): { sta
     start: isBeforeOrigin ? valuePercent : originPercent,
     end: isBeforeOrigin ? 100 - originPercent : 100 - valuePercent,
   }
+}
+
+export const toThumbSize = (size: number | Size | undefined): Size | null => {
+  if (size == null) return null
+  return typeof size === "number" ? { width: size, height: size } : size
 }
