@@ -33,7 +33,7 @@ function loadChildren(details: tree.LoadChildrenDetails<Node>): Promise<Node[]> 
   const value = details.valuePath.join("/")
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(apiResult[value] ?? [])
+      resolve(apiResult[value as keyof typeof apiResult] ?? [])
     }, 1200)
   })
 }

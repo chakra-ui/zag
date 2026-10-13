@@ -15,7 +15,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "target": "esnext",
     "incremental": true,
     "baseUrl": ".",
@@ -28,8 +28,7 @@
       {
         "name": "next"
       }
-    ],
-    "strictNullChecks": true
+    ]
   },
   "exclude": ["node_modules"],
   "include": [

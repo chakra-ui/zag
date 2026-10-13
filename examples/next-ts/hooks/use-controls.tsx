@@ -71,7 +71,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                     }}
                   >
                     <option>-----</option>
-                    {options.map((option) => (
+                    {options.map((option: string) => (
                       <option key={option} value={option}>
                         {option}
                       </option>

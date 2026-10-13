@@ -20,7 +20,7 @@ export interface ScrollAreaProps {
 function trackScrollArea(node: HTMLElement | null, props: ScrollAreaProps) {
   if (!node) return
 
-  let { onScrollStart, onScrollEnd, onScrollChange, onSideReached, offset = {}, flush } = props
+  let { onScrollStart, onScrollEnd, onScrollChange, onSideReached, offset = {}, flush = (fn) => fn() } = props
   const { top: topOffset = 0, right: rightOffset = 0, bottom: bottomOffset = 0, left: leftOffset = 0 } = offset
 
   const win = getWindow(node)

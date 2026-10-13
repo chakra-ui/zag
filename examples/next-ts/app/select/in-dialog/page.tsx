@@ -23,7 +23,7 @@ function Select() {
       <div {...api.getControlProps()}>
         <button
           {...mergeProps(api.getTriggerProps(), {
-            "aria-controls": !api.open ? null : undefined,
+            "aria-controls": !api.open ? (null as unknown as undefined) : undefined,
           })}
         >
           <span>{api.valueAsString || "Select option"}</span>

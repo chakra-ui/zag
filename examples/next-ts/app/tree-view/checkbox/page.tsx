@@ -66,7 +66,7 @@ const iconMap = {
 function TreeNodeCheckbox(props: TreeNodeProps) {
   const { api, ...nodeProps } = props
   const nodeState = api.getNodeState(nodeProps)
-  const Icon = iconMap[nodeState.checked.toString()]
+  const Icon = iconMap[nodeState.checked.toString() as keyof typeof iconMap]
 
   return (
     <span {...api.getNodeCheckboxProps(nodeProps)}>
