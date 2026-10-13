@@ -3,7 +3,7 @@
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { useDeferredValue, useEffect, useId, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useEffect, useId, useMemo, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "@/lib/emoji-loader"
 import "@styles/emoji-picker.css"
@@ -99,9 +99,14 @@ export default function Page() {
     [items],
   )
 
+  const estimatedSize = useCallback(
+    (index: number) => (rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
+    [rows],
+  )
+
   const { virtualizer, ref: scrollRef } = useListVirtualizer({
     count: rows.length,
-    estimatedSize: (index) => (rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
+    estimatedSize,
     groups,
     // Keep scrolled-to rows below the sticky header
     scrollPaddingStart: HEADER_SIZE,

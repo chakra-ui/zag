@@ -21,7 +21,7 @@ interface VirtualizerLike<O> {
 
 type MaybeAccessor<T> = T | Accessor<T>
 
-// One level deep, so a rebuilt `groups: [{ id, startIndex }]` isn't a change
+// One level deep, so a rebuilt `groups` array isn't a change
 const isEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true
   if (!a || !b || typeof a !== "object" || typeof b !== "object") return false
@@ -36,25 +36,17 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
 ) {
   const read = () => (typeof options === "function" ? (options as Accessor<O>)() : options)
   let latest = untrack(read)
-
-  // Function options always call the latest version
-  const wrapped = { ...latest } as Record<string, unknown>
-  for (const key in wrapped) {
-    if (typeof wrapped[key] === "function") {
-      wrapped[key] = (...args: unknown[]) => (latest as any)[key](...args)
-    }
-  }
-  const inner = create(wrapped as O)
+  const inner = create(latest)
   const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
-  // Re-runs when the options accessor's dependencies change
+  // Syncs changed options whenever the accessor re-runs
   createEffect(() => {
     const next = read()
     const changed: Partial<O> = {}
     let dirty = false
     for (const key in next) {
       const value = next[key]
-      if (typeof value === "function" || isEqual(value, latest[key])) continue
+      if (isEqual(value, latest[key])) continue
       changed[key] = value
       dirty = true
     }

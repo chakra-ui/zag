@@ -9,6 +9,8 @@ import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/combobox.css"
 
+const estimateSize = () => 32
+
 interface Item {
   code: string
   label: string
@@ -20,13 +22,10 @@ export default function Page() {
   const [options, setOptions] = useState(comboboxData)
 
   const { virtualizer, ref } = useListVirtualizer({
-    count: comboboxData.length,
-    estimatedSize: () => 32,
+    count: options.length,
+    estimatedSize: estimateSize,
     observeScrollElementSize: true,
   })
-
-  // Sync count before render — useEffect is too late
-  virtualizer.updateOptions({ count: options.length })
 
   const collection = combobox.collection({
     items: options,
@@ -72,6 +71,8 @@ export default function Page() {
             <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = options[vi.index]
+                // The count syncs before paint; skip rows from the previous one
+                if (!item) return null
                 return (
                   <div
                     data-testid={item.code}

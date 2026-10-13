@@ -8,6 +8,8 @@ import { useId } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/select.css"
 
+const estimateSize = () => 32
+
 const collection = select.collection({
   items: selectData,
   itemToString: (item) => item.label,
@@ -17,7 +19,7 @@ const collection = select.collection({
 export default function Page() {
   const { virtualizer, ref } = useListVirtualizer({
     count: selectData.length,
-    estimatedSize: () => 32,
+    estimatedSize: estimateSize,
     observeScrollElementSize: true,
   })
 

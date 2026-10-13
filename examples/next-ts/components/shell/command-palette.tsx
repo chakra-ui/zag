@@ -7,7 +7,7 @@ import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { componentRoutesData, exampleRoutes, getComponentExamples } from "@zag-js/shared"
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useId, useMemo, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
 const { contains } = createFilter({ sensitivity: "base" })
@@ -204,7 +204,6 @@ interface PaletteListProps {
 function PaletteList(props: PaletteListProps) {
   const { api, items, currentValue, scrollToIndexRef } = props
   const { rows, itemRowIndex } = useMemo(() => getRows(items), [items])
-  // Stable per filter result: `updateOptions` treats a new function as a change and re-renders
   const estimatedSize = useCallback(
     (index: number) => (rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT),
     [rows],
@@ -219,11 +218,6 @@ function PaletteList(props: PaletteListProps) {
     paddingStart: LIST_PADDING,
     paddingEnd: LIST_PADDING,
   })
-
-  // Before paint, so the window never shows stale rows; not during render, which would update another component
-  useLayoutEffect(() => {
-    virtualizer.updateOptions({ count: rows.length, estimatedSize })
-  }, [virtualizer, rows.length, estimatedSize])
 
   scrollToIndexRef.current = (itemIndex, immediate) => {
     const rowIndex = itemRowIndex[itemIndex]

@@ -6,6 +6,8 @@ import { useId } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/listbox.css"
 
+const estimateSize = () => 28
+
 const items = new Array(10000).fill(0).map((_, index) => ({
   label: `Item ${index}`,
   value: `item-${index}`,
@@ -21,7 +23,7 @@ interface Item {
 export default function Page() {
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: () => 28,
+    estimatedSize: estimateSize,
     overscan: 12,
   })
 

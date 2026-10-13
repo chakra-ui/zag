@@ -18,7 +18,7 @@ interface VirtualizerLike<O> {
   updateOptions: (options: Partial<O>) => void
 }
 
-// One level deep, so `groups: [{ id, startIndex }]` rebuilt each render isn't a change
+// One level deep, so a rebuilt `groups` array isn't a change
 const isEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true
   if (!a || !b || typeof a !== "object" || typeof b !== "object") return false
@@ -28,30 +28,17 @@ const isEqual = (a: unknown, b: unknown): boolean => {
 }
 
 function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(create: (options: O) => V, options: O) {
-  const latest = useRef(options)
-  latest.current = options
-
-  // Function options always call the latest render's version, so inline callbacks are fine
-  const [virtualizer] = useState(() => {
-    const wrapped = { ...options } as Record<string, unknown>
-    for (const key in wrapped) {
-      if (typeof wrapped[key] === "function") {
-        wrapped[key] = (...args: unknown[]) => (latest.current as any)[key](...args)
-      }
-    }
-    return create(wrapped as O)
-  })
-
+  const [virtualizer] = useState(() => create(options))
   useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
 
-  // Before paint, so a new `count` never renders stale rows
+  // Sync changed options before paint; keep function options stable (useCallback)
   const synced = useRef(options)
   useLayoutEffect(() => {
     const changed: Partial<O> = {}
     let dirty = false
     for (const key in options) {
       const value = options[key]
-      if (typeof value === "function" || isEqual(value, synced.current[key])) continue
+      if (isEqual(value, synced.current[key])) continue
       changed[key] = value
       dirty = true
     }
