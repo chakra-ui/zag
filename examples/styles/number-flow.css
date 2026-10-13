@@ -13,6 +13,15 @@
 
 [data-number-flow-digit] {
   vertical-align: top;
+  /* Fade a rolling glyph at the window's edges instead of cutting it */
+  --mask-height: 0.15em;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--mask-height),
+    #000 calc(100% - var(--mask-height)),
+    transparent
+  );
 }
 
 [data-number-flow-digit-cell] {

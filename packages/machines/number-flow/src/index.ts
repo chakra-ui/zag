@@ -17,4 +17,4 @@ export type {
   ValueChangeDetails,
 } from "./number-flow.types"
 export { isDigitSegment, isSymbolSegment } from "./utils/segments"
-export type { DigitCell, DigitSegment, Segment, SymbolSegment, Trend } from "./utils/segments"
+export type { DigitCell, DigitSegment, Segment, SegmentPresence, SymbolSegment, Trend } from "./utils/segments"
