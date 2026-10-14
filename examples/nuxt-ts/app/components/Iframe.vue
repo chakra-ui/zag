@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { type IframeHTMLAttributes, type VNode, ref, watch } from "vue"
 
+defineOptions({ inheritAttrs: false })
+
 const frameRef = ref<HTMLIFrameElement | null>(null)
 const mountNode = ref<HTMLElement | null>(null)
 
@@ -57,9 +59,9 @@ const env = () => frameRef.value?.contentDocument ?? document
 </script>
 
 <template>
-  <iframe ref="frameRef" v-bind="$attrs">
-    <Teleport v-if="mountNode" :to="mountNode">
-      <slot />
-    </Teleport>
-  </iframe>
+  <!-- Teleport sits outside: the parser turns iframe children into text, breaking hydration -->
+  <iframe ref="frameRef" v-bind="$attrs" />
+  <Teleport v-if="mountNode" :to="mountNode">
+    <slot />
+  </Teleport>
 </template>
