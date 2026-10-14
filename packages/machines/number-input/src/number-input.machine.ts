@@ -388,9 +388,15 @@ export const machine = createMachine({
         if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
-      setValue({ context, event }) {
+      setValue({ context, event, action }) {
         const value = event.target?.value ?? event.value
         context.set("value", value)
+        // In controlled mode the parent may refuse or clamp the change, so the
+        // context value ends up different from the typed text. The watch only
+        // reacts to value changes, so rewrite the element here.
+        if (context.get("value") !== value) {
+          action(["syncInputElement"])
+        }
       },
       clearValue({ context }) {
         context.set("value", "")
@@ -439,12 +445,14 @@ export const machine = createMachine({
         })
       },
       syncInputElement({ context, event, computed, scope }) {
-        const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
         const sel = event.selection ?? recordCursor(inputEl, scope)
         raf(() => {
+          // Read the value inside the frame: for controlled inputs the parent's
+          // echoed value only reaches the context after the change event
+          const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })
