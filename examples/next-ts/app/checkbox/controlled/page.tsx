@@ -1,40 +1,30 @@
 "use client"
 
-import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { useId, useState } from "react"
+import { useState } from "react"
+import { Checkbox } from "@/components/checkbox"
 import "@styles/checkbox.css"
 
 export default function Page() {
   const [checked, setChecked] = useState(false)
 
-  const service = useMachine(checkbox.machine, {
-    id: useId(),
-    name: "checkbox",
-    checked,
-    onCheckedChange(details) {
-      setChecked(!!details.checked)
-    },
-  })
-
-  const api = checkbox.connect(service, normalizeProps)
-
   return (
     <main className="checkbox">
-      <label {...api.getRootProps()}>
-        <div {...api.getControlProps()} />
-        <span {...api.getLabelProps()}>Input {api.checked ? "Checked" : "Unchecked"}</span>
-        <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
-        <div {...api.getIndicatorProps()}>Indicator</div>
-      </label>
+      <div className="vstack gap-4">
+        <Checkbox
+          label="Email me product updates"
+          description="State lives in the parent; the checkbox reports changes."
+          checked={checked}
+          onCheckedChange={(details) => setChecked(details.checked === true)}
+          data-testid="hidden-input"
+        />
 
-      <button type="button" disabled={api.checked} onClick={() => api.setChecked(true)}>
-        Check
-      </button>
-      <button type="button" disabled={!api.checked} onClick={() => api.setChecked(false)}>
-        Uncheck
-      </button>
-      <button type="reset">Reset Form</button>
+        <div className="hstack">
+          <button type="button" onClick={() => setChecked((value) => !value)}>
+            Toggle from outside
+          </button>
+          <span className="checkbox-description">checked: {String(checked)}</span>
+        </div>
+      </div>
     </main>
   )
 }

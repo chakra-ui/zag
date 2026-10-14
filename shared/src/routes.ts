@@ -436,7 +436,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Checkbox",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "indeterminate", title: "Indeterminate" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "indeterminate", title: "Select All (Indeterminate)" },
+      { slug: "states", title: "States" },
+      { slug: "form", title: "Form" },
     ],
   },
   {

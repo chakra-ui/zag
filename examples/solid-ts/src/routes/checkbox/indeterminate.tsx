@@ -1,54 +1,66 @@
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId } from "solid-js"
+import { CheckIcon, MinusIcon } from "lucide-solid"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import { Checkbox } from "~/components/checkbox"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import "@styles/checkbox.css"
+
+const toppings = ["Cheese", "Mushrooms", "Olives"]
 
 export default function Page() {
-  const service = useMachine(checkbox.machine, {
-    id: createUniqueId(),
-    name: "uncontrolled",
-    defaultChecked: "indeterminate",
-  })
+  const [selected, setSelected] = createSignal<string[]>(["Cheese"])
 
-  const api = createMemo(() => checkbox.connect(service, normalizeProps))
+  // Derived from the children: none, some (indeterminate) or all
+  const allState = (): checkbox.CheckedState =>
+    selected().length === 0 ? false : selected().length === toppings.length ? true : "indeterminate"
 
-  const [checked, setChecked] = createSignal<checkbox.CheckedState>("indeterminate")
-  const controlledId = createUniqueId()
-
-  const controlledService = useMachine(checkbox.machine, () => ({
-    id: controlledId,
-    name: "controlled",
-    checked: checked(),
-    onCheckedChange(details) {
-      setChecked(details.checked)
+  const id = createUniqueId()
+  const service = useMachine(checkbox.machine, () => ({
+    id,
+    name: "all",
+    checked: allState(),
+    onCheckedChange({ checked }: checkbox.CheckedChangeDetails) {
+      setSelected(checked === true ? toppings : [])
     },
   }))
 
-  const controlledApi = createMemo(() => checkbox.connect(controlledService, normalizeProps))
+  const api = createMemo(() => checkbox.connect(service, normalizeProps))
 
   return (
     <>
       <main class="checkbox">
-        <form>
-          <fieldset>
-            <label {...api().getRootProps()}>
-              <div {...api().getControlProps()} />
-              <span {...api().getLabelProps()}>Uncontrolled: {String(api().checkedState)}</span>
-              <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
-            </label>
-            <button type="reset">Reset Form</button>
-          </fieldset>
-        </form>
+        <div class="vstack gap-3">
+          <label {...api().getRootProps()}>
+            <div {...api().getControlProps()}>
+              <span {...api().getIndicatorProps()}>
+                <Show when={api().indeterminate} fallback={<CheckIcon />}>
+                  <MinusIcon />
+                </Show>
+              </span>
+            </div>
+            <span {...api().getLabelProps()}>All toppings</span>
+            <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
+          </label>
 
-        <label {...controlledApi().getRootProps()}>
-          <div {...controlledApi().getControlProps()} />
-          <span {...controlledApi().getLabelProps()}>Controlled: {String(controlledApi().checkedState)}</span>
-          <input {...controlledApi().getHiddenInputProps()} data-testid="controlled-hidden-input" />
-        </label>
+          <div class="checkbox-children">
+            <For each={toppings}>
+              {(topping) => (
+                <Checkbox
+                  label={topping}
+                  checked={selected().includes(topping)}
+                  onCheckedChange={({ checked }) =>
+                    setSelected((prev) => (checked ? [...prev, topping] : prev.filter((item) => item !== topping)))
+                  }
+                />
+              )}
+            </For>
+          </div>
+        </div>
       </main>
 
-      <Toolbar viz>
+      <Toolbar>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

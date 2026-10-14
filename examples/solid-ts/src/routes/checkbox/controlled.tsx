@@ -1,39 +1,28 @@
-import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId } from "solid-js"
+import { createSignal } from "solid-js"
+import { Checkbox } from "~/components/checkbox"
 import "@styles/checkbox.css"
 
 export default function Page() {
   const [checked, setChecked] = createSignal(false)
 
-  const id = createUniqueId()
-  const service = useMachine(checkbox.machine, () => ({
-    id,
-    name: "checkbox",
-    checked: checked(),
-    onCheckedChange(details) {
-      setChecked(!!details.checked)
-    },
-  }))
-
-  const api = createMemo(() => checkbox.connect(service, normalizeProps))
-
   return (
     <main class="checkbox">
-      <label {...api().getRootProps()}>
-        <div {...api().getControlProps()} />
-        <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
-        <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
-        <div {...api().getIndicatorProps()}>Indicator</div>
-      </label>
+      <div class="vstack gap-4">
+        <Checkbox
+          label="Email me product updates"
+          description="State lives in the parent; the checkbox reports changes."
+          checked={checked()}
+          onCheckedChange={(details) => setChecked(details.checked === true)}
+          data-testid="hidden-input"
+        />
 
-      <button type="button" disabled={api().checked} onClick={() => api().setChecked(true)}>
-        Check
-      </button>
-      <button type="button" disabled={!api().checked} onClick={() => api().setChecked(false)}>
-        Uncheck
-      </button>
-      <button type="reset">Reset Form</button>
+        <div class="hstack">
+          <button type="button" onClick={() => setChecked((value) => !value)}>
+            Toggle from outside
+          </button>
+          <span class="checkbox-description">checked: {String(checked())}</span>
+        </div>
+      </div>
     </main>
   )
 }
