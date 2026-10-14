@@ -19,33 +19,37 @@ const service = useMachine(
 )
 
 const api = computed(() => pinInput.connect(service, normalizeProps))
+
+const onSubmit = (e: Event) => {
+  const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+  console.log(formData)
+}
 </script>
 
 <template>
   <main class="pin-input">
-    <form
-      @submit="
-        (e) => {
-          e.preventDefault()
-          const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
-          console.log(formData)
-        }
-      "
-    >
+    <form class="vstack gap-4" @submit.prevent="onSubmit">
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">Enter code:</label>
         <div v-bind="api.getControlProps()">
-          <input v-for="index in api.items" :data-testid="`input-${index + 1}`" v-bind="api.getInputProps({ index })" />
+          <input
+            v-for="index in api.items"
+            :key="index"
+            :data-testid="`input-${index + 1}`"
+            v-bind="api.getInputProps({ index })"
+          />
         </div>
         <input v-bind="api.getHiddenInputProps()" />
       </div>
-      <button data-testid="clear-button" @click="api.clearValue">Clear</button>
-      <button @click="api.focus">Focus</button>
+      <div class="hstack">
+        <button data-testid="clear-button" @click="api.clearValue">Clear</button>
+        <button @click="api.focus">Focus</button>
+      </div>
     </form>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" :context="['value', 'focusedIndex']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

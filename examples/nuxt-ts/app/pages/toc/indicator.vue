@@ -48,5 +48,8 @@ const api = computed(() => toc.connect(service, normalizeProps))
 
   <Toolbar>
     <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>

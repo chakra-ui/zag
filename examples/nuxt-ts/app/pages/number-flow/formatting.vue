@@ -2,7 +2,6 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { numberFlowControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, ref, useId } from "vue"
 import "@styles/number-flow.css"
 
 const PRESETS = {
@@ -54,19 +53,19 @@ const value = ref(PRESETS.usd.defaultValue)
 
 const current = computed(() => PRESETS[preset.value])
 
+const id = useId()
+const controlProps = controls.mergeProps({})
+
 const service = useMachine(
   numberFlow.machine,
-  controls.mergeProps<numberFlow.Props>({
-    id: useId(),
-    get value() {
-      return value.value
-    },
-    get locale() {
-      return current.value.locale
-    },
-    get formatOptions() {
-      return current.value.formatOptions
-    },
+  computed<numberFlow.Props>(() => {
+    const { label: _label, step: _step, ...presetProps } = current.value
+    return {
+      id,
+      value: value.value,
+      ...presetProps,
+      ...(controlProps.value as Record<string, unknown>),
+    }
   }),
 )
 
@@ -80,7 +79,7 @@ function changePreset(next: PresetKey) {
 
 <template>
   <main class="number-flow">
-    <div v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()" class="nf-hero">
       <template v-for="segment in api.segments" :key="segment.key">
         <span v-if="segment.kind === 'digit'" v-bind="api.getDigitProps({ segment })">
           <span v-bind="api.getDigitTrackProps({ segment })">
@@ -94,7 +93,7 @@ function changePreset(next: PresetKey) {
       <span v-bind="api.getValueTextProps()">{{ api.announcedValueText }}</span>
     </div>
 
-    <div class="number-flow__actions">
+    <div class="hstack">
       <select
         data-testid="preset"
         :value="preset"

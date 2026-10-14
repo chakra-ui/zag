@@ -3,7 +3,13 @@ import { createFilter } from "@zag-js/i18n-utils"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronsUpDownIcon } from "lucide-vue-next"
 import "@styles/select.css"
+
+interface Item {
+  label: string
+  value: string
+}
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -18,8 +24,8 @@ const collection = computed(() =>
 const id = useId()
 
 const service = useMachine(
-  select.machine,
-  computed<select.Props>(() => ({
+  select.machine as select.Machine<Item>,
+  computed<select.Props<Item>>(() => ({
     id,
     collection: collection.value,
     popupType: "dialog",
@@ -38,8 +44,10 @@ const api = computed(() => select.connect(service, normalizeProps))
       <div v-bind="api.getControlProps()">
         <label v-bind="api.getLabelProps()">Country</label>
         <button v-bind="api.getTriggerProps()">
-          <span>{{ api.valueAsString || "Select country" }}</span>
-          <span v-bind="api.getIndicatorProps()">▼</span>
+          <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select country" }}</span>
+          <span v-bind="api.getIndicatorProps()">
+            <ChevronsUpDownIcon />
+          </span>
         </button>
       </div>
 
@@ -65,7 +73,7 @@ const api = computed(() => select.connect(service, normalizeProps))
               <template v-if="collection.size === 0">No matches for "{{ search }}"</template>
             </div>
 
-            <div data-select-footer>
+            <div data-select-footer="">
               <span>{{ collection.size }} of {{ selectData.length }}</span>
               <button v-if="api.hasSelectedItems" type="button" @click="api.clearValue()">Clear</button>
             </div>
@@ -74,8 +82,4 @@ const api = computed(() => select.connect(service, normalizeProps))
       </Teleport>
     </div>
   </main>
-
-  <Toolbar>
-    <StateVisualizer :state="service" :omit="['collection']" />
-  </Toolbar>
 </template>

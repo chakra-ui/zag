@@ -28,7 +28,7 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
       <button v-bind="api.getItemProps({ value: 'paste' })">Paste</button>
       <div v-bind="api.getSeparatorProps()" />
       <button v-bind="mergeProps(menuApi.getTriggerProps(), api.getItemProps({ value: 'more' }))">
-        More actions <span v-bind="menuApi.getIndicatorProps()">v</span>
+        More actions <span v-bind="menuApi.getIndicatorProps()">▾</span>
       </button>
       <Teleport to="#teleports">
         <div v-if="menuApi.open" v-bind="menuApi.getPositionerProps()">
@@ -40,6 +40,10 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
         </div>
       </Teleport>
     </div>
+    <p>
+      Open the menu and use arrow keys — they navigate menu items, not the toolbar. Closing the menu returns roving
+      focus to the toolbar.
+    </p>
   </main>
 
   <Toolbar>

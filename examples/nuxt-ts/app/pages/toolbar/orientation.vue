@@ -29,6 +29,6 @@ const items = [
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" :context="['focusedValue']" />
   </Toolbar>
 </template>

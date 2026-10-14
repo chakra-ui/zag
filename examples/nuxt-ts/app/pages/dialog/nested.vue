@@ -1,6 +1,8 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/dialog.css"
 
 // Dialog 1
 const service = useMachine(dialog.machine, { id: useId() })
@@ -18,7 +20,7 @@ const childDialog = computed(() => dialog.connect(service2, normalizeProps))
 
       <div style="min-height: 1200px" />
 
-      <Teleport v-if="parentDialog.open" to="#teleports">
+      <Teleport v-if="parentDialog.open" to="body">
         <div v-bind="parentDialog.getBackdropProps()" />
         <div data-testid="positioner-1" v-bind="parentDialog.getPositionerProps()">
           <div v-bind="parentDialog.getContentProps()">
@@ -26,18 +28,22 @@ const childDialog = computed(() => dialog.connect(service2, normalizeProps))
             <p v-bind="parentDialog.getDescriptionProps()">
               Make changes to your profile here. Click save when you are done.
             </p>
-            <button v-bind="parentDialog.getCloseTriggerProps()" data-testid="close-1">X</button>
+            <button v-bind="parentDialog.getCloseTriggerProps()" data-testid="close-1">
+              <XIcon />
+            </button>
             <input type="text" placeholder="Enter name..." data-testid="input-1" />
             <button data-testid="save-button-1">Save Changes</button>
 
             <button v-bind="childDialog.getTriggerProps()" data-testid="trigger-2">Open Nested</button>
 
-            <Teleport v-if="childDialog.open" to="#teleports">
+            <Teleport v-if="childDialog.open" to="body">
               <div v-bind="childDialog.getBackdropProps()" />
               <div data-testid="positioner-2" v-bind="childDialog.getPositionerProps()">
                 <div v-bind="childDialog.getContentProps()">
                   <h2 v-bind="childDialog.getTitleProps()">Nested</h2>
-                  <button v-bind="childDialog.getCloseTriggerProps()" data-testid="close-2">X</button>
+                  <button v-bind="childDialog.getCloseTriggerProps()" data-testid="close-2">
+                    <XIcon />
+                  </button>
                   <button data-testid="special-close" @click="parentDialog.setOpen(false)">Close Dialog 1</button>
                 </div>
               </div>

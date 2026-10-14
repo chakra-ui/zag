@@ -9,6 +9,9 @@ const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
 
 const src = ref(images[0])
 const showImage = ref(true)
+const setSrc = (value: string | undefined) => {
+  src.value = value
+}
 
 const service = useMachine(avatar.machine, { id: useId() })
 const api = computed(() => avatar.connect(service, normalizeProps))
@@ -22,8 +25,8 @@ const api = computed(() => avatar.connect(service, normalizeProps))
     </div>
 
     <div class="controls">
-      <button @click="() => (src = getRandomImage())">Change Image</button>
-      <button @click="() => (src = avatarData.broken)">Broken Image</button>
+      <button @click="setSrc(getRandomImage())">Change Image</button>
+      <button @click="setSrc(avatarData.broken)">Broken Image</button>
       <button @click="() => (showImage = !showImage)">Toggle Image</button>
     </div>
   </main>

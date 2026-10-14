@@ -2,6 +2,8 @@
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
+import { XIcon } from "lucide-vue-next"
 import "@styles/cascade-select.css"
 
 interface Node {
@@ -24,20 +26,36 @@ const controls = useControls(cascadeSelectControls)
 
 const open = ref(false)
 
+const id = useId()
+const controlProps = controls.mergeProps({})
+
 const service = useMachine(
   cascadeSelect.machine,
   computed(() => ({
-    id: useId(),
-    open: open.value,
-    onOpenChange(details) {
-      open.value = details.open
-    },
+    id,
     collection,
     name: "location",
+    open: open.value,
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
+    },
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      open.value = details.open
+      console.log("onOpenChange", details)
+    },
+    ...controlProps.value,
   })),
 )
 
 const api = computed(() => cascadeSelect.connect(service, normalizeProps))
+
+const onFormChange = (e: Event) => {
+  const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+  console.log(formData)
+}
 </script>
 
 <template>
@@ -45,16 +63,21 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Select a location</label>
 
+      <button @click="open = !open">Toggle (external)</button>
+
       <div v-bind="api.getControlProps()">
-        <button @click="open = !open">Toggle (external)</button>
         <button v-bind="api.getTriggerProps()">
           <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select a location" }}</span>
           <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
-        <button v-bind="api.getClearTriggerProps()">X</button>
+        <button v-bind="api.getClearTriggerProps()">
+          <XIcon :size="16" />
+        </button>
       </div>
 
-      <input v-bind="api.getHiddenInputProps()" />
+      <form @change="onFormChange">
+        <input v-bind="api.getHiddenInputProps()" />
+      </form>
 
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">

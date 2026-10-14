@@ -11,7 +11,6 @@ const service = useMachine(
   controls.mergeProps<carousel.Props>({
     id: useId(),
     spacing: "20px",
-    slidesPerPage: 2,
     count: carouselData.length,
     allowMouseDrag: true,
   }),
@@ -33,7 +32,7 @@ const api = computed(() => carousel.connect(service, normalizeProps))
 
       <div v-bind="api.getItemGroupProps()">
         <div v-for="(image, index) in carouselData" :key="index" v-bind="api.getItemProps({ index })">
-          <img :src="image" alt="" />
+          <img :src="image" alt="" width="188px" />
         </div>
       </div>
 
@@ -48,7 +47,7 @@ const api = computed(() => carousel.connect(service, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" :omit="['translations']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

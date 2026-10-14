@@ -18,20 +18,21 @@ const api = computed(() => progress.connect(service, normalizeProps))
 
 <template>
   <main class="progress">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getLabelProps()">Upload progress</div>
-      <svg v-bind="api.getCircleProps()">
-        <circle v-bind="api.getCircleTrackProps()" />
-        <circle v-bind="api.getCircleRangeProps()" />
-      </svg>
-      <div v-bind="api.getTrackProps()">
-        <div v-bind="api.getRangeProps()" />
+    <div class="vstack gap-4">
+      <div v-bind="api.getRootProps()">
+        <div class="progress-header">
+          <span v-bind="api.getLabelProps()">Upload progress</span>
+          <span v-bind="api.getValueTextProps()">{{ api.valueAsString }}</span>
+        </div>
+        <div v-bind="api.getTrackProps()">
+          <div v-bind="api.getRangeProps()" />
+        </div>
       </div>
-      <div v-bind="api.getValueTextProps()">{{ api.valueAsString }}</div>
-      <div>
-        <button @click="() => api.setValue((api.value ?? 0) - 20)">Decrease</button>
-        <button @click="() => api.setValue((api.value ?? 0) + 20)">Increase</button>
-        <button @click="() => api.setValue(null)">Indeterminate</button>
+
+      <div class="hstack">
+        <button @click="api.setValue((api.value ?? 0) - 20)">Decrease</button>
+        <button @click="api.setValue((api.value ?? 0) + 20)">Increase</button>
+        <button @click="api.setValue(null)">Indeterminate</button>
       </div>
     </div>
   </main>

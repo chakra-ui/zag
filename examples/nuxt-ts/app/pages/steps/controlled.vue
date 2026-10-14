@@ -9,7 +9,7 @@ const items: steps.StepItem[] = [
   { value: "review", title: "Review" },
 ]
 
-const value = ref<string>(items[0].value)
+const value = ref<string>(items[0]!.value)
 const finished = ref<string[] | null>(null)
 
 const id = useId()

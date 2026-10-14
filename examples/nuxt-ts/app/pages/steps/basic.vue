@@ -23,7 +23,9 @@ const api = computed(() => steps.connect(service, normalizeProps))
       <div v-bind="api.getListProps()">
         <div v-for="(step, index) in stepsData" :key="step.value" v-bind="api.getItemProps({ value: step.value })">
           <button v-bind="api.getTriggerProps({ value: step.value })">
-            <div v-bind="api.getIndicatorProps({ value: step.value })">{{ index + 1 }}</div>
+            <div v-bind="api.getIndicatorProps({ value: step.value })">
+              {{ api.getItemState({ value: step.value }).completed ? "✓" : index + 1 }}
+            </div>
             <span>{{ step.title }}</span>
           </button>
           <div v-bind="api.getSeparatorProps({ value: step.value })" />

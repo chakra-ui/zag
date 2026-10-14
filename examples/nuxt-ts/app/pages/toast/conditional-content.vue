@@ -2,6 +2,7 @@
 import * as toast from "@zag-js/toast"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import ConditionalContentToast from "../../components/ConditionalContentToast.vue"
+import "@styles/toast.css"
 
 const store = toast.createStore<string>({ duration: Infinity })
 const ready = ref(false)

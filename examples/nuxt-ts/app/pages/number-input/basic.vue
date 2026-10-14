@@ -2,6 +2,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { MinusIcon, PlusIcon } from "lucide-vue-next"
 import "@styles/number-input.css"
 
 const controls = useControls(numberInputControls)
@@ -19,11 +20,15 @@ const api = computed(() => numberInput.connect(service, normalizeProps))
 <template>
   <main>
     <div v-bind="api.getRootProps()">
-      <label data-testid="label" v-bind="api.getLabelProps()"> Enter number </label>
+      <label data-testid="label" v-bind="api.getLabelProps()">Enter number:</label>
       <div v-bind="api.getControlProps()">
-        <button data-testid="dec-button" v-bind="api.getDecrementTriggerProps()">DEC</button>
+        <button data-testid="dec-button" v-bind="api.getDecrementTriggerProps()">
+          <MinusIcon />
+        </button>
         <input data-testid="input" v-bind="api.getInputProps()" />
-        <button data-testid="inc-button" v-bind="api.getIncrementTriggerProps()">INC</button>
+        <button data-testid="inc-button" v-bind="api.getIncrementTriggerProps()">
+          <PlusIcon />
+        </button>
       </div>
     </div>
   </main>

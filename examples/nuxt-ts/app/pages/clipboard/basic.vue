@@ -11,7 +11,7 @@ const service = useMachine(
   clipboard.machine,
   controls.mergeProps<clipboard.Props>({
     id: useId(),
-    defaultValue: "https://github.com/chakra-ui/zag",
+    value: "https://github.com/chakra-ui/zag",
   }),
 )
 
@@ -23,7 +23,7 @@ const api = computed(() => clipboard.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Copy this link</label>
       <div v-bind="api.getControlProps()">
-        <input v-bind="api.getInputProps()" style="width: 100%" />
+        <input v-bind="api.getInputProps()" />
         <button v-bind="api.getTriggerProps()">
           <ClipboardCheck v-if="api.copied" />
           <ClipboardCopyIcon v-else />

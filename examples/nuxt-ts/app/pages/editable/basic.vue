@@ -26,11 +26,10 @@ const api = computed(() => editable.connect(service, normalizeProps))
       </div>
       <div v-bind="api.getControlProps()">
         <button v-if="!api.editing" data-testid="edit-button" v-bind="api.getEditTriggerProps()">Edit</button>
-
-        <Fragment v-if="api.editing">
+        <template v-else>
           <button data-testid="save-button" v-bind="api.getSubmitTriggerProps()">Save</button>
           <button data-testid="cancel-button" v-bind="api.getCancelTriggerProps()">Cancel</button>
-        </Fragment>
+        </template>
       </div>
     </div>
   </main>

@@ -27,7 +27,7 @@ const nodeState = computed(() => props.api.getNodeState(nodeProps.value))
 <template>
   <div v-bind="api.getNodeGroupProps(nodeProps)">
     <div v-bind="api.getNodeProps(nodeProps)">
-      <div v-bind="api.getNodeCellProps({ ...nodeProps, cell: 'content' })">
+      <div v-bind="api.getNodeCellProps(nodeProps)">
         <input v-if="nodeState.renaming" v-bind="api.getNodeRenameInputProps(nodeProps)" />
         <template v-else>
           <FolderIcon v-if="nodeState.isBranch" />

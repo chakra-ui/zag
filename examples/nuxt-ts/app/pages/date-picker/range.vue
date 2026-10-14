@@ -2,7 +2,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
 import "@styles/date-picker.css"
 
 const controls = useControls(datePickerControls)
@@ -19,6 +18,8 @@ const service = useMachine(
 )
 
 const api = computed(() => datePicker.connect(service, normalizeProps))
+const tableId1 = useId()
+const tableId2 = useId()
 const offset = computed(() => api.value.getOffset({ months: 1 }))
 </script>
 
@@ -41,17 +42,19 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
       <button v-bind="api.getTriggerProps()">🗓</button>
     </div>
 
+    <button v-bind="api.getPresetTriggerProps({ value: 'last7Days' })">Last 7 days</button>
+
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
         <div style="margin-bottom: 20px">
           <select v-bind="api.getMonthSelectProps()">
-            <option v-for="(month, i) in api.getMonths()" :key="i" :value="i + 1">
+            <option v-for="(month, i) in api.getMonths()" :key="i" :value="i + 1" :disabled="month.disabled">
               {{ month.label }}
             </option>
           </select>
 
           <select v-bind="api.getYearSelectProps()">
-            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value">
+            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value" :disabled="year.disabled">
               {{ year.label }}
             </option>
           </select>
@@ -65,7 +68,7 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
           </div>
 
           <div style="display: flex; gap: 24px">
-            <table v-bind="api.getTableProps()">
+            <table v-bind="api.getTableProps({ id: tableId1 })">
               <thead v-bind="api.getTableHeaderProps()">
                 <tr v-bind="api.getTableRowProps()">
                   <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">
@@ -82,7 +85,7 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
               </tbody>
             </table>
 
-            <table v-bind="api.getTableProps()">
+            <table v-bind="api.getTableProps({ id: tableId2 })">
               <thead v-bind="api.getTableHeaderProps()">
                 <tr v-bind="api.getTableRowProps()">
                   <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">

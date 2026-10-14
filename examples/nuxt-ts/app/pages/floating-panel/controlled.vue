@@ -16,6 +16,7 @@ let observer: ResizeObserver | null = null
 
 onMounted(() => {
   observer = new ResizeObserver(([entry]) => {
+    if (!entry) return
     const { width, height } = entry.contentRect
     observedSize.value = { width: Math.round(width), height: Math.round(height) }
   })

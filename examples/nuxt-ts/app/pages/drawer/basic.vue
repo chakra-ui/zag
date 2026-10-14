@@ -9,7 +9,7 @@ const controls = useControls(drawerControls)
 
 const service = useMachine(
   drawer.machine,
-  controls.mergeProps({
+  controls.mergeProps<drawer.Props>({
     id: useId(),
   }),
 )
@@ -28,7 +28,7 @@ const api = computed(() => drawer.connect(service, normalizeProps))
         </div>
         <div v-bind="api.getTitleProps()">Drawer</div>
         <div data-no-drag="true" :class="styles.noDrag">No drag area</div>
-        <div :class="styles.scrollable">
+        <div :class="styles.scrollable" data-testid="scrollable">
           <div v-for="(_element, index) in Array.from({ length: 100 })" :key="index">Item {{ index }}</div>
         </div>
       </Presence>

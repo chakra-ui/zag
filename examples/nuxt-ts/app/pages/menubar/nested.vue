@@ -2,7 +2,6 @@
 import type * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, provide, useId } from "vue"
 import "@styles/menu.css"
 
 const service = useMachine(menubar.machine, { id: useId() })
@@ -29,4 +28,8 @@ const viewItems = [
       <MenubarMenu id="view" label="View" :items="viewItems" />
     </div>
   </main>
+
+  <Toolbar>
+    <StateVisualizer :state="service" />
+  </Toolbar>
 </template>

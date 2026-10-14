@@ -13,6 +13,7 @@ const service = useMachine(
     id: useId(),
     name: "quantity",
     defaultValue: [0],
+    thumbSize: 20,
   }),
 )
 
@@ -22,7 +23,7 @@ const api = computed(() => slider.connect(service, normalizeProps))
 <template>
   <main class="slider">
     <form
-      @input="
+      @change="
         (e) => {
           const target = e.currentTarget
           const formData = serialize(target as any, { hash: true })
@@ -32,14 +33,15 @@ const api = computed(() => slider.connect(service, normalizeProps))
     >
       <div v-bind="api.getRootProps()">
         <div>
-          <label data-testid="label" v-bind="api.getLabelProps()"> Slider Label </label>
-          <output data-testid="output" v-bind="api.getValueTextProps()"> {{ api.value.at(0) }} </output>
+          <label data-testid="label" v-bind="api.getLabelProps()">Slider Label</label>
+          <output data-testid="output" v-bind="api.getValueTextProps()">{{ api.value.join("") }}</output>
         </div>
         <div class="control-area">
           <div v-bind="api.getControlProps()">
             <div data-testid="track" v-bind="api.getTrackProps()">
               <div v-bind="api.getRangeProps()" />
             </div>
+            <span v-bind="api.getDraggingIndicatorProps({ index: 0 })">{{ api.getThumbValue(0) }}</span>
             <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
               <input v-bind="api.getHiddenInputProps({ index })" />
             </div>

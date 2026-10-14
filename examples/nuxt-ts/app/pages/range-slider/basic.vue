@@ -10,6 +10,7 @@ const controls = useControls(sliderControls)
 const service = useMachine(
   slider.machine,
   controls.mergeProps<slider.Props>({
+    thumbSize: 20,
     id: useId(),
     name: "quantity",
     defaultValue: [10, 60],
@@ -21,8 +22,9 @@ const api = computed(() => slider.connect(service, normalizeProps))
 
 <template>
   <main class="slider">
+    <!-- ensure we can read the value within forms -->
     <form
-      @input="
+      @change="
         (e) => {
           const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
           console.log(formData)
@@ -42,6 +44,12 @@ const api = computed(() => slider.connect(service, normalizeProps))
             <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
               <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
+          </div>
+          <div v-bind="api.getMarkerGroupProps()">
+            <span v-bind="api.getMarkerProps({ value: 10 })">*</span>
+            <span v-bind="api.getMarkerProps({ value: 30 })">*</span>
+            <span v-bind="api.getMarkerProps({ value: 50 })">*</span>
+            <span v-bind="api.getMarkerProps({ value: 90 })">*</span>
           </div>
         </div>
       </div>

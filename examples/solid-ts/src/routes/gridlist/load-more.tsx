@@ -1,11 +1,11 @@
 import * as asyncList from "@zag-js/async-list"
 import * as gridlist from "@zag-js/gridlist"
-import * as infiniteScroll from "@zag-js/infinite-scroll"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { CheckIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
+import { useInfiniteScroll } from "~/hooks/use-infinite-scroll"
 import "@styles/gridlist.css"
 
 interface Pokemon {
@@ -25,15 +25,12 @@ export default function Page() {
   })
   const listApi = createMemo(() => asyncList.connect(listService))
 
-  const scrollId = createUniqueId()
-  const scrollService = useMachine(infiniteScroll.machine, () => ({
-    id: scrollId,
+  const scrollApi = useInfiniteScroll(() => ({
     count: listApi().items.length,
     hasMore: listApi().hasMore,
     loading: listApi().isLoading,
     onLoadMore: () => listApi().loadMore(),
   }))
-  const scrollApi = createMemo(() => infiniteScroll.connect(scrollService, normalizeProps))
 
   const collection = createMemo(() =>
     gridlist.collection<Pokemon>({

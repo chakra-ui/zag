@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import Presence from "~/components/Presence.vue"
 import { computed, ref } from "vue"
 import styles from "@styles/drawer-nested.module.css"
@@ -77,14 +78,16 @@ const notes = ref("Rotate recovery codes and revoke older sessions.")
               <div :class="styles.actionsLeft">
                 <button v-bind="secondApi.getTriggerProps()" :class="styles.ghostButton">Security settings</button>
               </div>
-              <button v-bind="firstApi.getCloseTriggerProps()" :class="styles.button">Close</button>
+              <button v-bind="firstApi.getCloseTriggerProps()" :class="styles.button">
+                <XIcon />
+              </button>
             </div>
           </div>
         </div>
       </Presence>
     </div>
 
-    <Teleport to="body">
+    <Teleport to="#teleports">
       <div v-bind="secondApi.getPositionerProps()" :class="styles.positioner">
         <Presence v-bind="secondApi.getContentProps()" :class="styles.contentHost">
           <div :class="styles.popup">
@@ -105,7 +108,9 @@ const notes = ref("Rotate recovery codes and revoke older sessions.")
                 <div :class="styles.actionsLeft">
                   <button v-bind="thirdApi.getTriggerProps()" :class="styles.ghostButton">Advanced options</button>
                 </div>
-                <button v-bind="secondApi.getCloseTriggerProps()" :class="styles.button">Close</button>
+                <button v-bind="secondApi.getCloseTriggerProps()" :class="styles.button">
+                  <XIcon />
+                </button>
               </div>
             </div>
           </div>
@@ -113,7 +118,7 @@ const notes = ref("Rotate recovery codes and revoke older sessions.")
       </div>
     </Teleport>
 
-    <Teleport to="body">
+    <Teleport to="#teleports">
       <div v-bind="thirdApi.getPositionerProps()" :class="styles.positioner">
         <Presence v-bind="thirdApi.getContentProps()" :class="styles.contentHost">
           <div :class="styles.popup">

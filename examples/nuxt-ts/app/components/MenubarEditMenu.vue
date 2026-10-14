@@ -19,7 +19,7 @@ onMounted(() => {
 
 <template>
   <button data-testid="edit:trigger" v-bind="api.getTriggerProps()">Edit</button>
-  <Teleport to="body" v-if="api.open">
+  <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
       <ul data-testid="edit:content" v-bind="api.getContentProps()">
         <li data-testid="undo" v-bind="api.getItemProps({ value: 'undo' })">Undo</li>
@@ -28,7 +28,7 @@ onMounted(() => {
       </ul>
     </div>
   </Teleport>
-  <Teleport to="body" v-if="sub.open">
+  <Teleport v-if="sub.open" to="#teleports">
     <div v-bind="sub.getPositionerProps()">
       <ul data-testid="find:content" v-bind="sub.getContentProps()">
         <li data-testid="find-text" v-bind="sub.getItemProps({ value: 'find-text' })">Find...</li>

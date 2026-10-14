@@ -58,7 +58,7 @@ const api = computed(() => infiniteScroll.connect(service, normalizeProps))
         </li>
       </ul>
       <div v-bind="api.getSentinelProps()" />
-      <div>
+      <div class="footer">
         <button v-if="api.hasMore" type="button" :disabled="api.loading" @click="api.loadMore()">
           {{ api.loading ? "Loading…" : "Load more" }}
         </button>

@@ -7,16 +7,23 @@ const props = defineProps<{
   id: string
   label: string
   items: { value: string; label: string }[]
+  positioning?: menu.Props["positioning"]
+  onSelect?: menu.Props["onSelect"]
 }>()
 
 const menubarContext = inject<menu.MenubarContext | undefined>("menubar", undefined)
-const service = useMachine(menu.machine, { id: props.id, menubar: menubarContext })
+const service = useMachine(menu.machine, {
+  id: props.id,
+  menubar: menubarContext,
+  positioning: props.positioning,
+  onSelect: props.onSelect,
+})
 const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
   <button :data-testid="`${props.id}:trigger`" v-bind="api.getTriggerProps()">{{ props.label }}</button>
-  <Teleport to="body" v-if="api.open">
+  <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
       <ul :data-testid="`${props.id}:content`" v-bind="api.getContentProps()">
         <li

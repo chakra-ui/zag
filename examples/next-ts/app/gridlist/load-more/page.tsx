@@ -1,11 +1,11 @@
 "use client"
 
 import * as gridlist from "@zag-js/gridlist"
-import * as infiniteScroll from "@zag-js/infinite-scroll"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { CheckIcon } from "lucide-react"
 import { useId, useMemo } from "react"
 import { useAsyncList } from "@/hooks/use-async-list"
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/gridlist.css"
@@ -26,14 +26,12 @@ export default function Page() {
     },
   })
 
-  const scrollService = useMachine(infiniteScroll.machine, {
-    id: useId(),
+  const scrollApi = useInfiniteScroll({
     count: listApi.items.length,
     hasMore: listApi.hasMore,
     loading: listApi.isLoading,
     onLoadMore: () => listApi.loadMore(),
   })
-  const scrollApi = infiniteScroll.connect(scrollService, normalizeProps)
 
   const collection = useMemo(
     () =>

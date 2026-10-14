@@ -18,16 +18,7 @@ const service = useMachine(dnd.machine, {
   id: useId(),
   orientation: "vertical",
   onDrop(details) {
-    const { source, target, placement } = details
-    if (placement === "on") return
-    const fromIndex = items.value.findIndex((item) => item.id === source)
-    const toIndex = items.value.findIndex((item) => item.id === target)
-    if (fromIndex === -1 || toIndex === -1) return
-    items.value = dnd.move(
-      items.value,
-      fromIndex,
-      dnd.getDestinationIndex(items.value.length, fromIndex, toIndex, placement),
-    )
+    items.value = dnd.reorder(items.value, { ...details, itemToValue: (i) => i.id })
   },
 })
 

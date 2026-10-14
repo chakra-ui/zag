@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as toggle from "@zag-js/toggle"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { BoldIcon } from "lucide-vue-next"
 import "@styles/toggle.css"
 
 const service = useMachine(toggle.machine)
@@ -17,7 +18,7 @@ const api = computed(() => toggle.connect(service, normalizeProps))
     </button>
   </main>
 
-  <Toolbar>
+  <Toolbar viz>
     <StateVisualizer :state="service" />
   </Toolbar>
 </template>

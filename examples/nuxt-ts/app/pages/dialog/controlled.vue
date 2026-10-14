@@ -1,6 +1,8 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/dialog.css"
 
 const open = ref(false)
 
@@ -14,7 +16,6 @@ const service = useMachine(
     },
   })),
 )
-
 const api = computed(() => dialog.connect(service, normalizeProps))
 </script>
 
@@ -23,7 +24,7 @@ const api = computed(() => dialog.connect(service, normalizeProps))
     <button @click="open = !open">Open Dialog</button>
     <p>state - isOpen: {{ String(open) }}</p>
     <p>machine - isOpen: {{ String(api.open) }}</p>
-    <Teleport v-if="api.open" to="#teleports">
+    <Teleport v-if="api.open" to="body">
       <div v-bind="api.getBackdropProps()" />
       <div v-bind="api.getPositionerProps()">
         <div v-bind="api.getContentProps()">
@@ -33,7 +34,9 @@ const api = computed(() => dialog.connect(service, normalizeProps))
             <input placeholder="Enter name..." />
             <button>Save</button>
           </div>
-          <button v-bind="api.getCloseTriggerProps()">Close</button>
+          <button v-bind="api.getCloseTriggerProps()">
+            <XIcon />
+          </button>
         </div>
       </div>
     </Teleport>

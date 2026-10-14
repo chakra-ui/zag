@@ -3,6 +3,7 @@ import * as radio from "@zag-js/radio-group"
 import { segmentControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/segmented-control.css"
+import "@styles/radio-group.css"
 
 const controls = useControls(segmentControls)
 

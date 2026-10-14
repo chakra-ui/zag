@@ -37,7 +37,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main>
+  <main style="padding: 40px; font-family: system-ui">
     <h2>File Explorer - Right-click on any item</h2>
     <p style="color: #666; margin-bottom: 20px">
       Right-click on different files/folders to open the context menu. The menu will reposition to the click location.
@@ -67,6 +67,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
           border: 1px solid #e5e7eb;
           cursor: context-menu;
           user-select: none;
+          transition: box-shadow 0.2s;
         "
       >
         <span style="font-size: 32px; margin-bottom: 8px">{{ file.icon }}</span>
@@ -131,7 +132,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
     </Teleport>
   </main>
 
-  <Toolbar>
-    <StateVisualizer :state="service" />
+  <Toolbar viz>
+    <StateVisualizer :state="service" :context="['triggerValue', 'anchorPoint']" />
   </Toolbar>
 </template>

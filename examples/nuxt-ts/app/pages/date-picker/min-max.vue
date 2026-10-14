@@ -1,0 +1,79 @@
+<script setup lang="ts">
+import * as datePicker from "@zag-js/date-picker"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import "@styles/date-picker.css"
+
+const service = useMachine(datePicker.machine, {
+  id: useId(),
+  locale: "en",
+  selectionMode: "single",
+  min: datePicker.parse("2025-07-01"),
+  max: datePicker.parse("2025-09-30"),
+})
+
+const api = computed(() => datePicker.connect(service, normalizeProps))
+</script>
+
+<template>
+  <main class="date-picker">
+    <p>{{ `Visible range: ${api.visibleRangeText.formatted}` }}</p>
+
+    <output class="date-output">
+      <div>Selected: {{ api.valueAsString ?? "-" }}</div>
+      <div>Focused: {{ api.focusedValueAsString }}</div>
+    </output>
+
+    <div v-bind="api.getControlProps()">
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getClearTriggerProps()">❌</button>
+      <button v-bind="api.getTriggerProps()">🗓</button>
+    </div>
+
+    <div v-bind="api.getPositionerProps()">
+      <div v-bind="api.getContentProps()">
+        <div style="margin-bottom: 20px">
+          <select v-bind="api.getMonthSelectProps()">
+            <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value" :disabled="month.disabled">
+              {{ month.label }}
+            </option>
+          </select>
+
+          <select v-bind="api.getYearSelectProps()">
+            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value" :disabled="year.disabled">
+              {{ year.label }}
+            </option>
+          </select>
+        </div>
+
+        <div :hidden="api.view !== 'day'">
+          <div v-bind="api.getViewControlProps({ view: 'year' })">
+            <button v-bind="api.getPrevTriggerProps()">Prev</button>
+            <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
+            <button v-bind="api.getNextTriggerProps()">Next</button>
+          </div>
+
+          <table v-bind="api.getTableProps({ view: 'day' })">
+            <thead v-bind="api.getTableHeaderProps({ view: 'day' })">
+              <tr v-bind="api.getTableRowProps({ view: 'day' })">
+                <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">
+                  {{ day.narrow }}
+                </th>
+              </tr>
+            </thead>
+            <tbody v-bind="api.getTableBodyProps({ view: 'day' })">
+              <tr v-for="(week, i) in api.weeks" :key="i" v-bind="api.getTableRowProps({ view: 'day' })">
+                <td v-for="(value, i) in week" :key="i" v-bind="api.getDayTableCellProps({ value })">
+                  <div v-bind="api.getDayTableCellTriggerProps({ value })">{{ value.day }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Toolbar viz>
+    <StateVisualizer :state="service" :omit="['weeks']" />
+  </Toolbar>
+</template>

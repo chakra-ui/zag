@@ -1,11 +1,12 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import * as pagination from "@zag-js/pagination"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import * as pagination from "@zag-js/pagination"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-vue-next"
 import "@styles/pagination.css"
 
 const controls = useControls(paginationControls)
-const details = ref({})
+const details = ref({} as any)
 
 const service = useMachine(
   pagination.machine,
@@ -24,48 +25,54 @@ const data = computed(() => api.value.slice(paginationData))
 
 <template>
   <main class="pagination">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>FIRST NAME</th>
-          <th>LAST NAME</th>
-          <th>EMAIL</th>
-          <th>PHONE</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in data" :key="item.id">
-          <td>{{ item.id }}</td>
-          <td>{{ item.first_name }}</td>
-          <td>{{ item.last_name }}</td>
-          <td>{{ item.email }}</td>
-          <td>{{ item.phone }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <template v-if="api.totalPages > 1">
-      <nav v-bind="api.getRootProps()">
-        <ul>
-          <li>
-            <button v-bind="api.getPrevTriggerProps()">Previous <span class="sr-only">Page</span></button>
-          </li>
-          <template v-for="(page, i) in api.pages" :key="i">
-            <li v-if="page.type === 'page'">
-              <button :data-testid="`item-${page.value}`" v-bind="api.getItemProps(page)">
-                {{ page.value }}
+    <div class="pagination-layout">
+      <table class="pagination-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in data" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.first_name }} {{ item.last_name }}</td>
+            <td>{{ item.email }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination-bar">
+        <span class="pagination-summary">{{ api.pageRange.start + 1 }}–{{ api.pageRange.end }} of {{ api.count }}</span>
+        <nav v-if="api.totalPages > 1" v-bind="api.getRootProps()">
+          <ul>
+            <li>
+              <button v-bind="api.getPrevTriggerProps()">
+                <ChevronLeftIcon />
               </button>
             </li>
-            <li v-else>
-              <span v-bind="api.getEllipsisProps({ index: i })">&#8230;</span>
+            <template v-for="(page, i) in api.pages">
+              <li v-if="page.type === 'page'" :key="page.value">
+                <button :data-testid="`item-${page.value}`" v-bind="api.getItemProps(page)">
+                  {{ page.value }}
+                </button>
+              </li>
+              <li v-else :key="`ellipsis-${i}`">
+                <span v-bind="api.getEllipsisProps({ index: i })">&#8230;</span>
+              </li>
+            </template>
+            <li>
+              <button v-bind="api.getNextTriggerProps()">
+                <ChevronRightIcon />
+              </button>
             </li>
-          </template>
-          <li>
-            <button v-bind="api.getNextTriggerProps()">Next <span class="sr-only">Page</span></button>
-          </li>
-        </ul>
-      </nav>
-    </template>
+          </ul>
+        </nav>
+      </div>
+
+      <Print title="Page change details" :value="details" />
+    </div>
   </main>
 
   <Toolbar>

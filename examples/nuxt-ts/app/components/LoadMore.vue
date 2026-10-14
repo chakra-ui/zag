@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import * as infiniteScroll from "@zag-js/infinite-scroll"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-
 const props = withDefaults(
   defineProps<{
     count: number
@@ -16,18 +13,12 @@ const props = withDefaults(
   { as: "div" },
 )
 
-const id = useId()
-const service = useMachine(
-  infiniteScroll.machine,
-  computed(() => ({
-    id,
-    count: props.count,
-    hasMore: props.hasMore,
-    loading: props.loading,
-    onLoadMore: () => props.loadMore(),
-  })),
-)
-const api = computed(() => infiniteScroll.connect(service, normalizeProps))
+const api = useInfiniteScroll(() => ({
+  count: props.count,
+  hasMore: props.hasMore,
+  loading: props.loading,
+  onLoadMore: () => props.loadMore(),
+}))
 </script>
 
 <template>

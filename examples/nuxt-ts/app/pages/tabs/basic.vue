@@ -21,7 +21,7 @@ const api = computed(() => tabs.connect(service, normalizeProps))
   <main class="tabs">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getIndicatorProps()" />
-      <div v-bind="api.getListProps()">
+      <div data-stretch="" v-bind="api.getListProps()">
         <button
           v-for="data in tabsData"
           v-bind="api.getTriggerProps({ value: data.id })"

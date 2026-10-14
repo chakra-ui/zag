@@ -19,17 +19,17 @@ const api = computed(() => fileUpload.connect(service, normalizeProps))
 <template>
   <main class="file-upload">
     <div v-bind="api.getRootProps()">
-      <input v-bind="api.getHiddenInputProps()" />
+      <input data-testid="input" v-bind="api.getHiddenInputProps()" />
       <div v-bind="api.getDropzoneProps()">Drag your files here</div>
 
       <button v-bind="api.getTriggerProps()">Choose Files...</button>
 
       <ul v-bind="api.getItemGroupProps()">
         <li v-for="file in api.acceptedFiles" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
-          <div v-bind="api.getItemNameProps({ file })">
-            <b>{file.name}</b>
+          <div>
+            <b>{{ file.name }}</b>
           </div>
-          <div>{{ api.getFileSize(file) }}</div>
+          <div v-bind="api.getItemSizeTextProps({ file })">{{ api.getFileSize(file) }}</div>
           <div>{{ file.type }}</div>
           <button v-bind="api.getItemDeleteTriggerProps({ file })">X</button>
         </li>

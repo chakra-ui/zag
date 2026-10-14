@@ -1,14 +1,13 @@
 "use client"
 
-import type { Range } from "@zag-js/virtualizer"
+import { mergeProps } from "@zag-js/react"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { useLoadMoreSentinel } from "@/hooks/use-load-more-sentinel"
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
 const TOTAL_ITEMS = 1000
 const PAGE_SIZE = 50
 const ROW_HEIGHT = 56
-const LOADER_HEIGHT = 48
 
 const allItems = Array.from({ length: TOTAL_ITEMS }, (_, index) => ({
   id: `item-${index}`,
@@ -16,62 +15,35 @@ const allItems = Array.from({ length: TOTAL_ITEMS }, (_, index) => ({
   status: index % 3 === 0 ? "Triaged" : index % 3 === 1 ? "In progress" : "Backlog",
 }))
 
-function getRangeIndexes(range: Range) {
-  const indexes: number[] = []
-  for (let i = range.startIndex; i <= range.endIndex; i++) {
-    indexes.push(i)
-  }
-  return indexes
-}
+const estimateSize = () => ROW_HEIGHT
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export default function Page() {
-  const loaderRef = useRef<HTMLDivElement>(null)
-  const loadingRef = useRef(false)
   const [loadedCount, setLoadedCount] = useState(PAGE_SIZE)
-  const [isLoading, setIsLoading] = useState(false)
-
   const items = useMemo(() => allItems.slice(0, loadedCount), [loadedCount])
-  const hasMore = loadedCount < allItems.length
-  const loaderIndex = items.length
-  const count = items.length + (hasMore ? 1 : 0)
 
-  const estimatedSize = useCallback(
-    (index: number) => (index === loaderIndex ? LOADER_HEIGHT : ROW_HEIGHT),
-    [loaderIndex],
-  )
-
-  const rangeExtractor = useCallback(
-    (range: Range) => {
-      const indexes = getRangeIndexes(range)
-      if (hasMore && range.endIndex >= items.length - 6) {
-        indexes.push(loaderIndex)
-      }
-      return indexes
-    },
-    [hasMore, items.length, loaderIndex],
-  )
-
+  const scrollerRef = useRef<HTMLDivElement | null>(null)
   const { virtualizer, ref } = useListVirtualizer({
-    count,
-    estimatedSize,
+    count: items.length,
+    estimatedSize: estimateSize,
     overscan: 4,
-    rangeExtractor,
   })
+  const setScroller = useCallback(
+    (el: HTMLDivElement | null) => {
+      scrollerRef.current = el
+      ref(el)
+    },
+    [ref],
+  )
 
-  const virtualItems = virtualizer.getVirtualItems()
-
-  useLoadMoreSentinel(loaderRef, {
-    collectionKey: virtualItems,
-    onLoadMore() {
-      if (!hasMore || loadingRef.current) return
-
-      loadingRef.current = true
-      setIsLoading(true)
-      window.setTimeout(() => {
-        loadingRef.current = false
-        setIsLoading(false)
-        setLoadedCount((count) => Math.min(count + PAGE_SIZE, allItems.length))
-      }, 500)
+  const api = useInfiniteScroll({
+    count: items.length,
+    hasMore: loadedCount < TOTAL_ITEMS,
+    scrollEl: () => scrollerRef.current,
+    // The returned promise drives the loading state
+    async onLoadMore() {
+      await wait(500)
+      setLoadedCount((count) => Math.min(count + PAGE_SIZE, TOTAL_ITEMS))
     },
   })
 
@@ -79,12 +51,12 @@ export default function Page() {
     <main style={{ padding: 20, maxWidth: 720, width: "100%" }}>
       <h1>Infinite Scroll + Virtualized</h1>
       <p style={{ color: "#64748b", fontSize: 14 }}>
-        Loaded {items.length} of {TOTAL_ITEMS} rows. The loader row is injected with <code>rangeExtractor</code> when
-        the rendered range approaches the end.
+        Loaded {items.length} of {TOTAL_ITEMS} rows. The infinite-scroll sentinel sits after the virtual rows, so it is
+        always mounted.
       </p>
 
       <div
-        ref={ref}
+        ref={setScroller}
         onScroll={virtualizer.handleScroll}
         tabIndex={0}
         aria-label="Virtualized infinite list"
@@ -99,47 +71,44 @@ export default function Page() {
         }}
       >
         <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
-          {virtualItems.map((virtualItem) => {
-            const isLoader = virtualItem.index === loaderIndex
+          {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = items[virtualItem.index]
-            if (!isLoader && !item) return null
-
+            if (!item) return null
             return (
               <div
-                ref={isLoader ? loaderRef : undefined}
-                key={isLoader ? "loader" : item.id}
+                key={item.id}
                 style={{
                   ...virtualizer.getItemStyle(virtualItem),
                   height: virtualItem.size,
                   padding: "0 16px",
                   borderBottom: "1px solid #e2e8f0",
                   boxSizing: "border-box",
-                  background: isLoader ? "#f8fafc" : virtualItem.index % 2 === 0 ? "#ffffff" : "#f1f5f9",
+                  background: virtualItem.index % 2 === 0 ? "#ffffff" : "#f1f5f9",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: 16,
                 }}
               >
-                {isLoader ? (
-                  <span role="status" aria-live="polite" style={{ color: "#64748b" }}>
-                    {isLoading ? "Loading more..." : "Scroll for more"}
-                  </span>
-                ) : (
-                  <>
-                    <strong>{item.title}</strong>
-                    <span style={{ color: "#64748b", fontSize: 13 }}>{item.status}</span>
-                  </>
-                )}
+                <strong>{item.title}</strong>
+                <span style={{ color: "#64748b", fontSize: 13 }}>{item.status}</span>
               </div>
             )
           })}
         </div>
+
+        <div {...mergeProps(api.getSentinelProps(), { style: { height: 1 } })} />
+        <div {...api.getIndicatorProps({ type: "loading" })} style={{ padding: 12, color: "#64748b" }}>
+          Loading more…
+        </div>
+        <div {...api.getIndicatorProps({ type: "complete" })} style={{ padding: 12, color: "#64748b" }}>
+          You&apos;re all caught up
+        </div>
       </div>
 
       <p style={{ marginTop: 12, fontSize: 13, color: "#64748b" }}>
-        Rendered: {virtualItems.length} rows
-        {hasMore ? ` · Next page starts at ${items.length + 1}` : " · Complete"}
+        Rendered: {virtualizer.getVirtualItems().length} rows
+        {loadedCount < TOTAL_ITEMS ? ` · Next page starts at ${items.length + 1}` : " · Complete"}
       </p>
     </main>
   )

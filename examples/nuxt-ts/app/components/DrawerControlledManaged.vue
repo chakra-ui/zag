@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import Presence from "~/components/Presence.vue"
 import { computed, ref } from "vue"
 import styles from "@styles/drawer.module.css"
@@ -40,7 +41,9 @@ const api = computed(() => drawer.connect(service, normalizeProps))
         <p style="font-size: 14px">
           Open: <strong>{{ String(isOpen) }}</strong>
         </p>
-        <button v-bind="api.getCloseTriggerProps()">Close</button>
+        <button v-bind="api.getCloseTriggerProps()">
+          <XIcon />
+        </button>
       </Presence>
     </div>
   </div>

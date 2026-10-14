@@ -95,7 +95,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
     </div>
   </main>
 
-  <Toolbar>
+  <Toolbar viz>
     <StateVisualizer :state="service" :context="['value', 'previousValue']" />
     <template #controls>
       <Controls :control="controls" />

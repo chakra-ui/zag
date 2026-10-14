@@ -2,7 +2,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
 import "@styles/date-picker.css"
 
 const controls = useControls(datePickerControls)
@@ -49,7 +48,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
         </select>
       </div>
 
-      <div v-if="api.view === 'day'">
+      <div :hidden="api.view !== 'day'">
         <div v-bind="api.getViewControlProps({ view: 'year' })">
           <button v-bind="api.getPrevTriggerProps()">Prev</button>
           <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
@@ -66,7 +65,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
           </thead>
           <tbody v-bind="api.getTableBodyProps({ view: 'day' })">
             <tr v-for="(week, i) in api.weeks" :key="i" v-bind="api.getTableRowProps({ view: 'day' })">
-              <td v-for="(value, j) in week" :key="j" v-bind="api.getDayTableCellProps({ value })">
+              <td v-for="(value, i) in week" :key="i" v-bind="api.getDayTableCellProps({ value })">
                 <div v-bind="api.getDayTableCellTriggerProps({ value })">{{ value.day }}</div>
               </td>
             </tr>
@@ -75,7 +74,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
       </div>
 
       <div style="display: flex; gap: 40px">
-        <div v-if="api.view === 'month'" style="width: 100%">
+        <div :hidden="api.view !== 'month'" style="width: 100%">
           <div v-bind="api.getViewControlProps({ view: 'month' })">
             <button v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
             <button v-bind="api.getViewTriggerProps({ view: 'month' })">{{ api.visibleRange.start.year }}</button>
@@ -101,7 +100,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
           </table>
         </div>
 
-        <div v-if="api.view === 'year'" style="width: 100%">
+        <div :hidden="api.view !== 'year'" style="width: 100%">
           <div v-bind="api.getViewControlProps({ view: 'year' })">
             <button v-bind="api.getPrevTriggerProps({ view: 'year' })">Prev</button>
             <span> {{ api.getDecade().start }} - {{ api.getDecade().end }} </span>

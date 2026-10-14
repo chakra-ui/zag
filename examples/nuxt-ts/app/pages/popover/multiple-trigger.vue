@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { MoreVerticalIcon, XIcon } from "lucide-vue-next"
 import "@styles/popover.css"
 
 interface Document {
@@ -24,7 +25,8 @@ const activeDocument = ref<Document | null>(null)
 const service = useMachine(popover.machine, {
   id: useId(),
   onTriggerValueChange({ value }) {
-    activeDocument.value = documents.find((d) => `${d.id}` === value) ?? null
+    const doc = documents.find((d) => `${d.id}` === value) ?? null
+    activeDocument.value = doc
   },
 })
 
@@ -33,36 +35,40 @@ const api = computed(() => popover.connect(service, normalizeProps))
 
 <template>
   <main>
-    <h2>Document Manager - Popover with Multiple Triggers</h2>
+    <section style="margin-bottom: 40px">
+      <h2>Document Manager - Popover with Multiple Triggers</h2>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
-      <thead>
-        <tr style="background-color: #f3f4f6; text-align: left">
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Name</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Type</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Size</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Modified</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="doc in documents" :key="doc.id" style="border-bottom: 1px solid #e5e7eb">
-          <td style="padding: 12px">{{ doc.name }}</td>
-          <td style="padding: 12px">{{ doc.type }}</td>
-          <td style="padding: 12px">{{ doc.size }}</td>
-          <td style="padding: 12px">{{ doc.modified }}</td>
-          <td style="padding: 12px">
-            <button v-bind="api.getTriggerProps({ value: `${doc.id}` })">⋮</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
+        <thead>
+          <tr style="background-color: #f3f4f6; text-align: left">
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Name</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Type</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Size</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Modified</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="doc in documents" :key="doc.id" style="border-bottom: 1px solid #e5e7eb">
+            <td style="padding: 12px">{{ doc.name }}</td>
+            <td style="padding: 12px">{{ doc.type }}</td>
+            <td style="padding: 12px">{{ doc.size }}</td>
+            <td style="padding: 12px">{{ doc.modified }}</td>
+            <td style="padding: 12px">
+              <button v-bind="api.getTriggerProps({ value: `${doc.id}` })">
+                <MoreVerticalIcon :size="16" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-      <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
-      <strong>Active Document:</strong>
-      {{ activeDocument ? `${activeDocument.name} (${activeDocument.type})` : "-" }}
-    </div>
+      <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
+        <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
+        <strong>Active Document:</strong>
+        {{ activeDocument ? `${activeDocument.name} (${activeDocument.type})` : "-" }}
+      </div>
+    </section>
 
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
@@ -93,22 +99,22 @@ const api = computed(() => popover.connect(service, normalizeProps))
             >
               Delete
             </button>
+            <button
+              v-bind="api.getCloseTriggerProps()"
+              style="
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                padding: 4px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                font-size: 16px;
+              "
+            >
+              <XIcon />
+            </button>
           </div>
-          <button
-            v-bind="api.getCloseTriggerProps()"
-            style="
-              position: absolute;
-              top: 8px;
-              right: 8px;
-              padding: 4px;
-              border: none;
-              background: none;
-              cursor: pointer;
-              font-size: 16px;
-            "
-          >
-            ✕
-          </button>
         </Presence>
       </div>
     </Teleport>

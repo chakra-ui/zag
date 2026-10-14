@@ -1,6 +1,7 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import "@styles/dialog.css"
 
 interface User {
@@ -31,35 +32,37 @@ const api = computed(() => dialog.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main>
-    <h2>User Management Table</h2>
+  <main style="padding: 40px; font-family: system-ui">
+    <section style="margin-bottom: 40px">
+      <h2>User Management Table</h2>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
-      <thead>
-        <tr style="background-color: #f3f4f6; text-align: left">
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Name</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Email</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Role</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="user in users" :key="user.id" style="border-bottom: 1px solid #e5e7eb">
-          <td style="padding: 12px">{{ user.name }}</td>
-          <td style="padding: 12px">{{ user.email }}</td>
-          <td style="padding: 12px">{{ user.role }}</td>
-          <td style="padding: 12px">
-            <button v-bind="api.getTriggerProps({ value: `${user.id}` })">Edit</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
+        <thead>
+          <tr style="background-color: #f3f4f6; text-align: left">
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Name</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Email</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Role</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id" style="border-bottom: 1px solid #e5e7eb">
+            <td style="padding: 12px">{{ user.name }}</td>
+            <td style="padding: 12px">{{ user.email }}</td>
+            <td style="padding: 12px">{{ user.role }}</td>
+            <td style="padding: 12px; display: flex; gap: 8px">
+              <button v-bind="api.getTriggerProps({ value: `${user.id}` })">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-      <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
-      <strong>Active User:</strong>
-      {{ activeUser ? `${activeUser.name} (${activeUser.email})` : "-" }}
-    </div>
+      <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
+        <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
+        <strong>Active User:</strong>
+        {{ activeUser ? `${activeUser.name} (${activeUser.email})` : "-" }}
+      </div>
+    </section>
 
     <Teleport to="#teleports">
       <Presence v-bind="api.getBackdropProps()" />
@@ -86,7 +89,12 @@ const api = computed(() => dialog.connect(service, normalizeProps))
                 </select>
               </div>
             </div>
-            <button v-bind="api.getCloseTriggerProps()">Close</button>
+            <div style="display: flex; gap: 10px; justify-content: flex-end">
+              <button v-bind="api.getCloseTriggerProps()">
+                <XIcon />
+              </button>
+              <button>Save Changes</button>
+            </div>
           </template>
           <div v-else>No user selected</div>
         </Presence>
@@ -94,7 +102,7 @@ const api = computed(() => dialog.connect(service, normalizeProps))
     </Teleport>
   </main>
 
-  <Toolbar>
-    <StateVisualizer :state="service" />
+  <Toolbar viz>
+    <StateVisualizer :state="service" :context="['triggerValue']" />
   </Toolbar>
 </template>

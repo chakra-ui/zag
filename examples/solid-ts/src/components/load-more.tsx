@@ -1,7 +1,6 @@
-import * as infiniteScroll from "@zag-js/infinite-scroll"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, type ParentProps } from "solid-js"
+import { type ParentProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { useInfiniteScroll } from "~/hooks/use-infinite-scroll"
 
 export interface LoadMoreProps {
   count: number
@@ -20,15 +19,12 @@ export interface LoadMoreProps {
  * (e.g. while a menu/select is open) so loading is scoped to that lifetime.
  */
 export function LoadMore(props: ParentProps<LoadMoreProps>) {
-  const id = createUniqueId()
-  const service = useMachine(infiniteScroll.machine, () => ({
-    id,
+  const api = useInfiniteScroll(() => ({
     count: props.count,
     hasMore: props.hasMore,
     loading: props.loading,
     onLoadMore: () => props.onLoadMore(),
   }))
-  const api = createMemo(() => infiniteScroll.connect(service, normalizeProps))
   const tag = () => props.as ?? "div"
 
   return (

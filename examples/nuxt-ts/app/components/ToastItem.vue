@@ -15,6 +15,10 @@ const computedProps = computed(() => ({ ...props.actor, index: props.index, pare
 
 const service = useMachine(toast.machine, computedProps)
 const api = computed(() => toast.connect(service, normalizeProps))
+
+// Title and description may be strings or vnodes
+const Title = () => api.value.title
+const Description = () => api.value.description
 </script>
 
 <template>
@@ -22,8 +26,11 @@ const api = computed(() => toast.connect(service, normalizeProps))
     <div v-bind="api.getGhostBeforeProps()"></div>
     <div data-scope="toast" data-part="progressbar"></div>
     <div data-scope="toast" data-part="content" style="display: grid; gap: 8px; width: 100%; padding-right: 16px">
-      <div v-bind="api.getTitleProps()">{{ api.title }}</div>
-      <div v-bind="api.getDescriptionProps()">{{ api.description }}</div>
+      <div v-bind="api.getTitleProps()">
+        <template v-if="api.type === 'loading'">&lt;...&gt;</template>
+        <Title />
+      </div>
+      <div v-bind="api.getDescriptionProps()"><Description /></div>
       <button v-if="props.actor.action" v-bind="api.getActionTriggerProps()">
         {{ props.actor.action.label }}
       </button>

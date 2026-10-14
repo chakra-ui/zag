@@ -40,29 +40,35 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
       <div v-bind="api.getContentProps()">
         <div style="margin-bottom: 20px">
           <select v-bind="api.getMonthSelectProps()">
-            <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value">{{ month.label }}</option>
+            <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value" :disabled="month.disabled">
+              {{ month.label }}
+            </option>
           </select>
 
           <select v-bind="api.getYearSelectProps()">
-            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value">{{ year.label }}</option>
+            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value" :disabled="year.disabled">
+              {{ year.label }}
+            </option>
           </select>
         </div>
 
-        <div :hidden="api.view !== 'day'">
+        <div :hidden="api.view !== 'day'" style="width: 100%">
           <div v-bind="api.getViewControlProps({ view: 'year' })">
             <button v-bind="api.getPrevTriggerProps()">Prev</button>
             <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
             <button v-bind="api.getNextTriggerProps()">Next</button>
           </div>
 
-          <table v-bind="api.getTableProps({ view: 'day' })">
-            <thead v-bind="api.getTableHeaderProps({ view: 'day' })">
-              <tr v-bind="api.getTableRowProps({ view: 'day' })">
-                <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">{{ day.narrow }}</th>
+          <table v-bind="api.getTableProps()">
+            <thead v-bind="api.getTableHeaderProps()">
+              <tr>
+                <th v-for="(day, i) in api.weekDays" :key="i" scope="col" :aria-label="day.long">
+                  {{ day.narrow }}
+                </th>
               </tr>
             </thead>
-            <tbody v-bind="api.getTableBodyProps({ view: 'day' })">
-              <tr v-for="(week, i) in api.weeks" :key="i" v-bind="api.getTableRowProps({ view: 'day' })">
+            <tbody v-bind="api.getTableBodyProps()">
+              <tr v-for="(week, i) in api.weeks" :key="i">
                 <td v-for="(value, i) in week" :key="i" v-bind="api.getDayTableCellProps({ value })">
                   <div v-bind="api.getDayTableCellTriggerProps({ value })">{{ value.day }}</div>
                 </td>
@@ -71,9 +77,9 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
           </table>
         </div>
 
-        <div style="display: flex; gap: 40px">
+        <div style="display: flex; gap: 40px; margin-top: 24px">
           <div :hidden="api.view !== 'month'" style="width: 100%">
-            <div v-bind="api.getViewControlProps({ view: 'month' })">
+            <div v-bind="api.getViewControlProps({ view: 'year' })">
               <button v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
               <button v-bind="api.getViewTriggerProps({ view: 'month' })">{{ api.visibleRange.start.year }}</button>
               <button v-bind="api.getNextTriggerProps({ view: 'month' })">Next</button>
@@ -81,11 +87,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
             <table v-bind="api.getTableProps({ view: 'month', columns: 4 })">
               <tbody v-bind="api.getTableBodyProps({ view: 'month' })">
-                <tr
-                  v-for="(months, row) in api.getMonthsGrid({ columns: 4, format: 'short' })"
-                  :key="row"
-                  v-bind="api.getTableRowProps({ view: 'month' })"
-                >
+                <tr v-for="(months, row) in api.getMonthsGrid({ columns: 4, format: 'short' })" :key="row">
                   <td
                     v-for="(month, index) in months"
                     :key="index"
@@ -106,12 +108,8 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
             </div>
 
             <table v-bind="api.getTableProps({ view: 'year', columns: 4 })">
-              <tbody v-bind="api.getTableBodyProps()">
-                <tr
-                  v-for="(years, row) in api.getYearsGrid({ columns: 4 })"
-                  :key="row"
-                  v-bind="api.getTableRowProps({ view: 'year' })"
-                >
+              <tbody v-bind="api.getTableBodyProps({ view: 'year' })">
+                <tr v-for="(years, row) in api.getYearsGrid({ columns: 4 })" :key="row">
                   <td
                     v-for="(year, index) in years"
                     :key="index"
@@ -128,7 +126,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
     </div>
   </main>
 
-  <Toolbar>
+  <Toolbar viz>
     <StateVisualizer :state="service" :omit="['weeks']" />
     <template #controls>
       <Controls :control="controls" />

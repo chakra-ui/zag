@@ -2,6 +2,7 @@
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as toast from "@zag-js/toast"
 import ToastItem from "../../components/ToastItem.vue"
+import "@styles/toast.css"
 
 const toaster = toast.createStore<string>({ placement: "bottom-end", duration: 10000 })
 const saved = ref(true)

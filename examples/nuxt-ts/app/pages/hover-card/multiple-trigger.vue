@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/hover-card.css"
@@ -65,85 +65,41 @@ const api = computed(() => hoverCard.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main>
-    <h2 style="margin-bottom: 24px">Team Members - Hover Card with Multiple Triggers</h2>
+  <main class="hover-card">
+    <p>Hover a team member to preview their profile. The card follows the hovered trigger.</p>
 
-    <p style="margin-bottom: 24px; color: #666">
-      Hover over any team member to see their profile card. The card will reposition to the hovered member.
-    </p>
-
-    <div style="display: flex; gap: 24px; flex-wrap: wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
       <a
         v-for="user in users"
         :key="user.id"
         href="#"
+        class="profile-chip"
         v-bind="api.getTriggerProps({ value: `${user.id}` })"
-        style="
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          border-radius: 8px;
-          border: 1px solid #e5e7eb;
-          text-decoration: none;
-          color: inherit;
-        "
       >
-        <img :src="user.avatar" :alt="user.name" style="width: 40px; height: 40px; border-radius: 50%" />
-        <div>
-          <div style="font-weight: bold">{{ user.name }}</div>
-          <div style="color: #666; font-size: 14px">{{ user.username }}</div>
-        </div>
+        <img :src="user.avatar" alt="" />
+        {{ user.name }}
       </a>
     </div>
 
-    <div style="margin-top: 24px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-      <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
-      <strong>Active User:</strong>
-      {{ activeUser ? `${activeUser.name} (${activeUser.username})` : "-" }}
-    </div>
+    <output>Active trigger: {{ api.triggerValue || "-" }} · Active user: {{ activeUser?.name ?? "-" }}</output>
 
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
-        <Presence
-          v-bind="api.getContentProps()"
-          style="
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 320px;
-          "
-        >
-          <template v-if="activeUser">
-            <div style="display: flex; gap: 16px; margin-bottom: 16px">
-              <img
-                :src="activeUser.avatar"
-                :alt="activeUser.name"
-                style="width: 64px; height: 64px; border-radius: 50%"
-              />
-              <div>
-                <div style="font-weight: bold; font-size: 18px">{{ activeUser.name }}</div>
-                <div style="color: #666">{{ activeUser.username }}</div>
-              </div>
+        <Presence v-bind="api.getContentProps()">
+          <div v-if="activeUser" class="profile">
+            <img class="profile-avatar" :src="activeUser.avatar" alt="" />
+            <div class="profile-body">
+              <span class="profile-name">{{ activeUser.name }}</span>
+              <span class="profile-handle">{{ activeUser.username }}</span>
+              <p class="profile-bio">{{ activeUser.bio }}</p>
+              <span class="profile-meta">
+                {{ activeUser.followers.toLocaleString() }} followers ·
+                {{ activeUser.following.toLocaleString() }} following
+              </span>
             </div>
-            <p style="margin-bottom: 16px; color: #444">{{ activeUser.bio }}</p>
-            <div style="display: flex; gap: 24px; color: #666; font-size: 14px">
-              <div>
-                <strong style="color: #000">{{ activeUser.followers.toLocaleString() }}</strong> Followers
-              </div>
-              <div>
-                <strong style="color: #000">{{ activeUser.following.toLocaleString() }}</strong> Following
-              </div>
-            </div>
-          </template>
+          </div>
         </Presence>
       </div>
     </Teleport>
   </main>
-
-  <Toolbar>
-    <StateVisualizer :state="service" />
-  </Toolbar>
 </template>

@@ -2,6 +2,8 @@
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
+import { XIcon } from "lucide-vue-next"
 import "@styles/cascade-select.css"
 
 interface Node {
@@ -28,10 +30,24 @@ const service = useMachine(
     id: useId(),
     collection,
     name: "location",
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
+    },
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
   }),
 )
 
 const api = computed(() => cascadeSelect.connect(service, normalizeProps))
+
+const onFormChange = (e: Event) => {
+  const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+  console.log(formData)
+}
 </script>
 
 <template>
@@ -44,10 +60,14 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
           <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select a location" }}</span>
           <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
-        <button v-bind="api.getClearTriggerProps()">X</button>
+        <button v-bind="api.getClearTriggerProps()">
+          <XIcon :size="16" />
+        </button>
       </div>
 
-      <input v-bind="api.getHiddenInputProps()" />
+      <form @change="onFormChange">
+        <input v-bind="api.getHiddenInputProps()" />
+      </form>
 
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">

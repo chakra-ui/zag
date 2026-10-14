@@ -19,17 +19,20 @@ const api = computed(() => qrCode.connect(service, normalizeProps))
 
 <template>
   <main class="qr-code">
-    <div v-bind="api.getRootProps()">
-      <svg v-bind="api.getFrameProps()">
-        <path v-bind="api.getPatternProps()" />
-      </svg>
-      <div v-bind="api.getOverlayProps()">
-        <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+    <div class="vstack">
+      <div v-bind="api.getRootProps()">
+        <svg v-bind="api.getFrameProps()">
+          <path v-bind="api.getPatternProps()" />
+        </svg>
       </div>
+      <span class="qr-caption">{{ api.value }}</span>
     </div>
   </main>
 
   <Toolbar>
     <StateVisualizer :state="service" :omit="['encoded']" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>

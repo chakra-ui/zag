@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import "@styles/popover.css"
 
 const service = useMachine(popover.machine, {
@@ -10,12 +11,14 @@ const service = useMachine(popover.machine, {
 
 const api = computed(() => popover.connect(service, normalizeProps))
 
+// Generate lots of items to make the popover content heavy
 const items = Array.from({ length: 200 }, (_, i) => ({
   id: i,
   title: `Item ${i + 1}`,
   description: `This is a detailed description for item ${i + 1} that adds more DOM nodes and content weight.`,
 }))
 
+// Generate tall page content to enable scrolling
 const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
 </script>
 
@@ -26,10 +29,12 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
       Open the popover, then scroll the page. Watch for sluggish position updates in DevTools Performance tab.
     </p>
 
-    <div style="position: sticky; top: 0; background: white; padding: 12px 0; border-bottom: 1px solid #eee">
+    <div
+      style="position: sticky; top: 0; background: white; padding: 12px 0; z-index: 10; border-bottom: 1px solid #eee"
+    >
       <button v-bind="api.getTriggerProps()" style="padding: 8px 16px; font-size: 16px">Open heavy popover</button>
 
-      <Teleport to="body" :defer="true">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <Presence
             v-bind="api.getContentProps()"
@@ -42,7 +47,6 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
               max-height: 500px;
               overflow: auto;
               padding: 16px;
-              z-index: 1000;
             "
           >
             <div v-bind="api.getArrowProps()">
@@ -51,6 +55,7 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
 
             <h2 style="margin: 0 0 12px">Heavy Popover Content</h2>
 
+            <!-- Lots of nested DOM nodes to make style recalc expensive -->
             <div style="display: flex; flex-direction: column; gap: 8px">
               <div
                 v-for="item in items"
@@ -81,13 +86,14 @@ const sections = Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`)
               v-bind="api.getCloseTriggerProps()"
               style="margin-top: 12px; padding: 6px 12px; position: sticky; bottom: 0; background: white"
             >
-              Close
+              <XIcon />
             </button>
           </Presence>
         </div>
       </Teleport>
     </div>
 
+    <!-- Tall content to enable page scrolling -->
     <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 24px">
       <div v-for="(section, i) in sections" :key="i" style="padding: 24px; background: #f8f8f8; border-radius: 8px">
         <h3>{{ section }}</h3>

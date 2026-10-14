@@ -60,8 +60,7 @@ const api = computed(() => dnd.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()" :class="styles.root">
       <h3>Drop on the collection</h3>
       <p :class="styles.helperText">
-        Spectrum's root drop: hover the empty inbox to drop on the list as a whole, or insert between items once it has
-        rows.
+        Root drop: hover the empty inbox to drop on the list as a whole, or insert between items once it has rows.
       </p>
       <div :class="styles.transferLayout">
         <div :class="styles.transferColumn">

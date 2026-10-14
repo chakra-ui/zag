@@ -22,7 +22,7 @@ const load = (): Progress => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null")
     if (saved) return saved
   } catch {}
-  return { value: items[0].value, completedValues: [] }
+  return { value: items[0]!.value, completedValues: [] }
 }
 
 // Empty until storage is read, so the server render matches the client

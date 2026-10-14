@@ -1,35 +1,11 @@
 <script setup lang="ts">
 import * as menu from "@zag-js/menu"
+import { menuData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, onMounted, useId } from "vue"
 import "@styles/menu.css"
 
-const menuData = [
-  [
-    { label: "New File", value: "new-file" },
-    { label: "New Tab", value: "new-tab" },
-    { label: "New Window", value: "new-win" },
-    { label: "More Tools →", value: "more-tools", trigger: true },
-    { label: "Export", value: "export" },
-    { label: "Go to Google...", value: "google" },
-  ],
-  [
-    { label: "Save Page As...", value: "save-page" },
-    { label: "Create Shortcuts", value: "shortcut" },
-    { label: "Name Window...", value: "name-win" },
-    { label: "Open nested →", value: "open-nested", trigger: true },
-    { label: "Switch Window", value: "switch-win" },
-    { label: "New Terminal", value: "new-term" },
-  ],
-  [
-    { label: "Welcome", value: "welcome" },
-    { label: "Playground", value: "playground" },
-    { label: "Export", value: "export" },
-  ],
-]
-
-const rootService = useMachine(menu.machine, { id: useId() })
-const root = computed(() => menu.connect(rootService, normalizeProps))
+const service = useMachine(menu.machine, { id: useId() })
+const root = computed(() => menu.connect(service, normalizeProps))
 
 const subService = useMachine(menu.machine, { id: useId() })
 const sub = computed(() => menu.connect(subService, normalizeProps))
@@ -39,10 +15,7 @@ const sub2 = computed(() => menu.connect(sub2Service, normalizeProps))
 
 onMounted(() => {
   root.value.setChild(subService)
-  sub.value.setParent(rootService)
-})
-
-onMounted(() => {
+  sub.value.setParent(service)
   sub.value.setChild(sub2Service)
   sub2.value.setParent(subService)
 })
@@ -58,7 +31,7 @@ const [level1, level2, level3] = menuData
     <div>
       <button data-testid="trigger" v-bind="root.getTriggerProps()">Click me</button>
 
-      <Teleport to="body" v-if="root.open">
+      <Teleport to="#teleports">
         <div v-bind="root.getPositionerProps()">
           <ul data-testid="menu" v-bind="root.getContentProps()">
             <li
@@ -73,7 +46,7 @@ const [level1, level2, level3] = menuData
         </div>
       </Teleport>
 
-      <Teleport to="body" v-if="sub.open">
+      <Teleport to="#teleports">
         <div v-bind="sub.getPositionerProps()">
           <ul data-testid="more-tools-submenu" v-bind="sub.getContentProps()">
             <li
@@ -88,7 +61,7 @@ const [level1, level2, level3] = menuData
         </div>
       </Teleport>
 
-      <Teleport to="body" v-if="sub2.open">
+      <Teleport to="#teleports">
         <div v-bind="sub2.getPositionerProps()">
           <ul data-testid="open-nested-submenu" v-bind="sub2.getContentProps()">
             <li
@@ -104,4 +77,10 @@ const [level1, level2, level3] = menuData
       </Teleport>
     </div>
   </main>
+
+  <Toolbar>
+    <StateVisualizer :state="service" label="Root Machine" />
+    <StateVisualizer :state="subService" label="Sub Machine" />
+    <StateVisualizer :state="sub2Service" label="Sub2 Machine" />
+  </Toolbar>
 </template>

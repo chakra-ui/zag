@@ -28,7 +28,7 @@ const api = computed(() => radio.connect(service, normalizeProps))
         }
       "
     >
-      <fieldset>
+      <fieldset class="vstack gap-5" :disabled="false">
         <div v-bind="api.getRootProps()">
           <h3 v-bind="api.getLabelProps()">Fruits</h3>
           <div v-bind="api.getIndicatorProps()" />
@@ -47,9 +47,12 @@ const api = computed(() => radio.connect(service, normalizeProps))
           </label>
         </div>
 
-        <button type="reset">Reset</button>
-        <button type="button" @click="() => api.setValue('mango')">Set to Mangoes</button>
-        <button type="button" @click="() => api.focus()">Focus</button>
+        <div class="hstack">
+          <button type="reset">Reset</button>
+          <button type="button" @click="api.clearValue()">Clear</button>
+          <button type="button" @click="api.setValue('mango')">Set to Mangoes</button>
+          <button type="button" @click="api.focus()">Focus</button>
+        </div>
       </fieldset>
     </form>
   </main>

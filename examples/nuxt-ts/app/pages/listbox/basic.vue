@@ -29,7 +29,7 @@ const api = computed(() => listbox.connect(service, normalizeProps))
       <label v-bind="api.getLabelProps()">Label</label>
       <div v-bind="api.getContentProps()">
         <ul v-bind="api.getListProps()">
-          <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+          <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item, highlightOnHover: true })">
             <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
             <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
           </li>
@@ -39,7 +39,7 @@ const api = computed(() => listbox.connect(service, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" :context="['highlightedValue', 'focused']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

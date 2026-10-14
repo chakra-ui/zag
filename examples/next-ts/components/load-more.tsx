@@ -1,8 +1,7 @@
 "use client"
 
-import * as infiniteScroll from "@zag-js/infinite-scroll"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { type ReactNode, useId } from "react"
+import { type ReactNode } from "react"
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"
 
 export interface LoadMoreProps {
   count: number
@@ -23,14 +22,7 @@ export interface LoadMoreProps {
  */
 export function LoadMore(props: LoadMoreProps) {
   const { as: Comp = "div", children = "Loading more…", count, hasMore, loading, onLoadMore } = props
-  const service = useMachine(infiniteScroll.machine, {
-    id: useId(),
-    count,
-    hasMore,
-    loading,
-    onLoadMore,
-  })
-  const api = infiniteScroll.connect(service, normalizeProps)
+  const api = useInfiniteScroll({ count, hasMore, loading, onLoadMore })
 
   return (
     <Comp {...(Comp === "li" ? { role: "presentation" as const } : null)}>
