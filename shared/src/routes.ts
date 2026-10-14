@@ -567,8 +567,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Number Flow",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "pricing", title: "Pricing" },
-      { slug: "ticker", title: "Stock Ticker" },
       { slug: "countdown", title: "Countdown" },
       { slug: "compact", title: "Compact Notation" },
       { slug: "continuous", title: "Continuous" },

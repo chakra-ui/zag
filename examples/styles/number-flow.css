@@ -95,46 +95,6 @@
   }
 }
 
-.nf-price {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  font-size: 48px;
-
-  & small {
-    font-size: var(--z-text-md);
-    font-weight: 500;
-    color: var(--z-fg-muted);
-  }
-}
-
-.nf-ticker {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-size: 40px;
-}
-
-.nf-change {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: var(--z-text-md);
-
-  & svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  &[data-direction="up"] {
-    color: var(--z-green-600);
-  }
-
-  &[data-direction="down"] {
-    color: var(--z-red-600);
-  }
-}
-
 .nf-countdown {
   display: flex;
   align-items: baseline;
