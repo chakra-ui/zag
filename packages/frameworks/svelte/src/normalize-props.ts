@@ -37,6 +37,8 @@ export const normalizeProps = createNormalizer<PropTypes>((props) => {
 
   for (const key in props) {
     const value = props[key]
+    // Svelte templates render their own content, so `children` would leak as an attribute
+    if (key === "children") continue
     if (key === "style" && value && typeof value === "object") {
       Object.assign(normalized, toStyleProps(value))
       continue
