@@ -5,6 +5,7 @@
   import { tagsInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tagsInput from "@zag-js/tags-input"
+  import { XIcon } from "lucide-svelte"
   import "@styles/tags-input.css"
 
   function toDashCase(str: string) {
@@ -30,7 +31,7 @@
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>Enter frameworks:</label>
     <div {...api.getControlProps()}>
-      {#each api.value as value, index}
+      {#each api.value as value, index (`${toDashCase(value)}-tag-${index}`)}
         <span {...api.getItemProps({ index, value })}>
           <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
             <span data-testid={`${toDashCase(value)}-valuetext`} {...api.getItemTextProps({ index, value })}>
@@ -40,15 +41,16 @@
               data-testid={`${toDashCase(value)}-close-button`}
               {...api.getItemDeleteTriggerProps({ index, value })}
             >
-              &#x2715;
+              <XIcon />
             </button>
           </div>
           <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
         </span>
       {/each}
-
       <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
-      <button {...api.getClearTriggerProps()}>X</button>
+      <button {...api.getClearTriggerProps()}>
+        <XIcon />
+      </button>
     </div>
     <input {...api.getHiddenInputProps()} />
   </div>

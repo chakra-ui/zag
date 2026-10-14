@@ -5,7 +5,10 @@
   import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggle from "@zag-js/toggle-group"
+  import { BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-svelte"
   import "@styles/toggle-group.css"
+
+  const icons = { bold: BoldIcon, italic: ItalicIcon, underline: UnderlineIcon }
 
   const controls = useControls(toggleGroupControls)
 
@@ -16,16 +19,20 @@
 </script>
 
 <main class="toggle-group">
-  <button>Outside</button>
-  <div {...api.getRootProps()}>
-    {#each toggleGroupData as item}
-      <button {...api.getItemProps({ value: item.value })}>
-        {item.label}
-      </button>
-    {/each}
+  <div class="hstack gap-4">
+    <!-- Focus target outside the group, for tab order checks -->
+    <button>Outside</button>
+    <div {...api.getRootProps()}>
+      {#each toggleGroupData as item (item.value)}
+        {@const Icon = icons[item.value as keyof typeof icons]}
+        <button {...api.getItemProps({ value: item.value })} aria-label={item.value}>
+          <Icon />
+        </button>
+      {/each}
+    </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["focusedValue"]} />
 </Toolbar>

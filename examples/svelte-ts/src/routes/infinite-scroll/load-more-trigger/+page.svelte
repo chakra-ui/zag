@@ -56,7 +56,7 @@
       {/each}
     </ul>
     <div {...api.getSentinelProps()}></div>
-    <div>
+    <div class="footer">
       {#if api.hasMore}
         <button type="button" onclick={() => api.loadMore()} disabled={api.loading}>
           {api.loading ? "Loading…" : "Load more"}

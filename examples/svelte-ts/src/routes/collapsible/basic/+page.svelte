@@ -23,8 +23,8 @@
 
 <main class="collapsible">
   <div {...api.getRootProps()}>
-    <button {...api.getTriggerProps()}
-      >Collapsible Trigger
+    <button {...api.getTriggerProps()}>
+      Collapsible Trigger
       <div {...api.getIndicatorProps()}>
         <ChevronDownIcon />
       </div>
@@ -35,7 +35,7 @@
         magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
         consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-        laborum. <a href="/collapsible">Some Link</a>
+        laborum. <a href="#">Some Link</a>
       </p>
     </div>
   </div>
@@ -47,6 +47,6 @@
   </div>
 </main>
 
-<Toolbar {controls}>
-  <StateVisualizer state={service} />
+<Toolbar {controls} viz>
+  <StateVisualizer state={service} omit={["stylesRef"]} />
 </Toolbar>

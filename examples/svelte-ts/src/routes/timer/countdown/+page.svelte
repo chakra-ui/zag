@@ -30,13 +30,13 @@
       <div {...api.getSeparatorProps()}>:</div>
       <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
     </div>
+  </div>
 
-    <div {...api.getControlProps()}>
-      <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
-      <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
-      <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
-      <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
-    </div>
+  <div {...api.getControlProps()}>
+    <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+    <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+    <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+    <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
   </div>
 </main>
 

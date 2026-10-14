@@ -1,7 +1,9 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import ToastItem from "$lib/components/toast-item.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
+  import "@styles/toast.css"
 
   const toaster = toast.createStore<string>({ placement: "bottom-end", duration: 10000 })
   let saved = $state(true)
@@ -33,9 +35,11 @@
     <p role="status">{saved ? "Saved to reading list" : "Removed from reading list"}</p>
     <button disabled={!saved} onclick={removeBookmark}>Remove bookmark</button>
   </section>
-  <div {...api.getGroupProps()}>
-    {#each api.getToasts() as actor, index (actor.id)}
-      <ToastItem {actor} {index} parent={service} />
-    {/each}
-  </div>
+  <Portal>
+    <div {...api.getGroupProps()}>
+      {#each api.getToasts() as actor, index (actor.id)}
+        <ToastItem {actor} {index} parent={service} />
+      {/each}
+    </div>
+  </Portal>
 </main>

@@ -5,18 +5,19 @@
   import { untrack, type Snippet } from "svelte"
 
   interface Props {
+    [key: string]: any
     controls?: UseControlsReturn | null
     viz?: boolean
     children: Snippet
   }
 
-  const { controls, viz, children }: Props = $props()
+  const { controls, viz, children, ...rest }: Props = $props()
 
   const init = untrack(() => (viz ? 1 : !controls ? 1 : 0))
   let active = $state(init)
 </script>
 
-<div class="toolbar">
+<div class="toolbar" {...rest}>
   <nav>
     {#if controls}
       <button data-active={dataAttr(active === 0)} onclick={() => (active = 0)}>Controls</button>

@@ -1,7 +1,9 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import ToastItem from "$lib/components/toast-item.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
+  import "@styles/toast.css"
 
   const toaster = toast.createStore<string>({ placement: "bottom-end", overlap: false, duration: Infinity })
   const uid = $props.id()
@@ -32,9 +34,11 @@
     <button onclick={saveDraft}>Save draft</button>
     <button onclick={() => toaster.dismiss("draft")}>Dismiss draft</button>
   </div>
-  <div {...api.getGroupProps()}>
-    {#each api.getToasts() as actor, index (actor.id)}
-      <ToastItem {actor} {index} parent={service} />
-    {/each}
-  </div>
+  <Portal>
+    <div {...api.getGroupProps()}>
+      {#each api.getToasts() as actor, index (actor.id)}
+        <ToastItem {actor} {index} parent={service} />
+      {/each}
+    </div>
+  </Portal>
 </main>

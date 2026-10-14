@@ -37,7 +37,7 @@
     <div {...api.getItemGroupProps()}>
       {#each carouselData as image, index}
         <div {...api.getItemProps({ index })}>
-          <img src={image} alt="" />
+          <img src={image} alt="" width="188px" />
         </div>
       {/each}
     </div>
@@ -51,5 +51,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} omit={["translations"]} />
 </Toolbar>

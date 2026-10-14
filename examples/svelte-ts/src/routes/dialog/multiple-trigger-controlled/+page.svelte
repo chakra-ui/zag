@@ -5,6 +5,8 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { XIcon } from "lucide-svelte"
+  import "@styles/dialog.css"
 
   interface User {
     id: number
@@ -29,15 +31,11 @@
   const id = $props.id()
   const service = useMachine(dialog.machine, () => ({
     id,
-    get open() {
-      return open
-    },
+    open,
     onOpenChange(details) {
       open = details.open
     },
-    get triggerValue() {
-      return activeTrigger
-    },
+    triggerValue: activeTrigger,
     onTriggerValueChange(details) {
       activeTrigger = details.value
     },
@@ -46,26 +44,26 @@
   const api = $derived(dialog.connect(service, normalizeProps))
 </script>
 
-<main style="padding: 40px; font-family: system-ui;">
-  <section style="margin-bottom: 40px;">
+<main style="padding: 40px; font-family: system-ui">
+  <section style="margin-bottom: 40px">
     <h2>Controlled Mode - User Table</h2>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
       <thead>
-        <tr style="background-color: #f3f4f6; text-align: left;">
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb;">Name</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb;">Email</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb;">Role</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb;">Actions</th>
+        <tr style="background-color: #f3f4f6; text-align: left">
+          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Name</th>
+          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Email</th>
+          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Role</th>
+          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Actions</th>
         </tr>
       </thead>
       <tbody>
         {#each users as user (user.id)}
-          <tr style="border-bottom: 1px solid #e5e7eb;">
-            <td style="padding: 12px;">{user.name}</td>
-            <td style="padding: 12px;">{user.email}</td>
-            <td style="padding: 12px;">{user.role}</td>
-            <td style="padding: 12px; display: flex; gap: 8px;">
+          <tr style="border-bottom: 1px solid #e5e7eb">
+            <td style="padding: 12px">{user.name}</td>
+            <td style="padding: 12px">{user.email}</td>
+            <td style="padding: 12px">{user.role}</td>
+            <td style="padding: 12px; display: flex; gap: 8px">
               <button {...api.getTriggerProps({ value: `${user.id}` })}>Edit</button>
             </td>
           </tr>
@@ -73,7 +71,7 @@
       </tbody>
     </table>
 
-    <div style="margin-top: 20px; padding: 12px; background: #f3f4f6; border-radius: 6px;">
+    <div style="margin-top: 20px; padding: 12px; background: #f3f4f6; border-radius: 6px">
       <strong>api.open:</strong>
       {String(api.open)}
       <br />
@@ -97,25 +95,27 @@
         {#if activeUser}
           <h2 {...api.getTitleProps()}>Edit User</h2>
           <p {...api.getDescriptionProps()}>Update information for {activeUser.name}</p>
-          <div style="margin-bottom: 20px;">
-            <div style="margin-bottom: 12px;">
-              <label for="name">Name</label>
-              <input id="name" type="text" value={activeUser.name} style="display: block; width: 100%;" />
+          <div style="margin-bottom: 20px">
+            <div style="margin-bottom: 12px">
+              <label>Name</label>
+              <input type="text" value={activeUser.name} style="display: block; width: 100%" />
             </div>
-            <div style="margin-bottom: 12px;">
-              <label for="email">Email</label>
-              <input id="email" type="email" value={activeUser.email} style="display: block; width: 100%;" />
+            <div style="margin-bottom: 12px">
+              <label>Email</label>
+              <input type="email" value={activeUser.email} style="display: block; width: 100%" />
             </div>
-            <div style="margin-bottom: 12px;">
-              <label for="role">Role</label>
-              <select id="role" value={activeUser.role} style="display: block; width: 100%;">
+            <div style="margin-bottom: 12px">
+              <label>Role</label>
+              <select value={activeUser.role} style="display: block; width: 100%">
                 <option value="Admin">Admin</option>
                 <option value="Editor">Editor</option>
                 <option value="Viewer">Viewer</option>
               </select>
             </div>
           </div>
-          <button {...api.getCloseTriggerProps()}>Close</button>
+          <button {...api.getCloseTriggerProps()}>
+            <XIcon />
+          </button>
         {:else}
           <div>No user selected</div>
         {/if}

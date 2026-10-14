@@ -6,6 +6,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
   import "@styles/floating-panel.css"
+  import "@styles/popover.css"
 
   const id = $props.id()
   const service = useMachine(floatingPanel.machine, () => ({

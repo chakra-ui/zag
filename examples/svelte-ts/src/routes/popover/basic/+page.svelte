@@ -1,17 +1,24 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as popover from "@zag-js/popover"
   import { popoverControls } from "@zag-js/shared"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { XIcon } from "lucide-svelte"
   import "@styles/popover.css"
 
   const controls = useControls(popoverControls)
 
   const id = $props.id()
-  const service = useMachine(popover.machine, controls.mergeProps<popover.Props>({ id }))
+  const service = useMachine(
+    popover.machine,
+    controls.mergeProps<popover.Props>({
+      id,
+    }),
+  )
 
   const api = $derived(popover.connect(service, normalizeProps))
 </script>
@@ -27,22 +34,26 @@
 
     <div {...api.getAnchorProps()}>anchor</div>
 
-    <div use:portal {...api.getPositionerProps()}>
-      <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()}>
-        <div {...api.getArrowProps()}>
-          <div {...api.getArrowTipProps()}></div>
-        </div>
-        <div data-testid="popover-title" {...api.getTitleProps()}>Popover Title</div>
-        <div data-part="body" data-testid="popover-body">
-          <!-- svelte-ignore a11y_missing_attribute -->
-          <a>Non-focusable Link</a>
-          <a href="# " data-testid="focusable-link"> Focusable Link </a>
-          <input data-testid="input" placeholder="input" />
-          <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}> X </button>
-        </div>
-      </Presence>
-    </div>
-
+    <Portal>
+      <div {...api.getPositionerProps()}>
+        <Presence data-testid="popover-content" class="popover-content" {...api.getContentProps()}>
+          <div {...api.getArrowProps()}>
+            <div {...api.getArrowTipProps()}></div>
+          </div>
+          <div data-testid="popover-title" {...api.getTitleProps()}>Popover Title</div>
+          <div data-part="body" data-testid="popover-body">
+            <!-- svelte-ignore a11y_missing_attribute -->
+            <a>Non-focusable Link</a>
+            <!-- svelte-ignore a11y_invalid_attribute -->
+            <a href="#" data-testid="focusable-link">Focusable Link</a>
+            <input data-testid="input" placeholder="input" />
+            <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
+          </div>
+        </Presence>
+      </div>
+    </Portal>
     <span data-testid="plain-text">I am just text</span>
     <button data-testid="button-after">Button :after</button>
   </div>

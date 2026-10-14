@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { ListCollection } from "@zag-js/collection"
-  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import * as dnd from "@zag-js/dnd"
-  import { GripVertical } from "lucide-svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import * as dnd from "@zag-js/dnd"
   import styles from "@styles/dnd-list.module.css"
-
-  const ROOT = "inbox"
-  const id = $props.id()
+  import { GripVerticalIcon } from "lucide-svelte"
+  import { ListCollection } from "@zag-js/collection"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
 
   type Item = { id: string; name: string }
 
@@ -20,17 +17,20 @@
     })
   }
 
-  let source = $state(
-    createList([
-      { id: "beedrill", name: "Beedrill" },
-      { id: "pidgeot", name: "Pidgeot" },
-      { id: "fearow", name: "Fearow" },
-      { id: "jigglypuff", name: "Jigglypuff" },
-    ]),
-  )
+  const sourceData: Item[] = [
+    { id: "beedrill", name: "Beedrill" },
+    { id: "pidgeot", name: "Pidgeot" },
+    { id: "fearow", name: "Fearow" },
+    { id: "jigglypuff", name: "Jigglypuff" },
+  ]
+
+  const ROOT = "inbox"
+
+  const id = $props.id()
+  let source = $state(createList(sourceData))
   let inbox = $state(createList([]))
 
-  const service = useMachine(dnd.machine, {
+  const service = useMachine(dnd.machine, (): dnd.Props => ({
     id,
     orientation: "vertical",
     dropPlacements: ["before", "after", "on"],
@@ -43,25 +43,20 @@
     },
     onDrop({ values, target, placement }) {
       const moved = source.findMany(values)
-      if (!moved.length) return
+      if (moved.length === 0) return
       source = source.remove(...values)
-      if (target === ROOT) {
-        inbox = inbox.append(...moved)
-        return
-      }
-      inbox = placement === "after" ? inbox.insertAfter(target, ...moved) : inbox.insertBefore(target, ...moved)
+      if (target === ROOT) inbox = inbox.append(...moved)
+      else inbox = placement === "after" ? inbox.insertAfter(target, ...moved) : inbox.insertBefore(target, ...moved)
     },
-  })
-
+  }))
   const api = $derived(dnd.connect(service, normalizeProps))
 </script>
 
-<main class="{styles.main} {styles.wide}">
+<main class={`${styles.main} ${styles.wide}`}>
   <div {...api.getRootProps()} class={styles.root}>
     <h3>Drop on the collection</h3>
     <p class={styles.helperText}>
-      Spectrum's root drop: hover the empty inbox to drop on the list as a whole, or insert between items once it has
-      rows.
+      Root drop: hover the empty inbox to drop on the list as a whole, or insert between items once it has rows.
     </p>
     <div class={styles.transferLayout}>
       <div class={styles.transferColumn}>
@@ -71,7 +66,7 @@
             <li class={styles.item}>
               <div {...mergeProps(api.getDraggableProps({ value: item.id }), { class: styles.draggable })}>
                 <span {...api.getDragHandleProps({ value: item.id })} class={styles.dragHandle}>
-                  <GripVertical size={14} />
+                  <GripVerticalIcon size={14} />
                 </span>
                 {item.name}
               </div>

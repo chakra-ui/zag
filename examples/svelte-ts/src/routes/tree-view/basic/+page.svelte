@@ -14,6 +14,7 @@
     id: string
     name: string
     children?: Node[]
+    disabled?: boolean
   }
 
   interface TreeNodeProps {
@@ -62,10 +63,13 @@
   })
 
   const id = $props.id()
-  const service = useMachine(tree.machine, {
-    id,
-    collection,
-  })
+  const service = useMachine(
+    tree.machine,
+    controls.mergeProps<tree.Props>({
+      id,
+      collection,
+    }),
+  )
 
   const api = $derived(tree.connect(service, normalizeProps))
 </script>
@@ -93,7 +97,7 @@
     {#if nodeState.isBranch}
       <div {...api.getNodeGroupContentProps({ indexPath, node })}>
         <div {...api.getIndentGuideProps({ indexPath, node })}></div>
-        {#each node.children || [] as childNode, index}
+        {#each node.children || [] as childNode, index (childNode.id)}
           {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
         {/each}
       </div>
@@ -113,7 +117,7 @@
       {/if}
     </div>
     <div {...api.getTreeProps()}>
-      {#each collection.rootNode.children || [] as node, index}
+      {#each collection.rootNode.children || [] as node, index (node.id)}
         {@render treeNode({ node, indexPath: [index], api })}
       {/each}
     </div>

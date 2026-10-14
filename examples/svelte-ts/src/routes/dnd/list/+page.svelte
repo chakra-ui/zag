@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import * as dnd from "@zag-js/dnd"
-  import { GripVertical } from "lucide-svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import * as dnd from "@zag-js/dnd"
   import styles from "@styles/dnd-list.module.css"
+  import { GripVerticalIcon } from "lucide-svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
 
   const initialItems = [
     { id: "1", label: "Apple" },
@@ -17,19 +17,13 @@
   const id = $props.id()
   let items = $state(initialItems)
 
-  const service = useMachine(dnd.machine, {
+  const service = useMachine(dnd.machine, (): dnd.Props => ({
     id,
     orientation: "vertical",
     onDrop(details) {
-      const { source, target, placement } = details
-      if (placement === "on") return
-      const fromIndex = items.findIndex((item) => item.id === source)
-      const toIndex = items.findIndex((item) => item.id === target)
-      if (fromIndex === -1 || toIndex === -1) return
-      items = dnd.move(items, fromIndex, dnd.getDestinationIndex(items.length, fromIndex, toIndex, placement))
+      items = dnd.reorder(items, { ...details, itemToValue: (i) => i.id })
     },
-  })
-
+  }))
   const api = $derived(dnd.connect(service, normalizeProps))
 </script>
 
@@ -49,7 +43,7 @@
             })}
           >
             <span {...api.getDragHandleProps({ value: item.id })} class={styles.dragHandle}>
-              <GripVertical size={14} />
+              <GripVerticalIcon size={14} />
             </span>
             {item.label}
           </div>

@@ -25,9 +25,10 @@
   <div {...api.getRootProps()}>
     <div {...api.getListProps()}>
       {#each stepsData as step, index (step.value)}
+        {@const itemState = api.getItemState({ value: step.value })}
         <div {...api.getItemProps({ value: step.value })}>
           <button {...api.getTriggerProps({ value: step.value })}>
-            <div {...api.getIndicatorProps({ value: step.value })}>{index + 1}</div>
+            <div {...api.getIndicatorProps({ value: step.value })}>{itemState.completed ? "✓" : index + 1}</div>
             <span>{step.title}</span>
           </button>
           <div {...api.getSeparatorProps({ value: step.value })}></div>

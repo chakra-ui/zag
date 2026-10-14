@@ -1,7 +1,7 @@
 <script lang="ts">
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
-  import { ChevronRightIcon } from "lucide-svelte"
+  import { CheckSquareIcon, ChevronRightIcon, MinusSquareIcon, SquareIcon } from "lucide-svelte"
   import "@styles/tree-view.css"
 
   interface Node {
@@ -10,13 +10,7 @@
     children?: Node[]
   }
 
-  interface TreeNodeProps {
-    node: Node
-    indexPath: number[]
-    api: tree.Api
-  }
-
-  const collection = tree.collection<Node>({
+  const initialCollection = tree.collection<Node>({
     nodeToValue: (node) => node.id,
     nodeToString: (node) => node.name,
     rootNode: {
@@ -29,6 +23,14 @@
           children: [
             { id: "node_modules/zag-js", name: "zag-js" },
             { id: "node_modules/pandacss", name: "panda" },
+            {
+              id: "node_modules/@types",
+              name: "@types",
+              children: [
+                { id: "node_modules/@types/react", name: "react" },
+                { id: "node_modules/@types/react-dom", name: "react-dom" },
+              ],
+            },
           ],
         },
         {
@@ -41,52 +43,53 @@
         },
         { id: "panda.config", name: "panda.config.ts" },
         { id: "package.json", name: "package.json" },
+        { id: "renovate.json", name: "renovate.json" },
+        { id: "readme.md", name: "README.md" },
       ],
     },
   })
 
+  const iconMap = {
+    true: CheckSquareIcon,
+    false: SquareIcon,
+    indeterminate: MinusSquareIcon,
+  }
+
   const id = $props.id()
-  const service = useMachine(tree.machine, {
+  const service = useMachine(tree.machine as tree.Machine<Node>, {
     id,
-    collection,
+    collection: initialCollection,
     defaultCheckedValue: [],
   })
 
   const api = $derived(tree.connect(service, normalizeProps))
 </script>
 
-{#snippet treeNode(nodeProps: TreeNodeProps)}
-  {@const { node, indexPath, api } = nodeProps}
-  {@const nodeState = api.getNodeState({ indexPath, node })}
-  {@const checked = nodeState.checked}
-
-  <div {...api.getNodeGroupProps({ indexPath, node })}>
-    <div {...api.getNodeProps({ indexPath, node })}>
-      <div {...api.getNodeCellProps({ indexPath, node })}>
-        <span {...api.getNodeCheckboxProps({ indexPath, node })}>
-          {#if checked === true}
-            ☑
-          {:else if checked === "indeterminate"}
-            ☐
-          {:else}
-            ☐
-          {/if}
-        </span>
-      </div>
-      <div {...api.getNodeCellProps({ indexPath, node })}>
-        <span {...api.getNodeTextProps({ indexPath, node })}>{node.name}</span>
+{#snippet treeNode(node: Node, indexPath: number[])}
+  {@const nodeProps = { indexPath, node }}
+  {@const nodeState = api.getNodeState(nodeProps)}
+  {@const Icon = iconMap[nodeState.checked.toString() as keyof typeof iconMap]}
+  <div {...api.getNodeGroupProps(nodeProps)}>
+    <div {...api.getNodeProps(nodeProps)}>
+      <div {...api.getNodeCellProps(nodeProps)}>
         {#if nodeState.isBranch}
-          <span {...api.getNodeIndicatorProps({ indexPath, node, type: "expanded" })}>
+          <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
             <ChevronRightIcon />
           </span>
         {/if}
+        <span {...api.getNodeCheckboxProps(nodeProps)}>
+          <Icon />
+        </span>
+      </div>
+      <div {...api.getNodeCellProps(nodeProps)}>
+        <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
       </div>
     </div>
     {#if nodeState.isBranch}
-      <div {...api.getNodeGroupContentProps({ indexPath, node })}>
-        <div {...api.getIndentGuideProps({ indexPath, node })}></div>
-        {#each node.children || [] as childNode, index}
-          {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
+      <div {...api.getNodeGroupContentProps(nodeProps)}>
+        <div {...api.getIndentGuideProps(nodeProps)}></div>
+        {#each node.children ?? [] as childNode, index (childNode.id)}
+          {@render treeNode(childNode, [...indexPath, index])}
         {/each}
       </div>
     {/if}
@@ -97,8 +100,8 @@
   <div {...api.getRootProps()}>
     <h3 {...api.getLabelProps()}>My Documents</h3>
     <div {...api.getTreeProps()}>
-      {#each collection.rootNode.children || [] as node, index}
-        {@render treeNode({ node, indexPath: [index], api })}
+      {#each api.collection.rootNode.children ?? [] as node, index (node.id)}
+        {@render treeNode(node, [index])}
       {/each}
     </div>
   </div>

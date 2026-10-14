@@ -22,6 +22,7 @@
 </script>
 
 <main class="switch">
+  <button onclick={() => api.toggleChecked()}>Toggle</button>
   <!-- svelte-ignore a11y_label_has_associated_control -->
   <label {...api.getRootProps()}>
     <input {...api.getHiddenInputProps()} data-testid="hidden-input" />

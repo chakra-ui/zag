@@ -14,9 +14,10 @@ export function useControls<T extends ControlRecord>(config: T) {
       deepSet(context, key, value)
     },
     mergeProps<T extends object>(props: T | (() => T)) {
+      // Controls win over page props, as in the React examples
       return () => ({
-        ...getTransformedControlValues(config, context),
         ...(typeof props === "function" ? props() : props),
+        ...getTransformedControlValues(config, context),
       })
     },
   }

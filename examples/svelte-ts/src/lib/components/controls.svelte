@@ -3,10 +3,17 @@
   import { deepGet } from "@zag-js/shared"
 
   const { controls }: { controls: UseControlsReturn } = $props()
+
+  // Toggles last, so they pack together instead of breaking up the inputs
+  const keys = $derived(
+    Object.keys(controls.config).sort(
+      (a, b) => Number(controls.config[a]?.type === "boolean") - Number(controls.config[b]?.type === "boolean"),
+    ),
+  )
 </script>
 
 <div class="controls-container">
-  {#each Object.keys(controls.config) as key}
+  {#each keys as key}
     {@const { type, label = key, options, placeholder, min, max } = (controls.config[key] ?? {}) as any}
     {@const value = deepGet(controls.context, key)}
     {#if type === "boolean"}
@@ -79,6 +86,6 @@
           }}
         />
       </div>
-    {:else if type === "number"}{/if}
+    {/if}
   {/each}
 </div>

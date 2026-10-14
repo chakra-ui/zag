@@ -1,9 +1,17 @@
 <script lang="ts">
   import "@styles/global.css"
-  import Sidebar from "$lib/components/sidebar.svelte"
+  import "@styles/playground.css"
+  import Shell from "$lib/components/shell/shell.svelte"
+  import { prefsHtml } from "$lib/components/shell/prefs"
+
+  let { children } = $props()
 </script>
 
-<div class="page">
-  <Sidebar />
-  <slot />
-</div>
+<svelte:head>
+  <!-- Sets saved shell prefs on <html> before first paint -->
+  {@html prefsHtml}
+</svelte:head>
+
+<Shell>
+  {@render children()}
+</Shell>

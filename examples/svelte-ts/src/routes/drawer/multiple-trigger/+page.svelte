@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as drawer from "@zag-js/drawer"
+  import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
@@ -26,6 +27,7 @@
   const id = $props.id()
   const service = useMachine(drawer.machine, {
     id,
+    swipeDirection: "end",
     onTriggerValueChange({ value }) {
       activeUser = users.find((u) => `${u.id}` === value) ?? null
     },
@@ -84,7 +86,15 @@
             <label>Email</label>
             <input type="email" value={activeUser.email} style="display: block; width: 100%" />
           </div>
-          <button {...api.getCloseTriggerProps()}>Close</button>
+          <div style="margin-bottom: 12px">
+            <label>Role</label>
+            <select value={activeUser.role} style="display: block; width: 100%">
+              <option value="Admin">Admin</option>
+              <option value="Editor">Editor</option>
+              <option value="Viewer">Viewer</option>
+            </select>
+          </div>
+          <button {...api.getCloseTriggerProps()}><XIcon /></button>
         </div>
       {:else}
         <div style="padding: 16px">No user selected</div>
@@ -93,6 +103,6 @@
   </div>
 </main>
 
-<Toolbar>
+<Toolbar viz>
   <StateVisualizer state={service} context={["triggerValue", "snapPoint"]} />
 </Toolbar>

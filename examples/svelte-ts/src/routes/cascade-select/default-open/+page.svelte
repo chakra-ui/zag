@@ -1,29 +1,17 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
+  import CascadeSelectNode, { type CascadeNode } from "$lib/components/cascade-select-node.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as cascadeSelect from "@zag-js/cascade-select"
   import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { XIcon } from "lucide-svelte"
+  import serialize from "form-serialize"
   import "@styles/cascade-select.css"
 
-  interface Node {
-    label: string
-    value: string
-    continents?: Node[]
-    countries?: Node[]
-    code?: string
-    states?: Node[]
-  }
-
-  interface TreeNodeProps {
-    node: Node
-    indexPath: number[]
-    value: string[]
-    api: cascadeSelect.Api
-  }
-
-  const collection = cascadeSelect.collection<Node>({
+  const collection = cascadeSelect.collection<CascadeNode>({
     nodeToValue: (node) => node.value,
     nodeToString: (node) => node.label,
     nodeToChildren: (node) => node.continents ?? node.countries ?? node.states,
@@ -35,49 +23,25 @@
   const id = $props.id()
   const service = useMachine(
     cascadeSelect.machine,
-    controls.mergeProps<cascadeSelect.Props>({
+    controls.mergeProps<cascadeSelect.Props>(() => ({
       id,
-      defaultOpen: true,
       collection,
       name: "location",
-    }),
+      defaultOpen: true,
+      onHighlightChange(details) {
+        console.log("onHighlightChange", details)
+      },
+      onValueChange(details) {
+        console.log("onChange", details)
+      },
+      onOpenChange(details) {
+        console.log("onOpenChange", details)
+      },
+    })),
   )
 
   const api = $derived(cascadeSelect.connect(service, normalizeProps))
 </script>
-
-{#snippet treeNode(nodeProps: TreeNodeProps)}
-  {@const { node, indexPath, value, api } = nodeProps}
-  {@const listNodeProps = { indexPath, value, item: node }}
-  {@const nodeState = api.getItemState(listNodeProps)}
-  {@const children = collection.getNodeChildren(node)}
-
-  <ul {...api.getListProps(listNodeProps)}>
-    {#each children as item, index}
-      {@const itemProps = {
-        indexPath: [...indexPath, index],
-        value: [...value, collection.getNodeValue(item)],
-        item,
-      }}
-      {@const itemState = api.getItemState(itemProps)}
-      <li {...api.getItemProps(itemProps)}>
-        <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
-        <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
-        {#if itemState.hasChildren}
-          <span>{">"}</span>
-        {/if}
-      </li>
-    {/each}
-  </ul>
-  {#if nodeState.highlightedChild && collection.isBranchNode(nodeState.highlightedChild)}
-    {@render treeNode({
-      node: nodeState.highlightedChild,
-      api,
-      indexPath: [...indexPath, nodeState.highlightedIndex],
-      value: [...value, collection.getNodeValue(nodeState.highlightedChild)],
-    })}
-  {/if}
-{/snippet}
 
 <main class="cascade-select">
   <div {...api.getRootProps()}>
@@ -89,16 +53,27 @@
         <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
         <span {...api.getIndicatorProps()}>▼</span>
       </button>
-      <button {...api.getClearTriggerProps()}>X</button>
+      <button {...api.getClearTriggerProps()}>
+        <XIcon size={16} />
+      </button>
     </div>
 
-    <input {...api.getHiddenInputProps()} />
+    <form
+      onchange={(e) => {
+        const formData = serialize(e.currentTarget, { hash: true })
+        console.log(formData)
+      }}
+    >
+      <input {...api.getHiddenInputProps()} />
+    </form>
 
-    <div use:portal {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>
-        {@render treeNode({ node: collection.rootNode, api, indexPath: [], value: [] })}
+    <Portal>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          <CascadeSelectNode node={collection.rootNode} {api} {collection} />
+        </div>
       </div>
-    </div>
+    </Portal>
   </div>
 
   <div style="margin-top: 350px">

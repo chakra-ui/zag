@@ -60,17 +60,9 @@
   const id = $props.id()
   const service = useMachine(
     numberFlow.machine,
-    controls.mergeProps<numberFlow.Props>({
-      id,
-      get value() {
-        return value
-      },
-      get locale() {
-        return current.locale
-      },
-      get formatOptions() {
-        return current.formatOptions
-      },
+    controls.mergeProps<numberFlow.Props>(() => {
+      const { label: _label, step: _step, ...presetProps } = current
+      return { id, value, ...presetProps }
     }),
   )
 
@@ -83,7 +75,7 @@
 </script>
 
 <main class="number-flow">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class="nf-hero">
     {#each api.segments as segment (segment.key)}
       {#if segment.kind === "digit"}
         <span {...api.getDigitProps({ segment })}>
@@ -100,7 +92,7 @@
     <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
   </div>
 
-  <div class="number-flow__actions">
+  <div class="hstack">
     <select
       data-testid="preset"
       value={preset}

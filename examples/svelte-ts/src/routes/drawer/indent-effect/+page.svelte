@@ -1,10 +1,14 @@
-<script lang="ts">
+<script module lang="ts">
   import * as drawer from "@zag-js/drawer"
+
+  const stack = drawer.createStack()
+</script>
+
+<script lang="ts">
+  import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
   import styles from "@styles/drawer-indent-effect.module.css"
-
-  const stack = drawer.createStack()
 
   const id = $props.id()
 
@@ -34,7 +38,7 @@
       </div>
     </div>
 
-    <Presence {...api.getBackdropProps()} class={styles.backdrop}></Presence>
+    <Presence {...api.getBackdropProps()} class={styles.backdrop} data-testid="drawer-backdrop"></Presence>
     <div {...api.getPositionerProps()} class={styles.positioner}>
       <Presence {...api.getContentProps()} class={styles.content}>
         <div {...api.getGrabberProps()} class={styles.grabber}>
@@ -44,7 +48,7 @@
           <h2 class={styles.title} {...api.getTitleProps()}>Notifications</h2>
           <p class={styles.description} {...api.getDescriptionProps()}>You are all caught up. Good job!</p>
           <div class={styles.actions}>
-            <button class={styles.close} {...api.getCloseTriggerProps()}>Close</button>
+            <button class={styles.close} {...api.getCloseTriggerProps()}><XIcon /></button>
           </div>
         </div>
       </Presence>

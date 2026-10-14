@@ -7,9 +7,8 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/date-picker.css"
 
-  const controls = useControls(datePickerControls)
-
   const id = $props.id()
+  const controls = useControls(datePickerControls)
   const service = useMachine(
     datePicker.machine,
     controls.mergeProps<datePicker.Props>({
@@ -30,54 +29,43 @@
     <button>Outside Element</button>
   </div>
   <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
-
   <output class="date-output">
     <div>Selected: {api.valueAsString.join(", ") ?? "-"}</div>
     <div>Focused: {api.focusedValueAsString}</div>
   </output>
-
   <div {...api.getControlProps()}>
     <input {...api.getInputProps({ index: 0 })} />
     <input {...api.getInputProps({ index: 1 })} />
     <button {...api.getClearTriggerProps()}>❌</button>
     <button {...api.getTriggerProps()}>🗓</button>
   </div>
-
+  <button {...api.getPresetTriggerProps({ value: "last7Days" })}>Last 7 days</button>
   <div {...api.getPositionerProps()}>
     <div {...api.getContentProps()}>
       <div style="margin-bottom: 20px">
         <select {...api.getMonthSelectProps()}>
           {#each api.getMonths() as month, i (i)}
-            <option value={month.value}>{month.label}</option>
+            <option value={i + 1} disabled={month.disabled}>{month.label}</option>
           {/each}
         </select>
-
         <select {...api.getYearSelectProps()}>
           {#each api.getYears() as year, i (i)}
-            <option value={year.value}>{year.label}</option>
+            <option value={year.value} disabled={year.disabled}>{year.label}</option>
           {/each}
         </select>
       </div>
-
       <div>
         <div {...api.getViewControlProps({ view: "year" })}>
           <button {...api.getPrevTriggerProps()}>Prev</button>
-
-          <span>
-            {api.visibleRangeText.start} - {api.visibleRangeText.end}
-          </span>
-
+          <span>{api.visibleRangeText.start} - {api.visibleRangeText.end}</span>
           <button {...api.getNextTriggerProps()}>Next</button>
         </div>
-
-        <div style="display: flex; gap: 24px;">
-          <table {...api.getTableProps({ id: "0" })}>
+        <div style="display: flex; gap: 24px">
+          <table {...api.getTableProps({ id: `${id}-table-1` })}>
             <thead {...api.getTableHeaderProps()}>
               <tr {...api.getTableRowProps()}>
                 {#each api.weekDays as day, i (i)}
-                  <th scope="col" aria-label={day.long}>
-                    {day.narrow}
-                  </th>
+                  <th scope="col" aria-label={day.long}>{day.narrow}</th>
                 {/each}
               </tr>
             </thead>
@@ -93,14 +81,11 @@
               {/each}
             </tbody>
           </table>
-
-          <table {...api.getTableProps({ id: "1" })}>
+          <table {...api.getTableProps({ id: `${id}-table-2` })}>
             <thead {...api.getTableHeaderProps()}>
               <tr {...api.getTableRowProps()}>
                 {#each api.weekDays as day, i (i)}
-                  <th scope="col" aria-label={day.long}>
-                    {day.narrow}
-                  </th>
+                  <th scope="col" aria-label={day.long}>{day.narrow}</th>
                 {/each}
               </tr>
             </thead>
@@ -118,8 +103,7 @@
               {/each}
             </tbody>
           </table>
-
-          <div style="min-width:80px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="min-width: 80px; display: flex; flex-direction: column; gap: 4px">
             <b>Presets</b>
             <button {...api.getPresetTriggerProps({ value: "last3Days" })}>Last 3 Days</button>
             <button {...api.getPresetTriggerProps({ value: "last7Days" })}>Last 7 Days</button>
@@ -132,7 +116,6 @@
     </div>
   </div>
 </main>
-
 <Toolbar viz {controls}>
   <StateVisualizer state={service} omit={["weeks"]} />
 </Toolbar>

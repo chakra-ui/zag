@@ -1,8 +1,9 @@
 <script lang="ts">
   import * as asyncList from "@zag-js/async-list"
   import * as menu from "@zag-js/menu"
-  import { mergeProps, normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import LoadMore from "$lib/components/load-more.svelte"
+  import Portal from "$lib/components/portal.svelte"
   import "@styles/menu.css"
 
   interface Character {
@@ -49,42 +50,44 @@
       Characters <span {...api.getIndicatorProps()}>▾</span>
     </button>
     {#if api.open}
-      <div use:portal {...api.getPositionerProps()}>
-        <ul
-          {...mergeProps(api.getContentProps(), {
-            "aria-label": "Characters",
-            style: "max-height: 240px; overflow-y: auto; width: 220px",
-          })}
-        >
-          {#if isInitialLoading}
-            <li style="padding: 8px 6px; font-size: 13px">
-              <output aria-live="polite">Loading…</output>
-            </li>
-          {/if}
-          {#if listApi.error}
-            <li style="padding: 8px 6px; font-size: 13px">
-              <output>Couldn't load characters</output>
-            </li>
-          {/if}
-          {#if !isInitialLoading && listApi.isEmpty && !listApi.error}
-            <li style="padding: 8px 6px; font-size: 13px">
-              <output>No characters found</output>
-            </li>
-          {/if}
-          {#each listApi.items as item (item.name)}
-            <li {...api.getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>
-          {/each}
-          {#if !isInitialLoading}
-            <LoadMore
-              as="li"
-              count={listApi.items.length}
-              hasMore={listApi.hasMore}
-              loading={listApi.isLoading}
-              onLoadMore={() => listApi.loadMore()}
-            />
-          {/if}
-        </ul>
-      </div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <ul
+            {...mergeProps(api.getContentProps(), {
+              "aria-label": "Characters",
+              style: "max-height: 240px; overflow-y: auto; width: 220px",
+            })}
+          >
+            {#if isInitialLoading}
+              <li style="padding: 8px 6px; font-size: 13px">
+                <output aria-live="polite">Loading…</output>
+              </li>
+            {/if}
+            {#if listApi.error}
+              <li style="padding: 8px 6px; font-size: 13px">
+                <output>Couldn't load characters</output>
+              </li>
+            {/if}
+            {#if !isInitialLoading && listApi.isEmpty && !listApi.error}
+              <li style="padding: 8px 6px; font-size: 13px">
+                <output>No characters found</output>
+              </li>
+            {/if}
+            {#each listApi.items as item (item.name)}
+              <li {...api.getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>
+            {/each}
+            {#if !isInitialLoading}
+              <LoadMore
+                as="li"
+                count={listApi.items.length}
+                hasMore={listApi.hasMore}
+                loading={listApi.isLoading}
+                onLoadMore={() => listApi.loadMore()}
+              />
+            {/if}
+          </ul>
+        </div>
+      </Portal>
     {/if}
   </div>
 </main>

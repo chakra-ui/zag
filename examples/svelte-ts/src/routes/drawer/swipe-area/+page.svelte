@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as drawer from "@zag-js/drawer"
+  import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
@@ -23,7 +24,7 @@
       </div>
       <div {...api.getTitleProps()}>Drawer</div>
       <p {...api.getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>
-      <button {...api.getCloseTriggerProps()}>Close</button>
+      <button {...api.getCloseTriggerProps()}><XIcon /></button>
       <div class={styles.scrollable} data-testid="scrollable">
         {#each Array.from({ length: 100 }) as _, index}
           <div>Item {index}</div>

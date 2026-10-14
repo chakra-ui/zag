@@ -22,7 +22,7 @@
   const id = $props.id()
   const service = useMachine(
     listbox.machine,
-    controls.mergeProps<listbox.Props>({
+    controls.mergeProps<listbox.Props<Item>>({
       collection,
       id,
     }),
@@ -36,9 +36,9 @@
     <label {...api.getLabelProps()}>Label</label>
     <div {...api.getContentProps()}>
       <ul {...api.getListProps()}>
-        {#each selectData as item}
+        {#each collection.items as item (item.value)}
           <li {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+            {item.label}
             <span {...api.getItemIndicatorProps({ item })}>✓</span>
           </li>
         {/each}
@@ -47,6 +47,6 @@
   </div>
 </main>
 
-<Toolbar {controls}>
-  <StateVisualizer state={service} />
+<Toolbar {controls} viz>
+  <StateVisualizer state={service} context={["highlightedValue"]} />
 </Toolbar>

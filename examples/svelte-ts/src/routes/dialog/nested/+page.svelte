@@ -4,6 +4,10 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { XIcon } from "lucide-svelte"
+  import "@styles/dialog.css"
+
+  let inputRef = $state<HTMLInputElement | null>(null)
 
   const id = $props.id()
 
@@ -18,9 +22,9 @@
 
 <main>
   <div>
-    <button {...parentDialog.getTriggerProps()} data-testid="trigger-1"> Open Dialog </button>
+    <button {...parentDialog.getTriggerProps()} data-testid="trigger-1">Open Dialog</button>
 
-    <div style="min-height: 1200px;"></div>
+    <div style="min-height: 1200px"></div>
 
     {#if parentDialog.open}
       <Portal>
@@ -31,11 +35,13 @@
             <p {...parentDialog.getDescriptionProps()}>
               Make changes to your profile here. Click save when you are done.
             </p>
-            <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1"> X </button>
-            <input type="text" placeholder="Enter name..." data-testid="input-1" />
+            <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1">
+              <XIcon />
+            </button>
+            <input type="text" bind:this={inputRef} placeholder="Enter name..." data-testid="input-1" />
             <button data-testid="save-button-1">Save Changes</button>
 
-            <button {...childDialog.getTriggerProps()} data-testid="trigger-2"> Open Nested </button>
+            <button {...childDialog.getTriggerProps()} data-testid="trigger-2">Open Nested</button>
 
             {#if childDialog.open}
               <Portal>
@@ -43,10 +49,12 @@
                 <div data-testid="positioner-2" {...childDialog.getPositionerProps()}>
                   <div {...childDialog.getContentProps()}>
                     <h2 {...childDialog.getTitleProps()}>Nested</h2>
-                    <button {...childDialog.getCloseTriggerProps()} data-testid="close-2"> X </button>
-                    <button onclick={() => parentDialog.setOpen(false)} data-testid="special-close">
-                      Close Dialog 1
+                    <button {...childDialog.getCloseTriggerProps()} data-testid="close-2">
+                      <XIcon />
                     </button>
+                    <button onclick={() => parentDialog.setOpen(false)} data-testid="special-close"
+                      >Close Dialog 1</button
+                    >
                   </div>
                 </div>
               </Portal>

@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import Presence from "$lib/components/presence.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { InfoIcon } from "lucide-svelte"
   import * as tooltip from "@zag-js/tooltip"
   import "@styles/tooltip.css"
 
@@ -64,21 +66,7 @@
             <td style="padding: 12px;">{product.stock} units</td>
             <td style="padding: 12px;">
               <button {...api.getTriggerProps({ value: `${product.id}` })}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 16v-4" />
-                  <path d="M12 8h.01" />
-                </svg>
+                <InfoIcon size={18} />
               </button>
             </td>
           </tr>
@@ -94,8 +82,8 @@
     </div>
   </section>
 
-  {#if api.open}
-    <div use:portal {...api.getPositionerProps()}>
+  <Portal>
+    <div {...api.getPositionerProps()}>
       <Presence {...api.getContentProps()}>
         {#if activeProduct}
           <div>
@@ -107,7 +95,7 @@
         {/if}
       </Presence>
     </div>
-  {/if}
+  </Portal>
 </main>
 
 <Toolbar viz>

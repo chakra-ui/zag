@@ -16,22 +16,19 @@
   })
 
   const id = $props.id()
-  const service = useMachine(numberFlow.machine, {
+  const service = useMachine(numberFlow.machine, () => ({
     id,
-    get value() {
-      return value
-    },
-    get continuous() {
-      return continuous
-    },
+    value,
+    continuous,
     spinTiming: { duration: "800ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)" },
-  })
+  }))
 
   const api = $derived(numberFlow.connect(service, normalizeProps))
 </script>
 
 <main class="number-flow">
-  <div {...api.getRootProps()}>
+  <div {...api.getRootProps()} class="nf-hero">
+    <!-- Keyed by place so an update doesn't recreate a digit mid-roll -->
     {#each api.segments as segment (segment.key)}
       {#if segment.kind === "digit"}
         <span {...api.getDigitProps({ segment })}>
@@ -48,13 +45,15 @@
     <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
   </div>
 
-  <div class="number-flow__actions">
+  <!-- Continuous spins through every intermediate digit; default takes the short path -->
+  <div class="nf-toggle" role="group" aria-label="Roll mode">
+    <button aria-pressed={continuous} onclick={() => (continuous = true)}>Continuous</button>
+    <button aria-pressed={!continuous} onclick={() => (continuous = false)}>Default</button>
+  </div>
+
+  <div class="hstack">
     <button onclick={() => (playing = !playing)}>{playing ? "Pause" : "Play"}</button>
     <button onclick={() => (value = 0)}>Reset</button>
-    <label>
-      <input type="checkbox" bind:checked={continuous} />
-      continuous (spin through intermediates)
-    </label>
   </div>
 </main>
 

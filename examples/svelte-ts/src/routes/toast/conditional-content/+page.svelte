@@ -1,7 +1,9 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import ConditionalContentToast from "$lib/components/conditional-content-toast.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
+  import "@styles/toast.css"
   import { onMount } from "svelte"
 
   const store = toast.createStore<string>({ duration: Infinity })
@@ -31,9 +33,11 @@
     </button>
   </fieldset>
 
-  <div {...api.getGroupProps()}>
-    {#each api.getToasts() as actor, index (actor.id)}
-      <ConditionalContentToast {actor} parent={service} {index} {showTitle} {showDescription} />
-    {/each}
-  </div>
+  <Portal>
+    <div {...api.getGroupProps()}>
+      {#each api.getToasts() as actor, index (actor.id)}
+        <ConditionalContentToast {actor} parent={service} {index} {showTitle} {showDescription} />
+      {/each}
+    </div>
+  </Portal>
 </main>

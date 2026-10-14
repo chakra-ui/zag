@@ -1,9 +1,10 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { mergeProps, normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import ControlsPanel from "$lib/components/toolbar.svelte"
   import * as numberInput from "@zag-js/number-input"
   import * as select from "@zag-js/select"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggleGroup from "@zag-js/toggle-group"
   import * as toolbar from "@zag-js/toolbar"
   import "@styles/toolbar.css"
@@ -21,15 +22,16 @@
     { label: "Monospace", value: "monospace" },
   ]
 
-  const id = $props.id()
-  let format: string[] = []
-  let font = "sans-serif"
-  let fontSize = "16"
+  let format = $state<string[]>([])
+  let align = $state("left")
+  let font = $state("sans-serif")
+  let fontSize = $state("16")
 
+  const id = $props.id()
   const service = useMachine(toolbar.machine, { id })
   const api = $derived(toolbar.connect(service, normalizeProps))
 
-  const fontService = useMachine(select.machine, () => ({
+  const fontService = useMachine(select.machine as select.Machine<Font>, () => ({
     id: `${id}-font`,
     ids: { trigger: api.getItemId("font") },
     collection: select.collection({ items: fonts }),
@@ -65,6 +67,17 @@
     },
   }))
   const formatApi = $derived(toggleGroup.connect(formatService, normalizeProps))
+
+  const alignService = useMachine(toggleGroup.machine, () => ({
+    id: `${id}-align`,
+    disabled: api.disabled,
+    orientation: api.orientation,
+    defaultValue: ["left"],
+    onValueChange(details) {
+      if (details.value[0]) align = details.value[0]
+    },
+  }))
+  const alignApi = $derived(toggleGroup.connect(alignService, normalizeProps))
 </script>
 
 <main class="toolbar">
@@ -72,24 +85,26 @@
     <div {...api.getRootProps()}>
       <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
         <span>{fontApi.valueAsString}</span>
-        <span aria-hidden="true">v</span>
+        <span aria-hidden="true">▾</span>
       </button>
-      <div use:portal {...fontApi.getPositionerProps()}>
-        <div {...fontApi.getContentProps()}>
-          <ul {...fontApi.getListProps()}>
-            {#each fonts as item}
-              <li {...fontApi.getItemProps({ item })}>
-                <span {...fontApi.getItemTextProps({ item })}>{item.label}</span>
-              </li>
-            {/each}
-          </ul>
+      <Portal>
+        <div {...fontApi.getPositionerProps()}>
+          <div {...fontApi.getContentProps()}>
+            <ul {...fontApi.getListProps()}>
+              {#each fonts as item (item.value)}
+                <li {...fontApi.getItemProps({ item })}>
+                  <span {...fontApi.getItemTextProps({ item })}>{item.label}</span>
+                </li>
+              {/each}
+            </ul>
+          </div>
         </div>
-      </div>
+      </Portal>
 
       <div {...api.getSeparatorProps()}></div>
 
       <div {...sizeApi.getControlProps()}>
-        <button {...sizeApi.getDecrementTriggerProps()} aria-label="Decrease font size">-</button>
+        <button {...sizeApi.getDecrementTriggerProps()} aria-label="Decrease font size">−</button>
         <input
           class="toolbar-number-input"
           {...mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: "font-size" }))}
@@ -104,6 +119,14 @@
         <button {...formatApi.getItemProps({ value: "italic" })} aria-label="Italic"><em>I</em></button>
         <button {...formatApi.getItemProps({ value: "underline" })} aria-label="Underline"><u>U</u></button>
       </div>
+
+      <div {...api.getSeparatorProps()}></div>
+
+      <div {...alignApi.getRootProps()}>
+        <button {...alignApi.getItemProps({ value: "left" })} aria-label="Align left">⯇</button>
+        <button {...alignApi.getItemProps({ value: "center" })} aria-label="Align center">≡</button>
+        <button {...alignApi.getItemProps({ value: "right" })} aria-label="Align right">⯈</button>
+      </div>
     </div>
 
     <div
@@ -111,6 +134,7 @@
       style:font-weight={format.includes("bold") ? "bold" : "normal"}
       style:font-style={format.includes("italic") ? "italic" : "normal"}
       style:text-decoration={format.includes("underline") ? "underline" : "none"}
+      style:text-align={align}
       style:font-family={font}
       style:font-size={`${fontSize}px`}
     >
@@ -119,6 +143,6 @@
   </div>
 </main>
 
-<Toolbar>
+<ControlsPanel>
   <StateVisualizer state={service} />
-</Toolbar>
+</ControlsPanel>

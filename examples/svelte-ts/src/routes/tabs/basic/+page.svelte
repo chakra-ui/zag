@@ -24,7 +24,7 @@
 <main class="tabs">
   <div {...api.getRootProps()}>
     <div {...api.getIndicatorProps()}></div>
-    <div {...api.getListProps()}>
+    <div data-stretch="" {...api.getListProps()}>
       {#each tabsData as data}
         <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
           {data.label}

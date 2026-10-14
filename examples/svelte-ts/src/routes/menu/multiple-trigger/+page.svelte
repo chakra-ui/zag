@@ -1,7 +1,9 @@
 <script lang="ts">
   import Presence from "$lib/components/presence.svelte"
   import * as menu from "@zag-js/menu"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import Portal from "$lib/components/portal.svelte"
+  import { MoreVerticalIcon } from "lucide-svelte"
   import "@styles/menu.css"
 
   interface Document {
@@ -57,21 +59,7 @@
             <td style="padding: 12px;">{doc.modified}</td>
             <td style="padding: 12px;">
               <button {...api.getTriggerProps({ value: `${doc.id}` })}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="19" r="1" />
-                </svg>
+                <MoreVerticalIcon size={16} />
               </button>
             </td>
           </tr>
@@ -87,12 +75,12 @@
     </div>
   </section>
 
-  {#if api.open}
-    <div use:portal {...api.getPositionerProps()}>
+  <Portal>
+    <div {...api.getPositionerProps()}>
       <Presence {...api.getContentProps()}>
         <div {...api.getItemProps({ value: "rename" })}>Rename (value: {api.triggerValue})</div>
         <div {...api.getItemProps({ value: "delete" })}>Delete (value: {api.triggerValue})</div>
       </Presence>
     </div>
-  {/if}
+  </Portal>
 </main>

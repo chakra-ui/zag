@@ -6,6 +6,7 @@
   import { segmentControls, radioData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/segmented-control.css"
+  import "@styles/radio-group.css"
 
   const controls = useControls(segmentControls)
 

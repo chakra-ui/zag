@@ -2,6 +2,8 @@
   import Portal from "$lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { XIcon } from "lucide-svelte"
+  import "@styles/dialog.css"
 
   const id = $props.id()
   const service = useMachine(dialog.machine, { id })
@@ -117,7 +119,9 @@
           nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
           quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
         </p>
-        <button {...api.getCloseTriggerProps()}>Close</button>
+        <button {...api.getCloseTriggerProps()}>
+          <XIcon />
+        </button>
       </div>
     </div>
   </Portal>

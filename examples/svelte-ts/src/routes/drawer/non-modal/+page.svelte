@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as drawer from "@zag-js/drawer"
+  import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Presence from "$lib/components/presence.svelte"
   import styles from "@styles/drawer.module.css"
@@ -38,7 +39,7 @@
         to dismiss, or Escape.
       </p>
       <div style="padding: 16px">
-        <button {...api.getCloseTriggerProps()}>Close</button>
+        <button {...api.getCloseTriggerProps()}><XIcon /></button>
       </div>
     </Presence>
   </div>

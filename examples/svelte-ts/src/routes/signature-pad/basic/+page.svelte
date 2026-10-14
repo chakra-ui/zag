@@ -5,7 +5,7 @@
   import { signaturePadControls } from "@zag-js/shared"
   import * as signaturePad from "@zag-js/signature-pad"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { RotateCcw } from "lucide-svelte"
+  import { RotateCcwIcon } from "lucide-svelte"
   import "@styles/signature-pad.css"
 
   const controls = useControls(signaturePadControls)
@@ -34,6 +34,7 @@
 
 <main class="signature-pad">
   <div {...api.getRootProps()}>
+    <input {...api.getHiddenInputProps({ value: url })} />
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>Signature Pad</label>
 
@@ -51,7 +52,7 @@
     </div>
 
     <button {...api.getClearTriggerProps()}>
-      <RotateCcw />
+      <RotateCcwIcon />
     </button>
   </div>
 

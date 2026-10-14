@@ -27,6 +27,7 @@
 
 <main class="pin-input">
   <form
+    class="vstack gap-4"
     onsubmit={(e) => {
       e.preventDefault()
       const formData = serialize(e.currentTarget, { hash: true })
@@ -37,17 +38,19 @@
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>Enter code:</label>
       <div {...api.getControlProps()}>
-        {#each api.items as index}
+        {#each api.items as index (index)}
           <input data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
         {/each}
       </div>
       <input {...api.getHiddenInputProps()} />
     </div>
-    <button data-testid="clear-button" onclick={api.clearValue}>Clear</button>
-    <button onclick={api.focus}>Focus</button>
+    <div class="hstack">
+      <button data-testid="clear-button" onclick={api.clearValue}>Clear</button>
+      <button onclick={api.focus}>Focus</button>
+    </div>
   </form>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["value", "focusedIndex"]} />
 </Toolbar>

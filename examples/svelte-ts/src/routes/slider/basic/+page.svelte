@@ -17,6 +17,7 @@
       id,
       name: "quantity",
       defaultValue: [0],
+      thumbSize: 20,
     }),
   )
 
@@ -43,6 +44,7 @@
           <div data-testid="track" {...api.getTrackProps()}>
             <div {...api.getRangeProps()}></div>
           </div>
+          <span {...api.getDraggingIndicatorProps({ index: 0 })}>{api.getThumbValue(0)}</span>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>
               <input {...api.getHiddenInputProps({ index })} />

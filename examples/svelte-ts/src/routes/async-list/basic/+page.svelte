@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as asyncList from "@zag-js/async-list"
   import { useMachine } from "@zag-js/svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
 
   interface Character {
     name: string
@@ -70,3 +72,7 @@
     <pre>{JSON.stringify(api.items, null, 2)}</pre>
   </div>
 </main>
+
+<Toolbar>
+  <StateVisualizer state={service} context={["cursor", "filter"]} omit={["items"]} />
+</Toolbar>

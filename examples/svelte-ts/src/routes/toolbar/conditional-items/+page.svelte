@@ -1,12 +1,13 @@
 <script lang="ts">
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import ControlsPanel from "$lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toolbar from "@zag-js/toolbar"
   import "@styles/toolbar.css"
 
+  let showComment = $state(true)
+
   const id = $props.id()
-  let showComment = true
   const service = useMachine(toolbar.machine, { id })
   const api = $derived(toolbar.connect(service, normalizeProps))
 </script>
@@ -24,8 +25,12 @@
     <input type="checkbox" bind:checked={showComment} />
     Show Comment button
   </label>
+  <p>
+    Focus "Comment" (the last item), then uncheck the box above to remove it while it's still focused. Tab away and back
+    — the toolbar should still have a working tab stop, not become entirely unreachable.
+  </p>
 </main>
 
-<Toolbar>
+<ControlsPanel>
   <StateVisualizer state={service} />
-</Toolbar>
+</ControlsPanel>

@@ -2,7 +2,7 @@
   import * as gridlist from "@zag-js/gridlist"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { gridListControls, gridListData } from "@zag-js/shared"
-  import CheckIcon from "lucide-svelte/icons/check"
+  import { CheckIcon } from "lucide-svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
@@ -46,12 +46,12 @@
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>Mailboxes</label>
       <div {...api.getContentProps()}>
-        {#each gridListData as item}
+        {#each gridListData as item (item.id)}
           <div {...api.getItemProps({ item, focusOnHover: true })}>
             <div {...api.getCellProps()}>
               {#if api.hasCheckbox}
                 <button {...api.getItemCheckboxProps({ item })}>
-                  <CheckIcon {...api.getItemIndicatorProps({ item })} />
+                  <CheckIcon {...api.getItemIndicatorProps({ item }) as Record<string, unknown>} />
                 </button>
               {/if}
               <div class="gridlist-item-body">
@@ -61,6 +61,10 @@
                 <span class="gridlist-item-description">{item.description}</span>
               </div>
               <span class="gridlist-item-badge">{item.badge}</span>
+              <div class="gridlist-actions">
+                <button type="button" onclick={() => (lastAction = `Edit ${item.name}`)}>Edit</button>
+                <button type="button" onclick={() => (lastAction = `Delete ${item.name}`)}>Delete</button>
+              </div>
             </div>
           </div>
         {/each}
@@ -70,12 +74,11 @@
 
     <p style="margin-top: 12px; font-size: 13px; color: #52525b">
       Selected: <strong>{api.valueAsString || "none"}</strong>
-      {#if lastAction}
-        · {lastAction}{/if}
+      {lastAction ? ` · ${lastAction}` : ""}
     </p>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["focusedValue", "value"]} />
 </Toolbar>

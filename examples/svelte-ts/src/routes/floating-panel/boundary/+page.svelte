@@ -2,6 +2,7 @@
   import * as floatingPanel from "@zag-js/floating-panel"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
+  import "@styles/floating-panel.css"
 
   let boundaryEl = $state<HTMLElement | null>(null)
   let strategy = $state<"fixed" | "absolute">("fixed")

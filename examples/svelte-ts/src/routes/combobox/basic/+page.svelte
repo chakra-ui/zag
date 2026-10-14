@@ -9,10 +9,17 @@
   import { XIcon } from "lucide-svelte"
   import "@styles/combobox.css"
 
-  const controls = useControls(comboboxControls)
+  interface Item {
+    code: string
+    label: string
+  }
+
   const { contains } = createFilter({ sensitivity: "base" })
 
+  const controls = useControls(comboboxControls)
+
   let options = $state.raw(comboboxData)
+  let selectedItems = $state.raw<Item[]>([])
 
   const collection = $derived(
     combobox.collection({
@@ -24,12 +31,10 @@
 
   const id = $props.id()
   const service = useMachine(
-    combobox.machine,
-    controls.mergeProps<combobox.Props>({
+    combobox.machine as combobox.Machine<Item>,
+    controls.mergeProps<combobox.Props<Item>>(() => ({
       id,
-      get collection() {
-        return collection
-      },
+      collection,
       onOpenChange() {
         options = comboboxData
       },
@@ -37,7 +42,10 @@
         const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
         options = filtered
       },
-    }),
+      onValueChange({ items }) {
+        selectedItems = items as Item[]
+      },
+    })),
   )
 
   const api = $derived(combobox.connect(service, normalizeProps))
@@ -46,14 +54,16 @@
 <main class="combobox">
   <div>
     <button onclick={() => api.setValue(["TG"])}>Set to Togo</button>
-    <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
+    <button data-testid="clear-value-button" onclick={() => api.clearValue()}>Clear Value</button>
+    <pre data-testid="on-value-change-items">selectedItems: {selectedItems.map((item) => item.label).join(", ") ||
+        "N/A"}</pre>
     <br />
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>Select country</label>
       <div {...api.getControlProps()}>
         <input data-testid="input" {...api.getInputProps()} />
-        <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
+        <button data-testid="trigger" {...api.getTriggerProps()}>▼</button>
         <button {...api.getClearTriggerProps()}>
           <XIcon />
         </button>
@@ -61,14 +71,13 @@
     </div>
     <div {...api.getPositionerProps()}>
       <div data-testid="combobox-content" {...api.getContentProps()}>
-        <div {...api.getEmptyProps()}>
-          {#if options.length === 0}No results found{/if}
-        </div>
+        <div {...api.getEmptyProps()}>{options.length === 0 ? "No results found" : ""}</div>
         {#if options.length > 0}
           <div {...api.getListProps()}>
-            {#each options as item}
+            {#each options as item (item.code)}
               <div data-testid={item.code} {...api.getItemProps({ item })}>
-                {item.label}
+                <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                <span>{item.label}</span>
               </div>
             {/each}
           </div>

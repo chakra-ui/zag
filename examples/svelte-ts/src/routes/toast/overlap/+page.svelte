@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Dialog from "$lib/components/dialog.svelte"
+  import Portal from "$lib/components/portal.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import ToastItem from "$lib/components/toast-item.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
@@ -8,26 +10,39 @@
   import * as toast from "@zag-js/toast"
   import "@styles/toast.css"
 
+  const toaster = toast.createStore({
+    overlap: true,
+    placement: "bottom",
+    gap: 24,
+  })
+
   const controls = useControls(toastControls)
 
-  const toaster = toast.createStore({
-    placement: "bottom",
-    overlap: true,
-  })
-
   const uid = $props.id()
-  const service = useMachine(toast.group.machine, {
-    id: uid,
-    store: toaster,
-  })
+  const service = useMachine(
+    toast.group.machine,
+    controls.mergeProps<toast.GroupProps>({
+      id: uid,
+      store: toaster,
+    }),
+  )
 
   const api = $derived(toast.group.connect(service, normalizeProps))
 
-  let id: string | undefined = ""
+  let id: string | undefined
 </script>
 
+{#snippet jsxTitle()}
+  <h1 style="color: red">Hello</h1>
+{/snippet}
+
+{#snippet jsxDescription()}
+  <p>This is a description</p>
+{/snippet}
+
 <main>
-  <div style="display:flex;gap:16px;">
+  <Dialog />
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; max-width: 640px">
     <button
       onclick={() => {
         toaster.create({
@@ -43,6 +58,9 @@
         id = toaster.create({
           title: "Ooops! Something was wrong",
           type: "error",
+          onStatusChange(details) {
+            console.log(details)
+          },
         })
       }}
     >
@@ -59,20 +77,52 @@
     >
       Update Latest
     </button>
+    <button
+      class="toast-button"
+      onclick={() => {
+        const promise = new Promise<{ name: string }>((resolve) => {
+          setTimeout(() => {
+            resolve({ name: "Chakra" })
+          }, 3000)
+        })
+
+        toaster.promise(promise, {
+          loading: { title: "Creating toast..." },
+          success: (data) => {
+            return { title: `${data.name} toast added` }
+          },
+          error: { title: "Error" },
+        })
+      }}
+    >
+      Promise
+    </button>
+    <button
+      onclick={() => {
+        toaster.create({
+          type: "info",
+          title: jsxTitle as any,
+          description: jsxDescription as any,
+        })
+      }}
+    >
+      Create (JSX)
+    </button>
+
     <button onclick={() => toaster.dismiss()}>Close all</button>
     <button onclick={() => toaster.pause()}>Pause all</button>
     <button onclick={() => toaster.resume()}>Resume all</button>
   </div>
 
-  <pre>{JSON.stringify(api.getToasts(), null, 2)}</pre>
-
-  <div {...api.getGroupProps()}>
-    {#each api.getToasts() as toast, index (toast.id)}
-      <ToastItem actor={toast} parent={service} {index} />
-    {/each}
-  </div>
+  <Portal>
+    <div {...api.getGroupProps()}>
+      {#each api.getToasts() as actor, index (actor.id)}
+        <ToastItem {actor} {index} parent={service} />
+      {/each}
+    </div>
+  </Portal>
 </main>
 
-<Toolbar {controls} viz>
+<Toolbar {controls}>
   <StateVisualizer state={service} />
 </Toolbar>

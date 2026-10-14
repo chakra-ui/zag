@@ -1,10 +1,12 @@
 <script lang="ts">
+  import Print from "$lib/components/print.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as pagination from "@zag-js/pagination"
   import { paginationControls, paginationData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronLeftIcon, ChevronRightIcon } from "lucide-svelte"
   import "@styles/pagination.css"
 
   const controls = useControls(paginationControls)
@@ -28,57 +30,63 @@
 </script>
 
 <main class="pagination">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>FIRST NAME</th>
-        <th>LAST NAME</th>
-        <th>EMAIL</th>
-        <th>PHONE</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each data as item}
+  <div class="pagination-layout">
+    <table class="pagination-table">
+      <thead>
         <tr>
-          <td>{item.id}</td>
-          <td>{item.first_name}</td>
-          <td>{item.last_name}</td>
-          <td>{item.email}</td>
-          <td>{item.phone}</td>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
-  {#if api.totalPages > 1}
-    <nav {...api.getRootProps()}>
-      <ul>
-        <li>
-          <button {...api.getPrevTriggerProps()}>
-            Previous <span class="sr-only">Page</span>
-          </button>
-        </li>
-        {#each api.pages as page, i}
-          {#if page.type === "page"}
+      </thead>
+      <tbody>
+        {#each data as item (item.id)}
+          <tr>
+            <td>{item.id}</td>
+            <td>{item.first_name} {item.last_name}</td>
+            <td>{item.email}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+
+    <div class="pagination-bar">
+      <span class="pagination-summary">
+        {api.pageRange.start + 1}–{api.pageRange.end} of {api.count}
+      </span>
+      {#if api.totalPages > 1}
+        <nav {...api.getRootProps()}>
+          <ul>
             <li>
-              <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
-                {page.value}
+              <button {...api.getPrevTriggerProps()}>
+                <ChevronLeftIcon />
               </button>
             </li>
-          {:else}
+            {#each api.pages as page, i (page.type === "page" ? page.value : `ellipsis-${i}`)}
+              {#if page.type === "page"}
+                <li>
+                  <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+                    {page.value}
+                  </button>
+                </li>
+              {:else}
+                <li>
+                  <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+                </li>
+              {/if}
+            {/each}
             <li>
-              <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+              <button {...api.getNextTriggerProps()}>
+                <ChevronRightIcon />
+              </button>
             </li>
-          {/if}
-        {/each}
-        <li>
-          <button {...api.getNextTriggerProps()}>
-            Next <span class="sr-only">Page</span>
-          </button>
-        </li>
-      </ul>
-    </nav>
-  {/if}
+          </ul>
+        </nav>
+      {/if}
+    </div>
+
+    <Print title="Page change details" value={details} />
+  </div>
 </main>
 
 <Toolbar {controls}>

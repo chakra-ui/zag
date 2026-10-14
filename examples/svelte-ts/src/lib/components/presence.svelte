@@ -50,9 +50,9 @@
   <div
     {@attach setNode}
     data-scope="presence"
-    {...rest}
     data-state={api.skip && skipAnimationOnMount ? undefined : present ? "open" : "closed"}
     hidden={!api.present}
+    {...rest}
   >
     {@render children?.()}
   </div>

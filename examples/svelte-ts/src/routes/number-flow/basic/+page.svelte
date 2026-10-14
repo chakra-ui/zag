@@ -5,6 +5,7 @@
   import * as numberFlow from "@zag-js/number-flow"
   import { numberFlowControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { MinusIcon, PlusIcon } from "lucide-svelte"
   import "@styles/number-flow.css"
 
   const controls = useControls(numberFlowControls)
@@ -18,10 +19,10 @@
       id,
       defaultValue: 1234,
       onAnimationStart() {
-        animations = { ...animations, started: animations.started + 1 }
+        animations.started++
       },
       onAnimationComplete() {
-        animations = { ...animations, completed: animations.completed + 1 }
+        animations.completed++
       },
     }),
   )
@@ -32,9 +33,8 @@
 </script>
 
 <main class="number-flow">
-  <div {...api.getRootProps()}>
-    <!-- Keyed by place: every update rebuilds the segment objects, and an unkeyed `each` would
-         recreate each digit's DOM and drop the roll it was mid-way through. -->
+  <div {...api.getRootProps()} class="nf-hero">
+    <!-- Keyed by place so an update doesn't recreate a digit mid-roll -->
     {#each api.segments as segment (segment.key)}
       {#if segment.kind === "digit"}
         <span {...api.getDigitProps({ segment })}>
@@ -51,19 +51,20 @@
     <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
   </div>
 
-  <div class="number-flow__actions">
-    <button onclick={() => api.setValue(api.value - randomDelta())}>Decrement</button>
-    <button onclick={() => api.setValue(api.value + randomDelta())}>Increment</button>
+  <div class="hstack">
+    <button class="nf-stepper" aria-label="Decrement" onclick={() => api.setValue(api.value - randomDelta())}>
+      <MinusIcon />
+    </button>
+    <button class="nf-stepper" aria-label="Increment" onclick={() => api.setValue(api.value + randomDelta())}>
+      <PlusIcon />
+    </button>
     <button onclick={() => api.setValue(Math.round(Math.random() * 99999))}>Randomize</button>
     <button onclick={() => api.setValue(0)}>Reset</button>
-    <span class="number-flow__value" data-testid="value">
-      value: {api.value}
-      {api.animating ? "(rolling)" : ""}
-    </span>
-    <span class="number-flow__value" data-testid="animations">
-      animations: {animations.started} started / {animations.completed} completed
-    </span>
   </div>
+
+  <p class="nf-caption" data-testid="animations">
+    animations: {animations.started} started / {animations.completed} completed
+  </p>
 </main>
 
 <Toolbar {controls}>

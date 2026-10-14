@@ -1,7 +1,8 @@
 <script lang="ts">
   import { useControls } from "$lib/use-controls.svelte"
   import * as menu from "@zag-js/menu"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import Portal from "$lib/components/portal.svelte"
   import { menuOptionData, menuControls } from "@zag-js/shared"
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
@@ -50,23 +51,25 @@
       Actions <span {...api.getIndicatorProps()}>▾</span>
     </button>
 
-    <div use:portal {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>
-        {#each radios as item}
-          <div {...api.getOptionItemProps(item)}>
-            <span {...api.getItemIndicatorProps(item)}>✅</span>
-            <span {...api.getItemTextProps(item)}>{item.label}</span>
-          </div>
-        {/each}
-        <hr {...api.getSeparatorProps()} />
-        {#each checkboxes as item}
-          <div {...api.getOptionItemProps(item)}>
-            <span {...api.getItemIndicatorProps(item)}>✅</span>
-            <span {...api.getItemTextProps(item)}>{item.label}</span>
-          </div>
-        {/each}
+    <Portal>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          {#each radios as item (item.value)}
+            <div {...api.getOptionItemProps(item)}>
+              <span {...api.getItemIndicatorProps(item)}>✅</span>
+              <span {...api.getItemTextProps(item)}>{item.label}</span>
+            </div>
+          {/each}
+          <hr />
+          {#each checkboxes as item (item.value)}
+            <div {...api.getOptionItemProps(item)}>
+              <span {...api.getItemIndicatorProps(item)}>✅</span>
+              <span {...api.getItemTextProps(item)}>{item.label}</span>
+            </div>
+          {/each}
+        </div>
       </div>
-    </div>
+    </Portal>
   </div>
 </main>
 

@@ -15,7 +15,7 @@
     clipboard.machine,
     controls.mergeProps<clipboard.Props>({
       id,
-      defaultValue: "https://github/com/chakra-ui/zag",
+      value: "https://github.com/chakra-ui/zag",
     }),
   )
 

@@ -31,7 +31,7 @@
       </div>
       <div {...api.getTitleProps()}>Drawer</div>
       <div data-no-drag="true" class={styles.noDrag}>No drag area</div>
-      <div class={styles.scrollable}>
+      <div class={styles.scrollable} data-testid="scrollable">
         {#each Array.from({ length: 100 }) as _, index}
           <div>Item {index}</div>
         {/each}

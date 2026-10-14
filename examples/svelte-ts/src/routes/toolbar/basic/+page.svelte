@@ -1,10 +1,11 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import ControlsPanel from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as select from "@zag-js/select"
   import { toolbarControls, toolbarData } from "@zag-js/shared"
-  import { mergeProps, normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggleGroup from "@zag-js/toggle-group"
   import * as toolbar from "@zag-js/toolbar"
   import "@styles/toolbar.css"
@@ -36,7 +37,7 @@
   }))
   const alignmentApi = $derived(toggleGroup.connect(alignmentService, normalizeProps))
 
-  const fontService = useMachine(select.machine, () => ({
+  const fontService = useMachine(select.machine as select.Machine<Font>, () => ({
     id: `${id}-font`,
     ids: { trigger: api.getItemId("font") },
     collection: select.collection({ items: fonts }),
@@ -56,26 +57,33 @@
     <div {...api.getSeparatorProps()}></div>
 
     <div {...api.getGroupProps({ value: "clipboard" })}>
-      {#each toolbarData as item}
+      {#each toolbarData as item (item.id)}
         <button {...api.getItemProps({ value: item.id })}>{item.label}</button>
       {/each}
     </div>
 
     <div {...api.getSeparatorProps()}></div>
 
+    <!-- the trigger points aria-labelledby at this, so it has to be rendered even though the toolbar shows no label -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label {...fontApi.getLabelProps()} class="sr-only">Font</label>
     <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
       <span>{fontApi.valueAsString || "Font"}</span>
       <span aria-hidden="true">▾</span>
     </button>
-    <div use:portal {...fontApi.getPositionerProps()}>
-      <ul {...fontApi.getContentProps()}>
-        {#each fonts as item}
-          <li {...fontApi.getItemProps({ item })}>
-            <span {...fontApi.getItemTextProps({ item })}>{item.label}</span>
-          </li>
-        {/each}
-      </ul>
-    </div>
+    <Portal>
+      <div {...fontApi.getPositionerProps()}>
+        <div {...fontApi.getContentProps()}>
+          <ul {...fontApi.getListProps()}>
+            {#each fonts as item (item.value)}
+              <li {...fontApi.getItemProps({ item })}>
+                <span {...fontApi.getItemTextProps({ item })}>{item.label}</span>
+              </li>
+            {/each}
+          </ul>
+        </div>
+      </div>
+    </Portal>
 
     <div {...api.getSeparatorProps()}></div>
 
@@ -85,6 +93,6 @@
   </div>
 </main>
 
-<Toolbar {controls}>
-  <StateVisualizer state={service} />
-</Toolbar>
+<ControlsPanel {controls}>
+  <StateVisualizer state={service} context={["focusedValue"]} />
+</ControlsPanel>

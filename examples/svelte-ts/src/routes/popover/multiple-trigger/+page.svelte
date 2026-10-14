@@ -1,7 +1,9 @@
 <script lang="ts">
   import Presence from "$lib/components/presence.svelte"
   import * as popover from "@zag-js/popover"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
+  import Portal from "$lib/components/portal.svelte"
+  import { MoreVerticalIcon, XIcon } from "lucide-svelte"
   import "@styles/popover.css"
 
   interface Document {
@@ -57,21 +59,7 @@
             <td style="padding: 12px;">{doc.modified}</td>
             <td style="padding: 12px;">
               <button {...api.getTriggerProps({ value: `${doc.id}` })}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="19" r="1" />
-                </svg>
+                <MoreVerticalIcon size={16} />
               </button>
             </td>
           </tr>
@@ -87,35 +75,52 @@
     </div>
   </section>
 
-  {#if api.open}
-    <div use:portal {...api.getPositionerProps()}>
+  <Portal>
+    <div {...api.getPositionerProps()}>
       <Presence
-        {...api.getContentProps()}
-        style="position: relative; background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 12px; min-width: 200px;"
+        {...mergeProps(api.getContentProps(), {
+          style: {
+            position: "relative",
+            backgroundColor: "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            padding: "12px",
+            minWidth: "200px",
+          },
+        })}
       >
-        <div {...api.getTitleProps()} style="font-weight: bold; margin-bottom: 8px;">
+        <div {...mergeProps(api.getTitleProps(), { style: { fontWeight: "bold", marginBottom: "8px" } })}>
           {activeDocument?.name}
         </div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer">
             Open
           </button>
-          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer;">
+          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer">
             Rename
           </button>
-          <button
-            style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer; color: red;"
-          >
+          <button style="text-align: left; padding: 8px; border-radius: 4px; border: none; cursor: pointer; color: red">
             Delete
           </button>
           <button
-            {...api.getCloseTriggerProps()}
-            style="position: absolute; top: 8px; right: 8px; padding: 4px; border: none; background: none; cursor: pointer; font-size: 16px;"
+            {...mergeProps(api.getCloseTriggerProps(), {
+              style: {
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                padding: "4px",
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                fontSize: "16px",
+              },
+            })}
           >
-            ✕
+            <XIcon />
           </button>
         </div>
       </Presence>
     </div>
-  {/if}
+  </Portal>
 </main>

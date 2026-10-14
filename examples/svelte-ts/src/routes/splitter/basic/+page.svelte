@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
   import { splitterControls } from "@zag-js/shared"
   import * as splitter from "@zag-js/splitter"
-  import { useControls } from "$lib/use-controls.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/splitter.css"
 
   const controls = useControls(splitterControls)
@@ -14,7 +14,7 @@
     splitter.machine,
     controls.mergeProps<splitter.Props>({
       id,
-      panels: [{ id: "a" }, { id: "b" }],
+      panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
     }),
   )
 
@@ -22,17 +22,22 @@
 </script>
 
 <main class="splitter">
+  <pre>{JSON.stringify(api.getSizes())}</pre>
   <div {...api.getRootProps()}>
     <div {...api.getPanelProps({ id: "a" })}>
-      <p>A</p>
+      <p>Left</p>
     </div>
-    <div {...api.getResizeTriggerProps({ id: "a:b" })}></div>
+    <div data-testid="trigger-a:b" {...api.getResizeTriggerProps({ id: "a:b" })}></div>
     <div {...api.getPanelProps({ id: "b" })}>
-      <p>B</p>
+      <p>Middle</p>
+    </div>
+    <div data-testid="trigger-b:c" {...api.getResizeTriggerProps({ id: "b:c" })}></div>
+    <div {...api.getPanelProps({ id: "c" })}>
+      <p>Right</p>
     </div>
   </div>
 </main>
 
-<Toolbar {controls} viz>
-  <StateVisualizer state={service} omit={["previousPanels", "initialSize"]} />
+<Toolbar {controls}>
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -13,7 +13,7 @@
   let timer: ReturnType<typeof setTimeout> | undefined
 
   const id = $props.id()
-  const service = useMachine(field.machine, () => ({
+  const service = useMachine(field.machine, (): field.Props => ({
     id,
     required: true,
     validationMode: "onChange",

@@ -1,10 +1,11 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as hoverCard from "@zag-js/hover-card"
   import { hoverCardControls } from "@zag-js/shared"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/hover-card.css"
 
   const controls = useControls(hoverCardControls)
@@ -16,22 +17,35 @@
 </script>
 
 <main class="hover-card">
-  <div style="display:flex; gap:50px">
-    <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}> Twitter </a>
+  <div style="display: flex; gap: 50px">
+    <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer" {...api.getTriggerProps()}>@zag_js</a>
 
     {#if api.open}
-      <div use:portal {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>
-          <div {...api.getArrowProps()}>
-            <div {...api.getArrowTipProps()}></div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()}></div>
+            </div>
+            <div class="profile">
+              <span class="profile-avatar" aria-hidden="true">Z</span>
+              <div class="profile-body">
+                <span class="profile-name">Zag.js</span>
+                <span class="profile-handle">@zag_js</span>
+                <p class="profile-bio">
+                  UI components powered by finite state machines. Works with React, Solid, Vue and Svelte.
+                </p>
+                <a class="profile-meta" href="https://twitter.com/zag_js" target="_blank" rel="noreferrer">
+                  twitter.com/zag_js
+                </a>
+              </div>
+            </div>
           </div>
-          Twitter Preview
-          <a href="https://twitter.com/zag_js" target="_blank"> Twitter </a>
         </div>
-      </div>
+      </Portal>
     {/if}
 
-    <div data-part="test-text">Test text</div>
+    <div data-testid="test-text">Test text</div>
   </div>
 </main>
 

@@ -5,6 +5,7 @@
   import * as numberInput from "@zag-js/number-input"
   import { numberInputControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { MinusIcon, PlusIcon } from "lucide-svelte"
   import "@styles/number-input.css"
 
   const controls = useControls(numberInputControls)
@@ -18,11 +19,15 @@
 <main>
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label data-testid="label" {...api.getLabelProps()}> Enter number: </label>
+    <label data-testid="label" {...api.getLabelProps()}>Enter number:</label>
     <div {...api.getControlProps()}>
-      <button data-testid="dec-button" {...api.getDecrementTriggerProps()}> DEC </button>
+      <button data-testid="dec-button" {...api.getDecrementTriggerProps()}>
+        <MinusIcon />
+      </button>
       <input data-testid="input" {...api.getInputProps()} />
-      <button data-testid="inc-button" {...api.getIncrementTriggerProps()}> INC </button>
+      <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
+        <PlusIcon />
+      </button>
     </div>
   </div>
 </main>

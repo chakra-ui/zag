@@ -1,10 +1,13 @@
 <script lang="ts">
+  import Portal from "$lib/components/portal.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
   import Iframe from "$lib/components/iframe.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import { tourControls, tourData } from "@zag-js/shared"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"
-  import { X } from "lucide-svelte"
+  import { XIcon } from "lucide-svelte"
   import "@styles/tour.css"
 
   const controls = useControls(tourControls)
@@ -43,8 +46,8 @@
     </div>
   </div>
 
-  {#if api.open && api.step}
-    <div use:portal>
+  {#if api.step && api.open}
+    <Portal>
       {#if api.step.backdrop}
         <div {...api.getBackdropProps()}></div>
       {/if}
@@ -56,21 +59,28 @@
               <div {...api.getArrowTipProps()}></div>
             </div>
           {/if}
+
           <p {...api.getTitleProps()}>{api.step.title}</p>
           <div {...api.getDescriptionProps()}>{api.step.description}</div>
+          <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
 
           {#if api.step.actions}
             <div class="tour button__group">
-              {#each api.step.actions as action}
+              {#each api.step.actions as action (action.label)}
                 <button {...api.getActionTriggerProps({ action })}>{action.label}</button>
               {/each}
             </div>
           {/if}
+
           <button {...api.getCloseTriggerProps()}>
-            <X />
+            <XIcon />
           </button>
         </div>
       </div>
-    </div>
+    </Portal>
   {/if}
 </main>
+
+<Toolbar {controls}>
+  <StateVisualizer state={service} omit={["steps"]} />
+</Toolbar>

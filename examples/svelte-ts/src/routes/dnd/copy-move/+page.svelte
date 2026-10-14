@@ -1,15 +1,11 @@
 <script lang="ts">
-  import { ListCollection } from "@zag-js/collection"
-  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import * as dnd from "@zag-js/dnd"
-  import { GripVertical } from "lucide-svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import * as dnd from "@zag-js/dnd"
   import styles from "@styles/dnd-list.module.css"
-
-  const COPY = "library"
-  const MOVE = "archive"
-  const id = $props.id()
+  import { GripVerticalIcon } from "lucide-svelte"
+  import { ListCollection } from "@zag-js/collection"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
 
   type Item = { id: string; name: string }
 
@@ -21,18 +17,22 @@
     })
   }
 
-  let source = $state(
-    createList([
-      { id: "photoshop", name: "Adobe Photoshop" },
-      { id: "xd", name: "Adobe XD" },
-      { id: "dreamweaver", name: "Adobe Dreamweaver" },
-      { id: "indesign", name: "Adobe InDesign" },
-    ]),
-  )
+  const sourceData: Item[] = [
+    { id: "photoshop", name: "Adobe Photoshop" },
+    { id: "xd", name: "Adobe XD" },
+    { id: "dreamweaver", name: "Adobe Dreamweaver" },
+    { id: "indesign", name: "Adobe InDesign" },
+  ]
+
+  const COPY = "library"
+  const MOVE = "archive"
+
+  const id = $props.id()
+  let source = $state(createList(sourceData))
   let library = $state(createList([]))
   let archive = $state(createList([]))
 
-  const service = useMachine(dnd.machine, {
+  const service = useMachine(dnd.machine, (): dnd.Props => ({
     id,
     orientation: "vertical",
     dropPlacements: ["on"],
@@ -45,24 +45,45 @@
     canDrop: (dragSource, target) => source.has(dragSource) && (target === COPY || target === MOVE),
     onDrop({ values, target }) {
       const moved = source.findMany(values)
-      if (!moved.length) return
+      if (moved.length === 0) return
+
       if (target === COPY) {
         library = library.append(...moved.map((item) => ({ id: `${item.id}-${crypto.randomUUID()}`, name: item.name })))
         return
       }
+
       source = source.remove(...values)
       archive = archive.append(...moved)
     },
-  })
-
+  }))
   const api = $derived(dnd.connect(service, normalizeProps))
 </script>
 
-<main class="{styles.main} {styles.wide}">
+{#snippet renderZone(value: string, title: string, list: ListCollection<Item>)}
+  <div class={styles.transferColumn}>
+    <h4>{title}</h4>
+    <div {...mergeProps(api.getDropTargetProps({ value }), { class: styles.rootDrop })}>
+      {#if list.size === 0}
+        <p class={styles.rootDropEmpty}>Drop here</p>
+      {:else}
+        <ul class={styles.transferList}>
+          {#each list.items as item (item.id)}
+            <li class={styles.item}>
+              <div class={styles.draggable}>{item.name}</div>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+  </div>
+{/snippet}
+
+<main class={`${styles.main} ${styles.wide}`}>
   <div {...api.getRootProps()} class={styles.root}>
     <h3>Copy vs move</h3>
     <p class={styles.helperText}>
-      Library copies. Archive moves. Zag reports the target; the app chooses the operation.
+      Drop operations without HTML5 DataTransfer: Library copies, Archive moves. Zag reports the target; the app chooses
+      the operation.
     </p>
     <div class={styles.transferLayout}>
       <div class={styles.transferColumn}>
@@ -72,7 +93,7 @@
             <li class={styles.item}>
               <div {...mergeProps(api.getDraggableProps({ value: item.id }), { class: styles.draggable })}>
                 <span {...api.getDragHandleProps({ value: item.id })} class={styles.dragHandle}>
-                  <GripVertical size={14} />
+                  <GripVerticalIcon size={14} />
                 </span>
                 {item.name}
               </div>
@@ -80,34 +101,8 @@
           {/each}
         </ul>
       </div>
-      <div class={styles.transferColumn}>
-        <h4>Library (copy)</h4>
-        <div {...mergeProps(api.getDropTargetProps({ value: COPY }), { class: styles.rootDrop })}>
-          {#if library.size === 0}
-            <p class={styles.rootDropEmpty}>Drop here</p>
-          {:else}
-            <ul class={styles.transferList}>
-              {#each library.items as item (item.id)}
-                <li class={styles.item}><div class={styles.draggable}>{item.name}</div></li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-      <div class={styles.transferColumn}>
-        <h4>Archive (move)</h4>
-        <div {...mergeProps(api.getDropTargetProps({ value: MOVE }), { class: styles.rootDrop })}>
-          {#if archive.size === 0}
-            <p class={styles.rootDropEmpty}>Drop here</p>
-          {:else}
-            <ul class={styles.transferList}>
-              {#each archive.items as item (item.id)}
-                <li class={styles.item}><div class={styles.draggable}>{item.name}</div></li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
+      {@render renderZone(COPY, "Library (copy)", library)}
+      {@render renderZone(MOVE, "Archive (move)", archive)}
     </div>
   </div>
 </main>

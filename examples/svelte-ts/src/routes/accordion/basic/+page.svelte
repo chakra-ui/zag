@@ -5,7 +5,7 @@
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { ChevronRight } from "lucide-svelte"
+  import { ArrowRightIcon } from "lucide-svelte"
   import "@styles/accordion.css"
 
   const controls = useControls(accordionControls)
@@ -20,11 +20,11 @@
   <div {...api.getRootProps()}>
     {#each accordionData as item}
       <div {...api.getItemProps({ value: item.id })}>
-        <h3>
+        <h3 {...api.getItemHeaderProps({ value: item.id })}>
           <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
             {item.label}
             <div {...api.getItemIndicatorProps({ value: item.id })}>
-              <ChevronRight />
+              <ArrowRightIcon />
             </div>
           </button>
         </h3>

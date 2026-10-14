@@ -14,6 +14,7 @@
   const service = useMachine(
     slider.machine,
     controls.mergeProps<slider.Props>({
+      thumbSize: 20,
       id,
       name: "quantity",
       defaultValue: [10, 60],
@@ -25,7 +26,7 @@
 
 <main class="slider">
   <form
-    oninput={(e) => {
+    onchange={(e) => {
       const formData = serialize(e.currentTarget, { hash: true })
       console.log(formData)
     }}
@@ -41,7 +42,7 @@
           <div {...api.getTrackProps()}>
             <div {...api.getRangeProps()}></div>
           </div>
-          {#each api.value as _, index}
+          {#each api.value as _, index (index)}
             <div {...api.getThumbProps({ index })}>
               <input {...api.getHiddenInputProps({ index })} />
             </div>

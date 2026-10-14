@@ -1,15 +1,16 @@
 <script lang="ts">
+  import MenubarEditMenu from "$lib/components/menubar-edit-menu.svelte"
+  import MenubarMenu from "$lib/components/menubar-menu.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
   import type * as menu from "@zag-js/menu"
   import * as menubar from "@zag-js/menubar"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { setContext } from "svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import Menu from "../basic/menu.svelte"
-  import EditMenu from "./editmenu.svelte"
   import "@styles/menu.css"
 
-  const service = useMachine(menubar.machine, { id: "menubar" })
+  const id = $props.id()
+  const service = useMachine(menubar.machine, { id })
   const api = $derived(menubar.connect(service, normalizeProps))
 
   setContext<menu.MenubarContext>("menubar", api.getMenuContext())
@@ -26,10 +27,10 @@
 </script>
 
 <main class="menubar">
-  <div {...api.getRootProps()} style="display: inline-flex; gap: 4px;">
-    <Menu id="file" label="File" items={fileItems} />
-    <EditMenu />
-    <Menu id="view" label="View" items={viewItems} />
+  <div {...api.getRootProps()} style="display: inline-flex; gap: 4px">
+    <MenubarMenu id="file" label="File" items={fileItems} />
+    <MenubarEditMenu />
+    <MenubarMenu id="view" label="View" items={viewItems} />
   </div>
 </main>
 

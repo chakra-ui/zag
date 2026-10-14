@@ -1,19 +1,21 @@
 <script lang="ts">
   import * as menu from "@zag-js/menu"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import Portal from "$lib/components/portal.svelte"
   import { menuData } from "@zag-js/shared"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { onMount } from "svelte"
   import "@styles/menu.css"
 
-  const service = useMachine(menu.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(menu.machine, { id })
   const root = $derived(menu.connect(service, normalizeProps))
 
-  const service2 = useMachine(menu.machine, { id: "2" })
+  const service2 = useMachine(menu.machine, { id: `${id}-sub` })
   const sub = $derived(menu.connect(service2, normalizeProps))
 
-  const service3 = useMachine(menu.machine, { id: "3" })
+  const service3 = useMachine(menu.machine, { id: `${id}-sub2` })
   const sub2 = $derived(menu.connect(service3, normalizeProps))
 
   onMount(() => {
@@ -36,37 +38,43 @@
   <div>
     <button data-testid="trigger" {...root.getTriggerProps()}> Click me </button>
 
-    <div use:portal {...root.getPositionerProps()}>
-      <ul data-testid="menu" {...root.getContentProps()}>
-        {#each level1 as item, i (i)}
-          {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
-          <li data-testid={item.value} {...props}>
-            {item.label}
-          </li>
-        {/each}
-      </ul>
-    </div>
+    <Portal>
+      <div {...root.getPositionerProps()}>
+        <ul data-testid="menu" {...root.getContentProps()}>
+          {#each level1 as item (item.value)}
+            {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
+            <li data-testid={item.value} {...props}>
+              {item.label}
+            </li>
+          {/each}
+        </ul>
+      </div>
+    </Portal>
 
-    <div use:portal {...sub.getPositionerProps()}>
-      <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
-        {#each level2 as item, i (i)}
-          {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
-          <li data-testid={item.value} {...props}>
-            {item.label}
-          </li>
-        {/each}
-      </ul>
-    </div>
+    <Portal>
+      <div {...sub.getPositionerProps()}>
+        <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
+          {#each level2 as item (item.value)}
+            {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
+            <li data-testid={item.value} {...props}>
+              {item.label}
+            </li>
+          {/each}
+        </ul>
+      </div>
+    </Portal>
 
-    <div use:portal {...sub2.getPositionerProps()}>
-      <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
-        {#each level3 as item, i (i)}
-          <li data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
-            {item.label}
-          </li>
-        {/each}
-      </ul>
-    </div>
+    <Portal>
+      <div {...sub2.getPositionerProps()}>
+        <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
+          {#each level3 as item (item.value)}
+            <li data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
+              {item.label}
+            </li>
+          {/each}
+        </ul>
+      </div>
+    </Portal>
   </div>
 </main>
 

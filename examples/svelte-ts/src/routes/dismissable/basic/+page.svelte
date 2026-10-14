@@ -1,8 +1,9 @@
 <script lang="ts">
-  import Popover from "./popover.svelte"
+  import Popover from "$lib/components/dismissable-popover.svelte"
 </script>
 
-<main>
+<div>
+  <iframe title="sdfdsfs" src="https://motion.dev/"></iframe>
   <Popover id="1" background="pink" pointerBlocking>
     <p>This is a popover.</p>
     <input placeholder="Initial...." />
@@ -15,4 +16,4 @@
       </Popover>
     </Popover>
   </Popover>
-</main>
+</div>
