@@ -58,7 +58,7 @@ function Combobox(props: Omit<combobox.Props, "id" | "collection">) {
 export default function Page() {
   const menuService = useMachine(menu.machine, {
     id: useId(),
-    composite: false,
+    popupType: "dialog",
   })
 
   const menuApi = menu.connect(menuService, normalizeProps)

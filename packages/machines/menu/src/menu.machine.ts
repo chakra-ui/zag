@@ -94,7 +94,7 @@ export const machine = createMachine<MenuSchema>({
     return {
       closeOnSelect: true,
       typeahead: true,
-      composite: true,
+      popupType: "menu",
       loopFocus: false,
       navigate(details) {
         clickIfLink(details.node)
@@ -486,7 +486,7 @@ export const machine = createMachine<MenuSchema>({
         "unlockParentOnOpen",
         "dispatchMenubarOpen",
         "highlightFirstIfAlways",
-        "warnIfFilterInputComposite",
+        "warnIfFilterInputNotDialog",
       ],
       on: {
         CLOSE: closeTransitions,
@@ -973,11 +973,11 @@ export const machine = createMachine<MenuSchema>({
           if (first) context.set("highlightedValue", dom.getItemValue(first))
         })
       },
-      warnIfFilterInputComposite({ prop, scope }) {
-        if (process.env.NODE_ENV === "production" || !prop("composite")) return
+      warnIfFilterInputNotDialog({ prop, scope }) {
+        if (process.env.NODE_ENV === "production" || prop("popupType") === "dialog") return
         raf(() => {
           if (!dom.getInputEl(scope)) return
-          console.warn("[@zag-js/menu] A menu with a filter input needs `composite: false` to render a dialog popup.")
+          console.warn("[@zag-js/menu] A menu with a filter input needs `popupType` set to `dialog`.")
         })
       },
       // A submenu removed while it held focus (its trigger was filtered out) hands focus back to its parent.
@@ -1001,8 +1001,10 @@ export const machine = createMachine<MenuSchema>({
         let next: HTMLElement | null | undefined = null
         if (event.key === "first") next = items[0]
         else if (event.key === "last") next = items[lastIndex]
-        else if (event.key === "next") next = index === -1 ? items[0] : index < lastIndex ? items[index + 1] : wrap ? items[0] : null
-        else if (event.key === "prev") next = index === -1 ? items[lastIndex] : index > 0 ? items[index - 1] : wrap ? items[lastIndex] : null
+        else if (event.key === "next")
+          next = index === -1 ? items[0] : index < lastIndex ? items[index + 1] : wrap ? items[0] : null
+        else if (event.key === "prev")
+          next = index === -1 ? items[lastIndex] : index > 0 ? items[index - 1] : wrap ? items[lastIndex] : null
         context.set("highlightedValue", next ? dom.getItemValue(next) : null)
       },
       // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
@@ -1017,7 +1019,8 @@ export const machine = createMachine<MenuSchema>({
           const current = context.get("highlightedValue")
           const isRendered = items.some((el) => dom.getItemValue(el) === current)
           if (autoHighlight === "always" || (autoHighlight && hasQuery)) {
-            if (queryChanged || !isRendered) context.set("highlightedValue", items[0] ? dom.getItemValue(items[0]) : null)
+            if (queryChanged || !isRendered)
+              context.set("highlightedValue", items[0] ? dom.getItemValue(items[0]) : null)
             return
           }
           if (autoHighlight && queryChanged) {

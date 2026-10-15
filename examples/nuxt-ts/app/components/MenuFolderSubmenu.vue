@@ -12,7 +12,7 @@ const query = ref("")
 
 const service = useMachine(menu.machine, {
   id: props.id,
-  composite: false,
+  popupType: "dialog",
   onOpenChange(details) {
     if (!details.open) query.value = ""
   },

@@ -62,7 +62,7 @@ export default function Page() {
   const service = useMachine(combobox.machine, {
     collection,
     id: useId(),
-    composite: false,
+    popupType: "dialog",
     openOnClick: true,
     inputBehavior: "autohighlight",
     positioning: {
@@ -88,7 +88,7 @@ export default function Page() {
 
   const tabService = useMachine(tabs.machine, {
     id: useId(),
-    composite: false,
+    virtualFocus: true,
     value: selectedTab,
     onValueChange(details) {
       setSelectedTab(details.value as SelectedTab)

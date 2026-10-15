@@ -14,7 +14,7 @@ Added filter inputs and "no results" messages to menu and select. You filter the
 arrow keys move the highlight.
 
 ```tsx
-// menu: composite: false, select: popupType: "dialog"
+// popupType: "dialog" on menu and select
 <div {...api.getContentProps()}>
   <input {...api.getInputProps()} />
   <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
@@ -24,6 +24,8 @@ arrow keys move the highlight.
 
 - `getEmptyProps()` is a polite live region, so keep it rendered and toggle its text. Combobox and listbox have it too.
 - **Menu**
+  - **Breaking:** Replaced `composite` with `popupType: "menu" | "dialog"` (default `"menu"`), matching select and
+    combobox. Migrate `composite: false` to `popupType: "dialog"`.
   - `autoHighlight` highlights the first item as the query changes. A submenu can have its own input; `Escape`,
     `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's.
   - `onHighlightChange` reports a `reason` (`keyboard`, `pointer` or `programmatic`), and `setHighlightedValue` accepts

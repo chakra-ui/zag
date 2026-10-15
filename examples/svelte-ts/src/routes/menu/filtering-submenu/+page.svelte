@@ -17,7 +17,7 @@
 
   const service = useMachine(menu.machine, {
     id,
-    composite: false,
+    popupType: "dialog",
     onOpenChange(details) {
       if (!details.open) query = ""
     },

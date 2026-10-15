@@ -16,7 +16,7 @@ export default function Page() {
     collection,
     selectionBehavior: "clear",
     inputBehavior: "autohighlight",
-    composite: false,
+    popupType: "dialog",
     onOpenChange() {
       setOptions(selectData)
     },

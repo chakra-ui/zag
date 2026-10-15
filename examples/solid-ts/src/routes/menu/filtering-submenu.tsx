@@ -22,7 +22,7 @@ function FolderSubmenu(props: FolderSubmenuProps) {
 
   const service = useMachine(menu.machine, {
     id: props.id,
-    composite: false,
+    popupType: "dialog",
     onOpenChange(details) {
       if (!details.open) setQuery("")
     },
@@ -82,7 +82,7 @@ export default function Page() {
 
   const service = useMachine(menu.machine, {
     id: createUniqueId(),
-    composite: false,
+    popupType: "dialog",
     onOpenChange(details) {
       if (!details.open) setQuery("")
     },

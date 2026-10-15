@@ -22,7 +22,6 @@ export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: false,
-      composite: true,
       defaultValue: [],
       multiple: false,
       typeahead: true,

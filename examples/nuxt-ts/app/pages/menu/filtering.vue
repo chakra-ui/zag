@@ -10,7 +10,7 @@ const query = ref("")
 
 const service = useMachine(menu.machine, {
   id: useId(),
-  composite: false,
+  popupType: "dialog",
   onOpenChange(details) {
     if (!details.open) query.value = ""
   },

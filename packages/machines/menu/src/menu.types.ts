@@ -139,11 +139,12 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   autoHighlight?: boolean | "always" | undefined
   /**
-   * Whether the menu manages keyboard focus across its items.
-   * Set to `false` when another widget inside it, such as a filter input, keeps focus instead.
-   * @default true
+   * The type of popup the trigger opens.
+   * - `"menu"`: the content is the menu and manages keyboard focus across its items.
+   * - `"dialog"`: the content is a dialog holding the menu list, for widgets that keep focus such as a filter input.
+   * @default "menu"
    */
-  composite?: boolean | undefined
+  popupType?: "menu" | "dialog" | undefined
   /**
    * Function to navigate to the selected item if it's an anchor element
    */
@@ -189,7 +190,7 @@ export interface MenubarContext {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
+type PropsWithDefault = "closeOnSelect" | "typeahead" | "popupType" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
   props: MenuProps

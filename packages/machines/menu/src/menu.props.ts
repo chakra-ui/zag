@@ -7,7 +7,7 @@ export const props = createProps<MenuProps>()([
   "aria-label",
   "autoHighlight",
   "closeOnSelect",
-  "composite",
+  "popupType",
   "defaultHighlightedValue",
   "defaultOpen",
   "defaultTriggerValue",

@@ -10,7 +10,7 @@
   const id = $props.id()
   const menuService = useMachine(menu.machine, {
     id,
-    composite: false,
+    popupType: "dialog",
   })
 
   const menuApi = $derived(menu.connect(menuService, normalizeProps))

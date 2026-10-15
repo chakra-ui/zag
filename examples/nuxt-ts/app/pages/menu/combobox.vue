@@ -7,7 +7,7 @@ import "@styles/combobox.css"
 
 const menuService = useMachine(menu.machine, {
   id: useId(),
-  composite: false,
+  popupType: "dialog",
 })
 
 const menuApi = computed(() => menu.connect(menuService, normalizeProps))

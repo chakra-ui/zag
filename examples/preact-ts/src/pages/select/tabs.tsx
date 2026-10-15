@@ -36,7 +36,7 @@ export default function Page() {
   const selectService = useMachine(select.machine, {
     collection,
     id: useId(),
-    composite: false,
+    popupType: "dialog",
     highlightedValue: highlighted,
     onHighlightChange({ highlightedValue }) {
       setHighlighted(highlightedValue)

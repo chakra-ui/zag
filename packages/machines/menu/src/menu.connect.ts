@@ -53,7 +53,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   // keys change: the menu opens on ArrowRight and closes (not switches) on ArrowLeft.
   const isVerticalMenubar = isInMenubar && prop("menubar")?.orientation === "vertical"
   const isTypingAhead = computed("isTypingAhead")
-  const composite = prop("composite")
+  const isDialog = prop("popupType") === "dialog"
 
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
@@ -135,7 +135,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       "data-disabled": dataAttr(itemState.disabled),
       "data-highlighted": dataAttr(itemState.highlighted),
       // WebKit only announces an `aria-activedescendant` change from a filter input when the item is also selected
-      "aria-selected": !composite && itemState.highlighted && context.get("isWebKit") ? true : undefined,
+      "aria-selected": isDialog && itemState.highlighted && context.get("isWebKit") ? true : undefined,
       "data-value": value,
       "data-valuetext": valueText,
       onDragStart(event) {
@@ -283,7 +283,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           "data-value": value,
           "data-current": dataAttr(current),
         }),
-        "aria-haspopup": composite ? "menu" : "dialog",
+        "aria-haspopup": isDialog ? "dialog" : "menu",
         "aria-controls": dom.getContentId(scope),
         "data-controls": dom.getContentId(scope),
         "aria-expanded": triggerState.open,
@@ -428,10 +428,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         hidden: !contentState.open,
         "data-state": contentState.open ? "open" : "closed",
         "data-instant": dataAttr(instant),
-        role: composite ? "menu" : "dialog",
-        tabIndex: composite ? 0 : -1,
+        role: isDialog ? "dialog" : "menu",
+        tabIndex: isDialog ? -1 : 0,
         dir: prop("dir"),
-        "aria-activedescendant": (composite && computed("highlightedId")) || undefined,
+        "aria-activedescendant": (!isDialog && computed("highlightedId")) || undefined,
         "aria-labelledby": labelledBy,
         "data-placement": contentState.placement,
         "data-side": contentState.side,
@@ -658,8 +658,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.list.attrs(scope.id),
         id: dom.getListId(scope),
         dir: prop("dir"),
-        role: composite ? "presentation" : "menu",
-        "aria-labelledby": composite ? undefined : labelledBy,
+        role: isDialog ? "menu" : "presentation",
+        "aria-labelledby": isDialog ? labelledBy : undefined,
       })
     },
 
