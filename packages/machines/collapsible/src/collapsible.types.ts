@@ -53,6 +53,11 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
    * The width of the content when collapsed.
    */
   collapsedWidth?: number | string | undefined
+  /**
+   * Whether the closed content stays searchable with the browser's find-in-page.
+   * Uses `hidden="until-found"`, and opens the collapsible when a match is found inside it.
+   */
+  hiddenUntilFound?: boolean | undefined
 }
 
 export interface CollapsibleSchema {
@@ -66,6 +71,7 @@ export interface CollapsibleSchema {
   refs: {
     stylesRef: any
     cleanup: VoidFunction | undefined
+    revealedByFind: boolean
   }
 
   guard: "isOpenControlled"
@@ -89,7 +95,7 @@ export interface CollapsibleSchema {
     | "invokeOnExitComplete"
     | "toggleVisibility"
 
-  effect: "trackEnterAnimation" | "trackExitAnimation" | "trackTabbableElements"
+  effect: "trackEnterAnimation" | "trackExitAnimation" | "trackTabbableElements" | "trackBeforeMatch"
 }
 
 export type CollapsibleService = Service<CollapsibleSchema>

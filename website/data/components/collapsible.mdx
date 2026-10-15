@@ -87,6 +87,25 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
+### Searching closed content with find-in-page
+
+Set `hiddenUntilFound` to keep the closed content searchable with the browser's
+find-in-page. When a match is found inside it, the collapsible opens and the
+match shows without the open animation.
+
+```tsx {2}
+const service = useMachine(collapsible.machine, {
+  hiddenUntilFound: true,
+})
+```
+
+In controlled mode, the open goes through `onOpenChange`. If `open` isn't
+updated, the content is hidden again.
+
+> With server-side rendering, frameworks like React render `hidden` as a
+> boolean, so closed content ships as `hidden=""` and only becomes searchable
+> after hydration.
+
 ### Partial collapse (setting minimum dimensions)
 
 Use `collapsedHeight` or `collapsedWidth` to create a "partially collapsed"
@@ -231,6 +250,18 @@ dimensions.
     opacity: 0.01;
     height: 0;
   }
+}
+```
+
+### Find-in-page and CSS resets
+
+`hiddenUntilFound` renders the closed content with `hidden="until-found"`. A
+reset like `[hidden] { display: none }` overrides it and stops find-in-page from
+searching the content. Exclude `until-found` from the rule:
+
+```css
+[hidden]:not([hidden="until-found"]) {
+  display: none;
 }
 ```
 

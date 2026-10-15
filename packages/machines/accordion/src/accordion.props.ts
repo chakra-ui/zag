@@ -9,13 +9,13 @@ export const props = createProps<AccordionProps>()([
   "getRootNode",
   "id",
   "ids",
-  "loopFocus",
   "multiple",
   "onFocusChange",
   "onValueChange",
   "orientation",
   "value",
   "defaultValue",
+  "hiddenUntilFound",
 ])
 export const splitProps = createSplitProps<Partial<AccordionProps>>(props)
 

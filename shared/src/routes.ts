@@ -243,6 +243,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "uncontrolled", title: "Uncontrolled" },
       { slug: "nested", title: "Nested" },
+      { slug: "find-in-page", title: "Find in Page" },
     ],
   },
   {
@@ -437,6 +438,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "disabled-item", title: "Disabled Item" },
       { slug: "nested", title: "Nested" },
+      { slug: "find-in-page", title: "Find in Page" },
       { slug: "collapsible", title: "With Collapsible" },
     ],
   },

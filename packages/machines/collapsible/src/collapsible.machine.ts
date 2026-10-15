@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import {
+  addDomEvent,
   getComputedStyle,
   getEventTarget,
   getTabbables,
@@ -34,6 +35,7 @@ export const machine = createMachine<CollapsibleSchema>({
     return {
       cleanup: undefined,
       stylesRef: undefined,
+      revealedByFind: false,
     }
   },
 
@@ -47,7 +49,7 @@ export const machine = createMachine<CollapsibleSchema>({
 
   states: {
     closed: {
-      effects: ["trackTabbableElements"],
+      effects: ["trackTabbableElements", "trackBeforeMatch"],
       on: {
         "controlled.open": {
           target: "open",
@@ -208,6 +210,47 @@ export const machine = createMachine<CollapsibleSchema>({
         }
       },
 
+      trackBeforeMatch: ({ scope, prop, refs, send }) => {
+        if (!prop("hiddenUntilFound") || prop("disabled")) return
+
+        // Some adapters exit `closed` synchronously inside `send`, so check a flag, not timer handles
+        let active = true
+        let revertTimer: ReturnType<typeof setTimeout> | undefined
+        let revertFrame: VoidFunction | undefined
+
+        const frameCleanup = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+
+          // React renders `hidden` as a boolean
+          if (contentEl.hidden) contentEl.setAttribute("hidden", "until-found")
+
+          const onBeforeMatch = () => {
+            refs.set("revealedByFind", true)
+            send({ type: "open" })
+            if (!active) return
+
+            // Re-hide if still closed (ignored controlled `open`)
+            revertTimer = setTimeout(() => {
+              revertFrame = raf(() => {
+                if (!active) return
+                refs.set("revealedByFind", false)
+                contentEl.setAttribute("hidden", "until-found")
+              })
+            })
+          }
+
+          return addDomEvent(contentEl, "beforematch", onBeforeMatch)
+        })
+
+        return () => {
+          active = false
+          frameCleanup()
+          clearTimeout(revertTimer)
+          revertFrame?.()
+        }
+      },
+
       trackTabbableElements: ({ scope, prop }) => {
         if (!prop("collapsedHeight") && !prop("collapsedWidth")) return
         const contentEl = dom.getContentEl(scope)
@@ -238,9 +281,12 @@ export const machine = createMachine<CollapsibleSchema>({
     },
 
     actions: {
-      setInitial: ({ context, flush }) => {
+      setInitial: ({ context, flush, refs }) => {
+        // Find-in-page opens skip the animation
+        const animate = !refs.get("revealedByFind")
+        refs.set("revealedByFind", false)
         flush(() => {
-          context.set("initial", true)
+          context.set("initial", animate)
         })
       },
 

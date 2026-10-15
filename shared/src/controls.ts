@@ -11,9 +11,8 @@ export const schedulerControls = defineControls({
 })
 
 export const accordionControls = defineControls({
-  collapsible: { type: "boolean", defaultValue: false },
+  collapsible: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
-  loopFocus: { type: "boolean", defaultValue: true },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 

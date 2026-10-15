@@ -5,6 +5,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 defineOptions({ inheritAttrs: false })
 
 const props = defineProps<{ open: boolean }>()
+const emit = defineEmits<{ openChange: [open: boolean] }>()
 const attrs = useAttrs()
 
 const id = useId()
@@ -14,6 +15,9 @@ const service = useMachine(
     id,
     ids: { content: attrs.id as string | undefined },
     open: props.open,
+    // The accordion owns `open`, so route find-in-page reveals back to it
+    hiddenUntilFound: true,
+    onOpenChange: (details: collapsible.OpenChangeDetails) => emit("openChange", details.open),
   })),
 )
 

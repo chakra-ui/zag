@@ -14,5 +14,6 @@ export const props = createProps<CollapsibleProps>()([
   "onOpenChange",
   "defaultOpen",
   "open",
+  "hiddenUntilFound",
 ])
 export const splitProps = createSplitProps<Partial<CollapsibleProps>>(props)

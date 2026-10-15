@@ -43,7 +43,8 @@ ul {
   padding-inline-start: 0;
 }
 
-[hidden] {
+/* `until-found` must keep the UA's content-visibility so find-in-page can search it */
+[hidden]:not([hidden="until-found"]) {
   display: none !important;
 }
 
