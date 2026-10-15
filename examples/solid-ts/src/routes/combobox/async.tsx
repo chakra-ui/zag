@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { CheckIcon, ChevronsUpDownIcon, LoaderCircleIcon, XIcon } from "lucide-solid"
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { Output } from "~/components/output"
+import { useInfiniteScroll } from "~/hooks/use-infinite-scroll"
 import "@styles/combobox.css"
 
 interface Person {
@@ -12,30 +13,21 @@ interface Person {
   birth_year?: string
 }
 
-// Resolves after `ms`, or rejects when the request is superseded
-const delay = (ms: number, signal?: AbortSignal) =>
-  new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener("abort", () => {
-      clearTimeout(timer)
-      reject(signal.reason)
-    })
-  })
-
 export default function Page() {
+  const id = createUniqueId()
+  const spinnerId = `${id}-spinner`
   const [selected, setSelected] = createSignal<string[]>([])
 
   const listService = useMachine(asyncList.machine as asyncList.Machine<Person>, {
     autoReload: true,
     // Keep showing the last results while the next query loads
     keepPreviousItems: true,
-    async load({ signal, filter }) {
-      // Debounce: each keystroke aborts the pending wait
-      await delay(250, signal)
-      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filter ?? ""}`, { signal })
+    async load({ signal, filter, cursor }) {
+      const search = encodeURIComponent(filter?.trim() ?? "")
+      const response = await fetch(cursor ?? `https://swapi.py4e.com/api/people/?search=${search}`, { signal })
       if (!response.ok) throw new Error(`Request failed (${response.status})`)
       const data = await response.json()
-      return { items: data.results ?? [] }
+      return { items: data.results ?? [], cursor: data.next ?? undefined }
     },
   })
   const list = createMemo(() => asyncList.connect(listService))
@@ -43,32 +35,43 @@ export default function Page() {
   const collection = createMemo(() =>
     combobox.collection({
       items: list().items,
-      itemToValue: (item) => item.name,
+      itemToValue: (item) => item.url,
       itemToString: (item) => item.name,
     }),
   )
 
-  const id = createUniqueId()
   const service = useMachine(combobox.machine as combobox.Machine<Person>, () => ({
     id,
     collection: collection(),
     placeholder: "Search people…",
+    // Wrapping to the top would skip the next page
+    loopFocus: false,
     onInputValueChange({ inputValue, reason }) {
       // Selecting an item fills the input; that shouldn't trigger a search
       if (reason === "item-select") return
       list().setFilter(inputValue)
     },
-    onValueChange({ value }) {
-      setSelected(value)
+    onValueChange({ items }) {
+      setSelected(items.map((item) => item.name))
     },
   }))
 
   const api = createMemo(() => combobox.connect(service, normalizeProps))
 
+  // Load-more has its own spinner at the end of the list
+  const searching = () => list().isLoading && !list().isLoadingMore
+
+  const scroll = useInfiniteScroll(() => ({
+    count: list().items.length,
+    hasMore: list().hasMore,
+    loading: list().isLoading,
+    onLoadMore: () => list().loadMore(),
+  }))
+
   const status = () => {
-    const { error, isLoading, isEmpty, filter } = list()
+    const { error, isEmpty, filter } = list()
     if (error || !isEmpty) return null
-    if (isLoading) return "Searching…"
+    if (searching()) return "Searching…"
     const query = filter?.trim()
     return query ? `No people match “${query}”` : "No people found"
   }
@@ -81,9 +84,21 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>Star Wars character</label>
           <div {...api().getControlProps()}>
-            <input data-testid="input" {...api().getInputProps()} />
-            <Show when={list().isLoading}>
-              <LoaderCircleIcon class="combobox-spinner" aria-hidden data-testid="loading" />
+            <input
+              data-testid="input"
+              {...api().getInputProps()}
+              aria-describedby={searching() ? spinnerId : undefined}
+            />
+            <Show when={searching()}>
+              <span
+                id={spinnerId}
+                role="progressbar"
+                aria-label="Loading results"
+                class="combobox-spinner"
+                data-testid="loading"
+              >
+                <LoaderCircleIcon />
+              </span>
             </Show>
             <button {...api().getClearTriggerProps()}>
               <XIcon />
@@ -121,6 +136,14 @@ export default function Page() {
                     </div>
                   )}
                 </For>
+                <div {...scroll().getSentinelProps()} />
+                <Show when={list().isLoadingMore}>
+                  <div class="combobox-load-more" role="progressbar" aria-label="Loading more people">
+                    <span class="combobox-spinner">
+                      <LoaderCircleIcon />
+                    </span>
+                  </div>
+                </Show>
               </div>
             </Show>
           </div>

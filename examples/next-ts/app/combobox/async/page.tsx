@@ -6,6 +6,7 @@ import { CheckIcon, ChevronsUpDownIcon, LoaderCircleIcon, XIcon } from "lucide-r
 import { useId, useMemo, useState } from "react"
 import { Output } from "@/components/output"
 import { useAsyncList } from "@/hooks/use-async-list"
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"
 import "@styles/combobox.css"
 
 interface Person {
@@ -14,30 +15,21 @@ interface Person {
   birth_year?: string
 }
 
-// Resolves after `ms`, or rejects when the request is superseded
-const delay = (ms: number, signal?: AbortSignal) =>
-  new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener("abort", () => {
-      clearTimeout(timer)
-      reject(signal.reason)
-    })
-  })
-
 export default function Page() {
+  const id = useId()
+  const spinnerId = `${id}-spinner`
   const [selected, setSelected] = useState<string[]>([])
 
   const list = useAsyncList<Person>({
     autoReload: true,
     // Keep showing the last results while the next query loads
     keepPreviousItems: true,
-    async load({ signal, filter }) {
-      // Debounce: each keystroke aborts the pending wait
-      await delay(250, signal)
-      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filter ?? ""}`, { signal })
+    async load({ signal, filter, cursor }) {
+      const search = encodeURIComponent(filter?.trim() ?? "")
+      const response = await fetch(cursor ?? `https://swapi.py4e.com/api/people/?search=${search}`, { signal })
       if (!response.ok) throw new Error(`Request failed (${response.status})`)
       const data = await response.json()
-      return { items: data.results ?? [] }
+      return { items: data.results ?? [], cursor: data.next ?? undefined }
     },
   })
 
@@ -45,34 +37,46 @@ export default function Page() {
     () =>
       combobox.collection({
         items: list.items,
-        itemToValue: (item) => item.name,
+        itemToValue: (item) => item.url,
         itemToString: (item) => item.name,
       }),
     [list.items],
   )
 
   const service = useMachine(combobox.machine as combobox.Machine<Person>, {
-    id: useId(),
+    id,
     collection,
     placeholder: "Search people…",
+    // Wrapping to the top would skip the next page
+    loopFocus: false,
     onInputValueChange({ inputValue, reason }) {
       // Selecting an item fills the input; that shouldn't trigger a search
       if (reason === "item-select") return
       list.setFilter(inputValue)
     },
-    onValueChange({ value }) {
-      setSelected(value)
+    onValueChange({ items }) {
+      setSelected(items.map((item) => item.name))
     },
   })
 
   const api = combobox.connect(service, normalizeProps)
 
+  // Load-more has its own spinner at the end of the list
+  const searching = list.isLoading && !list.isLoadingMore
+
+  const scroll = useInfiniteScroll({
+    count: list.items.length,
+    hasMore: list.hasMore,
+    loading: list.isLoading,
+    onLoadMore: () => list.loadMore(),
+  })
+
   const query = list.filter?.trim()
   const status = list.error
     ? null
-    : list.isLoading && list.isEmpty
+    : list.isEmpty && searching
       ? "Searching…"
-      : !list.isLoading && list.isEmpty
+      : list.isEmpty
         ? query
           ? `No people match “${query}”`
           : "No people found"
@@ -86,8 +90,18 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Star Wars character</label>
           <div {...api.getControlProps()}>
-            <input data-testid="input" {...api.getInputProps()} />
-            {list.isLoading && <LoaderCircleIcon className="combobox-spinner" aria-hidden data-testid="loading" />}
+            <input data-testid="input" {...api.getInputProps()} aria-describedby={searching ? spinnerId : undefined} />
+            {searching && (
+              <span
+                id={spinnerId}
+                role="progressbar"
+                aria-label="Loading results"
+                className="combobox-spinner"
+                data-testid="loading"
+              >
+                <LoaderCircleIcon />
+              </span>
+            )}
             <button {...api.getClearTriggerProps()}>
               <XIcon />
             </button>
@@ -114,7 +128,7 @@ export default function Page() {
             {!list.isEmpty && (
               <div {...api.getListProps()}>
                 {list.items.map((item) => (
-                  <div key={item.name} data-testid={`item-${item.name}`} {...api.getItemProps({ item })}>
+                  <div key={item.url} data-testid={`item-${item.name}`} {...api.getItemProps({ item })}>
                     <span {...api.getItemTextProps({ item })}>{item.name}</span>
                     {item.birth_year && <span className="combobox-item-meta">{item.birth_year}</span>}
                     <span {...api.getItemIndicatorProps({ item })}>
@@ -122,6 +136,14 @@ export default function Page() {
                     </span>
                   </div>
                 ))}
+                <div {...scroll.getSentinelProps()} />
+                {list.isLoadingMore && (
+                  <div className="combobox-load-more" role="progressbar" aria-label="Loading more people">
+                    <span className="combobox-spinner">
+                      <LoaderCircleIcon />
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </div>

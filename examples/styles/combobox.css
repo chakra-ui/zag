@@ -143,18 +143,37 @@
 }
 
 .combobox-spinner {
+  display: inline-flex;
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
   margin-inline: 4px;
   color: var(--z-fg-muted);
-  animation: spin 0.8s linear infinite;
+
+  /* Fast responses finish before the reveal, so the spinner doesn't flash */
+  animation: combobox-spinner-reveal 0s 500ms both;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    animation: spin 0.8s linear infinite;
+  }
 }
 
-/* Stale results stay visible but dimmed while the next query loads */
+/* Stale results stay visible but dimmed while a slow query loads */
 [data-combobox-content][aria-busy] [data-combobox-list] {
   opacity: 0.6;
-  transition: opacity var(--z-duration) var(--z-ease);
+  transition: opacity var(--z-duration) var(--z-ease) 500ms;
+}
+
+@keyframes combobox-spinner-reveal {
+  from {
+    opacity: 0;
+  }
+}
+
+.combobox-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
 }
 
 .combobox-status {
