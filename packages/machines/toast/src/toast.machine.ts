@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { AnimationFrame, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -229,7 +229,19 @@ export const machine = createMachine<ToastSchema>({
             characterData: true,
           })
 
-          return () => observer.disconnect()
+          const frame = AnimationFrame.create()
+          let width = rootEl.offsetWidth
+          const stopResizeObserver = resizeObserverBorderBox.observe(rootEl, () => {
+            if (rootEl.offsetWidth === width) return
+            width = rootEl.offsetWidth
+            frame.request(syncHeight)
+          })
+
+          return () => {
+            observer.disconnect()
+            stopResizeObserver()
+            frame.cancel()
+          }
         })
       },
     },
