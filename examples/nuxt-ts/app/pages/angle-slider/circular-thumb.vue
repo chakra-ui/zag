@@ -1,26 +1,21 @@
 <script setup lang="ts">
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import "@styles/angle-slider-custom.css"
+import "@styles/angle-slider.css"
 
-const id = useId()
-const service = useMachine(
-  angleSlider.machine,
-  computed(() => ({ id })),
-)
+const service = useMachine(angleSlider.machine, { id: useId(), defaultValue: 120 })
 const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main class="angle-slider angle-slider-circular">
-    <h1>Angle Slider — Circular Thumb</h1>
+  <main class="angle-slider angle-slider-knob">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">
-        Angle Slider:
-        <div v-bind="api.getValueTextProps()">{{ api.valueAsDegree }}</div>
+        Shadow angle
+        <span v-bind="api.getValueTextProps()">{{ api.value }}°</span>
       </label>
       <div v-bind="api.getControlProps()">
-        <div v-bind="api.getThumbProps()"></div>
+        <div v-bind="api.getThumbProps()" />
       </div>
       <input v-bind="api.getHiddenInputProps()" />
     </div>

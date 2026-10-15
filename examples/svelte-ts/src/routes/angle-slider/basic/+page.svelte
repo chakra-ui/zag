@@ -24,7 +24,8 @@
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>
-      Angle Slider: <div {...api.getValueTextProps()}>{api.valueAsDegree}</div>
+      Rotation
+      <span {...api.getValueTextProps()}>{api.valueAsDegree}</span>
     </label>
     <div {...api.getControlProps()}>
       <div {...api.getThumbProps()}></div>

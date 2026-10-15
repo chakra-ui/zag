@@ -20,8 +20,8 @@ const api = computed(() => angleSlider.connect(service, normalizeProps))
   <main class="angle-slider">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">
-        Angle Slider:
-        <div v-bind="api.getValueTextProps()">{{ api.valueAsDegree }}</div>
+        Rotation
+        <span v-bind="api.getValueTextProps()">{{ api.valueAsDegree }}</span>
       </label>
       <div v-bind="api.getControlProps()">
         <div v-bind="api.getThumbProps()"></div>

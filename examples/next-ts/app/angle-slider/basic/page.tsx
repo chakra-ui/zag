@@ -9,6 +9,8 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/angle-slider.css"
 
+const MARKERS = [0, 45, 90, 135, 180, 225, 270, 315]
+
 export default function Page() {
   const controls = useControls(angleSliderControls)
 
@@ -24,13 +26,14 @@ export default function Page() {
       <main className="angle-slider">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>
-            Angle Slider: <div {...api.getValueTextProps()}>{api.valueAsDegree}</div>
+            Rotation
+            <span {...api.getValueTextProps()}>{api.valueAsDegree}</span>
           </label>
           <div {...api.getControlProps()}>
-            <div {...api.getThumbProps()}></div>
+            <div {...api.getThumbProps()} />
             <div {...api.getMarkerGroupProps()}>
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((value) => (
-                <div key={value} {...api.getMarkerProps({ value })}></div>
+              {MARKERS.map((value) => (
+                <div key={value} {...api.getMarkerProps({ value })} />
               ))}
             </div>
           </div>
