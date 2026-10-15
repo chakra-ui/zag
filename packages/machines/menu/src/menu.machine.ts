@@ -285,6 +285,7 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_POINTERLEAVE: [
           {
             guard: "isOpenControlled",
+            target: "closed",
             actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {
