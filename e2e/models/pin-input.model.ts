@@ -69,6 +69,12 @@ export class PinInputModel extends Model {
     await expect(form).toHaveAttribute("data-invalid", String(invalid))
   }
 
+  async seeInputsAreGroupedUnderLabel(name: string) {
+    const group = this.page.getByRole("group", { name })
+    await expect(group).toBeVisible()
+    await expect(group.locator("[data-part=input]")).toHaveCount(await this.allInputs.count())
+  }
+
   async seeInputIsFocused(index: number) {
     await expect(this.getInput(index)).toBeFocused()
   }
