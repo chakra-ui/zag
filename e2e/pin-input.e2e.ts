@@ -9,6 +9,10 @@ test.describe("pin input", () => {
     await I.goto()
   })
 
+  test("should group the inputs under the label", async () => {
+    await I.seeInputsAreGroupedUnderLabel("Enter code:")
+  })
+
   test("on type: should move focus to the next input", async () => {
     await I.fillInput(1, "1")
     await I.seeInputIsFocused(2)
