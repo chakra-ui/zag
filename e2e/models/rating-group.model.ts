@@ -27,6 +27,10 @@ export class RatingGroupModel extends Model {
     return this.page.locator(part("label"))
   }
 
+  get checkedItems() {
+    return this.page.locator(`${part("item")}[aria-checked="true"]`)
+  }
+
   getRating(value: number): Locator {
     return this.page.locator(part("item")).nth(value - 1)
   }
@@ -59,6 +63,15 @@ export class RatingGroupModel extends Model {
 
   async seeRatingIsDisabled(value: number) {
     await expect(this.getRating(value)).toHaveAttribute("data-disabled", "")
+  }
+
+  async seeRatingIsChecked(value: number) {
+    await expect(this.checkedItems).toHaveCount(1)
+    await expect(this.getRating(value)).toHaveAttribute("aria-checked", "true")
+  }
+
+  async seeNoRatingIsChecked() {
+    await expect(this.checkedItems).toHaveCount(0)
   }
 
   async seeRatingIsFocusable(value: number) {

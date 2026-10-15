@@ -137,7 +137,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "aria-setsize": prop("count"),
-        "aria-checked": itemState.checked,
+        "aria-checked": Math.ceil(value) === index,
         "data-checked": dataAttr(itemState.checked),
         "aria-posinset": index,
         "data-highlighted": dataAttr(itemState.highlighted),

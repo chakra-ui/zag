@@ -96,4 +96,15 @@ test.describe("rating / keyboard", () => {
     await I.pressKey("Tab")
     await I.seeRatingIsFocusable(1)
   })
+
+  test("should not mark any item as checked when value is 0", async () => {
+    await I.seeRatingIsChecked(3)
+
+    await I.focusRating(3)
+
+    // decrease value to 0
+    await I.pressKey("ArrowLeft", 5)
+    await I.seeInputHasValue("0")
+    await I.seeNoRatingIsChecked()
+  })
 })
