@@ -42,7 +42,7 @@
         <LoaderCircleIcon class="async-list-spinner" /> Loading people…
       </div>
     {:else}
-      <ul class="async-list-items" aria-busy={list.isLoading}>
+      <ul class="async-list-items async-list-panel" aria-busy={list.isLoading}>
         {#each list.items as person (person.url)}
           <li>
             {person.name}

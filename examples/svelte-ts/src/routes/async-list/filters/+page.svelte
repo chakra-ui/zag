@@ -75,7 +75,7 @@
     {:else if list.isEmpty}
       <div class="async-list-status">No characters match these filters</div>
     {:else}
-      <ul class="async-list-items" aria-busy={list.isLoading}>
+      <ul class="async-list-items async-list-panel" aria-busy={list.isLoading}>
         {#each list.items as character (character.id)}
           <li>
             <span class="async-list-person">

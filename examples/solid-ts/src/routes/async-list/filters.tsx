@@ -80,7 +80,7 @@ export default function Page() {
             <div class="async-list-status">No characters match these filters</div>
           </Match>
           <Match when={true}>
-            <ul class="async-list-items" aria-busy={list().isLoading}>
+            <ul class="async-list-items async-list-panel" aria-busy={list().isLoading}>
               <For each={list().items}>
                 {(character) => (
                   <li>

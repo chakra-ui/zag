@@ -76,7 +76,7 @@ export default function Page() {
         ) : list.isEmpty ? (
           <div className="async-list-status">No characters match these filters</div>
         ) : (
-          <ul className="async-list-items" aria-busy={list.isLoading}>
+          <ul className="async-list-items async-list-panel" aria-busy={list.isLoading}>
             {list.items.map((character) => (
               <li key={character.id}>
                 <span className="async-list-person">

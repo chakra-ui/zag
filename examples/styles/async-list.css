@@ -51,6 +51,11 @@
     color: var(--z-danger-fg);
   }
 
+  /* `display: flex` would otherwise override the attribute */
+  &[hidden] {
+    display: none;
+  }
+
   & svg {
     width: 16px;
     height: 16px;
@@ -61,12 +66,27 @@
   animation: spin 0.8s linear infinite;
 }
 
+.async-list-panel {
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+}
+
+/* Scrolls inside the panel; infinite scroll observes this element */
+.async-list-scroller {
+  max-height: 400px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+}
+
 .async-list-items {
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid var(--z-border);
-  border-radius: var(--z-radius);
 
   & li {
     display: flex;

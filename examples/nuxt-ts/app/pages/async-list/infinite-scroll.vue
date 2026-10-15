@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import * as asyncList from "@zag-js/async-list"
 import { useMachine } from "@zag-js/vue"
-import "@styles/infinite-scroll.css"
+import { LoaderCircleIcon } from "lucide-vue-next"
+import "@styles/async-list.css"
 
 interface Person {
   name: string
@@ -9,12 +10,13 @@ interface Person {
   birth_year: string
 }
 
-const listService = useMachine(asyncList.machine as asyncList.Machine<Person>, {
+const service = useMachine(asyncList.machine as asyncList.Machine<Person>, {
   autoReload: true,
+  initialFilter: "",
   // Keep showing the last results while the next query loads
   keepPreviousItems: true,
   async load({ signal, filter, cursor }) {
-    const search = encodeURIComponent(filter?.trim() ?? "")
+    const search = encodeURIComponent(filter.trim())
     const response = await fetch(cursor ?? `https://swapi.py4e.com/api/people/?search=${search}`, { signal })
     if (!response.ok) throw new Error(`Request failed (${response.status})`)
     const data = await response.json()
@@ -22,7 +24,7 @@ const listService = useMachine(asyncList.machine as asyncList.Machine<Person>, {
   },
 })
 
-const list = computed(() => asyncList.connect(listService))
+const list = computed(() => asyncList.connect(service))
 
 const scroll = useInfiniteScroll(() => ({
   count: list.value.items.length,
@@ -35,26 +37,46 @@ const searching = computed(() => list.value.isLoading && !list.value.isLoadingMo
 </script>
 
 <template>
-  <main class="infinite-scroll">
-    <input
-      type="search"
-      aria-label="Search people"
-      placeholder="Search people…"
-      @input="list.setFilter(($event.currentTarget as HTMLInputElement).value)"
-    />
-    <p data-testid="summary">{{ list.items.length }} loaded{{ searching ? " · Searching…" : "" }}</p>
+  <main>
+    <div class="async-list">
+      <div class="async-list-toolbar">
+        <input
+          type="search"
+          aria-label="Search people"
+          placeholder="Search people…"
+          @input="list.setFilter(($event.currentTarget as HTMLInputElement).value)"
+        />
+        <span class="async-list-meta" data-testid="summary">
+          {{ searching ? "Searching…" : `${list.items.length} loaded` }}
+        </span>
+      </div>
 
-    <div class="scroller" tabindex="0" :aria-busy="list.isLoading || undefined">
-      <ul>
-        <li v-for="item in list.items" :key="item.url">
-          {{ item.name }} <small>{{ item.birth_year }}</small>
-        </li>
-      </ul>
-      <div v-if="!list.isLoading && list.isEmpty" class="footer">No people found</div>
-      <div v-bind="scroll.getSentinelProps()" />
-      <div v-if="list.isLoadingMore" v-bind="scroll.getIndicatorProps({ type: 'loading' })">Loading more…</div>
-      <div v-if="!list.isLoading && !list.isEmpty" v-bind="scroll.getIndicatorProps({ type: 'complete' })">
-        You’ve reached the end
+      <div class="async-list-panel async-list-scroller" tabindex="0" aria-label="People">
+        <div v-if="list.error" role="alert" class="async-list-status" data-type="error">
+          Couldn’t load people.
+          <button @click="list.reload()">Retry</button>
+        </div>
+        <div v-else-if="list.isEmpty && list.isLoading" role="status" class="async-list-status">
+          <LoaderCircleIcon class="async-list-spinner" /> Loading people…
+        </div>
+        <div v-else-if="list.isEmpty" class="async-list-status">No people found</div>
+        <ul v-else class="async-list-items" :aria-busy="searching">
+          <li v-for="person in list.items" :key="person.url">
+            {{ person.name }}
+            <span class="async-list-meta">{{ person.birth_year }}</span>
+          </li>
+        </ul>
+        <div v-bind="scroll.getSentinelProps()" />
+        <div v-if="list.isLoadingMore" v-bind="scroll.getIndicatorProps({ type: 'loading' })" class="async-list-status">
+          <LoaderCircleIcon class="async-list-spinner" /> Loading more…
+        </div>
+        <div
+          v-if="!list.isLoading && !list.isEmpty"
+          v-bind="scroll.getIndicatorProps({ type: 'complete' })"
+          class="async-list-status"
+        >
+          You’ve reached the end
+        </div>
       </div>
     </div>
   </main>

@@ -40,7 +40,7 @@ const list = computed(() => asyncList.connect(service))
       <div v-else-if="list.isEmpty && list.isLoading" role="status" class="async-list-status">
         <LoaderCircleIcon class="async-list-spinner" /> Loading people…
       </div>
-      <ul v-else class="async-list-items" :aria-busy="list.isLoading">
+      <ul v-else class="async-list-items async-list-panel" :aria-busy="list.isLoading">
         <li v-for="person in list.items" :key="person.url">
           {{ person.name }}
           <span class="async-list-meta">{{ person.birth_year }}</span>

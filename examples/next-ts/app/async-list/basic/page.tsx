@@ -43,7 +43,7 @@ export default function Page() {
             <LoaderCircleIcon className="async-list-spinner" /> Loading people…
           </div>
         ) : (
-          <ul className="async-list-items" aria-busy={list.isLoading}>
+          <ul className="async-list-items async-list-panel" aria-busy={list.isLoading}>
             {list.items.map((person) => (
               <li key={person.url}>
                 {person.name}

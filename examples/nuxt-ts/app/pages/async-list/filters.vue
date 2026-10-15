@@ -75,7 +75,7 @@ const list = computed(() => asyncList.connect(service))
         <LoaderCircleIcon class="async-list-spinner" /> Loading characters…
       </div>
       <div v-else-if="list.isEmpty" class="async-list-status">No characters match these filters</div>
-      <ul v-else class="async-list-items" :aria-busy="list.isLoading">
+      <ul v-else class="async-list-items async-list-panel" :aria-busy="list.isLoading">
         <li v-for="character in list.items" :key="character.id">
           <span class="async-list-person">
             <img class="async-list-avatar" :src="character.image" alt="" />
