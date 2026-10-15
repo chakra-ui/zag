@@ -1,83 +1,65 @@
 import * as asyncList from "@zag-js/async-list"
 import { useMachine } from "@zag-js/solid"
-import { createMemo } from "solid-js"
-import { StateVisualizer } from "~/components/state-visualizer"
-import { Toolbar } from "~/components/toolbar"
+import { LoaderCircleIcon, RotateCwIcon } from "lucide-solid"
+import { createMemo, For, Match, Switch } from "solid-js"
+import "@styles/async-list.css"
 
-export default function Page() {
-  const service = useMachine(asyncList.machine as asyncList.Machine<Character>, {
-    autoReload: true,
-    initialFilter: "",
-    async load({ signal, cursor, filter }) {
-      if (cursor) cursor = cursor.replace(/^http:\/\//i, "https://")
-
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      let res = await fetch(cursor || `https://swapi.py4e.com/api/people/?search=${filter}`, { signal })
-      let json = await res.json()
-
-      return {
-        items: json.results,
-        cursor: json.next,
-      }
-    },
-    sort({ items, sorting }) {
-      return {
-        items:
-          items.length > 0
-            ? items.slice().sort((a, b) => {
-                if (sorting.column != null) {
-                  let cmp = a[sorting.column] < b[sorting.column] ? -1 : 1
-                  if (sorting.direction === "descending") {
-                    cmp *= -1
-                  }
-                  return cmp
-                } else {
-                  return 1
-                }
-              })
-            : [],
-      }
-    },
-  })
-
-  const api = createMemo(() => asyncList.connect(service))
-
-  return (
-    <>
-      <main class="async-list">
-        <span>{api().items.length}</span>
-        <input type="text" onInput={(e) => api().setFilter(e.currentTarget.value)} />
-        <div>
-          {api().isLoading && <p>Loading...</p>}
-          <button onClick={() => api().reload()}>Reload</button>
-          <button onClick={() => api().loadMore()}>Load More</button>
-          <button onClick={() => api().setSorting({ column: "name", direction: "ascending" })}>Sort by name</button>
-          <pre>{JSON.stringify(api().items, null, 2)}</pre>
-        </div>
-      </main>
-
-      <Toolbar>
-        <StateVisualizer state={service} context={["cursor", "filter"]} omit={["items"]} />
-      </Toolbar>
-    </>
-  )
+interface Person {
+  name: string
+  url: string
+  birth_year: string
 }
 
-interface Character {
-  name: string
-  height: string
-  mass: string
-  hair_color: string
-  skin_color: string
-  eye_color: string
-  birth_year: string
-  gender: string
-  homeworld: string
-  films: string[]
-  species: string[]
-  vehicles: string[]
-  starships: string[]
-  created: string
-  edited: string
-  url: string
+export default function Page() {
+  const service = useMachine(asyncList.machine as asyncList.Machine<Person>, {
+    autoReload: true,
+    // Reloading dims the current rows instead of blanking them
+    keepPreviousItems: true,
+    async load({ signal }) {
+      const response = await fetch("https://swapi.py4e.com/api/people/", { signal })
+      if (!response.ok) throw new Error(`Request failed (${response.status})`)
+      const data = await response.json()
+      return { items: data.results }
+    },
+  })
+  const list = createMemo(() => asyncList.connect(service))
+
+  return (
+    <main>
+      <div class="async-list">
+        <div class="async-list-toolbar">
+          <button onClick={() => list().reload()} disabled={list().isLoading}>
+            <RotateCwIcon /> Reload
+          </button>
+          <span class="async-list-meta">{list().items.length} people</span>
+        </div>
+
+        <Switch>
+          <Match when={list().error}>
+            <div role="alert" class="async-list-status" data-type="error">
+              Couldn’t load people.
+              <button onClick={() => list().reload()}>Retry</button>
+            </div>
+          </Match>
+          <Match when={list().isEmpty && list().isLoading}>
+            <div role="status" class="async-list-status">
+              <LoaderCircleIcon class="async-list-spinner" /> Loading people…
+            </div>
+          </Match>
+          <Match when={true}>
+            <ul class="async-list-items" aria-busy={list().isLoading}>
+              <For each={list().items}>
+                {(person) => (
+                  <li>
+                    {person.name}
+                    <span class="async-list-meta">{person.birth_year}</span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </Match>
+        </Switch>
+      </div>
+    </main>
+  )
 }

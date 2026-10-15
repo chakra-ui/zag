@@ -106,6 +106,9 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Async List",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "sorting", title: "Sorting" },
+      { slug: "server-sorting", title: "Server Sorting" },
+      { slug: "filters", title: "Filters" },
       { slug: "infinite-scroll", title: "Infinite Scroll" },
     ],
   },

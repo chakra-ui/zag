@@ -1,0 +1,147 @@
+.async-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+  font-size: var(--z-text-sm);
+
+  /* Stale results stay visible but dimmed while the next load runs */
+  & [aria-busy="true"] {
+    opacity: 0.6;
+    transition: opacity var(--z-duration) var(--z-ease) 300ms;
+  }
+}
+
+.async-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  & input[type="search"] {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  & .async-list-meta {
+    margin-inline-start: auto;
+  }
+}
+
+.async-list-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.async-list-meta {
+  color: var(--z-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.async-list-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 12px;
+  color: var(--z-fg-muted);
+
+  &[data-type="error"] {
+    color: var(--z-danger-fg);
+  }
+
+  & svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.async-list-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+.async-list-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+
+  & li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--z-border-subtle);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.async-list-table-scroll {
+  overflow-x: auto;
+}
+
+.async-list-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  & :is(th, td) {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--z-border-subtle);
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  & th {
+    font-weight: 500;
+    color: var(--z-fg-muted);
+  }
+
+  & [data-numeric] {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.async-list-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & > span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+.async-list-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--z-radius-full);
+  object-fit: cover;
+}
+
+/* Header button: reads as text, not as a control chip */
+.async-list-sort {
+  height: auto;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+
+  &:hover:not(:disabled) {
+    background: none;
+    color: var(--z-fg);
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+}

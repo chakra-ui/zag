@@ -1,81 +1,51 @@
 <script setup lang="ts">
 import * as asyncList from "@zag-js/async-list"
 import { useMachine } from "@zag-js/vue"
-import { computed } from "vue"
-import StateVisualizer from "~/components/StateVisualizer.vue"
-import Toolbar from "~/components/Toolbar.vue"
+import { LoaderCircleIcon, RotateCwIcon } from "lucide-vue-next"
+import "@styles/async-list.css"
 
-interface Character {
+interface Person {
   name: string
-  height: string
-  mass: string
-  hair_color: string
-  skin_color: string
-  eye_color: string
-  birth_year: string
-  gender: string
-  homeworld: string
-  films: string[]
-  species: string[]
-  vehicles: string[]
-  starships: string[]
-  created: string
-  edited: string
   url: string
+  birth_year: string
 }
 
-const service = useMachine(asyncList.machine as asyncList.Machine<Character>, {
+const service = useMachine(asyncList.machine as asyncList.Machine<Person>, {
   autoReload: true,
-  initialFilter: "",
-  async load({ signal, cursor, filter }) {
-    if (cursor) cursor = cursor.replace(/^http:\/\//i, "https://")
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    let res = await fetch(cursor || `https://swapi.py4e.com/api/people/?search=${filter}`, { signal })
-    let json = await res.json()
-
-    return {
-      items: json.results,
-      cursor: json.next,
-    }
-  },
-  sort({ items, sorting }) {
-    return {
-      items:
-        items.length > 0
-          ? items.slice().sort((a, b) => {
-              if (sorting.column != null) {
-                let cmp = a[sorting.column as keyof Character] < b[sorting.column as keyof Character] ? -1 : 1
-                if (sorting.direction === "descending") {
-                  cmp *= -1
-                }
-                return cmp
-              } else {
-                return 1
-              }
-            })
-          : [],
-    }
+  // Reloading dims the current rows instead of blanking them
+  keepPreviousItems: true,
+  async load({ signal }) {
+    const response = await fetch("https://swapi.py4e.com/api/people/", { signal })
+    if (!response.ok) throw new Error(`Request failed (${response.status})`)
+    const data = await response.json()
+    return { items: data.results }
   },
 })
 
-const api = computed(() => asyncList.connect(service))
+const list = computed(() => asyncList.connect(service))
 </script>
 
 <template>
-  <main class="async-list">
-    <span>{{ api.items.length }}</span>
-    <input type="text" @input="(e) => api.setFilter((e.target as HTMLInputElement).value)" />
-    <div>
-      <p v-if="api.isLoading">Loading...</p>
-      <button @click="api.reload()">Reload</button>
-      <button @click="api.loadMore()">Load More</button>
-      <button @click="api.setSorting({ column: 'name', direction: 'ascending' })">Sort by name</button>
-      <pre>{{ JSON.stringify(api.items, null, 2) }}</pre>
+  <main>
+    <div class="async-list">
+      <div class="async-list-toolbar">
+        <button :disabled="list.isLoading" @click="list.reload()"><RotateCwIcon /> Reload</button>
+        <span class="async-list-meta">{{ list.items.length }} people</span>
+      </div>
+
+      <div v-if="list.error" role="alert" class="async-list-status" data-type="error">
+        Couldn’t load people.
+        <button @click="list.reload()">Retry</button>
+      </div>
+      <div v-else-if="list.isEmpty && list.isLoading" role="status" class="async-list-status">
+        <LoaderCircleIcon class="async-list-spinner" /> Loading people…
+      </div>
+      <ul v-else class="async-list-items" :aria-busy="list.isLoading">
+        <li v-for="person in list.items" :key="person.url">
+          {{ person.name }}
+          <span class="async-list-meta">{{ person.birth_year }}</span>
+        </li>
+      </ul>
     </div>
   </main>
-
-  <Toolbar>
-    <StateVisualizer :state="service" :context="['cursor', 'filter']" :omit="['items']" />
-  </Toolbar>
 </template>
