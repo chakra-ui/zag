@@ -26,16 +26,38 @@
   }
 }
 
-[data-accordion-item-content] {
-  padding-block: 12px;
-}
-
-/* Collapsible-driven content: pad the child, not the animated element */
-.accordion [data-collapsible-content] > p {
+/* Padding lives on an inner element so the content's height animation isn't offset by it */
+.accordion-item-body {
   margin: 0;
   padding-block: 12px;
 }
 
 [data-accordion-item-indicator] {
   display: inline-flex;
+}
+
+.accordion-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.accordion-hint {
+  margin: 0;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+}
+
+/* Inner accordion: indented under its parent panel */
+.accordion [data-accordion-root] [data-accordion-root] {
+  padding-inline-start: 12px;
+  border-inline-start: 2px solid var(--z-border);
+}
+
+.accordion-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 40ch;
 }

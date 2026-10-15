@@ -35,8 +35,10 @@ export default function Page() {
                 </button>
               </h3>
               <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
+                <div className="accordion-item-body">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </div>
               </div>
             </div>
           ))}

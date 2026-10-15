@@ -17,6 +17,29 @@ export const accordionData = [
   { id: "contact", label: "Contact" },
 ]
 
+export const accordionFaqData = [
+  {
+    value: "shipping",
+    title: "How long does shipping take?",
+    content: "Orders ship within 2 business days. Standard delivery takes 3–5 days, express takes 1–2.",
+  },
+  {
+    value: "returns",
+    title: "What is your return policy?",
+    content: "Unused items can be returned within 30 days for a full refund. Return shipping is free.",
+  },
+  {
+    value: "payment",
+    title: "Which payment methods do you accept?",
+    content: "We accept all major cards, PayPal, and Apple Pay. Invoices are available for business accounts.",
+  },
+  {
+    value: "support",
+    title: "How do I contact support?",
+    content: "Email support@example.com or use the chat in your dashboard. We reply within one business day.",
+  },
+]
+
 export const avatarData = {
   full: [
     "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/top-crop/width/200/height/150?cb=20210223094656",

@@ -80,7 +80,7 @@ export default function Page() {
                 </button>
               </h3>
               <Collapsible {...getContentProps(item.value)} open={api().getItemState({ value: item.value }).expanded}>
-                <p>{item.description}</p>
+                <p class="accordion-item-body">{item.description}</p>
               </Collapsible>
             </div>
           )}

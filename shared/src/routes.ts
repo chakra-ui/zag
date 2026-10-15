@@ -434,6 +434,9 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Accordion",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "disabled-item", title: "Disabled Item" },
+      { slug: "nested", title: "Nested" },
       { slug: "collapsible", title: "With Collapsible" },
     ],
   },

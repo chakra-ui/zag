@@ -78,7 +78,7 @@ export default function Page() {
                 </button>
               </h3>
               <Collapsible {...contentProps} open={itemState.expanded}>
-                <p>{item.description}</p>
+                <p className="accordion-item-body">{item.description}</p>
               </Collapsible>
             </div>
           )
