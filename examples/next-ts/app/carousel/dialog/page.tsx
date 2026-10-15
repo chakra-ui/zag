@@ -3,49 +3,43 @@
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
-import { XIcon } from "lucide-react"
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
 import "@styles/carousel.css"
 import "@styles/dialog.css"
 
-const SLIDE_COUNT = 30
+const images = Array.from({ length: 12 }, (_, index) => `https://picsum.photos/seed/zag-product-${index}/800/500`)
 
-function CarouselInDialog({ page, onPageChange }: { page: number; onPageChange: (page: number) => void }) {
+function Lightbox({ page, onPageChange }: { page: number; onPageChange: (page: number) => void }) {
   const service = useMachine(carousel.machine, {
     id: useId(),
-    count: SLIDE_COUNT,
+    count: images.length,
     page,
-    onPageChange({ page }) {
-      onPageChange(page)
-    },
+    onPageChange: (details) => onPageChange(details.page),
   })
   const api = carousel.connect(service, normalizeProps)
 
   return (
-    <div className="carousel">
-      <div {...api.getRootProps()}>
-        <div {...api.getControlProps()}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
-          <button {...api.getNextTriggerProps()}>Next</button>
-        </div>
-
+    <div {...api.getRootProps()}>
+      <div {...api.getControlProps()}>
+        <button {...api.getPrevTriggerProps()}>
+          <ChevronLeftIcon />
+        </button>
         <div {...api.getItemGroupProps()}>
-          {Array.from({ length: SLIDE_COUNT }, (_, i) => (
-            <div {...api.getItemProps({ index: i })} key={i}>
-              <img src={`https://picsum.photos/seed/slide-${i}/300/200`} alt={`Slide ${i}`} style={{ width: "100%" }} />
+          {images.map((src, index) => (
+            <div {...api.getItemProps({ index })} key={index} className="carousel-photo">
+              <img src={src} alt={`Product image ${index + 1}`} />
             </div>
           ))}
         </div>
-
-        <div {...api.getIndicatorGroupProps()}>
-          {api.pageSnapPoints.map((_, index) => (
-            <button {...api.getIndicatorProps({ index })} key={index} />
-          ))}
-        </div>
-
-        <p data-testid="page-display">Current page: {api.page}</p>
+        <button {...api.getNextTriggerProps()}>
+          <ChevronRightIcon />
+        </button>
       </div>
+      <span {...api.getProgressTextProps()} data-testid="page-display">
+        {api.getProgressText()}
+      </span>
     </div>
   )
 }
@@ -59,16 +53,16 @@ export default function Page() {
   return (
     <main>
       <button {...api.getTriggerProps()} data-testid="open-dialog">
-        Open Carousel in Dialog
+        View product images
       </button>
 
       <Portal>
         <Presence {...api.getBackdropProps()} />
         <div {...api.getPositionerProps()}>
-          <Presence {...api.getContentProps()}>
-            <h2 {...api.getTitleProps()}>Carousel in Dialog</h2>
-            <p {...api.getDescriptionProps()}>Navigate past page 10 to test the fix.</p>
-            <CarouselInDialog page={page} onPageChange={setPage} />
+          <Presence {...api.getContentProps()} className="carousel">
+            <h2 {...api.getTitleProps()}>Product images</h2>
+            <p {...api.getDescriptionProps()}>Use the arrows or swipe to browse.</p>
+            <Lightbox page={page} onPageChange={setPage} />
             <button {...api.getCloseTriggerProps()} data-testid="close-dialog">
               <XIcon />
             </button>

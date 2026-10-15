@@ -3,6 +3,7 @@ import { addDomEvent, raf, resizeObserverBorderBox, trackPointerMove } from "@za
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
+import { getClosestSnapIndex, getPageForIndex, getPageSnapPoints, getSlidesPerMove } from "./carousel.utils"
 import type { CarouselSchema } from "./carousel.types"
 
 const DRIFT_THRESHOLD = 1
@@ -430,7 +431,8 @@ export const machine = createMachine<CarouselSchema>({
       },
       scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"
-        const index = clampValue(event.index ?? context.get("page"), 0, context.get("pageSnapPoints").length - 1)
+        // `INDEX.SET` carries a slide index, not a page
+        const index = clampValue(context.get("page"), 0, context.get("pageSnapPoints").length - 1)
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const axis = computed("isHorizontal") ? "left" : "top"
@@ -455,13 +457,7 @@ export const machine = createMachine<CarouselSchema>({
         const snapPoints = context.get("pageSnapPoints")
         if (!snapPoints.length) return
 
-        const page = snapPoints.reduce((closestIndex, snapPoint, index) => {
-          const currentDistance = Math.abs(snapPoint - scrollPosition)
-          const closestDistance = Math.abs(snapPoints[closestIndex] - scrollPosition)
-          return currentDistance < closestDistance ? index : closestIndex
-        }, 0)
-
-        context.set("page", page)
+        context.set("page", getClosestSnapIndex(snapPoints, scrollPosition))
       },
       setNextPage({ context, prop, state }) {
         const loop = state.matches("autoplay") || prop("loop")
@@ -473,18 +469,25 @@ export const machine = createMachine<CarouselSchema>({
         const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
         context.set("page", page)
       },
-      setMatchingPage({ context, event, computed, scope }) {
+      setMatchingPage({ context, event, computed, scope, prop }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
+        const pageSnapPoints = context.get("pageSnapPoints")
         const snapPoint = findSnapPoint(
           el,
           computed("isHorizontal") ? "x" : "y",
           (node) => node.dataset.index === event.index.toString(),
         )
-        if (snapPoint == null) return
 
-        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - snapPoint) < 1)
-        context.set("page", page)
+        const page = snapPoint == null ? -1 : pageSnapPoints.findIndex((point) => Math.abs(point - snapPoint) < 1)
+        if (page !== -1) {
+          context.set("page", page)
+          return
+        }
+
+        const perMove = getSlidesPerMove(prop("slidesPerMove"), prop("slidesPerPage"))
+        const fallbackPage = getPageForIndex(event.index, perMove, pageSnapPoints.length)
+        if (fallbackPage != null) context.set("page", fallbackPage)
       },
       setPage({ context, event }) {
         const page = event.index ?? context.get("page")
@@ -516,10 +519,7 @@ export const machine = createMachine<CarouselSchema>({
         const snapPoints = context.get("pageSnapPoints")
         if (!snapPoints.length) return
 
-        // Find closest snap point
-        const closest = snapPoints.reduce((closest, curr) => {
-          return Math.abs(curr - scrollPos) < Math.abs(closest - scrollPos) ? curr : closest
-        }, snapPoints[0])
+        const closest = snapPoints[getClosestSnapIndex(snapPoints, scrollPos)]
 
         raf(() => {
           // Scroll to closest snap point
@@ -557,25 +557,3 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 })
-
-function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: number | "auto", slidesPerPage: number) {
-  // If there are no total slides or if slidesPerPage is 0, do nothing.
-  if (totalSlides == null || slidesPerPage <= 0) {
-    return []
-  }
-
-  const snapPoints: number[] = []
-  const perMove = slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove
-
-  // An additional safety check in case perMove becomes 0 through other means
-  if (perMove <= 0) {
-    return []
-  }
-
-  for (let i = 0; i < totalSlides; i += perMove) {
-    // Ensure we don't create a snap point that would go beyond the available slides
-    if (i + slidesPerPage > totalSlides) break
-    snapPoints.push(i)
-  }
-  return snapPoints
-}

@@ -3,6 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/t
 import { clampValue, mergeWithDefault, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
+import { getSlidesPerMove, isSnapTarget } from "./carousel.utils"
 import type {
   CarouselApi,
   CarouselService,
@@ -188,13 +189,9 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         style: {
           flex: "0 0 auto",
           [horizontal ? "maxWidth" : "maxHeight"]: "100%",
-          scrollSnapAlign: (() => {
-            const snapAlign = props.snapAlign ?? "start"
-            const slidesPerMove = prop("slidesPerMove")
-            const perMove = slidesPerMove === "auto" ? Math.floor(prop("slidesPerPage")) : slidesPerMove
-            const shouldSnap = (props.index + perMove) % perMove === 0
-            return shouldSnap ? snapAlign : undefined
-          })(),
+          scrollSnapAlign: isSnapTarget(props.index, getSlidesPerMove(prop("slidesPerMove"), prop("slidesPerPage")))
+            ? (props.snapAlign ?? "start")
+            : undefined,
         },
       })
     },

@@ -1,55 +1,48 @@
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-solid"
 import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import "@styles/carousel.css"
-import { XIcon } from "lucide-solid"
+import "@styles/dialog.css"
 
-const SLIDE_COUNT = 30
+const images = Array.from({ length: 12 }, (_, index) => `https://picsum.photos/seed/zag-product-${index}/800/500`)
 
-function CarouselInDialog(props: { page: number; onPageChange: (page: number) => void }) {
+function Lightbox(props: { page: number; onPageChange: (page: number) => void }) {
   const service = useMachine(carousel.machine, {
     id: createUniqueId(),
-    count: SLIDE_COUNT,
+    count: images.length,
     get page() {
       return props.page
     },
-    onPageChange({ page }) {
-      props.onPageChange(page)
-    },
+    onPageChange: (details) => props.onPageChange(details.page),
   })
   const api = createMemo(() => carousel.connect(service, normalizeProps))
 
   return (
-    <div class="carousel">
-      <div {...api().getRootProps()}>
-        <div {...api().getControlProps()}>
-          <button {...api().getPrevTriggerProps()}>Prev</button>
-          <button {...api().getNextTriggerProps()}>Next</button>
-        </div>
-
+    <div {...api().getRootProps()}>
+      <div {...api().getControlProps()}>
+        <button {...api().getPrevTriggerProps()}>
+          <ChevronLeftIcon />
+        </button>
         <div {...api().getItemGroupProps()}>
-          <Index each={Array.from({ length: SLIDE_COUNT })}>
-            {(_, index) => (
-              <div {...api().getItemProps({ index })}>
-                <img
-                  src={`https://picsum.photos/seed/slide-${index}/300/200`}
-                  alt={`Slide ${index}`}
-                  style={{ width: "100%" }}
-                />
+          <Index each={images}>
+            {(src, index) => (
+              <div {...api().getItemProps({ index })} class="carousel-photo">
+                <img src={src()} alt={`Product image ${index + 1}`} />
               </div>
             )}
           </Index>
         </div>
-
-        <div {...api().getIndicatorGroupProps()}>
-          <Index each={api().pageSnapPoints}>{(_, index) => <button {...api().getIndicatorProps({ index })} />}</Index>
-        </div>
-
-        <p data-testid="page-display">Current page: {api().page}</p>
+        <button {...api().getNextTriggerProps()}>
+          <ChevronRightIcon />
+        </button>
       </div>
+      <span {...api().getProgressTextProps()} data-testid="page-display">
+        {api().getProgressText()}
+      </span>
     </div>
   )
 }
@@ -63,16 +56,16 @@ export default function Page() {
   return (
     <main>
       <button {...api().getTriggerProps()} data-testid="open-dialog">
-        Open Carousel in Dialog
+        View product images
       </button>
 
       <Portal>
         <Presence {...api().getBackdropProps()} />
         <div {...api().getPositionerProps()}>
-          <Presence {...api().getContentProps()}>
-            <h2 {...api().getTitleProps()}>Carousel in Dialog</h2>
-            <p {...api().getDescriptionProps()}>Navigate past page 10 to test the fix.</p>
-            <CarouselInDialog page={page()} onPageChange={setPage} />
+          <Presence {...api().getContentProps()} class="carousel">
+            <h2 {...api().getTitleProps()}>Product images</h2>
+            <p {...api().getDescriptionProps()}>Use the arrows or swipe to browse.</p>
+            <Lightbox page={page()} onPageChange={setPage} />
             <button {...api().getCloseTriggerProps()} data-testid="close-dialog">
               <XIcon />
             </button>

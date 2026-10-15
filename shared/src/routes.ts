@@ -361,6 +361,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "thumbnail", title: "Thumbnail" },
+      { slug: "auto-size", title: "Auto Size" },
+      { slug: "mutation", title: "Add and Remove Slides" },
       { slug: "dialog", title: "With Dialog" },
     ],
   },

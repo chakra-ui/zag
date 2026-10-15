@@ -1,59 +1,65 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
 import { Index, createMemo, createUniqueId } from "solid-js"
 import "@styles/carousel.css"
 
-const items = Array.from({ length: 10 }, (_, index) => index)
-
-function useCarousel(props: Partial<carousel.Props> = {}) {
-  const service = useMachine(carousel.machine, {
-    id: createUniqueId(),
-    count: items.length,
-    ...props,
-  })
-  return createMemo(() => carousel.connect(service, normalizeProps))
-}
-
-const THUMBNAIL_SLIDES_PER_PAGE = 6.75
+const images = Array.from({ length: 8 }, (_, index) => `https://picsum.photos/seed/zag-gallery-${index}/800/500`)
 
 export default function Page() {
-  const mainApi = useCarousel({
+  const mainService = useMachine(carousel.machine, {
+    id: createUniqueId(),
+    count: images.length,
     slidesPerPage: 1,
-    onPageChange(details) {
-      const index = Math.floor((details.page + 1) / THUMBNAIL_SLIDES_PER_PAGE)
-      thumbnailApi().scrollTo(index)
-    },
+    onPageChange: (details) => thumbnails().scrollToIndex(details.page),
   })
+  const main = createMemo(() => carousel.connect(mainService, normalizeProps))
 
-  const thumbnailApi = useCarousel({
-    slidesPerPage: THUMBNAIL_SLIDES_PER_PAGE,
-    spacing: "12px",
+  const thumbnailService = useMachine(carousel.machine, {
+    id: createUniqueId(),
+    count: images.length,
+    // The cut-off sixth thumbnail shows the strip scrolls
+    slidesPerPage: 5.5,
+    spacing: "8px",
   })
+  const thumbnails = createMemo(() => carousel.connect(thumbnailService, normalizeProps))
 
   return (
     <main>
-      <div {...mainApi().getRootProps()}>
-        <div {...mainApi().getControlProps()}>
-          <button {...mainApi().getPrevTriggerProps()}>Prev</button>
-          <button {...mainApi().getNextTriggerProps()}>Next</button>
-        </div>
-        <div {...mainApi().getItemGroupProps()}>
-          <Index each={items}>
-            {(index) => <div {...mainApi().getItemProps({ index: index() })}>{index() + 1}</div>}
-          </Index>
-        </div>
-        <div {...thumbnailApi().getRootProps()}>
-          <div {...thumbnailApi().getItemGroupProps()}>
-            <Index each={items}>
-              {(index) => (
-                <div
-                  {...thumbnailApi().getItemProps({ index: index() })}
-                  onClick={() => mainApi().scrollToIndex(index())}
-                >
-                  {index() + 1}
-                </div>
-              )}
-            </Index>
+      <div class="carousel">
+        <div {...main().getRootProps()}>
+          <div {...main().getControlProps()}>
+            <button {...main().getPrevTriggerProps()}>
+              <ChevronLeftIcon />
+            </button>
+            <div {...main().getItemGroupProps()}>
+              <Index each={images}>
+                {(src, index) => (
+                  <div {...main().getItemProps({ index })} class="carousel-photo">
+                    <img src={src()} alt={`Photo ${index + 1}`} />
+                  </div>
+                )}
+              </Index>
+            </div>
+            <button {...main().getNextTriggerProps()}>
+              <ChevronRightIcon />
+            </button>
+          </div>
+
+          <div {...thumbnails().getRootProps()} class="carousel-thumbnails">
+            <div {...thumbnails().getItemGroupProps()}>
+              <Index each={images}>
+                {(src, index) => (
+                  <div
+                    {...thumbnails().getItemProps({ index })}
+                    data-selected={main().page === index || undefined}
+                    onClick={() => main().scrollToIndex(index)}
+                  >
+                    <img src={src()} alt="" />
+                  </div>
+                )}
+              </Index>
+            </div>
           </div>
         </div>
       </div>

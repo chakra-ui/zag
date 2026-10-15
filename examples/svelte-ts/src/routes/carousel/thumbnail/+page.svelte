@@ -1,55 +1,59 @@
 <script lang="ts">
   import * as carousel from "@zag-js/carousel"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronLeftIcon, ChevronRightIcon } from "lucide-svelte"
   import "@styles/carousel.css"
 
-  const items = Array.from({ length: 10 }, (_, index) => index)
-
-  const THUMBNAIL_SLIDES_PER_PAGE = 6.75
+  const images = Array.from({ length: 8 }, (_, index) => `https://picsum.photos/seed/zag-gallery-${index}/800/500`)
 
   const id = $props.id()
 
   const mainService = useMachine(carousel.machine, {
     id: `${id}-main`,
-    count: items.length,
+    count: images.length,
     slidesPerPage: 1,
-    onPageChange(details) {
-      const index = Math.floor((details.page + 1) / THUMBNAIL_SLIDES_PER_PAGE)
-      thumbnailApi.scrollTo(index)
-    },
+    onPageChange: (details) => thumbnails.scrollToIndex(details.page),
   })
-  const mainApi = $derived(carousel.connect(mainService, normalizeProps))
+  const main = $derived(carousel.connect(mainService, normalizeProps))
 
   const thumbnailService = useMachine(carousel.machine, {
-    id: `${id}-thumbnail`,
-    count: items.length,
-    slidesPerPage: THUMBNAIL_SLIDES_PER_PAGE,
-    spacing: "12px",
+    id: `${id}-thumbnails`,
+    count: images.length,
+    // The cut-off sixth thumbnail shows the strip scrolls
+    slidesPerPage: 5.5,
+    spacing: "8px",
   })
-  const thumbnailApi = $derived(carousel.connect(thumbnailService, normalizeProps))
+  const thumbnails = $derived(carousel.connect(thumbnailService, normalizeProps))
 </script>
 
 <main>
-  <div {...mainApi.getRootProps()}>
-    <div {...mainApi.getControlProps()}>
-      <button {...mainApi.getPrevTriggerProps()}>Prev</button>
-      <button {...mainApi.getNextTriggerProps()}>Next</button>
-    </div>
-    <div {...mainApi.getItemGroupProps()}>
-      {#each items as index}
-        <div {...mainApi.getItemProps({ index })}>
-          {index + 1}
+  <div class="carousel">
+    <div {...main.getRootProps()}>
+      <div {...main.getControlProps()}>
+        <button {...main.getPrevTriggerProps()}><ChevronLeftIcon /></button>
+        <div {...main.getItemGroupProps()}>
+          {#each images as src, index (src)}
+            <div {...main.getItemProps({ index })} class="carousel-photo">
+              <img {src} alt={`Photo ${index + 1}`} />
+            </div>
+          {/each}
         </div>
-      {/each}
-    </div>
-    <div {...thumbnailApi.getRootProps()}>
-      <div {...thumbnailApi.getItemGroupProps()}>
-        {#each items as index}
-          <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-          <div {...thumbnailApi.getItemProps({ index })} onclick={() => mainApi.scrollToIndex(index)}>
-            {index + 1}
-          </div>
-        {/each}
+        <button {...main.getNextTriggerProps()}><ChevronRightIcon /></button>
+      </div>
+
+      <div {...thumbnails.getRootProps()} class="carousel-thumbnails">
+        <div {...thumbnails.getItemGroupProps()}>
+          {#each images as src, index (src)}
+            <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+            <div
+              {...thumbnails.getItemProps({ index })}
+              data-selected={main.page === index || undefined}
+              onclick={() => main.scrollToIndex(index)}
+            >
+              <img {src} alt="" />
+            </div>
+          {/each}
+        </div>
       </div>
     </div>
   </div>

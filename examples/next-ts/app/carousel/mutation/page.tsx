@@ -2,82 +2,59 @@
 
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { useCallback, useId, useState } from "react"
-import { StateVisualizer } from "@/components/state-visualizer"
-import { Toolbar } from "@/components/toolbar"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { useId, useState } from "react"
 import "@styles/carousel.css"
 
 export default function Page() {
-  const [index, setIndex] = useState(0)
-  const [images, setImages] = useState([0, 1, 2, 3, 4])
+  const [slides, setSlides] = useState([1, 2, 3, 4])
 
   const service = useMachine(carousel.machine, {
     id: useId(),
-    count: images.length,
-    loop: true,
-    autoPlay: { delay: 1000 },
-    onPageChange: ({ page }) => setIndex(page),
-    page: index,
+    count: slides.length,
+    slidesPerPage: 2,
+    spacing: "16px",
   })
 
   const api = carousel.connect(service, normalizeProps)
 
-  const onAdd = useCallback(
-    () =>
-      setImages((prevImages) => {
-        const max = Math.max(...prevImages)
-        return [...prevImages, max + 1]
-      }),
-    [],
-  )
-
   return (
-    <>
-      <main className="carousel">
+    <main>
+      <div className="carousel">
         <div {...api.getRootProps()}>
+          <div className="carousel-toolbar">
+            <button onClick={() => setSlides((prev) => [...prev, Math.max(0, ...prev) + 1])}>Add slide</button>
+            <button disabled={slides.length <= 1} onClick={() => setSlides((prev) => prev.slice(0, -1))}>
+              Remove slide
+            </button>
+          </div>
+
           <div {...api.getControlProps()}>
-            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
-            <div className="carousel-spacer" />
-            <button {...api.getPrevTriggerProps()}>&laquo;</button>
-            <button {...api.getNextTriggerProps()}>&raquo;</button>
-          </div>
-
-          <div {...api.getIndicatorGroupProps()}>
-            {api.pageSnapPoints.map((_, i) => (
-              <button {...api.getIndicatorProps({ index: i })} key={i}>
-                {i}
-              </button>
-            ))}
-          </div>
-
-          <div {...api.getItemGroupProps()}>
-            {images.map((image, index) => (
-              <div {...api.getItemProps({ index })} key={image}>
-                <div
-                  style={{
-                    width: "188px",
-                    height: "188px",
-                    backgroundColor: "#f0f0f0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  Slide {image}
+            <button {...api.getPrevTriggerProps()}>
+              <ChevronLeftIcon />
+            </button>
+            <div {...api.getItemGroupProps()}>
+              {slides.map((slide, index) => (
+                <div {...api.getItemProps({ index })} key={slide}>
+                  <div className="carousel-card">{slide}</div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRightIcon />
+            </button>
+          </div>
+
+          <div className="carousel-footer">
+            <div {...api.getIndicatorGroupProps()}>
+              {api.pageSnapPoints.map((_, index) => (
+                <button {...api.getIndicatorProps({ index })} key={index} />
+              ))}
+            </div>
+            <span {...api.getProgressTextProps()}>{api.getProgressText()}</span>
           </div>
         </div>
-
-        <p>
-          <button onClick={onAdd}>add slide</button>
-        </p>
-      </main>
-
-      <Toolbar>
-        <StateVisualizer state={service} omit={["translations"]} />
-      </Toolbar>
-    </>
+      </div>
+    </main>
   )
 }

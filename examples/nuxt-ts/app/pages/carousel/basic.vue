@@ -2,6 +2,7 @@
 import * as carousel from "@zag-js/carousel"
 import { carouselControls, carouselData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "lucide-vue-next"
 import "@styles/carousel.css"
 
 const controls = useControls(carouselControls)
@@ -10,7 +11,8 @@ const service = useMachine(
   carousel.machine,
   controls.mergeProps<carousel.Props>({
     id: useId(),
-    spacing: "20px",
+    spacing: "16px",
+    slidesPerPage: 2,
     count: carouselData.length,
     allowMouseDrag: true,
   }),
@@ -20,28 +22,39 @@ const api = computed(() => carousel.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main class="carousel">
-    <div v-bind="api.getRootProps()">
-      <button @click="() => api.scrollToIndex(4)">Scroll to 4</button>
-      <div v-bind="api.getControlProps()">
-        <button v-bind="api.getAutoplayTriggerProps()">{{ api.isPlaying ? "Stop" : "Play" }}</button>
-        <div class="carousel-spacer"></div>
-        <button v-bind="api.getPrevTriggerProps()">Prev</button>
-        <button v-bind="api.getNextTriggerProps()">Next</button>
-      </div>
-
-      <div v-bind="api.getItemGroupProps()">
-        <div v-for="(image, index) in carouselData" :key="index" v-bind="api.getItemProps({ index })">
-          <img :src="image" alt="" width="188px" />
+  <main>
+    <div class="carousel">
+      <div v-bind="api.getRootProps()">
+        <div class="carousel-toolbar">
+          <button @click="api.scrollToIndex(4)">Scroll to 4</button>
         </div>
-      </div>
 
-      <div v-bind="api.getIndicatorGroupProps()">
-        <button
-          v-for="(_, index) in api.pageSnapPoints"
-          :key="index"
-          v-bind="api.getIndicatorProps({ index })"
-        ></button>
+        <div v-bind="api.getControlProps()">
+          <button v-bind="api.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+          <div v-bind="api.getItemGroupProps()">
+            <div
+              v-for="(image, index) in carouselData"
+              :key="index"
+              v-bind="api.getItemProps({ index })"
+              class="carousel-photo"
+            >
+              <img :src="image" alt="" />
+            </div>
+          </div>
+          <button v-bind="api.getNextTriggerProps()"><ChevronRightIcon /></button>
+        </div>
+
+        <div class="carousel-footer">
+          <button v-bind="api.getAutoplayTriggerProps()">
+            <PauseIcon v-if="api.isPlaying" />
+            <PlayIcon v-else />
+            <span class="sr-only">{{ api.isPlaying ? "Stop" : "Play" }}</span>
+          </button>
+          <div v-bind="api.getIndicatorGroupProps()">
+            <button v-for="(_, index) in api.pageSnapPoints" :key="index" v-bind="api.getIndicatorProps({ index })" />
+          </div>
+          <span v-bind="api.getProgressTextProps()">{{ api.getProgressText() }}</span>
+        </div>
       </div>
     </div>
   </main>

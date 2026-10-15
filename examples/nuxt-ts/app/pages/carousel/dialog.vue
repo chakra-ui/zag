@@ -1,12 +1,12 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { XIcon } from "lucide-vue-next"
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-vue-next"
 import "@styles/carousel.css"
 import "@styles/dialog.css"
 
-const SLIDE_COUNT = 30
+const images = Array.from({ length: 12 }, (_, index) => `https://picsum.photos/seed/zag-product-${index}/800/500`)
 
 const page = ref(0)
 const carouselId = `${useId()}-carousel`
@@ -18,7 +18,7 @@ const carouselService = useMachine(
   carousel.machine,
   computed(() => ({
     id: carouselId,
-    count: SLIDE_COUNT,
+    count: images.length,
     page: page.value,
     onPageChange(details: { page: number }) {
       page.value = details.page
@@ -30,46 +30,33 @@ const carouselApi = computed(() => carousel.connect(carouselService, normalizePr
 
 <template>
   <main>
-    <button v-bind="dialogApi.getTriggerProps()" data-testid="open-dialog">Open Carousel in Dialog</button>
+    <button v-bind="dialogApi.getTriggerProps()" data-testid="open-dialog">View product images</button>
 
     <Teleport to="#teleports">
       <Presence v-bind="dialogApi.getBackdropProps()" />
       <div v-bind="dialogApi.getPositionerProps()">
-        <Presence v-bind="dialogApi.getContentProps()">
-          <h2 v-bind="dialogApi.getTitleProps()">Carousel in Dialog</h2>
-          <p v-bind="dialogApi.getDescriptionProps()">Navigate past page 10 to test the fix.</p>
+        <Presence v-bind="dialogApi.getContentProps()" class="carousel">
+          <h2 v-bind="dialogApi.getTitleProps()">Product images</h2>
+          <p v-bind="dialogApi.getDescriptionProps()">Use the arrows or swipe to browse.</p>
 
-          <div class="carousel">
-            <div v-bind="carouselApi.getRootProps()">
-              <div v-bind="carouselApi.getControlProps()">
-                <button v-bind="carouselApi.getPrevTriggerProps()">Prev</button>
-                <button v-bind="carouselApi.getNextTriggerProps()">Next</button>
-              </div>
-
+          <div v-bind="carouselApi.getRootProps()">
+            <div v-bind="carouselApi.getControlProps()">
+              <button v-bind="carouselApi.getPrevTriggerProps()"><ChevronLeftIcon /></button>
               <div v-bind="carouselApi.getItemGroupProps()">
                 <div
-                  v-for="index in SLIDE_COUNT"
-                  :key="index - 1"
-                  v-bind="carouselApi.getItemProps({ index: index - 1 })"
+                  v-for="(src, index) in images"
+                  :key="index"
+                  v-bind="carouselApi.getItemProps({ index })"
+                  class="carousel-photo"
                 >
-                  <img
-                    :src="`https://picsum.photos/seed/slide-${index - 1}/300/200`"
-                    :alt="`Slide ${index - 1}`"
-                    style="width: 100%"
-                  />
+                  <img :src="src" :alt="`Product image ${index + 1}`" />
                 </div>
               </div>
-
-              <div v-bind="carouselApi.getIndicatorGroupProps()">
-                <button
-                  v-for="(_, index) in carouselApi.pageSnapPoints"
-                  :key="index"
-                  v-bind="carouselApi.getIndicatorProps({ index })"
-                ></button>
-              </div>
-
-              <p data-testid="page-display">Current page: {{ carouselApi.page }}</p>
+              <button v-bind="carouselApi.getNextTriggerProps()"><ChevronRightIcon /></button>
             </div>
+            <span v-bind="carouselApi.getProgressTextProps()" data-testid="page-display">
+              {{ carouselApi.getProgressText() }}
+            </span>
           </div>
 
           <button v-bind="dialogApi.getCloseTriggerProps()" data-testid="close-dialog">

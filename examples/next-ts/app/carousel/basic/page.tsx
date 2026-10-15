@@ -3,6 +3,7 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { carouselControls, carouselData } from "@zag-js/shared"
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -14,7 +15,7 @@ export default function Page() {
 
   const service = useMachine(carousel.machine, {
     id: useId(),
-    spacing: "20px",
+    spacing: "16px",
     slidesPerPage: 2,
     count: carouselData.length,
     allowMouseDrag: true,
@@ -25,27 +26,41 @@ export default function Page() {
 
   return (
     <>
-      <main className="carousel">
-        <div {...api.getRootProps()}>
-          <button onClick={() => api.scrollToIndex(4)}>Scroll to 4</button>
-          <div {...api.getControlProps()}>
-            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
-            <div className="carousel-spacer" />
-            <button {...api.getPrevTriggerProps()}>Prev</button>
-            <button {...api.getNextTriggerProps()}>Next</button>
-          </div>
+      <main>
+        <div className="carousel">
+          <div {...api.getRootProps()}>
+            <div className="carousel-toolbar">
+              <button onClick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+            </div>
 
-          <div {...api.getItemGroupProps()}>
-            {carouselData.map((image, index) => (
-              <div {...api.getItemProps({ index })} key={index}>
-                <img src={image} alt="" width="188px" />
+            <div {...api.getControlProps()}>
+              <button {...api.getPrevTriggerProps()}>
+                <ChevronLeftIcon />
+              </button>
+              <div {...api.getItemGroupProps()}>
+                {carouselData.map((image, index) => (
+                  <div {...api.getItemProps({ index })} key={index} className="carousel-photo">
+                    <img src={image} alt="" />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div {...api.getIndicatorGroupProps()}>
-            {api.pageSnapPoints.map((_, index) => (
-              <button {...api.getIndicatorProps({ index })} key={index} />
-            ))}
+              <button {...api.getNextTriggerProps()}>
+                <ChevronRightIcon />
+              </button>
+            </div>
+
+            <div className="carousel-footer">
+              <button {...api.getAutoplayTriggerProps()}>
+                {api.isPlaying ? <PauseIcon /> : <PlayIcon />}
+                <span className="sr-only">{api.isPlaying ? "Stop" : "Play"}</span>
+              </button>
+              <div {...api.getIndicatorGroupProps()}>
+                {api.pageSnapPoints.map((_, index) => (
+                  <button {...api.getIndicatorProps({ index })} key={index} />
+                ))}
+              </div>
+              <span {...api.getProgressTextProps()}>{api.getProgressText()}</span>
+            </div>
           </div>
         </div>
       </main>

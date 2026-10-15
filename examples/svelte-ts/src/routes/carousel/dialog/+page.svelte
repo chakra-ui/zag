@@ -8,7 +8,7 @@
   import "@styles/carousel.css"
   import "@styles/dialog.css"
 
-  const SLIDE_COUNT = 30
+  const images = Array.from({ length: 12 }, (_, index) => `https://picsum.photos/seed/zag-product-${index}/800/500`)
 
   let page = $state(0)
 
@@ -18,15 +18,15 @@
 </script>
 
 <main>
-  <button {...api.getTriggerProps()} data-testid="open-dialog">Open Carousel in Dialog</button>
+  <button {...api.getTriggerProps()} data-testid="open-dialog">View product images</button>
 
   <Portal>
     <Presence {...api.getBackdropProps()} />
     <div {...api.getPositionerProps()}>
-      <Presence {...api.getContentProps()}>
-        <h2 {...api.getTitleProps()}>Carousel in Dialog</h2>
-        <p {...api.getDescriptionProps()}>Navigate past page 10 to test the fix.</p>
-        <CarouselInDialog count={SLIDE_COUNT} {page} onPageChange={(p) => (page = p)} />
+      <Presence {...api.getContentProps()} class="carousel">
+        <h2 {...api.getTitleProps()}>Product images</h2>
+        <p {...api.getDescriptionProps()}>Use the arrows or swipe to browse.</p>
+        <CarouselInDialog {images} {page} onPageChange={(p) => (page = p)} />
         <button {...api.getCloseTriggerProps()} data-testid="close-dialog">
           <XIcon />
         </button>
