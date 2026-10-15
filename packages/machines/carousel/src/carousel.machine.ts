@@ -1,9 +1,15 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
-import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
+import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
-import { getClosestSnapIndex, getPageForIndex, getPageSnapPoints, getSlidesPerMove } from "./carousel.utils"
+import {
+  getPageForIndex,
+  getPageSnapPoints,
+  getReleaseVelocity,
+  getSlidesPerMove,
+  type DragSample,
+} from "./carousel.utils"
 import type { CarouselSchema } from "./carousel.types"
 
 const DRIFT_THRESHOLD = 1
@@ -74,7 +80,7 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop, send }) {
+  watch({ track, action, context, prop, send, flush }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
@@ -82,7 +88,8 @@ export const machine = createMachine<CarouselSchema>({
       action(["scrollToPage", "focusIndicatorEl"])
     })
     track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
-      action(["setSnapPoints", "scrollToPage"])
+      // Measure once the new layout is in the DOM
+      flush(() => action(["setSnapPoints", "scrollToPage"]))
     })
     // Realign only when the snap points move, so content or size changes don't interrupt a scroll
     track([() => context.get("pageSnapPoints").join(",")], () => {
@@ -386,14 +393,22 @@ export const machine = createMachine<CarouselSchema>({
         return addDomEvent(doc, "visibilitychange", onVisibilityChange)
       },
 
-      trackPointerMove({ scope, send }) {
-        const doc = scope.getDoc()
-        return trackPointerMove(doc, {
+      trackPointerMove({ scope, send, computed }) {
+        const samples: DragSample[] = []
+        let distance = 0
+        return trackPointerMove(scope.getDoc(), {
           onPointerMove({ event }) {
-            send({ type: "DRAGGING", left: -event.movementX, top: -event.movementY })
+            const left = -event.movementX
+            const top = -event.movementY
+            const delta = computed("isHorizontal") ? left : top
+            distance += delta
+            samples.push({ time: event.timeStamp, delta })
+            send({ type: "DRAGGING", left, top })
           },
-          onPointerUp() {
-            send({ type: "DRAGGING.END" })
+          onPointerUp({ event }) {
+            // A cancelled pointer never counts as a flick
+            const velocity = event.type === "pointerup" ? getReleaseVelocity(samples, event.timeStamp, distance) : 0
+            send({ type: "DRAGGING.END", velocity })
           },
         })
       },
@@ -508,7 +523,7 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         el?.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
       },
-      endDragging({ scope, context, computed }) {
+      endDragging({ scope, context, computed, event }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
@@ -519,13 +534,12 @@ export const machine = createMachine<CarouselSchema>({
         const snapPoints = context.get("pageSnapPoints")
         if (!snapPoints.length) return
 
-        const closest = snapPoints[getClosestSnapIndex(snapPoints, scrollPos)]
+        const target = snapPoints[getReleaseSnapIndex(snapPoints, scrollPos, event.velocity)]
 
         raf(() => {
-          // Scroll to closest snap point
           el.scrollTo({
-            left: isHorizontal ? closest : el.scrollLeft,
-            top: isHorizontal ? el.scrollTop : closest,
+            left: isHorizontal ? target : el.scrollLeft,
+            top: isHorizontal ? el.scrollTop : target,
             behavior: "smooth",
           })
         })

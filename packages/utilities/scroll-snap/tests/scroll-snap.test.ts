@@ -1,7 +1,14 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { findSnapPoint, getScrollSnapPositions, getSnapPointTarget, getSnapPositions } from "../src"
+import {
+  findSnapPoint,
+  getClosestSnapIndex,
+  getReleaseSnapIndex,
+  getScrollSnapPositions,
+  getSnapPointTarget,
+  getSnapPositions,
+} from "../src"
 
 /**
  * jsdom has no layout engine, so we stub geometry and computed styles.
@@ -288,8 +295,7 @@ describe("getScrollSnapPositions", () => {
    */
   it("negates positions in RTL with negative scrollLeft behavior", () => {
     const { parent } = createContainer({ direction: "rtl", items: fourItems("start") })
-    // negating clamped 0 yields -0, which is equivalent for scrollLeft
-    expect(getScrollSnapPositions(parent).x).toEqual([-0, -100, -200])
+    expect(getScrollSnapPositions(parent).x).toEqual([0, -100, -200])
   })
 
   it("supports the vertical axis", () => {
@@ -407,5 +413,32 @@ describe("getSnapPointTarget", () => {
   it("falls back to the first child when nothing matches", () => {
     const { parent, children } = createContainer({ items: fourItems("start") })
     expect(getSnapPointTarget(parent, 999)).toBe(children[0])
+  })
+})
+
+describe("snap selection", () => {
+  const snapPoints = [0, 576, 1152]
+
+  test("getClosestSnapIndex picks the nearest point, first wins ties", () => {
+    expect(getClosestSnapIndex(snapPoints, 400)).toBe(1)
+    expect(getClosestSnapIndex(snapPoints, 288)).toBe(0)
+  })
+
+  test("without a flick, settles on the closest point", () => {
+    expect(getReleaseSnapIndex(snapPoints, 224)).toBe(0)
+  })
+
+  test("a flick moves to the next point in its direction", () => {
+    expect(getReleaseSnapIndex(snapPoints, 60, 0.3)).toBe(1)
+    expect(getReleaseSnapIndex(snapPoints, 520, -0.3)).toBe(0)
+    expect(getReleaseSnapIndex(snapPoints, 200, 5)).toBe(1)
+  })
+
+  test("a flick past the last point settles on the closest", () => {
+    expect(getReleaseSnapIndex(snapPoints, 1152, 1)).toBe(2)
+  })
+
+  test("works with negative RTL scroll positions", () => {
+    expect(getReleaseSnapIndex([0, -576, -1152], -100, -0.4)).toBe(1)
   })
 })
