@@ -2,4 +2,4 @@
 "@zag-js/dnd": patch
 ---
 
-Fall back to `before` / `after` when `canDrop` rejects an `"on"` hit so between-item indicators still show.
+Between-item indicators still show when `canDrop` rejects an `"on"` drop: the target falls back to `before` / `after`.

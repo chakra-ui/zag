@@ -2,5 +2,8 @@
 "@zag-js/slider": patch
 ---
 
-- Fixed issue where `origin: "center"` assumed the neutral value was always the midpoint of `min`/`max`
-- `origin` now also accepts a `number`, so the track can fill from that specific value instead
+`origin` accepts a number, so the track fills from a neutral value other than the midpoint:
+
+```ts
+slider.machine({ min: -50, max: 100, origin: 0 })
+```

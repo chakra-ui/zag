@@ -2,31 +2,10 @@
 "@zag-js/steps": major
 ---
 
-**Breaking:** Steps are now defined by an `items` array and addressed by string `value` instead of index.
+**Breaking:** Steps are now defined by an `items` array and addressed by string `value` instead of index, e.g.
+`items: [{ value: "shipping" }, { value: "gift", optional: true }]`.
 
 ### Migration
-
-```tsx
-// Before
-const service = useMachine(steps.machine, {
-  count: 3,
-  defaultStep: 0,
-  onStepChange({ step }) {},
-  isStepValid: (index) => isValid[index],
-  isStepSkippable: (index) => index === 1,
-})
-api.setStep(2)
-api.getItemProps({ index: 0 })
-
-// After
-const service = useMachine(steps.machine, {
-  items: [{ value: "shipping" }, { value: "gift", optional: true }, { value: "payment", invalid: !isCardValid }],
-  defaultValue: "shipping",
-  onValueChange({ value }) {},
-})
-api.setValue("payment")
-api.getItemProps({ value: "shipping" })
-```
 
 | Before                                      | After                                                           |
 | ------------------------------------------- | --------------------------------------------------------------- |
@@ -60,10 +39,9 @@ api.getItemProps({ value: "shipping" })
 
 ### Fixes
 
-- Fixed issue where the step list had no keyboard support. Arrow keys, `Home` and `End` move focus; `Enter` or `Space`
-  opens the step.
-- Fixed issue where unreachable triggers in linear mode were enabled but did nothing.
-- Fixed issue where the completed content was a `tabpanel` labelled by a trigger that did not exist. It is now a
-  focusable region, and finishing moves focus to it.
-- Fixed issue where the progress bar had no accessible name.
-- Fixed issue where `--percent` collided with the progress machine's variable.
+- The step list has keyboard support: arrow keys, `Home` and `End` move focus, and `Enter` or `Space` opens the step.
+- Unreachable triggers in linear mode are now disabled.
+- The completed content is a focusable region instead of a `tabpanel` labelled by a missing trigger, and finishing moves
+  focus to it.
+- The progress bar has an accessible name.
+- `--steps-percent` replaces `--percent`, which collided with the progress machine's variable.
