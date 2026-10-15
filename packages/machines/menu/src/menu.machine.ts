@@ -239,6 +239,7 @@ export const machine = createMachine<MenuSchema>({
         CONTEXT_MENU_CANCEL: [
           {
             guard: "isOpenControlled",
+            target: "closed",
             actions: ["invokeOnClose", "releaseParentRoutingLock"],
           },
           {

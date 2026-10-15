@@ -186,6 +186,7 @@ export const routes: RouteDefinition[] = [
   { path: "/menu/multiple-nested", component: lazy(() => import("./pages/menu/multiple-nested")) },
   { path: "/menu/multiple-trigger", component: lazy(() => import("./pages/menu/multiple-trigger")) },
   { path: "/context-menu/basic", component: lazy(() => import("./pages/context-menu/basic")) },
+  { path: "/context-menu/controlled", component: lazy(() => import("./pages/context-menu/controlled")) },
   { path: "/context-menu/multiple-trigger", component: lazy(() => import("./pages/context-menu/multiple-trigger")) },
   { path: "/number-input/basic", component: lazy(() => import("./pages/number-input/basic")) },
   { path: "/number-input/wrapped", component: lazy(() => import("./pages/number-input/wrapped")) },
