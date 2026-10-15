@@ -297,6 +297,103 @@ describe("basic", () => {
     expect(notify).toHaveBeenCalledOnce()
   })
 
+  test("watch: tracks context set by the root entry action", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      entry: ["setValue"],
+      states: {
+        test: {},
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "hello"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).toHaveBeenCalledOnce()
+  })
+
+  test("watch: tracks context set by the initial state entry action", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: {
+        test: {
+          entry: ["setValue"],
+        },
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "hello"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).toHaveBeenCalledOnce()
+  })
+
+  test("watch: does not run on mount when entry leaves context unchanged", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      entry: ["setValue"],
+      states: {
+        test: {},
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "bar"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).not.toHaveBeenCalled()
+  })
+
   test("guard: basic", async () => {
     const machine = createMachine<any>({
       props() {
