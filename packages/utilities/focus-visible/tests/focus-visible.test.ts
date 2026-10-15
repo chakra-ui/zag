@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { isFocusVisible, listenerMap, trackFocusVisible } from "../src"
 
 describe("focus visible", () => {
@@ -16,7 +16,23 @@ describe("focus visible", () => {
   afterEach(() => {
     Object.defineProperty(HTMLElement.prototype, "focus", descriptor)
     listenerMap.delete(window)
+    document.body.replaceChildren()
   })
+
+  // The shape of Storybook's instrumented `focus`: the getter reads `this.ownerDocument`, which
+  // throws off the prototype but resolves the native method for an element.
+  const instrumentFocus = () => {
+    const native = HTMLElement.prototype.focus
+    const accessor = {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.ownerDocument?.defaultView ? native : () => {}
+      },
+      set() {},
+    }
+    Object.defineProperty(HTMLElement.prototype, "focus", accessor)
+    return accessor
+  }
 
   it("should set up when the prototype's focus cannot be read", () => {
     // Storybook's instrumenter replaces `focus` with an accessor that dereferences `this`,
@@ -83,5 +99,34 @@ describe("focus visible", () => {
     trackFocusVisible()
 
     expect(listenerMap.get(window)?.focus).toBeUndefined()
+  })
+
+  it("should mark programmatic focus as such when focus is an accessor it cannot read", async () => {
+    // A fresh module: earlier tests leave `hasEventBeforeFocus` set by their keydown.
+    vi.resetModules()
+    const { getInteractionModality, isFocusVisible, setInteractionModality, trackFocusVisible } = await import("../src")
+    instrumentFocus()
+    trackFocusVisible()
+
+    // A pointer opened the dialog, which then moves focus itself.
+    setInteractionModality("pointer")
+    const button = document.body.appendChild(document.createElement("button"))
+    button.focus()
+
+    expect(document.activeElement).toBe(button)
+    expect(getInteractionModality()).toBe("pointer")
+    expect(isFocusVisible()).toBe(false)
+
+    // Tear this module's tracking down so its teardown cannot fire in a later test.
+    window.dispatchEvent(new Event("beforeunload"))
+  })
+
+  it("should restore an accessor focus it could not read on teardown", () => {
+    const accessor = instrumentFocus()
+    trackFocusVisible()
+
+    window.dispatchEvent(new Event("beforeunload"))
+
+    expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.get).toBe(accessor.get)
   })
 })

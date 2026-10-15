@@ -72,8 +72,10 @@ let currentModality: Modality | null = null
 let changeHandlers = new Set<Handler>()
 
 interface GlobalListenerData {
-  /** Unset when the prototype's `focus` could not be read, so there is nothing to restore. */
+  /** Unset when the prototype's `focus` could not be read; `descriptor` then holds what to restore. */
   focus: VoidFunction | undefined
+  /** The accessor `focus` was patched over when it could not be read off the prototype. */
+  descriptor?: PropertyDescriptor | undefined
 }
 
 export let listenerMap = new Map<Window, GlobalListenerData>()
@@ -188,15 +190,28 @@ function handleWindowBlur() {
   hasBlurredWindowRecently = true
 }
 
-/**
- * Patch `HTMLElement.prototype.focus` to mark focus as programmatic, and return the native method
- * for teardown to restore. Returns `undefined` when the patch could not be applied - the read itself
- * can throw when tooling has replaced `focus` with an accessor that dereferences `this` (Storybook's
- * instrumenter does), and losing the patch must not take the caller's setup down with it.
- */
-function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undefined {
+function readPrototypeFocus(proto: HTMLElement): HTMLElement["focus"] | undefined {
   try {
-    const nativeFocus = win.HTMLElement.prototype.focus
+    return proto.focus
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Patch `HTMLElement.prototype.focus` to mark focus as programmatic, and return what teardown needs
+ * to restore. Tooling can replace `focus` with an accessor whose getter dereferences `this`
+ * (Storybook's instrumenter does), so reading it off the prototype throws. The patch then resolves
+ * the method through that getter per element instead, and teardown restores the accessor. Losing
+ * the patch must never take the caller's setup down with it.
+ */
+function patchFocusMethod(win: Window & typeof globalThis): GlobalListenerData {
+  const proto = win.HTMLElement.prototype
+  try {
+    const nativeFocus = readPrototypeFocus(proto)
+    const descriptor = nativeFocus ? undefined : Object.getOwnPropertyDescriptor(proto, "focus")
+    const getFocus = descriptor?.get
+    if (!nativeFocus && !getFocus) return { focus: undefined }
 
     function patchedFocus(this: HTMLElement) {
       // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
@@ -205,7 +220,8 @@ function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undef
       // When `options.focusVisible` is supported in most browsers, we can remove this.
       // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
       hasEventBeforeFocus = true
-      nativeFocus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
+      const focus: HTMLElement["focus"] = nativeFocus ?? getFocus!.call(this)
+      focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
     }
 
     // Keep focus writable when replacing an accessor (e.g. Storybook's).
@@ -215,9 +231,9 @@ function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undef
       value: patchedFocus,
     })
 
-    return nativeFocus
+    return { focus: nativeFocus, descriptor }
   } catch {
-    return undefined
+    return { focus: undefined }
   }
 }
 
@@ -232,7 +248,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const win = getWindow(root)
   const doc = getDocument(root)
 
-  const nativeFocus = patchFocusMethod(win)
+  const focusData = patchFocusMethod(win)
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
@@ -260,7 +276,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
     { once: true },
   )
 
-  listenerMap.set(win, { focus: nativeFocus })
+  listenerMap.set(win, focusData)
 }
 
 const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
@@ -276,13 +292,13 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     return
   }
 
-  if (listenerData.focus) {
+  if (listenerData.focus || listenerData.descriptor) {
     try {
-      Object.defineProperty(win.HTMLElement.prototype, "focus", {
-        configurable: true,
-        writable: true,
-        value: listenerData.focus,
-      })
+      Object.defineProperty(
+        win.HTMLElement.prototype,
+        "focus",
+        listenerData.descriptor ?? { configurable: true, writable: true, value: listenerData.focus },
+      )
     } catch {
       // Failed to restore - ignore silently
     }
