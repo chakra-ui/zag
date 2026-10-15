@@ -3,6 +3,7 @@ import { paginationControls, paginationData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import { Output } from "~/components/output"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -91,10 +92,7 @@ export default function Page() {
             </Show>
           </div>
 
-          <div class="output">
-            <p>Page change details</p>
-            <pre data-testid="output">{JSON.stringify(details(), null, 2)}</pre>
-          </div>
+          <Output label="Page change details" value={details()} data-testid="output" />
         </div>
       </main>
 

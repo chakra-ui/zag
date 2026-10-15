@@ -3,7 +3,9 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-react"
 import { useId, useMemo, useState } from "react"
+import { Output } from "@/components/output"
 import "@styles/combobox.css"
 
 interface Item {
@@ -45,96 +47,73 @@ export default function Page() {
     id: useId(),
     collection,
     value,
-    onValueChange: (e) => setValue(e.value),
-    onOpenChange: () => {
-      setOptions(frameworks)
+    onValueChange: (details) => setValue(details.value),
+    // Reset on close so reopening shows every option, not the last filtered list
+    onOpenChange: ({ open }) => {
+      if (!open) setOptions(frameworks)
     },
-    onInputValueChange: ({ inputValue }) => {
-      const filtered = frameworks.filter((item) => contains(item.label, inputValue))
-      setOptions(filtered.length > 0 ? filtered : frameworks)
+    onInputValueChange: ({ inputValue, reason }) => {
+      // Selection and external values also set the input; only typing should filter
+      if (reason !== "input-change") return setOptions(frameworks)
+      setOptions(frameworks.filter((item) => contains(item.label, inputValue)))
     },
     placeholder: "Type to search",
   })
 
   const api = combobox.connect(service, normalizeProps)
 
+  // The selected item may be filtered out, so the external value must still resolve
+  const setExternalValue = (next: string[]) => {
+    setOptions(frameworks)
+    setValue(next)
+  }
+
   return (
-    <main className="combobox" style={{ padding: "2rem" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "320px" }}>
-        <div style={{ fontSize: "0.875rem" }}>
-          <strong>Selected:</strong> {value.length > 0 ? value.join(", ") : "N/A"}
-          <pre style={{ maxWidth: 400, overflow: "auto" }}>{JSON.stringify(collection.toString(), null, 2)}</pre>
+    <main className="combobox">
+      <div className="vstack gap-6">
+        <div className="hstack">
+          <button data-testid="set-solid-button" onClick={() => setExternalValue(["solid"])}>
+            Set to Solid
+          </button>
+          <button onClick={() => setExternalValue(["svelte"])}>Set to Svelte</button>
+          <button onClick={() => setExternalValue([])}>Clear</button>
         </div>
 
-        <div>
-          <label {...api.getLabelProps()}>Select framework</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <input
-              data-testid="input"
-              {...api.getInputProps()}
-              style={{
-                flex: 1,
-                padding: "8px 12px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            />
-            <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px" }}>
-              ▼
+        <div className="hstack gap-4 items-start">
+          <Output label="value" value={value} />
+          <Output label="inputValue" value={api.inputValue} />
+        </div>
+
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Framework</label>
+          <div {...api.getControlProps()}>
+            <input data-testid="input" {...api.getInputProps()} />
+            <button {...api.getClearTriggerProps()}>
+              <XIcon />
+            </button>
+            <button data-testid="trigger" {...api.getTriggerProps()}>
+              <ChevronsUpDownIcon />
             </button>
           </div>
         </div>
 
         <div {...api.getPositionerProps()}>
-          <div
-            data-testid="combobox-content"
-            {...api.getContentProps()}
-            style={{
-              listStyle: "none",
-              margin: 0,
-              padding: "4px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              marginTop: "4px",
-              maxHeight: "200px",
-              overflow: "auto",
-            }}
-          >
-            <div {...api.getListProps()}>
-              {options.map((item) => (
-                <div
-                  data-testid={item.value}
-                  key={item.value}
-                  {...api.getItemProps({ item })}
-                  style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {item.label}
-                </div>
-              ))}
-            </div>
+          <div data-testid="combobox-content" {...api.getContentProps()}>
+            <div {...api.getEmptyProps()}>{options.length === 0 && "No frameworks found"}</div>
+            {options.length > 0 && (
+              <div {...api.getListProps()}>
+                {options.map((item) => (
+                  <div data-testid={item.value} key={item.value} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>
+                      <CheckIcon />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-
-        <button
-          data-testid="set-solid-button"
-          onClick={() => {
-            setOptions(frameworks)
-            setValue(["solid"])
-          }}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#3182ce",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Set value to &quot;Solid&quot; externally
-        </button>
       </div>
     </main>
   )

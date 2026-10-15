@@ -1,7 +1,9 @@
 <script lang="ts">
+  import Output from "$lib/components/output.svelte"
   import * as combobox from "@zag-js/combobox"
   import { createFilter } from "@zag-js/i18n-utils"
-  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-svelte"
   import "@styles/combobox.css"
 
   interface Item {
@@ -26,7 +28,7 @@
   const { contains } = createFilter({ sensitivity: "base" })
 
   let value = $state<string[]>(["react"])
-  let options = $state.raw(frameworks)
+  let options = $state(frameworks)
 
   const collection = $derived(
     combobox.collection({
@@ -37,76 +39,81 @@
   )
 
   const id = $props.id()
-  const service = useMachine(combobox.machine as combobox.Machine<Item>, () => ({
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, (): combobox.Props<Item> => ({
     id,
     collection,
     value,
-    onValueChange: (e) => (value = e.value),
-    onOpenChange: () => {
-      options = frameworks
+    onValueChange: (details) => {
+      value = details.value
     },
-    onInputValueChange: ({ inputValue }) => {
-      const filtered = frameworks.filter((item) => contains(item.label, inputValue))
-      options = filtered.length > 0 ? filtered : frameworks
+    // Reset on close so reopening shows every option, not the last filtered list
+    onOpenChange: ({ open }) => {
+      if (!open) options = frameworks
+    },
+    onInputValueChange: ({ inputValue, reason }) => {
+      // Selection and external values also set the input; only typing should filter
+      if (reason !== "input-change") {
+        options = frameworks
+        return
+      }
+      options = frameworks.filter((item) => contains(item.label, inputValue))
     },
     placeholder: "Type to search",
   }))
 
   const api = $derived(combobox.connect(service, normalizeProps))
+
+  // The selected item may be filtered out, so the external value must still resolve
+  function setExternalValue(next: string[]) {
+    options = frameworks
+    value = next
+  }
 </script>
 
-<main class="combobox" style="padding: 2rem">
-  <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 320px">
-    <div style="font-size: 0.875rem">
-      <strong>Selected:</strong>
-      {value.length > 0 ? value.join(", ") : "N/A"}
-      <pre style="max-width: 400px; overflow: auto">{JSON.stringify(collection.toString(), null, 2)}</pre>
+<main class="combobox">
+  <div class="vstack gap-6">
+    <div class="hstack">
+      <button data-testid="set-solid-button" onclick={() => setExternalValue(["solid"])}>Set to Solid</button>
+      <button onclick={() => setExternalValue(["svelte"])}>Set to Svelte</button>
+      <button onclick={() => setExternalValue([])}>Clear</button>
     </div>
 
-    <div>
-      <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.getLabelProps()}>Select framework</label>
-      <div {...mergeProps(api.getControlProps(), { style: "display: flex; margin-top: 4px" })}>
-        <input
-          data-testid="input"
-          {...mergeProps(api.getInputProps(), {
-            style: "flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px",
-          })}
-        />
-        <button data-testid="trigger" {...mergeProps(api.getTriggerProps(), { style: "padding: 8px" })}>▼</button>
+    <div class="hstack gap-4 items-start">
+      <Output label="value" {value} />
+      <Output label="inputValue" value={api.inputValue} />
+    </div>
+
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Framework</label>
+      <div {...api.getControlProps()}>
+        <input data-testid="input" {...api.getInputProps()} />
+        <button {...api.getClearTriggerProps()}>
+          <XIcon />
+        </button>
+        <button data-testid="trigger" {...api.getTriggerProps()}>
+          <ChevronsUpDownIcon />
+        </button>
       </div>
     </div>
 
     <div {...api.getPositionerProps()}>
-      <div
-        data-testid="combobox-content"
-        {...mergeProps(api.getContentProps(), {
-          style:
-            "list-style: none; margin: 0; padding: 4px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; max-height: 200px; overflow: auto",
-        })}
-      >
-        <div {...api.getListProps()}>
-          {#each options as item (item.value)}
-            <div
-              data-testid={item.value}
-              {...mergeProps(api.getItemProps({ item }), { style: "padding: 8px 12px; cursor: pointer" })}
-            >
-              {item.label}
-            </div>
-          {/each}
+      <div data-testid="combobox-content" {...api.getContentProps()}>
+        <div {...api.getEmptyProps()}>
+          {#if options.length === 0}No frameworks found{/if}
         </div>
+        {#if options.length > 0}
+          <div {...api.getListProps()}>
+            {#each options as item (item.value)}
+              <div data-testid={item.value} {...api.getItemProps({ item })}>
+                <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                <span {...api.getItemIndicatorProps({ item })}>
+                  <CheckIcon />
+                </span>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
     </div>
-
-    <button
-      data-testid="set-solid-button"
-      onclick={() => {
-        options = frameworks
-        value = ["solid"]
-      }}
-      style="padding: 8px 16px; background-color: #3182ce; color: white; border: none; border-radius: 4px; cursor: pointer"
-    >
-      Set value to &quot;Solid&quot; externally
-    </button>
   </div>
 </main>

@@ -141,3 +141,56 @@
     display: none;
   }
 }
+
+.combobox-spinner {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-inline: 4px;
+  color: var(--z-fg-muted);
+  animation: spin 0.8s linear infinite;
+}
+
+/* Stale results stay visible but dimmed while the next query loads */
+[data-combobox-content][aria-busy] [data-combobox-list] {
+  opacity: 0.6;
+  transition: opacity var(--z-duration) var(--z-ease);
+}
+
+.combobox-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &[data-type="error"] {
+    color: var(--z-danger-fg);
+  }
+
+  & button {
+    height: auto;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.combobox-item-meta {
+  margin-inline-start: auto;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-combobox-item-text] {
+  flex: 1;
+  min-width: 0;
+}
+
+[data-combobox-item-text] + [data-combobox-item-indicator] {
+  margin-inline-start: auto;
+}

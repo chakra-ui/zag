@@ -73,3 +73,29 @@
     color: var(--z-fg);
   }
 }
+
+/* Labeled state readout (components/output) */
+.output {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  & .output-label {
+    color: var(--z-fg-muted);
+    font-size: var(--z-text-xs);
+    font-weight: 500;
+  }
+
+  & pre {
+    max-height: 240px;
+    margin: 0;
+    padding: 8px 10px;
+    overflow: auto;
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg-muted);
+    font: var(--z-text-xs) / 1.5 var(--z-font-mono);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

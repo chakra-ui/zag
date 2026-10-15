@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Print from "$lib/components/print.svelte"
+  import Output from "$lib/components/output.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
@@ -85,7 +85,7 @@
       {/if}
     </div>
 
-    <Print title="Page change details" value={details} />
+    <Output label="Page change details" value={details} data-testid="output" />
   </div>
 </main>
 

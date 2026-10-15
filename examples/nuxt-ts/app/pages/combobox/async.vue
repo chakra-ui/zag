@@ -1,25 +1,39 @@
 <script setup lang="ts">
 import * as asyncList from "@zag-js/async-list"
 import * as combobox from "@zag-js/combobox"
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { CheckIcon, ChevronsUpDownIcon, LoaderCircleIcon, XIcon } from "lucide-vue-next"
 import "@styles/combobox.css"
 
-interface Item {
+interface Person {
   name: string
   url: string
+  birth_year?: string
 }
+
+// Resolves after `ms`, or rejects when the request is superseded
+const delay = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal?.addEventListener("abort", () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    })
+  })
 
 const selected = ref<string[]>([])
 
-const listService = useMachine(asyncList.machine as asyncList.Machine<Item>, {
+const listService = useMachine(asyncList.machine as asyncList.Machine<Person>, {
   autoReload: true,
+  // Keep showing the last results while the next query loads
+  keepPreviousItems: true,
   async load({ signal, filter }) {
+    // Debounce: each keystroke aborts the pending wait
+    await delay(250, signal)
     const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filter ?? ""}`, { signal })
+    if (!response.ok) throw new Error(`Request failed (${response.status})`)
     const data = await response.json()
-    return {
-      items: data.results ?? [],
-      cursor: data.next ?? null,
-    }
+    return { items: data.results ?? [] }
   },
 })
 
@@ -35,12 +49,14 @@ const collection = computed(() =>
 
 const id = useId()
 const service = useMachine(
-  combobox.machine as combobox.Machine<Item>,
+  combobox.machine as combobox.Machine<Person>,
   computed(() => ({
     id,
     collection: collection.value,
-    placeholder: "Search people...",
-    onInputValueChange({ inputValue }) {
+    placeholder: "Search people…",
+    onInputValueChange({ inputValue, reason }) {
+      // Selecting an item fills the input; that shouldn't trigger a search
+      if (reason === "item-select") return
       list.value.setFilter(inputValue)
     },
     onValueChange({ value }) {
@@ -50,44 +66,56 @@ const service = useMachine(
 )
 
 const api = computed(() => combobox.connect(service, normalizeProps))
+
+const status = computed(() => {
+  const { error, isLoading, isEmpty, filter } = list.value
+  if (error || !isEmpty) return null
+  if (isLoading) return "Searching…"
+  const query = filter?.trim()
+  return query ? `No people match “${query}”` : "No people found"
+})
 </script>
 
 <template>
-  <main class="combobox" style="padding: 2rem">
-    <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 360px">
-      <div data-testid="selected-value" style="font-size: 0.875rem">
-        <strong>Selected:</strong> {{ selected.join(", ") }}
-      </div>
+  <main class="combobox">
+    <div class="vstack gap-6">
+      <Output label="Selected" :value="selected.join(', ') || '—'" data-testid="selected-value" />
 
       <div v-bind="api.getRootProps()">
-        <label v-bind="api.getLabelProps()">Search Star Wars characters</label>
-        <div v-bind="mergeProps(api.getControlProps(), { style: { display: 'flex', marginTop: '4px' } })">
-          <input
-            data-testid="input"
-            v-bind="mergeProps(api.getInputProps(), { style: { flex: 1, padding: '8px 12px' } })"
-          />
-          <button data-testid="trigger" v-bind="mergeProps(api.getTriggerProps(), { style: { padding: '8px' } })">
-            ▼
+        <label v-bind="api.getLabelProps()">Star Wars character</label>
+        <div v-bind="api.getControlProps()">
+          <input data-testid="input" v-bind="api.getInputProps()" />
+          <LoaderCircleIcon v-if="list.isLoading" class="combobox-spinner" aria-hidden="true" data-testid="loading" />
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon />
+          </button>
+          <button data-testid="trigger" v-bind="api.getTriggerProps()">
+            <ChevronsUpDownIcon />
           </button>
         </div>
       </div>
 
-      <div v-if="list.isLoading" data-testid="loading" style="font-size: 0.875rem">Loading...</div>
-
       <div v-bind="api.getPositionerProps()">
-        <div
-          data-testid="combobox-content"
-          v-bind="mergeProps(api.getContentProps(), { style: { listStyle: 'none', padding: '4px' } })"
-        >
-          <div v-if="api.collection.items.length > 0" v-bind="api.getListProps()">
+        <div data-testid="combobox-content" v-bind="api.getContentProps()" :aria-busy="list.isLoading || undefined">
+          <div v-bind="api.getEmptyProps()">
+            <span v-if="list.error" class="combobox-status" data-type="error">
+              Couldn’t load people.
+              <button type="button" @click="list.reload()">Retry</button>
+            </span>
+            <template v-else>{{ status ?? "" }}</template>
+          </div>
+          <div v-if="!list.isEmpty" v-bind="api.getListProps()">
             <div
-              v-for="item in api.collection.items"
+              v-for="item in list.items"
               :key="item.name"
               :data-testid="`item-${item.name}`"
               v-bind="api.getItemProps({ item })"
-              style="padding: 8px 12px; cursor: pointer"
             >
-              {{ item.name }}
+              <span v-bind="api.getItemTextProps({ item })">{{ item.name }}</span>
+              <span v-if="item.birth_year" class="combobox-item-meta">{{ item.birth_year }}</span>
+              <span v-bind="api.getItemIndicatorProps({ item })">
+                <CheckIcon />
+              </span>
             </div>
           </div>
         </div>

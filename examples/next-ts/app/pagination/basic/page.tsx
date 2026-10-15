@@ -5,7 +5,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { useId, useState } from "react"
-import { Print } from "@/components/print"
+import { Output } from "@/components/output"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
@@ -88,7 +88,7 @@ export default function Page() {
             )}
           </div>
 
-          <Print title="Page change details" value={details} />
+          <Output label="Page change details" value={details} data-testid="output" />
         </div>
       </main>
 

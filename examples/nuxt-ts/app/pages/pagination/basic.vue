@@ -71,7 +71,7 @@ const data = computed(() => api.value.slice(paginationData))
         </nav>
       </div>
 
-      <Print title="Page change details" :value="details" />
+      <Output label="Page change details" :value="details" data-testid="output" />
     </div>
   </main>
 

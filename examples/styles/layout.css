@@ -275,17 +275,6 @@ div.toolbar [data-content] {
   font-family: var(--viz-font);
 }
 
-.output {
-  border: 2px solid black;
-  padding-inline: 40px;
-  padding-block: 10px;
-  padding-bottom: 32px;
-}
-
-.output p {
-  font-weight: 600;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;

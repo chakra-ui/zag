@@ -2,6 +2,7 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-vue-next"
 import "@styles/combobox.css"
 
 interface Item {
@@ -43,15 +44,20 @@ const service = useMachine(
     id,
     collection: collection.value,
     value: value.value,
-    onValueChange: (e) => {
-      value.value = e.value
+    onValueChange: (details) => {
+      value.value = details.value
     },
-    onOpenChange: () => {
-      options.value = frameworks
+    // Reset on close so reopening shows every option, not the last filtered list
+    onOpenChange: ({ open }) => {
+      if (!open) options.value = frameworks
     },
-    onInputValueChange: ({ inputValue }) => {
-      const filtered = frameworks.filter((item) => contains(item.label, inputValue))
-      options.value = filtered.length > 0 ? filtered : frameworks
+    onInputValueChange: ({ inputValue, reason }) => {
+      // Selection and external values also set the input; only typing should filter
+      if (reason !== "input-change") {
+        options.value = frameworks
+        return
+      }
+      options.value = frameworks.filter((item) => contains(item.label, inputValue))
     },
     placeholder: "Type to search",
   })),
@@ -59,75 +65,58 @@ const service = useMachine(
 
 const api = computed(() => combobox.connect(service, normalizeProps))
 
-const setSolid = () => {
+// The selected item may be filtered out, so the external value must still resolve
+function setExternalValue(next: string[]) {
   options.value = frameworks
-  value.value = ["solid"]
+  value.value = next
 }
 </script>
 
 <template>
-  <main class="combobox" style="padding: 2rem">
-    <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 320px">
-      <div style="font-size: 0.875rem">
-        <strong>Selected:</strong> {{ value.length > 0 ? value.join(", ") : "N/A" }}
-        <pre style="max-width: 400px; overflow: auto">{{ JSON.stringify(collection.toString(), null, 2) }}</pre>
+  <main class="combobox">
+    <div class="vstack gap-6">
+      <div class="hstack">
+        <button data-testid="set-solid-button" @click="setExternalValue(['solid'])">Set to Solid</button>
+        <button @click="setExternalValue(['svelte'])">Set to Svelte</button>
+        <button @click="setExternalValue([])">Clear</button>
       </div>
 
-      <div>
-        <label v-bind="api.getLabelProps()">Select framework</label>
-        <div v-bind="api.getControlProps()" style="display: flex; margin-top: 4px">
-          <input
-            data-testid="input"
-            v-bind="api.getInputProps()"
-            style="flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px"
-          />
-          <button data-testid="trigger" v-bind="api.getTriggerProps()" style="padding: 8px">▼</button>
+      <div class="hstack gap-4 items-start">
+        <Output label="value" :value="value" />
+        <Output label="inputValue" :value="api.inputValue" />
+      </div>
+
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Framework</label>
+        <div v-bind="api.getControlProps()">
+          <input data-testid="input" v-bind="api.getInputProps()" />
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon />
+          </button>
+          <button data-testid="trigger" v-bind="api.getTriggerProps()">
+            <ChevronsUpDownIcon />
+          </button>
         </div>
       </div>
 
       <div v-bind="api.getPositionerProps()">
-        <div
-          data-testid="combobox-content"
-          v-bind="api.getContentProps()"
-          style="
-            list-style: none;
-            margin: 0;
-            padding: 4px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-top: 4px;
-            max-height: 200px;
-            overflow: auto;
-          "
-        >
-          <div v-bind="api.getListProps()">
+        <div data-testid="combobox-content" v-bind="api.getContentProps()">
+          <div v-bind="api.getEmptyProps()">{{ options.length === 0 ? "No frameworks found" : "" }}</div>
+          <div v-if="options.length > 0" v-bind="api.getListProps()">
             <div
               v-for="item in options"
               :key="item.value"
               :data-testid="item.value"
               v-bind="api.getItemProps({ item })"
-              style="padding: 8px 12px; cursor: pointer"
             >
-              {{ item.label }}
+              <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+              <span v-bind="api.getItemIndicatorProps({ item })">
+                <CheckIcon />
+              </span>
             </div>
           </div>
         </div>
       </div>
-
-      <button
-        data-testid="set-solid-button"
-        style="
-          padding: 8px 16px;
-          background-color: #3182ce;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        "
-        @click="setSolid"
-      >
-        Set value to &quot;Solid&quot; externally
-      </button>
     </div>
   </main>
 </template>
