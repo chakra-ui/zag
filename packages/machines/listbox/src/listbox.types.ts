@@ -282,9 +282,9 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   highlightedItem: V | null
   /**
-   * Function to highlight a value
+   * Function to highlight a value, or clear the highlight with `null`
    */
-  highlightValue: (value: string) => void
+  setHighlightedValue: (value: string | null) => void
   /**
    * Function to highlight the first value
    */
@@ -301,10 +301,6 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to highlight the previous value
    */
   highlightPrevious: VoidFunction
-  /**
-   * Function to clear the highlighted value
-   */
-  clearHighlightedValue: VoidFunction
   /**
    * The selected items
    */

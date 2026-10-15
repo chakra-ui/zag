@@ -145,9 +145,6 @@ export const machine = createMachine<CascadeSelectSchema>({
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedValue"],
     },
-    "HIGHLIGHTED_VALUE.CLEAR": {
-      actions: ["clearHighlightedValue"],
-    },
     "ITEM.SELECT": {
       actions: ["selectItem"],
     },
@@ -700,7 +697,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       setHighlightedValue(params) {
         const { event } = params
-        set.highlightedValue(params, event.value)
+        set.highlightedValue(params, event.value ?? [])
       },
       clearHighlightedValue(params) {
         set.highlightedValue(params, [])

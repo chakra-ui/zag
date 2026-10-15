@@ -382,13 +382,9 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   setOpen(open: boolean): void
   /**
-   * Function to set the highlighted value (path or single value to find)
+   * Function to set the highlighted value (path or single value to find), or clear it with `null`
    */
-  setHighlightValue(value: string | string[]): void
-  /**
-   * Function to clear the highlighted value
-   */
-  clearHighlightValue(): void
+  setHighlightedValue(value: string | string[] | null): void
   /**
    * Function to select a value
    */

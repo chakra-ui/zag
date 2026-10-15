@@ -69,7 +69,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!selectApi.open) return
-    selectApi.highlightValue(collection.firstValue!)
+    selectApi.setHighlightedValue(collection.firstValue)
   }, [collection])
 
   return (

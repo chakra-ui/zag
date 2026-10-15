@@ -71,7 +71,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!selectApi.open) return
-    selectApi.setHighlightValue(collection.firstValue!)
+    selectApi.setHighlightedValue(collection.firstValue)
     listRef.current?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collection])

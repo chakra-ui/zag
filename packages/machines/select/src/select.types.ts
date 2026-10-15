@@ -403,13 +403,9 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
    */
   highlightedItem: V | null
   /**
-   * Function to highlight a value
+   * Function to highlight a value, or clear the highlight with `null`
    */
-  setHighlightValue: (value: string) => void
-  /**
-   * Function to clear the highlighted value
-   */
-  clearHighlightValue: VoidFunction
+  setHighlightedValue: (value: string | null) => void
   /**
    * The selected items
    */

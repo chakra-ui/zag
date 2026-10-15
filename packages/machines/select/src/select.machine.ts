@@ -177,9 +177,6 @@ export const machine = createMachine<SelectSchema>({
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"],
     },
-    "HIGHLIGHTED_VALUE.CLEAR": {
-      actions: ["clearHighlightedItem"],
-    },
     "INPUT.FOCUS": {
       actions: ["setInputFocused"],
     },

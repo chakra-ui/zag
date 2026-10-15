@@ -73,7 +73,7 @@ export default function Page() {
       collection,
       (collection) => {
         if (!selectApi().open) return
-        selectApi().setHighlightValue(collection.firstValue!)
+        selectApi().setHighlightedValue(collection.firstValue)
         listRef?.focus()
       },
       { defer: true },

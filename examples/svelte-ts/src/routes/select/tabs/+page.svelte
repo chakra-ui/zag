@@ -64,7 +64,7 @@
     const next = collection
     untrack(() => {
       if (!selectApi.open) return
-      selectApi.setHighlightValue(next.firstValue!)
+      selectApi.setHighlightedValue(next.firstValue)
       tick().then(() => listRef?.focus())
     })
   })

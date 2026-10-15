@@ -88,9 +88,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     empty: value.length === 0,
     highlightedItem,
     highlightedValue,
-    clearHighlightedValue() {
-      send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
-    },
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value,
@@ -109,7 +106,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       }
       send({ type: "VALUE.SET", value: collection.getValues() })
     },
-    highlightValue(value) {
+    setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     highlightFirst() {

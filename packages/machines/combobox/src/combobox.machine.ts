@@ -193,9 +193,6 @@ export const machine = createMachine({
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedValue"],
     },
-    "HIGHLIGHTED_VALUE.CLEAR": {
-      actions: ["clearHighlightedValue"],
-    },
     "ITEM.SELECT": {
       actions: ["selectItem"],
     },
@@ -776,8 +773,7 @@ export const machine = createMachine({
         })
       },
       setHighlightedValue({ context, event }) {
-        if (event.value == null) return
-        context.set("highlightedValue", event.value)
+        context.set("highlightedValue", event.value ?? null)
       },
       clearHighlightedValue({ context }) {
         context.set("highlightedValue", null)

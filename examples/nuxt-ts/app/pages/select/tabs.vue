@@ -67,7 +67,7 @@ const tabApi = computed(() => tabs.connect(tabService, normalizeProps))
 
 watch(collection, async (next) => {
   if (!selectApi.value.open) return
-  selectApi.value.setHighlightValue(next.firstValue!)
+  selectApi.value.setHighlightedValue(next.firstValue)
   await nextTick()
   listRef.value?.focus()
 })

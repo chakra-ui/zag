@@ -479,13 +479,9 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   highlightedItem: V | null
   /**
-   * The value of the combobox input
+   * Function to highlight a value, or clear the highlight with `null`
    */
-  setHighlightValue: (value: string) => void
-  /**
-   * Function to clear the highlighted value
-   */
-  clearHighlightValue: VoidFunction
+  setHighlightedValue: (value: string | null) => void
   /**
    * Function to sync the selected items with the value.
    * Useful when `value` is updated from async sources.

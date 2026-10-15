@@ -23,6 +23,18 @@ arrow keys move the highlight.
 ```
 
 - `getEmptyProps()` is a polite live region, so keep it rendered and toggle its text. Combobox and listbox have it too.
+- **Breaking:** Select, combobox, listbox and cascade select now set the highlight with `setHighlightedValue`, like
+  menu. Pass `null` to clear it.
+
+  ```diff
+  - api.setHighlightValue("react") // select, combobox, cascade select
+  - api.highlightValue("react") // listbox
+  + api.setHighlightedValue("react")
+
+  - api.clearHighlightValue()
+  + api.setHighlightedValue(null)
+  ```
+
 - **Menu**
   - **Breaking:** Replaced `composite` with `popupType: "menu" | "dialog"` (default `"menu"`), matching select and
     combobox. Migrate `composite: false` to `popupType: "dialog"`.
