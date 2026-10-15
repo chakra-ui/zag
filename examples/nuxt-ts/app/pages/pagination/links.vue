@@ -34,7 +34,7 @@ const api = computed(() => pagination.connect(service, normalizeProps))
       <nav v-bind="api.getRootProps()">
         <ul>
           <li>
-            <a v-bind="api.getPrevTriggerProps()">
+            <a v-bind="api.getPreviousTriggerProps()">
               <ChevronLeftIcon />
             </a>
           </li>

@@ -15,7 +15,7 @@ const LOCALES = {
   "en-US": {
     dir: "ltr" as const,
     translations: {
-      prevTriggerLabel: "Previous",
+      previousTriggerLabel: "Previous",
       nextTriggerLabel: "Next",
       todayTriggerLabel: "Today",
       viewSelectLabel: "Calendar view",
@@ -25,7 +25,7 @@ const LOCALES = {
   "de-DE": {
     dir: "ltr" as const,
     translations: {
-      prevTriggerLabel: "Zurück",
+      previousTriggerLabel: "Zurück",
       nextTriggerLabel: "Weiter",
       todayTriggerLabel: "Heute",
       viewSelectLabel: "Kalenderansicht",
@@ -35,7 +35,7 @@ const LOCALES = {
   "ar-EG": {
     dir: "rtl" as const,
     translations: {
-      prevTriggerLabel: "السابق",
+      previousTriggerLabel: "السابق",
       nextTriggerLabel: "التالي",
       todayTriggerLabel: "اليوم",
       viewSelectLabel: "عرض التقويم",
@@ -79,7 +79,7 @@ export default function Page() {
 
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>‹</button>
+            <button {...api.getPreviousTriggerProps()}>‹</button>
             <button {...api.getTodayTriggerProps()}>{config.translations.todayTriggerLabel}</button>
             <button {...api.getNextTriggerProps()}>›</button>
             <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>

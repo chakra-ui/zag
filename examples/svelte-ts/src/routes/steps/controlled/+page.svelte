@@ -51,7 +51,7 @@
     <div {...api.getContentProps({ value: steps.COMPLETE })}>All done 🎉</div>
 
     <div>
-      <button {...api.getPrevTriggerProps()}>Back</button>
+      <button {...api.getPreviousTriggerProps()}>Back</button>
       <button {...api.getNextTriggerProps()}>Next</button>
     </div>
   </div>

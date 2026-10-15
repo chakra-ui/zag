@@ -11,7 +11,8 @@ export const getTableBodyId = (ctx: Scope, id: string) => ctx.ids?.tableBody?.(i
 export const getTableRowId = (ctx: Scope, id: string) => ctx.ids?.tableRow?.(id) ?? `${ctx.id}:tr:${id}`
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
 export const getCellTriggerId = (ctx: Scope, id: string) => ctx.ids?.cellTrigger?.(id) ?? `${ctx.id}:cell-trigger:${id}`
-export const getPrevTriggerId = (ctx: Scope, view: DateView) => ctx.ids?.prevTrigger?.(view) ?? `${ctx.id}:prev:${view}`
+export const getPreviousTriggerId = (ctx: Scope, view: DateView) =>
+  ctx.ids?.previousTrigger?.(view) ?? `${ctx.id}:previous:${view}`
 export const getNextTriggerId = (ctx: Scope, view: DateView) => ctx.ids?.nextTrigger?.(view) ?? `${ctx.id}:next:${view}`
 export const getViewTriggerId = (ctx: Scope, view: DateView) => ctx.ids?.viewTrigger?.(view) ?? `${ctx.id}:view:${view}`
 export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `${ctx.id}:clear`

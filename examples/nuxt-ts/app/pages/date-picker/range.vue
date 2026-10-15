@@ -62,7 +62,7 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
 
         <div>
           <div v-bind="api.getViewControlProps({ view: 'year' })">
-            <button v-bind="api.getPrevTriggerProps()">Prev</button>
+            <button v-bind="api.getPreviousTriggerProps()">Prev</button>
             <span> {{ api.visibleRangeText.start }} - {{ api.visibleRangeText.end }} </span>
             <button v-bind="api.getNextTriggerProps()">Next</button>
           </div>

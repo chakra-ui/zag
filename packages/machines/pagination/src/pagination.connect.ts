@@ -9,7 +9,7 @@ import { getTransformedRange } from "./pagination.utils"
 const defaultTranslations: Required<IntlTranslations> = {
   rootLabel: "pagination",
   firstTriggerLabel: "first page",
-  prevTriggerLabel: "previous page",
+  previousTriggerLabel: "previous page",
   nextTriggerLabel: "next page",
   lastTriggerLabel: "last page",
   itemLabel({ page, totalPages }) {
@@ -91,7 +91,7 @@ export function connect<T extends PropTypes>(
     goToNextPage() {
       send({ type: "NEXT_PAGE" })
     },
-    goToPrevPage() {
+    goToPreviousPage() {
       send({ type: "PREVIOUS_PAGE" })
     },
     goToFirstPage() {
@@ -141,12 +141,12 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getPrevTriggerProps() {
+    getPreviousTriggerProps() {
       return normalize.element({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isFirstPage),
-        "aria-label": translations.prevTriggerLabel,
+        "aria-label": translations.previousTriggerLabel,
         onClick() {
           send({ type: "PREVIOUS_PAGE" })
         },

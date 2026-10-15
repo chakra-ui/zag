@@ -26,7 +26,7 @@ const groups = computed(() => api.value.getAgendaGroups())
   <main class="scheduler">
     <div v-bind="mergeProps(api.getRootProps(), { style: { maxWidth: '520px' } })">
       <div v-bind="api.getHeaderProps()">
-        <button v-bind="api.getPrevTriggerProps()">
+        <button v-bind="api.getPreviousTriggerProps()">
           <ChevronLeft />
         </button>
         <button v-bind="api.getTodayTriggerProps()">Today</button>

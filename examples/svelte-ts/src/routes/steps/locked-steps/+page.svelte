@@ -92,10 +92,10 @@
 
     <div class="steps-actions">
       {#if api.complete}
-        <button {...api.getPrevTriggerProps()}>Back</button>
+        <button {...api.getPreviousTriggerProps()}>Back</button>
       {:else}
         <button onclick={cancel}>Cancel</button>
-        <button {...api.getPrevTriggerProps()}>Back</button>
+        <button {...api.getPreviousTriggerProps()}>Back</button>
         {#if api.value === "verify"}
           <button onclick={verify} disabled={verifying || api.item?.invalid}>
             {verifying ? "Verifying…" : "Verify"}

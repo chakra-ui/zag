@@ -55,7 +55,7 @@ export default function Page() {
           <nav {...api.getRootProps()}>
             <ul>
               <li>
-                <button {...api.getPrevTriggerProps()}>Previous</button>
+                <button {...api.getPreviousTriggerProps()}>Previous</button>
               </li>
               {api.pages.map((page, i) => {
                 if (page.type === "page")

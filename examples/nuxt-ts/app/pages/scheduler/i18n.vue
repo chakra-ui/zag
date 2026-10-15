@@ -11,7 +11,7 @@ const LOCALES = {
   "en-US": {
     dir: "ltr" as const,
     translations: {
-      prevTriggerLabel: "Previous",
+      previousTriggerLabel: "Previous",
       nextTriggerLabel: "Next",
       todayTriggerLabel: "Today",
       viewSelectLabel: "Calendar view",
@@ -21,7 +21,7 @@ const LOCALES = {
   "de-DE": {
     dir: "ltr" as const,
     translations: {
-      prevTriggerLabel: "Zurück",
+      previousTriggerLabel: "Zurück",
       nextTriggerLabel: "Weiter",
       todayTriggerLabel: "Heute",
       viewSelectLabel: "Kalenderansicht",
@@ -31,7 +31,7 @@ const LOCALES = {
   "ar-EG": {
     dir: "rtl" as const,
     translations: {
-      prevTriggerLabel: "السابق",
+      previousTriggerLabel: "السابق",
       nextTriggerLabel: "التالي",
       todayTriggerLabel: "اليوم",
       viewSelectLabel: "عرض التقويم",
@@ -75,7 +75,7 @@ const api = computed(() => scheduler.connect(service, normalizeProps))
 
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getHeaderProps()">
-        <button v-bind="api.getPrevTriggerProps()">‹</button>
+        <button v-bind="api.getPreviousTriggerProps()">‹</button>
         <button v-bind="api.getTodayTriggerProps()">{{ config.translations.todayTriggerLabel }}</button>
         <button v-bind="api.getNextTriggerProps()">›</button>
         <span v-bind="api.getHeaderTitleProps()">{{ api.visibleRangeText.formatted }}</span>

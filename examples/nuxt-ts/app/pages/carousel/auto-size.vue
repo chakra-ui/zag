@@ -29,7 +29,7 @@ const photoApi = computed(() => carousel.connect(photoService, normalizeProps))
     <div class="carousel">
       <div v-bind="photoApi.getRootProps()" class="carousel-strip">
         <div v-bind="photoApi.getControlProps()">
-          <button v-bind="photoApi.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+          <button v-bind="photoApi.getPreviousTriggerProps()"><ChevronLeftIcon /></button>
           <div v-bind="photoApi.getItemGroupProps()">
             <div v-for="(photo, index) in photos" :key="photo.src" v-bind="photoApi.getItemProps({ index })">
               <img :src="photo.src" :width="photo.width" :height="photo.height" alt="" />

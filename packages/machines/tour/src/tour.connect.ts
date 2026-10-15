@@ -20,7 +20,7 @@ import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacem
 
 const defaultTranslations: Required<IntlTranslations> = {
   nextStep: "next step",
-  prevStep: "previous step",
+  previousStep: "previous step",
   close: "close tour",
   progressText: ({ current, total }) => `${current + 1} of ${total}`,
   skip: "skip tour",
@@ -37,7 +37,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const hasTarget = typeof step?.target?.() !== "undefined"
 
   const hasNextStep = computed("hasNextStep")
-  const hasPrevStep = computed("hasPrevStep")
+  const hasPreviousStep = computed("hasPreviousStep")
 
   const firstStep = computed("isFirstStep")
   const lastStep = computed("isLastStep")
@@ -89,7 +89,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     next() {
       send({ type: "STEP.NEXT", src: "actionTrigger" })
     },
-    prev() {
+    previous() {
       send({ type: "STEP.PREV", src: "actionTrigger" })
     },
     dismiss() {
@@ -109,7 +109,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     stepIndex,
     step,
     hasNextStep,
-    hasPrevStep,
+    hasPreviousStep,
     firstStep,
     lastStep,
     addStep(step) {
@@ -142,7 +142,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     next() {
       send({ type: "STEP.NEXT" })
     },
-    prev() {
+    previous() {
       send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
@@ -279,7 +279,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
               send({ type: isRtl ? "STEP.PREV" : "STEP.NEXT", src: "keydown" })
               break
             case "ArrowLeft":
-              if (!hasPrevStep) return
+              if (!hasPreviousStep) return
               send({ type: isRtl ? "STEP.NEXT" : "STEP.PREV", src: "keydown" })
               break
             default:
@@ -332,12 +332,12 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
           }
           break
 
-        case "prev":
+        case "previous":
           actionProps = {
-            "data-type": "prev",
-            disabled: !hasPrevStep,
-            "data-disabled": dataAttr(!hasPrevStep),
-            onClick: actionMap.prev,
+            "data-type": "previous",
+            disabled: !hasPreviousStep,
+            "data-disabled": dataAttr(!hasPreviousStep),
+            onClick: actionMap.previous,
           }
           break
 

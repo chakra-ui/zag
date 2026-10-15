@@ -34,7 +34,7 @@ export default function Page() {
             </div>
 
             <div {...api().getControlProps()}>
-              <button {...api().getPrevTriggerProps()}>
+              <button {...api().getPreviousTriggerProps()}>
                 <ChevronLeftIcon />
               </button>
               <div {...api().getItemGroupProps()}>

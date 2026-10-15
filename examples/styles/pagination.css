@@ -23,7 +23,7 @@
 
 [data-pagination-item],
 [data-pagination-first-trigger],
-[data-pagination-prev-trigger],
+[data-pagination-previous-trigger],
 [data-pagination-next-trigger],
 [data-pagination-last-trigger] {
   min-width: 32px;
@@ -44,7 +44,7 @@
 
 /* Current page: raised outline chip */
 /* type="link": match the base button box */
-a:is([data-pagination-item], [data-pagination-prev-trigger], [data-pagination-next-trigger]) {
+a:is([data-pagination-item], [data-pagination-previous-trigger], [data-pagination-next-trigger]) {
   display: inline-flex;
   align-items: center;
   justify-content: center;

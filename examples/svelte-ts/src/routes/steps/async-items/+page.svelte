@@ -53,7 +53,7 @@
     <div {...api.getContentProps({ value: steps.COMPLETE })}>All set 🎉</div>
 
     <div style="display: flex; gap: 0.5rem; margin-top: 1rem">
-      <button {...api.getPrevTriggerProps()}>Back</button>
+      <button {...api.getPreviousTriggerProps()}>Back</button>
       <button {...api.getNextTriggerProps()}>Next</button>
       <button onclick={() => (items = [])}>Clear items</button>
       <button onclick={() => (items = remoteItems.map((item) => ({ ...item, disabled: true })))}>Disable all</button>

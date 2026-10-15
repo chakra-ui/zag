@@ -100,7 +100,7 @@ export default function Page() {
             </div>
 
             <div class="steps-actions">
-              <button {...api().getPrevTriggerProps()}>Back</button>
+              <button {...api().getPreviousTriggerProps()}>Back</button>
               <Show when={!api().complete}>
                 <button {...api().getNextTriggerProps()}>{api().canComplete ? "Launch" : "Next"}</button>
               </Show>

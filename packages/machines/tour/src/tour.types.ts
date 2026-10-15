@@ -21,7 +21,7 @@ export interface StepEffectArgs {
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
 
-export type StepActionType = "next" | "prev" | "dismiss" | "skip"
+export type StepActionType = "next" | "previous" | "dismiss" | "skip"
 
 export type StepActionFn = (actionMap: StepActionMap) => void
 
@@ -113,7 +113,7 @@ export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismiss
 
 export interface StepActionMap {
   next: VoidFunction
-  prev: VoidFunction
+  previous: VoidFunction
   dismiss: VoidFunction
   skip: VoidFunction
   goto: (id: string) => void
@@ -133,7 +133,7 @@ export interface ProgressTextDetails {
 export interface IntlTranslations {
   progressText?: ((details: ProgressTextDetails) => string) | undefined
   nextStep?: string | undefined
-  prevStep?: string | undefined
+  previousStep?: string | undefined
   close?: string | undefined
   skip?: string | undefined
 }
@@ -300,7 +300,7 @@ type ComputedContext = Readonly<{
   /**
    * Whether there is a previous step
    */
-  hasPrevStep: boolean
+  hasPreviousStep: boolean
   /**
    * Whether the current step is the first step
    */
@@ -425,7 +425,7 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Whether there is a previous step
    */
-  hasPrevStep: boolean
+  hasPreviousStep: boolean
   /**
    * Whether the current step is the first step
    */
@@ -473,7 +473,7 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Move to the previous step
    */
-  prev: VoidFunction
+  previous: VoidFunction
   /**
    * Returns the progress text
    */

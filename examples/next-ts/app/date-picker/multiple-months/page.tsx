@@ -37,7 +37,7 @@ export default function Page() {
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
           <div style={{ display: "flex", gap: "10px" }}>
-            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getPreviousTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
           </div>
 

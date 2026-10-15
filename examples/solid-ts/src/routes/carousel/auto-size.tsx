@@ -29,7 +29,7 @@ export default function Page() {
       <div class="carousel">
         <div {...photoApi().getRootProps()} class="carousel-strip">
           <div {...photoApi().getControlProps()}>
-            <button {...photoApi().getPrevTriggerProps()}>
+            <button {...photoApi().getPreviousTriggerProps()}>
               <ChevronLeftIcon />
             </button>
             <div {...photoApi().getItemGroupProps()}>

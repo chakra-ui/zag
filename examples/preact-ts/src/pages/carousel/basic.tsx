@@ -28,7 +28,7 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
             <div className="carousel-spacer" />
-            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getPreviousTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
           </div>
 

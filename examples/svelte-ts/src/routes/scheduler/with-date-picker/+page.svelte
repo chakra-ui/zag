@@ -68,7 +68,7 @@
               style: { display: "flex", gap: "6px", marginBottom: "10px", alignItems: "center" },
             })}
           >
-            <button {...dp.getPrevTriggerProps()}>
+            <button {...dp.getPreviousTriggerProps()}>
               <ChevronLeftIcon />
             </button>
             <button {...mergeProps(dp.getViewTriggerProps(), { style: { flex: 1, fontWeight: 600 } })}>
@@ -118,7 +118,7 @@
 
     <div {...api.getRootProps()}>
       <div {...api.getHeaderProps()}>
-        <button {...api.getPrevTriggerProps()}>
+        <button {...api.getPreviousTriggerProps()}>
           <ChevronLeftIcon />
         </button>
         <button {...api.getTodayTriggerProps()}>Today</button>

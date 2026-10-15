@@ -83,7 +83,7 @@ export const machine = createMachine<TourSchema>({
     stepIndex: ({ context }) => findStepIndex(context.get("steps"), context.get("stepId")),
     step: ({ context }) => findStep(context.get("steps"), context.get("stepId")),
     hasNextStep: ({ context, computed }) => computed("stepIndex") < context.get("steps").length - 1,
-    hasPrevStep: ({ computed }) => computed("stepIndex") > 0,
+    hasPreviousStep: ({ computed }) => computed("stepIndex") > 0,
     isFirstStep: ({ computed }) => computed("stepIndex") === 0,
     isLastStep: ({ context, computed }) => computed("stepIndex") === context.get("steps").length - 1,
     progress: ({ context, computed }) => {

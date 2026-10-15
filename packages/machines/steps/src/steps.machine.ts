@@ -97,7 +97,7 @@ export const machine = createMachine<StepsSchema>({
         "VALUE.SET": { actions: ["goToValue"] },
         "STEP.NEXT": { actions: ["goToNextStep"] },
         "STEP.SKIP": { actions: ["skipStep"] },
-        "STEP.PREV": { actions: ["goToPrevStep"] },
+        "STEP.PREV": { actions: ["goToPreviousStep"] },
         "STEP.RESET": { actions: ["resetStep"] },
         "COMPLETED.SET": { actions: ["setCompletedValues"] },
       },
@@ -138,7 +138,7 @@ export const machine = createMachine<StepsSchema>({
         navigate(params, getNextResult(toNavContext(params), { skip: true }))
       },
 
-      goToPrevStep(params) {
+      goToPreviousStep(params) {
         const ctx = toNavContext(params)
         navigate(params, getPrevResult(ctx, findItemIndex(ctx.items, ctx.value)))
       },

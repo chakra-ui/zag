@@ -24,7 +24,7 @@ function Lightbox(props: { page: number; onPageChange: (page: number) => void })
   return (
     <div {...api().getRootProps()}>
       <div {...api().getControlProps()}>
-        <button {...api().getPrevTriggerProps()}>
+        <button {...api().getPreviousTriggerProps()}>
           <ChevronLeftIcon />
         </button>
         <div {...api().getItemGroupProps()}>

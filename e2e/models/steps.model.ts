@@ -37,7 +37,7 @@ export class StepsModel extends Model {
     return this.page.locator(part("steps", "next-trigger"))
   }
 
-  get prevTrigger() {
+  get previousTrigger() {
     return this.page.locator(part("steps", "prev-trigger"))
   }
 
@@ -50,7 +50,7 @@ export class StepsModel extends Model {
   }
 
   clickPrev() {
-    return this.prevTrigger.click()
+    return this.previousTrigger.click()
   }
 
   clickSkip() {

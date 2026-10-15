@@ -41,7 +41,7 @@ const carouselApi = computed(() => carousel.connect(carouselService, normalizePr
 
           <div v-bind="carouselApi.getRootProps()">
             <div v-bind="carouselApi.getControlProps()">
-              <button v-bind="carouselApi.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+              <button v-bind="carouselApi.getPreviousTriggerProps()"><ChevronLeftIcon /></button>
               <div v-bind="carouselApi.getItemGroupProps()">
                 <div
                   v-for="(src, index) in images"

@@ -59,7 +59,7 @@
         <nav {...api.getRootProps()}>
           <ul>
             <li>
-              <button {...api.getPrevTriggerProps()}>
+              <button {...api.getPreviousTriggerProps()}>
                 <ChevronLeftIcon />
               </button>
             </li>

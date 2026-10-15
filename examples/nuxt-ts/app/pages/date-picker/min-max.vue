@@ -47,7 +47,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
         <div :hidden="api.view !== 'day'">
           <div v-bind="api.getViewControlProps({ view: 'year' })">
-            <button v-bind="api.getPrevTriggerProps()">Prev</button>
+            <button v-bind="api.getPreviousTriggerProps()">Prev</button>
             <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
             <button v-bind="api.getNextTriggerProps()">Next</button>
           </div>

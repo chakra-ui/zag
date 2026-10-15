@@ -69,9 +69,9 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       send({ type: "TAB_FOCUS", value: fromValue, src: "selectNext" })
       send({ type: "ARROW_NEXT", src: "selectNext" })
     },
-    selectPrev(fromValue) {
-      send({ type: "TAB_FOCUS", value: fromValue, src: "selectPrev" })
-      send({ type: "ARROW_PREV", src: "selectPrev" })
+    selectPrevious(fromValue) {
+      send({ type: "TAB_FOCUS", value: fromValue, src: "selectPrevious" })
+      send({ type: "ARROW_PREV", src: "selectPrevious" })
     },
     focus() {
       const value = context.get("value")

@@ -35,7 +35,7 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
         <div style="display: flex; gap: 10px">
-          <button v-bind="api.getPrevTriggerProps()">Prev</button>
+          <button v-bind="api.getPreviousTriggerProps()">Prev</button>
           <button v-bind="api.getNextTriggerProps()">Next</button>
         </div>
         <hr />

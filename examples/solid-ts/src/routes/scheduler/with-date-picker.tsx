@@ -83,7 +83,7 @@ export default function Page() {
                   {...dp().getViewControlProps({ view: "day" })}
                   style={{ display: "flex", gap: "6px", "margin-bottom": "10px", "align-items": "center" }}
                 >
-                  <button {...dp().getPrevTriggerProps()}>
+                  <button {...dp().getPreviousTriggerProps()}>
                     <ChevronLeft />
                   </button>
                   <button {...dp().getViewTriggerProps()} style={{ flex: 1, "font-weight": 600 }}>
@@ -137,7 +137,7 @@ export default function Page() {
 
           <div {...api().getRootProps()}>
             <div {...api().getHeaderProps()}>
-              <button {...api().getPrevTriggerProps()}>
+              <button {...api().getPreviousTriggerProps()}>
                 <ChevronLeft />
               </button>
               <button {...api().getTodayTriggerProps()}>Today</button>

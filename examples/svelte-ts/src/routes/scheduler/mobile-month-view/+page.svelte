@@ -29,7 +29,7 @@
 <main class="scheduler">
   <div {...mergeProps(api.getRootProps(), { style: { maxWidth: "420px" } })}>
     <div {...api.getHeaderProps()}>
-      <button {...api.getPrevTriggerProps()}>
+      <button {...api.getPreviousTriggerProps()}>
         <ChevronLeftIcon />
       </button>
       <span {...api.getHeaderTitleProps()}>

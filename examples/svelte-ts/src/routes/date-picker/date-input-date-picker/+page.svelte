@@ -68,7 +68,7 @@
       </div>
       <div hidden={datePickerApi.view !== "day"}>
         <div {...datePickerApi.getViewControlProps({ view: "year" })}>
-          <button {...datePickerApi.getPrevTriggerProps()}>Prev</button>
+          <button {...datePickerApi.getPreviousTriggerProps()}>Prev</button>
           <button {...datePickerApi.getViewTriggerProps()}>{datePickerApi.visibleRangeText.start}</button>
           <button {...datePickerApi.getNextTriggerProps()}>Next</button>
         </div>

@@ -29,7 +29,7 @@ const selectedDayEvents = computed(() => api.value.getEventsForDay(selectedDate.
   <main class="scheduler">
     <div v-bind="mergeProps(api.getRootProps(), { style: { maxWidth: '420px' } })">
       <div v-bind="api.getHeaderProps()">
-        <button v-bind="api.getPrevTriggerProps()">
+        <button v-bind="api.getPreviousTriggerProps()">
           <ChevronLeft />
         </button>
         <span v-bind="api.getHeaderTitleProps()">{{ api.getMonthName(api.date) }} {{ api.date.year }}</span>

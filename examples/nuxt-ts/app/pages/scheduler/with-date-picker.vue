@@ -72,7 +72,7 @@ const api = computed(() => scheduler.connect(service, normalizeProps))
               v-bind="dp.getViewControlProps({ view: 'day' })"
               style="display: flex; gap: 6px; margin-bottom: 10px; align-items: center"
             >
-              <button v-bind="dp.getPrevTriggerProps()">
+              <button v-bind="dp.getPreviousTriggerProps()">
                 <ChevronLeft />
               </button>
               <button v-bind="dp.getViewTriggerProps()" style="flex: 1; font-weight: 600">
@@ -118,7 +118,7 @@ const api = computed(() => scheduler.connect(service, normalizeProps))
 
       <div v-bind="api.getRootProps()">
         <div v-bind="api.getHeaderProps()">
-          <button v-bind="api.getPrevTriggerProps()">
+          <button v-bind="api.getPreviousTriggerProps()">
             <ChevronLeft />
           </button>
           <button v-bind="api.getTodayTriggerProps()">Today</button>

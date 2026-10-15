@@ -89,7 +89,7 @@ const api = computed(() => steps.connect(service, normalizeProps))
         </div>
 
         <div class="steps-actions">
-          <button v-bind="api.getPrevTriggerProps()">Back</button>
+          <button v-bind="api.getPreviousTriggerProps()">Back</button>
           <button v-if="!api.complete" v-bind="api.getNextTriggerProps()">
             {{ api.canComplete ? "Launch" : "Next" }}
           </button>

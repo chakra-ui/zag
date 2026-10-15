@@ -143,7 +143,7 @@ export default function Page() {
 
           {!api.complete && (
             <div className="steps-actions">
-              <button {...api.getPrevTriggerProps()}>Back</button>
+              <button {...api.getPreviousTriggerProps()}>Back</button>
               {api.value === "review" ? (
                 <button onClick={submit} disabled={submitting}>
                   {submitting ? "Creating…" : "Create project"}

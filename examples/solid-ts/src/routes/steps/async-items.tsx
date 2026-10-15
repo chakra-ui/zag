@@ -58,7 +58,7 @@ export default function Page() {
           <div {...api().getContentProps({ value: steps.COMPLETE })}>All set 🎉</div>
 
           <div style={{ display: "flex", gap: "0.5rem", "margin-top": "1rem" }}>
-            <button {...api().getPrevTriggerProps()}>Back</button>
+            <button {...api().getPreviousTriggerProps()}>Back</button>
             <button {...api().getNextTriggerProps()}>Next</button>
             <button onClick={() => setItems([])}>Clear items</button>
             <button onClick={() => setItems(remoteItems.map((item) => ({ ...item, disabled: true })))}>

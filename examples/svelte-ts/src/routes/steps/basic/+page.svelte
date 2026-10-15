@@ -45,7 +45,7 @@
     <div {...api.getContentProps({ value: steps.COMPLETE })}>Steps Complete - Thank you for filling out the form!</div>
 
     <div>
-      <button {...api.getPrevTriggerProps()}>Back</button>
+      <button {...api.getPreviousTriggerProps()}>Back</button>
       <button {...api.getSkipTriggerProps()}>Skip</button>
       <button {...api.getNextTriggerProps()}>Next</button>
     </div>

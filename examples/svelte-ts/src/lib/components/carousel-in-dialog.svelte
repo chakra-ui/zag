@@ -25,7 +25,7 @@
 
 <div {...api.getRootProps()}>
   <div {...api.getControlProps()}>
-    <button {...api.getPrevTriggerProps()}><ChevronLeftIcon /></button>
+    <button {...api.getPreviousTriggerProps()}><ChevronLeftIcon /></button>
     <div {...api.getItemGroupProps()}>
       {#each props.images as src, index (src)}
         <div {...api.getItemProps({ index })} class="carousel-photo">

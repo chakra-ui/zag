@@ -44,7 +44,7 @@
       </div>
       <div hidden={api.view !== "day"}>
         <div {...api.getViewControlProps({ view: "year" })}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
+          <button {...api.getPreviousTriggerProps()}>Prev</button>
           <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
           <button {...api.getNextTriggerProps()}>Next</button>
         </div>

@@ -138,7 +138,7 @@
 
     {#if !api.complete}
       <div class="steps-actions">
-        <button {...api.getPrevTriggerProps()}>Back</button>
+        <button {...api.getPreviousTriggerProps()}>Back</button>
         {#if api.value === "review"}
           <button onclick={submit} disabled={submitting}>
             {submitting ? "Creating…" : "Create project"}

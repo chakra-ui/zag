@@ -61,7 +61,7 @@ export const defaultTranslations: Required<IntlTranslations> = {
     const [start = "", end = ""] = value
     return `select ${start} to ${end}`
   },
-  prevTrigger(view) {
+  previousTrigger(view) {
     return match(view, {
       year: "Switch to previous decade",
       month: "Switch to previous year",

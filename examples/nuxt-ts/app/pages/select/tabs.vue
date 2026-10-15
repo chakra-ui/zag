@@ -85,7 +85,7 @@ const tabListProps = computed(() =>
 const listProps = computed(() =>
   mergeProps(selectApi.value.getListProps(), {
     onKeydown(event: KeyboardEvent) {
-      if (event.key === "ArrowLeft") tabApi.value.selectPrev()
+      if (event.key === "ArrowLeft") tabApi.value.selectPrevious()
       else if (event.key === "ArrowRight") tabApi.value.selectNext()
       else return
       event.preventDefault()

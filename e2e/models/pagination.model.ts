@@ -23,8 +23,8 @@ export class PaginationModel extends Model {
     return this.page.locator("[data-pagination-next-trigger]")
   }
 
-  get prevTrigger() {
-    return this.page.locator("[data-pagination-prev-trigger]")
+  get previousTrigger() {
+    return this.page.locator("[data-pagination-previous-trigger]")
   }
 
   get output() {
@@ -48,7 +48,7 @@ export class PaginationModel extends Model {
   }
 
   clickPrev = async (times = 1) => {
-    await repeat(times, () => this.prevTrigger.click())
+    await repeat(times, () => this.previousTrigger.click())
   }
 
   seeOutputContains = async (text: string) => {

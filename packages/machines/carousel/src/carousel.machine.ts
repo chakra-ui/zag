@@ -73,7 +73,7 @@ export const machine = createMachine<CarouselSchema>({
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
     canScrollNext: ({ prop, context }) =>
       prop("loop") || context.get("page") < context.get("pageSnapPoints").length - 1,
-    canScrollPrev: ({ prop, context }) => prop("loop") || context.get("page") > 0,
+    canScrollPrevious: ({ prop, context }) => prop("loop") || context.get("page") > 0,
     autoplayInterval: ({ prop }) => {
       const autoPlay = prop("autoPlay")
       return isObject(autoPlay) ? autoPlay.delay : 4000

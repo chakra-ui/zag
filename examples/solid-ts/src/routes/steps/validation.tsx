@@ -148,7 +148,7 @@ export default function Page() {
 
           <Show when={!api().complete}>
             <div class="steps-actions">
-              <button {...api().getPrevTriggerProps()}>Back</button>
+              <button {...api().getPreviousTriggerProps()}>Back</button>
               <Show when={api().value === "review"} fallback={<button {...api().getNextTriggerProps()}>Next</button>}>
                 <button onClick={submit} disabled={submitting()}>
                   {submitting() ? "Creating…" : "Create project"}

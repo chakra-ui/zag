@@ -82,7 +82,7 @@
   const listProps = $derived(
     mergeProps(selectApi.getListProps(), {
       onkeydown(event: KeyboardEvent) {
-        if (event.key === "ArrowLeft") tabApi.selectPrev()
+        if (event.key === "ArrowLeft") tabApi.selectPrevious()
         else if (event.key === "ArrowRight") tabApi.selectNext()
         else return
         event.preventDefault()

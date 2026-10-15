@@ -13,6 +13,7 @@
     },
     "ItemContent": {
       "data-accordion-item-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
@@ -103,9 +104,9 @@
       "data-carousel-control": "<uid>",
       "data-orientation": "The orientation of the control"
     },
-    "PrevTrigger": {
-      "data-carousel-prev-trigger": "<uid>",
-      "data-orientation": "The orientation of the prevtrigger"
+    "PreviousTrigger": {
+      "data-carousel-previous-trigger": "<uid>",
+      "data-orientation": "The orientation of the previoustrigger"
     },
     "NextTrigger": {
       "data-carousel-next-trigger": "<uid>",
@@ -694,8 +695,8 @@
       "data-date-picker-next-trigger": "<uid>",
       "data-disabled": "Present when disabled"
     },
-    "PrevTrigger": {
-      "data-date-picker-prev-trigger": "<uid>",
+    "PreviousTrigger": {
+      "data-date-picker-previous-trigger": "<uid>",
       "data-disabled": "Present when disabled"
     },
     "Trigger": {
@@ -1262,6 +1263,10 @@
       "data-nested": "menu",
       "data-has-nested": "menu"
     },
+    "Input": {
+      "data-menu-input": "<uid>",
+      "data-highlighted": "Present when highlighted"
+    },
     "Item": {
       "data-menu-item": "<uid>",
       "data-disabled": "Present when disabled",
@@ -1401,11 +1406,17 @@
     },
     "Symbol": {
       "data-number-flow-symbol": "<uid>",
-      "data-type": "The type of the item"
+      "data-type": "The type of the item",
+      "data-key": "",
+      "data-entering": "",
+      "data-exiting": ""
     },
     "Digit": {
       "data-number-flow-digit": "<uid>",
-      "data-place": ""
+      "data-place": "",
+      "data-key": "",
+      "data-entering": "",
+      "data-exiting": ""
     },
     "DigitTrack": {
       "data-number-flow-digit-track": "<uid>",
@@ -1479,8 +1490,8 @@
       "data-index": "The index of the item",
       "data-selected": "Present when selected"
     },
-    "PrevTrigger": {
-      "data-pagination-prev-trigger": "<uid>",
+    "PreviousTrigger": {
+      "data-pagination-previous-trigger": "<uid>",
       "data-disabled": "Present when disabled"
     },
     "FirstTrigger": {

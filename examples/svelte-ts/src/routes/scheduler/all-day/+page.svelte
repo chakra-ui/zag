@@ -48,7 +48,7 @@
   </label>
   <div {...api.getRootProps()}>
     <div {...api.getHeaderProps()}>
-      <button {...api.getPrevTriggerProps()}>
+      <button {...api.getPreviousTriggerProps()}>
         <ChevronLeftIcon />
       </button>
       <button {...api.getTodayTriggerProps()}>Today</button>

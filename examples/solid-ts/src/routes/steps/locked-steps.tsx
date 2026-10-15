@@ -98,9 +98,9 @@ export default function Page() {
           </div>
 
           <div class="steps-actions">
-            <Show when={!api().complete} fallback={<button {...api().getPrevTriggerProps()}>Back</button>}>
+            <Show when={!api().complete} fallback={<button {...api().getPreviousTriggerProps()}>Back</button>}>
               <button onClick={cancel}>Cancel</button>
-              <button {...api().getPrevTriggerProps()}>Back</button>
+              <button {...api().getPreviousTriggerProps()}>Back</button>
               <Show
                 when={api().value === "verify"}
                 fallback={<button {...api().getNextTriggerProps()}>Continue</button>}

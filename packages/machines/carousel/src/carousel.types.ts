@@ -34,7 +34,7 @@ export interface ProgressTextDetails {
 
 export interface IntlTranslations {
   nextTrigger?: string | undefined
-  prevTrigger?: string | undefined
+  previousTrigger?: string | undefined
   indicator?: ((index: number) => string) | undefined
   item?: ((index: number, count: number) => string) | undefined
   autoplayStart?: string | undefined
@@ -47,7 +47,7 @@ export interface ElementIds {
   item?: ((index: number) => string) | undefined
   itemGroup?: string | undefined
   nextTrigger?: string | undefined
-  prevTrigger?: string | undefined
+  previousTrigger?: string | undefined
   indicatorGroup?: string | undefined
   indicator?: ((index: number) => string) | undefined
 }
@@ -169,7 +169,7 @@ interface ComputedContext {
   isRtl: boolean
   isHorizontal: boolean
   canScrollNext: boolean
-  canScrollPrev: boolean
+  canScrollPrevious: boolean
   autoplayInterval: number
 }
 
@@ -270,7 +270,7 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the carousel is can scroll to the previous view
    */
-  canScrollPrev: boolean
+  canScrollPrevious: boolean
   /**
    * Function to scroll to a specific item index
    */
@@ -286,7 +286,7 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * Function to scroll to the previous page
    */
-  scrollPrev: (instant?: boolean) => void
+  scrollPrevious: (instant?: boolean) => void
   /**
    * Returns the current scroll progress as a percentage
    */
@@ -321,7 +321,7 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
    */
   getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
-  getPrevTriggerProps: () => T["button"]
+  getPreviousTriggerProps: () => T["button"]
   getNextTriggerProps: () => T["button"]
   getAutoplayTriggerProps: () => T["button"]
   getIndicatorGroupProps: () => T["element"]

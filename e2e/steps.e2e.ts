@@ -34,7 +34,7 @@ test.describe("steps / basic", () => {
   })
 
   test("prev is disabled on the first step", async () => {
-    await expect(I.prevTrigger).toBeDisabled()
+    await expect(I.previousTrigger).toBeDisabled()
   })
 
   test("walking to the end shows the completed content", async () => {
@@ -332,7 +332,7 @@ test.describe("steps / locked steps", () => {
 
   test("verifying locks every earlier step", async () => {
     await verify()
-    await expect(I.prevTrigger).toBeDisabled()
+    await expect(I.previousTrigger).toBeDisabled()
     await I.seeTriggerIsDisabled("password")
     await I.seeTriggerIsDisabled("verify")
   })

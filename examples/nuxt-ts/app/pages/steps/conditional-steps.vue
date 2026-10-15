@@ -84,7 +84,7 @@ const indicator = (value: string, index: number) => {
       </div>
 
       <div v-if="!api.complete" class="steps-actions">
-        <button v-bind="api.getPrevTriggerProps()">Back</button>
+        <button v-bind="api.getPreviousTriggerProps()">Back</button>
         <button v-bind="api.getSkipTriggerProps()">Do it later</button>
         <button v-bind="api.getNextTriggerProps()">{{ api.canComplete ? "Finish" : "Continue" }}</button>
       </div>

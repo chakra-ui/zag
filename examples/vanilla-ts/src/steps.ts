@@ -54,8 +54,8 @@ export class Steps extends Component<steps.Props, steps.Api> {
     const progress = this.rootEl.querySelector<HTMLElement>(".steps-progress")
     if (progress) this.spreadProps(progress, this.api.getProgressProps())
 
-    const prevButton = this.rootEl.querySelector<HTMLButtonElement>(".steps-prev-trigger")
-    if (prevButton) this.spreadProps(prevButton, this.api.getPrevTriggerProps())
+    const prevButton = this.rootEl.querySelector<HTMLButtonElement>(".steps-previous-trigger")
+    if (prevButton) this.spreadProps(prevButton, this.api.getPreviousTriggerProps())
 
     const nextButton = this.rootEl.querySelector<HTMLButtonElement>(".steps-next-trigger")
     if (nextButton) this.spreadProps(nextButton, this.api.getNextTriggerProps())

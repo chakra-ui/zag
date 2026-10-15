@@ -33,7 +33,7 @@ const removeSlide = () => (slides.value = slides.value.slice(0, -1))
         </div>
 
         <div v-bind="api.getControlProps()">
-          <button v-bind="api.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+          <button v-bind="api.getPreviousTriggerProps()"><ChevronLeftIcon /></button>
           <div v-bind="api.getItemGroupProps()">
             <div v-for="(slide, index) in slides" :key="slide" v-bind="api.getItemProps({ index })">
               <div class="carousel-card">{{ slide }}</div>

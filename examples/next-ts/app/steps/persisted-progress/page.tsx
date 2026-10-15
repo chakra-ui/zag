@@ -96,7 +96,7 @@ export default function Page() {
             </div>
 
             <div className="steps-actions">
-              <button {...api.getPrevTriggerProps()}>Back</button>
+              <button {...api.getPreviousTriggerProps()}>Back</button>
               {!api.complete && <button {...api.getNextTriggerProps()}>{api.canComplete ? "Launch" : "Next"}</button>}
               <button onClick={() => api.resetStep()}>Reset progress</button>
             </div>

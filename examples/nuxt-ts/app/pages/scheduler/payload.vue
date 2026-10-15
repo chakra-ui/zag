@@ -78,7 +78,7 @@ const selected = computed(() => (selectedId.value ? (api.value.getEventById(sele
   <main class="scheduler scheduler-with-aside">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getHeaderProps()">
-        <button v-bind="api.getPrevTriggerProps()">
+        <button v-bind="api.getPreviousTriggerProps()">
           <ChevronLeft />
         </button>
         <button v-bind="api.getTodayTriggerProps()">Today</button>

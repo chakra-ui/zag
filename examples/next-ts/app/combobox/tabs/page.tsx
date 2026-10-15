@@ -118,7 +118,7 @@ export default function Page() {
                 }
 
                 if (event.key === "ArrowLeft") {
-                  tabApi.selectPrev()
+                  tabApi.selectPrevious()
                   event.preventDefault()
                 }
               },

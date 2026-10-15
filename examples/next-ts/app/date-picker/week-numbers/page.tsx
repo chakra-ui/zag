@@ -45,7 +45,7 @@ export default function Page() {
 
           <div hidden={api.view !== "day"}>
             <div {...api.getViewControlProps({ view: "day" })}>
-              <button {...api.getPrevTriggerProps()}>Prev</button>
+              <button {...api.getPreviousTriggerProps()}>Prev</button>
               <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
               <button {...api.getNextTriggerProps()}>Next</button>
             </div>
@@ -81,7 +81,7 @@ export default function Page() {
           <div style={{ display: "flex", gap: "40px" }}>
             <div hidden={api.view !== "month"} style={{ width: "100%" }}>
               <div {...api.getViewControlProps({ view: "month" })}>
-                <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
+                <button {...api.getPreviousTriggerProps({ view: "month" })}>Prev</button>
                 <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
                 <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
@@ -103,7 +103,7 @@ export default function Page() {
 
             <div hidden={api.view !== "year"} style={{ width: "100%" }}>
               <div {...api.getViewControlProps({ view: "year" })}>
-                <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
+                <button {...api.getPreviousTriggerProps({ view: "year" })}>Prev</button>
                 <span>
                   {api.getDecade().start} - {api.getDecade().end}
                 </span>

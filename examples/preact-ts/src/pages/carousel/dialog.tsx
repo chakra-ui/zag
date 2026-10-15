@@ -21,7 +21,7 @@ function CarouselInDialog({ page, onPageChange }: { page: number; onPageChange: 
     <div className="carousel">
       <div {...api.getRootProps()}>
         <div {...api.getControlProps()}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
+          <button {...api.getPreviousTriggerProps()}>Prev</button>
           <button {...api.getNextTriggerProps()}>Next</button>
         </div>
 

@@ -95,11 +95,11 @@ export default function Page() {
 
           <div className="steps-actions">
             {api.complete ? (
-              <button {...api.getPrevTriggerProps()}>Back</button>
+              <button {...api.getPreviousTriggerProps()}>Back</button>
             ) : (
               <>
                 <button onClick={cancel}>Cancel</button>
-                <button {...api.getPrevTriggerProps()}>Back</button>
+                <button {...api.getPreviousTriggerProps()}>Back</button>
                 {api.value === "verify" ? (
                   <button onClick={verify} disabled={verifying || api.item?.invalid}>
                     {verifying ? "Verifying…" : "Verify"}

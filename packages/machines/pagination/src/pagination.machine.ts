@@ -78,7 +78,7 @@ export const machine = createMachine<PaginationSchema>({
     },
     PREVIOUS_PAGE: {
       guard: "canGoToPrevPage",
-      actions: ["goToPrevPage"],
+      actions: ["goToPreviousPage"],
     },
     NEXT_PAGE: {
       guard: "canGoToNextPage",
@@ -112,7 +112,7 @@ export const machine = createMachine<PaginationSchema>({
       goToLastPage({ context, computed }) {
         context.set("page", computed("totalPages"))
       },
-      goToPrevPage({ context, computed }) {
+      goToPreviousPage({ context, computed }) {
         context.set("page", (prev) => clampPage(prev - 1, computed("totalPages")))
       },
       goToNextPage({ context, computed }) {

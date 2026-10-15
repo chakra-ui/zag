@@ -90,10 +90,10 @@ const cancel = () => {
       </div>
 
       <div class="steps-actions">
-        <button v-if="api.complete" v-bind="api.getPrevTriggerProps()">Back</button>
+        <button v-if="api.complete" v-bind="api.getPreviousTriggerProps()">Back</button>
         <template v-else>
           <button @click="cancel">Cancel</button>
-          <button v-bind="api.getPrevTriggerProps()">Back</button>
+          <button v-bind="api.getPreviousTriggerProps()">Back</button>
           <button v-if="api.value === 'verify'" :disabled="verifying || api.item?.invalid" @click="verify">
             {{ verifying ? "Verifying…" : "Verify" }}
           </button>

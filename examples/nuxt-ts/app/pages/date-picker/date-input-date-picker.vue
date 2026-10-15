@@ -91,7 +91,7 @@ const dateInputApi = computed(() => dateInput.connect(dateInputService, normaliz
 
         <div :hidden="datePickerApi.view !== 'day'">
           <div v-bind="datePickerApi.getViewControlProps({ view: 'year' })">
-            <button v-bind="datePickerApi.getPrevTriggerProps()">Prev</button>
+            <button v-bind="datePickerApi.getPreviousTriggerProps()">Prev</button>
             <button v-bind="datePickerApi.getViewTriggerProps()">{{ datePickerApi.visibleRangeText.start }}</button>
             <button v-bind="datePickerApi.getNextTriggerProps()">Next</button>
           </div>

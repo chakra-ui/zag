@@ -93,7 +93,7 @@ export default function Page() {
 
           <Show when={!api().complete}>
             <div class="steps-actions">
-              <button {...api().getPrevTriggerProps()}>Back</button>
+              <button {...api().getPreviousTriggerProps()}>Back</button>
               <button {...api().getSkipTriggerProps()}>Do it later</button>
               <button {...api().getNextTriggerProps()}>{api().canComplete ? "Finish" : "Continue"}</button>
             </div>

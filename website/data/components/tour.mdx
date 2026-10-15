@@ -135,13 +135,14 @@ The `action` property accepts one of the following built-in types, or a custom
 function:
 
 - `next`: Move to the next step.
-- `prev`: Move to the previous step.
+- `previous`: Move to the previous step.
 - `dismiss`: End the tour. Use this when the user is unlikely to want to see the
   tour again.
 - `skip`: End the tour, similar to `dismiss`, but semantically intended for
   cases where the user might want to resume or restart the tour later.
 - A custom function `(actionMap) => void`, which receives the same
-  `next`/`prev`/`dismiss`/`skip`/`goto` methods to compose your own behavior.
+  `next`/`previous`/`dismiss`/`skip`/`goto` methods to compose your own
+  behavior.
 
 ```tsx
 const steps: tour.StepDetails[] = [
@@ -335,7 +336,7 @@ Use the connected API to drive tour flow from code.
 api.start()
 api.setStep("step-2")
 api.next()
-api.prev()
+api.previous()
 api.updateStep("step-2", { title: "Updated title" })
 ```
 

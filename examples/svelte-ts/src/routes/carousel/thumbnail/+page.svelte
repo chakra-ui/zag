@@ -30,7 +30,7 @@
   <div class="carousel">
     <div {...main.getRootProps()}>
       <div {...main.getControlProps()}>
-        <button {...main.getPrevTriggerProps()}><ChevronLeftIcon /></button>
+        <button {...main.getPreviousTriggerProps()}><ChevronLeftIcon /></button>
         <div {...main.getItemGroupProps()}>
           {#each images as src, index (src)}
             <div {...main.getItemProps({ index })} class="carousel-photo">

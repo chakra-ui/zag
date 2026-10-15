@@ -114,7 +114,7 @@ const inputProps = computed(() =>
       }
 
       if (event.key === "ArrowLeft") {
-        tabApi.value.selectPrev()
+        tabApi.value.selectPrevious()
         event.preventDefault()
       }
     },

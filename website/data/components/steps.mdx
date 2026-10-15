@@ -141,8 +141,8 @@ still loading.
 
 Moving past the last step sets the value to `steps.COMPLETE` and invokes
 `onComplete`. Render the terminal screen with
-`getContentProps({ value: steps.COMPLETE })`, and `goToPrevStep` returns to the
-last step.
+`getContentProps({ value: steps.COMPLETE })`, and `goToPreviousStep` returns to
+the last step.
 
 ```tsx
 <div {...api.getContentProps({ value: steps.COMPLETE })}>All done</div>
@@ -279,7 +279,7 @@ Use the API methods to move through the flow in code.
 ```tsx
 api.setValue("review")
 api.goToNextStep()
-api.goToPrevStep()
+api.goToPreviousStep()
 api.skipStep()
 api.resetStep()
 ```

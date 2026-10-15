@@ -33,7 +33,7 @@
   <div class="carousel">
     <div {...photoApi.getRootProps()} class="carousel-strip">
       <div {...photoApi.getControlProps()}>
-        <button {...photoApi.getPrevTriggerProps()}><ChevronLeftIcon /></button>
+        <button {...photoApi.getPreviousTriggerProps()}><ChevronLeftIcon /></button>
         <div {...photoApi.getItemGroupProps()}>
           {#each photos as photo, index (photo.src)}
             <div {...photoApi.getItemProps({ index })}>

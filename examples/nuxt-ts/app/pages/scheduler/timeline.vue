@@ -20,7 +20,7 @@ const timeline = computed(() => api.value.getTimelineState())
   <main class="scheduler">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getHeaderProps()">
-        <button v-bind="api.getPrevTriggerProps()">‹</button>
+        <button v-bind="api.getPreviousTriggerProps()">‹</button>
         <button v-bind="api.getTodayTriggerProps()">Today</button>
         <button v-bind="api.getNextTriggerProps()">›</button>
         <span v-bind="api.getHeaderTitleProps()">{{ api.visibleRangeText.formatted }}</span>

@@ -107,7 +107,7 @@ const steps: tour.StepDetails[] = [
     target: () => document.querySelector("[data-id=result]"),
     placement: "bottom",
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },

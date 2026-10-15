@@ -29,7 +29,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
       <div v-bind="api.getContentProps()">
         <div :hidden="api.view !== 'month'">
           <div v-bind="api.getViewControlProps({ view: 'month' })">
-            <button v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
+            <button v-bind="api.getPreviousTriggerProps({ view: 'month' })">Prev</button>
             <button v-bind="api.getViewTriggerProps({ view: 'month' })">{{ api.visibleRange.start.year }}</button>
             <button v-bind="api.getNextTriggerProps({ view: 'month' })">Next</button>
           </div>

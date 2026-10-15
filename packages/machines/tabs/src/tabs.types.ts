@@ -129,7 +129,7 @@ export type TabsSchema = {
   guard: string
   effect: string
   event: EventObject & {
-    src?: "keyboard" | "selectNext" | "selectPrev" | undefined
+    src?: "keyboard" | "selectNext" | "selectPrevious" | undefined
   }
 }
 
@@ -218,7 +218,7 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * Selects the previous tab
    */
-  selectPrev: (fromValue?: string) => void
+  selectPrevious: (fromValue?: string) => void
   /**
    * Returns the state of the trigger with the given props
    */

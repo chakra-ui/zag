@@ -66,7 +66,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
         <div :hidden="api.view !== 'day'">
           <div v-bind="api.getViewControlProps({ view: 'day' })">
-            <button type="button" v-bind="api.getPrevTriggerProps()">Prev</button>
+            <button type="button" v-bind="api.getPreviousTriggerProps()">Prev</button>
             <button type="button" v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
             <button type="button" v-bind="api.getNextTriggerProps()">Next</button>
           </div>
@@ -92,7 +92,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
         <div style="display: flex; gap: 40px">
           <div :hidden="api.view !== 'month'" style="width: 100%">
             <div v-bind="api.getViewControlProps({ view: 'month' })">
-              <button type="button" v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
+              <button type="button" v-bind="api.getPreviousTriggerProps({ view: 'month' })">Prev</button>
               <button type="button" v-bind="api.getViewTriggerProps({ view: 'month' })">
                 {{ api.visibleRange.start.year }}
               </button>
@@ -120,7 +120,7 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
           <div :hidden="api.view !== 'year'" style="width: 100%">
             <div v-bind="api.getViewControlProps({ view: 'year' })">
-              <button type="button" v-bind="api.getPrevTriggerProps({ view: 'year' })">Prev</button>
+              <button type="button" v-bind="api.getPreviousTriggerProps({ view: 'year' })">Prev</button>
               <span> {{ api.getDecade().start }} - {{ api.getDecade().end }} </span>
               <button type="button" v-bind="api.getNextTriggerProps({ view: 'year' })">Next</button>
             </div>

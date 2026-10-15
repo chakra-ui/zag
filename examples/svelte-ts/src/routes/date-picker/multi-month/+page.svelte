@@ -29,7 +29,7 @@
     <div {...api.getContentProps()}>
       <div hidden={api.view !== "month"}>
         <div {...api.getViewControlProps({ view: "month" })}>
-          <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
+          <button {...api.getPreviousTriggerProps({ view: "month" })}>Prev</button>
           <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
           <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
         </div>

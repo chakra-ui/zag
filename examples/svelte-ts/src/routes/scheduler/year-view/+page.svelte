@@ -41,7 +41,7 @@
     <div {...api.getHeaderProps()}>
       <span {...api.getHeaderTitleProps()}>{api.date.year}</span>
       <div class="scheduler-year-nav">
-        <button {...api.getPrevTriggerProps()} aria-label="Previous year">
+        <button {...api.getPreviousTriggerProps()} aria-label="Previous year">
           <ChevronLeftIcon />
         </button>
         <button {...api.getTodayTriggerProps()}>Today</button>

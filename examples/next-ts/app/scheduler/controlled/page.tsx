@@ -40,7 +40,7 @@ export default function Page() {
       <main className="scheduler">
         <div {...api.getRootProps()}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>
+            <button {...api.getPreviousTriggerProps()}>
               <ChevronLeft />
             </button>
             <button {...api.getTodayTriggerProps()}>Today</button>

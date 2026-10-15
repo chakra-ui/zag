@@ -90,9 +90,9 @@ test.describe("scheduler / i18n", () => {
   })
 
   test("translations reach the trigger labels", async () => {
-    await expect(I.prevTrigger).toHaveAttribute("aria-label", "Previous")
+    await expect(I.previousTrigger).toHaveAttribute("aria-label", "Previous")
     await I.selectLocale("de-DE")
-    await expect(I.prevTrigger).toHaveAttribute("aria-label", "Zurück")
+    await expect(I.previousTrigger).toHaveAttribute("aria-label", "Zurück")
   })
 
   test("viewText drives the view item labels", async () => {

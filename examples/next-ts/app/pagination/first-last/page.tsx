@@ -25,7 +25,7 @@ export default function Page() {
               </button>
             </li>
             <li>
-              <button {...api.getPrevTriggerProps()}>
+              <button {...api.getPreviousTriggerProps()}>
                 <ChevronLeftIcon />
               </button>
             </li>

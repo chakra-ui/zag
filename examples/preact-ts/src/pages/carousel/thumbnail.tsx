@@ -33,7 +33,7 @@ export default function Page() {
     <main>
       <div {...mainApi.getRootProps()}>
         <div {...mainApi.getControlProps()}>
-          <button {...mainApi.getPrevTriggerProps()}>Prev</button>
+          <button {...mainApi.getPreviousTriggerProps()}>Prev</button>
           <button {...mainApi.getNextTriggerProps()}>Next</button>
         </div>
         <div {...mainApi.getItemGroupProps()}>

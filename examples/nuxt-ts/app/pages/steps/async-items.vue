@@ -57,7 +57,7 @@ const disableAll = () => {
       <div v-bind="api.getContentProps({ value: steps.COMPLETE })">All set 🎉</div>
 
       <div style="display: flex; gap: 0.5rem; margin-top: 1rem">
-        <button v-bind="api.getPrevTriggerProps()">Back</button>
+        <button v-bind="api.getPreviousTriggerProps()">Back</button>
         <button v-bind="api.getNextTriggerProps()">Next</button>
         <button @click="items = []">Clear items</button>
         <button @click="disableAll">Disable all</button>

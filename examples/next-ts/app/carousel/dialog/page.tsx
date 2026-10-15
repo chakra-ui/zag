@@ -23,7 +23,7 @@ function Lightbox({ page, onPageChange }: { page: number; onPageChange: (page: n
   return (
     <div {...api.getRootProps()}>
       <div {...api.getControlProps()}>
-        <button {...api.getPrevTriggerProps()}>
+        <button {...api.getPreviousTriggerProps()}>
           <ChevronLeftIcon />
         </button>
         <div {...api.getItemGroupProps()}>

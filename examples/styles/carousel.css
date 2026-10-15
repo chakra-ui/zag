@@ -67,7 +67,7 @@
   }
 }
 
-:is([data-carousel-prev-trigger], [data-carousel-next-trigger]) {
+:is([data-carousel-previous-trigger], [data-carousel-next-trigger]) {
   position: absolute;
   z-index: 1;
   width: 36px;
@@ -110,7 +110,7 @@
     scale: -1 1;
   }
 
-  &[data-carousel-prev-trigger] {
+  &[data-carousel-previous-trigger] {
     &[data-orientation="horizontal"] {
       inset-inline-start: 12px;
     }

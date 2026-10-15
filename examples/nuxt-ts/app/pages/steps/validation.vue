@@ -133,7 +133,7 @@ const reset = () => {
       </div>
 
       <div v-if="!api.complete" class="steps-actions">
-        <button v-bind="api.getPrevTriggerProps()">Back</button>
+        <button v-bind="api.getPreviousTriggerProps()">Back</button>
         <button v-if="api.value === 'review'" :disabled="submitting" @click="submit">
           {{ submitting ? "Creating…" : "Create project" }}
         </button>

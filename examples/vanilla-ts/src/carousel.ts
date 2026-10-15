@@ -100,7 +100,7 @@ export class Carousel extends Component<carousel.Props, carousel.Api> {
     }
 
     const prevBtn = this.rootEl.querySelector<HTMLElement>(".carousel-prev")
-    if (prevBtn) this.spreadProps(prevBtn, this.api.getPrevTriggerProps())
+    if (prevBtn) this.spreadProps(prevBtn, this.api.getPreviousTriggerProps())
 
     const nextBtn = this.rootEl.querySelector<HTMLElement>(".carousel-next")
     if (nextBtn) this.spreadProps(nextBtn, this.api.getNextTriggerProps())

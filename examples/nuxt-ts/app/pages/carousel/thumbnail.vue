@@ -29,7 +29,7 @@ const thumbnails = computed(() => carousel.connect(thumbnailService, normalizePr
     <div class="carousel">
       <div v-bind="main.getRootProps()">
         <div v-bind="main.getControlProps()">
-          <button v-bind="main.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+          <button v-bind="main.getPreviousTriggerProps()"><ChevronLeftIcon /></button>
           <div v-bind="main.getItemGroupProps()">
             <div
               v-for="(src, index) in images"

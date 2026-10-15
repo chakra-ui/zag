@@ -23,7 +23,7 @@
       description: "This tooltip points to a specific element on the page.",
       placement: "bottom",
       actions: [
-        { label: "Prev", action: "prev" },
+        { label: "Previous", action: "previous" },
         { label: "Next", action: "next" },
       ],
     },

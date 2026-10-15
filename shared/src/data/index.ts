@@ -281,7 +281,7 @@ export const tourDataWithEffect: StepDetails[] = [
     description: "Use them to change the context properties",
     target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(1)"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -303,7 +303,7 @@ export const tourDataWithEffect: StepDetails[] = [
     description: "Use them to see the state of the tour. Click the Visualizer button to proceed.",
     target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(2)"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -336,7 +336,7 @@ export const tourData: StepDetails[] = [
     description: "To the new world",
     target: () => document.querySelector<HTMLElement>("#step-1"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
     effect({ show, update }) {
@@ -361,7 +361,7 @@ export const tourData: StepDetails[] = [
     description: "Using scrollIntoView(...) rocks!",
     target: () => document.querySelector<HTMLElement>("#step-2"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -375,7 +375,7 @@ export const tourData: StepDetails[] = [
       return frameEl?.document.querySelector<HTMLElement>("#step-2a")
     },
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -386,7 +386,7 @@ export const tourData: StepDetails[] = [
     description: "The new world is a great place",
     target: () => document.querySelector<HTMLElement>("#step-3"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -397,7 +397,7 @@ export const tourData: StepDetails[] = [
     description: "So nice to see the scrolling works!",
     target: () => document.querySelector<HTMLElement>("#step-4"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -519,7 +519,7 @@ export const tourLayoutShiftData: StepDetails[] = [
     title: "A different target",
     description: "The spotlight animates across to this one, then snaps for any layout change after that.",
     target: () => document.getElementById("other-target"),
-    actions: [{ label: "Prev", action: "prev" }],
+    actions: [{ label: "Previous", action: "previous" }],
   },
 ]
 

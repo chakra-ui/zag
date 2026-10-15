@@ -56,7 +56,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
   const effectiveIndex = findEffectiveIndex(items, value)
   const percent = count === 0 ? 0 : Math.round((Math.max(effectiveIndex, 0) / count) * 100)
   const hasNextStep = !complete && currentIndex !== -1
-  const hasPrevStep = currentIndex !== -1 && findNavigableIndex(navContext, currentIndex, -1) !== -1
+  const hasPreviousStep = currentIndex !== -1 && findNavigableIndex(navContext, currentIndex, -1) !== -1
   const canComplete = isCompletingResult(getNextResult(navContext))
   const isReachable = (target: string) => getReachability(navContext, target).ok
   const reachableItems = effectiveItems.filter((item) => isReachable(item.value))
@@ -105,7 +105,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
     send({ type: "STEP.NEXT", src: "next.trigger.click" })
   }
 
-  const goToPrevStep = () => {
+  const goToPreviousStep = () => {
     send({ type: "STEP.PREV", src: "prev.trigger.click" })
   }
 
@@ -123,13 +123,13 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
     complete,
     completedValues,
     hasNextStep,
-    hasPrevStep,
+    hasPreviousStep,
     canSkip,
     canComplete,
     getItemState,
     setValue,
     goToNextStep,
-    goToPrevStep,
+    goToPreviousStep,
     skipStep,
     resetStep() {
       send({ type: "STEP.RESET", src: "api.resetStep" })
@@ -296,15 +296,15 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
       })
     },
 
-    getPrevTriggerProps() {
+    getPreviousTriggerProps() {
       return normalize.button({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
-        disabled: !hasPrevStep,
+        disabled: !hasPreviousStep,
         onClick(event) {
           if (event.defaultPrevented) return
-          goToPrevStep()
+          goToPreviousStep()
         },
       })
     },

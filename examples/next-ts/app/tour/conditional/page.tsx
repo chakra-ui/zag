@@ -40,7 +40,7 @@ const steps: tour.StepDetails[] = [
     title: "Getting Started",
     description: "Create your first project and invite your team.",
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Done", action: "dismiss" },
     ],
   },
@@ -59,7 +59,7 @@ const steps: tour.StepDetails[] = [
     title: "Power Features",
     description: "Set up automations, API keys, and custom workflows.",
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Done", action: "dismiss" },
     ],
   },

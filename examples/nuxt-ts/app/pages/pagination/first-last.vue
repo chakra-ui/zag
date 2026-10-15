@@ -22,7 +22,7 @@ const api = computed(() => pagination.connect(service, normalizeProps))
             </button>
           </li>
           <li>
-            <button v-bind="api.getPrevTriggerProps()">
+            <button v-bind="api.getPreviousTriggerProps()">
               <ChevronLeftIcon />
             </button>
           </li>

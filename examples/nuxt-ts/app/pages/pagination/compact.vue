@@ -18,7 +18,7 @@ const api = computed(() => pagination.connect(service, normalizeProps))
       <nav v-bind="api.getRootProps()">
         <ul>
           <li>
-            <button v-bind="api.getPrevTriggerProps()">
+            <button v-bind="api.getPreviousTriggerProps()">
               <ChevronLeftIcon />
               <span>Previous</span>
             </button>

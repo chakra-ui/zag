@@ -30,7 +30,7 @@ const api = computed(() => carousel.connect(service, normalizeProps))
         </div>
 
         <div v-bind="api.getControlProps()">
-          <button v-bind="api.getPrevTriggerProps()"><ChevronLeftIcon /></button>
+          <button v-bind="api.getPreviousTriggerProps()"><ChevronLeftIcon /></button>
           <div v-bind="api.getItemGroupProps()">
             <div
               v-for="(image, index) in carouselData"

@@ -5,7 +5,7 @@ export const anatomy = createAnatomy("pagination").parts(
   "item",
   "ellipsis",
   "firstTrigger",
-  "prevTrigger",
+  "previousTrigger",
   "nextTrigger",
   "lastTrigger",
 )

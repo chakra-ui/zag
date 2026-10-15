@@ -26,7 +26,7 @@
       </div>
 
       <div {...api.getControlProps()}>
-        <button {...api.getPrevTriggerProps()}><ChevronLeftIcon /></button>
+        <button {...api.getPreviousTriggerProps()}><ChevronLeftIcon /></button>
         <div {...api.getItemGroupProps()}>
           {#each slides as slide, index (slide)}
             <div {...api.getItemProps({ index })}>

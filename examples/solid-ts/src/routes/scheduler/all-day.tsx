@@ -51,7 +51,7 @@ export default function Page() {
         </label>
         <div {...api().getRootProps()}>
           <div {...api().getHeaderProps()}>
-            <button {...api().getPrevTriggerProps()}>
+            <button {...api().getPreviousTriggerProps()}>
               <ChevronLeft />
             </button>
             <button {...api().getTodayTriggerProps()}>Today</button>

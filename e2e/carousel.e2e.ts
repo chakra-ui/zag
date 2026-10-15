@@ -22,10 +22,10 @@ test.describe("carousel", () => {
   })
 
   test("next/prev buttons navigate carousel", async () => {
-    await I.seePrevTriggerIsDisabled()
+    await I.seePreviousTriggerIsDisabled()
     await I.clickNextTrigger()
     await I.seeIndicatorIsActive(1)
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
   })
 
   test.skip("[loop=true] autoplay start/stop", async ({ page }) => {
@@ -187,13 +187,13 @@ test.describe("carousel", () => {
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(2)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.seeIndicatorIsActive(1)
   })
 
   test("loop=false boundary stress keeps page clamped at first and last pages", async () => {
     await I.controls.bool("loop", false)
-    await I.seePrevTriggerIsDisabled()
+    await I.seePreviousTriggerIsDisabled()
     await I.seeIndicatorIsActive(0)
 
     await I.swipeCarousel("right", 420, 450, false)
@@ -233,7 +233,7 @@ test.describe("carousel", () => {
     await I.seeIndicatorIsActive(2)
     await I.seeNextTriggerIsDisabled()
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.seeIndicatorIsActive(1)
 
     await I.controls.select("orientation", "horizontal")
@@ -281,7 +281,7 @@ test.describe("carousel", () => {
     await I.controls.num("slidesPerPage", "1")
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(1)
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
     await I.seeNextTriggerIsEnabled()
 
     await I.clickNextTrigger()
@@ -366,7 +366,7 @@ test.describe("carousel", () => {
     await I.seeItemInView(2)
     await I.seeItemInView(3)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(0)
 
@@ -384,7 +384,7 @@ test.describe("carousel", () => {
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(0)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(2)
     await I.seeItemInView(4)
@@ -452,7 +452,7 @@ test.describe("carousel", () => {
 
   test("[loop=true] should loop slides", async () => {
     await I.controls.bool("loop")
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
 
     await I.clickNextTrigger()
     await I.clickNextTrigger()

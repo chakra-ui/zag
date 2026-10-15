@@ -21,7 +21,7 @@ export default function Page() {
         <nav {...api.getRootProps()}>
           <ul>
             <li>
-              <button {...api.getPrevTriggerProps()}>
+              <button {...api.getPreviousTriggerProps()}>
                 <ChevronLeftIcon />
                 <span>Previous</span>
               </button>

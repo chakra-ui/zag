@@ -23,7 +23,7 @@ export class CarouselModel extends Model {
     return this.page.locator(part("carousel", "indicator")).nth(index)
   }
 
-  get prevTrigger() {
+  get previousTrigger() {
     return this.page.locator(part("carousel", "prev-trigger"))
   }
 
@@ -39,8 +39,8 @@ export class CarouselModel extends Model {
     return this.page.locator(part("carousel", "item-group"))
   }
 
-  async clickPrevTrigger() {
-    await this.prevTrigger.click()
+  async clickPreviousTrigger() {
+    await this.previousTrigger.click()
   }
 
   async clickNextTrigger() {
@@ -136,12 +136,12 @@ export class CarouselModel extends Model {
     await expect(this.getItem(index)).toHaveAttribute("data-inview", "")
   }
 
-  async seePrevTriggerIsDisabled() {
-    await expect(this.prevTrigger).toBeDisabled()
+  async seePreviousTriggerIsDisabled() {
+    await expect(this.previousTrigger).toBeDisabled()
   }
 
-  async seePrevTriggerIsEnabled() {
-    await expect(this.prevTrigger).toBeEnabled()
+  async seePreviousTriggerIsEnabled() {
+    await expect(this.previousTrigger).toBeEnabled()
   }
 
   async seeNextTriggerIsDisabled() {

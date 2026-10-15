@@ -40,7 +40,7 @@ test.describe("tour", () => {
 
     test("prev is named by its label", async ({ page }) => {
       await goToStep(page, "step-1")
-      await expect(button(page, "Prev")).not.toHaveAttribute("aria-label")
+      await expect(button(page, "Previous")).not.toHaveAttribute("aria-label")
     })
 
     test("dismiss is named by its label", async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe("tour", () => {
 
     test("prev by label goes back", async ({ page }) => {
       await goToStep(page, "step-1")
-      await button(page, "Prev").click()
+      await button(page, "Previous").click()
       await I.seeStep("step-0")
     })
 
@@ -199,10 +199,7 @@ test.describe("tour / replaced target", () => {
 
     // the highlight moves to the element now carrying the target, and nothing is left on the old one
     await expect(page.locator("[data-tour-highlighted]")).toHaveCount(1)
-    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute(
-      "data-tour-highlighted",
-      "",
-    )
+    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute("data-tour-highlighted", "")
 
     // and the spotlight follows it rather than staying on a node that has left the document.
     // Polled, because the position is recomputed asynchronously, on the next update.

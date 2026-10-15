@@ -234,7 +234,7 @@ export const machine = createMachine<DatePickerSchema>({
         timeZone: prop("timeZone"),
         selectionMode: prop("selectionMode"),
       }),
-    isPrevVisibleRangeValid: ({ context, prop }) =>
+    isPreviousVisibleRangeValid: ({ context, prop }) =>
       !isPreviousRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),

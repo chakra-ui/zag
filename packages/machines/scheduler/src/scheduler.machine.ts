@@ -113,7 +113,7 @@ export const machine = createMachine<SchedulerSchema>({
     "DATE.SET": { actions: ["setDate"] },
     "GOTO.TODAY": { actions: ["goToToday"] },
     "GOTO.NEXT": { actions: ["goToNext"] },
-    "GOTO.PREV": { actions: ["goToPrev"] },
+    "GOTO.PREV": { actions: ["goToPrevious"] },
     "EVENT.CLICK": { actions: ["invokeOnEventClick", "clearSelectedSlot"] },
     "EVENT.FOCUS": { actions: ["setFocusedEvent"] },
     "EVENT.BLUR": { actions: ["clearFocusedEvent"] },
@@ -266,7 +266,7 @@ export const machine = createMachine<SchedulerSchema>({
       goToNext({ context }) {
         context.set("date", getNextDate(context.get("view"), context.get("date")))
       },
-      goToPrev({ context }) {
+      goToPrevious({ context }) {
         context.set("date", getPrevDate(context.get("view"), context.get("date")))
       },
       invokeOnEventClick({ context, prop, event }) {

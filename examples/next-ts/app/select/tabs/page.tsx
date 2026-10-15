@@ -113,7 +113,7 @@ export default function Page() {
                       ref={listRef}
                       {...mergeProps(selectApi.getListProps(), {
                         onKeyDown(event) {
-                          if (event.key === "ArrowLeft") tabApi.selectPrev()
+                          if (event.key === "ArrowLeft") tabApi.selectPrevious()
                           else if (event.key === "ArrowRight") tabApi.selectNext()
                           else return
                           event.preventDefault()
@@ -135,7 +135,7 @@ export default function Page() {
                       ref={listRef}
                       {...mergeProps(selectApi.getListProps(), {
                         onKeyDown(event) {
-                          if (event.key === "ArrowLeft") tabApi.selectPrev()
+                          if (event.key === "ArrowLeft") tabApi.selectPrevious()
                           else if (event.key === "ArrowRight") tabApi.selectNext()
                           else return
                           event.preventDefault()

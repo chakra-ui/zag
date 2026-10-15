@@ -41,7 +41,7 @@ const api = computed(() => steps.connect(service, normalizeProps))
       </div>
 
       <div>
-        <button v-bind="api.getPrevTriggerProps()">Back</button>
+        <button v-bind="api.getPreviousTriggerProps()">Back</button>
         <button v-bind="api.getSkipTriggerProps()">Skip</button>
         <button v-bind="api.getNextTriggerProps()">Next</button>
       </div>

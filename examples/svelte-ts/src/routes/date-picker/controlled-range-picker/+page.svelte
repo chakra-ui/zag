@@ -54,7 +54,7 @@
       </div>
       <div>
         <div {...api.getViewControlProps({ view: "year" })}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
+          <button {...api.getPreviousTriggerProps()}>Prev</button>
           <span>{api.visibleRangeText.start} - {api.visibleRangeText.end}</span>
           <button {...api.getNextTriggerProps()}>Next</button>
         </div>

@@ -446,7 +446,7 @@ export function connect<T extends PropTypes>(
     goToNext() {
       send({ type: "GOTO.NEXT", view: context.get("view") })
     },
-    goToPrev() {
+    goToPrevious() {
       send({ type: "GOTO.PREV", view: context.get("view") })
     },
 
@@ -870,15 +870,15 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getPrevTriggerProps(props = {}) {
+    getPreviousTriggerProps(props = {}) {
       const { view = "day" } = props
-      const isDisabled = disabled || !computed("isPrevVisibleRangeValid")
+      const isDisabled = disabled || !computed("isPreviousVisibleRangeValid")
       return normalize.button({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPrevTriggerId(scope, view),
+        id: dom.getPreviousTriggerId(scope, view),
         type: "button",
-        "aria-label": translations.prevTrigger(view),
+        "aria-label": translations.previousTrigger(view),
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         onClick(event) {

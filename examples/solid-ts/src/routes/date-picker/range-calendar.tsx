@@ -79,7 +79,7 @@ export default function Page() {
 
             <div hidden={api().view !== "day"}>
               <div {...api().getViewControlProps({ view: "day" })}>
-                <button type="button" {...api().getPrevTriggerProps()}>
+                <button type="button" {...api().getPreviousTriggerProps()}>
                   Prev
                 </button>
                 <button type="button" {...api().getViewTriggerProps()}>
@@ -123,7 +123,7 @@ export default function Page() {
             <div style={{ display: "flex", gap: "40px" }}>
               <div hidden={api().view !== "month"} style={{ width: "100%" }}>
                 <div {...api().getViewControlProps({ view: "month" })}>
-                  <button type="button" {...api().getPrevTriggerProps({ view: "month" })}>
+                  <button type="button" {...api().getPreviousTriggerProps({ view: "month" })}>
                     Prev
                   </button>
                   <button type="button" {...api().getViewTriggerProps({ view: "month" })}>
@@ -157,7 +157,7 @@ export default function Page() {
 
               <div hidden={api().view !== "year"} style={{ width: "100%" }}>
                 <div {...api().getViewControlProps({ view: "year" })}>
-                  <button type="button" {...api().getPrevTriggerProps({ view: "year" })}>
+                  <button type="button" {...api().getPreviousTriggerProps({ view: "year" })}>
                     Prev
                   </button>
                   <span>

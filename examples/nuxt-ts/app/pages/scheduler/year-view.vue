@@ -38,7 +38,7 @@ const weekDays = computed(() => api.value.getWeekDays())
       <div v-bind="api.getHeaderProps()">
         <span v-bind="api.getHeaderTitleProps()">{{ api.date.year }}</span>
         <div class="scheduler-year-nav">
-          <button v-bind="api.getPrevTriggerProps()" aria-label="Previous year">
+          <button v-bind="api.getPreviousTriggerProps()" aria-label="Previous year">
             <ChevronLeft />
           </button>
           <button v-bind="api.getTodayTriggerProps()">Today</button>

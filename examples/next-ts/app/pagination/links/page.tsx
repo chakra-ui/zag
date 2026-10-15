@@ -29,7 +29,7 @@ function Links() {
       <nav {...api.getRootProps()}>
         <ul>
           <li>
-            <a {...api.getPrevTriggerProps()}>
+            <a {...api.getPreviousTriggerProps()}>
               <ChevronLeftIcon />
             </a>
           </li>

@@ -48,7 +48,7 @@ const data = computed(() => api.value.slice(paginationData))
         <nav v-if="api.totalPages > 1" v-bind="api.getRootProps()">
           <ul>
             <li>
-              <button v-bind="api.getPrevTriggerProps()">
+              <button v-bind="api.getPreviousTriggerProps()">
                 <ChevronLeftIcon />
               </button>
             </li>

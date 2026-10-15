@@ -278,7 +278,7 @@ export interface StepsApi<T extends PropTypes = PropTypes, V extends StepItem = 
   /**
    * Whether the stepper has a previous step
    */
-  hasPrevStep: boolean
+  hasPreviousStep: boolean
   /**
    * Whether the current step is optional and can be skipped
    */
@@ -302,7 +302,7 @@ export interface StepsApi<T extends PropTypes = PropTypes, V extends StepItem = 
   /**
    * Function to go to the previous step
    */
-  goToPrevStep: VoidFunction
+  goToPreviousStep: VoidFunction
   /**
    * Function to skip the current step. Only works when the step is optional.
    */
@@ -322,7 +322,7 @@ export interface StepsApi<T extends PropTypes = PropTypes, V extends StepItem = 
   getTriggerProps: (props: ItemProps) => T["element"]
   getContentProps: (props: ItemProps) => T["element"]
   getNextTriggerProps: () => T["button"]
-  getPrevTriggerProps: () => T["button"]
+  getPreviousTriggerProps: () => T["button"]
   getSkipTriggerProps: () => T["button"]
   getProgressProps: () => T["element"]
   getIndicatorProps: (props: ItemProps) => T["element"]
