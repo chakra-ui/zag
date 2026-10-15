@@ -1130,3 +1130,84 @@ describe("toast store priority", () => {
     expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, priority: 6 })
   })
 })
+
+describe("toast store stack state", () => {
+  test.each([true, false])("uses the initial overlap setting (%s)", (overlap) => {
+    const store = createToastStore({ overlap })
+    store.create({})
+    expect(store.getVisibleToasts()[0].stacked).toBe(!overlap)
+  })
+
+  test("new toasts inherit expand and collapse before subscribers are notified", () => {
+    const store = createToastStore({ overlap: true })
+    store.create({ id: "first" })
+    store.expand()
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    store.create({ id: "expanded" })
+    expect(subscriber).toHaveBeenLastCalledWith(expect.objectContaining({ id: "expanded", stacked: true }))
+
+    store.collapse()
+    store.create({ id: "collapsed" })
+    expect(subscriber).toHaveBeenLastCalledWith(expect.objectContaining({ id: "collapsed", stacked: false }))
+  })
+
+  test("remembers stack state when there are no toasts", () => {
+    const store = createToastStore({ overlap: true })
+    store.expand()
+    store.create({ id: "first" })
+    expect(store.getVisibleToasts()[0].stacked).toBe(true)
+    store.remove()
+    store.create({ id: "second" })
+    expect(store.getVisibleToasts()[0].stacked).toBe(true)
+    store.remove()
+    store.collapse()
+    store.create({ id: "third" })
+    expect(store.getVisibleToasts()[0].stacked).toBe(false)
+  })
+
+  test.each([true, false])("queued toasts inherit the latest stack state (%s)", (expanded) => {
+    const store = createToastStore({ overlap: true, max: 1 })
+    store.create({ id: "visible" })
+    store.create({ id: "queued-before" })
+    store.expand()
+    store.create({ id: "queued-after" })
+    if (!expanded) store.collapse()
+
+    store.dismiss("visible")
+    store.remove("visible")
+    expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-before", stacked: expanded }])
+    store.remove("queued-before")
+    expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-after", stacked: expanded }])
+  })
+
+  test("commits stack state before a subscriber creates a toast", () => {
+    const store = createToastStore({ overlap: true })
+    store.create({ id: "first" })
+    store.subscribe((toast) => {
+      if (toast.id === "first") store.create({ id: toast.stacked ? "expanded" : "collapsed" })
+    })
+
+    store.expand()
+    expect(store.getVisibleToasts().find((toast) => toast.id === "expanded")?.stacked).toBe(true)
+    store.collapse()
+    expect(store.getVisibleToasts().find((toast) => toast.id === "collapsed")?.stacked).toBe(false)
+  })
+
+  test("updates and promise settlement preserve the expanded state", async () => {
+    const store = createToastStore({ overlap: true })
+    store.expand()
+    store.update("updated", { title: "Created by update" })
+    store.update("updated", (prev) => ({ title: `${prev.title}!` }))
+    const result = store.promise(Promise.resolve("Done"), {
+      loading: { title: "Loading" },
+      success: (title) => ({ title }),
+    })!
+    await result.unwrap()
+    expect(store.getVisibleToasts()).toMatchObject([
+      { id: result.id, title: "Done", stacked: true },
+      { id: "updated", title: "Created by update!", stacked: true },
+    ])
+  })
+})

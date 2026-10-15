@@ -52,6 +52,8 @@ export const groupMachine = createMachine({
     placement: ({ prop }) => prop("store").attrs.placement,
   },
 
+  entry: ["syncStackState"],
+
   effects: ["subscribeToStore", "trackDocumentVisibility", "trackHotKeyPress"],
 
   watch({ track, context, action }) {
@@ -190,6 +192,12 @@ export const groupMachine = createMachine({
     },
 
     actions: {
+      syncStackState({ prop, computed }) {
+        // A reused store can retain the previous group's layout across mounts.
+        const store = prop("store")
+        if (computed("overlap")) store.collapse()
+        else store.expand()
+      },
       setDismissableBranch({ refs, context, computed, scope }) {
         const toasts = context.get("toasts")
         const placement = computed("placement")
