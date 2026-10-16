@@ -161,6 +161,7 @@ right in RTL). Change it by setting the `origin` property to these values:
 - `start`: the track will be filled from start to the thumb (default).
 - `center`: the track will be filled from the center (50%) to the thumb.
 - `end`: the track will be filled from the thumb to the end.
+- a number: the track will be filled from that value to the thumb.
 
 This applies to sliders with single values.
 
@@ -177,6 +178,16 @@ const service = useMachine(slider.machine, {
 In scenarios where the slider value is used as a threshold to include values
 above it, it might make more sense to set the `origin` to `end` to have the
 track filled from the thumb to the end.
+
+When zero isn't in the middle of the range, pass the value to fill from.
+
+```tsx {4}
+const service = useMachine(slider.machine, {
+  min: -3,
+  max: 1,
+  origin: 0,
+})
+```
 
 ### Changing the thumb alignment
 
@@ -377,7 +388,11 @@ track, range, label, and thumb parts.
 
 ```css
 [data-slider-marker][data-state="(at|under|over)-value"] {
-  /* styles for when the value exceeds the marker's value */
+  /* styles for the marker's position relative to the value */
+}
+
+[data-slider-marker][data-in-range] {
+  /* styles for markers covered by the filled range, accounting for `origin` */
 }
 ```
 

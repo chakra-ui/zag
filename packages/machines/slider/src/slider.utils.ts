@@ -217,13 +217,13 @@ export function getOriginPercent(origin: SliderOrigin, min: number, max: number)
   }
 }
 
-/** Track-fill insets (from the left/right edges) needed to fill between origin and value. */
-export function getFillRange(valuePercent: number, originPercent: number): { start: number; end: number } {
-  const isBeforeOrigin = valuePercent < originPercent
-  return {
-    start: isBeforeOrigin ? valuePercent : originPercent,
-    end: isBeforeOrigin ? 100 - originPercent : 100 - valuePercent,
-  }
+export function getFillSpan(params: Pick<Ctx, "computed" | "prop">): [number, number] {
+  const { computed, prop } = params
+  const percents = computed("valuePercent")
+  if (percents.length > 1) return [percents[0], percents[percents.length - 1]]
+  const origin = getOriginPercent(prop("origin"), prop("min"), prop("max"))
+  const value = percents[0]
+  return value < origin ? [value, origin] : [origin, value]
 }
 
 export function getThumbExtent(params: Pick<Ctx, "context" | "prop">) {

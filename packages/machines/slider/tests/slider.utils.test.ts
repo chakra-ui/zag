@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest"
-import { getFillRange, getOriginPercent, toThumbSize } from "../src/slider.utils"
+import { getFillSpan, getOriginPercent, toThumbSize } from "../src/slider.utils"
+import type { SliderOrigin } from "../src/slider.types"
 
 /**
  * Legend for the track diagrams below (all in percent-space, 0 = start of track, 100 = end):
@@ -10,9 +11,8 @@ import { getFillRange, getOriginPercent, toThumbSize } from "../src/slider.utils
  *   ·  empty   — unfilled track
  *
  * `getOriginPercent(origin, min, max)` turns the `origin` prop ("start" | "center" | "end" | a
- * domain value) into one of these percent positions. `getFillRange(valuePercent, originPercent)`
- * then turns a origin + value pair into `{ start, end }` — insets from the track's left and right
- * edges respectively, which is what `getRangeStyle` turns into CSS.
+ * domain value) into one of these percent positions. `getFillSpan` returns the filled part of the
+ * track as `[from, to]` percents, from the thumbs' percents and the origin.
  */
 
 describe("@zag-js/slider getOriginPercent", () => {
@@ -61,35 +61,40 @@ describe("@zag-js/slider getOriginPercent", () => {
   })
 })
 
-describe("@zag-js/slider getFillRange", () => {
+function fillSpan(valuePercent: number[], origin: SliderOrigin, min = 0, max = 100) {
+  const props: Record<string, unknown> = { origin, min, max }
+  return getFillSpan({ computed: () => valuePercent, prop: (key: string) => props[key] } as any)
+}
+
+describe("@zag-js/slider getFillSpan", () => {
   test("origin at the start: fills from the left edge up to the value", () => {
     //   0                  50                 100
     //   ○█████████████████████████████●··········
-    expect(getFillRange(75, 0)).toEqual({ start: 0, end: 25 })
+    expect(fillSpan([75], 0)).toEqual([0, 75])
 
     //   0                  50                 100
     //   ○███████████████████████████████████████●
-    expect(getFillRange(100, 0)).toEqual({ start: 0, end: 0 })
+    expect(fillSpan([100], 0)).toEqual([0, 100])
   })
 
   test("origin at the end: fills from the value up to the right edge", () => {
     //   0                  50                 100
     //   ··········●█████████████████████████████○
-    expect(getFillRange(25, 100)).toEqual({ start: 25, end: 0 })
+    expect(fillSpan([25], 100)).toEqual([25, 100])
 
     //   0                  50                 100
     //   ●███████████████████████████████████████○
-    expect(getFillRange(0, 100)).toEqual({ start: 0, end: 0 })
+    expect(fillSpan([0], 100)).toEqual([0, 100])
   })
 
   test("origin in the center: fills toward whichever side the value is on", () => {
     //   0                  50                 100
     //   ············●███████○····················
-    expect(getFillRange(30, 50)).toEqual({ start: 30, end: 50 })
+    expect(fillSpan([30], 50)).toEqual([30, 50])
 
     //   0                  50                 100
     //   ····················○███████●············
-    expect(getFillRange(70, 50)).toEqual({ start: 50, end: 30 })
+    expect(fillSpan([70], 50)).toEqual([50, 70])
   })
 
   test("fills correctly around an arbitrary, off-center origin too", () => {
@@ -97,51 +102,33 @@ describe("@zag-js/slider getFillRange", () => {
     //
     //   0                  50                 100
     //   ·······○████████████████●················
-    expect(getFillRange(60, 16.6667)).toEqual({ start: 16.6667, end: 40 })
+    expect(fillSpan([60], 16.6667)).toEqual([16.6667, 60])
 
     //   0                  50                 100
     //   ··●████○·································
-    expect(getFillRange(5, 16.6667)).toEqual({ start: 5, end: 100 - 16.6667 })
+    expect(fillSpan([5], 16.6667)).toEqual([5, 16.6667])
   })
 
   test("value exactly at the origin never renders a fill, at any origin position", () => {
-    //   0                  50                 100
-    //   ····················○····················
-    //   (only the origin marker shows — there's nothing to fill)
-    const atStart = getFillRange(0, 0)
-    const atCenter = getFillRange(50, 50)
-    const atEnd = getFillRange(100, 100)
-    const atCustom = getFillRange(16.6667, 16.6667)
-
-    for (const { start, end } of [atStart, atCenter, atEnd, atCustom]) {
-      expect(start + end).toBeCloseTo(100, 4)
+    for (const origin of [0, 50, 100, 16.6667]) {
+      const [from, to] = fillSpan([origin], origin)
+      expect(to - from).toBe(0)
     }
   })
 
-  test("start + fill-width + end always add up to exactly 100% of the track", () => {
-    const cases: Array<[value: number, origin: number]> = [
-      [0, 0],
-      [100, 0],
-      [25, 100],
-      [30, 50],
-      [70, 50],
-      [60, 16.6667],
-    ]
-    for (const [value, origin] of cases) {
-      const { start, end } = getFillRange(value, origin)
-      const fillWidth = 100 - start - end
-      expect(fillWidth).toBeGreaterThanOrEqual(0)
-      expect(start + fillWidth + end).toBeCloseTo(100, 4)
-    }
+  test("multiple thumbs fill between the first and last thumb, ignoring the origin", () => {
+    //   0                  50                 100
+    //   ········●████████████████●···············
+    expect(fillSpan([20, 60], 0)).toEqual([20, 60])
+    expect(fillSpan([20, 40, 60], 100)).toEqual([20, 60])
   })
 })
 
 describe("regression: 'center' vs. a numeric origin on an asymmetric domain", () => {
   test("'center' still behaves exactly as before on a symmetric domain", () => {
     // domain -50..50: the midpoint (0) is also the neutral value, so "center" is correct here
-    const origin = getOriginPercent("center", -50, 50)
-    expect(getFillRange(30, origin)).toEqual({ start: 30, end: 50 })
-    expect(getFillRange(70, origin)).toEqual({ start: 50, end: 30 })
+    expect(fillSpan([30], "center", -50, 50)).toEqual([30, 50])
+    expect(fillSpan([70], "center", -50, 50)).toEqual([50, 70])
   })
 
   test("a numeric origin fixes the case 'center' gets wrong: neutral value off the midpoint", () => {
@@ -155,15 +142,15 @@ describe("regression: 'center' vs. a numeric origin on an asymmetric domain", ()
     // origin = 0 (the real neutral value): value sits ON the origin → zero fill
     //   0                  50                 100
     //   ·······○··································
-    const correctFill = getFillRange(valuePercent, getOriginPercent(neutralValue, min, max))
-    expect(correctFill.start + correctFill.end).toBeCloseTo(100, 4)
+    const [from, to] = fillSpan([valuePercent], neutralValue, min, max)
+    expect(to - from).toBe(0)
 
     // origin = "center" (the midpoint, 40, not the neutral value): misreads the untouched
     // value as a fill toward the midpoint
     //   0                  50                 100
     //   ·······●█████████████○····················
-    const wrongFill = getFillRange(valuePercent, getOriginPercent("center", min, max))
-    expect(wrongFill.start + wrongFill.end).toBeLessThan(100)
+    const [wrongFrom, wrongTo] = fillSpan([valuePercent], "center", min, max)
+    expect(wrongTo - wrongFrom).toBeGreaterThan(0)
   })
 })
 

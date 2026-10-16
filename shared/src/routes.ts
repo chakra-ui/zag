@@ -663,6 +663,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "steps", title: "Steps" },
+      { slug: "origin", title: "Origin" },
       { slug: "marks", title: "Marks" },
       { slug: "form", title: "Form" },
       { slug: "range", title: "Range" },

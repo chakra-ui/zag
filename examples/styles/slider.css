@@ -216,12 +216,8 @@
     background: var(--z-fg-subtle);
   }
 
-  &:is([data-state="under-value"], [data-state="at-value"])::before {
+  &[data-in-range]::before {
     background: rgb(255 255 255 / 0.7);
-  }
-
-  [data-slider-root]:has([data-slider-thumb][data-index="1"]) &[data-state="under-value"]::before {
-    background: var(--z-fg-subtle);
   }
 }
 

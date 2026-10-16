@@ -299,6 +299,10 @@ export interface MarkerState {
    * The state of the marker relative to the slider value
    */
   state: "under-value" | "over-value" | "at-value"
+  /**
+   * Whether the marker is within the filled range, accounting for `origin`
+   */
+  inRange: boolean
 }
 
 export interface ThumbProps {

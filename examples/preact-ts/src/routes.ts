@@ -241,6 +241,7 @@ export const routes: RouteDefinition[] = [
   { path: "/slider/dragging-indicator", component: lazy(() => import("./pages/slider/dragging-indicator")) },
   { path: "/slider/controlled", component: lazy(() => import("./pages/slider/controlled")) },
   { path: "/slider/steps", component: lazy(() => import("./pages/slider/steps")) },
+  { path: "/slider/origin", component: lazy(() => import("./pages/slider/origin")) },
   { path: "/slider/marks", component: lazy(() => import("./pages/slider/marks")) },
   { path: "/slider/form", component: lazy(() => import("./pages/slider/form")) },
   { path: "/slider/range", component: lazy(() => import("./pages/slider/range")) },

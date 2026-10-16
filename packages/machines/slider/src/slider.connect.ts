@@ -28,7 +28,7 @@ import type {
   ThumbProps,
   ThumbState,
 } from "./slider.types"
-import { getRangeAtIndex } from "./slider.utils"
+import { getFillSpan, getRangeAtIndex } from "./slider.utils"
 
 export function connect<T extends PropTypes>(service: SliderService, normalize: NormalizeProps<T>): SliderApi<T> {
   const { state, send, context, prop, computed, scope } = service
@@ -94,7 +94,9 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       markerState = "at-value"
     }
 
-    return { value, disabled, state: markerState }
+    const [fillFrom, fillTo] = getFillSpan(service)
+    const percent = getValuePercentFn(value) * 100
+    return { value, disabled, state: markerState, inRange: percent >= fillFrom && percent <= fillTo }
   }
 
   // -----------------------------------------------------------------------------
@@ -359,6 +361,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         "data-value": markerState.value,
         "data-disabled": dataAttr(markerState.disabled),
         "data-state": markerState.state,
+        "data-in-range": dataAttr(markerState.inRange),
         style,
       })
     },

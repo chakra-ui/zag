@@ -2,7 +2,7 @@ import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
 import { getValuePercent, toPx } from "@zag-js/utils"
 import type { SliderSchema } from "./slider.types"
-import { getFillRange, getOriginPercent, getThumbExtent } from "./slider.utils"
+import { getFillSpan, getThumbExtent } from "./slider.utils"
 
 type Ctx = Params<SliderSchema>
 
@@ -10,16 +10,8 @@ type Ctx = Params<SliderSchema>
  * Range style calculations
  * -----------------------------------------------------------------------------*/
 
-function getBounds<T>(value: T[]): [T, T] {
-  const firstValue = value[0]
-  const lastThumb = value[value.length - 1]
-  return [firstValue, lastThumb]
-}
-
 export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed" | "context">) {
-  const { prop, computed } = params
-  const valuePercent = computed("valuePercent")
-  const [firstPercent, lastPercent] = getBounds(valuePercent)
+  const [from, to] = getFillSpan(params)
   const extent = getThumbExtent(params)
 
   const toEdge = (percent: number, flip = false) => {
@@ -29,13 +21,7 @@ export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed" | "context
     return flip ? `calc(${edge}% + ${inset}px)` : `calc(${edge}% - ${inset}px)`
   }
 
-  if (valuePercent.length === 1) {
-    const originPercent = getOriginPercent(prop("origin"), prop("min"), prop("max"))
-    const { start, end } = getFillRange(valuePercent[0], originPercent)
-    return { start: toEdge(start), end: toEdge(100 - end, true) }
-  }
-
-  return { start: toEdge(firstPercent), end: toEdge(lastPercent, true) }
+  return { start: toEdge(from), end: toEdge(to, true) }
 }
 
 export function getRangeStyle(params: Pick<Ctx, "computed">): Style {

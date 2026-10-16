@@ -2064,7 +2064,8 @@
       "data-orientation": "The orientation of the marker",
       "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
-      "data-state": "\"under-value\" | \"over-value\" | \"at-value\""
+      "data-state": "\"under-value\" | \"over-value\" | \"at-value\"",
+      "data-in-range": "Present when is within the range"
     },
     "DraggingIndicator": {
       "data-slider-dragging-indicator": "<uid>",
