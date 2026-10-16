@@ -83,6 +83,24 @@ test.describe("toast / stacked", () => {
     await I.resizeWindow({ width: 1024, height: 720 })
     await expect.poll(() => I.getToastHeight()).toBeLessThan(initialHeight)
   })
+
+  test("should update the toast height when its text changes", async () => {
+    await I.clickErrorToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.appendToLatestToast(2)
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+  })
+
+  test("should update the toast height when its content grows without a resize", async () => {
+    await I.clickLoadingToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.enlargeTitle()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+  })
 })
 
 test.describe("toast / overlapping", () => {

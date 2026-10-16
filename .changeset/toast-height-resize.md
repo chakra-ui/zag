@@ -1,7 +1,7 @@
 ---
 "@zag-js/toast": patch
+"@zag-js/dom-query": patch
 ---
 
-Fixed toasts keeping a stale height when their width changes after they render, for example when a resize or rotation
-makes the text wrap onto more or fewer lines. The stack no longer clips or overlaps the content, or leaves empty space
-below it.
+- Fix toast height not updating when its content resizes, such as text rewrapping after a window resize.
+- Fix the shared resize observers throwing when `ResizeObserver` is unavailable, such as in jsdom.

@@ -1,6 +1,6 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
 import { AnimationFrame, contains, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
-import { ensureProps, setRafTimeout } from "@zag-js/utils"
+import { callAll, ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -197,12 +197,14 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackContent({ scope, prop, context }) {
+      trackContent({ scope, prop, context, state }) {
         return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
           const syncHeight = () => {
+            // A closing toast must not re-add its height after it's removed
+            if (!state.hasTag("visible") || !rootEl.isConnected) return
             const height = measureLayoutHeight(rootEl)
             const item = { id: prop("id"), height }
             setHeight(prop("parent"), item)
@@ -219,27 +221,30 @@ export const machine = createMachine<ToastSchema>({
 
           const win = scope.getWin()
 
+          const frame = AnimationFrame.create()
+
+          // The root's height is set by CSS, so watch its children, which size freely with the content
+          let stopObservingChildren: VoidFunction | undefined
+          const observeChildren = () => {
+            stopObservingChildren?.()
+            const children = Array.from(rootEl.children).filter((child) => !child.hasAttribute("data-ghost"))
+            stopObservingChildren = callAll(
+              ...children.map((child) => resizeObserverBorderBox.observe(child, () => frame.request(syncHeight))),
+            )
+          }
+
+          observeChildren()
+
           const observer = new win.MutationObserver(() => {
             syncHeight()
             syncRenderedElements()
+            observeChildren()
           })
-          observer.observe(rootEl, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          })
-
-          const frame = AnimationFrame.create()
-          let width = rootEl.offsetWidth
-          const stopResizeObserver = resizeObserverBorderBox.observe(rootEl, () => {
-            if (rootEl.offsetWidth === width) return
-            width = rootEl.offsetWidth
-            frame.request(syncHeight)
-          })
+          observer.observe(rootEl, { childList: true, subtree: true, characterData: true })
 
           return () => {
             observer.disconnect()
-            stopResizeObserver()
+            stopObservingChildren?.()
             frame.cancel()
           }
         })
@@ -329,8 +334,8 @@ function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
     const alreadyExists = prev.find((i) => i.id === id)
     if (!alreadyExists) {
       return [{ id, height }, ...prev]
-    } else {
-      return prev.map((i) => (i.id === id ? { ...i, height } : i))
     }
+    if (alreadyExists.height === height) return prev
+    return prev.map((i) => (i.id === id ? { ...i, height } : i))
   })
 }

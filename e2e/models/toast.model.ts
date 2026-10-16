@@ -32,6 +32,15 @@ export class ToastModel extends Model {
     return box?.height ?? 0
   }
 
+  // Grows the content without changing the toast's width, like a late font load
+  async enlargeTitle(num = 0) {
+    await this.getToast(num)
+      .locator("[data-part=title]")
+      .evaluate((el) => {
+        ;(el as HTMLElement).style.fontSize = "2em"
+      })
+  }
+
   seeAccessibleName(value: string, num = 0) {
     return expect(this.getToast(num)).toHaveAccessibleName(value)
   }
@@ -48,7 +57,7 @@ export class ToastModel extends Model {
 
   async dontSeeDescription(num = 0) {
     const toast = this.getToast(num)
-    await expect(toast.locator("[data-part=description]")).toHaveCount(0)
+    await expect(toast.locator("[data-part=title]")).toHaveCount(0)
     await expect(toast).not.toHaveAttribute("aria-describedby")
   }
 
@@ -58,6 +67,10 @@ export class ToastModel extends Model {
 
   async clickErrorToast(times = 1) {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Error)" }).click())
+  }
+
+  async appendToLatestToast(times = 1) {
+    return await repeat(times, () => this.page.getByRole("button", { name: "Append to Latest" }).click())
   }
 
   openDialog() {
