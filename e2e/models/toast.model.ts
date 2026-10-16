@@ -84,6 +84,11 @@ export class ToastModel extends Model {
     return this.getCloseButton(num).click({ force: true })
   }
 
+  // Waits for the toast to settle, so the click can't land on a toast that's still animating in
+  closeNthToast(num: number) {
+    return this.getCloseButton(num).click()
+  }
+
   seeRegionIsFocused() {
     return expect(this.region).toBeFocused()
   }
@@ -97,6 +102,21 @@ export class ToastModel extends Model {
     for (const toast of toasts) {
       await expect(toast).toHaveAttribute("data-paused", "")
     }
+  }
+
+  async seeToastsAreNotPaused() {
+    const toasts = await this.page.getByRole("status").all()
+    for (const toast of toasts) {
+      await expect(toast).not.toHaveAttribute("data-paused")
+    }
+  }
+
+  seeToastIsFocused(num = 0) {
+    return expect(this.getToast(num)).toBeFocused()
+  }
+
+  seeButtonIsFocused(name: string) {
+    return expect(this.page.getByRole("button", { name })).toBeFocused()
   }
 
   async seeToast(title: string) {

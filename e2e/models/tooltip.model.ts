@@ -53,6 +53,10 @@ export class TooltipModel extends Model {
     await this.getTrigger(id).dispatchEvent("pointerdown", { button: 0 })
   }
 
+  seeTriggerDescription = async (id: string, description: string) => {
+    await expect(this.getTrigger(id)).toHaveAccessibleDescription(description)
+  }
+
   seeTriggerIsFocused = async (id: string) => {
     await expect(this.getTrigger(id)).toBeFocused()
   }
