@@ -3,11 +3,11 @@
   import Portal from "$lib/components/portal.svelte"
   import * as combobox from "@zag-js/combobox"
   import * as dialog from "@zag-js/dialog"
+  import { createHotkeyStore } from "@zag-js/hotkeys"
   import { createFilter } from "@zag-js/i18n-utils"
   import { commandData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import "@styles/combobox.css"
-  import "@styles/dialog.css"
+  import "@styles/cmdk.css"
 
   const { allItems, commands, applications, suggestions } = commandData
   const { contains } = createFilter({ sensitivity: "base" })
@@ -43,33 +43,25 @@
   )
 
   const id = $props.id()
-  const service = useMachine(dialog.machine, { id })
+  const service = useMachine(dialog.machine, {
+    id,
+    onOpenChange({ open }) {
+      if (!open) inputValue = ""
+    },
+  })
   const dialogApi = $derived(dialog.connect(service, normalizeProps))
 
   $effect(() => {
-    const fn = (event: KeyboardEvent) => {
-      if (dialogApi.open) return
-
-      const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator?.platform)
-      const hotkey = isMac ? "metaKey" : "ctrlKey"
-
-      if (event.key?.toLowerCase() === "k" && event[hotkey]) {
-        event.preventDefault()
-        dialogApi.setOpen(true)
-      }
-    }
-    document.addEventListener("keydown", fn, true)
-    return () => {
-      document.removeEventListener("keydown", fn, true)
-    }
+    const store = createHotkeyStore()
+    store.register({ id: "cmdk", hotkey: "/", action: () => dialogApi.setOpen(true) })
+    store.init({ target: document })
+    return () => store.destroy()
   })
 </script>
 
 <main>
   <button {...dialogApi.getTriggerProps()}>Open Command Menu</button>
-  <div style="background: lightgray; padding: 12px">
-    or press <kbd> Cmd+K</kbd>
-  </div>
+  <p>or press <kbd>/</kbd></p>
 
   {#if selectedAction}
     <div>

@@ -117,8 +117,7 @@
   const service = useMachine(combobox.machine, (): combobox.Props<PaletteItem> => ({
     id: "pg-palette",
     collection,
-    open: true,
-    disableLayer: true,
+    inline: true,
     loopFocus: false,
     // Pickers open on the current item, like a native select
     defaultHighlightedValue: mode.type === "all" ? null : currentValue,

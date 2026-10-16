@@ -271,9 +271,9 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * Whether to disable registering this a dismissable layer
+   * Whether the list renders inline: always open, not positioned or dismissable
    */
-  disableLayer?: boolean | undefined
+  inline?: boolean | undefined
   /**
    * Function to navigate to the selected item
    */
@@ -428,6 +428,10 @@ export interface ContentState {
    */
   open: boolean
   /**
+   * Whether the list renders inline
+   */
+  inline: boolean
+  /**
    * Whether the combobox is nested within another layered element
    */
   nested: boolean
@@ -466,6 +470,10 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    * Whether the combobox is open
    */
   open: boolean
+  /**
+   * Whether the list renders inline
+   */
+  inline: boolean
   /**
    * The value of the combobox input
    */

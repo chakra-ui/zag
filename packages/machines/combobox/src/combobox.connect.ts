@@ -97,6 +97,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   function getContentState(): ContentState {
     return {
       open,
+      inline: !!prop("inline"),
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
@@ -112,6 +113,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   return {
     focused,
     open,
+    inline: !!prop("inline"),
     inputValue: context.get("inputValue"),
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
@@ -151,6 +153,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       dom.getInputEl(scope)?.focus()
     },
     setOpen(nextOpen, reason = "script") {
+      if (prop("inline")) return
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
@@ -201,7 +204,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         ...getDismissableLayerAttrs(layer),
         style: {
-          ...popperStyles.floating,
+          ...(prop("inline") ? undefined : popperStyles.floating),
           ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
@@ -393,6 +396,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-side": contentState.side,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(contentState.empty),
+        "data-inline": dataAttr(contentState.inline),
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {

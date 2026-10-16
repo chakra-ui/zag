@@ -2,7 +2,7 @@
   import type { ListCollection } from "@zag-js/collection"
   import * as combobox from "@zag-js/combobox"
   import type { commandData } from "@zag-js/shared"
-  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   interface Props {
     matches: Record<string, commandData.Command[]>
@@ -17,8 +17,7 @@
 
   const id = $props.id()
   const service = useMachine(combobox.machine as combobox.Machine<commandData.Command>, () => ({
-    open: true,
-    disableLayer: true,
+    inline: true,
     placeholder: "Type a command or search term...",
     loopFocus: false,
     collection: props.collection,
@@ -32,13 +31,11 @@
   const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 
-<div {...mergeProps(api.getRootProps(), { style: "width: 100%" })}>
-  <input {...mergeProps(api.getInputProps(), { style: "margin-bottom: 12px" })} />
-  <div {...mergeProps(api.getContentProps(), { style: "min-height: 120px" })}>
+<div {...api.getRootProps()}>
+  <input {...api.getInputProps()} />
+  <div {...api.getContentProps()}>
+    <div {...api.getEmptyProps()}>{matchEntries.length === 0 ? "No results found" : ""}</div>
     <div {...api.getListProps()}>
-      {#if matchEntries.length === 0}
-        <div>No results found</div>
-      {/if}
       {#each matchEntries as [group, items] (group)}
         <div {...api.getItemGroupProps({ id: group })}>
           <div {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>

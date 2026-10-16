@@ -108,8 +108,7 @@ export function CommandPalette(props: CommandPaletteProps) {
   const service = useMachine(combobox.machine, {
     id: useId(),
     collection,
-    open: true,
-    disableLayer: true,
+    inline: true,
     loopFocus: false,
     // Pickers open on the current item, like a native select
     defaultHighlightedValue: mode.type === "all" ? null : currentValue,

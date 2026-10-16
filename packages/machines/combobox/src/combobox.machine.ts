@@ -56,7 +56,7 @@ export const machine = createMachine({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("inline") || prop("open") || prop("defaultOpen")
     return open ? "open.suggesting" : "closed.idle"
   },
 
@@ -643,7 +643,7 @@ export const machine = createMachine({
       allowCustomValue: ({ prop }) => !!prop("allowCustomValue"),
       hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
-      isOpenControlled: ({ prop }) => prop("open") != null,
+      isOpenControlled: ({ prop }) => prop("open") != null || !!prop("inline"),
       openOnChange: ({ prop, context }) => {
         const openOnChange = prop("openOnChange")
         if (isBoolean(openOnChange)) return openOnChange
@@ -664,7 +664,7 @@ export const machine = createMachine({
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
       trackDismissableLayer({ send, prop, scope, context }) {
-        if (prop("disableLayer")) return
+        if (prop("inline")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
           type: "listbox",
@@ -695,6 +695,7 @@ export const machine = createMachine({
         return () => liveRegion.destroy()
       },
       trackPlacement({ context, prop, scope }) {
+        if (prop("inline")) return
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
         const positionerEl = () => dom.getPositionerEl(scope)
 
@@ -939,10 +940,12 @@ export const machine = createMachine({
         }
       },
       invokeOnOpen({ prop, event, context }) {
+        if (prop("inline")) return
         const reason = getOpenChangeReason(event)
         prop("onOpenChange")?.({ open: true, reason, value: context.get("value") })
       },
       invokeOnClose({ prop, event, context }) {
+        if (prop("inline")) return
         const reason = getOpenChangeReason(event)
         prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
       },

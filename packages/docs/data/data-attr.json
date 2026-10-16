@@ -487,6 +487,7 @@
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
       "data-empty": "Present when the content is empty",
+      "data-inline": "Present when the content is inline",
       "data-nested": "listbox",
       "data-has-nested": "listbox"
     },

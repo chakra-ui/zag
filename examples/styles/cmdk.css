@@ -1,0 +1,113 @@
+[data-dialog-backdrop] {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--layer-index) * 2);
+  background: rgb(0 0 0 / 0.2);
+}
+
+[data-dialog-positioner] {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--layer-index) * 2 + 1);
+  display: flex;
+  justify-content: center;
+  padding: 16vh 16px 0;
+}
+
+[data-dialog-content] {
+  box-sizing: border-box;
+  align-self: flex-start;
+  width: 100%;
+  max-width: 640px;
+  overflow: hidden;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-lg);
+  background: var(--z-bg);
+  box-shadow:
+    0 24px 64px -12px rgb(0 0 0 / 0.25),
+    0 4px 12px rgb(0 0 0 / 0.06);
+  color: var(--z-fg);
+  font-family: var(--z-font-sans);
+
+  &[data-state="open"] {
+    animation: scaleFadeIn 120ms var(--z-ease);
+  }
+
+  & [data-combobox-root] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & [data-combobox-input] {
+    box-sizing: border-box;
+    width: 100%;
+    height: 56px;
+    padding: 0 20px;
+    border: none;
+    border-bottom: 1px solid var(--z-border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--z-fg);
+    font-size: 16px;
+    outline: none;
+    box-shadow: none;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &::placeholder {
+      color: var(--z-fg-muted);
+    }
+  }
+
+  & [data-combobox-list] {
+    max-height: 360px;
+    padding: 8px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 8px;
+  }
+
+  & [data-combobox-item-group] + [data-combobox-item-group] {
+    margin-top: 8px;
+  }
+
+  & [data-combobox-item-group-label] {
+    padding: 8px 12px 6px;
+    color: var(--z-fg-muted);
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  & [data-combobox-item] {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: var(--z-radius);
+    color: var(--z-fg);
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+
+    &[data-highlighted] {
+      background: var(--z-bg-muted);
+    }
+  }
+
+  & [data-combobox-empty] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+    color: var(--z-fg-muted);
+    font-size: 14px;
+
+    &:empty {
+      display: none;
+    }
+  }
+}

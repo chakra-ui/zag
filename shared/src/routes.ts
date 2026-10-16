@@ -529,7 +529,6 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "filtering-submenu", title: "Filtering Submenu" },
       { slug: "options", title: "With options" },
       { slug: "async", title: "Async + Infinite Scroll" },
-      { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "lazy-mounted", title: "Lazy Mounted" },
       { slug: "links", title: "Links" },

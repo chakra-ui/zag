@@ -1,12 +1,12 @@
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
+import { createHotkeyStore } from "@zag-js/hotkeys"
 import { createFilter } from "@zag-js/i18n-utils"
 import { commandData } from "@zag-js/shared"
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { For, Show, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
-import "@styles/combobox.css"
-import "@styles/dialog.css"
+import "@styles/cmdk.css"
 
 const { allItems, commands, applications, suggestions } = commandData
 const { contains } = createFilter({ sensitivity: "base" })
@@ -39,8 +39,7 @@ function Combobox(props: ComboboxProps) {
   const id = createUniqueId()
 
   const service = useMachine(combobox.machine, (): combobox.Props<commandData.Command> => ({
-    open: true,
-    disableLayer: true,
+    inline: true,
     placeholder: "Type a command or search term...",
     loopFocus: false,
     collection: props.collection,
@@ -54,13 +53,11 @@ function Combobox(props: ComboboxProps) {
   const comboApi = createMemo(() => combobox.connect(service, normalizeProps))
 
   return (
-    <div {...mergeProps(() => comboApi().getRootProps(), { style: { width: "100%" } })}>
-      <input {...mergeProps(() => comboApi().getInputProps(), { style: { "margin-bottom": "12px" } })} />
-      <div {...mergeProps(() => comboApi().getContentProps(), { style: { "min-height": "120px" } })}>
+    <div {...comboApi().getRootProps()}>
+      <input {...comboApi().getInputProps()} />
+      <div {...comboApi().getContentProps()}>
+        <div {...comboApi().getEmptyProps()}>{matchEntries().length === 0 && "No results found"}</div>
         <div {...comboApi().getListProps()}>
-          <Show when={matchEntries().length === 0}>
-            <div>No results found</div>
-          </Show>
           <For each={matchEntries()}>
             {([group, items]) => (
               <div {...comboApi().getItemGroupProps({ id: group })}>
@@ -91,31 +88,27 @@ export default function Page() {
     }),
   )
 
-  const service = useMachine(dialog.machine, { id: createUniqueId() })
+  const service = useMachine(dialog.machine, {
+    id: createUniqueId(),
+    onOpenChange({ open }) {
+      if (!open) setInputValue("")
+    },
+  })
   const dialogApi = createMemo(() => dialog.connect(service, normalizeProps))
 
   onMount(() => {
-    const fn = (event: KeyboardEvent) => {
-      if (dialogApi().open) return
-
-      const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator?.platform)
-      const hotkey = isMac ? "metaKey" : "ctrlKey"
-
-      if (event.key?.toLowerCase() === "k" && event[hotkey]) {
-        event.preventDefault()
-        dialogApi().setOpen(true)
-      }
-    }
-    document.addEventListener("keydown", fn, true)
-    onCleanup(() => document.removeEventListener("keydown", fn, true))
+    const store = createHotkeyStore()
+    store.register({ id: "cmdk", hotkey: "/", action: () => dialogApi().setOpen(true) })
+    store.init({ target: document })
+    onCleanup(() => store.destroy())
   })
 
   return (
     <main>
       <button {...dialogApi().getTriggerProps()}>Open Command Menu</button>
-      <div style={{ background: "lightgray", padding: "12px" }}>
-        or press <kbd> Cmd+K</kbd>
-      </div>
+      <p>
+        or press <kbd>/</kbd>
+      </p>
 
       <Show when={selectedAction()}>
         <div>

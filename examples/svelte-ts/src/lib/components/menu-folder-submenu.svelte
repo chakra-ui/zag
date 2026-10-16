@@ -18,7 +18,7 @@
   const { contains } = createFilter({ sensitivity: "base" })
   let query = $state("")
 
-  const service = useMachine(menu.machine, () => ({
+  const service = useMachine(menu.machine, (): menu.Props => ({
     id: props.id,
     popupType: "dialog",
     onOpenChange(details) {

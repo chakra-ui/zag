@@ -279,6 +279,18 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+### Rendering the list inline
+
+Set `inline` to keep the list always open and render it in place, like a command
+menu. The list isn't positioned or dismissed on outside interaction, and
+`onOpenChange` doesn't fire.
+
+```tsx
+const service = useMachine(combobox.machine, {
+  inline: true,
+})
+```
+
 ### Submitting forms on Enter
 
 Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even

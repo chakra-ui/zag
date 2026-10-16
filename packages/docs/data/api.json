@@ -1184,6 +1184,10 @@
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether the list renders inline"
+      },
       "inputValue": {
         "type": "string",
         "description": "The value of the combobox input"
@@ -1432,9 +1436,9 @@
         "type": "((details: ScrollToIndexDetails) => void) | undefined",
         "description": "Function to scroll to a specific index"
       },
-      "disableLayer": {
+      "inline": {
         "type": "boolean | undefined",
-        "description": "Whether to disable registering this a dismissable layer"
+        "description": "Whether the list renders inline: always open, not positioned or dismissable"
       },
       "navigate": {
         "type": "((details: NavigateDetails) => void) | null | undefined",

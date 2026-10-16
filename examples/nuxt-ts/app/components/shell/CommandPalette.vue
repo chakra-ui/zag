@@ -109,8 +109,7 @@ const service = useMachine(
   computed(() => ({
     id,
     collection: collection.value,
-    open: true,
-    disableLayer: true,
+    inline: true,
     loopFocus: false,
     // Pickers open on the current item, like a native select
     defaultHighlightedValue: props.mode.type === "all" ? null : currentValue,

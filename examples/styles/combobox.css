@@ -213,3 +213,9 @@
 [data-combobox-item-text] + [data-combobox-item-indicator] {
   margin-inline-start: auto;
 }
+
+[data-combobox-content][data-inline] {
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
