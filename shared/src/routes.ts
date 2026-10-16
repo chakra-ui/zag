@@ -371,6 +371,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
+      { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -381,6 +382,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "controlled", title: "Controlled" },
     ],
   },
   {
@@ -515,6 +517,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "aria-label", title: "Aria Label" },
     ],
   },
   {

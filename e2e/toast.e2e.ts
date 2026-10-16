@@ -19,6 +19,42 @@ test.describe("toast / stacked", () => {
     await I.seeNumOfToasts(0)
   })
 
+  test("dismissing a focused toast with escape moves focus to the next toast", async () => {
+    await I.clickErrorToast(2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(0)
+    await I.seeButtonIsFocused("Notify (Error)")
+  })
+
+  test("dismissing a focused toast with its close button moves focus to the next toast", async () => {
+    await I.clickErrorToast(2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.pressKey("Tab")
+
+    await I.pressKey("Enter")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+  })
+
+  test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.clickNthCloseButton(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
+  })
+
   test("interacting with toast does not close dialog", async () => {
     if (process.env.FRAMEWORK !== "react") return
     await I.clickLoadingToast()
@@ -103,6 +139,15 @@ test.describe("toast / overlapping", () => {
 
     await I.clickOutside()
     await I.seeToastsOverlap()
+  })
+
+  test("closing a toast with the mouse resumes the last toast once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.clickNthCloseButton(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
   })
 
   test("should pause all toast on click pause", async () => {
