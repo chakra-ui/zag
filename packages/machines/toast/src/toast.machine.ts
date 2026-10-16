@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { contains, raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
@@ -277,9 +277,10 @@ export const machine = createMachine<ToastSchema>({
         })
       },
 
-      notifyParentToRemove({ prop }) {
+      notifyParentToRemove({ prop, scope }) {
         const parent = prop("parent")
-        parent.send({ type: "TOAST.REMOVE", id: prop("id") })
+        const focused = contains(dom.getRootEl(scope), scope.getActiveElement())
+        parent.send({ type: "TOAST.REMOVE", id: prop("id"), focused })
       },
       invokeOnDismiss({ prop, event }) {
         prop("parent").prop("store").dismiss(prop("id"))

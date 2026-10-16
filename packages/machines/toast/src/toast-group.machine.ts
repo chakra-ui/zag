@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent, AnimationFrame, contains } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
@@ -257,10 +257,8 @@ export const groupMachine = createMachine({
         refs.set("lastFocusedEl", event.target ?? null)
       },
       moveFocusFromRemovedToast({ refs, scope, computed, event }) {
-        // Removing the focused toast drops focus to the body without a blur event,
-        // so the region would never resume. Move focus out before it unmounts.
-        const rootEl = scope.getById(`toast:${event.id}`)
-        if (!contains(rootEl, scope.getActiveElement())) return
+        // Unmounting the focused toast fires no blur, so the region would never resume
+        if (!event.focused) return
         const lastFocusedEl = refs.get("lastFocusedEl")
         if (lastFocusedEl) {
           lastFocusedEl.focus({ preventScroll: true })
