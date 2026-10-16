@@ -54,3 +54,18 @@ test.describe("context menu", () => {
     await I.seeMenuIsPositionedNear(point)
   })
 })
+
+test.describe("context menu / controlled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/context-menu/controlled")
+  })
+
+  test("should not open on tap", async ({ page }) => {
+    const point = await I.getContextTriggerPoint()
+    await I.tapContextTrigger(point)
+
+    await page.waitForTimeout(1000)
+    await I.dontSeeDropdown()
+  })
+})

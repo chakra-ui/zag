@@ -46,6 +46,13 @@ export class Model {
     return repeat(times, () => this.page.keyboard.up("ArrowUp"))
   }
 
+  // Unlike `hover`, this fires `pointermove` along the way
+  async movePointerTo(selector: string, steps = 1) {
+    const box = await this.page.locator(selector).boundingBox()
+    if (!box) throw new Error(`Cannot move pointer to ${selector}`)
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps })
+  }
+
   rightClick(selector: string) {
     return this.page.locator(selector).click({ button: "right" })
   }

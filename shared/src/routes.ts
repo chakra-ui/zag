@@ -382,6 +382,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "controlled", title: "Controlled" },
     ],
   },
   {
