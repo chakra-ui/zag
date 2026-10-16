@@ -343,15 +343,15 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     return dismissedToasts.has(id)
   }
 
-  const expand = () => {
-    stacked = true
+  const setStacked = (value: boolean) => {
+    if (stacked === value) return
+    stacked = value
     changeToasts({ stacked })
   }
 
-  const collapse = () => {
-    stacked = false
-    changeToasts({ stacked })
-  }
+  const expand = () => setStacked(true)
+
+  const collapse = () => setStacked(false)
 
   return {
     attrs,

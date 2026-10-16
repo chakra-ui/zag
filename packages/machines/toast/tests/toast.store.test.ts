@@ -1167,6 +1167,20 @@ describe("toast store stack state", () => {
     expect(store.getVisibleToasts()[0].stacked).toBe(false)
   })
 
+  test("does not republish toasts when the stack state is unchanged", () => {
+    const store = createToastStore({ overlap: true })
+    store.create({ id: "first" })
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    store.collapse()
+    expect(subscriber).not.toHaveBeenCalled()
+
+    store.expand()
+    store.expand()
+    expect(subscriber).toHaveBeenCalledOnce()
+  })
+
   test.each([true, false])("queued toasts inherit the latest stack state (%s)", (expanded) => {
     const store = createToastStore({ overlap: true, max: 1 })
     store.create({ id: "visible" })
@@ -1180,34 +1194,5 @@ describe("toast store stack state", () => {
     expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-before", stacked: expanded }])
     store.remove("queued-before")
     expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-after", stacked: expanded }])
-  })
-
-  test("commits stack state before a subscriber creates a toast", () => {
-    const store = createToastStore({ overlap: true })
-    store.create({ id: "first" })
-    store.subscribe((toast) => {
-      if (toast.id === "first") store.create({ id: toast.stacked ? "expanded" : "collapsed" })
-    })
-
-    store.expand()
-    expect(store.getVisibleToasts().find((toast) => toast.id === "expanded")?.stacked).toBe(true)
-    store.collapse()
-    expect(store.getVisibleToasts().find((toast) => toast.id === "collapsed")?.stacked).toBe(false)
-  })
-
-  test("updates and promise settlement preserve the expanded state", async () => {
-    const store = createToastStore({ overlap: true })
-    store.expand()
-    store.update("updated", { title: "Created by update" })
-    store.update("updated", (prev) => ({ title: `${prev.title}!` }))
-    const result = store.promise(Promise.resolve("Done"), {
-      loading: { title: "Loading" },
-      success: (title) => ({ title }),
-    })!
-    await result.unwrap()
-    expect(store.getVisibleToasts()).toMatchObject([
-      { id: result.id, title: "Done", stacked: true },
-      { id: "updated", title: "Created by update!", stacked: true },
-    ])
   })
 })

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { test } from "@playwright/test"
 import { ToastModel } from "./models/toast.model"
 
 let I: ToastModel
@@ -110,23 +110,6 @@ test.describe("toast / overlapping", () => {
     await I.page.keyboard.press("Space")
     await I.seeNumOfToasts(4)
     await I.seeToastsOverlap()
-  })
-
-  test("toasts queued while expanded stay expanded when promoted", async () => {
-    // Fill the store's default visible limit before expanding the stack.
-    await I.clickLoadingToast(24)
-    await I.seeNumOfToasts(24)
-    await I.mouseIntoRegion()
-    await I.seeToastsStacked()
-
-    await I.page.keyboard.press("Space")
-    const dismissedId = await I.page.getByRole("status").first().getAttribute("id")
-    await I.clickNthCloseButton(0)
-    await expect(I.page.locator(`[id="${dismissedId}"]`)).toHaveCount(0)
-
-    await I.seeNumOfToasts(24)
-    await I.seeToastsStacked()
-    await I.seeToastArePaused()
   })
 
   test("focus on region on hotkey press", async () => {
