@@ -1,68 +1,51 @@
 import type { CommunityLink as CommunityLinkItem } from "lib/community"
 import { FaDiscord, FaGithub, FaXTwitter, FaYoutube } from "react-icons/fa6"
-import { Center, styled } from "styled-system/jsx"
+import { HStack, Stack, styled } from "styled-system/jsx"
 
-interface CommunityLinkProps {
-  link: CommunityLinkItem
+function getIcon(title: string) {
+  const name = title.toLowerCase()
+  if (name.includes("discord")) return <FaDiscord />
+  if (name.includes("youtube")) return <FaYoutube />
+  if (name.includes("twitter")) return <FaXTwitter />
+  return <FaGithub />
 }
 
-function getCommunityLinkMeta(title: string) {
-  const normalized = title.toLowerCase()
-  if (normalized.includes("discord"))
-    return { icon: <FaDiscord />, label: "Discord" }
-  if (normalized.includes("github"))
-    return { icon: <FaGithub />, label: "Github" }
-  if (normalized.includes("x") || normalized.includes("twitter"))
-    return { icon: <FaXTwitter />, label: "Twitter" }
-  if (normalized.includes("youtube"))
-    return { icon: <FaYoutube />, label: "YouTube" }
-  return { icon: <FaGithub />, label: title }
-}
-
-export function CommunityLink(props: CommunityLinkProps) {
+export function CommunityLink(props: { link: CommunityLinkItem }) {
   const { link } = props
-  const meta = getCommunityLinkMeta(link.title)
-
   return (
     <styled.a
       href={link.href}
       target="_blank"
       rel="noopener noreferrer"
-      px={{ base: "4", md: "5" }}
-      py={{ base: "4", md: "5" }}
-      rounded="xl"
-      borderWidth="1px"
-      borderColor="border.subtle"
-      bg="bg"
-      display="grid"
-      placeItems="center"
-      textAlign="center"
-      minH={{ base: "24", md: "28" }}
-      gap="3"
-      transition="all 0.2s"
-      _hover={{
-        borderColor: "border.emphasized",
-        bg: "bg.subtle",
-        shadow: "sm",
-      }}
+      display="block"
+      p="4"
+      mx="-4"
+      rounded="sm"
+      transition="background 0.15s"
+      _hover={{ bg: "bg.muted" }}
       _focusVisible={{
         outline: "2px solid",
         outlineColor: "green.500",
         outlineOffset: "2px",
       }}
     >
-      <Center _icon={{ color: "text.primary.bold", boxSize: "8" }}>
-        {meta.icon}
-      </Center>
-      <styled.span
-        textStyle="xs"
-        fontWeight="medium"
-        fontFamily="mono"
-        textTransform="uppercase"
-        letterSpacing="wider"
-      >
-        {meta.label}
-      </styled.span>
+      <HStack gap="4" alignItems="flex-start">
+        <styled.span
+          mt="0.5"
+          flexShrink="0"
+          color="text.primary.bold"
+          _icon={{ boxSize: "5" }}
+          aria-hidden
+        >
+          {getIcon(link.title)}
+        </styled.span>
+        <Stack gap="1">
+          <styled.span fontWeight="semibold">{link.title}</styled.span>
+          <styled.span fontSize="sm" color="text.muted">
+            {link.description}
+          </styled.span>
+        </Stack>
+      </HStack>
     </styled.a>
   )
 }

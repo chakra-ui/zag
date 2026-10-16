@@ -1,5 +1,4 @@
-"use client"
-
+import { AnnouncementBanner } from "components/announcement-banner"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
 import {
@@ -62,6 +61,11 @@ export default function Home() {
       <Box as="header" position="relative">
         <Section>
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
+            <Box mb="6">
+              <AnnouncementBanner href="/guides/migration" badge="v2">
+                Zag v2 is in pre-release: see what changed
+              </AnnouncementBanner>
+            </Box>
             <styled.h1 textStyle="display.2xl">
               UI components powered by Finite State Machines
             </styled.h1>
@@ -80,34 +84,45 @@ export default function Home() {
 
           <Illustration />
 
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            align={{ sm: "center" }}
-            mt="8"
-            mb="12"
-            gap="5"
-          >
+          <Stack direction={{ base: "column", sm: "row" }} mt="10" gap="3">
             <ButtonLink href="/overview/introduction" variant="green">
               <HStack gap="6">
                 <span>Get Started</span>
                 <Icon as={ArrowRightIcon} />
               </HStack>
             </ButtonLink>
+            <ButtonLink href="/overview/components" px="6">
+              Browse components
+            </ButtonLink>
+          </Stack>
+
+          <Flex
+            mt="14"
+            gap={{ base: "6", md: "10" }}
+            align="center"
+            flexWrap="wrap"
+            color="text.muted"
+          >
+            <HStack gap="6">
+              <styled.span textStyle="sm" fontWeight="medium">
+                Works with
+                <styled.span srOnly> React, Vue, Solid and Svelte</styled.span>
+              </styled.span>
+              <HStack gap="5" color="text" aria-hidden>
+                <ReactIcon />
+                <VueIcon />
+                <SolidIcon />
+                <SvelteIcon />
+              </HStack>
+            </HStack>
             <Image
               draggable={false}
               src="/oss-nominee.png"
               alt="GitNation React Nominee (2024)"
-              width={200}
-              height={64}
+              width={160}
+              height={51}
             />
-          </Stack>
-
-          <HStack gap="12">
-            <ReactIcon />
-            <VueIcon />
-            <SolidIcon />
-            <SvelteIcon />
-          </HStack>
+          </Flex>
         </Section>
       </Box>
 
@@ -126,7 +141,7 @@ export default function Home() {
 
           <ButtonLink
             href="/overview/introduction"
-            variant="black"
+            variant="green"
             width={{ base: "full", md: "auto" }}
           >
             Get Started
@@ -223,11 +238,18 @@ export default function Home() {
           </styled.h2>
           <styled.p textStyle="text.lg" maxW="560px" mt="6">
             Finite state machines for building accessible design systems and UI
-            components. Works with React, Vue and Solid.
+            components. Works with React, Vue, Solid and Svelte.
           </styled.p>
         </Box>
 
-        <MultiframeworkTabs />
+        <MultiframeworkTabs
+          snippets={{
+            react: <CodeArea slug="react/number-input/usage" />,
+            vue: <CodeArea slug="vue/number-input/usage" />,
+            solid: <CodeArea slug="solid/number-input/usage" />,
+            svelte: <CodeArea slug="svelte/number-input/usage" />,
+          }}
+        />
       </Section>
 
       <Section my="10">
@@ -302,7 +324,7 @@ export default function Home() {
           <Stack direction={{ base: "column", sm: "row" }} gap="5">
             <ButtonLink
               href="/overview/introduction"
-              variant="black"
+              variant="green"
               width={{ base: "full", md: "auto" }}
             >
               Get Started

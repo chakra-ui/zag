@@ -1,12 +1,18 @@
-import { components as allComponents, overviews as allOverviews } from ".velite"
+import {
+  components,
+  getSectionText,
+  guides,
+  overviews,
+  posts,
+  utilities,
+} from "./source"
 
 export type SearchMetaItem = {
   content: string
-  id: string
   url: string
   type: "lvl1" | "lvl2" | "lvl3"
-  pathname: string
-  slug: string[]
+  /** the opening text of the section, so a query can match what it says */
+  text?: string
   hierarchy: {
     lvl1: string | null
     lvl2?: string | null
@@ -19,50 +25,61 @@ export type SearchMetaResult = SearchMetaItem[]
 type TOC = {
   content: string
   slug: string
-  lvl: 1 | 2 | 3
+  lvl: number
 }
 
+// ponytail: first 160 characters per section keeps the index small; index whole
+// sections if people search for phrases deeper in a page
+function excerpt(raw?: string) {
+  if (!raw) return undefined
+  const text = raw.replace(/[`*]/g, "").replace(/\s+/g, " ").trim()
+  return text.length > 160 ? `${text.slice(0, 157).trimEnd()}…` : text
+}
+
+type Category = "overview" | "guides" | "components" | "utilities"
+
 function getSearchMeta() {
-  const documents = [...allOverviews, ...allComponents]
+  const pages = [
+    ...[...overviews, ...guides, ...components, ...utilities].map((doc) => ({
+      title: doc.frontmatter.title,
+      url: doc.frontmatter.slug,
+      toc: doc.frontmatter.toc,
+      sections: getSectionText(doc.params[0] as Category, doc.slug),
+    })),
+    ...posts.map((post) => ({
+      title: post.title,
+      url: `/blog/${post.slug}`,
+      toc: post.toc,
+      sections: getSectionText("blog", post.slug),
+    })),
+  ]
 
   const result: SearchMetaResult = []
 
-  for (const doc of documents) {
-    const { title, toc, slug } = doc.frontmatter
-    const params = [...doc.params]
-    params.shift()
-
+  for (const { title, url, toc, sections } of pages) {
     result.push({
       content: title,
-      id: doc._id,
       type: "lvl1",
-      url: slug,
-      pathname: doc.pathname || "",
-      slug: params,
-      hierarchy: {
-        lvl1: title,
-      },
+      url,
+      text: excerpt(sections.get("")),
+      hierarchy: { lvl1: title },
     })
 
-    // The TOC is now already flattened by our transformation in velite.config.ts
-    if (toc && Array.isArray(toc)) {
-      toc.forEach((item: TOC, index: number) => {
-        result.push({
-          content: item.content,
-          id: doc._id + item.slug,
-          type: `lvl${item.lvl}` as any,
-          url: slug + `#${item.slug}`,
-          pathname: doc.pathname || "",
-          slug: params,
-          hierarchy: {
-            lvl1: title,
-            lvl2:
-              item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
-            lvl3: item.lvl === 3 ? item.content : null,
-          },
-        })
+    if (!Array.isArray(toc)) continue
+    toc.forEach((item: TOC, index: number) => {
+      result.push({
+        content: item.content,
+        type: `lvl${item.lvl}` as SearchMetaItem["type"],
+        url: `${url}#${item.slug}`,
+        text: excerpt(sections.get(item.slug)),
+        hierarchy: {
+          lvl1: title,
+          lvl2:
+            item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
+          lvl3: item.lvl === 3 ? item.content : null,
+        },
       })
-    }
+    })
   }
   return result
 }

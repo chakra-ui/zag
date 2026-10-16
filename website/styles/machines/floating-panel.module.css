@@ -56,7 +56,7 @@
       padding-inline: 8px;
       border-radius: 4px;
       background-color: var(--colors-bg-subtle);
-      color: var(--colors-fg);
+      color: var(--colors-text);
     }
 
     & label {

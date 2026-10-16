@@ -11,6 +11,6 @@ export const Code = styled("code", {
     fontSize: "0.84em",
     fontFamily: "mono",
     fontWeight: "semibold",
-    color: { base: "pink.600", _dark: "pink.400" },
+    color: { base: "pink.700", _dark: "pink.400" },
   },
 })

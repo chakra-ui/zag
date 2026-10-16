@@ -47,7 +47,7 @@
 
     &[data-selected] {
       background: var(--colors-bg-primary-bold);
-      color: #ffffff;
+      color: var(--colors-text-inverse);
     }
 
     & img {

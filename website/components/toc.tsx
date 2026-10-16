@@ -1,3 +1,5 @@
+"use client"
+
 import { useScrollSpy } from "lib/use-scrollspy"
 import Link from "next/link"
 import { Stack, styled } from "styled-system/jsx"

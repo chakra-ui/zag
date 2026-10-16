@@ -27,7 +27,7 @@ const bannerStyles = css({
 
 const badgeStyles = css({
   bg: "bg.primary.subtle",
-  color: "white",
+  color: "text.inverse",
   rounded: "full",
   px: "2.5",
   py: "0.5",
