@@ -7,7 +7,7 @@ function access<T>(v: T | (() => T)): T {
 }
 
 export const createTrack = (deps: any[], effect: VoidFunction) => {
-  // Taken at creation, with the initial state, so a dep written before the effect's first run still notifies.
+  // Baseline at creation, so a change before the first effect run still notifies
   let prevDeps = untrack(() => deps.map((d) => access(d)))
   createEffect(() => {
     const nextDeps = deps.map((d) => access(d))

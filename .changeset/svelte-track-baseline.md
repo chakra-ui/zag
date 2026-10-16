@@ -3,5 +3,5 @@
 "@zag-js/solid": patch
 ---
 
-Fixed issue where a machine ignored a prop change made between its creation and its first effect run (e.g. a value an
-earlier sibling's effect writes on mount), leaving a presence machine unmounted while `present` is true.
+- Fix machines missing a prop change made before their first effect run, such as a value an earlier sibling's effect
+  sets on mount. A presence machine could stay unmounted while `present` was true.
