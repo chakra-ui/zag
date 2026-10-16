@@ -1,6 +1,6 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { AnimationFrame, contains, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
-import { callAll, ensureProps, setRafTimeout } from "@zag-js/utils"
+import { contains, raf } from "@zag-js/dom-query"
+import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -206,8 +206,7 @@ export const machine = createMachine<ToastSchema>({
             // A closing toast must not re-add its height after it's removed
             if (!state.hasTag("visible") || !rootEl.isConnected) return
             const height = measureLayoutHeight(rootEl)
-            const item = { id: prop("id"), height }
-            setHeight(prop("parent"), item)
+            setHeight(prop("parent"), { id: prop("id"), height })
           }
 
           const syncRenderedElements = () => {
@@ -219,34 +218,11 @@ export const machine = createMachine<ToastSchema>({
 
           syncRenderedElements()
 
-          const win = scope.getWin()
-
-          const frame = AnimationFrame.create()
-
-          // The root's height is set by CSS, so watch its children, which size freely with the content
-          let stopObservingChildren: VoidFunction | undefined
-          const observeChildren = () => {
-            stopObservingChildren?.()
-            const children = Array.from(rootEl.children).filter((child) => !child.hasAttribute("data-ghost"))
-            stopObservingChildren = callAll(
-              ...children.map((child) => resizeObserverBorderBox.observe(child, () => frame.request(syncHeight))),
-            )
-          }
-
-          observeChildren()
-
-          const observer = new win.MutationObserver(() => {
-            syncHeight()
-            syncRenderedElements()
-            observeChildren()
+          return dom.observeContent(rootEl, {
+            filter: (el) => !el.hasAttribute("data-ghost"),
+            onChange: syncHeight,
+            onMutate: syncRenderedElements,
           })
-          observer.observe(rootEl, { childList: true, subtree: true, characterData: true })
-
-          return () => {
-            observer.disconnect()
-            stopObservingChildren?.()
-            frame.cancel()
-          }
         })
       },
     },
