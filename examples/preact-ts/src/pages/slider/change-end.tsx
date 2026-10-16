@@ -1,6 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as slider from "@zag-js/slider"
 import { useId, useState } from "react"
+import { Output } from "../../components/output"
+import "@styles/slider.css"
 
 export default function Page() {
   const [value, setValue] = useState([50])
@@ -8,8 +10,9 @@ export default function Page() {
 
   const service = useMachine(slider.machine, {
     id: useId(),
-    name: "quantity",
+    name: "brightness",
     defaultValue: [50],
+    thumbSize: 20,
     onValueChange(details) {
       setValue(details.value)
     },
@@ -23,8 +26,10 @@ export default function Page() {
   return (
     <main>
       <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Brightness</label>
+        <output {...api.getValueTextProps()}>{api.value}</output>
         <div {...api.getControlProps()}>
-          <div data-testid="track" {...api.getTrackProps()}>
+          <div {...api.getTrackProps()}>
             <div {...api.getRangeProps()} />
           </div>
           {api.value.map((_, index) => (
@@ -33,11 +38,10 @@ export default function Page() {
             </div>
           ))}
         </div>
-
-        <div style={{ display: "flex", gap: "16px" }}>
-          <output>Change: {value[0]}</output>
-          <output>Change end: {endValue[0]}</output>
-        </div>
+      </div>
+      <div className="hstack gap-4">
+        <Output label="onValueChange" value={value[0]} />
+        <Output label="onValueChangeEnd" value={endValue[0]} />
       </div>
     </main>
   )

@@ -10,42 +10,41 @@ import "@styles/tooltip.css"
 export default function Page() {
   const sliderService = useMachine(slider.machine, {
     id: useId(),
-    name: "quantity",
+    name: "opacity",
+    defaultValue: [60],
     thumbSize: 20,
-    ids: {
-      thumb(index) {
-        return `thumb-${index}`
-      },
-    },
   })
 
   const sliderApi = slider.connect(sliderService, normalizeProps)
 
   const tooltipService = useMachine(tooltip.machine, {
     id: useId(),
-    ids: { trigger: "thumb-0" },
-    open: sliderApi.dragging,
+    open: sliderApi.focused || sliderApi.dragging,
+    positioning: { placement: "top" },
   })
 
   const tooltipApi = tooltip.connect(tooltipService, normalizeProps)
 
   return (
-    <main className="slider">
+    <main>
       <div {...sliderApi.getRootProps()}>
+        <label {...sliderApi.getLabelProps()}>Opacity</label>
         <div {...sliderApi.getControlProps()}>
           <div {...sliderApi.getTrackProps()}>
             <div {...sliderApi.getRangeProps()} />
           </div>
-          <div {...mergeProps(tooltipApi.getTriggerProps(), sliderApi.getThumbProps({ index: 0 }))} />
-          {tooltipApi.open && (
-            <Portal>
-              <div {...tooltipApi.getPositionerProps()}>
-                <div {...tooltipApi.getContentProps()}>{sliderApi.value[0]}</div>
-              </div>
-            </Portal>
-          )}
+          <div {...mergeProps(tooltipApi.getTriggerProps(), sliderApi.getThumbProps({ index: 0 }))}>
+            <input {...sliderApi.getHiddenInputProps({ index: 0 })} />
+          </div>
         </div>
       </div>
+      {tooltipApi.open && (
+        <Portal>
+          <div {...tooltipApi.getPositionerProps()}>
+            <div {...tooltipApi.getContentProps()}>{sliderApi.value[0]}%</div>
+          </div>
+        </Portal>
+      )}
     </main>
   )
 }

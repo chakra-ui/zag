@@ -7,13 +7,9 @@ import "@styles/tooltip.css"
 
 const sliderService = useMachine(slider.machine, {
   id: useId(),
-  name: "quantity",
+  name: "opacity",
+  defaultValue: [60],
   thumbSize: 20,
-  ids: {
-    thumb(index) {
-      return `thumb-${index}`
-    },
-  },
 })
 
 const sliderApi = computed(() => slider.connect(sliderService, normalizeProps))
@@ -23,8 +19,8 @@ const tooltipService = useMachine(
   tooltip.machine,
   computed(() => ({
     id: tooltipId,
-    ids: { trigger: "thumb-0" },
-    open: sliderApi.value.dragging,
+    open: sliderApi.value.focused || sliderApi.value.dragging,
+    positioning: { placement: "top" as const },
   })),
 )
 
@@ -32,19 +28,22 @@ const tooltipApi = computed(() => tooltip.connect(tooltipService, normalizeProps
 </script>
 
 <template>
-  <main class="slider">
+  <main>
     <div v-bind="sliderApi.getRootProps()">
+      <label v-bind="sliderApi.getLabelProps()">Opacity</label>
       <div v-bind="sliderApi.getControlProps()">
         <div v-bind="sliderApi.getTrackProps()">
           <div v-bind="sliderApi.getRangeProps()" />
         </div>
-        <div v-bind="mergeProps(tooltipApi.getTriggerProps(), sliderApi.getThumbProps({ index: 0 }))" />
-        <Teleport v-if="tooltipApi.open" to="#teleports">
-          <div v-bind="tooltipApi.getPositionerProps()">
-            <div v-bind="tooltipApi.getContentProps()">{{ sliderApi.value[0] }}</div>
-          </div>
-        </Teleport>
+        <div v-bind="mergeProps(tooltipApi.getTriggerProps(), sliderApi.getThumbProps({ index: 0 }))">
+          <input v-bind="sliderApi.getHiddenInputProps({ index: 0 })" />
+        </div>
       </div>
     </div>
+    <Teleport v-if="tooltipApi.open" to="#teleports">
+      <div v-bind="tooltipApi.getPositionerProps()">
+        <div v-bind="tooltipApi.getContentProps()">{{ sliderApi.value[0] }}%</div>
+      </div>
+    </Teleport>
   </main>
 </template>

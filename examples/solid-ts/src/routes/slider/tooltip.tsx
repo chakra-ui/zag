@@ -1,5 +1,5 @@
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as slider from "@zag-js/slider"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
@@ -9,13 +9,9 @@ import "@styles/tooltip.css"
 export default function Page() {
   const sliderService = useMachine(slider.machine, {
     id: createUniqueId(),
-    name: "quantity",
+    name: "opacity",
+    defaultValue: [60],
     thumbSize: 20,
-    ids: {
-      thumb(index) {
-        return `thumb-${index}`
-      },
-    },
   })
 
   const sliderApi = createMemo(() => slider.connect(sliderService, normalizeProps))
@@ -23,29 +19,32 @@ export default function Page() {
   const tooltipId = createUniqueId()
   const tooltipService = useMachine(tooltip.machine, () => ({
     id: tooltipId,
-    ids: { trigger: "thumb-0" },
-    open: sliderApi().dragging,
+    open: sliderApi().focused || sliderApi().dragging,
+    positioning: { placement: "top" as const },
   }))
 
   const tooltipApi = createMemo(() => tooltip.connect(tooltipService, normalizeProps))
 
   return (
-    <main class="slider">
+    <main>
       <div {...sliderApi().getRootProps()}>
+        <label {...sliderApi().getLabelProps()}>Opacity</label>
         <div {...sliderApi().getControlProps()}>
           <div {...sliderApi().getTrackProps()}>
             <div {...sliderApi().getRangeProps()} />
           </div>
-          <div {...mergeProps(tooltipApi().getTriggerProps(), sliderApi().getThumbProps({ index: 0 }))} />
-          <Show when={tooltipApi().open}>
-            <Portal>
-              <div {...tooltipApi().getPositionerProps()}>
-                <div {...tooltipApi().getContentProps()}>{sliderApi().value[0]}</div>
-              </div>
-            </Portal>
-          </Show>
+          <div {...mergeProps(tooltipApi().getTriggerProps(), sliderApi().getThumbProps({ index: 0 }))}>
+            <input {...sliderApi().getHiddenInputProps({ index: 0 })} />
+          </div>
         </div>
       </div>
+      <Show when={tooltipApi().open}>
+        <Portal>
+          <div {...tooltipApi().getPositionerProps()}>
+            <div {...tooltipApi().getContentProps()}>{sliderApi().value[0]}%</div>
+          </div>
+        </Portal>
+      </Show>
     </main>
   )
 }

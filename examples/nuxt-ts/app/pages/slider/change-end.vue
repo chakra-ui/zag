@@ -7,10 +7,10 @@ const value = ref([50])
 const endValue = ref([50])
 
 const service = useMachine(slider.machine, {
-  thumbSize: 20,
   id: useId(),
-  name: "quantity",
+  name: "brightness",
   defaultValue: [50],
+  thumbSize: 20,
   onValueChange(details) {
     value.value = details.value
   },
@@ -25,19 +25,20 @@ const api = computed(() => slider.connect(service, normalizeProps))
 <template>
   <main>
     <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Brightness</label>
+      <output v-bind="api.getValueTextProps()">{{ api.value.join("") }}</output>
       <div v-bind="api.getControlProps()">
-        <div data-testid="track" v-bind="api.getTrackProps()">
+        <div v-bind="api.getTrackProps()">
           <div v-bind="api.getRangeProps()" />
         </div>
         <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
           <input v-bind="api.getHiddenInputProps({ index })" />
         </div>
       </div>
-
-      <div style="display: flex; gap: 16px">
-        <output>Change: {{ value[0] }}</output>
-        <output>Change end: {{ endValue[0] }}</output>
-      </div>
+    </div>
+    <div class="hstack gap-4">
+      <Output label="onValueChange" :value="value[0]" />
+      <Output label="onValueChangeEnd" :value="endValue[0]" />
     </div>
   </main>
 </template>

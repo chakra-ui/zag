@@ -646,11 +646,6 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
-    slug: "range-slider",
-    label: "Range Slider",
-    examples: [{ slug: "basic", title: "Basic" }],
-  },
-  {
     slug: "rating-group",
     label: "Rating Group",
     examples: [
@@ -666,10 +661,19 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Slider",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "steps", title: "Steps" },
+      { slug: "marks", title: "Marks" },
+      { slug: "form", title: "Form" },
+      { slug: "range", title: "Range" },
+      { slug: "range-controlled", title: "Range Controlled" },
+      { slug: "range-marks", title: "Range Marks" },
+      { slug: "range-prevent-overlap", title: "Range Prevent Overlap" },
       { slug: "change-end", title: "Change End" },
       { slug: "number-input", title: "With Number Input" },
       { slug: "in-popover", title: "With Popover" },
       { slug: "tooltip", title: "With Tooltip" },
+      { slug: "dragging-indicator", title: "Dragging Indicator" },
     ],
   },
   {

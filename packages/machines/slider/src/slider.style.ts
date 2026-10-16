@@ -16,18 +16,29 @@ function getBounds<T>(value: T[]): [T, T] {
   return [firstValue, lastThumb]
 }
 
-export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed">) {
-  const { prop, computed } = params
+export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed" | "context">) {
+  const { prop, computed, context } = params
   const valuePercent = computed("valuePercent")
   const [firstPercent, lastPercent] = getBounds(valuePercent)
+
+  const thumbSize = context.get("thumbSize")
+  const size = (computed("isVertical") ? thumbSize?.height : thumbSize?.width) ?? 0
+  const inset = prop("thumbAlignment") === "contain" ? size : 0
+
+  // Matches the thumb's contained position, so the fill ends at the thumb's center; track ends stay flush
+  const toEdge = (percent: number, flip = false) => {
+    const offset = inset * (percent / 100 - 0.5)
+    if (!offset || percent === 0 || percent === 100) return `${flip ? 100 - percent : percent}%`
+    return flip ? `calc(${100 - percent}% + ${offset.toFixed(2)}px)` : `calc(${percent}% - ${offset.toFixed(2)}px)`
+  }
 
   if (valuePercent.length === 1) {
     const originPercent = getOriginPercent(prop("origin"), prop("min"), prop("max"))
     const { start, end } = getFillRange(valuePercent[0], originPercent)
-    return { start: `${start}%`, end: `${end}%` }
+    return { start: toEdge(start), end: toEdge(100 - end, true) }
   }
 
-  return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }
+  return { start: toEdge(firstPercent), end: toEdge(lastPercent, true) }
 }
 
 export function getRangeStyle(params: Pick<Ctx, "computed">): Style {

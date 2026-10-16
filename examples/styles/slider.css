@@ -1,59 +1,61 @@
-.slider > * {
-  width: 100%;
-}
-
 [data-slider-root] {
   --slider-thumb-size: 20px;
   --slider-track-size: 12px;
   --slider-dot-size: 4px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 320px;
+  --slider-dot-inset: calc((var(--slider-thumb-size) - var(--slider-dot-size)) / 2);
+  --slider-marker-gap: calc(var(--slider-dot-inset) + 6px);
+  display: grid;
+  align-items: center;
+  gap: 10px 16px;
+
+  &[data-orientation="horizontal"] {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "label value"
+      "control control";
+    width: 320px;
+    max-width: 100%;
+  }
 
   &[data-orientation="vertical"] {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "label value"
+      "control control";
     height: 240px;
-  }
-
-  & .control-area {
-    display: flex;
-    margin-top: 12px;
-  }
-
-  &[data-orientation="horizontal"] .control-area {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  &[data-orientation="vertical"] .control-area {
-    flex-direction: row;
-    height: 100%;
   }
 }
 
 [data-slider-label] {
+  grid-area: label;
   font-size: var(--z-text-md);
   font-weight: 500;
 }
 
 [data-slider-value-text] {
-  margin-inline-start: 8px;
+  grid-area: value;
+  justify-self: end;
   color: var(--z-fg-muted);
   font-size: var(--z-text-md);
   font-variant-numeric: tabular-nums;
 }
 
 [data-slider-control] {
+  grid-area: control;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 
   &[data-orientation="horizontal"] {
+    align-self: start;
     height: var(--slider-thumb-size);
   }
 
   &[data-orientation="vertical"] {
+    align-self: stretch;
+    justify-self: start;
     width: var(--slider-thumb-size);
   }
 }
@@ -85,13 +87,16 @@
     width: 100%;
   }
 
+  &[data-invalid] {
+    background: var(--z-danger);
+  }
+
   &[data-disabled] {
     background: var(--z-border-emphasis);
   }
 }
 
 [data-slider-thumb] {
-  /* Above the step dots, which come later in the DOM */
   z-index: 1;
   box-sizing: border-box;
   width: var(--slider-thumb-size);
@@ -105,7 +110,6 @@
     box-shadow var(--z-duration) var(--z-ease),
     scale var(--z-duration) var(--z-ease);
 
-  /* Accent center dot */
   &::after {
     content: "";
     position: absolute;
@@ -133,6 +137,14 @@
       0 0 0 4px var(--z-ring);
   }
 
+  &[data-invalid]:not([data-disabled]) {
+    border-color: var(--z-danger);
+
+    &::after {
+      background: var(--z-danger);
+    }
+  }
+
   &[data-disabled] {
     border-color: var(--z-border-emphasis);
     background: var(--z-bg-muted);
@@ -144,34 +156,6 @@
   }
 }
 
-/* Step dots sit inside the track: the group collapses and moves onto the track's centerline */
-[data-slider-marker-group] {
-  &[data-orientation="horizontal"] {
-    height: 0;
-    margin-top: calc((var(--slider-thumb-size) + var(--slider-dot-size)) / -2);
-  }
-
-  &[data-orientation="vertical"] {
-    width: 0;
-    height: 100%;
-    margin-left: calc((var(--slider-thumb-size) + var(--slider-dot-size)) / -2);
-  }
-}
-
-[data-slider-marker] {
-  width: var(--slider-dot-size);
-  height: var(--slider-dot-size);
-  overflow: hidden;
-  border-radius: var(--z-radius-full);
-  background: var(--z-fg-subtle);
-  font-size: 0;
-
-  &:is([data-state="under-value"], [data-state="at-value"]) {
-    background: rgb(255 255 255 / 0.7);
-  }
-}
-
-/* The value bubble while dragging, styled like the tooltip */
 [data-slider-dragging-indicator] {
   padding: 2px 6px;
   border-radius: var(--z-radius-xs);
@@ -179,12 +163,77 @@
   color: var(--z-fg-inverted);
   font-size: var(--z-text-xs);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 
   &[data-orientation="horizontal"] {
-    top: calc(var(--slider-thumb-size) + 8px);
+    bottom: calc(var(--slider-thumb-size) + 8px);
   }
 
   &[data-orientation="vertical"] {
     left: calc(var(--slider-thumb-size) + 8px);
   }
+}
+
+/* Shares the control's cell; the dots line up with the track and labels extend the row */
+[data-slider-marker-group] {
+  grid-area: control;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+  font-variant-numeric: tabular-nums;
+
+  &[data-orientation="horizontal"] {
+    align-self: start;
+    height: var(--slider-dot-size);
+    margin-top: var(--slider-dot-inset);
+
+    &:has([data-slider-marker]:not(:empty)) {
+      height: calc(var(--slider-dot-size) + var(--slider-marker-gap) + 1lh);
+    }
+  }
+
+  &[data-orientation="vertical"] {
+    align-self: stretch;
+    justify-self: start;
+    margin-inline-start: var(--slider-dot-inset);
+  }
+}
+
+[data-slider-marker] {
+  display: flex;
+  align-items: center;
+  gap: var(--slider-marker-gap);
+  white-space: nowrap;
+
+  &[data-orientation="horizontal"] {
+    flex-direction: column;
+  }
+
+  &::before {
+    content: "";
+    flex-shrink: 0;
+    width: var(--slider-dot-size);
+    height: var(--slider-dot-size);
+    border-radius: var(--z-radius-full);
+    background: var(--z-fg-subtle);
+  }
+
+  &:is([data-state="under-value"], [data-state="at-value"])::before {
+    background: rgb(255 255 255 / 0.7);
+  }
+
+  /* With two thumbs the fill starts at the first one, so markers before it aren't covered */
+  [data-slider-root]:has([data-slider-thumb][data-index="1"]) &[data-state="under-value"]::before {
+    background: var(--z-fg-subtle);
+  }
+}
+
+.slider-hint,
+.slider-error {
+  margin: 0;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+}
+
+.slider-error {
+  color: var(--z-danger);
 }

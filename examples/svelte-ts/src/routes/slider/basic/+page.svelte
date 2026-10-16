@@ -5,7 +5,6 @@
   import { sliderControls } from "@zag-js/shared"
   import * as slider from "@zag-js/slider"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import serialize from "form-serialize"
   import "@styles/slider.css"
 
   const controls = useControls(sliderControls)
@@ -15,7 +14,7 @@
     slider.machine,
     controls.mergeProps<slider.Props>({
       id,
-      name: "quantity",
+      name: "volume",
       defaultValue: [0],
       thumbSize: 20,
     }),
@@ -24,41 +23,21 @@
   const api = $derived(slider.connect(service, normalizeProps))
 </script>
 
-<main class="slider">
-  <form
-    oninput={(e) => {
-      const formData = serialize(e.currentTarget, { hash: true })
-      console.log(formData)
-    }}
-  >
-    <div {...api.getRootProps()}>
-      <div>
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label data-testid="label" {...api.getLabelProps()}> Slider Label </label>
-        <output data-testid="output" {...api.getValueTextProps()}>
-          {api.value}
-        </output>
+<main>
+  <div {...api.getRootProps()}>
+    <label {...api.getLabelProps()}>Volume</label>
+    <output {...api.getValueTextProps()}>{api.value}</output>
+    <div {...api.getControlProps()}>
+      <div {...api.getTrackProps()}>
+        <div {...api.getRangeProps()}></div>
       </div>
-      <div class="control-area">
-        <div {...api.getControlProps()}>
-          <div data-testid="track" {...api.getTrackProps()}>
-            <div {...api.getRangeProps()}></div>
-          </div>
-          <span {...api.getDraggingIndicatorProps({ index: 0 })}>{api.getThumbValue(0)}</span>
-          {#each api.value as _, index}
-            <div {...api.getThumbProps({ index })}>
-              <input {...api.getHiddenInputProps({ index })} />
-            </div>
-          {/each}
+      {#each api.value as _, index}
+        <div {...api.getThumbProps({ index })}>
+          <input {...api.getHiddenInputProps({ index })} />
         </div>
-        <div {...api.getMarkerGroupProps()}>
-          <span {...api.getMarkerProps({ value: 10 })}>*</span>
-          <span {...api.getMarkerProps({ value: 30 })}>*</span>
-          <span {...api.getMarkerProps({ value: 90 })}>*</span>
-        </div>
-      </div>
+      {/each}
     </div>
-  </form>
+  </div>
 </main>
 
 <Toolbar {controls}>

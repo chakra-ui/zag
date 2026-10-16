@@ -1,42 +1,27 @@
 <script setup lang="ts">
 import * as slider from "@zag-js/slider"
-import { nan } from "@zag-js/utils"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/slider.css"
 import "@styles/number-input.css"
 
-const min = 500
-const max = 5000
-const minStepsBetweenThumbs = 100
+const min = 0
+const max = 1000
 
-function getAdjustedValue(value: number[]) {
-  let [start, end] = value as [number, number]
-
-  const isOverflowing = start > end || end > max || start < min
-  if (!isOverflowing) return value
-
-  if (start > end || start < min) start = min
-  if (end > max) end = max
-  if (end < start) end = start + minStepsBetweenThumbs
-
-  return [start, end]
-}
-
-const value = ref([max / 4, max / 2])
+const value = ref([200, 600])
 
 const id = useId()
 const service = useMachine(
   slider.machine,
   computed(() => ({
-    thumbSize: 20,
     id,
-    name: "quantity",
+    name: "price",
     min,
     max,
-    minStepsBetweenThumbs,
-    thumbAlignment: "center" as const,
-    "aria-label": ["Minimum Price", "Maximum Price"],
-    value: getAdjustedValue(value.value),
+    step: 10,
+    minStepsBetweenThumbs: 10,
+    thumbSize: 20,
+    "aria-label": ["Minimum price", "Maximum price"],
+    value: value.value,
     onValueChange(details: slider.ValueChangeDetails) {
       value.value = details.value
     },
@@ -44,36 +29,34 @@ const service = useMachine(
 )
 
 const api = computed(() => slider.connect(service, normalizeProps))
-
-function onChange(i: number, v: string) {
-  const next = [...value.value]
-  next[i] = nan(parseFloat(v))
-  value.value = next
-}
 </script>
 
 <template>
-  <main class="slider">
+  <main>
     <div v-bind="api.getRootProps()">
-      <div>
-        <output v-bind="api.getValueTextProps()">{{ api.value.join(" - ") }}</output>
-      </div>
+      <label v-bind="api.getLabelProps()">Price</label>
+      <output v-bind="api.getValueTextProps()">${{ value[0] }} – ${{ value[1] }}</output>
       <div v-bind="api.getControlProps()">
         <div v-bind="api.getTrackProps()">
           <div v-bind="api.getRangeProps()" />
         </div>
-        <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })" />
+        <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
+          <input v-bind="api.getHiddenInputProps({ index })" />
+        </div>
       </div>
-    </div>
-
-    <div style="display: flex; gap: 40px">
-      <SliderPriceNumberInput
-        v-for="(v, i) in value"
-        :key="i"
-        :value="v.toString()"
-        :min="api.getThumbMin(i)"
-        :max="api.getThumbMax(i)"
-        @change="(next) => onChange(i, next)"
+      <SliderPriceInput
+        label="Min"
+        :value="value[0]!"
+        :min="min"
+        :max="api.getThumbMax(0)"
+        @change="(next) => api.setThumbValue(0, next)"
+      />
+      <SliderPriceInput
+        label="Max"
+        :value="value[1]!"
+        :min="api.getThumbMin(1)"
+        :max="max"
+        @change="(next) => api.setThumbValue(1, next)"
       />
     </div>
   </main>
