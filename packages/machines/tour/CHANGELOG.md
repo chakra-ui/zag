@@ -1,5 +1,82 @@
 # @zag-js/tour
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`1e1f6da`](https://github.com/chakra-ui/zag/commit/1e1f6da67fb6fb4682a9982a9243eec8f06fb7ae) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** "Prev" is now spelled out as "Previous"
+  across the API.
+
+  ### Parts
+
+  The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps. This
+  renames its prop getter, data attribute, `ids` key and translation key.
+
+  ```diff
+  - <button {...api.getPrevTriggerProps()} />
+  + <button {...api.getPreviousTriggerProps()} />
+  ```
+
+  ```diff
+  - [data-carousel-prev-trigger] { ... }
+  + [data-carousel-previous-trigger] { ... }
+  ```
+
+  ```diff
+    carousel.machine({
+  -   ids: { prevTrigger: "prev" },
+  -   translations: { prevTrigger: "Previous slide" },
+  +   ids: { previousTrigger: "prev" },
+  +   translations: { previousTrigger: "Previous slide" },
+    })
+  ```
+
+  Pagination and scheduler: `translations.prevTriggerLabel` is now `translations.previousTriggerLabel`.
+
+  ### API
+
+  | Component              | Before                          | After                                   |
+  | ---------------------- | ------------------------------- | --------------------------------------- |
+  | Carousel               | `scrollPrev()`, `canScrollPrev` | `scrollPrevious()`, `canScrollPrevious` |
+  | Date picker, Scheduler | `goToPrev()`                    | `goToPrevious()`                        |
+  | Pagination             | `goToPrevPage()`                | `goToPreviousPage()`                    |
+  | Steps                  | `goToPrevStep()`, `hasPrevStep` | `goToPreviousStep()`, `hasPreviousStep` |
+  | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
+  | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
+
+  ### Tour step actions
+
+  The `"prev"` action is now `"previous"`, along with the action map method and translation key. The action trigger
+  renders `data-type="previous"`.
+
+  ```diff
+    actions: [
+  -   { label: "Prev", action: "prev" },
+  +   { label: "Previous", action: "previous" },
+    ]
+
+  - action: (actions) => actions.prev()
+  + action: (actions) => actions.previous()
+
+  - translations: { prevStep: "Previous step" }
+  + translations: { previousStep: "Previous step" }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-trap@2.0.0-next.4
+  - @zag-js/interact-outside@2.0.0-next.4
+  - @zag-js/popper@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

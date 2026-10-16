@@ -1,5 +1,29 @@
 # @zag-js/svelte
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where nested menus didn't open on hover or
+  with the keyboard, or closed as soon as they opened.
+
+  - **Solid:** `mergeProps` keeps keys a source adds after the first render.
+  - **Svelte**
+    - Styles set by a component, such as popup positioning, survive re-renders.
+    - `normalizeProps` no longer renders a `children` prop as a DOM attribute.
+    - Raised the minimum `svelte` peer version to `5.29.0`.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`e7499f4`](https://github.com/chakra-ui/zag/commit/e7499f4c823b8a015e88328ca50f508f64393385) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where a machine skipped a transition when two
+  events were sent in the same task, e.g. moving focus between slider thumbs left no thumb focused.
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.46.0

@@ -1,5 +1,24 @@
 # @zag-js/gridlist
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Clicking a button or link inside a gridlist row, or
+  inside a tree node (e.g. an actions menu trigger), no longer selects the row or node.
+  - **Gridlist:** The gridlist can be reached with Tab again after losing focus, and tabbing in focuses the selected
+    item, or the first item when nothing is selected.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/collection@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
