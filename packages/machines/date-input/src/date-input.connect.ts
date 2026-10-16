@@ -22,6 +22,7 @@ import type {
 } from "./date-input.types"
 import { getLocaleSeparator, isValidCharacter } from "@zag-js/date-utils"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
+import { resolvedHourCycle } from "./utils/incomplete-date"
 import { getGroupOffset } from "./utils/validity"
 
 export function connect<T extends PropTypes>(service: DateInputService, normalize: NormalizeProps<T>): DateInputApi<T> {
@@ -81,6 +82,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
     focused,
     disabled,
     invalid,
+    resolvedHourCycle: resolvedHourCycle(prop("formatter")),
     value,
     valueAsDate,
     valueAsString: computed("valueAsString"),
