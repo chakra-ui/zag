@@ -54,6 +54,12 @@ const closeTransitions: Transition<MenuSchema>[] = [
   },
 ]
 
+// The parent's `open` is still false before it confirms an open, so cancelling needs no confirmation
+const cancelOpenTransition: Transition<MenuSchema> = {
+  target: "closed",
+  actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
+}
+
 export const machine = createMachine<MenuSchema>({
   props({ props }) {
     return {
@@ -233,22 +239,14 @@ export const machine = createMachine<MenuSchema>({
       effects: ["waitForLongPress"],
       on: {
         OPEN: openTransitions,
-        CLOSE: closeTransitions,
+        CLOSE: cancelOpenTransition,
         "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
         "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
-        CONTEXT_MENU_CANCEL: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
+        CONTEXT_MENU_CANCEL: cancelOpenTransition,
         "LONG_PRESS.OPEN": [
           {
             guard: "isOpenControlled",
+            target: "opening:requested",
             actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
@@ -264,7 +262,7 @@ export const machine = createMachine<MenuSchema>({
       effects: ["waitForOpenDelay"],
       on: {
         OPEN: openTransitions,
-        CLOSE: closeTransitions,
+        CLOSE: cancelOpenTransition,
         "CONTROLLED.OPEN": {
           target: "open",
         },
@@ -272,29 +270,12 @@ export const machine = createMachine<MenuSchema>({
           target: "closed",
           actions: ["focusTrigger"],
         },
-        BLUR: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
-        TRIGGER_POINTERLEAVE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
+        BLUR: cancelOpenTransition,
+        TRIGGER_POINTERLEAVE: cancelOpenTransition,
         "DELAY.OPEN": [
           {
             guard: "isOpenControlled",
+            target: "opening:requested",
             actions: ["invokeOnOpen"],
           },
           {
@@ -302,6 +283,16 @@ export const machine = createMachine<MenuSchema>({
             actions: ["invokeOnOpen"],
           },
         ],
+      },
+    },
+
+    // Controlled open was requested; ignore pointer events until the parent confirms
+    "opening:requested": {
+      tags: ["closed"],
+      on: {
+        CLOSE: cancelOpenTransition,
+        "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
+        "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
       },
     },
 

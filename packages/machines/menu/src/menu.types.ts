@@ -179,7 +179,7 @@ export interface MenuSchema {
   guard: string
   event: EventObject
 
-  state: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  state: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu" | "opening:requested"
 
   tag: "open" | "closed"
 }
