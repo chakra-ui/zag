@@ -161,7 +161,7 @@ export const machine = createMachine<ToastSchema>({
     },
 
     dismissing: {
-      entry: ["invokeOnDismiss"],
+      entry: ["notifyParentOfDismiss", "invokeOnDismiss"],
       effects: ["waitForRemoveDelay"],
       on: {
         REMOVE: {
@@ -277,10 +277,15 @@ export const machine = createMachine<ToastSchema>({
         })
       },
 
-      notifyParentToRemove({ prop, scope }) {
+      notifyParentToRemove({ prop }) {
         const parent = prop("parent")
-        const focused = contains(dom.getRootEl(scope), scope.getActiveElement())
-        parent.send({ type: "TOAST.REMOVE", id: prop("id"), focused })
+        parent.send({ type: "TOAST.REMOVE", id: prop("id") })
+      },
+      notifyParentOfDismiss({ prop, scope }) {
+        const activeEl = scope.getActiveElement()
+        if (!contains(dom.getRootEl(scope), activeEl)) return
+        const focusVisible = !!activeEl?.matches(":focus-visible")
+        prop("parent").send({ type: "TOAST.DISMISS", focusVisible })
       },
       invokeOnDismiss({ prop, event }) {
         prop("parent").prop("store").dismiss(prop("id"))

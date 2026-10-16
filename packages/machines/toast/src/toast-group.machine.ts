@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
@@ -57,7 +57,7 @@ export const groupMachine = createMachine({
   watch({ track, context, action }) {
     track([() => context.hash("toasts")], () => {
       queueMicrotask(() => {
-        action(["collapsedIfEmpty", "setDismissableBranch"])
+        action(["collapsedIfEmpty", "setDismissableBranch", "resetInteractionIfEmpty"])
       })
     })
   },
@@ -89,8 +89,11 @@ export const groupMachine = createMachine({
         actions: ["clearFocusWithin"],
       },
     ],
+    "TOAST.DISMISS": {
+      actions: ["moveFocusOnDismiss"],
+    },
     "TOAST.REMOVE": {
-      actions: ["moveFocusFromRemovedToast", "removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
+      actions: ["removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
     },
     "TOAST.PAUSE": {
       actions: ["pauseToasts"],
@@ -256,15 +259,31 @@ export const groupMachine = createMachine({
         refs.set("isFocusWithin", true)
         refs.set("lastFocusedEl", event.target ?? null)
       },
-      moveFocusFromRemovedToast({ refs, scope, computed, event }) {
-        // Unmounting the focused toast fires no blur, so the region would never resume
-        if (!event.focused) return
+      moveFocusOnDismiss({ refs, scope, computed, event }) {
+        if (event.focusVisible) {
+          const toastEls = dom.getToastEls(scope, computed("placement"))
+          const index = toastEls.findIndex((el) => contains(el, scope.getActiveElement()))
+          const nextEl = findOpenToast(toastEls, index + 1, 1) ?? findOpenToast(toastEls, index - 1, -1)
+          if (nextEl) {
+            nextEl.focus({ preventScroll: true })
+            return
+          }
+        }
+
         const lastFocusedEl = refs.get("lastFocusedEl")
-        if (lastFocusedEl) {
+        if (event.focusVisible && lastFocusedEl) {
           lastFocusedEl.focus({ preventScroll: true })
         } else {
-          dom.getRegionEl(scope, computed("placement"))?.focus({ preventScroll: true })
+          scope.getActiveElement()?.blur()
         }
+      },
+      resetInteractionIfEmpty({ refs, prop, scope, computed }) {
+        if (computed("count") > 0) return
+        refs.set("isFocusWithin", false)
+        refs.set("isPointerWithin", false)
+        refs.set("lastFocusedEl", null)
+        const idle = prop("store").attrs.pauseOnPageIdle && scope.getDoc().visibilityState === "hidden"
+        if (!idle) prop("store").resume()
       },
       restoreFocusIfPointerOut({ refs }) {
         if (!refs.get("lastFocusedEl") || refs.get("isPointerWithin")) return
@@ -291,8 +310,21 @@ export const groupMachine = createMachine({
         refs.set("lastFocusedEl", null)
         refs.set("isFocusWithin", false)
       },
-      ignoreMouseEventsTemporarily({ refs }) {
-        refs.get("ignoreMouseTimer").request()
+      ignoreMouseEventsTemporarily({ refs, scope, computed, send }) {
+        // Removing the hovered toast fires no leave, so check on the next pointer move
+        refs.get("ignoreMouseTimer").request(() => {
+          return addDomEvent(
+            scope.getDoc(),
+            "pointermove",
+            (event) => {
+              if (!refs.get("isPointerWithin")) return
+              const regionEl = dom.getRegionEl(scope, computed("placement"))
+              if (contains(regionEl, getEventTarget(event))) return
+              send({ type: "REGION.POINTER_LEAVE", placement: computed("placement") })
+            },
+            { once: true },
+          )
+        })
       },
       clearMouseEventTimer({ refs }) {
         refs.get("ignoreMouseTimer").cancel()
@@ -300,3 +332,10 @@ export const groupMachine = createMachine({
     },
   },
 })
+
+function findOpenToast(toastEls: HTMLElement[], from: number, step: number) {
+  for (let i = from; i >= 0 && i < toastEls.length; i += step) {
+    if (toastEls[i].dataset.state === "open") return toastEls[i]
+  }
+  return null
+}

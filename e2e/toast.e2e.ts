@@ -19,7 +19,7 @@ test.describe("toast / stacked", () => {
     await I.seeNumOfToasts(0)
   })
 
-  test("dismissing a focused toast with escape resumes the others", async () => {
+  test("dismissing a focused toast with escape moves focus to the next toast", async () => {
     await I.clickErrorToast(2)
     await I.pressHotkey()
     await I.pressKey("Tab")
@@ -27,20 +27,31 @@ test.describe("toast / stacked", () => {
 
     await I.pressKey("Escape")
     await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(0)
     await I.seeButtonIsFocused("Notify (Error)")
-    await I.seeToastsAreNotPaused()
   })
 
-  test("dismissing a focused toast with its close button resumes the others", async () => {
+  test("dismissing a focused toast with its close button moves focus to the next toast", async () => {
     await I.clickErrorToast(2)
     await I.pressHotkey()
     await I.pressKey("Tab")
     await I.pressKey("Tab")
-    await I.seeToastArePaused()
 
     await I.pressKey("Enter")
     await I.seeNumOfToasts(1)
-    await I.seeButtonIsFocused("Notify (Error)")
+    await I.seeToastIsFocused(0)
+  })
+
+  test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.clickNthCloseButton(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
     await I.seeToastsAreNotPaused()
   })
 

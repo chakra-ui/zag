@@ -106,6 +106,10 @@ export class ToastModel extends Model {
     }
   }
 
+  seeToastIsFocused(num = 0) {
+    return expect(this.getToast(num)).toBeFocused()
+  }
+
   seeButtonIsFocused(name: string) {
     return expect(this.page.getByRole("button", { name })).toBeFocused()
   }
