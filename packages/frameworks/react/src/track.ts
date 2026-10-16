@@ -4,9 +4,6 @@ import { useEffect, useRef } from "react"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {
   const values = (deps ?? []).map((d) => (typeof d === "function" ? d() : d))
-  // Compared against the values the last run saw, not a mounted flag: an `<Activity>` that hides
-  // the component disconnects its effects, and the first run after it reconnects must still see a
-  // change made while hidden.
   const previous = useRef<any[] | null>(null)
 
   useEffect(() => {
