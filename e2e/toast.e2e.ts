@@ -48,7 +48,7 @@ test.describe("toast / stacked", () => {
 
   test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
     await I.clickErrorToast(2)
-    await I.clickNthCloseButton(0)
+    await I.closeNthToast(0)
     await I.seeNumOfToasts(1)
 
     await I.mouseOutOfRegion()
@@ -126,7 +126,7 @@ test.describe("toast / overlapping", () => {
 
   test("closing a toast with the mouse resumes the last toast once the pointer leaves", async () => {
     await I.clickErrorToast(2)
-    await I.clickNthCloseButton(0)
+    await I.closeNthToast(0)
     await I.seeNumOfToasts(1)
 
     await I.mouseOutOfRegion()

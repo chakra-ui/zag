@@ -52,9 +52,7 @@ export const groupMachine = createMachine({
     placement: ({ prop }) => prop("store").attrs.placement,
   },
 
-  entry: ["syncStackState"],
-
-  effects: ["subscribeToStore", "trackDocumentVisibility", "trackHotKeyPress"],
+  effects: ["subscribeToStore", "subscribeToLayout", "trackDocumentVisibility", "trackHotKeyPress"],
 
   watch({ track, context, action }) {
     track([() => context.hash("toasts")], () => {
@@ -80,7 +78,7 @@ export const groupMachine = createMachine({
       {
         guard: and("isOverlapping", "isPointerOut"),
         target: "overlap",
-        actions: ["collapseToasts", "resumeToasts", "restoreFocusIfPointerOut"],
+        actions: ["resumeToasts", "restoreFocusIfPointerOut"],
       },
       {
         guard: "isPointerOut",
@@ -109,7 +107,7 @@ export const groupMachine = createMachine({
           {
             guard: "isOverlapping",
             target: "overlap",
-            actions: ["clearPointerWithin", "resumeToasts", "collapseToasts"],
+            actions: ["clearPointerWithin", "resumeToasts"],
           },
           {
             actions: ["clearPointerWithin", "resumeToasts"],
@@ -117,7 +115,6 @@ export const groupMachine = createMachine({
         ],
         "REGION.OVERLAP": {
           target: "overlap",
-          actions: ["collapseToasts"],
         },
         "REGION.FOCUS": {
           actions: ["setLastFocusedEl", "pauseToasts"],
@@ -132,18 +129,17 @@ export const groupMachine = createMachine({
       on: {
         "REGION.STACK": {
           target: "stack",
-          actions: ["expandToasts"],
         },
         "REGION.POINTER_ENTER": {
           target: "stack",
-          actions: ["setPointerWithin", "pauseToasts", "expandToasts"],
+          actions: ["setPointerWithin", "pauseToasts"],
         },
         "REGION.POINTER_LEAVE": {
           actions: ["clearPointerWithin", "resumeToasts"],
         },
         "REGION.FOCUS": {
           target: "stack",
-          actions: ["setLastFocusedEl", "pauseToasts", "expandToasts"],
+          actions: ["setLastFocusedEl", "pauseToasts"],
         },
       },
     },
@@ -174,6 +170,11 @@ export const groupMachine = createMachine({
           })
         })
       },
+      subscribeToLayout({ prop, send }) {
+        return prop("store").subscribeLayout((stacked) => {
+          send({ type: stacked ? "REGION.STACK" : "REGION.OVERLAP" })
+        })
+      },
       trackHotKeyPress({ prop, send }) {
         const handleKeyDown = (event: KeyboardEvent) => {
           const { hotkey } = prop("store").attrs
@@ -198,12 +199,6 @@ export const groupMachine = createMachine({
     },
 
     actions: {
-      syncStackState({ prop, computed }) {
-        // A reused store can retain the previous group's layout across mounts.
-        const store = prop("store")
-        if (computed("overlap")) store.collapse()
-        else store.expand()
-      },
       setDismissableBranch({ refs, context, computed, scope }) {
         const toasts = context.get("toasts")
         const placement = computed("placement")
@@ -244,12 +239,6 @@ export const groupMachine = createMachine({
         if (idle || refs.get("isPointerWithin") || refs.get("isFocusWithin")) return
 
         prop("store").resume()
-      },
-      expandToasts({ prop }) {
-        prop("store").expand()
-      },
-      collapseToasts({ prop }) {
-        prop("store").collapse()
       },
       removeToast({ prop, event }) {
         prop("store").remove(event.id)

@@ -84,6 +84,11 @@ export class ToastModel extends Model {
     return this.getCloseButton(num).click({ force: true })
   }
 
+  // Waits for the toast to settle, so the click can't land on a toast that's still animating in
+  closeNthToast(num: number) {
+    return this.getCloseButton(num).click()
+  }
+
   seeRegionIsFocused() {
     return expect(this.region).toBeFocused()
   }

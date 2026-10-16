@@ -27,7 +27,7 @@ export function connect<T extends PropTypes, O>(
 
   const placement = prop("parent").computed("placement")
   const type = prop("type")
-  const stacked = prop("stacked")
+  const stacked = prop("parent").state.matches("stack")
   const title = prop("title")
   const description = prop("description")
   const action = prop("action")

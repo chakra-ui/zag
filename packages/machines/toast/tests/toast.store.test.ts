@@ -64,7 +64,6 @@ describe("toast store updates", () => {
     const updater = vi.fn((prev: Partial<ToastProps<string>>) => {
       expect(prev).toEqual(original)
       expect(prev.duration).toBe(5000)
-      expect(prev.stacked).toBe(false)
       return {}
     })
 
@@ -1131,68 +1130,35 @@ describe("toast store priority", () => {
   })
 })
 
-describe("toast store stack state", () => {
-  test.each([true, false])("uses the initial overlap setting (%s)", (overlap) => {
-    const store = createToastStore({ overlap })
-    store.create({})
-    expect(store.getVisibleToasts()[0].stacked).toBe(!overlap)
-  })
-
-  test("new toasts inherit expand and collapse before subscribers are notified", () => {
+describe("toast store layout", () => {
+  test("does not store the layout on toasts", () => {
     const store = createToastStore({ overlap: true })
     store.create({ id: "first" })
-    store.expand()
+    expect(store.getVisibleToasts()[0]).not.toHaveProperty("stacked")
+  })
+
+  test("expand and collapse notify layout subscribers", () => {
+    const store = createToastStore({ overlap: true })
     const subscriber = vi.fn()
-    store.subscribe(subscriber)
+    const unsubscribe = store.subscribeLayout(subscriber)
 
-    store.create({ id: "expanded" })
-    expect(subscriber).toHaveBeenLastCalledWith(expect.objectContaining({ id: "expanded", stacked: true }))
-
-    store.collapse()
-    store.create({ id: "collapsed" })
-    expect(subscriber).toHaveBeenLastCalledWith(expect.objectContaining({ id: "collapsed", stacked: false }))
-  })
-
-  test("remembers stack state when there are no toasts", () => {
-    const store = createToastStore({ overlap: true })
     store.expand()
-    store.create({ id: "first" })
-    expect(store.getVisibleToasts()[0].stacked).toBe(true)
-    store.remove()
-    store.create({ id: "second" })
-    expect(store.getVisibleToasts()[0].stacked).toBe(true)
-    store.remove()
     store.collapse()
-    store.create({ id: "third" })
-    expect(store.getVisibleToasts()[0].stacked).toBe(false)
+    expect(subscriber.mock.calls).toEqual([[true], [false]])
+
+    unsubscribe()
+    store.expand()
+    expect(subscriber).toHaveBeenCalledTimes(2)
   })
 
-  test("does not republish toasts when the stack state is unchanged", () => {
+  test("expand and collapse do not republish toasts", () => {
     const store = createToastStore({ overlap: true })
     store.create({ id: "first" })
     const subscriber = vi.fn()
     store.subscribe(subscriber)
 
+    store.expand()
     store.collapse()
     expect(subscriber).not.toHaveBeenCalled()
-
-    store.expand()
-    store.expand()
-    expect(subscriber).toHaveBeenCalledOnce()
-  })
-
-  test.each([true, false])("queued toasts inherit the latest stack state (%s)", (expanded) => {
-    const store = createToastStore({ overlap: true, max: 1 })
-    store.create({ id: "visible" })
-    store.create({ id: "queued-before" })
-    store.expand()
-    store.create({ id: "queued-after" })
-    if (!expanded) store.collapse()
-
-    store.dismiss("visible")
-    store.remove("visible")
-    expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-before", stacked: expanded }])
-    store.remove("queued-before")
-    expect(store.getVisibleToasts()).toMatchObject([{ id: "queued-after", stacked: expanded }])
   })
 })
