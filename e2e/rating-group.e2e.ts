@@ -19,6 +19,15 @@ test.describe("rating / pointer", () => {
     await I.seeInputHasValue("4")
   })
 
+  test("should only mark the selected rating as checked", async () => {
+    await I.seeRatingIsChecked(3)
+    await I.seeCheckedRatingLabel("2.5 stars")
+
+    await I.previewRating(5)
+    await I.seeRatingIsHighlighted(5)
+    await I.seeRatingIsChecked(3)
+  })
+
   test.skip("highlight when hovered", async () => {
     await I.hoverRating(4)
     await I.seeRatingIsHighlighted(4)

@@ -70,6 +70,14 @@ export class RatingGroupModel extends Model {
     await expect(this.getRating(value)).toHaveAttribute("aria-checked", "true")
   }
 
+  async previewRating(value: number) {
+    await this.movePointerTo(`${part("item")} >> nth=${value - 1}`, 10)
+  }
+
+  async seeCheckedRatingLabel(label: string) {
+    await expect(this.checkedItems).toHaveAttribute("aria-label", label)
+  }
+
   async seeNoRatingIsChecked() {
     await expect(this.checkedItems).toHaveCount(0)
   }
