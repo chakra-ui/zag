@@ -106,6 +106,15 @@ test.describe("toast / overlapping", () => {
     await I.seeToastsOverlap()
   })
 
+  test("closing a toast with the mouse resumes the last toast once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.clickNthCloseButton(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
+  })
+
   test("should pause all toast on click pause", async () => {
     await I.clickErrorToast(2)
 

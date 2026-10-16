@@ -136,6 +136,9 @@ export const groupMachine = createMachine({
           target: "stack",
           actions: ["setPointerWithin", "pauseToasts", "expandToasts"],
         },
+        "REGION.POINTER_LEAVE": {
+          actions: ["clearPointerWithin", "resumeToasts"],
+        },
         "REGION.FOCUS": {
           target: "stack",
           actions: ["setLastFocusedEl", "pauseToasts", "expandToasts"],
