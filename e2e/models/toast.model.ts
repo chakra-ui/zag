@@ -57,7 +57,7 @@ export class ToastModel extends Model {
 
   async dontSeeDescription(num = 0) {
     const toast = this.getToast(num)
-    await expect(toast.locator("[data-part=title]")).toHaveCount(0)
+    await expect(toast.locator("[data-part=description]")).toHaveCount(0)
     await expect(toast).not.toHaveAttribute("aria-describedby")
   }
 
