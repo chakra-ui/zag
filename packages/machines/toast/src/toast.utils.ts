@@ -93,8 +93,8 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const frontmost = computed("frontmost")
   const sibling = !frontmost
 
-  const overlap = !prop("stacked")
-  const stacked = prop("stacked")
+  const stacked = prop("parent").state.matches("stack")
+  const overlap = !stacked
   const type = prop("type")
 
   const duration = type === "loading" ? Number.MAX_SAFE_INTEGER : remainingTime

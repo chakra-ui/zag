@@ -48,7 +48,7 @@ test.describe("toast / stacked", () => {
 
   test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
     await I.clickErrorToast(2)
-    await I.clickNthCloseButton(0)
+    await I.closeNthToast(0)
     await I.seeNumOfToasts(1)
 
     await I.mouseOutOfRegion()
@@ -94,6 +94,24 @@ test.describe("toast / overlapping", () => {
     await I.seeToastsOverlap()
   })
 
+  test("new toasts join the expanded stack without moving the pointer", async () => {
+    await I.clickLoadingToast(2)
+    await I.mouseIntoRegion()
+    await I.seeToastsStacked()
+
+    // The create button still has focus while the pointer stays over the stack.
+    await I.page.keyboard.press("Space")
+    await I.seeNumOfToasts(3)
+    await I.seeToastsStacked()
+    await I.seeToastArePaused()
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsOverlap()
+    await I.page.keyboard.press("Space")
+    await I.seeNumOfToasts(4)
+    await I.seeToastsOverlap()
+  })
+
   test("focus on region on hotkey press", async () => {
     await I.clickErrorToast(2)
     await I.pressHotkey()
@@ -108,7 +126,7 @@ test.describe("toast / overlapping", () => {
 
   test("closing a toast with the mouse resumes the last toast once the pointer leaves", async () => {
     await I.clickErrorToast(2)
-    await I.clickNthCloseButton(0)
+    await I.closeNthToast(0)
     await I.seeNumOfToasts(1)
 
     await I.mouseOutOfRegion()

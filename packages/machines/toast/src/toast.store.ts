@@ -57,6 +57,7 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
   const closingToasts = new Set<string>()
   const promiseTokens = new Map<string, symbol>()
   let paused = false
+  const layoutSubscribers = new Set<(stacked: boolean) => void>()
 
   const subscribe = (subscriber: (...args: any[]) => void) => {
     subscribers.push(subscriber)
@@ -141,7 +142,6 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
         removeDelay: attrs.removeDelay,
         type: DEFAULT_TYPE,
         ...data,
-        stacked: !attrs.overlap,
         gap: attrs.gap,
         paused,
       }
@@ -342,9 +342,16 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     return dismissedToasts.has(id)
   }
 
-  const expand = () => changeToasts({ stacked: true })
+  const subscribeLayout = (subscriber: (stacked: boolean) => void) => {
+    layoutSubscribers.add(subscriber)
+    return () => {
+      layoutSubscribers.delete(subscriber)
+    }
+  }
 
-  const collapse = () => changeToasts({ stacked: false })
+  const expand = () => layoutSubscribers.forEach((subscriber) => subscriber(true))
+
+  const collapse = () => layoutSubscribers.forEach((subscriber) => subscriber(false))
 
   return {
     attrs,
@@ -367,6 +374,7 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
     isDismissed,
     expand,
     collapse,
+    subscribeLayout,
   }
 }
 
