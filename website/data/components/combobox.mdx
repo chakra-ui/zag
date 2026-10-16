@@ -475,6 +475,91 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+## Recipes
+
+### Command palette
+
+Render an inline combobox inside a dialog to build a command palette. Each item
+runs an action instead of holding a value:
+
+- `value: []` keeps nothing selected
+- `selectionBehavior: "clear"` empties the input after each command
+- `onSelect` looks up the item by `itemValue` and runs it
+
+```tsx
+const collection = combobox.collection({
+  items: [
+    { value: "new-file", label: "New file", run: createFile },
+    { value: "settings", label: "Open settings", run: openSettings },
+  ],
+})
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  inline: true,
+  value: [],
+  selectionBehavior: "clear",
+  onSelect({ itemValue }) {
+    collection.find(itemValue)?.run()
+    dialogApi.setOpen(false)
+  },
+})
+```
+
+### Async combobox
+
+Pair the combobox with the [async list](/utilities/async-list) to fetch items as
+the user types. The async list aborts stale requests and tracks loading state.
+
+```tsx
+import * as asyncList from "@zag-js/async-list"
+
+const listService = useMachine(asyncList.machine, {
+  autoReload: true,
+  // Keep showing the last results while the next query loads
+  keepPreviousItems: true,
+  async load({ signal, filter }) {
+    const res = await fetch(`/api/people?search=${filter ?? ""}`, { signal })
+    const json = await res.json()
+    return { items: json.results }
+  },
+})
+
+const list = asyncList.connect(listService)
+
+const collection = useMemo(
+  () => combobox.collection({ items: list.items }),
+  [list.items],
+)
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  onInputValueChange({ inputValue, reason }) {
+    // Selecting an item fills the input; that shouldn't trigger a search
+    if (reason === "item-select") return
+    list.setFilter(inputValue)
+  },
+})
+```
+
+Mark the content busy while loading, and only show the empty message once the
+search has settled. Keep the empty part rendered, since it announces its text to
+screen readers.
+
+```tsx
+<div {...api.getContentProps()} aria-busy={list.isLoading || undefined}>
+  <div {...api.getEmptyProps()}>
+    {list.isEmpty && !list.isLoading && "No results"}
+  </div>
+  <div {...api.getListProps()}>{/* items */}</div>
+</div>
+```
+
+To paginate, return a `cursor` from `load` and call `list.loadMore()` from
+[infinite scroll](/utilities/infinite-scroll) at the end of the list.
+
 ## Styling guide
 
 Each part includes a component-scoped data attribute you can target in CSS.
