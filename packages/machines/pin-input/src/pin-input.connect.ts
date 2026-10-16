@@ -121,6 +121,8 @@ export function connect<T extends PropTypes>(
         ...parts.control.attrs,
         dir: prop("dir"),
         id: dom.getControlId(scope),
+        role: "group",
+        "aria-labelledby": dom.getLabelId(scope),
       })
     },
 

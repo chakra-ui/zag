@@ -1,4 +1,5 @@
 import { isEqual } from "@zag-js/utils"
+import { untrack } from "svelte"
 
 const access = (value: any) => {
   if (typeof value === "function") return value()
@@ -6,23 +7,12 @@ const access = (value: any) => {
 }
 
 export const track = (deps: any[], effect: VoidFunction) => {
-  let prevDeps: any[] = []
-  let isFirstRun = true
+  // Baseline at creation, so a change before the first effect run still notifies
+  let prevDeps = untrack(() => deps.map((d) => access(d)))
   $effect(() => {
-    if (isFirstRun) {
-      prevDeps = deps.map((d) => access(d))
-      isFirstRun = false
-      return
-    }
-    let changed = false
-    for (let i = 0; i < deps.length; i++) {
-      if (!isEqual(prevDeps[i], access(deps[i]))) {
-        changed = true
-        break
-      }
-    }
-    if (changed) {
-      prevDeps = deps.map((d) => access(d))
+    const nextDeps = deps.map((d) => access(d))
+    if (nextDeps.some((dep, i) => !isEqual(prevDeps[i], dep))) {
+      prevDeps = nextDeps
       effect()
     }
   })
