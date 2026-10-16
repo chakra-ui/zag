@@ -6768,14 +6768,6 @@
         "type": "ElementIds | undefined",
         "description": "The ids of the elements in the slider. Useful for composition."
       },
-      "aria-label": {
-        "type": "string[] | undefined",
-        "description": "The aria-label of each slider thumb. Useful for providing an accessible name to the slider"
-      },
-      "aria-labelledby": {
-        "type": "string[] | undefined",
-        "description": "The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider"
-      },
       "name": {
         "type": "string | undefined",
         "description": "The name associated with each slider thumb (when used in a form)"
@@ -6819,6 +6811,14 @@
       "getAriaValueText": {
         "type": "((details: ValueTextDetails) => string) | undefined",
         "description": "Function that returns a human readable value for the slider thumb"
+      },
+      "getAriaLabel": {
+        "type": "((details: ThumbLabelDetails) => string) | undefined",
+        "description": "Function that returns the accessible name of each thumb, e.g. \"Minimum price\""
+      },
+      "getAriaLabelledBy": {
+        "type": "((details: ThumbLabelDetails) => string) | undefined",
+        "description": "Function that returns the `id` of the element that labels each thumb.\nDefaults to the label part when no `getAriaLabel` is provided."
       },
       "min": {
         "type": "number | undefined",

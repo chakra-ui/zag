@@ -14,7 +14,7 @@ export default function Page() {
     max: 24,
     minStepsBetweenThumbs: 4,
     thumbSize: 20,
-    "aria-label": ["Start hour", "End hour"],
+    getAriaLabel: ({ index }) => (index === 0 ? "Start hour" : "End hour"),
   })
 
   const api = slider.connect(service, normalizeProps)

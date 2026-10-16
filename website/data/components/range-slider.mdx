@@ -177,6 +177,19 @@ const service = useMachine(rangeSlider.machine, {
 })
 ```
 
+### Labeling each thumb
+
+Each thumb is labeled by the label part by default. Use `getAriaLabel` to give
+each thumb its own accessible name.
+
+```tsx
+const service = useMachine(slider.machine, {
+  defaultValue: [200, 600],
+  getAriaLabel: ({ index }) =>
+    index === 0 ? "Minimum price" : "Maximum price",
+})
+```
+
 ### Usage within forms
 
 To use range slider in forms, set `name` and render

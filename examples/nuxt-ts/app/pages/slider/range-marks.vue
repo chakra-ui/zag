@@ -10,7 +10,7 @@ const service = useMachine(slider.machine, {
   name: "quantity",
   defaultValue: [20, 60],
   thumbSize: 20,
-  "aria-label": ["Minimum quantity", "Maximum quantity"],
+  getAriaLabel: ({ index }) => (index === 0 ? "Minimum quantity" : "Maximum quantity"),
 })
 
 const api = computed(() => slider.connect(service, normalizeProps))

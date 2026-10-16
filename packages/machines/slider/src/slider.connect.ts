@@ -33,9 +33,6 @@ import { getRangeAtIndex } from "./slider.utils"
 export function connect<T extends PropTypes>(service: SliderService, normalize: NormalizeProps<T>): SliderApi<T> {
   const { state, send, context, prop, computed, scope } = service
 
-  const ariaLabel = prop("aria-label")
-  const ariaLabelledBy = prop("aria-labelledby")
-
   const sliderValue = context.get("value")
   const focusedIndex = context.get("focusedIndex")
 
@@ -207,8 +204,8 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
       const range = getRangeAtIndex(service, index)
       const valueText = prop("getAriaValueText")?.({ value: thumbState.value, index })
-      const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
-      const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
+      const ariaLabel = prop("getAriaLabel")?.({ index })
+      const ariaLabelledBy = prop("getAriaLabelledBy")?.({ index }) ?? (ariaLabel ? undefined : dom.getLabelId(scope))
 
       return normalize.element({
         ...parts.thumb.attrs(scope.id),
@@ -223,8 +220,8 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         draggable: false,
         "aria-disabled": ariaAttr(thumbState.disabled),
         "aria-invalid": ariaAttr(invalid),
-        "aria-label": _ariaLabel,
-        "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(scope),
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy,
         "aria-orientation": prop("orientation"),
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,

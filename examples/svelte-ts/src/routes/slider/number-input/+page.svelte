@@ -19,7 +19,7 @@
     step: 10,
     minStepsBetweenThumbs: 10,
     thumbSize: 20,
-    "aria-label": ["Minimum price", "Maximum price"],
+    getAriaLabel: ({ index }) => (index === 0 ? "Minimum price" : "Maximum price"),
     value,
     onValueChange(details: slider.ValueChangeDetails) {
       value = details.value

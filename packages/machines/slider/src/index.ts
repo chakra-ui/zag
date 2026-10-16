@@ -16,6 +16,7 @@ export type {
   ThumbProps,
   ThumbState,
   ValueChangeDetails,
+  ThumbLabelDetails,
   ValueTextDetails,
   ThumbAlignment,
   ThumbCollisionBehavior,

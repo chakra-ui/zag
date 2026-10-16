@@ -11,7 +11,7 @@ export default function Page() {
     name: "quantity",
     defaultValue: [20, 60],
     thumbSize: 20,
-    "aria-label": ["Minimum quantity", "Maximum quantity"],
+    getAriaLabel: ({ index }) => (index === 0 ? "Minimum quantity" : "Maximum quantity"),
   })
 
   const api = createMemo(() => slider.connect(service, normalizeProps))

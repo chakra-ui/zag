@@ -20,7 +20,7 @@ const service = useMachine(
     step: 10,
     minStepsBetweenThumbs: 10,
     thumbSize: 20,
-    "aria-label": ["Minimum price", "Maximum price"],
+    getAriaLabel: ({ index }) => (index === 0 ? "Minimum price" : "Maximum price"),
     value: value.value,
     onValueChange(details: slider.ValueChangeDetails) {
       value.value = details.value
