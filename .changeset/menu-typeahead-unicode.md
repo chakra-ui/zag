@@ -1,7 +1,6 @@
 ---
 "@zag-js/dom-query": patch
-"@zag-js/menu": patch
 ---
 
-Fix menu typeahead not matching items whose text starts with an accented or non-Latin character, such as "Éditer" or
-"Экспорт".
+- Fix menu and tree view typeahead not matching items that start with an accented or non-Latin character.
+- Typeahead now ignores case and accents, so typing "e" finds "Éditer".

@@ -39,11 +39,6 @@ export class MenuModel extends Model {
     return this.content.pressSequentially(input)
   }
 
-  // keyboard.type sends no keydown for characters outside the US layout
-  typeKey(key: string) {
-    return this.content.dispatchEvent("keydown", { key, bubbles: true })
-  }
-
   focusTrigger = async () => {
     await this.trigger.focus()
   }
