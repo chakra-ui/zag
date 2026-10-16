@@ -260,7 +260,7 @@ export interface SliderSchema {
      * The values when a thumb drag starts.
      * Used for swap collision behavior to determine swap direction.
      */
-    thumbDragStartValue: number[] | null
+    startValue: number[] | null
   }
   computed: Computed
   event: EventObject

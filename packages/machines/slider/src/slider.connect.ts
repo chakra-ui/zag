@@ -62,6 +62,15 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     return { disabled, invalid, dragging, focused, orientation: prop("orientation") }
   }
 
+  const stateAttrs = {
+    dir: prop("dir"),
+    "data-disabled": dataAttr(disabled),
+    "data-orientation": prop("orientation"),
+    "data-dragging": dataAttr(dragging),
+    "data-invalid": dataAttr(invalid),
+    "data-focus": dataAttr(focused),
+  }
+
   function getThumbState(props: ThumbProps): ThumbState {
     const { index } = props
     return {
@@ -134,15 +143,9 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     getRootState,
 
     getLabelProps() {
-      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
-        dir: prop("dir"),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-orientation": rootState.orientation,
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-dragging": dataAttr(rootState.dragging),
-        "data-focus": dataAttr(rootState.focused),
+        ...stateAttrs,
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope, 0),
         onClick(event) {
@@ -158,41 +161,24 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     },
 
     getRootProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-orientation": rootState.orientation,
-        "data-dragging": dataAttr(rootState.dragging),
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-focus": dataAttr(rootState.focused),
-        dir: prop("dir"),
+        ...stateAttrs,
         style: getRootStyle(service),
       })
     },
 
     getValueTextProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.valueText.attrs(scope.id),
-        dir: prop("dir"),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-orientation": rootState.orientation,
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-focus": dataAttr(rootState.focused),
+        ...stateAttrs,
       })
     },
 
     getTrackProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.track.attrs(scope.id),
-        dir: prop("dir"),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-dragging": dataAttr(rootState.dragging),
-        "data-orientation": rootState.orientation,
-        "data-focus": dataAttr(rootState.focused),
+        ...stateAttrs,
         style: { position: "relative" },
       })
     },
@@ -323,29 +309,17 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     },
 
     getRangeProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.range.attrs(scope.id),
-        dir: prop("dir"),
-        "data-dragging": dataAttr(rootState.dragging),
-        "data-focus": dataAttr(rootState.focused),
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-orientation": rootState.orientation,
+        ...stateAttrs,
         style: getRangeStyle(service),
       })
     },
 
     getControlProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        dir: prop("dir"),
-        "data-dragging": dataAttr(rootState.dragging),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-orientation": rootState.orientation,
-        "data-invalid": dataAttr(rootState.invalid),
-        "data-focus": dataAttr(rootState.focused),
+        ...stateAttrs,
         style: getControlStyle(),
         onPointerDown(event) {
           if (!interactive) return

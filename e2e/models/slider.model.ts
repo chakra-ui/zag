@@ -47,10 +47,17 @@ export class SliderModel extends Model {
   private async getFillPercent() {
     const controlBbox = await rect(this.control)
     const rangeBbox = await rect(this.range)
+    const thumbBbox = await rect(this.getThumb(0))
     const isRtl = (await this.control.getAttribute("dir")) === "rtl"
 
-    const insetFromLeft = ((rangeBbox.x - controlBbox.x) / controlBbox.width) * 100
-    const insetFromRight = ((controlBbox.maxX - rangeBbox.maxX) / controlBbox.width) * 100
+    const toPercent = (px: number) => {
+      if (px <= 0.5) return 0
+      if (px >= controlBbox.width - 0.5) return 100
+      return ((px - thumbBbox.width / 2) / (controlBbox.width - thumbBbox.width)) * 100
+    }
+
+    const insetFromLeft = toPercent(rangeBbox.x - controlBbox.x)
+    const insetFromRight = 100 - toPercent(rangeBbox.maxX - controlBbox.x)
 
     return isRtl ? { start: insetFromRight, end: insetFromLeft } : { start: insetFromLeft, end: insetFromRight }
   }

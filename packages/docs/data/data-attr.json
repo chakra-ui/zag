@@ -2001,8 +2001,8 @@
       "data-slider-label": "<uid>",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the label",
-      "data-invalid": "Present when invalid",
       "data-dragging": "Present when in the dragging state",
+      "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
     "Root": {
@@ -2017,15 +2017,16 @@
       "data-slider-value-text": "<uid>",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the valuetext",
+      "data-dragging": "Present when in the dragging state",
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
     "Track": {
       "data-slider-track": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-invalid": "Present when invalid",
-      "data-dragging": "Present when in the dragging state",
       "data-orientation": "The orientation of the track",
+      "data-dragging": "Present when in the dragging state",
+      "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
     "Thumb": {
@@ -2040,17 +2041,17 @@
     },
     "Range": {
       "data-slider-range": "<uid>",
-      "data-dragging": "Present when in the dragging state",
-      "data-focus": "Present when focused",
-      "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-orientation": "The orientation of the range"
+      "data-orientation": "The orientation of the range",
+      "data-dragging": "Present when in the dragging state",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
     },
     "Control": {
       "data-slider-control": "<uid>",
-      "data-dragging": "Present when in the dragging state",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the control",
+      "data-dragging": "Present when in the dragging state",
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },

@@ -1,8 +1,8 @@
 import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
-import { getValuePercent, getValueTransformer, toPx } from "@zag-js/utils"
+import { getValuePercent, toPx } from "@zag-js/utils"
 import type { SliderSchema } from "./slider.types"
-import { getFillRange, getOriginPercent } from "./slider.utils"
+import { getFillRange, getOriginPercent, getThumbExtent } from "./slider.utils"
 
 type Ctx = Params<SliderSchema>
 
@@ -17,19 +17,16 @@ function getBounds<T>(value: T[]): [T, T] {
 }
 
 export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed" | "context">) {
-  const { prop, computed, context } = params
+  const { prop, computed } = params
   const valuePercent = computed("valuePercent")
   const [firstPercent, lastPercent] = getBounds(valuePercent)
+  const extent = getThumbExtent(params)
 
-  const thumbSize = context.get("thumbSize")
-  const size = (computed("isVertical") ? thumbSize?.height : thumbSize?.width) ?? 0
-  const inset = prop("thumbAlignment") === "contain" ? size : 0
-
-  // Matches the thumb's contained position, so the fill ends at the thumb's center; track ends stay flush
   const toEdge = (percent: number, flip = false) => {
-    const offset = inset * (percent / 100 - 0.5)
-    if (!offset || percent === 0 || percent === 100) return `${flip ? 100 - percent : percent}%`
-    return flip ? `calc(${100 - percent}% + ${offset.toFixed(2)}px)` : `calc(${percent}% - ${offset.toFixed(2)}px)`
+    const inset = percent === 0 || percent === 100 ? 0 : toInset(percent, extent)
+    const edge = flip ? 100 - percent : percent
+    if (!inset) return `${edge}%`
+    return flip ? `calc(${edge}% + ${inset}px)` : `calc(${edge}% - ${inset}px)`
   }
 
   if (valuePercent.length === 1) {
@@ -64,41 +61,15 @@ export function getRangeStyle(params: Pick<Ctx, "computed">): Style {
  * Thumb style calculations
  * -----------------------------------------------------------------------------*/
 
-function getVerticalThumbOffset(params: Pick<Ctx, "context" | "prop">, value: number) {
-  const { context, prop } = params
-  const { height = 0 } = context.get("thumbSize") ?? {}
-  const getValue = getValueTransformer([prop("min"), prop("max")], [-height / 2, height / 2])
-  return parseFloat(getValue(value).toFixed(2))
+function toInset(percent: number, extent: number) {
+  return +(extent * (percent / 100 - 0.5)).toFixed(2)
 }
 
-function getHorizontalThumbOffset(params: Pick<Ctx, "computed" | "context" | "prop">, value: number) {
-  const { computed, context, prop } = params
-  const { width = 0 } = context.get("thumbSize") ?? {}
-
-  const isRtl = computed("isRtl")
-
-  if (isRtl) {
-    const getValue = getValueTransformer([prop("max"), prop("min")], [-width / 2, width / 2])
-    return -1 * parseFloat(getValue(value).toFixed(2))
-  }
-
-  const getValue = getValueTransformer([prop("min"), prop("max")], [-width / 2, width / 2])
-  return parseFloat(getValue(value).toFixed(2))
-}
-
-function getOffset(params: Pick<Ctx, "computed" | "context" | "prop">, percent: number, value: number) {
-  const { computed, prop } = params
-  if (prop("thumbAlignment") === "center") return `${percent}%`
-  const offset = computed("isVertical")
-    ? getVerticalThumbOffset(params, value)
-    : getHorizontalThumbOffset(params, value)
-  return `calc(${percent}% - ${offset}px)`
-}
-
-export function getThumbOffset(params: Pick<Ctx, "computed" | "context" | "prop">, value: number) {
+export function getThumbOffset(params: Pick<Ctx, "context" | "prop">, value: number) {
   const { prop } = params
   const percent = getValuePercent(value, prop("min"), prop("max")) * 100
-  return getOffset(params, percent, value)
+  const inset = toInset(percent, getThumbExtent(params))
+  return inset ? `calc(${percent}% - ${inset}px)` : `${percent}%`
 }
 
 export function getVisibility(params: Pick<Ctx, "computed" | "prop">) {

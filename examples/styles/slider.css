@@ -174,7 +174,6 @@
   }
 }
 
-/* Shares the control's cell; the dots line up with the track and labels extend the row */
 [data-slider-marker-group] {
   grid-area: control;
   color: var(--z-fg-muted);
@@ -221,7 +220,6 @@
     background: rgb(255 255 255 / 0.7);
   }
 
-  /* With two thumbs the fill starts at the first one, so markers before it aren't covered */
   [data-slider-root]:has([data-slider-thumb][data-index="1"]) &[data-state="under-value"]::before {
     background: var(--z-fg-subtle);
   }
