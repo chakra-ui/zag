@@ -104,14 +104,13 @@ export function connect<T extends PropTypes>(
       }
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
-        role: "presentation",
         "data-at-top": dataAttr(atSides.top),
         "data-at-bottom": dataAttr(atSides.bottom),
         "data-at-left": dataAttr(atSides.left),
         "data-at-right": dataAttr(atSides.right),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
-        tabIndex: hiddenState.scrollbarXHidden || hiddenState.scrollbarYHidden ? undefined : 0,
+        tabIndex: hiddenState.scrollbarXHidden && hiddenState.scrollbarYHidden ? undefined : 0,
         style: {
           overflow: "auto",
         },
