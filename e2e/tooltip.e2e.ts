@@ -65,3 +65,18 @@ test.describe("tooltip", () => {
     await I.dontSeeContent("tip-1")
   })
 })
+
+test.describe("tooltip / aria-label", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TooltipModel(page)
+    await I.goto("/tooltip/aria-label")
+  })
+
+  test("should describe the trigger with the aria-label", async () => {
+    await I.focusPage()
+    await I.pressKey("Tab")
+
+    await I.seeContent("tip-1")
+    await I.seeTriggerDescription("tip-1", "Save the document")
+  })
+})

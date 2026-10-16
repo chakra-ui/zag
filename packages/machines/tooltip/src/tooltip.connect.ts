@@ -14,7 +14,6 @@ export function connect<P extends PropTypes>(
 ): TooltipApi<P> {
   const { state, context, send, scope, prop, event: _event } = service
   const id = prop("id")
-  const hasAriaLabel = !!prop("aria-label")
 
   const open = state.matches("open", "closing")
   const triggerValue = context.get("triggerValue")
@@ -155,8 +154,9 @@ export function connect<P extends PropTypes>(
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-instant": dataAttr(instant),
-        role: hasAriaLabel ? undefined : "tooltip",
-        id: hasAriaLabel ? undefined : contentId,
+        role: "tooltip",
+        id: contentId,
+        "aria-label": prop("aria-label"),
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
         onPointerEnter() {
