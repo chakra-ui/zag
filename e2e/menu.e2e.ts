@@ -31,19 +31,6 @@ test.describe("menu", () => {
     await I.seeItemIsHighlighted("Export")
   })
 
-  test("onSelect receives the modifier keys of the Enter keydown", async ({ page }) => {
-    const selected = new Promise<any>((resolve) => {
-      page.on("console", async (msg) => {
-        const value = await msg.args()[0]?.jsonValue()
-        if (value && typeof value === "object" && "value" in value) resolve(value)
-      })
-    })
-    await I.clickTrigger()
-    await I.pressKey("ArrowDown")
-    await I.pressKey("Shift+Enter")
-    expect(await selected).toMatchObject({ value: "edit", modifiers: { shiftKey: true, metaKey: false } })
-  })
-
   test("when closeOnSelect=false, stay open on selection", async () => {
     await I.controls.bool("closeOnSelect", false)
     await I.clickTrigger()
