@@ -1,5 +1,17 @@
 # @zag-js/focus-visible
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3449](https://github.com/chakra-ui/zag/pull/3449)
+  [`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - - Fix programmatic focus turning on focus-visible styles when
+  `HTMLElement.prototype.focus` is an accessor, as in Storybook 10.0–10.5.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

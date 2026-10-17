@@ -1,5 +1,31 @@
 # @zag-js/svelte
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3443](https://github.com/chakra-ui/zag/pull/3443)
+  [`dd4d574`](https://github.com/chakra-ui/zag/commit/dd4d5745fde325ac98410c8d6e87d49ff9f1758b) Thanks
+  [@djurnamn](https://github.com/djurnamn)! - - Fix `derived_inert` warnings when a machine reads props, `scope` or
+  computed values after its Svelte component unmounts.
+
+- [#3443](https://github.com/chakra-ui/zag/pull/3443)
+  [`dd4d574`](https://github.com/chakra-ui/zag/commit/dd4d5745fde325ac98410c8d6e87d49ff9f1758b) Thanks
+  [@djurnamn](https://github.com/djurnamn)! - - Fix styles set by components being lost when the element re-renders,
+  which left popups like context menus and cascade selects stuck in the top-left corner and closed nested menus as soon
+  as they opened.
+  - Raise the minimum `svelte` peer version to `5.29.0`.
+
+- [#3463](https://github.com/chakra-ui/zag/pull/3463)
+  [`ae93ccd`](https://github.com/chakra-ui/zag/commit/ae93ccdccc90483a73d5d015c8fa74d4edd8a11a) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - - Fix machines missing a prop change made before their first
+  effect run, such as a value an earlier sibling's effect sets on mount. A presence machine could stay unmounted while
+  `present` was true.
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

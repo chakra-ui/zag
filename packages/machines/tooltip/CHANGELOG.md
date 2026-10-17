@@ -1,5 +1,25 @@
 # @zag-js/tooltip
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3467](https://github.com/chakra-ui/zag/pull/3467)
+  [`561b6fe`](https://github.com/chakra-ui/zag/commit/561b6fe4ec354151eda4e6669ec502f41bb240ce) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix the `aria-label` prop leaving the trigger's `aria-describedby`
+  pointing at a missing element.
+  - Use `aria-label` as the tooltip's accessible description.
+- Updated dependencies [[`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4),
+  [`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/focus-visible@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

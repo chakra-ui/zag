@@ -1,5 +1,31 @@
 # @zag-js/menu
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3471](https://github.com/chakra-ui/zag/pull/3471)
+  [`d000266`](https://github.com/chakra-ui/zag/commit/d000266435b5384c0164959c5e573fefcc39fa96) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix the `aria-label` prop not naming the menu.
+
+- [#3454](https://github.com/chakra-ui/zag/pull/3454)
+  [`4bd3092`](https://github.com/chakra-ui/zag/commit/4bd3092980912995d060b878690504d80d9f49e4) Thanks
+  [@maricastroc](https://github.com/maricastroc)! - - Fix controlled submenus opening after the pointer leaves their
+  trigger.
+  - Fix controlled context menus opening on a short tap.
+- Updated dependencies [[`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4),
+  [`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/focus-visible@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+  - @zag-js/rect-utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

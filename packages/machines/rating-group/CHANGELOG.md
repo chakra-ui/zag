@@ -1,5 +1,21 @@
 # @zag-js/rating-group
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3457](https://github.com/chakra-ui/zag/pull/3457)
+  [`91d421e`](https://github.com/chakra-ui/zag/commit/91d421eebe8d1307b1c5452856bac5d351450aef) Thanks
+  [@hellodamii](https://github.com/hellodamii)! - - Fix `aria-checked` being set on unselected items.
+  - Announce half ratings with their actual value.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

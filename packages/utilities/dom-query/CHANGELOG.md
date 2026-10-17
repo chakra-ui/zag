@@ -1,5 +1,23 @@
 # @zag-js/dom-query
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3469](https://github.com/chakra-ui/zag/pull/3469)
+  [`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix menu and tree view typeahead not matching items that start with an
+  accented or non-Latin character.
+  - Match typeahead regardless of case and accents, so typing "e" finds "Éditer".
+
+- [#3455](https://github.com/chakra-ui/zag/pull/3455)
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82) Thanks
+  [@maricastroc](https://github.com/maricastroc)! - - Fix toast height not updating when its content resizes, such as
+  text rewrapping after a window resize.
+  - Fix the shared resize observers throwing when `ResizeObserver` is unavailable, such as in jsdom.
+- Updated dependencies []:
+  - @zag-js/types@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
