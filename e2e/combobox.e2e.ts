@@ -48,6 +48,18 @@ test.describe("combobox", () => {
     await I.dontSeeDropdown()
   })
 
+  test("[keyboard] typing scrolls the list back to the top", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+
+    const content = page.getByTestId("combobox-content")
+    await content.evaluate((el) => (el.scrollTop = el.scrollHeight))
+    await expect.poll(() => content.evaluate((el) => el.scrollTop)).toBeGreaterThan(0)
+
+    await I.type("a")
+    await expect.poll(() => content.evaluate((el) => el.scrollTop)).toBe(0)
+  })
+
   test("[keyboard] should open combobox menu when typing", async () => {
     await I.focusInput()
     await I.type("c")
