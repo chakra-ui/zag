@@ -122,4 +122,30 @@ test.describe("menu / links", () => {
     await expect(newPage).toHaveURL(/\/menu\/basic$/)
     await expect(page).toHaveURL(/\/menu\/links$/)
   })
+
+  test("on enter, select link item, close menu and navigate once", async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/links")
+
+    // count link navigations (ignores the router's own history.replaceState)
+    await page.evaluate(() => {
+      const win = window as any
+      win.__linkNavigations = 0
+      win.navigation.addEventListener("navigate", (event: any) => {
+        if (event.sourceElement) win.__linkNavigations++
+      })
+    })
+
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.pressKey("End")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Section")
+    await I.pressKey("Enter")
+
+    await I.dontSeeDropdown()
+    await expect(page.getByTestId("selected")).toHaveText("section")
+    await expect(page).toHaveURL(/#section$/)
+    expect(await page.evaluate(() => (window as any).__linkNavigations)).toBe(1)
+  })
 })

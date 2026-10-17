@@ -88,6 +88,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       "data-highlighted": dataAttr(itemState.highlighted),
       "data-value": value,
       "data-valuetext": valueText,
+      "data-close-on-select": closeOnSelect == null ? undefined : String(closeOnSelect),
       onDragStart(event) {
         const isLink = event.currentTarget.matches("a[href]")
         if (isLink) event.preventDefault()

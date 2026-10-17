@@ -10,7 +10,9 @@ import {
   getModifierKeys,
   getWindow,
   isAnchorElement,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -747,17 +749,26 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context, event }) {
+      clickHighlightedItem({ scope, computed, prop, context, event, send }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({
-            value: highlightedValue!,
-            node: itemEl,
-            href: itemEl.href,
-            modifiers: getModifierKeys(event.modifiers),
+          const modifiers = getModifierKeys(event.modifiers)
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href, modifiers })
+
+          // match the item's click: modifier keys leave the link to the browser
+          const linkEvent = { currentTarget: itemEl, button: 0, ...modifiers }
+          if (isOpeningInNewTab(linkEvent) || isDownloadingEvent(linkEvent)) return
+
+          send({
+            type: "ITEM_CLICK",
+            target: itemEl,
+            id: itemEl.id,
+            value: highlightedValue,
+            closeOnSelect: dom.getItemCloseOnSelect(itemEl),
+            modifiers,
           })
         } else {
           const win = getWindow(itemEl)

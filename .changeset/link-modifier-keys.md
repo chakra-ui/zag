@@ -10,3 +10,4 @@
   `altKey`).
 - **Combobox**: Modifier clicks on a link item now call `onSelect`, like modifier+Enter. If you navigate in `onSelect`,
   skip it when a modifier is held so the current tab doesn't navigate too.
+- **Menu**: Enter on a link item now calls `onSelect` and closes the menu, like clicking it.
