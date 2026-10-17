@@ -391,8 +391,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             ArrowRight() {
               send({ type: "ARROW_RIGHT" })
             },
-            Enter() {
-              send({ type: "ENTER" })
+            Enter(event) {
+              const { metaKey, ctrlKey, shiftKey, altKey } = event
+              send({ type: "ENTER", modifiers: { metaKey, ctrlKey, shiftKey, altKey } })
             },
             Space(event) {
               if (isTypingAhead) {

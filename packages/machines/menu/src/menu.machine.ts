@@ -7,6 +7,7 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  getWindow,
   isAnchorElement,
   isEditableElement,
   observeAttributes,
@@ -745,13 +746,24 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context }) {
+      clickHighlightedItem({ scope, computed, prop, context, event }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
           prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+          // run the item's click handler (onSelect, closeOnSelect) without navigating twice
+          queueMicrotask(() => {
+            const win = getWindow(itemEl)
+            const init = { bubbles: true, cancelable: true, composed: true, ...event.modifiers }
+            const clickEvent = new win.MouseEvent("click", init)
+            const cleanup = addDomEvent(itemEl, "click", (e) => {
+              if (e === clickEvent) e.preventDefault()
+            })
+            itemEl.dispatchEvent(clickEvent)
+            cleanup()
+          })
         } else {
           queueMicrotask(() => itemEl.click())
         }
