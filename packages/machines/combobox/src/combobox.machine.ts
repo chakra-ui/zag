@@ -4,7 +4,7 @@ import {
   resolveSelectedItems,
   type CollectionItem,
 } from "@zag-js/collection"
-import { setup } from "@zag-js/core"
+import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   clickIfLink,
@@ -18,14 +18,20 @@ import {
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
+import { addOrRemove, isBoolean, isEqual, match, mergeWithDefault, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
+import { defaultTranslations } from "./combobox.translations"
 import type { ComboboxSchema, InputValueChangeReason, OpenChangeReason, Placement } from "./combobox.types"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
 const { and, not } = guards
+
+/**
+ * How long the input and results must stay unchanged before the result count is announced
+ */
+const RESULTS_ANNOUNCEMENT_DELAY = 1000
 
 export const machine = createMachine({
   props({ props }) {
@@ -58,6 +64,14 @@ export const machine = createMachine({
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
     return open ? "open.suggesting" : "closed.idle"
+  },
+
+  refs() {
+    return {
+      liveRegion: null,
+      resultsAnnouncement: null,
+      lastResultsAnnouncement: null,
+    }
   },
 
   context({ prop, bindable, getContext, getEvent }) {
@@ -170,7 +184,7 @@ export const machine = createMachine({
       action(["syncSelectedItems"])
     })
     track([() => context.get("inputValue")], () => {
-      action(["syncInputValue"])
+      action(["syncInputValue", "scheduleResultsAnnouncement"])
     })
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
@@ -180,6 +194,10 @@ export const machine = createMachine({
     })
     track([() => prop("collection").toString()], () => {
       send({ type: "CHILDREN_CHANGE" })
+      action(["scheduleResultsAnnouncement"])
+    })
+    track([() => prop("loading")], () => {
+      action(["scheduleLoadingAnnouncement"])
     })
   },
 
@@ -575,6 +593,7 @@ export const machine = createMachine({
         },
 
         suggesting: {
+          exit: ["cancelResultsAnnouncement"],
           on: {
             CHILDREN_CHANGE: [
               {
@@ -690,7 +709,11 @@ export const machine = createMachine({
           document: scope.getDoc(),
         })
         refs.set("liveRegion", liveRegion)
-        return () => liveRegion.destroy()
+        return () => {
+          cancelResultsAnnouncement(refs)
+          refs.set("lastResultsAnnouncement", null)
+          liveRegion.destroy()
+        }
       },
       trackPlacement({ context, prop, scope }) {
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
@@ -1057,6 +1080,15 @@ export const machine = createMachine({
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
+      scheduleResultsAnnouncement(params) {
+        scheduleResultsAnnouncement(params, false)
+      },
+      scheduleLoadingAnnouncement(params) {
+        scheduleResultsAnnouncement(params, true)
+      },
+      cancelResultsAnnouncement({ refs }) {
+        cancelResultsAnnouncement(refs)
+      },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
@@ -1066,4 +1098,47 @@ export const machine = createMachine({
 
 function getOpenChangeReason(event: ComboboxSchema["event"]): OpenChangeReason | undefined {
   return (event.previousEvent || event).src
+}
+
+function cancelResultsAnnouncement(refs: Params<ComboboxSchema>["refs"]) {
+  const pending = refs.get("resultsAnnouncement")
+  if (pending) clearTimeout(pending.timer)
+  refs.set("resultsAnnouncement", null)
+}
+
+/**
+ * Announces the result count ("N results", "No results") or the loading message once the
+ * input and results have settled. Typing-driven changes only announce while suggesting, while
+ * `loading` changes announce whenever the combobox is open.
+ */
+function scheduleResultsAnnouncement(params: Params<ComboboxSchema>, fromLoading: boolean) {
+  const { refs, state, prop, context } = params
+
+  const force = fromLoading || !!refs.get("resultsAnnouncement")?.force
+  cancelResultsAnnouncement(refs)
+
+  const timer = setTimeout(() => {
+    refs.set("resultsAnnouncement", null)
+    if (!state.hasTag("open")) return
+    if (!force && !state.matches("open.suggesting")) return
+
+    const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+    const count = prop("collection").size
+
+    let message: string
+    if (prop("loading")) message = translations.loading
+    else if (count === 0) message = translations.noResults
+    else message = translations.resultsCount(count)
+
+    if (!message) return
+
+    // skip repeating the same message when nothing the user did has changed
+    const key = `${context.get("inputValue")}\u0000${message}`
+    if (refs.get("lastResultsAnnouncement") === key) return
+    refs.set("lastResultsAnnouncement", key)
+
+    refs.get("liveRegion")?.announce(message)
+  }, RESULTS_ANNOUNCEMENT_DELAY)
+
+  refs.set("resultsAnnouncement", { timer, force })
 }
