@@ -138,3 +138,8 @@ export function isTargetWithinMenuTree(target: EventTarget | null, children: Rec
   }
   return false
 }
+
+export const getItemCloseOnSelect = (el: HTMLElement) => {
+  const value = el.dataset.closeOnSelect
+  return value == null ? undefined : value === "true"
+}

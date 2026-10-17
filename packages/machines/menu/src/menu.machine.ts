@@ -7,9 +7,10 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
-  getWindow,
   isAnchorElement,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -746,23 +747,24 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context, event }) {
+      clickHighlightedItem({ scope, computed, prop, context, event, send }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
           prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
-          // run the item's click handler (onSelect, closeOnSelect) without navigating twice
-          queueMicrotask(() => {
-            const win = getWindow(itemEl)
-            const init = { bubbles: true, cancelable: true, composed: true, ...event.modifiers }
-            const clickEvent = new win.MouseEvent("click", init)
-            const cleanup = addDomEvent(itemEl, "click", (e) => {
-              if (e === clickEvent) e.preventDefault()
-            })
-            itemEl.dispatchEvent(clickEvent)
-            cleanup()
+
+          // match the item's click: modifier keys leave the link to the browser
+          const linkEvent = { currentTarget: itemEl, button: 0, ...event.modifiers }
+          if (isOpeningInNewTab(linkEvent) || isDownloadingEvent(linkEvent)) return
+
+          send({
+            type: "ITEM_CLICK",
+            target: itemEl,
+            id: itemEl.id,
+            value: highlightedValue,
+            closeOnSelect: dom.getItemCloseOnSelect(itemEl),
           })
         } else {
           queueMicrotask(() => itemEl.click())
