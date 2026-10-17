@@ -2,8 +2,6 @@ import { createNormalizer } from "@zag-js/types"
 import { toStyleProps } from "./style"
 import type { SvelteHTMLElements, HTMLAttributes } from "svelte/elements"
 
-type Dict = Record<string, boolean | number | string | undefined>
-
 const propMap: Record<string, string> = {
   className: "class",
   defaultChecked: "checked",
