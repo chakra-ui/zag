@@ -40,10 +40,6 @@ export class ComboboxModel extends Model {
     return this.page.locator(`[data-part=item]`, { hasText: text })
   }
 
-  get liveRegion() {
-    return this.page.locator("#__live-region__")
-  }
-
   get highlightedItem() {
     return this.page.locator("[data-part=item][data-highlighted]")
   }

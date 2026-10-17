@@ -18,6 +18,10 @@ export class Model {
     return controls(this.page)
   }
 
+  get liveRegion() {
+    return this.page.locator("#__live-region__")
+  }
+
   clickViz() {
     return clickViz(this.page)
   }
