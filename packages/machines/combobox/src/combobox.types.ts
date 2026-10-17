@@ -336,7 +336,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   }
   refs: {
     liveRegion: LiveRegion | null
-    resultsAnnouncement: { timer: ReturnType<typeof setTimeout>; force: boolean } | null
+    resultsAnnouncementTimer: ReturnType<typeof setTimeout> | undefined
     lastResultsAnnouncement: string | null
   }
   computed: {

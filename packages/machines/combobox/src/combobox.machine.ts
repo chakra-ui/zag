@@ -69,7 +69,7 @@ export const machine = createMachine({
   refs() {
     return {
       liveRegion: null,
-      resultsAnnouncement: null,
+      resultsAnnouncementTimer: undefined,
       lastResultsAnnouncement: null,
     }
   },
@@ -197,7 +197,7 @@ export const machine = createMachine({
       action(["scheduleResultsAnnouncement"])
     })
     track([() => prop("loading")], () => {
-      action(["scheduleLoadingAnnouncement"])
+      action(["scheduleResultsAnnouncement"])
     })
   },
 
@@ -710,7 +710,7 @@ export const machine = createMachine({
         })
         refs.set("liveRegion", liveRegion)
         return () => {
-          cancelResultsAnnouncement(refs)
+          clearTimeout(refs.get("resultsAnnouncementTimer"))
           refs.set("lastResultsAnnouncement", null)
           liveRegion.destroy()
         }
@@ -1080,14 +1080,21 @@ export const machine = createMachine({
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
-      scheduleResultsAnnouncement(params) {
-        scheduleResultsAnnouncement(params, false)
-      },
-      scheduleLoadingAnnouncement(params) {
-        scheduleResultsAnnouncement(params, true)
+      scheduleResultsAnnouncement({ refs, state, prop, context }) {
+        clearTimeout(refs.get("resultsAnnouncementTimer"))
+        const timer = setTimeout(() => {
+          if (!state.hasTag("open")) return
+          const message = getResultsMessage(prop)
+          // only repeat a message when the query changed
+          const key = `${context.get("inputValue")}\u0000${message}`
+          if (!message || refs.get("lastResultsAnnouncement") === key) return
+          refs.set("lastResultsAnnouncement", key)
+          refs.get("liveRegion")?.announce(message)
+        }, RESULTS_ANNOUNCEMENT_DELAY)
+        refs.set("resultsAnnouncementTimer", timer)
       },
       cancelResultsAnnouncement({ refs }) {
-        cancelResultsAnnouncement(refs)
+        clearTimeout(refs.get("resultsAnnouncementTimer"))
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
@@ -1100,45 +1107,9 @@ function getOpenChangeReason(event: ComboboxSchema["event"]): OpenChangeReason |
   return (event.previousEvent || event).src
 }
 
-function cancelResultsAnnouncement(refs: Params<ComboboxSchema>["refs"]) {
-  const pending = refs.get("resultsAnnouncement")
-  if (pending) clearTimeout(pending.timer)
-  refs.set("resultsAnnouncement", null)
-}
-
-/**
- * Announces the result count ("N results", "No results") or the loading message once the
- * input and results have settled. Typing-driven changes only announce while suggesting, while
- * `loading` changes announce whenever the combobox is open.
- */
-function scheduleResultsAnnouncement(params: Params<ComboboxSchema>, fromLoading: boolean) {
-  const { refs, state, prop, context } = params
-
-  const force = fromLoading || !!refs.get("resultsAnnouncement")?.force
-  cancelResultsAnnouncement(refs)
-
-  const timer = setTimeout(() => {
-    refs.set("resultsAnnouncement", null)
-    if (!state.hasTag("open")) return
-    if (!force && !state.matches("open.suggesting")) return
-
-    const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-    const count = prop("collection").size
-
-    let message: string
-    if (prop("loading")) message = translations.loading
-    else if (count === 0) message = translations.noResults
-    else message = translations.resultsCount(count)
-
-    if (!message) return
-
-    // skip repeating the same message when nothing the user did has changed
-    const key = `${context.get("inputValue")}\u0000${message}`
-    if (refs.get("lastResultsAnnouncement") === key) return
-    refs.set("lastResultsAnnouncement", key)
-
-    refs.get("liveRegion")?.announce(message)
-  }, RESULTS_ANNOUNCEMENT_DELAY)
-
-  refs.set("resultsAnnouncement", { timer, force })
+function getResultsMessage(prop: Params<ComboboxSchema>["prop"]) {
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+  if (prop("loading")) return translations.loading
+  const count = prop("collection").size
+  return count === 0 ? translations.noResults : translations.resultsCount(count)
 }
