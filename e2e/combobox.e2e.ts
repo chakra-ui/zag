@@ -329,10 +329,10 @@ test.describe("combobox", () => {
     await I.clickInput()
     await I.type("lan")
     await expect(page.locator("[data-part=item]", { hasText: "Lando Calrissian" })).toBeVisible()
-    await expect(I.liveRegion).toHaveText("1 result")
+    await expect(I.liveRegion()).toHaveText("1 result")
 
     await I.type("zzz")
-    await expect(I.liveRegion).toHaveText("No results")
+    await expect(I.liveRegion()).toHaveText("No results")
   })
 
   test("[a11y] should mark the listbox busy and not announce no results while loading", async ({ page }) => {
@@ -349,13 +349,13 @@ test.describe("combobox", () => {
 
     await I.type("zzz")
     await expect(page.getByTestId("combobox-content")).toHaveAttribute("aria-busy", "true")
-    await expect(I.liveRegion).toHaveText("Loading results")
+    await expect(I.liveRegion()).toHaveText("Loading results")
     // still loading well past the settle delay: no premature "No results"
     await page.waitForTimeout(1500)
-    await expect(I.liveRegion).toHaveText("Loading results")
+    await expect(I.liveRegion()).toHaveText("Loading results")
 
     release()
-    await expect(I.liveRegion).toHaveText("No results")
+    await expect(I.liveRegion()).toHaveText("No results")
   })
 })
 

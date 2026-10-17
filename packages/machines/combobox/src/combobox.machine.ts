@@ -69,8 +69,7 @@ export const machine = createMachine({
   refs() {
     return {
       liveRegion: null,
-      resultsAnnouncementTimer: undefined,
-      lastResultsAnnouncement: null,
+      resultsRegion: null,
     }
   },
 
@@ -184,7 +183,7 @@ export const machine = createMachine({
       action(["syncSelectedItems"])
     })
     track([() => context.get("inputValue")], () => {
-      action(["syncInputValue", "scheduleResultsAnnouncement"])
+      action(["syncInputValue", "announceResults"])
     })
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
@@ -194,10 +193,10 @@ export const machine = createMachine({
     })
     track([() => prop("collection").toString()], () => {
       send({ type: "CHILDREN_CHANGE" })
-      action(["scheduleResultsAnnouncement"])
+      action(["announceResults"])
     })
     track([() => prop("loading")], () => {
-      action(["scheduleResultsAnnouncement"])
+      action(["announceResults"])
     })
   },
 
@@ -708,11 +707,17 @@ export const machine = createMachine({
           level: "assertive",
           document: scope.getDoc(),
         })
+        const resultsRegion = createLiveRegion({
+          level: "polite",
+          document: scope.getDoc(),
+        })
         refs.set("liveRegion", liveRegion)
+        refs.set("resultsRegion", resultsRegion)
         return () => {
-          clearTimeout(refs.get("resultsAnnouncementTimer"))
-          refs.set("lastResultsAnnouncement", null)
           liveRegion.destroy()
+          resultsRegion.destroy()
+          refs.set("liveRegion", null)
+          refs.set("resultsRegion", null)
         }
       },
       trackPlacement({ context, prop, scope }) {
@@ -1080,21 +1085,11 @@ export const machine = createMachine({
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
-      scheduleResultsAnnouncement({ refs, state, prop, context }) {
-        clearTimeout(refs.get("resultsAnnouncementTimer"))
-        const timer = setTimeout(() => {
-          if (!state.hasTag("open")) return
-          const message = getResultsMessage(prop)
-          // only repeat a message when the query changed
-          const key = `${context.get("inputValue")}\u0000${message}`
-          if (!message || refs.get("lastResultsAnnouncement") === key) return
-          refs.set("lastResultsAnnouncement", key)
-          refs.get("liveRegion")?.announce(message)
-        }, RESULTS_ANNOUNCEMENT_DELAY)
-        refs.set("resultsAnnouncementTimer", timer)
+      announceResults({ refs, prop }) {
+        refs.get("resultsRegion")?.announce(getResultsMessage(prop), RESULTS_ANNOUNCEMENT_DELAY)
       },
       cancelResultsAnnouncement({ refs }) {
-        clearTimeout(refs.get("resultsAnnouncementTimer"))
+        refs.get("resultsRegion")?.cancel()
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

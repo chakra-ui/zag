@@ -8,10 +8,22 @@ export interface LiveRegionOptions {
 
 export type LiveRegion = ReturnType<typeof createLiveRegion>
 
-const ID = "__live-region__"
 const DEBUG_ID = "__live-region-debug__"
 const DEBUG_STYLES =
   "position:fixed;inset-inline:0;bottom:0;z-index:2147483647;padding:12px 16px;background:black;color:white;font-size:14px;line-height:20px;text-align:center;pointer-events:none;"
+
+const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+  whiteSpace: "nowrap",
+  wordWrap: "normal",
+}
 
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const { level = "polite", document: doc = document, root, delay: _delay = 0, debug = false } = opts
@@ -19,80 +31,78 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const win = doc.defaultView ?? window
   const parent = root ?? doc.body
 
+  let region: HTMLElement | null = null
+  let timer: number | undefined
+
   function getDebugRegion() {
     if (!debug) return
 
-    let region = doc.getElementById(DEBUG_ID)
-    if (region) return region
+    let debugRegion = doc.getElementById(DEBUG_ID)
+    if (debugRegion) return debugRegion
 
-    region = doc.createElement("div")
-    region.id = DEBUG_ID
-    region.dataset.liveAnnouncerDebug = "true"
-    region.setAttribute("aria-hidden", "true")
-    region.style.cssText = DEBUG_STYLES
-    parent.appendChild(region)
+    debugRegion = doc.createElement("div")
+    debugRegion.id = DEBUG_ID
+    debugRegion.dataset.liveAnnouncerDebug = "true"
+    debugRegion.setAttribute("aria-hidden", "true")
+    debugRegion.style.cssText = DEBUG_STYLES
+    parent.appendChild(debugRegion)
 
-    return region
+    return debugRegion
   }
 
-  function announce(message: string, delay?: number) {
-    const oldRegion = doc.getElementById(ID)
+  function createRegion() {
+    const el = doc.createElement("span")
+    el.dataset.liveAnnouncer = "true"
+    el.setAttribute("aria-live", level)
+    el.setAttribute("role", level === "assertive" ? "alert" : "status")
+    Object.assign(el.style, HIDDEN_STYLES)
+    parent.appendChild(el)
+    return el
+  }
 
-    // remove old region
-    oldRegion?.remove()
+  /**
+   * Cancels the pending announcement, if any.
+   */
+  function cancel() {
+    win.clearTimeout(timer)
+    timer = undefined
+  }
 
-    // Did an override level get set?
-    delay = delay ?? _delay
+  /**
+   * Announces the message after `delay`, replacing this region's pending announcement.
+   */
+  function announce(message: string, delay = _delay) {
+    cancel()
 
-    // create fresh region
-    const region = doc.createElement("span")
-    region.id = ID
-    region.dataset.liveAnnouncer = "true"
+    // a fresh element makes screen readers repeat the same message
+    region?.remove()
+    const target = createRegion()
+    region = target
 
-    // Determine redundant role
-    const role = level !== "assertive" ? "status" : "alert"
-
-    // add role and attributes
-    region.setAttribute("aria-live", level)
-    region.setAttribute("role", role)
-
-    // hide live region
-    Object.assign(region.style, {
-      border: "0",
-      clip: "rect(0 0 0 0)",
-      height: "1px",
-      margin: "-1px",
-      overflow: "hidden",
-      padding: "0",
-      position: "absolute",
-      width: "1px",
-      whiteSpace: "nowrap",
-      wordWrap: "normal",
-    })
-
-    parent.appendChild(region)
-
-    // populate region to trigger it
-    win.setTimeout(() => {
-      if (!region.isConnected) return
-      region.textContent = message
+    timer = win.setTimeout(() => {
+      timer = undefined
+      target.textContent = message
       const debugRegion = getDebugRegion()
       if (debugRegion) debugRegion.textContent = message
     }, delay)
   }
 
+  /**
+   * Cancels the pending announcement and removes the region.
+   */
   function destroy() {
-    const oldRegion = doc.getElementById(ID)
-    oldRegion?.remove()
-    const debugRegion = doc.getElementById(DEBUG_ID)
-    debugRegion?.remove()
+    cancel()
+    region?.remove()
+    region = null
+    if (debug) doc.getElementById(DEBUG_ID)?.remove()
   }
 
   return {
     announce,
+    cancel,
     destroy,
     toJSON() {
-      return ID
+      return "live-region"
     },
   }
 }
