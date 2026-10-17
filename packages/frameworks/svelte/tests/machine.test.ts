@@ -1,6 +1,8 @@
 import { createGuards, createMachine } from "@zag-js/core"
+import { mount, settled, unmount } from "svelte"
 import { SvelteMap } from "svelte/reactivity"
 import { renderMachine } from "./render"
+import SetPropOnMount from "./SetPropOnMount.svelte"
 
 describe("basic", () => {
   test("initial state", async () => {
@@ -355,6 +357,56 @@ describe("edge cases", () => {
     await send({ type: "UPDATE" })
     expect(notify).toHaveBeenCalledOnce()
     await cleanup()
+  })
+
+  test("watch: tracks a prop changed before the first effect run", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const app = mount(SetPropOnMount, {
+      target: document.createElement("div"),
+      props: { machine, valueOnMount: true },
+    })
+    await settled()
+
+    expect(notify).toHaveBeenCalledOnce()
+    await unmount(app)
+  })
+
+  test("watch: does not run on mount when the prop is unchanged", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const app = mount(SetPropOnMount, {
+      target: document.createElement("div"),
+      props: { machine, valueOnMount: false },
+    })
+    await settled()
+
+    expect(notify).not.toHaveBeenCalled()
+    await unmount(app)
   })
 
   test("effects", async () => {

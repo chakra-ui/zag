@@ -1,7 +1,7 @@
 import { renderHook } from "@solidjs/testing-library"
 import { createGuards, createMachine } from "@zag-js/core"
 import type { Machine } from "@zag-js/core"
-import { createRoot, createSignal } from "solid-js"
+import { createEffect, createRoot, createSignal } from "solid-js"
 import { useMachine } from "../src"
 import { renderMachine } from "./render"
 
@@ -295,6 +295,157 @@ describe("basic", () => {
     await send({ type: "UPDATE" })
     await send({ type: "UPDATE" })
     expect(notify).toHaveBeenCalledOnce()
+  })
+
+  test("watch: tracks context set by the root entry action", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      entry: ["setValue"],
+      states: {
+        test: {},
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "hello"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).toHaveBeenCalledOnce()
+  })
+
+  test("watch: tracks context set by the initial state entry action", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: {
+        test: {
+          entry: ["setValue"],
+        },
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "hello"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).toHaveBeenCalledOnce()
+  })
+
+  test("watch: does not run on mount when entry leaves context unchanged", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      entry: ["setValue"],
+      states: {
+        test: {},
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "bar" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context }) => context.set("value", "bar"),
+          notify,
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(notify).not.toHaveBeenCalled()
+  })
+
+  test("watch: tracks a prop changed before the first effect run", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const { cleanup } = renderHook(() => {
+      const [value, setValue] = createSignal(false)
+      // Runs before the machine's watch effect, like an earlier sibling's effect
+      createEffect(() => setValue(true))
+      return useMachine<any>(machine, () => ({ value: value() }))
+    })
+    await Promise.resolve()
+
+    expect(notify).toHaveBeenCalledOnce()
+    cleanup()
+  })
+
+  test("watch: does not run on mount when the prop is unchanged", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const { cleanup } = renderHook(() => {
+      const [value, setValue] = createSignal(false)
+      // Runs before the machine's watch effect, like an earlier sibling's effect
+      createEffect(() => setValue(false))
+      return useMachine<any>(machine, () => ({ value: value() }))
+    })
+    await Promise.resolve()
+
+    expect(notify).not.toHaveBeenCalled()
+    cleanup()
   })
 
   test("guard: basic", async () => {
