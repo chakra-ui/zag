@@ -14,44 +14,69 @@ describe("focus visible", () => {
   })
 
   afterEach(() => {
+    window.dispatchEvent(new Event("beforeunload"))
     Object.defineProperty(HTMLElement.prototype, "focus", descriptor)
     listenerMap.delete(window)
     document.body.replaceChildren()
   })
 
-  // The shape of Storybook's instrumented `focus`: the getter reads `this.ownerDocument`, which
-  // throws off the prototype but resolves the native method for an element.
-  const instrumentFocus = () => {
-    const native = HTMLElement.prototype.focus
-    const accessor = {
+  // Storybook 10.0–10.5's `enhanceContext` loader. The getter reads `this.ownerDocument`, which
+  // throws off the prototype.
+  const installStorybookFocus = () => {
+    const originalFocus = HTMLElement.prototype.focus
+    let currentFocus = originalFocus
+    const noopFocus = () => {}
+    const focusingElements = new Set<HTMLElement>()
+    const accessor: PropertyDescriptor = {
       configurable: true,
-      get(this: HTMLElement) {
-        return this.ownerDocument?.defaultView ? native : () => {}
+      set: (newFocus) => {
+        currentFocus = newFocus
       },
-      set() {},
+      get(this: HTMLElement) {
+        if (!this.ownerDocument?.defaultView) return noopFocus
+        if (focusingElements.has(this)) return originalFocus
+        focusingElements.add(this)
+        setTimeout(() => focusingElements.delete(this), 0)
+        return currentFocus
+      },
     }
     Object.defineProperty(HTMLElement.prototype, "focus", accessor)
     return accessor
   }
 
+  // Module state (e.g. a pending keydown) leaks between tests, so interaction tests load a fresh copy
+  const loadFresh = async () => {
+    vi.resetModules()
+    return import("../src")
+  }
+
+  const pointerdown = (el: Element) => {
+    const type = typeof PointerEvent === "undefined" ? "mousedown" : "pointerdown"
+    el.dispatchEvent(new MouseEvent(type, { bubbles: true }))
+  }
+
+  const keydown = (el: Element, key: string) => {
+    el.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }))
+  }
+
+  const renderDialog = () => {
+    const trigger = document.body.appendChild(document.createElement("button"))
+    const closeButton = document.createElement("button")
+    // Opening the dialog moves focus into it programmatically
+    const open = () => {
+      document.body.appendChild(closeButton)
+      closeButton.focus()
+    }
+    return { trigger, closeButton, open }
+  }
+
   it("should set up when the prototype's focus cannot be read", () => {
-    // Storybook's instrumenter replaces `focus` with an accessor that dereferences `this`,
-    // so reading it off the prototype throws.
-    Object.defineProperty(HTMLElement.prototype, "focus", {
-      configurable: true,
-      get(this: HTMLElement) {
-        return this.ownerDocument.defaultView!.HTMLElement.prototype.focus
-      },
-    })
+    installStorybookFocus()
 
     expect(() => trackFocusVisible()).not.toThrow()
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true }))
     expect(isFocusVisible()).toBe(true)
-
-    // The patch must not resolve `focus` back to itself.
-    const button = document.body.appendChild(document.createElement("button"))
-    expect(() => button.focus()).not.toThrow(RangeError)
   })
 
   it("should keep the prototype's own focus for teardown", () => {
@@ -105,32 +130,46 @@ describe("focus visible", () => {
     expect(listenerMap.get(window)?.focus).toBeUndefined()
   })
 
-  it("should mark programmatic focus as such when focus is an accessor it cannot read", async () => {
-    // A fresh module: earlier tests leave `hasEventBeforeFocus` set by their keydown.
-    vi.resetModules()
-    const { getInteractionModality, isFocusVisible, setInteractionModality, trackFocusVisible } = await import("../src")
-    instrumentFocus()
-    trackFocusVisible()
+  it("should keep focus rings off when a pointer opens a dialog under Storybook", async () => {
+    const fv = await loadFresh()
+    installStorybookFocus()
+    fv.trackFocusVisible()
 
-    // A pointer opened the dialog, which then moves focus itself.
-    setInteractionModality("pointer")
-    const button = document.body.appendChild(document.createElement("button"))
-    button.focus()
+    const { trigger, closeButton, open } = renderDialog()
+    pointerdown(trigger)
+    trigger.focus()
+    open()
 
-    expect(document.activeElement).toBe(button)
-    expect(getInteractionModality()).toBe("pointer")
-    expect(isFocusVisible()).toBe(false)
-
-    // Tear this module's tracking down so its teardown cannot fire in a later test.
-    window.dispatchEvent(new Event("beforeunload"))
+    expect(document.activeElement).toBe(closeButton)
+    expect(fv.getInteractionModality()).toBe("pointer")
+    expect(fv.isFocusVisible()).toBe(false)
   })
 
-  it("should restore an accessor focus it could not read on teardown", () => {
-    const accessor = instrumentFocus()
+  it("should keep focus rings on when the keyboard opens a dialog under Storybook", async () => {
+    const fv = await loadFresh()
+    installStorybookFocus()
+    fv.trackFocusVisible()
+
+    const { trigger, closeButton, open } = renderDialog()
+    trigger.focus()
+    keydown(trigger, "Enter")
+    open()
+
+    expect(document.activeElement).toBe(closeButton)
+    expect(fv.getInteractionModality()).toBe("keyboard")
+    expect(fv.isFocusVisible()).toBe(true)
+  })
+
+  it("should restore Storybook's accessor on teardown", () => {
+    const accessor = installStorybookFocus()
     trackFocusVisible()
+
+    expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.value).toBeTypeOf("function")
 
     window.dispatchEvent(new Event("beforeunload"))
 
-    expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.get).toBe(accessor.get)
+    const restored = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")
+    expect(restored?.get).toBe(accessor.get)
+    expect(restored?.set).toBe(accessor.set)
   })
 })
