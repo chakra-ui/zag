@@ -197,15 +197,16 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackContent({ scope, prop, context }) {
+      trackContent({ scope, prop, context, state }) {
         return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
           const syncHeight = () => {
+            // A closing toast must not re-add its height after it's removed
+            if (!state.hasTag("visible") || !rootEl.isConnected) return
             const height = measureLayoutHeight(rootEl)
-            const item = { id: prop("id"), height }
-            setHeight(prop("parent"), item)
+            setHeight(prop("parent"), { id: prop("id"), height })
           }
 
           const syncRenderedElements = () => {
@@ -217,19 +218,11 @@ export const machine = createMachine<ToastSchema>({
 
           syncRenderedElements()
 
-          const win = scope.getWin()
-
-          const observer = new win.MutationObserver(() => {
-            syncHeight()
-            syncRenderedElements()
+          return dom.observeContent(rootEl, {
+            filter: (el) => !el.hasAttribute("data-ghost"),
+            onChange: syncHeight,
+            onMutate: syncRenderedElements,
           })
-          observer.observe(rootEl, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          })
-
-          return () => observer.disconnect()
         })
       },
     },
@@ -317,8 +310,8 @@ function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
     const alreadyExists = prev.find((i) => i.id === id)
     if (!alreadyExists) {
       return [{ id, height }, ...prev]
-    } else {
-      return prev.map((i) => (i.id === id ? { ...i, height } : i))
     }
+    if (alreadyExists.height === height) return prev
+    return prev.map((i) => (i.id === id ? { ...i, height } : i))
   })
 }
