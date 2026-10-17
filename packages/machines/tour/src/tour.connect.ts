@@ -200,8 +200,10 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
         dir: prop("dir"),
-        hidden: !tooltipPositioned,
-        style: tooltipPositioned ? popperStyles.arrow : undefined,
+        style: {
+          ...popperStyles.arrow,
+          visibility: tooltipPositioned ? undefined : "hidden",
+        },
         opacity: hasTarget ? undefined : 0,
       })
     },
