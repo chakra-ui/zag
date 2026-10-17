@@ -6,9 +6,7 @@ import {
   isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
-  isDownloadingEvent,
   isLeftClick,
-  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
@@ -431,8 +429,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onClick(event) {
-          if (isDownloadingEvent(event)) return
-          if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
