@@ -454,7 +454,7 @@ describe("edge cases", () => {
     vi.useRealTimers()
   })
 
-  test("prop and context read after stop return the values at stop", async () => {
+  test("prop and context stay readable after stop", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
     let label = "stopped"
     let value = "controlled"
@@ -493,15 +493,15 @@ describe("edge cases", () => {
 
     label = "changed"
     value = "changed"
-    const valuesAtStop = readAfterStop()
+    const values = readAfterStop()
     const warnings = [...warn.mock.calls]
     warn.mockRestore()
 
-    expect(valuesAtStop).toEqual(["stopped", "controlled"])
+    expect(values).toEqual(["changed", "changed"])
     expect(warnings).toHaveLength(0)
   })
 
-  test("computed read after stop uses the scope at stop", async () => {
+  test("computed stays readable after stop", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
     const values = new SvelteMap([["id", "stopped"]])
     let readRootId!: () => unknown
@@ -536,11 +536,11 @@ describe("edge cases", () => {
     await cleanup()
 
     values.set("id", "changed")
-    const valueAtStop = readRootId()
+    const rootId = readRootId()
     const warnings = [...warn.mock.calls]
     warn.mockRestore()
 
-    expect(valueAtStop).toBe("stopped")
+    expect(rootId).toBe("changed")
     expect(warnings).toHaveLength(0)
   })
 

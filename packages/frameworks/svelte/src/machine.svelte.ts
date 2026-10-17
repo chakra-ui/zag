@@ -37,26 +37,25 @@ export function useMachine<T extends MachineSchema>(
 ): Service<T> {
   let status = MachineStatus.NotStarted
 
-  const scope = $derived.by(() => {
+  const scope = derived_by(() => {
     const { id, ids, getRootNode } = access(userProps) as any
     return createScope({ id, ids, getRootNode })
   })
-  let scopeAtStop: any
-  const getScope = () => (status === MachineStatus.Stopped ? scopeAtStop : scope)
 
   const debug = (...args: any[]) => {
     if (machine.debug) console.log(...args)
   }
 
-  const props: any = $derived(machine.props?.({ props: compact(access(userProps)), scope }) ?? access(userProps))
-  let propsAtStop: any
-  const prop = useProp(() => (status === MachineStatus.Stopped ? propsAtStop : props))
+  const props = derived_by<any>(
+    () => machine.props?.({ props: compact(access(userProps)), scope: scope() }) ?? access(userProps),
+  )
+  const prop = useProp(props)
 
   const context: any = machine.context?.({
     prop,
     bindable: bindable,
     get scope() {
-      return getScope()
+      return scope()
     },
     flush: flush,
     getContext() {
@@ -131,7 +130,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     flush,
-    scope: getScope(),
+    scope: scope(),
     choose,
   })
 
@@ -188,7 +187,7 @@ export function useMachine<T extends MachineSchema>(
       event: getEvent(),
       prop,
       refs,
-      scope: getScope(),
+      scope: scope(),
       computed: computed as any,
     })
   }
@@ -244,8 +243,6 @@ export function useMachine<T extends MachineSchema>(
     if (status !== MachineStatus.Started) return
 
     debug("unmounting...")
-    propsAtStop = { ...props }
-    scopeAtStop = scope
     status = MachineStatus.Stopped
 
     effects.forEach((fn) => fn?.())
@@ -296,7 +293,7 @@ export function useMachine<T extends MachineSchema>(
     context: ctx,
     prop,
     get scope() {
-      return getScope()
+      return scope()
     },
     refs,
     computed,
@@ -305,6 +302,17 @@ export function useMachine<T extends MachineSchema>(
     },
     getStatus: () => status,
   } as Service<T>
+}
+
+// Deriveds owned by a root outlive the component, so deferred reads after unmount stay valid
+function derived_by<T>(fn: () => T): () => T {
+  let get: (() => T) | undefined
+  $effect.root(() => {
+    const value = $derived.by(fn)
+    get = () => value
+  })
+  // Effects don't run during SSR
+  return get ?? fn
 }
 
 function useProp<T>(value: () => T) {
