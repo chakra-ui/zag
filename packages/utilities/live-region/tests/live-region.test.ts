@@ -24,6 +24,27 @@ describe("live region", () => {
     expect(regions()[0].getAttribute("role")).toBe("status")
   })
 
+  test("keeps the same region in the DOM", () => {
+    const region = createLiveRegion()
+    const [el] = regions()
+    region.announce("1 result")
+    vi.advanceTimersByTime(100)
+    region.announce("2 results")
+    vi.advanceTimersByTime(100)
+    expect(regions()).toEqual([el])
+    expect(el.textContent).toBe("2 results")
+  })
+
+  test("clears the region before repeating a message", () => {
+    const region = createLiveRegion()
+    region.announce("No results")
+    vi.advanceTimersByTime(100)
+    region.announce("No results")
+    expect(regions()[0].textContent).toBe("")
+    vi.advanceTimersByTime(100)
+    expect(regions()[0].textContent).toBe("No results")
+  })
+
   test("replaces its own pending announcement", () => {
     const region = createLiveRegion()
     region.announce("1 result", 1000)

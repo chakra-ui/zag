@@ -12,6 +12,11 @@ const DEBUG_ID = "__live-region-debug__"
 const DEBUG_STYLES =
   "position:fixed;inset-inline:0;bottom:0;z-index:2147483647;padding:12px 16px;background:black;color:white;font-size:14px;line-height:20px;text-align:center;pointer-events:none;"
 
+/**
+ * How long a cleared region stays empty before the next message, so the change is noticed
+ */
+const MIN_DELAY = 100
+
 const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
   border: "0",
   clip: "rect(0 0 0 0)",
@@ -31,7 +36,6 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const win = doc.defaultView ?? window
   const parent = root ?? doc.body
 
-  let region: HTMLElement | null = null
   let timer: number | undefined
 
   function getDebugRegion() {
@@ -54,11 +58,15 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
     const el = doc.createElement("span")
     el.dataset.liveAnnouncer = "true"
     el.setAttribute("aria-live", level)
+    el.setAttribute("aria-atomic", "true")
     el.setAttribute("role", level === "assertive" ? "alert" : "status")
     Object.assign(el.style, HIDDEN_STYLES)
     parent.appendChild(el)
     return el
   }
+
+  // screen readers only announce changes to a region that is already in the DOM
+  let region: HTMLElement | null = createRegion()
 
   /**
    * Cancels the pending announcement, if any.
@@ -73,18 +81,21 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
    */
   function announce(message: string, delay = _delay) {
     cancel()
+    if (!region?.isConnected) region = createRegion()
 
-    // a fresh element makes screen readers repeat the same message
-    region?.remove()
-    const target = createRegion()
-    region = target
+    // clearing first lets screen readers repeat the same message
+    const target = region
+    target.textContent = ""
 
-    timer = win.setTimeout(() => {
-      timer = undefined
-      target.textContent = message
-      const debugRegion = getDebugRegion()
-      if (debugRegion) debugRegion.textContent = message
-    }, delay)
+    timer = win.setTimeout(
+      () => {
+        timer = undefined
+        target.textContent = message
+        const debugRegion = getDebugRegion()
+        if (debugRegion) debugRegion.textContent = message
+      },
+      Math.max(delay, MIN_DELAY),
+    )
   }
 
   /**
