@@ -32,6 +32,15 @@ export class ToastModel extends Model {
     return box?.height ?? 0
   }
 
+  // Grows the content without changing the toast's width, like a late font load
+  async enlargeTitle(num = 0) {
+    await this.getToast(num)
+      .locator("[data-part=title]")
+      .evaluate((el) => {
+        ;(el as HTMLElement).style.fontSize = "2em"
+      })
+  }
+
   seeAccessibleName(value: string, num = 0) {
     return expect(this.getToast(num)).toHaveAccessibleName(value)
   }
@@ -60,6 +69,10 @@ export class ToastModel extends Model {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Error)" }).click())
   }
 
+  async appendToLatestToast(times = 1) {
+    return await repeat(times, () => this.page.getByRole("button", { name: "Append to Latest" }).click())
+  }
+
   openDialog() {
     return this.page.getByText("Open Dialog").click()
   }
@@ -84,6 +97,11 @@ export class ToastModel extends Model {
     return this.getCloseButton(num).click({ force: true })
   }
 
+  // Waits for the toast to settle, so the click can't land on a toast that's still animating in
+  closeNthToast(num: number) {
+    return this.getCloseButton(num).click()
+  }
+
   seeRegionIsFocused() {
     return expect(this.region).toBeFocused()
   }
@@ -97,6 +115,21 @@ export class ToastModel extends Model {
     for (const toast of toasts) {
       await expect(toast).toHaveAttribute("data-paused", "")
     }
+  }
+
+  async seeToastsAreNotPaused() {
+    const toasts = await this.page.getByRole("status").all()
+    for (const toast of toasts) {
+      await expect(toast).not.toHaveAttribute("data-paused")
+    }
+  }
+
+  seeToastIsFocused(num = 0) {
+    return expect(this.getToast(num)).toBeFocused()
+  }
+
+  seeButtonIsFocused(name: string) {
+    return expect(this.page.getByRole("button", { name })).toBeFocused()
   }
 
   async seeToast(title: string) {
