@@ -1,5 +1,14 @@
 # @zag-js/anatomy-icons
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3437](https://github.com/chakra-ui/zag/pull/3437)
+  [`055a34f`](https://github.com/chakra-ui/zag/commit/055a34f86417e4f10e8269670e9435029d73aea3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add missing anatomy diagrams for angle slider, cascade select,
+  collapsible, drawer, image cropper, listbox, marquee, navigation menu, and timer.
+
 ## 1.46.0
 
 No changes in this release.

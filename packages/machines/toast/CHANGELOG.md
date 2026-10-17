@@ -1,5 +1,35 @@
 # @zag-js/toast
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3451](https://github.com/chakra-ui/zag/pull/3451)
+  [`bb67167`](https://github.com/chakra-ui/zag/commit/bb6716749a12826b41b1023bd34b25335ad187a0) Thanks
+  [@CrazyBucket](https://github.com/CrazyBucket)! - - Fix new and queued toasts appearing collapsed while the stack is
+  expanded.
+
+- [#3465](https://github.com/chakra-ui/zag/pull/3465)
+  [`21edaff`](https://github.com/chakra-ui/zag/commit/21edaff1959051991dc4f9437d1367a03631df16) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Move focus to the next toast when a focused toast is dismissed, and back
+  to the previously focused element after the last one.
+  - Fix toasts staying paused after a focused toast is dismissed.
+  - Fix toasts staying paused after closing one with the mouse and moving the pointer away.
+
+- [#3455](https://github.com/chakra-ui/zag/pull/3455)
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82) Thanks
+  [@maricastroc](https://github.com/maricastroc)! - - Fix toast height not updating when its content resizes, such as
+  text rewrapping after a window resize.
+  - Fix the shared resize observers throwing when `ResizeObserver` is unavailable, such as in jsdom.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Minor Changes

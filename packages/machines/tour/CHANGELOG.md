@@ -1,5 +1,25 @@
 # @zag-js/tour
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3356](https://github.com/chakra-ui/zag/pull/3356)
+  [`cad1b6a`](https://github.com/chakra-ui/zag/commit/cad1b6a05457c7729c30a57cfac8878358112e7a) Thanks
+  [@moczolaszlo](https://github.com/moczolaszlo)! - - Fix the tour content shifting by half the arrow's size right after
+  a step opens.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/focus-trap@1.47.0
+  - @zag-js/interact-outside@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

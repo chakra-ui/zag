@@ -1,5 +1,30 @@
 # @zag-js/drawer
 
+## 1.47.0
+
+### Minor Changes
+
+- [`0d7be1e`](https://github.com/chakra-ui/zag/commit/0d7be1ecf24c0f8d97d99981f474abfbc892592a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add axis support to `data-no-drag`. Set it to `x` or `y` to
+  block drags only along that axis.
+
+### Patch Changes
+
+- [`6d227fd`](https://github.com/chakra-ui/zag/commit/6d227fd8cbcd9b574ce886c104d27c0ce9da7eb2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix mouse drags that start on the grabber not moving the drawer
+  when the pointer passes over a scrolled list.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/aria-hidden@1.47.0
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/focus-trap@1.47.0
+  - @zag-js/remove-scroll@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

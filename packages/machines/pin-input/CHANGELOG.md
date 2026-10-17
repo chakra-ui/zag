@@ -1,5 +1,22 @@
 # @zag-js/pin-input
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3461](https://github.com/chakra-ui/zag/pull/3461)
+  [`3f3530c`](https://github.com/chakra-ui/zag/commit/3f3530cfd0f9f4f3b2a7afb260b675cf8d74ae70) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Render the control as a `group` labelled by the label, so screen
+  readers announce the label for the inputs. Previously the label pointed only at the hidden input, so its text was
+  never announced.
+- Updated dependencies [[`4c147ce`](https://github.com/chakra-ui/zag/commit/4c147ce90ec37f29ee41d9039615882e69a8db7a),
+  [`e3e5334`](https://github.com/chakra-ui/zag/commit/e3e5334ab7d97c5b0ea80aa6b36d950cc7f15a82)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
