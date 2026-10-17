@@ -221,6 +221,8 @@ function patchFocusMethod(win: Window & typeof globalThis): GlobalListenerData {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
       hasEventBeforeFocus = true
       const focus: HTMLElement["focus"] = nativeFocus ?? getFocus!.call(this)
+      // A getter that resolves through the prototype would return this patch
+      if (focus === patchedFocus) return
       focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
     }
 

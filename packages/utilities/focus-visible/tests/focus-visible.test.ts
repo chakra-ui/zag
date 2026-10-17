@@ -48,6 +48,10 @@ describe("focus visible", () => {
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true }))
     expect(isFocusVisible()).toBe(true)
+
+    // The patch must not resolve `focus` back to itself.
+    const button = document.body.appendChild(document.createElement("button"))
+    expect(() => button.focus()).not.toThrow(RangeError)
   })
 
   it("should keep the prototype's own focus for teardown", () => {
