@@ -246,7 +246,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select", ...getModifierKeys(event) })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
@@ -264,7 +264,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
                   value: highlightedValue,
                   node: itemEl,
                   href: itemEl.href,
-                  ...getModifierKeys(event),
+                  modifiers: getModifierKeys(event),
                 })
               }
             },
@@ -434,7 +434,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "item-select", value, ...getModifierKeys(event) })
+          send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
         },
       })
     },

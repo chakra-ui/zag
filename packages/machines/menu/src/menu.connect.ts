@@ -123,7 +123,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect, ...getModifierKeys(event) })
+        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect, modifiers: getModifierKeys(event) })
       },
     })
   }
@@ -393,7 +393,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               send({ type: "ARROW_RIGHT" })
             },
             Enter(event) {
-              send({ type: "ENTER", ...getModifierKeys(event) })
+              send({ type: "ENTER", modifiers: getModifierKeys(event) })
             },
             Space(event) {
               if (isTypingAhead) {
@@ -468,7 +468,14 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect, ...getModifierKeys(event) })
+            send({
+              type: "ITEM_CLICK",
+              target,
+              option,
+              value: option.value,
+              closeOnSelect,
+              modifiers: getModifierKeys(event),
+            })
           },
         }),
       }

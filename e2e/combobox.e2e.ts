@@ -544,6 +544,6 @@ test.describe("combobox / links", () => {
 
     const selection = JSON.parse((await page.getByTestId("selection").textContent()) ?? "null")
     const modKey = process.platform === "darwin" ? "metaKey" : "ctrlKey"
-    expect(selection).toMatchObject({ itemValue: "/combobox/basic", [modKey]: true, shiftKey: false })
+    expect(selection).toMatchObject({ itemValue: "/combobox/basic", modifiers: { [modKey]: true, shiftKey: false } })
   })
 })

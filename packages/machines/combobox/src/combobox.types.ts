@@ -61,15 +61,23 @@ export interface ScrollToIndexDetails {
   getElement: () => HTMLElement | null
 }
 
-export interface NavigateDetails extends ModifierKeys {
+export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
   href: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
-export interface SelectionDetails extends ModifierKeys {
+export interface SelectionDetails {
   value: string[]
   itemValue: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 /* -----------------------------------------------------------------------------

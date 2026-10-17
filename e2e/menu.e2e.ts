@@ -41,7 +41,7 @@ test.describe("menu", () => {
     await I.clickTrigger()
     await I.pressKey("ArrowDown")
     await I.pressKey("Shift+Enter")
-    expect(await selected).toMatchObject({ value: "edit", shiftKey: true, metaKey: false })
+    expect(await selected).toMatchObject({ value: "edit", modifiers: { shiftKey: true, metaKey: false } })
   })
 
   test("when closeOnSelect=false, stay open on selection", async () => {

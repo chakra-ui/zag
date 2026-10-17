@@ -70,7 +70,7 @@ export const machine = createMachine<MenuSchema>({
       composite: true,
       loopFocus: false,
       navigate(details) {
-        clickIfLink(details.node, details)
+        clickIfLink(details.node, details.modifiers)
       },
       ...props,
       positioning: {
@@ -753,10 +753,15 @@ export const machine = createMachine<MenuSchema>({
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href, ...getModifierKeys(event) })
+          prop("navigate")?.({
+            value: highlightedValue!,
+            node: itemEl,
+            href: itemEl.href,
+            modifiers: getModifierKeys(event.modifiers),
+          })
         } else {
           const win = getWindow(itemEl)
-          const init = { bubbles: true, cancelable: true, composed: true, ...getModifierKeys(event) }
+          const init = { bubbles: true, cancelable: true, composed: true, ...getModifierKeys(event.modifiers) }
           queueMicrotask(() => itemEl.dispatchEvent(new win.MouseEvent("click", init)))
         }
       },
@@ -854,7 +859,7 @@ export const machine = createMachine<MenuSchema>({
         const node = dom.getItemEl(scope, value)
         dom.dispatchSelectionEvent(node, value)
 
-        prop("onSelect")?.({ value, ...getModifierKeys(event) })
+        prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
       focusTrigger({ scope, context, event }) {
         if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return

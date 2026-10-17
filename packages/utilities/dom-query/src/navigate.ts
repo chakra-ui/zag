@@ -54,29 +54,37 @@ export interface ModifierKeys {
   /**
    * Whether the meta key (Cmd on macOS) is pressed
    */
-  metaKey?: boolean | undefined
+  metaKey: boolean
   /**
    * Whether the ctrl key is pressed
    */
-  ctrlKey?: boolean | undefined
+  ctrlKey: boolean
   /**
    * Whether the shift key is pressed
    */
-  shiftKey?: boolean | undefined
+  shiftKey: boolean
   /**
    * Whether the alt key (Option on macOS) is pressed
    */
-  altKey?: boolean | undefined
+  altKey: boolean
 }
 
-export function getModifierKeys(event: object) {
-  const { metaKey, ctrlKey, shiftKey, altKey } = event as ModifierKeys
-  return { metaKey: !!metaKey, ctrlKey: !!ctrlKey, shiftKey: !!shiftKey, altKey: !!altKey }
+export function getModifierKeys(event?: Partial<ModifierKeys> | null): ModifierKeys {
+  return {
+    metaKey: !!event?.metaKey,
+    ctrlKey: !!event?.ctrlKey,
+    shiftKey: !!event?.shiftKey,
+    altKey: !!event?.altKey,
+  }
 }
 
-export function clickIfLink(el: HTMLAnchorElement, modifiers: ModifierKeys = {}) {
+export function hasModifierKey(modifiers: ModifierKeys) {
+  return modifiers.metaKey || modifiers.ctrlKey || modifiers.shiftKey || modifiers.altKey
+}
+
+export function clickIfLink(el: HTMLAnchorElement, modifiers?: ModifierKeys) {
   const init = getModifierKeys(modifiers)
-  const hasModifier = init.metaKey || init.ctrlKey || init.shiftKey || init.altKey
+  const hasModifier = hasModifierKey(init)
 
   const click = () => {
     const win = getWindow(el)

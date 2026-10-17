@@ -44,7 +44,7 @@ export const machine = createMachine({
       openOnChange: true,
       composite: true,
       navigate(details) {
-        clickIfLink(details.node, details)
+        clickIfLink(details.node, details.modifiers)
       },
       collection: collection.empty(),
       ...props,
@@ -788,7 +788,11 @@ export const machine = createMachine({
 
         // select item
         const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
-        prop("onSelect")?.({ value: nextValue, itemValue: highlightedValue, ...getModifierKeys(event) })
+        prop("onSelect")?.({
+          value: nextValue,
+          itemValue: highlightedValue,
+          modifiers: getModifierKeys(event.modifiers),
+        })
         context.set("value", nextValue)
 
         // set input value
@@ -826,7 +830,7 @@ export const machine = createMachine({
         if (event.value == null) return
         flush(() => {
           const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
-          prop("onSelect")?.({ value: nextValue, itemValue: event.value, ...getModifierKeys(event) })
+          prop("onSelect")?.({ value: nextValue, itemValue: event.value, modifiers: getModifierKeys(event.modifiers) })
           context.set("value", nextValue)
 
           // set input value
