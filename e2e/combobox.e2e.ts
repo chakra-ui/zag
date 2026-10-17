@@ -4,23 +4,28 @@ import { ComboboxModel } from "./models/combobox.model"
 let I: ComboboxModel
 const swapiPeople = ["Luke Skywalker", "Leia Organa", "Lando Calrissian", "Han Solo"]
 
-const mockSwapiPeople = async (page: Page) => {
+const mockSwapiPeople = async (page: Page, options: { gate?: Promise<void> } = {}) => {
   await page.route("https://swapi.py4e.com/api/people/*", async (route) => {
     const search = new URL(route.request().url()).searchParams.get("search")?.toLowerCase() ?? ""
+    // hold filtered requests until the test releases them, to observe the loading state
+    if (search && options.gate) await options.gate
     const people = swapiPeople
       .filter((name) => name.toLowerCase().includes(search))
       .map((name, index) => ({ name, url: `https://swapi.py4e.com/api/people/${index + 1}/` }))
 
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        count: people.length,
-        next: null,
-        previous: null,
-        results: people,
-      }),
-    })
+    // superseded requests are aborted by the page while held
+    await route
+      .fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          count: people.length,
+          next: null,
+          previous: null,
+          results: people,
+        }),
+      })
+      .catch(() => {})
   })
 }
 
@@ -315,6 +320,42 @@ test.describe("combobox", () => {
 
     await I.seeInputHasValue("Luke Skywalker")
     await expect(page.getByTestId("selected-value")).toContainText("Luke Skywalker")
+  })
+
+  test("[a11y] should announce the result count after typing", async ({ page }) => {
+    await mockSwapiPeople(page)
+
+    await I.goto("/combobox/async")
+    await I.clickInput()
+    await I.type("lan")
+    await expect(page.locator("[data-part=item]", { hasText: "Lando Calrissian" })).toBeVisible()
+    await expect(I.liveRegion()).toHaveText("1 result")
+
+    await I.type("zzz")
+    await expect(I.liveRegion()).toHaveText("No results")
+  })
+
+  test("[a11y] should mark the listbox busy and not announce no results while loading", async ({ page }) => {
+    let release!: () => void
+    const gate = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    await mockSwapiPeople(page, { gate })
+
+    await I.goto("/combobox/async")
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await expect(page.getByTestId("combobox-content")).not.toHaveAttribute("aria-busy")
+
+    await I.type("zzz")
+    await expect(page.getByTestId("combobox-content")).toHaveAttribute("aria-busy", "true")
+    await expect(I.liveRegion()).toHaveText("Loading results")
+    // still loading well past the settle delay: no premature "No results"
+    await page.waitForTimeout(1500)
+    await expect(I.liveRegion()).toHaveText("Loading results")
+
+    release()
+    await expect(I.liveRegion()).toHaveText("No results")
   })
 })
 

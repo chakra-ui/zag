@@ -1,98 +1,130 @@
 export interface LiveRegionOptions {
   level: "polite" | "assertive"
   document?: Document | undefined
-  root?: HTMLElement | null | undefined
+  /**
+   * Where to add the region. Defaults to `document.body`. Inside a modal dialog, pass an element
+   * in the dialog, since screen readers can ignore regions outside it.
+   */
+  root?: HTMLElement | null | (() => HTMLElement | null) | undefined
   delay?: number | undefined
   debug?: boolean | undefined
 }
 
 export type LiveRegion = ReturnType<typeof createLiveRegion>
 
-const ID = "__live-region__"
 const DEBUG_ID = "__live-region-debug__"
 const DEBUG_STYLES =
   "position:fixed;inset-inline:0;bottom:0;z-index:2147483647;padding:12px 16px;background:black;color:white;font-size:14px;line-height:20px;text-align:center;pointer-events:none;"
+
+/**
+ * How long a cleared region stays empty before the next message, so the change is noticed
+ */
+const MIN_DELAY = 100
+
+/**
+ * How long a new region waits before its first message, since Safari VoiceOver can miss earlier changes
+ */
+const INITIAL_DELAY = 200
+
+const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+  whiteSpace: "nowrap",
+  wordWrap: "normal",
+}
 
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const { level = "polite", document: doc = document, root, delay: _delay = 0, debug = false } = opts
 
   const win = doc.defaultView ?? window
-  const parent = root ?? doc.body
+  const getParent = () => (typeof root === "function" ? root() : root) ?? doc.body
+
+  let timer: number | undefined
 
   function getDebugRegion() {
     if (!debug) return
 
-    let region = doc.getElementById(DEBUG_ID)
-    if (region) return region
+    let debugRegion = doc.getElementById(DEBUG_ID)
+    if (debugRegion) return debugRegion
 
-    region = doc.createElement("div")
-    region.id = DEBUG_ID
-    region.dataset.liveAnnouncerDebug = "true"
-    region.setAttribute("aria-hidden", "true")
-    region.style.cssText = DEBUG_STYLES
-    parent.appendChild(region)
+    debugRegion = doc.createElement("div")
+    debugRegion.id = DEBUG_ID
+    debugRegion.dataset.liveAnnouncerDebug = "true"
+    debugRegion.setAttribute("aria-hidden", "true")
+    debugRegion.style.cssText = DEBUG_STYLES
+    getParent().appendChild(debugRegion)
 
-    return region
+    return debugRegion
   }
 
-  function announce(message: string, delay?: number) {
-    const oldRegion = doc.getElementById(ID)
-
-    // remove old region
-    oldRegion?.remove()
-
-    // Did an override level get set?
-    delay = delay ?? _delay
-
-    // create fresh region
-    const region = doc.createElement("span")
-    region.id = ID
-    region.dataset.liveAnnouncer = "true"
-
-    // Determine redundant role
-    const role = level !== "assertive" ? "status" : "alert"
-
-    // add role and attributes
-    region.setAttribute("aria-live", level)
-    region.setAttribute("role", role)
-
-    // hide live region
-    Object.assign(region.style, {
-      border: "0",
-      clip: "rect(0 0 0 0)",
-      height: "1px",
-      margin: "-1px",
-      overflow: "hidden",
-      padding: "0",
-      position: "absolute",
-      width: "1px",
-      whiteSpace: "nowrap",
-      wordWrap: "normal",
-    })
-
-    parent.appendChild(region)
-
-    // populate region to trigger it
-    win.setTimeout(() => {
-      if (!region.isConnected) return
-      region.textContent = message
-      const debugRegion = getDebugRegion()
-      if (debugRegion) debugRegion.textContent = message
-    }, delay)
+  function createRegion() {
+    const el = doc.createElement("span")
+    el.dataset.liveAnnouncer = "true"
+    el.setAttribute("aria-live", level)
+    el.setAttribute("aria-atomic", "true")
+    el.setAttribute("role", level === "assertive" ? "alert" : "status")
+    Object.assign(el.style, HIDDEN_STYLES)
+    getParent().appendChild(el)
+    readyAt = Date.now() + INITIAL_DELAY
+    return el
   }
 
+  // screen readers only announce changes to a region that is already in the DOM
+  let readyAt = 0
+  let region: HTMLElement | null = createRegion()
+
+  /**
+   * Cancels the pending announcement, if any.
+   */
+  function cancel() {
+    win.clearTimeout(timer)
+    timer = undefined
+  }
+
+  /**
+   * Announces the message after `delay`, replacing this region's pending announcement.
+   */
+  function announce(message: string, delay = _delay) {
+    cancel()
+    if (!region?.isConnected) region = createRegion()
+
+    // clearing first lets screen readers repeat the same message
+    const target = region
+    target.textContent = ""
+
+    timer = win.setTimeout(
+      () => {
+        timer = undefined
+        target.textContent = message
+        const debugRegion = getDebugRegion()
+        if (debugRegion) debugRegion.textContent = message
+      },
+      Math.max(delay, MIN_DELAY, readyAt - Date.now()),
+    )
+  }
+
+  /**
+   * Cancels the pending announcement and removes the region.
+   */
   function destroy() {
-    const oldRegion = doc.getElementById(ID)
-    oldRegion?.remove()
-    const debugRegion = doc.getElementById(DEBUG_ID)
-    debugRegion?.remove()
+    cancel()
+    region?.remove()
+    region = null
+    if (debug) doc.getElementById(DEBUG_ID)?.remove()
   }
 
   return {
     announce,
+    cancel,
     destroy,
     toJSON() {
-      return ID
+      return "live-region"
     },
   }
 }

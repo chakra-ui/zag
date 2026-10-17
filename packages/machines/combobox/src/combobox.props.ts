@@ -23,6 +23,7 @@ export const props = createProps<ComboboxProps>()([
   "inputBehavior",
   "inputValue",
   "invalid",
+  "loading",
   "loopFocus",
   "multiple",
   "name",
