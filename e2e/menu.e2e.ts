@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { MenuModel } from "./models/menu.model"
 
 let I: MenuModel
@@ -106,5 +106,46 @@ test.describe("menu / overflow", () => {
     await I.seeItemIsHighlighted("Zebra")
     await I.hoverItem("Item 23")
     await I.seeItemIsHighlighted("Item 23")
+  })
+})
+
+test.describe("menu / links", () => {
+  test("modifier + Enter opens the highlighted link in a new tab", async ({ page, context }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/links")
+    await I.clickTrigger()
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Basic menu")
+
+    const [newPage] = await Promise.all([context.waitForEvent("page"), page.keyboard.press("ControlOrMeta+Enter")])
+
+    await expect(newPage).toHaveURL(/\/menu\/basic$/)
+    await expect(page).toHaveURL(/\/menu\/links$/)
+  })
+
+  test("on enter, select link item, close menu and navigate once", async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/links")
+
+    // count link navigations (ignores the router's own history.replaceState)
+    await page.evaluate(() => {
+      const win = window as any
+      win.__linkNavigations = 0
+      win.navigation.addEventListener("navigate", (event: any) => {
+        if (event.sourceElement) win.__linkNavigations++
+      })
+    })
+
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.pressKey("End")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Section")
+    await I.pressKey("Enter")
+
+    await I.dontSeeDropdown()
+    await expect(page.getByTestId("selected")).toHaveText("section")
+    await expect(page).toHaveURL(/#section$/)
+    expect(await page.evaluate(() => (window as any).__linkNavigations)).toBe(1)
   })
 })

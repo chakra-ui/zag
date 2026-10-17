@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { TypeaheadState } from "@zag-js/dom-query"
+import type { ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -32,6 +32,10 @@ export interface SelectionDetails {
    * The value of the selected menu item
    */
   value: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 export interface HighlightChangeDetails {
@@ -45,6 +49,10 @@ export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
   href: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 export interface ElementIds {
