@@ -60,6 +60,22 @@ export class DrawerModel extends Model {
     return mouseSwipe(this.page, this.grabber, direction, distance, duration, release)
   }
 
+  /** Drags down from the grabber, with the first move landing on the scrollable list */
+  async mouseDragGrabberOverList(distance: number) {
+    const grabber = await this.grabber.boundingBox()
+    const list = await this.scrollable.boundingBox()
+    if (!grabber || !list) throw new Error("Could not determine the grabber or list bounding box.")
+
+    const x = grabber.x + grabber.width / 2
+    const y = grabber.y + grabber.height / 2
+
+    await this.page.mouse.move(x, y)
+    await this.page.mouse.down()
+    await this.page.mouse.move(x, list.y + 20, { steps: 2 })
+    await this.page.mouse.move(x, y + distance, { steps: 10 })
+    await this.page.mouse.up()
+  }
+
   touchDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
     return touchSwipe(this.page, this.grabber, direction, distance, duration)
   }

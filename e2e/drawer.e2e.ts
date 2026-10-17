@@ -61,6 +61,18 @@ test.describe("drawer", () => {
     await I.dontSeeContent()
   })
 
+  test("should close when dragged from the grabber over a scrolled list", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    await I.scrollContent(200)
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.mouseDragGrabberOverList(Math.floor(initialHeight * 0.55))
+    await I.dontSeeContent()
+  })
+
   test("should stay open when dragged down slightly", async () => {
     await I.clickTrigger()
     await I.seeContent()

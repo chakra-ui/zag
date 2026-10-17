@@ -1,4 +1,4 @@
-import { dataAttr, getEventPoint, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, compact, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
@@ -64,7 +64,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       swipeDirection: physicalDirection,
       canCommit: () => state.hasTag("open") && !state.matches("closing"),
       onCommit(point) {
-        send({ type: "POINTER_DOWN", point })
+        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
       },
     })
   }
@@ -75,7 +75,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       point: getEventPoint(event),
       canCommit: () => state.hasTag("open") && !state.matches("closing"),
       onCommit(point) {
-        send({ type: "POINTER_DOWN", point })
+        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
       },
     })
   }

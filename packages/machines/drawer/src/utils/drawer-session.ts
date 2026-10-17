@@ -157,8 +157,8 @@ export class DrawerSwipeSession {
     return velocity
   }
 
-  beginSwipe(point: Point) {
-    this.session.setStartPoint(point)
+  beginSwipe(point: Point, target?: EventTarget | null) {
+    this.session.setStartPoint(point, target)
   }
 
   clearSwipeStart() {
@@ -228,6 +228,8 @@ export class DrawerSwipeSession {
     preventDragOnScroll: boolean,
     direction: PhysicalSwipeDirection,
   ): boolean {
+    // Mouse moves report the element under the pointer, so check where the drag began (as touch does)
+    target = this.session.getStartTarget() ?? target
     if (!isHTMLElement(target)) return false
     if (isDragExemptElement(target)) return false
     if (!this.session.getStartPoint() || !container) return false

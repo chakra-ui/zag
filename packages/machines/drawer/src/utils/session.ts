@@ -94,6 +94,7 @@ export function isNegativeSwipeDirection(direction: PhysicalSwipeDirection): boo
 
 export class SwipeSession {
   private startPoint: Point | null = null
+  private startTarget: EventTarget | null = null
   private velocity: number | null = null
   private samples: VelocitySample[] = []
   private sampleStartIndex = 0
@@ -102,16 +103,22 @@ export class SwipeSession {
   private gestureSign = 1
   private pendingSwipe: PendingSwipe | null = null
 
-  setStartPoint(point: Point) {
+  setStartPoint(point: Point, target: EventTarget | null = null) {
     this.startPoint = point
+    this.startTarget = target
   }
 
   clearStartPoint() {
     this.startPoint = null
+    this.startTarget = null
   }
 
   getStartPoint(): Point | null {
     return this.startPoint
+  }
+
+  getStartTarget(): EventTarget | null {
+    return this.startTarget
   }
 
   getGestureAxis(direction: PhysicalSwipeDirection): GestureAxis {
