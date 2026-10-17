@@ -28,7 +28,7 @@ describe("live region", () => {
     const region = createLiveRegion()
     const [el] = regions()
     region.announce("1 result")
-    vi.advanceTimersByTime(100)
+    vi.advanceTimersByTime(200)
     region.announce("2 results")
     vi.advanceTimersByTime(100)
     expect(regions()).toEqual([el])
@@ -38,11 +38,26 @@ describe("live region", () => {
   test("clears the region before repeating a message", () => {
     const region = createLiveRegion()
     region.announce("No results")
-    vi.advanceTimersByTime(100)
+    vi.advanceTimersByTime(200)
     region.announce("No results")
     expect(regions()[0].textContent).toBe("")
     vi.advanceTimersByTime(100)
     expect(regions()[0].textContent).toBe("No results")
+  })
+
+  test("waits for a new region before the first message", () => {
+    const region = createLiveRegion()
+    region.announce("Apple")
+    vi.advanceTimersByTime(100)
+    expect(regions()[0].textContent).toBe("")
+    vi.advanceTimersByTime(100)
+    expect(regions()[0].textContent).toBe("Apple")
+  })
+
+  test("adds the region to the root", () => {
+    document.body.innerHTML = `<div role="dialog" aria-modal="true"><div id="root"></div></div>`
+    createLiveRegion({ root: () => document.getElementById("root") })
+    expect(regions()[0].parentElement?.id).toBe("root")
   })
 
   test("replaces its own pending announcement", () => {

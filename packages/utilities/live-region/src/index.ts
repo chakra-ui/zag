@@ -1,7 +1,11 @@
 export interface LiveRegionOptions {
   level: "polite" | "assertive"
   document?: Document | undefined
-  root?: HTMLElement | null | undefined
+  /**
+   * Where to add the region. Defaults to `document.body`. Inside a modal dialog, pass an element
+   * in the dialog, since screen readers can ignore regions outside it.
+   */
+  root?: HTMLElement | null | (() => HTMLElement | null) | undefined
   delay?: number | undefined
   debug?: boolean | undefined
 }
@@ -16,6 +20,11 @@ const DEBUG_STYLES =
  * How long a cleared region stays empty before the next message, so the change is noticed
  */
 const MIN_DELAY = 100
+
+/**
+ * How long a new region waits before its first message, since Safari VoiceOver can miss earlier changes
+ */
+const INITIAL_DELAY = 200
 
 const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
   border: "0",
@@ -34,7 +43,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const { level = "polite", document: doc = document, root, delay: _delay = 0, debug = false } = opts
 
   const win = doc.defaultView ?? window
-  const parent = root ?? doc.body
+  const getParent = () => (typeof root === "function" ? root() : root) ?? doc.body
 
   let timer: number | undefined
 
@@ -49,7 +58,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
     debugRegion.dataset.liveAnnouncerDebug = "true"
     debugRegion.setAttribute("aria-hidden", "true")
     debugRegion.style.cssText = DEBUG_STYLES
-    parent.appendChild(debugRegion)
+    getParent().appendChild(debugRegion)
 
     return debugRegion
   }
@@ -61,11 +70,13 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
     el.setAttribute("aria-atomic", "true")
     el.setAttribute("role", level === "assertive" ? "alert" : "status")
     Object.assign(el.style, HIDDEN_STYLES)
-    parent.appendChild(el)
+    getParent().appendChild(el)
+    readyAt = Date.now() + INITIAL_DELAY
     return el
   }
 
   // screen readers only announce changes to a region that is already in the DOM
+  let readyAt = 0
   let region: HTMLElement | null = createRegion()
 
   /**
@@ -94,7 +105,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
         const debugRegion = getDebugRegion()
         if (debugRegion) debugRegion.textContent = message
       },
-      Math.max(delay, MIN_DELAY),
+      Math.max(delay, MIN_DELAY, readyAt - Date.now()),
     )
   }
 

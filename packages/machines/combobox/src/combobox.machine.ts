@@ -703,13 +703,16 @@ export const machine = createMachine({
         })
       },
       trackLiveRegion({ refs, scope }) {
+        const root = () => dom.getRootEl(scope)
         const liveRegion = createLiveRegion({
           level: "assertive",
           document: scope.getDoc(),
+          root,
         })
         const resultsRegion = createLiveRegion({
           level: "polite",
           document: scope.getDoc(),
+          root,
         })
         refs.set("liveRegion", liveRegion)
         refs.set("resultsRegion", resultsRegion)
