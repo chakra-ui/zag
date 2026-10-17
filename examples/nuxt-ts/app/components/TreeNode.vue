@@ -47,6 +47,9 @@ const nodeState = computed(() => props.api.getNodeState(nodeProps.value))
     </div>
   </template>
   <template v-else>
-    <div v-bind="api.getItemProps(nodeProps)"><FileIcon /> {{ node.name }}</div>
+    <div v-bind="api.getItemProps(nodeProps)">
+      <input v-if="nodeState.renaming" v-bind="api.getNodeRenameInputProps(nodeProps)" />
+      <template v-else><FileIcon /> {{ node.name }}</template>
+    </div>
   </template>
 </template>

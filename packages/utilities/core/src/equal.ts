@@ -30,6 +30,8 @@ export const isEqual = (a: any, b: any): boolean => {
   const keys = Object.keys(b ?? Object.create(null))
   const length = keys.length
 
+  if (Object.keys(a).length !== length) return false
+
   for (let i = 0; i < length; i++) {
     const hasKey = Reflect.has(a, keys[i])
     if (!hasKey) return false

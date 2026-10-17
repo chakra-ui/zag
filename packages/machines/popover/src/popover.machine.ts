@@ -100,6 +100,7 @@ export const machine = createMachine<PopoverSchema>({
     },
 
     open: {
+      entry: ["checkRenderedElements"],
       effects: [
         "trapFocus",
         "preventScroll",
@@ -167,6 +168,7 @@ export const machine = createMachine<PopoverSchema>({
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (prop("closeOnEscape")) return
@@ -269,7 +271,7 @@ export const machine = createMachine<PopoverSchema>({
 
       checkRenderedElements({ context, scope }) {
         raf(() => {
-          Object.assign(context.get("renderedElements"), {
+          context.set("renderedElements", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
           })

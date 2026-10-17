@@ -107,8 +107,9 @@ describe("layerStack", () => {
       expect(backdrop.hasAttribute("data-has-nested")).toBe(false)
     })
 
-    test("clears mirrored styles when the layer is removed", () => {
+    test("clears mirrored layer metadata but preserves exit animation stacking", () => {
       const primary = document.createElement("div")
+      primary.style.zIndex = "1302"
       const backdrop = document.createElement("div")
       document.body.append(primary, backdrop)
 
@@ -123,7 +124,7 @@ describe("layerStack", () => {
       layerStack.remove(primary)
 
       expect(backdrop.style.getPropertyValue("--layer-index")).toBe("")
-      expect(backdrop.style.getPropertyValue("--z-index")).toBe("")
+      expect(backdrop.style.getPropertyValue("--z-index")).toBe("1302")
     })
 
     test("skips mirroring when target is the same node as the layer", () => {

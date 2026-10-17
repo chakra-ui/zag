@@ -1,4 +1,4 @@
-import { setup, type Params } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
@@ -29,6 +29,13 @@ export const machine = createMachine({
       activeIds: bindable<string[]>(() => ({
         defaultValue: prop("defaultActiveIds") ?? [],
         value: prop("activeIds"),
+        isEqual,
+        onChange(value) {
+          prop("onActiveChange")?.({
+            activeIds: value,
+            activeItems: prop("items").filter((item) => value.includes(item.value)),
+          })
+        },
       })),
       indicatorRect: bindable<Rect | null>(() => ({
         defaultValue: null,
@@ -73,10 +80,8 @@ export const machine = createMachine({
 
   implementations: {
     actions: {
-      setActiveIds(params) {
-        const { context, event } = params
+      setActiveIds({ context, event }) {
         context.set("activeIds", event.value)
-        invokeOnActiveChange(params)
       },
 
       autoScrollToc({ context, scope, prop }) {
@@ -195,7 +200,6 @@ export const machine = createMachine({
           const currentActiveIds = context.get("activeIds")
           if (!isEqual(currentActiveIds, nextActiveIds)) {
             context.set("activeIds", nextActiveIds)
-            invokeOnActiveChange(params)
           }
         }, observerOptions)
 
@@ -214,11 +218,3 @@ export const machine = createMachine({
     },
   },
 })
-
-function invokeOnActiveChange(params: Params<TocSchema>) {
-  const { context, computed, prop } = params
-  prop("onActiveChange")?.({
-    activeIds: context.get("activeIds"),
-    activeItems: computed("activeItems"),
-  })
-}

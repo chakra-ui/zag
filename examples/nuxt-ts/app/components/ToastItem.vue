@@ -21,11 +21,16 @@ const api = computed(() => toast.connect(service, normalizeProps))
   <div v-bind="api.getRootProps()">
     <div v-bind="api.getGhostBeforeProps()"></div>
     <div data-scope="toast" data-part="progressbar"></div>
-    <div v-bind="api.getTitleProps()">{{ api.title }} {{ service.state.get() }}</div>
-    <div v-bind="api.getDescriptionProps()">{{ api.description }}</div>
-    <button v-bind="api.getCloseTriggerProps()">
-      <XIcon />
-    </button>
+    <div data-scope="toast" data-part="content" style="display: grid; gap: 8px; width: 100%; padding-right: 16px">
+      <div v-bind="api.getTitleProps()">{{ api.title }}</div>
+      <div v-bind="api.getDescriptionProps()">{{ api.description }}</div>
+      <button v-if="props.actor.action" v-bind="api.getActionTriggerProps()">
+        {{ props.actor.action.label }}
+      </button>
+      <button v-bind="api.getCloseTriggerProps()">
+        <XIcon />
+      </button>
+    </div>
     <div v-bind="api.getGhostAfterProps()"></div>
   </div>
 </template>

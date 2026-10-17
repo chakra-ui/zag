@@ -1,11 +1,11 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { contains, raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
-const { not } = createGuards<ToastSchema>()
+const { not, and } = createGuards<ToastSchema>()
 
 export const machine = createMachine<ToastSchema>({
   props({ props }) {
@@ -18,7 +18,9 @@ export const machine = createMachine<ToastSchema>({
   },
 
   initialState({ prop }) {
-    const persist = prop("type") === "loading" || prop("duration") === Infinity
+    if (prop("message") === "DISMISS") return "dismissing"
+
+    const persist = prop("type") === "loading" || prop("duration") === Infinity || prop("paused")
     return persist ? "visible:persist" : "visible"
   },
 
@@ -35,6 +37,9 @@ export const machine = createMachine<ToastSchema>({
       })),
       initialHeight: bindable<number>(() => ({
         defaultValue: 0,
+      })),
+      rendered: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
       })),
     }
   },
@@ -79,6 +84,10 @@ export const machine = createMachine<ToastSchema>({
       if (message) send({ type: message, src: "programmatic" })
     })
 
+    track([() => prop("paused")], () => {
+      send({ type: prop("paused") ? "PAUSE" : "RESUME" })
+    })
+
     track([() => prop("type"), () => prop("duration")], () => {
       send({ type: "UPDATE" })
     })
@@ -87,11 +96,12 @@ export const machine = createMachine<ToastSchema>({
   on: {
     UPDATE: [
       {
-        guard: "shouldPersist",
+        guard: and("isVisible", "shouldPause"),
         target: "visible:persist",
         actions: ["resetCloseTimer"],
       },
       {
+        guard: "isVisible",
         target: "visible:updating",
         actions: ["resetCloseTimer"],
       },
@@ -103,13 +113,19 @@ export const machine = createMachine<ToastSchema>({
 
   entry: ["setMounted", "measureHeight", "invokeOnVisible"],
 
-  effects: ["trackHeight"],
+  effects: ["trackContent"],
 
   states: {
     "visible:updating": {
       tags: ["visible", "updating"],
       effects: ["waitForNextTick"],
       on: {
+        DISMISS: {
+          target: "dismissing",
+        },
+        PAUSE: {
+          target: "visible:persist",
+        },
         SHOW: {
           target: "visible",
         },
@@ -120,7 +136,7 @@ export const machine = createMachine<ToastSchema>({
       tags: ["visible", "paused"],
       on: {
         RESUME: {
-          guard: not("isLoadingType"),
+          guard: not("shouldPause"),
           target: "visible",
           actions: ["setCloseTimer"],
         },
@@ -145,7 +161,7 @@ export const machine = createMachine<ToastSchema>({
     },
 
     dismissing: {
-      entry: ["invokeOnDismiss"],
+      entry: ["notifyParentOfDismiss", "invokeOnDismiss"],
       effects: ["waitForRemoveDelay"],
       on: {
         REMOVE: {
@@ -181,37 +197,39 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackHeight({ scope, prop }) {
-        let cleanup: VoidFunction | undefined
-        raf(() => {
+      trackContent({ scope, prop, context, state }) {
+        return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
           const syncHeight = () => {
+            // A closing toast must not re-add its height after it's removed
+            if (!state.hasTag("visible") || !rootEl.isConnected) return
             const height = measureLayoutHeight(rootEl)
-            const item = { id: prop("id"), height }
-            setHeight(prop("parent"), item)
+            setHeight(prop("parent"), { id: prop("id"), height })
           }
 
-          const win = scope.getWin()
+          const syncRenderedElements = () => {
+            context.set("rendered", {
+              title: !!dom.getTitleEl(scope),
+              description: !!dom.getDescriptionEl(scope),
+            })
+          }
 
-          const observer = new win.MutationObserver(syncHeight)
-          observer.observe(rootEl, {
-            childList: true,
-            subtree: true,
-            characterData: true,
+          syncRenderedElements()
+
+          return dom.observeContent(rootEl, {
+            filter: (el) => !el.hasAttribute("data-ghost"),
+            onChange: syncHeight,
+            onMutate: syncRenderedElements,
           })
-
-          cleanup = () => observer.disconnect()
         })
-
-        return () => cleanup?.()
       },
     },
 
     guards: {
-      isLoadingType: ({ prop }) => prop("type") === "loading",
-      shouldPersist: ({ computed }) => computed("shouldPersist"),
+      isVisible: ({ state }) => state.hasTag("visible"),
+      shouldPause: ({ computed, prop }) => computed("shouldPersist") || !!prop("paused"),
     },
 
     actions: {
@@ -256,7 +274,14 @@ export const machine = createMachine<ToastSchema>({
         const parent = prop("parent")
         parent.send({ type: "TOAST.REMOVE", id: prop("id") })
       },
+      notifyParentOfDismiss({ prop, scope }) {
+        const activeEl = scope.getActiveElement()
+        if (!contains(dom.getRootEl(scope), activeEl)) return
+        const focusVisible = !!activeEl?.matches(":focus-visible")
+        prop("parent").send({ type: "TOAST.DISMISS", focusVisible })
+      },
       invokeOnDismiss({ prop, event }) {
+        prop("parent").prop("store").dismiss(prop("id"))
         prop("onStatusChange")?.({ status: "dismissing", src: event.src })
       },
       invokeOnUnmount({ prop }) {
@@ -285,8 +310,8 @@ function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
     const alreadyExists = prev.find((i) => i.id === id)
     if (!alreadyExists) {
       return [{ id, height }, ...prev]
-    } else {
-      return prev.map((i) => (i.id === id ? { ...i, height } : i))
     }
+    if (alreadyExists.height === height) return prev
+    return prev.map((i) => (i.id === id ? { ...i, height } : i))
   })
 }

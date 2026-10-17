@@ -1,4 +1,5 @@
 module.exports = {
+  agentRules: false,
   typescript: { ignoreBuildErrors: true },
   experimental: {
     externalDir: true,

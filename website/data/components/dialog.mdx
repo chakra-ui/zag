@@ -90,6 +90,13 @@ const service = useMachine(dialog.machine, {
 })
 ```
 
+Use `api.modal` to skip the backdrop, since it would block interaction with the
+page.
+
+```tsx
+{api.modal && <div {...api.getBackdropProps()} />}
+```
+
 ### Closing the dialog on interaction outside
 
 By default, the dialog closes when you click its overlay. You can set

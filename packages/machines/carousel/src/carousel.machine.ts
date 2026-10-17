@@ -83,6 +83,10 @@ export const machine = createMachine<CarouselSchema>({
     track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
       action(["setSnapPoints", "scrollToPage"])
     })
+    // Realign only when the snap points move, so content or size changes don't interrupt a scroll
+    track([() => context.get("pageSnapPoints").join(",")], () => {
+      send({ type: "SNAP.CHANGE" })
+    })
     track([() => prop("slideCount")], () => {
       send({ type: "SNAP.REFRESH", src: "slide.count" })
     })
@@ -109,7 +113,7 @@ export const machine = createMachine<CarouselSchema>({
       actions: ["clearScrollEndTimer", "setMatchingPage"],
     },
     "SNAP.REFRESH": {
-      actions: ["setSnapPoints", "scrollToPageIfDrifted"],
+      actions: ["setSnapPoints"],
     },
     "PAGE.SCROLL": {
       actions: ["scrollToPage"],
@@ -125,6 +129,9 @@ export const machine = createMachine<CarouselSchema>({
   states: {
     idle: {
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "DRAGGING.START": {
           target: "dragging",
           actions: ["invokeDragStart"],
@@ -145,6 +152,9 @@ export const machine = createMachine<CarouselSchema>({
     focus: {
       effects: ["trackKeyboardScroll"],
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "VIEWPORT.BLUR": {
           target: "idle",
         },
@@ -168,7 +178,6 @@ export const machine = createMachine<CarouselSchema>({
 
     dragging: {
       effects: ["trackPointerMove"],
-      entry: ["disableScrollSnap"],
       on: {
         DRAGGING: {
           actions: ["scrollSlides", "invokeDragging"],
@@ -226,6 +235,9 @@ export const machine = createMachine<CarouselSchema>({
       effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
       exit: ["invokeAutoplayEnd"],
       on: {
+        "SNAP.CHANGE": {
+          actions: ["scrollToPageIfDrifted"],
+        },
         "AUTOPLAY.TICK": {
           actions: ["setNextPage", "invokeAutoplay"],
         },
@@ -489,13 +501,6 @@ export const machine = createMachine<CarouselSchema>({
         const index = clampValue(context.get("page"), 0, pageSnapPoints.length - 1)
         context.set("page", index)
       },
-      disableScrollSnap({ scope }) {
-        const el = dom.getItemGroupEl(scope)
-        if (!el) return
-        const styles = getComputedStyle(el)
-        el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
-        el.style.setProperty("scroll-snap-type", "none")
-      },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
         el?.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
@@ -523,12 +528,6 @@ export const machine = createMachine<CarouselSchema>({
             top: isHorizontal ? el.scrollTop : closest,
             behavior: "smooth",
           })
-
-          const scrollSnapType = el.dataset.scrollSnapType
-          if (scrollSnapType) {
-            el.style.setProperty("scroll-snap-type", scrollSnapType)
-            delete el.dataset.scrollSnapType
-          }
         })
       },
       focusIndicatorEl({ context, event, scope }) {

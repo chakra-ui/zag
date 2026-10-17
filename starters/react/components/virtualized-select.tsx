@@ -11,8 +11,10 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-interface SelectProps
-  extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"> {
+interface SelectProps extends Omit<
+  select.Props,
+  "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"
+> {
   defaultValue?: string | null | undefined
   value?: string | null | undefined
   onValueChange?: (value: string) => void
@@ -31,7 +33,7 @@ export function VirtualizedSelect(props: SelectProps) {
     estimateSize: () => 32,
   })
 
-  const timerRef = useRef<NodeJS.Timeout>()
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const service = useMachine(select.machine, {
     id: useId(),

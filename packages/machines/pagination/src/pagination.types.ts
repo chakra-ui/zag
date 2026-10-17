@@ -209,6 +209,14 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
    */
   pageRange: PageRange
   /**
+   * The type of the pagination controls.
+   */
+  type: "button" | "link"
+  /**
+   * Returns the url for the given page, or `undefined` when `getPageUrl` is not provided.
+   */
+  getPageUrl: (page: number) => string | undefined
+  /**
    * Function to slice an array of data based on the current page.
    */
   slice: <V>(data: V[]) => V[]

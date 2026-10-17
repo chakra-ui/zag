@@ -491,6 +491,18 @@ test.describe("combobox / multiple", () => {
     await I.pressKey("Enter")
     await I.seeValueText("Malawi")
   })
+
+  test("should expose the selected state of every option", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+    await I.pressKey("Enter")
+
+    await I.seeItemIsSelected("Zambia")
+    await I.seeItemIsNotSelected("Benin")
+  })
 })
 
 test.describe("combobox / scroll under resting cursor", () => {

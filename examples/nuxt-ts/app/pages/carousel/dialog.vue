@@ -6,6 +6,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 const SLIDE_COUNT = 30
 
 const page = ref(0)
+const carouselId = `${useId()}-carousel`
 
 const dialogService = useMachine(dialog.machine, { id: useId() })
 const dialogApi = computed(() => dialog.connect(dialogService, normalizeProps))
@@ -13,7 +14,7 @@ const dialogApi = computed(() => dialog.connect(dialogService, normalizeProps))
 const carouselService = useMachine(
   carousel.machine,
   computed(() => ({
-    id: `${useId()}-carousel`,
+    id: carouselId,
     slideCount: SLIDE_COUNT,
     page: page.value,
     onPageChange(details: { page: number }) {

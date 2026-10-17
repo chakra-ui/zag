@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { CarouselModel } from "./models/carousel.model"
 
 let I: CarouselModel
@@ -70,12 +70,32 @@ test.describe("carousel", () => {
 
     await I.swipeCarousel("left", 20, 120, false)
     await I.holdDrag(40)
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "none")
+
     await I.releaseDrag()
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "none")
+
     await I.waitForScrollSettle()
+    await expect(I.carousel).toHaveCSS("scroll-snap-type", "x mandatory")
 
     await I.seeIndicatorIsActive(0)
     await I.seeItemInView(0)
     await I.seeItemInView(1)
+  })
+
+  test("slide content and size changes do not interrupt an active drag", async ({ page }) => {
+    await I.swipeCarousel("left", 200, 300, false)
+    const position = await I.carousel.evaluate((el) => el.scrollLeft)
+    expect(position).toBeGreaterThan(100)
+
+    await I.getItem(0).evaluate((el) => {
+      el.appendChild(document.createElement("span"))
+      el.style.height = `${el.offsetHeight + 20}px`
+    })
+    await page.waitForTimeout(100)
+
+    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
+    await I.releaseDrag()
   })
 
   test("drag interruption and immediate restart resolves to final drag target", async () => {

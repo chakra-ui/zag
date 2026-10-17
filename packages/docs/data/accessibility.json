@@ -190,6 +190,14 @@
         "description": "Moves focus to the next input"
       },
       {
+        "keys": ["Home", "ArrowUp", "Control + ArrowLeft"],
+        "description": "Moves focus to the first input"
+      },
+      {
+        "keys": ["End", "ArrowDown", "Control + ArrowRight"],
+        "description": "Moves focus to the last filled input"
+      },
+      {
         "keys": ["Backspace"],
         "description": "Deletes the value in the current input and moves focus to the previous input"
       },

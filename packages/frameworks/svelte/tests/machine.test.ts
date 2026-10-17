@@ -1,5 +1,7 @@
 import { createGuards, createMachine } from "@zag-js/core"
+import { mount, settled, unmount } from "svelte"
 import { renderMachine } from "./render"
+import SetPropOnMount from "./SetPropOnMount.svelte"
 
 describe("basic", () => {
   test("initial state", async () => {
@@ -356,6 +358,56 @@ describe("edge cases", () => {
     await cleanup()
   })
 
+  test("watch: tracks a prop changed before the first effect run", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const app = mount(SetPropOnMount, {
+      target: document.createElement("div"),
+      props: { machine, valueOnMount: true },
+    })
+    await settled()
+
+    expect(notify).toHaveBeenCalledOnce()
+    await unmount(app)
+  })
+
+  test("watch: does not run on mount when the prop is unchanged", async () => {
+    const notify = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: { test: {} },
+      watch({ track, prop, action }) {
+        track([() => prop("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: { actions: { notify } },
+    })
+
+    const app = mount(SetPropOnMount, {
+      target: document.createElement("div"),
+      props: { machine, valueOnMount: false },
+    })
+    await settled()
+
+    expect(notify).not.toHaveBeenCalled()
+    await unmount(app)
+  })
+
   test("effects", async () => {
     vi.useFakeTimers()
 
@@ -399,6 +451,53 @@ describe("edge cases", () => {
     await cleanup()
 
     vi.useRealTimers()
+  })
+
+  test("prop and context read after stop return the values at stop", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    let label = "stopped"
+    let value = "controlled"
+    let readAfterStop!: () => unknown[]
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+      },
+      context({ bindable, prop }) {
+        return { value: bindable(() => ({ defaultValue: "default", value: prop("value") })) }
+      },
+      exit: ["captureRead"],
+      implementations: {
+        actions: {
+          captureRead({ prop, context }) {
+            readAfterStop = () => [prop("label"), context.get("value")]
+          },
+        },
+      },
+    })
+
+    const { cleanup } = renderMachine(machine, {
+      get label() {
+        return label
+      },
+      get value() {
+        return value
+      },
+    })
+    await Promise.resolve()
+    await cleanup()
+
+    label = "changed"
+    value = "changed"
+    const valuesAtStop = readAfterStop()
+    const warnings = [...warn.mock.calls]
+    warn.mockRestore()
+
+    expect(valuesAtStop).toEqual(["stopped", "controlled"])
+    expect(warnings).toHaveLength(0)
   })
 
   test("state.matches() helper", async () => {

@@ -298,6 +298,10 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * Whether the drawer is modal.
+   */
+  modal: boolean
+  /**
    * Whether the drawer is currently being dragged.
    */
   dragging: boolean

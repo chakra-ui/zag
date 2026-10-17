@@ -300,7 +300,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "checkbox",
     label: "Checkbox",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "indeterminate", title: "Indeterminate" },
+    ],
   },
   {
     slug: "combobox",
@@ -368,6 +371,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
+      { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -378,6 +382,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "controlled", title: "Controlled" },
     ],
   },
   {
@@ -481,6 +486,11 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "toast",
     label: "Toast",
     examples: [
+      { slug: "conditional-content", title: "Conditional Title and Description" },
+      { slug: "deduplicated", title: "Deduplicated" },
+      { slug: "promise", title: "Promise" },
+      { slug: "queued", title: "Queued" },
+      { slug: "undo-action", title: "Undo Action" },
       { slug: "stacked", title: "Stacked" },
       { slug: "overlap", title: "Overlap" },
     ],
@@ -507,6 +517,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "dialog", title: "With Dialog" },
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "aria-label", title: "Aria Label" },
     ],
   },
   {

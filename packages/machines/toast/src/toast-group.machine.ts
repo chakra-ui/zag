@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
@@ -52,12 +52,12 @@ export const groupMachine = createMachine({
     placement: ({ prop }) => prop("store").attrs.placement,
   },
 
-  effects: ["subscribeToStore", "trackDocumentVisibility", "trackHotKeyPress"],
+  effects: ["subscribeToStore", "subscribeToLayout", "trackDocumentVisibility", "trackHotKeyPress"],
 
   watch({ track, context, action }) {
     track([() => context.hash("toasts")], () => {
       queueMicrotask(() => {
-        action(["collapsedIfEmpty", "setDismissableBranch"])
+        action(["collapsedIfEmpty", "setDismissableBranch", "resetInteractionIfEmpty"])
       })
     })
   },
@@ -65,6 +65,12 @@ export const groupMachine = createMachine({
   exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearMouseEventTimer"],
 
   on: {
+    PAUSE_ALL: {
+      actions: ["pauseToasts"],
+    },
+    RESUME_ALL: {
+      actions: ["resumeToasts"],
+    },
     "DOC.HOTKEY": {
       actions: ["focusRegionEl"],
     },
@@ -72,7 +78,7 @@ export const groupMachine = createMachine({
       {
         guard: and("isOverlapping", "isPointerOut"),
         target: "overlap",
-        actions: ["collapseToasts", "resumeToasts", "restoreFocusIfPointerOut"],
+        actions: ["resumeToasts", "restoreFocusIfPointerOut"],
       },
       {
         guard: "isPointerOut",
@@ -83,6 +89,9 @@ export const groupMachine = createMachine({
         actions: ["clearFocusWithin"],
       },
     ],
+    "TOAST.DISMISS": {
+      actions: ["moveFocusOnDismiss"],
+    },
     "TOAST.REMOVE": {
       actions: ["removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
     },
@@ -98,7 +107,7 @@ export const groupMachine = createMachine({
           {
             guard: "isOverlapping",
             target: "overlap",
-            actions: ["clearPointerWithin", "resumeToasts", "collapseToasts"],
+            actions: ["clearPointerWithin", "resumeToasts"],
           },
           {
             actions: ["clearPointerWithin", "resumeToasts"],
@@ -106,7 +115,6 @@ export const groupMachine = createMachine({
         ],
         "REGION.OVERLAP": {
           target: "overlap",
-          actions: ["collapseToasts"],
         },
         "REGION.FOCUS": {
           actions: ["setLastFocusedEl", "pauseToasts"],
@@ -121,15 +129,17 @@ export const groupMachine = createMachine({
       on: {
         "REGION.STACK": {
           target: "stack",
-          actions: ["expandToasts"],
         },
         "REGION.POINTER_ENTER": {
           target: "stack",
-          actions: ["setPointerWithin", "pauseToasts", "expandToasts"],
+          actions: ["setPointerWithin", "pauseToasts"],
+        },
+        "REGION.POINTER_LEAVE": {
+          actions: ["clearPointerWithin", "resumeToasts"],
         },
         "REGION.FOCUS": {
           target: "stack",
-          actions: ["setLastFocusedEl", "pauseToasts", "expandToasts"],
+          actions: ["setLastFocusedEl", "pauseToasts"],
         },
       },
     },
@@ -160,6 +170,11 @@ export const groupMachine = createMachine({
           })
         })
       },
+      subscribeToLayout({ prop, send }) {
+        return prop("store").subscribeLayout((stacked) => {
+          send({ type: stacked ? "REGION.STACK" : "REGION.OVERLAP" })
+        })
+      },
       trackHotKeyPress({ prop, send }) {
         const handleKeyDown = (event: KeyboardEvent) => {
           const { hotkey } = prop("store").attrs
@@ -172,7 +187,10 @@ export const groupMachine = createMachine({
       trackDocumentVisibility({ prop, send, scope }) {
         const { pauseOnPageIdle } = prop("store").attrs
         if (!pauseOnPageIdle) return
+
         const doc = scope.getDoc()
+        if (doc.visibilityState === "hidden") send({ type: "PAUSE_ALL" })
+
         return addDomEvent(doc, "visibilitychange", () => {
           const isHidden = doc.visibilityState === "hidden"
           send({ type: isHidden ? "PAUSE_ALL" : "RESUME_ALL" })
@@ -188,6 +206,7 @@ export const groupMachine = createMachine({
 
         if (!hasToasts) {
           refs.get("dismissableCleanup")?.()
+          refs.set("dismissableCleanup", undefined)
           return
         }
 
@@ -203,6 +222,7 @@ export const groupMachine = createMachine({
       },
       clearDismissableBranch({ refs }) {
         refs.get("dismissableCleanup")?.()
+        refs.set("dismissableCleanup", undefined)
       },
       focusRegionEl({ scope, computed }) {
         queueMicrotask(() => {
@@ -212,14 +232,13 @@ export const groupMachine = createMachine({
       pauseToasts({ prop }) {
         prop("store").pause()
       },
-      resumeToasts({ prop }) {
+      resumeToasts({ prop, refs, scope, event }) {
+        if (event.type === "REGION.BLUR") refs.set("isFocusWithin", false)
+
+        const idle = prop("store").attrs.pauseOnPageIdle && scope.getDoc().visibilityState === "hidden"
+        if (idle || refs.get("isPointerWithin") || refs.get("isFocusWithin")) return
+
         prop("store").resume()
-      },
-      expandToasts({ prop }) {
-        prop("store").expand()
-      },
-      collapseToasts({ prop }) {
-        prop("store").collapse()
       },
       removeToast({ prop, event }) {
         prop("store").remove(event.id)
@@ -235,9 +254,36 @@ export const groupMachine = createMachine({
         send({ type: "REGION.OVERLAP" })
       },
       setLastFocusedEl({ refs, event }) {
-        if (refs.get("isFocusWithin") || !event.target) return
+        if (refs.get("isFocusWithin")) return
+
         refs.set("isFocusWithin", true)
-        refs.set("lastFocusedEl", event.target)
+        refs.set("lastFocusedEl", event.target ?? null)
+      },
+      moveFocusOnDismiss({ refs, scope, computed, event }) {
+        if (event.focusVisible) {
+          const toastEls = dom.getToastEls(scope, computed("placement"))
+          const index = toastEls.findIndex((el) => contains(el, scope.getActiveElement()))
+          const nextEl = findOpenToast(toastEls, index + 1, 1) ?? findOpenToast(toastEls, index - 1, -1)
+          if (nextEl) {
+            nextEl.focus({ preventScroll: true })
+            return
+          }
+        }
+
+        const lastFocusedEl = refs.get("lastFocusedEl")
+        if (event.focusVisible && lastFocusedEl) {
+          lastFocusedEl.focus({ preventScroll: true })
+        } else {
+          scope.getActiveElement()?.blur()
+        }
+      },
+      resetInteractionIfEmpty({ refs, prop, scope, computed }) {
+        if (computed("count") > 0) return
+        refs.set("isFocusWithin", false)
+        refs.set("isPointerWithin", false)
+        refs.set("lastFocusedEl", null)
+        const idle = prop("store").attrs.pauseOnPageIdle && scope.getDoc().visibilityState === "hidden"
+        if (!idle) prop("store").resume()
       },
       restoreFocusIfPointerOut({ refs }) {
         if (!refs.get("lastFocusedEl") || refs.get("isPointerWithin")) return
@@ -264,8 +310,21 @@ export const groupMachine = createMachine({
         refs.set("lastFocusedEl", null)
         refs.set("isFocusWithin", false)
       },
-      ignoreMouseEventsTemporarily({ refs }) {
-        refs.get("ignoreMouseTimer").request()
+      ignoreMouseEventsTemporarily({ refs, scope, computed, send }) {
+        // Removing the hovered toast fires no leave, so check on the next pointer move
+        refs.get("ignoreMouseTimer").request(() => {
+          return addDomEvent(
+            scope.getDoc(),
+            "pointermove",
+            (event) => {
+              if (!refs.get("isPointerWithin")) return
+              const regionEl = dom.getRegionEl(scope, computed("placement"))
+              if (contains(regionEl, getEventTarget(event))) return
+              send({ type: "REGION.POINTER_LEAVE", placement: computed("placement") })
+            },
+            { once: true },
+          )
+        })
       },
       clearMouseEventTimer({ refs }) {
         refs.get("ignoreMouseTimer").cancel()
@@ -273,3 +332,10 @@ export const groupMachine = createMachine({
     },
   },
 })
+
+function findOpenToast(toastEls: HTMLElement[], from: number, step: number) {
+  for (let i = from; i >= 0 && i < toastEls.length; i += step) {
+    if (toastEls[i].dataset.state === "open") return toastEls[i]
+  }
+  return null
+}

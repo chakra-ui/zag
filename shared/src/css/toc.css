@@ -1,4 +1,9 @@
 [data-scope="toc"][data-part="root"] {
+  display: flex;
+  gap: 2rem;
+}
+
+[data-scope="toc"][data-part="nav"] {
   position: relative;
   max-width: 16rem;
   max-height: 20rem;

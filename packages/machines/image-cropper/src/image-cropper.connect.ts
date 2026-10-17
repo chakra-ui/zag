@@ -14,6 +14,7 @@ import {
   isRightHandle,
   isTopHandle,
   isBottomHandle,
+  isValidRect,
 } from "./utils/crop"
 import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
 
@@ -137,6 +138,12 @@ export function connect<T extends PropTypes>(
       }
 
       send({ type: "RESIZE_CROP", handlePosition, delta: { x: deltaX, y: deltaY } })
+    },
+
+    setCrop(nextCrop) {
+      if (fixedCropArea) return
+      if (!isValidRect(nextCrop)) return
+      send({ type: "SET_CROP", crop: nextCrop, replaces: "crop" })
     },
 
     reset() {

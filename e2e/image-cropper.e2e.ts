@@ -326,6 +326,29 @@ test.describe("image-cropper / resizable", () => {
     expect(rect.y).toBe(initialRect.y)
   })
 
+  test("[keyboard] should maintain aspect ratio when resizing with Alt+Arrow keys", async () => {
+    await I.controls.num("aspectRatio", "1")
+    await I.wait(100)
+
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, shift: true })
+
+    let rect = await I.getSelectionRect()
+    expect(rect.width).toBe(initialRect.width - 10)
+    expect(rect.height).toBe(rect.width)
+    expect(rect.x).toBe(initialRect.x)
+
+    const prevRect = rect
+    await I.pressKeyWithModifiers("ArrowUp", { alt: true, shift: true })
+
+    rect = await I.getSelectionRect()
+    expect(rect.height).toBe(prevRect.height - 10)
+    expect(rect.width).toBe(rect.height)
+    expect(rect.y).toBe(prevRect.y)
+  })
+
   test("[keyboard] should use larger step with shift modifier when resizing", async () => {
     const initialRect = await I.getSelectionRect()
 
@@ -794,6 +817,67 @@ test.describe("image-cropper / resize API", () => {
   })
 })
 
+test.describe("image-cropper / setCrop API", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[api] should place the selection at the given rect", async () => {
+    await I.dragSelection(-60, -40)
+    const initialRect = await I.getSelectionRect()
+
+    await I.clickCenterCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect.width).toBe(initialRect.width)
+    expect(rect.height).toBe(initialRect.height)
+    expect(rect.x - viewport.x).toBeCloseTo((viewport.width - rect.width) / 2, 0)
+    expect(rect.y - viewport.y).toBeCloseTo((viewport.height - rect.height) / 2, 0)
+  })
+
+  test("[api] should fill the viewport without an aspect ratio", async () => {
+    await I.clickFillCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect).toEqual(viewport)
+  })
+
+  test("[api] should constrain the rect to the aspect ratio", async () => {
+    await I.controls.num("aspectRatio", "1")
+    await I.wait(100)
+
+    await I.clickFillCrop()
+
+    const viewport = await I.getViewportRect()
+    const rect = await I.getSelectionRect()
+
+    expect(rect.width).toBe(rect.height)
+    expect(rect.height).toBe(viewport.height)
+    expect(rect.x).toBe(viewport.x)
+    expect(rect.y).toBe(viewport.y)
+  })
+
+  test("[api] should keep zoom and pan", async () => {
+    await I.zoomWithWheel(-100)
+    await I.wait(100)
+    await I.panImage(50, 30)
+    await I.wait(100)
+
+    const initialTransform = await I.getImageTransform()
+
+    await I.dragSelection(-60, -40)
+    await I.clickCenterCrop()
+
+    expect(await I.getImageTransform()).toBe(initialTransform)
+  })
+})
+
 test.describe("image-cropper / circle", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)
@@ -813,6 +897,18 @@ test.describe("image-cropper / circle", () => {
     const newRect = await I.getSelectionRect()
 
     expect(newRect.width).toEqual(newRect.height)
+  })
+
+  test("should keep the crop area in 1:1 aspect ratio when resizing with the keyboard", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, shift: true })
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 10)
+    expect(newRect.height).toEqual(newRect.width)
   })
 })
 

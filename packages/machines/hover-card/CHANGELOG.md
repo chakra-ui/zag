@@ -1,5 +1,39 @@
 # @zag-js/hover-card
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3426](https://github.com/chakra-ui/zag/pull/3426)
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix nested popups rendering behind their parent layer when using
+  `--layer-index` with `lazyMount` or `unmountOnExit`. Keep the positioner's z-index synchronized with its dismissable
+  layer and preserve it during exit animations.
+- Updated dependencies [[`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/popper@1.46.0
+
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c),
+  [`647e225`](https://github.com/chakra-ui/zag/commit/647e225e087f3646a1dffdb02594ca6a11548641),
+  [`6688282`](https://github.com/chakra-ui/zag/commit/668828229eb47730be2a9da78956ff3fd01317fb)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/popper@1.45.0
+  - @zag-js/dismissable@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

@@ -8,8 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "3.12.3",
-    "@tanstack/react-virtual": "3.13.25",
+    "@internationalized/date": "3.12.4",
+    "@tanstack/react-virtual": "3.14.14",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -95,7 +95,7 @@
     "image-conversion": "2.1.1",
     "lucide-preact": "1.7.0",
     "react-hook-form": "7.72.0",
-    "react-spinners": "0.17.0",
+    "react-spinners": "0.17.1",
     "virtua": "^0.49.0",
     "preact": "10.29.2",
     "preact-iso": "2.11.1",
@@ -103,9 +103,9 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "2.10.5",
-    "eslint": "10.4.0",
+    "eslint": "10.12.0",
     "eslint-config-preact": "2.0.0",
     "typescript": "6.0.3",
-    "vite": "8.0.16"
+    "vite": "8.3.4"
   }
 }

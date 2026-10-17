@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { ToastModel } from "./models/toast.model"
 
 let I: ToastModel
@@ -19,6 +19,42 @@ test.describe("toast / stacked", () => {
     await I.seeNumOfToasts(0)
   })
 
+  test("dismissing a focused toast with escape moves focus to the next toast", async () => {
+    await I.clickErrorToast(2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(0)
+    await I.seeButtonIsFocused("Notify (Error)")
+  })
+
+  test("dismissing a focused toast with its close button moves focus to the next toast", async () => {
+    await I.clickErrorToast(2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.pressKey("Tab")
+
+    await I.pressKey("Enter")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+  })
+
+  test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.closeNthToast(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
+  })
+
   test("interacting with toast does not close dialog", async () => {
     if (process.env.FRAMEWORK !== "react") return
     await I.clickLoadingToast()
@@ -27,6 +63,43 @@ test.describe("toast / stacked", () => {
 
     await I.seeDialog()
     await I.seeNumOfToasts(0)
+  })
+
+  test("should update the toast height when its content wraps onto more lines", async () => {
+    await I.clickLoadingToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 200, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+  })
+
+  test("should update the toast height when its content wraps onto fewer lines", async () => {
+    await I.resizeWindow({ width: 200, height: 720 })
+    await I.clickLoadingToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 1024, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeLessThan(initialHeight)
+  })
+
+  test("should update the toast height when its text changes", async () => {
+    await I.clickErrorToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.appendToLatestToast(2)
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+  })
+
+  test("should update the toast height when its content grows without a resize", async () => {
+    await I.clickLoadingToast()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.enlargeTitle()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
   })
 })
 
@@ -58,6 +131,24 @@ test.describe("toast / overlapping", () => {
     await I.seeToastsOverlap()
   })
 
+  test("new toasts join the expanded stack without moving the pointer", async () => {
+    await I.clickLoadingToast(2)
+    await I.mouseIntoRegion()
+    await I.seeToastsStacked()
+
+    // The create button still has focus while the pointer stays over the stack.
+    await I.page.keyboard.press("Space")
+    await I.seeNumOfToasts(3)
+    await I.seeToastsStacked()
+    await I.seeToastArePaused()
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsOverlap()
+    await I.page.keyboard.press("Space")
+    await I.seeNumOfToasts(4)
+    await I.seeToastsOverlap()
+  })
+
   test("focus on region on hotkey press", async () => {
     await I.clickErrorToast(2)
     await I.pressHotkey()
@@ -70,23 +161,32 @@ test.describe("toast / overlapping", () => {
     await I.seeToastsOverlap()
   })
 
+  test("closing a toast with the mouse resumes the last toast once the pointer leaves", async () => {
+    await I.clickErrorToast(2)
+    await I.closeNthToast(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
+  })
+
   test("should pause all toast on click pause", async () => {
     await I.clickErrorToast(2)
 
     // pause
-    await I.clickPauseAll()
+    await I.clickButton("Pause All")
     await I.seeToastArePaused()
 
     // resume
-    await I.clickResumeAll()
+    await I.clickButton("Resume All")
     await I.seeNumOfToasts(0)
   })
 
   test("close all", async () => {
     await I.clickErrorToast(2)
     // pause to make it actually works
-    await I.clickPauseAll()
-    await I.clickCloseAll()
+    await I.clickButton("Pause All")
+    await I.clickButton("Close All")
     await I.seeNumOfToasts(0)
   })
 

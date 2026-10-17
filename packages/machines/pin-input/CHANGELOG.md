@@ -1,5 +1,47 @@
 # @zag-js/pin-input
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3410](https://github.com/chakra-ui/zag/pull/3410)
+  [`2209f73`](https://github.com/chakra-ui/zag/commit/2209f73eeaa55d3d266054e9b5529cfa90ed48d2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where pressing Enter with an incomplete value did
+  nothing, blocking form submission and native validation.
+
+  - Pressing Enter now always requests form submission, so the browser runs constraint validation.
+  - When `required` is set, each input is marked required so the validation message points to the first empty input.
+  - An incomplete value, or one with characters that don't match `type`, now fails validation, and focus moves to a
+    visible input instead of the hidden one.
+
+- [#3411](https://github.com/chakra-ui/zag/pull/3411)
+  [`3abcef4`](https://github.com/chakra-ui/zag/commit/3abcef4e9e055ac9d715fbcba227c60f873859e0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improved keyboard navigation and setup feedback.
+
+  - Pressing `Ctrl`/`Cmd` + `ArrowLeft`/`ArrowRight` now moves focus to the first or last input (reversed in RTL).
+  - Pressing `ArrowUp`/`ArrowDown` now moves focus to the first or last input, matching `Home`/`End`.
+  - Added a development warning when `count` doesn't match the number of rendered inputs.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c),
+  [`647e225`](https://github.com/chakra-ui/zag/commit/647e225e087f3646a1dffdb02594ca6a11548641)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

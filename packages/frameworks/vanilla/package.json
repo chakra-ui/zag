@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vanilla",
-  "version": "1.44.0",
+  "version": "1.46.0",
   "description": "The vanilla wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -33,7 +33,7 @@
     "@types/jsdom": "^30.0.0",
     "clean-package": "2.2.0",
     "jsdom": "^30.0.0",
-    "vitest": "^4.1.2"
+    "vitest": "^5.0.0"
   },
   "scripts": {
     "build": "tsup",

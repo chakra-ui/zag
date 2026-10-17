@@ -39,6 +39,8 @@ export const machine = createMachine<TooltipSchema>({
 
   effects: ["trackFocusVisible", "trackStore"],
 
+  exit: ["clearGlobalId"],
+
   context: ({ bindable, prop, scope }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
     hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),

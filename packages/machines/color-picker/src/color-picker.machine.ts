@@ -394,6 +394,7 @@ export const machine = createMachine<ColorPickerSchema>({
           type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
+          layerStyleTargets: [() => dom.getPositionerEl(scope)],
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (event.defaultPrevented) return

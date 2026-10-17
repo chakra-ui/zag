@@ -202,9 +202,24 @@ toaster.remove(id)
 toaster.dismiss(id)
 ```
 
+#### Updating from current properties
+
+Pass a function to derive an update from the latest toast properties. Its return
+value is shallowly merged into the toast.
+
+```tsx
+toaster.update(id, (prev) => ({
+  title: `${prev.title} (updated)`,
+  meta: { ...prev.meta, count: (prev.meta?.count ?? 0) + 1 },
+}))
+```
+
+Queued toasts are supported. Missing or closing toasts skip the updater.
+
 #### Pause and resume all toasts
 
-Call `pause()`/`resume()` without an `id` to affect all active toasts.
+Call `pause()`/`resume()` without an `id` to affect all toasts, including new
+and queued toasts.
 
 ```tsx
 toaster.pause()

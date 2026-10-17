@@ -56,20 +56,22 @@ representing the headings on the page.
 Use `getIndicatorProps()` to render an animated bar that follows the active
 item. The indicator position is exposed as CSS variables on the root element.
 
-```tsx {5}
-<nav {...api.getRootProps()}>
-  <h5 {...api.getTitleProps()}>On this page</h5>
-  <ul {...api.getListProps()}>
-    <div {...api.getIndicatorProps()} />
-    {api.items.map((item) => (
-      <li key={item.value} {...api.getItemProps({ item })}>
-        <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
-          {item.value}
-        </a>
-      </li>
-    ))}
-  </ul>
-</nav>
+```tsx {6}
+<div {...api.getRootProps()}>
+  <nav {...api.getNavProps()}>
+    <h5 {...api.getTitleProps()}>On this page</h5>
+    <ul {...api.getListProps()}>
+      <div {...api.getIndicatorProps()} />
+      {api.items.map((item) => (
+        <li key={item.value} {...api.getItemProps({ item })}>
+          <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
+            {item.value}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
 ```
 
 ### Configuring the observer
@@ -148,6 +150,10 @@ Each part includes a `data-part` attribute you can target in CSS.
 ```css
 [data-scope="toc"][data-part="root"] {
   /* styles for the root container */
+}
+
+[data-scope="toc"][data-part="nav"] {
+  /* styles for the nav landmark */
 }
 
 [data-scope="toc"][data-part="link"] {

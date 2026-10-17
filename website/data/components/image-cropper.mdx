@@ -17,7 +17,8 @@ rotation, and flip controls.
 - Rectangle or circle crops with optional fixed area and aspect ratio
 - Min/max crop dimensions and keyboard nudging
 - Controlled zoom/rotation/flip with change callbacks
-- Programmatic helpers like `api.resize` and `api.getCroppedImage`
+- Programmatic helpers like `api.resize`, `api.setCrop`, and
+  `api.getCroppedImage`
 - Accessibility labels, translations, and styling data attributes
 
 ## Installation
@@ -159,6 +160,31 @@ api.resize("e", 8)
 // Shrink from top-left corner by 4px in both axes
 api.resize("nw", -4)
 ```
+
+### Setting the crop programmatically
+
+Use `api.setCrop(rect)` to place the crop area at a rect in viewport
+coordinates, like `api.crop`. Use it for presets, numeric fields, or a "center"
+button.
+
+```tsx
+const { crop, viewportRect } = api
+
+// Center the current selection
+api.setCrop({
+  ...crop,
+  x: (viewportRect.width - crop.width) / 2,
+  y: (viewportRect.height - crop.height) / 2,
+})
+```
+
+The rect is constrained the same way as `initialCrop`: `minSize`/`maxSize`,
+`aspectRatio` (or `cropShape: "circle"`), and the viewport bounds. When the rect
+doesn't match the aspect ratio, the crop shrinks to fit inside it. Unlike
+`api.reset()`, zoom, rotation, flip and pan are kept.
+
+> `setCrop` does nothing when `fixedCropArea` is set. To set the crop on mount,
+> use `initialCrop`.
 
 ### Getting the cropped image
 

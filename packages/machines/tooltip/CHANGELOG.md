@@ -1,5 +1,39 @@
 # @zag-js/tooltip
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3391](https://github.com/chakra-ui/zag/pull/3391)
+  [`36aaf7d`](https://github.com/chakra-ui/zag/commit/36aaf7d7485b8b6b35c1c1f16a1cb776e256da12) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - Fixed issue where unmounting an open tooltip made the next tooltip
+  skip its open delay.
+- Updated dependencies [[`0afddfa`](https://github.com/chakra-ui/zag/commit/0afddfae6e4f9fea790d4321bf2d0bb37160f4a1)]:
+  - @zag-js/focus-visible@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/popper@1.46.0
+
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`8a204a3`](https://github.com/chakra-ui/zag/commit/8a204a33f1e7074ea5aab394bd4682745e7125ed),
+  [`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c),
+  [`647e225`](https://github.com/chakra-ui/zag/commit/647e225e087f3646a1dffdb02594ca6a11548641),
+  [`6688282`](https://github.com/chakra-ui/zag/commit/668828229eb47730be2a9da78956ff3fd01317fb)]:
+  - @zag-js/focus-visible@1.45.0
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/popper@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

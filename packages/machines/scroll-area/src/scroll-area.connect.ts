@@ -12,9 +12,9 @@ export function connect<T extends PropTypes>(
   service: ScrollAreaService,
   normalize: NormalizeProps<T>,
 ): ScrollAreaApi<T> {
-  const { state, send, context, prop, scope } = service
+  const { state, send, context, prop, scope, refs } = service
 
-  const dragging = state.matches("dragging")
+  const draggingOrientation = state.matches("dragging") ? refs.get("orientation") : null
   const hovering = context.get("hovering")
 
   const cornerSize = context.get("cornerSize")
@@ -40,10 +40,11 @@ export function connect<T extends PropTypes>(
       return scrollTo(dom.getViewportEl(scope), details)
     },
     getScrollbarState(props) {
-      const horizontal = props.orientation === "horizontal"
+      const { orientation = "vertical" } = props
+      const horizontal = orientation === "horizontal"
       return {
         hovering,
-        dragging,
+        dragging: draggingOrientation === orientation,
         scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
         hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
       }
@@ -135,7 +136,7 @@ export function connect<T extends PropTypes>(
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
         "data-hover": dataAttr(hovering),
-        "data-dragging": dataAttr(dragging),
+        "data-dragging": dataAttr(draggingOrientation === orientation),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
@@ -178,7 +179,7 @@ export function connect<T extends PropTypes>(
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         "data-hover": dataAttr(hovering),
-        "data-dragging": dataAttr(dragging),
+        "data-dragging": dataAttr(draggingOrientation === orientation),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)

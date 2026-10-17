@@ -11,7 +11,7 @@ export class ToastModel extends Model {
     return a11y(this.page)
   }
 
-  goto(type: "stacked" | "overlap") {
+  goto(type: "stacked" | "overlap" | "conditional-content") {
     return this.page.goto(`/toast/${type}`)
   }
 
@@ -23,6 +23,44 @@ export class ToastModel extends Model {
     return this.page.locator("[data-scope=toast][data-part=close-trigger]").nth(num)
   }
 
+  private getToast(num: number) {
+    return this.page.getByRole("status").nth(num)
+  }
+
+  async getToastHeight(num = 0) {
+    const box = await this.getToast(num).boundingBox()
+    return box?.height ?? 0
+  }
+
+  // Grows the content without changing the toast's width, like a late font load
+  async enlargeTitle(num = 0) {
+    await this.getToast(num)
+      .locator("[data-part=title]")
+      .evaluate((el) => {
+        ;(el as HTMLElement).style.fontSize = "2em"
+      })
+  }
+
+  seeAccessibleName(value: string, num = 0) {
+    return expect(this.getToast(num)).toHaveAccessibleName(value)
+  }
+
+  seeAccessibleDescription(value: string, num = 0) {
+    return expect(this.getToast(num)).toHaveAccessibleDescription(value)
+  }
+
+  async dontSeeTitle(num = 0) {
+    const toast = this.getToast(num)
+    await expect(toast.locator("[data-part=title]")).toHaveCount(0)
+    await expect(toast).not.toHaveAttribute("aria-labelledby")
+  }
+
+  async dontSeeDescription(num = 0) {
+    const toast = this.getToast(num)
+    await expect(toast.locator("[data-part=description]")).toHaveCount(0)
+    await expect(toast).not.toHaveAttribute("aria-describedby")
+  }
+
   async clickLoadingToast(times = 1) {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Loading)" }).click())
   }
@@ -31,20 +69,8 @@ export class ToastModel extends Model {
     return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Error)" }).click())
   }
 
-  async clickUpdateLatest() {
-    return this.page.getByRole("button", { name: "Update Latest" }).click()
-  }
-
-  async clickCloseAll() {
-    return this.page.getByRole("button", { name: "Close All" }).click()
-  }
-
-  async clickPauseAll() {
-    return this.page.getByRole("button", { name: "Pause All" }).click()
-  }
-
-  async clickResumeAll() {
-    return this.page.getByRole("button", { name: "Resume All" }).click()
+  async appendToLatestToast(times = 1) {
+    return await repeat(times, () => this.page.getByRole("button", { name: "Append to Latest" }).click())
   }
 
   openDialog() {
@@ -71,6 +97,11 @@ export class ToastModel extends Model {
     return this.getCloseButton(num).click({ force: true })
   }
 
+  // Waits for the toast to settle, so the click can't land on a toast that's still animating in
+  closeNthToast(num: number) {
+    return this.getCloseButton(num).click()
+  }
+
   seeRegionIsFocused() {
     return expect(this.region).toBeFocused()
   }
@@ -84,6 +115,21 @@ export class ToastModel extends Model {
     for (const toast of toasts) {
       await expect(toast).toHaveAttribute("data-paused", "")
     }
+  }
+
+  async seeToastsAreNotPaused() {
+    const toasts = await this.page.getByRole("status").all()
+    for (const toast of toasts) {
+      await expect(toast).not.toHaveAttribute("data-paused")
+    }
+  }
+
+  seeToastIsFocused(num = 0) {
+    return expect(this.getToast(num)).toBeFocused()
+  }
+
+  seeButtonIsFocused(name: string) {
+    return expect(this.page.getByRole("button", { name })).toBeFocused()
   }
 
   async seeToast(title: string) {

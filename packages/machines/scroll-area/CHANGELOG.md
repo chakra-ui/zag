@@ -1,5 +1,33 @@
 # @zag-js/scroll-area
 
+## 1.46.0
+
+### Patch Changes
+
+- [#3419](https://github.com/chakra-ui/zag/pull/3419)
+  [`3e4e068`](https://github.com/chakra-ui/zag/commit/3e4e068e4fadc0f15482ca663f71d1a35be3f6cc) Thanks
+  [@guiepifanio](https://github.com/guiepifanio)! - Fixed issue where `data-dragging` was set on both scrollbars and
+  thumbs when only one axis was dragged.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
+## 1.45.0
+
+### Patch Changes
+
+- Updated dependencies [[`cfb5874`](https://github.com/chakra-ui/zag/commit/cfb5874ed6b1b3128f308ba47aa445d13fe5c631),
+  [`a125167`](https://github.com/chakra-ui/zag/commit/a1251671fcee3e2d3f61ec7cb661dff7cc8ba51c),
+  [`647e225`](https://github.com/chakra-ui/zag/commit/647e225e087f3646a1dffdb02594ca6a11548641)]:
+  - @zag-js/dom-query@1.45.0
+  - @zag-js/utils@1.45.0
+  - @zag-js/core@1.45.0
+  - @zag-js/anatomy@1.45.0
+  - @zag-js/types@1.45.0
+
 ## 1.44.0
 
 ### Patch Changes

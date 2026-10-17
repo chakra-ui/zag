@@ -21,8 +21,8 @@
 </script>
 
 <main class="toc">
-  <div style="display: flex; gap: 2rem;">
-    <nav {...api.getRootProps()}>
+  <div {...api.getRootProps()}>
+    <nav {...api.getNavProps()}>
       <h5 {...api.getTitleProps()}>On this page</h5>
       <ul {...api.getListProps()}>
         {#each tocData as item}

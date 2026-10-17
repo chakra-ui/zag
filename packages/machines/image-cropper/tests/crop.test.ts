@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { clampOffset, computeMoveCrop, computeResizeCrop } from "../src/utils/crop"
+import { clampOffset, computeMoveCrop, computeResizeCrop, constrainCrop, isValidRect } from "../src/utils/crop"
 
 describe("@zag-js/image-cropper crop utils", () => {
   test("computeMoveCrop keeps the crop inside the viewport", () => {
@@ -26,6 +26,44 @@ describe("@zag-js/image-cropper crop utils", () => {
     })
 
     expect(result).toEqual({ x: 100, y: 100, width: 300, height: 150 })
+  })
+
+  test("constrainCrop applies the aspect ratio and keeps the crop inside the viewport", () => {
+    const result = constrainCrop({
+      crop: { x: 450, y: -20, width: 200, height: 50 },
+      viewportRect: { width: 500, height: 300 },
+      minSize: { width: 40, height: 40 },
+      maxSize: { width: Infinity, height: Infinity },
+      aspectRatio: 2,
+    })
+
+    expect(result).toEqual({ x: 400, y: 0, width: 100, height: 50 })
+  })
+
+  test("constrainCrop respects the minimum and maximum size", () => {
+    const viewportRect = { width: 500, height: 300 }
+    const minSize = { width: 40, height: 40 }
+    const maxSize = { width: 300, height: 200 }
+
+    expect(constrainCrop({ crop: { x: 10, y: 10, width: 10, height: 10 }, viewportRect, minSize, maxSize })).toEqual({
+      x: 10,
+      y: 10,
+      width: 40,
+      height: 40,
+    })
+
+    expect(constrainCrop({ crop: { x: 10, y: 10, width: 800, height: 800 }, viewportRect, minSize, maxSize })).toEqual({
+      x: 10,
+      y: 10,
+      width: 300,
+      height: 200,
+    })
+  })
+
+  test("isValidRect rejects non-finite values", () => {
+    expect(isValidRect({ x: 0, y: 0, width: 100, height: 50 })).toBe(true)
+    expect(isValidRect({ x: Number.NaN, y: 0, width: 100, height: 50 })).toBe(false)
+    expect(isValidRect({ x: 0, y: 0, width: Infinity, height: 50 })).toBe(false)
   })
 
   test("clampOffset accounts for the rotated image bounds", () => {

@@ -639,26 +639,30 @@ export const machine = createMachine<TreeViewSchema>({
         }
       },
       syncRenameInput({ context, scope, prop }) {
-        const renamingValue = context.get("renamingValue")
-        if (!renamingValue) return
+        raf(() => {
+          const renamingValue = context.get("renamingValue")
+          if (!renamingValue) return
 
-        const collection = prop("collection")
-        const node = collection.findNode(renamingValue)
-        if (!node) return
+          const collection = prop("collection")
+          const node = collection.findNode(renamingValue)
+          if (!node) return
 
-        const label = collection.stringifyNode(node)
+          const label = collection.stringifyNode(node)
 
-        const inputEl = dom.getRenameInputEl(scope, renamingValue)
-        setElementValue(inputEl, label)
+          const inputEl = dom.getRenameInputEl(scope, renamingValue)
+          setElementValue(inputEl, label)
+        })
       },
       focusRenameInput({ context, scope }) {
-        const renamingValue = context.get("renamingValue")
-        if (!renamingValue) return
+        raf(() => {
+          const renamingValue = context.get("renamingValue")
+          if (!renamingValue) return
 
-        const inputEl = dom.getRenameInputEl(scope, renamingValue)
-        if (!inputEl) return
-        inputEl.focus()
-        inputEl.select()
+          const inputEl = dom.getRenameInputEl(scope, renamingValue)
+          if (!inputEl) return
+          inputEl.focus()
+          inputEl.select()
+        })
       },
     },
   },

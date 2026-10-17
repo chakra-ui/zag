@@ -40,6 +40,13 @@ export function connect<T extends PropTypes>(
   const isFirstPage = page === 1
   const isLastPage = page >= totalPages
 
+  const getTriggerLinkProps = (targetPage: number | null, disabled: boolean) => {
+    if (type !== "link") return
+    if (disabled || targetPage == null) return { role: "link", "aria-disabled": true }
+    if (!getPageUrl) return
+    return { href: getPageUrl({ page: targetPage, pageSize }) }
+  }
+
   const pages = getTransformedRange({
     page,
     totalPages,
@@ -56,6 +63,10 @@ export function connect<T extends PropTypes>(
     previousPage,
     nextPage,
     pageRange,
+    type,
+    getPageUrl(page) {
+      return getPageUrl?.({ page, pageSize })
+    },
     slice(data) {
       return data.slice(pageRange.start, pageRange.end)
     },
@@ -129,11 +140,7 @@ export function connect<T extends PropTypes>(
           send({ type: "PREVIOUS_PAGE" })
         },
         ...(type === "button" && { disabled: isFirstPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl &&
-          previousPage && {
-            href: getPageUrl({ page: previousPage, pageSize }),
-          }),
+        ...getTriggerLinkProps(previousPage, isFirstPage),
       })
     },
 
@@ -148,10 +155,7 @@ export function connect<T extends PropTypes>(
           send({ type: "FIRST_PAGE" })
         },
         ...(type === "button" && { disabled: isFirstPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl && {
-            href: getPageUrl({ page: 1, pageSize }),
-          }),
+        ...getTriggerLinkProps(1, isFirstPage),
       })
     },
 
@@ -166,11 +170,7 @@ export function connect<T extends PropTypes>(
           send({ type: "NEXT_PAGE" })
         },
         ...(type === "button" && { disabled: isLastPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl &&
-          nextPage && {
-            href: getPageUrl({ page: nextPage, pageSize }),
-          }),
+        ...getTriggerLinkProps(nextPage, isLastPage),
       })
     },
 
@@ -185,10 +185,7 @@ export function connect<T extends PropTypes>(
           send({ type: "LAST_PAGE" })
         },
         ...(type === "button" && { disabled: isLastPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl && {
-            href: getPageUrl({ page: totalPages, pageSize }),
-          }),
+        ...getTriggerLinkProps(totalPages, isLastPage),
       })
     },
   }
