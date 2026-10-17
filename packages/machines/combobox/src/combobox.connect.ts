@@ -2,6 +2,7 @@ import {
   ariaAttr,
   dataAttr,
   getEventKey,
+  getModifierKeys,
   isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
@@ -245,7 +246,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", ...getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
@@ -259,7 +260,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                prop("navigate")?.({ value: highlightedValue, node: itemEl, href: itemEl.href })
+                prop("navigate")?.({
+                  value: highlightedValue,
+                  node: itemEl,
+                  href: itemEl.href,
+                  ...getModifierKeys(event),
+                })
               }
             },
             Escape() {
@@ -428,7 +434,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "item-select", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value, ...getModifierKeys(event) })
         },
       })
     },

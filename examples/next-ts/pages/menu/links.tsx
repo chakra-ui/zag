@@ -26,6 +26,9 @@ export default function Page() {
           <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">
             YouTube
           </a>
+          <a {...api.getItemProps({ value: "basic" })} href="/menu/basic">
+            Basic menu
+          </a>
         </div>
       </div>
     </div>

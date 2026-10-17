@@ -6,6 +6,7 @@ import {
   getEventKey,
   getEventPoint,
   getEventTarget,
+  getModifierKeys,
   isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
@@ -122,7 +123,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect })
+        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect, ...getModifierKeys(event) })
       },
     })
   }
@@ -391,8 +392,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             ArrowRight() {
               send({ type: "ARROW_RIGHT" })
             },
-            Enter() {
-              send({ type: "ENTER" })
+            Enter(event) {
+              send({ type: "ENTER", ...getModifierKeys(event) })
             },
             Space(event) {
               if (isTypingAhead) {
@@ -467,7 +468,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect })
+            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect, ...getModifierKeys(event) })
           },
         }),
       }

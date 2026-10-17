@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { MenuModel } from "./models/menu.model"
 
 let I: MenuModel
@@ -29,6 +29,19 @@ test.describe("menu", () => {
     await I.seeItemIsHighlighted("Edit")
     await I.type("E")
     await I.seeItemIsHighlighted("Export")
+  })
+
+  test("onSelect receives the modifier keys of the Enter keydown", async ({ page }) => {
+    const selected = new Promise<any>((resolve) => {
+      page.on("console", async (msg) => {
+        const value = await msg.args()[0]?.jsonValue()
+        if (value && typeof value === "object" && "value" in value) resolve(value)
+      })
+    })
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Shift+Enter")
+    expect(await selected).toMatchObject({ value: "edit", shiftKey: true, metaKey: false })
   })
 
   test("when closeOnSelect=false, stay open on selection", async () => {
@@ -106,5 +119,20 @@ test.describe("menu / overflow", () => {
     await I.seeItemIsHighlighted("Zebra")
     await I.hoverItem("Item 23")
     await I.seeItemIsHighlighted("Item 23")
+  })
+})
+
+test.describe("menu / links", () => {
+  test("modifier + Enter opens the highlighted link in a new tab", async ({ page, context }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/links")
+    await I.clickTrigger()
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Basic menu")
+
+    const [newPage] = await Promise.all([context.waitForEvent("page"), page.keyboard.press("ControlOrMeta+Enter")])
+
+    await expect(newPage).toHaveURL(/\/menu\/basic$/)
+    await expect(page).toHaveURL(/\/menu\/links$/)
   })
 })

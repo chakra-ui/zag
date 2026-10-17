@@ -1,6 +1,7 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { ModifierKeys } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -60,13 +61,13 @@ export interface ScrollToIndexDetails {
   getElement: () => HTMLElement | null
 }
 
-export interface NavigateDetails {
+export interface NavigateDetails extends ModifierKeys {
   value: string
   node: HTMLAnchorElement
   href: string
 }
 
-export interface SelectionDetails {
+export interface SelectionDetails extends ModifierKeys {
   value: string[]
   itemValue: string
 }
