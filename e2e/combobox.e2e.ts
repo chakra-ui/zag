@@ -546,4 +546,19 @@ test.describe("combobox / links", () => {
     const modKey = process.platform === "darwin" ? "metaKey" : "ctrlKey"
     expect(selection).toMatchObject({ itemValue: "/combobox/basic", modifiers: { [modKey]: true, shiftKey: false } })
   })
+
+  test("shift + Enter opens the highlighted link in a new window", async ({ page, context }) => {
+    await page.goto("/combobox/links")
+    const input = page.getByTestId("input")
+    await input.focus()
+    await input.press("ArrowDown")
+
+    const [newPage] = await Promise.all([context.waitForEvent("page"), input.press("Shift+Enter")])
+
+    await expect(newPage).toHaveURL(/\/combobox\/basic$/)
+    await expect(page).toHaveURL(/\/combobox\/links$/)
+
+    const selection = JSON.parse((await page.getByTestId("selection").textContent()) ?? "null")
+    expect(selection).toMatchObject({ itemValue: "/combobox/basic", modifiers: { shiftKey: true } })
+  })
 })

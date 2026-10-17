@@ -214,7 +214,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
+          if (isComposingEvent(event)) return
+          if ((event.ctrlKey || event.shiftKey) && event.key !== "Enter") return
 
           const openOnKeyPress = prop("openOnKeyPress")
           const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
