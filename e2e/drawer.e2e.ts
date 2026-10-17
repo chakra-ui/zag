@@ -156,6 +156,26 @@ test.describe("drawer", () => {
     expect(finalHeight).toBe(initialHeight)
   })
 
+  test("should only block drags on the no-drag axis", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.setNoDragAxis("y")
+    await I.dragNoDragArea("down", 100, 500, false)
+    await I.waitForSnapComplete()
+    expect(await I.getContentVisibleHeight()).toBe(initialHeight)
+    await page.mouse.up()
+
+    await I.setNoDragAxis("x")
+    await I.dragNoDragArea("down", 100, 500, false)
+    await I.waitForSnapComplete()
+    expect(await I.getContentVisibleHeight()).toBeLessThan(initialHeight)
+    await page.mouse.up()
+  })
+
   test("should not start dragging when text is selected in content", async () => {
     await I.clickTrigger()
     await I.seeContent()

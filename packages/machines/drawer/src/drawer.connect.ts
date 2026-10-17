@@ -73,6 +73,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     refs.get("swipeSession").grabberPointerDown({
       event,
       point: getEventPoint(event),
+      swipeDirection: physicalDirection,
       canCommit: () => state.hasTag("open") && !state.matches("closing"),
       onCommit(point) {
         send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })

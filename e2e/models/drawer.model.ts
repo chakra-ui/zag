@@ -121,6 +121,10 @@ export class DrawerModel extends Model {
     })
   }
 
+  setNoDragAxis(axis: "x" | "y") {
+    return this.noDragArea.evaluate((el, value) => el.setAttribute("data-no-drag", value), axis)
+  }
+
   dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
     return mouseSwipe(this.page, this.noDragArea, direction, distance, duration, release)
   }
