@@ -48,8 +48,7 @@ function renderInActivity(machine: Machine<any>) {
 
 describe("React Activity", () => {
   test("a prop changed while hidden is tracked once the Activity is visible again", () => {
-    // Regression test for #3474 — hiding an Activity disconnects effects, and the first `track` run
-    // after they reconnect used to skip the change made while hidden.
+    // Hiding an Activity disconnects effects; the first run after reconnecting must see the change
     const notify = vi.fn()
     const { update } = renderInActivity(watchMachine(notify))
 
