@@ -15,63 +15,73 @@ export type LayerStyleTarget = () => HTMLElement | null
 
 export interface Layer {
   dismiss: VoidFunction
-  node: HTMLElement
+  /** A registration reserves its position before its content mounts. */
+  node: HTMLElement | null
+  /** The owner document is known even while content is pending. */
+  document: Document
+  onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
   styleTargets?: LayerStyleTarget[] | undefined
 }
 
+type LayerTarget = Layer | HTMLElement
+
+export type LayerBranch = HTMLElement | (() => HTMLElement | null)
+
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
 
 export const layerStack = {
   layers: [] as Layer[],
-  branches: [] as HTMLElement[],
+  branches: [] as LayerBranch[],
   recentlyRemoved: new Set<HTMLElement>(),
   count(): number {
     return this.layers.length
   },
-  pointerBlockingLayers(): Layer[] {
-    return this.layers.filter((layer) => layer.pointerBlocking)
+  pointerBlockingLayers(doc?: Document): Layer[] {
+    return this.layers.filter((layer) => layer.node && layer.pointerBlocking && (!doc || layer.document === doc))
   },
-  topMostPointerBlockingLayer(): Layer | undefined {
-    return [...this.pointerBlockingLayers()].slice(-1)[0]
+  topMostPointerBlockingLayer(doc?: Document): Layer | undefined {
+    return this.pointerBlockingLayers(doc).slice(-1)[0]
   },
-  hasPointerBlockingLayer(): boolean {
-    return this.pointerBlockingLayers().length > 0
+  hasPointerBlockingLayer(doc?: Document): boolean {
+    return this.pointerBlockingLayers(doc).length > 0
   },
   isBelowPointerBlockingLayer(node: HTMLElement) {
     const index = this.indexOf(node)
-    const highestBlockingIndex = this.topMostPointerBlockingLayer()
-      ? this.indexOf(this.topMostPointerBlockingLayer()?.node)
-      : -1
+    const highestBlockingIndex = this.indexOf(this.topMostPointerBlockingLayer(node.ownerDocument))
     return index < highestBlockingIndex
   },
   isTopMost(node: HTMLElement | null) {
-    const layer = this.layers[this.count() - 1]
-    return layer?.node === node
+    return !!node && this.topMost(node.ownerDocument)?.node === node
   },
-  getNestedLayers(node: HTMLElement) {
-    return Array.from(this.layers).slice(this.indexOf(node) + 1)
+  topMost(doc: Document) {
+    return [...this.layers].reverse().find((layer) => layer.document === doc)
+  },
+  getNestedLayers(target: LayerTarget) {
+    const index = this.indexOf(target)
+    if (index < 0) return []
+    const doc = this.layers[index].document
+    return this.layers.slice(index + 1).filter((layer) => layer.document === doc)
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
   },
-  getNestedLayersByType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index === -1) return []
-    return this.layers.slice(index + 1).filter((layer) => layer.type === type)
+  getNestedLayersByType(target: LayerTarget, type: LayerType) {
+    return this.getNestedLayers(target).filter((layer) => layer.type === type)
   },
-  getParentLayerOfType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
+  getParentLayerOfType(target: LayerTarget, type: LayerType) {
+    const index = this.indexOf(target)
     if (index <= 0) return undefined
+    const doc = this.layers[index].document
     return this.layers
       .slice(0, index)
       .reverse()
-      .find((layer) => layer.type === type)
+      .find((layer) => layer.type === type && layer.document === doc)
   },
-  countNestedLayersOfType(node: HTMLElement, type: LayerType) {
-    return this.getNestedLayersByType(node, type).length
+  countNestedLayersOfType(target: LayerTarget, type: LayerType) {
+    return this.getNestedLayersByType(target, type).length
   },
   isInNestedLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
     // Check active nested layers
@@ -81,31 +91,41 @@ export const layerStack = {
     // During layer removal, treat all focus events as "inside" to prevent cascading dismissals.
     // This handles the race condition where focus moves during cleanup - we don't want parent
     // layers to dismiss just because focus is transitioning from a closing nested layer.
-    if (this.recentlyRemoved.size > 0) return true
+    if ([...this.recentlyRemoved].some((removed) => removed.ownerDocument === node.ownerDocument)) return true
 
     return false
   },
   isInBranch(target: HTMLElement | EventTarget | null) {
-    return Array.from(this.branches).some((branch) => contains(branch, target))
+    return this.branches.some((branch) => contains(typeof branch === "function" ? branch() : branch, target))
   },
   add(layer: Layer) {
     // Idempotent per DOM node: React Strict Mode (and similar races) can register
     // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
-    const existingIndex = this.indexOf(layer.node)
+    const existingIndex = layer.node ? this.indexOf(layer.node) : this.layers.indexOf(layer)
     if (existingIndex !== -1) {
       this.layers.splice(existingIndex, 1)
     }
     this.layers.push(layer)
     this.syncLayers()
   },
-  addBranch(node: HTMLElement) {
-    this.branches.push(node)
+  attach(layer: Layer, node: HTMLElement | null) {
+    if (this.indexOf(layer) < 0) return
+    // A stale registration must not remove the replacement when its cleanup runs.
+    const duplicate = node ? this.layers.find((item) => item !== layer && item.node === node) : undefined
+    if (duplicate) this.layers.splice(this.layers.indexOf(duplicate), 1)
+    layer.node = node
+    this.syncLayers()
   },
-  remove(node: HTMLElement) {
-    const index = this.indexOf(node)
+  addBranch(branch: LayerBranch) {
+    this.branches.push(branch)
+  },
+  remove(target: LayerTarget) {
+    const index = this.indexOf(target)
     if (index < 0) return
 
     const layer = this.layers[index]
+    const node = layer.node
+    const nested = this.getNestedLayers(layer).map((child) => ({ layer: child, index: this.indexOf(child) }))
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
@@ -116,47 +136,55 @@ export const layerStack = {
     // Track this node as recently removed to handle focus race conditions
     // during layer cleanup. This prevents parent layers from incorrectly
     // dismissing when focus moves from a closing nested layer.
-    this.recentlyRemoved.add(node)
+    if (node) this.recentlyRemoved.add(node)
 
     // Schedule cleanup after two frames to ensure it outlasts any deferred
     // focusin handlers (which also use requestAnimationFrame)
-    nextTick(() => this.recentlyRemoved.delete(node))
+    if (node) nextTick(() => this.recentlyRemoved.delete(node))
 
-    // dismiss nested layers
-    if (index < this.count() - 1) {
-      const _layers = this.getNestedLayers(node)
-      _layers.forEach((layer) => layerStack.dismiss(layer.node, node))
-    }
-
-    // remove this layer
+    // Remove by identity before invoking consumers, which may synchronously remove children.
     this.layers.splice(index, 1)
+    nested.forEach((child) =>
+      this.dismiss(child.layer, node ?? undefined, { originalIndex: child.index, targetIndex: index }),
+    )
     this.syncLayers()
   },
-  removeBranch(node: HTMLElement) {
-    const index = this.branches.indexOf(node)
+  removeBranch(branch: LayerBranch) {
+    const index = this.branches.indexOf(branch)
     if (index >= 0) this.branches.splice(index, 1)
   },
   syncLayers() {
-    this.layers.forEach((layer, index) => {
-      applyLayerStackMetadata(layer, index, layer.node)
+    this.layers.forEach((layer) => {
+      const node = layer.node
+      if (!node) return
+      const doc = layer.document
+      const index = this.layers.filter((item) => item.document === doc).indexOf(layer)
+      applyLayerStackMetadata(layer, index, node)
       layer.styleTargets?.forEach((getTarget) => {
         const target = getTarget()
-        if (!target || target === layer.node) return
+        if (!target || target === node) return
         applyLayerStackMetadata(layer, index, target)
-        const { zIndex } = getComputedStyle(layer.node)
+        const { zIndex } = getComputedStyle(node)
         target.style.setProperty("--z-index", zIndex)
       })
     })
   },
-  indexOf(node: HTMLElement | undefined) {
-    return this.layers.findIndex((layer) => layer.node === node)
+  indexOf(target: LayerTarget | null | undefined) {
+    if (!target) return -1
+    return this.layers.findIndex((layer) => layer === target || layer.node === target)
   },
-  dismiss(node: HTMLElement, parent?: HTMLElement) {
+  dismiss(target: LayerTarget, parent?: HTMLElement, indices?: { originalIndex: number; targetIndex: number }) {
     // Create and dispatch the preventable event
-    const index = this.indexOf(node)
+    const index = this.indexOf(target)
     if (index === -1) return
 
     const layer = this.layers[index]
+    const node = layer.node
+    // DOM request-dismiss events require mounted content. Pending children can still close.
+    if (!node) {
+      layer.dismiss()
+      return
+    }
 
     addListenerOnce(node, LAYER_REQUEST_DISMISS_EVENT, (event) => {
       layer.requestDismiss?.(event)
@@ -168,14 +196,15 @@ export const layerStack = {
     fireCustomEvent(node, LAYER_REQUEST_DISMISS_EVENT, {
       originalLayer: node,
       targetLayer: parent,
-      originalIndex: index,
-      targetIndex: parent ? this.indexOf(parent) : -1,
+      originalIndex: indices?.originalIndex ?? index,
+      targetIndex: indices?.targetIndex ?? (parent ? this.indexOf(parent) : -1),
     })
 
     this.syncLayers()
   },
   clear() {
-    this.remove(this.layers[0].node)
+    const first = this.layers[0]
+    if (first) this.remove(first)
   },
 }
 
@@ -185,12 +214,12 @@ function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {
   el.removeAttribute("data-nested")
   el.removeAttribute("data-has-nested")
 
-  const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
+  const parentOfSameType = layerStack.getParentLayerOfType(layer, layer.type)
   if (parentOfSameType) {
     el.setAttribute("data-nested", layer.type)
   }
 
-  const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+  const nestedCount = layerStack.countNestedLayersOfType(layer, layer.type)
   if (nestedCount > 0) {
     el.setAttribute("data-has-nested", layer.type)
   }

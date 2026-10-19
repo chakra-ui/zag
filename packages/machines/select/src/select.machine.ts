@@ -464,6 +464,7 @@ export const machine = createMachine<SelectSchema>({
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
+          getRootNode: scope.getRootNode,
           type: "listbox",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

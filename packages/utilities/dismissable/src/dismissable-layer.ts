@@ -1,4 +1,4 @@
-import { contains, getEventTarget, isHTMLElement, whenNode } from "@zag-js/dom-query"
+import { contains, getDocument, getEventTarget, isHTMLElement, raf } from "@zag-js/dom-query"
 import {
   trackInteractOutside,
   type FocusOutsideEvent,
@@ -6,8 +6,9 @@ import {
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
 import { warn, type MaybeFunction } from "@zag-js/utils"
-import { trackEscapeKeydown } from "./escape-keydown"
+import { trackLayerEscape } from "./layer-escape"
 import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
+import { observeNode } from "./observe-node"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
@@ -35,6 +36,8 @@ export interface PersistentElementOptions {
 }
 
 export interface DismissableElementOptions extends DismissableElementHandlers, PersistentElementOptions {
+  /** The root containing the content. Used before the content mounts to register Escape. */
+  getRootNode?: (() => Document | ShadowRoot | Element) | undefined
   /**
    * Extra elements that receive the same layer stack CSS vars, `data-*`, and `--z-index`
    * (from the primary node's computed `z-index`) as the dismissable node
@@ -71,30 +74,14 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   type?: LayerType | undefined
 }
 
-function trackDismissableElementImpl(node: HTMLElement, options: DismissableElementOptions) {
-  const {
-    onDismiss,
-    onRequestDismiss,
-    pointerBlocking,
-    exclude: excludeContainers,
-    debug,
-    type = "dialog",
-    layerStyleTargets,
-  } = options
+function attachDismissableElement(layer: Layer, node: HTMLElement, options: DismissableElementOptions) {
+  const { onDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
 
-  const layer: Layer = {
-    dismiss: onDismiss,
-    node,
-    type,
-    pointerBlocking,
-    requestDismiss: onRequestDismiss,
-    styleTargets: layerStyleTargets,
-  }
-
-  layerStack.add(layer)
+  layerStack.attach(layer, node)
   assignPointerEventToLayers()
 
   function onPointerDownOutside(event: PointerDownOutsideEvent) {
+    if (layerStack.indexOf(layer) < 0 || layer.node !== node) return
     const target = getEventTarget(event.detail.originalEvent)
     if (layerStack.isBelowPointerBlockingLayer(node) || layerStack.isInBranch(target)) return
     options.onPointerDownOutside?.(event)
@@ -107,6 +94,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   function onFocusOutside(event: FocusOutsideEvent) {
+    if (layerStack.indexOf(layer) < 0 || layer.node !== node) return
     const target = getEventTarget(event.detail.originalEvent)
     if (layerStack.isInBranch(target)) return
     options.onFocusOutside?.(event)
@@ -118,15 +106,6 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     onDismiss?.()
   }
 
-  function onEscapeKeyDown(event: KeyboardEvent) {
-    if (!layerStack.isTopMost(node)) return
-    options.onEscapeKeyDown?.(event)
-    if (!event.defaultPrevented && onDismiss) {
-      event.preventDefault()
-      onDismiss()
-    }
-  }
-
   function exclude(target: Element) {
     const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
     const _containers = Array.isArray(containers) ? containers : [containers]
@@ -136,43 +115,72 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   const cleanups = [
-    pointerBlocking ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
-    trackEscapeKeydown(node, onEscapeKeyDown),
+    pointerBlocking
+      ? disablePointerEventsOutside(node, options.persistentElements, options.getRootNode?.())
+      : undefined,
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]
 
   return () => {
-    layerStack.remove(node)
-    // re-assign pointer event to remaining layers
-    assignPointerEventToLayers()
-    // remove pointer event from removed layer
+    if (layer.node === node) layerStack.attach(layer, null)
     clearPointerEvent(node)
     cleanups.forEach((fn) => fn?.())
+    assignPointerEventToLayers()
   }
 }
 
 export function trackDismissableElement(nodeOrFn: NodeOrFn, options: DismissableElementOptions) {
   const { warnOnMissingNode = true } = options
-  // `defer` gates node resolution only — escape dismissal is dead until the layer is on
-  // the stack, so registration must not wait a frame longer than the node does.
-  return whenNode(nodeOrFn, (node) => trackDismissableElementImpl(node, options), {
+  const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
+  const root = options.getRootNode?.() ?? getDocument(getNode())
+  const doc = getDocument(root)
+  const layer: Layer = {
+    node: null,
+    document: doc,
+    type: options.type ?? "dialog",
+    dismiss: options.onDismiss,
+    requestDismiss: options.onRequestDismiss,
+    pointerBlocking: options.pointerBlocking,
+    styleTargets: options.layerStyleTargets,
+    onEscapeKeyDown(event) {
+      options.onEscapeKeyDown?.(event)
+      if (event.defaultPrevented) return
+      event.preventDefault()
+      options.onDismiss()
+    },
+  }
+
+  // Opening order is independent of rendering order. Escape is live even while node is null.
+  layerStack.add(layer)
+  const stopEscape = trackLayerEscape(doc)
+  const stopNode = observeNode(getNode, {
+    attach: (node) => attachDismissableElement(layer, node, options),
+    getRootNode: () => root,
     defer: options.defer,
     onMissing: warnOnMissingNode ? () => warn("[@zag-js/dismissable] node is `null` or `undefined`") : undefined,
   })
+
+  let disposed = false
+  return () => {
+    if (disposed) return
+    disposed = true
+    layerStack.remove(layer)
+    stopEscape()
+    stopNode()
+  }
 }
 
 export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean | undefined } = {}) {
-  return whenNode(
-    nodeOrFn,
-    (node) => {
-      layerStack.addBranch(node)
-      return () => {
-        layerStack.removeBranch(node)
-      }
-    },
-    {
-      defer: options.defer,
-      onMissing: () => warn("[@zag-js/dismissable] branch node is `null` or `undefined`"),
-    },
-  )
+  // Resolved at event time, so late mounts and replaced nodes need no observation.
+  const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
+  layerStack.addBranch(getNode)
+  const checkMissing = () => {
+    if (!getNode()) warn("[@zag-js/dismissable] branch node is `null` or `undefined`")
+  }
+  if (!options.defer) checkMissing()
+  const cancelWarning = options.defer ? raf(checkMissing) : undefined
+  return () => {
+    cancelWarning?.()
+    layerStack.removeBranch(getNode)
+  }
 }

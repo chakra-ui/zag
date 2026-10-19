@@ -615,6 +615,7 @@ export const machine = createMachine<MenuSchema>({
         }
 
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
           type: "menu",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

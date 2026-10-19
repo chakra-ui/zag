@@ -269,6 +269,7 @@ export const machine = createMachine<HoverCardSchema>({
       trackDismissableElement({ send, scope, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
           type: "popover",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

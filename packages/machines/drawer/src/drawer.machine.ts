@@ -721,6 +721,7 @@ export const machine = createMachine<DrawerSchema>({
       trackDismissableElement({ scope, prop, send }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
           type: "drawer",
           defer: true,
           pointerBlocking: prop("modal"),

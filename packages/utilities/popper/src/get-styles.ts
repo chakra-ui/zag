@@ -49,9 +49,17 @@ export function getPlacementStyles(
       pointerEvents: !placement ? "none" : undefined,
       top: "0px",
       left: "0px",
-      // move off-screen if placement is not defined
-      transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
+      transform: getFloatingTransform(placement, applyStyles),
       zIndex: applyStyles === false ? "var(--z-index)" : undefined,
     } as const,
   }
+}
+
+function getFloatingTransform(placement: Placement | undefined, applyStyles: boolean) {
+  // move off-screen if placement is not defined
+  if (!placement) return "translate3d(0, -100vh, 0)"
+  // With `applyStyles: false`, consumers own `--x`/`--y`
+  if (!applyStyles) return "translate3d(var(--x), var(--y), 0)"
+  // Keep newly mounted content off-screen until its coordinates are available
+  return "translate3d(var(--x, 0), var(--y, -100vh), 0)"
 }

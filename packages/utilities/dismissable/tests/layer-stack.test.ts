@@ -19,6 +19,7 @@ function createLayer(
   return compact({
     type,
     node,
+    document: node.ownerDocument,
     pointerBlocking,
     dismiss,
     requestDismiss,
@@ -38,7 +39,7 @@ function nextTick() {
 function resetStack() {
   while (layerStack.count() > 0) {
     const first = layerStack.layers[0]
-    if (first) layerStack.remove(first.node)
+    if (first) layerStack.remove(first)
   }
   while (layerStack.branches.length > 0) {
     const b = layerStack.branches[0]

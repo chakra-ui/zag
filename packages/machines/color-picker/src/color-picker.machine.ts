@@ -391,6 +391,7 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
           type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
