@@ -252,10 +252,60 @@ describe("dismissable layer lifecycle", () => {
     expect(layerStack.layers[0].node).toBe(replacement)
   })
 
-  test("closing a pending parent dismisses its pending child", () => {
-    const parent = track(() => null)
-    const child = track(() => null)
+  test("keeps layers without a trigger open when an earlier layer closes", async () => {
+    const parent = track(mount())
+    // e.g. a button in the parent opens a dialog from code, then closes the parent
+    const pending = track(() => null)
+    const mounted = track(mount())
+    await commit()
+
     parent.cleanup()
+
+    expect(pending.dismiss).not.toHaveBeenCalled()
+    expect(mounted.dismiss).not.toHaveBeenCalled()
+  })
+
+  test("keeps a layer opened from outside open when an earlier layer closes", async () => {
+    const parent = track(mount())
+    const siblingTrigger = mount()
+    const mounted = track(mount(), { getTriggerEl: () => siblingTrigger })
+    const pending = track(() => null, { getTriggerEl: () => siblingTrigger })
+    await commit()
+
+    parent.cleanup()
+
+    expect(mounted.dismiss).not.toHaveBeenCalled()
+    expect(pending.dismiss).not.toHaveBeenCalled()
+  })
+
+  test("closes layers opened from inside a closing layer, including their own children", async () => {
+    const parentNode = mount()
+    const childTrigger = mount(parentNode)
+    const childNode = mount()
+    const grandchildTrigger = mount(childNode)
+
+    const parent = track(parentNode)
+    const child = track(childNode, { getTriggerEl: () => childTrigger })
+    const grandchild = track(mount(), { getTriggerEl: () => grandchildTrigger })
+    await commit()
+
+    parent.cleanup()
+
+    expect(child.dismiss).toHaveBeenCalledOnce()
+    expect(grandchild.dismiss).toHaveBeenCalledOnce()
+  })
+
+  test("closes a child whose trigger was removed along with the parent's content", async () => {
+    const parentNode = mount()
+    const trigger = mount(parentNode)
+    const parent = track(parentNode)
+    // Like an id lookup, the getter finds nothing once the trigger leaves the document
+    const child = track(mount(), { getTriggerEl: () => (trigger.isConnected ? trigger : null) })
+    await commit()
+
+    parentNode.remove()
+    parent.cleanup()
+
     expect(child.dismiss).toHaveBeenCalledOnce()
   })
 
@@ -278,7 +328,8 @@ describe("dismissable layer lifecycle", () => {
     const node = mount()
     const parent = track(node)
     const onRequestDismiss = vi.fn((event) => event.preventDefault())
-    const child = track(mount(), { onRequestDismiss })
+    const trigger = mount(node)
+    const child = track(mount(), { onRequestDismiss, getTriggerEl: () => trigger })
     await commit()
     parent.cleanup()
     expect(onRequestDismiss).toHaveBeenCalledOnce()

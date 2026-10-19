@@ -20,6 +20,8 @@ export interface Layer {
   /** The owner document is known even while content is pending. */
   document: Document
   onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
+  /** The element that opened the layer, used to tell nested layers from unrelated ones. */
+  getTriggerEl?: (() => Element | null) | undefined
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
@@ -64,6 +66,21 @@ export const layerStack = {
     if (index < 0) return []
     const doc = this.layers[index].document
     return this.layers.slice(index + 1).filter((layer) => layer.document === doc)
+  },
+  /** Layers that close along with `target`: those whose trigger is inside it or inside another layer it owns. */
+  getOwnedLayers(target: LayerTarget) {
+    const index = this.indexOf(target)
+    if (index < 0) return []
+
+    const parent = this.layers[index]
+    const owned: Layer[] = []
+
+    for (const layer of this.layers.slice(index + 1)) {
+      if (layer.document !== parent.document) continue
+      if (isOpenedFrom(layer, parent, owned)) owned.push(layer)
+    }
+
+    return owned
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
@@ -125,7 +142,7 @@ export const layerStack = {
 
     const layer = this.layers[index]
     const node = layer.node
-    const nested = this.getNestedLayers(layer).map((child) => ({ layer: child, index: this.indexOf(child) }))
+    const nested = this.getOwnedLayers(layer).map((child) => ({ layer: child, index: this.indexOf(child) }))
     layer.styleTargets?.forEach((getTarget) => {
       const target = getTarget()
       if (target) {
@@ -206,6 +223,13 @@ export const layerStack = {
     const first = this.layers[0]
     if (first) this.remove(first)
   },
+}
+
+// Without a trigger there's no evidence of ownership, so the layer stays independent.
+function isOpenedFrom(layer: Layer, parent: Layer, owned: Layer[]) {
+  const trigger = layer.getTriggerEl?.()
+  if (!trigger) return false
+  return [parent, ...owned].some((owner) => contains(owner.node, trigger))
 }
 
 function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {

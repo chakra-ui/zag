@@ -668,6 +668,7 @@ export const machine = createMachine({
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
           getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getControlEl(scope) ?? dom.getInputEl(scope),
           type: "listbox",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

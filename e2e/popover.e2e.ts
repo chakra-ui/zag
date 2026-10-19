@@ -171,3 +171,20 @@ test.describe("popover / lazy mount", () => {
     await I.seeContentIsLabelled()
   })
 })
+
+for (const variant of ["multiple-controlled", "multiple-uncontrolled"]) {
+  test(`[${variant}] pressing a sibling trigger switches to its popover`, async ({ page }) => {
+    test.skip(!!process.env.FRAMEWORK && !["react", "preact"].includes(process.env.FRAMEWORK), "React/Preact example")
+
+    await page.goto(`/popover/${variant}`)
+    const triggers = page.locator('[data-scope="popover"][data-part="trigger"]')
+
+    await triggers.nth(0).click()
+    await expect(triggers.nth(0)).toHaveAttribute("aria-expanded", "true")
+
+    // Closing the first popover must not take the second one down with it
+    await triggers.nth(1).click()
+    await expect(triggers.nth(0)).toHaveAttribute("aria-expanded", "false")
+    await expect(triggers.nth(1)).toHaveAttribute("aria-expanded", "true")
+  })
+}

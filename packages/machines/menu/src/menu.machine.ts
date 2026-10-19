@@ -616,6 +616,12 @@ export const machine = createMachine<MenuSchema>({
 
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
+          getTriggerEl: () => {
+            const value = context.get("triggerValue")
+            // A context menu is opened from its context trigger
+            if (context.get("anchorPoint")) return dom.getActiveContextTriggerEl(scope, value)
+            return dom.getActiveTriggerEl(scope, value)
+          },
           type: "menu",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

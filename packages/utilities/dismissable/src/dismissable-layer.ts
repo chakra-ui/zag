@@ -39,6 +39,12 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   /** The root containing the content. Used before the content mounts to register Escape. */
   getRootNode?: (() => Document | ShadowRoot | Element) | undefined
   /**
+   * The element that opens the layer, such as its trigger. When another layer closes,
+   * this layer closes with it only if this element is inside it. Without one, the layer
+   * is never closed by another layer closing.
+   */
+  getTriggerEl?: (() => Element | null) | undefined
+  /**
    * Extra elements that receive the same layer stack CSS vars, `data-*`, and `--z-index`
    * (from the primary node's computed `z-index`) as the dismissable node
    * (e.g. dialog backdrop + positioner when the node is content).
@@ -134,6 +140,8 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
   const root = options.getRootNode?.() ?? getDocument(getNode())
   const doc = getDocument(root)
+  // Kept so ownership survives the trigger being removed along with its parent's content
+  const initialTrigger = options.getTriggerEl?.() ?? null
   const layer: Layer = {
     node: null,
     document: doc,
@@ -142,6 +150,7 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
     requestDismiss: options.onRequestDismiss,
     pointerBlocking: options.pointerBlocking,
     styleTargets: options.layerStyleTargets,
+    getTriggerEl: () => options.getTriggerEl?.() ?? initialTrigger,
     onEscapeKeyDown(event) {
       options.onEscapeKeyDown?.(event)
       if (event.defaultPrevented) return

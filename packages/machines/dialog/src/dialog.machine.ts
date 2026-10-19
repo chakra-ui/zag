@@ -126,10 +126,11 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
-      trackDismissableElement({ scope, send, prop }) {
+      trackDismissableElement({ scope, send, prop, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
           type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),

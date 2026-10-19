@@ -266,10 +266,11 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
 
-      trackDismissableElement({ send, scope, prop }) {
+      trackDismissableElement({ send, scope, prop, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
           type: "popover",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

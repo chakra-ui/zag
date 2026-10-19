@@ -49,8 +49,15 @@ that prevent dismissal. The machine leaving its open state owns cleanup.
 - Attaching, detaching or replacing content does not reorder or remove the registration, and does not dismiss children.
 - Separate documents have independent top registrations, nesting metadata and pointer blocking. Layers in the same
   document, including shadow roots, share Escape arbitration.
-- Nesting is inferred from opening order, not from an ownership tree. Removing a layer dismisses the layers opened after
-  it in the same document.
+- Removing a layer dismisses only the later layers it owns: those whose trigger (`getTriggerEl`) is inside it or inside
+  another owned layer. Closing is destructive, so ownership needs that evidence. A layer without a trigger, such as a
+  dialog opened from code, stays independent; its own outside-press and Escape handling still close it.
+- The trigger is read when the layer opens and again when its parent closes, so ownership survives the parent's content
+  (and the trigger in it) being removed first. Popovers fall back to their anchor; context menus use their context
+  trigger.
+- This keeps a sibling popover open when pressing its trigger closes the previous one, and keeps a dialog open when the
+  button that opened it also closes its popover or menu.
+- Click-inside checks, nesting metadata and pointer blocking stay order-based.
 
 ## DOM attachment
 

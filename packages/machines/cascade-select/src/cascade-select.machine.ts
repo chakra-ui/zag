@@ -606,6 +606,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
           getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getControlEl(scope) ?? dom.getTriggerEl(scope),
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
