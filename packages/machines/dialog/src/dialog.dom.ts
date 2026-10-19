@@ -33,3 +33,19 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
   }
   return ctx.getById(getTriggerId(ctx, value))
 }
+
+interface ReturnFocusOptions {
+  finalFocusEl: (() => HTMLElement | null) | undefined
+  triggerValue: string | null
+}
+
+/** Where focus goes when the dialog closes: `finalFocusEl`, then the active trigger, then any trigger. */
+export const getReturnFocusEl = (ctx: Scope, options: ReturnFocusOptions): HTMLElement | null => {
+  const finalFocusEl = options.finalFocusEl?.()
+  if (finalFocusEl) return finalFocusEl
+  if (options.triggerValue) {
+    const activeTriggerEl = getActiveTriggerEl(ctx, options.triggerValue)
+    if (activeTriggerEl) return activeTriggerEl
+  }
+  return getTriggerEls(ctx)[0] ?? null
+}
