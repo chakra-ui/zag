@@ -20,11 +20,11 @@
 
     &[data-type="info"] {
       background: var(--colors-bg-popover);
-      color: var(--colors-fg);
+      color: var(--colors-text);
     }
 
     &[data-type="success"] {
-      color: #ffffff;
+      color: var(--colors-text-inverse);
       background: var(--colors-bg-primary-bold);
     }
 

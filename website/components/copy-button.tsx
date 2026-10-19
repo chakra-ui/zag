@@ -1,3 +1,5 @@
+"use client"
+
 import { Icon } from "components/ui/icon"
 import { useState, type JSX } from "react"
 import { HiCheck, HiOutlineClipboardCopy } from "react-icons/hi"

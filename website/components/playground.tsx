@@ -44,12 +44,15 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
     <HStack
       gap="1"
       as="button"
-      bg="#1574ef"
-      color="white"
+      bg="bg"
+      color="text"
       fontSize="sm"
       px="2"
       py="1"
-      shadow="inset 0 0 0 1px var(--colors-white-alpha-300)"
+      borderWidth="1px"
+      borderColor="border"
+      cursor="pointer"
+      _hover={{ bg: "bg.muted" }}
       onClick={() => {
         openInStackblitz(name, defaultProps)
       }}
@@ -88,9 +91,18 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       pos="relative"
       minHeight="24em"
       my="16"
-      borderColor="border-subtle"
+      borderColor="border.subtle"
     >
-      <Box pos="absolute" bottom="2" right="2">
+      {/* pinned in the corner beside the preview; on phones the panel stacks
+          below the preview, so the button follows it instead of covering it */}
+      <Box
+        pos={{ md: "absolute" }}
+        bottom="2"
+        right="2"
+        order={{ base: 1, md: 0 }}
+        alignSelf={{ base: "flex-end", md: "auto" }}
+        m={{ base: "2", md: "0" }}
+      >
         <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
       </Box>
 

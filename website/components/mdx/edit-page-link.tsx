@@ -1,25 +1,31 @@
-import { Icon } from "components/ui/icon"
-import { HiPencilAlt } from "react-icons/hi"
-import { styled } from "styled-system/jsx"
+import { LuPencilLine } from "react-icons/lu"
+import { css } from "styled-system/css"
 
-const StyledLink = styled("a", {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "1",
-    textStyle: "a",
-    fontSize: "sm",
-    mt: "14",
+const linkStyles = css({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "2",
+  textStyle: "sm",
+  color: "text.muted",
+  transition: "color 0.15s",
+  _hover: { color: "text" },
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "green.500",
+    outlineOffset: "2px",
   },
 })
 
-type EditPageLinkProps = React.ComponentProps<typeof StyledLink>
-
-export const EditPageLink = (props: EditPageLinkProps) => {
+export function EditPageLink(props: { href: string }) {
   return (
-    <StyledLink {...props}>
-      <Icon as={HiPencilAlt} />
-      {props.children}
-    </StyledLink>
+    <a
+      href={props.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={linkStyles}
+    >
+      <LuPencilLine size={15} aria-hidden />
+      Edit this page on GitHub
+    </a>
   )
 }

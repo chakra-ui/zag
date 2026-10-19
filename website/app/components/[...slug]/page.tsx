@@ -1,11 +1,8 @@
-import {
-  extractParams,
-  getComponentDoc,
-  getComponentPaths,
-} from "lib/contentlayer-utils"
+import { extractParams, getComponentDoc, getComponentPaths } from "lib/source"
+import { isFramework } from "lib/framework-utils"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import ComponentPageClient from "./client"
+import { DocPage } from "components/doc-page"
 
 type PageProps = {
   params: Promise<{ slug: string[] }>
@@ -24,6 +21,7 @@ export async function generateMetadata({
     title: doc.title,
     description: doc.description,
     path: `/components/${componentSlug}`,
+    image: `/og/components/${componentSlug}.png`,
   })
 }
 
@@ -38,5 +36,11 @@ export default async function ComponentPage({ params }: PageProps) {
   const { framework, slug: componentSlug } = extractParams(slug)
   const doc = getComponentDoc(componentSlug)
 
-  return <ComponentPageClient doc={doc} framework={framework} />
+  return (
+    <DocPage
+      category="components"
+      doc={doc}
+      framework={isFramework(slug[0]) ? framework : undefined}
+    />
+  )
 }

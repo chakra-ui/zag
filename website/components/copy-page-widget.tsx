@@ -197,7 +197,7 @@ const itemStyles = css({
   textAlign: "left",
   _highlighted: {
     bg: "bg.primary.bold",
-    color: "white",
+    color: "text.inverse",
   },
 })
 

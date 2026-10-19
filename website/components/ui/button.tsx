@@ -16,7 +16,7 @@ const buttonRecipe = cva({
     variant: {
       green: {
         bg: "bg.primary.subtle",
-        color: "white",
+        color: "text.inverse",
         _hover: {
           bg: "bg.primary.bold",
         },

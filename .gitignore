@@ -185,6 +185,7 @@ public/feed.xml
 
 # Velite
 .velite
+.source
 
 ## Panda
 styled-system
