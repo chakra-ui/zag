@@ -62,6 +62,29 @@ describe("trackDismissableElement", () => {
 
   // the real-world path: machine effects run before the framework commits the content,
   // so the node is always null at call time and only appears in the following render
+  // content mounted through presence (lazyMount / unmountOnExit) commits one render later,
+  // after the microtask check: Escape pressed before the next frame must still dismiss
+  test("dismisses on Escape before the next frame when the node commits after the microtask", async () => {
+    let node: HTMLElement | null = null
+    const onDismiss = vi.fn()
+
+    const cleanup = trackDismissableElement(() => node, {
+      defer: true,
+      onDismiss,
+      warnOnMissingNode: false,
+    })
+
+    await Promise.resolve()
+    node = mountNode()
+    await Promise.resolve()
+
+    expect(layerStack.isTopMost(node)).toBe(true)
+    pressEscape()
+    expect(onDismiss).toHaveBeenCalledTimes(1)
+
+    cleanup()
+  })
+
   test("registers on the microtask tick, without waiting a frame, once the node commits", async () => {
     let node: HTMLElement | null = null
     const onDismiss = vi.fn()

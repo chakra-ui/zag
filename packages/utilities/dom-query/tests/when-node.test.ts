@@ -70,6 +70,60 @@ describe("whenNode", () => {
     expect(fn).toHaveBeenCalledWith(node)
   })
 
+  // content mounted through presence (lazyMount / unmountOnExit) commits one render after the
+  // effect, i.e. after the microtask check, and shouldn't have to wait for the next frame
+  test("runs as soon as the node commits after the microtask, without waiting a frame", async () => {
+    let node: HTMLElement | null = null
+    const fn = vi.fn()
+
+    whenNode(() => node, fn, { defer: true })
+
+    await Promise.resolve()
+    expect(fn).not.toHaveBeenCalled()
+
+    node = mountNode()
+    await Promise.resolve()
+
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith(node)
+
+    // the frame fallback must not run setup a second time
+    await raf()
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  test("still falls back to a frame when the node appears without a document mutation", async () => {
+    let node: HTMLElement | null = null
+    const fn = vi.fn()
+
+    whenNode(() => node, fn, { defer: true })
+    await Promise.resolve()
+
+    // e.g. a node in a shadow root or another document, which the observer doesn't see
+    node = document.createElement("div")
+    await Promise.resolve()
+    expect(fn).not.toHaveBeenCalled()
+
+    await raf()
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith(node)
+  })
+
+  test("cleanup stops watching for a node that commits after the microtask", async () => {
+    let node: HTMLElement | null = null
+    const fn = vi.fn()
+
+    const cleanup = whenNode(() => node, fn, { defer: true })
+    await Promise.resolve()
+    cleanup()
+
+    node = mountNode()
+    await Promise.resolve()
+    await raf()
+
+    expect(fn).not.toHaveBeenCalled()
+  })
+
   test("never calls fn without a node, and reports via onMissing", async () => {
     const fn = vi.fn()
     const onMissing = vi.fn()
