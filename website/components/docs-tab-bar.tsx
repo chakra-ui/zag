@@ -11,26 +11,35 @@ import { FrameworkSelect } from "./framework-select"
 import { Icon } from "./ui/icon"
 
 const tabLink = css({
+  position: "relative",
   display: "inline-flex",
   alignItems: "center",
   gap: "2",
   h: "full",
-  textStyle: "sm",
-  fontWeight: "medium",
+  fontSize: "13px",
   color: "text.muted",
-  borderBottomWidth: "2px",
-  borderBottomColor: "transparent",
-  transition: "color 0.2s",
-  _hover: { color: "text" },
+  transition: "color 120ms",
+  "& svg": { boxSize: "3.5", opacity: "0.7" },
+  _hover: { color: "text.bold" },
   _currentPage: {
-    color: "text",
-    fontWeight: "semibold",
-    borderBottomColor: "green.500",
+    color: "text.bold",
+    "& svg": { opacity: "1" },
+    _after: {
+      content: '""',
+      position: "absolute",
+      left: "0",
+      right: "0",
+      bottom: "-1px",
+      h: "1px",
+      bg: "text.bold",
+    },
   },
-  _focusVisible: {
+  outline: "none",
+  "&:focus-visible > span": {
     outline: "2px solid",
-    outlineColor: "green.500",
-    outlineOffset: "-2px",
+    outlineColor: "border.primary.bold",
+    outlineOffset: "4px",
+    rounded: "xs",
   },
 })
 
@@ -50,9 +59,11 @@ export function DocsTabBar() {
 
   return (
     <Box
-      bg="bg.subtle"
+      bg="bg/80"
+      backdropFilter="auto"
+      backdropBlur="md"
       borderBottomWidth="1px"
-      borderBottomColor="border.subtle"
+      borderBottomColor="border"
       hideBelow="lg"
     >
       <Flex
@@ -65,7 +76,7 @@ export function DocsTabBar() {
         alignItems="stretch"
         justifyContent="space-between"
       >
-        <HStack gap="6" alignItems="stretch">
+        <HStack gap="6" alignItems="stretch" h="full">
           {tabs.map((tab) => (
             <Link
               key={tab.id}
@@ -74,7 +85,7 @@ export function DocsTabBar() {
               aria-current={tab.id === active.id ? "page" : undefined}
             >
               <Icon as={tab.icon} />
-              {tab.label}
+              <span>{tab.label}</span>
             </Link>
           ))}
         </HStack>

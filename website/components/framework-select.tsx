@@ -31,22 +31,30 @@ export function FrameworkSelect() {
 
   return (
     <HStack>
-      <styled.span fontWeight="medium" fontSize="sm">
-        Framework:
+      <styled.span
+        fontFamily="mono"
+        fontSize="11px"
+        textTransform="uppercase"
+        letterSpacing="0.12em"
+        color="text.muted"
+      >
+        Framework
       </styled.span>
       <styled.button
         display="flex"
         alignItems="center"
         gap="1.5"
+        h="7"
         borderWidth="1px"
-        rounded="sm"
-        fontSize="sm"
-        px="2"
-        py="1"
-        fontWeight="semibold"
+        borderColor="border"
+        rounded="full"
+        fontFamily="mono"
+        fontSize="12px"
+        px="3"
         cursor="pointer"
-        bg="bg"
-        color="text"
+        bg="transparent"
+        color="text.bold"
+        _hover={{ borderColor: "border.bold" }}
         {...api.getTriggerProps()}
       >
         <Icon as={current.icon} aria-hidden />
@@ -60,13 +68,16 @@ export function FrameworkSelect() {
             <Stack
               width="180px"
               zIndex="1000"
-              fontSize="sm"
+              fontSize="13px"
               bg="bg"
-              padding="2"
+              padding="1"
               gap="0"
               isolation="isolate"
               listStyleType="none"
-              boxShadow="md"
+              borderWidth="1px"
+              borderColor="border.bold"
+              rounded="md"
+              boxShadow="lg"
               outline="0"
               {...api.getContentProps()}
             >
@@ -82,14 +93,13 @@ export function FrameworkSelect() {
                     display: "flex",
                     alignItems: "center",
                     gap: "2",
-                    px: "0.5rem",
-                    py: "0.25rem",
+                    px: "2",
+                    py: "1.5",
+                    rounded: "sm",
                     cursor: "pointer",
-                    _checked: { fontWeight: "semibold" },
-                    _highlighted: {
-                      bg: "bg.primary.bold",
-                      color: "text.inverse",
-                    },
+                    color: "text.muted",
+                    _checked: { color: "text.bold" },
+                    _highlighted: { bg: "bg.muted", color: "text.bold" },
                   })}
                 >
                   <Icon as={value.icon} aria-hidden />

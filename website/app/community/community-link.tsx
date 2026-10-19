@@ -33,7 +33,7 @@ export function CommunityLink(props: { link: CommunityLinkItem }) {
         <styled.span
           mt="0.5"
           flexShrink="0"
-          color="text.primary.bold"
+          color="text.muted"
           _icon={{ boxSize: "5" }}
           aria-hidden
         >

@@ -56,8 +56,7 @@ export function RecordingItem(props: RecordingItemProps) {
           aspectRatio="16/9"
           overflow="hidden"
           className={css({
-            background:
-              "linear-gradient(135deg, token(colors.green.200/30), token(colors.blue.200/30))",
+            background: "token(colors.bg.muted)",
           })}
         >
           {thumbnail ? (
@@ -113,7 +112,7 @@ export function RecordingItem(props: RecordingItemProps) {
           placeItems="center"
           flexShrink={0}
         >
-          <styled.span _icon={{ color: "text.primary.bold", boxSize: "5" }}>
+          <styled.span _icon={{ color: "text.muted", boxSize: "5" }}>
             <FaYoutube />
           </styled.span>
         </Box>

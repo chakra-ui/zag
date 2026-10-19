@@ -14,38 +14,61 @@ export function NavLinks() {
           href={link.href}
           aria-current={link.isActive(pathname) ? "page" : undefined}
           className={css({
-            fontWeight: "medium",
-            textStyle: "sm",
-            _hover: { color: "text" },
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            h: "full",
+            fontSize: "14px",
+            color: "text.muted",
+            transition: "color 120ms",
+            _hover: { color: "text.bold" },
+            outline: "none",
+            "&:focus-visible > span": {
+              outline: "2px solid",
+              outlineColor: "border.primary.bold",
+              outlineOffset: "4px",
+              rounded: "xs",
+            },
             _currentPage: {
-              fontWeight: "semibold",
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
+              color: "text.bold",
+              _after: {
+                content: '""',
+                position: "absolute",
+                left: "0",
+                right: "0",
+                bottom: "-1px",
+                h: "1px",
+                bg: "text.bold",
+              },
             },
           })}
         >
-          {link.label}
+          <span>{link.label}</span>
         </Link>
       ))}
     </>
   )
 }
 
-interface NavLink {
+export interface NavLink {
   href: string
   label: string
   isActive: (pathname: string) => boolean
 }
 
-const navLinks: NavLink[] = [
+export const navLinks: NavLink[] = [
   {
     href: "/overview/introduction",
     label: "Docs",
     isActive: (pathname) =>
       pathname.startsWith("/overview") ||
-      pathname.startsWith("/components") ||
       pathname.startsWith("/guides") ||
       pathname.startsWith("/utilities"),
+  },
+  {
+    href: "/components/react/accordion",
+    label: "Components",
+    isActive: (pathname) => pathname.startsWith("/components"),
   },
   {
     href: "/blog",

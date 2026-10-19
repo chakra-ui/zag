@@ -108,35 +108,34 @@ export function Sidebar(props: { tabId?: string }) {
                   {item.label}
                   {item.new && (
                     <styled.span
-                      bg="purple.600"
-                      color="white"
                       ms="2"
-                      px="1"
+                      px="1.5"
                       py="0.5"
-                      rounded="sm"
-                      fontSize="xs"
-                      fontWeight="medium"
+                      rounded="xs"
+                      borderWidth="1px"
+                      borderColor="border.bold"
+                      color="text.muted"
+                      fontFamily="mono"
+                      fontSize="10px"
+                      textTransform="uppercase"
+                      letterSpacing="0.08em"
                     >
                       New
                     </styled.span>
                   )}
                   {item.beta && (
                     <styled.span
-                      bg="purple.50"
-                      borderWidth="1px"
-                      borderColor="purple.200"
-                      color="purple.600"
                       ms="2"
-                      px="1"
+                      px="1.5"
                       py="0.5"
                       rounded="xs"
-                      fontSize="xs"
-                      fontWeight="medium"
-                      _dark={{
-                        bg: "purple.900/50",
-                        color: "purple.200",
-                        borderColor: "purple.800",
-                      }}
+                      borderWidth="1px"
+                      borderColor="border.bold"
+                      color="text.muted"
+                      fontFamily="mono"
+                      fontSize="10px"
+                      textTransform="uppercase"
+                      letterSpacing="0.08em"
                     >
                       Beta
                     </styled.span>

@@ -26,11 +26,10 @@ const StyledLink = styled("a", {
         _hover: { color: "gray.600" },
       },
       solid: {
-        bg: "bg.primary.subtle",
-        color: "text.inverse",
-        _hover: {
-          filter: "brightness(0.9)",
-        },
+        borderWidth: "1px",
+        borderColor: "border.bold",
+        color: "text.bold",
+        _hover: { bg: "bg.muted" },
       },
     },
   },

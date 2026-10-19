@@ -33,9 +33,7 @@ export function CommunityStat(props: CommunityStatProps) {
         textTransform="uppercase"
         letterSpacing="0.1em"
       >
-        <styled.span _icon={{ color: "text.primary.bold" }}>
-          {props.icon}
-        </styled.span>
+        <styled.span _icon={{ color: "text.muted" }}>{props.icon}</styled.span>
         <styled.span>{props.label}</styled.span>
       </HStack>
       <styled.p my="2" fontSize="3xl" lineHeight="1" fontWeight="semibold">
