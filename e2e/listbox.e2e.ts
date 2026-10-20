@@ -28,6 +28,14 @@ test.describe("listbox", () => {
     await I.seeItemIsHighlighted("Zimbabwe")
   })
 
+  test("typeahead: lowercase a should move the highlight to matching item", async () => {
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Andorra")
+
+    await I.type("a")
+    await I.seeItemIsHighlighted("Afghanistan")
+  })
+
   test("should scroll selected option into view", async () => {
     await I.tabToContent()
     await I.pressKey("End")
