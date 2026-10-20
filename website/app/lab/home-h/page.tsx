@@ -9,12 +9,7 @@ import {
   type HChapter,
   type HSection,
 } from "components/lab/h-copy"
-import {
-  accent,
-  ConnectPanel,
-  StateRail,
-  useActiveState,
-} from "components/lab/h-parts"
+import { accent, ConnectPanel } from "components/lab/h-parts"
 import {
   cells,
   Ctas,
@@ -342,35 +337,16 @@ function Closing() {
 }
 
 export default function HomeH() {
-  const active = useActiveState(chapters.map((c) => c.slug))
   return (
     <Box>
       <TopNav />
       <Frame>
-        <Grid
-          gridTemplateColumns={{
-            base: "minmax(0, 1fr)",
-            lg: "168px minmax(0, 1fr)",
-          }}
-          gap="0"
-        >
-          <Box
-            hideBelow="lg"
-            borderRightWidth="1px"
-            borderColor="border"
-            pt="10"
-          >
-            <StateRail items={chapters} active={active} />
-          </Box>
-          <Box minW="0">
-            <Hero />
-            <Contents />
-            {chapters.map((c) => (
-              <Chapter key={c.slug} chapter={c} />
-            ))}
-            <Closing />
-          </Box>
-        </Grid>
+        <Hero />
+        <Contents />
+        {chapters.map((c) => (
+          <Chapter key={c.slug} chapter={c} />
+        ))}
+        <Closing />
       </Frame>
       <Footer />
     </Box>
