@@ -113,9 +113,6 @@ export default function BlogPage() {
         <Suspense>
           <PostList posts={posts.map(({ toc: _toc, ...post }) => post)} />
         </Suspense>
-        <Band>
-          <Box h={{ base: "16", md: "24" }} />
-        </Band>
       </Frame>
       <Footer />
     </Box>

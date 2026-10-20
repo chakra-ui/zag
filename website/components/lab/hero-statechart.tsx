@@ -170,7 +170,7 @@ export function HeroStatechart() {
               <text
                 x={e.lx}
                 y={e.ly}
-                textAnchor={e.anchor}
+                textAnchor={e.anchor as "start" | "middle" | "end"}
                 fontFamily="ui-monospace, monospace"
                 fontSize="11"
                 letterSpacing="0.06em"

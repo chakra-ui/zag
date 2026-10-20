@@ -219,7 +219,9 @@ export function Install() {
   )
 }
 
-export { cells } from "./cells"
+import { cells } from "./cells"
+
+export { cells }
 
 export function Cell(props: {
   label?: string

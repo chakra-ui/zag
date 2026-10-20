@@ -445,7 +445,7 @@ function ToggleGroupCell() {
             borderColor="border"
             _last={{ borderRightWidth: "0" }}
             _hover={{ color: "text.bold" }}
-            _on={{ bg: "text.bold", color: "bg" }}
+            css={{ "&[data-state=on]": { bg: "text.bold", color: "bg" } }}
             focusVisibleRing="inside"
             style={m.style}
           >
