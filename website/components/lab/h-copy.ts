@@ -62,17 +62,17 @@ export const chapters: HChapter[] = guide.chapters.map((chapter) => ({
 
 export const hCopy = {
   hero: {
-    kicker: "How Zag works",
-    title: "Write the combobox once",
+    kicker: "Open source · MIT",
+    title: "Accessible components for any framework",
     subtitle:
-      "Zag keeps a combobox's focus, keyboard and ARIA logic in one state machine. React, Vue, Solid, Svelte and Preact run the same machine, and you write the markup.",
-    tour: "Seven short chapters, from the machine to your CSS.",
+      "Over 50 components, like menus, dialogs and date pickers, with keyboard, focus and screen reader support built in. They work the same in React, Vue, Solid, Svelte and Preact. You bring the markup and styles.",
+    tour: "How it works, in seven short chapters.",
   },
-  contents: "The tour",
+  contents: "How it works",
   start: {
     state: "install",
     label: "Get started",
-    body: "One machine, one adapter.",
+    body: "Install one component and try it.",
     href: "/overview/introduction",
   },
   glossary: "connect(service)",

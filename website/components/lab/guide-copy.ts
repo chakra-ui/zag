@@ -43,19 +43,19 @@ export interface GuideCopy {
 
 export const guide: GuideCopy = {
   hero: {
-    kicker: "Zag · a field guide",
-    title: "Build the menu once",
+    kicker: "Zag · how it works",
+    title: "Accessible components for any framework",
     subtitle:
-      "Zag puts menus, dialogs and comboboxes in state machines, so focus, keyboard and ARIA work the same in every framework.",
+      "Over 50 components, from menus and dialogs to date pickers, with keyboard, focus and screen reader support built in. They work the same in React, Vue, Solid, Svelte and Preact, and you style them your way.",
     cta: "Get started",
     secondary: "Browse components",
   },
   cards: [
-    { id: "00", label: "Principles", slug: "principles" },
-    { id: "01", label: "Machines", slug: "machines" },
-    { id: "02", label: "Events", slug: "events" },
-    { id: "03", label: "Anatomy", slug: "anatomy" },
-    { id: "04", label: "Adapters", slug: "adapters" },
+    { id: "00", label: "Why Zag", slug: "principles" },
+    { id: "01", label: "States", slug: "machines" },
+    { id: "02", label: "Clicks and keys", slug: "events" },
+    { id: "03", label: "Parts", slug: "anatomy" },
+    { id: "04", label: "Frameworks", slug: "adapters" },
     { id: "05", label: "Accessibility", slug: "a11y" },
     { id: "06", label: "Styling", slug: "styling" },
   ],
@@ -63,26 +63,26 @@ export const guide: GuideCopy = {
     {
       id: "00",
       slug: "principles",
-      title: "Core principles",
+      title: "Why Zag exists",
       intro:
-        "Zag started inside Chakra UI. Menus and dialogs kept breaking in the glue between useEffect, useMemo and refs, and the Vue port broke in the same places. These three ideas came out of fixing those bugs.",
+        "Menus, dialogs and comboboxes look simple until you try them with a keyboard or a screen reader. The Chakra UI team kept fixing the same focus and keyboard bugs, then fixed them again in the Vue version. Zag lets them write each fix once and use it everywhere.",
       sections: [
         {
-          title: "Three ideas",
-          lead: "Behavior is the hard part. Write it once and keep it out of your components.",
+          title: "Zag does the behavior, you do the look",
+          lead: "How a component behaves is the hard part, so Zag keeps it in one place.",
           diagram: "principles",
           terms: [
             {
-              term: "Logic lives in a machine",
-              body: "Open, close, highlight and select are states and transitions in one file. You read the component top to bottom instead of tracing effects across hooks.",
+              term: "Behavior in one place",
+              body: "Opening, closing, highlighting and selecting are written once, with no framework code in them.",
             },
             {
-              term: "Frameworks are adapters",
-              body: "The machine never imports React, Vue or Svelte. A thin adapter wires it to each framework's reactivity.",
+              term: "Works in any framework",
+              body: "A small package for each framework connects that same behavior to React, Vue, Solid, Svelte or Preact.",
             },
             {
-              term: "You own the markup",
-              body: "Zag hands you props for each part. You spread them on your own markup and style it the way your design system does.",
+              term: "Your markup, your styles",
+              body: "Zag gives you the attributes and event handlers for each element. You put them on your own HTML and style it however you like.",
             },
           ],
         },
@@ -91,47 +91,39 @@ export const guide: GuideCopy = {
     {
       id: "01",
       slug: "machines",
-      title: "Machines",
+      title: "Always in a known state",
       intro:
-        "Every component is a finite state machine. A menu is idle, open or closed, one at a time. If no transition leads to a state, the component can't end up there.",
+        "Every Zag component knows exactly what state it's in. A menu is closed, opening, open or closing, one at a time. Each state lists what can happen next, so the menu never ends up somewhere nobody planned. Zag calls this a state machine.",
       sections: [
         {
           title: "One state at a time",
-          lead: "One state at a time, and a list of the events each state accepts.",
+          lead: "A closed menu waits for something to open it. An open menu listens for arrow keys, Escape and clicks.",
           diagram: "machines",
-          caption: "menu.machine · 6 states",
+          caption: "A menu has six states. One is active at a time.",
           terms: [
             {
-              term: "createMachine()",
-              body: "Declares states, transitions, guards, actions and effects in one object. It runs the same in every framework.",
+              term: "No half-open menus",
+              body: "A menu is never open and closed at the same time, so the bugs that come from mixed-up flags don't happen.",
             },
             {
-              term: "state.matches()",
-              body: "Asks which state the machine is in. Nested states use dot paths like open.idle.",
-            },
-            {
-              term: "effects",
-              body: "Work that runs while a state is active, like tracking outside clicks. Zag cleans it up when the state exits.",
+              term: "Read it top to bottom",
+              body: "Each component's logic sits in one file, state by state. You follow it in order instead of chasing effects across hooks.",
             },
           ],
         },
         {
-          title: "Controlled or not",
-          lead: "Each value can be owned by the machine or by you, without a second code path.",
+          title: "Let Zag track it, or track it yourself",
+          lead: "Zag remembers whether the menu is open, and you can take over that value when your app needs it.",
           diagram: "machines",
-          caption: "open · defaultOpen · onOpenChange",
+          caption: "Zag owns the value, or you do",
           terms: [
             {
-              term: "bindable",
-              body: "Wraps a context value with a default, an optional controlled value and a change callback. Pass value and the machine follows it.",
+              term: "Zag keeps track",
+              body: "Set a starting value with defaultOpen and the menu handles the rest.",
             },
             {
-              term: "computed",
-              body: "Values derived from context and props. They update when their inputs change.",
-            },
-            {
-              term: "watch",
-              body: "Tracks props or context and runs actions when they change, like syncing a disabled prop.",
+              term: "You keep track",
+              body: "Pass open and listen to onOpenChange. The menu follows your value.",
             },
           ],
         },
@@ -140,27 +132,23 @@ export const guide: GuideCopy = {
     {
       id: "02",
       slug: "events",
-      title: "Events",
+      title: "The state decides what a key does",
       intro:
-        "Nothing changes until an event arrives. Clicks, keys and pointer moves become named events, and the current state decides what they mean.",
+        "Zag turns clicks, key presses and pointer moves into named events, like a click on the trigger. The component's current state decides what each event does, so you don't write an if-statement for every case.",
       sections: [
         {
-          title: "Send, then transition",
-          lead: "The same ArrowDown opens a closed menu and moves the highlight in an open one.",
+          title: "One key, two jobs",
+          lead: "Press ArrowDown on a closed menu and it opens. Press it in an open menu and the highlight moves down.",
           diagram: "events",
-          caption: "TRIGGER_CLICK → open",
+          caption: "ArrowDown in an open menu moves the highlight",
           terms: [
             {
-              term: "send()",
-              body: "Dispatches an event to the machine. DOM handlers call it for you, and you can call it yourself.",
+              term: "Handlers come built in",
+              body: "Zag adds the click and key handlers to each element for you. To open it from your own code, call api.setOpen(true).",
             },
             {
-              term: "guards",
-              body: "Conditions on a transition. A guard like isOpenControlled stops the menu from opening itself when you own the open state.",
-            },
-            {
-              term: "actions",
-              body: "Side effects that run on a transition, like moving the highlight or invoking onSelect.",
+              term: "It waits for you when it should",
+              body: "If you control the open state, a click calls onOpenChange and the menu waits for your new value.",
             },
           ],
         },
@@ -169,27 +157,23 @@ export const guide: GuideCopy = {
     {
       id: "03",
       slug: "anatomy",
-      title: "Anatomy",
+      title: "A component is a set of parts",
       intro:
-        "A component is a set of named parts: trigger, positioner, content, item. connect() turns machine state into props for each one.",
+        "A menu is more than one element. There's the button that opens it, the list, and each item in the list. Zag names each part and gives it what it needs: the right role, ARIA attributes and event handlers.",
       sections: [
         {
-          title: "Props for every part",
-          lead: "Spread a getter on your element and it gets the right role, ARIA, handlers and data attributes.",
+          title: "One call per element",
+          lead: "You spread getTriggerProps() on your button and it's ready.",
           diagram: "anatomy",
-          caption: "api.getTriggerProps() · api.getItemProps()",
+          caption: "The button, the list and each item get their own props",
           terms: [
             {
-              term: "connect()",
-              body: "Reads the service and returns an api object: state like api.open, methods like api.setOpen, and a prop getter per part.",
+              term: "Trigger, content, item",
+              body: "These are the menu's parts. Other components have their own, like a dialog's backdrop or a slider's thumb.",
             },
             {
-              term: "Prop getters",
-              body: "getTriggerProps(), getContentProps(), getItemProps({ value }). Call them in render and spread the result.",
-            },
-            {
-              term: "anatomy",
-              body: "The list of parts a component exports. Use it to build styled wrappers that cover every part.",
+              term: "Everything the element needs",
+              body: "Each call returns the role, ARIA attributes, event handlers and data attributes for that part, based on the current state.",
             },
           ],
         },
@@ -198,27 +182,23 @@ export const guide: GuideCopy = {
     {
       id: "04",
       slug: "adapters",
-      title: "Adapters",
+      title: "Works in any framework",
       intro:
-        "Official adapters cover React, Preact, Solid, Vue, Svelte and vanilla JS. Machines and adapters share one version, so the combobox your React app ships is the one your Vue app ships.",
+        "The component logic doesn't depend on a framework. A small package for React, Preact, Solid, Vue, Svelte or plain JavaScript connects it to your app. Every package ships at the same version, so a combobox behaves the same in your React app and your Vue app.",
       sections: [
         {
-          title: "Same machine, any framework",
-          lead: "Two calls per component in any framework.",
+          title: "The same two steps everywhere",
+          lead: "In every framework you start the component, then ask it for props.",
           diagram: "adapters",
-          caption: "useMachine → connect → props",
+          caption: "Start it, get props, render",
           terms: [
             {
-              term: "useMachine()",
-              body: "Starts the machine, binds it to your framework's state and stops it on unmount. It returns the service.",
+              term: "Start the component",
+              body: "useMachine() starts it when your component mounts and stops it when it unmounts.",
             },
             {
-              term: "normalizeProps",
-              body: "Converts Zag's prop shape to your framework's, so onClick and htmlFor come out right in Vue or Solid.",
-            },
-            {
-              term: "mergeProps()",
-              body: "Combines your props with Zag's. Event handlers chain and class names join instead of overwriting each other.",
+              term: "Props in your framework's format",
+              body: "Zag writes each prop the way your framework expects, so React gets htmlFor and Vue gets for.",
             },
           ],
         },
@@ -227,47 +207,47 @@ export const guide: GuideCopy = {
     {
       id: "05",
       slug: "a11y",
-      title: "Accessibility",
+      title: "Accessible from the start",
       intro:
-        "The edge cases you'd find on the third rebuild are already handled. Keyboard, focus and ARIA follow the WAI-ARIA authoring practices, and Playwright tests check them in each framework.",
+        "Keyboard support, focus and screen reader labels follow the WAI-ARIA authoring practices, the W3C guide to accessible widgets. Edge cases you'd usually find on your third rewrite are already handled, and Playwright tests check them in each framework.",
       sections: [
         {
-          title: "Keyboard and ARIA",
+          title: "Keyboard support",
           lead: "Arrow keys, Home, End and typing a letter all work before you write a handler.",
           diagram: "a11y",
-          caption: "role=menu · aria-activedescendant",
+          caption: "Screen readers read each item as the highlight moves",
           terms: [
             {
-              term: "aria-activedescendant",
+              term: "Screen readers keep up",
               body: "Focus stays on the menu while the highlight moves, and screen readers announce each item.",
             },
             {
-              term: "typeahead",
-              body: "Type the first letters of an item to jump to it. Keystrokes in quick succession build one search.",
+              term: "Type to jump",
+              body: "Type the first letters of an item to jump to it.",
             },
             {
-              term: "dir",
-              body: "Set dir to rtl and left and right arrows swap, and submenus open to the left.",
+              term: "Right-to-left languages",
+              body: "Set dir to rtl and the left and right arrow keys swap.",
             },
           ],
         },
         {
-          title: "Focus that lands right",
+          title: "Focus goes where you expect",
           lead: "Focus moves into what opens and back to what opened it.",
           diagram: "a11y",
-          caption: "dialog · trapFocus · restoreFocus",
+          caption: "Focus moves into the dialog, then back to the button",
           terms: [
             {
-              term: "Dismissable layer",
+              term: "Escape closes one thing",
               body: "Escape closes the topmost layer only. A menu open inside a dialog closes before the dialog does.",
             },
             {
-              term: "restoreFocus",
-              body: "When a dialog closes, focus returns to the element that opened it.",
+              term: "Focus goes back where it was",
+              body: "When a dialog closes, focus returns to the button that opened it.",
             },
             {
-              term: "trapFocus",
-              body: "A modal dialog keeps Tab inside, locks page scroll and hides the rest of the page from screen readers.",
+              term: "Focus stays inside",
+              body: "While a modal dialog is open, Tab stays inside it. The page behind can't scroll, and screen readers skip over it.",
             },
           ],
         },
@@ -276,31 +256,27 @@ export const guide: GuideCopy = {
     {
       id: "06",
       slug: "styling",
-      title: "Styling",
+      title: "Style it your way",
       intro:
-        "Zag ships zero CSS. Every part carries attributes for what it is and what state it's in, so plain CSS, Tailwind or your tokens can target it.",
+        "Zag ships zero CSS. Each part carries attributes that say what it is and what state it's in, so you can style it with plain CSS, Tailwind or your own design tokens.",
       sections: [
         {
-          title: "Style the state",
-          lead: "Select a part by name and a state by attribute.",
+          title: "Style by name and state",
+          lead: "Pick a part by its name, then style each state.",
           diagram: "styling",
           caption: "[data-menu-content][data-state=open]",
           terms: [
             {
-              term: "data-{scope}-{part}",
-              body: "Each part gets one attribute, like data-menu-item or data-dialog-backdrop. Its value is the machine id.",
+              term: "Every part has a name",
+              body: "The menu's list gets data-menu-content and each item gets data-menu-item. Target them from any stylesheet.",
             },
             {
-              term: "data-state",
-              body: "open or closed, checked or unchecked. Hook enter and exit animations to it.",
+              term: "Every state is visible",
+              body: "data-state says open or closed. Hook enter and exit animations to it.",
             },
             {
-              term: "data-highlighted",
-              body: "Marks the item under the keyboard or pointer. Items also get data-disabled when they can't be picked.",
-            },
-            {
-              term: "CSS variables",
-              body: "Positioned parts expose --reference-width, --available-height and --transform-origin for sizing and motion.",
+              term: "Highlighted and disabled items",
+              body: "The item under the keyboard or pointer gets data-highlighted. Items that can't be picked get data-disabled.",
             },
           ],
         },
@@ -308,8 +284,8 @@ export const guide: GuideCopy = {
     },
   ],
   closing: {
-    title: "Stop rebuilding the combobox",
-    body: "Install one machine and one adapter. Bring your own markup and styles.",
+    title: "Start with one component",
+    body: "Install a component and the package for your framework. Bring your own markup and styles.",
     cta: "Get started",
   },
 }

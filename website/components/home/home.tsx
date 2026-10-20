@@ -3,6 +3,8 @@
 import { Footer } from "components/footer"
 import { GuideLogo, guideArt } from "components/lab/guide-art"
 import { HLogo, HMini } from "components/lab/h-art"
+import { createContext, useContext } from "react"
+import { FlatMini, flatArt } from "./flat-art"
 import {
   chapters,
   hCopy,
@@ -52,6 +54,9 @@ function Release() {
 }
 
 export type HeroArt = "iso" | "construction"
+export type DrawingStyle = "iso" | "flat"
+
+const Drawings = createContext<DrawingStyle>("iso")
 
 function Hero(props: { art: HeroArt }) {
   return (
@@ -109,6 +114,7 @@ function Hero(props: { art: HeroArt }) {
 }
 
 function Contents() {
+  const Mini = useContext(Drawings) === "flat" ? FlatMini : HMini
   return (
     <Box>
       <HStack
@@ -153,7 +159,7 @@ function Contents() {
               transition="color 160ms"
               _groupHover={{ color: "text.bold" }}
             >
-              <HMini kind={c.sections[0]?.diagram ?? "principles"} />
+              <Mini kind={c.sections[0]?.diagram ?? "principles"} />
             </Box>
             <Box>
               <styled.p
@@ -204,7 +210,9 @@ function Contents() {
 }
 
 function Diagram(props: { section: HSection }) {
-  const Art = guideArt[props.section.diagram]
+  const Art = (useContext(Drawings) === "flat" ? flatArt : guideArt)[
+    props.section.diagram
+  ]
   return (
     <Box>
       <Box
@@ -376,19 +384,21 @@ function Closing() {
   )
 }
 
-export function Home(props: { art?: HeroArt }) {
+export function Home(props: { art?: HeroArt; drawings?: DrawingStyle }) {
   return (
-    <Box>
-      <TopNav />
-      <Frame>
-        <Hero art={props.art ?? "iso"} />
-        <Contents />
-        {chapters.map((c) => (
-          <Chapter key={c.slug} chapter={c} />
-        ))}
-        <Closing />
-      </Frame>
-      <Footer />
-    </Box>
+    <Drawings.Provider value={props.drawings ?? "iso"}>
+      <Box>
+        <TopNav />
+        <Frame>
+          <Hero art={props.art ?? "iso"} />
+          <Contents />
+          {chapters.map((c) => (
+            <Chapter key={c.slug} chapter={c} />
+          ))}
+          <Closing />
+        </Frame>
+        <Footer />
+      </Box>
+    </Drawings.Provider>
   )
 }
