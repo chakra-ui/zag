@@ -432,6 +432,45 @@ describe("basic", () => {
     expect(result.current.context.get("value")).toEqual("foo")
   })
 
+  test("context: get returns a value set before the next render", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+
+      context({ bindable }) {
+        return { page: bindable(() => ({ defaultValue: 0 })) }
+      },
+
+      states: {
+        test: {
+          on: {
+            "PAGE.SET": { actions: ["setPage"] },
+            REFRESH: { actions: ["refreshPage"] },
+          },
+        },
+      },
+
+      implementations: {
+        actions: {
+          setPage: ({ context, event }) => context.set("page", event.value),
+          // re-sets the value from a read, as the carousel's `setSnapPoints` does
+          refreshPage: ({ context }) => context.set("page", context.get("page")),
+        },
+      },
+    })
+
+    const { result } = renderMachine(machine)
+    await Promise.resolve()
+
+    await act(async () => {
+      result.current.send({ type: "PAGE.SET", value: 1 })
+      result.current.send({ type: "REFRESH" })
+    })
+
+    expect(result.current.context.get("page")).toEqual(1)
+  })
+
   test("effects", async () => {
     vi.useFakeTimers()
 
