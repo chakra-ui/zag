@@ -87,7 +87,6 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const [side] = placement.split("-")
 
   const mounted = context.get("mounted")
-  const remainingTime = context.get("remainingTime")
 
   const height = computed("height")
   const frontmost = computed("frontmost")
@@ -97,7 +96,8 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const stacked = prop("stacked")
   const type = prop("type")
 
-  const duration = type === "loading" ? Number.MAX_SAFE_INTEGER : remainingTime
+  const totalDuration = getToastDuration(prop("duration"), type)
+  const duration = type === "loading" || !Number.isFinite(totalDuration) ? Number.MAX_SAFE_INTEGER : totalDuration
   const offset = computed("heightIndex") * gap + computed("heightBefore")
 
   const styles: Style = {
