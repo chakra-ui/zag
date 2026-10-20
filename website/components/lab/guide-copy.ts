@@ -65,7 +65,7 @@ export const guide: GuideCopy = {
       slug: "principles",
       title: "Core principles",
       intro:
-        "Three ideas run through everything that follows. Each one comes from a bug we fixed too many times, once per framework.",
+        "Zag started inside Chakra UI. Menus and dialogs kept breaking in the glue between useEffect, useMemo and refs, and the Vue port broke in the same places. These three ideas came out of fixing those bugs.",
       sections: [
         {
           title: "Three ideas",
@@ -74,7 +74,7 @@ export const guide: GuideCopy = {
           terms: [
             {
               term: "Logic lives in a machine",
-              body: "Open, close, highlight and select are states and transitions, not a pile of effects and flags. You can read the whole component in one file.",
+              body: "Open, close, highlight and select are states and transitions in one file. You read the component top to bottom instead of tracing effects across hooks.",
             },
             {
               term: "Frameworks are adapters",
@@ -82,7 +82,7 @@ export const guide: GuideCopy = {
             },
             {
               term: "You own the markup",
-              body: "Zag ships no styles and no components. It hands you props to spread on your own elements.",
+              body: "Zag hands you props for each part. You spread them on your own markup and style it the way your design system does.",
             },
           ],
         },
@@ -93,10 +93,10 @@ export const guide: GuideCopy = {
       slug: "machines",
       title: "Machines",
       intro:
-        "Every component is a finite state machine. A menu is idle, open or closed, never half of each. Impossible states stay impossible because there is no transition into them.",
+        "Every component is a finite state machine. A menu is idle, open or closed, one at a time. If no transition leads to a state, the component can't end up there.",
       sections: [
         {
-          title: "States, not flags",
+          title: "One state at a time",
           lead: "One state at a time, and a list of the events each state accepts.",
           diagram: "machines",
           caption: "menu.machine · 6 states",
@@ -127,7 +127,7 @@ export const guide: GuideCopy = {
             },
             {
               term: "computed",
-              body: "Values derived from context and props. They're lazy and memoized by each framework.",
+              body: "Values derived from context and props. They update when their inputs change.",
             },
             {
               term: "watch",
@@ -204,7 +204,7 @@ export const guide: GuideCopy = {
       sections: [
         {
           title: "Same machine, any framework",
-          lead: "Two calls per component, whatever you render with.",
+          lead: "Two calls per component in any framework.",
           diagram: "adapters",
           caption: "useMachine → connect → props",
           terms: [
@@ -229,7 +229,7 @@ export const guide: GuideCopy = {
       slug: "a11y",
       title: "Accessibility",
       intro:
-        "The details you'd find on the third rebuild are already in the machine. Keyboard, focus and ARIA follow the WAI-ARIA patterns, and are tested end to end.",
+        "The edge cases you'd find on the third rebuild are already handled. Keyboard, focus and ARIA follow the WAI-ARIA authoring practices, and Playwright tests check them in each framework.",
       sections: [
         {
           title: "Keyboard and ARIA",
@@ -253,13 +253,13 @@ export const guide: GuideCopy = {
         },
         {
           title: "Focus that lands right",
-          lead: "Open, dismiss, close: focus goes where the user expects.",
+          lead: "Focus moves into what opens and back to what opened it.",
           diagram: "a11y",
           caption: "dialog · trapFocus · restoreFocus",
           terms: [
             {
               term: "Dismissable layer",
-              body: "Escape and outside clicks close the top layer only, so a menu inside a dialog closes first.",
+              body: "Escape closes the topmost layer only. A menu open inside a dialog closes before the dialog does.",
             },
             {
               term: "restoreFocus",
@@ -278,7 +278,7 @@ export const guide: GuideCopy = {
       slug: "styling",
       title: "Styling",
       intro:
-        "Zag renders no styles. Every part carries data attributes for what it is and what state it's in, so plain CSS, Tailwind or your token system can target it.",
+        "Zag ships zero CSS. Every part carries attributes for what it is and what state it's in, so plain CSS, Tailwind or your tokens can target it.",
       sections: [
         {
           title: "Style the state",

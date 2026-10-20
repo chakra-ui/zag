@@ -32,6 +32,11 @@ const variants = [
     "Field guide",
     "A Polar-style guide: chapters, diagrams and a glossary of how Zag thinks.",
   ],
+  [
+    "h",
+    "How Zag works",
+    "Chapters as a statechart you scroll through, with an isometric logo and connect()-style glossary.",
+  ],
 ]
 
 export default function LabIndex() {
@@ -41,7 +46,7 @@ export default function LabIndex() {
       <Frame>
         <Pad>
           <Eyebrow mb="3">Lab · homepage v2</Eyebrow>
-          <Title as="h1">Seven directions</Title>
+          <Title as="h1">Eight directions</Title>
           <Lead mt="4">Same tone, same kit, different hero and story.</Lead>
         </Pad>
         <Grid className={cells} gap="1px" columns={{ base: 1, md: 2, xl: 3 }}>
