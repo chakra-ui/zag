@@ -11,7 +11,7 @@ export class ToastModel extends Model {
     return a11y(this.page)
   }
 
-  goto(type: "stacked" | "overlap" | "conditional-content") {
+  goto(type: string) {
     return this.page.goto(`/toast/${type}`)
   }
 
@@ -19,11 +19,15 @@ export class ToastModel extends Model {
     return this.page.locator("[data-toast-group]")
   }
 
+  clickExact(name: string, times = 1) {
+    return repeat(times, () => this.page.getByRole("button", { name, exact: true }).click())
+  }
+
   private getCloseButton(num: number) {
     return this.page.locator("[data-toast-close-trigger]").nth(num)
   }
 
-  private getToast(num: number) {
+  getToast(num = 0) {
     return this.page.getByRole("status").nth(num)
   }
 
@@ -52,18 +56,6 @@ export class ToastModel extends Model {
     await expect(toast).not.toHaveAttribute("aria-describedby")
   }
 
-  async clickLoadingToast(times = 1) {
-    return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Loading)" }).click())
-  }
-
-  async clickErrorToast(times = 1) {
-    return await repeat(times, () => this.page.getByRole("button", { name: "Notify (Error)" }).click())
-  }
-
-  openDialog() {
-    return this.page.getByText("Open Dialog").click()
-  }
-
   pressHotkey() {
     return this.page.keyboard.press("Alt+T")
   }
@@ -86,6 +78,18 @@ export class ToastModel extends Model {
 
   seeRegionIsFocused() {
     return expect(this.region).toBeFocused()
+  }
+
+  seeToastType(type: string, num = 0) {
+    return expect(this.getToast(num)).toHaveAttribute("data-type", type)
+  }
+
+  seeToastText(texts: string[]) {
+    return expect(this.page.getByRole("status")).toHaveText(texts.map((text) => new RegExp(text)))
+  }
+
+  clickAction(name: string) {
+    return this.getToast().getByRole("button", { name }).click()
   }
 
   async seeDialog() {

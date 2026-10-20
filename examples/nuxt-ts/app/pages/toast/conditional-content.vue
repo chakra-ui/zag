@@ -18,10 +18,7 @@ onMounted(() => {
 
 <template>
   <main>
-    <h1>Conditional title and description</h1>
-    <p>Toggle the optional title and description before or after creating a toast.</p>
-
-    <fieldset :disabled="!ready" style="display: flex; align-items: center; gap: 16px; border: 0; padding: 0">
+    <fieldset class="hstack gap-4" :disabled="!ready">
       <label><input v-model="showTitle" type="checkbox" /> Show title</label>
       <label><input v-model="showDescription" type="checkbox" /> Show description</label>
       <button @click="store.create({ id: 'draft', title: 'Draft saved', description: 'All changes are up to date.' })">

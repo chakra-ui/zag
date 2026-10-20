@@ -1,8 +1,16 @@
 <script lang="ts">
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
-  import { XIcon } from "lucide-svelte"
+  import { CircleCheck, CircleX, Info, LoaderCircle, TriangleAlert, XIcon } from "lucide-svelte"
   import type { Snippet } from "svelte"
+
+  const icons: Record<string, typeof Info> = {
+    success: CircleCheck,
+    error: CircleX,
+    warning: TriangleAlert,
+    info: Info,
+    loading: LoaderCircle,
+  }
 
   interface Props {
     actor: toast.Options<any>
@@ -14,6 +22,7 @@
 
   const service = useMachine(toast.machine, () => ({ ...actor, parent, index }))
   const api = $derived(toast.connect(service, normalizeProps))
+  const Icon = $derived(icons[api.type])
 </script>
 
 <!-- Title and description may be strings or snippets -->
@@ -24,18 +33,26 @@
 <div {...api.getRootProps()}>
   <span {...api.getGhostBeforeProps()}></span>
   <div data-scope="toast" data-part="progressbar"></div>
-  <div data-scope="toast" data-part="content" style="display: grid; gap: 8px; width: 100%; padding-right: 16px">
-    <div {...api.getTitleProps()}>
-      {#if api.type === "loading"}&lt;...&gt;{/if}
-      {@render content(api.title)}
-    </div>
-    <div {...api.getDescriptionProps()}>{@render content(api.description)}</div>
-    {#if actor.action}
-      <button {...api.getActionTriggerProps()}>{actor.action.label}</button>
+  {#if Icon}
+    <span data-scope="toast" data-part="indicator">
+      <Icon />
+    </span>
+  {/if}
+  <div data-scope="toast" data-part="content">
+    {#if api.title}
+      <div {...api.getTitleProps()}>{@render content(api.title)}</div>
     {/if}
+    {#if api.description}
+      <div {...api.getDescriptionProps()}>{@render content(api.description)}</div>
+    {/if}
+  </div>
+  {#if actor.action}
+    <button {...api.getActionTriggerProps()}>{actor.action.label}</button>
+  {/if}
+  {#if api.closable}
     <button {...api.getCloseTriggerProps()}>
       <XIcon />
     </button>
-  </div>
+  {/if}
   <span {...api.getGhostAfterProps()}></span>
 </div>

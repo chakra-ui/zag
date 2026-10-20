@@ -21,7 +21,7 @@ function ConditionalToast(props: ConditionalToastProps) {
 
   return (
     <div {...api.getRootProps()}>
-      <div style={{ flex: 1 }}>
+      <div data-scope="toast" data-part="content">
         <p>Your draft is ready.</p>
         {showTitle && <div {...api.getTitleProps()}>{api.title}</div>}
         {showDescription && <div {...api.getDescriptionProps()}>{api.description}</div>}
@@ -45,10 +45,7 @@ export default function ConditionalContent() {
 
   return (
     <main>
-      <h1>Conditional title and description</h1>
-      <p>Toggle the optional title and description before or after creating a toast.</p>
-
-      <fieldset disabled={!ready} style={{ display: "flex", alignItems: "center", gap: 16, border: 0, padding: 0 }}>
+      <fieldset className="hstack gap-4" disabled={!ready}>
         <label>
           <input type="checkbox" checked={showTitle} onChange={(event) => setShowTitle(event.target.checked)} />
           Show title

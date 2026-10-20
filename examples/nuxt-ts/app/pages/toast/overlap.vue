@@ -4,81 +4,25 @@ import * as toast from "@zag-js/toast"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/toast.css"
 
-const toaster = toast.createStore({
-  overlap: true,
-  placement: "bottom",
-  gap: 24,
-})
+const toaster = toast.createStore({ placement: "bottom-end", overlap: true })
+
+const messages = [
+  { title: "Message sent", description: "Your message to Ada was delivered." },
+  { title: "File uploaded" },
+  { title: "Invite accepted", description: "Grace joined the design team and can now edit shared files." },
+]
+
+let count = 0
 
 const controls = useControls(toastControls)
 
-const service = useMachine(
-  toast.group.machine,
-  controls.mergeProps<toast.GroupProps>({
-    id: useId(),
-    store: toaster,
-  }),
-)
-
+const service = useMachine(toast.group.machine, controls.mergeProps<toast.GroupProps>({ id: useId(), store: toaster }))
 const api = computed(() => toast.group.connect(service, normalizeProps))
-const id = ref<string>()
-
-const notifyLoading = () => {
-  toaster.create({ title: "Fetching data...", type: "loading" })
-}
-
-const notifyError = () => {
-  id.value = toaster.create({
-    title: "Ooops! Something was wrong",
-    type: "error",
-    onStatusChange(details) {
-      console.log(details)
-    },
-  })
-}
-
-const updateLatest = () => {
-  if (!id.value) return
-  toaster.update(id.value, { title: "Testing", type: "loading" })
-}
-
-const notifyPromise = () => {
-  const promise = new Promise<{ name: string }>((resolve) => {
-    setTimeout(() => resolve({ name: "Chakra" }), 3000)
-  })
-
-  toaster.promise(promise, {
-    loading: { title: "Creating toast..." },
-    success: (data) => ({ title: `${data.name} toast added` }),
-    error: { title: "Error" },
-  })
-}
-
-const createVNode = () => {
-  toaster.create({
-    type: "info",
-    title: h("h1", { style: { color: "red" } }, "Hello"),
-    description: h("p", "This is a description"),
-  })
-}
 </script>
 
 <template>
   <main>
-    <ProfileDialog />
-    <div style="display: flex; flex-wrap: wrap; gap: 16px; max-width: 640px">
-      <button @click="notifyLoading">Notify (Loading)</button>
-      <button @click="notifyError">Notify (Error)</button>
-      <button @click="updateLatest">Update Latest</button>
-
-      <button class="toast-button" @click="notifyPromise">Promise</button>
-      <button @click="createVNode">Create (JSX)</button>
-
-      <button @click="toaster.dismiss()">Close all</button>
-      <button @click="toaster.pause()">Pause all</button>
-      <button @click="toaster.resume()">Resume all</button>
-    </div>
-
+    <button @click="toaster.create(messages[count++ % messages.length]!)">Show toast</button>
     <Teleport to="#teleports">
       <div v-bind="api.getGroupProps()">
         <ToastItem

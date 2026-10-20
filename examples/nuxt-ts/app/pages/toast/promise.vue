@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as toast from "@zag-js/toast"
-import ToastItem from "../../components/ToastItem.vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/toast.css"
 
-const toaster = toast.createStore({ placement: "bottom-end", overlap: false })
+const toaster = toast.createStore({ placement: "bottom-end" })
+
 const service = useMachine(toast.group.machine, { id: useId(), store: toaster })
 const api = computed(() => toast.group.connect(service, normalizeProps))
 
@@ -29,14 +29,11 @@ function upload(options: { reject?: boolean; description?: string } = {}) {
 </script>
 
 <template>
-  <main style="display: grid; align-content: start; gap: 24px; max-width: 640px">
-    <h1>Promise toasts</h1>
-    <p>Show a loading toast while uploading, then update it with the result.</p>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px">
-      <button @click="() => upload()">Upload successfully</button>
-      <button @click="() => upload({ description: 'Sending photo.png…' })">Upload with progress message</button>
-      <button @click="() => upload({ reject: true })">Fail upload</button>
-      <button @click="() => toaster.dismiss()">Dismiss all</button>
+  <main>
+    <div class="hstack">
+      <button @click="upload()">Upload</button>
+      <button @click="upload({ description: 'Sending photo.png…' })">Upload with message</button>
+      <button @click="upload({ reject: true })">Fail upload</button>
     </div>
     <Teleport to="#teleports">
       <div v-bind="api.getGroupProps()">

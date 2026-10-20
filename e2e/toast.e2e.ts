@@ -1,65 +1,67 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { ToastModel } from "./models/toast.model"
 
 let I: ToastModel
 
-test.describe("toast / stacked", () => {
+test.describe("toast / basic", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToastModel(page)
-    await I.goto("stacked")
+    await I.goto("basic")
   })
 
-  test("should pause on hover region", async () => {
-    await I.clickErrorToast(3)
+  test("renders a status with title and description", async () => {
+    await I.clickExact("Show toast")
+    await I.seeNumOfToasts(1)
+    await I.seeAccessibleName("Event created")
+    await I.seeAccessibleDescription("Sunday, December 3 at 9:00 AM")
+  })
 
-    await I.mouseIntoRegion()
-    await I.seeToastArePaused()
+  test("sets the type", async () => {
+    for (const type of ["success", "error", "warning", "info", "loading"]) {
+      await I.clickExact(type[0].toUpperCase() + type.slice(1))
+      await I.seeToastType(type)
+    }
+  })
 
-    await I.mouseOutOfRegion()
+  test("close button removes the toast", async () => {
+    await I.clickExact("Loading")
+    await I.clickNthCloseButton(0)
     await I.seeNumOfToasts(0)
   })
 
-  test("interacting with toast does not close dialog", async () => {
-    if (process.env.FRAMEWORK !== "react") return
-    await I.clickLoadingToast()
-    await I.openDialog()
-    await I.clickNthCloseButton(0)
-
-    await I.seeDialog()
+  test("escape dismisses the focused toast", async ({ page }) => {
+    await I.clickExact("Loading")
+    await I.getToast().focus()
+    await page.keyboard.press("Escape")
     await I.seeNumOfToasts(0)
   })
 })
 
-test.describe("toast / overlapping", () => {
+test.describe("toast / overlap", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToastModel(page)
     await I.goto("overlap")
   })
 
-  test("should render/remove error toast", async () => {
-    await I.clickErrorToast()
-    await I.seeToast("Ooops!")
-    await I.seeNumOfToasts(0)
-  })
-
-  test("should overlap toasts by default", async () => {
-    await I.clickErrorToast(3)
+  test("overlaps toasts by default", async () => {
+    await I.clickExact("Show toast", 3)
     await I.seeNumOfToasts(3)
     await I.seeToastsOverlap()
   })
 
-  test("hover on region should expand region", async () => {
-    await I.clickLoadingToast(3)
+  test("hover expands the stack and pauses", async () => {
+    await I.clickExact("Show toast", 3)
 
     await I.mouseIntoRegion()
     await I.seeToastsStacked()
+    await I.seeToastArePaused()
 
     await I.mouseOutOfRegion()
     await I.seeToastsOverlap()
   })
 
-  test("focus on region on hotkey press", async () => {
-    await I.clickErrorToast(2)
+  test("hotkey focuses the region", async () => {
+    await I.clickExact("Show toast", 2)
     await I.pressHotkey()
 
     await I.seeRegionIsFocused()
@@ -70,34 +72,211 @@ test.describe("toast / overlapping", () => {
     await I.seeToastsOverlap()
   })
 
-  test("should pause all toast on click pause", async () => {
-    await I.clickErrorToast(2)
-
-    // pause
-    await I.clickButton("Pause All")
-    await I.seeToastArePaused()
-
-    // resume
-    await I.clickButton("Resume All")
-    await I.seeNumOfToasts(0)
-  })
-
-  test("close all", async () => {
-    await I.clickErrorToast(2)
-    // pause to make it actually works
-    await I.clickButton("Pause All")
-    await I.clickButton("Close All")
-    await I.seeNumOfToasts(0)
-  })
-
-  test("closing a toast should keep it expanded", async () => {
-    await I.clickLoadingToast(4)
+  test("closing a toast keeps the stack expanded", async ({ page }) => {
+    await I.clickExact("Show toast", 4)
 
     await I.mouseIntoRegion()
     await I.hoverNthCloseButton(2)
     await I.clickNthCloseButton(2)
 
-    await I.page.waitForTimeout(16)
+    await page.waitForTimeout(16)
     await I.seeToastsStacked()
+  })
+})
+
+test.describe("toast / list", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("list")
+  })
+
+  test("lays toasts out without overlap", async () => {
+    await I.clickExact("Show toast", 3)
+    await I.seeToastsStacked()
+
+    const boxes = await Promise.all([0, 1, 2].map((i) => I.getToast(i).boundingBox()))
+    const sorted = boxes.map((box) => box!).sort((a, b) => a.y - b.y)
+    expect(sorted[0].y + sorted[0].height).toBeLessThanOrEqual(sorted[1].y)
+    expect(sorted[1].y + sorted[1].height).toBeLessThanOrEqual(sorted[2].y)
+  })
+
+  test("pauses on hover and resumes on leave", async () => {
+    await I.clickExact("Show toast")
+    await I.mouseIntoRegion()
+    await I.seeToastArePaused()
+
+    await I.mouseOutOfRegion()
+    await I.seeNumOfToasts(0)
+  })
+})
+
+test.describe("toast / duration", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("duration")
+  })
+
+  test("auto-dismisses after its duration", async () => {
+    await I.clickExact("2 seconds")
+    await I.seeNumOfToasts(1)
+    await expect(I.page.getByRole("status")).toHaveCount(0, { timeout: 4000 })
+  })
+
+  test("persistent toast stays", async ({ page }) => {
+    await I.clickExact("Persistent")
+    await page.waitForTimeout(3000)
+    await I.seeNumOfToasts(1)
+  })
+})
+
+test.describe("toast / placement", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("placement")
+  })
+
+  test("renders each toast in its placement", async ({ page }) => {
+    const viewport = page.viewportSize()!
+
+    for (const placement of ["top-start", "top-end", "bottom-start", "bottom-end"]) {
+      await I.clickExact(placement)
+      const toast = page.locator(`[data-toast-root][data-placement="${placement}"]`)
+      await expect(toast).toBeVisible()
+
+      const box = (await toast.boundingBox())!
+      const [side, align] = placement.split("-")
+      expect(box.y < viewport.height / 2).toBe(side === "top")
+      expect(box.x < viewport.width / 2).toBe(align === "start")
+    }
+  })
+})
+
+test.describe("toast / action", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("action")
+  })
+
+  test("runs the action and dismisses the toast", async ({ page }) => {
+    await I.clickExact("Remove bookmark")
+    await expect(page.getByText("Removed from reading list")).toBeVisible()
+
+    await I.clickAction("Undo")
+    await expect(page.getByText("Saved to reading list")).toBeVisible()
+    await I.seeNumOfToasts(0)
+  })
+})
+
+test.describe("toast / promise", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("promise")
+  })
+
+  test("resolves the loading toast in place", async () => {
+    await I.clickExact("Upload")
+    await I.seeToastType("loading")
+    await I.seeToastText(["Uploading photo"])
+
+    await I.seeToastType("success")
+    await I.seeToastText(["Upload complete"])
+  })
+
+  test("rejects the loading toast in place", async () => {
+    await I.clickExact("Fail upload")
+    await I.seeToastType("loading")
+
+    await I.seeToastType("error")
+    await I.seeToastText(["Upload failed"])
+  })
+
+  test("keeps updates made while loading", async () => {
+    await I.clickExact("Upload with message")
+    await I.seeToastText(["Sending photo.png"])
+
+    await I.seeToastType("success")
+    await I.seeToastText(["photo.png is ready"])
+  })
+})
+
+test.describe("toast / update", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("update")
+  })
+
+  test("updates one toast instead of stacking", async () => {
+    await I.clickExact("Save draft", 3)
+    await I.seeToastText(["Saved 3 times"])
+
+    await I.clickExact("Dismiss")
+    await I.seeNumOfToasts(0)
+
+    await I.clickExact("Save draft")
+    await I.seeToastText(["Saved 1 time"])
+  })
+})
+
+test.describe("toast / max", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("max")
+  })
+
+  test("queues toasts past the limit with their latest update", async () => {
+    await I.clickExact("Create three toasts")
+    await I.seeToastText(["Toast 2", "Toast 1"])
+
+    await I.clickExact("Update waiting toast")
+    await I.clickExact("Dismiss oldest")
+    await I.seeToastText(["updated 2 times", "Toast 2"])
+  })
+
+  test("dismissing a queued toast cancels it", async () => {
+    await I.clickExact("Create three toasts")
+    await I.clickExact("Dismiss waiting toast")
+    await I.clickExact("Dismiss oldest")
+    await I.seeToastText(["Toast 2"])
+  })
+})
+
+test.describe("toast / programmatic", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("programmatic")
+  })
+
+  test("pauses and resumes all toasts", async () => {
+    await I.clickExact("Show toast", 2)
+
+    await I.clickExact("Pause all")
+    await I.seeToastArePaused()
+
+    await I.clickExact("Resume all")
+    await I.seeNumOfToasts(0)
+  })
+
+  test("dismisses all toasts", async () => {
+    await I.clickExact("Show toast", 2)
+    await I.clickExact("Pause all")
+    await I.clickExact("Dismiss all")
+    await I.seeNumOfToasts(0)
+  })
+})
+
+test.describe("toast / with dialog", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToastModel(page)
+    await I.goto("with-dialog")
+  })
+
+  test("interacting with a toast does not close the dialog", async () => {
+    await I.clickExact("Edit profile")
+    await I.clickExact("Save")
+    await I.seeNumOfToasts(1)
+
+    await I.clickNthCloseButton(0)
+    await I.seeDialog()
+    await I.seeNumOfToasts(0)
   })
 })

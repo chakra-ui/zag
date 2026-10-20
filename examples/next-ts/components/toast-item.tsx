@@ -1,6 +1,14 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as toast from "@zag-js/toast"
-import { XIcon } from "lucide-react"
+import { CircleCheck, CircleX, Info, LoaderCircle, TriangleAlert, XIcon } from "lucide-react"
+
+const icons: Record<string, React.ElementType> = {
+  success: CircleCheck,
+  error: CircleX,
+  warning: TriangleAlert,
+  info: Info,
+  loading: LoaderCircle,
+}
 
 interface ToastItemProps {
   actor: toast.Options<React.ReactNode>
@@ -14,26 +22,27 @@ export function ToastItem(props: ToastItemProps) {
 
   const service = useMachine(toast.machine, composedProps)
   const api = toast.connect(service, normalizeProps)
+  const Icon = icons[api.type]
 
   return (
     <div {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
-      <div
-        data-scope="toast"
-        data-part="content"
-        style={{ display: "grid", gap: "8px", width: "100%", paddingRight: "16px" }}
-      >
-        <div {...api.getTitleProps()}>
-          {api.type === "loading" && "<...>"}
-          {api.title}
-        </div>
-        <div {...api.getDescriptionProps()}>{api.description}</div>
-        {actor.action && <button {...api.getActionTriggerProps()}>{actor.action.label}</button>}
+      {Icon && (
+        <span data-scope="toast" data-part="indicator">
+          <Icon />
+        </span>
+      )}
+      <div data-scope="toast" data-part="content">
+        {api.title && <div {...api.getTitleProps()}>{api.title}</div>}
+        {api.description && <div {...api.getDescriptionProps()}>{api.description}</div>}
+      </div>
+      {actor.action && <button {...api.getActionTriggerProps()}>{actor.action.label}</button>}
+      {api.closable && (
         <button {...api.getCloseTriggerProps()}>
           <XIcon />
         </button>
-      </div>
+      )}
       <span {...api.getGhostAfterProps()} />
     </div>
   )

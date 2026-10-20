@@ -5,7 +5,8 @@
   import * as toast from "@zag-js/toast"
   import "@styles/toast.css"
 
-  const toaster = toast.createStore({ placement: "bottom-end", overlap: false })
+  const toaster = toast.createStore({ placement: "bottom-end" })
+
   const uid = $props.id()
   const service = useMachine(toast.group.machine, { id: uid, store: toaster })
   const api = $derived(toast.group.connect(service, normalizeProps))
@@ -30,14 +31,11 @@
   }
 </script>
 
-<main style="display: grid; align-content: start; gap: 24px; max-width: 640px">
-  <h1>Promise toasts</h1>
-  <p>Show a loading toast while uploading, then update it with the result.</p>
-  <div style="display: flex; flex-wrap: wrap; gap: 8px">
-    <button onclick={() => upload()}>Upload successfully</button>
-    <button onclick={() => upload({ description: "Sending photo.png…" })}>Upload with progress message</button>
+<main>
+  <div class="hstack">
+    <button onclick={() => upload()}>Upload</button>
+    <button onclick={() => upload({ description: "Sending photo.png…" })}>Upload with message</button>
     <button onclick={() => upload({ reject: true })}>Fail upload</button>
-    <button onclick={() => toaster.dismiss()}>Dismiss all</button>
   </div>
   <Portal>
     <div {...api.getGroupProps()}>
