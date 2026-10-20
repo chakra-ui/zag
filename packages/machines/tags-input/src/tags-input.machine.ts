@@ -38,7 +38,7 @@ export const machine = createMachine<TagsInputSchema>({
     }
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope, getContext }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
@@ -69,8 +69,10 @@ export const machine = createMachine<TagsInputSchema>({
       highlightedTagId: bindable<string | null>(() => ({
         defaultValue: null,
         sync: true,
-        onChange(value) {
-          prop("onHighlightChange")?.({ highlightedValue: value })
+        onChange(id) {
+          prop("onHighlightChange")?.({
+            highlightedValue: dom.getValueOfItemId(scope, getContext().get("value"), id),
+          })
         },
       })),
     }
@@ -84,6 +86,8 @@ export const machine = createMachine<TagsInputSchema>({
     isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),
     isAtMax: ({ context, prop }) => context.get("value").length === prop("max"),
     isOverflowing: ({ context, prop }) => context.get("value").length > prop("max"),
+    highlightedValue: ({ context, scope }) =>
+      dom.getValueOfItemId(scope, context.get("value"), context.get("highlightedTagId")),
   },
 
   watch({ track, context, action, computed, refs }) {

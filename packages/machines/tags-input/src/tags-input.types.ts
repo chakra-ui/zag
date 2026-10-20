@@ -215,6 +215,7 @@ type ComputedContext = Readonly<{
   isAtMax: boolean
   count: number
   isOverflowing: boolean
+  highlightedValue: string | null
   isDisabled: boolean
 }>
 
@@ -324,6 +325,10 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
    * Whether the tags have reached the max limit.
    */
   atMax: boolean
+  /**
+   * The value of the highlighted tag.
+   */
+  highlightedValue: string | null
   /**
    * Function to set the value of the tags.
    */

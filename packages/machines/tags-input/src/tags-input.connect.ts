@@ -56,6 +56,7 @@ export function connect<T extends PropTypes>(
     valueAsString: computed("valueAsString"),
     count: computed("count"),
     atMax: computed("isAtMax"),
+    highlightedValue: computed("highlightedValue"),
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },

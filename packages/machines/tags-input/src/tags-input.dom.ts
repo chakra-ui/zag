@@ -17,6 +17,11 @@ export const getItemDeleteTriggerId = (ctx: Scope, opt: ItemProps) =>
 export const getItemInputId = (ctx: Scope, opt: ItemProps) =>
   ctx.ids?.itemInput?.(opt) ?? `${getItemId(ctx, opt)}-input`
 
+export const getValueOfItemId = (ctx: Scope, value: string[], id: string | null) => {
+  if (id == null) return null
+  return value.find((value, index) => getItemId(ctx, { value, index }) === id) ?? null
+}
+
 export const getEditInputId = (id: string) => `${id}-input`
 
 // Element lookups — use querySelector with merged data attributes
