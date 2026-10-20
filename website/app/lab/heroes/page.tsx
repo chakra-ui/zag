@@ -27,7 +27,7 @@ const concepts: [string, string, ComponentType, string][] = [
     "03",
     "anatomy",
     HeroAnatomy,
-    "A menu lifts apart into its data-part layers while the highlight walks the items, then settles back.",
+    "A menu lifts apart into its anatomy parts while the highlight walks the items, then settles back.",
   ],
   [
     "04",

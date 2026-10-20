@@ -3,7 +3,9 @@
 import { Fragment, useEffect, useState } from "react"
 import {
   Glow,
+  Guide,
   IsoGrid,
+  IsoHandles,
   IsoText,
   Slab,
   isoVars,
@@ -20,6 +22,7 @@ const T = 12
 const RISE = 12
 const G = 250
 const MOVE = 720
+const B = 14
 
 const states = [
   { name: "closed", x: 0, y: 0 },
@@ -35,11 +38,11 @@ const order = [0, 1, 3, 2]
 const css = `
 .zsf { ${isoVars} }
 html:not(.dark) .zsf { ${isoVarsLight} }
-.zsf text { fill: var(--t); font-size: 10px; letter-spacing: .02em }
+.zsf text { fill: var(--t); font-size: 12px; letter-spacing: .02em }
 .zsf .zsf-move { transition: transform ${MOVE}ms cubic-bezier(.65,0,.35,1) }
 .zsf .zsf-rise { transition: transform 260ms cubic-bezier(.2,.8,.2,1) }
 .zsf .zsf-fade { transition: opacity 260ms ease, stroke 260ms ease, fill 260ms ease }
-.zsf .zsf-read text { font-size: 14px }
+.zsf .zsf-read text { font-size: 16px }
 @keyframes zsf-pulse { 0% { opacity: .9; transform: scale(.6) } 100% { opacity: 0; transform: scale(2.4) } }
 .zsf .zsf-pulse { transform-box: fill-box; transform-origin: center; animation: zsf-pulse 1800ms ease-out infinite }
 @media (prefers-reduced-motion: reduce) { .zsf .zsf-move, .zsf .zsf-rise, .zsf .zsf-fade { transition: none } .zsf .zsf-pulse { animation: none; opacity: 0 } }
@@ -88,7 +91,7 @@ function Edge(props: {
           y={my}
           axis={dx !== 0 ? "x" : "y"}
           anchor="middle"
-          size={13}
+          size={14}
         >
           <tspan style={{ fill: props.active ? "var(--a)" : undefined }}>
             {props.label}
@@ -154,6 +157,27 @@ export function HeroStatefloor() {
         />
       </g>
       <circle cx={px(-108, 0)[0]} cy={px(-108, 0)[1]} r="3" fill="var(--l3)" />
+      <IsoText x={-112} y={-14} size={11} axis="x">
+        initial
+      </IsoText>
+      <Slab
+        x={-H - B}
+        y={-H - B}
+        w={G + S + 2 * B}
+        d={G + S + 2 * B}
+        stroke="var(--k)"
+        dashed
+      />
+      <IsoHandles
+        x={-H - B}
+        y={-H - B}
+        w={G + S + 2 * B}
+        d={G + S + 2 * B}
+        s={5}
+      />
+      <IsoText x={-30} y={G + H + B + 12} size={11}>
+        menu · 4 states · 4 events
+      </IsoText>
 
       {states.map((s, i) => (
         <Edge
@@ -198,6 +222,17 @@ export function HeroStatefloor() {
                 stroke={on ? "var(--a)" : "var(--l2)"}
                 className="zsf-fade"
               />
+              <IsoHandles
+                x={s.x - H}
+                y={s.y - H}
+                w={S}
+                d={S}
+                z={T}
+                s={5}
+                on
+                className="zsf-fade"
+                style={{ opacity: on ? 1 : 0 }}
+              />
               {on && (
                 <polygon
                   points={pts([
@@ -209,7 +244,7 @@ export function HeroStatefloor() {
                   fill="var(--as)"
                 />
               )}
-              <IsoText x={s.x - H + 14} y={s.y + H - 16} z={T} size={12}>
+              <IsoText x={s.x - H + 12} y={s.y + H - 16} z={T} size={15}>
                 <tspan style={{ fill: on ? "var(--a)" : "var(--tb)" }}>
                   {s.name}
                 </tspan>
@@ -241,6 +276,9 @@ export function HeroStatefloor() {
           stroke="var(--a)"
         />
         <ellipse cx="0" cy="0" rx="6" ry="3.5" fill="var(--a)" />
+      </g>
+      <g className="zsf-move" style={{ transform: lift(cur.x, cur.y, 0) }}>
+        <Guide from={[0, 0, 0]} to={[0, 0, T + RISE]} />
       </g>
 
       <g

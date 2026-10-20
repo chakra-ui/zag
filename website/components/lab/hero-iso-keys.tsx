@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import {
   Glow,
+  IsoHandles,
   IsoText,
   Slab,
   isoVars,
@@ -44,11 +45,12 @@ const IY = 20
 const ID = 30
 const MS = 1500
 const TRAVEL = 640
+const RY = 96
 
 const css = `
 .zik { ${isoVars} }
 html:not(.dark) .zik { ${isoVarsLight} }
-.zik text { fill: var(--t); font-size: 11px; letter-spacing: .02em }
+.zik text { fill: var(--t); font-size: 13px; letter-spacing: .02em }
 .zik .zik-key { transition: transform 140ms cubic-bezier(.3,0,.2,1) }
 .zik .zik-move { transition: transform 520ms cubic-bezier(.65,0,.35,1) }
 .zik .zik-fade { transition: opacity 400ms ease, fill 400ms ease, stroke 400ms ease }
@@ -123,11 +125,12 @@ export function HeroIsoKeys() {
   const open = hl >= 0
   const at = Math.max(hl, 0)
   const [cx, cy, cw, cd] = CHIP
+  const [lx, ly] = px(MX + 20, IY + at * ROW + ID / 2, 11)
 
   return (
     <svg
       className="zik"
-      viewBox="-370 -130 620 430"
+      viewBox="-362 -140 600 400"
       width="100%"
       aria-label="Keyboard keys send events along a wire into the menu machine, which moves the highlighted item and updates aria-activedescendant"
     >
@@ -196,7 +199,7 @@ export function HeroIsoKeys() {
               x={KX + KW / 2}
               y={k.y + KW / 2}
               z={14}
-              size={k.glyph.length > 1 ? 12 : 20}
+              size={k.glyph.length > 1 ? 13 : 20}
               anchor="middle"
             >
               <tspan style={{ fill: down ? "var(--a)" : "var(--tb)" }}>
@@ -219,7 +222,8 @@ export function HeroIsoKeys() {
         stroke={inChip ? "var(--a)" : "var(--l3)"}
         className="zik-fade"
       />
-      <IsoText x={cx + cw / 2} y={cy + cd / 2} z={18} size={10} anchor="middle">
+      <IsoHandles x={cx} y={cy} w={cw} d={cd} z={18} s={4} on={inChip} />
+      <IsoText x={cx + cw / 2} y={cy + cd / 2} z={18} size={12} anchor="middle">
         <tspan style={{ fill: inChip ? "var(--a)" : "var(--tb)" }}>
           machine
         </tspan>
@@ -276,7 +280,7 @@ export function HeroIsoKeys() {
                 fill={on ? "var(--as)" : "transparent"}
                 stroke="none"
               />
-              <IsoText x={MX + 34} y={y + ID / 2} z={11} size={12}>
+              <IsoText x={MX + 32} y={y + ID / 2} z={11} size={14}>
                 <tspan style={{ fill: on ? "var(--a)" : "var(--tb)" }}>
                   {item}
                 </tspan>
@@ -291,12 +295,27 @@ export function HeroIsoKeys() {
         <circle r="3.5" fill="var(--a)" />
       </g>
 
-      <g transform="translate(-340 250)">
+      <IsoHandles x={MX} y={0} w={MW} d={MD} z={8} s={4} />
+
+      <g className="zik-fade" style={{ opacity: open ? 1 : 0 }}>
+        <path
+          d={`M-176 ${RY + 17} L${lx - 6} ${ly}`}
+          stroke="var(--k)"
+          strokeDasharray="1 3"
+          fill="none"
+        />
+        <circle cx={lx} cy={ly} r="2.5" fill="var(--a)" />
+      </g>
+
+      <g transform={`translate(-348 ${RY})`}>
         <text x="0" y="0">
           send(<tspan style={{ fill: "var(--tb)" }}>"{keys[key].event}"</tspan>)
         </text>
-        <text x="0" y="17">
-          aria-activedescendant=
+        <text x="0" y="22">
+          aria-activedescendant
+        </text>
+        <text x="0" y="40">
+          ={" "}
           <tspan style={{ fill: "var(--a)" }}>
             {open ? `"menu:${items[hl]}"` : "undefined"}
           </tspan>

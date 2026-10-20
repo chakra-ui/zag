@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react"
 
 export const C = 0.866
 
@@ -39,6 +45,7 @@ export const isoVars = `
   --t: rgba(255,255,255,.45); --tb: rgba(255,255,255,.88);
   --top: #18181b; --side: #0f0f11; --grid: rgba(255,255,255,.06);
   --a: #48bb78; --as: rgba(72,187,120,.14); --ag: rgba(72,187,120,.55); --aside: #1f5f3c;
+  --k: rgba(255,255,255,.26); --hf: #111113;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 `
 
@@ -47,6 +54,7 @@ export const isoVarsLight = `
   --t: rgba(0,0,0,.45); --tb: rgba(0,0,0,.82);
   --top: #ffffff; --side: #ededf0; --grid: rgba(0,0,0,.06);
   --a: #2f855a; --as: rgba(47,133,90,.12); --ag: rgba(47,133,90,.35); --aside: #9fd8b8;
+  --k: rgba(0,0,0,.28); --hf: #ffffff;
 `
 
 export function Slab(props: {
@@ -178,6 +186,177 @@ export function IsoGrid(props: {
   return (
     <g stroke="var(--grid)" fill="none" mask={`url(#${props.maskId})`}>
       {lines}
+    </g>
+  )
+}
+
+export const reduced = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+export function useClock<T extends Element>(still: number) {
+  const [t, setT] = useState(0)
+  const ref = useRef<T>(null)
+  useEffect(() => {
+    if (reduced()) {
+      setT(still)
+      return
+    }
+    let raf = 0
+    let last = performance.now()
+    let acc = 0
+    let seen = true
+    const el = ref.current
+    const io = new IntersectionObserver(([e]) => {
+      seen = e.isIntersecting
+    })
+    if (el) io.observe(el)
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 100)
+      last = now
+      if (seen) {
+        acc += dt
+        setT(acc)
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(raf)
+      io.disconnect()
+    }
+  }, [still])
+  return [t, ref] as const
+}
+
+export const ramp = (t: number, from: number, dur: number) =>
+  Math.min(Math.max((t - from) / dur, 0), 1)
+
+export const ease = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+
+export function Handle(props: {
+  at: [number, number]
+  s?: number
+  on?: boolean
+  className?: string
+  style?: CSSProperties
+}) {
+  const s = props.s ?? 5
+  return (
+    <rect
+      className={props.className}
+      style={props.style}
+      x={props.at[0] - s / 2}
+      y={props.at[1] - s / 2}
+      width={s}
+      height={s}
+      fill="var(--hf)"
+      stroke={props.on ? "var(--a)" : "var(--l3)"}
+      strokeWidth={1}
+    />
+  )
+}
+
+export function IsoHandles(props: {
+  x: number
+  y: number
+  w: number
+  d: number
+  z?: number
+  s?: number
+  on?: boolean
+  className?: string
+  style?: CSSProperties
+}) {
+  const { x, y, w, d, z = 0 } = props
+  const corners: [number, number][] = [
+    [x, y],
+    [x + w, y],
+    [x + w, y + d],
+    [x, y + d],
+  ]
+  return (
+    <g className={props.className} style={props.style}>
+      {corners.map(([cx, cy]) => (
+        <Handle
+          key={`${cx},${cy}`}
+          at={px(cx, cy, z)}
+          s={props.s}
+          on={props.on}
+        />
+      ))}
+    </g>
+  )
+}
+
+export function Guide(props: {
+  from: [number, number, number?]
+  to: [number, number, number?]
+  className?: string
+  style?: CSSProperties
+}) {
+  return (
+    <polyline
+      className={props.className}
+      style={props.style}
+      points={pts([props.from, props.to])}
+      fill="none"
+      stroke="var(--k)"
+      strokeDasharray="1 3"
+    />
+  )
+}
+
+export function IsoDim(props: {
+  from: [number, number, number?]
+  to: [number, number, number?]
+  off: [number, number, number?]
+  label: string
+  size?: number
+  axis?: "x" | "y"
+}) {
+  const [ox, oy, oz = 0] = props.off
+  const shift = (p: [number, number, number?]): [number, number, number] => [
+    p[0] + ox,
+    p[1] + oy,
+    (p[2] ?? 0) + oz,
+  ]
+  const a = shift(props.from)
+  const b = shift(props.to)
+  const tick = (p: [number, number, number]) => {
+    const len = Math.hypot(ox, oy, oz) || 1
+    const k = 4 / len
+    return pts([
+      [p[0] - ox * k, p[1] - oy * k, p[2] - oz * k],
+      [p[0] + ox * k, p[1] + oy * k, p[2] + oz * k],
+    ])
+  }
+  const m: [number, number, number] = [
+    (a[0] + b[0]) / 2,
+    (a[1] + b[1]) / 2,
+    (a[2] + b[2]) / 2,
+  ]
+  const lk = 12 / (Math.hypot(ox, oy, oz) || 1)
+  return (
+    <g stroke="var(--k)" fill="none">
+      <polyline points={pts([props.from, a])} strokeDasharray="1 3" />
+      <polyline points={pts([props.to, b])} strokeDasharray="1 3" />
+      <polyline points={pts([a, b])} />
+      <polyline points={tick(a)} />
+      <polyline points={tick(b)} />
+      <g stroke="none">
+        <IsoText
+          x={m[0] + ox * lk}
+          y={m[1] + oy * lk}
+          z={m[2] + oz * lk}
+          axis={props.axis}
+          anchor="middle"
+          size={props.size ?? 10}
+        >
+          {props.label}
+        </IsoText>
+      </g>
     </g>
   )
 }

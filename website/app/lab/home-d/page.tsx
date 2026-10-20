@@ -58,8 +58,7 @@ const returns = [
     body: "Target parts and states from any CSS, no class juggling.",
     code: `api.getIncrementTriggerProps()
 // {
-//   "data-scope": "number-input",
-//   "data-part": "increment-trigger",
+//   "data-number-input-increment-trigger": "seats",
 //   "data-disabled": "",
 //   disabled: true
 // }`,

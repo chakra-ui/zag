@@ -26,7 +26,12 @@ const variants = [
     "Same component in four frameworks, with the live result floating over it.",
   ],
   ["e", "Catalog", "A bento wall of real, working components."],
-  ["f", "Anatomy", "An isometric menu lifts apart into its data-part layers."],
+  ["f", "Anatomy", "An isometric menu lifts apart into its anatomy parts."],
+  [
+    "g",
+    "Field guide",
+    "A Polar-style guide: chapters, diagrams and a glossary of how Zag thinks.",
+  ],
 ]
 
 export default function LabIndex() {
@@ -36,7 +41,7 @@ export default function LabIndex() {
       <Frame>
         <Pad>
           <Eyebrow mb="3">Lab · homepage v2</Eyebrow>
-          <Title as="h1">Six directions</Title>
+          <Title as="h1">Seven directions</Title>
           <Lead mt="4">Same tone, same kit, different hero and story.</Lead>
         </Pad>
         <Grid className={cells} gap="1px" columns={{ base: 1, md: 2, xl: 3 }}>

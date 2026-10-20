@@ -2,6 +2,7 @@
 
 import {
   Glow,
+  IsoHandles,
   IsoText,
   Slab,
   isoVars,
@@ -65,7 +66,7 @@ const script = [
 const css = `
 .zan { ${isoVars} }
 html:not(.dark) .zan { ${isoVarsLight} }
-.zan text { fill: var(--t); font-size: 11px; letter-spacing: .02em }
+.zan text { fill: var(--t); font-size: 12px; letter-spacing: .02em }
 .zan .zan-move { transition: transform 800ms cubic-bezier(.65,0,.35,1) }
 .zan .zan-fade { transition: opacity 500ms ease }
 .zan .zan-tint { transition: fill 400ms ease }
@@ -88,9 +89,9 @@ function Leader(props: {
       />
       <circle cx={sx} cy={sy} r="2.5" fill="var(--l3)" />
       <text x={COL} y={sy - 2}>
-        data-part=<tspan style={{ fill: "var(--tb)" }}>"{props.part}"</tspan>
+        data-menu-<tspan style={{ fill: "var(--tb)" }}>{props.part}</tspan>
       </text>
-      <text x={COL} y={sy + 13} style={{ opacity: 0.7, fontSize: 10 }}>
+      <text x={COL} y={sy + 14} style={{ opacity: 0.75, fontSize: 11 }}>
         {props.note}
       </text>
     </g>
@@ -109,7 +110,7 @@ export function HeroAnatomy() {
       className="zan"
       viewBox="-280 -270 710 520"
       width="100%"
-      aria-label="A menu separates into its parts, positioner, content, items and trigger, each labelled with its data-part attribute, while the highlight steps through the items"
+      aria-label="A menu separates into its parts, positioner, content, items and trigger, each labelled with its data-menu attribute, while the highlight steps through the items"
     >
       <style>{css}</style>
       <defs>
@@ -140,6 +141,15 @@ export function HeroAnatomy() {
 
       <g className="zan-move" style={{ transform: lift(0, 0, z(0)) }}>
         <Slab x={0} y={0} w={260} d={200} stroke="var(--l3)" dashed />
+        <IsoHandles
+          x={0}
+          y={0}
+          w={260}
+          d={200}
+          s={5}
+          className="zan-fade"
+          style={{ opacity: open ? 1 : 0 }}
+        />
         <Leader
           at={layers[0].anchor}
           part="positioner"
@@ -150,6 +160,16 @@ export function HeroAnatomy() {
 
       <g className="zan-move" style={{ transform: lift(0, 0, z(1)) }}>
         <Slab x={20} y={20} w={220} d={160} z={8} t={8} top="var(--top)" />
+        <IsoHandles
+          x={20}
+          y={20}
+          w={220}
+          d={160}
+          z={8}
+          s={4}
+          className="zan-fade"
+          style={{ opacity: open ? 1 : 0 }}
+        />
         <Leader
           at={layers[1].anchor}
           part="content"

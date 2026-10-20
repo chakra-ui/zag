@@ -141,10 +141,10 @@ export function ArtAnatomy() {
           </text>
         </g>
       ))}
-      {callout(120, 33, 168, 'data-part="trigger"')}
-      {callout(144, 62, 168, 'data-part="content"')}
+      {callout(120, 33, 168, "data-menu-trigger")}
+      {callout(144, 62, 168, "data-menu-content")}
       {callout(138, 95, 168, "data-highlighted", true)}
-      {callout(144, 143, 168, 'data-part="item"')}
+      {callout(144, 143, 168, "data-menu-item")}
     </Svg>
   )
 }
