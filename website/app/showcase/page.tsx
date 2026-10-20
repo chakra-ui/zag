@@ -1,13 +1,6 @@
 import { Footer } from "components/footer"
-import {
-  Band,
-  cells,
-  Eyebrow,
-  Frame,
-  Lead,
-  Pad,
-  Title,
-} from "components/lab/kit"
+import { cells } from "components/lab/cells"
+import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
 import { TopNav } from "components/nav/top-nav"
 import { ShowcaseCard } from "components/showcase-card"
 import { showcaseItems } from "lib/showcase"

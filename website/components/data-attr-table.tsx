@@ -1,6 +1,12 @@
-import { Box, HStack, Stack } from "styled-system/jsx"
 import { DataAttrDocKey, DataAttrEntry, getDataAttrDoc } from "@zag-js/docs"
-import { Kbd } from "components/ui/kbd"
+import {
+  DocTable,
+  DocTableHead,
+  DocTableKey,
+  DocTableRow,
+} from "components/ui/doc-table"
+import { Fragment } from "react"
+import { Box } from "styled-system/jsx"
 
 interface Props {
   name: DataAttrDocKey
@@ -16,29 +22,28 @@ export const DataAttrTable = (props: Props) => {
   }
 
   return (
-    <Stack
-      paddingLeft="0!"
-      listStyleType="none"
-      listStylePosition="inside"
-      divideY="1px"
-    >
-      {Object.entries(data).map(([part, attrs], index) => (
-        <Stack key={index} gap="4" py="4">
-          <Box fontWeight="semibold">{part}</Box>
-          <Stack align="flex-start" gap="4" maxW="lg">
-            {Object.entries(attrs)
-              .filter(([_key, value]) => value !== "")
-              .map(([key, value], index) => (
-                <HStack key={index} gap="8" width="full">
-                  <Box minW="160px">
-                    <Kbd>{key}</Kbd>
-                  </Box>
-                  <span>{value}</span>
-                </HStack>
-              ))}
-          </Stack>
-        </Stack>
+    <DocTable>
+      {Object.entries(data).map(([part, attrs]) => (
+        <Fragment key={part}>
+          <DocTableHead
+            textTransform="none"
+            letterSpacing="0.02em"
+            fontSize="12px"
+            color="text.bold"
+            css={{ "* + &": { borderTopWidth: "1px" } }}
+          >
+            {part}
+          </DocTableHead>
+          {Object.entries(attrs)
+            .filter(([_key, value]) => value !== "")
+            .map(([key, value]) => (
+              <DocTableRow key={key}>
+                <DocTableKey>{key}</DocTableKey>
+                <Box color="text.muted">{value}</Box>
+              </DocTableRow>
+            ))}
+        </Fragment>
       ))}
-    </Stack>
+    </DocTable>
   )
 }

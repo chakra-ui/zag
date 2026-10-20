@@ -1,14 +1,20 @@
-import { AuthorLine, eyebrow, eyebrowStyles } from "components/blog"
+import {
+  accentDot,
+  AuthorLine,
+  eyebrow,
+  monoLink,
+  shortDate,
+} from "components/blog"
 import { Footer } from "components/footer"
+import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
 import { TopNav } from "components/nav/top-nav"
+import { PostList } from "components/post-list"
 import { createPageMetadata } from "lib/seo"
 import { posts } from "lib/source"
-import { PostList } from "components/post-list"
 import Link from "next/link"
 import { Suspense } from "react"
-import { LuRss } from "react-icons/lu"
 import { css, cx } from "styled-system/css"
-import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 
 export const metadata = createPageMetadata({
   title: "Blog",
@@ -17,98 +23,115 @@ export const metadata = createPageMetadata({
 })
 
 export default function BlogPage() {
-  // a post marked `featured` wins, otherwise the newest
   const featured = posts.find((post) => post.featured) ?? posts[0]
 
   return (
     <Box>
       <TopNav />
-      <Box maxW="72rem" mx="auto" px="6" pt={{ base: "10", md: "14" }}>
-        <HStack justify="space-between" alignItems="end" mb="8" gap="4">
-          <styled.h1 textStyle="display.xl">Latest Updates</styled.h1>
+      <Frame>
+        <Pad>
+          <Eyebrow mb="3">Blog · {posts.length} posts</Eyebrow>
+          <Title as="h1">Notes from the Zag team</Title>
+          <Lead mt="4">
+            Release notes, deep dives and how we build state machines for UI.
+          </Lead>
           <Link
             href="/blog/rss.xml"
             prefetch={false}
             aria-label="Subscribe to the RSS feed"
-            className={cx(
-              eyebrow,
-              css({
-                display: "flex",
-                alignItems: "center",
-                gap: "2",
-                _hover: { color: "text" },
-              }),
-            )}
+            className={cx(monoLink, css({ display: "inline-block", mt: "6" }))}
           >
-            <LuRss size={14} aria-hidden />
-            RSS
+            rss.xml ↗
           </Link>
-        </HStack>
+        </Pad>
 
         {featured && (
-          <Link
-            href={`/blog/${featured.slug}`}
-            className={css({
-              display: "block",
-              p: { base: "6", md: "8" },
-              borderWidth: "1px",
-              borderColor: "border",
-              rounded: "lg",
-              transition: "background-color 150ms",
-              _hover: { bg: "bg.subtle" },
-              _focusVisible: {
-                outline: "2px solid",
-                outlineColor: "green.500",
-                outlineOffset: "2px",
-              },
-            })}
-          >
-            <HStack gap="3" mb="4" flexWrap="wrap">
-              <styled.span
-                className={css(eyebrowStyles, {
-                  bg: "bg.primary.subtle",
-                  color: "text.inverse",
-                  px: "2",
-                  py: "1",
-                })}
+          <Band>
+            <Link href={`/blog/${featured.slug}`} className={featuredCard}>
+              <Grid
+                columns={{ base: 1, lg: 12 }}
+                gap={{ base: "6", lg: "10" }}
+                alignItems="end"
               >
-                {featured.featured ? "Featured" : "Latest"}
-              </styled.span>
-              <styled.span className={eyebrow}>
-                {featured.date
-                  .toLocaleDateString("en-US", {
-                    month: "long",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })
-                  .toUpperCase()}
-              </styled.span>
-            </HStack>
-            <Stack gap="3" maxW="40rem">
-              <styled.h2
-                fontSize={{ base: "3xl", md: "4xl" }}
-                fontWeight="bold"
-                letterSpacing="tight"
-                lineHeight="1.1"
-              >
-                {featured.title}
-              </styled.h2>
-              <styled.p textStyle="text.lg" color="text.muted">
-                {featured.description}
-              </styled.p>
-              <AuthorLine
-                authors={featured.authors}
-                readingTime={featured.readingTime}
-              />
-            </Stack>
-          </Link>
+                <Stack gap="4" gridColumn={{ lg: "span 8" }}>
+                  <HStack gap="2.5" className={eyebrow}>
+                    <span className={accentDot} />
+                    <span>{featured.featured ? "Featured" : "Latest"}</span>
+                    <span aria-hidden>·</span>
+                    <time dateTime={featured.date.toISOString()}>
+                      {shortDate(featured.date)}
+                    </time>
+                    {featured.type === "release" && (
+                      <>
+                        <span aria-hidden>·</span>
+                        <span>Release</span>
+                      </>
+                    )}
+                  </HStack>
+                  <styled.h2
+                    fontSize={{ base: "26px", md: "34px" }}
+                    lineHeight="1.12"
+                    letterSpacing="-0.03em"
+                    fontWeight="semibold"
+                    color="text.bold"
+                    textWrap="balance"
+                  >
+                    {featured.title}
+                  </styled.h2>
+                  <styled.p
+                    fontSize={{ base: "15px", md: "17px" }}
+                    lineHeight="1.6"
+                    color="text.muted"
+                    maxW="60ch"
+                    textWrap="pretty"
+                  >
+                    {featured.description}
+                  </styled.p>
+                </Stack>
+                <Stack
+                  gap="4"
+                  gridColumn={{ lg: "span 4" }}
+                  alignItems={{ base: "start", lg: "end" }}
+                >
+                  <AuthorLine
+                    authors={featured.authors}
+                    readingTime={featured.readingTime}
+                  />
+                  <styled.span
+                    fontFamily="mono"
+                    fontSize="13px"
+                    color="text.bold"
+                  >
+                    Read post →
+                  </styled.span>
+                </Stack>
+              </Grid>
+            </Link>
+          </Band>
         )}
 
         <Suspense>
           <PostList posts={posts.map(({ toc: _toc, ...post }) => post)} />
         </Suspense>
-      </Box>
+        <Band>
+          <Box h={{ base: "16", md: "24" }} />
+        </Band>
+      </Frame>
       <Footer />
     </Box>
   )
 }
+
+const featuredCard = css({
+  display: "block",
+  px: { base: "4", sm: "6", md: "10" },
+  py: { base: "10", md: "14" },
+  bg: "bg.muted",
+  transition: "background 150ms",
+  _hover: { bg: "bg" },
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "text.bold",
+    outlineOffset: "-2px",
+  },
+})

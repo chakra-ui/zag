@@ -1,5 +1,6 @@
 import { Footer } from "components/footer"
-import { cells, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
+import { cells } from "components/lab/cells"
+import { Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
 import { TopNav } from "components/nav/top-nav"
 import Link from "next/link"
 import { Box, Grid, styled } from "styled-system/jsx"

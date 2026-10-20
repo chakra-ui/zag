@@ -1,19 +1,24 @@
-import { HiArrowLeft } from "react-icons/hi"
-import { AuthorLine, eyebrow } from "components/blog"
+import {
+  accentDot,
+  AuthorLine,
+  eyebrow,
+  monoLink,
+  shortDate,
+} from "components/blog"
 import { Footer } from "components/footer"
 import { absoluteUrl, JsonLd } from "components/json-ld"
 import { mdxComponents } from "components/mdx-components"
+import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
+import { cells } from "components/lab/cells"
 import { TopNav } from "components/nav/top-nav"
 import { TableOfContents } from "components/toc"
-import { formatDate } from "lib/format-date"
 import { createPageMetadata } from "lib/seo"
 import { getPostBody, posts } from "lib/source"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { LuRss } from "react-icons/lu"
-import { css, cx } from "styled-system/css"
-import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { css } from "styled-system/css"
+import { Box, Grid, HStack, styled } from "styled-system/jsx"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -45,6 +50,9 @@ export default async function PostPage({ params }: PageProps) {
   const post = posts.find((post) => post.slug === slug)
   const Body = getPostBody(slug)
   if (!post || !Body) notFound()
+  const index = posts.indexOf(post)
+  const newer = posts[index - 1]
+  const older = posts[index + 1]
 
   return (
     <Box>
@@ -64,91 +72,196 @@ export default async function PostPage({ params }: PageProps) {
         }}
       />
       <TopNav />
-      <Box maxW="8xl" mx="auto" display="flex" position="relative">
-        <Box
-          as="article"
-          flex="1"
-          minW="0"
-          px={{ base: "4", lg: "10" }}
-          pt={{ base: "8", md: "10" }}
-        >
-          <Box maxW="3xl" mx="auto">
-            <Link
-              href="/blog"
-              className={css({
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "1.5",
-                fontSize: "sm",
-                color: "text.muted",
-                mb: "6",
-                _hover: { color: "text" },
-              })}
-            >
-              <HiArrowLeft aria-hidden />
-              All posts
-            </Link>
-
-            <Stack gap="3" mb="10">
-              <styled.h1 textStyle="display.xl">{post.title}</styled.h1>
-              <styled.p fontSize="lg" color="text.muted">
-                {post.description}
-              </styled.p>
-              <HStack justify="space-between" flexWrap="wrap" gap="3">
-                <HStack gap="3" flexWrap="wrap">
-                  <time dateTime={post.date.toISOString()} className={eyebrow}>
-                    {formatDate(post.date)}
-                  </time>
-                  <styled.span aria-hidden color="text.subtle">
-                    ·
+      <Frame>
+        <Pad pb={{ base: "10", md: "14" }}>
+          <Link href="/blog" className={monoLink}>
+            ← blog
+          </Link>
+          <Box maxW="72ch" mt={{ base: "8", md: "10" }}>
+            <HStack gap="2.5" flexWrap="wrap" className={eyebrow}>
+              {post.type === "release" && (
+                <>
+                  <styled.span
+                    display="inline-flex"
+                    alignItems="center"
+                    gap="1.5"
+                  >
+                    <span className={accentDot} />
+                    Release
                   </styled.span>
-                  <span className={eyebrow}>{post.readingTime} min read</span>
-                </HStack>
-                <Link
-                  href="/blog/rss.xml"
-                  prefetch={false}
-                  aria-label="Subscribe to the RSS feed"
-                  className={cx(
-                    eyebrow,
-                    css({
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "2",
-                      _hover: { color: "text" },
-                    }),
-                  )}
-                >
-                  <LuRss size={14} aria-hidden />
-                  RSS
-                </Link>
-              </HStack>
-              <Box pt="3">
-                <AuthorLine authors={post.authors} linked />
+                  <span aria-hidden>·</span>
+                </>
+              )}
+              <time dateTime={post.date.toISOString()}>
+                {shortDate(post.date)}
+              </time>
+              <span aria-hidden>·</span>
+              <span>{post.readingTime} min read</span>
+            </HStack>
+            <Title as="h1" mt="4" fontSize={{ base: "32px", md: "44px" }}>
+              {post.title}
+            </Title>
+            <Lead mt="4" maxW="62ch">
+              {post.description}
+            </Lead>
+            <Box mt="8">
+              <AuthorLine authors={post.authors} linked />
+            </Box>
+          </Box>
+        </Pad>
+
+        <Band>
+          <Box display="flex" position="relative">
+            <Box
+              as="article"
+              flex="1"
+              minW="0"
+              px={{ base: "4", sm: "6", md: "10" }}
+              py={{ base: "10", md: "14" }}
+            >
+              <Box className={prose}>
+                <div className="mdx-content">
+                  <Body components={mdxComponents} />
+                </div>
               </Box>
-            </Stack>
+            </Box>
 
-            <div className="mdx-content">
-              <Body components={mdxComponents} />
-            </div>
+            {post.toc.length > 1 && (
+              <Box
+                as="aside"
+                hideBelow="xl"
+                flexShrink="0"
+                w="64"
+                borderLeftWidth="1px"
+                borderColor="border"
+              >
+                <Box
+                  position="sticky"
+                  top="calc(4rem + 2rem)"
+                  px="6"
+                  py="14"
+                  className={tocStyles}
+                >
+                  <TableOfContents data={post.toc} />
+                </Box>
+              </Box>
+            )}
           </Box>
-        </Box>
+        </Band>
 
-        {post.toc.length > 1 && (
-          <Box
-            hideBelow="xl"
-            flexShrink="0"
-            w="56"
-            position="sticky"
-            top="calc(4rem + 2rem)"
-            alignSelf="flex-start"
-            pt="10"
-            pe="8"
-          >
-            <TableOfContents data={post.toc} />
-          </Box>
-        )}
-      </Box>
+        <Grid className={cells} gap="1px" columns={{ base: 1, md: 2 }}>
+          {older ? (
+            <Link href={`/blog/${older.slug}`} className={pager}>
+              <Eyebrow>← Older</Eyebrow>
+              <styled.span
+                fontSize="16px"
+                fontWeight="semibold"
+                color="text.bold"
+              >
+                {older.title}
+              </styled.span>
+            </Link>
+          ) : (
+            <Link href="/blog" className={pager}>
+              <Eyebrow>← Index</Eyebrow>
+              <styled.span
+                fontSize="16px"
+                fontWeight="semibold"
+                color="text.bold"
+              >
+                All posts
+              </styled.span>
+            </Link>
+          )}
+          {newer ? (
+            <Link href={`/blog/${newer.slug}`} className={pager} data-end="">
+              <Eyebrow>Newer →</Eyebrow>
+              <styled.span
+                fontSize="16px"
+                fontWeight="semibold"
+                color="text.bold"
+              >
+                {newer.title}
+              </styled.span>
+            </Link>
+          ) : (
+            <Link
+              href="/blog/rss.xml"
+              prefetch={false}
+              className={pager}
+              data-end=""
+            >
+              <Eyebrow>Latest post</Eyebrow>
+              <styled.span
+                fontSize="16px"
+                fontWeight="semibold"
+                color="text.bold"
+              >
+                Subscribe via rss.xml ↗
+              </styled.span>
+            </Link>
+          )}
+        </Grid>
+      </Frame>
       <Footer />
     </Box>
   )
 }
+
+const pager = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "3",
+  px: { base: "4", sm: "6", md: "10" },
+  py: { base: "8", md: "10" },
+  transition: "background 150ms",
+  _hover: { bg: "bg.muted" },
+  "&[data-end]": { md: { alignItems: "end", textAlign: "end" } },
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "text.bold",
+    outlineOffset: "-2px",
+  },
+})
+
+const tocStyles = css({
+  "& .toc__heading": {
+    fontFamily: "mono",
+    fontSize: "11px",
+    fontWeight: "normal",
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    color: "text.muted",
+  },
+})
+
+const prose = css({
+  color: "text",
+  fontSize: "16px",
+  "& .mdx-content > p:first-child": {
+    fontSize: "17px",
+    color: "text.bold",
+  },
+  "& .mdx-content :is(h2, h3)": {
+    color: "text.bold",
+    letterSpacing: "-0.02em",
+    textWrap: "balance",
+  },
+  "& .mdx-content > h2": {
+    mt: "14",
+    pt: "8",
+    borderTopWidth: "1px",
+    borderColor: "border",
+  },
+  "& .mdx-content li::marker": {
+    color: "text.muted",
+  },
+  "& .mdx-content hr": {
+    my: "10",
+    borderColor: "border",
+  },
+  "& .mdx-content img": {
+    maxW: "100%",
+    h: "auto",
+  },
+})

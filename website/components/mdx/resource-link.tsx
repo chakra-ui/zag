@@ -13,16 +13,27 @@ interface ResourceLinkProps {
 
 const StyledLink = styled("a", {
   base: {
-    display: "flex",
+    display: "inline-flex",
     alignItems: "center",
-    gap: "1",
+    gap: "1.5",
+    h: "7",
+    px: "2.5",
     borderWidth: "1px",
-    px: "2",
-    py: "1",
-    fontSize: "sm",
+    borderColor: "border",
+    rounded: "md",
+    fontFamily: "mono",
+    fontSize: "12px",
+    letterSpacing: "0.02em",
+    color: "text.muted",
     cursor: "pointer",
     bg: "bg",
-    _hover: { bg: "bg.muted" },
+    transition: "color 120ms, border-color 120ms",
+    _hover: { color: "text.bold", borderColor: "border.bold" },
+    _focusVisible: {
+      outline: "2px solid",
+      outlineColor: "border.primary.bold",
+      outlineOffset: "2px",
+    },
   },
 })
 
@@ -30,7 +41,7 @@ function ResourceLink(props: ResourceLinkProps) {
   const { href, icon, children, ...rest } = props
   return (
     <StyledLink href={href} target="_blank" {...rest}>
-      <Icon as={icon} fontSize="lg" color="text.primary.bold" />
+      <Icon as={icon} fontSize="14px" />
       <span>{children}</span>
     </StyledLink>
   )
@@ -52,7 +63,7 @@ interface ResourceLinkGroupProps {
 export function ResourceLinkGroup(props: ResourceLinkGroupProps) {
   const { item } = props
   return (
-    <Wrap mt="6" columnGap="4">
+    <Wrap mt="5" gap="2">
       <ResourceLink icon={RiNpmjsFill} href={item.npmUrl} data-id="npm">
         {item.version} (latest)
       </ResourceLink>

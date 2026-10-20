@@ -1,18 +1,24 @@
 import { styled } from "styled-system/jsx"
 
+/** Matches the ⌘K chip in the top nav */
 export const Kbd = styled("kbd", {
   base: {
     fontFamily: "mono",
-    display: "inline-block",
-    px: "0.4em",
-    py: "0.1em",
-    fontSize: "0.8em",
-    fontWeight: "bold",
-    bg: "bg.code.inline/50",
-    color: { base: "pink.700", _dark: "pink.400" },
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minW: "6",
+    h: "6",
+    px: "1.5",
+    fontSize: "12px",
+    lineHeight: "1",
+    letterSpacing: "0.02em",
+    bg: "bg",
+    color: "text.bold",
     borderWidth: "1px",
     borderBottomWidth: "2px",
     borderColor: "border.bold",
-    borderRadius: "3px",
+    rounded: "sm",
+    whiteSpace: "nowrap",
   },
 })

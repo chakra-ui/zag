@@ -39,80 +39,66 @@ export function ProfileItem({ member }: { member: TeamMember }) {
     (member.href ? [{ label: "GitHub", href: member.href }] : [])
 
   return (
-    <Stack
-      gap="5"
-      p={{ base: "5", md: "6" }}
-      rounded="2xl"
-      borderWidth="1px"
-      borderColor="border.subtle"
-      bg="bg"
-      transition="all 0.2s"
-      h="full"
-      _hover={{
-        borderColor: "border.bold",
-        shadow: "sm",
-        translateY: "-1px",
-      }}
-    >
+    <Stack gap="6" p={{ base: "6", md: "8" }} h="full">
       <HStack gap="4" alignItems="center">
         <styled.img
           src={getAvatar(member)}
-          alt={member.name}
-          boxSize="20"
+          alt=""
+          boxSize="14"
+          flexShrink="0"
           borderRadius="full"
           objectFit="cover"
+          borderWidth="1px"
+          borderColor="border"
+          bg="bg.muted"
         />
-        <Stack gap="1">
-          <styled.h3 fontSize="lg" fontWeight="semibold">
+        <Box minW="0">
+          <styled.h3
+            fontSize="17px"
+            fontWeight="semibold"
+            letterSpacing="-0.01em"
+            color="text.bold"
+          >
             {member.name}
           </styled.h3>
           <styled.p
-            fontSize="xs"
-            color="text.muted"
-            textTransform="uppercase"
+            mt="1"
+            fontFamily="mono"
+            fontSize="11px"
             letterSpacing="0.12em"
-            fontWeight="medium"
+            textTransform="uppercase"
+            color="text.muted"
           >
             {member.role}
           </styled.p>
-        </Stack>
+        </Box>
       </HStack>
-      <Box h="1px" bg="border.subtle" />
       {links.length > 0 ? (
-        <Stack gap="2.5">
+        <HStack gap="4" flexWrap="wrap" mt="auto">
           {links.map((link) => (
             <styled.a
               key={`${member.name}-${link.label}`}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`${member.name} on ${link.label}`}
               display="inline-flex"
               alignItems="center"
-              gap="2"
-              fontSize="sm"
+              gap="1.5"
+              fontFamily="mono"
+              fontSize="12px"
               color="text.muted"
-              w="fit-content"
-              transition="all 0.2s"
-              _hover={{ color: "text" }}
-              _focusVisible={{
-                outline: "2px solid",
-                outlineColor: "green.500",
-                outlineOffset: "2px",
-              }}
+              transition="color 120ms"
+              _hover={{ color: "text.bold" }}
+              focusVisibleRing="outside"
             >
-              <styled.span
-                fontSize="xs"
-                color="text.subtle"
-                display="inline-flex"
-              >
+              <styled.span display="inline-flex" fontSize="13px">
                 <PlatformIcon label={link.label} />
               </styled.span>
-              <styled.span fontFamily="mono" fontSize="xs" color="text.subtle">
-                {getHandle(link.href)}
-              </styled.span>
+              {getHandle(link.href)}
             </styled.a>
           ))}
-        </Stack>
+        </HStack>
       ) : null}
     </Stack>
   )

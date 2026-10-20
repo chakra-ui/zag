@@ -36,15 +36,17 @@ const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
 
 const Anchor = styled("a", {
   base: {
-    color: "text.primary.bold",
+    color: "text.bold",
     cursor: "pointer",
     fontWeight: "medium",
     textDecoration: "underline",
-    textDecorationColor: "cyan.default",
+    textDecorationColor: "text.muted/50",
     textDecorationThickness: "1px",
-    textUnderlineOffset: "2px",
+    textUnderlineOffset: "3px",
+    transition: "color 120ms, text-decoration-color 120ms",
     _hover: {
-      textDecorationThickness: "2px",
+      color: "text.primary.bold",
+      textDecorationColor: "currentColor",
     },
   },
 })
@@ -124,7 +126,21 @@ const components: Record<string, FC<any>> = {
     const { data, headings } = props.items
 
     return (
-      <table>
+      <styled.table
+        css={{
+          borderCollapse: "collapse",
+          "& th": {
+            bg: "bg.code.inline",
+            fontFamily: "mono",
+            fontSize: "11px",
+            fontWeight: "medium",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "text.muted",
+          },
+          "& th, & td": { borderColor: "border", px: "4", py: "2.5" },
+        }}
+      >
         <thead>
           <tr>
             {headings.map((heading) => (
@@ -146,7 +162,7 @@ const components: Record<string, FC<any>> = {
             </tr>
           ))}
         </tbody>
-      </table>
+      </styled.table>
     )
   },
   code(props) {
@@ -190,7 +206,11 @@ const components: Record<string, FC<any>> = {
     return (
       <Box
         my="8"
-        bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)"
+        bg={{ base: "gray.900", _dark: "gray.950" }}
+        borderWidth="1px"
+        borderColor="border"
+        rounded="md"
+        overflow="hidden"
         css={{
           "& > svg": {
             maxW: "100%",
@@ -198,7 +218,7 @@ const components: Record<string, FC<any>> = {
           },
         }}
       >
-        <Anatomy accentColor="#2CFF80" />
+        <Anatomy accentColor="#a1a1aa" />
       </Box>
     )
   },

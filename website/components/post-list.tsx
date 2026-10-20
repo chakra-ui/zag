@@ -2,14 +2,14 @@
 
 import * as select from "@zag-js/select"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { AuthorLine, eyebrow } from "components/blog"
+import { accentDot, AuthorLine, eyebrow, shortDate } from "components/blog"
 import type { Post } from "lib/source"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useId } from "react"
 import { LuCheck, LuChevronDown } from "react-icons/lu"
 import { css } from "styled-system/css"
-import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 
 export type PostSummary = Omit<Post, "toc">
 
@@ -21,17 +21,6 @@ const filters = [
 
 const collection = select.collection({ items: filters })
 
-const shortDate = (date: Date) =>
-  date
-    .toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      timeZone: "UTC",
-    })
-    .toUpperCase()
-
-/** Posts grouped by year, filtered by type through `?type=articles|releases` */
 export function PostList({ posts }: { posts: PostSummary[] }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -66,8 +55,16 @@ export function PostList({ posts }: { posts: PostSummary[] }) {
   const years = [...new Set(visible.map((post) => post.date.getUTCFullYear()))]
 
   return (
-    <Box mt="12">
-      <HStack justify="space-between" flexWrap="wrap" gap="4" mb="8">
+    <Box>
+      <HStack
+        justify="space-between"
+        flexWrap="wrap"
+        gap="4"
+        px={{ base: "4", sm: "6", md: "10" }}
+        py="4"
+        borderTopWidth="1px"
+        borderColor="border"
+      >
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()} className={css({ srOnly: true })}>
             Filter posts
@@ -107,75 +104,97 @@ export function PostList({ posts }: { posts: PostSummary[] }) {
       </HStack>
 
       {visible.length === 0 && (
-        <styled.p py="10" color="text.muted">
+        <styled.p
+          px={{ base: "4", sm: "6", md: "10" }}
+          py="16"
+          borderTopWidth="1px"
+          borderColor="border"
+          color="text.muted"
+          fontFamily="mono"
+          fontSize="13px"
+        >
           No posts here yet.
         </styled.p>
       )}
 
       {years.map((year) => (
-        <Box key={year} mb="8" _last={{ mb: "0" }}>
+        <Box key={year} as="section" aria-labelledby={`year-${year}`}>
           <styled.h2
-            fontSize="md"
-            fontWeight="semibold"
-            color="text.subtle"
+            id={`year-${year}`}
+            className={eyebrow}
             position="sticky"
             top="16"
-            bg="bg"
-            py="2"
-            borderBottomWidth="1px"
-            borderColor="border"
             zIndex="1"
+            bg="bg"
+            px={{ base: "4", sm: "6", md: "10" }}
+            py="3"
+            borderTopWidth="1px"
+            borderColor="border"
           >
             {year}
           </styled.h2>
-          <Stack gap="0" mt="1" mx="-4" rounded="lg" overflow="hidden">
-            {visible
-              .filter((post) => post.date.getUTCFullYear() === year)
-              .map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className={row}
+          {visible
+            .filter((post) => post.date.getUTCFullYear() === year)
+            .map((post) => (
+              <Link key={post.slug} href={`/blog/${post.slug}`} className={row}>
+                <Grid
+                  columns={{ base: 1, md: 12 }}
+                  gap={{ base: "3", md: "8" }}
+                  alignItems="baseline"
                 >
-                  <Stack gap="2">
-                    <HStack gap="2" className={eyebrow}>
-                      <time dateTime={post.date.toISOString()}>
-                        {shortDate(post.date)}
-                      </time>
-                      {post.type === "release" && (
-                        <styled.span
-                          bg="bg.muted"
-                          color="text"
-                          rounded="sm"
-                          px="1.5"
-                          py="0.5"
-                        >
-                          Release
-                        </styled.span>
-                      )}
-                    </HStack>
+                  <Stack
+                    gap="2"
+                    gridColumn={{ md: "span 3", lg: "span 2" }}
+                    className={eyebrow}
+                    direction={{ base: "row", md: "column" }}
+                  >
+                    <time dateTime={post.date.toISOString()}>
+                      {shortDate(post.date)}
+                    </time>
+                    {post.type === "release" && (
+                      <styled.span
+                        display="inline-flex"
+                        alignItems="center"
+                        gap="1.5"
+                      >
+                        <span className={accentDot} />
+                        Release
+                      </styled.span>
+                    )}
+                  </Stack>
+                  <Stack gap="2" gridColumn={{ md: "span 9", lg: "span 7" }}>
                     <styled.span
-                      fontSize="xl"
+                      fontSize={{ base: "18px", md: "20px" }}
                       fontWeight="semibold"
+                      letterSpacing="-0.02em"
                       lineHeight="1.3"
+                      color="text.bold"
+                      textWrap="balance"
                     >
                       {post.title}
                     </styled.span>
                     <styled.span
-                      fontSize="sm"
+                      fontSize="15px"
                       color="text.muted"
                       lineHeight="1.6"
+                      maxW="62ch"
+                      textWrap="pretty"
                     >
                       {post.description}
                     </styled.span>
+                  </Stack>
+                  <Box
+                    gridColumn={{ md: "4 / span 9", lg: "span 3" }}
+                    justifySelf={{ lg: "end" }}
+                  >
                     <AuthorLine
                       authors={post.authors}
                       readingTime={post.readingTime}
                     />
-                  </Stack>
-                </Link>
-              ))}
-          </Stack>
+                  </Box>
+                </Grid>
+              </Link>
+            ))}
         </Box>
       ))}
     </Box>
@@ -184,19 +203,16 @@ export function PostList({ posts }: { posts: PostSummary[] }) {
 
 const row = css({
   display: "block",
-  py: "5",
-  px: "4",
-  transition: "background-color 150ms",
-  position: "relative",
+  px: { base: "4", sm: "6", md: "10" },
+  py: { base: "6", md: "8" },
+  borderTopWidth: "1px",
+  borderColor: "border",
+  transition: "background 150ms",
   _hover: { bg: "bg.muted" },
-  // one hairline between rows, inset to the text, none above the first
-  "& + &::before": {
-    content: '""',
-    position: "absolute",
-    top: "0",
-    insetInline: "4",
-    borderTopWidth: "1px",
-    borderColor: "border",
+  _focusVisible: {
+    outline: "2px solid",
+    outlineColor: "text.bold",
+    outlineOffset: "-2px",
   },
 })
 
@@ -205,21 +221,23 @@ const trigger = css({
   alignItems: "center",
   justifyContent: "space-between",
   gap: "3",
-  minW: "12rem",
-  h: "11",
-  px: "4",
-  fontSize: "sm",
-  fontWeight: "medium",
+  minW: "11rem",
+  h: "9",
+  px: "3",
+  fontFamily: "mono",
+  fontSize: "12px",
+  color: "text.bold",
+  rounded: "md",
   bg: "bg",
   borderWidth: "1px",
   borderColor: "border",
   cursor: "pointer",
   transition: "background-color 150ms",
-  _hover: { bg: "bg.subtle" },
-  _expanded: { bg: "bg.subtle" },
+  _hover: { bg: "bg.muted" },
+  _expanded: { bg: "bg.muted", borderColor: "border.bold" },
   _focusVisible: {
     outline: "2px solid",
-    outlineColor: "green.500",
+    outlineColor: "text.bold",
     outlineOffset: "2px",
   },
 })
@@ -246,10 +264,12 @@ const option = css({
   alignItems: "center",
   justifyContent: "space-between",
   gap: "3",
-  px: "4",
+  px: "3",
   py: "2",
-  fontSize: "sm",
+  fontFamily: "mono",
+  fontSize: "12px",
+  color: "text.muted",
   cursor: "pointer",
-  _highlighted: { bg: "bg.subtle" },
-  _selected: { fontWeight: "medium" },
+  _highlighted: { bg: "bg.muted", color: "text.bold" },
+  _selected: { color: "text.bold" },
 })

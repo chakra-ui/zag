@@ -6,7 +6,7 @@ import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "components/icons"
 import { showcaseItems } from "lib/showcase"
 import Link from "next/link"
 import { useId, useState, type ReactNode } from "react"
-import { css, cva } from "styled-system/css"
+import { cva } from "styled-system/css"
 import { Box, Grid, HStack, styled } from "styled-system/jsx"
 
 export const Frame = styled("div", {
@@ -219,13 +219,7 @@ export function Install() {
   )
 }
 
-export const cells = css({
-  gap: "1px",
-  bg: "border",
-  borderTopWidth: "1px",
-  borderColor: "border",
-  "& > *": { bg: "bg" },
-})
+export { cells } from "./cells"
 
 export function Cell(props: {
   label?: string

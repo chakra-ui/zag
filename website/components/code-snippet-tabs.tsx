@@ -29,44 +29,75 @@ export function CodeSnippetTabs(props: CodeSnippetTabsProps) {
       width="full"
       maxW="768px"
       borderWidth="1px"
+      borderColor="border"
       my="8"
       bg="bg.code.block"
-      rounded="6px"
+      rounded="md"
+      overflow="hidden"
       {...api.getRootProps()}
     >
-      <Box {...api.getListProps()}>
+      <HStack
+        gap="5"
+        h="10"
+        px="4"
+        /* an inset line, not a border, so the active underline covers it */
+        boxShadow="inset 0 -1px 0 token(colors.border)"
+        overflowX="auto"
+        {...api.getListProps()}
+      >
         {FRAMEWORKS.map((framework) => (
           <styled.button
-            py="2"
-            px="8"
-            fontSize="sm"
-            fontWeight="medium"
-            borderBottom="2px solid transparent"
+            position="relative"
+            h="full"
+            flexShrink="0"
+            fontFamily="mono"
+            fontSize="12px"
+            letterSpacing="0.02em"
+            color="text.muted"
+            cursor="pointer"
+            transition="color 120ms"
+            _hover={{ color: "text.bold" }}
             _selected={{
-              borderColor: "border.primary.subtle",
-              color: "text.primary.bold",
+              color: "text.bold",
+              _after: {
+                content: '""',
+                position: "absolute",
+                left: "0",
+                right: "0",
+                bottom: "0",
+                h: "1px",
+                bg: "text.bold",
+              },
             }}
-            _focusVisible={{ outline: "2px solid blue" }}
+            _focusVisible={{
+              outline: "2px solid",
+              outlineColor: "border.primary.bold",
+              outlineOffset: "-2px",
+            }}
             {...api.getTriggerProps({ value: framework })}
             key={framework}
           >
-            <HStack>
-              <Icon as={frameworks[framework].icon} />
+            <HStack gap="1.5">
+              <Icon as={frameworks[framework].icon} opacity="0.7" />
               <p>{frameworks[framework].label}</p>
             </HStack>
           </styled.button>
         ))}
-      </Box>
+      </HStack>
       {FRAMEWORKS.map((framework) => (
         <Box
           {...api.getContentProps({ value: framework })}
           position="relative"
           key={framework}
           mt="-6"
-          _focusVisible={{ outline: "2px solid blue" }}
+          _focusVisible={{
+            outline: "2px solid",
+            outlineColor: "border.primary.bold",
+            outlineOffset: "-2px",
+          }}
         >
           {props.panels[framework] ?? (
-            <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
+            <Box mt="6" padding="4" fontSize="sm" color="text.muted">
               Snippet not found :(
             </Box>
           )}

@@ -12,21 +12,33 @@ import siteConfig from "site.config"
 import { css, cva } from "styled-system/css"
 import { HStack, Stack } from "styled-system/jsx"
 
+// same height, border and hover as the nav controls (components/nav/control.ts)
 const buttonStyles = cva({
   base: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: "2",
-    borderWidth: "1px",
-    rounded: "sm",
-    textStyle: "sm",
+    h: "full",
+    minW: "9",
+    px: "3",
+    fontSize: "13px",
     fontWeight: "medium",
-    height: "8",
     cursor: "pointer",
     bg: "bg",
-    color: "text",
-    px: "2",
+    color: "text.muted",
     outline: "0",
+    transition: "color 120ms, background 120ms",
+    _hover: { color: "text.bold", bg: "bg.muted" },
+    _focusVisible: {
+      outline: "2px solid",
+      outlineColor: "border.primary.bold",
+      outlineOffset: "-2px",
+    },
+    "& svg": { boxSize: "4", flexShrink: "0" },
+  },
+  variants: {
+    iconOnly: { true: { w: "9", px: "0" } },
   },
 })
 
@@ -119,7 +131,11 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
 
   return (
     <>
-      <button {...api.getTriggerProps()} className={buttonStyles()}>
+      <button
+        {...api.getTriggerProps()}
+        aria-label="More page actions"
+        className={buttonStyles({ iconOnly: true })}
+      >
         <Icon as={HiChevronDown} />
       </button>
       <Portal>
@@ -127,12 +143,15 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
           <Stack
             width="200px"
             zIndex="1000"
-            fontSize="sm"
-            bg="bg"
+            fontSize="13px"
+            bg="bg.popover"
             gap="0"
-            padding="2"
+            padding="1"
             isolation="isolate"
             listStyleType="none"
+            borderWidth="1px"
+            borderColor="border"
+            rounded="md"
             boxShadow="md"
             outline="0"
             {...api.getContentProps()}
@@ -183,39 +202,37 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
 }
 
 const itemStyles = css({
-  px: "0.5rem",
-  py: "0.25rem",
+  px: "2",
+  h: "8",
+  rounded: "sm",
+  color: "text.muted",
   cursor: "pointer",
   display: "flex",
   alignItems: "center",
   gap: "2",
   textDecoration: "none",
-  color: "inherit",
   width: "100%",
   bg: "transparent",
   border: "none",
   textAlign: "left",
   _highlighted: {
-    bg: "bg.primary.bold",
-    color: "text.inverse",
+    bg: "bg.muted",
+    color: "text.bold",
   },
 })
 
 export const CopyPageWidget = ({ slug, title }: CopyPageWidgetProps) => {
   return (
     <HStack
-      gap="0"
-      css={{
-        spaceX: "-1px",
-        "& > *:first-child": {
-          borderTopRightRadius: "0!",
-          borderBottomRightRadius: "0!",
-        },
-        "& > *:last-child": {
-          borderTopLeftRadius: "0!",
-          borderBottomLeftRadius: "0!",
-        },
-      }}
+      flexShrink="0"
+      alignItems="stretch"
+      h="9"
+      gap="1px"
+      bg="border"
+      borderWidth="1px"
+      borderColor="border"
+      rounded="md"
+      overflow="hidden"
     >
       <CopyPageButton slug={slug} />
       <ActionMenu slug={slug} title={title} />

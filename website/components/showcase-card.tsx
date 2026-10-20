@@ -1,6 +1,5 @@
 import type { ShowcaseItem } from "lib/showcase"
 import Image from "next/image"
-import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 
 export function ShowcaseCard(props: {
@@ -41,12 +40,6 @@ export function ShowcaseCard(props: {
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "top center" }}
-          className={css({
-            filter: "grayscale(1)",
-            opacity: 0.85,
-            transition: "filter 0.3s, opacity 0.3s",
-            _groupHover: { filter: "grayscale(0)", opacity: 1 },
-          })}
         />
       </Box>
       <Stack gap="1">

@@ -5,13 +5,18 @@ import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
   <Flex
-    fontSize="sm"
     align="center"
-    height="48px"
+    height="10"
     bg="transparent"
     borderBottomWidth="1px"
-    px="4"
+    borderColor="border"
+    px="5"
+    fontFamily="mono"
+    fontSize="11px"
     fontWeight="medium"
+    letterSpacing="0.08em"
+    textTransform="uppercase"
+    color="text.muted"
     {...props}
   />
 )
@@ -42,17 +47,26 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
 
   return (
     <HStack
-      gap="1"
+      gap="1.5"
       as="button"
+      h="7"
+      px="2.5"
       bg="bg"
-      color="text"
-      fontSize="sm"
-      px="2"
-      py="1"
+      color="text.muted"
+      fontFamily="mono"
+      fontSize="12px"
+      letterSpacing="0.02em"
       borderWidth="1px"
       borderColor="border"
+      rounded="md"
       cursor="pointer"
-      _hover={{ bg: "bg.muted" }}
+      transition="color 120ms, border-color 120ms"
+      _hover={{ color: "text.bold", borderColor: "border.bold" }}
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "border.primary.bold",
+        outlineOffset: "2px",
+      }}
       onClick={() => {
         openInStackblitz(name, defaultProps)
       }}
@@ -90,8 +104,9 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       borderWidth="1px"
       pos="relative"
       minHeight="24em"
-      my="16"
-      borderColor="border.subtle"
+      my="12"
+      borderColor="border"
+      rounded="md"
     >
       {/* pinned in the corner beside the preview; on phones the panel stacks
           below the preview, so the button follows it instead of covering it */}
@@ -110,10 +125,11 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
         <Component {...(state as T)} />
       </Flex>
 
-      <Box flexBasis="1px" alignSelf="stretch" bg="bg.bold" />
+      <Box flexBasis="1px" alignSelf="stretch" bg="border" hidden={isEmpty} />
 
       <Box
         bg="bg.subtle"
+        roundedRight={{ md: "md" }}
         width={{ md: "240px" }}
         fontSize="sm"
         hidden={isEmpty}

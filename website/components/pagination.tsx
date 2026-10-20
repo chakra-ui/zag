@@ -37,16 +37,17 @@ const card = css({
   display: "flex",
   alignItems: "center",
   gap: "3",
-  p: "4",
-  rounded: "lg",
+  px: "4",
+  py: "3.5",
+  rounded: "md",
   borderWidth: "1px",
-  borderColor: "border.subtle",
+  borderColor: "border",
   color: "text.muted",
-  transition: "border-color 0.15s",
-  _hover: { borderColor: "green.500" },
+  transition: "border-color 120ms, color 120ms",
+  _hover: { borderColor: "border.bold", color: "text.bold" },
   _focusVisible: {
     outline: "2px solid",
-    outlineColor: "green.500",
+    outlineColor: "border.primary.bold",
     outlineOffset: "2px",
   },
 })
@@ -57,10 +58,18 @@ function PageCard(props: { item: PageLink; rel: "prev" | "next" }) {
     <Link href={item.url} rel={rel} className={card}>
       {rel === "prev" && <Icon as={HiChevronLeft} flexShrink="0" />}
       <Box flex="1" minW="0" textAlign={rel === "prev" ? "start" : "end"}>
-        <Box textStyle="sm" mb="1">
-          {item.group}
+        <Box
+          fontFamily="mono"
+          fontSize="11px"
+          letterSpacing="0.08em"
+          textTransform="uppercase"
+          mb="1"
+          truncate
+        >
+          {rel === "prev" ? "Previous" : "Next"}
+          {item.group ? ` · ${item.group}` : null}
         </Box>
-        <Box fontWeight="medium" color="text" truncate>
+        <Box fontWeight="medium" color="text.bold" truncate>
           {item.label}
         </Box>
       </Box>
@@ -76,7 +85,7 @@ export function Pagination(props: SystemStyleObject) {
   if (!isClient || (!prev && !next)) return null
 
   return (
-    <HStack gap="4" {...props}>
+    <HStack gap="3" {...props}>
       {prev ? <PageCard item={prev} rel="prev" /> : <Box flex="1" />}
       {next ? <PageCard item={next} rel="next" /> : <Box flex="1" />}
     </HStack>

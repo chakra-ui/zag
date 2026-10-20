@@ -6,12 +6,7 @@ import { Pagination } from "./pagination"
 export function MdxFooter(props: { editUrl?: string }) {
   return (
     <footer>
-      <Pagination
-        mt="20"
-        pt="10"
-        borderTopWidth="1px"
-        borderColor="border.subtle"
-      />
+      <Pagination mt="16" pt="8" borderTopWidth="1px" borderColor="border" />
       {props.editUrl && (
         <Box mt="6">
           <EditPageLink href={props.editUrl} />

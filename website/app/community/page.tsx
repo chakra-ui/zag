@@ -1,14 +1,7 @@
 import { Footer } from "components/footer"
 import { TopNav } from "components/nav/top-nav"
-import {
-  Band,
-  cells,
-  Eyebrow,
-  Frame,
-  Lead,
-  Pad,
-  Title,
-} from "components/lab/kit"
+import { cells } from "components/lab/cells"
+import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
 import { communityLinks, communityProjects, recordings } from "lib/community"
 import { createPageMetadata } from "lib/seo"
 import { Suspense } from "react"
