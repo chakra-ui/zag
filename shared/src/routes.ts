@@ -694,6 +694,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },
+      { slug: "sortable", title: "Sortable" },
     ],
   },
   {

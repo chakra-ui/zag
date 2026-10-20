@@ -144,3 +144,39 @@
     display: none;
   }
 }
+
+[data-tags-input-item][data-dnd-draggable] {
+  position: relative;
+
+  &[data-dragging] {
+    opacity: 0.4;
+  }
+
+  & [data-dnd-drop-indicator] {
+    position: absolute;
+    inset-block: 2px;
+    width: 2px;
+    border-radius: var(--z-radius-full);
+    background: var(--z-accent);
+    opacity: 0;
+    pointer-events: none;
+
+    &[data-placement="before"] {
+      inset-inline-start: -3px;
+    }
+
+    &[data-placement="after"] {
+      inset-inline-end: -3px;
+    }
+
+    &[data-active] {
+      opacity: 1;
+    }
+  }
+}
+
+.tags-input-hint {
+  margin: 6px 0 0;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+}

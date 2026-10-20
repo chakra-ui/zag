@@ -257,6 +257,7 @@ export const routes: RouteDefinition[] = [
   { path: "/tags-input/validate", component: lazy(() => import("./pages/tags-input/validate")) },
   { path: "/tags-input/allow-duplicates", component: lazy(() => import("./pages/tags-input/allow-duplicates")) },
   { path: "/tags-input/sentence-builder", component: lazy(() => import("./pages/tags-input/sentence-builder")) },
+  { path: "/tags-input/sortable", component: lazy(() => import("./pages/tags-input/sortable")) },
   { path: "/timer/countdown", component: lazy(() => import("./pages/timer/countdown")) },
   { path: "/timer/stopwatch", component: lazy(() => import("./pages/timer/stopwatch")) },
   { path: "/toast/basic", component: lazy(() => import("./pages/toast/basic")) },
