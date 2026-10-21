@@ -68,8 +68,7 @@ export const getMousemoveValue = (ctx: Scope, opts: { point: Point | null; isRtl
 
   let hint = x > 0 ? "increment" : x < 0 ? "decrement" : null
 
-  if (isRtl && hint === "increment") hint = "decrement"
-  if (isRtl && hint === "decrement") hint = "increment"
+  if (isRtl && hint) hint = hint === "increment" ? "decrement" : "increment"
 
   const newPoint = { x: point!.x + x, y: point!.y + y }
   const width = win.innerWidth
