@@ -5,11 +5,11 @@ import { createPageMetadata } from "lib/seo"
 import { Suspense } from "react"
 import { FaGithub, FaNpm } from "react-icons/fa6"
 import { Box, Grid, Stack, styled } from "styled-system/jsx"
-import { CommunityLink } from "./community-link"
-import { CommunityProjects } from "./community-projects"
-import { CommunityStat } from "./community-stat"
-import { RecordingItem } from "./recording-item"
-import { getCommunityStats } from "./stats"
+import { CommunityLink } from "./_components/community-link"
+import { CommunityProjects } from "./_components/community-projects"
+import { CommunityStat } from "./_components/community-stat"
+import { RecordingItem } from "./_components/recording-item"
+import { getCommunityStats } from "lib/community-stats"
 
 export const metadata = createPageMetadata({
   title: "Community",

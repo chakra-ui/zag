@@ -3,7 +3,7 @@ import type { Framework } from "lib/framework-utils"
 import { getBody, type Doc } from "lib/source"
 import { notFound } from "next/navigation"
 import { FrameworkProvider } from "./framework"
-import { absoluteUrl, JsonLd } from "./json-ld"
+import { absoluteUrl, JsonLd } from "../json-ld"
 import { mdxComponents } from "./mdx-components"
 
 interface DocPageProps {

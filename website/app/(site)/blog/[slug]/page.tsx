@@ -4,12 +4,12 @@ import {
   eyebrow,
   monoLink,
   shortDate,
-} from "components/blog"
+} from "app/(site)/blog/_components/blog"
 import { absoluteUrl, JsonLd } from "components/json-ld"
-import { mdxComponents } from "components/mdx-components"
+import { mdxComponents } from "components/docs/mdx-components"
 import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { cells } from "components/ui/cells"
-import { TableOfContents } from "components/toc"
+import { TableOfContents } from "components/docs/toc"
 import { createPageMetadata } from "lib/seo"
 import { getPostBody, posts } from "lib/source"
 import type { Metadata } from "next"

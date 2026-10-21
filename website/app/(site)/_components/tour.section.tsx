@@ -3,7 +3,7 @@
 import { cells } from "components/ui/cells"
 import { Eyebrow } from "components/ui/layout"
 import { Box, Grid, HStack, styled } from "styled-system/jsx"
-import { chapters, hCopy } from "./content"
+import { chapters, hCopy } from "lib/home"
 import { HMini } from "components/illustrations/minis"
 import { accent, gutter } from "./shared"
 

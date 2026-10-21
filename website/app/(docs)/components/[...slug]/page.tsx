@@ -2,7 +2,7 @@ import { extractParams, getComponentDoc, getComponentPaths } from "lib/source"
 import { isFramework } from "lib/framework-utils"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import { DocPage } from "components/doc-page"
+import { DocPage } from "components/docs/doc-page"
 
 type PageProps = {
   params: Promise<{ slug: string[] }>

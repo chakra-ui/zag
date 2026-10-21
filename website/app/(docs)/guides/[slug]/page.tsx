@@ -1,7 +1,7 @@
 import { getGuideDoc, getGuidePaths } from "lib/source"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import { DocPage } from "components/doc-page"
+import { DocPage } from "components/docs/doc-page"
 
 type PageProps = {
   params: Promise<{ slug: string }>

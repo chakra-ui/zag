@@ -1,6 +1,6 @@
 import { cells } from "components/ui/cells"
 import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
-import { ShowcaseCard } from "components/showcase-card"
+import { ShowcaseCard } from "app/(site)/showcase/_components/showcase-card"
 import { showcaseItems } from "lib/showcase"
 import { createPageMetadata } from "lib/seo"
 import { Box, Grid, styled } from "styled-system/jsx"

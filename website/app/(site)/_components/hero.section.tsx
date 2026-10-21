@@ -4,7 +4,7 @@ import { Eyebrow } from "components/ui/layout"
 import Link from "next/link"
 import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 import { Ctas, FrameworkRow, Install } from "./actions"
-import { hCopy } from "./content"
+import { hCopy } from "lib/home"
 import { GuideLogo } from "components/illustrations"
 import { accent, gutter } from "./shared"
 

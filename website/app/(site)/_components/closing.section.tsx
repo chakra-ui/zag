@@ -2,7 +2,7 @@
 
 import { Box, styled } from "styled-system/jsx"
 import { Ctas } from "./actions"
-import { hCopy } from "./content"
+import { hCopy } from "lib/home"
 import { gutter, StateLabel } from "./shared"
 
 export function ClosingSection() {

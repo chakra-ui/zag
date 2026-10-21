@@ -1,7 +1,7 @@
 "use client"
 
 import { Box, Grid, styled } from "styled-system/jsx"
-import { type HChapter, type HSection } from "./content"
+import { type HChapter, type HSection } from "lib/home"
 import { guideArt } from "components/illustrations"
 import { gutter, StateLabel } from "./shared"
 

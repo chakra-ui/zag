@@ -2,7 +2,12 @@
 
 import * as select from "@zag-js/select"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { accentDot, AuthorLine, eyebrow, shortDate } from "components/blog"
+import {
+  accentDot,
+  AuthorLine,
+  eyebrow,
+  shortDate,
+} from "app/(site)/blog/_components/blog"
 import type { Post } from "lib/source"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"

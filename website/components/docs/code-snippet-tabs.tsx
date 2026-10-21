@@ -5,7 +5,7 @@ import * as tabs from "@zag-js/tabs"
 import { Icon } from "components/ui/icon"
 import type { ReactNode } from "react"
 import { Box, HStack, styled } from "styled-system/jsx"
-import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
+import { FRAMEWORKS, frameworks } from "../../lib/framework-utils"
 import { useFramework } from "./framework"
 
 interface CodeSnippetTabsProps {

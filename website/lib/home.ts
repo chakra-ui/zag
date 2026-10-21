@@ -1,3 +1,4 @@
+import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "components/icons"
 import type { DiagramKey } from "components/illustrations/types"
 
 export type { DiagramKey }
@@ -359,3 +360,17 @@ export const hCopy = {
     body: guide.closing.body,
   },
 }
+
+export const frameworks = [
+  { id: "react", label: "React", icon: ReactIcon },
+  { id: "vue", label: "Vue", icon: VueIcon },
+  { id: "solid", label: "Solid", icon: SolidIcon },
+  { id: "svelte", label: "Svelte", icon: SvelteIcon },
+] as const
+
+export const installCommands = [
+  { id: "pnpm", cmd: "pnpm add @zag-js/react @zag-js/menu" },
+  { id: "npm", cmd: "npm i @zag-js/react @zag-js/menu" },
+  { id: "yarn", cmd: "yarn add @zag-js/react @zag-js/menu" },
+  { id: "bun", cmd: "bun add @zag-js/react @zag-js/menu" },
+]

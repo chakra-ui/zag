@@ -3,7 +3,7 @@
 import * as tabs from "@zag-js/tabs"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { Btn, Eyebrow } from "components/ui/layout"
-import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "components/icons"
+import { frameworks, installCommands } from "lib/home"
 import { useId, useState } from "react"
 import { Box, HStack, styled } from "styled-system/jsx"
 
@@ -18,13 +18,6 @@ export function Ctas() {
   )
 }
 
-export const frameworks = [
-  { id: "react", label: "React", icon: ReactIcon },
-  { id: "vue", label: "Vue", icon: VueIcon },
-  { id: "solid", label: "Solid", icon: SolidIcon },
-  { id: "svelte", label: "Svelte", icon: SvelteIcon },
-] as const
-
 export function FrameworkRow() {
   return (
     <HStack gap="5" color="text.muted">
@@ -38,13 +31,6 @@ export function FrameworkRow() {
   )
 }
 
-const managers = [
-  { id: "pnpm", cmd: "pnpm add @zag-js/react @zag-js/menu" },
-  { id: "npm", cmd: "npm i @zag-js/react @zag-js/menu" },
-  { id: "yarn", cmd: "yarn add @zag-js/react @zag-js/menu" },
-  { id: "bun", cmd: "bun add @zag-js/react @zag-js/menu" },
-]
-
 export function Install() {
   const service = useMachine(tabs.machine, {
     id: useId(),
@@ -52,7 +38,8 @@ export function Install() {
   })
   const api = tabs.connect(service, normalizeProps)
   const [copied, setCopied] = useState(false)
-  const current = managers.find((m) => m.id === api.value) ?? managers[0]
+  const current =
+    installCommands.find((m) => m.id === api.value) ?? installCommands[0]
   return (
     <Box
       {...api.getRootProps()}
@@ -71,7 +58,7 @@ export function Install() {
         borderColor="border"
         px="2"
       >
-        {managers.map((m) => (
+        {installCommands.map((m) => (
           <styled.button
             key={m.id}
             {...api.getTriggerProps({ value: m.id })}

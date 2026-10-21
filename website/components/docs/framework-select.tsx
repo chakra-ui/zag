@@ -6,7 +6,7 @@ import { HiChevronDown } from "react-icons/hi"
 import { css } from "styled-system/css"
 import { HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
-import { Icon } from "./ui/icon"
+import { Icon } from "../ui/icon"
 
 // Same menu as the version switcher in the top nav
 export function FrameworkSelect() {

@@ -7,7 +7,7 @@ import { css } from "styled-system/css"
 import { Box, HStack } from "styled-system/jsx"
 import type { SystemStyleObject } from "styled-system/types"
 import { useFramework } from "./framework"
-import { Icon } from "./ui/icon"
+import { Icon } from "../ui/icon"
 
 export function usePagination() {
   const { framework } = useFramework()

@@ -9,8 +9,8 @@ import { createPageMetadata } from "lib/seo"
 import type { ReactNode } from "react"
 import { css } from "styled-system/css"
 import { Box, styled } from "styled-system/jsx"
-import { ProfileItem } from "../community/profile-item"
-import { fetchContributors } from "./contributors"
+import { ProfileItem } from "./_components/profile-item"
+import { fetchContributors } from "lib/contributors"
 
 export const metadata = createPageMetadata({
   title: "Team",

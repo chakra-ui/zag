@@ -4,9 +4,9 @@ import {
   eyebrow,
   monoLink,
   shortDate,
-} from "components/blog"
+} from "app/(site)/blog/_components/blog"
 import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
-import { PostList } from "components/post-list"
+import { PostList } from "app/(site)/blog/_components/post-list"
 import { createPageMetadata } from "lib/seo"
 import { posts } from "lib/source"
 import Link from "next/link"
