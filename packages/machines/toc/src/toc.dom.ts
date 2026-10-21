@@ -1,4 +1,6 @@
 import type { Scope } from "@zag-js/core"
+import type { TocItem } from "./toc.types"
+import type { Heading } from "./utils/active-ids"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toc:${ctx.id}`
 export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `toc:${ctx.id}:nav`
@@ -24,3 +26,9 @@ export const getHeadingEl = (ctx: Scope, value: string): HTMLElement | null => {
   const doc = ctx.getDoc()
   return doc.getElementById(value)
 }
+
+export const getHeadings = (ctx: Scope, items: TocItem[]): Heading[] =>
+  items.flatMap((item) => {
+    const el = getHeadingEl(ctx, item.value)
+    return el ? [{ value: item.value, el }] : []
+  })

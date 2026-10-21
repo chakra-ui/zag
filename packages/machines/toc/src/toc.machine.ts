@@ -1,12 +1,16 @@
-import { setup, type Params } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { addDomEvent, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
-import { getScrollContainer, getViewBounds } from "./utils/scroll"
+import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
+import { getBandTop, getScrollContainer, getScrollTarget } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
+
+// How long scrolling must pause before a link-triggered scroll counts as finished
+const SCROLL_END_DELAY = 150
 
 export const machine = createMachine({
   props({ props }) {
@@ -47,10 +51,11 @@ export const machine = createMachine({
 
   refs() {
     return {
+      headings: [],
+      scrollContainer: null,
       visibilityMap: new Map<string, boolean>(),
-      indicatorCleanup: null,
-      scrollLockTimer: null,
       rootBounds: null,
+      indicatorCleanup: null,
     }
   },
 
@@ -71,24 +76,55 @@ export const machine = createMachine({
   },
 
   entry: ["syncIndicatorRect"],
-  exit: ["cleanupIndicatorObserver", "clearScrollLock"],
+  exit: ["cleanupIndicatorObserver"],
+  effects: ["trackHeadings"],
 
   on: {
     "ACTIVE_IDS.SET": {
       actions: ["setActiveIds"],
     },
     SCROLL_TO: {
-      actions: ["setScrollTarget"],
+      target: "navigating",
+      actions: ["setActiveIdsToTarget"],
     },
   },
 
   states: {
     idle: {
-      effects: ["trackHeadingVisibility"],
+      on: {
+        "VISIBILITY.CHANGE": {
+          actions: ["syncActiveIds"],
+        },
+        // Only sent in single mode: near the end of the page, the active heading changes without any intersection change
+        SCROLL: {
+          actions: ["syncActiveIds"],
+        },
+      },
+    },
+
+    // Scrolling to a clicked item: keep it active so headings passed on the way don't take over
+    navigating: {
+      effects: ["waitForScrollEnd"],
+      on: {
+        "SCROLL.END": [
+          {
+            guard: "isMultiple",
+            target: "idle",
+            actions: ["syncActiveIds"],
+          },
+          {
+            target: "idle",
+          },
+        ],
+      },
     },
   },
 
   implementations: {
+    guards: {
+      isMultiple: ({ prop }) => prop("multiple"),
+    },
+
     actions: {
       setActiveIds({ context, event }) {
         context.set("activeIds", event.value)
@@ -103,20 +139,33 @@ export const machine = createMachine({
         })
       },
 
-      setScrollTarget(params) {
-        const { context, event } = params
+      setActiveIdsToTarget({ context, event }) {
         context.set("activeIds", [event.value])
-        // Hold the clicked item until scrolling settles, so it isn't overridden mid-scroll
-        lockScroll(params)
       },
 
-      syncActiveIds(params) {
-        syncActiveIds(params)
-      },
+      syncActiveIds({ context, prop, refs }) {
+        const headings = refs.get("headings")
+        const container = refs.get("scrollContainer")
+        if (headings.length === 0 || !container) return
 
-      clearScrollLock({ refs }) {
-        clearTimeout(refs.get("scrollLockTimer") ?? undefined)
-        refs.set("scrollLockTimer", null)
+        const bandTop = getBandTop(container, refs.get("rootBounds"))
+        const visibleIds = getVisibleIds(prop("items"), refs.get("visibilityMap"))
+
+        let nextActiveIds = visibleIds
+        if (!prop("multiple")) {
+          const activeId = findEndOfPageHeading(headings, container, bandTop) ?? first(visibleIds)
+          nextActiveIds = activeId ? [activeId] : []
+        }
+
+        // No heading in view: the reader is inside the section whose heading scrolled past the top
+        if (nextActiveIds.length === 0) {
+          const sectionId = findCurrentSection(headings, bandTop)
+          if (!sectionId) return
+          nextActiveIds = [sectionId]
+        }
+
+        if (isEqual(context.get("activeIds"), nextActiveIds)) return
+        context.set("activeIds", nextActiveIds)
       },
 
       cleanupIndicatorObserver({ refs }) {
@@ -186,148 +235,79 @@ export const machine = createMachine({
     },
 
     effects: {
-      trackHeadingVisibility(params) {
-        const { scope, prop, refs } = params
-
-        const items = prop("items")
-        if (items.length === 0) return
-
-        const doc = scope.getDoc()
-        const visibilityMap = refs.get("visibilityMap")
-
-        const observerOptions: IntersectionObserverInit = {
-          rootMargin: prop("rootMargin"),
-          threshold: prop("threshold"),
-        }
-
-        const scrollEl = prop("scrollEl")?.()
-        if (scrollEl) {
-          observerOptions.root = scrollEl
-        }
+      trackHeadings({ scope, prop, refs, send }) {
+        const headings = dom.getHeadings(scope, prop("items"))
+        if (headings.length === 0) return
 
         const win = scope.getWin()
-        const observer = new win.IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            visibilityMap.set(entry.target.id, entry.isIntersecting)
-          }
-          refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+        const scrollEl = prop("scrollEl")?.()
+        const container = getScrollContainer(scope.getDoc(), scrollEl, headings[0].el)
 
-          if (refs.get("scrollLockTimer") == null) syncActiveIds(params)
-        }, observerOptions)
+        // Looked up once here, so syncing on scroll only reads layout
+        refs.set("headings", headings)
+        refs.set("scrollContainer", container)
 
-        for (const item of items) {
-          const headingEl = dom.getHeadingEl(scope, item.value)
-          if (headingEl) {
-            observer.observe(headingEl)
-          }
+        const visibilityMap = refs.get("visibilityMap")
+        const observer = new win.IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              visibilityMap.set(entry.target.id, entry.isIntersecting)
+            }
+            refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+            send({ type: "VISIBILITY.CHANGE" })
+          },
+          {
+            root: scrollEl ?? null,
+            rootMargin: prop("rootMargin"),
+            threshold: prop("threshold"),
+          },
+        )
+
+        for (const heading of headings) {
+          observer.observe(heading.el)
         }
 
-        const scrollContainer = getScrollContainer(doc, scrollEl, dom.getHeadingEl(scope, items[0].value))
-        const scrollTarget = scrollContainer === doc.scrollingElement ? win : scrollContainer
-
+        // At most one sync per frame, and only in single mode
         let frame = 0
         const onScroll = () => {
-          if (refs.get("scrollLockTimer") != null) {
-            lockScroll(params)
-            return
-          }
-          // Scrolling near the end moves the activation line without any intersection change
-          if (prop("multiple")) return
-          win.cancelAnimationFrame(frame)
-          frame = win.requestAnimationFrame(() => syncActiveIds(params))
+          if (frame || prop("multiple")) return
+          frame = win.requestAnimationFrame(() => {
+            frame = 0
+            send({ type: "SCROLL" })
+          })
         }
 
-        const cleanupScroll = addDomEvent(scrollTarget, "scroll", onScroll, { passive: true })
+        const cleanupScroll = addDomEvent(getScrollTarget(container), "scroll", onScroll, { passive: true })
 
         return () => {
           observer.disconnect()
           cleanupScroll()
           win.cancelAnimationFrame(frame)
           visibilityMap.clear()
+          refs.set("headings", [])
+          refs.set("scrollContainer", null)
+        }
+      },
+
+      waitForScrollEnd({ scope, send }) {
+        const win = scope.getWin()
+
+        let timer = 0
+        const restartTimer = () => {
+          win.clearTimeout(timer)
+          timer = win.setTimeout(() => send({ type: "SCROLL.END" }), SCROLL_END_DELAY)
+        }
+
+        // Starts right away, so it also ends when nothing scrolls (the target is already in view)
+        restartTimer()
+
+        // Capture catches scrolling in any container, since scroll events don't bubble
+        const cleanup = addDomEvent(scope.getDoc(), "scroll", restartTimer, { capture: true, passive: true })
+        return () => {
+          cleanup()
+          win.clearTimeout(timer)
         }
       },
     },
   },
 })
-
-const SCROLL_IDLE_MS = 150
-
-function lockScroll(params: Params<TocSchema>) {
-  const { refs, scope, prop } = params
-  const win = scope.getWin()
-  win.clearTimeout(refs.get("scrollLockTimer") ?? undefined)
-  const timer = win.setTimeout(() => {
-    refs.set("scrollLockTimer", null)
-    if (prop("multiple")) syncActiveIds(params)
-  }, SCROLL_IDLE_MS)
-  refs.set("scrollLockTimer", timer)
-}
-
-function syncActiveIds(params: Params<TocSchema>) {
-  const { scope, prop, context, refs } = params
-  const items = prop("items")
-  const visibilityMap = refs.get("visibilityMap")
-
-  const scrollContainer = getScrollContainer(
-    scope.getDoc(),
-    prop("scrollEl")?.(),
-    dom.getHeadingEl(scope, items[0]?.value),
-  )
-  // Where headings stop counting as visible: the observed band's top edge (after `rootMargin`),
-  // or the scroll container's edge when it clips headings first
-  const viewTop = getViewBounds(scrollContainer).top
-  const bandTop = Math.max(refs.get("rootBounds")?.top ?? viewTop, viewTop)
-
-  // Visible heading ids in document order
-  let nextActiveIds = items.filter((item) => visibilityMap.get(item.value)).map((item) => item.value)
-
-  if (!prop("multiple")) {
-    const endId = findEndZoneHeading(params, scrollContainer, bandTop)
-    nextActiveIds = endId ? [endId] : nextActiveIds.slice(0, 1)
-  }
-
-  // Nothing in view: the reader is inside the section whose heading scrolled past the top
-  if (nextActiveIds.length === 0) {
-    const sectionId = findLastHeading(params, (r) => r.top <= bandTop)
-    if (!sectionId) return
-    nextActiveIds = [sectionId]
-  }
-
-  if (!isEqual(context.get("activeIds"), nextActiveIds)) {
-    context.set("activeIds", nextActiveIds)
-  }
-}
-
-function findLastHeading(params: Params<TocSchema>, match: (rect: DOMRect) => boolean) {
-  const { scope, prop } = params
-  const items = prop("items")
-  for (let i = items.length - 1; i >= 0; i--) {
-    const rect = dom.getHeadingEl(scope, items[i].value)?.getBoundingClientRect()
-    if (rect && match(rect)) return items[i].value
-  }
-  return null
-}
-
-// The last headings can't scroll to the top, so over the final stretch of scrolling, slide the
-// activation line from the top of the view down to the last heading so each one gets a turn
-function findEndZoneHeading(params: Params<TocSchema>, scrollContainer: HTMLElement, bandTop: number) {
-  const { scope, prop } = params
-  const items = prop("items")
-  const lastEl = dom.getHeadingEl(scope, items[items.length - 1]?.value)
-  if (!lastEl) return null
-
-  const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight
-  const remaining = maxScroll - scrollContainer.scrollTop
-  const deficit = lastEl.getBoundingClientRect().top - bandTop - remaining
-  if (deficit <= 0) return null
-
-  const stretch = Math.min(deficit, maxScroll)
-  if (remaining >= stretch) return null
-
-  const line = bandTop + deficit * (1 - remaining / stretch)
-  for (const item of items) {
-    const rect = dom.getHeadingEl(scope, item.value)?.getBoundingClientRect()
-    if (rect && rect.top >= line - 1) return item.value
-  }
-  return null
-}

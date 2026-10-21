@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { Heading } from "./utils/active-ids"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -116,7 +117,7 @@ export interface TocProps extends DirectionProperty, CommonProperties {
 type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items" | "multiple"
 
 export interface TocSchema {
-  state: "idle"
+  state: "idle" | "navigating"
   props: RequiredBy<TocProps, PropsWithDefault>
   context: {
     activeIds: string[]
@@ -125,8 +126,9 @@ export interface TocSchema {
   refs: {
     visibilityMap: Map<string, boolean>
     indicatorCleanup: VoidFunction | null
-    scrollLockTimer: number | null
     rootBounds: DOMRectReadOnly | null
+    headings: Heading[]
+    scrollContainer: HTMLElement | null
   }
   computed: {
     activeItems: TocItem[]

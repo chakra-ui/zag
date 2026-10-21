@@ -1,20 +1,30 @@
 import { getNearestOverflowAncestor, isRootElement } from "@zag-js/dom-query"
 
-export function getScrollContainer(
-  doc: Document,
-  scrollEl: HTMLElement | null | undefined,
-  headingEl: HTMLElement | null,
-) {
+/**
+ * The element that scrolls the headings: `scrollEl` when provided, otherwise the
+ * nearest scrollable ancestor of the first heading.
+ */
+export function getScrollContainer(doc: Document, scrollEl: HTMLElement | null | undefined, headingEl: HTMLElement) {
   if (scrollEl) return scrollEl
-  const el = headingEl ? getNearestOverflowAncestor(headingEl) : null
-  if (!el || isRootElement(el)) return doc.scrollingElement as HTMLElement
-  return el
+  const el = getNearestOverflowAncestor(headingEl)
+  return isRootElement(el) ? (doc.scrollingElement as HTMLElement) : el
 }
 
-export function getViewBounds(el: HTMLElement) {
-  if (el === el.ownerDocument.scrollingElement) {
-    return { top: 0, bottom: el.ownerDocument.defaultView!.innerHeight }
-  }
-  const { top, bottom } = el.getBoundingClientRect()
-  return { top, bottom }
+/**
+ * The target to listen to for scroll events. The document's scrolling element
+ * doesn't receive them, so the window is used instead.
+ */
+export function getScrollTarget(container: HTMLElement) {
+  const doc = container.ownerDocument
+  return container === doc.scrollingElement ? doc.defaultView! : container
+}
+
+/**
+ * The y-position where headings stop counting as visible: the top edge of the
+ * observed band (root bounds after `rootMargin`), or the scroll container's edge
+ * when it clips headings first.
+ */
+export function getBandTop(container: HTMLElement, rootBounds: DOMRectReadOnly | null) {
+  const viewTop = container === container.ownerDocument.scrollingElement ? 0 : container.getBoundingClientRect().top
+  return Math.max(rootBounds?.top ?? viewTop, viewTop)
 }
