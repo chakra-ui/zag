@@ -2,9 +2,7 @@
 
 import { Footer } from "components/footer"
 import { GuideLogo, guideArt } from "components/lab/guide-art"
-import { HLogo, HMini } from "components/lab/h-art"
-import { createContext, useContext } from "react"
-import { FlatMini, flatArt } from "./flat-art"
+import { HMini } from "components/lab/h-iso-mini"
 import {
   chapters,
   hCopy,
@@ -53,12 +51,7 @@ function Release() {
   )
 }
 
-export type HeroArt = "iso" | "construction"
-export type DrawingStyle = "iso" | "flat"
-
-const Drawings = createContext<DrawingStyle>("iso")
-
-function Hero(props: { art: HeroArt }) {
+function Hero() {
   return (
     <Grid
       gridTemplateColumns={{ base: "1fr", lg: "minmax(0, 1fr) minmax(0, 1fr)" }}
@@ -102,19 +95,14 @@ function Hero(props: { art: HeroArt }) {
         </Box>
         <FrameworkRow />
       </Stack>
-      <Box
-        w="full"
-        maxW={props.art === "iso" ? "600px" : "640px"}
-        justifySelf="center"
-      >
-        {props.art === "iso" ? <HLogo /> : <GuideLogo />}
+      <Box w="full" maxW="640px" justifySelf="center">
+        <GuideLogo />
       </Box>
     </Grid>
   )
 }
 
 function Contents() {
-  const Mini = useContext(Drawings) === "flat" ? FlatMini : HMini
   return (
     <Box>
       <HStack
@@ -159,7 +147,7 @@ function Contents() {
               transition="color 160ms"
               _groupHover={{ color: "text.bold" }}
             >
-              <Mini kind={c.sections[0]?.diagram ?? "principles"} />
+              <HMini kind={c.sections[0]?.diagram ?? "principles"} />
             </Box>
             <Box>
               <styled.p
@@ -210,9 +198,7 @@ function Contents() {
 }
 
 function Diagram(props: { section: HSection }) {
-  const Art = (useContext(Drawings) === "flat" ? flatArt : guideArt)[
-    props.section.diagram
-  ]
+  const Art = guideArt[props.section.diagram]
   return (
     <Box>
       <Box
@@ -384,21 +370,19 @@ function Closing() {
   )
 }
 
-export function Home(props: { art?: HeroArt; drawings?: DrawingStyle }) {
+export function Home() {
   return (
-    <Drawings.Provider value={props.drawings ?? "iso"}>
-      <Box>
-        <TopNav />
-        <Frame>
-          <Hero art={props.art ?? "iso"} />
-          <Contents />
-          {chapters.map((c) => (
-            <Chapter key={c.slug} chapter={c} />
-          ))}
-          <Closing />
-        </Frame>
-        <Footer />
-      </Box>
-    </Drawings.Provider>
+    <Box>
+      <TopNav />
+      <Frame>
+        <Hero />
+        <Contents />
+        {chapters.map((c) => (
+          <Chapter key={c.slug} chapter={c} />
+        ))}
+        <Closing />
+      </Frame>
+      <Footer />
+    </Box>
   )
 }
