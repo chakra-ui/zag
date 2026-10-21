@@ -93,6 +93,12 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    */
   scrollBehavior?: ScrollBehavior | undefined
   /**
+   * Whether every visible heading can be active at once.
+   * When `false`, only the topmost visible heading is active.
+   * @default true
+   */
+  multiple?: boolean | undefined
+  /**
    * Callback when the active (visible) headings change.
    */
   onActiveChange?: ((details: ActiveChangeDetails) => void) | undefined
@@ -107,7 +113,7 @@ export interface TocProps extends DirectionProperty, CommonProperties {
   defaultActiveIds?: string[] | undefined
 }
 
-type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items"
+type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items" | "multiple"
 
 export interface TocSchema {
   state: "idle"
@@ -119,6 +125,7 @@ export interface TocSchema {
   refs: {
     visibilityMap: Map<string, boolean>
     indicatorCleanup: VoidFunction | null
+    scrollLockTimer: number | null
   }
   computed: {
     activeItems: TocItem[]

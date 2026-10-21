@@ -352,6 +352,7 @@ export const stepsControls = defineControls({
 
 export const tocControls = defineControls({
   autoScroll: { type: "boolean", defaultValue: true },
+  multiple: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
