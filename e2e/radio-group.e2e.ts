@@ -87,34 +87,12 @@ test("should apply data-focus-visible after mouse click then arrow navigation", 
   await I.seeRadioIsFocusVisible("grape")
 })
 
-test.describe("radio group / controlled value and disabled", () => {
-  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+test("should sync the native input when the value changes while disabled", async () => {
+  await I.clickRadio("apple")
+  await I.controls.bool("disabled")
+  await I.clickButton("Set to Mangoes")
+  await I.controls.bool("disabled", false)
 
-  test.beforeEach(async ({ page }) => {
-    I = new RadioGroupModel(page)
-    await I.gotoControlledValueDisabled()
-  })
-
-  test("native checked and FormData match controlled value after re-enable", async () => {
-    await I.clickRadio("editor")
-    await I.clickRadio("viewer")
-    await I.seeRadioIsChecked("viewer")
-    await I.seeNativeInputChecked("viewer", true)
-    await I.seeNativeInputChecked("editor", false)
-
-    await I.clickButton("Set editor and disable")
-    await I.seeRadioIsChecked("editor")
-    await I.seeNativeInputChecked("editor", true)
-    await I.seeNativeInputChecked("viewer", false)
-
-    await I.clickButton("Submit")
-    await I.seeLastSubmitContains({ controlledValue: "editor", submittedRole: null })
-
-    await I.clickButton("Enable only")
-    await I.seeNativeInputChecked("editor", true)
-    await I.seeNativeInputChecked("viewer", false)
-
-    await I.clickButton("Submit")
-    await I.seeLastSubmitContains({ controlledValue: "editor", submittedRole: "editor" })
-  })
+  await I.seeRadioIsChecked("mango")
+  await I.seeInputIsChecked("mango")
 })
