@@ -497,11 +497,13 @@ export const machine = createMachine<CarouselSchema>({
         const pageSnapPoints = computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y
         context.set("pageSnapPoints", pageSnapPoints)
 
+        // Correct the page only when it's out of range. On React, `page` can lag a render behind a page change,
+        // so writing the read value back unconditionally would revert that change
         if (!pageSnapPoints.length) return
         const page = context.get("page")
-        const index = clampValue(page, 0, pageSnapPoints.length - 1)
-        // Only write when clamping changes the page, so a stale read can't revert a newer page
-        if (index !== page) context.set("page", index)
+        const lastPage = pageSnapPoints.length - 1
+        if (page > lastPage) context.set("page", lastPage)
+        else if (page < 0) context.set("page", 0)
       },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
