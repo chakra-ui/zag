@@ -4,10 +4,8 @@
 "@zag-js/menu": minor
 ---
 
-- **Combobox, Menu**: Cmd/Ctrl/Shift/Alt+Enter on a link item now opens it like a modifier-click (new tab, window, or
-  download).
-- **Combobox, Menu**: `navigate` and `onSelect` details include `modifiers` (`metaKey`, `ctrlKey`, `shiftKey`,
-  `altKey`).
-- **Combobox**: Modifier clicks on a link item now call `onSelect`, like modifier+Enter. If you navigate in `onSelect`,
-  skip it when a modifier is held so the current tab doesn't navigate too.
-- **Menu**: Enter on a link item now calls `onSelect` and closes the menu, like clicking it.
+- Fix Cmd/Ctrl/Shift/Alt+Enter on combobox and menu link items not opening the link like a modifier-click.
+- Add `modifiers` to the `navigate` and `onSelect` details of combobox and menu.
+- Call `onSelect` when a combobox link item is clicked with a modifier. Skip navigating in `onSelect` when one is held.
+- Call `onSelect` and close the menu when Enter is pressed on a menu link item.
+- Add `getModifierKeys` and `hasModifierKey` to `@zag-js/dom-query`.

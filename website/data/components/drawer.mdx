@@ -251,6 +251,20 @@ restrict dragging to only the grabber, pass `draggable: false` to
 </div>
 ```
 
+### Excluding elements from dragging
+
+Add `data-no-drag` to an element to stop drags that start on it from moving the
+drawer. Set it to `x` or `y` to block only drawers that swipe along that axis.
+For example, a horizontal carousel marked `x` won't start a drag in a left or
+right drawer, but vertical drags on it still move a bottom sheet.
+
+```tsx
+<div {...api.getContentProps()}>
+  <div data-no-drag>Never starts a drag</div>
+  <div data-no-drag="x">Carousel</div>
+</div>
+```
+
 ### Using drawer stack
 
 When your app shows multiple drawers that stack on top of each other (with

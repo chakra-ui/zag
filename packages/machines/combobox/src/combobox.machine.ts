@@ -4,7 +4,7 @@ import {
   resolveSelectedItems,
   type CollectionItem,
 } from "@zag-js/collection"
-import { setup } from "@zag-js/core"
+import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   clickIfLink,
@@ -19,14 +19,20 @@ import {
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
+import { addOrRemove, isBoolean, isEqual, match, mergeWithDefault, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
+import { defaultTranslations } from "./combobox.translations"
 import type { ComboboxSchema, InputValueChangeReason, OpenChangeReason, Placement } from "./combobox.types"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
 const { and, not } = guards
+
+/**
+ * How long the input and results must stay unchanged before the result count is announced
+ */
+const RESULTS_ANNOUNCEMENT_DELAY = 1000
 
 export const machine = createMachine({
   props({ props }) {
@@ -59,6 +65,13 @@ export const machine = createMachine({
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
     return open ? "open.suggesting" : "closed.idle"
+  },
+
+  refs() {
+    return {
+      liveRegion: null,
+      resultsRegion: null,
+    }
   },
 
   context({ prop, bindable, getContext, getEvent }) {
@@ -171,7 +184,7 @@ export const machine = createMachine({
       action(["syncSelectedItems"])
     })
     track([() => context.get("inputValue")], () => {
-      action(["syncInputValue"])
+      action(["syncInputValue", "announceResults"])
     })
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
@@ -181,6 +194,10 @@ export const machine = createMachine({
     })
     track([() => prop("collection").toString()], () => {
       send({ type: "CHILDREN_CHANGE" })
+      action(["announceResults"])
+    })
+    track([() => prop("loading")], () => {
+      action(["announceResults"])
     })
   },
 
@@ -491,7 +508,7 @@ export const machine = createMachine({
         "VALUE.CLEAR": [
           {
             guard: "isOpenControlled",
-            actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"],
+            actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose", "scrollContentToTop"],
           },
           {
             target: "closed.focused",
@@ -504,6 +521,10 @@ export const machine = createMachine({
         interacting: {
           on: {
             CHILDREN_CHANGE: [
+              {
+                guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
+                actions: ["clearHighlightedValue", "highlightFirstItem"],
+              },
               {
                 guard: "isHighlightedItemRemoved",
                 actions: ["clearHighlightedValue"],
@@ -540,11 +561,11 @@ export const machine = createMachine({
               {
                 guard: "autoComplete",
                 target: "suggesting",
-                actions: ["setInputValue"],
+                actions: ["setInputValue", "scrollContentToTop"],
               },
               {
                 target: "suggesting",
-                actions: ["clearHighlightedValue", "setInputValue"],
+                actions: ["clearHighlightedValue", "setInputValue", "scrollContentToTop"],
               },
             ],
             "ITEM.POINTER_MOVE": {
@@ -576,6 +597,7 @@ export const machine = createMachine({
         },
 
         suggesting: {
+          exit: ["cancelResultsAnnouncement"],
           on: {
             CHILDREN_CHANGE: [
               {
@@ -608,7 +630,7 @@ export const machine = createMachine({
               actions: ["highlightLastItem"],
             },
             "INPUT.CHANGE": {
-              actions: ["setInputValue"],
+              actions: ["setInputValue", "scrollContentToTop"],
             },
             "LAYER.ESCAPE": [
               {
@@ -686,12 +708,25 @@ export const machine = createMachine({
         })
       },
       trackLiveRegion({ refs, scope }) {
+        const root = () => dom.getRootEl(scope)
         const liveRegion = createLiveRegion({
           level: "assertive",
           document: scope.getDoc(),
+          root,
+        })
+        const resultsRegion = createLiveRegion({
+          level: "polite",
+          document: scope.getDoc(),
+          root,
         })
         refs.set("liveRegion", liveRegion)
-        return () => liveRegion.destroy()
+        refs.set("resultsRegion", resultsRegion)
+        return () => {
+          liveRegion.destroy()
+          resultsRegion.destroy()
+          refs.set("liveRegion", null)
+          refs.set("resultsRegion", null)
+        }
       },
       trackPlacement({ context, prop, scope }) {
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
@@ -1062,6 +1097,12 @@ export const machine = createMachine({
         const isSelected = value ? context.get("value").includes(value) : false
         refs.get("liveRegion")?.announce(isSelected ? `${optionText}, selected` : optionText)
       },
+      announceResults({ refs, prop }) {
+        refs.get("resultsRegion")?.announce(getResultsMessage(prop), RESULTS_ANNOUNCEMENT_DELAY)
+      },
+      cancelResultsAnnouncement({ refs }) {
+        refs.get("resultsRegion")?.cancel()
+      },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
@@ -1071,4 +1112,11 @@ export const machine = createMachine({
 
 function getOpenChangeReason(event: ComboboxSchema["event"]): OpenChangeReason | undefined {
   return (event.previousEvent || event).src
+}
+
+function getResultsMessage(prop: Params<ComboboxSchema>["prop"]) {
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+  if (prop("loading")) return translations.loading
+  const count = prop("collection").size
+  return count === 0 ? translations.noResults : translations.resultsCount(count)
 }
