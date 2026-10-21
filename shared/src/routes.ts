@@ -432,10 +432,7 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "radio-group",
     label: "Radio Group",
-    examples: [
-      { slug: "basic", title: "Basic" },
-      { slug: "controlled-value-disabled", title: "Controlled Value + Disabled" },
-    ],
+    examples: [{ slug: "basic", title: "Basic" }],
   },
   {
     slug: "range-slider",
