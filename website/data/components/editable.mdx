@@ -210,8 +210,7 @@ const service = useMachine(editable.machine, {
 
 ### Labeling the input
 
-Render the label part to give the input a visible, accessible name. The input
-points to it with `aria-labelledby`.
+Render the label part to name the input.
 
 ```tsx
 <div {...api.getRootProps()}>
@@ -223,12 +222,10 @@ points to it with `aria-labelledby`.
 </div>
 ```
 
-Without a rendered label, the input falls back to its `aria-label`, set by
-`translations.input` (default: "editable input"). An `aria-labelledby` that
-points to a missing element is ignored, per the
-[accessible name computation](https://www.w3.org/TR/accname-1.2/#computation-steps).
-Set `translations.input` to a name that describes the value when the editable
-has no visible label.
+Without a label, the input uses `translations.input` (default: "editable
+input"), since an `aria-labelledby` pointing to a missing element is
+[ignored](https://www.w3.org/TR/accname-1.2/#computation-steps). Set it to
+describe the value.
 
 ### Customizing accessibility labels
 
