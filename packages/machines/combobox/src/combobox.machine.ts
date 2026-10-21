@@ -667,6 +667,8 @@ export const machine = createMachine({
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
+          getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getControlEl(scope) ?? dom.getInputEl(scope),
           type: "listbox",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

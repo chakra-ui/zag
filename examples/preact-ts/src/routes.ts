@@ -200,6 +200,10 @@ export const routes: RouteDefinition[] = [
   { path: "/popover/composition-controlled", component: lazy(() => import("./pages/popover/composition-controlled")) },
   { path: "/popover/in-dialog", component: lazy(() => import("./pages/popover/in-dialog")) },
   { path: "/popover/multiple-controlled", component: lazy(() => import("./pages/popover/multiple-controlled")) },
+  {
+    path: "/popover/multiple-uncontrolled",
+    component: lazy(() => import("./pages/popover/multiple-uncontrolled")),
+  },
   { path: "/popover/multiple-trigger", component: lazy(() => import("./pages/popover/multiple-trigger")) },
   { path: "/popover/nested", component: lazy(() => import("./pages/popover/nested")) },
   { path: "/popover/selection", component: lazy(() => import("./pages/popover/selection")) },

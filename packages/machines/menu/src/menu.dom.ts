@@ -55,6 +55,13 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
   return ctx.getById(getTriggerId(ctx, value))
 }
 
+export const getActiveContextTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
+  if (value == null) {
+    return getContextTriggerEl(ctx) ?? getContextTriggerEls(ctx)[0] ?? null
+  }
+  return ctx.getById(getContextTriggerId(ctx, value))
+}
+
 export const getElements = (ctx: Scope) => {
   const selector = `[role^="menuitem"]${getByOwnerId(getContentId(ctx))}:not([data-disabled])`
   return queryAll(getContentEl(ctx), selector)

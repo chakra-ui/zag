@@ -10,7 +10,7 @@ import {
   isHTMLElement,
   raf,
 } from "@zag-js/dom-query"
-import { callAll } from "@zag-js/utils"
+import { callAll, noop } from "@zag-js/utils"
 import { getParentWindow, getWindowFrames } from "./frame-utils"
 
 export interface InteractOutsideHandlers {
@@ -113,7 +113,22 @@ function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
   return onScrollbarY || onScrollbarX
 }
 
-function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
+const getNow = () => performance.timeOrigin + performance.now()
+
+// Input that began before tracking started belongs to the gesture that opened the component.
+function isEventBefore(event: Event, startedAt: number, win: Window) {
+  if (!event.timeStamp) return false
+  // Frame events are timed from their own window's origin
+  const view = (event as UIEvent).view ?? win
+  return view.performance.timeOrigin + event.timeStamp < startedAt
+}
+
+interface TrackOptions {
+  startedAt: number
+  deferFocus: boolean
+}
+
+function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions, trackOptions: TrackOptions) {
   const {
     exclude,
     onFocusOutside,
@@ -167,6 +182,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   let isPointerDown = false
 
   function onPointerDown(event: PointerEvent) {
+    if (isEventBefore(event, trackOptions.startedAt, win)) return
     isPointerDown = true
     const onPointerUp = () => {
       isPointerDown = false
@@ -213,11 +229,10 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   }
   const cleanups = new Set<VoidFunction>()
 
-  const timer = setTimeout(() => {
-    cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
-    cleanups.add(parentWin.addEventListener("pointerdown", onPointerDown, true))
-    cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
-  }, 0)
+  // Listen right away: a busy main thread must not drop outside presses
+  cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
+  cleanups.add(parentWin.addEventListener("pointerdown", onPointerDown, true))
+  cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
 
   function onFocusin(event: FocusEvent) {
     // Skip focusin events during pointer interactions.
@@ -248,27 +263,40 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     })
   }
 
-  if (!isTouchDevice()) {
+  function trackFocusin() {
+    if (isTouchDevice()) return
     cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
     cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
     cleanups.add(frames.addEventListener("focusin", onFocusin, true))
   }
 
+  // Let focus settle after opening before treating focus moves as outside
+  let cancelFocusin: VoidFunction | undefined
+  if (trackOptions.deferFocus) cancelFocusin = raf(trackFocusin)
+  else trackFocusin()
+
   return () => {
-    clearTimeout(timer)
+    cancelFocusin?.()
     pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())
   }
 }
 
 export function trackInteractOutside(nodeOrFn: NodeOrFn, options: InteractOutsideOptions) {
-  const { defer } = options
-  const func = defer ? raf : (v: any) => v()
+  const { defer = false } = options
+  const startedAt = getNow()
+  const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
+
+  const node = getNode()
+  if (node || !defer) {
+    return trackInteractOutsideImpl(node, options, { startedAt, deferFocus: defer }) ?? noop
+  }
+
+  // Not mounted yet: resolve on the next frame, which already defers focus
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
-    func(() => {
-      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
-      cleanups.push(trackInteractOutsideImpl(node, options))
+    raf(() => {
+      cleanups.push(trackInteractOutsideImpl(getNode(), options, { startedAt, deferFocus: false }))
     }),
   )
   return () => {

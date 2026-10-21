@@ -13,16 +13,19 @@ function createLayer(
     dismiss?: VoidFunction
     requestDismiss?: (event: LayerDismissEvent) => void
     styleTargets?: LayerStyleTarget[]
+    trigger?: HTMLElement
   } = {},
 ): Layer {
-  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets } = options
+  const { type = "dialog", pointerBlocking, dismiss = noop, requestDismiss, styleTargets, trigger } = options
   return compact({
     type,
     node,
+    document: node.ownerDocument,
     pointerBlocking,
     dismiss,
     requestDismiss,
     styleTargets,
+    getTriggerEl: trigger ? () => trigger : undefined,
   })
 }
 
@@ -38,7 +41,7 @@ function nextTick() {
 function resetStack() {
   while (layerStack.count() > 0) {
     const first = layerStack.layers[0]
-    if (first) layerStack.remove(first.node)
+    if (first) layerStack.remove(first)
   }
   while (layerStack.branches.length > 0) {
     const b = layerStack.branches[0]
@@ -165,16 +168,32 @@ describe("layerStack", () => {
   describe("remove", () => {
     test("dismisses nested layers when removing a parent from the stack", () => {
       const parent = document.createElement("div")
+      const trigger = document.createElement("button")
       const child = document.createElement("div")
+      parent.append(trigger)
       document.body.append(parent, child)
 
       const childDismiss = vi.fn()
       layerStack.add(createLayer(parent))
-      layerStack.add(createLayer(child, { dismiss: childDismiss }))
+      layerStack.add(createLayer(child, { dismiss: childDismiss, trigger }))
 
       layerStack.remove(parent)
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("keeps later layers without a trigger when removing a parent", () => {
+      const parent = document.createElement("div")
+      const other = document.createElement("div")
+      document.body.append(parent, other)
+
+      const otherDismiss = vi.fn()
+      layerStack.add(createLayer(parent))
+      layerStack.add(createLayer(other, { dismiss: otherDismiss }))
+
+      layerStack.remove(parent)
+
+      expect(otherDismiss).not.toHaveBeenCalled()
     })
   })
 

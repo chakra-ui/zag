@@ -776,6 +776,8 @@ export const machine = createMachine<DatePickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getControlEl(scope) ?? dom.getTriggerEl(scope),
           type: "popover",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],

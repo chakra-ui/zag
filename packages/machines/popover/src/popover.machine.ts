@@ -160,10 +160,12 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      trackDismissableElement({ send, prop, scope }) {
+      trackDismissableElement({ send, prop, scope, context }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
+          getRootNode: scope.getRootNode,
+          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")) ?? dom.getAnchorEl(scope),
           type: "popover",
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
