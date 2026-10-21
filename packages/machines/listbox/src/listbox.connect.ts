@@ -432,7 +432,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
           }
 
-          const key = getEventKey(event)
+          const key = getEventKey(event, { dir: prop("dir") })
           // `a` is only a shortcut with the ctrl or meta key (select all), otherwise let it reach typeahead
           const exec = key === "a" && !isCtrlOrMetaKey(event) ? undefined : keyMap[key]
 

@@ -28,6 +28,18 @@ test.describe("listbox", () => {
     await I.seeItemIsHighlighted("Zimbabwe")
   })
 
+  test("[rtl] grid arrow keys should be mirrored", async () => {
+    await I.goto("/listbox/grid")
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Andorra")
+    await I.pressKey("ArrowLeft")
+    await I.seeItemIsHighlighted("United Arab Emirates")
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsHighlighted("Andorra")
+  })
+
   test("typeahead: lowercase a should move the highlight to matching item", async () => {
     await I.tabToContent()
     await I.seeItemIsHighlighted("Andorra")

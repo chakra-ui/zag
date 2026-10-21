@@ -210,6 +210,7 @@ export const listboxControls = defineControls({
   deselectable: { type: "boolean", defaultValue: true },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const datePickerControls = defineControls({
