@@ -275,9 +275,16 @@ export const machine = createMachine<TourSchema>({
     },
 
     actions: {
-      scrollToTarget({ context }) {
+      scrollToTarget({ context, computed, prop }) {
         const node = context.get("resolvedTarget")
-        node?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })
+        const step = computed("step")
+        if (!node || !step) return
+        const scrollToTargetFn = prop("scrollToTargetFn")
+        if (scrollToTargetFn) {
+          scrollToTargetFn({ target: node, step })
+          return
+        }
+        node.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })
       },
       setSteps(params) {
         const { event, context } = params

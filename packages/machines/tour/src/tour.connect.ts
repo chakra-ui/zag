@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault, toPx } from "@zag-js/utils"
@@ -221,7 +221,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         dir: prop("dir"),
-        role: "alertdialog",
+        role: "dialog",
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
@@ -237,6 +237,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!prop("keyboardNavigation")) return
+          // let arrow keys move the caret in inputs rendered inside the step
+          if (isEditableElement(getEventTarget(event))) return
           const isRtl = prop("dir") === "rtl"
           switch (event.key) {
             case "ArrowRight":
