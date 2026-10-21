@@ -133,7 +133,8 @@ export function connect<T extends PropTypes>(
             },
           }
 
-          const exec = keyMap[getEventKey(event)]
+          const key = getEventKey(event, { dir: prop("dir"), orientation: prop("orientation") })
+          const exec = keyMap[key]
 
           if (exec) {
             exec(event)

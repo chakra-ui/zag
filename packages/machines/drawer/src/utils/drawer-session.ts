@@ -2,7 +2,6 @@ import {
   contains,
   getComputedStyle,
   getEventPoint,
-  getEventTarget,
   isEditableElement,
   isHTMLElement,
   isInputElement,
