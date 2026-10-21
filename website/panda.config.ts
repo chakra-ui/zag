@@ -107,14 +107,14 @@ export default defineConfig({
               // pair with text.inverse: white in light, near-black in dark
               subtle: {
                 value: {
-                  _light: "{colors.gray.900}",
-                  _dark: "{colors.gray.100}",
+                  _light: "{colors.green.600}",
+                  _dark: "{colors.green.400}",
                 },
               },
               bold: {
                 value: {
-                  _light: "{colors.gray.700}",
-                  _dark: "{colors.white}",
+                  _light: "{colors.green.700}",
+                  _dark: "{colors.green.300}",
                 },
               },
             },
