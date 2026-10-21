@@ -2,12 +2,11 @@ import {
   ariaAttr,
   dataAttr,
   getEventKey,
+  getModifierKeys,
   isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
-  isDownloadingEvent,
   isLeftClick,
-  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
@@ -204,7 +203,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
+          if (isComposingEvent(event)) return
+          if ((event.ctrlKey || event.shiftKey) && event.key !== "Enter") return
 
           const openOnKeyPress = prop("openOnKeyPress")
           const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
@@ -236,7 +236,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
@@ -250,7 +250,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                prop("navigate")?.({ value: highlightedValue, node: itemEl, href: itemEl.href })
+                prop("navigate")?.({
+                  value: highlightedValue,
+                  node: itemEl,
+                  href: itemEl.href,
+                  modifiers: getModifierKeys(event),
+                })
               }
             },
             Escape() {
@@ -419,11 +424,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onClick(event) {
-          if (isDownloadingEvent(event)) return
-          if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "item-select", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
         },
       })
     },

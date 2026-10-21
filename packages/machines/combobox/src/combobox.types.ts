@@ -1,6 +1,7 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { ModifierKeys } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -64,11 +65,19 @@ export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
   href: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 export interface SelectionDetails {
   value: string[]
   itemValue: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 /* -----------------------------------------------------------------------------

@@ -8,6 +8,7 @@ import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   clickIfLink,
+  getModifierKeys,
   isApple,
   nextTick,
   observeAttributes,
@@ -48,8 +49,8 @@ export const machine = createMachine({
       openOnKeyPress: true,
       openOnChange: true,
       composite: true,
-      navigate({ node }) {
-        clickIfLink(node)
+      navigate(details) {
+        clickIfLink(details.node, details.modifiers)
       },
       collection: collection.empty(),
       ...props,
@@ -813,7 +814,7 @@ export const machine = createMachine({
         context.set("highlightedValue", null)
       },
       selectHighlightedItem(params) {
-        const { context, prop } = params
+        const { context, event, prop } = params
         const collection = prop("collection")
 
         // check if item is valid
@@ -822,7 +823,11 @@ export const machine = createMachine({
 
         // select item
         const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
-        prop("onSelect")?.({ value: nextValue, itemValue: highlightedValue })
+        prop("onSelect")?.({
+          value: nextValue,
+          itemValue: highlightedValue,
+          modifiers: getModifierKeys(event.modifiers),
+        })
         context.set("value", nextValue)
 
         // set input value
@@ -860,7 +865,7 @@ export const machine = createMachine({
         if (event.value == null) return
         flush(() => {
           const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
-          prop("onSelect")?.({ value: nextValue, itemValue: event.value })
+          prop("onSelect")?.({ value: nextValue, itemValue: event.value, modifiers: getModifierKeys(event.modifiers) })
           context.set("value", nextValue)
 
           // set input value

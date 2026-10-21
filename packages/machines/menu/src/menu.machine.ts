@@ -7,8 +7,12 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  getModifierKeys,
+  getWindow,
   isAnchorElement,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -68,7 +72,7 @@ export const machine = createMachine<MenuSchema>({
       composite: true,
       loopFocus: false,
       navigate(details) {
-        clickIfLink(details.node)
+        clickIfLink(details.node, details.modifiers)
       },
       ...props,
       positioning: {
@@ -745,15 +749,31 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context }) {
+      clickHighlightedItem({ scope, computed, prop, context, event, send }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+          const modifiers = getModifierKeys(event.modifiers)
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href, modifiers })
+
+          // match the item's click: modifier keys leave the link to the browser
+          const linkEvent = { currentTarget: itemEl, button: 0, ...modifiers }
+          if (isOpeningInNewTab(linkEvent) || isDownloadingEvent(linkEvent)) return
+
+          send({
+            type: "ITEM_CLICK",
+            target: itemEl,
+            id: itemEl.id,
+            value: highlightedValue,
+            closeOnSelect: dom.getItemCloseOnSelect(itemEl),
+            modifiers,
+          })
         } else {
-          queueMicrotask(() => itemEl.click())
+          const win = getWindow(itemEl)
+          const init = { bubbles: true, cancelable: true, composed: true, ...getModifierKeys(event.modifiers) }
+          queueMicrotask(() => itemEl.dispatchEvent(new win.MouseEvent("click", init)))
         }
       },
       setIntentPolygon({ context, scope, event }) {
@@ -850,7 +870,7 @@ export const machine = createMachine<MenuSchema>({
         const node = dom.getItemEl(scope, value)
         dom.dispatchSelectionEvent(node, value)
 
-        prop("onSelect")?.({ value })
+        prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
       focusTrigger({ scope, context, event }) {
         if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
