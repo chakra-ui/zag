@@ -218,7 +218,7 @@ export const machine = createMachine<TourSchema>({
           on: {
             "TARGET.NOT_FOUND": {
               target: "tourInactive",
-              actions: ["invokeOnNotFound", "clearStep"],
+              actions: ["invokeOnNotFound", "clearStep", "restoreFocus"],
             },
             "TARGET.RESOLVED": {
               target: "scrolling",
