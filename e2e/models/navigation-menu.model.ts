@@ -67,6 +67,27 @@ export class NavigationMenuModel extends Model {
     await expect(this.getLink(value)).toBeFocused()
   }
 
+  async seeContentLinksAreTabbable(value: string) {
+    await expect(this.getContent(value).locator('a[tabindex="-1"]')).toHaveCount(0)
+  }
+
+  /** Queue animation frames so the next key presses land in the same frame */
+  async holdFrames() {
+    await this.page.evaluate(() => {
+      const held: FrameRequestCallback[] = []
+      const raf = window.requestAnimationFrame
+      ;(window as any).__releaseFrames = () => {
+        window.requestAnimationFrame = raf
+        held.forEach((cb) => cb(performance.now()))
+      }
+      window.requestAnimationFrame = (cb) => (held.push(cb), 0)
+    })
+  }
+
+  async releaseFrames() {
+    await this.page.evaluate(() => (window as any).__releaseFrames())
+  }
+
   async wait(ms: number) {
     await this.page.waitForTimeout(ms)
   }

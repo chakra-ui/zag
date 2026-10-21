@@ -1,6 +1,7 @@
 import { addDomEvent, isContextMenuEvent, isShadowRoot, isTouchDevice } from "@zag-js/dom-query"
 import {
   contains,
+  getActiveElement,
   getDocument,
   getEventTarget,
   getNearestOverflowAncestor,
@@ -111,6 +112,13 @@ function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
   if (!isPointInRect(rect, point)) return false
 
   return onScrollbarY || onScrollbarX
+}
+
+function hasFocusMovedOn(target: EventTarget | null) {
+  if (!isHTMLElement(target)) return false
+  const doc = target.ownerDocument
+  const activeEl = getActiveElement(doc)
+  return !!activeEl && activeEl !== target && activeEl !== doc.body
 }
 
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
@@ -229,6 +237,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
       const composedPath = event?.composedPath?.() ?? [event?.target]
       const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
       if (!node || !isEventOutside(event, target)) return
+
+      // Focus moved again before this deferred check ran, so the newer focusin decides
+      if (defer && hasFocusMovedOn(target)) return
 
       if (onFocusOutside || onInteractOutside) {
         const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
