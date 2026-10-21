@@ -11,10 +11,6 @@ export function getScrollContainer(
   return el
 }
 
-export function isScrolledToEnd(el: HTMLElement) {
-  return el.scrollHeight - el.scrollTop - el.clientHeight <= 1
-}
-
 export function getViewBounds(el: HTMLElement) {
   if (el === el.ownerDocument.scrollingElement) {
     return { top: 0, bottom: el.ownerDocument.defaultView!.innerHeight }

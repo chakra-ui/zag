@@ -4,7 +4,7 @@ import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
-import { getScrollContainer, getViewBounds, isScrolledToEnd } from "./utils/scroll"
+import { getScrollContainer, getViewBounds } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -50,6 +50,7 @@ export const machine = createMachine({
       visibilityMap: new Map<string, boolean>(),
       indicatorCleanup: null,
       scrollLockTimer: null,
+      rootBounds: null,
     }
   },
 
@@ -209,6 +210,7 @@ export const machine = createMachine({
           for (const entry of entries) {
             visibilityMap.set(entry.target.id, entry.isIntersecting)
           }
+          refs.set("rootBounds", entries[0]?.rootBounds ?? null)
 
           if (refs.get("scrollLockTimer") == null) syncActiveIds(params)
         }, observerOptions)
@@ -229,7 +231,7 @@ export const machine = createMachine({
             lockScroll(params)
             return
           }
-          // The last headings may never reach the top, so re-check once the end is reached
+          // Scrolling near the end moves the activation line without any intersection change
           if (prop("multiple")) return
           win.cancelAnimationFrame(frame)
           frame = win.requestAnimationFrame(() => syncActiveIds(params))
@@ -271,19 +273,22 @@ function syncActiveIds(params: Params<TocSchema>) {
     prop("scrollEl")?.(),
     dom.getHeadingEl(scope, items[0]?.value),
   )
-  const bounds = getViewBounds(scrollContainer)
+  // Where headings stop counting as visible: the observed band's top edge (after `rootMargin`),
+  // or the scroll container's edge when it clips headings first
+  const viewTop = getViewBounds(scrollContainer).top
+  const bandTop = Math.max(refs.get("rootBounds")?.top ?? viewTop, viewTop)
 
   // Visible heading ids in document order
   let nextActiveIds = items.filter((item) => visibilityMap.get(item.value)).map((item) => item.value)
 
   if (!prop("multiple")) {
-    const lastInView = isScrolledToEnd(scrollContainer) ? findLastHeading(params, (r) => r.top < bounds.bottom) : null
-    nextActiveIds = lastInView ? [lastInView] : nextActiveIds.slice(0, 1)
+    const endId = findEndZoneHeading(params, scrollContainer, bandTop)
+    nextActiveIds = endId ? [endId] : nextActiveIds.slice(0, 1)
   }
 
   // Nothing in view: the reader is inside the section whose heading scrolled past the top
   if (nextActiveIds.length === 0) {
-    const sectionId = findLastHeading(params, (r) => r.top <= bounds.top)
+    const sectionId = findLastHeading(params, (r) => r.top <= bandTop)
     if (!sectionId) return
     nextActiveIds = [sectionId]
   }
@@ -299,6 +304,30 @@ function findLastHeading(params: Params<TocSchema>, match: (rect: DOMRect) => bo
   for (let i = items.length - 1; i >= 0; i--) {
     const rect = dom.getHeadingEl(scope, items[i].value)?.getBoundingClientRect()
     if (rect && match(rect)) return items[i].value
+  }
+  return null
+}
+
+// The last headings can't scroll to the top, so over the final stretch of scrolling, slide the
+// activation line from the top of the view down to the last heading so each one gets a turn
+function findEndZoneHeading(params: Params<TocSchema>, scrollContainer: HTMLElement, bandTop: number) {
+  const { scope, prop } = params
+  const items = prop("items")
+  const lastEl = dom.getHeadingEl(scope, items[items.length - 1]?.value)
+  if (!lastEl) return null
+
+  const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight
+  const remaining = maxScroll - scrollContainer.scrollTop
+  const deficit = lastEl.getBoundingClientRect().top - bandTop - remaining
+  if (deficit <= 0) return null
+
+  const stretch = Math.min(deficit, maxScroll)
+  if (remaining >= stretch) return null
+
+  const line = bandTop + deficit * (1 - remaining / stretch)
+  for (const item of items) {
+    const rect = dom.getHeadingEl(scope, item.value)?.getBoundingClientRect()
+    if (rect && rect.top >= line - 1) return item.value
   }
   return null
 }

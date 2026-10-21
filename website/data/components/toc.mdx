@@ -77,9 +77,9 @@ item. The indicator position is exposed as CSS variables on the root element.
 ### Activating one item at a time
 
 By default, every heading in view is active. Set `multiple` to `false` to keep
-only the topmost visible heading active. Once the page is scrolled to the end,
-the last heading in view becomes active, so short sections at the bottom can
-still be reached.
+only the topmost visible heading active. Near the end of the page, the last
+headings take turns as you scroll, so short sections at the bottom are still
+reachable.
 
 ```tsx {2}
 const service = useMachine(toc.machine, {

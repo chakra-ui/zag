@@ -126,6 +126,7 @@ export interface TocSchema {
     visibilityMap: Map<string, boolean>
     indicatorCleanup: VoidFunction | null
     scrollLockTimer: number | null
+    rootBounds: DOMRectReadOnly | null
   }
   computed: {
     activeItems: TocItem[]
