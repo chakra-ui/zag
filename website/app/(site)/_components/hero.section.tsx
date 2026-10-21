@@ -1,31 +1,11 @@
 "use client"
 
-import { Eyebrow } from "components/ui/layout"
-import Link from "next/link"
-import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, Stack, styled } from "styled-system/jsx"
 import { Ctas, FrameworkRow, Install } from "./actions"
 import { hCopy } from "lib/home"
 import { GuideLogo } from "components/illustrations"
-import { accent, gutter } from "./shared"
-
-function Release() {
-  return (
-    <Link href="/guides/migration">
-      <styled.span
-        display="inline-flex"
-        gap="2"
-        fontFamily="mono"
-        fontSize="12px"
-        color="text.muted"
-        transition="color 160ms"
-        _hover={{ color: "text.bold" }}
-      >
-        <styled.span color="text.bold">v2</styled.span>
-        <span>pre-release · see what changed →</span>
-      </styled.span>
-    </Link>
-  )
-}
+import { ReleaseBadge } from "./release-badge"
+import { gutter } from "./shared"
 
 export function HeroSection() {
   return (
@@ -37,14 +17,8 @@ export function HeroSection() {
       pt={{ base: "12", md: "20" }}
       pb={{ base: "12", md: "20" }}
     >
-      <Stack gap="7">
-        <Stack gap="4">
-          <Release />
-          <HStack gap="2.5">
-            <Box w="7px" h="7px" borderRadius="full" bg={accent} />
-            <Eyebrow>{hCopy.hero.kicker}</Eyebrow>
-          </HStack>
-        </Stack>
+      <Stack gap="7" minW="0">
+        <ReleaseBadge />
         <styled.h1
           fontSize={{ base: "40px", md: "56px", xl: "64px" }}
           lineHeight="1.02"

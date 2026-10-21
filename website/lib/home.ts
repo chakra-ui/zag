@@ -26,7 +26,6 @@ export interface GuideChapter {
 
 export interface GuideCopy {
   hero: {
-    kicker: string
     title: string
     subtitle: string
     cta: string
@@ -39,7 +38,6 @@ export interface GuideCopy {
 
 export const guide: GuideCopy = {
   hero: {
-    kicker: "Zag · how it works",
     title: "Accessible components for any framework",
     subtitle:
       "Over 50 components, from menus and dialogs to date pickers, with keyboard, focus and screen reader support built in. They work the same in React, Vue, Solid, Svelte and Preact, and you style them your way.",
@@ -340,7 +338,6 @@ export const chapters: HChapter[] = guide.chapters.map((chapter) => ({
 
 export const hCopy = {
   hero: {
-    kicker: "Open source · MIT",
     title: "Accessible components for any framework",
     subtitle:
       "Over 50 components, like menus, dialogs and date pickers, with keyboard, focus and screen reader support built in. They work the same in React, Vue, Solid, Svelte and Preact. You bring the markup and styles.",
