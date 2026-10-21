@@ -1,11 +1,13 @@
 import { normalizeSpan } from "./normalize-span"
 import { escapeRegex } from "./escape-regex"
 import type { HighlightChunk, HighlightWordProps } from "./types"
-import { getWholeWordSpans } from "./whole-word"
+import { wholeWord } from "./whole-word"
 
-const buildRegex = (queryProp: string[], flags: string): RegExp => {
+const buildRegex = (queryProp: string[], flags: string, exactMatch: boolean | undefined): RegExp => {
   const query = queryProp.filter(Boolean).map((text) => escapeRegex(text))
-  return new RegExp(`(${query.join("|")})`, flags)
+  const pattern = query.join("|")
+
+  return exactMatch ? new RegExp(wholeWord(pattern), `${flags}u`) : new RegExp(`(${pattern})`, flags)
 }
 
 const getRegexFlags = (ignoreCase: boolean | undefined, matchAll = true): string =>
@@ -18,14 +20,13 @@ export function highlightMultiple(props: HighlightWordProps): HighlightChunk[] {
     return [{ text, match: false }]
   }
 
-  const queries = Array.isArray(query) ? query : [query]
+  const flags = getRegexFlags(ignoreCase, matchAll)
+  const regex = buildRegex(Array.isArray(query) ? query : [query], flags, exactMatch)
 
-  const spans = exactMatch
-    ? getWholeWordSpans(text, queries, ignoreCase)
-    : [...text.matchAll(buildRegex(queries, getRegexFlags(ignoreCase, matchAll)))].map((match) => ({
-        start: match.index || 0,
-        end: (match.index || 0) + match[0].length,
-      }))
+  const spans = [...text.matchAll(regex)].map((match) => ({
+    start: match.index || 0,
+    end: (match.index || 0) + match[0].length,
+  }))
 
   return normalizeSpan(spans, props.text.length).map((chunk) => ({
     text: props.text.slice(chunk.start, chunk.end),

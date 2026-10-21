@@ -1,16 +1,23 @@
 import { normalizeSpan } from "./normalize-span"
+import { escapeRegex } from "./escape-regex"
 import type { HighlightChunk, HighlightWordProps } from "./types"
-import { getWholeWordSpans } from "./whole-word"
+import { wholeWord } from "./whole-word"
 
 export function highlightFirst(props: HighlightWordProps): HighlightChunk[] {
   const { text, query, ignoreCase, exactMatch } = props
 
   if (exactMatch) {
-    const spans = getWholeWordSpans(text, [query as string], ignoreCase, 1)
+    const escapedQuery = escapeRegex(query as string)
+    const regex = new RegExp(wholeWord(escapedQuery), ignoreCase ? "iu" : "u")
 
-    if (!spans.length) {
+    const match = text.match(regex)
+    if (!match || match.index === undefined) {
       return [{ text, match: false }]
     }
+
+    const start = match.index
+    const end = start + match[0].length
+    const spans = [{ start, end }]
 
     return normalizeSpan(spans, text.length).map((chunk) => ({
       text: text.slice(chunk.start, chunk.end),
