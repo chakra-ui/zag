@@ -96,4 +96,18 @@ test.describe("toggle-group", () => {
     await I.pressKey("ArrowRight")
     await I.seeItemIsFocused("bold")
   })
+
+  test("[keyboard] rtl flips horizontal arrow keys", async () => {
+    await I.controls.select("dir", "rtl")
+
+    await I.clickOutsideButton()
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("bold")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeItemIsFocused("italic")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("bold")
+  })
 })
