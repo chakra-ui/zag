@@ -144,11 +144,34 @@
 
 [data-scope="tour"][data-part="spotlight"] {
   border: 3px solid pink;
+}
+
+/* Step changes: the cutout, spotlight and tooltip move together */
+[data-scope="tour"][data-part="backdrop"] {
+  transition: clip-path 0.2s ease;
+}
+
+[data-scope="tour"][data-part="spotlight"] {
   transition:
     left 0.2s ease,
     top 0.2s ease,
     width 0.2s ease,
     height 0.2s ease;
+}
+
+[data-scope="tour"][data-part="positioner"] {
+  transition: transform 0.2s ease;
+}
+
+/* Snap into place when there's no visible previous step to move from */
+[data-scope="tour"][data-instant] {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scope="tour"] {
+    transition: none !important;
+  }
 }
 
 [data-scope="tour"][data-part="close-trigger"] {
