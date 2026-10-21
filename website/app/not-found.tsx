@@ -1,6 +1,6 @@
 import { Footer } from "components/footer"
-import { IsoNotFound } from "components/iso-not-found"
-import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/lab/kit"
+import { IsoNotFound } from "components/illustrations/not-found"
+import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { TopNav } from "components/nav/top-nav"
 import { Box, Grid, HStack, styled } from "styled-system/jsx"
 

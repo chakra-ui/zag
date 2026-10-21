@@ -3,7 +3,7 @@ import { FaDiscord, FaGithub, FaXTwitter } from "react-icons/fa6"
 import siteConfig from "site.config"
 import { css } from "styled-system/css"
 import { Box, Grid, HStack, Stack } from "styled-system/jsx"
-import { Eyebrow } from "./lab/kit"
+import { Eyebrow } from "./ui/layout"
 import { Logo } from "./logo"
 
 interface FooterColumn {

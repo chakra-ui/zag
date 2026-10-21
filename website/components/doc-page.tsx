@@ -1,4 +1,4 @@
-import DocsLayout from "app/docs-layout"
+import DocsLayout from "app/(docs)/docs-layout"
 import type { Framework } from "lib/framework-utils"
 import { getBody, type Doc } from "lib/source"
 import { notFound } from "next/navigation"
