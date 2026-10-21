@@ -2,4 +2,4 @@
 "@zag-js/editable": patch
 ---
 
-Fix Escape cancel to restore the edit-session snapshot, including empty strings and `defaultEdit` mounts.
+- Fix cancelling an edit not restoring an empty value, or the initial value when `defaultEdit` is set.

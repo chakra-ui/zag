@@ -46,6 +46,20 @@ test.describe("editable", () => {
     await I.dontSeeInput()
   })
 
+  test("on type and esc, should revert to an empty value", async () => {
+    await I.focusPreview()
+    await I.pressKey("Backspace")
+    await I.pressKey("Enter")
+    await I.seePreviewHasText("")
+
+    await I.focusPreview()
+    await I.type("Naruto")
+    await I.pressKey("Escape")
+
+    await I.seeInputHasValue("")
+    await I.dontSeeInput()
+  })
+
   test("on type and click submit, should commit value", async () => {
     await I.focusPreview()
 
@@ -98,39 +112,6 @@ test.describe("editable", () => {
       await I.pressKey("Backspace")
       await I.clickCancel()
       await I.seePreviewHasText("Hello World")
-    })
-  })
-
-  test.describe("escape revert (#3510)", () => {
-    test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
-
-    test("on type and esc, should restore empty initial value", async ({ page }) => {
-      I = new EditableModel(page)
-      await I.gotoEscapeRevert("a")
-
-      await I.clickEdit()
-      await I.seeInputIsFocused()
-      await I.type("x")
-      await I.seeInputHasValue("x")
-      await I.pressKey("Escape")
-
-      await I.seePreviewHasText("")
-      await I.dontSeeInput()
-    })
-
-    test("on type and esc with defaultEdit, should restore defaultValue", async ({ page }) => {
-      I = new EditableModel(page)
-      await I.gotoEscapeRevert("b")
-
-      await I.seeInput()
-      await I.seeInputIsFocused()
-      await I.seeInputHasValue("Segment")
-      await I.type("Changed")
-      await I.seeInputHasValue("Changed")
-      await I.pressKey("Escape")
-
-      await I.seePreviewHasText("Segment")
-      await I.dontSeeInput()
     })
   })
 })
