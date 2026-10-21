@@ -292,6 +292,7 @@ export const fileUploadControls = defineControls({
 })
 
 export const toggleGroupControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
