@@ -23,7 +23,7 @@ export function Pagination(props: PaginationProps) {
               <a
                 className={styles.PrevTrigger}
                 href="#previous"
-                {...api.getPrevTriggerProps()}
+                {...api.getPreviousTriggerProps()}
               >
                 &lt; <span>Previous Page</span>
               </a>

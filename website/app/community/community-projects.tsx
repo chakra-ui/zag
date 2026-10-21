@@ -53,7 +53,7 @@ function Pagination(props: {
     <nav {...api.getRootProps()}>
       <HStack as="ul" listStyle="none" gap="1" justifyContent="center">
         <li>
-          <button className={pageButton()} {...api.getPrevTriggerProps()}>
+          <button className={pageButton()} {...api.getPreviousTriggerProps()}>
             <LuChevronLeft /> Previous
           </button>
         </li>

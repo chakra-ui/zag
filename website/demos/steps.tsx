@@ -67,7 +67,10 @@ export function Steps(props: StepsProps) {
       </div>
 
       <div>
-        <button className={styles.PrevTrigger} {...api.getPrevTriggerProps()}>
+        <button
+          className={styles.PrevTrigger}
+          {...api.getPreviousTriggerProps()}
+        >
           Back
         </button>
         <button className={styles.NextTrigger} {...api.getNextTriggerProps()}>
