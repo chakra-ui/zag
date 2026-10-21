@@ -452,4 +452,22 @@ test.describe("navigation-menu", () => {
     await I.dontSeeContent("company")
     await I.dontSeeContent("developers")
   })
+
+  test("tabbing out and back within one frame keeps the content tabbable", async () => {
+    await I.focusTrigger("developers")
+    await I.pressKey("Enter")
+    await I.pressKey("Tab", 3)
+    await I.seeContentLinkIsFocused("developers", "Corporate Responsibility")
+
+    await I.holdFrames()
+    await I.pressKey("Tab")
+    await I.pressKey("Shift+Tab")
+    await I.releaseFrames()
+
+    await I.seeContentLinkIsFocused("developers", "Corporate Responsibility")
+    await I.seeContentLinksAreTabbable("developers")
+
+    await I.pressKey("Shift+Tab")
+    await I.seeContentLinkIsFocused("developers", "Partners")
+  })
 })
