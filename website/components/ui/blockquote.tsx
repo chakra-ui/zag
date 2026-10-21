@@ -1,6 +1,5 @@
 import { styled } from "styled-system/jsx"
 
-/** Neutral note box. A leading bold phrase ("**Note:**") becomes a mono label. */
 export const Blockquote = styled("blockquote", {
   base: {
     marginY: "6",

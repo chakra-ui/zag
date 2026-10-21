@@ -63,12 +63,6 @@
     white-space: normal;
   }
 
-  /*
-   * Mostly grey: base text, muted punctuation and comments, bold keywords
-   * and names. Two accents: green for strings and values, amber for
-   * attributes, props and literals. Every colour clears 4.5:1 on its
-   * code block (gray.50 light, gray.800 dark).
-   */
   pre[class*="language-"],
   code[class*="language-"] {
     --prism-text: var(--colors-gray-700);
@@ -136,14 +130,12 @@
     color: var(--prism-text);
   }
 
-  /* tag brackets read as punctuation, not as the tag name */
   .token.tag > .token.punctuation,
   .token.attr-value > .token.punctuation.attr-equals,
   .token.special-attr > .token.attr-value > .token.value.css {
     color: var(--prism-muted);
   }
 
-  /* CSS: selectors carry the zag data attributes, so give them the accent */
   .language-css .token.selector {
     color: var(--prism-attr);
   }

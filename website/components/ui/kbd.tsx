@@ -1,6 +1,5 @@
 import { styled } from "styled-system/jsx"
 
-/** Matches the ⌘K chip in the top nav */
 export const Kbd = styled("kbd", {
   base: {
     fontFamily: "mono",

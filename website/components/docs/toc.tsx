@@ -37,7 +37,6 @@ export function TableOfContents({
         {title}
       </styled.h5>
 
-      {/* same rail as the sidebar: muted items, the active one marked in green */}
       <Stack
         as="ul"
         mt="3"

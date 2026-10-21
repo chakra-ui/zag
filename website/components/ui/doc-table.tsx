@@ -1,6 +1,5 @@
 import { styled } from "styled-system/jsx"
 
-/** Bordered frame shared by the API, data attribute, CSS variable and keyboard tables */
 export const DocTable = styled("div", {
   base: {
     my: "6",
@@ -12,7 +11,6 @@ export const DocTable = styled("div", {
   },
 })
 
-/** Mono header row */
 export const DocTableHead = styled("div", {
   base: {
     display: "grid",
@@ -31,7 +29,6 @@ export const DocTableHead = styled("div", {
   },
 })
 
-/** Two columns from `sm` up, stacked on phones */
 export const DocTableRow = styled("div", {
   base: {
     display: "grid",
@@ -45,7 +42,6 @@ export const DocTableRow = styled("div", {
   },
 })
 
-/** Mono key cell: an attribute, variable or prop name */
 export const DocTableKey = styled("code", {
   base: {
     fontFamily: "mono",

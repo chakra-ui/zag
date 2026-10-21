@@ -12,7 +12,6 @@ import siteConfig from "site.config"
 import { css, cva } from "styled-system/css"
 import { HStack, Stack } from "styled-system/jsx"
 
-// same height, border and hover as the nav controls (components/nav/control.ts)
 const buttonStyles = cva({
   base: {
     display: "flex",

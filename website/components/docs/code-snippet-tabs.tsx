@@ -40,7 +40,6 @@ export function CodeSnippetTabs(props: CodeSnippetTabsProps) {
         gap="5"
         h="10"
         px="4"
-        /* an inset line, not a border, so the active underline covers it */
         boxShadow="inset 0 -1px 0 token(colors.border)"
         overflowX="auto"
         {...api.getListProps()}
