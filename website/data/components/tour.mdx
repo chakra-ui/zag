@@ -441,6 +441,10 @@ DOM.
 [data-scope="tour"][data-part="backdrop"] {
   /* styles for the backdrop part */
 }
+
+[data-scope="tour"][data-part="spotlight"] {
+  /* styles for the spotlight part */
+}
 ```
 
 ### Step types
@@ -491,9 +495,19 @@ backdrop:
 
 ### Spotlight
 
-The spotlight exposes CSS variables you can transition between steps:
+The spotlight exposes CSS variables for the target's position and size:
+`--spotlight-x`, `--spotlight-y`, `--spotlight-width`, `--spotlight-height`.
+
+### Animating step changes
+
+Transition the backdrop cutout, the spotlight and the positioner together so the
+highlight and the tooltip glide to the next step.
 
 ```css
+[data-scope="tour"][data-part="backdrop"] {
+  transition: clip-path 0.2s ease;
+}
+
 [data-scope="tour"][data-part="spotlight"] {
   transition:
     left 0.2s ease,
@@ -501,10 +515,25 @@ The spotlight exposes CSS variables you can transition between steps:
     width 0.2s ease,
     height 0.2s ease;
 }
+
+[data-scope="tour"][data-part="positioner"] {
+  transition: transform 0.2s ease;
+}
+
+[data-scope="tour"][data-instant] {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scope="tour"] {
+    transition: none !important;
+  }
+}
 ```
 
-Variables: `--spotlight-x`, `--spotlight-y`, `--spotlight-width`,
-`--spotlight-height`.
+These parts get `data-instant` when there's no visible previous step to move
+from (open, reopen, or after a step without a target). Turning transitions off
+for it makes them snap into place instead of animating from their last position.
 
 ### Placement Styles
 
