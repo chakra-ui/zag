@@ -350,6 +350,20 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+### Customizing scroll behavior
+
+By default, the target scrolls into view with the nearest alignment. Use
+`scrollToTargetFn` to handle sticky headers, smooth scrolling or custom scroll
+containers.
+
+```tsx
+const service = useMachine(tour.machine, {
+  scrollToTargetFn({ target }) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" })
+  },
+})
+```
+
 ### Exit animations (Presence)
 
 After the tour closes, `api.step` still references the last step so exit
