@@ -100,4 +100,37 @@ test.describe("editable", () => {
       await I.seePreviewHasText("Hello World")
     })
   })
+
+  test.describe("escape revert (#3510)", () => {
+    test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
+    test("on type and esc, should restore empty initial value", async ({ page }) => {
+      I = new EditableModel(page)
+      await I.gotoEscapeRevert("a")
+
+      await I.clickEdit()
+      await I.seeInputIsFocused()
+      await I.type("x")
+      await I.seeInputHasValue("x")
+      await I.pressKey("Escape")
+
+      await I.seePreviewHasText("")
+      await I.dontSeeInput()
+    })
+
+    test("on type and esc with defaultEdit, should restore defaultValue", async ({ page }) => {
+      I = new EditableModel(page)
+      await I.gotoEscapeRevert("b")
+
+      await I.seeInput()
+      await I.seeInputIsFocused()
+      await I.seeInputHasValue("Segment")
+      await I.type("Changed")
+      await I.seeInputHasValue("Changed")
+      await I.pressKey("Escape")
+
+      await I.seePreviewHasText("Segment")
+      await I.dontSeeInput()
+    })
+  })
 })

@@ -15,6 +15,11 @@ export class EditableModel extends Model {
     return this.page.goto("/editable/basic")
   }
 
+  async gotoEscapeRevert(scenario: "a" | "b") {
+    await this.page.goto(`/editable/escape-revert?case=${scenario}`)
+    await this.page.locator(`main.editable-escape-revert[data-ready="true"][data-case="${scenario}"]`).waitFor()
+  }
+
   get preview() {
     return this.page.locator("[data-testid=preview]")
   }
