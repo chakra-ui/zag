@@ -14,6 +14,11 @@ test.describe("editable", () => {
     await I.checkAccessibility()
   })
 
+  test("input should be named by the rendered label", async () => {
+    await I.focusPreview()
+    await I.seeInputHasAccessibleName("Display name")
+  })
+
   test("on focus, input should be visible and focus", async () => {
     await I.focusPreview()
     await I.seeInput()
