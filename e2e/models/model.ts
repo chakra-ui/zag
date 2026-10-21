@@ -18,6 +18,10 @@ export class Model {
     return controls(this.page)
   }
 
+  liveRegion(level: "polite" | "assertive" = "polite") {
+    return this.page.locator(`[data-live-announcer][aria-live=${level}]`)
+  }
+
   clickViz() {
     return clickViz(this.page)
   }
