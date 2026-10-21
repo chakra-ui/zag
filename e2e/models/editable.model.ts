@@ -76,6 +76,10 @@ export class EditableModel extends Model {
     return expect(this.input).toHaveValue(value)
   }
 
+  seeInputHasAccessibleName(name: string) {
+    return expect(this.input).toHaveAccessibleName(name)
+  }
+
   seePreviewHasText(text: string) {
     return expect(this.preview).toHaveText(text)
   }

@@ -86,6 +86,11 @@ export interface StepBaseDetails {
   actions?: StepAction[] | undefined
 }
 
+export interface ScrollToTargetDetails {
+  target: HTMLElement
+  step: StepDetails
+}
+
 export interface StepDetails extends StepBaseDetails {
   /**
    * The unique identifier of the step
@@ -206,6 +211,11 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
    * @default 4
    */
   spotlightRadius?: number | undefined
+  /**
+   * Function to scroll the step target into view.
+   * Defaults to `scrollIntoView` with the nearest alignment.
+   */
+  scrollToTargetFn?: ((details: ScrollToTargetDetails) => void) | undefined
   /**
    * The translations for the tour
    */
