@@ -529,3 +529,28 @@ test.describe("combobox / scroll under resting cursor", () => {
     await I.seeItemIsHighlighted("Tonga")
   })
 })
+
+test.describe("combobox / tabs", () => {
+  test.skip(!!process.env.FRAMEWORK && !["react", "preact"].includes(process.env.FRAMEWORK), "React and Preact example")
+
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox/tabs")
+  })
+
+  test("[autoHighlight] highlights first item when the highlighted item is removed while navigating", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Docs")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Examples")
+
+    // switch to "Page" tab: highlighted item still exists, so highlight is preserved
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsHighlighted("Examples")
+
+    // switch to "Component" tab: highlighted item is removed, so first item is highlighted
+    await I.page.getByRole("tab", { name: /Component/ }).click()
+    await I.seeItemIsHighlighted("Select Tabs")
+  })
+})
