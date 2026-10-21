@@ -312,11 +312,14 @@ export class SwipeSession {
       restoreSelection = undefined
     }
 
+    // Moves are tracked while the drawer is open, but only a started swipe may block text selection
+    const isSwiping = () => this.startPoint !== null
+
     function onPointerMove(event: PointerEvent) {
       if (event.pointerType === "touch" && usingTouchEvents) return
       const point = getEventPoint(event)
       const target = getEventTarget<Element>(event)
-      startSelectionGuard()
+      if (isSwiping()) startSelectionGuard()
       trackPoint(point)
       onMove({
         point,

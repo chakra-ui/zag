@@ -1,6 +1,6 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { contains, isHTMLElement } from "@zag-js/dom-query"
+import { contains, isHTMLElement, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -175,7 +175,7 @@ export const machine = createMachine<TourSchema>({
       entry: ["validateSteps"],
       on: {
         START: {
-          actions: ["clearStep", "setInitialStep", "invokeOnStart"],
+          actions: ["setRestoreFocusEl", "clearStep", "setInitialStep", "invokeOnStart"],
         },
       },
     },
@@ -197,16 +197,16 @@ export const machine = createMachine<TourSchema>({
           {
             guard: "isLastStep",
             target: "tourInactive",
-            actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete"],
+            actions: ["cleanupAll", "restoreFocus", "invokeOnDismiss", "invokeOnComplete"],
           },
           {
             target: "tourInactive",
-            actions: ["cleanupAll", "invokeOnDismiss"],
+            actions: ["cleanupAll", "restoreFocus", "invokeOnDismiss"],
           },
         ],
         SKIP: {
           target: "tourInactive",
-          actions: ["cleanupAll", "invokeOnSkip"],
+          actions: ["cleanupAll", "restoreFocus", "invokeOnSkip"],
         },
       },
 
@@ -218,7 +218,7 @@ export const machine = createMachine<TourSchema>({
           on: {
             "TARGET.NOT_FOUND": {
               target: "tourInactive",
-              actions: ["invokeOnNotFound", "clearStep"],
+              actions: ["invokeOnNotFound", "clearStep", "restoreFocus"],
             },
             "TARGET.RESOLVED": {
               target: "scrolling",
@@ -275,9 +275,16 @@ export const machine = createMachine<TourSchema>({
     },
 
     actions: {
-      scrollToTarget({ context }) {
+      scrollToTarget({ context, computed, prop }) {
         const node = context.get("resolvedTarget")
-        node?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })
+        const step = computed("step")
+        if (!node || !step) return
+        const scrollToTargetFn = prop("scrollToTargetFn")
+        if (scrollToTargetFn) {
+          scrollToTargetFn({ target: node, step })
+          return
+        }
+        node.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })
       },
       setSteps(params) {
         const { event, context } = params
@@ -368,6 +375,21 @@ export const machine = createMachine<TourSchema>({
 
         refs.get("effectCleanup")?.()
         refs.set("effectCleanup", undefined)
+      },
+      setRestoreFocusEl({ refs, scope }) {
+        refs.set("restoreFocusEl", scope.getActiveElement())
+      },
+      restoreFocus({ refs, scope }) {
+        const restoreFocusEl = refs.get("restoreFocusEl")
+        refs.set("restoreFocusEl", undefined)
+        if (!restoreFocusEl) return
+        raf(() => {
+          // leave focus alone if the user moved it elsewhere, e.g. by clicking outside
+          const activeEl = scope.getActiveElement()
+          if (activeEl && activeEl !== scope.getDoc().body && !contains(dom.getContentEl(scope), activeEl)) return
+          if (!restoreFocusEl.isConnected) return
+          restoreFocusEl.focus({ preventScroll: true })
+        })
       },
       cleanupStepEffect({ refs }) {
         refs.get("effectCleanup")?.()

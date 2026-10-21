@@ -504,6 +504,10 @@ export const machine = createMachine({
           on: {
             CHILDREN_CHANGE: [
               {
+                guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
+                actions: ["clearHighlightedValue", "highlightFirstItem"],
+              },
+              {
                 guard: "isHighlightedItemRemoved",
                 actions: ["clearHighlightedValue"],
               },

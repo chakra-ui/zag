@@ -261,7 +261,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           }
 
           const key = getEventKey(event, { dir: prop("dir") })
-          const exec = keyMap[key]
+          // `a` is only a shortcut with the meta key (select all), otherwise let it reach typeahead
+          const exec = key === "a" && !event.metaKey ? undefined : keyMap[key]
 
           if (exec) {
             exec(event)
