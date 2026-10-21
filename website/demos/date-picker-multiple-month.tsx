@@ -102,7 +102,7 @@ const Header = (props: HeaderProps) => {
   const { api } = props
   return (
     <div {...api.getViewControlProps({ view: "year" })}>
-      <button {...api.getPrevTriggerProps()}>
+      <button {...api.getPreviousTriggerProps()}>
         <BiChevronLeft />
       </button>
       <div style={{ flex: 1, textAlign: "center" }}>
