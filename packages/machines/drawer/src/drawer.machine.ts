@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { createDismissableTrigger, trackDismissableElement } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   addDomEvent,
@@ -65,6 +65,15 @@ export const machine = createMachine<DrawerSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      dismissableTrigger: bindable(() => ({
+        defaultValue: createDismissableTrigger(
+          scope.getById,
+          prop("triggerValue") !== undefined || prop("defaultTriggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? prop("defaultTriggerValue") ?? undefined)
+            : null,
+        ),
+      })),
+
       triggerValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
@@ -144,6 +153,9 @@ export const machine = createMachine<DrawerSchema>({
   },
 
   watch({ track, context, prop, action, computed }) {
+    track([() => prop("triggerValue")], () => {
+      action(["syncDismissableTrigger"])
+    })
     track(
       [
         () => context.get("snapPoint"),
@@ -521,7 +533,21 @@ export const machine = createMachine<DrawerSchema>({
         if (backdropEl) backdropEl.style.removeProperty("animation")
       },
 
-      setTriggerValue({ context, event }) {
+      syncDismissableTrigger({ scope, prop, context }) {
+        const value = prop("triggerValue")
+        context
+          .get("dismissableTrigger")
+          .setId(value === undefined ? null : dom.getTriggerId(scope, value ?? undefined))
+      },
+      setTriggerValue({ context, event, scope, prop }) {
+        const explicit = event.src === "trigger" || event.type === "TRIGGER_VALUE.SET" || event.value !== undefined
+        const value = prop("triggerValue") !== undefined ? prop("triggerValue") : event.value
+        const id = explicit
+          ? dom.getTriggerId(scope, value ?? undefined)
+          : prop("triggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? undefined)
+            : context.get("dismissableTrigger").takePendingId()
+        context.get("dismissableTrigger").setId(id)
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
       },
@@ -722,7 +748,7 @@ export const machine = createMachine<DrawerSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
-          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+          trigger: context.get("dismissableTrigger"),
           type: "drawer",
           defer: true,
           pointerBlocking: prop("modal"),

@@ -1,3 +1,4 @@
+import type { DismissableTrigger } from "@zag-js/dismissable"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -87,6 +88,7 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
 type PropsWithDefault = "openDelay" | "closeDelay" | "positioning"
 
 interface PrivateContext {
+  dismissableTrigger: DismissableTrigger
   /**
    * The computed placement of the tooltip.
    */

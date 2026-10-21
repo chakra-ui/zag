@@ -92,7 +92,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, src: "trigger" })
         },
         onBlur(event) {
           send({ type: "TRIGGER_BLUR", target: event.relatedTarget })

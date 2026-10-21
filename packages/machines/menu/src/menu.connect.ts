@@ -256,7 +256,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onPointerDown(event) {
           if (dom.isTargetDisabled(event.currentTarget)) return
           if (isContextMenuEvent(event)) return
-          event.preventDefault()
+          // A closed root trigger can be the focus target of another menu's outside press.
+          if (!open && !isSubmenu && event.button === 0) event.currentTarget.focus({ preventScroll: true })
+          // WebKit needs the touch default to synthesize the click that opens the menu.
+          if (event.pointerType !== "touch") event.preventDefault()
         },
         onClick(event) {
           if (event.defaultPrevented) return

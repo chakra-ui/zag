@@ -1,3 +1,4 @@
+import type { DismissableTrigger } from "@zag-js/dismissable"
 import type { Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
@@ -131,6 +132,7 @@ export interface DialogSchema {
   props: RequiredBy<DialogProps, PropsWithDefault>
   state: "open" | "closed"
   context: {
+    dismissableTrigger: DismissableTrigger
     rendered: { title: boolean; description: boolean }
     triggerValue: string | null
   }
@@ -143,6 +145,7 @@ export interface DialogSchema {
     | "invokeOnOpen"
     | "toggleVisibility"
     | "setTriggerValue"
+    | "syncDismissableTrigger"
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined

@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Transition } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { createDismissableTrigger, trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
   clickIfLink,
@@ -85,6 +85,15 @@ export const machine = createMachine<MenuSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      dismissableTrigger: bindable(() => ({
+        defaultValue: createDismissableTrigger(
+          scope.getById,
+          prop("triggerValue") !== undefined || prop("defaultTriggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? prop("defaultTriggerValue") ?? undefined)
+            : null,
+        ),
+      })),
+
       highlightedValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
@@ -131,6 +140,7 @@ export const machine = createMachine<MenuSchema>({
       parent: null,
       children: {},
       pointerRoutingLocked: false,
+      restoreFocus: true,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
     }
@@ -144,6 +154,9 @@ export const machine = createMachine<MenuSchema>({
   },
 
   watch({ track, action, context, prop }) {
+    track([() => prop("triggerValue")], () => {
+      action(["syncDismissableTrigger"])
+    })
     track([() => context.get("isSubmenu")], () => {
       action(["setSubmenuPlacement"])
     })
@@ -230,6 +243,7 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_POINTERMOVE: {
           guard: "isSubmenu",
           target: "opening",
+          actions: ["setTriggerValue"],
         },
       },
     },
@@ -384,6 +398,7 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_POINTERMOVE: {
           guard: "isTriggerItem",
           target: "opening",
+          actions: ["setTriggerValue"],
         },
         TRIGGER_BLUR: { target: "idle" },
         ARROW_DOWN: [
@@ -412,7 +427,7 @@ export const machine = createMachine<MenuSchema>({
     open: {
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
-      entry: ["focusMenu", "unlockParentOnOpen"],
+      entry: ["resetRestoreFocus", "focusMenu", "unlockParentOnOpen"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -616,12 +631,7 @@ export const machine = createMachine<MenuSchema>({
 
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
-          getTriggerEl: () => {
-            const value = context.get("triggerValue")
-            // A context menu is opened from its context trigger
-            if (context.get("anchorPoint")) return dom.getActiveContextTriggerEl(scope, value)
-            return dom.getActiveTriggerEl(scope, value)
-          },
+          trigger: context.get("dismissableTrigger"),
           type: "menu",
           defer: true,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
@@ -642,6 +652,7 @@ export const machine = createMachine<MenuSchema>({
             }
           },
           onEscapeKeyDown(event) {
+            restoreFocus = true
             prop("onEscapeKeyDown")?.(event)
             if (context.get("isSubmenu")) event.preventDefault()
             closeRootMenu({ parent: refs.get("parent") })
@@ -859,8 +870,9 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value })
       },
-      focusTrigger({ scope, context, event }) {
-        if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+      focusTrigger({ scope, context, event, refs }) {
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus ?? refs.get("restoreFocus")
+        if (context.get("isSubmenu") || context.get("anchorPoint") || restoreFocus === false) return
         queueMicrotask(() => {
           const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           triggerEl?.focus({ preventScroll: true })
@@ -937,10 +949,16 @@ export const machine = createMachine<MenuSchema>({
       restoreParentHighlightedItem({ refs }) {
         refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
       },
-      invokeOnOpen({ prop }) {
+      resetRestoreFocus({ refs }) {
+        refs.set("restoreFocus", true)
+      },
+      invokeOnOpen({ prop, refs }) {
+        refs.set("restoreFocus", true)
         prop("onOpenChange")?.({ open: true })
       },
-      invokeOnClose({ prop }) {
+      invokeOnClose({ prop, refs, event }) {
+        // Controlled confirmation may arrive after unrelated machine events.
+        refs.set("restoreFocus", event.restoreFocus ?? true)
         prop("onOpenChange")?.({ open: false })
       },
       releaseParentRoutingLock({ refs, context }) {
@@ -953,7 +971,30 @@ export const machine = createMachine<MenuSchema>({
           previousEvent: event,
         })
       },
-      setTriggerValue({ context, event }) {
+      syncDismissableTrigger({ scope, prop, context }) {
+        const value = prop("triggerValue")
+        context
+          .get("dismissableTrigger")
+          .setId(
+            value === undefined
+              ? null
+              : (context.get("anchorPoint") ? dom.getContextTriggerId : dom.getTriggerId)(scope, value ?? undefined),
+          )
+      },
+      setTriggerValue({ context, event, scope, prop, state }) {
+        // The initiating touch event already selected its context trigger.
+        if (event.type === "LONG_PRESS.OPEN") return
+        if (event.type === "OPEN" && event.value === undefined && state.matches("open")) return
+        const explicit = event.type !== "OPEN" || event.value !== undefined
+        const value = prop("triggerValue") !== undefined ? prop("triggerValue") : event.value
+        const contextTrigger =
+          event.type.startsWith("CONTEXT_MENU") || (event.type === "TRIGGER_VALUE.SET" && event.point != null)
+        const id = explicit
+          ? (contextTrigger ? dom.getContextTriggerId : dom.getTriggerId)(scope, value ?? undefined)
+          : prop("triggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? undefined)
+            : context.get("dismissableTrigger").takePendingId()
+        context.get("dismissableTrigger").setId(id)
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
       },

@@ -22,6 +22,10 @@ export interface Layer {
   onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
   /** The element that opened the layer, used to tell nested layers from unrelated ones. */
   getTriggerEl?: (() => Element | null) | undefined
+  /** Established ownership survives DOM detachment and replacement. */
+  owner?: Layer | null | undefined
+  ownershipResolved?: boolean | undefined
+  getContentEl?: (() => HTMLElement | null) | undefined
   type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
@@ -33,6 +37,7 @@ type LayerTarget = Layer | HTMLElement
 export type LayerBranch = HTMLElement | (() => HTMLElement | null)
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
+let dismissalBatch: Set<Layer> | undefined
 
 export const layerStack = {
   layers: [] as Layer[],
@@ -67,20 +72,33 @@ export const layerStack = {
     const doc = this.layers[index].document
     return this.layers.slice(index + 1).filter((layer) => layer.document === doc)
   },
-  /** Layers that close along with `target`: those whose trigger is inside it or inside another layer it owns. */
+  /** Ownership is independent of registration order and current DOM attachment. */
   getOwnedLayers(target: LayerTarget) {
     const index = this.indexOf(target)
     if (index < 0) return []
-
     const parent = this.layers[index]
-    const owned: Layer[] = []
+    return this.layers.filter((layer) => isOwnedBy(layer, parent))
+  },
+  resolveOwnership(layer: Layer) {
+    if (layer.ownershipResolved) return
+    const trigger = layer.getTriggerEl?.()
+    if (!trigger?.isConnected) return
 
-    for (const layer of this.layers.slice(index + 1)) {
-      if (layer.document !== parent.document) continue
-      if (isOpenedFrom(layer, parent, owned)) owned.push(layer)
+    let owner: Layer | null = null
+    for (const candidate of this.layers) {
+      if (candidate === layer || candidate.document !== layer.document || isOwnedBy(candidate, layer)) continue
+      const content = candidate.node ?? candidate.getContentEl?.()
+      if (!content?.isConnected || !contains(content, trigger)) continue
+      // Prefer the innermost containing content; later registrations break ties.
+      const ownerContent = owner?.node ?? owner?.getContentEl?.()
+      if (!ownerContent || !contains(content, ownerContent) || content === ownerContent) owner = candidate
     }
 
-    return owned
+    layer.owner = owner
+    // A pending registration may still turn out to contain this trigger.
+    layer.ownershipResolved =
+      !!owner ||
+      !this.layers.some((candidate) => candidate !== layer && candidate.document === layer.document && !candidate.node)
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
@@ -120,17 +138,28 @@ export const layerStack = {
     // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
     const existingIndex = layer.node ? this.indexOf(layer.node) : this.layers.indexOf(layer)
     if (existingIndex !== -1) {
+      const previous = this.layers[existingIndex]
+      this.layers.forEach((item) => {
+        if (item.owner === previous) item.owner = item === layer ? (previous.owner ?? null) : layer
+      })
       this.layers.splice(existingIndex, 1)
     }
     this.layers.push(layer)
+    this.resolveOwnership(layer)
     this.syncLayers()
   },
   attach(layer: Layer, node: HTMLElement | null) {
     if (this.indexOf(layer) < 0) return
     // A stale registration must not remove the replacement when its cleanup runs.
     const duplicate = node ? this.layers.find((item) => item !== layer && item.node === node) : undefined
-    if (duplicate) this.layers.splice(this.layers.indexOf(duplicate), 1)
+    if (duplicate) {
+      this.layers.forEach((item) => {
+        if (item.owner === duplicate) item.owner = item === layer ? (duplicate.owner ?? null) : layer
+      })
+      this.layers.splice(this.layers.indexOf(duplicate), 1)
+    }
     layer.node = node
+    if (node) this.layers.forEach((item) => this.resolveOwnership(item))
     this.syncLayers()
   },
   addBranch(branch: LayerBranch) {
@@ -141,6 +170,7 @@ export const layerStack = {
     if (index < 0) return
 
     const layer = this.layers[index]
+    this.layers.forEach((item) => this.resolveOwnership(item))
     const node = layer.node
     const nested = this.getOwnedLayers(layer).map((child) => ({ layer: child, index: this.indexOf(child) }))
     layer.styleTargets?.forEach((getTarget) => {
@@ -161,10 +191,16 @@ export const layerStack = {
 
     // Remove by identity before invoking consumers, which may synchronously remove children.
     this.layers.splice(index, 1)
-    nested.forEach((child) =>
-      this.dismiss(child.layer, node ?? undefined, { originalIndex: child.index, targetIndex: index }),
-    )
-    this.syncLayers()
+    const outerBatch = dismissalBatch
+    dismissalBatch ??= new Set()
+    try {
+      nested.forEach((child) =>
+        this.dismiss(child.layer, node ?? undefined, { originalIndex: child.index, targetIndex: index }),
+      )
+    } finally {
+      dismissalBatch = outerBatch
+      this.syncLayers()
+    }
   },
   removeBranch(branch: LayerBranch) {
     const index = this.branches.indexOf(branch)
@@ -196,6 +232,8 @@ export const layerStack = {
     if (index === -1) return
 
     const layer = this.layers[index]
+    if (dismissalBatch?.has(layer)) return
+    dismissalBatch?.add(layer)
     const node = layer.node
     // DOM request-dismiss events require mounted content. Pending children can still close.
     if (!node) {
@@ -225,11 +263,15 @@ export const layerStack = {
   },
 }
 
-// Without a trigger there's no evidence of ownership, so the layer stays independent.
-function isOpenedFrom(layer: Layer, parent: Layer, owned: Layer[]) {
-  const trigger = layer.getTriggerEl?.()
-  if (!trigger) return false
-  return [parent, ...owned].some((owner) => contains(owner.node, trigger))
+function isOwnedBy(layer: Layer, owner: Layer): boolean {
+  const visited = new Set<Layer>([layer])
+  let current = layer.owner
+  while (current && !visited.has(current)) {
+    if (current === owner) return true
+    visited.add(current)
+    current = current.owner
+  }
+  return false
 }
 
 function applyLayerStackMetadata(layer: Layer, index: number, el: HTMLElement) {

@@ -49,12 +49,29 @@ that prevent dismissal. The machine leaving its open state owns cleanup.
 - Attaching, detaching or replacing content does not reorder or remove the registration, and does not dismiss children.
 - Separate documents have independent top registrations, nesting metadata and pointer blocking. Layers in the same
   document, including shadow roots, share Escape arbitration.
-- Removing a layer dismisses only the later layers it owns: those whose trigger (`getTriggerEl`) is inside it or inside
-  another owned layer. Closing is destructive, so ownership needs that evidence. A layer without a trigger, such as a
-  dialog opened from code, stays independent; its own outside-press and Escape handling still close it.
-- The trigger is read when the layer opens and again when its parent closes, so ownership survives the parent's content
-  (and the trigger in it) being removed first. Popovers fall back to their anchor; context menus use their context
-  trigger.
+- Removing a layer dismisses only the registrations it owns, directly or through an ownership chain. Ownership is
+  established from the selected trigger and stored as a registration reference. Removing a trigger, detaching content,
+  or replacing a portal node does not erase that reference. Ownership traversal does not depend on stack position.
+- For multiple-trigger components, `createDismissableTrigger` records the selected trigger ID separately from its DOM
+  node. A subscription resolves explicit selection changes synchronously, including changes without a DOM mutation.
+  Missing selected triggers retain established ownership until their replacement can be resolved. Resolving ownership
+  never changes Escape order, and a descendant cannot become its own ancestor.
+- Trigger gestures identify default triggers explicitly. Named trigger selections and controlled `triggerValue` changes
+  resolve that exact trigger; they never fall back to the first available trigger. A controlled value remains
+  authoritative when a requested selection is rejected. Context menus resolve their context trigger. Positioning anchors
+  do not establish ownership.
+- Programmatic opening without a fresh explicit or controlled trigger selection starts independently, even if
+  `triggerValue` retains a previous opening's value for focus or positioning. Calling `setTriggerValue` while closed
+  supplies a fresh selection for the next opening. Registrations consume pending selections when attaching to the
+  selector and whenever it notifies them, including reselecting the same ID. A trigger-originated controlled opening
+  preserves its selection while awaiting confirmation. Explicit initial trigger values also establish a selection.
+- A registration awaiting trigger/content DOM retries discovery on attachment and trigger mutations. Standalone callers
+  using `getTriggerEl` also establish durable ownership, but use `trigger` when selection can change without DOM
+  updates.
+- Cleanup snapshots owned descendants before invoking consumers. Synchronous nested cleanup shares a dismissal batch, so
+  a controlled descendant receives only one request. Mounted request-dismiss events remain preventable; preventing an
+  intermediate layer's own dismissal does not exempt its descendants from the original ancestor's request. Duplicate
+  registrations on the same node transfer ownership to the replacement registration.
 - This keeps a sibling popover open when pressing its trigger closes the previous one, and keeps a dialog open when the
   button that opened it also closes its popover or menu.
 - Click-inside checks, nesting metadata and pointer blocking stay order-based.
@@ -80,7 +97,8 @@ The body lock is stored on the document under a `Symbol.for` key with a set of o
 package share it: the first owner records the original `pointer-events`, and the last one to unblock restores it.
 
 Stale outside callbacks check registration membership and node identity before invoking consumers. Disposal cancels
-observation and warnings; a later insertion cannot resurrect the layer. Repeated cleanup is harmless.
+content/trigger observation, selection subscriptions and warnings; a later insertion cannot resurrect the layer.
+Repeated cleanup is harmless.
 
 ## Outside interactions
 

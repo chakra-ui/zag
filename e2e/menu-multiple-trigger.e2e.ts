@@ -37,9 +37,8 @@ test.describe("menu / multiple triggers", () => {
     await page.click(trigger(1))
     await expect(page.locator(menu)).toBeVisible()
 
-    const menuRect2 = await rect(page.locator(positioner))
     // Y position should be different (trigger 1 is above trigger 5)
-    expect(menuRect2.y).toBeLessThan(menuRect1.y)
+    await expect.poll(async () => (await rect(page.locator(positioner))).y).toBeLessThan(menuRect1.y)
   })
 
   test("should close menu on escape and focus active trigger", async ({ page }) => {

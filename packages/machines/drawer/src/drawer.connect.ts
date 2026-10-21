@@ -194,7 +194,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     triggerValue,
     setTriggerValue(value) {
-      send({ type: "OPEN", value: value ?? undefined })
+      send({ type: "OPEN", value: value ?? undefined, src: "trigger" })
     },
 
     getTriggerProps(props: TriggerProps = {}) {
@@ -215,7 +215,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : open ? "CLOSE" : "OPEN", value })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : open ? "CLOSE" : "OPEN", value, src: "trigger" })
         },
       })
     },

@@ -1,3 +1,4 @@
+import type { DismissableTrigger } from "@zag-js/dismissable"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -152,6 +153,7 @@ type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioni
 export interface MenuSchema {
   props: RequiredBy<MenuProps, PropsWithDefault>
   context: {
+    dismissableTrigger: DismissableTrigger
     highlightedValue: string | null
     lastHighlightedValue: string | null
     currentPlacement: Placement | undefined
@@ -170,6 +172,7 @@ export interface MenuSchema {
     parent: MenuService | null
     children: Record<string, MenuService>
     pointerRoutingLocked: boolean
+    restoreFocus: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
   }

@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, src: "trigger" })
         },
       })
     },

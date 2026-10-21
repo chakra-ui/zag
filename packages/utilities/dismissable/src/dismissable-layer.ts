@@ -6,6 +6,7 @@ import {
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
 import { warn, type MaybeFunction } from "@zag-js/utils"
+import type { DismissableTrigger } from "./dismissable-trigger"
 import { trackLayerEscape } from "./layer-escape"
 import { layerStack, type Layer, type LayerDismissEvent, type LayerStyleTarget, type LayerType } from "./layer-stack"
 import { observeNode } from "./observe-node"
@@ -44,6 +45,8 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
    * is never closed by another layer closing.
    */
   getTriggerEl?: (() => Element | null) | undefined
+  /** Explicit trigger selection, including changes that do not mutate the DOM. */
+  trigger?: DismissableTrigger | undefined
   /**
    * Extra elements that receive the same layer stack CSS vars, `data-*`, and `--z-index`
    * (from the primary node's computed `z-index`) as the dismissable node
@@ -140,8 +143,6 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
   const root = options.getRootNode?.() ?? getDocument(getNode())
   const doc = getDocument(root)
-  // Kept so ownership survives the trigger being removed along with its parent's content
-  const initialTrigger = options.getTriggerEl?.() ?? null
   const layer: Layer = {
     node: null,
     document: doc,
@@ -150,7 +151,9 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
     requestDismiss: options.onRequestDismiss,
     pointerBlocking: options.pointerBlocking,
     styleTargets: options.layerStyleTargets,
-    getTriggerEl: () => options.getTriggerEl?.() ?? initialTrigger,
+    getContentEl: getNode,
+    getTriggerEl: options.trigger?.getElement ?? options.getTriggerEl,
+    ownershipResolved: options.trigger ? options.trigger.getId() === null : !options.getTriggerEl,
     onEscapeKeyDown(event) {
       options.onEscapeKeyDown?.(event)
       if (event.defaultPrevented) return
@@ -162,6 +165,36 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   // Opening order is independent of rendering order. Escape is live even while node is null.
   layerStack.add(layer)
   const stopEscape = trackLayerEscape(doc)
+  let triggerId = options.trigger?.getId()
+  options.trigger?.takePendingId()
+  const stopTriggerChange = options.trigger?.subscribe(() => {
+    const nextId = options.trigger!.getId()
+    options.trigger!.takePendingId()
+    if (nextId === triggerId) return
+    triggerId = nextId
+    const independent = nextId === null
+    layer.ownershipResolved = independent
+    if (independent) layer.owner = null
+    else layerStack.resolveOwnership(layer)
+  })
+  const getTriggerEl = layer.getTriggerEl
+  const stopTrigger = getTriggerEl
+    ? observeNode(
+        () => {
+          const trigger = getTriggerEl()
+          return isHTMLElement(trigger) ? trigger : null
+        },
+        {
+          getRootNode: () => root,
+          attach: () => {
+            // Explicit selection preserves ownership across replacement of the same trigger.
+            if (!options.trigger) layer.ownershipResolved = false
+            layerStack.resolveOwnership(layer)
+            return () => {}
+          },
+        },
+      )
+    : undefined
   const stopNode = observeNode(getNode, {
     attach: (node) => attachDismissableElement(layer, node, options),
     getRootNode: () => root,
@@ -175,6 +208,8 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
     disposed = true
     layerStack.remove(layer)
     stopEscape()
+    stopTriggerChange?.()
+    stopTrigger?.()
     stopNode()
   }
 }

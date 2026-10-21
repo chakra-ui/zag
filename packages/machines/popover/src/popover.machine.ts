@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { createDismissableTrigger, trackDismissableElement } from "@zag-js/dismissable"
 import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
@@ -32,6 +32,15 @@ export const machine = createMachine<PopoverSchema>({
 
   context({ bindable, prop, scope }) {
     return {
+      dismissableTrigger: bindable(() => ({
+        defaultValue: createDismissableTrigger(
+          scope.getById,
+          prop("triggerValue") !== undefined || prop("defaultTriggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? prop("defaultTriggerValue") ?? undefined)
+            : null,
+        ),
+      })),
+
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -56,6 +65,9 @@ export const machine = createMachine<PopoverSchema>({
   },
 
   watch({ track, prop, action }) {
+    track([() => prop("triggerValue")], () => {
+      action(["syncDismissableTrigger"])
+    })
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
@@ -165,7 +177,7 @@ export const machine = createMachine<PopoverSchema>({
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
           getRootNode: scope.getRootNode,
-          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")) ?? dom.getAnchorEl(scope),
+          trigger: context.get("dismissableTrigger"),
           type: "popover",
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
@@ -266,7 +278,21 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      setTriggerValue({ context, event }) {
+      syncDismissableTrigger({ scope, prop, context }) {
+        const value = prop("triggerValue")
+        context
+          .get("dismissableTrigger")
+          .setId(value === undefined ? null : dom.getTriggerId(scope, value ?? undefined))
+      },
+      setTriggerValue({ context, event, scope, prop }) {
+        const explicit = event.src === "trigger" || event.type === "TRIGGER_VALUE.SET" || event.value !== undefined
+        const value = prop("triggerValue") !== undefined ? prop("triggerValue") : event.value
+        const id = explicit
+          ? dom.getTriggerId(scope, value ?? undefined)
+          : prop("triggerValue") !== undefined
+            ? dom.getTriggerId(scope, prop("triggerValue") ?? undefined)
+            : context.get("dismissableTrigger").takePendingId()
+        context.get("dismissableTrigger").setId(id)
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
       },

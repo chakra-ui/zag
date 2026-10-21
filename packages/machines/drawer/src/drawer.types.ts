@@ -1,3 +1,4 @@
+import type { DismissableTrigger } from "@zag-js/dismissable"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
@@ -240,6 +241,7 @@ export interface DrawerSchema {
   state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
   tag: "open" | "closed"
   context: {
+    dismissableTrigger: DismissableTrigger
     triggerValue: string | null
     dragOffset: number | null
     snapPoint: SnapPoint | null

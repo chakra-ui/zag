@@ -7,7 +7,7 @@ const positioner = '[data-scope="hover-card"][data-part="positioner"]'
 
 test.describe("hover-card / multiple triggers", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/hover-card/multiple-trigger")
+    await page.goto("/hover-card/multiple-trigger", { waitUntil: "domcontentloaded" })
   })
 
   test("should open hover card on hover", async ({ page }) => {
@@ -37,10 +37,8 @@ test.describe("hover-card / multiple triggers", () => {
     // Hover last trigger
     await page.hover(trigger(4))
     await expect(page.locator(content)).toBeVisible()
-    const pos2 = await rect(page.locator(positioner))
-
     // X position should be different (triggers are side by side)
-    expect(pos2.x).not.toBe(pos1.x)
+    await expect.poll(async () => (await rect(page.locator(positioner))).x).not.toBe(pos1.x)
   })
 
   test("should close hover card on mouse leave", async ({ page }) => {
