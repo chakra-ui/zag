@@ -1,5 +1,22 @@
 # @zag-js/toast
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`56c6ba6`](https://github.com/chakra-ui/zag/commit/56c6ba6ad2d96623d7b4bf551889fd6ebb0cceac) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where a progress bar driven by `--duration`
+  jumped when the toast was paused and resumed. `--duration` is now the toast's total duration instead of the remaining
+  time, so pausing the animation with `animation-play-state` stays in sync with the dismiss timer.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

@@ -1,5 +1,42 @@
 # @zag-js/accordion
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Added `hiddenUntilFound`, so closed content stays
+  searchable with the browser's find-in-page. A match opens the item.
+
+  ```ts
+  accordion.machine({ hiddenUntilFound: true })
+  collapsible.machine({ hiddenUntilFound: true })
+  ```
+
+  A `[hidden] { display: none }` reset blocks this. Exclude it:
+
+  ```css
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+  ```
+
+  **Breaking (accordion):**
+
+  - Removed arrow, `Home` and `End` navigation between triggers, and the `loopFocus` prop, following the WAI-ARIA
+    accordion pattern. Use `Tab`.
+  - `collapsible` now defaults to `true`. Set `collapsible: false` to keep one item open.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.46.0

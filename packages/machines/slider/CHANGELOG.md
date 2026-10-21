@@ -1,5 +1,89 @@
 # @zag-js/slider
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Number flow:** Smoother transitions when the number
+  gains or loses digits.
+
+  - Digits and symbols that enter or exit (e.g. `999` to `1,000`) now grow or shrink in place while fading, instead of
+    popping in and out. New digits also roll in by one step.
+  - `transformTiming` now controls these enter and exit transitions. Previously it had no effect.
+  - The default timing for rolls and transitions is now a spring-like easing over `900ms`.
+  - Digits and symbols expose `data-entering` and `data-exiting` while they animate in or out.
+  - Reordering `formatOptions` keys no longer restarts the format update.
+
+  **Slider:** Allow `thumbSize` to be a single number that sets both the thumb width and height, e.g. `thumbSize: 20`.
+
+  **Infinite scroll:** Loading more now keeps working after the list is replaced (e.g. by a new search), and when the
+  sentinel renders after the machine starts observing.
+
+  **Tabs:** `onValueChange` and `onFocusChange` details are now typed as nullable. `value` is `null` after a
+  `deselectable` tab is deselected, and `focusedValue` is `null` when focus leaves the tab list.
+
+  **Toggle:** The machine now accepts the common `id` and `getRootNode` props, and `splitProps` keeps them.
+
+  **Anatomy icons:** Add missing anatomy diagrams for angle slider, cascade select, collapsible, drawer, image cropper,
+  listbox, marquee, navigation menu, and timer.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`e075bfb`](https://github.com/chakra-ui/zag/commit/e075bfb5683317cecda8e26c9695071beb12bec2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Added `inRange` to the marker state and `data-in-range`
+  to markers within the filled range. It accounts for `origin` and range sliders, unlike `data-state` which only
+  compares against the thumb values.
+
+  ```css
+  [data-slider-marker][data-in-range] {
+    color: white;
+  }
+  ```
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`3c64a3e`](https://github.com/chakra-ui/zag/commit/3c64a3e5da32cd8a531fadafd4129c139a3e0651) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Replaced the `aria-label` and
+  `aria-labelledby` array props with `getAriaLabel` and `getAriaLabelledBy`, matching `getAriaValueText`.
+
+  ```diff
+    slider.machine({
+  -   "aria-label": ["Minimum price", "Maximum price"],
+  +   getAriaLabel: ({ index }) => (index === 0 ? "Minimum price" : "Maximum price"),
+    })
+  ```
+
+  ```diff
+    slider.machine({
+  -   "aria-labelledby": ["min-label", "max-label"],
+  +   getAriaLabelledBy: ({ index }) => (index === 0 ? "min-label" : "max-label"),
+    })
+  ```
+
+  Thumbs with their own label no longer get `aria-labelledby` pointing at the label part, which used to override the
+  thumb's `aria-label`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`057bd5f`](https://github.com/chakra-ui/zag/commit/057bd5f3bad89d0dd652c1be4b63755a6f4e5ae4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixes:
+
+  - The range now ends at the thumb's center when `thumbAlignment` is `"contain"`, instead of falling short of it near
+    the edges.
+  - The thumb now sets `aria-invalid` and `data-invalid` when the slider is invalid.
+  - `onValueChangeEnd` no longer fires when an interaction ends on the starting value, e.g. a thumb press without moving
+    or an arrow key at the boundary.
+  - Page Up, Page Down and Shift + Arrow now move by exactly `largeStep` from the current value, instead of snapping to
+    multiples of `largeStep` counted from the neighboring thumb.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.46.0
