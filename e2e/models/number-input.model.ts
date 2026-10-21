@@ -80,11 +80,17 @@ export class NumberInputModel extends Model {
   }
 
   async scrubBy(x: number) {
+    // Pointer lock is granted on Linux but not macOS, and skews synthetic mouse deltas once engaged
+    await this.page.evaluate(() => {
+      Element.prototype.requestPointerLock = () => Promise.resolve()
+    })
     const scrubber = await this.scrubber.boundingBox()
     if (!scrubber) throw new Error("No scrubber found")
     await this.scrubber.hover()
     await this.page.mouse.down()
-    await this.page.mouse.move(scrubber.x + scrubber.width / 2 + x, scrubber.y + scrubber.height / 2, { steps: x })
+    await this.page.mouse.move(scrubber.x + scrubber.width / 2 + x, scrubber.y + scrubber.height / 2, {
+      steps: Math.abs(x),
+    })
     await this.page.mouse.up()
   }
 
