@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { mount, settled, unmount } from "svelte"
+import { SvelteMap } from "svelte/reactivity"
 import { renderMachine } from "./render"
 import SetPropOnMount from "./SetPropOnMount.svelte"
 
@@ -453,7 +454,7 @@ describe("edge cases", () => {
     vi.useRealTimers()
   })
 
-  test("prop and context read after stop return the values at stop", async () => {
+  test("prop and context stay readable after stop", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
     let label = "stopped"
     let value = "controlled"
@@ -492,11 +493,54 @@ describe("edge cases", () => {
 
     label = "changed"
     value = "changed"
-    const valuesAtStop = readAfterStop()
+    const values = readAfterStop()
     const warnings = [...warn.mock.calls]
     warn.mockRestore()
 
-    expect(valuesAtStop).toEqual(["stopped", "controlled"])
+    expect(values).toEqual(["changed", "changed"])
+    expect(warnings).toHaveLength(0)
+  })
+
+  test("computed stays readable after stop", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const values = new SvelteMap([["id", "stopped"]])
+    let readRootId!: () => unknown
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+      },
+      computed: {
+        rootId: ({ scope }) => scope.id,
+      },
+      entry: ["captureRead"],
+      implementations: {
+        actions: {
+          captureRead({ computed }) {
+            readRootId = () => computed("rootId")
+          },
+        },
+      },
+    })
+
+    const { cleanup } = renderMachine(machine, {
+      get id() {
+        return values.get("id")
+      },
+    })
+    await Promise.resolve()
+    expect(readRootId()).toBe("stopped")
+    await cleanup()
+
+    values.set("id", "changed")
+    const rootId = readRootId()
+    const warnings = [...warn.mock.calls]
+    warn.mockRestore()
+
+    expect(rootId).toBe("changed")
     expect(warnings).toHaveLength(0)
   })
 

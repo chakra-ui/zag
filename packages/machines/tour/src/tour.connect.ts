@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault, toPx } from "@zag-js/utils"
@@ -36,7 +36,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
-  const suppressTransition = context.get("suppressSpotlightTransition")
+  // No visible previous step to move from (first open, reopen, same step), so parts should snap instead of animate
+  const instant = context.get("suppressSpotlightTransition")
   const floatingOffset = context.get("floatingOffset")
   const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
 
@@ -133,6 +134,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-type": step?.type,
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
@@ -147,6 +149,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.element({
         ...parts.spotlight.attrs,
         hidden: !open || !step?.target?.(),
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 1,
           "--spotlight-x": toPx(targetRect.x),
@@ -160,8 +163,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
           top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
-          transitionDuration: suppressTransition ? "0ms" : undefined,
-          transitionDelay: suppressTransition ? "0ms" : undefined,
+          transitionDuration: instant ? "0ms" : undefined,
+          transitionDelay: instant ? "0ms" : undefined,
         },
       })
     },
@@ -180,6 +183,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "data-type": step?.type,
         "data-placement": placement,
         "data-side": placementSide,
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 2,
           ...(isTooltipStep(step) && {
@@ -200,8 +204,10 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
         dir: prop("dir"),
-        hidden: !tooltipPositioned,
-        style: tooltipPositioned ? popperStyles.arrow : undefined,
+        style: {
+          ...popperStyles.arrow,
+          visibility: tooltipPositioned ? undefined : "hidden",
+        },
         opacity: hasTarget ? undefined : 0,
       })
     },
@@ -219,7 +225,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         dir: prop("dir"),
-        role: "alertdialog",
+        role: "dialog",
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
@@ -235,6 +241,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!prop("keyboardNavigation")) return
+          // let arrow keys move the caret in inputs rendered inside the step
+          if (isEditableElement(getEventTarget(event))) return
           const isRtl = prop("dir") === "rtl"
           switch (event.key) {
             case "ArrowRight":

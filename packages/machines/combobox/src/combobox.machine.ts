@@ -507,7 +507,7 @@ export const machine = createMachine({
         "VALUE.CLEAR": [
           {
             guard: "isOpenControlled",
-            actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"],
+            actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose", "scrollContentToTop"],
           },
           {
             target: "closed.focused",
@@ -520,6 +520,10 @@ export const machine = createMachine({
         interacting: {
           on: {
             CHILDREN_CHANGE: [
+              {
+                guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
+                actions: ["clearHighlightedValue", "highlightFirstItem"],
+              },
               {
                 guard: "isHighlightedItemRemoved",
                 actions: ["clearHighlightedValue"],
@@ -556,11 +560,11 @@ export const machine = createMachine({
               {
                 guard: "autoComplete",
                 target: "suggesting",
-                actions: ["setInputValue"],
+                actions: ["setInputValue", "scrollContentToTop"],
               },
               {
                 target: "suggesting",
-                actions: ["clearHighlightedValue", "setInputValue"],
+                actions: ["clearHighlightedValue", "setInputValue", "scrollContentToTop"],
               },
             ],
             "ITEM.POINTER_MOVE": {
@@ -625,7 +629,7 @@ export const machine = createMachine({
               actions: ["highlightLastItem"],
             },
             "INPUT.CHANGE": {
-              actions: ["setInputValue"],
+              actions: ["setInputValue", "scrollContentToTop"],
             },
             "LAYER.ESCAPE": [
               {

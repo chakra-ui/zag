@@ -539,7 +539,7 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       setPointerStart({ event, refs }) {
-        refs.get("swipeSession").beginSwipe(event.point)
+        refs.get("swipeSession").beginSwipe(event.point, event.target)
       },
 
       setDragOffset({ context, event, refs, computed }) {

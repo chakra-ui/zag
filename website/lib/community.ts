@@ -70,10 +70,10 @@ export const teamMembers: TeamMember[] = [
     links: [{ label: "GitHub", href: "https://github.com/estheragbaje" }],
   },
   {
-    name: "Abraham",
+    name: "Adebesin Tolulope",
     role: "Active member",
-    avatar: "https://github.com/anubra266.png",
-    links: [{ label: "GitHub", href: "https://github.com/anubra266" }],
+    avatar: "https://github.com/Adebesin-Cell.png",
+    links: [{ label: "GitHub", href: "https://github.com/Adebesin-Cell" }],
   },
   {
     name: "Christian Schroter",
@@ -89,6 +89,12 @@ export const teamMembers: TeamMember[] = [
 ]
 
 export const alumniMembers: TeamMember[] = [
+  {
+    name: "Abraham",
+    role: "Past contributor",
+    avatar: "https://github.com/anubra266.png",
+    links: [{ label: "GitHub", href: "https://github.com/anubra266" }],
+  },
   {
     name: "Michal Korczak",
     role: "Past contributor",

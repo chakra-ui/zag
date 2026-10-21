@@ -86,6 +86,7 @@ export const hoverCardControls = defineControls({
 })
 
 export const numberInputControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   allowMouseWheel: { type: "boolean", defaultValue: false },
@@ -209,6 +210,7 @@ export const listboxControls = defineControls({
   deselectable: { type: "boolean", defaultValue: true },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const datePickerControls = defineControls({
@@ -292,6 +294,7 @@ export const fileUploadControls = defineControls({
 })
 
 export const toggleGroupControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
