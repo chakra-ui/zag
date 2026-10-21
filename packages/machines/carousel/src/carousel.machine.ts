@@ -498,8 +498,10 @@ export const machine = createMachine<CarouselSchema>({
         context.set("pageSnapPoints", pageSnapPoints)
 
         if (!pageSnapPoints.length) return
-        const index = clampValue(context.get("page"), 0, pageSnapPoints.length - 1)
-        context.set("page", index)
+        const page = context.get("page")
+        const index = clampValue(page, 0, pageSnapPoints.length - 1)
+        // Only write when clamping changes the page, so a stale read can't revert a newer page
+        if (index !== page) context.set("page", index)
       },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
