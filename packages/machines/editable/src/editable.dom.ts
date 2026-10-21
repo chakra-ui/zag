@@ -10,7 +10,6 @@ export const getSubmitTriggerId = (ctx: Scope) => ctx.ids?.submitTrigger ?? `edi
 export const getCancelTriggerId = (ctx: Scope) => ctx.ids?.cancelTrigger ?? `editable:${ctx.id}:cancel`
 export const getEditTriggerId = (ctx: Scope) => ctx.ids?.editTrigger ?? `editable:${ctx.id}:edit`
 
-export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))
 export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
 export const getPreviewEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getPreviewId(ctx))
 export const getSubmitTriggerEl = (ctx: Scope) => ctx.getById<HTMLButtonElement>(getSubmitTriggerId(ctx))

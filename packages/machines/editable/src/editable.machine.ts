@@ -20,7 +20,7 @@ export const machine = createMachine<EditableSchema>({
     return edit ? "edit" : "preview"
   },
 
-  entry: ["focusInputIfNeeded", "checkLabelRendered"],
+  entry: ["focusInputIfNeeded"],
 
   context: ({ bindable, prop }) => {
     return {
@@ -33,9 +33,6 @@ export const machine = createMachine<EditableSchema>({
       })),
       previousValue: bindable(() => ({
         defaultValue: prop("value") ?? prop("defaultValue"),
-      })),
-      labelRendered: bindable(() => ({
-        defaultValue: false,
       })),
     }
   },
@@ -221,11 +218,6 @@ export const machine = createMachine<EditableSchema>({
       },
       revertValue({ context }) {
         context.set("value", context.get("previousValue"))
-      },
-      checkLabelRendered({ context, scope }) {
-        raf(() => {
-          context.set("labelRendered", !!dom.getLabelEl(scope))
-        })
       },
       blurInput({ scope }) {
         dom.getInputEl(scope)?.blur()

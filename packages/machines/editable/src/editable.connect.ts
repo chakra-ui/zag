@@ -25,8 +25,6 @@ export function connect<T extends PropTypes>(
   const invalid = !!prop("invalid")
   const autoResize = !!prop("autoResize")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-  // a rendered label names the input, so the default aria-label only fills in when there is none
-  const inputLabel = prop("translations")?.input ?? (context.get("labelRendered") ? undefined : translations.input)
 
   const editing = state.matches("edit")
 
@@ -104,7 +102,8 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
-        "aria-label": inputLabel,
+        "aria-label": translations?.input,
+        "aria-labelledby": dom.getLabelId(scope),
         name: prop("name"),
         form: prop("form"),
         id: dom.getInputId(scope),
