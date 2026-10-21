@@ -500,9 +500,8 @@ export const machine = createMachine<CarouselSchema>({
         // Write only when out of range, since `page` can lag a render and writing it back would revert a change
         if (!pageSnapPoints.length) return
         const page = context.get("page")
-        const lastPage = pageSnapPoints.length - 1
-        if (page > lastPage) context.set("page", lastPage)
-        else if (page < 0) context.set("page", 0)
+        const index = clampValue(page, 0, pageSnapPoints.length - 1)
+        if (index !== page) context.set("page", index)
       },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
