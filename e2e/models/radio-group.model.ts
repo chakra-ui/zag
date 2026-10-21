@@ -92,4 +92,23 @@ export class RadioGroupModel extends Model {
     if (!labelId) return
     await expect(this.root).toHaveAttribute("aria-labelledby", labelId)
   }
+
+  gotoControlledValueDisabled() {
+    return this.page.goto("/radio-group/controlled-value-disabled")
+  }
+
+  async seeNativeInputChecked(value: string, checked: boolean) {
+    const input = this.getRadio(value).input
+    if (checked) {
+      await expect(input).toBeChecked()
+    } else {
+      await expect(input).not.toBeChecked()
+    }
+  }
+
+  async seeLastSubmitContains(expected: Record<string, unknown>) {
+    const text = await this.page.locator("[data-testid=last-submit]").innerText()
+    const payload = JSON.parse(text || "{}")
+    expect(payload).toMatchObject(expected)
+  }
 }
