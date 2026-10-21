@@ -1,6 +1,6 @@
 import { DateFormatter } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations, MaxGranularity, Segments } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
 
 export function needsTimeGranularity(granularity: DateGranularity): boolean {
@@ -9,6 +9,7 @@ export function needsTimeGranularity(granularity: DateGranularity): boolean {
 
 export interface FormatterOptions {
   granularity: DateGranularity
+  maxGranularity: MaxGranularity
   digitStyle: "2-digit" | "numeric"
   hourCycle: "h12" | "h23" | undefined
   timeZone: string
@@ -18,18 +19,34 @@ export interface FormatterOptions {
   hideTimeZone?: boolean | undefined
 }
 
+const FIELD_ORDER = ["year", "month", "day", "hour", "minute", "second"] as const
+
 export function getFormatterOptions(opts: FormatterOptions): Intl.DateTimeFormatOptions {
-  const { granularity, digitStyle, hourCycle, timeZone, hasTimeZone, hideTimeZone } = opts
+  const { granularity, maxGranularity, digitStyle, hourCycle, timeZone, hasTimeZone, hideTimeZone } = opts
   const options: Intl.DateTimeFormatOptions = {
     timeZone,
-    day: digitStyle,
-    month: digitStyle,
-    year: "numeric",
     hourCycle,
   }
-  if (needsTimeGranularity(granularity)) options.hour = digitStyle
-  if (granularity === "minute" || granularity === "second") options.minute = "2-digit"
-  if (granularity === "second") options.second = "2-digit"
+
+  const fieldOptions = {
+    year: "numeric",
+    month: digitStyle,
+    day: digitStyle,
+    hour: digitStyle,
+    minute: "2-digit",
+    second: "2-digit",
+  } as const satisfies Record<(typeof FIELD_ORDER)[number], "numeric" | "2-digit">
+  const startIndex = FIELD_ORDER.indexOf(maxGranularity)
+  const endIndex = FIELD_ORDER.indexOf(granularity)
+
+  if (startIndex > endIndex) {
+    throw new Error("maxGranularity must be greater than granularity")
+  }
+
+  for (const field of FIELD_ORDER.slice(startIndex, endIndex + 1)) {
+    Object.assign(options, { [field]: fieldOptions[field] })
+  }
+
   if (hasTimeZone && !hideTimeZone) options.timeZoneName = "short"
   return options
 }
