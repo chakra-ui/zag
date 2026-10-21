@@ -51,6 +51,20 @@ test.describe("editable", () => {
     await I.dontSeeInput()
   })
 
+  test("on type and esc, should revert to an empty value", async () => {
+    await I.focusPreview()
+    await I.pressKey("Backspace")
+    await I.pressKey("Enter")
+    await I.seePreviewHasText("")
+
+    await I.focusPreview()
+    await I.type("Naruto")
+    await I.pressKey("Escape")
+
+    await I.seeInputHasValue("")
+    await I.dontSeeInput()
+  })
+
   test("on type and click submit, should commit value", async () => {
     await I.focusPreview()
 

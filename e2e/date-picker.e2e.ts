@@ -40,6 +40,15 @@ test.describe("datepicker [single]", () => {
     await I.seeInputIsFocused()
   })
 
+  test("selecting a date with Space key", async () => {
+    const day = currentDate.getDate().toString().padStart(2, "0")
+    await I.clickTrigger()
+    await I.seeTodayCellIsFocused()
+    await I.pressKey("Space")
+    await I.dontSeeContent()
+    await I.seeInputHasValue(`${month}/${day}/${year}`)
+  })
+
   test("navigates to next day on ArrowRight key press", async () => {
     await I.clickTrigger()
     await I.seeContent()

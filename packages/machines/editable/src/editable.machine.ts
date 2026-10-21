@@ -32,7 +32,7 @@ export const machine = createMachine<EditableSchema>({
         },
       })),
       previousValue: bindable(() => ({
-        defaultValue: "",
+        defaultValue: prop("value") ?? prop("defaultValue"),
       })),
       labelRendered: bindable(() => ({
         defaultValue: false,
@@ -220,9 +220,7 @@ export const machine = createMachine<EditableSchema>({
         context.set("previousValue", context.get("value"))
       },
       revertValue({ context }) {
-        const value = context.get("previousValue")
-        if (!value) return
-        context.set("value", value)
+        context.set("value", context.get("previousValue"))
       },
       checkLabelRendered({ context, scope }) {
         raf(() => {
