@@ -157,7 +157,7 @@ export const machine = createMachine<RadioGroupSchema>({
         context.set("animateIndicator", false)
       },
       syncInputElements({ context, scope }) {
-        const inputs = dom.getOwnedInputEls(scope)
+        const inputs = dom.getInputEls(scope)
         inputs.forEach((input) => {
           input.checked = input.value === context.get("value")
         })
