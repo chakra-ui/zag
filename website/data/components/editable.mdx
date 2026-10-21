@@ -224,8 +224,11 @@ points to it with `aria-labelledby`.
 ```
 
 Without a rendered label, the input falls back to its `aria-label`, set by
-`translations.input` (default: "editable input"). Set it to a name that
-describes the value when the editable has no visible label.
+`translations.input` (default: "editable input"). An `aria-labelledby` that
+points to a missing element is ignored, per the
+[accessible name computation](https://www.w3.org/TR/accname-1.2/#computation-steps).
+Set `translations.input` to a name that describes the value when the editable
+has no visible label.
 
 ### Customizing accessibility labels
 
