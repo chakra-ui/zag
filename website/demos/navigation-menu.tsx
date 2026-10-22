@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { useId } from "react"
 import { BiChevronDown } from "react-icons/bi"
-import { Presence } from "../components/presence"
+import { Presence } from "../components/docs/presence"
 import styles from "../styles/machines/navigation-menu.module.css"
 
 const solutionLinks = [

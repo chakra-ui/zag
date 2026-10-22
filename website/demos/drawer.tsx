@@ -2,7 +2,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
-import { Presence } from "../components/presence"
+import { Presence } from "../components/docs/presence"
 import styles from "../styles/machines/drawer.module.css"
 
 type DrawerProps = Partial<drawer.Props>

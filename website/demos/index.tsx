@@ -63,7 +63,7 @@ function useIsClient() {
 import { ImSpinner3 } from "react-icons/im"
 import { css } from "styled-system/css"
 import { center } from "styled-system/patterns"
-import { Playground } from "../components/playground"
+import { Playground } from "../components/docs/playground"
 import { Drawer } from "./drawer"
 import { FloatingPanel } from "./floating-panel"
 import { Listbox } from "./listbox"
