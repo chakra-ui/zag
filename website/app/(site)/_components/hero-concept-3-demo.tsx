@@ -2,78 +2,71 @@
 
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { useEffect, useId, useRef, useState } from "react"
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react"
 import { Box, Stack, styled } from "styled-system/jsx"
-import { accent } from "./shared"
+import { CodePanel, items, type Snapshot } from "./hero-concept-3-code"
+import { duration, ease, hopGap, rest, resumeAfter } from "./motion"
 
-const items = [
-  { value: "rename", label: "Rename" },
-  { value: "copy", label: "Copy" },
-  { value: "share", label: "Share" },
-  { value: "delete", label: "Delete" },
-]
+type Cue = { key: string; n: number }
 
-const flashBg = {
-  base: "rgba(47, 133, 90, 0.08)",
-  _dark: "rgba(72, 187, 120, 0.10)",
-} as const
-const flashMs = 1000
-
-function tokenize(src: string): [string, string][] {
-  const out: [string, string][] = []
-  const re =
-    /(\s+)|(const\b)|("[^"]*")|([A-Za-z_][A-Za-z0-9_]*)(?=\()|(<\/?)([a-z]+)|(\.\.\.|=>|=)|([A-Za-z_][A-Za-z0-9_]*)|([^\sA-Za-z_"]+)/g
-  let m: RegExpExecArray | null
-  while ((m = re.exec(src))) {
-    if (m[1]) out.push(["", m[1]])
-    else if (m[2]) out.push(["keyword", m[2]])
-    else if (m[3]) out.push(["string", m[3]])
-    else if (m[4]) out.push(["function", m[4]])
-    else if (m[5]) {
-      out.push(["punctuation", m[5]])
-      out.push(["tag", m[6]])
-    } else if (m[7]) out.push(["operator", m[7]])
-    else if (m[8]) out.push(["", m[8]])
-    else if (m[9]) out.push(["punctuation", m[9]])
-  }
-  return out
+type Driver = {
+  open: () => void
+  highlight: (value: string) => void
+  press: (value: string) => void
+  select: (value: string) => void
+  key: (key: string) => void
 }
 
-type Snapshot = { open: boolean; highlighted: string | null }
-type Chip = { name: string; value?: string }
-type Line = { src: string; gap?: boolean; chip?: (s: Snapshot) => Chip | null }
+type Beat = { wait: number; run: (d: Driver) => void }
 
-const lines: Line[] = [
-  {
-    src: 'const service = useMachine(menu.machine, { id: "edit" })',
-    chip: (s) => ({ name: "state", value: s.open ? '"open"' : '"closed"' }),
-  },
-  { src: "const api = menu.connect(service, normalizeProps)" },
-  {
-    src: "<button {...api.getTriggerProps()}>Edit</button>",
-    gap: true,
-    chip: (s) => ({ name: "aria-expanded", value: String(s.open) }),
-  },
-  { src: "<div {...api.getPositionerProps()}>" },
-  { src: "  <ul {...api.getContentProps()}>" },
-  ...items.map((item): Line => ({
-    src: `    <li {...api.getItemProps({ value: "${item.value}" })}>${item.label}</li>`,
-    chip: (s) =>
-      s.highlighted === item.value ? { name: "data-highlighted" } : null,
-  })),
-  { src: "  </ul>" },
-  { src: "</div>" },
+const pressHold = duration.press + 60
+const idleEvents = [
+  "pointerdown",
+  "pointermove",
+  "pointerleave",
+  "keydown",
+  "focusin",
+  "focusout",
+  "wheel",
+] as const
+const rowH = 32
+
+const pointerPass: Beat[] = [
+  { wait: rest.base, run: (d) => d.open() },
+  { wait: duration.open + hopGap, run: (d) => d.highlight("rename") },
+  { wait: rest.short, run: (d) => d.highlight("copy") },
+  { wait: rest.short, run: (d) => d.highlight("share") },
+  { wait: rest.short, run: (d) => d.press("share") },
+  { wait: pressHold, run: (d) => d.select("share") },
 ]
 
-type Step = { wait: number; run: (api: menu.Api, close: () => void) => void }
-
-const script: Step[] = [
-  { wait: 1600, run: (api) => api.setOpen(true) },
-  { wait: 1100, run: (api) => api.setHighlightedValue("rename") },
-  { wait: 950, run: (api) => api.setHighlightedValue("copy") },
-  { wait: 950, run: (api) => api.setHighlightedValue("share") },
-  { wait: 1500, run: (_api, close) => close() },
+const keyboardPass: Beat[] = [
+  {
+    wait: rest.base,
+    run: (d) => {
+      d.key("↓")
+      d.open()
+    },
+  },
+  { wait: 16, run: (d) => d.highlight("rename") },
+  {
+    wait: rest.short,
+    run: (d) => {
+      d.key("↓")
+      d.highlight("copy")
+    },
+  },
+  {
+    wait: rest.short,
+    run: (d) => {
+      d.key("Enter")
+      d.press("copy")
+    },
+  },
+  { wait: pressHold, run: (d) => d.select("copy") },
 ]
+
+const beats = [...pointerPass, ...keyboardPass]
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false)
@@ -91,7 +84,11 @@ export function MenuWithChips() {
   const [live, setLive] = useState(false)
   const liveRef = useRef(false)
   const [selected, setSelected] = useState<string | null>(null)
+  const [pressed, setPressed] = useState<string | null>(null)
+  const [cue, setCue] = useState<Cue | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const hoveredRef = useRef(false)
+  const hoverRef = useRef<(hovered: boolean) => void>(() => {})
 
   const guard = (event: { preventDefault(): void }) => {
     if (!liveRef.current) event.preventDefault()
@@ -127,33 +124,100 @@ export function MenuWithChips() {
       )
       return () => cancelAnimationFrame(id)
     }
-    let index = 0
-    let timer: ReturnType<typeof setTimeout> | undefined
-    let visible = false
-    const tick = () => {
-      const step = script[index]
-      timer = setTimeout(() => {
-        step.run(apiRef.current, closeRef.current)
-        index = (index + 1) % script.length
-        if (visible) tick()
-      }, step.wait)
-    }
     const el = rootRef.current
     if (!el) return
+
+    let cueCount = 0
+    const driver: Driver = {
+      open: () => apiRef.current.setOpen(true),
+      highlight: (value) => apiRef.current.setHighlightedValue(value),
+      press: (value) => setPressed(value),
+      select: (value) => {
+        setSelected(value)
+        setPressed(null)
+        setCue(null)
+        closeRef.current()
+      },
+      key: (key) => setCue({ key, n: ++cueCount }),
+    }
+
+    let index = 0
+    let remaining = beats[0].wait
+    let startedAt = 0
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let visible = false
+    let hovered = false
+
+    const running = () => visible && !hovered && !document.hidden
+    const fire = () => {
+      timer = undefined
+      beats[index].run(driver)
+      index = (index + 1) % beats.length
+      remaining = beats[index].wait
+      if (running()) schedule()
+    }
+    const schedule = () => {
+      startedAt = performance.now()
+      timer = setTimeout(fire, remaining)
+    }
+    const sync = () => {
+      if (running()) {
+        if (timer === undefined) schedule()
+        return
+      }
+      if (timer === undefined) return
+      clearTimeout(timer)
+      timer = undefined
+      remaining = Math.max(0, remaining - (performance.now() - startedAt))
+    }
+
+    hoverRef.current = (next) => {
+      hovered = next
+      sync()
+    }
     const io = new IntersectionObserver(
       ([entry]) => {
-        const next = entry.isIntersecting
-        if (next === visible) return
-        visible = next
-        clearTimeout(timer)
-        if (visible) tick()
+        visible = entry.isIntersecting
+        sync()
       },
       { threshold: 0.35 },
     )
     io.observe(el)
+    document.addEventListener("visibilitychange", sync)
     return () => {
       io.disconnect()
+      document.removeEventListener("visibilitychange", sync)
+      hoverRef.current = () => {}
       clearTimeout(timer)
+    }
+  }, [live, reduced])
+
+  useEffect(() => {
+    if (!live || reduced) return
+    const el = rootRef.current
+    if (!el) return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const arm = () => {
+      clearTimeout(timer)
+      timer = setTimeout(check, resumeAfter)
+    }
+    const check = () => {
+      const busy =
+        hoveredRef.current ||
+        el.contains(document.activeElement) ||
+        apiRef.current.open
+      if (busy) return arm()
+      liveRef.current = false
+      setSelected(null)
+      setPressed(null)
+      setCue(null)
+      setLive(false)
+    }
+    idleEvents.forEach((type) => el.addEventListener(type, arm))
+    arm()
+    return () => {
+      clearTimeout(timer)
+      idleEvents.forEach((type) => el.removeEventListener(type, arm))
     }
   }, [live, reduced])
 
@@ -161,16 +225,32 @@ export function MenuWithChips() {
     if (liveRef.current) return
     liveRef.current = true
     setLive(true)
+    setPressed(null)
+    setCue(null)
   }
 
   const snapshot: Snapshot = {
     open: service.state.hasTag("open"),
     highlighted: api.highlightedValue,
   }
-  const chips = lines.map((line) => line.chip?.(snapshot) ?? null)
-  const flashing = useFlash(
-    chips.map((c) => (c ? `${c.name}:${c.value ?? ""}` : null)),
-  )
+
+  const hiIndex = items.findIndex((i) => i.value === api.highlightedValue)
+  const lastHi = useRef(Math.max(hiIndex, 0))
+  const wasShown = useRef(false)
+  const shown = hiIndex >= 0
+  const at = shown ? hiIndex : lastHi.current
+  const isPressed = pressed != null && pressed === api.highlightedValue
+  useLayoutEffect(() => {
+    if (hiIndex >= 0) lastHi.current = hiIndex
+    wasShown.current = hiIndex >= 0
+  })
+  const barTransition = reduced
+    ? `opacity ${duration.hop}ms ${ease.out}`
+    : isPressed
+      ? `transform ${duration.press}ms ${ease.out}`
+      : shown && wasShown.current
+        ? `transform ${duration.hop}ms ${ease.inOut}, opacity ${duration.close}ms ${ease.out}`
+        : `opacity ${shown ? duration.hop : duration.close}ms ${ease.out}`
 
   return (
     <Box
@@ -182,8 +262,20 @@ export function MenuWithChips() {
       borderRadius="xl"
       bg="bg"
       overflow="hidden"
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse") return
+        hoveredRef.current = true
+        hoverRef.current(true)
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType !== "mouse") return
+        hoveredRef.current = false
+        hoverRef.current(false)
+      }}
+      onPointerDown={handOver}
+      onFocus={handOver}
+      onKeyDown={handOver}
     >
-      <style>{keyframes}</style>
       <Box
         position="relative"
         h="196px"
@@ -191,12 +283,6 @@ export function MenuWithChips() {
         alignItems="center"
         justifyContent={{ base: "flex-start", md: "center" }}
         px={{ base: "5", md: "8" }}
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") handOver()
-        }}
-        onPointerDown={handOver}
-        onFocus={handOver}
-        onKeyDown={handOver}
       >
         <Stack
           gap="2.5"
@@ -220,8 +306,9 @@ export function MenuWithChips() {
             borderRadius="md"
             cursor="pointer"
             outline="none"
-            transition="border-color 160ms, background 160ms"
+            style={{ transition: `transform ${duration.press}ms ${ease.out}` }}
             _hover={{ bg: "bg.muted" }}
+            _active={{ transform: "scale(0.98)" }}
             _open={{
               bg: "bg.muted",
               borderColor: { base: "gray.300", _dark: "whiteAlpha.300" },
@@ -238,7 +325,11 @@ export function MenuWithChips() {
               w="3.5"
               h="3.5"
               color="text.muted"
-              transition="transform 180ms"
+              style={{
+                transition: reduced
+                  ? "none"
+                  : `transform ${api.open ? duration.open : duration.close}ms ${ease.out}`,
+              }}
               css={{ "[data-state=open] > &": { transform: "rotate(-90deg)" } }}
               aria-hidden
             >
@@ -252,29 +343,22 @@ export function MenuWithChips() {
               />
             </styled.svg>
           </styled.button>
-          <styled.p
-            fontFamily="mono"
-            fontSize="11px"
-            color="text.muted"
-            whiteSpace="nowrap"
-            transition="opacity 160ms"
-            opacity={api.open ? 0 : 1}
-            aria-live="polite"
-          >
-            {selected ? (
-              <>
-                onSelect{" "}
-                <styled.span color="text.bold">{`{ value: "${selected}" }`}</styled.span>
-              </>
-            ) : (
-              "click, ↑ ↓, Enter, Esc"
-            )}
-          </styled.p>
+          <Box position="relative" h="16px">
+            <Hint
+              open={api.open}
+              selected={selected}
+              live={live}
+              reduced={reduced}
+            />
+            <KeyCue cue={api.open ? cue : null} reduced={reduced} />
+          </Box>
         </Stack>
         <div {...api.getPositionerProps()}>
           <styled.ul
             {...api.getContentProps()}
+            hidden={false}
             inert={!live || undefined}
+            position="relative"
             minW="176px"
             p="1"
             bg="bg.popover"
@@ -287,29 +371,55 @@ export function MenuWithChips() {
             }}
             outline="none"
             listStyle="none"
-            css={{
-              "&[data-state=open]": {
-                animation: "zc3-in 140ms cubic-bezier(0.2, 0, 0, 1)",
-              },
-              _motionReduce: { animation: "none!" },
+            transformOrigin="var(--transform-origin)"
+            style={{
+              opacity: api.open ? 1 : 0,
+              transform: api.open || reduced ? "none" : "scale(0.96)",
+              visibility: api.open ? "visible" : "hidden",
+              transition: api.open
+                ? `opacity ${duration.open}ms ${ease.out}, transform ${duration.open}ms ${ease.out}, visibility 0s`
+                : `opacity ${duration.close}ms ${ease.out}, transform ${duration.close}ms ${ease.out}, visibility 0s linear ${duration.close}ms`,
             }}
           >
+            <styled.li
+              role="presentation"
+              aria-hidden
+              position="absolute"
+              top="1"
+              left="1"
+              right="1"
+              h="32px"
+              borderRadius="md"
+              bg={{ base: "gray.100", _dark: "whiteAlpha.100" }}
+              pointerEvents="none"
+              style={{
+                transform: `translateY(${at * rowH}px)${isPressed && !reduced ? " scale(0.98)" : ""}`,
+                opacity: shown ? 1 : 0,
+                transition: barTransition,
+              }}
+            />
             {items.map((item) => (
               <styled.li
                 key={item.value}
                 {...api.getItemProps({ value: item.value })}
+                data-pressed={(!reduced && pressed === item.value) || undefined}
+                position="relative"
                 display="flex"
                 alignItems="center"
-                h="8"
+                h="32px"
                 px="2.5"
                 fontSize="14px"
                 color="text.subtle"
                 borderRadius="md"
                 cursor="pointer"
                 userSelect="none"
-                _highlighted={{
-                  bg: { base: "gray.100", _dark: "whiteAlpha.100" },
-                  color: "text.bold",
+                style={{
+                  transition: `transform ${duration.press}ms ${ease.out}`,
+                }}
+                _highlighted={{ color: "text.bold" }}
+                css={{
+                  "&[data-pressed], &:active": { transform: "scale(0.98)" },
+                  _motionReduce: { transform: "none!" },
                 }}
               >
                 {item.label}
@@ -318,164 +428,115 @@ export function MenuWithChips() {
           </styled.ul>
         </div>
       </Box>
-      <styled.pre
-        className="language-tsx"
-        m="0"
-        p="0"
-        py="4"
-        borderWidth="0"
-        borderTopWidth="1px"
-        borderColor="border"
-        bg="code.block"
-        overflowX="auto"
-        fontFamily="mono"
-        fontSize="12px"
-        lineHeight="24px"
-      >
-        <Box minW="max-content" pl="3" pr="5">
-          {lines.map((line, i) => (
-            <CodeLine
-              key={i}
-              line={line}
-              chip={chips[i]}
-              flash={flashing.has(i)}
-            />
-          ))}
-        </Box>
-      </styled.pre>
+      <CodePanel snapshot={snapshot} reduced={reduced} />
     </Box>
   )
 }
 
-function CodeLine(props: { line: Line; chip: Chip | null; flash: boolean }) {
-  const { line, chip, flash } = props
+function Hint(props: {
+  open: boolean
+  selected: string | null
+  live: boolean
+  reduced: boolean
+}) {
+  const { open, selected, live, reduced } = props
+  const shift = reduced ? 0 : 4
+  const textRef = useRef<HTMLSpanElement>(null)
+  const prevSelected = useRef(selected)
+  useLayoutEffect(() => {
+    const was = prevSelected.current
+    prevSelected.current = selected
+    if (was == null || selected != null || open) return
+    textRef.current?.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: duration.fade,
+      easing: ease.out,
+    })
+  }, [selected, open])
   return (
-    <Box
-      display="grid"
-      gridTemplateColumns={{ base: "104px 1fr", md: "162px 1fr" }}
-      mt={line.gap ? "3" : "0"}
-      data-flash={flash || undefined}
-      css={{
-        "& [data-code]": {
-          transition:
-            "background-color 900ms ease-out, border-color 900ms ease-out",
-        },
-        "&[data-flash] [data-code]": {
-          bg: flashBg,
-          borderColor: accent,
-          transition: "none",
-        },
-        "& [data-chip]": {
-          transition: "border-color 900ms ease-out, color 900ms ease-out",
-        },
-        "&[data-flash] [data-chip]": {
-          borderColor: accent,
-          color: accent,
-          transition: "none",
-        },
-        "&[data-flash] [data-chip-value]": {
-          color: accent,
-          transition: "none",
-        },
+    <styled.p
+      fontFamily="mono"
+      fontSize="11px"
+      lineHeight="16px"
+      color="text.muted"
+      whiteSpace="nowrap"
+      aria-live={live ? "polite" : undefined}
+      style={{
+        opacity: open ? 0 : 1,
+        transform: `translateY(${open ? shift : 0}px)`,
+        transition: open
+          ? `opacity ${duration.close}ms ${ease.out}, transform ${duration.close}ms ${ease.out}`
+          : `opacity ${duration.fade}ms ${ease.out} ${duration.close}ms, transform ${duration.fade}ms ${ease.out} ${duration.close}ms`,
       }}
     >
-      <Box display="flex" justifyContent="flex-end" alignItems="center" pr="3">
-        {chip && (
-          <styled.span
-            data-chip=""
-            display="inline-flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap="1.5"
-            w={{ base: "92px", md: "148px" }}
-            h="5"
-            px="2.5"
-            fontSize="10.5px"
-            lineHeight="1"
-            color="text.muted"
-            borderWidth="1px"
-            borderColor="border"
-            borderRadius="full"
-            bg="bg"
-            whiteSpace="nowrap"
-          >
-            <styled.span display={{ base: "none", md: "inline" }}>
-              {chip.name}
-            </styled.span>
-            {chip.value == null && (
-              <styled.span display={{ base: "inline", md: "none" }}>
-                {chip.name.replace("data-", "")}
-              </styled.span>
-            )}
-            {chip.value != null && (
-              <styled.span
-                data-chip-value=""
-                color="text.bold"
-                transition="color 900ms ease-out"
-                mx={{ base: "auto", md: "0" }}
-              >
-                {chip.value}
-              </styled.span>
-            )}
-          </styled.span>
+      <span ref={textRef}>
+        {selected ? (
+          <>
+            onSelect{" "}
+            <styled.span color="text.bold">{`{ value: "${selected}" }`}</styled.span>
+          </>
+        ) : (
+          "click, ↑ ↓, Enter, Esc"
         )}
-      </Box>
-      <Box
-        data-code=""
-        borderLeftWidth="2px"
-        borderColor="border"
-        pl="4"
-        whiteSpace="pre"
-      >
-        {tokenize(line.src).map(([type, text], j) =>
-          type ? (
-            <span key={j} className={`token ${type}`}>
-              {text}
-            </span>
-          ) : (
-            <span key={j}>{text}</span>
-          ),
-        )}
-      </Box>
-    </Box>
+      </span>
+    </styled.p>
   )
 }
 
-function useFlash(keys: (string | null)[]) {
-  const prev = useRef(keys)
-  const [flashing, setFlashing] = useState<Set<number>>(() => new Set())
-  const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>())
-  const signature = keys.join("|")
+function KeyCue(props: { cue: Cue | null; reduced: boolean }) {
+  const { cue, reduced } = props
+  const ref = useRef<HTMLElement>(null)
+  const last = useRef<Cue | null>(null)
+  if (cue) last.current = cue
+  const shown = last.current
 
-  useEffect(() => {
-    const changed: number[] = []
-    keys.forEach((k, i) => {
-      if (k !== prev.current[i] && k != null) changed.push(i)
-    })
-    prev.current = keys
-    if (!changed.length) return
-    setFlashing((s) => new Set([...s, ...changed]))
-    for (const i of changed) {
-      clearTimeout(timers.current.get(i))
-      timers.current.set(
-        i,
-        setTimeout(() => {
-          setFlashing((s) => {
-            const next = new Set(s)
-            next.delete(i)
-            return next
-          })
-        }, flashMs),
-      )
-    }
-  }, [signature])
+  useLayoutEffect(() => {
+    if (!cue) return
+    ref.current?.animate(
+      reduced
+        ? [{ opacity: 0.4 }, { opacity: 1 }]
+        : [
+            { opacity: 0.4, transform: "translateY(2px) scale(0.96)" },
+            { opacity: 1, transform: "none" },
+          ],
+      { duration: duration.swap, easing: ease.out },
+    )
+  }, [cue?.n])
 
-  useEffect(() => {
-    const map = timers.current
-    return () => map.forEach((t) => clearTimeout(t))
-  }, [])
-
-  return flashing
+  return (
+    <styled.span
+      aria-hidden
+      position="absolute"
+      top="0"
+      left={{ base: "0", md: "50%" }}
+      display="flex"
+      justifyContent={{ base: "flex-start", md: "center" }}
+      w="max-content"
+      css={{ md: { translate: "-50% 0" } }}
+      pointerEvents="none"
+      style={{
+        opacity: cue ? 1 : 0,
+        transition: `opacity ${cue ? duration.hop : duration.close}ms ${ease.out}`,
+      }}
+    >
+      <styled.kbd
+        ref={ref}
+        display="inline-flex"
+        alignItems="center"
+        justifyContent="center"
+        minW="16px"
+        h="16px"
+        px="1"
+        fontFamily="mono"
+        fontSize="10.5px"
+        lineHeight="1"
+        color="text.bold"
+        bg="bg.muted"
+        borderWidth="1px"
+        borderColor="border"
+        borderRadius="sm"
+      >
+        {shown?.key}
+      </styled.kbd>
+    </styled.span>
+  )
 }
-
-const keyframes = `@keyframes zc3-in{from{opacity:0;transform:translateX(-4px) scale(0.98)}to{opacity:1;transform:none}}`

@@ -3,6 +3,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import {
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
@@ -12,7 +13,14 @@ import {
 } from "react"
 import { css } from "styled-system/css"
 import { Box, HStack, styled } from "styled-system/jsx"
-import { MenuChart, type MenuBeat } from "./hero-concept-1-chart"
+import {
+  MenuChart,
+  motionVars,
+  travel,
+  typeStep,
+  type MenuBeat,
+} from "./hero-concept-1-chart"
+import { rest, resumeAfter } from "./motion"
 import { accent } from "./shared"
 
 const items = [
@@ -24,25 +32,47 @@ const items = [
 
 type Step = [event: string, rest: number]
 
+const moved = rest.base + travel
+
 const scripts: Step[][] = [
   [
-    ["TRIGGER_CLICK", 1700],
-    ["ARROW_DOWN", 1300],
-    ["ARROW_DOWN", 1300],
-    ["ENTER", 1800],
-    ["TRIGGER_BLUR", 1600],
+    ["TRIGGER_CLICK", moved],
+    ["ARROW_DOWN", rest.base],
+    ["ARROW_DOWN", rest.base],
+    ["ENTER", moved],
+    ["TRIGGER_BLUR", moved],
   ],
   [
-    ["TRIGGER_FOCUS", 1400],
-    ["ARROW_DOWN", 1500],
-    ["ARROW_DOWN", 1200],
-    ["ARROW_DOWN", 1300],
-    ["CLOSE", 1700],
-    ["TRIGGER_BLUR", 1600],
+    ["TRIGGER_FOCUS", moved],
+    ["ARROW_DOWN", moved],
+    ["ARROW_DOWN", rest.base],
+    ["ARROW_DOWN", rest.base],
+    ["CLOSE", moved],
+    ["TRIGGER_BLUR", moved],
   ],
 ]
 
 const positioning = { placement: "bottom-end", gutter: 6 } as const
+
+const inertEffects = [
+  "trackInteractOutside",
+  "trackFocusVisible",
+  "trackPositioning",
+  "scrollToHighlightedItem",
+]
+
+const ghostMachine = {
+  ...menu.machine,
+  implementations: {
+    ...menu.machine.implementations,
+    effects: {
+      ...menu.machine.implementations?.effects,
+      ...Object.fromEntries(inertEffects.map((name) => [name, () => {}])),
+    },
+  },
+} as typeof menu.machine
+
+const rowH = 32
 
 function useBeat(service: menu.Service) {
   const state = String(service.state.get())
@@ -77,31 +107,123 @@ function useBeat(service: menu.Service) {
     })
   })
 
-  return { state, highlighted, beat }
+  const reset = useCallback(() => setBeat(null), [])
+
+  return { state, highlighted, beat, reset }
 }
 
+const anchored = {
+  position: "absolute",
+  top: "calc(100% + 6px)",
+  right: "12px",
+  left: "auto",
+  transform: "none",
+  zIndex: 1,
+} as const
+
+const contentClass = css({
+  position: "relative",
+  w: "200px",
+  p: "1",
+  bg: "bg.popover",
+  borderWidth: "1px",
+  borderColor: "border.bold",
+  rounded: "md",
+  outline: "0",
+  boxShadow: "0 16px 40px -18px rgb(0 0 0 / 0.35)",
+  transformOrigin: "calc(100% - 40px) -6px",
+  transition:
+    "opacity var(--hc1-open) var(--hc1-out), transform var(--hc1-open) var(--hc1-out), visibility 0s",
+  "&[data-state=closed]": {
+    opacity: "0",
+    transform: "scale(0.96)",
+    visibility: "hidden",
+    pointerEvents: "none",
+    transition:
+      "opacity var(--hc1-close) var(--hc1-out), transform var(--hc1-close) var(--hc1-out), visibility 0s linear var(--hc1-close)",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    "&[data-state=closed]": { transform: "none" },
+  },
+})
+
+const barClass = css({
+  position: "absolute",
+  top: "1",
+  left: "1",
+  right: "1",
+  h: "8",
+  rounded: "sm",
+  bg: { base: "gray.100", _dark: "whiteAlpha.100" },
+  pointerEvents: "none",
+  opacity: "0",
+  transition: "opacity var(--hc1-close) var(--hc1-out)",
+  "&[data-on]": {
+    opacity: "1",
+    transition: "opacity var(--hc1-hop) var(--hc1-out)",
+  },
+  "&[data-glide]": {
+    transition:
+      "opacity var(--hc1-hop) var(--hc1-out), transform var(--hc1-hop) var(--hc1-inout)",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    "&[data-glide]": {
+      transition: "opacity var(--hc1-hop) var(--hc1-out)",
+    },
+  },
+})
+
 const itemClass = css({
+  position: "relative",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   gap: "6",
   px: "2.5",
   h: "8",
-  rounded: "sm",
   cursor: "pointer",
-  color: "text.muted",
+  color: "text.bold",
   fontSize: "13px",
   outline: "0",
-  _highlighted: {
-    bg: { base: "gray.100", _dark: "whiteAlpha.100" },
-    color: "text.bold",
+  "& > span": {
+    opacity: "0.62",
+    transition: "opacity var(--hc1-hop) var(--hc1-inout)",
   },
+  "& > [data-hint]": { opacity: "0.36" },
+  "&[data-highlighted] > span": { opacity: "1" },
+  "&[data-highlighted] > [data-hint]": { opacity: "0.6" },
 })
+
+function HighlightBar(props: { index: number }) {
+  const { index } = props
+  const [track, setTrack] = useState({
+    index,
+    at: Math.max(index, 0),
+    glide: false,
+  })
+  if (track.index !== index) {
+    setTrack({
+      index,
+      at: index >= 0 ? index : track.at,
+      glide: index >= 0 && track.index >= 0,
+    })
+  }
+  return (
+    <div
+      aria-hidden="true"
+      className={barClass}
+      data-on={index >= 0 ? "" : undefined}
+      data-glide={track.glide ? "" : undefined}
+      style={{ transform: `translateY(${track.at * rowH}px)` }}
+    />
+  )
+}
 
 function FileRow(props: { api: menu.Api; children?: ReactNode }) {
   const { api } = props
   return (
     <HStack
+      position="relative"
       justify="space-between"
       gap="3"
       px="3"
@@ -168,8 +290,11 @@ function FileRow(props: { api: menu.Api; children?: ReactNode }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="1.5"
-          transition="transform 160ms"
-          css={{ "[data-state=open] > &": { transform: "rotate(180deg)" } }}
+          transition="transform var(--hc1-hop) var(--hc1-inout)"
+          css={{
+            "[data-state=open] > &": { transform: "rotate(180deg)" },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+          }}
           aria-hidden="true"
         >
           <path d="M3 4.5 L6 7.5 L9 4.5" />
@@ -182,21 +307,17 @@ function FileRow(props: { api: menu.Api; children?: ReactNode }) {
 
 function FileMenu(props: { api: menu.Api }) {
   const { api } = props
+  const positionerProps = api.getPositionerProps()
+  const { hidden: _hidden, ...contentProps } = api.getContentProps()
+  const index = items.findIndex((item) => item.value === api.highlightedValue)
   return (
     <FileRow api={api}>
-      <div {...api.getPositionerProps()}>
-        <Box
-          {...api.getContentProps()}
-          w="200px"
-          p="1"
-          bg="bg.popover"
-          borderWidth="1px"
-          borderColor="border.bold"
-          rounded="md"
-          outline="0"
-          boxShadow="0 16px 40px -18px rgb(0 0 0 / 0.35)"
-          zIndex="1"
-        >
+      <div
+        {...positionerProps}
+        style={{ ...positionerProps.style, ...anchored }}
+      >
+        <div {...contentProps} className={contentClass}>
+          <HighlightBar index={index} />
           {items.map((item) => (
             <div
               key={item.value}
@@ -204,12 +325,12 @@ function FileMenu(props: { api: menu.Api }) {
               className={itemClass}
             >
               <span>{item.label}</span>
-              <styled.span fontFamily="mono" fontSize="11px" opacity="0.6">
+              <styled.span data-hint="" fontFamily="mono" fontSize="11px">
                 {item.hint}
               </styled.span>
             </div>
           ))}
-        </Box>
+        </div>
       </div>
     </FileRow>
   )
@@ -223,6 +344,25 @@ const narratorClass = css({
   color: "text.muted",
   "& [data-tone=bold]": { color: "text.bold" },
   "& [data-tone=accent]": { color: accent },
+  "&[data-typing] [data-char]": {
+    opacity: "0",
+    animation: "hc1-type var(--hc1-press) linear forwards",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    "&[data-typing]": { animation: "hc1-type var(--hc1-fade) var(--hc1-out)" },
+    "&[data-typing] [data-char]": {
+      opacity: "1",
+      animation: "none",
+      animationDelay: "0ms !important",
+    },
+  },
+})
+
+const narratorKeyframes =
+  "@keyframes hc1-type { from { opacity: 0; } to { opacity: 1; } }"
+
+const fadeInClass = css({
+  animation: "hc1-type var(--hc1-fade) var(--hc1-inout) both",
 })
 
 function narrate(state: string, beat: MenuBeat | null): [string, Tone][] {
@@ -248,13 +388,33 @@ function narrate(state: string, beat: MenuBeat | null): [string, Tone][] {
 }
 
 function Narrator(props: { state: string; beat: MenuBeat | null }) {
+  const parts = narrate(props.state, props.beat)
+  const typing = props.beat != null
+  let n = 0
   return (
-    <p className={narratorClass}>
-      {narrate(props.state, props.beat).map(([text, tone], i) => (
-        <span key={i} data-tone={tone}>
-          {text}
-        </span>
-      ))}
+    <p
+      key={props.beat?.id ?? 0}
+      className={narratorClass}
+      data-typing={typing ? "" : undefined}
+    >
+      <styled.span srOnly>{parts.map(([text]) => text).join("")}</styled.span>
+      <span aria-hidden="true">
+        {parts.map(([text, tone], i) => (
+          <span key={i} data-tone={tone}>
+            {typing
+              ? Array.from(text, (char, j) => (
+                  <span
+                    key={j}
+                    data-char=""
+                    style={{ animationDelay: `${n++ * typeStep}ms` }}
+                  >
+                    {char}
+                  </span>
+                ))
+              : text}
+          </span>
+        ))}
+      </span>
     </p>
   )
 }
@@ -276,7 +436,7 @@ export function MenuMachineDemo() {
     id: useId(),
     positioning,
   })
-  const ghostService = useMachine(menu.machine, {
+  const ghostService = useMachine(ghostMachine, {
     id: useId(),
     positioning,
   })
@@ -287,11 +447,26 @@ export function MenuMachineDemo() {
   const ghost = useBeat(ghostService)
 
   const [handedOver, setHandedOver] = useState(false)
+  const [resumed, setResumed] = useState(false)
   const reduced = usePrefersReducedMotion()
   const rootRef = useRef<HTMLDivElement>(null)
   const visibleRef = useRef(true)
+  const hoverRef = useRef(false)
+  const typedUntil = useRef(0)
+
+  useLayoutEffect(() => {
+    if (!ghost.beat) return
+    const length = narrate(ghost.state, ghost.beat)
+      .map(([text]) => text)
+      .join("").length
+    typedUntil.current = performance.now() + length * typeStep
+  }, [ghost.beat, ghost.state])
   const ghostRef = useRef(ghostService)
   ghostRef.current = ghostService
+  const liveRef = useRef(liveService)
+  liveRef.current = liveService
+  const activeAt = useRef(0)
+  const resetGhost = ghost.reset
 
   useEffect(() => {
     const el = rootRef.current
@@ -321,31 +496,39 @@ export function MenuMachineDemo() {
     const sleep = (ms: number) =>
       new Promise<void>((resolve) => {
         let left = ms
+        let last = performance.now()
         const tick = () => {
           if (cancelled) return resolve()
-          if (visibleRef.current && !document.hidden) left -= 100
+          const now = performance.now()
+          const running =
+            visibleRef.current && !document.hidden && !hoverRef.current
+          if (running) left -= now - last
+          last = now
           if (left <= 0) resolve()
-          else setTimeout(tick, 100)
+          else setTimeout(tick, 50)
         }
-        setTimeout(tick, 100)
+        setTimeout(tick, 50)
       })
 
     const run = async () => {
-      await sleep(1400)
+      await sleep(rest.short)
       let round = 0
       while (!cancelled) {
         const current = String(ghostRef.current.state.get())
         if (current !== "idle") {
           send("CLOSE")
           send("TRIGGER_BLUR")
-          await sleep(1200)
+          await sleep(rest.base)
         }
-        for (const [type, rest] of scripts[round % scripts.length]) {
+        for (const [type, wait] of scripts[round % scripts.length]) {
           if (cancelled) return
           send(type)
-          await sleep(rest)
+          await sleep(wait)
+          const typing = typedUntil.current + rest.short - performance.now()
+          if (typing > 0) await sleep(typing)
         }
         round++
+        if (round % 3 === 0) await sleep(rest.long)
       }
     }
     run()
@@ -354,8 +537,32 @@ export function MenuMachineDemo() {
     }
   }, [handedOver, reduced])
 
+  useEffect(() => {
+    if (!handedOver || reduced) return
+    activeAt.current = performance.now()
+    const id = setInterval(() => {
+      const root = rootRef.current
+      const now = performance.now()
+      const busy =
+        hoverRef.current ||
+        String(liveRef.current.state.get()) === "open" ||
+        (!!root && root.contains(document.activeElement))
+      if (busy) activeAt.current = now
+      if (now - activeAt.current < resumeAfter) return
+      resetGhost()
+      setResumed(true)
+      setHandedOver(false)
+    }, 250)
+    return () => clearInterval(id)
+  }, [handedOver, reduced, resetGhost])
+
   const takeOver = () => {
-    if (!handedOver) setHandedOver(true)
+    activeAt.current = performance.now()
+    if (handedOver) return
+    ghostRef.current.send({ type: "CLOSE" })
+    ghostRef.current.send({ type: "TRIGGER_BLUR" })
+    live.reset()
+    setHandedOver(true)
   }
 
   const shown = handedOver ? live : ghost
@@ -363,12 +570,31 @@ export function MenuMachineDemo() {
   return (
     <Box
       ref={rootRef}
+      style={motionVars}
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") hoverRef.current = true
+        activeAt.current = performance.now()
+      }}
+      onPointerLeave={() => {
+        hoverRef.current = false
+        activeAt.current = performance.now()
+      }}
+      onPointerMove={() => {
+        activeAt.current = performance.now()
+      }}
+      onPointerDownCapture={() => {
+        activeAt.current = performance.now()
+      }}
+      onKeyDownCapture={() => {
+        activeAt.current = performance.now()
+      }}
       borderWidth="1px"
       borderColor="border"
       rounded="xl"
       bg="bg"
       overflow="hidden"
     >
+      <style>{narratorKeyframes}</style>
       <HStack
         justify="space-between"
         gap="3"
@@ -394,11 +620,19 @@ export function MenuMachineDemo() {
         onFocusCapture={takeOver}
         onKeyDownCapture={takeOver}
       >
-        <Box opacity={handedOver ? 1 : 0}>
+        <Box
+          opacity={handedOver ? 1 : 0}
+          style={{
+            transition: handedOver
+              ? "none"
+              : "opacity var(--hc1-fade) var(--hc1-inout)",
+          }}
+        >
           <FileMenu api={liveApi} />
         </Box>
         {handedOver ? null : (
           <Box
+            className={resumed ? fadeInClass : undefined}
             position="absolute"
             inset="0"
             px={{ base: "3", md: "5" }}
@@ -421,6 +655,7 @@ export function MenuMachineDemo() {
       >
         <MenuChart
           key={handedOver ? "live" : "ghost"}
+          className={resumed && !handedOver ? fadeInClass : undefined}
           state={shown.state}
           highlighted={shown.highlighted}
           beat={handedOver ? live.beat : ghost.beat}
@@ -428,11 +663,13 @@ export function MenuMachineDemo() {
       </Box>
 
       <Box
+        key={handedOver ? "live" : "ghost"}
+        className={resumed && !handedOver ? fadeInClass : undefined}
         px="4"
         py="3"
         borderTopWidth="1px"
         borderColor="border"
-        minH="11"
+        minH={{ base: "16", md: "11" }}
         aria-live={handedOver ? "polite" : "off"}
       >
         <Narrator state={shown.state} beat={shown.beat} />

@@ -1,8 +1,9 @@
 "use client"
 
 import * as menu from "@zag-js/menu"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useState, type CSSProperties } from "react"
 import { css } from "styled-system/css"
+import { duration, ease, rest, swapBlur } from "./motion"
 import { accent } from "./shared"
 
 export interface MenuBeat {
@@ -16,8 +17,26 @@ export interface MenuBeat {
 
 type StateName = "idle" | "open" | "closed"
 
+export const travel = duration.swap * 2
+export const typeStep = 30
+
+export const motionVars = {
+  "--hc1-out": ease.out,
+  "--hc1-inout": ease.inOut,
+  "--hc1-press": `${duration.press}ms`,
+  "--hc1-close": `${duration.close}ms`,
+  "--hc1-hop": `${duration.hop}ms`,
+  "--hc1-open": `${duration.open}ms`,
+  "--hc1-swap": `${duration.swap}ms`,
+  "--hc1-fade": `${duration.fade}ms`,
+  "--hc1-travel": `${travel}ms`,
+  "--hc1-linger": `${rest.short}ms`,
+  "--hc1-blur": swapBlur,
+} as CSSProperties
+
 const H = 36
 const W = 112
+const chipW = 124
 
 const pills: Record<StateName, { x: number; y: number }> = {
   idle: { x: 16, y: 48 },
@@ -127,6 +146,9 @@ function edgeFor(beat: MenuBeat | null) {
 const asState = (value: string): StateName =>
   value === "open" || value === "closed" ? value : "idle"
 
+const arrive = "var(--hc1-open) var(--hc1-out) var(--hc1-travel)"
+const leave = "var(--hc1-fade) var(--hc1-inout)"
+
 const root = css({
   display: "block",
   w: "full",
@@ -140,39 +162,57 @@ const root = css({
     stroke: "border.bold",
     strokeWidth: "1",
     opacity: "0.6",
-    transition: "opacity 240ms, stroke 240ms",
+    transition: `opacity ${leave}`,
   },
-  "& [data-edge][data-live] [data-line]": { opacity: "1" },
+  "& [data-edge][data-live] [data-line]": {
+    opacity: "1",
+    transition: `opacity ${arrive}`,
+  },
   "& [data-head]": { fill: "border.bold" },
   "& [data-label]": {
     fill: "text.muted",
     opacity: "0.32",
-    transition: "opacity 240ms, fill 240ms",
+    transition: `opacity ${leave}, filter ${leave}`,
   },
-  "& [data-edge][data-live] [data-label]": { opacity: "1" },
-  "& [data-edge] [data-label][data-fired]": {
-    fill: "var(--hc1-accent)",
+  "& [data-edge][data-live] [data-label]": {
     opacity: "1",
+    transition: `opacity ${arrive}, filter ${arrive}`,
   },
+  "& [data-edge] [data-label][data-fired]": {
+    opacity: "0",
+    filter: "var(--hc1-blur)",
+    transition:
+      "opacity var(--hc1-swap) var(--hc1-inout), filter var(--hc1-swap) var(--hc1-inout)",
+  },
+  "& [data-glow]": {
+    fill: "var(--hc1-accent)",
+    opacity: "0",
+    filter: "var(--hc1-blur)",
+    transition:
+      "opacity var(--hc1-swap) var(--hc1-inout), filter var(--hc1-swap) var(--hc1-inout)",
+  },
+  "& [data-glow][data-fired]": { opacity: "1", filter: "blur(0px)" },
   "& [data-pill] rect": {
     fill: "bg",
     stroke: "border.bold",
     strokeWidth: "1",
-    transition: "fill 220ms, stroke 220ms",
   },
   "& [data-pill] text": {
     fill: "text.muted",
     fontSize: { base: "15px", md: "13px" },
-    transition: "fill 220ms",
   },
-  "& [data-pill][data-active] rect": {
+  "& [data-pill] [data-lit]": {
+    opacity: "0",
+    transition: `opacity ${leave}`,
+  },
+  "& [data-pill] [data-lit] rect": {
     stroke: "var(--hc1-accent)",
     fill: "color-mix(in srgb, var(--hc1-accent) 12%, var(--colors-bg))",
-    transitionDelay: "380ms",
   },
-  "& [data-pill][data-active] text": {
-    fill: "var(--hc1-accent)",
-    transitionDelay: "380ms",
+  "& [data-pill] [data-lit] text": { fill: "var(--hc1-accent)" },
+  "& [data-pill][data-active] [data-lit]": {
+    opacity: "1",
+    transition: `opacity ${arrive}`,
   },
   "& [data-run]": {
     fill: "none",
@@ -182,7 +222,7 @@ const root = css({
     strokeDasharray: "1",
     strokeDashoffset: "1",
     animation:
-      "hc1-draw 460ms cubic-bezier(0.4, 0, 0.2, 1) forwards, hc1-fade 900ms ease 1500ms forwards",
+      "hc1-draw var(--hc1-travel) var(--hc1-inout) forwards, hc1-out var(--hc1-fade) var(--hc1-inout) calc(var(--hc1-travel) + var(--hc1-linger)) forwards",
   },
   "& [data-token]": {
     fill: "var(--hc1-accent)",
@@ -190,11 +230,19 @@ const root = css({
     strokeWidth: "2",
     opacity: "0",
     offsetRotate: "0deg",
-    animation: "hc1-token 460ms cubic-bezier(0.4, 0, 0.2, 1) forwards",
+    animation:
+      "hc1-travel var(--hc1-travel) var(--hc1-inout) forwards, hc1-blink var(--hc1-travel) linear forwards",
   },
-  "& [data-chip]": {
+  "& [data-chip] > g": {
     opacity: "0",
-    animation: "hc1-in 220ms ease 380ms forwards",
+    transform: "var(--hc1-from)",
+    transition:
+      "opacity var(--hc1-close) var(--hc1-out), transform var(--hc1-close) var(--hc1-out)",
+  },
+  "& [data-chip][data-active] > g": {
+    opacity: "1",
+    transform: "translate(0px, 0px)",
+    transition: `opacity ${arrive}, transform ${arrive}`,
   },
   "& [data-chip] rect": {
     fill: "bg",
@@ -206,55 +254,105 @@ const root = css({
     fill: "text.bold",
     fontSize: { base: "13px", md: "12px" },
   },
+  "& [data-chip] [data-value][data-enter]": {
+    animation: "hc1-swap-in var(--hc1-swap) var(--hc1-inout) both",
+  },
+  "& [data-chip] [data-value][data-exit]": {
+    animation: "hc1-swap-out var(--hc1-swap) var(--hc1-inout) forwards",
+  },
   "& [data-chip] [data-pin]": { stroke: "border.bold", strokeWidth: "1" },
   "@media (prefers-reduced-motion: reduce)": {
-    "& *": { transition: "none !important", animation: "none !important" },
-    "& [data-run], & [data-token]": { display: "none" },
-    "& [data-chip]": { opacity: "1" },
+    "--hc1-travel": "0ms",
+    "--hc1-blur": "blur(0px)",
+    "& [data-token]": { display: "none" },
+    "& [data-run]": {
+      strokeDashoffset: "0",
+      animation:
+        "hc1-in var(--hc1-fade) var(--hc1-out) both, hc1-out var(--hc1-fade) var(--hc1-inout) var(--hc1-linger) forwards",
+    },
+    "& [data-chip] > g": { transform: "none" },
+    "& [data-chip][data-active] > g": { transform: "none" },
   },
 })
 
 const keyframes = `
 @keyframes hc1-draw { to { stroke-dashoffset: 0; } }
-@keyframes hc1-fade { to { opacity: 0; } }
-@keyframes hc1-in { to { opacity: 1; } }
-@keyframes hc1-token {
-  0% { offset-distance: 0%; opacity: 1; }
-  92% { opacity: 1; }
-  100% { offset-distance: 100%; opacity: 0; }
-}
+@keyframes hc1-in { from { opacity: 0; } }
+@keyframes hc1-out { to { opacity: 0; } }
+@keyframes hc1-travel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes hc1-blink { 0% { opacity: 0; } 8%, 88% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes hc1-swap-in { from { opacity: 0; filter: var(--hc1-blur); } }
+@keyframes hc1-swap-out { to { opacity: 0; filter: var(--hc1-blur); } }
 `
 
-function Chip(props: { state: StateName; highlighted: string | null }) {
-  const { state, highlighted } = props
-  const pos = chipAt[state]
-  const textRef = useRef<SVGGElement>(null)
-  const [width, setWidth] = useState(124)
+function ChipValue(props: { value: string; active: boolean }) {
+  const { value, active } = props
+  const [swap, setSwap] = useState({
+    current: value,
+    previous: null as string | null,
+    n: 0,
+  })
+  if (swap.current !== value) {
+    setSwap({
+      current: value,
+      previous: active ? swap.current : null,
+      n: swap.n + 1,
+    })
+  }
+  const animate = swap.n > 0 && swap.previous != null
+  return (
+    <>
+      {animate ? (
+        <text key={`out-${swap.n}`} data-value="" data-exit="" x="10" y="29">
+          {swap.previous}
+        </text>
+      ) : null}
+      <text
+        key={`in-${swap.n}`}
+        data-value=""
+        data-enter={animate ? "" : undefined}
+        x="10"
+        y="29"
+      >
+        {swap.current}
+      </text>
+    </>
+  )
+}
+
+function Chip(props: {
+  name: StateName
+  active: boolean
+  highlighted: string | null
+}) {
+  const { name, active, highlighted } = props
+  const pos = chipAt[name]
   const value = highlighted == null ? "null" : `"${highlighted}"`
+  const [held, setHeld] = useState(value)
+  if (active && held !== value) setHeld(value)
 
-  useLayoutEffect(() => {
-    const box = textRef.current?.getBBox()
-    if (box) setWidth(Math.ceil(box.width) + 20)
-  }, [value])
-
-  const pinX = state === "idle" ? 40 : -12
-  const pinY = state === "idle" ? H : H / 2
+  const idle = name === "idle"
+  const pinX = idle ? 40 : -12
+  const pinY = idle ? H : H / 2
+  const from = idle ? "translate(0px, 4px)" : "translate(-4px, 0px)"
 
   return (
-    <g data-chip="" transform={`translate(${pos.x} ${pos.y})`}>
-      {state === "idle" ? (
-        <line data-pin="" x1={pinX} y1={pinY} x2={pinX} y2={pinY + 10} />
-      ) : (
-        <line data-pin="" x1={pinX} y1={pinY} x2={0} y2={pinY} />
-      )}
-      <rect width={width} height={H} rx="6" />
-      <g ref={textRef}>
+    <g
+      data-chip={name}
+      data-active={active ? "" : undefined}
+      transform={`translate(${pos.x} ${pos.y})`}
+    >
+      <g style={{ "--hc1-from": from } as CSSProperties}>
+        {idle ? (
+          <line data-pin="" x1={pinX} y1={pinY} x2={pinX} y2={pinY + 10} />
+        ) : (
+          <line data-pin="" x1={pinX} y1={pinY} x2={0} y2={pinY} />
+        )}
+        <rect width={chipW} height={H} rx="6" />
         <text data-key="" x="10" y="14">
           highlightedValue
         </text>
-        <text data-value="" x="10" y="29">
-          {value}
-        </text>
+        <ChipValue value={held} active={active} />
       </g>
     </g>
   )
@@ -264,6 +362,7 @@ export function MenuChart(props: {
   state: string
   highlighted: string | null
   beat: MenuBeat | null
+  className?: string
 }) {
   const state = asState(props.state)
   const { beat } = props
@@ -278,7 +377,11 @@ export function MenuChart(props: {
   }, [run, beat])
 
   return (
-    <svg viewBox="0 0 540 284" className={root} aria-hidden="true">
+    <svg
+      viewBox="0 0 540 284"
+      className={props.className ? `${root} ${props.className}` : root}
+      aria-hidden="true"
+    >
       <style>{keyframes}</style>
       <defs>
         <marker
@@ -296,6 +399,12 @@ export function MenuChart(props: {
 
       {edges.map((edge) => {
         const live = edge.from === state
+        const fired =
+          !!beat &&
+          run?.id === edge.id &&
+          edge.events.includes(beat.event) &&
+          edge.to === state
+        const event = shownEvent[edge.id] ?? edge.events[0]
         return (
           <g
             key={edge.id}
@@ -303,27 +412,25 @@ export function MenuChart(props: {
             data-live={live ? "" : undefined}
           >
             <path data-line="" d={edge.d} markerEnd="url(#hc1-head)" />
-            {(() => {
-              const event = shownEvent[edge.id] ?? edge.events[0]
-              const fired =
-                run?.id === edge.id &&
-                beat?.event === event &&
-                edge.to === state
-              return (
-                <text
-                  data-label=""
-                  data-fired={fired ? "" : undefined}
-                  data-accepted={
-                    live && accepts(edge.from, event) ? "" : undefined
-                  }
-                  x={edge.x}
-                  y={edge.y}
-                  textAnchor={edge.anchor}
-                >
-                  {event}
-                </text>
-              )
-            })()}
+            <text
+              data-label=""
+              data-fired={fired ? "" : undefined}
+              data-accepted={live && accepts(edge.from, event) ? "" : undefined}
+              x={edge.x}
+              y={edge.y}
+              textAnchor={edge.anchor}
+            >
+              {event}
+            </text>
+            <text
+              data-glow=""
+              data-fired={fired ? "" : undefined}
+              x={edge.x}
+              y={edge.y}
+              textAnchor={edge.anchor}
+            >
+              {fired && beat ? beat.event : event}
+            </text>
           </g>
         )
       })}
@@ -341,21 +448,34 @@ export function MenuChart(props: {
 
       {(Object.keys(pills) as StateName[]).map((name) => {
         const p = pills[name]
+        const label = (
+          <>
+            <rect x={p.x} y={p.y} width={W} height={H} rx={H / 2} />
+            <text x={p.x + W / 2} y={p.y + H / 2 + 4.5} textAnchor="middle">
+              {name}
+            </text>
+          </>
+        )
         return (
           <g
             key={name}
             data-pill={name}
             data-active={state === name ? "" : undefined}
           >
-            <rect x={p.x} y={p.y} width={W} height={H} rx={H / 2} />
-            <text x={p.x + W / 2} y={p.y + H / 2 + 4.5} textAnchor="middle">
-              {name}
-            </text>
+            {label}
+            <g data-lit="">{label}</g>
           </g>
         )
       })}
 
-      <Chip key={state} state={state} highlighted={props.highlighted} />
+      {(Object.keys(chipAt) as StateName[]).map((name) => (
+        <Chip
+          key={name}
+          name={name}
+          active={state === name}
+          highlighted={props.highlighted}
+        />
+      ))}
     </svg>
   )
 }

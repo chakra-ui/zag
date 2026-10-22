@@ -7,15 +7,18 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
 import * as tabs from "@zag-js/tabs"
-import { Fragment, useEffect, useId, useMemo, useState } from "react"
+import {
+  Fragment,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import type { ReactNode } from "react"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
+import { duration, ease } from "./motion"
 import { accent } from "./shared"
-
-export interface LiveProps {
-  step: number
-  auto: boolean
-}
 
 function fmt(value: unknown) {
   return value === undefined ? "null" : JSON.stringify(value)
@@ -49,8 +52,76 @@ export function Readout(props: { rows: [string, unknown][] }) {
 
 export function Chart(props: { states: string[]; active: string }) {
   const leaf = props.active.split(".").pop()
+  const rowRef = useRef<HTMLDivElement>(null)
+  const capL = useRef<HTMLSpanElement>(null)
+  const mid = useRef<HTMLSpanElement>(null)
+  const capR = useRef<HTMLSpanElement>(null)
+  const placed = useRef(false)
+  const leafRef = useRef(leaf)
+
+  useLayoutEffect(() => {
+    leafRef.current = leaf
+    const place = (animate: boolean) => {
+      const row = rowRef.current
+      const parts = [capL.current, mid.current, capR.current]
+      if (!row || parts.some((p) => !p)) return
+      const [l, m, r] = parts as HTMLSpanElement[]
+      const pill = row.querySelector<HTMLElement>(
+        `[data-pill="${leafRef.current}"]`,
+      )
+      const still = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches
+      const t = animate
+        ? `${still ? "transform 0ms" : `transform ${duration.swap}ms ${ease.inOut}`}, opacity ${duration.hop}ms ${ease.out}`
+        : "none"
+      parts.forEach((p) => {
+        p!.style.transition = t
+        p!.style.opacity = pill ? "1" : "0"
+      })
+      if (!pill) return
+      const x = pill.offsetLeft
+      const y = pill.offsetTop
+      const w = pill.offsetWidth
+      const h = pill.offsetHeight
+      const c = h / 2
+      l.style.width = `${c}px`
+      r.style.width = `${c}px`
+      ;[l, m, r].forEach((p) => (p.style.height = `${h}px`))
+      l.style.transform = `translate(${x}px, ${y}px)`
+      m.style.transform = `translate(${x + c - 0.5}px, ${y}px) scaleX(${(w - 2 * c + 1) / 100})`
+      r.style.transform = `translate(${x + w - c}px, ${y}px)`
+    }
+    place(placed.current)
+    placed.current = true
+    const row = rowRef.current
+    if (!row) return
+    let skip = true
+    const ro = new ResizeObserver(() => {
+      if (skip) {
+        skip = false
+        return
+      }
+      place(false)
+    })
+    ro.observe(row)
+    return () => ro.disconnect()
+  }, [leaf])
+
+  const part = {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    borderColor: accent,
+    pointerEvents: "none",
+    transformOrigin: "0 0",
+    opacity: "0",
+  } as const
+
   return (
     <HStack
+      ref={rowRef}
+      position="relative"
       gap="0"
       fontFamily="mono"
       fontSize="11px"
@@ -68,9 +139,10 @@ export function Chart(props: { states: string[]; active: string }) {
               py="0.5"
               borderWidth="1px"
               borderRadius="full"
-              borderColor={on ? accent : "border"}
+              borderColor="border"
               color={on ? accent : "text.muted"}
-              transition="color 160ms, border-color 160ms"
+              transition="color 200ms ease"
+              data-pill={s}
               data-active={on ? "" : undefined}
             >
               {s}
@@ -78,6 +150,27 @@ export function Chart(props: { states: string[]; active: string }) {
           </Fragment>
         )
       })}
+      <styled.span
+        ref={capL}
+        {...part}
+        borderWidth="1px"
+        borderRightWidth="0"
+        borderLeftRadius="full"
+      />
+      <styled.span
+        ref={mid}
+        {...part}
+        w="100px"
+        borderTopWidth="1px"
+        borderBottomWidth="1px"
+      />
+      <styled.span
+        ref={capR}
+        {...part}
+        borderWidth="1px"
+        borderLeftWidth="0"
+        borderRightRadius="full"
+      />
     </HStack>
   )
 }
@@ -127,7 +220,7 @@ export const popover = {
   zIndex: "50",
 } as const
 
-const option = {
+export const option = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -140,14 +233,14 @@ const option = {
   _highlighted: { bg: "bg.muted", color: "text.bold" },
 } as const
 
-const menuItems = [
-  { value: "edit", label: "Edit", kbd: "E" },
-  { value: "duplicate", label: "Duplicate", kbd: "D" },
-  { value: "archive", label: "Archive", kbd: "A" },
+export const menuItems = [
+  { value: "rename", label: "Rename", kbd: "R" },
+  { value: "copy", label: "Copy", kbd: "C" },
+  { value: "share", label: "Share", kbd: "S" },
   { value: "delete", label: "Delete", kbd: "⌫" },
 ]
 
-export function LiveMenu(_props: LiveProps) {
+export function LiveMenu() {
   const service = useMachine(menu.machine, {
     id: useId(),
     positioning: { placement: "bottom-start", gutter: 6 },
@@ -180,7 +273,7 @@ export function LiveMenu(_props: LiveProps) {
       </styled.button>
       <Portal>
         <div {...api.getPositionerProps()}>
-          <styled.div {...api.getContentProps()} {...popover} minW="180px">
+          <styled.div {...api.getContentProps()} {...popover} minW="212px">
             <div {...api.getListProps()}>
               {menuItems.map((item) => (
                 <styled.div
@@ -206,7 +299,7 @@ export function LiveMenu(_props: LiveProps) {
   )
 }
 
-export function LiveDialog(_props: LiveProps) {
+export function LiveDialog() {
   const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
   return (
@@ -293,7 +386,7 @@ export function LiveDialog(_props: LiveProps) {
   )
 }
 
-const frameworks = [
+export const frameworks = [
   { value: "react", label: "React" },
   { value: "preact", label: "Preact" },
   { value: "solid", label: "Solid" },
@@ -302,7 +395,7 @@ const frameworks = [
   { value: "vanilla", label: "Vanilla" },
 ]
 
-export function LiveCombobox(props: LiveProps) {
+export function LiveCombobox() {
   const [items, setItems] = useState(frameworks)
   const collection = useMemo(() => combobox.collection({ items }), [items])
   const service = useMachine(combobox.machine, {
@@ -317,12 +410,6 @@ export function LiveCombobox(props: LiveProps) {
     },
   })
   const api = combobox.connect(service, normalizeProps)
-
-  useEffect(() => {
-    if (!props.auto) return
-    if (props.step === 1) api.setInputValue("sv")
-    if (props.step === 2) api.setValue(["svelte"])
-  }, [props.step, props.auto])
 
   return (
     <Pinned
@@ -393,7 +480,7 @@ export function LiveCombobox(props: LiveProps) {
   )
 }
 
-export function LiveDatePicker(props: LiveProps) {
+export function LiveDatePicker() {
   const service = useMachine(datePicker.machine, {
     id: useId(),
     locale: "en-US",
@@ -401,11 +488,6 @@ export function LiveDatePicker(props: LiveProps) {
     selectionMode: "single",
   })
   const api = datePicker.connect(service, normalizeProps)
-
-  useEffect(() => {
-    if (!props.auto || props.step !== 1) return
-    api.setValue([api.focusedValue.add({ days: 3 })])
-  }, [props.step, props.auto])
 
   return (
     <Pinned
@@ -518,7 +600,7 @@ export function LiveDatePicker(props: LiveProps) {
   )
 }
 
-export function LiveSlider(props: LiveProps) {
+export function LiveSlider() {
   const service = useMachine(slider.machine, {
     id: useId(),
     defaultValue: [42],
@@ -526,12 +608,6 @@ export function LiveSlider(props: LiveProps) {
     thumbSize: { width: 18, height: 18 },
   })
   const api = slider.connect(service, normalizeProps)
-
-  useEffect(() => {
-    if (!props.auto) return
-    if (props.step === 1) api.setValue([68])
-    if (props.step === 2) api.setValue([24])
-  }, [props.step, props.auto])
 
   return (
     <Pinned
@@ -602,7 +678,7 @@ export function LiveSlider(props: LiveProps) {
   )
 }
 
-const tabItems = [
+export const tabItems = [
   { value: "account", label: "Account", body: "Name, avatar and email." },
   {
     value: "password",
@@ -612,18 +688,12 @@ const tabItems = [
   { value: "billing", label: "Billing", body: "Plan, invoices and seats." },
 ]
 
-export function LiveTabs(props: LiveProps) {
+export function LiveTabs() {
   const service = useMachine(tabs.machine, {
     id: useId(),
     defaultValue: "account",
   })
   const api = tabs.connect(service, normalizeProps)
-
-  useEffect(() => {
-    if (!props.auto) return
-    if (props.step === 1) api.setValue("password")
-    if (props.step === 2) api.setValue("billing")
-  }, [props.step, props.auto])
 
   return (
     <Pinned
