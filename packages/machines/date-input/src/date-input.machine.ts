@@ -102,6 +102,8 @@ export const machine = createMachine<DateInputSchema>({
     }
   },
 
+  exit: ["cancelFocusActiveSegment"],
+
   effects: ["setupLiveRegion"],
 
   context({ prop, bindable }) {

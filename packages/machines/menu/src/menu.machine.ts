@@ -142,6 +142,8 @@ export const machine = createMachine<MenuSchema>({
     }
   },
 
+  exit: ["cancelFocusMenu"],
+
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",

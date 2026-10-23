@@ -483,17 +483,20 @@ trackPointerMove({ scope, send }) {
 }
 ```
 
-### 9. Cancel Deferred Work When the State Exits
+### 9. Cancel Deferred Work When the State Exits or the Machine Stops
 
 Work an action defers with `raf`, `queueMicrotask` or `setTimeout` outlives the state that scheduled it. If it moves
 focus or changes state, it can run after the user has moved on (e.g. focus jumps back into a closing menu after Escape).
 
-Store an `AnimationFrame` in `refs` and cancel it in the state's `exit`:
+Store an `AnimationFrame` in `refs` and cancel it in the state's `exit` and the machine's top-level `exit` (state `exit`
+actions don't run on unmount):
 
 ```typescript
 refs() {
   return { focusMenuFrame: AnimationFrame.create() }
 },
+
+exit: ["cancelFocusMenu"],
 
 states: {
   open: {
@@ -515,7 +518,9 @@ actions: {
 }
 ```
 
-- Don't guard inside the callback with `state.hasTag(...)` or a DOM check. Cancel on exit instead.
+- Cancel actions only cancel. Don't set context or send events from them, since the top-level `exit` runs after unmount.
+- Don't guard inside the callback with `state.hasTag(...)`. Cancel on exit instead. A DOM check in the callback is fine
+  only when the decision depends on where focus is when the frame runs (e.g. "focus already moved inside").
 - Plain `raf()` is fine for one-off waits that are harmless if they run late (e.g. waiting for content to mount).
 - Long-lived work (listeners, observers) belongs in `effects`, not actions.
 
