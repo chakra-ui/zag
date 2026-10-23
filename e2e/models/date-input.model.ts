@@ -11,10 +11,6 @@ export class DateInputModel extends Model {
     return this.page.goto(url)
   }
 
-  gotoDateInputDatePicker() {
-    return this.page.goto("/date-picker/date-input-date-picker")
-  }
-
   getOpenCalendarTrigger() {
     return this.page.getByRole("button", { name: "Open calendar" })
   }
