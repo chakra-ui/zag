@@ -379,8 +379,8 @@ export const machine = createMachine<DateInputSchema>({
 
       focusActiveSegment({ scope, context }) {
         raf(() => {
-          const segmentEls = dom.getSegmentEls(scope)
-          const activeSegmentEl = segmentEls[context.get("activeSegmentIndex")]
+          if (!dom.isSegmentFocused(scope)) return
+          const activeSegmentEl = dom.getSegmentEls(scope)[context.get("activeSegmentIndex")]
           activeSegmentEl?.focus({ preventScroll: true })
         })
       },
