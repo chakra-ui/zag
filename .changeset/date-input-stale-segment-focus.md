@@ -2,4 +2,4 @@
 "@zag-js/date-input": patch
 ---
 
-- Fix deferred segment focus overriding Tab/Shift+Tab when leaving editable segments for a non-segment focus target.
+- Fix focus jumping back into the input after tabbing out of it.

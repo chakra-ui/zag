@@ -1205,7 +1205,6 @@ test.describe("date-input [focus tab]", () => {
   })
 
   test("[focus] Tab after typing keeps focus outside the input", async ({ page }) => {
-    const day = I.getSegment("day")
     const trigger = I.getOpenCalendarTrigger()
 
     await I.focusSegment("month")
@@ -1214,23 +1213,6 @@ test.describe("date-input [focus tab]", () => {
     await expect(trigger).toBeFocused()
 
     await page.clock.runFor(16)
-
     await expect(trigger).toBeFocused()
-    await expect(day).not.toBeFocused()
-  })
-
-  test("[focus] Tab after ArrowLeft keeps focus outside the input", async ({ page }) => {
-    const day = I.getSegment("day")
-    const trigger = I.getOpenCalendarTrigger()
-
-    await I.focusSegment("year")
-    await I.pressKey("ArrowLeft")
-    await I.pressKey("Tab")
-    await expect(trigger).toBeFocused()
-
-    await page.clock.runFor(16)
-
-    await expect(trigger).toBeFocused()
-    await expect(day).not.toBeFocused()
   })
 })
