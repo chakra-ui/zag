@@ -302,8 +302,10 @@ export const machine = createMachine<TooltipSchema>({
         prop("onOpenChange")?.({ open: false })
       },
 
-      closeIfDisabled: ({ prop, send }) => {
+      closeIfDisabled: ({ prop, send, context }) => {
         if (!prop("disabled")) return
+        // the trigger ignores pointerleave while disabled, so clear the flag here
+        context.set("hasPointerMoveOpened", null)
         send({ type: "close", src: "disabled.change" })
       },
 

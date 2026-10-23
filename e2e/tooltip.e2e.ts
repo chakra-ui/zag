@@ -46,6 +46,21 @@ test.describe("tooltip", () => {
     await I.seeContent("tip-2")
   })
 
+  test("opens on the first hover after being re-enabled", async () => {
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+
+    await I.toggleDisabled()
+    await I.dontSeeContent("tip-1")
+
+    // the pointer leaves while disabled
+    await I.hoverOutside()
+    await I.toggleDisabled()
+
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+  })
+
   test("closes on pointerdown", async () => {
     await I.hoverTrigger("tip-1")
 

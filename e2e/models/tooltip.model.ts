@@ -53,6 +53,11 @@ export class TooltipModel extends Model {
     await this.getTrigger(id).dispatchEvent("pointerdown", { button: 0 })
   }
 
+  toggleDisabled = async () => {
+    // dispatch the click so the pointer stays where it is
+    await this.page.locator(testid("disabled")).dispatchEvent("click")
+  }
+
   seeTriggerDescription = async (id: string, description: string) => {
     await expect(this.getTrigger(id)).toHaveAccessibleDescription(description)
   }
