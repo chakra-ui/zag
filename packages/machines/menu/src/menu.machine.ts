@@ -2,6 +2,7 @@ import { createGuards, createMachine, type Transition } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
+  AnimationFrame,
   clickIfLink,
   contains,
   getByTypeahead,
@@ -137,6 +138,7 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingLocked: false,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
+      focusMenuFrame: AnimationFrame.create(),
     }
   },
 
@@ -417,6 +419,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "unlockParentOnOpen"],
+      exit: ["cancelFocusMenu"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -815,8 +818,8 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope }) {
-        raf(() => {
+      focusMenu({ scope, refs }) {
+        refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
@@ -828,6 +831,9 @@ export const machine = createMachine<MenuSchema>({
           if (!initialFocusEl) return
           initialFocusEl.focus({ preventScroll: true })
         })
+      },
+      cancelFocusMenu({ refs }) {
+        refs.get("focusMenuFrame").cancel()
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted
