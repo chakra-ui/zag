@@ -51,7 +51,7 @@ test.describe("menu / multiple triggers", () => {
     await expect(page.locator(trigger(3))).toBeFocused()
   })
 
-  test("on ArrowDown then Escape, pending focusMenu rAF does not leave focus on body", async ({ page }) => {
+  test("should keep focus on the trigger when Escape follows ArrowDown", async ({ page }) => {
     const t0 = new Date("2025-06-01T12:00:00")
     await page.clock.install({ time: t0 })
     await page.goto("/menu/multiple-trigger")

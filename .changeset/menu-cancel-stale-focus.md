@@ -2,4 +2,4 @@
 "@zag-js/menu": patch
 ---
 
-Skip stale deferred `focusMenu` focus when the menu is no longer open, so exiting content cannot reclaim focus after close.
+- Fix focus being lost after pressing Escape right after an arrow key.
