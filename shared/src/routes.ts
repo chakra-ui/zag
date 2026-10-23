@@ -519,6 +519,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "aria-label", title: "Aria Label" },
+      { slug: "disabled", title: "Disabled" },
     ],
   },
   {
