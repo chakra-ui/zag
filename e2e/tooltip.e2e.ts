@@ -46,21 +46,6 @@ test.describe("tooltip", () => {
     await I.seeContent("tip-2")
   })
 
-  test("opens on the first hover after being re-enabled", async () => {
-    await I.hoverTrigger("tip-1")
-    await I.seeContent("tip-1")
-
-    await I.toggleDisabled()
-    await I.dontSeeContent("tip-1")
-
-    // the pointer leaves while disabled
-    await I.hoverOutside()
-    await I.toggleDisabled()
-
-    await I.hoverTrigger("tip-1")
-    await I.seeContent("tip-1")
-  })
-
   test("closes on pointerdown", async () => {
     await I.hoverTrigger("tip-1")
 
@@ -93,5 +78,32 @@ test.describe("tooltip / aria-label", () => {
 
     await I.seeContent("tip-1")
     await I.seeTriggerDescription("tip-1", "Save the document")
+  })
+})
+
+test.describe("tooltip / disabled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TooltipModel(page)
+    await I.goto("/tooltip/disabled")
+  })
+
+  test("should open on the first hover after being re-enabled", async ({ page }) => {
+    // toggle with the keyboard so the pointer stays on the trigger
+    const toggleDisabled = async () => {
+      await page.getByTestId("disabled").focus()
+      await page.keyboard.press("Space")
+    }
+
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+
+    await toggleDisabled()
+    await I.dontSeeContent("tip-1")
+
+    await I.hoverOutside()
+    await toggleDisabled()
+
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
   })
 })
