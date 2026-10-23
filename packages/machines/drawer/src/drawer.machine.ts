@@ -934,6 +934,7 @@ function waitForContentEl(
   const contentEl = dom.getContentEl(scope)
   let cleanup = contentEl ? setup(contentEl) : undefined
   let abort: VoidFunction | undefined
+  let disposed = false
 
   if (!cleanup) {
     const [promise, cancel] = waitForElement(() => dom.getContentEl(scope), {
@@ -941,10 +942,16 @@ function waitForContentEl(
       rootNode: scope.getDoc(),
     })
     abort = cancel
-    promise.then((el) => (cleanup = setup(el))).catch(noop)
+    promise
+      .then((el) => {
+        if (disposed) return
+        cleanup = setup(el)
+      })
+      .catch(noop)
   }
 
   return () => {
+    disposed = true
     abort?.()
     cleanup?.()
   }

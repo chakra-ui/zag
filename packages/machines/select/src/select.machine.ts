@@ -520,19 +520,24 @@ export const machine = createMachine<SelectSchema>({
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec(true)
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {
             exec(false)
           },
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 

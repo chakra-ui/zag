@@ -8,3 +8,4 @@
 - Fix the `aria-label` prop not naming the menu.
 - Fix controlled submenus opening after the pointer leaves their trigger, and controlled context menus opening on a
   short tap.
+- Fix a pending scroll to the highlighted item running after the menu closes.

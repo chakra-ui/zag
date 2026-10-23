@@ -521,6 +521,8 @@ actions: {
 - Cancel actions only cancel. Don't set context or send events from them, since the top-level `exit` runs after unmount.
 - Don't guard inside the callback with `state.hasTag(...)`. Cancel on exit instead. A DOM check in the callback is fine
   only when the decision depends on where focus is when the frame runs (e.g. "focus already moved inside").
+- For timers, use `Timeout` from `@zag-js/dom-query` the same way (`start(delay, fn)` replaces any pending call,
+  `clear()` cancels).
 - Plain `raf()` is fine for one-off waits that are harmless if they run late (e.g. waiting for content to mount).
 - Long-lived work (listeners, observers) belongs in `effects`, not actions.
 

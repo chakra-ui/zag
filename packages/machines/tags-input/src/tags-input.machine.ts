@@ -397,8 +397,10 @@ export const machine = createMachine<TagsInputSchema>({
       },
       autoResize({ context, prop, scope }) {
         let fn_cleanup: VoidFunction | undefined
+        let cancelled = false
 
         queueMicrotask(() => {
+          if (cancelled) return
           const editedTagValue = context.get("editedTagValue")
           const editedTagIndex = context.get("editedTagIndex")
           if (!editedTagValue || editedTagIndex == null || !prop("editable")) return
@@ -410,6 +412,7 @@ export const machine = createMachine<TagsInputSchema>({
         })
 
         return () => {
+          cancelled = true
           fn_cleanup?.()
         }
       },
@@ -594,9 +597,7 @@ export const machine = createMachine<TagsInputSchema>({
       },
 
       clearInputValue({ context }) {
-        raf(() => {
-          context.set("inputValue", "")
-        })
+        context.set("inputValue", "")
       },
 
       syncInputValue({ context, scope }) {
