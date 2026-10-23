@@ -483,7 +483,46 @@ trackPointerMove({ scope, send }) {
 }
 ```
 
-### 9. Type Safety
+### 9. Cancel Deferred Work When the State Exits
+
+Work an action defers with `raf`, `queueMicrotask` or `setTimeout` outlives the state that scheduled it. If it moves
+focus or changes state, it can run after the user has moved on (e.g. focus jumps back into a closing menu after Escape).
+
+Store an `AnimationFrame` in `refs` and cancel it in the state's `exit`:
+
+```typescript
+refs() {
+  return { focusMenuFrame: AnimationFrame.create() }
+},
+
+states: {
+  open: {
+    entry: ["focusMenu"],
+    exit: ["cancelFocusMenu"],
+  },
+},
+
+actions: {
+  focusMenu({ scope, refs }) {
+    // request() replaces any pending frame, so repeated events don't stack
+    refs.get("focusMenuFrame").request(() => {
+      dom.getContentEl(scope)?.focus({ preventScroll: true })
+    })
+  },
+  cancelFocusMenu({ refs }) {
+    refs.get("focusMenuFrame").cancel()
+  },
+}
+```
+
+- Don't guard inside the callback with `state.hasTag(...)` or a DOM check. Cancel on exit instead.
+- Plain `raf()` is fine for one-off waits that are harmless if they run late (e.g. waiting for content to mount).
+- Long-lived work (listeners, observers) belongs in `effects`, not actions.
+
+Examples: `menu` (`focusMenuFrame`), `date-input` (`focusSegmentFrame`), `drawer` (`snapBackFrame`), `toast-group`
+(`ignoreMouseTimer`).
+
+### 10. Type Safety
 
 Define comprehensive TypeScript schemas:
 
