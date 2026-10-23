@@ -6,6 +6,7 @@ import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
 import { defaultTranslations } from "./tags-input.translations"
 import type { ItemProps, ItemState, TagsInputApi, TagsInputSchema } from "./tags-input.types"
+import { endsWithDelimiter } from "./tags-input.utils"
 
 export function connect<T extends PropTypes>(
   service: Service<TagsInputSchema>,
@@ -140,7 +141,7 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (endsWith(value, prop("delimiter"))) {
+          if (endsWithDelimiter(value, prop("delimiter"))) {
             send({ type: "DELIMITER_KEY" })
             return
           }
@@ -356,10 +357,4 @@ export function connect<T extends PropTypes>(
       })
     },
   }
-}
-
-function endsWith(str: string, del: string | RegExp | undefined) {
-  if (!del) return false
-  if (typeof del === "string") return str.endsWith(del)
-  return new RegExp(`${del.source}$`).test(str)
 }
