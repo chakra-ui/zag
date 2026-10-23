@@ -12,4 +12,3 @@ export const getHiddenInputId = (ctx: Scope, index: number) =>
 
 export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
 export const getSegmentEls = (ctx: Scope) => queryAll<HTMLInputElement>(getControlEl(ctx), `[data-part=segment]`)
-export const isSegmentFocused = (ctx: Scope) => getSegmentEls(ctx).some((el) => ctx.isActiveElement(el))
