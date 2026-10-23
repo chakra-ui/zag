@@ -815,8 +815,9 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope }) {
+      focusMenu({ scope, state }) {
         raf(() => {
+          if (!state.hasTag("open")) return
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
