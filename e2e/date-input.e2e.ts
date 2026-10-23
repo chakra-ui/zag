@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test, expect } from "@playwright/test"
 import { DateInputModel } from "./models/date-input.model"
 
 let I: DateInputModel
@@ -1192,5 +1192,55 @@ test.describe("date-input [min/max]", () => {
 
     await I.clickOutsideToBlur()
     await I.seeSelectedValue("2/22/2000")
+  })
+})
+
+test.describe("date-input [focus tab]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DateInputModel(page)
+    await page.clock.install()
+    await I.gotoDateInputDatePicker()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  async function tabToOpenCalendarTrigger() {
+    const trigger = I.getOpenCalendarTrigger()
+    for (let i = 0; i < 6; i++) {
+      if (await trigger.evaluate((el) => el === document.activeElement)) break
+      await I.page.keyboard.press("Tab")
+    }
+    return trigger
+  }
+
+  // Deterministic scheduling (page.clock.pauseAt + runFor): not natural unslowed-rAF proof.
+  test("[focus][deterministic-scheduling] pending segment focus rAF must not override tab exit", async ({ page }) => {
+    const day = I.getSegment("day")
+    const trigger = I.getOpenCalendarTrigger()
+
+    await I.focusSegment("month")
+    await page.keyboard.type("01", { delay: 0 })
+    await tabToOpenCalendarTrigger()
+    await expect(trigger).toBeFocused()
+
+    await page.clock.runFor(16)
+
+    await expect(trigger).toBeFocused()
+    await expect(day).not.toBeFocused()
+  })
+
+  test("[focus][deterministic-scheduling] arrow-left segment advance then tab exit", async ({ page }) => {
+    const day = I.getSegment("day")
+    const trigger = I.getOpenCalendarTrigger()
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowLeft")
+    await tabToOpenCalendarTrigger()
+    await expect(trigger).toBeFocused()
+
+    await page.clock.runFor(16)
+
+    await expect(trigger).toBeFocused()
+    await expect(day).not.toBeFocused()
   })
 })

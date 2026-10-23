@@ -2,7 +2,7 @@ import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } fro
 import { createMachine, memo, type Params } from "@zag-js/core"
 import { mergeWithDefault } from "@zag-js/utils"
 import { constrainSegments, getTodayDate, isDateEqual } from "@zag-js/date-utils"
-import { raf } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
@@ -98,6 +98,7 @@ export const machine = createMachine<DateInputSchema>({
     return {
       announcer: null,
       segmentToAnnounceIndex: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -277,7 +278,7 @@ export const machine = createMachine<DateInputSchema>({
         ],
         "SEGMENT.BLUR": {
           target: "idle",
-          actions: ["confirmPlaceholder", "clearEnteredKeys", "invokeOnBlur"],
+          actions: ["cancelPendingSegmentFocus", "confirmPlaceholder", "clearEnteredKeys", "invokeOnBlur"],
         },
         "SEGMENT.INPUT": {
           actions: ["setSegmentValue", "announceSegmentValue"],
@@ -377,11 +378,24 @@ export const machine = createMachine<DateInputSchema>({
         goToNextSegment(ctx)
       },
 
-      focusActiveSegment({ scope, context }) {
-        raf(() => {
+      cancelPendingSegmentFocus({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
+
+      focusActiveSegment({ scope, context, refs }) {
+        refs.get("focusFrame").request(() => {
           const segmentEls = dom.getSegmentEls(scope)
           const activeSegmentEl = segmentEls[context.get("activeSegmentIndex")]
-          activeSegmentEl?.focus({ preventScroll: true })
+          if (!activeSegmentEl) return
+
+          const activeEl = scope.getActiveElement()
+          if (activeEl) {
+            const focusedSegmentIndex = segmentEls.indexOf(activeEl as HTMLInputElement)
+            // Respect Tab/Shift+Tab to a non-segment (sibling button, picker trigger, etc.)
+            if (focusedSegmentIndex === -1) return
+          }
+
+          activeSegmentEl.focus({ preventScroll: true })
         })
       },
 
