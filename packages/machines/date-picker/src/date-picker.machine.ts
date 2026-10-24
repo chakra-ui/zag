@@ -788,7 +788,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           onEscapeKeyDown(event) {
             event.preventDefault()
-            send({ type: "TABLE.ESCAPE", src: "dismissable" })
+            send({ type: "TABLE.ESCAPE", src: "dismissable", focusVisible: true })
           },
         })
       },
@@ -1121,12 +1121,13 @@ export const machine = createMachine<DatePickerSchema>({
         if (!isKeyboardNavigation || prop("selectionMode") !== "range" || context.get("activeIndex") === 0) return
         context.set("hoveredValue", context.get("focusedValue").copy())
       },
-      restoreFocusToTrigger({ scope }) {
+      restoreFocusToTrigger({ scope, event }) {
         const contentEl = dom.getContentEl(scope)
+        const focusOptions = getReturnFocusOptions(event)
         raf(() => {
           // Keep focus that moved elsewhere (e.g. from `onValueChange`)
           if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
-          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+          dom.getTriggerEl(scope)?.focus(focusOptions)
         })
       },
       focusFirstInputElement({ scope, event }) {
@@ -1323,4 +1324,10 @@ function setAdjustedValue(ctx: Params<DatePickerSchema>, value: AdjustDateReturn
   const focusedValue = context.get("focusedValue")
   if (isDateEqual(focusedValue, value.focusedDate)) return
   context.set("focusedValue", value.focusedDate)
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }

@@ -186,8 +186,8 @@ export const machine = createMachine<PopoverSchema>({
           onFocusOutside: prop("onFocusOutside"),
           persistentElements: prop("persistentElements"),
           onRequestDismiss: prop("onRequestDismiss"),
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          onDismiss(event) {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -300,16 +300,18 @@ export const machine = createMachine<PopoverSchema>({
         // skip if restoreFocus prop is false
         if (!prop("restoreFocus")) return
 
+        const focusOptions = getReturnFocusOptions(event)
+
         raf(() => {
           // prefer finalFocusEl if provided
           const finalFocusEl = prop("finalFocusEl")?.()
           if (finalFocusEl) {
-            finalFocusEl.focus({ preventScroll: true })
+            finalFocusEl.focus(focusOptions)
             return
           }
 
           const element = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-          element?.focus({ preventScroll: true })
+          element?.focus(focusOptions)
         })
       },
       invokeOnOpen({ prop, flush }) {
@@ -328,3 +330,9 @@ export const machine = createMachine<PopoverSchema>({
     },
   },
 })
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
+}
