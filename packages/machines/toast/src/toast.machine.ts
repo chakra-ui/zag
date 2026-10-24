@@ -1,9 +1,9 @@
-import { createGuards, createMachine, type Service } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
-import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
-import { getToastDuration } from "./toast.utils"
+import type { ToastSchema } from "./toast.types"
+import { getToastDuration, setHeight } from "./toast.utils"
 
 const { not, and } = createGuards<ToastSchema>()
 
@@ -302,16 +302,4 @@ function measureLayoutHeight(el: HTMLElement): number {
   const height = el.offsetHeight
   el.style.height = prevHeight
   return height
-}
-
-function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
-  const { id, height } = item
-  parent.context.set("heights", (prev) => {
-    const alreadyExists = prev.find((i) => i.id === id)
-    if (!alreadyExists) {
-      return [{ id, height }, ...prev]
-    }
-    if (alreadyExists.height === height) return prev
-    return prev.map((i) => (i.id === id ? { ...i, height } : i))
-  })
 }
