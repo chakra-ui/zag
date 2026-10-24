@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
+import type { Heading } from "./utils/active-ids"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -93,6 +94,12 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    */
   scrollBehavior?: ScrollBehavior | undefined
   /**
+   * Whether every visible heading can be active at once.
+   * When `false`, only the topmost visible heading is active.
+   * @default true
+   */
+  multiple?: boolean | undefined
+  /**
    * Callback when the active (visible) headings change.
    */
   onActiveChange?: ((details: ActiveChangeDetails) => void) | undefined
@@ -107,10 +114,10 @@ export interface TocProps extends DirectionProperty, CommonProperties {
   defaultActiveIds?: string[] | undefined
 }
 
-type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items"
+type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items" | "multiple"
 
 export interface TocSchema {
-  state: "idle"
+  state: "idle" | "navigating"
   props: RequiredBy<TocProps, PropsWithDefault>
   context: {
     activeIds: string[]
@@ -119,6 +126,9 @@ export interface TocSchema {
   refs: {
     visibilityMap: Map<string, boolean>
     indicatorCleanup: VoidFunction | null
+    rootBounds: DOMRectReadOnly | null
+    headings: Heading[]
+    scrollContainer: HTMLElement | null
   }
   computed: {
     activeItems: TocItem[]
