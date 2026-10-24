@@ -50,9 +50,9 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
    */
   pointerBlocking?: boolean | undefined
   /**
-   * Function called when the dismissable element is dismissed
+   * Function called when the dismissable element is dismissed, with the event that caused it
    */
-  onDismiss: VoidFunction
+  onDismiss: (event?: KeyboardEvent | PointerDownOutsideEvent | FocusOutsideEvent) => void
   /**
    * Exclude containers from the interact outside event
    */
@@ -103,7 +103,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     if (debug) {
       console.log("onPointerDownOutside:", event.detail.originalEvent)
     }
-    onDismiss?.()
+    onDismiss?.(event)
   }
 
   function onFocusOutside(event: FocusOutsideEvent) {
@@ -115,7 +115,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     if (debug) {
       console.log("onFocusOutside:", event.detail.originalEvent)
     }
-    onDismiss?.()
+    onDismiss?.(event)
   }
 
   function onEscapeKeyDown(event: KeyboardEvent) {
@@ -123,7 +123,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     options.onEscapeKeyDown?.(event)
     if (!event.defaultPrevented && onDismiss) {
       event.preventDefault()
-      onDismiss()
+      onDismiss(event)
     }
   }
 

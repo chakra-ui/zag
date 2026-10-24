@@ -625,8 +625,8 @@ export const machine = createMachine<CascadeSelectSchema>({
             prop("onInteractOutside")?.(event)
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          onDismiss(event) {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -943,9 +943,10 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       focusTriggerEl({ event, scope }) {
         if (!restoreFocusFn(event)) return
+        const focusOptions = getReturnFocusOptions(event)
         raf(() => {
           const triggerEl = dom.getTriggerEl(scope)
-          triggerEl?.focus({ preventScroll: true })
+          triggerEl?.focus(focusOptions)
         })
       },
       invokeOnOpen({ prop, context }) {
@@ -1103,4 +1104,10 @@ const set = {
 function restoreFocusFn(event: Record<string, any>) {
   const v = event.restoreFocus ?? event.previousEvent?.restoreFocus
   return v == null || !!v
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }
