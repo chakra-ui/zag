@@ -539,3 +539,26 @@ test.describe("pin input / transform paste", () => {
     await I.seeValues("1", "2", "3")
   })
 })
+
+test.describe("pin input [paste focus]", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new PinInputModel(page)
+    await page.clock.install()
+    await I.goto()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("should keep focus outside when leaving right after paste", async ({ page }) => {
+    await I.focusInput(1)
+    await I.paste("123")
+    await page.keyboard.press("Shift+Tab")
+    await I.seeInputIsNotFocused(1)
+
+    await page.clock.runFor(32)
+    await I.seeValues("1", "2", "3")
+    await I.seeInputIsNotFocused(1)
+    await I.seeInputIsNotFocused(3)
+  })
+})

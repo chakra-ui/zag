@@ -340,3 +340,41 @@ test.describe("tags-input / form", () => {
     await I.seeTextValue("[data-testid=last-submit]", "")
   })
 })
+
+test.describe("tags-input [highlight frame]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TagsInputModel(page)
+    await page.clock.install()
+    await I.goto()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("Escape right after deleting the first tag should not highlight the next tag", async ({ page }) => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft", 2)
+    await I.seeTagIsHighlighted("React")
+
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Escape")
+    await page.clock.runFor(32)
+    await I.seeNoHighlightedTag()
+
+    await page.keyboard.press("Delete")
+    await I.seeTag("Vue")
+  })
+
+  test("leaving right after editing a tag should not refocus the input", async ({ page }) => {
+    await I.doubleClickTag("React")
+    await page.clock.runFor(32)
+    await I.seeTagInputIsFocused("React")
+    await page.keyboard.press("End")
+    await I.type("JS")
+    await page.keyboard.press("Enter")
+    await page.keyboard.press("Shift+Tab")
+
+    await page.clock.runFor(32)
+    await I.seeTag("ReactJS")
+    await expect(page.locator("[data-testid=input]")).not.toBeFocused()
+  })
+})
