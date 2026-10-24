@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -103,6 +104,9 @@ export interface ToggleGroupSchema {
   context: PrivateContext
   computed: ComputedContext
   state: "idle" | "focused"
+  refs: {
+    focusFrame: AnimationFrame
+  }
   event: EventObject
   action: string
   effect: string

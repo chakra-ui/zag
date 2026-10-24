@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
 import { addOrRemove, ensureProps, isArray, isEqual } from "@zag-js/utils"
 import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
@@ -50,7 +50,15 @@ export const machine = createMachine<ToggleGroupSchema>({
     currentLoopFocus: ({ context, prop }) => prop("loopFocus") && !context.get("isWithinToolbar"),
   },
 
+  refs() {
+    return {
+      focusFrame: AnimationFrame.create(),
+    }
+  },
+
   entry: ["checkIfWithinToolbar"],
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     "VALUE.SET": {
@@ -80,6 +88,7 @@ export const machine = createMachine<ToggleGroupSchema>({
     },
 
     focused: {
+      exit: ["cancelFocusFrame"],
       on: {
         "ROOT.BLUR": {
           target: "idle",
@@ -157,29 +166,32 @@ export const machine = createMachine<ToggleGroupSchema>({
         }
         context.set("value", next)
       },
-      focusNextToggle({ context, scope, prop }) {
-        raf(() => {
+      focusNextToggle({ context, scope, prop, refs }) {
+        refs.get("focusFrame").request(() => {
           const focusedId = context.get("focusedId")
           if (!focusedId) return
           dom.getNextEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
         })
       },
-      focusPrevToggle({ context, scope, prop }) {
-        raf(() => {
+      focusPrevToggle({ context, scope, prop, refs }) {
+        refs.get("focusFrame").request(() => {
           const focusedId = context.get("focusedId")
           if (!focusedId) return
           dom.getPrevEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
         })
       },
-      focusFirstToggle({ scope }) {
-        raf(() => {
+      focusFirstToggle({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getFirstEl(scope)?.focus({ preventScroll: true })
         })
       },
-      focusLastToggle({ scope }) {
-        raf(() => {
+      focusLastToggle({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getLastEl(scope)?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
     },
   },

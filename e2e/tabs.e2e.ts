@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { TabsModel } from "./models/tabs.model"
 
 let I: TabsModel
@@ -135,5 +135,26 @@ test.describe("tabs", () => {
 
     await I.waitForIndicatorToUpdate("agnes")
     await I.seeIndicatorMovedWithTab("agnes", agnesTabBefore, indicatorBefore)
+  })
+})
+
+test.describe("tabs [focus frame]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TabsModel(page)
+    await page.clock.install()
+    await I.goto()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("Tab right after an arrow key should keep focus out of the tab list", async ({ page }) => {
+    await I.focusTab("nils")
+    await I.seeTabIsFocused("nils")
+
+    await I.pressKey("ArrowRight")
+    await I.pressKey("Tab")
+    await page.clock.runFor(32)
+
+    await expect(page.locator("[data-scope=tabs][data-part=trigger]:focus")).toHaveCount(0)
   })
 })
