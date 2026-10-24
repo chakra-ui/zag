@@ -5,6 +5,7 @@ import {
   disableTextSelection,
   dispatchInputValueEvent,
   getInitialFocus,
+  isFocusOutside,
   raf,
   setElementValue,
   trackFormControl,
@@ -621,7 +622,10 @@ export const machine = createMachine<ColorPickerSchema>({
         })
       },
       setReturnFocus({ scope }) {
+        const contentEl = dom.getContentEl(scope)
         raf(() => {
+          // Keep focus that moved elsewhere (e.g. from `onValueChange`)
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         })
       },

@@ -169,3 +169,17 @@ test.describe("color-picker / disabled", () => {
     await I.seeChannelThumbIsDisabled("hue")
   })
 })
+
+test.describe("color-picker / focus moved on value change", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ColorPickerModel(page)
+    await I.goto("/color-picker/focus-next-field")
+  })
+
+  test("should keep focus where onValueChange moved it", async () => {
+    await I.clickTrigger()
+    await I.clickSwatch(1)
+    await I.waitForFrames()
+    await I.seeElementIsFocused("next-field")
+  })
+})
