@@ -1,5 +1,20 @@
 # @zag-js/tree-view
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3509](https://github.com/chakra-ui/zag/pull/3509)
+  [`a93f655`](https://github.com/chakra-ui/zag/commit/a93f655a9f636cd9d0df6175a061699bb7d9fd58) Thanks
+  [@b84330808](https://github.com/b84330808)! - - Fix typeahead ignoring the lowercase `a` key.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/collection@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

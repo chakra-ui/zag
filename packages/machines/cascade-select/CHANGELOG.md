@@ -1,5 +1,31 @@
 # @zag-js/cascade-select
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3531](https://github.com/chakra-ui/zag/pull/3531)
+  [`cfdcfb7`](https://github.com/chakra-ui/zag/commit/cfdcfb7a1fc03b7de458f2282532948903455f35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix the content taking focus after closing right after it
+  opened.
+  - Fix leaving one item clearing the next item's grace area early, which could switch the highlighted item.
+  - Fix a pending scroll to the highlighted item running after the content closes.
+  - Fix the trigger missing its focus ring in Firefox after closing with Escape.
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4),
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/focus-visible@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/collection@1.47.0
+  - @zag-js/utils@1.47.0
+  - @zag-js/rect-utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

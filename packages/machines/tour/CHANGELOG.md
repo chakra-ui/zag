@@ -1,5 +1,34 @@
 # @zag-js/tour
 
+## 1.47.0
+
+### Minor Changes
+
+- [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `scrollToTargetFn` to customize how a step's target is
+  scrolled into view.
+  - Add `data-instant` to the backdrop, spotlight and positioner when they should snap into place instead of animating
+    between steps.
+  - Use the `dialog` role for the content instead of `alertdialog`.
+  - Fix focus moving to the page body when the tour is dismissed, skipped or ends because a step target is missing.
+  - Fix arrow keys changing steps while typing in an input inside the tour content.
+  - Fix the content shifting by half the arrow's size right after a step opens.
+
+### Patch Changes
+
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/focus-trap@1.47.0
+  - @zag-js/interact-outside@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

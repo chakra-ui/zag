@@ -1,5 +1,25 @@
 # @zag-js/listbox
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3502](https://github.com/chakra-ui/zag/pull/3502)
+  [`4cdd554`](https://github.com/chakra-ui/zag/commit/4cdd554b8065e98efb924aec87678fac376391f2) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix `ArrowLeft` and `ArrowRight` not being mirrored in grid and
+  horizontal layouts when `dir` is `rtl`.
+  - Fix typeahead ignoring the lowercase `a` key.
+  - Fix a pending scroll to the highlighted item running after the listbox unmounts.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/focus-visible@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/collection@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
