@@ -7,6 +7,7 @@ import {
 import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   clickIfLink,
   getModifierKeys,
   isApple,
@@ -71,8 +72,11 @@ export const machine = createMachine({
     return {
       liveRegion: null,
       resultsRegion: null,
+      finalFocusFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFinalFocus"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -290,6 +294,7 @@ export const machine = createMachine({
         focused: {
           tags: ["focused"],
           entry: ["scrollContentToTop", "clearHighlightedValue"],
+          exit: ["cancelFinalFocus"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -898,8 +903,8 @@ export const machine = createMachine({
           dom.focusInputEl(scope)
         })
       },
-      setFinalFocus({ scope }) {
-        raf(() => {
+      setFinalFocus({ scope, refs }) {
+        refs.get("finalFocusFrame").request(() => {
           const triggerEl = dom.getTriggerEl(scope)
           if (triggerEl?.dataset.focusable == null) {
             dom.focusInputEl(scope)
@@ -907,6 +912,9 @@ export const machine = createMachine({
             dom.focusTriggerEl(scope)
           }
         })
+      },
+      cancelFinalFocus({ refs }) {
+        refs.get("finalFocusFrame").cancel()
       },
       syncInputValue({ context, scope, event }) {
         const inputEl = dom.getInputEl(scope)

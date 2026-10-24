@@ -696,17 +696,22 @@ export const machine = createMachine<MenuSchema>({
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec()
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 

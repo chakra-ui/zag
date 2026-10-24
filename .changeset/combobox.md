@@ -13,3 +13,4 @@
 - Fix `inputBehavior: "autohighlight"` leaving no item highlighted when the highlighted item is removed after keyboard
   or pointer navigation.
 - Scroll the list back to the top when the input changes while open.
+- Fix focus being pulled back into the input when tabbing away right after selecting an item.

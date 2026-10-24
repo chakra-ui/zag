@@ -623,12 +623,13 @@ export const machine = createMachine<SplitterSchema>({
         }
       },
 
-      invokeOnResizeEnd({ context, prop, refs }) {
+      invokeOnResizeEnd({ context, prop, refs, event }) {
+        // Read before the transition clears the drag state
+        const resizeTriggerId = event.id ?? context.get("dragState")?.resizeTriggerId ?? null
         queueMicrotask(() => {
-          const dragState = context.get("dragState")
           prop("onResizeEnd")?.({
             size: refs.get("lastRequestedSize") ?? context.get("size"),
-            resizeTriggerId: dragState?.resizeTriggerId ?? null,
+            resizeTriggerId,
           })
         })
       },
