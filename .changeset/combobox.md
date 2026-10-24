@@ -14,3 +14,5 @@
   or pointer navigation.
 - Scroll the list back to the top when the input changes while open.
 - Fix focus being pulled back into the input when tabbing away right after selecting an item.
+- Fix an item staying highlighted (and `onHighlightChange` firing) after the combobox closes right after opening with
+  the keyboard.
