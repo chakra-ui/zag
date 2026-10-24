@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { contains, getInitialFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -219,8 +219,7 @@ export const machine = createMachine<DialogSchema>({
 
         raf(() => {
           // Don't take focus back from an element the user moved to
-          const activeEl = scope.getActiveElement()
-          if (activeEl && activeEl !== scope.getDoc().body && !contains(contentEl, activeEl)) return
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           returnFocusEl?.focus({ preventScroll: true })
         })
       },

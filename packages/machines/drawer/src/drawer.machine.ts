@@ -4,9 +4,9 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   addDomEvent,
-  contains,
   getComputedStyle,
   getInitialFocus,
+  isFocusOutside,
   raf,
   resizeObserverBorderBox,
   waitForElement,
@@ -489,8 +489,7 @@ export const machine = createMachine<DrawerSchema>({
 
         raf(() => {
           // Don't take focus back from an element the user moved to
-          const activeEl = scope.getActiveElement()
-          if (activeEl && activeEl !== scope.getDoc().body && !contains(contentEl, activeEl)) return
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           returnFocusEl?.focus({ preventScroll: true })
         })
       },
