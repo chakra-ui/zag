@@ -49,8 +49,8 @@ export function getPlacementStyles(
       pointerEvents: !placement ? "none" : undefined,
       top: "0px",
       left: "0px",
-      // move off-screen if placement is not defined
-      transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
+      // move off-screen until placement and position are computed
+      transform: placement ? "translate3d(var(--x, 0), var(--y, -100vh), 0)" : "translate3d(0, -100vh, 0)",
       zIndex: applyStyles === false ? "var(--z-index)" : undefined,
     } as const,
   }
