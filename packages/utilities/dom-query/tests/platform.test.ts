@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { isAndroid, isLinux, isMac } from "../src/platform"
 
 const stubNavigator = (platform: string, userAgent: string) => {
