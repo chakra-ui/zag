@@ -106,4 +106,25 @@ test.describe("tooltip / disabled", () => {
     await I.hoverTrigger("tip-1")
     await I.seeContent("tip-1")
   })
+
+  test("should stay dismissed when disabled is toggled while hovering", async ({ page }) => {
+    const toggleDisabled = async () => {
+      await page.getByTestId("disabled").focus()
+      await page.keyboard.press("Space")
+    }
+
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+
+    await page.keyboard.press("Escape")
+    await I.dontSeeContent("tip-1")
+
+    await toggleDisabled()
+    await toggleDisabled()
+
+    // move within the trigger without leaving it
+    await page.getByTestId("tip-1-trigger").hover({ position: { x: 4, y: 4 } })
+    await I.wait(1000)
+    await I.dontSeeContent("tip-1")
+  })
 })
