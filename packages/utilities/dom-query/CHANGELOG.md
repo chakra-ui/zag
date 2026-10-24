@@ -1,5 +1,23 @@
 # @zag-js/dom-query
 
+## 1.47.0
+
+### Minor Changes
+
+- [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `getModifierKeys` and `hasModifierKey`.
+  - Fix typeahead not matching items that start with an accented or non-Latin character, and match regardless of case
+    and accents (typing "e" finds "Éditer").
+  - Fix the shared resize observers throwing when `ResizeObserver` is unavailable, such as in jsdom.
+  - Add `Timeout`, a `setTimeout` wrapper whose `start()` replaces any pending call.
+  - Fix `waitForElement` leaving its `MutationObserver` running after an abort or timeout.
+  - Add `isFocusOutside` to check whether focus moved outside a set of containers.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

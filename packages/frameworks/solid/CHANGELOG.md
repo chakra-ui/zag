@@ -1,5 +1,20 @@
 # @zag-js/solid
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3463](https://github.com/chakra-ui/zag/pull/3463)
+  [`ae93ccd`](https://github.com/chakra-ui/zag/commit/ae93ccdccc90483a73d5d015c8fa74d4edd8a11a) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - - Fix machines missing prop changes made before their first effect
+  run, such as presence staying unmounted while `present` is `true`.
+  - Fix `watch` missing context changes made by entry actions, such as pin input's `autoFocus` having no effect.
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/store@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
