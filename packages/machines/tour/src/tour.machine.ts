@@ -1,6 +1,6 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { contains, isHTMLElement, raf } from "@zag-js/dom-query"
+import { contains, isFocusOutside, isHTMLElement, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -385,8 +385,7 @@ export const machine = createMachine<TourSchema>({
         if (!restoreFocusEl) return
         raf(() => {
           // leave focus alone if the user moved it elsewhere, e.g. by clicking outside
-          const activeEl = scope.getActiveElement()
-          if (activeEl && activeEl !== scope.getDoc().body && !contains(dom.getContentEl(scope), activeEl)) return
+          if (isFocusOutside(scope.getActiveElement(), [dom.getContentEl(scope)])) return
           if (!restoreFocusEl.isConnected) return
           restoreFocusEl.focus({ preventScroll: true })
         })
