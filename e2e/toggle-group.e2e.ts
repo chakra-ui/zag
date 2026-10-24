@@ -111,3 +111,25 @@ test.describe("toggle-group", () => {
     await I.seeItemIsFocused("bold")
   })
 })
+
+test.describe("toggle-group [focus frame]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ToggleGroupModel(page)
+    await page.clock.install()
+    await page.goto("/toggle-group/basic")
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("Tab right after End should keep focus out of the group", async ({ page }) => {
+    await I.focusItem("bold")
+    await I.seeItemIsFocused("bold")
+
+    await I.pressKey("End")
+    await I.pressKey("Tab")
+    await page.clock.runFor(32)
+
+    await I.seeItemIsNotFocused("underline")
+    await I.seeItemIsNotFocused("bold")
+  })
+})
