@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { getNearestOverflowAncestor, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
@@ -87,10 +87,13 @@ export const machine = createMachine({
       autoScrollToc({ context, scope, prop }) {
         if (!prop("autoScroll")) return
         const tocItemEl = dom.getItemEl(scope, first(context.get("activeIds")))
-        tocItemEl?.scrollIntoView({
-          behavior: prop("scrollBehavior"),
-          block: "nearest",
-        })
+        const rootEl = dom.getRootEl(scope)
+        if (!tocItemEl || !rootEl) return
+        // Only scroll the toc's own scroll container. `scrollIntoView` would also scroll its
+        // ancestors, e.g. the content scroller, and cancel a smooth scroll to a heading.
+        const scrollEl = getNearestOverflowAncestor(tocItemEl)
+        if (!rootEl.contains(scrollEl)) return
+        scrollToNearest(tocItemEl, { rootEl: scrollEl, behavior: prop("scrollBehavior") })
       },
 
       cleanupIndicatorObserver({ refs }) {
