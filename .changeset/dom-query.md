@@ -8,3 +8,4 @@
 - Fix the shared resize observers throwing when `ResizeObserver` is unavailable, such as in jsdom.
 - Add `Timeout`, a `setTimeout` wrapper whose `start()` replaces any pending call.
 - Fix `waitForElement` leaving its `MutationObserver` running after an abort or timeout.
+- Add `isFocusOutside` to check whether focus moved outside a set of containers.

@@ -518,3 +518,17 @@ test.describe("datepicker [multiple month + maxSelectedDates]", () => {
     await expect(I.getMonthCell("Jan")).toHaveAttribute("data-selected", "")
   })
 })
+
+test.describe("date-picker / focus moved on value change", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/focus-next-field")
+  })
+
+  test("should keep focus where onValueChange moved it", async () => {
+    await I.clickTrigger()
+    await I.clickDayCell(11)
+    await I.waitForFrames()
+    await I.seeElementIsFocused("next-field")
+  })
+})

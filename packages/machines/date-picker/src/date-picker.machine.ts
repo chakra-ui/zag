@@ -27,7 +27,7 @@ import {
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { disableTextSelection, raf, restoreTextSelection, setElementValue } from "@zag-js/dom-query"
+import { disableTextSelection, isFocusOutside, raf, restoreTextSelection, setElementValue } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
@@ -427,12 +427,12 @@ export const machine = createMachine<DatePickerSchema>({
           {
             guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
             target: "focused",
-            actions: ["focusTriggerElement"],
+            actions: ["restoreFocusToTrigger"],
           },
           {
             guard: "shouldRestoreFocus",
             target: "focused",
-            actions: ["focusInputElement"],
+            actions: ["restoreFocusToInput"],
           },
           {
             target: "idle",
@@ -468,7 +468,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setActiveIndexToStart",
               "clearHoveredDate",
               "invokeOnClose",
-              "focusInputElement",
+              "restoreFocusToInput",
             ],
           },
           {
@@ -496,7 +496,7 @@ export const machine = createMachine<DatePickerSchema>({
           {
             guard: "closeOnSelect",
             target: "focused",
-            actions: ["setFocusedDate", "setSelectedDate", "invokeOnClose", "focusInputElement"],
+            actions: ["setFocusedDate", "setSelectedDate", "invokeOnClose", "restoreFocusToInput"],
           },
           {
             actions: ["setFocusedDate", "setSelectedDate"],
@@ -530,7 +530,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "focused",
-            actions: ["focusFirstSelectedDate", "invokeOnClose", "focusTriggerElement"],
+            actions: ["focusFirstSelectedDate", "invokeOnClose", "restoreFocusToTrigger"],
           },
         ],
         "TABLE.ENTER": [
@@ -555,7 +555,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setActiveIndexToStart",
               "clearHoveredDate",
               "invokeOnClose",
-              "focusInputElement",
+              "restoreFocusToInput",
             ],
           },
           {
@@ -582,7 +582,7 @@ export const machine = createMachine<DatePickerSchema>({
           {
             guard: "closeOnSelect",
             target: "focused",
-            actions: ["selectFocusedDate", "invokeOnClose", "focusInputElement"],
+            actions: ["selectFocusedDate", "invokeOnClose", "restoreFocusToInput"],
           },
           {
             actions: ["selectFocusedDate"],
@@ -694,7 +694,7 @@ export const machine = createMachine<DatePickerSchema>({
           {
             guard: "shouldRestoreFocus",
             target: "focused",
-            actions: ["setActiveIndexToStart", "invokeOnClose", "focusTriggerElement"],
+            actions: ["setActiveIndexToStart", "invokeOnClose", "restoreFocusToTrigger"],
           },
           {
             target: "idle",
@@ -1121,8 +1121,11 @@ export const machine = createMachine<DatePickerSchema>({
         if (!isKeyboardNavigation || prop("selectionMode") !== "range" || context.get("activeIndex") === 0) return
         context.set("hoveredValue", context.get("focusedValue").copy())
       },
-      focusTriggerElement({ scope }) {
+      restoreFocusToTrigger({ scope }) {
+        const contentEl = dom.getContentEl(scope)
         raf(() => {
+          // Keep focus that moved elsewhere (e.g. from `onValueChange`)
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         })
       },
@@ -1136,22 +1139,14 @@ export const machine = createMachine<DatePickerSchema>({
         })
       },
       focusInputElement({ scope }) {
+        raf(() => dom.focusInputEl(scope))
+      },
+      restoreFocusToInput({ scope }) {
+        const contentEl = dom.getContentEl(scope)
         raf(() => {
-          const inputEls = dom.getInputEls(scope)
-
-          // If no input elements exist (trigger-only mode), focus the trigger instead
-          if (inputEls.length === 0) {
-            dom.getTriggerEl(scope)?.focus({ preventScroll: true })
-            return
-          }
-
-          const lastIndexWithValue = inputEls.findLastIndex((inputEl) => inputEl.value !== "")
-          const indexToFocus = Math.max(lastIndexWithValue, 0)
-
-          const inputEl = inputEls[indexToFocus]
-          inputEl?.focus({ preventScroll: true })
-          // move cursor to the end
-          inputEl?.setSelectionRange(inputEl.value.length, inputEl.value.length)
+          // Keep focus that moved elsewhere (e.g. from `onValueChange`)
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
+          dom.focusInputEl(scope)
         })
       },
 
