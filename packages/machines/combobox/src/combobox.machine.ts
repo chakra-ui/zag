@@ -73,10 +73,11 @@ export const machine = createMachine({
       liveRegion: null,
       resultsRegion: null,
       finalFocusFrame: AnimationFrame.create(),
+      highlightFrame: AnimationFrame.create(),
     }
   },
 
-  exit: ["cancelFinalFocus"],
+  exit: ["cancelFinalFocus", "cancelHighlightFrame"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -412,6 +413,7 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
+      exit: ["cancelHighlightFrame"],
       effects: [
         "trackFocusVisible",
         "scrollToHighlightedItem",
@@ -916,6 +918,9 @@ export const machine = createMachine({
       cancelFinalFocus({ refs }) {
         refs.get("finalFocusFrame").cancel()
       },
+      cancelHighlightFrame({ refs }) {
+        refs.get("highlightFrame").cancel()
+      },
       syncInputValue({ context, scope, event }) {
         const inputEl = dom.getInputEl(scope)
 
@@ -993,23 +998,27 @@ export const machine = createMachine({
         const reason = getOpenChangeReason(event)
         prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
       },
-      highlightFirstItem({ context, prop, scope }) {
-        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
-        exec(() => {
+      highlightFirstItem({ context, prop, scope, refs }) {
+        const fn = () => {
           const value = prop("collection").firstValue
           if (value) context.set("highlightedValue", value)
-        })
+        }
+        // wait a frame if the content is not mounted yet
+        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        else refs.get("highlightFrame").request(fn)
       },
       highlightFirstItemIfNeeded({ computed, action }) {
         if (!computed("autoHighlight")) return
         action(["highlightFirstItem"])
       },
-      highlightLastItem({ context, prop, scope }) {
-        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
-        exec(() => {
+      highlightLastItem({ context, prop, scope, refs }) {
+        const fn = () => {
           const value = prop("collection").lastValue
           if (value) context.set("highlightedValue", value)
-        })
+        }
+        // wait a frame if the content is not mounted yet
+        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        else refs.get("highlightFrame").request(fn)
       },
       highlightNextItem({ context, prop }) {
         let value: string | null = null
@@ -1035,14 +1044,14 @@ export const machine = createMachine({
         }
         if (value) context.set("highlightedValue", value)
       },
-      highlightFirstSelectedItem({ context, prop }) {
-        raf(() => {
+      highlightFirstSelectedItem({ context, prop, refs }) {
+        refs.get("highlightFrame").request(() => {
           const [value] = prop("collection").sort(context.get("value"))
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightFirstOrSelectedItem({ context, prop, computed }) {
-        raf(() => {
+      highlightFirstOrSelectedItem({ context, prop, computed, refs }) {
+        refs.get("highlightFrame").request(() => {
           let value: string | null = null
           if (computed("hasSelectedItems")) {
             value = prop("collection").sort(context.get("value"))[0]
@@ -1052,8 +1061,8 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightLastOrSelectedItem({ context, prop, computed }) {
-        raf(() => {
+      highlightLastOrSelectedItem({ context, prop, computed, refs }) {
+        refs.get("highlightFrame").request(() => {
           const collection = prop("collection")
           let value: string | null = null
           if (computed("hasSelectedItems")) {

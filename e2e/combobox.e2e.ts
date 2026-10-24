@@ -657,3 +657,25 @@ test.describe("combobox / tabs", () => {
     await I.seeItemIsHighlighted("Select Tabs")
   })
 })
+
+test.describe("combobox [highlight frame]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await page.clock.install()
+    await I.goto()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("Escape right after ArrowDown should not leave a highlighted item", async ({ page }) => {
+    await I.focusInput()
+    await I.seeInputIsFocused()
+
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Escape")
+    await page.clock.runFor(32)
+
+    await I.dontSeeDropdown()
+    await expect(page.locator("[data-scope=combobox][data-part=item][data-highlighted]")).toHaveCount(0)
+  })
+})

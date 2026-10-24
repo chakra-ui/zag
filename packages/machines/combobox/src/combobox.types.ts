@@ -347,6 +347,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     liveRegion: LiveRegion | null
     resultsRegion: LiveRegion | null
     finalFocusFrame: AnimationFrame
+    highlightFrame: AnimationFrame
   }
   computed: {
     isCustomValue: boolean
