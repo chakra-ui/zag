@@ -107,11 +107,12 @@ export function connect<P extends PropTypes>(
           send({ type: "pointer.move", value, triggerId })
         },
         onPointerLeave() {
-          if (disabled) return
+          // while disabled, still let a closed tooltip clear the hover flag
+          if (disabled && open) return
           send({ type: "pointer.leave" })
         },
         onPointerCancel() {
-          if (disabled) return
+          if (disabled && open) return
           send({ type: "pointer.leave" })
         },
       })
