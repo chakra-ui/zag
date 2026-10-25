@@ -537,7 +537,7 @@ export const machine = createMachine<TourSchema>({
         const step = computed("step")
         if (step == null) return
         const contentEl = () => dom.getContentEl(scope)
-        return trackDismissableBranch(contentEl, { defer: true })
+        return trackDismissableBranch(contentEl, { defer: true, getRootNode: scope.getRootNode })
       },
 
       trapFocus({ computed, scope, context }) {

@@ -261,6 +261,7 @@ export const machine = createMachine({
 
         const contentDismissable = trackDismissableElement(getContentEl, {
           defer: true,
+          getRootNode: scope.getRootNode,
           onFocusOutside(event) {
             const target = event.detail.target as HTMLElement
 
