@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PasswordInputModel } from "./models/password-input.model"
 
 let I: PasswordInputModel

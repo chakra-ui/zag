@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/select/nested-dialog")

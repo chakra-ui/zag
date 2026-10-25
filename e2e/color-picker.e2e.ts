@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { ColorPickerModel } from "./models/color-picker.model"
 
 const INITIAL_VALUE = "#FF0000"

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const trigger = (id: number) => `[data-scope="dialog"][data-part="trigger"][data-value="${id}"]`
 const content = '[data-scope="dialog"][data-part="content"]'

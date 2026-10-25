@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { rect } from "./_utils"
 
 const contextTrigger = (id: number) => `[data-scope="menu"][data-part="context-trigger"][data-value="${id}"]`

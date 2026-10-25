@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PinInputModel } from "./models/pin-input.model"
 
 let I: PinInputModel

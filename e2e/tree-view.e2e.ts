@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { TreeViewModel } from "./models/tree-view.model"
 
 let I: TreeViewModel
