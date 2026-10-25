@@ -139,6 +139,7 @@ export const machine = createMachine<DialogSchema>({
         return trackDismissableElement(getContentEl, {
           type: "dialog",
           defer: true,
+          getRootNode: scope.getRootNode,
           pointerBlocking: prop("modal"),
           layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],

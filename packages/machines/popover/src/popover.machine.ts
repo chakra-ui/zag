@@ -168,6 +168,7 @@ export const machine = createMachine<PopoverSchema>({
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)

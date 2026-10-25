@@ -14,6 +14,10 @@ export interface WhenNodeOptions {
    * Called when the node never became available.
    */
   onMissing?: VoidFunction | undefined
+  /**
+   * The root the node is queried from. When set, a deferred lookup also resolves on DOM insertion.
+   */
+  getRootNode?: (() => Node) | undefined
 }
 
 /**
@@ -26,7 +30,7 @@ export function whenNode<T extends Element = HTMLElement>(
   fn: (node: T) => VoidFunction | void,
   options: WhenNodeOptions = {},
 ): VoidFunction {
-  const { defer, onMissing } = options
+  const { defer, onMissing, getRootNode } = options
 
   const getNode = () => (typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn)
   const cleanups: (VoidFunction | undefined | void)[] = []
@@ -63,9 +67,9 @@ export function whenNode<T extends Element = HTMLElement>(
         setup(node)
       }
 
-      const doc = globalThis.document
-      const stopObserving = doc
-        ? childListObserver.observe(doc, () => {
+      const rootNode = getRootNode?.()
+      const stopObserving = rootNode
+        ? childListObserver.observe(rootNode, () => {
             const node = getNode()
             if (node) settle(node)
           })

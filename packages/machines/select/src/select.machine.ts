@@ -466,6 +466,7 @@ export const machine = createMachine<SelectSchema>({
         return trackDismissableElement(contentEl, {
           type: "listbox",
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
