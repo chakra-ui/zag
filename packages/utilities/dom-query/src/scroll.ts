@@ -52,19 +52,20 @@ export function scrollToNearest(el: HTMLElement | null | undefined, options?: Sc
   const rootStyle = win.getComputedStyle(rootEl)
   const elStyle = win.getComputedStyle(el)
 
+  // work in rootEl's layout pixels, since rects include transforms but scroll offsets don't
+  const scale = rootEl.offsetHeight ? rootRect.height / rootEl.offsetHeight : 1
   const viewHeight = rootEl.clientHeight
   const viewTop =
-    rootRect.top +
-    rootEl.clientTop +
-    getLength(rootStyle.scrollPaddingBlockStart || rootStyle.scrollPaddingTop, viewHeight)
+    rootEl.clientTop + getLength(rootStyle.scrollPaddingBlockStart || rootStyle.scrollPaddingTop, viewHeight)
   const viewBottom =
-    rootRect.top +
     rootEl.clientTop +
     viewHeight -
     getLength(rootStyle.scrollPaddingBlockEnd || rootStyle.scrollPaddingBottom, viewHeight)
 
-  const top = elRect.top - getNumericStyle(elStyle.scrollMarginBlockStart || elStyle.scrollMarginTop)
-  const bottom = elRect.bottom + getNumericStyle(elStyle.scrollMarginBlockEnd || elStyle.scrollMarginBottom)
+  const top =
+    (elRect.top - rootRect.top) / scale - getNumericStyle(elStyle.scrollMarginBlockStart || elStyle.scrollMarginTop)
+  const bottom =
+    (elRect.bottom - rootRect.top) / scale + getNumericStyle(elStyle.scrollMarginBlockEnd || elStyle.scrollMarginBottom)
 
   const isLarger = bottom - top > viewBottom - viewTop
   const alignTop = top - viewTop
