@@ -369,6 +369,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "lazy-mounted", title: "Lazy Mounted" },
+      { slug: "presence", title: "Presence" },
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
