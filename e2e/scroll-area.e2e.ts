@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 
 const scrollbar = (page: Page, orientation: string) =>
   page.locator(`[data-scope=scroll-area][data-part=scrollbar][data-orientation=${orientation}]`)

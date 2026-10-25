@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { controls } from "./_utils"
 import { RatingGroupModel } from "./models/rating-group.model"
 

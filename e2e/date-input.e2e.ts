@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect } from "./_test"
 import { DateInputModel } from "./models/date-input.model"
 
 let I: DateInputModel

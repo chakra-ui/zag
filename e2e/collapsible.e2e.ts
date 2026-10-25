@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { a11y, part } from "./_utils"
 
 const trigger = part("trigger")

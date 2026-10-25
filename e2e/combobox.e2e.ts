@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { ComboboxModel } from "./models/combobox.model"
 
 let I: ComboboxModel

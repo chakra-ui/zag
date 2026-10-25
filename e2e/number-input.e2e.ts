@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { NumberInputModel } from "./models/number-input.model"
 
 let I: NumberInputModel

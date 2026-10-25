@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { rect } from "./_utils"
 
 const trigger = (id: number) => `[data-scope="tooltip"][data-part="trigger"][data-value="${id}"]`

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { TourModel } from "./models/tour.model"
 
 let I: TourModel
@@ -215,10 +215,7 @@ test.describe("tour / replaced target", () => {
 
     // the highlight moves to the element now carrying the target, and nothing is left on the old one
     await expect(page.locator("[data-tour-highlighted]")).toHaveCount(1)
-    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute(
-      "data-tour-highlighted",
-      "",
-    )
+    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute("data-tour-highlighted", "")
 
     // and the spotlight follows it rather than staying on a node that has left the document.
     // Polled, because the position is recomputed asynchronously, on the next update.

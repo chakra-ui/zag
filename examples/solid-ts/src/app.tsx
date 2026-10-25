@@ -4,7 +4,7 @@ import { FileRoutes } from "@solidjs/start/router"
 import { dataAttr } from "@zag-js/dom-query"
 import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
 import "@zag-js/shared/src/style.css"
-import { For, Suspense } from "solid-js"
+import { For, Suspense, onMount } from "solid-js"
 
 export default function App() {
   return (
@@ -32,7 +32,10 @@ export default function App() {
                   )}
                 </For>
               </aside>
-              <Suspense>{props.children}</Suspense>
+              <Suspense>
+                {props.children}
+                <Ready />
+              </Suspense>
             </MetaProvider>
           )
         }}
@@ -41,4 +44,12 @@ export default function App() {
       </Router>
     </div>
   )
+}
+
+// e2e waits for this before interacting
+function Ready() {
+  onMount(() => {
+    document.documentElement.dataset.ready = ""
+  })
+  return null
 }

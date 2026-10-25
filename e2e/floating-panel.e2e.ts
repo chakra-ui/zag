@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { FloatingPanelModel } from "./models/floating-panel.model"
 
 let I: FloatingPanelModel
