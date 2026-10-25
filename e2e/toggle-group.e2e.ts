@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { ToggleGroupModel } from "./models/toggle-group.model"
 
 let I: ToggleGroupModel

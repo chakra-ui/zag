@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect } from "./_test"
 import { a11y, controls, testid, part } from "./_utils"
 
 test.describe("splitter", () => {

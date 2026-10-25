@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { a11y, controls, part, testid } from "./_utils"
 
 const root = part("root")

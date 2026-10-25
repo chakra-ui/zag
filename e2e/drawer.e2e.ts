@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { controls } from "./_utils"
 import { DrawerModel } from "./models/drawer.model"
 

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { TabsModel } from "./models/tabs.model"
 
 let I: TabsModel

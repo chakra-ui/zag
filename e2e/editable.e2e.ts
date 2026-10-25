@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { EditableModel } from "./models/editable.model"
 import { repeat } from "./_utils"
 
