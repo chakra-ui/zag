@@ -1,7 +1,10 @@
 import type { Params } from "@zag-js/core"
 import { getEventTarget, getWindow } from "@zag-js/dom-query"
 import { createFileTypeValidator, getFileKey, isValidFileSize, type FileError } from "@zag-js/file-utils"
-import type { FileRejection, FileUploadSchema } from "./file-upload.types"
+import { mergeWithDefault } from "@zag-js/utils"
+import type { Required } from "@zag-js/types"
+import { defaultTranslations } from "./file-upload.translations"
+import type { FileRejection, FileUploadSchema, IntlTranslations } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
   const target = getEventTarget<Element>(event)
@@ -91,4 +94,16 @@ export function setInputFiles(inputEl: HTMLInputElement, files: File[]) {
   } catch {
     // do nothing
   }
+}
+
+/**
+ * Announces a message to screen readers.
+ */
+export function announce(
+  ctx: Params<FileUploadSchema>,
+  getMessage: (translations: Required<IntlTranslations>) => string,
+) {
+  const translations = mergeWithDefault(defaultTranslations, ctx.prop("translations"))
+  const message = getMessage(translations)
+  if (message) ctx.refs.get("liveRegion")?.announce(message)
 }
