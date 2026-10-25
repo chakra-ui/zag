@@ -6,7 +6,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 
-// The nav is a sticky child of the same scroll container as the content
 export default function Page() {
   const controls = useControls(tocControls)
   const scrollRef = useRef<HTMLDivElement | null>(null)

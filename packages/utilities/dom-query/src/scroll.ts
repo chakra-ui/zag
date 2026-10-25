@@ -40,11 +40,7 @@ export function scrollToElement(el: HTMLElement | null | undefined, options?: Sc
   return true
 }
 
-/**
- * Scrolls `rootEl` (and only `rootEl`, unlike `el.scrollIntoView`) by the least amount needed to
- * show `el` vertically, like `block: "nearest"`. Does nothing when `el` is already visible.
- * Returns whether a scroll was requested.
- */
+/** Like `scrollIntoView({ block: "nearest" })`, but only scrolls `rootEl` */
 export function scrollToNearest(el: HTMLElement | null | undefined, options?: ScrollToElementOptions): boolean {
   const { rootEl, behavior } = options || {}
   if (!el || !rootEl) return false
@@ -56,24 +52,31 @@ export function scrollToNearest(el: HTMLElement | null | undefined, options?: Sc
   const rootStyle = win.getComputedStyle(rootEl)
   const elStyle = win.getComputedStyle(el)
 
-  // the visible area of rootEl, excluding borders and scroll padding
+  const viewHeight = rootEl.clientHeight
   const viewTop =
-    rootRect.top + rootEl.clientTop + getNumericStyle(rootStyle.scrollPaddingBlockStart || rootStyle.scrollPaddingTop)
+    rootRect.top +
+    rootEl.clientTop +
+    getLength(rootStyle.scrollPaddingBlockStart || rootStyle.scrollPaddingTop, viewHeight)
   const viewBottom =
     rootRect.top +
     rootEl.clientTop +
-    rootEl.clientHeight -
-    getNumericStyle(rootStyle.scrollPaddingBlockEnd || rootStyle.scrollPaddingBottom)
+    viewHeight -
+    getLength(rootStyle.scrollPaddingBlockEnd || rootStyle.scrollPaddingBottom, viewHeight)
 
   const top = elRect.top - getNumericStyle(elStyle.scrollMarginBlockStart || elStyle.scrollMarginTop)
   const bottom = elRect.bottom + getNumericStyle(elStyle.scrollMarginBlockEnd || elStyle.scrollMarginBottom)
 
+  const isLarger = bottom - top > viewBottom - viewTop
+  const alignTop = top - viewTop
+  const alignBottom = bottom - viewBottom
+
   let delta = 0
-  if (top < viewTop) {
-    delta = top - viewTop
+  if (top < viewTop && bottom > viewBottom) {
+    return false
+  } else if (top < viewTop) {
+    delta = isLarger ? alignBottom : alignTop
   } else if (bottom > viewBottom) {
-    // align the bottom edge, unless that would push the top out of view
-    delta = Math.min(bottom - viewBottom, top - viewTop)
+    delta = isLarger ? alignTop : alignBottom
   }
 
   if (delta === 0) return false
@@ -84,6 +87,11 @@ export function scrollToNearest(el: HTMLElement | null | undefined, options?: Sc
 const getNumericStyle = (value: string) => {
   const numericValue = Number.parseFloat(value)
   return Number.isNaN(numericValue) ? 0 : numericValue
+}
+
+const getLength = (value: string, basis: number) => {
+  const numericValue = getNumericStyle(value)
+  return value.trim().endsWith("%") ? (numericValue * basis) / 100 : numericValue
 }
 
 export interface ScrollPosition {

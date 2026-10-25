@@ -1,4 +1,5 @@
 import type { Scope } from "@zag-js/core"
+import { getWindow } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toc:${ctx.id}`
 export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `toc:${ctx.id}:nav`
@@ -15,6 +16,23 @@ export const getItemEl = (ctx: Scope, value: string | undefined | null) => {
   return ctx.getById(getItemId(ctx, value))
 }
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
+
+const SCROLLABLE_RE = /auto|scroll|overlay|hidden/
+
+const isScrollContainer = (el: HTMLElement) => {
+  const { overflowY } = getWindow(el).getComputedStyle(el)
+  return SCROLLABLE_RE.test(overflowY) && el.scrollHeight > el.clientHeight
+}
+
+export const getScrollEl = (ctx: Scope, itemEl: HTMLElement) => {
+  const rootEl = getRootEl(ctx)
+  let el = itemEl.parentElement
+  while (el && rootEl?.contains(el)) {
+    if (isScrollContainer(el)) return el
+    el = el.parentElement
+  }
+  return null
+}
 
 /**
  * Get the heading element in the document by its slug/id.
