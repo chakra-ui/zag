@@ -87,3 +87,36 @@ test.describe("splitter", () => {
     expect(page.locator(part("resize-trigger")).first()).toHaveAttribute("data-orientation", "vertical")
   })
 })
+
+test.describe("splitter / nested", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/splitter/nested")
+  })
+
+  test("should keep the inner layout when the outer splitter resizes", async ({ page }) => {
+    const innerTrigger = page.locator(part("resize-trigger")).and(page.locator('[data-id="top:middle"]'))
+    const outerTrigger = page.locator(part("resize-trigger")).and(page.locator('[data-id="left:center"]'))
+
+    const initialValue = await innerTrigger.getAttribute("aria-valuenow")
+    const innerBox = await innerTrigger.boundingBox()
+    if (!innerBox) throw new Error("Inner resize trigger is not visible")
+
+    await page.mouse.move(innerBox.x + innerBox.width / 2, innerBox.y + innerBox.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(innerBox.x + innerBox.width / 2, innerBox.y + innerBox.height / 2 + 40, { steps: 5 })
+    await page.mouse.up()
+
+    const value = await innerTrigger.getAttribute("aria-valuenow")
+    expect(value).not.toBe(initialValue)
+
+    const outerBox = await outerTrigger.boundingBox()
+    if (!outerBox) throw new Error("Outer resize trigger is not visible")
+
+    await page.mouse.move(outerBox.x + outerBox.width / 2, outerBox.y + 10)
+    await page.mouse.down()
+    await page.mouse.move(outerBox.x + outerBox.width / 2 + 40, outerBox.y + 10, { steps: 5 })
+    await page.mouse.up()
+
+    await expect(innerTrigger).toHaveAttribute("aria-valuenow", value!)
+  })
+})
