@@ -1,6 +1,7 @@
 import { setup } from "@zag-js/core"
 import {
   addDomEvent,
+  AnimationFrame,
   contains,
   getEventTarget,
   resizeObserverBorderBox,
@@ -289,16 +290,13 @@ export const machine = createMachine({
           observer.observe(heading.el)
         }
 
-        let frame = 0
+        const frame = AnimationFrame.create()
         const onScroll = (event: Event) => {
-          if (frame) return
+          if (frame.isActive()) return
           // Ignore scrolling that doesn't move the headings
           const target = getEventTarget<Node>(event)
           if (target !== doc && !contains(target, headings[0].el)) return
-          frame = win.requestAnimationFrame(() => {
-            frame = 0
-            send({ type: "SCROLL" })
-          })
+          frame.request(() => send({ type: "SCROLL" }))
         }
 
         const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
@@ -306,7 +304,7 @@ export const machine = createMachine({
         return () => {
           observer.disconnect()
           cleanupScroll()
-          win.cancelAnimationFrame(frame)
+          frame.cancel()
           visibilityMap.clear()
           refs.set("headings", [])
           refs.set("scrollContainer", null)
