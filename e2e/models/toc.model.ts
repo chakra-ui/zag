@@ -42,10 +42,7 @@ export class TocModel extends Model {
     })
   }
 
-  /**
-   * Scrolls the content from top to bottom in small steps and returns the
-   * order in which items became active.
-   */
+  // Returns the order in which items became active
   async scrollThroughContent(step = 10) {
     const container = await this.getScrollContainer()
     return container.evaluate(
@@ -106,7 +103,6 @@ export class TocModel extends Model {
     await expect.poll(visible).toBe(true)
   }
 
-  // The nearest scrollable ancestor of the headings
   private async getScrollContainer() {
     const [firstValue] = await this.getItemValues()
     return this.page.locator(`[id="${firstValue}"]`).evaluateHandle((heading) => {

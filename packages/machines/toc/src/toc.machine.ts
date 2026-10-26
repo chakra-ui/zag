@@ -9,7 +9,6 @@ import { getBandTop, getScrollContainer, hasOverflow } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
-// How long scrolling must pause before a link-triggered scroll counts as finished
 const SCROLL_END_DELAY = 150
 
 export const machine = createMachine({
@@ -95,14 +94,14 @@ export const machine = createMachine({
         "VISIBILITY.CHANGE": {
           actions: ["syncActiveIds"],
         },
-        // Only sent in single mode: near the end of the page, the active heading changes without any intersection change
+        // Single mode only: near the end, the active heading changes without an intersection change
         SCROLL: {
           actions: ["syncActiveIds"],
         },
       },
     },
 
-    // Scrolling to a clicked item: keep it active so headings passed on the way don't take over
+    // Keeps the clicked item active while scrolling to it
     navigating: {
       effects: ["waitForScrollEnd"],
       on: {
@@ -151,7 +150,7 @@ export const machine = createMachine({
         const headings = refs.get("headings")
         if (headings.length === 0) return
 
-        // Content can grow after mount, so a container that doesn't scroll yet is looked up again
+        // Content can grow after mount
         let container = refs.get("scrollContainer")
         if (!container || !hasOverflow(container)) {
           container = getScrollContainer(prop("scrollEl")?.(), headings[0].el)
@@ -167,7 +166,7 @@ export const machine = createMachine({
           nextActiveIds = activeId ? [activeId] : []
         }
 
-        // No heading in view: the reader is inside the section whose heading scrolled past the top
+        // No heading in view: use the section the reader is in
         if (nextActiveIds.length === 0) {
           const sectionId = findCurrentSection(headings, bandTop)
           if (!sectionId) return
@@ -254,7 +253,6 @@ export const machine = createMachine({
         const scrollEl = prop("scrollEl")?.()
         const container = getScrollContainer(scrollEl, headings[0].el)
 
-        // Looked up once here, so syncing on scroll only reads layout
         refs.set("headings", headings)
         refs.set("scrollContainer", container)
 
@@ -278,11 +276,10 @@ export const machine = createMachine({
           observer.observe(heading.el)
         }
 
-        // At most one sync per frame, and only in single mode
         let frame = 0
         const onScroll = (event: Event) => {
           if (frame || prop("multiple")) return
-          // Only scrolling that moves the headings, not the nav or unrelated scrollers
+          // Ignore scrolling that doesn't move the headings
           const target = getEventTarget<Node>(event)
           if (target !== doc && !contains(target, headings[0].el)) return
           frame = win.requestAnimationFrame(() => {
@@ -291,7 +288,6 @@ export const machine = createMachine({
           })
         }
 
-        // Capture catches scrolling in any container, since scroll events don't bubble
         const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
 
         return () => {
@@ -313,10 +309,10 @@ export const machine = createMachine({
           timer = win.setTimeout(() => send({ type: "SCROLL.END" }), SCROLL_END_DELAY)
         }
 
-        // Starts right away, so it also ends when nothing scrolls (the target is already in view)
+        // Also ends when nothing scrolls
         restartTimer()
 
-        // Capture catches scrolling in any container, since scroll events don't bubble
+        // Scroll events don't bubble
         const cleanup = addDomEvent(scope.getDoc(), "scroll", restartTimer, { capture: true, passive: true })
         return () => {
           cleanup()
