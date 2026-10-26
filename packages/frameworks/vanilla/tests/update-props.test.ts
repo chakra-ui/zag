@@ -26,20 +26,50 @@ describe("updateProps", () => {
     expect(service.prop("values")).toEqual([3])
   })
 
-  test.each(["object", "getter"])("reads patches once with an initial %s source", (kind) => {
+  test.each(["object", "getter"])("keeps only the latest getter patch live with an initial %s source", (kind) => {
     const service = new VanillaMachine(machine, kind === "object" ? { value: -1 } : () => ({ value: -1 }))
-    let reads = 0
+    const reads = Array<number>(1_000).fill(0)
     for (let i = 0; i < 1_000; i++) {
       service.updateProps({
         get value() {
-          reads++
+          reads[i]++
           return i
         },
       })
     }
-    expect(reads).toBe(1_000)
     for (let i = 0; i < 100; i++) expect(service.prop("value")).toBe(999)
-    expect(reads).toBe(1_000)
+    expect(reads.slice(0, -1).every((count) => count === 0)).toBe(true)
+  })
+
+  test("keeps initial getters live after object patches", () => {
+    let items = ["a"]
+    const service = new VanillaMachine(machine, {
+      id: "test",
+      get collection() {
+        return items
+      },
+    })
+    service.updateProps({ value: 1 })
+    items = ["a", "b"]
+
+    expect(service.prop("collection")).toEqual(["a", "b"])
+    expect(service.prop("value")).toBe(1)
+  })
+
+  test("keeps getter patches live and lets a value patch override them", () => {
+    let items = ["a"]
+    const service = new VanillaMachine(machine, { id: "test" })
+    service.updateProps({
+      get collection() {
+        return items
+      },
+    })
+    items = ["a", "b"]
+    expect(service.prop("collection")).toEqual(["a", "b"])
+
+    service.updateProps({ collection: ["a", "b"] })
+    items = ["c"]
+    expect(service.prop("collection")).toEqual(["a", "b"])
   })
 
   test("supports long-lived machines without growing the prop read stack", () => {

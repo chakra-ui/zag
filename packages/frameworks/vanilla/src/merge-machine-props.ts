@@ -1,5 +1,7 @@
 import { isPlainObject } from "@zag-js/utils"
 
+const { defineProperty, getOwnPropertyDescriptor, getOwnPropertyDescriptors } = Object
+
 export function mergeMachineProps<T>(prev: T, next: Partial<T>): T {
   if (Object.is(prev, next)) return prev
   if (!isPlainObject(prev) || !isPlainObject(next)) {
@@ -7,20 +9,28 @@ export function mergeMachineProps<T>(prev: T, next: Partial<T>): T {
   }
 
   let result: any = prev
+  // Copy descriptors, not values, so getters stay live
+  const set = (key: string, descriptor: PropertyDescriptor) => {
+    if (result === prev) result = Object.defineProperties({}, getOwnPropertyDescriptors(prev))
+    defineProperty(result, key, descriptor)
+  }
 
-  for (const key of Object.keys(next)) {
-    const nextValue = (next as any)[key]
-    const prevValue = (prev as any)[key]
-
-    if (nextValue === undefined || Object.is(prevValue, nextValue)) {
+  for (const [key, descriptor] of Object.entries(getOwnPropertyDescriptors(next))) {
+    if (!descriptor.enumerable) continue
+    if (descriptor.get) {
+      set(key, descriptor)
       continue
     }
 
+    const nextValue = descriptor.value
+    if (nextValue === undefined) continue
+
+    const prevIsGetter = !!getOwnPropertyDescriptor(prev, key)?.get
+    const prevValue = (prev as any)[key]
     const value =
       isPlainObject(prevValue) && isPlainObject(nextValue) ? mergeMachineProps(prevValue, nextValue) : nextValue
-    if (Object.is(prevValue, value)) continue
-    if (result === prev) result = { ...prev }
-    result[key] = value
+    if (!prevIsGetter && Object.is(prevValue, value)) continue
+    set(key, { value, writable: true, enumerable: true, configurable: true })
   }
 
   return result
