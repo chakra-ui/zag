@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -54,6 +54,7 @@ export const machine = createMachine({
     return {
       indicatorCleanup: null,
       prevValue: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -86,7 +87,7 @@ export const machine = createMachine({
 
   entry: ["syncPrevValue", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
 
-  exit: ["cleanupObserver"],
+  exit: ["cleanupObserver", "cancelFocusFrame"],
 
   states: {
     idle: {
@@ -102,6 +103,7 @@ export const machine = createMachine({
       },
     },
     focused: {
+      exit: ["cancelFocusFrame"],
       on: {
         TAB_CLICK: {
           actions: ["setFocusedValue", "setValue", "requestNavigation"],
@@ -195,19 +197,19 @@ export const machine = createMachine({
         context.set("value", null)
       },
 
-      focusFirstTab({ scope }) {
-        raf(() => {
+      focusFirstTab({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getFirstTriggerEl(scope)?.focus()
         })
       },
 
-      focusLastTab({ scope }) {
-        raf(() => {
+      focusLastTab({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getLastTriggerEl(scope)?.focus()
         })
       },
 
-      focusNextTab({ context, prop, scope, event }) {
+      focusNextTab({ context, prop, scope, event, refs }) {
         const focusedValue = event.value ?? context.get("focusedValue")
         if (!focusedValue) return
 
@@ -216,7 +218,7 @@ export const machine = createMachine({
           loopFocus: prop("loopFocus"),
         })
 
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (prop("composite")) {
             triggerEl?.focus()
           } else if (triggerEl?.dataset.value != null) {
@@ -225,7 +227,7 @@ export const machine = createMachine({
         })
       },
 
-      focusPrevTab({ context, prop, scope, event }) {
+      focusPrevTab({ context, prop, scope, event, refs }) {
         const focusedValue = event.value ?? context.get("focusedValue")
         if (!focusedValue) return
 
@@ -234,7 +236,7 @@ export const machine = createMachine({
           loopFocus: prop("loopFocus"),
         })
 
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (prop("composite")) {
             triggerEl?.focus()
           } else if (triggerEl?.dataset.value != null) {
@@ -258,6 +260,9 @@ export const machine = createMachine({
             contentEl.setAttribute("tabindex", "0")
           }
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       cleanupObserver({ refs }) {
         const cleanup = refs.get("indicatorCleanup")

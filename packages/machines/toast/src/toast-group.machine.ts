@@ -217,7 +217,7 @@ export const groupMachine = createMachine({
         //  mark toast as a dismissable branch
         //  so that interacting with them will not close dismissable layers
         const groupEl = () => dom.getRegionEl(scope, placement)
-        const cleanup = trackDismissableBranch(groupEl, { defer: true })
+        const cleanup = trackDismissableBranch(groupEl, { defer: true, getRootNode: scope.getRootNode })
         refs.set("dismissableCleanup", cleanup)
       },
       clearDismissableBranch({ refs }) {

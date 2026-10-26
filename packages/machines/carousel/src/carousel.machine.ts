@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, raf, resizeObserverBorderBox, Timeout, trackPointerMove, trackScrollEnd } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
@@ -29,7 +29,7 @@ export const machine = createMachine<CarouselSchema>({
 
   refs() {
     return {
-      timeoutRef: undefined,
+      scrollEndTimeout: Timeout.create(),
     }
   },
 
@@ -332,48 +332,18 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const onScroll = () => {
-          clearTimeout(refs.get("timeoutRef"))
-          refs.set("timeoutRef", undefined)
-
-          refs.set(
-            "timeoutRef",
-            setTimeout(() => {
-              send({ type: "SCROLL.END" })
-            }, 150),
-          )
-        }
-
-        return addDomEvent(el, "scroll", onScroll, { passive: true })
+        return trackScrollEnd(el, () => send({ type: "SCROLL.END" }), { timeout: refs.get("scrollEndTimeout") })
       },
 
       trackSettlingScroll({ send, refs, scope }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const startTimer = () => {
-          clearTimeout(refs.get("timeoutRef"))
-          refs.set("timeoutRef", undefined)
-          refs.set(
-            "timeoutRef",
-            setTimeout(() => {
-              send({ type: "SCROLL.END" })
-            }, 200),
-          )
-        }
-
-        startTimer()
-
-        const onScroll = () => {
-          startTimer()
-        }
-
-        const cleanup = addDomEvent(el, "scroll", onScroll, { passive: true })
-        return () => {
-          cleanup()
-          clearTimeout(refs.get("timeoutRef"))
-          refs.set("timeoutRef", undefined)
-        }
+        return trackScrollEnd(el, () => send({ type: "SCROLL.END" }), {
+          delay: 200,
+          immediate: true,
+          timeout: refs.get("scrollEndTimeout"),
+        })
       },
 
       trackDocumentVisibility({ scope, send }) {
@@ -424,9 +394,7 @@ export const machine = createMachine<CarouselSchema>({
 
     actions: {
       clearScrollEndTimer({ refs }) {
-        if (refs.get("timeoutRef") == null) return
-        clearTimeout(refs.get("timeoutRef"))
-        refs.set("timeoutRef", undefined)
+        refs.get("scrollEndTimeout").clear()
       },
       scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"

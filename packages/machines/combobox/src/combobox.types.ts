@@ -1,7 +1,7 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { ModifierKeys } from "@zag-js/dom-query"
+import type { AnimationFrame, ModifierKeys } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -346,6 +346,8 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   refs: {
     liveRegion: LiveRegion | null
     resultsRegion: LiveRegion | null
+    finalFocusFrame: AnimationFrame
+    highlightFrame: AnimationFrame
   }
   computed: {
     isCustomValue: boolean

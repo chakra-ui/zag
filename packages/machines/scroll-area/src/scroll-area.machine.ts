@@ -1,12 +1,11 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, setStyleProperty, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, setStyleProperty, Timeout, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import { callAll, clampValue, ensureProps, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
 import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scroll-area.types"
 import { getScrollOffset } from "./utils/scroll-offset"
 import { getScrollSides } from "./utils/scroll-sides"
-import { Timeout } from "./utils/timeout"
 
 const MIN_THUMB_SIZE = 20
 const SCROLL_TIMEOUT = 1000
@@ -50,9 +49,9 @@ export const machine = createMachine<ScrollAreaSchema>({
     return {
       orientation: "vertical",
       scrollPosition: { x: 0, y: 0 },
-      scrollYTimeout: new Timeout(),
-      scrollXTimeout: new Timeout(),
-      scrollEndTimeout: new Timeout(),
+      scrollYTimeout: Timeout.create(),
+      scrollXTimeout: Timeout.create(),
+      scrollEndTimeout: Timeout.create(),
       startX: 0,
       startY: 0,
       startScrollTop: 0,
@@ -465,12 +464,13 @@ export const machine = createMachine<ScrollAreaSchema>({
         if (!contentEl || !rootEl) return
 
         const win = scope.getWin()
+        const measureTimeout = Timeout.create()
         const obs = new win.ResizeObserver(() => {
           // Use a small timeout to ensure scroll events are processed before resize adjustments
           // This prevents conflicts between scroll events and resize observer events
-          setTimeout(() => {
+          measureTimeout.start(1, () => {
             send({ type: "thumb.measure" })
-          }, 1)
+          })
         })
 
         obs.observe(contentEl)
@@ -478,6 +478,7 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         return () => {
           obs.disconnect()
+          measureTimeout.clear()
         }
       },
 

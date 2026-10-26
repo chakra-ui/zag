@@ -626,6 +626,7 @@ export const machine = createMachine<MenuSchema>({
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
@@ -696,17 +697,22 @@ export const machine = createMachine<MenuSchema>({
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec()
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 

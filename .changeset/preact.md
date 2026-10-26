@@ -1,5 +1,4 @@
 ---
-"@zag-js/react": patch
 "@zag-js/preact": patch
 ---
 

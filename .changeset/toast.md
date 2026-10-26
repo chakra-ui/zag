@@ -8,3 +8,4 @@
   pointer away.
 - Fix new and queued toasts appearing collapsed while the stack is expanded.
 - Fix toast height not updating when its content resizes.
+- Fix swapped offsets when several toasts are created at once in adapters that batch renders (e.g. Vue).

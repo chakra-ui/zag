@@ -4,6 +4,7 @@ import "@zag-js/shared/src/style.css"
 import { AppProps } from "next/app"
 import Head from "next/head"
 import Link from "next/link"
+import { useEffect } from "react"
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const pathname = router.asPath.split("?")[0] || "/"
@@ -12,6 +13,11 @@ export default function App({ Component, pageProps, router }: AppProps) {
     router.pathname === "/[component]" && router.query.component ? String(router.query.component) : null
   const currentComponent =
     routeComponent ?? getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
+
+  // e2e waits for this before interacting
+  useEffect(() => {
+    document.documentElement.dataset.ready = ""
+  }, [])
 
   return (
     <div className="page">

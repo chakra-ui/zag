@@ -11,6 +11,7 @@ export const props = createProps<TocProps>()([
   "id",
   "ids",
   "items",
+  "multiple",
   "onActiveChange",
   "rootMargin",
   "scrollBehavior",

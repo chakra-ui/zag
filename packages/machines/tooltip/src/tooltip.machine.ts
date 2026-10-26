@@ -417,14 +417,19 @@ export const machine = createMachine<TooltipSchema>({
 
       trackStore: ({ prop, send }) => {
         let cleanup: VoidFunction | undefined
+        let cancelled = false
         queueMicrotask(() => {
+          if (cancelled) return
           cleanup = store.subscribe(() => {
             if (store.get("id") !== prop("id")) {
               send({ type: "close", src: "id.change" })
             }
           })
         })
-        return () => cleanup?.()
+        return () => {
+          cancelled = true
+          cleanup?.()
+        }
       },
 
       trackEscapeKey: ({ send, prop }) => {
