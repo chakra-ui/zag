@@ -7,6 +7,7 @@ import type {
   GuardFn,
   Machine,
   MachineSchema,
+  Scope,
   Service,
 } from "@zag-js/core"
 import {
@@ -19,7 +20,7 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { callAll, compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { callAll, compact, ensure, isEqual, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
@@ -31,9 +32,22 @@ export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
   userProps: MaybeRef<Partial<T["props"]>> = {},
 ): Service<T> {
-  const scope = __computed(() => {
+  let scopeProps: Pick<Scope, "id" | "ids" | "getRootNode"> | undefined
+
+  // Keep the same scope while its inputs are unchanged, so readers of `service.scope` don't depend on every prop
+  const scope = __computed((prev?: Scope) => {
     const { id, ids, getRootNode } = toValue(userProps) as any
-    return createScope({ id, ids, getRootNode })
+    if (
+      prev &&
+      scopeProps &&
+      scopeProps.id === id &&
+      scopeProps.getRootNode === getRootNode &&
+      isEqual(scopeProps.ids, ids)
+    ) {
+      return prev
+    }
+    scopeProps = { id, ids, getRootNode }
+    return createScope(scopeProps)
   })
 
   const debug = (...args: any[]) => {

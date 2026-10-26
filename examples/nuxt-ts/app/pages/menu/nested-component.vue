@@ -1,11 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue"
+
+const placement = ref<"right-start" | "left-start">("right-start")
+</script>
 
 <template>
   <main>
     <div>
       <!-- Parent menu -->
       <NestedMenu v-slot="{ api: root }">
-        <button v-bind="root.getTriggerProps()">File <span v-bind="root.getIndicatorProps()">▾</span></button>
+        <button data-testid="trigger" v-bind="root.getTriggerProps()">
+          File <span v-bind="root.getIndicatorProps()">▾</span>
+        </button>
 
         <Teleport to="#teleports">
           <div v-bind="root.getPositionerProps()">
@@ -14,8 +20,8 @@
               <li v-bind="root.getItemProps({ value: 'open' })">Open...</li>
 
               <!-- Submenu: Share -->
-              <NestedMenu v-slot="{ api: share, triggerItemProps }">
-                <li v-bind="triggerItemProps">Share →</li>
+              <NestedMenu v-slot="{ api: share, triggerItemProps }" :positioning="{ placement, gutter: 4 }">
+                <li data-testid="share-trigger" v-bind="triggerItemProps">Share →</li>
                 <Teleport to="#teleports">
                   <div v-bind="share.getPositionerProps()">
                     <ul data-testid="share-submenu" v-bind="share.getContentProps()">
