@@ -34,7 +34,7 @@ export function useMachine<T extends MachineSchema>(
 ): Service<T> {
   let scopeProps: Pick<Scope, "id" | "ids" | "getRootNode"> | undefined
 
-  // Keep the same scope while its inputs are unchanged, so readers of `service.scope` don't depend on every prop
+  // Reuse the scope so readers don't track every prop
   const scope = __computed((prev?: Scope) => {
     const { id, ids, getRootNode } = toValue(userProps) as any
     if (
