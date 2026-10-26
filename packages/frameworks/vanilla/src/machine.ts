@@ -61,7 +61,16 @@ export class VanillaMachine<T extends MachineSchema> {
   private cleanups: VoidFunction[] = []
   private subscriptions: Array<(service: Service<T>) => void> = []
 
-  private userPropsRef: { current: Partial<T["props"]> | (() => Partial<T["props"]>) }
+  private userProps: Partial<T["props"]> | undefined
+  private userPropsGetter: (() => Partial<T["props"]>) | undefined
+  private userPropsOverrides: Partial<T["props"]> | undefined
+
+  private getUserProps = (): Partial<T["props"]> => {
+    if (!this.userPropsGetter) return this.userProps!
+    const next = this.userPropsGetter()
+    const props = this.userProps ? mergeMachineProps(this.userProps, next) : next
+    return this.userPropsOverrides ? mergeMachineProps(props, this.userPropsOverrides) : props
+  }
 
   private getEvent = () => ({
     ...this.event,
@@ -88,7 +97,8 @@ export class VanillaMachine<T extends MachineSchema> {
     private machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
-    this.userPropsRef = { current: userProps }
+    if (isFunction(userProps)) this.userPropsGetter = userProps
+    else this.userProps = userProps
 
     // create scope
     const { id, ids, getRootNode } = runIfFn(userProps) as any
@@ -96,7 +106,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
     // create prop
     const prop: PropFn<T> = (key) => {
-      const __props = runIfFn(this.userPropsRef.current)
+      const __props = this.getUserProps()
       const props: any = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
       return props[key] as any
     }
@@ -208,13 +218,20 @@ export class VanillaMachine<T extends MachineSchema> {
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
+  /**
+   * Applies a partial props update. Objects are merged eagerly. A function replaces the live getter,
+   * retaining omitted props at their last resolved values. Every update notifies subscribers.
+   */
   updateProps(newProps: Partial<T["props"]> | (() => Partial<T["props"]>)) {
-    const prevSource = this.userPropsRef.current
-
-    this.userPropsRef.current = () => {
-      const prev = runIfFn(prevSource)
-      const next = runIfFn(newProps)
-      return mergeMachineProps(prev, next)
+    if (isFunction(newProps)) {
+      // Retain omitted props, but only the latest getter remains live.
+      this.userProps = { ...this.getUserProps() }
+      this.userPropsGetter = newProps
+      this.userPropsOverrides = undefined
+    } else if (this.userPropsGetter) {
+      this.userPropsOverrides = mergeMachineProps(this.userPropsOverrides ?? {}, newProps)
+    } else {
+      this.userProps = mergeMachineProps(this.userProps!, newProps)
     }
 
     this.notify()
