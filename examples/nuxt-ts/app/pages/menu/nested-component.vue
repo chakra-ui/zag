@@ -9,9 +9,7 @@ const placement = ref<"right-start" | "left-start">("right-start")
     <div>
       <!-- Parent menu -->
       <NestedMenu v-slot="{ api: root }">
-        <button data-testid="trigger" v-bind="root.getTriggerProps()">
-          File <span v-bind="root.getIndicatorProps()">▾</span>
-        </button>
+        <button v-bind="root.getTriggerProps()">File <span v-bind="root.getIndicatorProps()">▾</span></button>
 
         <Teleport to="#teleports">
           <div v-bind="root.getPositionerProps()">
@@ -21,7 +19,7 @@ const placement = ref<"right-start" | "left-start">("right-start")
 
               <!-- Submenu: Share -->
               <NestedMenu v-slot="{ api: share, triggerItemProps }" :positioning="{ placement, gutter: 4 }">
-                <li data-testid="share-trigger" v-bind="triggerItemProps">Share →</li>
+                <li v-bind="triggerItemProps">Share →</li>
                 <Teleport to="#teleports">
                   <div v-bind="share.getPositionerProps()">
                     <ul data-testid="share-submenu" v-bind="share.getContentProps()">

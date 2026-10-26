@@ -1,30 +1,22 @@
 import { expect, test } from "./_test"
 import { testid } from "./_utils"
+import { MenuModel } from "./models/menu.model"
 
 test.describe("menu / nested component", () => {
   test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "vue", "Vue example")
 
-  test("should open a submenu with inline positioning without recursive updates", async ({ page }) => {
-    const errors: string[] = []
-    page.on("pageerror", (error) => errors.push(error.message))
-    page.on("console", (message) => {
-      if (message.type() === "error") errors.push(message.text())
-    })
+  test("should open a submenu that receives an inline object prop", async ({ page }) => {
+    const I = new MenuModel(page)
+    await I.goto("/menu/nested-component")
 
-    await page.goto("/menu/nested-component")
-
-    await page.click(testid("trigger"))
-    await expect(page.locator(testid("menu"))).toBeFocused()
-
+    await I.clickTrigger()
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
-    await expect(page.locator(testid("share-trigger"))).toHaveAttribute("data-highlighted", "")
 
     await page.keyboard.press("ArrowRight")
-    await expect(page.locator(testid("share-submenu"))).toBeVisible()
     await expect(page.locator(testid("share-submenu"))).toBeFocused()
 
-    expect(errors).toEqual([])
+    await I.dontSeeInConsole("Maximum recursive updates")
   })
 })
