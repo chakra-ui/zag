@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { ColorPickerModel } from "./models/color-picker.model"
 
 const INITIAL_VALUE = "#FF0000"
@@ -167,5 +167,19 @@ test.describe("color-picker / disabled", () => {
 
   test("[disabled] channel slider thumb should expose aria-disabled", async () => {
     await I.seeChannelThumbIsDisabled("hue")
+  })
+})
+
+test.describe("color-picker / focus moved on value change", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ColorPickerModel(page)
+    await I.goto("/color-picker/focus-next-field")
+  })
+
+  test("should keep focus where onValueChange moved it", async () => {
+    await I.clickTrigger()
+    await I.clickSwatch(1)
+    await I.waitForFrames()
+    await I.seeElementIsFocused("next-field")
   })
 })

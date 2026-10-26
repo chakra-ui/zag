@@ -4,9 +4,9 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   addDomEvent,
-  contains,
   getComputedStyle,
   getInitialFocus,
+  isFocusOutside,
   raf,
   resizeObserverBorderBox,
   waitForElement,
@@ -489,8 +489,7 @@ export const machine = createMachine<DrawerSchema>({
 
         raf(() => {
           // Don't take focus back from an element the user moved to
-          const activeEl = scope.getActiveElement()
-          if (activeEl && activeEl !== scope.getDoc().body && !contains(contentEl, activeEl)) return
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           returnFocusEl?.focus({ preventScroll: true })
         })
       },
@@ -752,6 +751,7 @@ export const machine = createMachine<DrawerSchema>({
         return trackDismissableElement(getContentEl, {
           type: "drawer",
           defer: true,
+          getRootNode: scope.getRootNode,
           pointerBlocking: prop("modal"),
           layerStyleTargets: [() => dom.getBackdropEl(scope), () => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
@@ -934,6 +934,7 @@ function waitForContentEl(
   const contentEl = dom.getContentEl(scope)
   let cleanup = contentEl ? setup(contentEl) : undefined
   let abort: VoidFunction | undefined
+  let disposed = false
 
   if (!cleanup) {
     const [promise, cancel] = waitForElement(() => dom.getContentEl(scope), {
@@ -941,10 +942,16 @@ function waitForContentEl(
       rootNode: scope.getDoc(),
     })
     abort = cancel
-    promise.then((el) => (cleanup = setup(el))).catch(noop)
+    promise
+      .then((el) => {
+        if (disposed) return
+        cleanup = setup(el)
+      })
+      .catch(noop)
   }
 
   return () => {
+    disposed = true
     abort?.()
     cleanup?.()
   }

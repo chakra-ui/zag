@@ -7,6 +7,7 @@ import {
 import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   clickIfLink,
   getModifierKeys,
   isApple,
@@ -71,8 +72,12 @@ export const machine = createMachine({
     return {
       liveRegion: null,
       resultsRegion: null,
+      finalFocusFrame: AnimationFrame.create(),
+      highlightFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFinalFocus", "cancelHighlightFrame"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -290,6 +295,7 @@ export const machine = createMachine({
         focused: {
           tags: ["focused"],
           entry: ["scrollContentToTop", "clearHighlightedValue"],
+          exit: ["cancelFinalFocus"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -407,6 +413,7 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
+      exit: ["cancelHighlightFrame"],
       effects: [
         "trackFocusVisible",
         "scrollToHighlightedItem",
@@ -692,6 +699,7 @@ export const machine = createMachine({
         return trackDismissableElement(contentEl, {
           type: "listbox",
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -898,8 +906,8 @@ export const machine = createMachine({
           dom.focusInputEl(scope)
         })
       },
-      setFinalFocus({ scope }) {
-        raf(() => {
+      setFinalFocus({ scope, refs }) {
+        refs.get("finalFocusFrame").request(() => {
           const triggerEl = dom.getTriggerEl(scope)
           if (triggerEl?.dataset.focusable == null) {
             dom.focusInputEl(scope)
@@ -907,6 +915,12 @@ export const machine = createMachine({
             dom.focusTriggerEl(scope)
           }
         })
+      },
+      cancelFinalFocus({ refs }) {
+        refs.get("finalFocusFrame").cancel()
+      },
+      cancelHighlightFrame({ refs }) {
+        refs.get("highlightFrame").cancel()
       },
       syncInputValue({ context, scope, event }) {
         const inputEl = dom.getInputEl(scope)
@@ -985,23 +999,27 @@ export const machine = createMachine({
         const reason = getOpenChangeReason(event)
         prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
       },
-      highlightFirstItem({ context, prop, scope }) {
-        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
-        exec(() => {
+      highlightFirstItem({ context, prop, scope, refs }) {
+        const fn = () => {
           const value = prop("collection").firstValue
           if (value) context.set("highlightedValue", value)
-        })
+        }
+        // wait a frame if the content is not mounted yet
+        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        else refs.get("highlightFrame").request(fn)
       },
       highlightFirstItemIfNeeded({ computed, action }) {
         if (!computed("autoHighlight")) return
         action(["highlightFirstItem"])
       },
-      highlightLastItem({ context, prop, scope }) {
-        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
-        exec(() => {
+      highlightLastItem({ context, prop, scope, refs }) {
+        const fn = () => {
           const value = prop("collection").lastValue
           if (value) context.set("highlightedValue", value)
-        })
+        }
+        // wait a frame if the content is not mounted yet
+        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        else refs.get("highlightFrame").request(fn)
       },
       highlightNextItem({ context, prop }) {
         let value: string | null = null
@@ -1027,14 +1045,14 @@ export const machine = createMachine({
         }
         if (value) context.set("highlightedValue", value)
       },
-      highlightFirstSelectedItem({ context, prop }) {
-        raf(() => {
+      highlightFirstSelectedItem({ context, prop, refs }) {
+        refs.get("highlightFrame").request(() => {
           const [value] = prop("collection").sort(context.get("value"))
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightFirstOrSelectedItem({ context, prop, computed }) {
-        raf(() => {
+      highlightFirstOrSelectedItem({ context, prop, computed, refs }) {
+        refs.get("highlightFrame").request(() => {
           let value: string | null = null
           if (computed("hasSelectedItems")) {
             value = prop("collection").sort(context.get("value"))[0]
@@ -1044,8 +1062,8 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightLastOrSelectedItem({ context, prop, computed }) {
-        raf(() => {
+      highlightLastOrSelectedItem({ context, prop, computed, refs }) {
+        refs.get("highlightFrame").request(() => {
           const collection = prop("collection")
           let value: string | null = null
           if (computed("hasSelectedItems")) {

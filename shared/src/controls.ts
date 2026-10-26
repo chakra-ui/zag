@@ -85,6 +85,10 @@ export const hoverCardControls = defineControls({
   closeDelay: { type: "number", defaultValue: 300 },
 })
 
+export const tooltipControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+})
+
 export const numberInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
@@ -352,6 +356,7 @@ export const stepsControls = defineControls({
 
 export const tocControls = defineControls({
   autoScroll: { type: "boolean", defaultValue: true },
+  multiple: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 

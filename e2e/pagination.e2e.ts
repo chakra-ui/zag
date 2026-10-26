@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PaginationModel } from "./models/pagination.model"
 
 let I: PaginationModel

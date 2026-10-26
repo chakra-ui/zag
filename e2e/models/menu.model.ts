@@ -67,6 +67,10 @@ export class MenuModel extends Model {
     await this.page.mouse.move(0, 0)
   }
 
+  seeTriggerIsCollapsed = async () => {
+    await expect(this.trigger).toHaveAttribute("aria-expanded", "false")
+  }
+
   seeDropdownIsFocused = async () => {
     await expect(this.content).toBeFocused()
   }

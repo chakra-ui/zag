@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
+import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -180,6 +180,7 @@ export interface MenuSchema {
     pointerRoutingLocked: boolean
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
+    focusMenuFrame: AnimationFrame
   }
 
   action: string

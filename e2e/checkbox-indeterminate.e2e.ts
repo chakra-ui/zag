@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { testid } from "./_utils"
 
 test("should sync the native input when initially indeterminate", async ({ page }) => {

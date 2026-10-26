@@ -2,6 +2,7 @@ import { createGuards, createMachine, type Transition } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
+  AnimationFrame,
   clickIfLink,
   contains,
   getByTypeahead,
@@ -137,8 +138,11 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingLocked: false,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
+      focusMenuFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFocusMenu"],
 
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
@@ -417,6 +421,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "unlockParentOnOpen"],
+      exit: ["cancelFocusMenu"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -621,6 +626,7 @@ export const machine = createMachine<MenuSchema>({
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
@@ -691,17 +697,22 @@ export const machine = createMachine<MenuSchema>({
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec()
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 
@@ -815,8 +826,8 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope }) {
-        raf(() => {
+      focusMenu({ scope, refs }) {
+        refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
@@ -828,6 +839,9 @@ export const machine = createMachine<MenuSchema>({
           if (!initialFocusEl) return
           initialFocusEl.focus({ preventScroll: true })
         })
+      },
+      cancelFocusMenu({ refs }) {
+        refs.get("focusMenuFrame").cancel()
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted

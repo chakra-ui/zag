@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -128,6 +129,9 @@ export interface RatingGroupSchema {
   props: RequiredBy<RatingGroupProps, PropsWithDefault>
   computed: ComputedContext
   private: PrivateContext
+  refs: {
+    focusFrame: AnimationFrame
+  }
   action: string
   event: EventObject
   effect: string
