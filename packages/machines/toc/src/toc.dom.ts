@@ -26,7 +26,7 @@ const isScrollable = (el: HTMLElement) => {
 }
 
 export const getScrollEl = (ctx: Scope, itemEl: HTMLElement) => {
-  const navEl = getNavEl(ctx) ?? getListEl(ctx)
+  const navEl = getNavEl(ctx) ?? getRootEl(ctx)
   if (!navEl) return null
   let el = getNearestOverflowAncestor(itemEl)
   while (navEl.contains(el) && !isScrollable(el)) el = getNearestOverflowAncestor(el)
