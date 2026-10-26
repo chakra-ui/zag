@@ -128,6 +128,7 @@ export interface TocSchema {
     indicatorCleanup: VoidFunction | null
     rootBounds: DOMRectReadOnly | null
     headings: Heading[]
+    headingObserver: IntersectionObserver | null
     scrollContainer: HTMLElement | null
   }
   computed: {

@@ -1,4 +1,4 @@
-import { setup } from "@zag-js/core"
+import { setup, type Params } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
@@ -57,6 +57,7 @@ export const machine = createMachine({
   refs() {
     return {
       headings: [],
+      headingObserver: null,
       scrollContainer: null,
       visibilityMap: new Map<string, boolean>(),
       rootBounds: null,
@@ -78,6 +79,17 @@ export const machine = createMachine({
     track([() => prop("multiple")], () => {
       action(["syncActiveIds"])
     })
+    track(
+      [
+        () =>
+          prop("items")
+            .map((item) => item.value)
+            .join(),
+      ],
+      () => {
+        action(["syncHeadings"])
+      },
+    )
   },
 
   entry: ["syncIndicatorRect"],
@@ -189,6 +201,10 @@ export const machine = createMachine({
         context.set("activeIds", nextActiveIds)
       },
 
+      syncHeadings(params) {
+        observeHeadings(params)
+      },
+
       cleanupIndicatorObserver({ refs }) {
         refs.get("indicatorCleanup")?.()
       },
@@ -251,18 +267,10 @@ export const machine = createMachine({
     },
 
     effects: {
-      trackHeadings({ scope, prop, refs, send }) {
-        const headings = dom.getHeadings(scope, prop("items"))
-        if (headings.length === 0) return
-
+      trackHeadings(params) {
+        const { scope, prop, refs, send } = params
         const win = scope.getWin()
         const doc = scope.getDoc()
-        const scrollEl = prop("scrollEl")?.()
-        const container = getScrollContainer(scrollEl, headings[0].el)
-
-        refs.set("headings", headings)
-        refs.set("scrollContainer", container)
-
         const visibilityMap = refs.get("visibilityMap")
         const observer = new win.IntersectionObserver(
           (entries) => {
@@ -273,21 +281,23 @@ export const machine = createMachine({
             send({ type: "VISIBILITY.CHANGE" })
           },
           {
-            root: scrollEl ?? null,
+            root: prop("scrollEl")?.() ?? null,
             rootMargin: prop("rootMargin"),
             threshold: prop("threshold"),
           },
         )
 
-        for (const heading of headings) {
-          observer.observe(heading.el)
-        }
+        refs.set("headingObserver", observer)
+        observeHeadings(params)
 
         const frame = AnimationFrame.create()
         const onScroll = (event: Event) => {
           if (frame.isActive()) return
+          const headings = refs.get("headings")
+          if (headings.length === 0) return
           const target = getEventTarget<Node>(event)
-          const movesHeadings = target === doc || target === container || contains(target, headings[0].el)
+          const movesHeadings =
+            target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
           if (!movesHeadings) return
           frame.request(() => send({ type: "SCROLL" }))
         }
@@ -299,6 +309,7 @@ export const machine = createMachine({
           cleanupScroll()
           frame.cancel()
           visibilityMap.clear()
+          refs.set("headingObserver", null)
           refs.set("headings", [])
           refs.set("scrollContainer", null)
         }
@@ -310,3 +321,23 @@ export const machine = createMachine({
     },
   },
 })
+
+/** Caches and observes the headings of the current items */
+function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
+  const observer = refs.get("headingObserver")
+  if (!observer) return
+
+  observer.disconnect()
+  refs.get("visibilityMap").clear()
+
+  const headings = dom.getHeadings(scope, prop("items"))
+  refs.set("headings", headings)
+  refs.set("scrollContainer", headings.length ? getScrollContainer(prop("scrollEl")?.(), headings[0].el) : null)
+
+  // Observing reports each heading's visibility, which resyncs the active ids
+  for (const heading of headings) {
+    observer.observe(heading.el)
+  }
+
+  if (headings.length === 0) context.set("activeIds", [])
+}
