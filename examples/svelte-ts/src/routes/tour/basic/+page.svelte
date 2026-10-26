@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Iframe from "$lib/components/iframe.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import Iframe from "#lib/components/iframe.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import { tourControls, tourData } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"

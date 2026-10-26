@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Presence from "$lib/components/presence.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as hoverCard from "@zag-js/hover-card"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
 

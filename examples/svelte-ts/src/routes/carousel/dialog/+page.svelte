@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Presence from "$lib/components/presence.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as carousel from "@zag-js/carousel"
   import * as dialog from "@zag-js/dialog"
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const SLIDE_COUNT = 30

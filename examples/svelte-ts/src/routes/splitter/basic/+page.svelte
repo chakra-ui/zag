@@ -2,9 +2,9 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { splitterControls } from "@zag-js/shared"
   import * as splitter from "@zag-js/splitter"
-  import { useControls } from "$lib/use-controls.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
 
   const controls = useControls(splitterControls)
 

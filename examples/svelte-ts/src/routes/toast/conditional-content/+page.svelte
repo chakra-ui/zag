@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ConditionalContentToast from "$lib/components/conditional-content-toast.svelte"
+  import ConditionalContentToast from "#lib/components/conditional-content-toast.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
   import { onMount } from "svelte"

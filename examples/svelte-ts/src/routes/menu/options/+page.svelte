@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { useControls } from "$lib/use-controls.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import { menuOptionData, menuControls } from "@zag-js/shared"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
 
   const controls = useControls(menuControls)
 

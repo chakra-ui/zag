@@ -9,7 +9,7 @@ import { defineConfig } from "vite"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // Load package mappings
-let packageMap = {}
+let packageMap: Record<string, string> = {}
 const packageMapPath = resolve(__dirname, "package-map.json")
 if (existsSync(packageMapPath)) {
   packageMap = JSON.parse(readFileSync(packageMapPath, "utf8"))
@@ -21,13 +21,15 @@ export default defineConfig({
   plugins: [
     sveltekit({
       adapter: adapter(),
-      alias: { $lib: "src/lib", ...packageMap },
       preprocess: vitePreprocess(),
       compilerOptions: {
         warningFilter: (warning) => warning.code !== "a11y_invalid_attribute",
       },
     }),
   ],
+  resolve: {
+    alias: Object.fromEntries(Object.entries(packageMap).map(([name, path]) => [name, resolve(__dirname, path)])),
+  },
   server: {
     port: Number(process.env.PORT) || 3003,
     strictPort: true,

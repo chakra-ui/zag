@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as toggle from "@zag-js/toggle"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 

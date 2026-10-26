@@ -3,13 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "imports": {
+    "#lib": "./src/lib",
+    "#lib/*": "./src/lib/*"
+  },
   "scripts": {
     "predev": "pnpm generate-map",
     "dev": "vite dev",
     "prebuild": "pnpm generate-map",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --compiler-warnings a11y_invalid_attribute:ignore",
     "generate-map": "node package-map.mjs"
   },
   "dependencies": {

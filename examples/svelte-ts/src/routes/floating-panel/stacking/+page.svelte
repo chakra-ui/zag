@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FloatingPanelStackItem from "$lib/components/floating-panel-stack-item.svelte"
+  import FloatingPanelStackItem from "#lib/components/floating-panel-stack-item.svelte"
 </script>
 
 <main class="floating-panel">

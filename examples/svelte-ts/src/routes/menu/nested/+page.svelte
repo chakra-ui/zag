@@ -2,8 +2,8 @@
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import { menuData } from "@zag-js/shared"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { onMount } from "svelte"
 
   const service = useMachine(menu.machine, { id: "1" })
