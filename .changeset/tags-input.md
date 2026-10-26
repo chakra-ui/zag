@@ -7,3 +7,5 @@
 - Fix a tag staying highlighted after pressing Escape right after deleting the first tag, so a later Delete removed it.
 - Fix focus jumping back to the input when focus moves away right after editing a tag.
 - Fix a paste with `addOnPaste` adding tags and calling `onValueChange` after the component unmounts.
+- Fix a regex `delimiter` not creating tags while typing when it has flags (e.g. `/\p{P}/u`) or several characters, and
+  matching anywhere in the input when it has alternatives.

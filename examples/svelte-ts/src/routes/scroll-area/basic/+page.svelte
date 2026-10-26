@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as scrollArea from "@zag-js/scroll-area"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
 
   const id = $props.id()
   const service = useMachine(scrollArea.machine, { id })

@@ -67,6 +67,10 @@ export class NavigationMenuModel extends Model {
     await expect(this.getLink(value)).toBeFocused()
   }
 
+  async seeContentLinksAreTabbable(value: string) {
+    await expect(this.getContent(value).locator('a[tabindex="-1"]')).toHaveCount(0)
+  }
+
   async wait(ms: number) {
     await this.page.waitForTimeout(ms)
   }

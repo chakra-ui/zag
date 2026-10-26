@@ -2,9 +2,9 @@
   import * as qrCode from "@zag-js/qr-code"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
   import { qrCodeControls } from "@zag-js/shared"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
 
   const controls = useControls(qrCodeControls)
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ToastItem from "$lib/components/toast-item.svelte"
+  import ToastItem from "#lib/components/toast-item.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
 

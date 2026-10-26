@@ -48,6 +48,7 @@ export function connect<P extends PropTypes>(
       const { value } = props
       const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
+
       return normalize.button({
         ...parts.trigger.attrs,
         id: triggerId,
@@ -107,11 +108,9 @@ export function connect<P extends PropTypes>(
           send({ type: "pointer.move", value, triggerId })
         },
         onPointerLeave() {
-          if (disabled) return
           send({ type: "pointer.leave" })
         },
         onPointerCancel() {
-          if (disabled) return
           send({ type: "pointer.leave" })
         },
       })

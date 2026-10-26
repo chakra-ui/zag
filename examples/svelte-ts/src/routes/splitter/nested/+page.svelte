@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as splitter from "@zag-js/splitter"
-  import Splitter, { getSplitterApi } from "$lib/components/splitter.svelte"
+  import Splitter, { getSplitterApi } from "#lib/components/splitter.svelte"
 
   const registry = splitter.registry({
     hitAreaMargins: { coarse: 15, fine: 8 },

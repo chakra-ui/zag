@@ -142,6 +142,10 @@ export const machine = createMachine<TooltipSchema>({
         ],
         "pointer.leave": [
           {
+            guard: "isDisabled",
+            actions: ["clearPointerMoveOpened"],
+          },
+          {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
             actions: ["clearPointerMoveOpened", "invokeOnClose", "toggleVisibility"],
@@ -183,6 +187,11 @@ export const machine = createMachine<TooltipSchema>({
           },
         ],
         "pointer.leave": [
+          {
+            // A controlled tooltip can stay open while disabled
+            guard: "isDisabled",
+            actions: ["clearPointerMoveOpened"],
+          },
           {
             guard: "isVisible",
             target: "closing",
@@ -279,6 +288,7 @@ export const machine = createMachine<TooltipSchema>({
       isInteractive: ({ prop }) => !!prop("interactive"),
       hasPointerMoveOpened: ({ context }) => !!context.get("hasPointerMoveOpened"),
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
+      isDisabled: ({ prop }) => !!prop("disabled"),
     },
 
     actions: {
@@ -302,10 +312,8 @@ export const machine = createMachine<TooltipSchema>({
         prop("onOpenChange")?.({ open: false })
       },
 
-      closeIfDisabled: ({ prop, send, context }) => {
+      closeIfDisabled: ({ prop, send }) => {
         if (!prop("disabled")) return
-        // the trigger ignores pointerleave while disabled, so clear the flag here
-        context.set("hasPointerMoveOpened", null)
         send({ type: "close", src: "disabled.change" })
       },
 

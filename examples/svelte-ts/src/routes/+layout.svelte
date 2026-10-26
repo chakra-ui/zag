@@ -1,18 +1,22 @@
 <script lang="ts">
   import "../../../../shared/src/style.css"
   import { afterNavigate } from "$app/navigation"
-  import { page } from "$app/stores"
+  import { page } from "$app/state"
   import { dataAttr } from "@zag-js/dom-query"
   import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
+
+  let { children } = $props()
 
   // e2e waits for this before interacting
   afterNavigate(() => {
     document.documentElement.dataset.ready = ""
   })
 
-  $: pathname = $page.url.pathname.split("?")[0] || "/"
-  $: pathnameComponent = pathname.split("/").filter(Boolean)[0] ?? ""
-  $: currentComponent = getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
+  const pathname = $derived(page.url.pathname.split("?")[0] || "/")
+  const pathnameComponent = $derived(pathname.split("/").filter(Boolean)[0] ?? "")
+  const currentComponent = $derived(
+    getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : ""),
+  )
 </script>
 
 <div class="page">
@@ -25,5 +29,5 @@
     {/each}
   </aside>
 
-  <slot />
+  {@render children()}
 </div>
