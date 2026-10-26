@@ -1,29 +1,31 @@
 import { describe, expect, test } from "vitest"
-import { endsWithDelimiter } from "../src/tags-input.utils"
+import { trimTrailingDelimiter } from "../src/tags-input.utils"
 
 describe("@zag-js/tags-input utils", () => {
   test("string delimiter", () => {
-    expect(endsWithDelimiter("react,", ",")).toBe(true)
-    expect(endsWithDelimiter("re,act", ",")).toBe(false)
-    expect(endsWithDelimiter("react", undefined)).toBe(false)
+    expect(trimTrailingDelimiter("react,", ",")).toBe("react")
+    expect(trimTrailingDelimiter("re,act", ",")).toBeUndefined()
+    expect(trimTrailingDelimiter("react", undefined)).toBeUndefined()
   })
 
   test("regex delimiter", () => {
-    expect(endsWithDelimiter("react,", /[,\s]+/)).toBe(true)
-    expect(endsWithDelimiter("react ", /[,\s]+/)).toBe(true)
-    expect(endsWithDelimiter("react", /[,\s]+/)).toBe(false)
+    expect(trimTrailingDelimiter("react, ", /[,\s]+/)).toBe("react")
+    expect(trimTrailingDelimiter("react", /[,\s]+/)).toBeUndefined()
   })
 
   test("regex delimiter with alternation only matches at the end", () => {
-    expect(endsWithDelimiter("react;", /,|;/)).toBe(true)
-    expect(endsWithDelimiter("react,", /,|;/)).toBe(true)
-    expect(endsWithDelimiter("re,act", /,|;/)).toBe(false)
+    expect(trimTrailingDelimiter("react;", /,|;/)).toBe("react")
+    expect(trimTrailingDelimiter("re,act", /,|;/)).toBeUndefined()
   })
 
   test("regex delimiter keeps its flags", () => {
-    expect(endsWithDelimiter("react、", /\u{3001}/u)).toBe(true)
-    expect(endsWithDelimiter("react.", /\p{P}/u)).toBe(true)
-    expect(endsWithDelimiter("react AND", / and/i)).toBe(true)
-    expect(endsWithDelimiter("react,", /,/gy)).toBe(true)
+    expect(trimTrailingDelimiter("react、", /\u{3001}/u)).toBe("react")
+    expect(trimTrailingDelimiter("react.", /\p{P}/u)).toBe("react")
+    expect(trimTrailingDelimiter("react AND", / and/i)).toBe("react")
+    expect(trimTrailingDelimiter("react,", /,/gy)).toBe("react")
+  })
+
+  test("regex delimiter that matches an empty string", () => {
+    expect(trimTrailingDelimiter("react", /,*/)).toBeUndefined()
   })
 })

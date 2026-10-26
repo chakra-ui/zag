@@ -1,7 +1,11 @@
-export function endsWithDelimiter(str: string, delimiter: string | RegExp | undefined) {
-  if (!delimiter) return false
-  if (typeof delimiter === "string") return str.endsWith(delimiter)
-  // group the source so `$` applies to every alternative, and keep flags like `u` and `i`
-  // (`g`/`y` are dropped: `y` would anchor the match at index 0)
-  return new RegExp(`(?:${delimiter.source})$`, delimiter.flags.replace(/[gy]/g, "")).test(str)
+/** The value without its trailing delimiter, or `undefined` if it doesn't end with one */
+export function trimTrailingDelimiter(value: string, delimiter: string | RegExp | undefined) {
+  if (!delimiter) return
+  if (typeof delimiter === "string") {
+    return value.endsWith(delimiter) ? value.slice(0, -delimiter.length) : undefined
+  }
+  const regex = new RegExp(`(?:${delimiter.source})$`, delimiter.flags.replace(/[gy]/g, ""))
+  const match = regex.exec(value)
+  if (!match?.[0]) return
+  return value.slice(0, match.index)
 }

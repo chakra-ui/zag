@@ -6,7 +6,7 @@ import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
 import { defaultTranslations } from "./tags-input.translations"
 import type { ItemProps, ItemState, TagsInputApi, TagsInputSchema } from "./tags-input.types"
-import { endsWithDelimiter } from "./tags-input.utils"
+import { trimTrailingDelimiter } from "./tags-input.utils"
 
 export function connect<T extends PropTypes>(
   service: Service<TagsInputSchema>,
@@ -141,7 +141,9 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (endsWithDelimiter(value, prop("delimiter"))) {
+          const valueBeforeDelimiter = trimTrailingDelimiter(value, prop("delimiter"))
+          if (valueBeforeDelimiter != null) {
+            send({ type: "TYPE", value: valueBeforeDelimiter, key: evt.inputType })
             send({ type: "DELIMITER_KEY" })
             return
           }
