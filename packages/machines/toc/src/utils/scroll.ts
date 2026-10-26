@@ -1,23 +1,15 @@
-import { getNearestOverflowAncestor, isRootElement } from "@zag-js/dom-query"
+import { getScrollParent } from "@zag-js/dom-query"
 
 /**
  * The element that scrolls the headings: `scrollEl` when provided, otherwise the
- * nearest scrollable ancestor of the first heading.
+ * nearest ancestor of the heading that actually scrolls, or the page.
  */
-export function getScrollContainer(doc: Document, scrollEl: HTMLElement | null | undefined, headingEl: HTMLElement) {
+export function getScrollContainer(scrollEl: HTMLElement | null | undefined, headingEl: HTMLElement) {
   if (scrollEl) return scrollEl
-  const el = getNearestOverflowAncestor(headingEl)
-  return isRootElement(el) ? (doc.scrollingElement as HTMLElement) : el
+  return getScrollParent(headingEl, { axis: "y" }) ?? (headingEl.ownerDocument.scrollingElement as HTMLElement)
 }
 
-/**
- * The target to listen to for scroll events. The document's scrolling element
- * doesn't receive them, so the window is used instead.
- */
-export function getScrollTarget(container: HTMLElement) {
-  const doc = container.ownerDocument
-  return container === doc.scrollingElement ? doc.defaultView! : container
-}
+export const hasOverflow = (el: HTMLElement) => el.scrollHeight > el.clientHeight
 
 /**
  * The y-position where headings stop counting as visible: the top edge of the

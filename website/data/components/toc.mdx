@@ -111,8 +111,9 @@ const service = useMachine(toc.machine, {
 
 ### Auto-scrolling the TOC
 
-When the TOC sidebar is scrollable, the machine auto-scrolls to keep the first
-active item visible. Disable this with `autoScroll`.
+When the TOC, or a wrapper around it, is scrollable, the machine scrolls it to
+keep the first active item visible. It never scrolls the content, so it doesn't
+interrupt scrolling to a heading. Disable this with `autoScroll`.
 
 ```tsx {2}
 const service = useMachine(toc.machine, {

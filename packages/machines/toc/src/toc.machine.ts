@@ -1,11 +1,11 @@
 import { setup } from "@zag-js/core"
-import { addDomEvent, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
+import { addDomEvent, contains, getEventTarget, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
-import { getBandTop, getScrollContainer, getScrollTarget } from "./utils/scroll"
+import { getBandTop, getScrollContainer, hasOverflow } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -149,8 +149,14 @@ export const machine = createMachine({
 
       syncActiveIds({ context, prop, refs }) {
         const headings = refs.get("headings")
-        const container = refs.get("scrollContainer")
-        if (headings.length === 0 || !container) return
+        if (headings.length === 0) return
+
+        // Content can grow after mount, so a container that doesn't scroll yet is looked up again
+        let container = refs.get("scrollContainer")
+        if (!container || !hasOverflow(container)) {
+          container = getScrollContainer(prop("scrollEl")?.(), headings[0].el)
+          refs.set("scrollContainer", container)
+        }
 
         const bandTop = getBandTop(container, refs.get("rootBounds"))
         const visibleIds = getVisibleIds(prop("items"), refs.get("visibilityMap"))
@@ -244,8 +250,9 @@ export const machine = createMachine({
         if (headings.length === 0) return
 
         const win = scope.getWin()
+        const doc = scope.getDoc()
         const scrollEl = prop("scrollEl")?.()
-        const container = getScrollContainer(scope.getDoc(), scrollEl, headings[0].el)
+        const container = getScrollContainer(scrollEl, headings[0].el)
 
         // Looked up once here, so syncing on scroll only reads layout
         refs.set("headings", headings)
@@ -273,15 +280,19 @@ export const machine = createMachine({
 
         // At most one sync per frame, and only in single mode
         let frame = 0
-        const onScroll = () => {
+        const onScroll = (event: Event) => {
           if (frame || prop("multiple")) return
+          // Only scrolling that moves the headings, not the nav or unrelated scrollers
+          const target = getEventTarget<Node>(event)
+          if (target !== doc && !contains(target, headings[0].el)) return
           frame = win.requestAnimationFrame(() => {
             frame = 0
             send({ type: "SCROLL" })
           })
         }
 
-        const cleanupScroll = addDomEvent(getScrollTarget(container), "scroll", onScroll, { passive: true })
+        // Capture catches scrolling in any container, since scroll events don't bubble
+        const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
 
         return () => {
           observer.disconnect()
