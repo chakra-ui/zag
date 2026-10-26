@@ -126,7 +126,7 @@ export class TagsInputModel extends Model {
   }
 
   async seeNoHighlightedTag() {
-    return expect(await this.page.locator("[data-part=item][data-selected]").count()).toBe(0)
+    await expect(this.page.locator("[data-part=item-preview][data-highlighted]")).toHaveCount(0)
   }
 
   async seeClearTriggerIsFocused() {

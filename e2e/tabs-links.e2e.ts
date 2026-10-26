@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 
 async function goto(page: Page, query = "") {
   await page.goto(`/tabs/with-link${query}`)

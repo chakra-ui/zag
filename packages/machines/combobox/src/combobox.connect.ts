@@ -2,32 +2,20 @@ import {
   ariaAttr,
   dataAttr,
   getEventKey,
+  getModifierKeys,
   isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
-  isDownloadingEvent,
   isLeftClick,
-  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
-import type {
-  CollectionItem,
-  ComboboxApi,
-  ComboboxService,
-  IntlTranslations,
-  ItemProps,
-  ItemState,
-} from "./combobox.types"
-
-const defaultTranslations: Required<IntlTranslations> = {
-  triggerLabel: "Toggle suggestions",
-  clearTriggerLabel: "Clear value",
-}
+import type { CollectionItem, ComboboxApi, ComboboxService, ItemProps, ItemState } from "./combobox.types"
+import { defaultTranslations } from "./combobox.translations"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -45,6 +33,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
+  const loading = !!prop("loading")
   const focused = state.hasTag("focused")
   const composite = prop("composite")
   const highlightedValue = context.get("highlightedValue")
@@ -71,6 +60,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   return {
     focused,
     open,
+    loading,
     inputValue: context.get("inputValue"),
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
@@ -213,7 +203,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
+          if (isComposingEvent(event)) return
+          if ((event.ctrlKey || event.shiftKey) && event.key !== "Enter") return
 
           const openOnKeyPress = prop("openOnKeyPress")
           const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
@@ -245,7 +236,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
@@ -259,7 +250,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                prop("navigate")?.({ value: highlightedValue, node: itemEl, href: itemEl.href })
+                prop("navigate")?.({
+                  value: highlightedValue,
+                  node: itemEl,
+                  href: itemEl.href,
+                  modifiers: getModifierKeys(event),
+                })
               }
             },
             Escape() {
@@ -348,7 +344,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-side": currentPlacementSide,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
+        "aria-busy": composite ? ariaAttr(loading) : undefined,
         "data-empty": dataAttr(collection.size === 0),
+        "data-loading": dataAttr(loading),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           // prevent options or elements within listbox from taking focus
@@ -364,6 +362,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
+        "aria-busy": !composite ? ariaAttr(loading) : undefined,
+        "data-loading": dataAttr(loading),
       })
     },
 
@@ -424,11 +424,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onClick(event) {
-          if (isDownloadingEvent(event)) return
-          if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "item-select", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
         },
       })
     },

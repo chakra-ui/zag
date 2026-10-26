@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect } from "./_test"
 import { CascadeSelectModel } from "./models/cascade-select.model"
 
 let I: CascadeSelectModel

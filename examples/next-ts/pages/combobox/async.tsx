@@ -36,6 +36,7 @@ export default function Page() {
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
+    loading: asyncList.loading,
     placeholder: "Search people...",
     onInputValueChange({ inputValue }) {
       asyncList.setFilterText(inputValue)

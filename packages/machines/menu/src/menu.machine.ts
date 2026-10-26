@@ -2,13 +2,18 @@ import { createGuards, createMachine, type Transition } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
+  AnimationFrame,
   clickIfLink,
   contains,
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  getModifierKeys,
+  getWindow,
   isAnchorElement,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -68,7 +73,7 @@ export const machine = createMachine<MenuSchema>({
       composite: true,
       loopFocus: false,
       navigate(details) {
-        clickIfLink(details.node)
+        clickIfLink(details.node, details.modifiers)
       },
       ...props,
       positioning: {
@@ -133,8 +138,11 @@ export const machine = createMachine<MenuSchema>({
       pointerRoutingLocked: false,
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
+      focusMenuFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFocusMenu"],
 
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
@@ -413,6 +421,7 @@ export const machine = createMachine<MenuSchema>({
       tags: ["open"],
       effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "unlockParentOnOpen"],
+      exit: ["cancelFocusMenu"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -617,6 +626,7 @@ export const machine = createMachine<MenuSchema>({
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
+          getRootNode: scope.getRootNode,
           layerStyleTargets: [() => dom.getPositionerEl(scope)],
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
@@ -687,17 +697,22 @@ export const machine = createMachine<MenuSchema>({
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec()
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 
@@ -745,15 +760,31 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context }) {
+      clickHighlightedItem({ scope, computed, prop, context, event, send }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+          const modifiers = getModifierKeys(event.modifiers)
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href, modifiers })
+
+          // match the item's click: modifier keys leave the link to the browser
+          const linkEvent = { currentTarget: itemEl, button: 0, ...modifiers }
+          if (isOpeningInNewTab(linkEvent) || isDownloadingEvent(linkEvent)) return
+
+          send({
+            type: "ITEM_CLICK",
+            target: itemEl,
+            id: itemEl.id,
+            value: highlightedValue,
+            closeOnSelect: dom.getItemCloseOnSelect(itemEl),
+            modifiers,
+          })
         } else {
-          queueMicrotask(() => itemEl.click())
+          const win = getWindow(itemEl)
+          const init = { bubbles: true, cancelable: true, composed: true, ...getModifierKeys(event.modifiers) }
+          queueMicrotask(() => itemEl.dispatchEvent(new win.MouseEvent("click", init)))
         }
       },
       setIntentPolygon({ context, scope, event }) {
@@ -795,8 +826,8 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope }) {
-        raf(() => {
+      focusMenu({ scope, refs }) {
+        refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
@@ -808,6 +839,9 @@ export const machine = createMachine<MenuSchema>({
           if (!initialFocusEl) return
           initialFocusEl.focus({ preventScroll: true })
         })
+      },
+      cancelFocusMenu({ refs }) {
+        refs.get("focusMenuFrame").cancel()
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted
@@ -850,7 +884,7 @@ export const machine = createMachine<MenuSchema>({
         const node = dom.getItemEl(scope, value)
         dom.dispatchSelectionEvent(node, value)
 
-        prop("onSelect")?.({ value })
+        prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
       focusTrigger({ scope, context, event }) {
         if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return

@@ -1,12 +1,13 @@
 import { normalizeSpan } from "./normalize-span"
 import { escapeRegex } from "./escape-regex"
 import type { HighlightChunk, HighlightWordProps } from "./types"
+import { wholeWord } from "./whole-word"
 
 const buildRegex = (queryProp: string[], flags: string, exactMatch: boolean | undefined): RegExp => {
   const query = queryProp.filter(Boolean).map((text) => escapeRegex(text))
-  const pattern = exactMatch ? `\\b(${query.join("|")})\\b` : `(${query.join("|")})`
+  const pattern = query.join("|")
 
-  return new RegExp(pattern, flags)
+  return exactMatch ? new RegExp(wholeWord(pattern), `${flags}u`) : new RegExp(`(${pattern})`, flags)
 }
 
 const getRegexFlags = (ignoreCase: boolean | undefined, matchAll = true): string =>

@@ -2,7 +2,7 @@ import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } fro
 import { createMachine, memo, type Params } from "@zag-js/core"
 import { mergeWithDefault } from "@zag-js/utils"
 import { constrainSegments, getTodayDate, isDateEqual } from "@zag-js/date-utils"
-import { raf } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
@@ -98,8 +98,11 @@ export const machine = createMachine<DateInputSchema>({
     return {
       announcer: null,
       segmentToAnnounceIndex: null,
+      focusSegmentFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFocusActiveSegment"],
 
   effects: ["setupLiveRegion"],
 
@@ -264,6 +267,7 @@ export const machine = createMachine<DateInputSchema>({
     },
 
     focused: {
+      exit: ["cancelFocusActiveSegment"],
       on: {
         "SEGMENT.FOCUS": [
           {
@@ -377,12 +381,15 @@ export const machine = createMachine<DateInputSchema>({
         goToNextSegment(ctx)
       },
 
-      focusActiveSegment({ scope, context }) {
-        raf(() => {
-          const segmentEls = dom.getSegmentEls(scope)
-          const activeSegmentEl = segmentEls[context.get("activeSegmentIndex")]
+      focusActiveSegment({ scope, context, refs }) {
+        refs.get("focusSegmentFrame").request(() => {
+          const activeSegmentEl = dom.getSegmentEls(scope)[context.get("activeSegmentIndex")]
           activeSegmentEl?.focus({ preventScroll: true })
         })
+      },
+
+      cancelFocusActiveSegment({ refs }) {
+        refs.get("focusSegmentFrame").cancel()
       },
 
       clearSegmentValue(params) {

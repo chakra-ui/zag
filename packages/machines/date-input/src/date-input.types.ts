@@ -9,6 +9,7 @@ import type {
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
@@ -256,6 +257,7 @@ type Refs = {
   announcer: LiveRegion | null
   /** Segment index to announce (for SEGMENT.INPUT with auto-advance). Set before advance, used after. */
   segmentToAnnounceIndex: number | null
+  focusSegmentFrame: AnimationFrame
 }
 
 export interface DateInputSchema {

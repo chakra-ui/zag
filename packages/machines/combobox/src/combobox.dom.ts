@@ -15,6 +15,7 @@ export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
   ctx.ids?.itemGroupLabel?.(id) ?? `combobox:${ctx.id}:optgroup-label:${id}`
 export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `combobox:${ctx.id}:option:${id}`
 
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
 export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
 export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))

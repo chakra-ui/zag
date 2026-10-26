@@ -12,6 +12,7 @@ export type {
   IntlTranslations,
   Point,
   ProgressTextDetails,
+  ScrollToTargetDetails,
   StatusChangeDetails,
   StepAction,
   StepActionMap,

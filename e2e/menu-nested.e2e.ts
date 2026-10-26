@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { clickOutside, rect, testid } from "./_utils"
 import { MenuModel } from "./models/menu.model"
 

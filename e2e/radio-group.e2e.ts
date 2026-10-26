@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { RadioGroupModel } from "./models/radio-group.model"
 
 let I: RadioGroupModel

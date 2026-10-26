@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { controls } from "./_utils"
 import { DrawerModel } from "./models/drawer.model"
 
@@ -218,6 +218,29 @@ test.describe("drawer", () => {
 
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
+  })
+})
+
+test.describe("drawer [non-modal]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DrawerModel(page)
+    await I.goto("/drawer/non-modal")
+  })
+
+  test("should restore focus to the trigger on escape", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
+  })
+
+  test("should restore focus to the trigger on close", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await page.getByRole("button", { name: "Close" }).click()
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
   })
 })
 

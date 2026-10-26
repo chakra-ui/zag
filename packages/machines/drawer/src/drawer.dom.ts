@@ -19,6 +19,22 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
   if (value == null) return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
   return ctx.getById(getTriggerId(ctx, value))
 }
+
+interface ReturnFocusOptions {
+  finalFocusEl: (() => HTMLElement | null) | undefined
+  triggerValue: string | null
+}
+
+/** Where focus goes when the drawer closes: `finalFocusEl`, then the active trigger, then any trigger. */
+export const getReturnFocusEl = (ctx: Scope, options: ReturnFocusOptions): HTMLElement | null => {
+  const finalFocusEl = options.finalFocusEl?.()
+  if (finalFocusEl) return finalFocusEl
+  if (options.triggerValue) {
+    const activeTriggerEl = getActiveTriggerEl(ctx, options.triggerValue)
+    if (activeTriggerEl) return activeTriggerEl
+  }
+  return getTriggerEls(ctx)[0] ?? null
+}
 export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `drawer:${ctx.id}:backdrop`
 export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `drawer:${ctx.id}:header`
 export const getGrabberId = (ctx: Scope) => ctx.ids?.grabber ?? `drawer:${ctx.id}:grabber`

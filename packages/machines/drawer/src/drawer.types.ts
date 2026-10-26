@@ -254,6 +254,7 @@ export interface DrawerSchema {
   refs: {
     swipeSession: DrawerSwipeSession
     snapBackFrame: AnimationFrame
+    returnFocusEl: HTMLElement | null
   }
   computed: {
     drawerId: string

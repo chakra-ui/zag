@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { NavigationMenuModel } from "./models/navigation-menu.model"
 
 let I: NavigationMenuModel

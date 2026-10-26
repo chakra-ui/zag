@@ -54,7 +54,9 @@ export function waitForElement(
   const doc = getDocument(rootNode)
   const controller = new win.AbortController()
 
-  return waitForPromise(
+  let observer: MutationObserver | undefined
+
+  const result = waitForPromise(
     new Promise<HTMLElement>((resolve) => {
       const el = target()
 
@@ -63,11 +65,11 @@ export function waitForElement(
         return
       }
 
-      const observer = new win.MutationObserver(() => {
+      observer = new win.MutationObserver(() => {
         const el = target()
 
         if (el && el.isConnected) {
-          observer.disconnect()
+          observer?.disconnect()
           resolve(el)
         }
       })
@@ -80,6 +82,12 @@ export function waitForElement(
     controller,
     timeout,
   )
+
+  // Stop observing once the wait settles, including on abort or timeout
+  const disconnect = () => observer?.disconnect()
+  result[0].then(disconnect, disconnect)
+
+  return result
 }
 
 type WaitForEventReturn<K extends keyof HTMLElementEventMap> = [Promise<HTMLElementEventMap[K]>, VoidFunction]

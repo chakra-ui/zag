@@ -1,6 +1,7 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { AnimationFrame, ModifierKeys } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -64,11 +65,19 @@ export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
   href: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 export interface SelectionDetails {
   value: string[]
   itemValue: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 /* -----------------------------------------------------------------------------
@@ -78,6 +87,21 @@ export interface SelectionDetails {
 export interface IntlTranslations {
   triggerLabel?: string | undefined
   clearTriggerLabel?: string | undefined
+  /**
+   * The message announced to screen readers when the results settle after typing.
+   * Return an empty string to disable the announcement.
+   */
+  resultsCount?: ((count: number) => string) | undefined
+  /**
+   * The message announced to screen readers when typing yields no results.
+   * Set to an empty string to disable the announcement.
+   */
+  noResults?: string | undefined
+  /**
+   * The message announced to screen readers while results are loading.
+   * Set to an empty string to disable the announcement.
+   */
+  loading?: string | undefined
 }
 
 export interface ElementIds {
@@ -282,6 +306,13 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Function to navigate to the selected item
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
+  /**
+   * Whether the results are being loaded (e.g. fetched from a server).
+   *
+   * While loading, the listbox is marked with `aria-busy`, the loading message is
+   * announced instead of the result count, and "no results" is never announced.
+   */
+  loading?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -314,6 +345,9 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   }
   refs: {
     liveRegion: LiveRegion | null
+    resultsRegion: LiveRegion | null
+    finalFocusFrame: AnimationFrame
+    highlightFrame: AnimationFrame
   }
   computed: {
     isCustomValue: boolean
@@ -393,6 +427,10 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    * Whether the combobox is open
    */
   open: boolean
+  /**
+   * Whether the results are being loaded
+   */
+  loading: boolean
   /**
    * The value of the combobox input
    */

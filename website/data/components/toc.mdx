@@ -74,6 +74,19 @@ item. The indicator position is exposed as CSS variables on the root element.
 </div>
 ```
 
+### Activating one item at a time
+
+By default, every heading in view is active. Set `multiple` to `false` to keep
+only the topmost visible heading active. Near the end of the page, the last
+headings take turns as you scroll, so short sections at the bottom are still
+reachable.
+
+```tsx {2}
+const service = useMachine(toc.machine, {
+  multiple: false,
+})
+```
+
 ### Configuring the observer
 
 Control how headings are detected with `rootMargin` and `threshold`.
@@ -98,8 +111,9 @@ const service = useMachine(toc.machine, {
 
 ### Auto-scrolling the TOC
 
-When the TOC sidebar is scrollable, the machine auto-scrolls to keep the first
-active item visible. Disable this with `autoScroll`.
+When the TOC, or a wrapper around it, is scrollable, the machine scrolls it to
+keep the first active item visible. It never scrolls the content, so it doesn't
+interrupt scrolling to a heading. Disable this with `autoScroll`.
 
 ```tsx {2}
 const service = useMachine(toc.machine, {
@@ -192,8 +206,8 @@ Use the `--depth` CSS variable to indent items based on heading level.
 
 ### Indicator styling
 
-The indicator position is exposed as CSS variables on the root element:
-`--top`, `--left`, `--width`, `--height`.
+The indicator position is exposed as CSS variables on the root element: `--top`,
+`--left`, `--width`, `--height`.
 
 ```css
 [data-scope="toc"][data-part="indicator"] {
@@ -203,7 +217,9 @@ The indicator position is exposed as CSS variables on the root element:
   inset-inline-start: 0;
   top: var(--top);
   height: var(--height);
-  transition: top 0.15s, height 0.15s;
+  transition:
+    top 0.15s,
+    height 0.15s;
 }
 ```
 

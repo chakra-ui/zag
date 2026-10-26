@@ -2014,7 +2014,7 @@
       "closeOnInteractOutside": {
         "type": "boolean | undefined",
         "description": "Whether to close the dialog when the outside is clicked",
-        "defaultValue": "true"
+        "defaultValue": "`true` for modal dialogs, `false` for non-modal dialogs"
       },
       "closeOnEscape": {
         "type": "boolean | undefined",

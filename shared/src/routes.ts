@@ -344,6 +344,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "delayed-close", title: "Delayed Close" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "multiple-trigger-controlled", title: "Multiple Trigger Controlled" },
+      { slug: "non-modal", title: "Non-modal" },
       { slug: "popover-nested", title: "Popover Nested" },
       { slug: "scroll-outside", title: "Scroll Outside" },
     ],
@@ -368,6 +369,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "lazy-mounted", title: "Lazy Mounted" },
+      { slug: "presence", title: "Presence" },
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
@@ -507,6 +509,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "indicator", title: "Indicator" },
       { slug: "scroll-element", title: "Scroll Element" },
+      { slug: "nested-nav", title: "Nav Inside Scroll Container" },
+      { slug: "long-sections", title: "Long Sections" },
     ],
   },
   {
@@ -518,6 +522,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "aria-label", title: "Aria Label" },
+      { slug: "disabled", title: "Disabled" },
     ],
   },
   {
