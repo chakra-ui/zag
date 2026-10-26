@@ -14,6 +14,18 @@ export function getBandTop(container: HTMLElement, rootBounds: DOMRectReadOnly |
   return Math.max(rootBounds?.top ?? viewTop, viewTop)
 }
 
-/** The page scroller's view is the window */
-export const getViewport = (container: HTMLElement) =>
-  container === container.ownerDocument.scrollingElement ? container.ownerDocument.defaultView! : container
+const getPx = (value: string) => Number.parseFloat(value) || 0
+
+/** Whether the container stopped where navigating to the heading aims, or as close as its scroll range allows */
+export function isScrolledToHeading(headingEl: HTMLElement, container: HTMLElement) {
+  const win = container.ownerDocument.defaultView!
+  const viewTop = container === container.ownerDocument.scrollingElement ? 0 : container.getBoundingClientRect().top
+  const offset =
+    headingEl.getBoundingClientRect().top -
+    viewTop -
+    getPx(win.getComputedStyle(container).scrollPaddingTop) -
+    getPx(win.getComputedStyle(headingEl).scrollMarginTop)
+  const maxScroll = container.scrollHeight - container.clientHeight
+  const target = Math.min(Math.max(container.scrollTop + offset, 0), maxScroll)
+  return Math.abs(target - container.scrollTop) <= 2
+}

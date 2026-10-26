@@ -35,13 +35,21 @@ export class TocModel extends Model {
     return this.page.locator(`[id="${value}"]`).scrollIntoViewIfNeeded()
   }
 
-  // Scrolls just past the heading, so no heading is left in the observed band
-  async jumpIntoSection(value: string) {
+  // Scrolls so the heading sits `offset` pixels below the top of the view
+  async scrollHeadingTo(value: string, offset: number) {
     const container = await this.getScrollContainer()
-    await container.evaluate((el, value) => {
-      const heading = document.getElementById(value)!
-      el.scrollTop += heading.getBoundingClientRect().top - el.getBoundingClientRect().top + 40
-    }, value)
+    await container.evaluate(
+      (el, { value, offset }) => {
+        const heading = document.getElementById(value)!
+        el.scrollTop += heading.getBoundingClientRect().top - el.getBoundingClientRect().top - offset
+      },
+      { value, offset },
+    )
+  }
+
+  // Scrolls just past the heading, so no heading is left in the observed band
+  jumpIntoSection(value: string) {
+    return this.scrollHeadingTo(value, -40)
   }
 
   async scrollToTop() {

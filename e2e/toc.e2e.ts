@@ -41,6 +41,13 @@ test.describe("toc", () => {
       await I.seeItemIsActive("introduction")
     })
 
+    test("follows the scroll position when navigation stops short of its heading", async () => {
+      await I.clickLink("configuration")
+      await I.scrollHeadingTo("configuration", 150)
+      await I.seeActiveItemCount(1)
+      await I.seeItemIsActive("installation")
+    })
+
     test("keeps a clicked item active when it can't scroll to the top", async () => {
       await I.clickLink("api-reference")
       await I.seeLinkIsCurrent("api-reference")

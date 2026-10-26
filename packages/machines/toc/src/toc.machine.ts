@@ -1,18 +1,11 @@
 import { setup } from "@zag-js/core"
-import {
-  addDomEvent,
-  contains,
-  getEventTarget,
-  isInView,
-  resizeObserverBorderBox,
-  scrollToNearest,
-} from "@zag-js/dom-query"
+import { addDomEvent, contains, getEventTarget, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
-import { getBandTop, getScrollContainer, getViewport, hasOverflow } from "./utils/scroll"
+import { getBandTop, getScrollContainer, hasOverflow, isScrolledToHeading } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -115,7 +108,7 @@ export const machine = createMachine({
         "SCROLL.END": [
           {
             // e.g. a heading near the end that can't scroll to the top
-            guard: "isTargetKept",
+            guard: "isTargetReached",
             target: "idle",
           },
           {
@@ -129,13 +122,13 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      isTargetKept: ({ context, prop, refs }) => {
+      isTargetReached: ({ context, prop, refs }) => {
         if (prop("multiple")) return false
         const heading = refs.get("headings").find((heading) => heading.value === first(context.get("activeIds")))
         const container = refs.get("scrollContainer")
         if (!heading || !container) return false
-        // Not in view means the scroll was interrupted
-        return isInView(heading.el, getViewport(container))
+        // Anywhere else means the user interrupted the scroll
+        return isScrolledToHeading(heading.el, container)
       },
     },
 
