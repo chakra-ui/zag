@@ -85,7 +85,6 @@ export function connect<T extends PropTypes>(
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
-        "aria-expanded": visible,
         "data-readonly": dataAttr(readOnly),
         disabled,
         "data-disabled": dataAttr(disabled),

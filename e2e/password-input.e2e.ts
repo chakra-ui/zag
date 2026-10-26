@@ -19,6 +19,13 @@ test("should toggle password visibility", async () => {
   await I.cantSeePassword()
 })
 
+test("visibility trigger conveys its state through its label, not aria-expanded", async () => {
+  await I.seeVisibilityTriggerLabel("Show password")
+  await I.clickVisibilityTrigger()
+  await I.canSeePassword()
+  await I.seeVisibilityTriggerLabel("Hide password")
+})
+
 test("preserve caret position when toggling password visibility", async () => {
   await I.input.pressSequentially("123456")
   await I.input.press("ArrowLeft")

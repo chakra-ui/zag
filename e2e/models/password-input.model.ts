@@ -27,6 +27,11 @@ export class PasswordInputModel extends Model {
     await this.visibilityTrigger.click()
   }
 
+  seeVisibilityTriggerLabel = async (label: string) => {
+    await expect(this.visibilityTrigger).toHaveAttribute("aria-label", label)
+    await expect(this.visibilityTrigger).not.toHaveAttribute("aria-expanded")
+  }
+
   canSeePassword = async () => {
     await expect(this.input).toHaveAttribute("type", "text")
   }
