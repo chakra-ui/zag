@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getNearestOverflowAncestor, getWindow } from "@zag-js/dom-query"
+import { contains, getScrollParent } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toc:${ctx.id}`
 export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `toc:${ctx.id}:nav`
@@ -10,7 +10,6 @@ export const getLinkId = (ctx: Scope, value: string) => ctx.ids?.link?.(value) ?
 export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `toc:${ctx.id}:indicator`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getNavEl = (ctx: Scope) => ctx.getById(getNavId(ctx))
 export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
 export const getItemEl = (ctx: Scope, value: string | undefined | null) => {
   if (value == null) return null
@@ -18,20 +17,8 @@ export const getItemEl = (ctx: Scope, value: string | undefined | null) => {
 }
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
 
-const SCROLLABLE_RE = /auto|scroll|overlay|hidden/
-
-const isScrollable = (el: HTMLElement) => {
-  const { overflowY } = getWindow(el).getComputedStyle(el)
-  return SCROLLABLE_RE.test(overflowY) && el.scrollHeight > el.clientHeight
-}
-
-export const getScrollEl = (ctx: Scope, itemEl: HTMLElement) => {
-  const navEl = getNavEl(ctx) ?? getRootEl(ctx)
-  if (!navEl) return null
-  let el = getNearestOverflowAncestor(itemEl)
-  while (navEl.contains(el) && !isScrollable(el)) el = getNearestOverflowAncestor(el)
-  return navEl.contains(el) ? el : null
-}
+export const getScrollEl = (itemEl: HTMLElement, contentEl: HTMLElement) =>
+  getScrollParent(itemEl, { axis: "y", stop: (el) => contains(el, contentEl) })
 
 /**
  * Get the heading element in the document by its slug/id.
