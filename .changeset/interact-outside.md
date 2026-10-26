@@ -2,4 +2,4 @@
 "@zag-js/interact-outside": patch
 ---
 
-- Fix a deferred focus-outside check firing after focus had already moved back, which could take a navigation menu's links out of the Tab order when tabbing out and back quickly.
+- Fix focus-outside firing after focus had already moved back inside, which removed a navigation menu's links from the Tab order on a quick Tab and Shift+Tab.
