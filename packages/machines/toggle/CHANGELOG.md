@@ -1,5 +1,16 @@
 # @zag-js/toggle
 
+## 1.47.0
+
+### Patch Changes
+
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

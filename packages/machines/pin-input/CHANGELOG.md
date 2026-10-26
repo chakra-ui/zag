@@ -1,5 +1,21 @@
 # @zag-js/pin-input
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3461](https://github.com/chakra-ui/zag/pull/3461)
+  [`3f3530c`](https://github.com/chakra-ui/zag/commit/3f3530cfd0f9f4f3b2a7afb260b675cf8d74ae70) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix screen readers not announcing the label for the inputs.
+  - Fix `api.clearValue()` wiping a value set right after it in the same handler.
+  - Fix focus jumping back into the inputs when focus moves away right after a paste.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

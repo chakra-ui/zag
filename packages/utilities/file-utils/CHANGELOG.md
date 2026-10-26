@@ -1,5 +1,16 @@
 # @zag-js/file-utils
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3505](https://github.com/chakra-ui/zag/pull/3505)
+  [`ff78c72`](https://github.com/chakra-ui/zag/commit/ff78c727072ba77ae3956c476886bdbd3d599a72) Thanks
+  [@rjsgud49](https://github.com/rjsgud49)! - - Fix `getFileMimeType` ignoring uppercase file extensions (e.g.
+  `IMG_0001.HEIC`).
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
