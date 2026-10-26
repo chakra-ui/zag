@@ -2,7 +2,6 @@ import { createMachine } from "@zag-js/core"
 import { VanillaMachine } from "../src/machine"
 
 // Run with: pnpm exec tsx packages/frameworks/vanilla/bench/update-props.ts
-// Pass update counts as arguments to measure longer-lived instances.
 const counts = process.argv.slice(2).map(Number)
 const machine = createMachine<any>({
   initialState: () => "idle",

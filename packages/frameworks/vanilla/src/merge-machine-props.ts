@@ -6,14 +6,12 @@ export function mergeMachineProps<T>(prev: T, next: Partial<T>): T {
     return next === undefined ? prev : (next as T)
   }
 
-  // Allocate a merged object only on the first change, reusing unchanged branches.
   let result: any = prev
 
   for (const key of Object.keys(next)) {
     const nextValue = (next as any)[key]
     const prevValue = (prev as any)[key]
 
-    // ignore undefined updates
     if (nextValue === undefined || Object.is(prevValue, nextValue)) {
       continue
     }

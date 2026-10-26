@@ -67,9 +67,10 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private getUserProps = (): Partial<T["props"]> => {
     if (!this.userPropsGetter) return this.userProps!
-    const next = this.userPropsGetter()
-    const props = this.userProps ? mergeMachineProps(this.userProps, next) : next
-    return this.userPropsOverrides ? mergeMachineProps(props, this.userPropsOverrides) : props
+    let props = this.userPropsGetter()
+    if (this.userProps) props = mergeMachineProps(this.userProps, props)
+    if (this.userPropsOverrides) props = mergeMachineProps(props, this.userPropsOverrides)
+    return props
   }
 
   private getEvent = () => ({
@@ -218,13 +219,9 @@ export class VanillaMachine<T extends MachineSchema> {
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
-  /**
-   * Applies a partial props update. Objects are merged eagerly. A function replaces the live getter,
-   * retaining omitted props at their last resolved values. Every update notifies subscribers.
-   */
+  /** Applies a partial update; replacing the getter snapshots props it omits. */
   updateProps(newProps: Partial<T["props"]> | (() => Partial<T["props"]>)) {
     if (isFunction(newProps)) {
-      // Retain omitted props, but only the latest getter remains live.
       this.userProps = { ...this.getUserProps() }
       this.userPropsGetter = newProps
       this.userPropsOverrides = undefined
