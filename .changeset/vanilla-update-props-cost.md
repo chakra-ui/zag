@@ -1,8 +1,6 @@
 ---
-"@zag-js/vanilla": major
+"@zag-js/vanilla": patch
 ---
 
-Fix growing update cost and stack overflows in `VanillaMachine.updateProps`.
-
-**Breaking:** Only the latest getter stays live. Move all reactive values into it; omitted props keep their last
-resolved values.
+Fix growing update costs and stack overflows in `VanillaMachine.updateProps` by coalescing object patches and resolving
+live getters without recursion.

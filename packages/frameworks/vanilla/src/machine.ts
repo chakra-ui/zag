@@ -62,15 +62,15 @@ export class VanillaMachine<T extends MachineSchema> {
   private subscriptions: Array<(service: Service<T>) => void> = []
 
   private userProps: Partial<T["props"]> | undefined
-  private userPropsGetter: (() => Partial<T["props"]>) | undefined
-  private userPropsOverrides: Partial<T["props"]> | undefined
+  private userPropsSources: Array<Partial<T["props"]> | (() => Partial<T["props"]>)> = []
 
   private getUserProps = (): Partial<T["props"]> => {
-    if (!this.userPropsGetter) return this.userProps!
-    let props = this.userPropsGetter()
-    if (this.userProps) props = mergeMachineProps(this.userProps, props)
-    if (this.userPropsOverrides) props = mergeMachineProps(props, this.userPropsOverrides)
-    return props
+    let props = this.userProps
+    for (const source of this.userPropsSources) {
+      const next = runIfFn(source)
+      props = props ? mergeMachineProps(props, next) : next
+    }
+    return props!
   }
 
   private getEvent = () => ({
@@ -98,7 +98,7 @@ export class VanillaMachine<T extends MachineSchema> {
     private machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
-    if (isFunction(userProps)) this.userPropsGetter = userProps
+    if (isFunction(userProps)) this.userPropsSources.push(userProps)
     else this.userProps = userProps
 
     // create scope
@@ -219,16 +219,21 @@ export class VanillaMachine<T extends MachineSchema> {
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
-  /** Applies a partial update; replacing the getter snapshots props it omits. */
   updateProps(newProps: Partial<T["props"]> | (() => Partial<T["props"]>)) {
+    const sources = this.userPropsSources
     if (isFunction(newProps)) {
-      this.userProps = { ...this.getUserProps() }
-      this.userPropsGetter = newProps
-      this.userPropsOverrides = undefined
-    } else if (this.userPropsGetter) {
-      this.userPropsOverrides = mergeMachineProps(this.userPropsOverrides ?? {}, newProps)
-    } else {
+      sources.push(newProps)
+    } else if (sources.length === 0) {
       this.userProps = mergeMachineProps(this.userProps!, newProps)
+    } else {
+      const lastIndex = sources.length - 1
+      const previous = sources[lastIndex]
+      if (isFunction(previous)) {
+        const patch = mergeMachineProps({}, newProps)
+        if (patch && Object.keys(patch).length > 0) sources.push(patch)
+      } else {
+        sources[lastIndex] = mergeMachineProps(previous, newProps)
+      }
     }
 
     this.notify()

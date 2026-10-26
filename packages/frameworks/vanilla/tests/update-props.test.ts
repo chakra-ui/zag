@@ -26,8 +26,8 @@ describe("updateProps", () => {
     expect(service.prop("values")).toEqual([3])
   })
 
-  test("reads object patches once instead of replaying them on each prop read", () => {
-    const service = new VanillaMachine(machine, { value: -1 })
+  test.each(["object", "getter"])("reads patches once with an initial %s source", (kind) => {
+    const service = new VanillaMachine(machine, kind === "object" ? { value: -1 } : () => ({ value: -1 }))
     let reads = 0
     for (let i = 0; i < 1_000; i++) {
       service.updateProps({
@@ -65,7 +65,7 @@ describe("updateProps", () => {
     expect(service.prop("translations")).toEqual({ clear: "Reset", close: "Close 2" })
   })
 
-  test("replaces a getter while retaining omitted props at their last resolved values", () => {
+  test("keeps earlier getters live when a partial getter is added", () => {
     let oldValue = 1
     let nextValue = 10
     const previous = vi.fn(() => ({ id: "test", value: oldValue, retained: oldValue }))
@@ -77,31 +77,44 @@ describe("updateProps", () => {
     nextValue = 20
 
     expect(service.prop("id")).toBe("test")
-    expect(service.prop("retained")).toBe(1)
+    expect(service.prop("retained")).toBe(3)
     expect(service.prop("value")).toBe(20)
     expect(service.prop("translations")).toEqual({ clear: "Clear", close: "Close" })
-    expect(previous).not.toHaveBeenCalled()
+    expect(previous).toHaveBeenCalled()
 
     service.updateProps({ value: 30 })
     nextValue = 40
     expect(service.prop("value")).toBe(30)
   })
 
-  test("evaluates only the current getter regardless of earlier function updates", () => {
+  test("resolves long getter histories without growing the call stack", () => {
     const service = new VanillaMachine(machine, { id: "test", value: -1 })
     let reads = 0
-    service.start()
-    for (let value = 0; value < 1_000; value++) {
+    for (let value = 0; value < 20_000; value++) {
       service.updateProps(() => {
         reads++
         return { value }
       })
     }
-    reads = 0
-    for (let i = 0; i < 100; i++) expect(service.prop("value")).toBe(999)
-    expect(reads).toBe(100)
+    expect(service.prop("value")).toBe(19_999)
+    expect(reads).toBe(20_000)
     expect(service.prop("id")).toBe("test")
-    service.stop()
+  })
+
+  test("coalesces object patches without moving them ahead of live getters", () => {
+    let first = 1
+    let second = 2
+    const service = new VanillaMachine(machine, () => ({ value: first, retained: first }))
+    for (let i = 0; i < 1_000; i++) service.updateProps({ value: 10, before: i })
+    service.updateProps(() => ({ value: second, retained: undefined }))
+    for (let i = 0; i < 1_000; i++) service.updateProps({ after: i })
+    first = 3
+    second = 4
+
+    expect(service.prop("retained")).toBe(3)
+    expect(service.prop("value")).toBe(4)
+    expect(service.prop("before")).toBe(999)
+    expect(service.prop("after")).toBe(999)
   })
 
   test("notifies watchers and subscribers when an empty patch signals changed getter values", () => {
