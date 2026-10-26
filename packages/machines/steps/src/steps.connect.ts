@@ -97,9 +97,11 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
       return normalize.element({
         ...parts.item.attrs,
         dir: prop("dir"),
-        "aria-current": itemState.current ? "step" : undefined,
         "data-orientation": prop("orientation"),
         "data-skippable": dataAttr(itemState.skippable),
+        "data-complete": dataAttr(itemState.completed),
+        "data-current": dataAttr(itemState.current),
+        "data-incomplete": dataAttr(itemState.incomplete),
       })
     },
 
@@ -113,6 +115,7 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
         dir: prop("dir"),
         tabIndex: !prop("linear") || itemState.current ? 0 : -1,
         "aria-selected": itemState.current,
+        "aria-current": itemState.current ? "step" : undefined,
         "aria-controls": itemState.contentId,
         "data-state": itemState.current ? "open" : "closed",
         "data-orientation": prop("orientation"),
