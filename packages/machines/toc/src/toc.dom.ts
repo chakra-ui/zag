@@ -1,4 +1,5 @@
 import type { Scope } from "@zag-js/core"
+import { contains, getScrollParent } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toc:${ctx.id}`
 export const getNavId = (ctx: Scope) => ctx.ids?.nav ?? `toc:${ctx.id}:nav`
@@ -15,6 +16,9 @@ export const getItemEl = (ctx: Scope, value: string | undefined | null) => {
   return ctx.getById(getItemId(ctx, value))
 }
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
+
+export const getScrollEl = (itemEl: HTMLElement, contentEl: HTMLElement) =>
+  getScrollParent(itemEl, { axis: "y", stop: (el) => contains(el, contentEl) })
 
 /**
  * Get the heading element in the document by its slug/id.
