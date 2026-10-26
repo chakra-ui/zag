@@ -1,7 +1,6 @@
 import { addDomEvent, isContextMenuEvent, isShadowRoot, isTouchDevice } from "@zag-js/dom-query"
 import {
   contains,
-  getActiveElement,
   getDocument,
   getEventTarget,
   getNearestOverflowAncestor,
@@ -114,13 +113,6 @@ function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
   return onScrollbarY || onScrollbarX
 }
 
-function hasFocusMovedOn(target: EventTarget | null) {
-  if (!isHTMLElement(target)) return false
-  const doc = target.ownerDocument
-  const activeEl = getActiveElement(doc)
-  return !!activeEl && activeEl !== target && activeEl !== doc.body
-}
-
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
   const {
     exclude,
@@ -227,19 +219,21 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
   }, 0)
 
+  let focusinCount = 0
+
   function onFocusin(event: FocusEvent) {
+    const id = ++focusinCount
     // Skip focusin events during pointer interactions.
     // Safari doesn't focus buttons on pointerdown, which can cause
     // focusin-based dismissal to race with pointer-based interactions.
     if (isPointerDown) return
     const func = defer ? raf : (v: any) => v()
     func(() => {
+      // A newer focusin decides
+      if (id !== focusinCount) return
       const composedPath = event?.composedPath?.() ?? [event?.target]
       const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
       if (!node || !isEventOutside(event, target)) return
-
-      // Focus moved again before this deferred check ran, so the newer focusin decides
-      if (defer && hasFocusMovedOn(target)) return
 
       if (onFocusOutside || onInteractOutside) {
         const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
