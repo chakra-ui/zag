@@ -9,3 +9,5 @@
 - Fix controlled submenus opening after the pointer leaves their trigger, and controlled context menus opening on a
   short tap.
 - Fix a pending scroll to the highlighted item running after the menu closes.
+- Fix focus being lost after pressing Escape right after an arrow key.
+- Fix Escape not closing the menu right after it opens.
