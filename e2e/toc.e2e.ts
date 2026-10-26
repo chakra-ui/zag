@@ -34,6 +34,13 @@ test.describe("toc", () => {
       await I.seeItemIsActive("troubleshooting")
     })
 
+    test("follows the scroll position when navigation is interrupted", async () => {
+      await I.clickLink("api-reference")
+      await I.scrollToTop()
+      await I.seeActiveItemCount(1)
+      await I.seeItemIsActive("introduction")
+    })
+
     test("keeps a clicked item active when it can't scroll to the top", async () => {
       await I.clickLink("api-reference")
       await I.seeLinkIsCurrent("api-reference")
@@ -41,6 +48,21 @@ test.describe("toc", () => {
       await I.seeActiveItemCount(1)
       await I.seeItemIsActive("api-reference")
     })
+  })
+})
+
+test.describe("toc / long sections", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TocModel(page)
+    await I.goto("/toc/long-sections")
+  })
+
+  test("activates the section the reader jumps into", async () => {
+    await I.jumpIntoSection("introduction")
+    await I.jumpIntoSection("getting-started")
+    await I.jumpIntoSection("installation")
+    await I.seeActiveItemCount(1)
+    await I.seeItemIsActive("installation")
   })
 })
 

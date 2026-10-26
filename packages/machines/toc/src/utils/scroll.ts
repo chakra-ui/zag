@@ -13,3 +13,7 @@ export function getBandTop(container: HTMLElement, rootBounds: DOMRectReadOnly |
   const viewTop = container === container.ownerDocument.scrollingElement ? 0 : container.getBoundingClientRect().top
   return Math.max(rootBounds?.top ?? viewTop, viewTop)
 }
+
+/** The page scroller's view is the window */
+export const getViewport = (container: HTMLElement) =>
+  container === container.ownerDocument.scrollingElement ? container.ownerDocument.defaultView! : container

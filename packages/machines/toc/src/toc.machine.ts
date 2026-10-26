@@ -1,11 +1,18 @@
 import { setup } from "@zag-js/core"
-import { addDomEvent, contains, getEventTarget, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  contains,
+  getEventTarget,
+  isInView,
+  resizeObserverBorderBox,
+  scrollToNearest,
+} from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
-import { getBandTop, getScrollContainer, hasOverflow } from "./utils/scroll"
+import { getBandTop, getScrollContainer, getViewport, hasOverflow } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -94,7 +101,7 @@ export const machine = createMachine({
         "VISIBILITY.CHANGE": {
           actions: ["syncActiveIds"],
         },
-        // Single mode only: near the end, the active heading changes without an intersection change
+        // Jumps and the end of the page change the active heading without an intersection change
         SCROLL: {
           actions: ["syncActiveIds"],
         },
@@ -107,12 +114,13 @@ export const machine = createMachine({
       on: {
         "SCROLL.END": [
           {
-            guard: "isMultiple",
+            // e.g. a heading near the end that can't scroll to the top
+            guard: "isTargetKept",
             target: "idle",
-            actions: ["syncActiveIds"],
           },
           {
             target: "idle",
+            actions: ["syncActiveIds"],
           },
         ],
       },
@@ -121,7 +129,14 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      isMultiple: ({ prop }) => prop("multiple"),
+      isTargetKept: ({ context, prop, refs }) => {
+        if (prop("multiple")) return false
+        const heading = refs.get("headings").find((heading) => heading.value === first(context.get("activeIds")))
+        const container = refs.get("scrollContainer")
+        if (!heading || !container) return false
+        // Not in view means the scroll was interrupted
+        return isInView(heading.el, getViewport(container))
+      },
     },
 
     actions: {
@@ -278,7 +293,7 @@ export const machine = createMachine({
 
         let frame = 0
         const onScroll = (event: Event) => {
-          if (frame || prop("multiple")) return
+          if (frame) return
           // Ignore scrolling that doesn't move the headings
           const target = getEventTarget<Node>(event)
           if (target !== doc && !contains(target, headings[0].el)) return
