@@ -510,6 +510,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "indicator", title: "Indicator" },
       { slug: "scroll-element", title: "Scroll Element" },
       { slug: "nested-nav", title: "Nav Inside Scroll Container" },
+      { slug: "long-sections", title: "Long Sections" },
     ],
   },
   {
