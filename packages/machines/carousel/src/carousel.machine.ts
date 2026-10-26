@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, raf, resizeObserverBorderBox, Timeout, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, raf, resizeObserverBorderBox, Timeout, trackPointerMove, trackScrollEnd } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
@@ -332,42 +332,18 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const scrollEndTimeout = refs.get("scrollEndTimeout")
-        const onScroll = () => {
-          scrollEndTimeout.start(150, () => {
-            send({ type: "SCROLL.END" })
-          })
-        }
-
-        const cleanup = addDomEvent(el, "scroll", onScroll, { passive: true })
-        return () => {
-          cleanup()
-          scrollEndTimeout.clear()
-        }
+        return trackScrollEnd(el, () => send({ type: "SCROLL.END" }), { timeout: refs.get("scrollEndTimeout") })
       },
 
       trackSettlingScroll({ send, refs, scope }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const scrollEndTimeout = refs.get("scrollEndTimeout")
-        const startTimer = () => {
-          scrollEndTimeout.start(200, () => {
-            send({ type: "SCROLL.END" })
-          })
-        }
-
-        startTimer()
-
-        const onScroll = () => {
-          startTimer()
-        }
-
-        const cleanup = addDomEvent(el, "scroll", onScroll, { passive: true })
-        return () => {
-          cleanup()
-          scrollEndTimeout.clear()
-        }
+        return trackScrollEnd(el, () => send({ type: "SCROLL.END" }), {
+          delay: 200,
+          immediate: true,
+          timeout: refs.get("scrollEndTimeout"),
+        })
       },
 
       trackDocumentVisibility({ scope, send }) {

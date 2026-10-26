@@ -1,5 +1,12 @@
 import { setup } from "@zag-js/core"
-import { addDomEvent, contains, getEventTarget, resizeObserverBorderBox, scrollToNearest } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  contains,
+  getEventTarget,
+  resizeObserverBorderBox,
+  scrollToNearest,
+  trackScrollEnd,
+} from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
@@ -8,8 +15,6 @@ import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils
 import { getBandTop, getScrollContainer, hasOverflow, isScrolledToHeading } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
-
-const SCROLL_END_DELAY = 150
 
 export const machine = createMachine({
   props({ props }) {
@@ -309,23 +314,7 @@ export const machine = createMachine({
       },
 
       waitForScrollEnd({ scope, send }) {
-        const win = scope.getWin()
-
-        let timer = 0
-        const restartTimer = () => {
-          win.clearTimeout(timer)
-          timer = win.setTimeout(() => send({ type: "SCROLL.END" }), SCROLL_END_DELAY)
-        }
-
-        // Also ends when nothing scrolls
-        restartTimer()
-
-        // Scroll events don't bubble
-        const cleanup = addDomEvent(scope.getDoc(), "scroll", restartTimer, { capture: true, passive: true })
-        return () => {
-          cleanup()
-          win.clearTimeout(timer)
-        }
+        return trackScrollEnd(scope.getDoc(), () => send({ type: "SCROLL.END" }), { immediate: true, capture: true })
       },
     },
   },

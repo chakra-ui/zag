@@ -1,5 +1,7 @@
+import { addDomEvent } from "./event"
 import { getWindow, isHTMLElement } from "./node"
 import { isScrollable } from "./overflow"
+import { Timeout } from "./timeout"
 
 export interface ScrollOptions extends ScrollIntoViewOptions {
   rootEl: HTMLElement | null
@@ -125,4 +127,27 @@ export function getScrollPosition(element: HTMLElement | Window): ScrollPosition
     return { scrollLeft: element.scrollLeft, scrollTop: element.scrollTop }
   }
   return { scrollLeft: element.scrollX, scrollTop: element.scrollY }
+}
+
+export interface ScrollEndOptions {
+  /** How long scrolling must pause, in ms. Defaults to `150` */
+  delay?: number | undefined
+  /** Starts waiting right away, so `fn` also runs when nothing scrolls */
+  immediate?: boolean | undefined
+  /** Catches scrolling in any descendant, since scroll events don't bubble */
+  capture?: boolean | undefined
+  /** The timer to use, so a pending call can be cleared elsewhere */
+  timeout?: Timeout | undefined
+}
+
+/** Calls `fn` once scroll events on `target` pause for `delay` */
+export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: ScrollEndOptions = {}): VoidFunction {
+  const { delay = 150, immediate = false, capture = false, timeout = Timeout.create() } = options
+  const restart = () => timeout.start(delay, fn)
+  if (immediate) restart()
+  const cleanup = addDomEvent(target, "scroll", restart, { capture, passive: true })
+  return () => {
+    cleanup()
+    timeout.clear()
+  }
 }
