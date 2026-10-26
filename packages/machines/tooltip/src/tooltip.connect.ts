@@ -48,6 +48,13 @@ export function connect<P extends PropTypes>(
       const { value } = props
       const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
+
+      const onTriggerLeave = () => {
+        // While disabled, a closed tooltip still clears the hover flag
+        if (disabled && open) return
+        send({ type: "pointer.leave" })
+      }
+
       return normalize.button({
         ...parts.trigger.attrs,
         id: triggerId,
@@ -106,15 +113,8 @@ export function connect<P extends PropTypes>(
           if (event.pointerType === "touch") return
           send({ type: "pointer.move", value, triggerId })
         },
-        onPointerLeave() {
-          // while disabled, still let a closed tooltip clear the hover flag
-          if (disabled && open) return
-          send({ type: "pointer.leave" })
-        },
-        onPointerCancel() {
-          if (disabled && open) return
-          send({ type: "pointer.leave" })
-        },
+        onPointerLeave: onTriggerLeave,
+        onPointerCancel: onTriggerLeave,
       })
     },
 
