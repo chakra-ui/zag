@@ -26,6 +26,26 @@ test("visibility trigger conveys its state through its label, not aria-expanded"
   await I.seeVisibilityTriggerLabel("Hide password")
 })
 
+test("keyboard: toggle visibility from the trigger and keep focus on it", async () => {
+  await I.input.focus()
+  await I.pressKey("Tab")
+  await I.seeVisibilityTriggerIsFocused()
+
+  await I.pressKey("Enter")
+  await I.canSeePassword()
+  await I.seeVisibilityTriggerIsFocused()
+
+  await I.pressKey("Space")
+  await I.cantSeePassword()
+  await I.seeVisibilityTriggerIsFocused()
+})
+
+test("pointer: keep focus in the input after toggling", async () => {
+  await I.clickVisibilityTrigger()
+  await I.canSeePassword()
+  await I.seeInputIsFocused()
+})
+
 test("preserve caret position when toggling password visibility", async () => {
   await I.input.pressSequentially("123456")
   await I.input.press("ArrowLeft")

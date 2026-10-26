@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr, isLeftClick } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getNativeEvent, isLeftClick, isVirtualClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./password-input.anatomy"
@@ -83,7 +83,6 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.visibilityTrigger.attrs,
         type: "button",
-        tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-readonly": dataAttr(readOnly),
         disabled,
@@ -94,7 +93,13 @@ export function connect<T extends PropTypes>(
           if (!isLeftClick(event)) return
           if (!interactive) return
           event.preventDefault()
-          service.send({ type: "TRIGGER.CLICK" })
+          service.send({ type: "TRIGGER.CLICK", src: "pointer" })
+        },
+        onClick(event) {
+          // pointer clicks are handled on pointerdown
+          if (!isVirtualClick(getNativeEvent(event))) return
+          if (!interactive) return
+          service.send({ type: "TRIGGER.CLICK", src: "keyboard" })
         },
       })
     },
