@@ -26,4 +26,11 @@ test.describe("steps", () => {
     await I.seeCurrentStep(1)
     await I.seeStepIsNotCurrent(0)
   })
+
+  test("marks items as complete or incomplete relative to the current step", async () => {
+    await I.clickNext()
+
+    await I.seeStepIsComplete(0)
+    await I.seeStepIsIncomplete(2)
+  })
 })

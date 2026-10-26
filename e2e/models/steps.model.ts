@@ -30,9 +30,19 @@ export class StepsModel extends Model {
   seeCurrentStep = async (index: number) => {
     await expect(this.getTrigger(index)).toHaveAttribute("aria-current", "step")
     await expect(this.getItem(index)).not.toHaveAttribute("aria-current")
+    await expect(this.getItem(index)).toHaveAttribute("data-current")
   }
 
   seeStepIsNotCurrent = async (index: number) => {
     await expect(this.getTrigger(index)).not.toHaveAttribute("aria-current")
+    await expect(this.getItem(index)).not.toHaveAttribute("data-current")
+  }
+
+  seeStepIsComplete = async (index: number) => {
+    await expect(this.getItem(index)).toHaveAttribute("data-complete")
+  }
+
+  seeStepIsIncomplete = async (index: number) => {
+    await expect(this.getItem(index)).toHaveAttribute("data-incomplete")
   }
 }

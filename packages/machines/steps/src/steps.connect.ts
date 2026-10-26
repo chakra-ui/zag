@@ -99,6 +99,9 @@ export function connect<T extends PropTypes>(service: StepsService, normalize: N
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-skippable": dataAttr(itemState.skippable),
+        "data-complete": dataAttr(itemState.completed),
+        "data-current": dataAttr(itemState.current),
+        "data-incomplete": dataAttr(itemState.incomplete),
       })
     },
 
