@@ -220,7 +220,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         "aria-valuemin": aria.valueMin,
         "aria-valuemax": aria.valueMax,
         "data-orientation": orientation,
-        // aria-orientation describes the separator line, which runs across the panel layout
+        // Describes the separator line, which is perpendicular to the panel layout
         "aria-orientation": horizontal ? "vertical" : "horizontal",
         "aria-controls":
           aria.beforeId && aria.afterId
