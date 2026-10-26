@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3531](https://github.com/chakra-ui/zag/pull/3531)
+  [`cfdcfb7`](https://github.com/chakra-ui/zag/commit/cfdcfb7a1fc03b7de458f2282532948903455f35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix a pending size measurement running after the collapsible
+  unmounts.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

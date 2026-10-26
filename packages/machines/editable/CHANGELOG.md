@@ -1,5 +1,23 @@
 # @zag-js/editable
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3512](https://github.com/chakra-ui/zag/pull/3512)
+  [`1ea0a95`](https://github.com/chakra-ui/zag/commit/1ea0a950f2a6061471944d5db59445217a97e0e4) Thanks
+  [@aose-yuu](https://github.com/aose-yuu)! - - Fix cancelling an edit not restoring an empty value, or the initial
+  value when `defaultEdit` is set.
+  - Fix a rendered label not naming the input.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`4f463ba`](https://github.com/chakra-ui/zag/commit/4f463bafa0b501a4060808a18a695d8118223c46)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/interact-outside@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

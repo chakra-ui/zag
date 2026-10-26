@@ -1,5 +1,29 @@
 # @zag-js/date-picker
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3500](https://github.com/chakra-ui/zag/pull/3500)
+  [`38ebab2`](https://github.com/chakra-ui/zag/commit/38ebab2d447b06e074f6150afa7324dcf0cc1b24) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix Space not selecting the focused date in the calendar.
+  - Fix focus being pulled back to the input or trigger after closing when focus had moved elsewhere.
+  - Fix the trigger missing its focus ring in Firefox after closing with Escape.
+  - Fix Escape not closing the content right after it opens.
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`60833ac`](https://github.com/chakra-ui/zag/commit/60833acda3f96b94c99464d0a2d3abbdeb5a87d5),
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/live-region@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+  - @zag-js/date-utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

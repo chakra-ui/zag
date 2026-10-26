@@ -1,5 +1,19 @@
 # @zag-js/dismissable
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3540](https://github.com/chakra-ui/zag/pull/3540)
+  [`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Pass the event that caused the dismiss to `onDismiss`.
+  - Fix Escape being ignored when the layer's element mounts after the layer is set up.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`4f463ba`](https://github.com/chakra-ui/zag/commit/4f463bafa0b501a4060808a18a695d8118223c46)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/interact-outside@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
