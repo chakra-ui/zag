@@ -1,4 +1,4 @@
-import { getComputedStyle, getScrollParent } from "@zag-js/dom-query"
+import { getScrollParent, getScrollTopToElement } from "@zag-js/dom-query"
 
 /** `scrollEl`, or the nearest ancestor of the heading that scrolls, or the page */
 export function getScrollContainer(scrollEl: HTMLElement | null | undefined, headingEl: HTMLElement) {
@@ -6,7 +6,15 @@ export function getScrollContainer(scrollEl: HTMLElement | null | undefined, hea
   return getScrollParent(headingEl, { axis: "y" }) ?? (headingEl.ownerDocument.scrollingElement as HTMLElement)
 }
 
-export const hasOverflow = (el: HTMLElement) => el.scrollHeight > el.clientHeight
+/** Looks the container up again while it doesn't scroll, since content can grow after mount */
+export function resolveScrollContainer(
+  cached: HTMLElement | null,
+  scrollEl: HTMLElement | null | undefined,
+  headingEl: HTMLElement,
+) {
+  if (cached && cached.scrollHeight > cached.clientHeight) return cached
+  return getScrollContainer(scrollEl, headingEl)
+}
 
 /** The top of the observed band, or of the container when it clips first */
 export function getBandTop(container: HTMLElement, rootBounds: DOMRectReadOnly | null) {
@@ -14,21 +22,6 @@ export function getBandTop(container: HTMLElement, rootBounds: DOMRectReadOnly |
   return Math.max(rootBounds?.top ?? viewTop, viewTop)
 }
 
-// Percentages resolve against `basis`
-const getPx = (value: string, basis = 0) => {
-  const px = Number.parseFloat(value) || 0
-  return value.trim().endsWith("%") ? (px * basis) / 100 : px
-}
-
-/** Whether the container stopped where navigating to the heading aims, or as close as its scroll range allows */
-export function isScrolledToHeading(headingEl: HTMLElement, container: HTMLElement) {
-  const viewTop = container === container.ownerDocument.scrollingElement ? 0 : container.getBoundingClientRect().top
-  const offset =
-    headingEl.getBoundingClientRect().top -
-    viewTop -
-    getPx(getComputedStyle(container).scrollPaddingTop, container.clientHeight) -
-    getPx(getComputedStyle(headingEl).scrollMarginTop)
-  const maxScroll = container.scrollHeight - container.clientHeight
-  const target = Math.min(Math.max(container.scrollTop + offset, 0), maxScroll)
-  return Math.abs(target - container.scrollTop) <= 2
-}
+/** Whether the container stopped where navigating to the heading aims */
+export const isScrolledToHeading = (headingEl: HTMLElement, container: HTMLElement) =>
+  Math.abs(getScrollTopToElement(headingEl, container) - container.scrollTop) <= 2

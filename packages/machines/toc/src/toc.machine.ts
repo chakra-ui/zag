@@ -9,11 +9,11 @@ import {
   trackScrollEnd,
 } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, first, isEqual, last } from "@zag-js/utils"
+import { callAll, first, isEqual, last, toArray } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
-import { getBandTop, getScrollContainer, hasOverflow, isScrolledToHeading } from "./utils/scroll"
+import { getBandTop, getScrollContainer, isScrolledToHeading, resolveScrollContainer } from "./utils/scroll"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -130,7 +130,8 @@ export const machine = createMachine({
     guards: {
       isTargetReached: ({ context, prop, refs }) => {
         if (prop("multiple")) return false
-        const heading = refs.get("headings").find((heading) => heading.value === first(context.get("activeIds")))
+        const targetId = first(context.get("activeIds"))
+        const heading = refs.get("headings").find((heading) => heading.value === targetId)
         const container = refs.get("scrollContainer")
         if (!heading || !container) return false
         // Anywhere else means the user interrupted the scroll
@@ -164,30 +165,27 @@ export const machine = createMachine({
         const headings = refs.get("headings")
         if (headings.length === 0) return
 
-        // Content can grow after mount
-        let container = refs.get("scrollContainer")
-        if (!container || !hasOverflow(container)) {
-          container = getScrollContainer(prop("scrollEl")?.(), headings[0].el)
-          refs.set("scrollContainer", container)
-        }
-
-        const bandTop = getBandTop(container, refs.get("rootBounds"))
-        const visibleIds = getVisibleIds(prop("items"), refs.get("visibilityMap"))
-
+        const multiple = prop("multiple")
+        const visibleIds = getVisibleIds(headings, refs.get("visibilityMap"))
         let nextActiveIds = visibleIds
-        if (!prop("multiple")) {
-          const activeId = findEndOfPageHeading(headings, container, bandTop) ?? first(visibleIds)
-          nextActiveIds = activeId ? [activeId] : []
+
+        // Only single mode and the section fallback read layout
+        if (!multiple || visibleIds.length === 0) {
+          const container = resolveScrollContainer(refs.get("scrollContainer"), prop("scrollEl")?.(), headings[0].el)
+          refs.set("scrollContainer", container)
+          const bandTop = getBandTop(container, refs.get("rootBounds"))
+
+          if (!multiple) {
+            nextActiveIds = toArray(findEndOfPageHeading(headings, container, bandTop) ?? first(visibleIds))
+          }
+
+          // No heading in view: use the section the reader is in
+          if (nextActiveIds.length === 0) {
+            nextActiveIds = toArray(findCurrentSection(headings, bandTop))
+          }
         }
 
-        // No heading in view: use the section the reader is in
-        if (nextActiveIds.length === 0) {
-          const sectionId = findCurrentSection(headings, bandTop)
-          if (!sectionId) return
-          nextActiveIds = [sectionId]
-        }
-
-        if (isEqual(context.get("activeIds"), nextActiveIds)) return
+        if (nextActiveIds.length === 0 || isEqual(context.get("activeIds"), nextActiveIds)) return
         context.set("activeIds", nextActiveIds)
       },
 
@@ -207,7 +205,8 @@ export const machine = createMachine({
           return
         }
 
-        const exec = () => {
+        // Also runs on resize, when the active ids may have changed since
+        const measure = () => {
           const ids = context.get("activeIds")
           if (ids.length === 0) {
             context.set("indicatorRect", null)
@@ -218,38 +217,32 @@ export const machine = createMachine({
           const lastEl = dom.getItemEl(scope, last(ids))
           if (!firstEl) return
 
+          const firstRect = firstEl.getBoundingClientRect()
+          const lastRect = (lastEl ?? firstEl).getBoundingClientRect()
+
+          // Relative to the list's scrolled content, or the viewport without a list
           const listEl = dom.getListEl(scope)
           const listRect = listEl?.getBoundingClientRect()
-          const firstRect = firstEl.getBoundingClientRect()
-
-          const offsetY = listRect ? firstRect.top - listRect.top + listEl!.scrollTop : firstRect.top
-          const offsetX = listRect ? firstRect.left - listRect.left + listEl!.scrollLeft : firstRect.left
-
-          let height: number
-          if (lastEl && lastEl !== firstEl) {
-            const lastRect = lastEl.getBoundingClientRect()
-            height = lastRect.top + lastRect.height - firstRect.top
-          } else {
-            height = firstRect.height
-          }
+          const originX = listEl && listRect ? listRect.left - listEl.scrollLeft : 0
+          const originY = listEl && listRect ? listRect.top - listEl.scrollTop : 0
 
           const nextRect: Rect = {
-            x: offsetX,
-            y: offsetY,
+            x: firstRect.left - originX,
+            y: firstRect.top - originY,
             width: firstRect.width,
-            height,
+            height: lastRect.bottom - firstRect.top,
           }
 
           context.set("indicatorRect", (prev) => (isEqual(prev, nextRect) ? prev : nextRect))
         }
 
-        exec()
+        measure()
 
         const cleanups: VoidFunction[] = []
         for (const id of activeIds) {
           const el = dom.getItemEl(scope, id)
           if (el) {
-            cleanups.push(resizeObserverBorderBox.observe(el, exec))
+            cleanups.push(resizeObserverBorderBox.observe(el, measure))
           }
         }
 
@@ -293,9 +286,9 @@ export const machine = createMachine({
         const frame = AnimationFrame.create()
         const onScroll = (event: Event) => {
           if (frame.isActive()) return
-          // Ignore scrolling that doesn't move the headings
           const target = getEventTarget<Node>(event)
-          if (target !== doc && !contains(target, headings[0].el)) return
+          const movesHeadings = target === doc || target === container || contains(target, headings[0].el)
+          if (!movesHeadings) return
           frame.request(() => send({ type: "SCROLL" }))
         }
 

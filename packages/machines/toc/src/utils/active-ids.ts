@@ -1,5 +1,3 @@
-import type { TocItem } from "../toc.types"
-
 export interface Heading {
   value: string
   el: HTMLElement
@@ -7,15 +5,25 @@ export interface Heading {
 
 const getTop = (heading: Heading) => heading.el.getBoundingClientRect().top
 
-export function getVisibleIds(items: TocItem[], visibilityMap: Map<string, boolean>) {
-  return items.filter((item) => visibilityMap.get(item.value)).map((item) => item.value)
+export function getVisibleIds(headings: Heading[], visibilityMap: Map<string, boolean>) {
+  return headings.filter((heading) => visibilityMap.get(heading.value)).map((heading) => heading.value)
 }
 
-/** The last heading that has scrolled past the band's top */
+/** The last heading that has scrolled past the band's top. Headings are in document order, so binary search */
 export function findCurrentSection(headings: Heading[], bandTop: number) {
-  for (let i = headings.length - 1; i >= 0; i--) {
-    if (getTop(headings[i]) <= bandTop) return headings[i].value
+  let low = 0
+  let high = headings.length - 1
+  let value: string | undefined
+  while (low <= high) {
+    const mid = (low + high) >> 1
+    if (getTop(headings[mid]) <= bandTop) {
+      value = headings[mid].value
+      low = mid + 1
+    } else {
+      high = mid - 1
+    }
   }
+  return value
 }
 
 /** Near the end, slides an activation line down to the last heading so each one takes a turn */

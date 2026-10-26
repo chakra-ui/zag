@@ -1,3 +1,4 @@
+import { getComputedStyle } from "./computed-style"
 import { addDomEvent } from "./event"
 import { getWindow, isHTMLElement } from "./node"
 import { isScrollable } from "./overflow"
@@ -19,22 +20,28 @@ export function scrollIntoView(el: HTMLElement | null | undefined, options?: Scr
   el.scrollIntoView(scrollOptions)
 }
 
+/** The `scrollTop` of `rootEl` that aligns the top of `el` with it, like `scrollIntoView({ block: "start" })` */
+export function getScrollTopToElement(el: HTMLElement, rootEl: HTMLElement): number {
+  const elTop = el.getBoundingClientRect().top
+  let distance = elTop
+
+  if (rootEl !== rootEl.ownerDocument.scrollingElement) {
+    const rootRect = rootEl.getBoundingClientRect()
+    // Rects include transforms, scroll offsets don't
+    const scale = rootEl.offsetHeight ? rootRect.height / rootEl.offsetHeight : 1
+    distance = (elTop - rootRect.top) / scale - rootEl.clientTop
+  }
+
+  const padding = getLength(getComputedStyle(rootEl).scrollPaddingTop, rootEl.clientHeight)
+  const margin = getNumericStyle(getComputedStyle(el).scrollMarginTop)
+  const maxScroll = rootEl.scrollHeight - rootEl.clientHeight
+  return Math.min(Math.max(rootEl.scrollTop + distance - padding - margin, 0), maxScroll)
+}
+
 export function scrollToElement(el: HTMLElement | null | undefined, options?: ScrollToElementOptions): boolean {
   const { rootEl, behavior } = options || {}
-  if (!el || !rootEl) return false
-  if (!rootEl.contains(el)) return false
-
-  const win = getWindow(rootEl)
-  const rootRect = rootEl.getBoundingClientRect()
-  const elRect = el.getBoundingClientRect()
-  const rootStyle = win.getComputedStyle(rootEl)
-  const elStyle = win.getComputedStyle(el)
-
-  const scrollPaddingTop = getNumericStyle(rootStyle.scrollPaddingBlockStart || rootStyle.scrollPaddingTop)
-  const scrollMarginTop = getNumericStyle(elStyle.scrollMarginBlockStart || elStyle.scrollMarginTop)
-  const top = elRect.top - rootRect.top + rootEl.scrollTop - scrollPaddingTop - scrollMarginTop
-
-  rootEl.scrollTo({ top, ...(behavior && { behavior }) })
+  if (!el || !rootEl || !rootEl.contains(el)) return false
+  rootEl.scrollTo({ top: getScrollTopToElement(el, rootEl), ...(behavior && { behavior }) })
   return true
 }
 
