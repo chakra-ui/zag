@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { page } from "$app/stores"
+  import { page } from "$app/state"
   import { componentRoutesData, getComponentExamples, isKnownComponent } from "@zag-js/shared"
 
-  let query = ""
+  const currentComponent = $derived(String(page.params.component ?? ""))
+  const componentInfo = $derived(componentRoutesData.find((item) => item.slug === currentComponent))
+  const examples = $derived(getComponentExamples(currentComponent))
 
-  $: currentComponent = String($page.params.component ?? "")
-  $: componentInfo = componentRoutesData.find((item) => item.slug === currentComponent)
-  $: examples = getComponentExamples(currentComponent)
+  // Reset the search when the component changes
+  let query = $derived.by(() => {
+    void currentComponent
+    return ""
+  })
 
-  $: if ($page.params.component) {
-    query = ""
-  }
-
-  $: filteredExamples = (() => {
+  const filteredExamples = $derived.by(() => {
     const search = query.trim().toLowerCase()
     if (!search) return examples
     return examples.filter((example) => example.title.toLowerCase().includes(search))
-  })()
+  })
 </script>
 
 {#if isKnownComponent(currentComponent) && componentInfo}
