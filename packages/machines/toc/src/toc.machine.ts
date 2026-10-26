@@ -58,6 +58,7 @@ export const machine = createMachine({
     return {
       headings: [],
       headingObserver: null,
+      headingsFrame: AnimationFrame.create(),
       scrollContainer: null,
       visibilityMap: new Map<string, boolean>(),
       rootBounds: null,
@@ -202,7 +203,8 @@ export const machine = createMachine({
       },
 
       syncHeadings(params) {
-        observeHeadings(params)
+        // Frameworks may not have rendered the new headings yet
+        params.refs.get("headingsFrame").request(() => observeHeadings(params))
       },
 
       cleanupIndicatorObserver({ refs }) {
@@ -308,6 +310,7 @@ export const machine = createMachine({
           observer.disconnect()
           cleanupScroll()
           frame.cancel()
+          refs.get("headingsFrame").cancel()
           visibilityMap.clear()
           refs.set("headingObserver", null)
           refs.set("headings", [])

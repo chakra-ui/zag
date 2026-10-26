@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 import type { Heading } from "./utils/active-ids"
 
@@ -129,6 +130,7 @@ export interface TocSchema {
     rootBounds: DOMRectReadOnly | null
     headings: Heading[]
     headingObserver: IntersectionObserver | null
+    headingsFrame: AnimationFrame
     scrollContainer: HTMLElement | null
   }
   computed: {
