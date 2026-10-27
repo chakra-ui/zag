@@ -1,19 +1,17 @@
-import { createSignal, onCleanup, onMount, type Accessor } from "solid-js"
+import { createSignal, onSettled, type Accessor } from "solid-js"
 
 export function useSyncExternalStore<T>(
   subscribe: (listener: () => void) => () => void,
   getSnapshot: () => T,
   _getServerSnapshot?: () => T,
 ): Accessor<T> {
-  const [snapshot, setSnapshot] = createSignal(getSnapshot())
+  const [snapshot, setSnapshot] = createSignal<T>(getSnapshot() as Exclude<T, Function>)
 
-  onMount(() => {
+  onSettled(() => {
     setSnapshot(() => getSnapshot())
-    const unsubscribe = subscribe(() => {
+    return subscribe(() => {
       setSnapshot(() => getSnapshot())
     })
-
-    onCleanup(unsubscribe)
   })
 
   return snapshot

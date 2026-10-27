@@ -7,32 +7,46 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
 
   const eq = props().isEqual ?? Object.is
 
-  const [value, setValue] = createSignal(initial as T)
+  // Solid 2 applies writes when the batch flushes, so a signal read right after `set` still answers the
+  // old value. Machines read their context right after writing it, so the value lives here and the
+  // signal only tells readers it changed.
+  let value = initial as T
+  const [version, setVersion] = createSignal(0)
   const controlled = createMemo(() => props().value !== undefined)
 
-  const valueRef = { current: value() }
+  const valueRef = { current: value }
 
-  createEffect(() => {
-    const v = controlled() ? props().value : value()
-    valueRef.current = v as T
-  })
+  createEffect(
+    () => (controlled() ? props().value : (version(), value)),
+    (v) => {
+      valueRef.current = v as T
+    },
+  )
 
   const set = (v: T | ((prev: T) => T)) => {
-    const prev = untrack(() => (controlled() ? props().value : value())) as T
+    const prev = untrack(() => (controlled() ? props().value : value)) as T
     const next = isFunction(v) ? v(prev) : v
 
     if (props().debug) {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled()) setValue(next as any)
+    if (!controlled()) {
+      value = next as T
+      valueRef.current = value
+      setVersion((n) => n + 1)
+    }
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }
   }
 
   function get(): T {
-    const v = (controlled() ? props().value : value) as T
+    if (!controlled()) {
+      version()
+      return value
+    }
+    const v = props().value as T
     return isFunction(v) ? v() : v
   }
 

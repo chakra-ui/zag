@@ -7,34 +7,41 @@ function access<T>(v: T | (() => T)): T {
 }
 
 export const createTrack = (deps: any[], effect: VoidFunction) => {
-  let prevDeps: any[] = []
-  let isFirstRun = true
-  createEffect(() => {
-    if (isFirstRun) {
-      prevDeps = deps.map((d) => access(d))
-      isFirstRun = false
-      return
-    }
-    let changed = false
-    for (let i = 0; i < deps.length; i++) {
-      if (!isEqual(prevDeps[i], access(deps[i]))) {
-        changed = true
-        break
+  let prevDeps: any[] | undefined
+  createEffect(
+    () => deps.map((d) => access(d)),
+    (next) => {
+      if (!prevDeps) {
+        prevDeps = next
+        return
       }
-    }
-    if (changed) {
-      prevDeps = deps.map((d) => access(d))
-      effect()
-    }
-  })
+      let changed = false
+      for (let i = 0; i < next.length; i++) {
+        if (!isEqual(prevDeps[i], next[i])) {
+          changed = true
+          break
+        }
+      }
+      if (changed) {
+        prevDeps = next
+        effect()
+      }
+    },
+  )
 }
 
-/** Solid does not re-render, so `notify` bumps a signal to re-subscribe when the effect set changes. */
-export const createEffectSync = (reconcile: VoidFunction): VoidFunction => {
+/**
+ * Solid does not re-render, so `notify` bumps a signal to re-read when the effect set changes.
+ * `read` runs tracked (it subscribes to the effects' deps); `apply` runs untracked with its result.
+ */
+export const createEffectSync = <T>(read: () => T, apply: (value: T) => void): VoidFunction => {
   const [version, setVersion] = createSignal(0)
-  createEffect(() => {
-    version()
-    reconcile()
-  })
+  createEffect(
+    () => {
+      version()
+      return read()
+    },
+    (value) => apply(value),
+  )
   return () => setVersion((n) => n + 1)
 }
