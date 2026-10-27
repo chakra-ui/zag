@@ -27,7 +27,7 @@ import {
   watchEffect,
 } from "@zag-js/core"
 import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
-import { type Accessor, createMemo, mergeProps, onCleanup, onMount, untrack } from "solid-js"
+import { type Accessor, createMemo, flush as flushSolid, merge, onCleanup, onSettled, untrack } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { createEffectSync, createTrack } from "./track"
@@ -102,7 +102,7 @@ export function useMachine<T extends MachineSchema>(
   const eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = (): any =>
-    mergeProps(eventRef.current, {
+    merge(eventRef.current, {
       current() {
         return eventRef.current
       },
@@ -112,7 +112,7 @@ export function useMachine<T extends MachineSchema>(
     })
 
   const getState = () =>
-    mergeProps(state, {
+    merge(state, {
       matches(...values: T["state"][]) {
         const current = state.get()
         return values.some((value) => matchesState(current as string, value as string))
@@ -206,15 +206,22 @@ export function useMachine<T extends MachineSchema>(
     notify()
   }
 
-  const reconcileEffects = () => {
+  // Tracked: subscribes to every running watch effect's deps.
+  const readEffectDeps = () => {
+    const values: [EffectRecord, any[]][] = []
+    for (const record of effects.current.values()) {
+      if (record.deps) values.push([record, record.deps.map((d) => d())])
+    }
+    return values
+  }
+
+  const reconcileEffects = (values: [EffectRecord, any[]][]) => {
     if (status !== MachineStatus.Started) return
 
     let stale: EffectRecord[] | undefined
 
-    for (const record of effects.current.values()) {
-      const deps = record.deps
-      if (!deps) continue
-      const next = deps.map((d) => d())
+    for (const [record, next] of values) {
+      if (!effects.current.has(record.id)) continue
       if (!next.some((value, index) => !isEqual(record.values![index], value))) continue
       record.values = next
       // setup() reads live values, so an already-queued restart covers this change too
@@ -291,7 +298,7 @@ export function useMachine<T extends MachineSchema>(
 
   let status = MachineStatus.NotStarted
 
-  onMount(() => {
+  onSettled(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
     debug(started ? "rehydrating..." : "initializing...")
@@ -351,7 +358,7 @@ export function useMachine<T extends MachineSchema>(
 
   machine.watch?.(getParams())
 
-  notify = createEffectSync(reconcileEffects)
+  notify = createEffectSync(readEffectDeps, reconcileEffects)
 
   return {
     state: getState(),
@@ -368,8 +375,11 @@ export function useMachine<T extends MachineSchema>(
   } as unknown as Service<T>
 }
 
+// Solid 2 batches writes until the microtask flush; apply them now so the DOM reflects `fn`.
+// Inside an effect the flush is already underway and this is a no-op.
 function flush(fn: VoidFunction) {
   fn()
+  flushSolid()
 }
 
 function access<T>(value: T | Accessor<T>) {

@@ -1,4 +1,4 @@
-export { Key } from "@solid-primitives/keyed"
+export { Key } from "./key"
 export * from "./machine"
 export { mergeProps } from "./merge-props"
 export * from "./normalize-props"

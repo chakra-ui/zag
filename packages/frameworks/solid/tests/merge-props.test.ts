@@ -1,4 +1,4 @@
-import { createComputed, createRoot, createSignal, mergeProps as _mergeProps, splitProps } from "solid-js"
+import { createRoot, createSignal, flush, merge, omit } from "solid-js"
 import { mergeProps } from "../src"
 
 describe("mergeProps", () => {
@@ -93,38 +93,29 @@ describe("mergeProps", () => {
     }))
 
   it("accepts function sources", () => {
-    createRoot(() => {
-      const [signal, setSignal] = createSignal<any>({
-        class: "primary",
-        style: {
-          margin: "10px",
-        },
-      })
-
-      const props = mergeProps(
-        signal,
-        { class: "secondary" },
-        {
-          style: { padding: "10px" },
-        },
-      )
-
-      let i = 0
-
-      createComputed(() => {
-        if (i === 0) {
-          expect(props.class).toBe("primary secondary")
-          expect(props.style).toEqual({ margin: "10px", padding: "10px" })
-          i++
-        } else {
-          expect(props.class).toBe("tertiary secondary")
-          expect(props.style).toEqual({ padding: "10px" })
-          // expect(props.foo).toEqual("bar")
-        }
-      })
-
-      setSignal({ class: "tertiary", foo: "bar" })
+    const [signal, setSignal] = createSignal<any>({
+      class: "primary",
+      style: {
+        margin: "10px",
+      },
     })
+
+    const props = mergeProps(
+      signal,
+      { class: "secondary" },
+      {
+        style: { padding: "10px" },
+      },
+    )
+
+    expect(props.class).toBe("primary secondary")
+    expect(props.style).toEqual({ margin: "10px", padding: "10px" })
+
+    setSignal({ class: "tertiary", foo: "bar" })
+    flush()
+
+    expect(props.class).toBe("tertiary secondary")
+    expect(props.style).toEqual({ padding: "10px" })
   })
 
   it("last value overwrites the event-listeners", async () => {
@@ -145,11 +136,11 @@ describe("mergeProps", () => {
     })
   })
 
-  it("works with mergeProps", () => {
+  it("works with Solid's merge", () => {
     const cb1 = vi.fn()
     const cb2 = vi.fn()
     const combined = mergeProps({ onClick: cb1 }, { onClick: cb2 })
-    const merged = _mergeProps(combined)
+    const merged = merge(combined)
 
     merged.onClick("foo")
 
@@ -160,66 +151,60 @@ describe("mergeProps", () => {
   })
 
   it("merges function source with override object", () => {
-    createRoot((dispose) => {
-      const [value, setValue] = createSignal("initial")
+    const [value, setValue] = createSignal("initial")
 
-      const baseProps = () => ({
-        id: "base",
-        value: value(),
-        class: "base-class",
-        onClick: vi.fn(),
-      })
-
-      const overrideProps = {
-        class: "override-class",
-        disabled: true,
-      }
-
-      const merged = mergeProps(baseProps, overrideProps)
-
-      // Initial state
-      expect(merged.id).toBe("base")
-      expect(merged.value).toBe("initial")
-      expect(merged.class).toBe("base-class override-class")
-      expect(merged.disabled).toBe(true)
-      expect(typeof merged.onClick).toBe("function")
-
-      // Update signal and check reactivity
-      setValue("updated")
-      expect(merged.value).toBe("updated")
-      expect(merged.class).toBe("base-class override-class")
-
-      dispose()
+    const baseProps = () => ({
+      id: "base",
+      value: value(),
+      class: "base-class",
+      onClick: vi.fn(),
     })
+
+    const overrideProps = {
+      class: "override-class",
+      disabled: true,
+    }
+
+    const merged = mergeProps(baseProps, overrideProps)
+
+    // Initial state
+    expect(merged.id).toBe("base")
+    expect(merged.value).toBe("initial")
+    expect(merged.class).toBe("base-class override-class")
+    expect(merged.disabled).toBe(true)
+    expect(typeof merged.onClick).toBe("function")
+
+    // Update signal and check reactivity
+    setValue("updated")
+    flush()
+    expect(merged.value).toBe("updated")
+    expect(merged.class).toBe("base-class override-class")
   })
 
-  it("picks up keys a source adds or drops after creation", () =>
-    createRoot((dispose) => {
-      const [submenu, setSubmenu] = createSignal(false)
-      const props = mergeProps(() => (submenu() ? { "data-trigger-item": "" } : { "data-trigger": "" }), { id: "x" })
+  it("picks up keys a source adds or drops after creation", () => {
+    const [submenu, setSubmenu] = createSignal(false)
+    const props = mergeProps(() => (submenu() ? { "data-trigger-item": "" } : { "data-trigger": "" }), { id: "x" })
 
-      expect(Object.keys(props)).toEqual(["data-trigger", "id"])
+    expect(Object.keys(props)).toEqual(["data-trigger", "id"])
 
-      setSubmenu(true)
-      expect(Object.keys(props)).toEqual(["data-trigger-item", "id"])
-      expect("data-trigger" in props).toBe(false)
-      expect({ ...props }).toEqual({ "data-trigger-item": "", id: "x" })
+    setSubmenu(true)
+    flush()
+    expect(Object.keys(props)).toEqual(["data-trigger-item", "id"])
+    expect("data-trigger" in props).toBe(false)
+    expect({ ...props }).toEqual({ "data-trigger-item": "", id: "x" })
+  })
 
-      dispose()
-    }))
+  it("stays dynamic through Solid's merge and omit", () => {
+    const [extra, setExtra] = createSignal(false)
+    const props = mergeProps(() => (extra() ? { "aria-label": "menu" } : {}), { id: "x" })
+    const merged = merge(props, { class: "a" })
+    const rest = omit(merged, "class")
 
-  it("stays dynamic through Solid's mergeProps and splitProps", () =>
-    createRoot((dispose) => {
-      const [extra, setExtra] = createSignal(false)
-      const props = mergeProps(() => (extra() ? { "aria-label": "menu" } : {}), { id: "x" })
-      const merged = _mergeProps(props, { class: "a" })
-      const [local, rest] = splitProps(merged, ["class"])
-
-      setExtra(true)
-      expect(merged["aria-label"]).toBe("menu")
-      expect(Object.keys(rest)).toContain("aria-label")
-      expect(local.class).toBe("a")
-
-      dispose()
-    }))
+    setExtra(true)
+    flush()
+    expect(merged["aria-label"]).toBe("menu")
+    expect(Object.keys(rest)).toContain("aria-label")
+    expect(merged.class).toBe("a")
+    expect("class" in rest).toBe(false)
+  })
 })
