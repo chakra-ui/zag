@@ -27,5 +27,14 @@ describe("number", () => {
 
     // When step fits evenly in range
     expect(snapValueToStep(150, 0, 100, 25)).toBe(100)
+
+    // Decimal steps past max stay at max instead of dropping a step
+    expect(snapValueToStep(0.4, 0, 0.3, 0.1)).toBe(0.3)
+    expect(snapValueToStep(0.8, 0, 0.6, 0.2)).toBe(0.6)
+    expect(snapValueToStep(5.2, 0, 4.6, 0.2)).toBe(4.6)
+    expect(snapValueToStep(1.1, 0.1, 0.7, 0.2)).toBe(0.7)
+
+    // A max off the step grid still snaps down to the last step
+    expect(snapValueToStep(0.4, 0, 0.2995, 0.1)).toBe(0.2)
   })
 })
