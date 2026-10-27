@@ -55,7 +55,9 @@ export const snapValueToStep = (v: number, vmin: number | undefined, vmax: numbe
   if (!isNaN(min) && snapped < min) {
     snapped = min
   } else if (!isNaN(max) && snapped > max) {
-    const stepsInRange = floor((max - min) / step)
+    // Count whole steps in integers: (0.3 - 0) / 0.1 is 2.9999999999999996 in floats
+    const scale = pow(10, Math.max(countDecimals(min), countDecimals(max), countDecimals(step)))
+    const stepsInRange = floor((round(max * scale) - round(min * scale)) / round(step * scale))
     const largestValidStep = min + stepsInRange * step
     snapped = stepsInRange <= 0 || largestValidStep < min ? max : largestValidStep
   }

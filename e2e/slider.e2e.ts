@@ -71,6 +71,21 @@ test.describe("slider", () => {
     await I.seeValueText("2")
   })
 
+  test("[keyboard] should stay at max when stepping past it with a decimal step", async () => {
+    await I.controls.num("max", "0.3")
+    await I.controls.num("step", "0.1")
+    await I.focusThumb()
+
+    await I.pressKey("End")
+    await I.seeValueText("0.3")
+
+    await I.pressKey("ArrowRight")
+    await I.seeValueText("0.3")
+
+    await I.pressKey("PageUp")
+    await I.seeValueText("0.3")
+  })
+
   test("[keyboard] should respect a custom largeStep", async () => {
     await I.controls.num("largeStep", "5")
     await I.focusThumb()
