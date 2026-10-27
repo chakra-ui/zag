@@ -1,27 +1,25 @@
 import { renderHook } from "@solidjs/testing-library"
-import { batch, createSignal } from "solid-js"
+import { createSignal, flush } from "solid-js"
 import { createBindable } from "../src/bindable"
 
 describe("bindable updates", () => {
-  test("functional updates accumulate inside a batch", () => {
+  test("functional updates accumulate within a tick", () => {
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0 })))
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-    })
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(3)
   })
 
-  test("functional updates see direct writes in the same batch", () => {
+  test("functional updates see direct writes in the same tick", () => {
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0 })))
 
-    batch(() => {
-      result.set(10)
-      result.set((prev) => prev + 1)
-    })
+    result.set(10)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(11)
   })
@@ -30,11 +28,10 @@ describe("bindable updates", () => {
     const onChange = vi.fn()
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0, onChange })))
 
-    batch(() => {
-      result.set(1)
-      result.set(1)
-      result.set((prev) => prev + 1)
-    })
+    result.set(1)
+    result.set(1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(onChange.mock.calls).toEqual([
       [1, 0],
@@ -42,17 +39,20 @@ describe("bindable updates", () => {
     ])
   })
 
-  test("controlled updates read parent changes within a batch", () => {
+  test("controlled updates read the parent's value once it has flushed", () => {
     const { result } = renderHook(() => {
       const [value, setValue] = createSignal(0)
       return createBindable(() => ({ value: value(), onChange: setValue }))
     })
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-    })
+    // Solid 2 applies the parent's write when the tick flushes, so both updates start from 0
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
+    expect(result.get()).toBe(1)
 
+    result.set((prev) => prev + 1)
+    flush()
     expect(result.get()).toBe(2)
   })
 
@@ -60,10 +60,9 @@ describe("bindable updates", () => {
     const onChange = vi.fn()
     const { result } = renderHook(() => createBindable(() => ({ value: 10, onChange })))
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-    })
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(10)
     expect(onChange.mock.calls).toEqual([

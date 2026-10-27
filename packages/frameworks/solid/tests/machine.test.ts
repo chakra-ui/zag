@@ -3,7 +3,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import type { Machine } from "@zag-js/core"
 import { createEffect, createRoot, createSignal } from "solid-js"
 import { useMachine } from "../src"
-import { renderMachine } from "./render"
+import { flush, renderMachine } from "./render"
 
 describe("basic", () => {
   test("initial state", async () => {
@@ -324,7 +324,7 @@ describe("basic", () => {
     })
 
     renderMachine(machine)
-    await Promise.resolve()
+    await flush()
 
     expect(notify).toHaveBeenCalledOnce()
   })
@@ -357,7 +357,7 @@ describe("basic", () => {
     })
 
     renderMachine(machine)
-    await Promise.resolve()
+    await flush()
 
     expect(notify).toHaveBeenCalledOnce()
   })
@@ -389,7 +389,7 @@ describe("basic", () => {
     })
 
     renderMachine(machine)
-    await Promise.resolve()
+    await flush()
 
     expect(notify).not.toHaveBeenCalled()
   })
@@ -412,10 +412,13 @@ describe("basic", () => {
     const { cleanup } = renderHook(() => {
       const [value, setValue] = createSignal(false)
       // Runs before the machine's watch effect, like an earlier sibling's effect
-      createEffect(() => setValue(true))
+      createEffect(
+        () => undefined,
+        () => setValue(true),
+      )
       return useMachine<any>(machine, () => ({ value: value() }))
     })
-    await Promise.resolve()
+    await flush()
 
     expect(notify).toHaveBeenCalledOnce()
     cleanup()
@@ -439,10 +442,13 @@ describe("basic", () => {
     const { cleanup } = renderHook(() => {
       const [value, setValue] = createSignal(false)
       // Runs before the machine's watch effect, like an earlier sibling's effect
-      createEffect(() => setValue(false))
+      createEffect(
+        () => undefined,
+        () => setValue(false),
+      )
       return useMachine<any>(machine, () => ({ value: value() }))
     })
-    await Promise.resolve()
+    await flush()
 
     expect(notify).not.toHaveBeenCalled()
     cleanup()
