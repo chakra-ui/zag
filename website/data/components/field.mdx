@@ -438,8 +438,8 @@ Field is a wrapper around a control, not a parent context other machines
 subscribe to. For a Zag checkbox, switch, or select:
 
 1. Keep the field's label, helper text, and error text.
-2. Put `api.ids.control` (or merge `api.getControlProps()`) on the element that
-   should receive the label's `htmlFor`.
+2. Pass `api.ids.control` to the other machine's `ids` (for a checkbox,
+   `ids.hiddenInput`) so the label's `htmlFor` points at its input.
 3. Mirror `disabled`, `invalid`, and `required` onto the other machine as props
    when you need matching data attributes.
 
@@ -447,6 +447,12 @@ subscribe to. For a Zag checkbox, switch, or select:
 
 ```tsx
 const fieldApi = field.connect(fieldService, normalizeProps)
+
+// the checkbox reads its input by id, so hand it the field's control id
+const checkboxService = useMachine(checkbox.machine, {
+  id: useId(),
+  ids: { hiddenInput: fieldApi.ids.control },
+})
 const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
 
 <div {...fieldApi.getRootProps()}>
@@ -454,10 +460,8 @@ const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
   <label>
     <div {...checkboxApi.getRootProps()}>
       <input
-        {...mergeProps(checkboxApi.getHiddenInputProps(), {
-          id: fieldApi.ids.control,
-          "aria-describedby": fieldApi.ariaDescribedby,
-        })}
+        {...checkboxApi.getHiddenInputProps()}
+        aria-describedby={fieldApi.ariaDescribedby}
       />
       <div {...checkboxApi.getControlProps()}>
         <span {...checkboxApi.getIndicatorProps()}>
