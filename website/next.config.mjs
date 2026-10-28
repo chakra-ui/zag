@@ -17,6 +17,7 @@ const nextConfig = {
   },
   experimental: {
     externalDir: true,
+    agentUpgrade: "security",
   },
   // /api/mdx reads page sources and package versions at request time
   outputFileTracingIncludes: {
