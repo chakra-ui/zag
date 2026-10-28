@@ -60,6 +60,8 @@ Then use the framework integration helpers:
 
 To set the initial selection, you can use the `defaultValue` property.
 
+<Example id="ListboxInitialValue">
+
 ```tsx
 const service = useMachine(listbox.machine, {
   // ...
@@ -67,9 +69,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling the selection
 
 Use `value` and `onValueChange` to control selection externally.
+
+<Example id="ListboxControlled">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -81,9 +87,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling the highlighted item
 
 Use `highlightedValue` and `onHighlightChange` to control highlighted state.
+
+<Example id="ListboxControlledHighlight">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -95,17 +105,25 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Filtering
 
 The listbox component supports filtering of items via `api.getInputProps`.
 Here's an example of how to support searching through a list of items.
 
+<Example id="ListboxFiltering">
+
 <CodeSnippet id="listbox/filtering.mdx" />
+
+</Example>
 
 ### Selecting multiple items
 
 To enable multiple selection, set the `selectionMode` property to `multiple` or
 `extended`.
+
+<Example id="ListboxMultiple">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -113,6 +131,8 @@ const service = useMachine(listbox.machine, {
   selectionMode: "multiple",
 })
 ```
+
+</Example>
 
 ### Selection Modes
 
@@ -126,6 +146,8 @@ Use `selectionMode` to control selection behavior:
 - **extended**: With no modifier keys like `Ctrl`, `Cmd` or `Shift`: the
   behavior is the same as single selection.
 
+<Example id="ListboxSelectionModes">
+
 ```tsx
 const service = useMachine(listbox.machine, {
   // ...
@@ -133,9 +155,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Selecting on highlight
 
 Set `selectOnHighlight` to `true` to select items as they become highlighted.
+
+<Example id="ListboxSelectOnHighlight">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -143,9 +169,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Disallowing select-all shortcuts
 
 Set `disallowSelectAll` to disable `Cmd/Ctrl + A` selection.
+
+<Example id="ListboxDisallowSelectAll">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -154,9 +184,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for item selection
 
 Use `onSelect` to react whenever an item is selected.
+
+<Example id="ListboxSelection">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -167,9 +201,13 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling items
 
 To disable an item, you can use the `disabled` property.
+
+<Example id="ListboxDisabled">
 
 ```tsx
 api.getItemProps({
@@ -177,6 +215,8 @@ api.getItemProps({
   disabled: true,
 })
 ```
+
+</Example>
 
 To disable the entire listbox, you can use the `disabled` property.
 
@@ -199,11 +239,17 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
+<Example id="ListboxGrid">
+
 <CodeSnippet id="listbox/grid-usage.mdx" />
+
+</Example>
 
 ### Horizontal orientation
 
 Set `orientation` to `horizontal` for horizontal keyboard navigation.
+
+<Example id="ListboxHorizontal">
 
 ```tsx
 const service = useMachine(listbox.machine, {
@@ -211,6 +257,8 @@ const service = useMachine(listbox.machine, {
   collection,
 })
 ```
+
+</Example>
 
 ## Styling guide
 
