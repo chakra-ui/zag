@@ -20,7 +20,7 @@ export const siteFooter = defineSlotRecipe({
     "credit",
   ],
   base: {
-    root: {},
+    root: { borderTopWidth: "1px", borderColor: "border" },
     inner: {
       maxW: "1440px",
       mx: "auto",

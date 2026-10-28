@@ -1,5 +1,6 @@
 import { absoluteUrl, JsonLd } from "components/json-ld"
 import { mdxComponents } from "components/docs/mdx-components"
+import { PostCover } from "app/(site)/blog/_components/post-cover"
 import { Chip } from "components/ui/chip"
 import { TableOfContents } from "components/docs/toc"
 import { createPageMetadata } from "lib/seo"
@@ -87,6 +88,7 @@ export default async function PostPage({ params }: PageProps) {
           </div>
           <h1 className={styles.title}>{post.title}</h1>
           <p className={styles.lead}>{post.description}</p>
+          {post.cover && <PostCover cover={post.cover} />}
           <div className={styles.authors}>
             {post.authors.map((author) => (
               <a

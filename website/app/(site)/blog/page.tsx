@@ -1,3 +1,4 @@
+import { PostCover } from "app/(site)/blog/_components/post-cover"
 import { PostFilters, PostList } from "app/(site)/blog/_components/post-list"
 import { Chip } from "components/ui/chip"
 import { TwoToneHeading } from "components/ui/heading"
@@ -56,15 +57,17 @@ export default function BlogPage() {
 
       {featured && (
         <Link href={`/blog/${featured.slug}`} className={styles.featured}>
-          <span className={styles.cover} aria-hidden>
-            <span className={styles.coverMeta}>{featured.type}</span>
-            <span className={styles.coverLabel}>
-              {featured.title.replace(/^Zag\s+/, "")}
+          {featured.cover ? (
+            <PostCover cover={featured.cover} size="md" />
+          ) : (
+            <span className={styles.cover} aria-hidden>
+              <span className={styles.coverMeta}>{featured.type}</span>
+              <span className={styles.coverLabel}>{featured.title}</span>
+              <span className={styles.coverFoot}>
+                {featured.readingTime} min read
+              </span>
             </span>
-            <span className={styles.coverFoot}>
-              {featured.readingTime} min read
-            </span>
-          </span>
+          )}
           <span className={styles.featuredBody}>
             <span className={styles.meta}>
               <Chip tone="accent">{featured.type}</Chip>

@@ -485,10 +485,10 @@ export const blogPost = defineSlotRecipe({
       display: "grid",
       gridTemplateColumns: {
         base: "minmax(0, 1fr)",
-        xl: "minmax(0, 720px) 240px",
+        xl: "minmax(0, 860px) 240px",
       },
       justifyContent: "space-between",
-      columnGap: "20",
+      columnGap: "16",
       maxW: "1440px",
       mx: "auto",
     },
@@ -700,4 +700,84 @@ export const team = defineSlotRecipe({
       bg: "bg.control",
     },
   },
+})
+
+export const postCover = defineSlotRecipe({
+  className: "post-cover",
+  jsx: ["PostCover"],
+  description: "Always-dark post cover: mark, label, giant glyph and footer",
+  slots: ["root", "mark", "label", "glyph", "foot"],
+  base: {
+    root: {
+      position: "relative",
+      display: "grid",
+      gridTemplateColumns: "1fr auto",
+      gridTemplateRows: "auto 1fr",
+      gap: "6",
+      overflow: "hidden",
+      bg: "#0b0b0c",
+      backgroundImage:
+        "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0)",
+      backgroundSize: "18px 18px",
+      borderWidth: "1px",
+      borderColor: "#27272a",
+      rounded: "2xl",
+      color: "#fafafa",
+    },
+    mark: {
+      display: "grid",
+      placeItems: "center",
+      rounded: "xl",
+      bg: "#68D391",
+      color: "#0b0b0c",
+      "& svg": { w: "62%", h: "auto" },
+    },
+    label: {
+      justifySelf: "end",
+      fontFamily: "mono",
+      letterSpacing: "0.22em",
+      textTransform: "uppercase",
+      color: "#68D391",
+    },
+    glyph: {
+      alignSelf: "end",
+      fontWeight: "bold",
+      lineHeight: "0.82",
+      letterSpacing: "-0.06em",
+      color: "#68D391",
+    },
+    foot: {
+      alignSelf: "end",
+      justifySelf: "end",
+      fontFamily: "mono",
+      letterSpacing: "0.22em",
+      textTransform: "uppercase",
+      color: "#71717a",
+    },
+  },
+  variants: {
+    size: {
+      lg: {
+        root: { aspectRatio: "16/8", p: { base: "8", md: "14" } },
+        mark: { boxSize: { base: "12", md: "16" } },
+        label: { fontSize: { base: "11px", md: "15px" } },
+        glyph: { fontSize: { base: "120px", md: "220px" } },
+        foot: { fontSize: { base: "11px", md: "14px" } },
+      },
+      md: {
+        root: {
+          h: "full",
+          minH: "260px",
+          p: "10",
+          rounded: "0",
+          borderWidth: "0",
+        },
+        mark: { boxSize: "12" },
+        label: { fontSize: "11px" },
+        glyph: { fontSize: "140px" },
+        foot: { fontSize: "11px" },
+      },
+    },
+  },
+  defaultVariants: { size: "lg" },
 })

@@ -12,6 +12,7 @@ import {
   blogPost,
   community,
   pageHeader,
+  postCover,
   showcaseCard,
   team,
 } from "./listing"
@@ -51,4 +52,5 @@ export const slotRecipes = {
   blogIndex,
   blogPost,
   team,
+  postCover,
 }
