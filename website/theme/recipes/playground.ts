@@ -169,7 +169,7 @@ export const playground = defineSlotRecipe({
       transitionDuration: "fast",
       _hover: { color: "fg" },
       textAlign: "center",
-      _checked: { bg: "fg", color: "bg.page" },
+      _checked: { bg: "fg", color: "bg.page", _hover: { color: "bg.page" } },
       "&:has(input:focus-visible)": {
         outline: "2px solid",
         outlineColor: "accent",
