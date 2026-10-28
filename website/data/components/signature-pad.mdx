@@ -168,15 +168,15 @@ const service = useMachine(signaturePad.machine, {
 
 ### Controlling pressure simulation
 
-Pressure simulation is enabled by default. Set `drawing.simulatePressure` to
-`false` to use raw pointer pressure values.
+Pressure simulation is off by default, so strokes use raw pointer pressure. Set
+`drawing.simulatePressure` to `true` to fake pressure from pointer speed.
 
 <Example id="SignaturePadPressure">
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
   drawing: {
-    simulatePressure: false,
+    simulatePressure: true,
   },
 })
 ```

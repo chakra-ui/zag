@@ -206,10 +206,16 @@ applied:
 
 ### Hidden state
 
-Scrollbars can be automatically hidden when not needed:
+A scrollbar loses its `data-overflow-x` or `data-overflow-y` attribute when
+there's nothing to scroll, so you can hide it:
 
 ```css
-[data-scroll-area-scrollbar][data-hidden] {
+[data-scroll-area-scrollbar][data-orientation="vertical"]:not(
+    [data-overflow-y]
+  ),
+[data-scroll-area-scrollbar][data-orientation="horizontal"]:not(
+    [data-overflow-x]
+  ) {
   /* styles for hidden scrollbar */
   opacity: 0;
   pointer-events: none;
