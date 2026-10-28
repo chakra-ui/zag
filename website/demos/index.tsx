@@ -286,7 +286,18 @@ const components = {
       defaultProps={{}}
     />
   ),
-  Menu: () => <Playground name="menu" component={Menu} />,
+  Menu: () => (
+    <Playground
+      name="menu"
+      component={Menu}
+      defaultProps={{
+        loopFocus: false,
+        closeOnSelect: true,
+        typeahead: true,
+        dir: { default: "ltr", options: ["ltr", "rtl"] },
+      }}
+    />
+  ),
   MenuAsync: () => (
     <Playground name="menu-async" component={MenuAsync} hideControls />
   ),

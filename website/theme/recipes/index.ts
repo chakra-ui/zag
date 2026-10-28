@@ -6,6 +6,7 @@ import { twoToneHeading } from "./heading"
 import { docsNav, docsShell, resourceChip } from "./docs"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
+import { playground } from "./playground"
 import { codeTag, demoSlider, demoTags, stylingBand } from "./styling"
 
 export const recipes = {
@@ -31,4 +32,5 @@ export const slotRecipes = {
   siteFooter,
   docsShell,
   docsNav,
+  playground,
 }

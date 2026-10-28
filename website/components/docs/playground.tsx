@@ -1,246 +1,237 @@
-import { styled, Box, Flex, HStack, Stack } from "styled-system/jsx"
+"use client"
+
+import { CodePanel } from "components/ui/code-panel"
+import { defaultOf, getChangedProps } from "lib/changed-props"
 import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
-import { SiStackblitz } from "react-icons/si"
+import { playground } from "styled-system/recipes"
 
-const Header = (props: any) => (
-  <Flex
-    align="center"
-    height="10"
-    bg="transparent"
-    borderBottomWidth="1px"
-    borderColor="border"
-    px="5"
-    fontFamily="mono"
-    fontSize="11px"
-    fontWeight="medium"
-    letterSpacing="0.08em"
-    textTransform="uppercase"
-    color="text.muted"
-    {...props}
-  />
-)
+type OptionSet<V> = { default: V; options: V[]; required?: boolean }
 
 type PlaygroundProps<T> = {
   name: string
   component: React.ComponentType<T>
-  defaultProps?: Partial<{
-    [K in keyof T]:
-      | T[K]
-      | { default: T[K]; options: Array<T[K]>; required?: boolean }
-  }>
+  defaultProps?: Partial<{ [K in keyof T]: T[K] | OptionSet<T[K]> }>
   hideControls?: boolean
-  debug?: boolean
 }
 
-const isObject = (value: any): value is Record<string, any> =>
-  typeof value === "object" && value !== null && !Array.isArray(value)
+type Values = Record<string, unknown>
 
-const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
-  const { name } = props
-  const defaultProps = Object.fromEntries(
-    Object.entries(props.defaultProps).map(([key, value]) => [
-      key,
-      isObject(value) ? value.default : value,
-    ]),
-  )
+const isOptionSet = (value: unknown): value is OptionSet<string> =>
+  typeof value === "object" && value !== null && "options" in value
 
-  return (
-    <HStack
-      gap="1.5"
-      as="button"
-      h="7"
-      px="2.5"
-      bg="bg"
-      color="text.muted"
-      fontFamily="mono"
-      fontSize="12px"
-      letterSpacing="0.02em"
-      borderWidth="1px"
-      borderColor="border"
-      rounded="md"
-      cursor="pointer"
-      transition="color 120ms, border-color 120ms"
-      _hover={{ color: "text.bold", borderColor: "border.bold" }}
-      _focusVisible={{
-        outline: "2px solid",
-        outlineColor: "border.primary.bold",
-        outlineOffset: "2px",
-      }}
-      onClick={() => {
-        openInStackblitz(name, defaultProps)
-      }}
-    >
-      <SiStackblitz />
-      <p>Stackblitz</p>
-    </HStack>
+const camel = (name: string) =>
+  name.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
+
+function getCode(name: string, values: Values, defaults: Values) {
+  const machine = camel(name)
+  const lines = [
+    `const service = useMachine(${machine}.machine, {`,
+    "  id: useId(),",
+  ]
+  const highlight: number[] = []
+  const notes: Record<number, string> = {}
+  for (const key of getChangedProps(defaults, values)) {
+    lines.push(`  ${key}: ${JSON.stringify(values[key])},`)
+    highlight.push(lines.length)
+    notes[lines.length] =
+      `changed · default ${JSON.stringify(defaultOf(defaults[key]))}`
+  }
+  lines.push("})", `const api = ${machine}.connect(service, normalizeProps)`)
+  return { code: lines.join("\n"), highlight, notes }
+}
+
+function initialValues(defaults: Values): Values {
+  return Object.fromEntries(
+    Object.entries(defaults).map(([key, value]) => [key, defaultOf(value)]),
   )
 }
 
 export function Playground<T extends object>(props: PlaygroundProps<T>) {
-  const {
-    name: componentName,
-    component: Component,
-    defaultProps = {},
-    debug,
-    hideControls,
-  } = props
+  const { name, component: Component, hideControls } = props
+  const defaults = (props.defaultProps ?? {}) as Values
+  const [values, setValues] = useState(() => initialValues(defaults))
+  const [copied, setCopied] = useState(false)
+  const styles = playground()
 
-  const [state, setState] = useState(
-    Object.fromEntries(
-      Object.entries(defaultProps).map(([key, value]) => [
-        key,
-        isObject(value) && "default" in value ? value.default : value,
-      ]),
-    ),
-  )
-
-  const isEmpty = Object.keys(state).length === 0 || hideControls
+  const keys = Object.keys(defaults)
+  const changed = getChangedProps(defaults, values)
+  const showPanel = keys.length > 0 && !hideControls
+  const { code, highlight, notes } = getCode(name, values, defaults)
+  const set = (key: string, value: unknown) =>
+    setValues((current) => ({ ...current, [key]: value }))
 
   return (
-    <Flex
-      id="playground"
-      direction={{ base: "column", md: "row" }}
-      borderWidth="1px"
-      pos="relative"
-      minHeight="24em"
-      my="12"
-      borderColor="border"
-      rounded="md"
-    >
-      {/* pinned in the corner beside the preview; on phones the panel stacks
-          below the preview, so the button follows it instead of covering it */}
-      <Box
-        pos={{ md: "absolute" }}
-        bottom="2"
-        right="2"
-        order={{ base: 1, md: 0 }}
-        alignSelf={{ base: "flex-end", md: "auto" }}
-        m={{ base: "2", md: "0" }}
-      >
-        <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
-      </Box>
-
-      <Flex align="center" justify="center" py="20" flex="1">
-        <Component {...(state as T)} />
-      </Flex>
-
-      <Box flexBasis="1px" alignSelf="stretch" bg="border" hidden={isEmpty} />
-
-      <Box
-        bg="bg.subtle"
-        roundedRight={{ md: "md" }}
-        width={{ md: "240px" }}
-        fontSize="sm"
-        hidden={isEmpty}
-      >
-        <Header>Properties</Header>
-        <Stack pos="relative" direction="column" gap="4" px="5" py="4">
-          {Object.keys(state).map((key) => {
-            const value = state[key]
-            const type = (defaultProps as Partial<T>)[key as keyof T]
-
-            if (typeof type === "boolean") {
-              return (
-                <styled.label
-                  as="label"
-                  htmlFor={key}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  gap="2"
-                  key={key}
-                >
-                  <div>{key}</div>
-                  <styled.input
-                    id={key}
-                    type="checkbox"
-                    defaultChecked={value as any}
-                    bg="bg.subtle"
-                    onChange={() => setState({ ...state, [key]: !value })}
-                  />
-                </styled.label>
-              )
-            }
-
-            if (typeof type === "string") {
-              return (
-                <div key={key}>
-                  <label htmlFor={key}>{key}</label>
-                  <styled.input
-                    mt="1"
-                    width="full"
-                    borderWidth="1px"
-                    px="2"
-                    id={key}
-                    type="text"
-                    defaultValue={value as any}
-                    bg="bg.subtle"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setState({ ...state, [key]: e.target.value })
-                    }}
-                  />
-                </div>
-              )
-            }
-
-            if (typeof type === "number") {
-              return (
-                <Flex justify="space-between" key={key}>
-                  <label htmlFor={key}>{key}</label>
-                  <styled.input
-                    id={key}
-                    type="number"
-                    maxWidth="6ch"
-                    borderWidth="1px"
-                    ps="2"
-                    bg="bg.subtle"
-                    defaultValue={value as number}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const val = e.currentTarget.valueAsNumber
-                      setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
-                    }}
-                  />
-                </Flex>
-              )
-            }
-
-            if (isObject(type) && "options" in type) {
-              return (
-                <Flex justify="space-between" key={key}>
-                  <label htmlFor={key}>{key}</label>
-                  <styled.select
-                    id={key}
-                    borderWidth="1px"
-                    fontSize="xs"
-                    px="1"
-                    bg="bg.subtle"
-                    defaultValue={value as string}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                      setState((s) => ({ ...s, [key]: e.target.value }))
-                    }}
+    <div className={styles.root}>
+      <div className={styles.top}>
+        <div className={styles.stage}>
+          <Component {...(values as T)} />
+        </div>
+        {showPanel && (
+          <div className={styles.panel}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>Props</span>
+              <button
+                type="button"
+                className={styles.reset}
+                disabled={changed.length === 0}
+                onClick={() => setValues(initialValues(defaults))}
+              >
+                Reset
+              </button>
+            </div>
+            <div className={styles.controls}>
+              {keys.map((key) => {
+                const type = defaults[key]
+                const value = values[key]
+                const id = `playground-${key}`
+                const label = (
+                  <span
+                    id={`${id}-label`}
+                    className={styles.name}
+                    data-changed={changed.includes(key) || undefined}
                   >
-                    {!type.required && <option>-----</option>}
-                    {type.options.map((option: string) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </styled.select>
-                </Flex>
-              )
-            }
+                    {key}
+                    {changed.includes(key) && (
+                      <span className={styles.changed} aria-label="changed" />
+                    )}
+                  </span>
+                )
 
-            return null
-          })}
+                if (typeof type === "boolean") {
+                  return (
+                    <div key={key} className={styles.control}>
+                      {label}
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={value === true}
+                        aria-labelledby={`${id}-label`}
+                        data-state={value ? "checked" : "unchecked"}
+                        className={styles.switch}
+                        onClick={() => set(key, !value)}
+                      >
+                        <span className={styles.thumb} />
+                      </button>
+                    </div>
+                  )
+                }
 
-          {debug && (
-            <Box as="pre" fontSize="xs">
-              {JSON.stringify(state, null, 2)}
-            </Box>
-          )}
-        </Stack>
-      </Box>
-    </Flex>
+                if (isOptionSet(type) && type.options.length <= 3) {
+                  return (
+                    <div key={key} className={styles.control} data-stack="">
+                      {label}
+                      <div
+                        role="radiogroup"
+                        aria-labelledby={`${id}-label`}
+                        className={styles.segment}
+                      >
+                        {type.options.map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            role="radio"
+                            aria-checked={value === option}
+                            data-state={
+                              value === option ? "checked" : "unchecked"
+                            }
+                            className={styles.option}
+                            onClick={() => set(key, option)}
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
+
+                if (isOptionSet(type)) {
+                  return (
+                    <div key={key} className={styles.control} data-stack="">
+                      {label}
+                      <select
+                        aria-labelledby={`${id}-label`}
+                        className={styles.field}
+                        value={(value as string) ?? ""}
+                        onChange={(e) => set(key, e.target.value || undefined)}
+                      >
+                        {!type.required && <option value="">—</option>}
+                        {type.options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )
+                }
+
+                if (typeof type === "number") {
+                  return (
+                    <div key={key} className={styles.control}>
+                      {label}
+                      <input
+                        type="number"
+                        aria-labelledby={`${id}-label`}
+                        className={styles.field}
+                        value={value as number}
+                        onChange={(e) => {
+                          const next = e.currentTarget.valueAsNumber
+                          set(key, Number.isNaN(next) ? 0 : next)
+                        }}
+                      />
+                    </div>
+                  )
+                }
+
+                if (typeof type === "string") {
+                  return (
+                    <div key={key} className={styles.control} data-stack="">
+                      {label}
+                      <input
+                        type="text"
+                        aria-labelledby={`${id}-label`}
+                        className={styles.field}
+                        value={value as string}
+                        onChange={(e) => set(key, e.target.value)}
+                      />
+                    </div>
+                  )
+                }
+
+                return null
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className={styles.bar}>
+        <button
+          type="button"
+          className={styles.action}
+          onClick={() => {
+            navigator.clipboard?.writeText(code)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1200)
+          }}
+        >
+          {copied ? "copied" : "copy"}
+        </button>
+        <button
+          type="button"
+          className={styles.action}
+          onClick={() => openInStackblitz(name, values)}
+        >
+          stackblitz ↗
+        </button>
+      </div>
+      <CodePanel
+        language="tsx"
+        code={code}
+        highlight={highlight}
+        notes={notes}
+      />
+    </div>
   )
 }

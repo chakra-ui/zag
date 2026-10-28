@@ -55,11 +55,11 @@ export interface CodePanelProps extends CodePanelVariantProps {
   code: string
   language: "tsx" | "css" | "bash"
   highlight?: number[]
-  note?: string
+  notes?: Record<number, string>
 }
 
 export function CodePanel(props: CodePanelProps) {
-  const { file, code, language, highlight = [], note, tone } = props
+  const { file, code, language, highlight = [], notes = {}, tone } = props
   const styles = codePanel({ tone })
   const lines = toLines(
     refractor.highlight(code.replace(/\n$/, ""), language)
@@ -81,8 +81,8 @@ export function CodePanel(props: CodePanelProps) {
                 <span className={styles.text}>
                   {line.length ? render(line) : " "}
                 </span>
-                {note && i + 1 === highlight[0] && (
-                  <span className={styles.note}>{note}</span>
+                {notes[i + 1] && (
+                  <span className={styles.note}>{notes[i + 1]}</span>
                 )}
               </div>
             )
