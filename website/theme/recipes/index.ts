@@ -7,7 +7,13 @@ import { docAction, docsNav, docsShell } from "./docs"
 import { explorer } from "./explorer"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
-import { blogIndex, community, pageHeader, showcaseCard } from "./listing"
+import {
+  blogIndex,
+  blogPost,
+  community,
+  pageHeader,
+  showcaseCard,
+} from "./listing"
 import { playground } from "./playground"
 import { propTable } from "./prop-table"
 import { codeTag, demoSlider, demoTags, stylingBand } from "./styling"
@@ -42,4 +48,5 @@ export const slotRecipes = {
   showcaseCard,
   community,
   blogIndex,
+  blogPost,
 }
