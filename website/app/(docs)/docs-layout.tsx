@@ -54,7 +54,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
           {doc?.title && (
             <div className={styles.header}>
               {crumb && <p className={styles.crumb}>{crumb}</p>}
-              <Flex alignItems="center" gap="4">
+              <Flex alignItems="center" flexWrap="wrap" gap="4">
                 <h1 className={styles.title}>{doc.title}</h1>
                 {doc?.body?.raw && (
                   <CopyPageWidget slug={pathname} title={doc.title} />
