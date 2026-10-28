@@ -354,9 +354,8 @@ export const hCopy = {
   },
   glossary: "connect(service)",
   closing: {
-    state: "done",
-    title: guide.closing.title,
-    body: guide.closing.body,
+    title: "Start with one component",
+    accent: "in the framework you already use",
   },
 }
 
@@ -473,3 +472,84 @@ export const chapterCopy = {
     ],
   },
 }
+
+export const stylingCopy = {
+  title: "Zag ships zero CSS.",
+  accent: "Bring your own styles.",
+  lead: "Every part says what it is and what state it's in. Pick a component, pick your styling tool, and target those attributes.",
+}
+
+export const deepCopy = {
+  title: "Go as deep",
+  accent: "as you need.",
+  lead: "Most apps only spread the props. When you need more, every layer underneath is yours to use: the machine's events, its methods, and the same createMachine we build our own components with.",
+  levels: [
+    {
+      level: 1,
+      tag: "styles",
+      title: "Write a style once",
+      body: "Menu, select and combobox items share the same states, so one rule covers all three.",
+      language: "css",
+      code: `/* one highlight for every list */
+[data-menu-item][data-highlighted],
+[data-select-item][data-highlighted],
+[data-combobox-item][data-highlighted] {
+  background: var(--green-50);
+}`,
+      highlight: [],
+    },
+    {
+      level: 2,
+      tag: "composition",
+      title: "Wire components together",
+      body: "Machines talk through callbacks and methods. Here a menu item opens a confirm dialog.",
+      language: "tsx",
+      code: `const confirm = dialog.connect(dialogService, normalizeProps)
+
+const service = useMachine(menu.machine, {
+  id: "actions",
+  onSelect({ value }) {
+    if (value === "delete") confirm.setOpen(true)
+  },
+})`,
+      highlight: [6],
+    },
+    {
+      level: 3,
+      tag: "control",
+      title: "Drive it from your code",
+      body: "Own the open state, or call the same methods the keyboard does.",
+      language: "tsx",
+      code: `const service = useMachine(menu.machine, {
+  id: "actions",
+  open,
+  onOpenChange: (details) => setOpen(details.open),
+})
+
+api.setHighlightedValue("rename")`,
+      highlight: [],
+    },
+    {
+      level: 4,
+      tag: "machines",
+      title: "Write your own machine",
+      body: "Every Zag component is built with @zag-js/core. Use it for the ones we don't ship.",
+      language: "tsx",
+      code: `export const machine = createMachine<ToggleSchema>({
+  initialState() {
+    return "off"
+  },
+  states: {
+    off: { on: { CLICK: { target: "on" } } },
+    on: { on: { CLICK: { target: "off" } } },
+  },
+})`,
+      highlight: [],
+    },
+  ],
+  more: {
+    label: "Read the guides →",
+    href: "/guides/composition",
+    body: "Composition, programmatic control, building machines",
+  },
+} as const

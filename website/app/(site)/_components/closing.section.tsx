@@ -1,44 +1,44 @@
-"use client"
-
-import { Box, styled } from "styled-system/jsx"
-import { Ctas } from "./actions"
+import { TwoToneHeading } from "components/ui/heading"
 import { hCopy } from "lib/home"
-import { gutter, StateLabel } from "./shared"
+import Link from "next/link"
+import { Flex, HStack, styled } from "styled-system/jsx"
+import { button } from "styled-system/recipes"
+import { gutter } from "./shared"
 
 export function ClosingSection() {
   return (
-    <Box
+    <styled.section
+      bg="accent.tint"
       borderTopWidth="1px"
-      borderColor="border"
-      px={gutter}
-      py={{ base: "16", md: "28" }}
+      borderColor="accent.line"
     >
-      <StateLabel name={hCopy.closing.state} />
-      <styled.h2
-        mt="3"
-        fontSize={{ base: "32px", md: "44px" }}
-        lineHeight="1.1"
-        letterSpacing="-0.035em"
-        fontWeight="medium"
-        color="text.bold"
-        maxW="22ch"
-        textWrap="balance"
+      <Flex
+        maxW="1440px"
+        mx="auto"
+        px={gutter}
+        py={{ base: "16", md: "24" }}
+        direction={{ base: "column", md: "row" }}
+        align={{ base: "flex-start", md: "center" }}
+        justify="space-between"
+        gap="8"
       >
-        {hCopy.closing.title}
-      </styled.h2>
-      <styled.p
-        mt="4"
-        fontSize={{ base: "17px", md: "20px" }}
-        lineHeight="1.55"
-        color="text.muted"
-        maxW="52ch"
-        textWrap="pretty"
-      >
-        {hCopy.closing.body}
-      </styled.p>
-      <Box mt="8">
-        <Ctas />
-      </Box>
-    </Box>
+        <TwoToneHeading
+          title={hCopy.closing.title}
+          accent={hCopy.closing.accent}
+          size="section"
+        />
+        <HStack gap="2.5" flexShrink="0">
+          <Link
+            href="/overview/introduction"
+            className={button({ variant: "solid" })}
+          >
+            Get started →
+          </Link>
+          <Link href="/components/react/accordion" className={button()}>
+            Browse components
+          </Link>
+        </HStack>
+      </Flex>
+    </styled.section>
   )
 }

@@ -7,7 +7,7 @@ export const codePanel = defineSlotRecipe({
     "A file of code with highlighted lines, tinted by the styling tool",
   slots: ["root", "file", "pre", "line", "text", "note"],
   base: {
-    root: { display: "flex", flexDirection: "column", minW: "0" },
+    root: { display: "flex", flexDirection: "column", minW: "0", h: "full" },
     file: {
       px: "5",
       py: "3",
@@ -18,7 +18,10 @@ export const codePanel = defineSlotRecipe({
       borderColor: "border",
     },
     pre: {
+      flex: "1",
       m: "0",
+      borderWidth: "0",
+      rounded: "0",
       py: "4",
       overflowX: "auto",
       bg: "transparent",

@@ -16,6 +16,13 @@ export default defineConfig({
   theme: {
     extend: {
       recipes,
+      keyframes: {
+        fadeIn: { from: { opacity: "0" }, to: { opacity: "1" } },
+        fadeUp: {
+          from: { opacity: "0", translate: "0 8px" },
+          to: { opacity: "1", translate: "0 0" },
+        },
+      },
       slotRecipes,
       tokens: {
         colors: {

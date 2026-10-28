@@ -29,6 +29,27 @@ function render(nodes: HastNode[]): ReactNode {
   )
 }
 
+function toLines(nodes: HastNode[]): HastNode[][] {
+  const lines: HastNode[][] = [[]]
+  for (const node of nodes) {
+    const parts =
+      node.type === "text"
+        ? node.value
+            .split("\n")
+            .map((value): HastNode[] =>
+              value ? [{ type: "text", value }] : [],
+            )
+        : toLines(node.children).map((children): HastNode[] =>
+            children.length ? [{ ...node, children }] : [],
+          )
+    parts.forEach((part, i) => {
+      if (i > 0) lines.push([])
+      lines[lines.length - 1].push(...part)
+    })
+  }
+  return lines
+}
+
 export interface CodePanelProps extends CodePanelVariantProps {
   file?: string
   code: string
@@ -40,7 +61,10 @@ export interface CodePanelProps extends CodePanelVariantProps {
 export function CodePanel(props: CodePanelProps) {
   const { file, code, language, highlight = [], note, tone } = props
   const styles = codePanel({ tone })
-  const lines = code.replace(/\n$/, "").split("\n")
+  const lines = toLines(
+    refractor.highlight(code.replace(/\n$/, ""), language)
+      .children as HastNode[],
+  )
   return (
     <div className={styles.root}>
       {file && <p className={styles.file}>{file}</p>}
@@ -55,12 +79,7 @@ export function CodePanel(props: CodePanelProps) {
                 data-active={active || undefined}
               >
                 <span className={styles.text}>
-                  {line === ""
-                    ? " "
-                    : render(
-                        refractor.highlight(line, language)
-                          .children as HastNode[],
-                      )}
+                  {line.length ? render(line) : " "}
                 </span>
                 {note && i + 1 === highlight[0] && (
                   <span className={styles.note}>{note}</span>
