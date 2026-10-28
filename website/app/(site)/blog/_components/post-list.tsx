@@ -20,8 +20,8 @@ export type PostSummary = Omit<Post, "toc">
 
 const filters = [
   { label: "Everything", value: "all" },
-  { label: "Articles", value: "articles" },
-  { label: "Releases", value: "releases" },
+  { label: "Articles", value: "articles", type: "article" },
+  { label: "Releases", value: "releases", type: "release" },
 ]
 
 const collection = select.collection({ items: filters })
@@ -50,13 +50,10 @@ export function PostList({ posts }: { posts: PostSummary[] }) {
   })
   const api = select.connect(service, normalizeProps)
 
-  const visible = posts.filter((post) =>
-    filter === "all"
-      ? true
-      : filter === "releases"
-        ? post.type === "release"
-        : post.type === "article",
-  )
+  const postType = filters.find((item) => item.value === filter)?.type
+  const visible = postType
+    ? posts.filter((post) => post.type === postType)
+    : posts
   const years = [...new Set(visible.map((post) => post.date.getUTCFullYear()))]
 
   return (
