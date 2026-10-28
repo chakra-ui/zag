@@ -239,11 +239,11 @@ function ChipShell(props: {
       px="2.5"
       fontSize="10.5px"
       lineHeight="1"
-      color="text.muted"
+      color="fg.muted"
       borderWidth="1px"
-      borderColor="border"
+      borderColor={{ base: "border", _dark: "border.strong" }}
       borderRadius="full"
-      bg="bg"
+      bg="bg.page"
       whiteSpace="nowrap"
     >
       {props.children}
@@ -294,8 +294,8 @@ function CodeLine(props: {
       <Box
         position="relative"
         zIndex="0"
-        borderLeftWidth="2px"
-        borderColor="border"
+        borderStartWidth="2px"
+        borderColor={{ base: "border", _dark: "border.strong" }}
         ps="4"
         whiteSpace="pre"
       >
@@ -309,7 +309,7 @@ function CodeLine(props: {
           insetEnd="0"
           zIndex="-1"
           bg={washBg}
-          borderLeftWidth="2px"
+          borderStartWidth="2px"
           borderColor="accent"
           pointerEvents="none"
           opacity="0"
