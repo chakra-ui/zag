@@ -58,6 +58,7 @@ export const docsShell = defineSlotRecipe({
       position: "sticky",
       top: "calc(6.5rem + 2px)",
       h: "calc(100dvh - 6.5rem - 2px)",
+      "& .toc": { pt: "9", pb: "10", ps: "6", pe: "4" },
     },
     header: { display: "flex", flexDirection: "column", gap: "4", mb: "4" },
     crumb: { fontFamily: "mono", fontSize: "12px", color: "fg.subtle" },
@@ -130,7 +131,7 @@ export const docsNav = defineSlotRecipe({
         },
       },
       toc: {
-        root: { gap: "1", pt: "9", pb: "10", ps: "7", pe: "5" },
+        root: { gap: "1" },
         heading: { mb: "2" },
         list: { gap: "0" },
         link: {
