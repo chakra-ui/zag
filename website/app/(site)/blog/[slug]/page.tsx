@@ -1,5 +1,6 @@
 import { absoluteUrl, JsonLd } from "components/json-ld"
 import { mdxComponents } from "components/docs/mdx-components"
+import { PostActions } from "app/(site)/blog/_components/post-actions"
 import { PostCover } from "app/(site)/blog/_components/post-cover"
 import { Chip } from "components/ui/chip"
 import { TableOfContents } from "components/docs/toc"
@@ -108,6 +109,7 @@ export default async function PostPage({ params }: PageProps) {
                 {author.name}
               </a>
             ))}
+            <PostActions slug={slug} title={post.title} />
           </div>
           <div className={`mdx-content ${styles.prose}`}>
             <Body components={mdxComponents} />

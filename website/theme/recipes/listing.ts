@@ -526,6 +526,7 @@ export const blogPost = defineSlotRecipe({
     authors: {
       display: "flex",
       flexWrap: "wrap",
+      alignItems: "center",
       gap: "5",
       py: "4",
       borderYWidth: "1px",
