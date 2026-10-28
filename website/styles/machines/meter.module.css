@@ -3,47 +3,83 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1rem;
     width: 100%;
-    max-width: 24rem;
+    max-width: 20rem;
+    color: var(--colors-fg);
+
+    &[data-orientation="vertical"] {
+      width: auto;
+      align-items: center;
+    }
   }
 
   .Header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    gap: 0.75rem;
     font-size: 0.875rem;
+
+    [data-orientation="vertical"] > & {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.125rem;
+    }
+  }
+
+  .Label {
+    font-weight: 500;
+  }
+
+  .ValueText {
+    font-family: var(--fonts-mono);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--colors-fg-muted);
   }
 
   .Track {
-    height: 12px;
+    height: 8px;
     border-radius: 999px;
-    background: var(--colors-bg-muted);
+    background: var(--colors-bg-control);
+    box-shadow: inset 0 0 0 1px var(--colors-border);
     overflow: hidden;
+
+    [data-orientation="vertical"] > & {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: 8px;
+      height: 8rem;
+    }
   }
 
   .Indicator {
     height: 100%;
     border-radius: inherit;
-    transition:
-      width 0.2s ease-in-out,
-      background-color 0.2s ease-in-out;
+    background: var(--colors-accent);
+
+    &[data-orientation="vertical"] {
+      width: 100%;
+    }
 
     &[data-state="optimal"] {
-      background: #22c55e;
+      background: var(--colors-accent);
     }
 
     &[data-state="suboptimal"] {
-      background: #eab308;
+      background: #d97706;
     }
 
     &[data-state="least-optimal"] {
-      background: #ef4444;
+      background: var(--colors-text-error);
     }
   }
 
   .ButtonGroup {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem;
   }
 
@@ -51,16 +87,32 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
+    cursor: pointer;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .Indicator {
+      transition:
+        width 200ms ease-out,
+        height 200ms ease-out,
+        background-color 200ms ease-out;
     }
   }
 }
