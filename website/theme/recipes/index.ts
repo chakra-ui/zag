@@ -8,6 +8,7 @@ import { explorer } from "./explorer"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
 import { playground } from "./playground"
+import { propTable } from "./prop-table"
 import { codeTag, demoSlider, demoTags, stylingBand } from "./styling"
 
 export const recipes = {
@@ -35,4 +36,5 @@ export const slotRecipes = {
   docsNav,
   playground,
   explorer,
+  propTable,
 }
