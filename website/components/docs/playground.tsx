@@ -4,7 +4,9 @@ import { CodePanel } from "components/ui/code-panel"
 import { defaultOf, getChangedProps } from "lib/changed-props"
 import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
-import { playground } from "styled-system/recipes"
+import { LuArrowUpRight, LuCheck, LuCopy } from "react-icons/lu"
+import { SiStackblitz, SiTypescript } from "react-icons/si"
+import { docAction, playground } from "styled-system/recipes"
 
 type OptionSet<V> = { default: V; options: V[]; required?: boolean }
 
@@ -127,19 +129,22 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                         className={styles.segment}
                       >
                         {type.options.map((option) => (
-                          <button
+                          <label
                             key={option}
-                            type="button"
-                            role="radio"
-                            aria-checked={value === option}
                             data-state={
                               value === option ? "checked" : "unchecked"
                             }
                             className={styles.option}
-                            onClick={() => set(key, option)}
                           >
+                            <input
+                              type="radio"
+                              name={id}
+                              value={option}
+                              checked={value === option}
+                              onChange={() => set(key, option)}
+                            />
                             {option}
-                          </button>
+                          </label>
                         ))}
                       </div>
                     </div>
@@ -207,24 +212,33 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
         )}
       </div>
       <div className={styles.bar}>
-        <button
-          type="button"
-          className={styles.action}
-          onClick={() => {
-            navigator.clipboard?.writeText(code)
-            setCopied(true)
-            setTimeout(() => setCopied(false), 1200)
-          }}
-        >
-          {copied ? "copied" : "copy"}
-        </button>
-        <button
-          type="button"
-          className={styles.action}
-          onClick={() => openInStackblitz(name, values)}
-        >
-          stackblitz ↗
-        </button>
+        <span className={styles.file}>
+          <SiTypescript aria-hidden />
+          {name}.tsx
+        </span>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={docAction({ size: "sm" })}
+            onClick={() => {
+              navigator.clipboard?.writeText(code)
+              setCopied(true)
+              setTimeout(() => setCopied(false), 1200)
+            }}
+          >
+            {copied ? <LuCheck aria-hidden /> : <LuCopy aria-hidden />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+          <button
+            type="button"
+            className={docAction({ size: "sm" })}
+            onClick={() => openInStackblitz(name, values)}
+          >
+            <SiStackblitz aria-hidden />
+            StackBlitz
+            <LuArrowUpRight data-part="arrow" aria-hidden />
+          </button>
+        </div>
       </div>
       <CodePanel
         language="tsx"

@@ -3,7 +3,8 @@ import { featurePanel, keycap, stateStepper, termList } from "./chapter"
 import { chip, logoChip, pill } from "./chip"
 import { codePanel } from "./code-panel"
 import { twoToneHeading } from "./heading"
-import { docsNav, docsShell, resourceChip } from "./docs"
+import { docAction, docsNav, docsShell } from "./docs"
+import { explorer } from "./explorer"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
 import { playground } from "./playground"
@@ -16,7 +17,7 @@ export const recipes = {
   pill,
   keycap,
   codeTag,
-  resourceChip,
+  docAction,
 }
 
 export const slotRecipes = {
@@ -33,4 +34,5 @@ export const slotRecipes = {
   docsShell,
   docsNav,
   playground,
+  explorer,
 }

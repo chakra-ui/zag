@@ -1,6 +1,13 @@
 import { apgPatterns } from "lib/apg"
+import {
+  LuAccessibility,
+  LuArrowUpRight,
+  LuCode,
+  LuPackage,
+  LuWorkflow,
+} from "react-icons/lu"
 import { Wrap } from "styled-system/jsx"
-import { resourceChip } from "styled-system/recipes"
+import { docAction } from "styled-system/recipes"
 
 interface ResourceLinkItem {
   npmUrl: string
@@ -9,44 +16,54 @@ interface ResourceLinkItem {
   sourceUrl: string
 }
 
+const Arrow = () => <LuArrowUpRight data-part="arrow" aria-hidden />
+
 export function ResourceLinkGroup(props: {
   pkg: string
   item: ResourceLinkItem
 }) {
   const { pkg, item } = props
   const pattern = apgPatterns[pkg]
-  const chip = resourceChip()
+  const action = docAction()
   return (
-    <Wrap mt="5" gap="2">
-      <a href={item.npmUrl} target="_blank" className={chip} data-id="npm">
-        {pkg} {item.version}
+    <Wrap mt="6" gap="2">
+      <a href={item.npmUrl} target="_blank" className={action} data-id="npm">
+        <LuPackage aria-hidden />
+        <span data-part="mono">{pkg}</span>
+        <span data-part="meta">{item.version}</span>
       </a>
       {item.visualizeUrl && (
         <a
           href={item.visualizeUrl}
           target="_blank"
-          className={chip}
+          className={action}
           data-id="logic"
         >
+          <LuWorkflow aria-hidden />
           Visualize logic
+          <Arrow />
         </a>
       )}
       <a
         href={item.sourceUrl}
         target="_blank"
-        className={chip}
+        className={action}
         data-id="source"
       >
-        View source ↗
+        <LuCode aria-hidden />
+        View source
+        <Arrow />
       </a>
       {pattern && (
         <a
           href={pattern.url}
           target="_blank"
-          className={resourceChip({ tone: "accent" })}
+          className={docAction({ tone: "accent" })}
           data-id="apg"
         >
-          WAI-ARIA {pattern.label} pattern
+          <LuAccessibility aria-hidden />
+          WAI-ARIA {pattern.label}
+          <Arrow />
         </a>
       )}
     </Wrap>

@@ -427,6 +427,10 @@ export default defineConfig({
   outdir: "styled-system",
 
   globalCss: {
+    "[data-explorer-highlight]": {
+      outline: "2px dashed {colors.accent} !important",
+      outlineOffset: "2px !important",
+    },
     // smooth in-page #hash jumps; Next pauses it during route changes (data-scroll-behavior on <html>)
     html: {
       "@media (prefers-reduced-motion: no-preference)": {

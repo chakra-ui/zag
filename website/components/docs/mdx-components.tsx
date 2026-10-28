@@ -20,6 +20,8 @@ import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
+import { Explorer } from "./explorer"
+import { explorerDemos } from "../../demos/explorer"
 import { PropTable } from "./prop-table"
 import { SectionIndex } from "./section-index"
 
@@ -204,22 +206,25 @@ const components: Record<string, FC<any>> = {
     if (!(id in Anatomies)) return <Box>No anatomy available for {id}</Box>
     const Anatomy = Anatomies[id as keyof typeof Anatomies]
     return (
-      <Box
-        my="8"
-        bg={{ base: "gray.900", _dark: "gray.950" }}
-        borderWidth="1px"
-        borderColor="border"
-        rounded="md"
-        overflow="hidden"
-        css={{
-          "& > svg": {
-            maxW: "100%",
-            h: "auto",
-          },
-        }}
-      >
-        <Anatomy accentColor="#a1a1aa" />
-      </Box>
+      <>
+        <Box
+          my="8"
+          bg={{ base: "gray.900", _dark: "gray.950" }}
+          borderWidth="1px"
+          borderColor="border"
+          rounded="md"
+          overflow="hidden"
+          css={{
+            "& > svg": {
+              maxW: "100%",
+              h: "auto",
+            },
+          }}
+        >
+          <Anatomy accentColor="#a1a1aa" />
+        </Box>
+        {id in explorerDemos && <Explorer id={id} />}
+      </>
     )
   },
 }
