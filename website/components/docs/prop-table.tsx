@@ -23,7 +23,7 @@ export const PropTable = (props: ApiTableProps) => {
 
   return (
     <div className={styles.root}>
-      <table className={styles.table}>
+      <table role="table" className={styles.table}>
         <thead>
           <tr>
             <th className={styles.th}>{isProps ? "Prop" : "Property"}</th>
