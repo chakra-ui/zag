@@ -40,7 +40,6 @@ const DocLink = (props: DocLinkProps) => {
         className={styles.link}
       >
         {children}
-        {current && <span className={styles.dot} />}
       </Link>
     </li>
   )
