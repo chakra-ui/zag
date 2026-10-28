@@ -19,9 +19,10 @@ export const docsShell = defineSlotRecipe({
       gridTemplateColumns: {
         base: "minmax(0, 1fr)",
         lg: "250px minmax(0, 1fr)",
-        xl: "250px minmax(0, 800px) minmax(220px, 1fr)",
+        xl: "250px minmax(0, 1fr) 240px",
       },
       maxW: "1440px",
+      mx: "auto",
     },
     sidebar: {
       hideBelow: "lg",
@@ -40,6 +41,9 @@ export const docsShell = defineSlotRecipe({
     },
     main: {
       minW: "0",
+      w: "full",
+      maxW: "800px",
+      mx: "auto",
       px: { base: "4", sm: "6", md: "12" },
       pt: "9",
       pb: "24",
@@ -128,7 +132,7 @@ export const docsNav = defineSlotRecipe({
         },
       },
       toc: {
-        root: { gap: "1", pt: "9", pb: "10", ps: "7", pe: "5", maxW: "300px" },
+        root: { gap: "1", pt: "9", pb: "10", ps: "7", pe: "5" },
         heading: { mb: "2" },
         list: {
           gap: "0",
