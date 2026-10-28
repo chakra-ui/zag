@@ -3,10 +3,11 @@ import { defineSlotRecipe } from "@pandacss/dev"
 export const example = defineSlotRecipe({
   className: "example",
   description: "Usage example: Preview and Code tabs over a bordered box",
-  slots: ["root", "bar", "tab", "stage", "code"],
+  slots: ["root", "bar", "list", "tab", "stage", "code"],
   base: {
     root: { my: "6" },
     bar: { display: "flex", alignItems: "center", gap: "1", mb: "3" },
+    list: { display: "flex", alignItems: "center", gap: "1" },
     tab: {
       px: "3.5",
       py: "1.5",
@@ -33,7 +34,7 @@ export const example = defineSlotRecipe({
       borderWidth: "1px",
       borderColor: "border",
       rounded: "lg",
-      "& > *": { w: "auto", alignItems: "flex-start" },
+      "& > *": { w: "full", alignItems: "flex-start" },
     },
     code: {
       borderWidth: "1px",

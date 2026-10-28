@@ -9,6 +9,7 @@
 
     &[data-orientation="horizontal"] {
       display: flex;
+      align-items: stretch;
       max-width: 560px;
     }
   }
@@ -113,6 +114,10 @@
 
     &[data-state="open"] {
       animation: accordion-in 160ms ease-out;
+    }
+
+    &[hidden] {
+      padding-block: 0;
     }
   }
 }
