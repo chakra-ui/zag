@@ -205,14 +205,14 @@ const service = useMachine(listbox.machine, {
 
 ### Disabling items
 
-To disable an item, you can use the `disabled` property.
+To disable an item, return `true` from the collection's `isItemDisabled`.
 
 <Example id="ListboxDisabled">
 
 ```tsx
-api.getItemProps({
-  // ...
-  disabled: true,
+const collection = listbox.collection({
+  items,
+  isItemDisabled: (item) => item.disabled,
 })
 ```
 
@@ -290,13 +290,14 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Focused state
+### Highlighted state
 
-The focused state is applied to the item that is currently focused.
+The list keeps focus and points at the current item with
+`aria-activedescendant`, so the item you're on gets `data-highlighted`.
 
 ```css
-[data-listbox-item][data-focused] {
-  /* styles for the focused item part */
+[data-listbox-item][data-highlighted] {
+  /* styles for the highlighted item part */
 }
 ```
 

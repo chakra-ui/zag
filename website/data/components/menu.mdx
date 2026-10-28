@@ -140,7 +140,8 @@ const service = useMachine(menu.machine, {
 When you have many menu items, it can help to group related options:
 
 - Wrap the menu items within an element.
-- Spread `api.getGroupProps(...)` props on the group element, providing an `id`.
+- Spread `api.getItemGroupProps(...)` props on the group element, providing an
+  `id`.
 - Render a label for the menu group, providing the `id` of the group element.
 
 <Example id="MenuGroups">

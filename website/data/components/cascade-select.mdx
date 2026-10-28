@@ -515,11 +515,11 @@ When an item is highlighted, via keyboard navigation or pointer, it is given a
 
 ### Branch items
 
-When an item has children (is a branch node), it is given a `data-has-children`
-attribute.
+When an item has children (is a branch node), its `data-type` attribute is
+`branch`. Leaf items get `leaf`.
 
 ```css
-[data-cascade-select-item][data-has-children] {
+[data-cascade-select-item][data-type="branch"] {
   /* styles for items with children (branch nodes) */
 }
 ```

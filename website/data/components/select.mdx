@@ -544,13 +544,13 @@ function Demo() {
 
 ### Wrapping items in a list
 
-By default, `getContentProps()` renders the `listbox` role, so items can sit
-directly inside the content. `getListProps()` is optional here and only acts as
-a layout wrapper.
+By default, `getContentProps()` renders the `listbox` role. Still wrap the items
+in `getListProps()`: when the select opens, focus moves to the list, so without
+it the arrow keys have nowhere to go.
 
-Set `composite` to `false` when the content holds other widgets, like tabs. The
-content becomes a `dialog`, and the list takes over the `listbox` role. In this
-mode, `getListProps()` is required.
+Set `popupType` to `"dialog"` when the content holds other widgets, like tabs.
+The content becomes a `dialog`, and the list takes over the `listbox` role. In
+this mode, `getListProps()` is required.
 
 <Example>
 
@@ -558,7 +558,7 @@ mode, `getListProps()` is required.
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
-  composite: false,
+  popupType: "dialog",
 })
 
 // ...
@@ -578,8 +578,8 @@ const service = useMachine(select.machine, {
 </Example>
 
 For a select with a search input, use a
-[combobox](/components/combobox#wrapping-items-in-a-list) with `composite` set
-to `false` instead. The select content handles keys like `Space` itself, so a
+[combobox](/components/combobox#wrapping-items-in-a-list) with `popupType` set
+to `"dialog"` instead. The select content handles keys like `Space` itself, so a
 plain input inside it can't take every keystroke.
 
 ### Usage within dialog

@@ -172,15 +172,21 @@ since it's shared by the input and preview elements.
 
 ### Setting a maxWidth
 
-It is common to set a max width when auto-resizing.
+It is common to cap the width when auto-resizing. Set `max-width` on the area
+part in CSS.
 
 <Example>
 
-```tsx {2-3}
+```tsx {2}
 const service = useMachine(editable.machine, {
   autoResize: true,
-  maxWidth: "320px",
 })
+```
+
+```css
+[data-editable-area] {
+  max-width: 320px;
+}
 ```
 
 </Example>
@@ -309,12 +315,12 @@ When the editable is in the focused mode, we set a `data-focus` attribute on the
 
 ### Empty state
 
-When the editable's value is empty, we set a `data-empty` attribute on the
-"area" part.
+When the editable's value is empty, the "area" part gets a
+`data-placeholder-shown` attribute.
 
 ```css
-[data-editable-area][data-empty] {
-  /* CSS for the editable's focus state */
+[data-editable-area][data-placeholder-shown] {
+  /* CSS for the editable's empty state */
 }
 ```
 
