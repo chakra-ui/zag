@@ -13,10 +13,10 @@ describe("redesign tokens", () => {
     })
   })
 
-  test("accent is green.600 in light and green.300 in dark", () => {
+  test("accent is green.600 in light and a bright #4ade80 in dark", () => {
     expect(modes(semanticColors.accent.DEFAULT)).toEqual({
       _light: "{colors.green.600}",
-      _dark: "{colors.green.300}",
+      _dark: "#4ade80",
     })
   })
 

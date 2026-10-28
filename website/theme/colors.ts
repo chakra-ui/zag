@@ -26,7 +26,7 @@ export const semanticColors = {
     faint: mode("{colors.gray.400}", "{colors.gray.600}"),
   },
   accent: {
-    DEFAULT: mode("{colors.green.600}", "{colors.green.300}"),
+    DEFAULT: mode("{colors.green.600}", "#4ade80"),
     tint: mode("{colors.green.50}", "#0e1a12"),
     line: mode("{colors.green.100}", "{colors.green.800}"),
     solid: mode("{colors.green.50}", "{colors.green.900}"),
