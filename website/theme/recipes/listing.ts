@@ -316,6 +316,7 @@ export const blogIndex = defineSlotRecipe({
         color: "bg.page",
         borderColor: "fg",
         fontWeight: "medium",
+        _hover: { color: "bg.page", borderColor: "fg" },
       },
     },
     featured: {
