@@ -1,15 +1,18 @@
-import { cells } from "components/ui/cells"
-import { Band, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
+import { TwoToneHeading } from "components/ui/heading"
 import { communityLinks, communityProjects, recordings } from "lib/community"
-import { createPageMetadata } from "lib/seo"
-import { Suspense } from "react"
-import { FaGithub, FaNpm } from "react-icons/fa6"
-import { Box, Grid, Stack, styled } from "styled-system/jsx"
-import { CommunityLink } from "./_components/community-link"
-import { CommunityProjects } from "./_components/community-projects"
-import { CommunityStat } from "./_components/community-stat"
-import { RecordingItem } from "./_components/recording-item"
 import { getCommunityStats } from "lib/community-stats"
+import { formatCompact } from "lib/format-number"
+import { createPageMetadata } from "lib/seo"
+import Image from "next/image"
+import { FaDiscord, FaGithub, FaXTwitter, FaYoutube } from "react-icons/fa6"
+import { Box, Grid, styled } from "styled-system/jsx"
+import {
+  button,
+  community,
+  pageHeader,
+  showcaseCard,
+} from "styled-system/recipes"
+import { gutter } from "../_components/shared"
 
 export const metadata = createPageMetadata({
   title: "Community",
@@ -18,131 +21,164 @@ export const metadata = createPageMetadata({
   path: "/community",
 })
 
-function SectionHeading(props: {
-  label: string
-  title: string
-  description: string
-}) {
-  return (
-    <Box maxW="3xl" mb={{ base: "8", md: "10" }}>
-      <Eyebrow mb="3">{props.label}</Eyebrow>
-      <Title mb="3">{props.title}</Title>
-      <Lead>{props.description}</Lead>
-    </Box>
-  )
+const icons = {
+  discord: FaDiscord,
+  github: FaGithub,
+  x: FaXTwitter,
+  youtube: FaYoutube,
 }
 
-const addProjectHref =
+const addPackageHref =
   "https://github.com/chakra-ui/zag/issues/new?title=Add%20community%20project%3A%20"
 
 export default async function CommunityPage() {
   const stats = await getCommunityStats()
+  const header = pageHeader()
+  const styles = community()
+  const card = showcaseCard()
+  const title = stats
+    ? `Made by ${formatCompact(stats.contributors)} contributors`
+    : "Made by its contributors"
 
   return (
-    <Box>
-      <Frame>
-        <Grid columns={{ base: 1, lg: 2 }} gap="0">
-          <Pad>
-            <Eyebrow mb="3">Community</Eyebrow>
-            <Title as="h1">Build with other people building on Zag</Title>
-            <Lead mt="4">
-              Ask questions, catch up on recordings, and find projects made on
-              top of Zag.
-            </Lead>
-            <styled.a
-              href="/team"
-              display="inline-block"
-              mt="6"
-              fontFamily="mono"
-              fontSize="13px"
-              color="text.bold"
-              _hover={{ textDecoration: "underline" }}
+    <Box maxW="1440px" mx="auto" px={gutter} pb="24">
+      <header className={header.root}>
+        <div className={header.copy}>
+          <p className={header.eyebrow}>Community</p>
+          <TwoToneHeading
+            as="h1"
+            title={title}
+            accent="and the people building on top"
+            size="display"
+          />
+          <p className={header.lead}>
+            Ask a question, share what you made, or pick up an issue. Packages
+            built by the community live here too.
+          </p>
+        </div>
+      </header>
+
+      <nav aria-label="Join the community" className={styles.channels}>
+        {communityLinks.map((link) => {
+          const Icon = icons[link.icon]
+          return (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.channel}
             >
-              Meet the team →
-            </styled.a>
-          </Pad>
-          <Stack
-            as="nav"
-            aria-label="Join the community"
-            gap="0"
-            justify="center"
-            px={{ base: "4", sm: "6", md: "10" }}
-            py={{ base: "6", md: "10" }}
-            borderLeftWidth={{ base: "0", lg: "1px" }}
-            borderTopWidth={{ base: "1px", lg: "0" }}
-            borderColor="border"
+              <Icon className={styles.icon} data-icon={link.icon} aria-hidden />
+              <span className={styles.channelTitle}>{link.title}</span>
+              <span className={styles.channelBody}>{link.description}</span>
+              <span className={styles.cta} data-part="cta">
+                {link.cta} →
+              </span>
+            </a>
+          )
+        })}
+      </nav>
+
+      <section className={styles.section} aria-labelledby="packages">
+        <div className={styles.sectionHead}>
+          <div>
+            <h2 id="packages" className={styles.sectionTitle}>
+              Community packages
+            </h2>
+            <p className={styles.sectionLead}>
+              Adapters and components the core team doesn&apos;t maintain, but
+              likes.
+            </p>
+          </div>
+          <a
+            href={addPackageHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={button()}
           >
-            {communityLinks.map((link) => (
-              <CommunityLink key={link.href} link={link} />
-            ))}
-          </Stack>
-        </Grid>
-
-        {stats ? (
-          <Grid className={cells} gap="1px" columns={{ base: 1, sm: 2 }}>
-            <Box px={{ base: "6", md: "10" }} py="8">
-              <CommunityStat
-                href="https://www.npmjs.com/package/@zag-js/core"
-                label="Downloads"
-                value={stats.npmTotalDownloads}
-                subLabel="@zag-js/core"
-                icon={<FaNpm size="24" />}
-              />
-            </Box>
-            <Box px={{ base: "6", md: "10" }} py="8">
-              <CommunityStat
-                href="https://github.com/chakra-ui/zag"
-                label="Stars"
-                value={stats.githubStars}
-                subLabel="chakra-ui/zag"
-                icon={<FaGithub size="16" />}
-              />
-            </Box>
-          </Grid>
-        ) : null}
-
-        <Band id="recordings" scrollMarginTop="20">
-          <Pad>
-            <SectionHeading
-              label="Watch"
-              title="Recordings"
-              description="Talks and conversations from the Zag.js journey."
-            />
-            <Grid columns={{ base: 1, md: 2 }} gap="4">
-              {recordings.map((video) => (
-                <RecordingItem key={video.href} video={video} />
-              ))}
-            </Grid>
-          </Pad>
-        </Band>
-
-        <Band id="ecosystem" scrollMarginTop="20">
-          <Pad>
-            <SectionHeading
-              label="Ecosystem"
-              title="Community packages"
-              description="Adapters and packages built on top of Zag machines. They're maintained by their authors, not the Zag team."
-            />
-            <styled.p fontSize="sm" color="text.muted" mb="6">
-              Built something on Zag?{" "}
-              <styled.a
-                href={addProjectHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                color="text"
-                textDecoration="underline"
-                textUnderlineOffset="2px"
+            Add your package →
+          </a>
+        </div>
+        <Grid columns={{ base: 1, sm: 2, lg: 3 }} gap="5">
+          {communityProjects.map((project) => (
+            <a
+              key={project.href}
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={card.root}
+            >
+              <Box
+                className={card.media}
+                data-part="media"
+                h="150px"
+                flex="none"
               >
-                Add it to the list
-              </styled.a>
-              .
-            </styled.p>
-            <Suspense>
-              <CommunityProjects projects={communityProjects} />
-            </Suspense>
-          </Pad>
-        </Band>
-      </Frame>
+                <Image
+                  src={project.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  style={{ objectFit: "contain", padding: "20px 70px" }}
+                />
+              </Box>
+              <div className={card.body}>
+                <div className={card.text}>
+                  <Box display="flex" justifyContent="space-between" gap="3">
+                    <h3 className={card.name}>
+                      <styled.span fontFamily="mono" fontSize="14px">
+                        {project.name}
+                      </styled.span>
+                    </h3>
+                    <span className={styles.author}>@{project.author}</span>
+                  </Box>
+                  <p className={card.description}>{project.description}</p>
+                </div>
+              </div>
+            </a>
+          ))}
+        </Grid>
+      </section>
+
+      <section
+        id="recordings"
+        className={styles.section}
+        aria-labelledby="recordings-title"
+      >
+        <div>
+          <h2 id="recordings-title" className={styles.sectionTitle}>
+            Recordings
+          </h2>
+          <p className={styles.sectionLead}>
+            Conversations with teams that build on Zag.
+          </p>
+        </div>
+        <div className={styles.recordings}>
+          {recordings.map((video) => (
+            <a
+              key={video.href}
+              href={video.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.recording}
+            >
+              <span className={styles.play} data-part="play" aria-hidden>
+                ▶
+              </span>
+              <span className={styles.recordingText}>
+                <span className={styles.recordingTitle}>{video.title}</span>
+                <span className={styles.recordingBody}>
+                  {video.description}
+                </span>
+              </span>
+              <span className={styles.duration}>
+                {video.duration ?? "watch ↗"}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
     </Box>
   )
 }
