@@ -91,6 +91,7 @@ export function CopySnippet(props: { label: string; value: string }) {
         </styled.button>
       </HStack>
       <styled.pre
+        tabIndex={0}
         p="3"
         fontFamily="mono"
         fontSize="12px"

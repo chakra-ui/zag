@@ -5,7 +5,7 @@ export default function SiteLayout(props: { children: React.ReactNode }) {
   return (
     <>
       <TopNav />
-      {props.children}
+      <main>{props.children}</main>
       <Footer />
     </>
   )

@@ -37,19 +37,21 @@ export function Example(props: ExampleProps) {
 
   return (
     <div {...api.getRootProps()} className={styles.root}>
-      <div {...api.getListProps()} className={styles.bar}>
-        <button
-          {...api.getTriggerProps({ value: "preview" })}
-          className={styles.tab}
-        >
-          Preview
-        </button>
-        <button
-          {...api.getTriggerProps({ value: "code" })}
-          className={styles.tab}
-        >
-          Code
-        </button>
+      <div className={styles.bar}>
+        <div {...api.getListProps()} className={styles.list}>
+          <button
+            {...api.getTriggerProps({ value: "preview" })}
+            className={styles.tab}
+          >
+            Preview
+          </button>
+          <button
+            {...api.getTriggerProps({ value: "code" })}
+            className={styles.tab}
+          >
+            Code
+          </button>
+        </div>
         {demoName && (
           <button
             type="button"

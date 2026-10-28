@@ -17,6 +17,7 @@ const wide = css({ hideBelow: "md" })
 export function TopNav() {
   return (
     <Box
+      as="header"
       bg={{ base: "bg.page", _dark: "bg.page/80" }}
       backdropFilter="auto"
       backdropBlur="md"

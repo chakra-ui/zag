@@ -25,9 +25,9 @@ export function TableOfContents({
 
   return (
     <nav className={`toc ${styles.root}`} aria-labelledby="toc-heading">
-      <h5 id="toc-heading" className={styles.heading}>
+      <h2 id="toc-heading" className={styles.heading}>
         {title}
-      </h5>
+      </h2>
       <ul className={styles.list}>
         {data.map((item, index) => (
           <li key={item.slug + index}>

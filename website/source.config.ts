@@ -77,7 +77,7 @@ export default defineConfig({
         {
           behavior: "append",
           test: ["h2", "h3", "h4"],
-          properties: { className: ["anchor"] },
+          properties: { className: ["anchor"], ariaHidden: true, tabIndex: -1 },
         },
       ],
     ],

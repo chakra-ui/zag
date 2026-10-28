@@ -99,7 +99,13 @@ const components: Record<string, FC<any>> = {
     return <styled.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
   },
   pre(props) {
-    return <styled.pre {...props} className={`prose ${props.className}`} />
+    return (
+      <styled.pre
+        tabIndex={0}
+        {...props}
+        className={`prose ${props.className}`}
+      />
+    )
   },
   li(props) {
     return (

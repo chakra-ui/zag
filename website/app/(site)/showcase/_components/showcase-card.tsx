@@ -35,7 +35,7 @@ export function ShowcaseCard(props: ShowcaseCardProps) {
       </div>
       <div className={styles.body}>
         <div className={styles.text}>
-          <h3 className={styles.name}>{item.name}</h3>
+          <h2 className={styles.name}>{item.name}</h2>
           <p className={styles.description}>{item.description}</p>
         </div>
         {size === "lg" && (
