@@ -23,7 +23,19 @@
     user-select: none;
     position: relative;
 
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &[data-readonly] {
+      cursor: default;
+      border-style: dashed;
+    }
+
     &[data-disabled] {
+      cursor: not-allowed;
       opacity: 0.5;
       filter: grayscale(100%);
     }
