@@ -64,11 +64,15 @@ Then use the framework integration helpers:
 
 Use the `accept` attribute to set the accepted file types.
 
+<Example id="FileUploadAccept">
+
 ```tsx
 const service = useMachine(fileUpload.machine, {
   accept: "image/*",
 })
 ```
+
+</Example>
 
 Alternatively, you can provide an object with a MIME type and an array of file
 extensions.
@@ -86,15 +90,21 @@ const service = useMachine(fileUpload.machine, {
 
 Use `maxFiles` to set how many files can be selected.
 
+<Example id="FileUploadMaxFiles">
+
 ```tsx
 const service = useMachine(fileUpload.machine, {
   maxFiles: 5,
 })
 ```
 
+</Example>
+
 ### Setting the minimum size per file
 
 Use `minFileSize` to reject files smaller than a minimum size.
+
+<Example id="FileUploadMinSize">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -102,10 +112,14 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the maximum size per file
 
 Use the `maxFileSize` attribute to set the maximum size per file that can be
 uploaded.
+
+<Example id="FileUploadMaxSize">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -113,9 +127,13 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Setting initial files
 
 Use `defaultAcceptedFiles` to prefill the accepted files list.
+
+<Example id="FileUploadDefaultFiles">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -125,9 +143,13 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled files
 
 Use `acceptedFiles` and `onFileChange` to control accepted files externally.
+
+<Example id="FileUploadControlled">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -138,10 +160,14 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Listening to file changes
 
 When files are uploaded, the `onFileChange` callback is invoked with the details
 of the accepted and rejected files.
+
+<Example id="FileUploadFileChange">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -153,9 +179,13 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Listening to accept and reject events
 
 Use `onFileAccept` and `onFileReject` for separated success/failure flows.
+
+<Example id="FileUploadAcceptReject">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -168,15 +198,21 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within a form
 
 To use file upload in a form, set `name` and render `api.getHiddenInputProps()`.
+
+<Example>
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
   name: "avatar",
 })
 ```
+
+</Example>
 
 ```tsx
 <input {...api.getHiddenInputProps()} />
@@ -186,6 +222,8 @@ const service = useMachine(fileUpload.machine, {
 
 To display a preview of the uploaded image, use the built-in FileReader API to
 read the file and set the `src` attribute of an image element.
+
+<Example id="FileUploadImagePreview">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -199,6 +237,8 @@ const service = useMachine(fileUpload.machine, {
   },
 })
 ```
+
+</Example>
 
 ### Applying custom validation
 
@@ -228,6 +268,8 @@ const service = useMachine(fileUpload.machine, {
 
 Apply multiple validation errors:
 
+<Example id="FileUploadValidate">
+
 ```js
 const service = useMachine(fileUpload.machine, {
   validate(file, details) {
@@ -256,9 +298,13 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling drag and drop
 
 Set `allowDrop` to `false` to disable drag and drop.
+
+<Example id="FileUploadNoDrop">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -266,10 +312,14 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Preventing document-level drop
 
 Set `preventDocumentDrop` to `false` if you do not want this component to block
 file drops outside the dropzone.
+
+<Example>
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -277,15 +327,21 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 ### Read-only mode
 
 Set `readOnly` to prevent adding or removing files.
+
+<Example id="FileUploadReadOnly">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
   readOnly: true,
 })
 ```
+
+</Example>
 
 ### Allowing directory selection
 
@@ -297,11 +353,15 @@ to select directories and their contents.
 
 > Please note that support for this feature varies from browser to browser.
 
+<Example id="FileUploadDirectory">
+
 ```tsx
 const service = useMachine(fileUpload.machine, {
   directory: true,
 })
 ```
+
+</Example>
 
 ### Supporting media capture on mobile devices
 
@@ -314,11 +374,15 @@ media on the spot. The value can be:
 > This behavior only works on mobile devices. On desktop devices, it will open
 > the file system like normal.
 
+<Example>
+
 ```tsx
 const service = useMachine(fileUpload.machine, {
   capture: "user",
 })
 ```
+
+</Example>
 
 ### Pasting files from clipboard
 
@@ -327,6 +391,8 @@ can listen for the paste event and use the `api.setFiles` method to set the
 files.
 
 Here's an example of how to do this in React.
+
+<Example id="FileUploadPaste">
 
 ```tsx
 function Demo() {
@@ -348,6 +414,8 @@ function Demo() {
 }
 ```
 
+</Example>
+
 ### Transforming files before acceptance
 
 Use the `transformFiles` callback to process files before they're added to
@@ -356,6 +424,8 @@ or format conversion.
 
 The `transformFiles` function receives the selected files and should return a
 promise that resolves with the transformed files.
+
+<Example id="FileUploadTransform">
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -372,12 +442,16 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
+</Example>
+
 While files are being transformed, the `api.transforming` boolean is `true`,
 allowing you to show loading states in your UI.
 
 ### Customizing accessibility labels
 
 Use `translations` to customize dropzone and item action labels.
+
+<Example>
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
@@ -387,6 +461,8 @@ const service = useMachine(fileUpload.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

@@ -57,6 +57,8 @@ The signature pad component emits the following events:
 - `onDraw`: Emitted when the user is drawing the signature.
 - `onDrawEnd`: Emitted when the user stops drawing the signature.
 
+<Example id="SignaturePadDrawEvents">
+
 ```tsx
 const service = useMachine(signaturePad.machine, {
   onDraw(details) {
@@ -70,14 +72,20 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 ### Clearing the signature
 
 To clear the signature, use the `api.clear()`, or render the clear trigger
 button.
 
+<Example id="SignaturePadClear">
+
 ```tsx
 <button onClick={() => api.clear()}>Clear</button>
 ```
+
+</Example>
 
 ### Rendering an image preview
 
@@ -85,6 +93,8 @@ Use the `api.getDataUrl()` method to get the signature as a data URL and render
 it as an image.
 
 > You can also leverage the `onDrawEnd` event to get the signature data URL.
+
+<Example id="SignaturePadPreview">
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
@@ -97,6 +107,8 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 Next, render the image preview using the URL.
 
 ```tsx
@@ -107,6 +119,8 @@ Next, render the image preview using the URL.
 
 Use `paths` and `onDraw` for controlled usage.
 
+<Example id="SignaturePadControlled">
+
 ```tsx
 const service = useMachine(signaturePad.machine, {
   paths,
@@ -116,11 +130,15 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the stroke color
 
 To change the stroke color, set the `drawing.fill` option to a valid CSS color.
 
 > Note: You can't use a css variable as the stroke color.
+
+<Example id="SignaturePadColor">
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
@@ -130,9 +148,13 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the stroke width
 
 To change the stroke width, set the `drawing.size` option to a number.
+
+<Example id="SignaturePadSize">
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
@@ -142,10 +164,14 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling pressure simulation
 
 Pressure simulation is enabled by default. Set `drawing.simulatePressure` to
 `false` to use raw pointer pressure values.
+
+<Example id="SignaturePadPressure">
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
@@ -155,15 +181,21 @@ const service = useMachine(signaturePad.machine, {
 })
 ```
 
+</Example>
+
 ### Usage in forms
 
 To use the signature pad in a form, set the `name` context property.
+
+<Example>
 
 ```tsx
 const service = useMachine(signaturePad.machine, {
   name: "signature",
 })
 ```
+
+</Example>
 
 Then, render the hidden input element using `api.getHiddenInputProps()`.
 
@@ -176,6 +208,8 @@ Then, render the hidden input element using `api.getHiddenInputProps()`.
 Use `translations` to customize accessible text for the drawing control and
 clear trigger.
 
+<Example>
+
 ```tsx
 const service = useMachine(signaturePad.machine, {
   translations: {
@@ -184,6 +218,8 @@ const service = useMachine(signaturePad.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Methods and Properties
 

@@ -2,16 +2,19 @@
   .Root {
     width: 100%;
     overflow: hidden;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
 
     &[data-orientation="vertical"] {
-      height: 20rem;
-      max-width: 20rem;
+      height: 16rem;
+      max-width: 14rem;
     }
 
     &[data-orientation="horizontal"] {
       width: 100%;
-      height: 120px;
       max-width: 32rem;
+      padding-block: 1rem;
     }
 
     &[data-paused] {
@@ -35,6 +38,7 @@
 
     &[data-side="top"],
     &[data-side="bottom"] {
+      padding-inline: 1rem;
       animation-name: marqueeY;
     }
 
@@ -72,34 +76,34 @@
     pointer-events: none;
 
     &[data-side="start"] {
-      width: 20%;
+      width: 15%;
       background: linear-gradient(
         to right,
-        var(--colors-bg-subtle),
+        var(--colors-bg-raised),
         transparent
       );
 
       &[dir="rtl"] {
         background: linear-gradient(
           to left,
-          var(--colors-bg-subtle),
+          var(--colors-bg-raised),
           transparent
         );
       }
     }
 
     &[data-side="end"] {
-      width: 20%;
+      width: 15%;
       background: linear-gradient(
         to left,
-        var(--colors-bg-subtle),
+        var(--colors-bg-raised),
         transparent
       );
 
       &[dir="rtl"] {
         background: linear-gradient(
           to right,
-          var(--colors-bg-subtle),
+          var(--colors-bg-raised),
           transparent
         );
       }
@@ -109,37 +113,49 @@
       height: 20%;
       background: linear-gradient(
         to bottom,
-        var(--colors-bg-subtle),
+        var(--colors-bg-raised),
         transparent
       );
     }
 
     &[data-side="bottom"] {
       height: 20%;
-      background: linear-gradient(to top, var(--colors-bg-subtle), transparent);
+      background: linear-gradient(to top, var(--colors-bg-raised), transparent);
     }
   }
 
   .Item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 24px;
-    background: var(--colors-bg-subtle);
-    border: 1px solid var(--colors-border-subtle);
-    border-radius: 6px;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding-inline: 0.875rem;
+    background: var(--colors-bg-control);
+    border: 1px solid var(--colors-border);
+    border-radius: 8px;
+    color: var(--colors-fg);
     white-space: nowrap;
     user-select: none;
+    text-decoration: none;
+
+    &:is(a):hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: -2px;
+    }
   }
 
   .Logo {
-    font-size: 32px;
+    font-size: 1.25rem;
     line-height: 1;
   }
 
   .Name {
-    font-size: 16px;
+    font-size: 0.875rem;
     font-weight: 500;
-    color: var(--colors-text-bold);
+    color: var(--colors-fg);
   }
 }

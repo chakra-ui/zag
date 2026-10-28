@@ -58,11 +58,15 @@ Then use the framework integration helpers:
 To automatically duplicate content to fill the container and prevent gaps during
 animation, set the `autoFill` property in the machine's context to `true`.
 
+<Example id="MarqueeAutoFill">
+
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   autoFill: true,
 })
 ```
+
+</Example>
 
 The `api.contentCount` property tells you the total number of content elements
 to render (original + clones). Use this value in your loop:
@@ -85,11 +89,15 @@ to render (original + clones). Use this value in your loop:
 To change the scroll direction, set the `side` property in the machine's context
 to one of: `"start"`, `"end"`, `"top"`, or `"bottom"`.
 
+<Example id="MarqueeSide">
+
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   side: "end", // scrolls from right to left in LTR
 })
 ```
+
+</Example>
 
 **Directional behavior:**
 
@@ -103,11 +111,15 @@ const service = useMachine(marquee.machine, {
 To control how fast the marquee scrolls, set the `speed` property in the
 machine's context. The value is in pixels per second.
 
+<Example id="MarqueeSpeed">
+
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   speed: 100, // 100 pixels per second
 })
 ```
+
+</Example>
 
 **Considerations:**
 
@@ -120,16 +132,22 @@ const service = useMachine(marquee.machine, {
 To customize the gap between marquee items, set the `spacing` property in the
 machine's context to a valid CSS unit.
 
+<Example id="MarqueeSpacing">
+
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   spacing: "2rem",
 })
 ```
 
+</Example>
+
 ### Reversing the animation direction
 
 To reverse the animation direction without changing the scroll side, set the
 `reverse` property in the machine's context to `true`.
+
+<Example id="MarqueeReverse">
 
 ```tsx {2}
 const service = useMachine(marquee.machine, {
@@ -137,16 +155,22 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Pausing on user interaction
 
 To pause the marquee when the user hovers or focuses any element inside it, set
 the `pauseOnInteraction` property in the machine's context to `true`.
+
+<Example id="MarqueePauseOnInteraction">
 
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   pauseOnInteraction: true,
 })
 ```
+
+</Example>
 
 This is especially important for accessibility when your marquee contains
 interactive elements like links or buttons.
@@ -156,15 +180,21 @@ interactive elements like links or buttons.
 To start the marquee in a paused state, set the `defaultPaused` property in the
 machine's context to `true`.
 
+<Example id="MarqueeDefaultPaused">
+
 ```tsx {2}
 const service = useMachine(marquee.machine, {
   defaultPaused: true,
 })
 ```
 
+</Example>
+
 ### Controlled paused state
 
 Use `paused` and `onPauseChange` to control playback externally.
+
+<Example id="MarqueeControlled">
 
 ```tsx
 const service = useMachine(marquee.machine, {
@@ -175,10 +205,14 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Delaying the animation start
 
 To add a delay before the animation starts, set the `delay` property in the
 machine's context to a value in seconds.
+
+<Example id="MarqueeDelay">
 
 ```tsx {2}
 const service = useMachine(marquee.machine, {
@@ -186,10 +220,14 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Limiting loop iterations
 
 By default, the marquee loops infinitely. To limit the number of loops, set the
 `loopCount` property in the machine's context.
+
+<Example id="MarqueeLoopCount">
 
 ```tsx {2}
 const service = useMachine(marquee.machine, {
@@ -197,12 +235,16 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 > Setting `loopCount` to `0` (default) creates an infinite loop.
 
 ### Listening for loop completion
 
 When the marquee completes a single loop iteration, the `onLoopComplete`
 callback is invoked.
+
+<Example id="MarqueeLoopComplete">
 
 ```tsx {2-4}
 const service = useMachine(marquee.machine, {
@@ -212,10 +254,14 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for animation completion
 
 When the marquee completes all loops and stops (only for finite loops), the
 `onComplete` callback is invoked.
+
+<Example id="MarqueeComplete">
 
 ```tsx {2-4}
 const service = useMachine(marquee.machine, {
@@ -226,9 +272,13 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling the marquee programmatically
 
 The marquee API provides methods to control playback:
+
+<Example id="MarqueeProgrammatic">
 
 ```tsx
 // Pause the marquee
@@ -244,9 +294,13 @@ api.togglePause()
 api.restart()
 ```
 
+</Example>
+
 ### Monitoring pause state changes
 
 When the marquee pause state changes, the `onPauseChange` callback is invoked.
+
+<Example id="MarqueePauseChange">
 
 ```tsx {2-5}
 const service = useMachine(marquee.machine, {
@@ -257,10 +311,14 @@ const service = useMachine(marquee.machine, {
 })
 ```
 
+</Example>
+
 ### Adding fade gradients at edges
 
 To add fade gradients at the edges of the marquee, use the `getEdgeProps`
 method:
+
+<Example id="MarqueeEdges">
 
 ```tsx
 <div {...api.getRootProps()}>
@@ -273,6 +331,8 @@ method:
   <div {...api.getEdgeProps({ side: "end" })} />
 </div>
 ```
+
+</Example>
 
 Style the edge gradients using CSS:
 

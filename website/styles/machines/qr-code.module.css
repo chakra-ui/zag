@@ -1,30 +1,101 @@
 @layer recipes {
+  .Root {
+    padding: 0.625rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: #fff;
+  }
+
   .Frame {
+    display: block;
     width: 120px;
     height: 120px;
-    background-color: var(--colors-bg-subtle);
+    background-color: #fff;
+  }
+
+  .FrameNatural {
+    display: block;
+    width: var(--qrcode-width);
+    height: var(--qrcode-height);
+    max-width: 100%;
+    background-color: #fff;
   }
 
   .Pattern {
-    fill: black;
+    fill: #111113;
+  }
 
-    :global(.dark) & {
-      fill: white;
-    }
+  .PatternGreen {
+    fill: #15803d;
   }
 
   .Overlay {
     width: 24px;
     height: 24px;
-    outline: 4px solid white;
+    border-radius: 4px;
+    overflow: hidden;
+    outline: 3px solid #fff;
 
     & img {
+      display: block;
       width: 100%;
       height: 100%;
     }
+  }
 
-    :global(.dark) & {
-      outline-color: black;
+  .Input {
+    width: 100%;
+    max-width: 16rem;
+    height: 2.25rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
     }
+  }
+
+  .Download {
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 150ms ease-out;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .Preview {
+    width: 80px;
+    height: 80px;
+    padding: 0.375rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 8px;
+    background: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Download {
+    transition: none;
   }
 }

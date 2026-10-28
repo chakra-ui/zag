@@ -43,6 +43,8 @@ Then use the framework integration helpers:
 
 Use `onExitComplete` to run logic after the exit animation finishes.
 
+<Example id="PresenceExitComplete">
+
 ```tsx
 const service = useMachine(presence.machine, {
   present: open,
@@ -51,6 +53,8 @@ const service = useMachine(presence.machine, {
   },
 })
 ```
+
+</Example>
 
 ### Running code after enter animation
 
@@ -63,6 +67,8 @@ it mounts.
 > The callback doesn't run on the initial render, only when `present` changes to
 > `true`.
 
+<Example id="PresenceEnterComplete">
+
 ```tsx
 const service = useMachine(presence.machine, {
   present: open,
@@ -72,10 +78,14 @@ const service = useMachine(presence.machine, {
 })
 ```
 
+</Example>
+
 ### Applying presence changes immediately
 
 Set `immediate` to `true` to skip deferring present-state changes to the next
 frame.
+
+<Example>
 
 ```tsx
 const service = useMachine(presence.machine, {
@@ -83,6 +93,8 @@ const service = useMachine(presence.machine, {
   immediate: true,
 })
 ```
+
+</Example>
 
 ## Styling guide
 
