@@ -1,4 +1,4 @@
-import { Link } from "components/ui/link"
+import Link from "next/link"
 import { docHref, getActiveTab, isCurrentDoc } from "lib/pagination-utils"
 import { type LinkProps } from "next/link"
 import { usePathname } from "next/navigation"
