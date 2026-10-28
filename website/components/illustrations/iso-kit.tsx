@@ -45,7 +45,7 @@ export const isoVars = `
   --t: rgba(255,255,255,.45); --tb: rgba(255,255,255,.88);
   --top: #18181b; --side: #0f0f11; --grid: rgba(255,255,255,.06);
   --a: #48bb78; --as: rgba(72,187,120,.14); --ag: rgba(72,187,120,.55); --aside: #1f5f3c;
-  --k: rgba(255,255,255,.26); --hf: #111113;
+  --k: rgba(255,255,255,.26); --hf: #0b0b0c;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 `
 

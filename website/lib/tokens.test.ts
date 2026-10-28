@@ -5,8 +5,8 @@ const modes = (value: unknown) =>
   (value as { value: Record<string, string> }).value
 
 describe("redesign tokens", () => {
-  test("the dark page is #111113 and the light page is white", () => {
-    expect(grays["925"].value).toBe("#111113")
+  test("the dark page is #0b0b0c and the light page is white", () => {
+    expect(grays["925"].value).toBe("#0b0b0c")
     expect(modes(semanticColors.bg.page)).toEqual({
       _light: "{colors.white}",
       _dark: "{colors.gray.925}",

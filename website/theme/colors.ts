@@ -3,21 +3,21 @@ const mode = (light: string, dark: string) => ({
 })
 
 export const grays = {
-  "925": { value: "#111113" },
+  "925": { value: "#0b0b0c" },
 }
 
 export const semanticColors = {
   bg: {
     page: mode("{colors.white}", "{colors.gray.925}"),
-    raised: mode("{colors.gray.50}", "{colors.gray.900}"),
-    inset: mode("{colors.gray.50}", "#141416"),
-    control: mode("{colors.gray.100}", "#1f1f23"),
+    raised: mode("{colors.gray.50}", "#121214"),
+    inset: mode("{colors.gray.50}", "#0f0f11"),
+    control: mode("{colors.gray.100}", "#1a1a1d"),
     deep: mode("{colors.gray.950}", "#0b0b0c"),
   },
   border: {
-    DEFAULT: mode("{colors.gray.200}", "{colors.gray.800}"),
-    subtle: mode("{colors.gray.100}", "#1f1f23"),
-    strong: mode("{colors.gray.300}", "{colors.gray.700}"),
+    DEFAULT: mode("{colors.gray.200}", "#202024"),
+    subtle: mode("{colors.gray.100}", "#17171a"),
+    strong: mode("{colors.gray.300}", "#303036"),
   },
   fg: {
     DEFAULT: mode("{colors.gray.950}", "{colors.gray.50}"),
@@ -27,7 +27,7 @@ export const semanticColors = {
   },
   accent: {
     DEFAULT: mode("{colors.green.600}", "{colors.green.300}"),
-    tint: mode("{colors.green.50}", "#132119"),
+    tint: mode("{colors.green.50}", "#0e1a12"),
     line: mode("{colors.green.100}", "{colors.green.800}"),
     solid: mode("{colors.green.50}", "{colors.green.900}"),
     solidFg: mode("{colors.green.800}", "{colors.green.100}"),

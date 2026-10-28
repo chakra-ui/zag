@@ -97,22 +97,22 @@ export default defineConfig({
             ...semanticColors.bg,
             DEFAULT: semanticColors.bg.page,
             subtle: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.900}" },
+              value: { _light: "{colors.white}", _dark: "#121214" },
             },
             bold: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.800}",
+                _dark: "#1a1a1d",
               },
             },
             muted: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.800}",
+                _dark: "#1a1a1d",
               },
             },
             popover: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
+              value: { _light: "{colors.white}", _dark: "#121214" },
             },
             primary: {
               // pair with text.inverse: white in light, near-black in dark
@@ -156,7 +156,7 @@ export default defineConfig({
               block: {
                 value: {
                   _light: "{colors.gray.50}",
-                  _dark: "{colors.gray.800}",
+                  _dark: "#121214",
                 },
               },
               inline: {
