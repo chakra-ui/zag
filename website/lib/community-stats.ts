@@ -3,6 +3,8 @@ import { unstable_cache } from "next/cache"
 export interface CommunityStats {
   npmTotalDownloads: number
   githubStars: number
+  weeklyDownloads: number
+  contributors: number
   asOf: string
 }
 
@@ -51,13 +53,42 @@ export const getCommunityStats = unstable_cache(
       })
       const ghData = ghRes.ok ? await ghRes.json() : null
 
-      if (!npmStats || !ghData || typeof ghData.stargazers_count !== "number") {
+      const weekRes = await fetch(
+        "https://api.npmjs.org/downloads/point/last-week/@zag-js/core",
+        {
+          headers: { "User-Agent": "zag-website-community-stats" },
+          next: { revalidate: 60 * 60 * 6 },
+        },
+      )
+      const weekJson = weekRes.ok ? await weekRes.json() : null
+
+      // the contributors API pages one per page; the last page number is the count
+      const contribRes = await fetch(
+        "https://api.github.com/repos/chakra-ui/zag/contributors?per_page=1&anon=1",
+        {
+          headers: { "User-Agent": "zag-website-community-stats" },
+          next: { revalidate: 60 * 60 * 6 },
+        },
+      )
+      const lastPage = contribRes.headers
+        .get("link")
+        ?.match(/[?&]page=(\d+)>; rel="last"/)?.[1]
+
+      if (
+        !npmStats ||
+        !ghData ||
+        typeof ghData.stargazers_count !== "number" ||
+        typeof weekJson?.downloads !== "number" ||
+        !lastPage
+      ) {
         return null
       }
 
       return {
         npmTotalDownloads: npmStats.downloads,
         githubStars: ghData.stargazers_count,
+        weeklyDownloads: weekJson.downloads,
+        contributors: Number(lastPage),
         asOf: new Date().toISOString().slice(0, 10),
       }
     } catch {
