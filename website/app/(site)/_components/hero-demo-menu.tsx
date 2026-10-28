@@ -295,8 +295,8 @@ export function MenuWithChips() {
             alignItems="center"
             gap="2"
             h="9"
-            pl="3.5"
-            pr="3"
+            ps="3.5"
+            pe="3"
             fontSize="14px"
             fontWeight="medium"
             color="text.bold"
@@ -386,8 +386,8 @@ export function MenuWithChips() {
               aria-hidden
               position="absolute"
               top="1"
-              left="1"
-              right="1"
+              insetStart="1"
+              insetEnd="1"
               h="32px"
               borderRadius="md"
               bg={{ base: "gray.100", _dark: "whiteAlpha.100" }}

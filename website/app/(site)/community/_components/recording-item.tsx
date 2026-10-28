@@ -71,7 +71,7 @@ export function RecordingItem(props: RecordingItemProps) {
           {video.duration ? (
             <styled.span
               position="absolute"
-              right="1.5"
+              insetEnd="1.5"
               bottom="1.5"
               px="2"
               py="1"

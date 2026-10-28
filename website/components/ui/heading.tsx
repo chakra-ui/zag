@@ -17,7 +17,7 @@ export function TwoToneHeading(props: TwoToneHeadingProps) {
   const styles = twoToneHeading({ size })
   return (
     <div className={styles.root}>
-      {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+      {eyebrow && <div className={styles.eyebrow}>{eyebrow}</div>}
       <Heading className={styles.title}>
         {title}
         <span className={styles.accent}>{accent}</span>

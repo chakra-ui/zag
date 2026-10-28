@@ -2,6 +2,7 @@ import { defineSlotRecipe } from "@pandacss/dev"
 
 export const inspector = defineSlotRecipe({
   className: "inspector",
+  jsx: ["Inspector"],
   description: "Live list of the data attributes on one part",
   slots: [
     "root",

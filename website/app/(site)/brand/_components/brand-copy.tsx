@@ -60,8 +60,8 @@ export function CopySnippet(props: { label: string; value: string }) {
       <HStack
         justify="space-between"
         h="9"
-        pl="3"
-        pr="1"
+        ps="3"
+        pe="1"
         borderBottomWidth="1px"
         borderColor="border"
       >

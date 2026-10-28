@@ -2,6 +2,7 @@ import { defineSlotRecipe } from "@pandacss/dev"
 
 export const twoToneHeading = defineSlotRecipe({
   className: "two-tone-heading",
+  jsx: ["TwoToneHeading"],
   description: "Section title: first line in fg, second line in accent",
   slots: ["root", "eyebrow", "title", "accent", "lead"],
   base: {
@@ -9,6 +10,7 @@ export const twoToneHeading = defineSlotRecipe({
     eyebrow: {
       fontFamily: "mono",
       fontSize: "12px",
+      textTransform: "none",
       color: "fg.subtle",
       mb: "4",
     },

@@ -2,6 +2,7 @@ import { defineSlotRecipe } from "@pandacss/dev"
 
 export const codePanel = defineSlotRecipe({
   className: "code-panel",
+  jsx: ["CodePanel"],
   description:
     "A file of code with highlighted lines, tinted by the styling tool",
   slots: ["root", "file", "pre", "line", "text", "note"],

@@ -164,7 +164,7 @@ export function CodePanel(props: { snapshot: Snapshot; reduced: boolean }) {
       fontSize="12px"
       lineHeight="24px"
     >
-      <Box position="relative" minW="max-content" pl="3" pr="5">
+      <Box position="relative" minW="max-content" ps="3" pe="5">
         {lines.map((line, i) => (
           <CodeLine
             key={i}
@@ -183,10 +183,10 @@ export function CodePanel(props: { snapshot: Snapshot; reduced: boolean }) {
           aria-hidden
           position="absolute"
           top="0"
-          left="0"
-          right="0"
+          insetStart="0"
+          insetEnd="0"
           h="24px"
-          pl="3"
+          ps="3"
           display="grid"
           gridTemplateColumns={{ base: "104px 1fr", md: "162px 1fr" }}
           pointerEvents="none"
@@ -217,7 +217,7 @@ export function CodePanel(props: { snapshot: Snapshot; reduced: boolean }) {
 
 function ChipSlot(props: { children?: React.ReactNode }) {
   return (
-    <Box display="flex" justifyContent="flex-end" alignItems="center" pr="3">
+    <Box display="flex" justifyContent="flex-end" alignItems="center" pe="3">
       {props.children}
     </Box>
   )
@@ -296,7 +296,7 @@ function CodeLine(props: {
         zIndex="0"
         borderLeftWidth="2px"
         borderColor="border"
-        pl="4"
+        ps="4"
         whiteSpace="pre"
       >
         <styled.span
@@ -305,8 +305,8 @@ function CodeLine(props: {
           position="absolute"
           top="0"
           bottom="0"
-          left="-2px"
-          right="0"
+          insetStart="-2px"
+          insetEnd="0"
           zIndex="-1"
           bg={washBg}
           borderLeftWidth="2px"

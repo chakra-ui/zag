@@ -381,3 +381,95 @@ export const tour = [
   { index: "04", state: "a11y", label: "Accessibility", mini: "a11y" },
   { index: "05", state: "styling", label: "Styling", mini: "styling" },
 ] as const
+
+export const chapterCopy = {
+  states: {
+    title: "One state at a time",
+    accent: "never half-open",
+    lead: "A menu is closed, opening, open or closing, and only ever one of those. Each state lists the events it accepts, so the menu can't end up somewhere nobody wrote down.",
+    terms: [
+      {
+        term: "No stray booleans",
+        body: "isOpen and isClosing can't disagree, because they don't exist.",
+      },
+      {
+        term: "One file to read",
+        body: "The whole menu fits in one machine you can read top to bottom.",
+      },
+    ],
+    steps: [
+      { state: "closed", event: "OPEN" },
+      { state: "opening", event: "ANIMATION.END" },
+      { state: "open", event: "CLOSE", active: true },
+      { state: "closing" },
+    ],
+  },
+  events: {
+    title: "The state decides what a key does",
+    accent: "and you skip the if-statements",
+    lead: "Every click and key press becomes a named event. What it does depends on the state the menu is in, and the handlers are already attached.",
+    rows: [
+      {
+        state: "closed",
+        key: "↓",
+        result: "Opens and highlights the first item",
+      },
+      {
+        state: "open",
+        key: "↓",
+        result: "Moves the highlight down",
+        active: true,
+      },
+      {
+        state: "open",
+        key: "esc",
+        result: "Closes, focus goes back to the button",
+        active: true,
+      },
+      {
+        state: "controlled",
+        key: "click",
+        result: "Calls onOpenChange and waits for you",
+      },
+    ],
+  },
+  parts: {
+    title: "A component is a set of parts",
+    accent: "one call per element",
+    lead: "A menu has a trigger, a content panel and items. Spread getTriggerProps() on your button and it gets its ARIA attributes and handlers, kept in sync with the state.",
+    getters: [
+      {
+        call: "getTriggerProps()",
+        returns: "aria-haspopup, aria-expanded, aria-controls, onClick",
+      },
+      {
+        call: "getContentProps()",
+        returns: 'role="menu", aria-activedescendant, data-state',
+      },
+      {
+        call: "getItemProps({ value })",
+        returns: 'role="menuitem", data-highlighted, data-disabled',
+      },
+    ],
+    code: "<button {...api.getTriggerProps()}>\n  Actions\n</button>",
+  },
+  a11y: {
+    title: "Accessible before you write a handler",
+    accent: "and tested in every framework",
+    lead: "Each component follows the WAI-ARIA Authoring Practices. The same Playwright suite runs against the React, Vue, Solid and Svelte versions.",
+    cards: [
+      {
+        title: "Keyboard",
+        body: "Arrow keys, Home, End, and typing a letter to jump. In right-to-left layouts the arrows flip.",
+      },
+      {
+        title: "Focus",
+        body: "Focus moves into what opens and back to what opened it. Modals keep it inside.",
+      },
+      {
+        title: "Screen readers",
+        body: "The highlighted item is announced as it changes. Escape closes the top layer and nothing under it.",
+      },
+    ],
+  },
+}

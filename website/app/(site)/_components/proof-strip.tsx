@@ -32,53 +32,54 @@ function Stat(props: { value: number; label: string }) {
 export async function ProofStrip() {
   const stats = await getCommunityStats()
   return (
-    <HStack
-      justify="space-between"
-      flexWrap="wrap"
-      gap="8"
-      px={gutter}
-      py="7"
-      bg="bg.raised"
-      borderYWidth="1px"
-      borderColor="border"
-    >
-      {stats && (
-        <HStack gap="10" divideX="1px" divideColor="border.strong">
-          <Stat value={stats.weeklyDownloads} label="weekly downloads" />
-          <Box ps="10">
-            <Stat value={stats.githubStars} label="GitHub stars" />
-          </Box>
-          <Box ps="10">
-            <Stat value={stats.contributors} label="contributors" />
-          </Box>
-        </HStack>
-      )}
-      <HStack gap="7" flexWrap="wrap">
-        <styled.p textStyle="eyebrow" color="fg.subtle">
-          Used by
-        </styled.p>
-        {usedBy.map((item) => (
-          <HStack key={item.name} gap="2">
-            <styled.span
-              display="grid"
-              placeItems="center"
-              boxSize="6"
-              rounded="md"
-              bg={{ _dark: "gray.50" }}
-            >
-              <styled.img src={item.logo} alt="" boxSize="4" />
-            </styled.span>
-            <styled.span
-              fontSize="16px"
-              fontWeight="semibold"
-              letterSpacing="-0.02em"
-              color="fg"
-            >
-              {item.name}
-            </styled.span>
+    <Box bg="bg.raised" borderYWidth="1px" borderColor="border">
+      <HStack
+        maxW="1440px"
+        mx="auto"
+        justify="space-between"
+        flexWrap="wrap"
+        gap="8"
+        px={gutter}
+        py="7"
+      >
+        {stats && (
+          <HStack gap="10" divideX="1px" divideColor="border.strong">
+            <Stat value={stats.weeklyDownloads} label="weekly downloads" />
+            <Box ps="10">
+              <Stat value={stats.githubStars} label="GitHub stars" />
+            </Box>
+            <Box ps="10">
+              <Stat value={stats.contributors} label="contributors" />
+            </Box>
           </HStack>
-        ))}
+        )}
+        <HStack gap="7" flexWrap="wrap">
+          <styled.p textStyle="eyebrow" color="fg.subtle">
+            Used by
+          </styled.p>
+          {usedBy.map((item) => (
+            <HStack key={item.name} gap="2">
+              <styled.span
+                display="grid"
+                placeItems="center"
+                boxSize="6"
+                rounded="md"
+                bg={{ _dark: "gray.50" }}
+              >
+                <styled.img src={item.logo} alt="" boxSize="4" />
+              </styled.span>
+              <styled.span
+                fontSize="16px"
+                fontWeight="semibold"
+                letterSpacing="-0.02em"
+                color="fg"
+              >
+                {item.name}
+              </styled.span>
+            </HStack>
+          ))}
+        </HStack>
       </HStack>
-    </HStack>
+    </Box>
   )
 }

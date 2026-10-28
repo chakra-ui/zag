@@ -2,6 +2,7 @@ import { defineRecipe } from "@pandacss/dev"
 
 export const chip = defineRecipe({
   className: "chip",
+  jsx: ["Chip"],
   description: "Small status pills like live, code only and level 1",
   base: {
     display: "inline-flex",
