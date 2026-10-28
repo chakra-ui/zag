@@ -35,7 +35,7 @@ export const playground = defineSlotRecipe({
     },
     top: {
       display: "grid",
-      gridTemplateColumns: { base: "1fr", md: "minmax(0, 1fr) 280px" },
+      gridTemplateColumns: { base: "1fr", md: "minmax(0, 1fr) auto" },
       minH: { md: "340px" },
       borderBottomWidth: "1px",
       borderColor: "border",
@@ -53,6 +53,7 @@ export const playground = defineSlotRecipe({
       minW: "0",
     },
     panel: {
+      w: { md: "280px" },
       borderColor: "border",
       borderTopWidth: { base: "1px", md: "0" },
       borderStartWidth: { md: "1px" },
@@ -215,7 +216,7 @@ export const playground = defineSlotRecipe({
       fontFamily: "mono",
       fontSize: "12px",
       color: "fg.muted",
-      "& svg": { boxSize: "3.5", color: "#3178C6" },
+      "& svg": { boxSize: "3.5", color: "brand.typescript" },
     },
     actions: { display: "flex", alignItems: "center", gap: "1.5" },
   },

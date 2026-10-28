@@ -54,7 +54,7 @@ export function Example(props: ExampleProps) {
           <button
             type="button"
             data-brand="stackblitz"
-            className={docAction({ size: "sm" })}
+            className={docAction()}
             style={{ marginInlineStart: "auto" }}
             onClick={() => openInStackblitz(demoName, {})}
           >

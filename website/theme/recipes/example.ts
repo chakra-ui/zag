@@ -8,10 +8,10 @@ export const example = defineSlotRecipe({
     root: { my: "6" },
     bar: { display: "flex", alignItems: "center", gap: "1", mb: "3" },
     tab: {
-      px: "3",
+      px: "3.5",
       py: "1.5",
       rounded: "md",
-      fontSize: "14px",
+      fontSize: "15px",
       fontWeight: "medium",
       color: "fg.subtle",
       cursor: "pointer",

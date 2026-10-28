@@ -26,7 +26,7 @@ export function ResourceLinkGroup(props: {
   const pattern = apgPatterns[pkg]
   const action = docAction()
   return (
-    <Wrap mt="6" gap="2">
+    <Wrap mt="6" mb="10" gap="2">
       <a href={item.npmUrl} target="_blank" className={action} data-id="npm">
         <LuPackage aria-hidden />
         <span data-part="mono">{pkg}</span>
