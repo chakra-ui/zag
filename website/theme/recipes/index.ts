@@ -13,6 +13,7 @@ import {
   community,
   pageHeader,
   showcaseCard,
+  team,
 } from "./listing"
 import { playground } from "./playground"
 import { propTable } from "./prop-table"
@@ -49,4 +50,5 @@ export const slotRecipes = {
   community,
   blogIndex,
   blogPost,
+  team,
 }
