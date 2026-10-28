@@ -4,7 +4,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react"
 import { Box, Stack, styled } from "styled-system/jsx"
-import { CodePanel, items, type Snapshot } from "./hero-concept-3-code"
+import { CodePanel, items, type Snapshot } from "./hero-demo-code"
 import { duration, ease, hopGap, rest, resumeAfter } from "./motion"
 
 type Cue = { key: string; n: number }
