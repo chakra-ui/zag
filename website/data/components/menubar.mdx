@@ -98,6 +98,8 @@ A submenu inside a menubar menu works like any nested menu — link it to its
 parent with `setChild` / `setParent` and render its trigger with
 `getTriggerItemProps`.
 
+<Example id="MenubarNested">
+
 ```tsx
 const parent = useMachine(menu.machine, { id: "edit", menubar: menubarContext })
 const sub = useMachine(menu.machine, { id: "find" })
@@ -107,6 +109,8 @@ useEffect(() => {
   subApi.setParent(parent)
 }, [])
 ```
+
+</Example>
 
 Only the top-level menu gets the `menubar` prop. The submenu doesn't — it's a
 child of the menu, not of the bar.
@@ -118,6 +122,8 @@ With the keyboard, `ArrowRight` on a submenu trigger opens the submenu, while
 
 Set `orientation` to `"vertical"` to stack the triggers. Use `positioning` so
 the menus open to the side instead of below.
+
+<Example id="MenubarVertical">
 
 ```tsx
 const service = useMachine(menubar.machine, {
@@ -133,12 +139,16 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 In a vertical menubar, `Up` / `Down` move between triggers, `ArrowRight` opens a
 menu, and `ArrowLeft` closes it back to its trigger.
 
 ### Disabling the menubar
 
 Set `disabled` on the menubar to disable every trigger at once.
+
+<Example id="MenubarDisabled">
 
 ```tsx
 const service = useMachine(menubar.machine, {
@@ -147,10 +157,14 @@ const service = useMachine(menubar.machine, {
 })
 ```
 
+</Example>
+
 ### Looping focus
 
 By default, arrowing past the first or last trigger wraps around. Set
 `loopFocus` to `false` to stop at the ends.
+
+<Example id="MenubarNoLoop">
 
 ```tsx
 const service = useMachine(menubar.machine, {
@@ -158,6 +172,8 @@ const service = useMachine(menubar.machine, {
   loopFocus: false,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

@@ -2,55 +2,77 @@
   .List {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: 0.25rem;
     list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
 
   .PrevTrigger,
   .NextTrigger,
   .Item {
-    padding-inline: 0.75rem;
-    height: 2rem;
-    text-align: center;
-    margin: auto 4px;
-    color: var(--colors-text-bold);
-    display: flex;
-    box-sizing: border-box;
+    display: inline-flex;
     align-items: center;
-    letter-spacing: 0.01071em;
-    line-height: 1.43;
-    font-size: 13px;
-    user-select: none;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding-inline: 0.625rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--colors-fg-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
     text-decoration: none;
-    border: solid 1px;
-    border-color: var(--colors-border-bold);
-    background: var(--colors-bg-subtle);
+    user-select: none;
     cursor: pointer;
+    transition:
+      background 150ms ease-out,
+      border-color 150ms ease-out,
+      color 150ms ease-out;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      color: var(--colors-fg);
+      background: var(--colors-bg-control);
     }
 
-    &:focus {
-      outline: 2px solid var(--colors-bg-primary-bold);
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
     &[data-selected] {
-      background: var(--colors-bg-primary-subtle);
-      color: var(--colors-text-inverse);
+      border-color: var(--colors-accent);
+      background: var(--colors-accent-tint);
+      color: var(--colors-accent);
     }
 
     &[data-disabled] {
-      opacity: 0.5;
-
+      opacity: 0.4;
+      cursor: not-allowed;
       background: none;
-      filter: grayscale(100%);
     }
   }
 
   .PrevTrigger,
   .NextTrigger {
+    border-color: var(--colors-border-strong);
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 1.125rem;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &[dir="rtl"] {
+      rotate: 180deg;
+    }
+
     & span {
       border: 0px;
       clip: rect(0, 0, 0, 0);
@@ -65,6 +87,19 @@
   }
 
   .Ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    color: var(--colors-fg-subtle);
     cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .PrevTrigger,
+    .NextTrigger,
+    .Item {
+      transition: none;
+    }
   }
 }

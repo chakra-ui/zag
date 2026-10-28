@@ -1,55 +1,99 @@
 @layer recipes {
+  .Root {
+    width: 100%;
+    max-width: 280px;
+    padding: 0.5rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    font-size: 0.875rem;
+    --indent: 1.125rem;
+  }
+
   .Tree {
-    margin-top: 20px;
-    width: 240px;
-    margin-inline-start: -16px;
+    margin-top: 0.25rem;
+    width: 100%;
+
+    &:focus-visible {
+      outline: none;
+    }
   }
 
   .Label {
-    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem 0.375rem;
+    font-family: var(--fonts-mono);
+    font-size: 0.6875rem;
     font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--colors-fg-subtle);
   }
 
   .Node {
     user-select: none;
-    --padding-inline: 16px;
-    padding-inline-start: calc(var(--depth) * var(--padding-inline));
+    --padding-inline: 0.375rem;
+    padding-inline-start: calc(
+      (var(--depth) - 1) * var(--indent) + var(--padding-inline)
+    );
     padding-inline-end: var(--padding-inline);
     display: flex;
     align-items: center;
-    gap: 8px;
-    border-radius: 2px;
-    min-height: 32px;
+    gap: 0.375rem;
+    border-radius: 6px;
+    min-height: 1.875rem;
+    color: var(--colors-fg-muted);
+    cursor: pointer;
 
     & svg {
-      width: 16px;
-      height: 16px;
-      opacity: 0.5;
+      flex-shrink: 0;
+      width: 0.9375rem;
+      height: 0.9375rem;
+      color: var(--colors-fg-subtle);
     }
 
     &:hover {
-      background: var(--colors-border-bold);
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: -2px;
     }
 
     &[data-selected] {
-      background: var(--colors-bg-primary-bold);
-      color: var(--colors-text-inverse);
+      background: var(--colors-accent-tint);
+      color: var(--colors-accent);
+
+      & svg {
+        color: var(--colors-accent);
+      }
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
   }
 
   .Cell {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.375rem;
+    flex: 1;
+    min-width: 0;
   }
 
   .NodeText {
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .Spacer {
+    width: 1rem;
+    flex-shrink: 0;
   }
 
   .NodeGroupContent {
@@ -59,20 +103,76 @@
 
   .IndentGuide {
     position: absolute;
-    content: "";
-    border-left: 1px solid rgba(226, 226, 226, 0.179);
-    height: 100%;
-    translate: calc(var(--depth) * 1.25rem);
-    z-index: 0;
+    top: 0;
+    bottom: 0;
+    inset-inline-start: calc(
+      (var(--depth) - 1) * var(--indent) + 0.375rem + 0.5rem
+    );
+    border-inline-start: 1px solid var(--colors-border);
+    z-index: -1;
   }
 
   .NodeIndicator {
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 1rem;
+    flex-shrink: 0;
+
+    & svg {
+      transition: rotate 150ms ease-out;
+    }
+
+    &[dir="rtl"] svg,
+    [dir="rtl"] & svg {
+      rotate: 180deg;
+    }
 
     &[data-state="open"] svg {
-      transform: rotate(90deg);
+      rotate: 90deg;
     }
+  }
+
+  .Checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9375rem;
+    height: 0.9375rem;
+    flex-shrink: 0;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 4px;
+    background: var(--colors-bg-control);
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1;
+
+    &[data-state="checked"],
+    &[data-state="indeterminate"] {
+      border-color: var(--colors-accent);
+      background: var(--colors-accent);
+      color: var(--colors-bg-raised);
+    }
+  }
+
+  .RenameInput {
+    flex: 1;
+    min-width: 0;
+    height: 1.5rem;
+    padding-inline: 0.375rem;
+    border: 1px solid var(--colors-accent);
+    border-radius: 4px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .Spinner {
+    animation: tree-spin 800ms linear infinite;
   }
 
   .Trigger {
@@ -82,10 +182,38 @@
     text-align: start;
     cursor: pointer;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-primary-subtle);
-    color: var(--colors-text-inverse);
-    margin-top: 20px;
+    font-size: 0.875rem;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    margin-top: 1rem;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  @keyframes tree-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .NodeIndicator svg {
+      transition: none;
+    }
+
+    .Spinner {
+      animation-duration: 2400ms;
+    }
   }
 }

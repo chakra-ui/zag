@@ -55,11 +55,15 @@ Then use the framework integration helpers:
 To set the initially selected tab, pass the `defaultValue` property to the
 machine's context.
 
+<Example id="TabsInitialValue">
+
 ```tsx {2}
 const service = useMachine(tabs.machine, {
   defaultValue: "tab-1",
 })
 ```
+
+</Example>
 
 Subsequently, you can use the `api.setValue` function to programmatically set
 the selected tab.
@@ -79,12 +83,18 @@ api.clearValue()
 To control the selected tab programmatically, pass the `value` and
 `onValueChange` properties to the machine function.
 
+<Example id="TabsControlled">
+
 <CodeSnippet id="tabs/controlled.mdx" />
+
+</Example>
 
 ### Changing the orientation
 
 The default orientation of the tabs is horizontal. To change the orientation,
 set the `orientation` property in the machine's context to `"vertical"`.
+
+<Example id="TabsVertical">
 
 ```tsx {2}
 const service = useMachine(tabs.machine, {
@@ -92,12 +102,18 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
+</Example>
+
 ### Showing an indicator
 
 To show an active indicator when a tab is selected, you add the
 `tabIndicatorProps` object provided by the `connect` function.
 
+<Example id="TabsIndicator">
+
 <CodeSnippet id="tabs/with-indicator.mdx" />
+
+</Example>
 
 ### Disabling a tab
 
@@ -107,16 +123,22 @@ To disable a tab, set the `disabled` property in the `getTriggerProps` to
 When a Tab is `disabled`, it is skipped during keyboard navigation and it is not
 clickable.
 
+<Example id="TabsDisabled">
+
 ```tsx
 //...
 <button {...api.getTriggerProps({ disabled: true })}></button>
 //...
 ```
 
+</Example>
+
 ### Listening for events
 
 - `onValueChange` — Callback invoked when the selected tab changes.
 - `onFocusChange` — Callback invoked when the focused tab changes.
+
+<Example id="TabsEvents">
 
 ```tsx {2-7}
 const service = useMachine(tabs.machine, {
@@ -131,9 +153,13 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing deselection
 
 Set `deselectable` to allow clicking the active tab to clear the current value.
+
+<Example id="TabsDeselectable">
 
 ```tsx
 const service = useMachine(tabs.machine, {
@@ -141,9 +167,13 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
+</Example>
+
 ### Custom navigation for link tabs
 
 Use `navigate` when your tab triggers are rendered as links.
+
+<Example>
 
 ```tsx
 const service = useMachine(tabs.machine, {
@@ -154,6 +184,8 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
+</Example>
+
 ### Manual tab activation
 
 By default, a tab is selected when it receives focus from either keyboard or
@@ -162,21 +194,29 @@ pointer interaction. This is called "automatic tab activation".
 The other approach is "manual tab activation" which means the tab is selected
 with the Enter key or by clicking on the tab.
 
+<Example id="TabsManual">
+
 ```tsx {2}
 const service = useMachine(tabs.machine, {
   activationMode: "manual",
 })
 ```
 
+</Example>
+
 ### Looping keyboard navigation
 
 Set `loopFocus` to control whether arrow-key navigation wraps at the ends.
+
+<Example id="TabsNoLoop">
 
 ```tsx
 const service = useMachine(tabs.machine, {
   loopFocus: false,
 })
 ```
+
+</Example>
 
 ### RTL Support
 
@@ -185,15 +225,21 @@ mode, the layout and keyboard interaction is flipped.
 
 To enable RTL support, set the `dir` property in the machine's context to `rtl`.
 
+<Example id="TabsRtl">
+
 ```tsx {2}
 const service = useMachine(tabs.machine, {
   dir: "rtl",
 })
 ```
 
+</Example>
+
 ### Programmatic tab control
 
 Use the connected API for imperative navigation and focus.
+
+<Example id="TabsProgrammatic">
 
 ```tsx
 api.setValue("tab-2")
@@ -201,6 +247,8 @@ api.selectNext()
 api.selectPrevious()
 api.focus()
 ```
+
+</Example>
 
 ## Styling guide
 

@@ -71,7 +71,11 @@ In this pattern:
 - You must include `triggerProxy` and `viewportProxy` for proper focus
   management
 
+<Example id="NavigationMenuViewport">
+
 <CodeSnippet id="navigation-menu/viewport-usage.mdx" />
+
+</Example>
 
 **When to use viewport pattern:**
 
@@ -85,11 +89,17 @@ In this pattern:
 To control which item is currently open, pass the `value` and `onValueChange`
 properties to the machine.
 
+<Example id="NavigationMenuControlled">
+
 <CodeSnippet id="navigation-menu/controlled.mdx" />
+
+</Example>
 
 ### Setting initial open item
 
 Use `defaultValue` to start with a specific item open.
+
+<Example id="NavigationMenuDefaultValue">
 
 ```tsx
 const service = useMachine(navigationMenu.machine, {
@@ -97,10 +107,14 @@ const service = useMachine(navigationMenu.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 When the open item changes, the `onValueChange` callback is invoked with the new
 value.
+
+<Example id="NavigationMenuValueChange">
 
 ```tsx {3-6}
 const service = useMachine(navigationMenu.machine, {
@@ -112,12 +126,18 @@ const service = useMachine(navigationMenu.machine, {
 })
 ```
 
+</Example>
+
 ### Adding an animated indicator
 
 To show a visual indicator that animates to the active trigger, render the
 indicator within the list container:
 
+<Example id="NavigationMenuIndicator">
+
 <CodeSnippet id="navigation-menu/with-indicator.mdx" />
+
+</Example>
 
 The indicator automatically transitions to match the active trigger's position
 and size using CSS variables.
@@ -126,6 +146,8 @@ and size using CSS variables.
 
 You can customize the delay before opening and closing on hover:
 
+<Example id="NavigationMenuDelays">
+
 ```tsx {2-3}
 const service = useMachine(navigationMenu.machine, {
   openDelay: 300, // Delay before opening on hover (default: 200ms)
@@ -133,12 +155,16 @@ const service = useMachine(navigationMenu.machine, {
 })
 ```
 
+</Example>
+
 **Tip**: Longer delays provide a more forgiving user experience but can feel
 less responsive.
 
 ### Disabling hover or click triggers
 
 You can disable hover or click triggers independently:
+
+<Example id="NavigationMenuClickOnly">
 
 ```tsx {2-6}
 const service = useMachine(navigationMenu.machine, {
@@ -150,6 +176,8 @@ const service = useMachine(navigationMenu.machine, {
 })
 ```
 
+</Example>
+
 - `disableHoverTrigger` — Prevents opening on hover (click only)
 - `disableClickTrigger` — Prevents opening on click (hover only)
 - `disablePointerLeaveClose` — Prevents closing when pointer leaves
@@ -158,17 +186,23 @@ const service = useMachine(navigationMenu.machine, {
 
 The default orientation is horizontal. To create a vertical navigation menu:
 
+<Example id="NavigationMenuVertical">
+
 ```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   orientation: "vertical",
 })
 ```
 
+</Example>
+
 This affects keyboard navigation (arrow keys) and indicator positioning.
 
 ### Disabling items
 
 To disable a navigation item, pass `disabled: true` to the item props:
+
+<Example id="NavigationMenuDisabled">
 
 ```tsx
 <div {...api.getItemProps({ value: "products", disabled: true })}>
@@ -178,21 +212,29 @@ To disable a navigation item, pass `disabled: true` to the item props:
 </div>
 ```
 
+</Example>
+
 Disabled items cannot be opened and are skipped during keyboard navigation.
 
 ### Indicating current page
 
 To highlight the current page link, use the `current` prop:
 
+<Example id="NavigationMenuCurrent">
+
 ```tsx
 <a {...api.getLinkProps({ value: "products", current: true })}>Products</a>
 ```
+
+</Example>
 
 This adds `data-current` attribute and `aria-current="page"` for accessibility.
 
 ### Controlling link close behavior
 
 Use `closeOnClick` in `getLinkProps` to keep content open after link click.
+
+<Example id="NavigationMenuKeepOpen">
 
 ```tsx
 <a
@@ -205,10 +247,14 @@ Use `closeOnClick` in `getLinkProps` to keep content open after link click.
 </a>
 ```
 
+</Example>
+
 ### Aligning the shared viewport
 
 When using the viewport pattern, set `align` on `getViewportProps` or
 `getViewportPositionerProps`.
+
+<Example id="NavigationMenuAlign">
 
 ```tsx
 <div
@@ -218,16 +264,22 @@ When using the viewport pattern, set `align` on `getViewportProps` or
 />
 ```
 
+</Example>
+
 ### RTL support
 
 The navigation menu supports right-to-left languages. Set the `dir` property to
 `rtl`:
+
+<Example id="NavigationMenuRtl">
 
 ```tsx {2}
 const service = useMachine(navigationMenu.machine, {
   dir: "rtl",
 })
 ```
+
+</Example>
 
 ## Styling guide
 
@@ -363,34 +415,29 @@ The arrow can be styled using CSS variables:
 }
 ```
 
-### Motion attributes
+### Animating content and the viewport
 
-When using the viewport pattern, content elements receive `data-motion`
-attributes for directional animations:
+Content and the viewport carry `data-state="open"` or `"closed"`. The viewport
+also sets `--viewport-width` and `--viewport-height` to the size of the active
+content, so it can animate between items.
 
 ```css
-[data-navigation-menu-content][data-motion="from-start"] {
-  animation: slideFromStart 250ms ease;
+[data-navigation-menu-viewport] {
+  width: var(--viewport-width);
+  height: var(--viewport-height);
+  transition:
+    width 250ms ease,
+    height 250ms ease;
 }
 
-[data-navigation-menu-content][data-motion="from-end"] {
-  animation: slideFromEnd 250ms ease;
+[data-navigation-menu-content][data-state="open"] {
+  animation: fadeIn 200ms ease;
 }
 
-[data-navigation-menu-content][data-motion="to-start"] {
-  animation: slideToStart 250ms ease;
-}
-
-[data-navigation-menu-content][data-motion="to-end"] {
-  animation: slideToEnd 250ms ease;
+[data-navigation-menu-content][data-state="closed"] {
+  animation: fadeOut 200ms ease;
 }
 ```
-
-**Tip**: The motion direction indicates where the content is coming from
-(from-start/from-end) or going to (to-start/to-end), enabling context-aware
-animations when switching between items.
-
-## Methods and Properties
 
 ### Machine Context
 

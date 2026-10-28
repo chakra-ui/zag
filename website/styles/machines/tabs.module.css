@@ -1,37 +1,117 @@
 @layer recipes {
   .Root {
     width: 100%;
-    max-width: 400px;
-    border-width: 1px;
-    border-color: var(--colors-border-bold);
+    max-width: 420px;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
     font-size: 0.875rem;
+    overflow: hidden;
+
+    &[data-orientation="vertical"] {
+      display: flex;
+    }
   }
 
   .List {
-    background: var(--colors-bg-subtle);
-    border-bottom-width: 1px;
+    position: relative;
+    display: flex;
+    gap: 0.25rem;
+    padding-inline: 0.5rem;
+    border-bottom: 1px solid var(--colors-border);
+
+    &[data-orientation="vertical"] {
+      flex-direction: column;
+      padding-inline: 0;
+      padding-block: 0.5rem;
+      border-bottom: 0;
+      border-inline-end: 1px solid var(--colors-border);
+    }
   }
 
   .Trigger {
-    padding-inline: 1rem;
-    padding-block: 0.5rem;
-    border-bottom-width: 2px;
-    border-bottom-color: transparent;
+    position: relative;
+    padding-inline: 0.75rem;
+    padding-block: 0.625rem;
+    color: var(--colors-fg-muted);
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: start;
+    transition: color 150ms ease-out;
+
+    &:hover {
+      color: var(--colors-fg);
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: -2px;
+      border-radius: 6px;
     }
 
     &[data-selected] {
-      color: var(--colors-text-primary-bold);
-      border-bottom-color: var(--colors-border-primary-subtle);
+      color: var(--colors-fg);
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        color: var(--colors-fg-muted);
+      }
+    }
+
+    [data-orientation="vertical"] > & {
+      padding-inline: 1rem;
+    }
+  }
+
+  .List:not(:has(.Indicator)) .Trigger[data-selected]::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0.5rem;
+    bottom: -1px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--colors-accent);
+  }
+
+  .Indicator {
+    background: var(--colors-accent);
+    border-radius: 2px;
+    --transition-duration: 200ms;
+    --transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+    &[data-orientation="horizontal"] {
+      bottom: -1px;
+      width: var(--width);
+      height: 2px;
+    }
+
+    &[data-orientation="vertical"] {
+      inset-inline-end: -1px;
+      width: 2px;
+      height: var(--height);
     }
   }
 
   .Content {
     padding: 1rem;
-    background: var(--colors-bg-subtle);
     min-height: 20px;
+    color: var(--colors-fg-muted);
+    line-height: 1.6;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: -2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Indicator {
+      --transition-duration: 0ms;
+    }
   }
 }
