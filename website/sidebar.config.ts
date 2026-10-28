@@ -83,7 +83,7 @@ export const tabs: SidebarTab[] = [
         label: "Build something",
         items: docs("guides", [
           {
-            label: "A design system with Panda",
+            label: "Panda design system",
             id: "design-system-with-panda",
             new: true,
           },

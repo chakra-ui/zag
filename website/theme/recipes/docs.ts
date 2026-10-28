@@ -122,7 +122,7 @@ export const docsNav = defineSlotRecipe({
   variants: {
     variant: {
       sidebar: {
-        root: { pt: "7", pb: "10", ps: { base: "0", lg: "8" }, pe: "5" },
+        root: { pt: "7", pb: "10", ps: { base: "0", lg: "8" }, pe: "2" },
         link: {
           py: "1.5",
           fontSize: "14px",
