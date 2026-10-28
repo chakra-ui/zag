@@ -1,7 +1,8 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
-import styles from "../styles/machines/menu.module.css"
+import styles from "../../styles/machines/menu.module.css"
+import { Ghost, Log, Row, Stack } from "./shared"
 
 const items = [
   { label: "Edit", value: "edit" },
@@ -48,18 +49,6 @@ function Content(props: { api: menu.Api; children?: React.ReactNode }) {
   )
 }
 
-function Log(props: { label: string; value: string }) {
-  return (
-    <output className={styles.Log}>
-      {props.label} <strong>{props.value}</strong>
-    </output>
-  )
-}
-
-function Stack(props: { children: React.ReactNode }) {
-  return <div className={styles.Example}>{props.children}</div>
-}
-
 export function MenuSelection() {
   const [value, setValue] = useState("—")
   const api = useMenu({ onSelect: (details) => setValue(details.value) })
@@ -92,16 +81,12 @@ export function MenuControlled() {
   })
   return (
     <Stack>
-      <div className={styles.Row}>
+      <Row>
         <Trigger api={api} />
-        <button
-          type="button"
-          className={styles.Ghost}
-          onClick={() => setOpen((current) => !current)}
-        >
+        <Ghost onClick={() => setOpen((current) => !current)}>
           {open ? "Close" : "Open"} from outside
-        </button>
-      </div>
+        </Ghost>
+      </Row>
       <Content api={api} />
     </Stack>
   )
