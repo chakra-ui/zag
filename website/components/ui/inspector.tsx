@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Box, HStack, styled } from "styled-system/jsx"
+import { inspector, type InspectorVariantProps } from "styled-system/recipes"
 
 export interface InspectorRow {
   name: string
@@ -9,91 +9,42 @@ export interface InspectorRow {
   active?: boolean
 }
 
-export function Inspector(props: {
+export interface InspectorProps extends InspectorVariantProps {
   part: string
   rows: InspectorRow[]
   footer?: ReactNode
-  tone?: string
-}) {
-  const { part, rows, footer, tone = "var(--colors-accent)" } = props
+}
+
+export function Inspector(props: InspectorProps) {
+  const { part, rows, footer, tone } = props
+  const styles = inspector({ tone })
   return (
-    <Box display="flex" flexDirection="column" minW="0">
-      <HStack
-        justify="space-between"
-        px="4"
-        py="3.5"
-        borderBottomWidth="1px"
-        borderColor="border"
-      >
-        <styled.p textStyle="eyebrow" color="fg.subtle">
-          Inspecting
-        </styled.p>
-        <styled.p
-          fontFamily="mono"
-          fontSize="12px"
-          color="syntax.attr"
-          truncate
-        >
-          {part}
-        </styled.p>
-      </HStack>
-      <Box py="1.5" role="list" aria-label={`Attributes on ${part}`}>
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <p className={styles.label}>Inspecting</p>
+        <p className={styles.part}>{part}</p>
+      </div>
+      <ul className={styles.list} aria-label={`Attributes on ${part}`}>
         {rows.map((row) => (
-          <HStack
+          <li
             key={row.name}
-            role="listitem"
-            gap="2.5"
-            px="4"
-            py="2"
-            fontFamily="mono"
-            fontSize="12px"
-            transition="background 160ms ease-out"
-            style={
-              row.active
-                ? {
-                    background: `color-mix(in srgb, ${tone} 8%, transparent)`,
-                    boxShadow: `inset 2px 0 0 ${tone}`,
-                  }
-                : undefined
-            }
+            className={styles.row}
+            data-on={row.on || undefined}
+            data-active={row.active || undefined}
           >
-            <Box
-              boxSize="1.5"
-              rounded="full"
-              flexShrink="0"
-              borderWidth={row.on ? "0" : "1px"}
-              borderColor="fg.faint"
-              transition="background 160ms ease-out"
-              style={{
-                background: row.on
-                  ? row.active
-                    ? tone
-                    : "var(--colors-accent)"
-                  : "transparent",
-              }}
-            />
-            <styled.span
-              color={row.on ? (row.active ? "fg" : "fg.muted") : "fg.faint"}
-            >
-              {row.name}
-            </styled.span>
-            <styled.span
-              ms="auto"
-              color={row.value ? "syntax.string" : "fg.subtle"}
+            <span className={styles.dot} />
+            <span className={styles.name}>{row.name}</span>
+            <span
+              className={styles.value}
+              data-string={row.value ? "" : undefined}
             >
               {row.value ? `"${row.value}"` : row.on ? "on" : "off"}
-              {row.note && (
-                <styled.span color="fg.faint"> · {row.note}</styled.span>
-              )}
-            </styled.span>
-          </HStack>
+              {row.note && <span className={styles.note}> · {row.note}</span>}
+            </span>
+          </li>
         ))}
-      </Box>
-      {footer && (
-        <Box px="4" py="3" borderTopWidth="1px" borderColor="border">
-          {footer}
-        </Box>
-      )}
-    </Box>
+      </ul>
+      {footer && <div className={styles.footer}>{footer}</div>}
+    </div>
   )
 }

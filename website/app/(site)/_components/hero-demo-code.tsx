@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import { Box, styled } from "styled-system/jsx"
 import { duration, ease, swapBlur } from "./motion"
-import { accent } from "./shared"
 
 export const items = [
   { value: "rename", label: "Rename" },
@@ -254,7 +253,7 @@ function ChipShell(props: {
         position="absolute"
         inset="-1px"
         borderWidth="1px"
-        borderColor={accent}
+        borderColor="accent"
         borderRadius="full"
         pointerEvents="none"
         opacity="0"
@@ -311,7 +310,7 @@ function CodeLine(props: {
           zIndex="-1"
           bg={washBg}
           borderLeftWidth="2px"
-          borderColor={accent}
+          borderColor="accent"
           pointerEvents="none"
           opacity="0"
         />

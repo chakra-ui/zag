@@ -62,7 +62,6 @@ export const getCommunityStats = unstable_cache(
       )
       const weekJson = weekRes.ok ? await weekRes.json() : null
 
-      // the contributors API pages one per page; the last page number is the count
       const contribRes = await fetch(
         "https://api.github.com/repos/chakra-ui/zag/contributors?per_page=1&anon=1",
         {
@@ -95,6 +94,6 @@ export const getCommunityStats = unstable_cache(
       return null
     }
   },
-  ["community-stats"],
+  ["community-stats-v2"],
   { revalidate: 60 * 60 * 6 },
 )

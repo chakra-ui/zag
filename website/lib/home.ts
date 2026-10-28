@@ -338,10 +338,12 @@ export const chapters: HChapter[] = guide.chapters.map((chapter) => ({
 
 export const hCopy = {
   hero: {
-    title: "Accessible components for any framework",
+    badge: "v2 is in pre-release. Read what changed →",
+    title: "Accessible components",
+    accent: "for any framework",
     subtitle:
-      "Over 50 components, like menus, dialogs and date pickers, with keyboard, focus and screen reader support built in. They work the same in React, Vue, Solid, Svelte and Preact. You bring the markup and styles.",
-    tour: "How it works, in seven short chapters.",
+      "50+ components that already handle the keyboard, focus and screen readers. You write the markup and the CSS.",
+    tour: "Read them in order, or jump to the one you need.",
   },
   contents: "How it works",
   start: {
@@ -371,3 +373,11 @@ export const installCommands = [
   { id: "yarn", cmd: "yarn add @zag-js/react @zag-js/menu" },
   { id: "bun", cmd: "bun add @zag-js/react @zag-js/menu" },
 ]
+
+export const tour = [
+  { index: "01", state: "states", label: "States", mini: "machines" },
+  { index: "02", state: "events", label: "Clicks and keys", mini: "events" },
+  { index: "03", state: "parts", label: "Parts", mini: "anatomy" },
+  { index: "04", state: "a11y", label: "Accessibility", mini: "a11y" },
+  { index: "05", state: "styling", label: "Styling", mini: "styling" },
+] as const

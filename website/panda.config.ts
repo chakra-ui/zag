@@ -1,5 +1,6 @@
 import { defineConfig } from "@pandacss/dev"
 import { grays, semanticColors } from "./theme/colors"
+import { recipes, slotRecipes } from "./theme/recipes"
 
 export default defineConfig({
   preflight: true,
@@ -14,6 +15,8 @@ export default defineConfig({
 
   theme: {
     extend: {
+      recipes,
+      slotRecipes,
       tokens: {
         colors: {
           // Neutral grays - minimal chroma for clean borders

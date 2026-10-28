@@ -1,5 +1,3 @@
-// Screenshots a route in light and dark (OS setting, no stored theme) for design review.
-// Usage: node website/scripts/shoot.mjs <route> [--mobile] [--base=http://localhost:3200]
 import { createRequire } from "node:module"
 import { mkdirSync } from "node:fs"
 import { join } from "node:path"

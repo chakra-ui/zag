@@ -3,7 +3,7 @@ import { refractor } from "refractor/core"
 import bash from "refractor/bash"
 import css from "refractor/css"
 import tsx from "refractor/tsx"
-import { Box, styled } from "styled-system/jsx"
+import { codePanel, type CodePanelVariantProps } from "styled-system/recipes"
 
 refractor.register(tsx)
 refractor.register(css)
@@ -29,104 +29,47 @@ function render(nodes: HastNode[]): ReactNode {
   )
 }
 
-const tones = {
-  accent: "accent",
-  panda: "#F6E458",
-  tailwind: "#38BDF8",
-} as const
-
-export interface CodePanelProps {
+export interface CodePanelProps extends CodePanelVariantProps {
   file?: string
   code: string
   language: "tsx" | "css" | "bash"
-  /** 1-based line numbers */
   highlight?: number[]
-  highlightTone?: keyof typeof tones
-  /** text shown on the right of the first highlighted line */
   note?: string
 }
 
 export function CodePanel(props: CodePanelProps) {
-  const {
-    file,
-    code,
-    language,
-    highlight = [],
-    highlightTone = "accent",
-    note,
-  } = props
-  const tone = tones[highlightTone]
-  // ponytail: highlights line by line, so multi-line block comments or template strings
-  // lose their colour past the first line. Fine for the short snippets on the site.
+  const { file, code, language, highlight = [], note, tone } = props
+  const styles = codePanel({ tone })
   const lines = code.replace(/\n$/, "").split("\n")
   return (
-    <Box display="flex" flexDirection="column" minW="0">
-      {file && (
-        <styled.p
-          px="5"
-          py="3"
-          fontFamily="mono"
-          fontSize="12px"
-          color="fg"
-          borderBottomWidth="1px"
-          borderColor="border"
-        >
-          {file}
-        </styled.p>
-      )}
-      <styled.pre
-        className={`language-${language}`}
-        m="0"
-        py="4"
-        overflowX="auto"
-        fontFamily="mono"
-        fontSize="13px"
-        lineHeight="1.9"
-        bg="transparent"
-      >
+    <div className={styles.root}>
+      {file && <p className={styles.file}>{file}</p>}
+      <pre className={`${styles.pre} language-${language}`}>
         <code className={`language-${language}`}>
           {lines.map((line, i) => {
             const active = highlight.includes(i + 1)
             return (
-              <Box
+              <div
                 key={i}
-                display="flex"
-                alignItems="center"
-                gap="4"
-                px="5"
-                minH="1.9em"
+                className={styles.line}
                 data-active={active || undefined}
-                style={
-                  active
-                    ? {
-                        background: `color-mix(in srgb, ${tone === "accent" ? "var(--colors-accent)" : tone} 8%, transparent)`,
-                        boxShadow: `inset 2px 0 0 ${tone === "accent" ? "var(--colors-accent)" : tone}`,
-                      }
-                    : undefined
-                }
               >
-                <styled.span whiteSpace="pre" flex="1">
+                <span className={styles.text}>
                   {line === ""
                     ? " "
                     : render(
                         refractor.highlight(line, language)
                           .children as HastNode[],
                       )}
-                </styled.span>
-                {active && note && i + 1 === highlight[0] && (
-                  <styled.span
-                    fontSize="11px"
-                    color="accent"
-                    whiteSpace="nowrap"
-                  >
-                    {note}
-                  </styled.span>
+                </span>
+                {note && i + 1 === highlight[0] && (
+                  <span className={styles.note}>{note}</span>
                 )}
-              </Box>
+              </div>
             )
           })}
         </code>
-      </styled.pre>
-    </Box>
+      </pre>
+    </div>
   )
 }

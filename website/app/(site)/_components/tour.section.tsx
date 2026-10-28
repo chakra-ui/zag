@@ -1,102 +1,79 @@
-"use client"
-
-import { cells } from "components/ui/cells"
-import { Eyebrow } from "components/ui/layout"
-import { Box, Grid, HStack, styled } from "styled-system/jsx"
-import { chapters, hCopy } from "lib/home"
 import { HMini } from "components/illustrations/minis"
-import { accent, gutter } from "./shared"
+import { hCopy, tour } from "lib/home"
+import { Box, Grid, HStack, styled } from "styled-system/jsx"
+import { gutter } from "./shared"
 
 export function TourSection() {
   return (
-    <Box>
+    <Box px={gutter} pt="24">
       <HStack
         justify="space-between"
+        alignItems="baseline"
+        pb="4"
         gap="4"
-        px={gutter}
-        pb="5"
         flexWrap="wrap"
       >
-        <Eyebrow>{hCopy.contents}</Eyebrow>
-        <styled.p fontSize="14px" color="text.muted">
+        <styled.p textStyle="eyebrow" color="fg.subtle">
+          How it works
+        </styled.p>
+        <styled.p fontSize="14px" color="fg.subtle">
           {hCopy.hero.tour}
         </styled.p>
       </HStack>
       <Grid
-        className={cells}
-        gap="1px"
         gridTemplateColumns={{
           base: "repeat(2, minmax(0, 1fr))",
-          md: "repeat(4, minmax(0, 1fr))",
-          xl: "repeat(8, minmax(0, 1fr))",
+          md: "repeat(5, minmax(0, 1fr))",
         }}
+        gap="1px"
+        bg="border"
+        borderWidth="1px"
+        borderColor="border"
       >
-        {chapters.map((c) => (
+        {tour.map((item) => (
           <styled.a
-            key={c.slug}
-            href={`#${c.slug}`}
+            key={item.state}
+            href={`#${item.state}`}
             className="group"
             display="flex"
             flexDirection="column"
-            gap="4"
-            p="5"
-            transition="background 160ms"
-            _hover={{ bg: "bg.muted" }}
+            alignItems="center"
+            gap="5"
+            px="5"
+            pt="6"
+            pb="5"
+            bg="bg.page"
+            transitionProperty="background"
+            transitionDuration="normal"
+            _hover={{ bg: "bg.raised" }}
             focusVisibleRing="inside"
           >
             <Box
               w="full"
               maxW="148px"
-              mx="auto"
-              color="text.muted"
-              transition="color 160ms"
-              _groupHover={{ color: "text.bold" }}
+              color="fg.subtle"
+              transitionProperty="color, transform"
+              transitionDuration="normal"
+              _groupHover={{ color: "fg", transform: "translateY(-2px)" }}
+              _motionReduce={{ _groupHover: { transform: "none" } }}
             >
-              <HMini kind={c.sections[0]?.diagram ?? "principles"} />
+              <HMini kind={item.mini} />
             </Box>
-            <Box>
+            <Box textAlign="center">
               <styled.p
                 fontFamily="mono"
                 fontSize="11px"
-                color="text.muted"
-                transition="color 160ms"
-                _groupHover={{ color: accent }}
+                color="fg.subtle"
+                _groupHover={{ color: "accent" }}
               >
-                &quot;{c.state}&quot;
+                {item.index} · &quot;{item.state}&quot;
               </styled.p>
-              <styled.p
-                mt="1"
-                fontSize="15px"
-                fontWeight="medium"
-                color="text.bold"
-              >
-                {c.label}
+              <styled.p mt="1" fontSize="15px" fontWeight="medium" color="fg">
+                {item.label}
               </styled.p>
             </Box>
           </styled.a>
         ))}
-        <styled.a
-          href={hCopy.start.href}
-          className="group"
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
-          gap="1"
-          p="5"
-          transition="background 160ms"
-          _hover={{ bg: "bg.muted" }}
-          focusVisibleRing="inside"
-        >
-          <styled.p fontFamily="mono" fontSize="11px" color={accent}>
-            &quot;{hCopy.start.state}&quot;
-          </styled.p>
-          <styled.p fontSize="15px" fontWeight="medium" color="text.bold">
-            {hCopy.start.label} →
-          </styled.p>
-          <styled.p fontSize="13px" color="text.muted">
-            {hCopy.start.body}
-          </styled.p>
-        </styled.a>
       </Grid>
     </Box>
   )
