@@ -3,8 +3,19 @@
 import * as tabs from "@zag-js/tabs"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { examples } from "demos/examples"
+import { openInStackblitz } from "lib/open-in-stackblitz"
+import { usePathname } from "next/navigation"
 import { useId } from "react"
-import { example } from "styled-system/recipes"
+import { SiStackblitz } from "react-icons/si"
+import { docAction, example } from "styled-system/recipes"
+
+const demoNames: Record<string, string | null> = {
+  progress: "progress-linear",
+  "radio-group": "radio",
+  "rating-group": "rating",
+  timer: "timer-countdown",
+  toc: null,
+}
 
 interface ExampleProps {
   id?: keyof typeof examples
@@ -19,6 +30,8 @@ export function Example(props: ExampleProps) {
   })
   const api = tabs.connect(service, normalizeProps)
   const styles = example()
+  const slug = usePathname().split("/").pop() ?? ""
+  const demoName = slug in demoNames ? demoNames[slug] : slug
 
   if (!Demo) return <>{props.children}</>
 
@@ -37,6 +50,18 @@ export function Example(props: ExampleProps) {
         >
           Code
         </button>
+        {demoName && (
+          <button
+            type="button"
+            data-brand="stackblitz"
+            className={docAction({ size: "sm" })}
+            style={{ marginInlineStart: "auto" }}
+            onClick={() => openInStackblitz(demoName, {})}
+          >
+            <SiStackblitz aria-hidden />
+            StackBlitz
+          </button>
+        )}
       </div>
       <div
         {...api.getContentProps({ value: "preview" })}
