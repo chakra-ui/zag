@@ -76,7 +76,7 @@ const components: Record<string, FC<any>> = {
       allComponents.find((c) => c.package === props.pkg) ??
       allUtilities.find((u) => u.package === props.pkg)
     if (!item) return null
-    return <ResourceLinkGroup item={item} />
+    return <ResourceLinkGroup pkg={props.pkg} item={item} />
   },
   blockquote(props) {
     return <Blockquote {...props} />

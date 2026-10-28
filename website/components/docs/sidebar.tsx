@@ -4,7 +4,7 @@ import { type LinkProps } from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
 import { tabs } from "sidebar.config"
-import { Stack, styled } from "styled-system/jsx"
+import { docsNav } from "styled-system/recipes"
 import { useFramework } from "./framework"
 
 interface DocLinkProps {
@@ -13,28 +13,6 @@ interface DocLinkProps {
   scrollIntoView: boolean
   children: React.ReactNode
 }
-
-const StyledLink = styled(Link, {
-  base: {
-    display: "block",
-    paddingY: "1",
-    paddingStart: "4",
-    marginStart: "-1px",
-    borderStartWidth: "1px",
-    borderStartColor: "transparent",
-    textStyle: "sm",
-    color: "text.muted",
-    _hover: {
-      color: "text",
-      borderStartColor: "border.bold",
-    },
-    _currentPage: {
-      color: "text.primary.bold",
-      fontWeight: "semibold",
-      borderStartColor: "green.500",
-    },
-  },
-})
 
 const DocLink = (props: DocLinkProps) => {
   const asPath = usePathname()
@@ -52,15 +30,18 @@ const DocLink = (props: DocLinkProps) => {
     container.scrollTop += linkTop - containerTop - container.clientHeight / 2
   }, [scrollIntoView, current, asPath])
 
+  const styles = docsNav()
   return (
     <li>
-      <StyledLink
+      <Link
         ref={linkRef}
         href={href.toString()}
         aria-current={current ? "page" : undefined}
+        className={styles.link}
       >
         {children}
-      </StyledLink>
+        {current && <span className={styles.dot} />}
+      </Link>
     </li>
   )
 }
@@ -75,29 +56,15 @@ export function Sidebar(props: { tabId?: string }) {
   const tab =
     tabs.find((tab) => tab.id === props.tabId) ?? getActiveTab(pathname)
 
+  const styles = docsNav()
+
   return (
     <nav aria-label={`${tab.label} navigation`}>
-      <Stack as="ul" listStyleType="none" direction="column" gap="8">
+      <ul className={styles.root}>
         {tab.groups.map((group) => (
-          <li key={group.label}>
-            <styled.h5
-              mb="2"
-              fontSize="xs"
-              fontWeight="semibold"
-              textTransform="uppercase"
-              letterSpacing="wide"
-              color="text.subtle"
-            >
-              {group.label}
-            </styled.h5>
-
-            <Stack
-              as="ul"
-              listStyleType="none"
-              gap="0"
-              borderStartWidth="1px"
-              borderStartColor="border.subtle"
-            >
+          <li key={group.label} className={styles.group}>
+            <h5 className={styles.heading}>{group.label}</h5>
+            <ul className={styles.list}>
               {group.items.map((item) => (
                 <DocLink
                   key={`${item.section}/${item.id}`}
@@ -106,46 +73,14 @@ export function Sidebar(props: { tabId?: string }) {
                   scrollIntoView={!props.tabId}
                 >
                   {item.label}
-                  {item.new && (
-                    <styled.span
-                      ms="2"
-                      px="1.5"
-                      py="0.5"
-                      rounded="xs"
-                      borderWidth="1px"
-                      borderColor="border.bold"
-                      color="text.muted"
-                      fontFamily="mono"
-                      fontSize="10px"
-                      textTransform="uppercase"
-                      letterSpacing="0.08em"
-                    >
-                      New
-                    </styled.span>
-                  )}
-                  {item.beta && (
-                    <styled.span
-                      ms="2"
-                      px="1.5"
-                      py="0.5"
-                      rounded="xs"
-                      borderWidth="1px"
-                      borderColor="border.bold"
-                      color="text.muted"
-                      fontFamily="mono"
-                      fontSize="10px"
-                      textTransform="uppercase"
-                      letterSpacing="0.08em"
-                    >
-                      Beta
-                    </styled.span>
-                  )}
+                  {item.new && <span className={styles.badge}>New</span>}
+                  {item.beta && <span className={styles.badge}>Beta</span>}
                 </DocLink>
               ))}
-            </Stack>
+            </ul>
           </li>
         ))}
-      </Stack>
+      </ul>
     </nav>
   )
 }

@@ -1,53 +1,6 @@
-import { Icon } from "components/ui/icon"
-import type { IconType } from "react-icons"
-import { HiOutlineCode } from "react-icons/hi"
-import { RiNpmjsFill } from "react-icons/ri"
-import { ImMagicWand } from "react-icons/im"
-import { styled, Wrap } from "styled-system/jsx"
-
-interface ResourceLinkProps {
-  href?: string | undefined
-  icon: IconType
-  children: any
-}
-
-const StyledLink = styled("a", {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "1.5",
-    h: "7",
-    px: "2.5",
-    borderWidth: "1px",
-    borderColor: "border",
-    rounded: "md",
-    fontFamily: "mono",
-    fontSize: "12px",
-    letterSpacing: "0.02em",
-    color: "text.muted",
-    cursor: "pointer",
-    bg: "bg",
-    transition: "color 120ms, border-color 120ms",
-    _hover: { color: "text.bold", borderColor: "border.bold" },
-    _focusVisible: {
-      outline: "2px solid",
-      outlineColor: "border.primary.bold",
-      outlineOffset: "2px",
-    },
-  },
-})
-
-function ResourceLink(props: ResourceLinkProps) {
-  const { href, icon, children, ...rest } = props
-  return (
-    <StyledLink href={href} target="_blank" {...rest}>
-      <Icon as={icon} fontSize="14px" />
-      <span>{children}</span>
-    </StyledLink>
-  )
-}
-
-//////////////////////////////////////////////////////////////////////////
+import { apgPatterns } from "lib/apg"
+import { Wrap } from "styled-system/jsx"
+import { resourceChip } from "styled-system/recipes"
 
 interface ResourceLinkItem {
   npmUrl: string
@@ -56,29 +9,46 @@ interface ResourceLinkItem {
   sourceUrl: string
 }
 
-interface ResourceLinkGroupProps {
+export function ResourceLinkGroup(props: {
+  pkg: string
   item: ResourceLinkItem
-}
-
-export function ResourceLinkGroup(props: ResourceLinkGroupProps) {
-  const { item } = props
+}) {
+  const { pkg, item } = props
+  const pattern = apgPatterns[pkg]
+  const chip = resourceChip()
   return (
     <Wrap mt="5" gap="2">
-      <ResourceLink icon={RiNpmjsFill} href={item.npmUrl} data-id="npm">
-        {item.version} (latest)
-      </ResourceLink>
-      {item.visualizeUrl ? (
-        <ResourceLink
-          icon={ImMagicWand}
+      <a href={item.npmUrl} target="_blank" className={chip} data-id="npm">
+        {pkg} {item.version}
+      </a>
+      {item.visualizeUrl && (
+        <a
           href={item.visualizeUrl}
+          target="_blank"
+          className={chip}
           data-id="logic"
         >
-          Visualize Logic
-        </ResourceLink>
-      ) : null}
-      <ResourceLink icon={HiOutlineCode} href={item.sourceUrl} data-id="source">
-        View Source
-      </ResourceLink>
+          Visualize logic
+        </a>
+      )}
+      <a
+        href={item.sourceUrl}
+        target="_blank"
+        className={chip}
+        data-id="source"
+      >
+        View source ↗
+      </a>
+      {pattern && (
+        <a
+          href={pattern.url}
+          target="_blank"
+          className={resourceChip({ tone: "accent" })}
+          data-id="apg"
+        >
+          WAI-ARIA {pattern.label} pattern
+        </a>
+      )}
     </Wrap>
   )
 }

@@ -9,28 +9,9 @@ import { SkipNavContent, SkipNavLink } from "components/docs/skip-nav"
 import { TableOfContents } from "components/docs/toc"
 import { TopNav } from "components/nav/top-nav"
 import { usePathname } from "next/navigation"
-import { css } from "styled-system/css"
-import { Box, Flex, styled } from "styled-system/jsx"
-
-const scrollbarStyles = css({
-  // Chrome 121+ and Firefox
-  scrollbarWidth: "thin",
-  scrollbarColor: "token(colors.border.bold) transparent",
-  // Safari
-  "&::-webkit-scrollbar": {
-    width: "10px",
-  },
-  "&::-webkit-scrollbar-track": {
-    background: "transparent",
-  },
-  "&::-webkit-scrollbar-thumb": {
-    background: "border.bold",
-    borderRadius: "full",
-    // Inset the thumb so it floats like a pill
-    border: "3px solid transparent",
-    backgroundClip: "padding-box",
-  },
-})
+import { getActiveTab, isCurrentDoc } from "lib/pagination-utils"
+import { Box, Flex } from "styled-system/jsx"
+import { docsShell } from "styled-system/recipes"
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -47,6 +28,12 @@ export default function DocsLayout(props: DocsLayoutProps) {
   const tableOfContent = toc?.data ?? doc.frontmatter?.toc ?? []
   const hideToc = tableOfContent.length < 2
   const pathname = usePathname()
+  const styles = docsShell()
+  const tab = getActiveTab(pathname)
+  const group = tab.groups.find((g) =>
+    g.items.some((item) => isCurrentDoc(item, pathname)),
+  )
+  const crumb = group ? `${tab.label} / ${group.label}` : tab.label
 
   return (
     <Box>
@@ -56,76 +43,31 @@ export default function DocsLayout(props: DocsLayoutProps) {
         <DocsTabBar />
       </Box>
       <SkipNavContent />
-      {/* Same columns as the Panda docs: a sticky sidebar, the article centered
-          at 4xl, and the TOC column always reserved so the article sits in the
-          same place with or without one. The container matches the top nav, so
-          the logo doesn't move between the docs and the other pages. */}
-      <Flex position="relative" maxW="8xl" mx="auto" px={{ md: "8" }}>
-        <Box
-          as="aside"
-          hideBelow="lg"
-          flexShrink="0"
-          w="240px"
-          position="sticky"
-          top="calc(6.5rem + 2px)"
-          h="calc(100dvh - 6.5rem - 2px)"
-        >
-          <Box
-            data-sidebar-scroll=""
-            h="full"
-            overflowY="auto"
-            overscrollBehavior="contain"
-            pt="10"
-            pb="10"
-            pe="6"
-            className={scrollbarStyles}
-          >
+      <div className={styles.root}>
+        <aside className={styles.sidebar}>
+          <div data-sidebar-scroll="" className={styles.scroll}>
             <Sidebar />
-          </Box>
-        </Box>
+          </div>
+        </aside>
 
-        <Box
-          as="main"
-          className="mdx-content"
-          flex="1"
-          minW="0"
-          maxW="4xl"
-          mx="auto"
-          px={{ base: "4", sm: "6" }}
-          pt="10"
-          pb="10"
-        >
+        <main className={`mdx-content ${styles.main}`}>
           {doc?.title && (
-            <Flex alignItems="center" gap="4" mb="6">
-              <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
-                {doc.title}
-              </styled.h1>
-              {doc?.body?.raw && (
-                <CopyPageWidget slug={pathname} title={doc.title} />
-              )}
-            </Flex>
+            <div className={styles.header}>
+              {crumb && <p className={styles.crumb}>{crumb}</p>}
+              <Flex alignItems="center" gap="4">
+                <h1 className={styles.title}>{doc.title}</h1>
+                {doc?.body?.raw && (
+                  <CopyPageWidget slug={pathname} title={doc.title} />
+                )}
+              </Flex>
+            </div>
           )}
           {children}
           <MdxFooter editUrl={doc?.editUrl} />
-        </Box>
+        </main>
 
-        <Box
-          hideBelow="xl"
-          flexShrink="0"
-          w="72"
-          position="sticky"
-          top="calc(6.5rem + 2px)"
-          h="calc(100dvh - 6.5rem - 2px)"
-        >
-          <Box
-            h="full"
-            overflowY="auto"
-            overscrollBehavior="contain"
-            pt="10"
-            pb="10"
-            ps="6"
-            className={scrollbarStyles}
-          >
+        <div className={styles.toc}>
+          <div className={styles.scroll}>
             {!hideToc && (
               <TableOfContents
                 title={toc?.title}
@@ -133,9 +75,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
                 getSlug={toc?.getSlug}
               />
             )}
-          </Box>
-        </Box>
-      </Flex>
+          </div>
+        </div>
+      </div>
       <Box as="footer" borderTopWidth="1px" borderColor="border.subtle" py="6">
         <Box maxW="8xl" mx="auto" px={{ base: "4", sm: "6", md: "8" }}>
           <FooterCredits />
