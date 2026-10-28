@@ -196,7 +196,9 @@ export const docAction = defineRecipe({
       translate: "1px -1px",
       color: "currentColor",
     },
-    "&[data-brand=stackblitz] svg:not([data-part=arrow])": { color: "#1389FD" },
+    "&[data-brand=stackblitz] svg:not([data-part=arrow])": {
+      color: "brand.stackblitz",
+    },
     "& [data-part=meta]": {
       px: "1.5",
       py: "0.5",

@@ -14,8 +14,8 @@ export const items = [
 export type Snapshot = { open: boolean; highlighted: string | null }
 
 const washBg = {
-  base: "rgba(47, 133, 90, 0.09)",
-  _dark: "rgba(72, 187, 120, 0.11)",
+  base: "green.600/9",
+  _dark: "green.400/11",
 } as const
 const washHold = 380
 const washFade = 600

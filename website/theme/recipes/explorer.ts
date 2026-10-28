@@ -62,7 +62,7 @@ export const explorer = defineSlotRecipe({
       textTransform: "uppercase",
       color: "fg.subtle",
     },
-    hint: { textTransform: "none", letterSpacing: "0", color: "fg.faint" },
+    hint: { textTransform: "none", letterSpacing: "0", color: "fg.subtle" },
     list: {
       display: "flex",
       flexDirection: "column",
@@ -88,7 +88,7 @@ export const explorer = defineSlotRecipe({
         outlineColor: "accent",
         outlineOffset: "-2px",
       },
-      "&[data-empty]": { opacity: "0.45" },
+      "&[data-empty] > *": { color: "fg.subtle" },
       "&[aria-pressed=true]": {
         bg: "accent.tint",
         boxShadow: "inset 2px 0 0 {colors.accent}",

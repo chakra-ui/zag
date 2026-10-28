@@ -69,7 +69,7 @@
     --prism-muted: var(--colors-gray-500);
     --prism-bold: var(--colors-gray-950);
     --prism-string: var(--colors-green-700);
-    --prism-attr: #a3500b;
+    --prism-attr: var(--colors-syntax-attr);
   }
 
   .dark pre[class*="language-"],
@@ -78,7 +78,7 @@
     --prism-muted: var(--colors-gray-400);
     --prism-bold: var(--colors-white);
     --prism-string: var(--colors-green-400);
-    --prism-attr: #e5b673;
+    --prism-attr: var(--colors-syntax-attr);
   }
 
   code[class*="language-"] {

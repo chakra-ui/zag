@@ -68,7 +68,7 @@
     }
 
     &[data-state="suboptimal"] {
-      background: #d97706;
+      background: var(--colors-amber-600);
     }
 
     &[data-state="least-optimal"] {

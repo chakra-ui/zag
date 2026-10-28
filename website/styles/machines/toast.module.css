@@ -50,7 +50,7 @@
     }
 
     &[data-type="warning"]::before {
-      background: #d97706;
+      background: var(--colors-amber-600);
     }
 
     &[data-type="error"]::before {

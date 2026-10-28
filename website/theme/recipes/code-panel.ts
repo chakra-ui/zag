@@ -48,8 +48,8 @@ export const codePanel = defineSlotRecipe({
   variants: {
     tone: {
       accent: { root: { "--code-tone": "colors.accent" } },
-      panda: { root: { "--code-tone": "#F6E458" } },
-      tailwind: { root: { "--code-tone": "#38BDF8" } },
+      panda: { root: { "--code-tone": "colors.brand.panda" } },
+      tailwind: { root: { "--code-tone": "colors.brand.tailwind" } },
     },
   },
   defaultVariants: { tone: "accent" },

@@ -73,7 +73,7 @@ export const propTable = defineSlotRecipe({
       color: "accent",
       whiteSpace: "nowrap",
     },
-    empty: { color: "fg.faint" },
+    empty: { color: "fg.subtle" },
     type: {
       display: "inline-block",
       px: "1.5",

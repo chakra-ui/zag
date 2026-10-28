@@ -116,7 +116,7 @@ export const stateStepper = defineSlotRecipe({
       fontFamily: "mono",
       fontSize: "10px",
       letterSpacing: "0.04em",
-      color: "fg.faint",
+      color: "fg.subtle",
     },
   },
 })

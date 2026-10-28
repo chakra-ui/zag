@@ -39,7 +39,7 @@
   .Selection {
     position: absolute;
     box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.55);
-    border: 1px solid rgb(255 255 255 / 0.8);
+    border: 1px solid var(--colors-white-alpha-800);
     cursor: move;
     touch-action: none;
 
@@ -76,7 +76,7 @@
       width: 8px;
       height: 8px;
       border-radius: 2px;
-      background: #fff;
+      background: var(--colors-white);
       box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25);
       translate: -50% -50%;
     }

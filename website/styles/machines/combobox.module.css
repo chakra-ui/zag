@@ -39,7 +39,7 @@
     }
 
     &[data-invalid] {
-      border-color: var(--colors-red-500, #e5484d);
+      border-color: var(--colors-red-500);
     }
 
     &[data-disabled] {

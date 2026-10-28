@@ -29,7 +29,7 @@
   .Backdrop {
     position: fixed;
     inset: 0px;
-    background: rgb(0 0 0 / 0.5);
+    background: var(--colors-black-alpha-600);
     z-index: 1400;
 
     &[data-state="open"] {
@@ -150,7 +150,7 @@
 
     & > button[data-variant="danger"] {
       border-color: transparent;
-      background: #dc2626;
+      background: var(--colors-red-600);
       color: white;
     }
   }

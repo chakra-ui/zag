@@ -4,8 +4,6 @@ import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { TopNav } from "components/nav/top-nav"
 import { Box, Grid, HStack, styled } from "styled-system/jsx"
 
-const accent = { base: "#2f855a", _dark: "#48bb78" }
-
 export default function NotFound() {
   return (
     <Box>
@@ -19,7 +17,7 @@ export default function NotFound() {
         >
           <Pad py={{ base: "16", md: "24" }}>
             <Eyebrow mb="3">
-              404 · state <styled.span color={accent}>not_found</styled.span>
+              404 · state <styled.span color="accent">not_found</styled.span>
             </Eyebrow>
             <Title as="h1">This page isn&apos;t in any state we know</Title>
             <Lead mt="4">

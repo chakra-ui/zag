@@ -3,14 +3,14 @@
     padding: 0.625rem;
     border: 1px solid var(--colors-border);
     border-radius: 10px;
-    background: #fff;
+    background: var(--colors-white);
   }
 
   .Frame {
     display: block;
     width: 120px;
     height: 120px;
-    background-color: #fff;
+    background-color: var(--colors-white);
   }
 
   .FrameNatural {
@@ -18,15 +18,15 @@
     width: var(--qrcode-width);
     height: var(--qrcode-height);
     max-width: 100%;
-    background-color: #fff;
+    background-color: var(--colors-white);
   }
 
   .Pattern {
-    fill: #111113;
+    fill: var(--colors-gray-950);
   }
 
   .PatternGreen {
-    fill: #15803d;
+    fill: var(--colors-green-700);
   }
 
   .Overlay {
@@ -34,7 +34,7 @@
     height: 24px;
     border-radius: 4px;
     overflow: hidden;
-    outline: 3px solid #fff;
+    outline: 3px solid var(--colors-white);
 
     & img {
       display: block;
@@ -90,7 +90,7 @@
     padding: 0.375rem;
     border: 1px solid var(--colors-border);
     border-radius: 8px;
-    background: #fff;
+    background: var(--colors-white);
   }
 }
 

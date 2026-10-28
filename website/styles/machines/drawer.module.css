@@ -26,7 +26,7 @@
   .backdrop {
     position: fixed;
     inset: 0px;
-    background: rgb(0 0 0 / 0.5);
+    background: var(--colors-black-alpha-600);
     opacity: calc(1 - var(--drawer-swipe-progress, 0));
     z-index: calc(1400 + 2 * var(--layer-index, 0));
 

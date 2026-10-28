@@ -5,8 +5,6 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { Box, HStack, styled } from "styled-system/jsx"
 
-const accent = { base: "#2f855a", _dark: "#48bb78" }
-
 function useCopy(value: string) {
   const service = useMachine(clipboard.machine, {
     id: useId(),
@@ -38,7 +36,7 @@ export function CopyHex(props: { value: string; label: string }) {
         focusVisibleRing="inside"
       >
         <span>{props.value}</span>
-        <styled.span color={api.copied ? accent : "text.muted"}>
+        <styled.span color={api.copied ? "accent" : "text.muted"}>
           {api.copied ? "copied" : "copy"}
         </styled.span>
       </styled.button>
@@ -87,7 +85,7 @@ export function CopySnippet(props: { label: string; value: string }) {
           _hover={{ color: "text.bold", bg: "bg" }}
           focusVisibleRing="inside"
         >
-          <styled.span color={api.copied ? accent : undefined}>
+          <styled.span color={api.copied ? "accent" : undefined}>
             {api.copied ? "copied" : "copy"}
           </styled.span>
         </styled.button>

@@ -84,6 +84,6 @@
     object-fit: contain;
     border: 1px solid var(--colors-border);
     border-radius: 8px;
-    background: #fff;
+    background: var(--colors-white);
   }
 }

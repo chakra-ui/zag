@@ -1,5 +1,5 @@
 import { defineConfig } from "@pandacss/dev"
-import { grays, semanticColors } from "./theme/colors"
+import { brands, grays, greens, semanticColors } from "./theme/colors"
 import { recipes, slotRecipes } from "./theme/recipes"
 
 export default defineConfig({
@@ -54,7 +54,9 @@ export default defineConfig({
             800: { value: "#22543D" },
             900: { value: "#1C4532" },
             950: { value: "#0d2818" },
+            ...greens,
           },
+          brand: brands,
           whiteAlpha: {
             50: { value: "rgba(255, 255, 255, 0.04)" },
             100: { value: "rgba(255, 255, 255, 0.06)" },
@@ -97,22 +99,22 @@ export default defineConfig({
             ...semanticColors.bg,
             DEFAULT: semanticColors.bg.page,
             subtle: {
-              value: { _light: "{colors.white}", _dark: "#121214" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
             },
             bold: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "#1a1a1d",
+                _dark: "{colors.gray.870}",
               },
             },
             muted: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "#1a1a1d",
+                _dark: "{colors.gray.870}",
               },
             },
             popover: {
-              value: { _light: "{colors.white}", _dark: "#121214" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
             },
             primary: {
               // pair with text.inverse: white in light, near-black in dark
@@ -156,7 +158,7 @@ export default defineConfig({
               block: {
                 value: {
                   _light: "{colors.gray.50}",
-                  _dark: "#121214",
+                  _dark: "{colors.gray.905}",
                 },
               },
               inline: {

@@ -12,6 +12,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
 import { Box, styled } from "styled-system/jsx"
+import { token } from "styled-system/tokens"
 import { Showcase } from "../../demos"
 import { FRAMEWORKS } from "../../lib/framework-utils"
 import { CodeSnippetTabs } from "./code-snippet-tabs"
@@ -223,7 +224,7 @@ const components: Record<string, FC<any>> = {
             },
           }}
         >
-          <Anatomy accentColor="#a1a1aa" />
+          <Anatomy accentColor={token("colors.gray.400")} />
         </Box>
         {id in explorerDemos && <Explorer id={id} />}
       </>

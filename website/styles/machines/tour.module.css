@@ -160,7 +160,7 @@
   }
 
   .Backdrop {
-    background-color: rgb(0 0 0 / 0.5);
+    background-color: var(--colors-black-alpha-600);
     z-index: calc(var(--tour-layer) + var(--tour-z-index));
   }
 
