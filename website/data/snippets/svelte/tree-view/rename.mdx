@@ -60,32 +60,32 @@
   {@const nodeState = api.getNodeState({ indexPath, node })}
 
   {#if nodeState.isBranch}
-    <div {...api.getBranchProps({ indexPath, node })}>
-      <div {...api.getBranchControlProps({ indexPath, node })}>
+    <div {...api.getNodeGroupProps({ indexPath, node })}>
+      <div {...api.getNodeProps({ indexPath, node })}>
         <FolderIcon />
         <span
-          {...api.getBranchTextProps({ indexPath, node })}
+          {...api.getNodeTextProps({ indexPath, node })}
           style:display={nodeState.renaming ? "none" : "inline"}
         >
           {node.name}
         </span>
         <input {...api.getNodeRenameInputProps({ indexPath, node })} />
-        <span {...api.getBranchIndicatorProps({ indexPath, node })}>
+        <span {...api.getNodeIndicatorProps({ indexPath, node, type: "expanded" })}>
           <ChevronRightIcon />
         </span>
       </div>
-      <div {...api.getBranchContentProps({ indexPath, node })}>
-        <div {...api.getBranchIndentGuideProps({ indexPath, node })}></div>
+      <div {...api.getNodeGroupContentProps({ indexPath, node })}>
+        <div {...api.getIndentGuideProps({ indexPath, node })}></div>
         {#each node.children || [] as childNode, index}
           {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
         {/each}
       </div>
     </div>
   {:else}
-    <div {...api.getItemProps({ indexPath, node })}>
+    <div {...api.getNodeProps({ indexPath, node })}>
       <FileIcon />
       <span
-        {...api.getItemTextProps({ indexPath, node })}
+        {...api.getNodeTextProps({ indexPath, node })}
         style:display={nodeState.renaming ? "none" : "inline"}
       >
         {node.name}

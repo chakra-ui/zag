@@ -39,21 +39,23 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
     <Show
       when={nodeState().isBranch}
       fallback={
-        <div {...api().getItemProps(nodeProps)}>
+        <div {...api().getNodeProps(nodeProps)}>
           <FileIcon /> {node.name}
         </div>
       }
     >
-      <div {...api().getBranchProps(nodeProps)}>
-        <div {...api().getBranchControlProps(nodeProps)}>
+      <div {...api().getNodeGroupProps(nodeProps)}>
+        <div {...api().getNodeProps(nodeProps)}>
           <FolderIcon />
-          <span {...api().getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api().getBranchIndicatorProps(nodeProps)}>
+          <span {...api().getNodeTextProps(nodeProps)}>{node.name}</span>
+          <span
+            {...api().getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}
+          >
             <ChevronRightIcon />
           </span>
         </div>
-        <div {...api().getBranchContentProps(nodeProps)}>
-          <div {...api().getBranchIndentGuideProps(nodeProps)} />
+        <div {...api().getNodeGroupContentProps(nodeProps)}>
+          <div {...api().getIndentGuideProps(nodeProps)} />
           <Index each={node.children}>
             {(childNode, index) => (
               <TreeNode
