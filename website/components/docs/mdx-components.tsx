@@ -21,6 +21,7 @@ import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
+import { GuideMeta, Steps } from "./mdx/steps"
 import { Explorer } from "./explorer"
 import { Example } from "./example"
 import { explorerDemos } from "../../demos/explorer"
@@ -66,6 +67,8 @@ const components: Record<string, FC<any>> = {
   Showcase,
   Example,
   SectionIndex,
+  Steps,
+  GuideMeta,
   Admonition(props) {
     return <div {...props} />
   },

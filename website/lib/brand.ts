@@ -1,18 +1,26 @@
-export const LIGHT = "#ffffff"
-export const DARK = "#18181b"
 export type Asset = { label: string; file: string }
 
 export const logos: {
   name: string
   note: string
-  previews: { bg: string; file: string; alt: string; h: string }[]
+  previews: {
+    tone: "light" | "dark"
+    file: string
+    alt: string
+    size: "logo" | "mark"
+  }[]
   downloads: Asset[]
 }[] = [
   {
     name: "Logo, light",
     note: "Dark wordmark for light backgrounds",
     previews: [
-      { bg: LIGHT, file: "zag-logo-light.svg", alt: "Zag logo", h: "12" },
+      {
+        tone: "light",
+        file: "zag-logo-light.svg",
+        alt: "Zag logo",
+        size: "logo",
+      },
     ],
     downloads: [{ label: "", file: "zag-logo-light" }],
   },
@@ -20,14 +28,21 @@ export const logos: {
     name: "Logo, dark",
     note: "White wordmark for dark backgrounds",
     previews: [
-      { bg: DARK, file: "zag-logo-dark.svg", alt: "Zag logo", h: "12" },
+      {
+        tone: "dark",
+        file: "zag-logo-dark.svg",
+        alt: "Zag logo",
+        size: "logo",
+      },
     ],
     downloads: [{ label: "", file: "zag-logo-dark" }],
   },
   {
     name: "Mark",
     note: "The slash alone, for avatars and small spaces",
-    previews: [{ bg: LIGHT, file: "zag-mark.svg", alt: "Zag mark", h: "14" }],
+    previews: [
+      { tone: "light", file: "zag-mark.svg", alt: "Zag mark", size: "mark" },
+    ],
     downloads: [{ label: "", file: "zag-mark" }],
   },
   {
@@ -35,12 +50,17 @@ export const logos: {
     note: "Single colour, when green is not an option",
     previews: [
       {
-        bg: LIGHT,
+        tone: "light",
         file: "zag-mark-black.svg",
         alt: "Zag mark, black",
-        h: "14",
+        size: "mark",
       },
-      { bg: DARK, file: "zag-mark-white.svg", alt: "Zag mark, white", h: "14" },
+      {
+        tone: "dark",
+        file: "zag-mark-white.svg",
+        alt: "Zag mark, white",
+        size: "mark",
+      },
     ],
     downloads: [
       { label: "Black", file: "zag-mark-black" },
@@ -51,13 +71,13 @@ export const logos: {
 
 export const colors = [
   { name: "Zag green", hex: "#00C65E", use: "Logo slash" },
-  { name: "Green 600", hex: "#2F855A", use: "UI accent, light" },
-  { name: "Green 400", hex: "#48BB78", use: "UI accent, dark" },
-  { name: "Gray 900", hex: "#18181B", use: "Wordmark, dark surface" },
+  { name: "Green 650", hex: "#287A51", use: "UI accent, light" },
+  { name: "Green 350", hex: "#4ADE80", use: "UI accent, dark" },
+  { name: "Gray 900", hex: "#18181B", use: "Wordmark" },
+  { name: "Gray 925", hex: "#0B0B0C", use: "Page, dark" },
   { name: "Gray 600", hex: "#52525B", use: "Muted text, light" },
   { name: "Gray 400", hex: "#A1A1AA", use: "Muted text, dark" },
   { name: "Gray 200", hex: "#E4E4E7", use: "Borders, light" },
-  { name: "Gray 50", hex: "#FAFAFA", use: "Text, dark" },
 ]
 
 export const dos = [

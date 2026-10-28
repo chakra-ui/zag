@@ -70,24 +70,32 @@ export const tabs: SidebarTab[] = [
     icon: LuBookOpen,
     groups: [
       {
-        label: "Concepts",
+        label: "Core",
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
           { label: "Collection", id: "collection" },
-          { label: "Programmatic Control", id: "programmatic-control" },
+          { label: "Programmatic control", id: "programmatic-control" },
+          { label: "TypeScript", id: "typescript", new: true },
+        ]),
+      },
+      {
+        label: "Build something",
+        items: docs("guides", [
+          {
+            label: "A design system with Panda",
+            id: "design-system-with-panda",
+            new: true,
+          },
         ]),
       },
       {
         label: "Advanced",
         items: docs("guides", [
-          { label: "Building Machines", id: "building-machines" },
-          { label: "Framework Adapters", id: "framework-adapters" },
+          { label: "Building machines", id: "building-machines" },
+          { label: "Framework adapters", id: "framework-adapters" },
+          { label: "Migrating to v2", id: "migration" },
         ]),
-      },
-      {
-        label: "Upgrading",
-        items: docs("guides", [{ label: "Migration", id: "migration" }]),
       },
     ],
   },

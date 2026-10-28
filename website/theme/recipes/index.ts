@@ -1,3 +1,4 @@
+import { brand } from "./brand"
 import { button } from "./button"
 import { featurePanel, keycap, stateStepper, termList } from "./chapter"
 import { chip, logoChip, pill } from "./chip"
@@ -6,6 +7,7 @@ import { twoToneHeading } from "./heading"
 import { docAction, docsNav, docsShell } from "./docs"
 import { example } from "./example"
 import { explorer } from "./explorer"
+import { guideMeta, steps } from "./guide"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
 import {
@@ -29,9 +31,12 @@ export const recipes = {
   keycap,
   codeTag,
   docAction,
+  steps,
+  guideMeta,
 }
 
 export const slotRecipes = {
+  brand,
   twoToneHeading,
   codePanel,
   inspector,
