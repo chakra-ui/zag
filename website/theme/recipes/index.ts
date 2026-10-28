@@ -4,6 +4,7 @@ import { chip, logoChip, pill } from "./chip"
 import { codePanel } from "./code-panel"
 import { twoToneHeading } from "./heading"
 import { docAction, docsNav, docsShell } from "./docs"
+import { example } from "./example"
 import { explorer } from "./explorer"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
@@ -46,6 +47,7 @@ export const slotRecipes = {
   playground,
   explorer,
   propTable,
+  example,
   pageHeader,
   showcaseCard,
   community,

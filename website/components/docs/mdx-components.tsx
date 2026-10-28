@@ -21,6 +21,7 @@ import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
 import { Explorer } from "./explorer"
+import { Example } from "./example"
 import { explorerDemos } from "../../demos/explorer"
 import { PropTable } from "./prop-table"
 import { SectionIndex } from "./section-index"
@@ -62,6 +63,7 @@ const components: Record<string, FC<any>> = {
     )
   },
   Showcase,
+  Example,
   SectionIndex,
   Admonition(props) {
     return <div {...props} />

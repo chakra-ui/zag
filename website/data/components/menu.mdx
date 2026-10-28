@@ -57,6 +57,8 @@ Then use the framework integration helpers:
 
 When a menu item is clicked, the `onSelect` callback is invoked.
 
+<Example id="MenuSelection">
+
 ```tsx {3-6}
 const service = useMachine(menu.machine, {
   onSelect(details) {
@@ -66,9 +68,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for open state changes
 
 When a menu is opened or closed, the `onOpenChange` callback is invoked.
+
+<Example id="MenuOpenChange">
 
 ```tsx {3-6}
 const service = useMachine(menu.machine, {
@@ -79,9 +85,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled open state
 
 Use `open` and `onOpenChange` to control visibility externally.
+
+<Example id="MenuControlled">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -92,9 +102,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for highlighted items
 
 Use `onHighlightChange` to react when highlighted item changes.
+
+<Example id="MenuHighlight">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -105,15 +119,21 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Setting initial highlighted item
 
 Use `defaultHighlightedValue` to set the initially highlighted item.
+
+<Example id="MenuInitialHighlight">
 
 ```tsx
 const service = useMachine(menu.machine, {
   defaultHighlightedValue: "settings",
 })
 ```
+
+</Example>
 
 ### Grouping menu items
 
@@ -122,6 +142,8 @@ When you have many menu items, it can help to group related options:
 - Wrap the menu items within an element.
 - Spread `api.getGroupProps(...)` props on the group element, providing an `id`.
 - Render a label for the menu group, providing the `id` of the group element.
+
+<Example id="MenuGroups">
 
 ```tsx
 //...
@@ -136,6 +158,8 @@ When you have many menu items, it can help to group related options:
 </div>
 //...
 ```
+
+</Example>
 
 ### Checkbox and Radio option items
 
@@ -154,11 +178,17 @@ A common requirement for the option item that you pass the `name`, `value` and
 - `checked` — The checked state of the option item.
 - `onCheckedChange` — The callback to invoke when the checked state changes.
 
+<Example id="MenuOptions">
+
 <CodeSnippet id="menu/option-items.mdx" />
+
+</Example>
 
 ### Default open state
 
 Use `defaultOpen` to start with the menu opened in uncontrolled mode.
+
+<Example>
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -166,9 +196,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Keeping menu open after selection
 
 Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
+
+<Example id="MenuKeepOpen">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -176,9 +210,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Positioning the menu
 
 Use `positioning` to configure menu placement.
+
+<Example id="MenuPositioning">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -186,10 +224,14 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Multiple triggers
 
 A single menu instance can be shared across multiple trigger elements. Pass a
 `value` to `getTriggerProps` to identify each trigger.
+
+<Example>
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -213,6 +255,8 @@ return (
 )
 ```
 
+</Example>
+
 When the menu is open and a different trigger is activated, it repositions
 without closing. `aria-expanded` is scoped to the active trigger, and focus
 returns to the correct trigger on close.
@@ -221,11 +265,15 @@ returns to the correct trigger on close.
 
 If you do not render a visible label, provide `aria-label`.
 
+<Example>
+
 ```tsx
 const service = useMachine(menu.machine, {
   "aria-label": "Actions",
 })
 ```
+
+</Example>
 
 ### Async loading with infinite scroll
 

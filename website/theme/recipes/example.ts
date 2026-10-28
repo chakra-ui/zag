@@ -1,0 +1,84 @@
+import { defineSlotRecipe } from "@pandacss/dev"
+
+export const example = defineSlotRecipe({
+  className: "example",
+  description: "Usage example: live preview and its code in two tabs",
+  slots: ["root", "bar", "tab", "chip", "stage", "code"],
+  base: {
+    root: {
+      my: "5",
+      borderWidth: "1px",
+      borderColor: "border",
+      rounded: "xl",
+      overflow: "hidden",
+      bg: "bg.raised",
+    },
+    bar: {
+      display: "flex",
+      alignItems: "center",
+      gap: "1",
+      px: "2",
+      py: "1.5",
+      borderBottomWidth: "1px",
+      borderColor: "border",
+    },
+    tab: {
+      px: "2.5",
+      py: "1",
+      rounded: "md",
+      fontSize: "13px",
+      fontWeight: "medium",
+      color: "fg.subtle",
+      cursor: "pointer",
+      transitionProperty: "color, background",
+      transitionDuration: "fast",
+      _hover: { color: "fg" },
+      _selected: { color: "fg", bg: "bg.control" },
+      _focusVisible: {
+        outline: "2px solid",
+        outlineColor: "accent",
+        outlineOffset: "1px",
+      },
+    },
+    chip: {
+      ms: "auto",
+      me: "1",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "1.5",
+      fontFamily: "mono",
+      fontSize: "11px",
+      color: "fg.subtle",
+      "&[data-live]": {
+        color: "accent",
+        _before: {
+          content: "''",
+          boxSize: "1.5",
+          rounded: "full",
+          bg: "accent",
+        },
+      },
+    },
+    stage: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minH: "180px",
+      p: { base: "6", md: "10" },
+      bg: "bg.inset",
+      backgroundImage:
+        "radial-gradient(circle at 1px 1px, {colors.border} 1px, transparent 0)",
+      backgroundSize: "16px 16px",
+      _motionSafe: { animation: "fadeIn 180ms ease-out" },
+    },
+    code: {
+      "& pre": {
+        my: "0 !important",
+        borderWidth: "0 !important",
+        rounded: "0 !important",
+      },
+      "& > div, & > figure": { my: "0 !important" },
+      _motionSafe: { animation: "fadeIn 180ms ease-out" },
+    },
+  },
+})
