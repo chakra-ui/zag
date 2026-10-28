@@ -6,7 +6,7 @@
     gap: 0px;
 
     & > * {
-      margin-left: -1px;
+      margin-inline-start: -1px;
     }
   }
 

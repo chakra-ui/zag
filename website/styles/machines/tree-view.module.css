@@ -2,7 +2,7 @@
   .Tree {
     margin-top: 20px;
     width: 240px;
-    margin-left: -16px;
+    margin-inline-start: -16px;
   }
 
   .Label {

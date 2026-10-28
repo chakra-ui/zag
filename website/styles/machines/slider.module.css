@@ -12,7 +12,7 @@
   .Label {
     font-size: 0.875rem;
     font-weight: 500;
-    margin-right: 0.5rem;
+    margin-inline-end: 0.5rem;
   }
 
   .ValueText {

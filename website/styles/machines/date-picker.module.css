@@ -64,8 +64,8 @@
   .Input {
     border-width: 1px;
     height: 2.5rem;
-    padding-right: 1.25rem;
-    padding-left: 0.75rem;
+    padding-inline-end: 1.25rem;
+    padding-inline-start: 0.75rem;
     background: var(--colors-bg-subtle);
     border-color: var(--colors-border-bold);
   }
