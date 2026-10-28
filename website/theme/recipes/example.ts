@@ -49,15 +49,6 @@ export const example = defineSlotRecipe({
       fontFamily: "mono",
       fontSize: "11px",
       color: "fg.subtle",
-      "&[data-live]": {
-        color: "accent",
-        _before: {
-          content: "''",
-          boxSize: "1.5",
-          rounded: "full",
-          bg: "accent",
-        },
-      },
     },
     stage: {
       display: "flex",

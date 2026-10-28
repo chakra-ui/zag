@@ -46,9 +46,6 @@ export function Example(props: ExampleProps) {
         >
           Code
         </button>
-        <span className={styles.chip} data-live="">
-          live
-        </span>
       </div>
       <div
         {...api.getContentProps({ value: "preview" })}
