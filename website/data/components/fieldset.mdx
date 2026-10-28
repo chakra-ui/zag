@@ -59,12 +59,16 @@ inheritance and form semantics intact.
 
 Set `disabled` to disable every descendant control.
 
+<Example id="FieldsetDisabled">
+
 ```tsx {3}
 const service = useMachine(fieldset.machine, {
   id: useId(),
   disabled: true,
 })
 ```
+
+</Example>
 
 ```tsx
 <fieldset {...api.getRootProps()}>
@@ -83,12 +87,16 @@ disabled state for styling via `data-disabled`.
 Set `invalid` for a group-level error, such as "pick at least one option" on a
 checkbox group.
 
+<Example id="FieldsetInvalid">
+
 ```tsx {3}
 const service = useMachine(fieldset.machine, {
   id: useId(),
   invalid: true,
 })
 ```
+
+</Example>
 
 ```tsx
 <fieldset {...api.getRootProps()}>
@@ -104,6 +112,8 @@ invalid for per-control messages.
 
 ### Adding helper text
 
+<Example id="FieldsetHelperText">
+
 ```tsx
 <fieldset {...api.getRootProps()}>
   <legend {...api.getLegendProps()}>Contact details</legend>
@@ -112,12 +122,16 @@ invalid for per-control messages.
 </fieldset>
 ```
 
+</Example>
+
 Helper text is always referenced from `aria-describedby`. Error text is only
 referenced while the fieldset is invalid.
 
 ### Nesting fields
 
 Compose with `@zag-js/field` for labeled controls inside the group.
+
+<Example id="FieldsetNested">
 
 ```tsx
 import * as field from "@zag-js/field"
@@ -146,6 +160,8 @@ const fieldApi = field.connect(fieldService, normalizeProps)
 </form>
 ```
 
+</Example>
+
 Disable the fieldset and the phone field's input gets `disabled` and
 `data-disabled` without passing a prop into the field machine.
 
@@ -153,6 +169,8 @@ Disable the fieldset and the phone field's input gets `disabled` and
 
 Use a fieldset when one legend labels several options. Keep each option's own
 label next to the control.
+
+<Example id="FieldsetRadios">
 
 ```tsx
 <fieldset {...api.getRootProps()}>
@@ -172,6 +190,8 @@ label next to the control.
 </fieldset>
 ```
 
+</Example>
+
 The same pattern works with `@zag-js/radio-group` or `@zag-js/checkbox` as the
 controls inside the fieldset. Put the group label on the legend, not on a field
 label, when the accessible name applies to the whole set.
@@ -182,6 +202,8 @@ Fieldset only needs `disabled` and `invalid` from a form library. Per-control
 validation still belongs on each field (see the
 [Field](/components/field#integrating-with-react-hook-form) docs).
 
+<Example>
+
 ```tsx
 const service = useMachine(fieldset.machine, {
   id: useId(),
@@ -189,6 +211,8 @@ const service = useMachine(fieldset.machine, {
   disabled: formState.isSubmitting,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

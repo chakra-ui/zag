@@ -56,15 +56,21 @@ Then use the framework integration helpers:
 
 Set `disabled` to `true` to disable all radio items.
 
+<Example id="RadioGroupDisabled">
+
 ```tsx {2}
 const service = useMachine(radio.machine, {
   disabled: true,
 })
 ```
 
+</Example>
+
 ### Setting the initial value
 
 Use the `defaultValue` property to set the radio group's initial value.
+
+<Example id="RadioGroupDefaultValue">
 
 ```tsx {2}
 const service = useMachine(radio.machine, {
@@ -72,9 +78,13 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled value
 
 Use `value` and `onValueChange` to control selection externally.
+
+<Example id="RadioGroupControlled">
 
 ```tsx
 const service = useMachine(radio.machine, {
@@ -85,9 +95,13 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the radio group value changes, the `onValueChange` callback is invoked.
+
+<Example id="RadioGroupValueChange">
 
 ```tsx {2-7}
 const service = useMachine(radio.machine, {
@@ -98,15 +112,21 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use radio group in forms, set `name`.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(radio.machine, {
   name: "fruits",
 })
 ```
+
+</Example>
 
 Set `form` if the radio inputs should submit with a form outside the current DOM
 subtree.
@@ -122,15 +142,21 @@ const service = useMachine(radio.machine, {
 
 Set `orientation` when you need a vertical layout.
 
+<Example id="RadioGroupVertical">
+
 ```tsx
 const service = useMachine(radio.machine, {
   orientation: "vertical",
 })
 ```
 
+</Example>
+
 ### Read-only and required state
 
 Use `readOnly` and `required` to control form behavior.
+
+<Example id="RadioGroupReadOnly">
 
 ```tsx
 const service = useMachine(radio.machine, {
@@ -139,15 +165,21 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Invalid state
 
 Set `invalid` to style and expose invalid form state.
+
+<Example id="RadioGroupInvalid">
 
 ```tsx
 const service = useMachine(radio.machine, {
   invalid: true,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

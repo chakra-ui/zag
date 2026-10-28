@@ -1,46 +1,107 @@
 @layer recipes {
   .Root {
-    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    width: 18rem;
   }
 
   .Area {
-    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding-inline: 0.625rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+    transition:
+      background 150ms ease-out,
+      border-color 150ms ease-out;
+
+    &:hover {
+      background: var(--colors-bg-control);
+    }
+
+    &[data-focus] {
+      background: var(--colors-bg-control);
+      border-color: var(--colors-accent);
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
+    }
+
+    & [data-editable-preview] {
+      cursor: text;
+    }
+
+    & [data-placeholder-shown] {
+      color: var(--colors-fg-subtle);
+    }
+
+    & [data-editable-preview][data-autoresize],
+    & textarea {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    & textarea {
+      white-space: pre-wrap;
+    }
   }
 
   .Input {
+    width: 100%;
     background: transparent;
+    color: inherit;
+    font: inherit;
+    outline: none;
 
     &[data-autoresize] {
       all: unset;
     }
 
-    &:focus {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+    &::placeholder {
+      color: var(--colors-fg-subtle);
     }
   }
 
   .EditTrigger,
-  .CancelTrigger {
+  .CancelTrigger,
+  .SubmitTrigger {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    height: 2rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.8125rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    border-width: 1px;
-    border-color: var(--colors-border-bold);
-    background: var(--colors-bg-subtle);
-
-    &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
-    }
+    cursor: pointer;
+    transition: border-color 150ms ease-out;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .SubmitTrigger {
+    background: var(--colors-accent-tint);
+    border-color: var(--colors-accent);
+    color: var(--colors-accent);
+
+    &:hover {
+      border-color: var(--colors-accent);
     }
   }
 
@@ -50,26 +111,13 @@
     flex-direction: row;
     gap: 0.5rem;
   }
+}
 
+@media (prefers-reduced-motion: reduce) {
+  .Area,
+  .EditTrigger,
+  .CancelTrigger,
   .SubmitTrigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: start;
-    cursor: pointer;
-    font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-primary-subtle);
-    color: var(--colors-text-inverse);
-
-    &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
-    }
-
-    &:hover {
-      background: var(--colors-bg-primary-bold);
-    }
+    transition: none;
   }
 }

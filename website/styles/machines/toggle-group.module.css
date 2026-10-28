@@ -1,45 +1,62 @@
 @layer recipes {
   .Root {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     flex-direction: row;
-    gap: 0px;
+    gap: 0.125rem;
+    padding: 0.1875rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-control);
 
-    & > * {
-      margin-inline-start: -1px;
+    &[data-orientation="vertical"] {
+      flex-direction: column;
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
     }
   }
 
   .Item {
-    width: 2.5rem;
-    height: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
-    font-size: 1.25rem;
     position: relative;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    color: var(--colors-fg-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition:
+      background 150ms ease-out,
+      color 150ms ease-out;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      color: var(--colors-fg);
     }
 
-    &[data-state="on"] {
-      background: var(--colors-bg-primary-bold);
-      color: var(--colors-text-inverse);
+    &[data-pressed] {
+      background: var(--colors-accent-tint);
+      color: var(--colors-accent);
     }
 
     &[data-disabled] {
-      opacity: 0.5;
-
-      filter: grayscale(100%);
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    &[data-focus] {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: -2px;
       z-index: 1;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Item {
+    transition: none;
   }
 }

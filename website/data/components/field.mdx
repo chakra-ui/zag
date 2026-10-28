@@ -66,12 +66,16 @@ reset to work.
 
 Set `required` to mark the control as required and show a required indicator.
 
+<Example id="FieldRequired">
+
 ```tsx {3}
 const service = useMachine(field.machine, {
   id: useId(),
   required: true,
 })
 ```
+
+</Example>
 
 ```tsx
 <label {...api.getLabelProps()}>
@@ -87,12 +91,16 @@ submitted. That matches how most form libraries treat `valueMissing`.
 
 Set `disabled` to disable the control and mute validation UI.
 
+<Example id="FieldDisabled">
+
 ```tsx {3}
 const service = useMachine(field.machine, {
   id: useId(),
   disabled: true,
 })
 ```
+
+</Example>
 
 A field inside `<fieldset disabled>` (or `@zag-js/fieldset` with `disabled`)
 picks that up from the DOM. You do not need to thread the prop yourself.
@@ -103,12 +111,16 @@ Set `readOnly` on the machine. It is applied to `getInputProps` and
 `getTextareaProps`. Native `<select>` has no `readOnly`, so `getSelectProps`
 does not set it.
 
+<Example id="FieldReadOnly">
+
 ```tsx {3}
 const service = useMachine(field.machine, {
   id: useId(),
   readOnly: true,
 })
 ```
+
+</Example>
 
 ### Choosing when validation shows
 
@@ -120,12 +132,16 @@ Set `validationMode` to control when committed errors become visible.
 | `onBlur`   | Errors show when the control blurs                                  |
 | `onChange` | Errors show on every change                                         |
 
+<Example id="FieldValidationMode">
+
 ```tsx {3}
 const service = useMachine(field.machine, {
   id: useId(),
   validationMode: "onBlur",
 })
 ```
+
+</Example>
 
 The browser still runs constraint validation on submit in every mode. The field
 listens for the control's `invalid` event, prevents the native tooltip, and
@@ -135,6 +151,8 @@ commits your error UI instead.
 
 Pass `validate` to run your own rules. Return a string (or array of strings) for
 errors, or `null` / `undefined` when the value is fine.
+
+<Example id="FieldCustomValidation">
 
 ```tsx {3-7}
 const service = useMachine(field.machine, {
@@ -146,6 +164,8 @@ const service = useMachine(field.machine, {
 })
 ```
 
+</Example>
+
 `validity` is the native `ValidityState` snapshot **before** your custom result
 is applied. Custom errors are mirrored with `setCustomValidity`, so the browser
 still blocks submit while your UI stays in charge of messaging.
@@ -156,6 +176,8 @@ Return a `Promise` from `validate`. While it is in flight, `api.validating` is
 `true`. A newer run cancels the previous one, so a fast typist does not see a
 stale error.
 
+<Example id="FieldAsyncValidation">
+
 ```tsx {3-8}
 const service = useMachine(field.machine, {
   id: useId(),
@@ -165,6 +187,8 @@ const service = useMachine(field.machine, {
   },
 })
 ```
+
+</Example>
 
 Debounce by delaying the Promise. The machine drops resolutions whose sequence
 number is no longer current:
@@ -183,6 +207,8 @@ validate({ value }) {
 
 Render several error texts and point each at a `ValidityState` key with `match`.
 
+<Example id="FieldErrorMatch">
+
 ```tsx
 <input {...api.getInputProps()} type="url" required />
 <span {...api.getErrorTextProps({ match: "valueMissing" })}>
@@ -192,6 +218,8 @@ Render several error texts and point each at a `ValidityState` key with `match`.
   Enter a full URL, including https://
 </span>
 ```
+
+</Example>
 
 `match` options:
 
@@ -206,12 +234,16 @@ Only visible error ids are referenced from `aria-describedby`.
 `getIndicatorProps` keeps the element mounted and toggles `hidden`, so CSS
 transitions still run.
 
+<Example id="FieldIndicators">
+
 ```tsx
 <span {...api.getIndicatorProps({ type: "required" })}>*</span>
 <span {...api.getIndicatorProps({ type: "validating" })}>Checking…</span>
 <span {...api.getIndicatorProps({ type: "valid" })}>Looks good</span>
 <span {...api.getIndicatorProps({ type: "invalid" })}>!</span>
 ```
+
+</Example>
 
 `api.valid` is tri-state: `null` until validation has run, then `true` or
 `false`. The valid indicator stays hidden while `valid` is `null`.
@@ -220,6 +252,8 @@ transitions still run.
 
 Use the matching props getter. Behavior is the same as with an input.
 
+<Example id="FieldSelect">
+
 ```tsx
 <select {...api.getSelectProps()} name="country" required>
   <option value="">Select a country</option>
@@ -227,6 +261,8 @@ Use the matching props getter. Behavior is the same as with an input.
   <option value="us">United States</option>
 </select>
 ```
+
+</Example>
 
 ```tsx
 <textarea {...api.getTextareaProps()} name="bio" rows={4} />
@@ -241,6 +277,8 @@ When one label covers several controls (amount + currency), set `target` to the
 item the field should track for dirty, filled, and validity. Pass `{ item }` to
 each control getter.
 
+<Example id="FieldMultiControl">
+
 ```tsx {3}
 const service = useMachine(field.machine, {
   id: useId(),
@@ -248,6 +286,8 @@ const service = useMachine(field.machine, {
   required: true,
 })
 ```
+
+</Example>
 
 ```tsx
 <label {...api.getLabelProps()}>Amount</label>
@@ -267,6 +307,8 @@ disabled. Changing a sibling does not mark the field dirty.
 Pass `dirty`, `touched`, or `invalid` when a parent or form library already owns
 those flags. User input will not overwrite them.
 
+<Example id="FieldControlledState">
+
 ```tsx {3-5}
 const service = useMachine(field.machine, {
   id: useId(),
@@ -275,6 +317,8 @@ const service = useMachine(field.machine, {
   invalid: !!formState.errors.email,
 })
 ```
+
+</Example>
 
 `invalid` is the right place for server errors and library-owned validation. It
 forces the invalid UI even when the machine has no messages of its own. Put the
@@ -290,6 +334,8 @@ message in your error text node:
 
 Let the library own validation. Mirror its state into the field, and merge the
 field's input props with `register` (or a `Controller` render prop).
+
+<Example>
 
 ```tsx
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
@@ -328,6 +374,8 @@ const api = field.connect(service, normalizeProps)
 </form>
 ```
 
+</Example>
+
 `noValidate` turns off the browser's native bubbles so React Hook Form and the
 field share one error surface.
 
@@ -336,6 +384,8 @@ field share one error surface.
 Same idea: mirror `invalid`, `dirty`, and `touched`, and bind the control's
 value through the form field API. Keep `useMachine` in its own component so
 hooks stay at the top level.
+
+<Example>
 
 ```tsx
 import { useForm } from "@tanstack/react-form"
@@ -380,6 +430,8 @@ function UsernameField({ formField }) {
 </form.Field>
 ```
 
+</Example>
+
 ### Composing with other Zag machines
 
 Field is a wrapper around a control, not a parent context other machines
@@ -390,6 +442,8 @@ subscribe to. For a Zag checkbox, switch, or select:
    should receive the label's `htmlFor`.
 3. Mirror `disabled`, `invalid`, and `required` onto the other machine as props
    when you need matching data attributes.
+
+<Example id="FieldWithCheckbox">
 
 ```tsx
 const fieldApi = field.connect(fieldService, normalizeProps)
@@ -417,10 +471,14 @@ const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
 </div>
 ```
 
+</Example>
+
 For a plain custom control that is not another Zag machine, prefer
 `api.getControlProps()` on the focusable element.
 
 ### Validating, clearing, and resetting from code
+
+<Example id="FieldValidateFromCode">
 
 ```tsx
 api.validate() // commit validity now (surfaces valueMissing even if pristine)
@@ -428,10 +486,14 @@ api.clearErrors() // drop committed errors and customValidity
 api.reset() // clear interaction state and re-baseline dirty from the control
 ```
 
+</Example>
+
 Form `reset` events are tracked automatically. After the browser restores
 default values, the field re-reads the control and returns to a pristine state.
 
 ### Listening for validity changes
+
+<Example id="FieldValidityChange">
 
 ```tsx {3-6}
 const service = useMachine(field.machine, {
@@ -442,6 +504,8 @@ const service = useMachine(field.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

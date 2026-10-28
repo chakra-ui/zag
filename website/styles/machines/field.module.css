@@ -4,56 +4,121 @@
     flex-direction: column;
     gap: 0.375rem;
     width: 100%;
-    max-width: 320px;
+    max-width: 18rem;
   }
 
   .Label {
-    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
     font-weight: 500;
+    color: var(--colors-fg-muted);
 
     &[data-disabled] {
-      opacity: 0.5;
+      opacity: 0.45;
     }
   }
 
-  .Input {
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
+  .Input,
+  .Select,
+  .Textarea {
     width: 100%;
-    height: 48px;
-    font-size: 1rem;
-    padding-inline: 1rem;
+    height: 2.25rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+    transition: border-color 150ms ease-out;
+
+    &::placeholder {
+      color: var(--colors-fg-subtle);
+    }
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
 
     &:focus {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+      outline: none;
+      border-color: var(--colors-accent);
+      box-shadow: 0 0 0 1px var(--colors-accent);
     }
 
     &[data-invalid] {
       border-color: var(--colors-border-error);
+      box-shadow: none;
     }
 
     &[data-valid] {
-      border-color: #38a169;
+      border-color: var(--colors-accent);
+    }
+
+    &[data-readonly] {
+      color: var(--colors-fg-muted);
     }
 
     &[data-disabled] {
-      opacity: 0.5;
+      opacity: 0.45;
       cursor: not-allowed;
     }
   }
 
+  .Textarea {
+    height: auto;
+    padding-block: 0.5rem;
+    resize: vertical;
+  }
+
+  .Select {
+    padding-inline-end: 0.5rem;
+  }
+
+  .Group {
+    display: flex;
+    gap: 0.375rem;
+
+    & .Select {
+      width: 5.5rem;
+      flex-shrink: 0;
+    }
+  }
+
   .HelperText {
-    font-size: 0.8125rem;
-    color: var(--colors-text-muted);
+    font-size: 0.75rem;
+    color: var(--colors-fg-subtle);
   }
 
   .ErrorText {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--colors-text-error);
   }
 
   .Required {
     color: var(--colors-text-error);
+  }
+
+  .Indicator {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--colors-fg-subtle);
+
+    &[data-type="valid"] {
+      color: var(--colors-accent);
+    }
+
+    &[data-type="invalid"] {
+      color: var(--colors-text-error);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Input,
+  .Select,
+  .Textarea {
+    transition: none;
   }
 }
