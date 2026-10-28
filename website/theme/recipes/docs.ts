@@ -42,7 +42,7 @@ export const docsShell = defineSlotRecipe({
     main: {
       minW: "0",
       w: "full",
-      maxW: "800px",
+      maxW: "960px",
       mx: "auto",
       px: { base: "4", sm: "6", md: "12" },
       pt: "9",
