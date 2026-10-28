@@ -275,6 +275,60 @@ track.
 
 <CodeSnippet id="slider/tick-marks.mdx" />
 
+### Range slider
+
+Pass two values to get two thumbs. Everything above applies to each thumb.
+
+<Showcase id="RangeSlider" />
+
+<CodeSnippet id="range-slider/usage.mdx" />
+
+#### Setting the initial range
+
+```tsx {2}
+const service = useMachine(slider.machine, {
+  defaultValue: [30, 60],
+})
+```
+
+#### Controlled range value
+
+Use `value` and `onValueChange` to control both thumb values externally.
+
+```tsx
+const service = useMachine(slider.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+#### Preventing thumb overlap
+
+By default, the range slider thumbs are allowed to overlap when their values are
+equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
+equal values.
+
+```tsx {2}
+const service = useMachine(slider.machine, {
+  minStepsBetweenThumbs: 1,
+})
+```
+
+#### Labeling each thumb
+
+Each thumb is labeled by the label part by default. Use `getAriaLabel` to give
+each thumb its own accessible name.
+
+```tsx
+const service = useMachine(slider.machine, {
+  defaultValue: [200, 600],
+  getAriaLabel: ({ index }) =>
+    index === 0 ? "Minimum price" : "Maximum price",
+})
+```
+
 ## Styling guide
 
 Each part includes a component-scoped data attribute you can target in CSS.

@@ -121,7 +121,6 @@ export const tabs: SidebarTab[] = [
           { label: "Select", id: "select" },
           { label: "Signature Pad", id: "signature-pad" },
           { label: "Slider", id: "slider" },
-          { label: "Slider (Range)", id: "range-slider" },
           { label: "Switch", id: "switch" },
           { label: "Tags Input", id: "tags-input" },
           { label: "Toggle", id: "toggle" },
@@ -152,7 +151,6 @@ export const tabs: SidebarTab[] = [
           { label: "Floating Panel", id: "floating-panel" },
           { label: "Hover Card", id: "hover-card" },
           { label: "Menu", id: "menu" },
-          { label: "Menu (Nested)", id: "nested-menu" },
           { label: "Popover", id: "popover" },
           { label: "Tooltip", id: "tooltip" },
           { label: "Tour", id: "tour" },
@@ -174,8 +172,7 @@ export const tabs: SidebarTab[] = [
       {
         label: "Feedback",
         items: docs("components", [
-          { label: "Progress (Circular)", id: "circular-progress" },
-          { label: "Progress (Linear)", id: "linear-progress" },
+          { label: "Progress", id: "progress" },
           { label: "Toast", id: "toast" },
         ]),
       },

@@ -249,6 +249,26 @@ npm install @zag-js/async-list @zag-js/infinite-scroll
 
 <CodeSnippet id="menu/async.mdx" />
 
+### Nested menus
+
+A nested menu is a second menu machine. Link the two, then render the child's
+trigger inside the parent with `api.getTriggerItemProps(...)`.
+
+- `setParent(...)` - Registers the parent menu on the child menu.
+- `setChild(...)` - Registers the child menu on the parent menu.
+
+<Showcase id="NestedMenu" />
+
+<CodeSnippet id="menu/nested-menu.mdx" />
+
+Use `positioning` on the child to place the submenu.
+
+```tsx
+const service = useMachine(menu.machine, {
+  positioning: { placement: "right-start" },
+})
+```
+
 ## Styling guide
 
 Each part includes a component-scoped data attribute you can target in CSS.
