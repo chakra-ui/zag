@@ -20,16 +20,7 @@ export function Example(props: ExampleProps) {
   const api = tabs.connect(service, normalizeProps)
   const styles = example()
 
-  if (!Demo) {
-    return (
-      <div className={styles.root} data-code-only="">
-        <div className={styles.bar}>
-          <span className={styles.chip}>code only</span>
-        </div>
-        <div className={styles.code}>{props.children}</div>
-      </div>
-    )
-  }
+  if (!Demo) return <>{props.children}</>
 
   return (
     <div {...api.getRootProps()} className={styles.root}>

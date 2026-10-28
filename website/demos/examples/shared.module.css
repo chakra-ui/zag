@@ -2,16 +2,14 @@
   .Stack {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.875rem;
-    width: 100%;
   }
 
   .Row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
   }
 
@@ -63,7 +61,6 @@
     font-family: var(--fonts-mono);
     font-size: 0.75rem;
     color: var(--colors-fg-subtle);
-    text-align: center;
 
     & strong {
       font-weight: 500;
