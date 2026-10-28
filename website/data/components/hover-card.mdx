@@ -58,15 +58,21 @@ Then use the framework integration helpers:
 
 Set `defaultOpen` to `true` to start with the hover card open.
 
+<Example>
+
 ```tsx {2}
 const service = useMachine(hoverCard.machine, {
   defaultOpen: true,
 })
 ```
 
+</Example>
+
 ### Controlled open state
 
 Use `open` and `onOpenChange` to control visibility externally.
+
+<Example id="HoverCardControlled">
 
 ```tsx
 const service = useMachine(hoverCard.machine, {
@@ -77,9 +83,13 @@ const service = useMachine(hoverCard.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing open and close delays
 
 Use `openDelay` and `closeDelay` to control hover timing.
+
+<Example id="HoverCardDelays">
 
 ```tsx
 const service = useMachine(hoverCard.machine, {
@@ -88,9 +98,13 @@ const service = useMachine(hoverCard.machine, {
 })
 ```
 
+</Example>
+
 ### Positioning the hover card
 
 Use `positioning` to control placement and offsets.
+
+<Example id="HoverCardPositioning">
 
 ```tsx
 const service = useMachine(hoverCard.machine, {
@@ -101,10 +115,14 @@ const service = useMachine(hoverCard.machine, {
 })
 ```
 
+</Example>
+
 ### Multiple triggers
 
 A single hover card instance can be shared across multiple trigger elements.
 Pass a `value` to `getTriggerProps` to identify each trigger.
+
+<Example id="HoverCardMultipleTriggers">
 
 ```tsx
 const users = [
@@ -135,6 +153,8 @@ return (
 )
 ```
 
+</Example>
+
 When hovering a different trigger while the card is open, it repositions without
 closing.
 
@@ -142,16 +162,22 @@ closing.
 
 Set `disabled` to `true` to prevent it from opening.
 
+<Example id="HoverCardDisabled">
+
 ```tsx
 const service = useMachine(hoverCard.machine, {
   disabled: true,
 })
 ```
 
+</Example>
+
 ### Listening for open state changes
 
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
+
+<Example id="HoverCardOpenChange">
 
 ```tsx {2-5}
 const service = useMachine(hoverCard.machine, {
@@ -161,6 +187,8 @@ const service = useMachine(hoverCard.machine, {
   },
 })
 ```
+
+</Example>
 
 `details.reason` says what caused the change, so you can treat a deliberate
 dismissal differently from the pointer wandering off.

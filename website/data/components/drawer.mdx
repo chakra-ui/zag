@@ -62,11 +62,17 @@ Then use the framework integration helpers:
 To control the drawer's open state, pass the `open` and `onOpenChange`
 properties.
 
+<Example id="DrawerControlled">
+
 <CodeSnippet id="drawer/controlled.mdx" />
+
+</Example>
 
 ### Listening for open state changes
 
 When the drawer state changes, the `onOpenChange` callback is invoked.
+
+<Example id="DrawerOpenChange">
 
 ```tsx {3-7}
 const service = useMachine(drawer.machine, {
@@ -78,12 +84,16 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Configuring snap points
 
 The drawer supports customizable snap points, which determine the heights at
 which the sheet can "snap" when dragged. Snap points can be defined as numbers
 (representing percentages of the content height, e.g., `0.5` for 50%) or pixel
 values (e.g., `"200px"`). By default, it snaps to full sheet height (`1`).
+
+<Example id="DrawerSnapPoints">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -96,9 +106,13 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled snap point
 
 Use `snapPoint` and `onSnapPointChange` to control the active snap point.
+
+<Example id="DrawerControlledSnapPoint">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -111,6 +125,8 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Swipe-to-dismiss behavior
 
 The drawer can be dismissed by swiping it down quickly or dragging it below a
@@ -121,6 +137,8 @@ threshold. Customize this behavior with the following properties:
 - `closeThreshold`: The percentage of content height below which the sheet
   closes when dragged (default: `0.25`).
 
+<Example id="DrawerSwipeDismiss">
+
 ```tsx {3-4}
 const service = useMachine(drawer.machine, {
   id: useId(),
@@ -129,9 +147,13 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Choosing swipe direction
 
 Set `swipeDirection` to control where the drawer can be dismissed.
+
+<Example id="DrawerSwipeDirection">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -140,9 +162,13 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Sequential snap points
 
 Set `snapToSequentialPoints` to force dragging through snap points in order.
+
+<Example id="DrawerSequentialSnapPoints">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -152,11 +178,15 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Preventing dragging during scroll
 
 By default, dragging is prevented if the content inside the drawer is scrollable
 and not at the top or bottom. To allow dragging even during scrolling, set
 `preventDragOnScroll` to `false`:
+
+<Example id="DrawerDragOnScroll">
 
 ```tsx {3}
 const service = useMachine(drawer.machine, {
@@ -165,9 +195,13 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+</Example>
+
 ### Non-modal drawer
 
 Set `modal` to `false` to allow interaction behind the drawer.
+
+<Example id="DrawerNonModal">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -175,6 +209,8 @@ const service = useMachine(drawer.machine, {
   modal: false,
 })
 ```
+
+</Example>
 
 Use `api.modal` to skip the backdrop, since it would block interaction with the
 page.
@@ -191,11 +227,15 @@ Use `getSwipeAreaProps` to render a region outside the drawer that users can
 swipe to open it (for example, an edge swipe gesture on mobile). The swipe area
 is automatically disabled while the drawer is already open.
 
+<Example id="DrawerSwipeArea">
+
 ```tsx
 <div {...api.getSwipeAreaProps()}>
   {/* invisible hit area along the screen edge */}
 </div>
 ```
+
+</Example>
 
 You can customize the swipe area's direction and disabled state:
 
@@ -211,6 +251,8 @@ api.getSwipeAreaProps({ swipeDirection: "up" })
 
 A single drawer instance can be shared across multiple trigger elements. Pass a
 `value` to `getTriggerProps` to identify each trigger.
+
+<Example id="DrawerMultipleTriggers">
 
 ```tsx
 const service = useMachine(drawer.machine, {
@@ -236,6 +278,8 @@ return (
 )
 ```
 
+</Example>
+
 When the drawer is open and a different trigger is activated, it switches
 without closing. Focus returns to the correct trigger on close.
 
@@ -245,6 +289,8 @@ By default the drawer content itself can be dragged to dismiss or snap. To
 restrict dragging to only the grabber, pass `draggable: false` to
 `getContentProps`.
 
+<Example id="DrawerContentDraggable">
+
 ```tsx
 <div {...api.getContentProps({ draggable: false })}>
   <div {...api.getGrabberProps()}>
@@ -253,6 +299,8 @@ restrict dragging to only the grabber, pass `draggable: false` to
   {/* Content here is not draggable */}
 </div>
 ```
+
+</Example>
 
 ### Using drawer stack
 
@@ -278,6 +326,8 @@ const service = useMachine(drawer.machine, {
 
 Subscribe to the stack snapshot and connect it to render indent layers:
 
+<Example id="DrawerStack">
+
 ```tsx
 const snapshot = useSyncExternalStore(stack.subscribe, stack.getSnapshot)
 const stackApi = drawer.connectStack(snapshot, normalizeProps)
@@ -290,6 +340,8 @@ return (
 )
 ```
 
+</Example>
+
 The indent element exposes `data-active` / `data-inactive` attributes and the
 CSS variables `--drawer-swipe-progress` and `--drawer-frontmost-height` for
 styling.
@@ -298,12 +350,16 @@ styling.
 
 Set `closeOnEscape` to `false` if the drawer should not close on `Esc`.
 
+<Example id="DrawerEscape">
+
 ```tsx
 const service = useMachine(drawer.machine, {
   id: useId(),
   closeOnEscape: false,
 })
 ```
+
+</Example>
 
 ### Reading drawer state
 
@@ -316,11 +372,15 @@ The `api` provides methods to read the drawer's current position:
 - `api.getContentSize()` — returns the drawer content size in pixels (along the
   swipe axis), or `null` if not yet measured.
 
+<Example id="DrawerReadState">
+
 ```tsx
 const percentage = api.getOpenPercentage()
 const index = api.getSnapPointIndex()
 const size = api.getContentSize()
 ```
+
+</Example>
 
 ## Styling guide
 
