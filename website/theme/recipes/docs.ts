@@ -188,11 +188,15 @@ export const docAction = defineRecipe({
     "& svg": {
       boxSize: "3.5",
       flexShrink: "0",
-      color: "fg.subtle",
+      color: "accent",
       transition: "color 150ms ease-out, translate 150ms ease-out",
     },
-    "&:hover svg": { color: "currentColor" },
-    "&:hover [data-part=arrow]": { translate: "1px -1px" },
+    "& [data-part=arrow]": { color: "fg.subtle" },
+    "&:hover [data-part=arrow]": {
+      translate: "1px -1px",
+      color: "currentColor",
+    },
+    "&[data-brand=stackblitz] svg:not([data-part=arrow])": { color: "#1389FD" },
     "& [data-part=meta]": {
       px: "1.5",
       py: "0.5",

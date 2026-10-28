@@ -232,6 +232,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
           <button
             type="button"
             className={docAction({ size: "sm" })}
+            data-brand="stackblitz"
             onClick={() => openInStackblitz(name, values)}
           >
             <SiStackblitz aria-hidden />
