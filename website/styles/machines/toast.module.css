@@ -1,10 +1,17 @@
 @layer recipes {
   .Root {
-    width: 400px;
-    border-radius: 0.375rem;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: min(22rem, calc(100vw - 2rem));
+    padding-block: 0.875rem;
+    padding-inline: 1rem 2.5rem;
     border: 1px solid var(--colors-border);
-    padding: 1.5rem;
-    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg);
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.3);
     overflow-wrap: anywhere;
     translate: var(--x) var(--y);
     scale: var(--scale);
@@ -18,14 +25,40 @@
       opacity 400ms;
     transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
 
+    &::before {
+      content: "";
+      flex-shrink: 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-block-start: 0.375rem;
+      border-radius: 9999px;
+      background: var(--colors-fg-subtle);
+    }
+
     &[data-type="info"] {
-      background: var(--colors-bg-popover);
-      color: var(--colors-text);
+      background: var(--colors-bg-raised);
+      color: var(--colors-fg);
     }
 
     &[data-type="success"] {
-      color: var(--colors-text-inverse);
-      background: var(--colors-bg-primary-bold);
+      color: var(--colors-fg);
+      background: var(--colors-bg-raised);
+
+      &::before {
+        background: var(--colors-accent);
+      }
+    }
+
+    &[data-type="warning"]::before {
+      background: var(--colors-amber-600);
+    }
+
+    &[data-type="error"]::before {
+      background: var(--colors-text-error);
+    }
+
+    &[data-type="loading"]::before {
+      display: none;
     }
 
     &[data-state="closed"] {
@@ -37,32 +70,132 @@
     }
   }
 
-  .CloseTrigger {
+  .Body {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .Title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--colors-fg);
+  }
+
+  .Description {
+    font-size: 0.8125rem;
+    color: var(--colors-fg-muted);
+  }
+
+  .Spinner {
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--colors-border-strong);
+    border-block-start-color: var(--colors-accent);
+    border-radius: 9999px;
+    animation: toast-spin 700ms linear infinite;
+  }
+
+  .ActionTrigger {
+    margin-block-start: 0.375rem;
+    height: 1.75rem;
+    padding-inline: 0.625rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 6px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .CloseTrigger {
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
+    inset-block-start: 0.625rem;
+    inset-inline-end: 0.625rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 6px;
+    color: var(--colors-fg-subtle);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 1px;
+    }
   }
 
   .TriggerGroup {
     display: flex;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .Trigger {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    border-width: 1px;
-    background: var(--colors-bg-subtle);
+    cursor: pointer;
+    transition: border-color 150ms ease-out;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      border-color: var(--colors-fg-subtle);
     }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@keyframes toast-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Root,
+  .Root[data-state="closed"] {
+    transition: opacity 200ms;
+  }
+
+  .Spinner {
+    animation-duration: 2s;
+  }
+
+  .Trigger {
+    transition: none;
   }
 }

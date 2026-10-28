@@ -55,6 +55,8 @@ Then use the framework integration helpers:
 You can programmatically scroll to any edge of the scroll area using the
 `scrollToEdge` method:
 
+<Example id="ScrollAreaScrollToEdge">
+
 ```tsx
 // Scroll to bottom
 api.scrollToEdge({ edge: "bottom" })
@@ -67,9 +69,13 @@ api.scrollToEdge({
 })
 ```
 
+</Example>
+
 ### Programmatic scrolling to coordinates
 
 Use the `scrollTo` method to scroll to specific coordinates:
+
+<Example id="ScrollAreaScrollTo">
 
 ```tsx
 // Scroll to specific position
@@ -86,9 +92,13 @@ api.scrollTo({
 })
 ```
 
+</Example>
+
 ### Reading scroll position and overflow
 
 The API provides several properties to check the current scroll state:
+
+<Example id="ScrollAreaState">
 
 ```tsx
 // Check if at edges
@@ -105,9 +115,13 @@ console.log(api.hasOverflowY) // boolean
 const progress = api.getScrollProgress() // { x: number, y: number }
 ```
 
+</Example>
+
 ### Rendering scrollbars only when needed
 
 Only render scrollbars when there's overflow content:
+
+<Example id="ScrollAreaConditional">
 
 ```tsx
 {
@@ -127,14 +141,20 @@ Only render scrollbars when there's overflow content:
 }
 ```
 
+</Example>
+
 ### Scrollbar state
 
 Get the current state of a scrollbar for styling purposes:
+
+<Example id="ScrollAreaScrollbarState">
 
 ```tsx
 const verticalState = api.getScrollbarState({ orientation: "vertical" })
 // Returns: { hovering: boolean, scrolling: boolean, hidden: boolean }
 ```
+
+</Example>
 
 ## Styling guide
 
@@ -186,10 +206,16 @@ applied:
 
 ### Hidden state
 
-Scrollbars can be automatically hidden when not needed:
+A scrollbar loses its `data-overflow-x` or `data-overflow-y` attribute when
+there's nothing to scroll, so you can hide it:
 
 ```css
-[data-scroll-area-scrollbar][data-hidden] {
+[data-scroll-area-scrollbar][data-orientation="vertical"]:not(
+    [data-overflow-y]
+  ),
+[data-scroll-area-scrollbar][data-orientation="horizontal"]:not(
+    [data-overflow-x]
+  ) {
   /* styles for hidden scrollbar */
   opacity: 0;
   pointer-events: none;

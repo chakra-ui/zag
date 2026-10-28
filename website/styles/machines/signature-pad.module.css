@@ -3,48 +3,72 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
     width: 100%;
     max-width: 400px;
-    margin-top: -24px;
   }
 
   .Label {
-    font-size: 0.875rem;
     display: inline-block;
-    margin-bottom: 8px;
+    font-size: 0.875rem;
     font-weight: 500;
+    color: var(--colors-fg);
   }
 
   .Control {
+    position: relative;
     width: 100%;
-    height: 120px;
-    background-color: var(--colors-bg-muted);
-    border-radius: 8px;
+    height: 140px;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 10px;
+    background-color: var(--colors-bg-raised);
+    cursor: crosshair;
+    touch-action: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+
+    &[data-disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
 
   .Segment {
-    fill: var(--colors-text);
+    fill: var(--colors-fg);
   }
 
   .Guide {
     position: absolute;
-    bottom: 12%;
-    left: 8px;
-    right: 8px;
-    border-bottom: 1px dashed var(--colors-border);
+    inset-block-end: 22%;
+    inset-inline: 1rem;
+    border-block-end: 1px dashed var(--colors-border-strong);
+    pointer-events: none;
   }
 
   .ClearTrigger {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    inset-block-start: 0.5rem;
+    inset-inline-end: 0.5rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 6px;
+    color: var(--colors-fg-subtle);
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
@@ -55,8 +79,11 @@
   }
 
   .Preview {
-    height: 160px;
-    object-fit: cover;
+    height: 100px;
     max-width: 100%;
+    object-fit: contain;
+    border: 1px solid var(--colors-border);
+    border-radius: 8px;
+    background: var(--colors-white);
   }
 }

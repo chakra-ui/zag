@@ -94,6 +94,8 @@ api.pageRange
 
 Use `page` and `onPageChange` to control the current page externally.
 
+<Example id="PaginationControlled">
+
 ```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
@@ -105,9 +107,13 @@ const service = useMachine(pagination.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled page size
 
 Use `pageSize` and `onPageSizeChange` to control page size.
+
+<Example id="PaginationPageSize">
 
 ```tsx
 const service = useMachine(pagination.machine, {
@@ -119,9 +125,13 @@ const service = useMachine(pagination.machine, {
 })
 ```
 
+</Example>
+
 ### Initial page and page size
 
 Use `defaultPage` and `defaultPageSize` for uncontrolled initial values.
+
+<Example id="PaginationInitial">
 
 ```tsx
 const service = useMachine(pagination.machine, {
@@ -131,9 +141,13 @@ const service = useMachine(pagination.machine, {
 })
 ```
 
+</Example>
+
 ### Link-based pagination
 
 Set `type: "link"` and provide `getPageUrl` to render real navigation links.
+
+<Example id="PaginationLinks">
 
 ```tsx
 const service = useMachine(pagination.machine, {
@@ -145,9 +159,13 @@ const service = useMachine(pagination.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing visible page ranges
 
 Use `siblingCount` and `boundaryCount` to control how many page items are shown.
+
+<Example id="PaginationSiblings">
 
 ```tsx
 const service = useMachine(pagination.machine, {
@@ -157,9 +175,13 @@ const service = useMachine(pagination.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations` to customize trigger and page labels.
+
+<Example>
 
 ```tsx
 const service = useMachine(pagination.machine, {
@@ -172,6 +194,8 @@ const service = useMachine(pagination.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

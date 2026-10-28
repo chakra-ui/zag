@@ -61,22 +61,32 @@ Then use the framework integration helpers:
 Set `defaultValue` to define the initial pin value. It must be an array of
 strings.
 
+<Example id="PinInputDefaultValue">
+
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
   defaultValue: ["1", "2", ""],
 })
 ```
 
+</Example>
+
 ### Controlled value
 
 Use the `value` and `onValueChange` properties to programmatically control the
 value of the pin input.
 
+<Example id="PinInputControlled">
+
 <CodeSnippet id="pin-input/controlled.mdx" />
+
+</Example>
 
 ### Setting input count
 
 Set `count` to define the number of input fields to render.
+
+<Example id="PinInputCount">
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -84,10 +94,14 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the placeholder
 
 To customize the default pin input placeholder (○) for each input, pass the
 `placeholder` prop and set it to your desired value.
+
+<Example id="PinInputPlaceholder">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
@@ -95,11 +109,15 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Blur on complete
 
 By default, the last input maintains focus when filled and `onValueComplete` is
 invoked. To blur the last input when the user completes the input, set the
 `blurOnComplete: true` in the machine's context.
+
+<Example id="PinInputBlurOnComplete">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
@@ -107,10 +125,14 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Auto-submitting on complete
 
 Set `autoSubmit` to automatically submit the owning form when all inputs are
 filled.
+
+<Example id="PinInputAutoSubmit">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
@@ -118,11 +140,15 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing alphanumeric values
 
 By default, the pin input accepts only number values but you can choose between
 `numeric`, `alphanumeric` and `alphabetic` values. To change the input mode,
 pass the `type` context property and set its value to `alphanumeric`.
+
+<Example id="PinInputAlphanumeric">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
@@ -130,16 +156,22 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Using a custom pattern
 
 Use `pattern` to provide a custom regex for validating input values. Each
 character entered is checked against this pattern.
+
+<Example id="PinInputPattern">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
   pattern: "[0-9a-fA-F]", // hex characters only
 })
 ```
+
+</Example>
 
 ### Using OTP mode
 
@@ -148,11 +180,15 @@ To trigger smartphone OTP auto-suggestion, it is recommended to set the
 support for this automatically when you set the `otp` context property to
 `true`.
 
+<Example>
+
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
   otp: true,
 })
 ```
+
+</Example>
 
 ### Securing the text input
 
@@ -160,11 +196,15 @@ When collecting private or sensitive information using the pin input, you might
 need to mask the value entered, similar to `<input type="password"/>`. Pass the
 `mask` context property and set it to `true`.
 
+<Example id="PinInputMask">
+
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
   mask: true,
 })
 ```
+
+</Example>
 
 ### Listening for changes
 
@@ -175,6 +215,8 @@ The pin input machine invokes several callback functions when the user enters:
   typing or pasting).
 - `onValueInvalid` — Function invoked when an invalid value is entered into the
   input. An invalid value is any value that doesn't match the specified "type".
+
+<Example id="PinInputValueChange">
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -193,10 +235,14 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Sanitizing pasted values
 
 Use `sanitizeValue` to strip dashes, spaces, or other formatting from pasted
 values before validation.
+
+<Example id="PinInputSanitize">
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -204,10 +250,14 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Autofocus and selection behavior
 
 Use `autoFocus` to focus the first input on mount, and `selectOnFocus` to select
 the active character on focus.
+
+<Example>
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -216,11 +266,15 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### RTL support
 
 The pin input machine supports RTL writing directions. Set `dir` to `rtl`.
 
 When this attribute is set, we attach a `dir` attribute to the root part.
+
+<Example id="PinInputRtl">
 
 ```tsx {2}
 const service = useMachine(pinInput.machine, {
@@ -228,10 +282,14 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Submitting with an external form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree. Use `required` to mark the input as required for form validation.
+
+<Example>
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -241,9 +299,13 @@ const service = useMachine(pinInput.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations.inputLabel` to customize screen-reader labels per input.
+
+<Example>
 
 ```tsx
 const service = useMachine(pinInput.machine, {
@@ -253,6 +315,8 @@ const service = useMachine(pinInput.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

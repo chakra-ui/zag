@@ -70,24 +70,32 @@ export const tabs: SidebarTab[] = [
     icon: LuBookOpen,
     groups: [
       {
-        label: "Concepts",
+        label: "Core",
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
           { label: "Collection", id: "collection" },
-          { label: "Programmatic Control", id: "programmatic-control" },
+          { label: "Programmatic control", id: "programmatic-control" },
+          { label: "TypeScript", id: "typescript", new: true },
+        ]),
+      },
+      {
+        label: "Build something",
+        items: docs("guides", [
+          {
+            label: "Panda design system",
+            id: "design-system-with-panda",
+            new: true,
+          },
         ]),
       },
       {
         label: "Advanced",
         items: docs("guides", [
-          { label: "Building Machines", id: "building-machines" },
-          { label: "Framework Adapters", id: "framework-adapters" },
+          { label: "Building machines", id: "building-machines" },
+          { label: "Framework adapters", id: "framework-adapters" },
+          { label: "Migrating to v2", id: "migration" },
         ]),
-      },
-      {
-        label: "Upgrading",
-        items: docs("guides", [{ label: "Migration", id: "migration" }]),
       },
     ],
   },
@@ -121,7 +129,6 @@ export const tabs: SidebarTab[] = [
           { label: "Select", id: "select" },
           { label: "Signature Pad", id: "signature-pad" },
           { label: "Slider", id: "slider" },
-          { label: "Slider (Range)", id: "range-slider" },
           { label: "Switch", id: "switch" },
           { label: "Tags Input", id: "tags-input" },
           { label: "Toggle", id: "toggle" },
@@ -152,7 +159,6 @@ export const tabs: SidebarTab[] = [
           { label: "Floating Panel", id: "floating-panel" },
           { label: "Hover Card", id: "hover-card" },
           { label: "Menu", id: "menu" },
-          { label: "Menu (Nested)", id: "nested-menu" },
           { label: "Popover", id: "popover" },
           { label: "Tooltip", id: "tooltip" },
           { label: "Tour", id: "tour" },
@@ -174,8 +180,7 @@ export const tabs: SidebarTab[] = [
       {
         label: "Feedback",
         items: docs("components", [
-          { label: "Progress (Circular)", id: "circular-progress" },
-          { label: "Progress (Linear)", id: "linear-progress" },
+          { label: "Progress", id: "progress" },
           { label: "Toast", id: "toast" },
         ]),
       },

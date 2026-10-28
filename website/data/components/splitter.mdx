@@ -62,6 +62,8 @@ Ensure the `defaultSize` totals to `100`.
 
 > Note: The splitter only supports setting percentage values.
 
+<Example id="SplitterDefaultSize">
+
 ```tsx {3}
 const service = useMachine(splitter.machine, {
   // ...
@@ -69,9 +71,13 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled panel sizes
 
 Use `size` and `onResize` for controlled layouts.
+
+<Example id="SplitterControlled">
 
 ```tsx
 const service = useMachine(splitter.machine, {
@@ -83,10 +89,14 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for resize events
 
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
 `onResizeEnd` callbacks are invoked.
+
+<Example id="SplitterResizeEvents">
 
 ```tsx {3-10}
 const service = useMachine(splitter.machine, {
@@ -103,11 +113,15 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the orientation
 
 By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
 `vertical`.
+
+<Example id="SplitterVertical">
 
 ```tsx {3}
 const service = useMachine(splitter.machine, {
@@ -116,10 +130,14 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Specifying constraints
 
 Use the `panels` property to specify constraints like `minSize` and `maxSize`
 for the splitter panels.
+
+<Example id="SplitterConstraints">
 
 ```tsx {3-6}
 const service = useMachine(splitter.machine, {
@@ -131,9 +149,13 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Configuring keyboard resize step
 
 Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
+
+<Example id="SplitterKeyboard">
 
 ```tsx
 const service = useMachine(splitter.machine, {
@@ -142,12 +164,16 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the collapsed size
 
 Set the `collapsedSize` and `collapsible` of a panel to specify the collapsed
 size of the panel.
 
 > For best results, ensure you also set the `minSize` of the panel
+
+<Example id="SplitterCollapsible">
 
 ```tsx {4}
 const service = useMachine(splitter.machine, {
@@ -159,6 +185,8 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 This allows the user to drag the splitter to collapse the panel to the
 `collapsedSize`.
 
@@ -166,6 +194,8 @@ This allows the user to drag the splitter to collapse the panel to the
 
 When the splitter panel is collapsed, the `onCollapse` callback is invoked.
 Alternatively, the `onExpand` callback is invoked when the panel is expanded.
+
+<Example id="SplitterCollapseEvents">
 
 ```tsx {3-8}
 const service = useMachine(splitter.machine, {
@@ -179,9 +209,13 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic panel control
 
 Use the connected API to resize, collapse, or expand panels from code.
+
+<Example id="SplitterProgrammatic">
 
 ```tsx
 api.setSizes([30, 70])
@@ -190,6 +224,8 @@ api.collapsePanel("a")
 api.expandPanel("a")
 api.resetSizes()
 ```
+
+</Example>
 
 ### Multi-drag with registry
 
@@ -207,6 +243,8 @@ const registry = splitter.registry()
 Pass the `registry` to each splitter machine that should participate in
 multi-drag:
 
+<Example id="SplitterRegistry">
+
 ```tsx
 const horizontalService = useMachine(splitter.machine, {
   panels: [{ id: "left" }, { id: "right" }],
@@ -220,6 +258,8 @@ const verticalService = useMachine(splitter.machine, {
 })
 ```
 
+</Example>
+
 When a user drags near the intersection of two resize handles, the registry
 detects both handles and resizes them together. The registry also manages the
 cursor globally during intersection dragging.
@@ -227,6 +267,8 @@ cursor globally during intersection dragging.
 ### Registry options
 
 The `splitter.registry()` function accepts optional configuration:
+
+<Example>
 
 ```tsx
 const registry = splitter.registry({
@@ -239,6 +281,8 @@ const registry = splitter.registry({
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

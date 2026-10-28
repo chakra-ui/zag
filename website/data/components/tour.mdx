@@ -73,6 +73,8 @@ the `StepType` type:
 - `"wait"`: A special type that waits for a specific condition before proceeding
   to the next step.
 
+<Example id="TourStepTypes">
+
 ```tsx
 const steps: tour.StepDetails[] = [
   // Tooltip step
@@ -116,15 +118,21 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 ### Resolving a step's target
 
 `target` is called on every position update, so a step keeps up when the page
 swaps its element. Keep it cheap and return a stable reference, since it runs on
 scroll and resize. Returning `null` keeps the last resolved element.
 
+<Example>
+
 ```tsx
 target: () => document.querySelector("#target-1")
 ```
+
+</Example>
 
 ### Configuring actions
 
@@ -144,6 +152,8 @@ function:
   `next`/`previous`/`dismiss`/`skip`/`goto` methods to compose your own
   behavior.
 
+<Example id="TourActions">
+
 ```tsx
 const steps: tour.StepDetails[] = [
   {
@@ -159,6 +169,8 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 **Dismiss vs Skip**
 
 Both `dismiss` and `skip` end the tour and trigger `onStatusChange`, but with a
@@ -168,6 +180,8 @@ intent, for example, to decide whether to show the tour again later.
 ### Changing tooltip placement
 
 Use the `placement` property to define the placement of the tooltip.
+
+<Example id="TourPlacement">
 
 ```tsx {5}
 const steps: tour.StepDetails[] = [
@@ -180,10 +194,14 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 ### Hiding the arrow
 
 Set `arrow: false` in the step property to hide the tooltip arrow. This is only
 useful for tooltip steps.
+
+<Example id="TourHideArrow">
 
 ```tsx {5}
 const steps: tour.StepDetails[] = [
@@ -195,10 +213,14 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 ### Hiding the backdrop
 
 Set `backdrop: false` in the step property to hide the backdrop. This applies to
 all step types except the `wait` step.
+
+<Example id="TourHideBackdrop">
 
 ```tsx {5}
 const steps: tour.StepDetails[] = [
@@ -209,6 +231,8 @@ const steps: tour.StepDetails[] = [
   },
 ]
 ```
+
+</Example>
 
 ### Step Effects
 
@@ -223,6 +247,8 @@ This function provides the following methods:
 - `show()`: Call this method to show the current step.
 - `update(details: Partial<StepBaseDetails>)`: Call this method to update the
   current step details (for example, after data is fetched).
+
+<Example id="TourEffects">
 
 ```tsx
 const steps: tour.StepDetails[] = [
@@ -245,6 +271,8 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 ### Wait Steps
 
 Wait steps are useful when you need to wait for a specific condition before
@@ -254,6 +282,8 @@ Use the step `effect` function to perform an action and then call `next()` to
 move to the next step.
 
 > **Note:** You cannot call `show()` in a wait step.
+
+<Example id="TourWait">
 
 ```tsx
 const steps: tour.StepDetails[] = [
@@ -270,9 +300,13 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
+</Example>
+
 ### Showing progress dots
 
 Use the `api.getProgressPercent()` to show the progress dots.
+
+<Example id="TourProgress">
 
 ```tsx
 const ProgressBar = () => {
@@ -282,6 +316,8 @@ const ProgressBar = () => {
 }
 ```
 
+</Example>
+
 ### Tracking the lifecycle
 
 As the tour is progressed, events are fired and you can track the lifecycle of
@@ -290,6 +326,8 @@ the tour. Here's are the events you can listen to:
 - `onStepChange`: Fires when the current step changes.
 - `onStepsChange`: Fires when the steps array is updated.
 - `onStatusChange`: Fires when the status of the tour changes.
+
+<Example id="TourLifecycle">
 
 ```tsx
 const Lifecycle = () => {
@@ -314,9 +352,13 @@ const Lifecycle = () => {
 }
 ```
 
+</Example>
+
 ### Controlled current step
 
 Use `stepId` and `onStepChange` for controlled navigation.
+
+<Example id="TourControlled">
 
 ```tsx
 const service = useMachine(tour.machine, {
@@ -328,9 +370,13 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic tour control
 
 Use the connected API to drive tour flow from code.
+
+<Example id="TourProgrammatic">
 
 ```tsx
 api.start()
@@ -340,9 +386,13 @@ api.previous()
 api.updateStep("step-2", { title: "Updated title" })
 ```
 
+</Example>
+
 ### Dismiss and interaction behavior
 
 Configure dismissal and page interaction behavior with machine props.
+
+<Example id="TourDismissBehavior">
 
 ```tsx
 const service = useMachine(tour.machine, {
@@ -352,11 +402,15 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+</Example>
+
 ### Exit animations (Presence)
 
 After the tour closes, `api.step` still references the last step so exit
 animations can keep rendering content. Drive visibility with `api.open` (or
 Presence), and read content from `api.step`.
+
+<Example id="TourPresence">
 
 ```tsx
 {
@@ -370,12 +424,16 @@ Presence), and read content from `api.step`.
 }
 ```
 
+</Example>
+
 > Don't treat `api.step === null` as "tour closed". Use `api.open` or
 > `onStatusChange` for that.
 
 ### Customizing progress text
 
 Use `translations.progressText` to customize the progress message.
+
+<Example>
 
 ```tsx
 const service = useMachine(tour.machine, {
@@ -384,6 +442,8 @@ const service = useMachine(tour.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

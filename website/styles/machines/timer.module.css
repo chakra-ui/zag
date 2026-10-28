@@ -1,56 +1,78 @@
 @layer recipes {
   .Root {
-    margin-top: 40px;
     display: inline-flex;
     flex-direction: column;
-    gap: 1rem;
     align-items: center;
+    gap: 1rem;
   }
 
   .Area {
     display: inline-flex;
-    gap: 0.25rem;
     align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg);
+  }
+
+  .Group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .Item {
+    min-width: 2ch;
+    font-family: var(--fonts-mono);
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
   }
 
   .Separator {
-    font-size: 2rem;
+    font-family: var(--fonts-mono);
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--colors-fg-subtle);
   }
 
   .Control {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
+    gap: 0.5rem;
   }
 
   .Button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    border-width: 1px;
-    background: var(--colors-bg-subtle);
-  }
+    cursor: pointer;
+    transition: border-color 150ms ease-out;
 
-  .Item {
-    height: 1em;
-    display: inline-block;
-    overflow-y: hidden;
-    font-size: 3rem;
-    line-height: 1em;
-    font-variation-settings: "tnum";
-    text-align: center;
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
 
-    &::before {
-      position: relative;
-      content: "00\a 01\a 02\a 03\a 04\a 05\a 06\a 07\a 08\a 09\a 10\a 11\a 12\a 13\a 14\a 15\a 16\a 17\a 18\a 19\a 20\a 21\a 22\a 23\a 24\a 25\a 26\a 27\a 28\a 29\a 30\a 31\a 32\a 33\a 34\a 35\a 36\a 37\a 38\a 39\a 40\a 41\a 42\a 43\a 44\a 45\a 46\a 47\a 48\a 49\a 50\a 51\a 52\a 53\a 54\a 55\a 56\a 57\a 58\a 59\a 60\a 61\a 62\a 63\a 64\a 65\a 66\a 67\a 68\a 69\a 70\a 71\a 72\a 73\a 74\a 75\a 76\a 77\a 78\a 79\a 80\a 81\a 82\a 83\a 84\a 85\a 86\a 87\a 88\a 89\a 90\a 91\a 92\a 93\a 94\a 95\a 96\a 97\a 98\a 99\a";
-      white-space: pre;
-      top: calc(var(--value) * -1em);
-      text-align: center;
-      transition: top 1s cubic-bezier(1, 0, 0, 1);
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+
+    &[hidden] {
+      display: none;
     }
   }
 }

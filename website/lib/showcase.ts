@@ -3,6 +3,7 @@ export interface ShowcaseItem {
   description: string
   href: string
   image: string
+  featured?: true
 }
 
 export const showcaseItems: ShowcaseItem[] = [
@@ -11,6 +12,7 @@ export const showcaseItems: ShowcaseItem[] = [
     description: "Create accessible React apps with speed",
     href: "https://chakra-ui.com",
     image: "/showcase/chakra-ui.png",
+    featured: true,
   },
   {
     name: "Harmonizer",
@@ -23,6 +25,7 @@ export const showcaseItems: ShowcaseItem[] = [
     description: "Headless component library for any framework",
     href: "https://ark-ui.com",
     image: "/showcase/ark-ui.png",
+    featured: true,
   },
   {
     name: "Wallet UI",
@@ -35,6 +38,7 @@ export const showcaseItems: ShowcaseItem[] = [
     description: "Build your own Design System with Panda and Ark UI",
     href: "https://park-ui.com",
     image: "/showcase/park-ui.png",
+    featured: true,
   },
   {
     name: "Skeleton",

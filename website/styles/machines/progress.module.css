@@ -3,29 +3,74 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    width: 16rem;
+    max-width: 100%;
+    color: var(--colors-fg);
+    font-size: 0.875rem;
 
     &.Centre {
+      width: auto;
+      align-items: center;
+    }
+
+    &[data-orientation="vertical"] {
+      width: auto;
       align-items: center;
     }
   }
 
+  .Header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+
+    [data-orientation="vertical"] > & {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.125rem;
+    }
+  }
+
+  .Label {
+    font-weight: 500;
+  }
+
+  .ValueText {
+    font-family: var(--fonts-mono);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--colors-fg-muted);
+  }
+
   .Track {
-    border-width: 1px;
-    height: 12px;
-    border-radius: 0.125rem;
-    background: var(--colors-bg-muted);
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--colors-bg-control);
+    box-shadow: inset 0 0 0 1px var(--colors-border);
     overflow: hidden;
+
+    [data-orientation="vertical"] > & {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: 8px;
+      height: 8rem;
+    }
   }
 
   .Range {
     --translate-x: -100%;
     height: 100%;
-    transition: width 0.2s ease-in-out;
-    background: #38a169;
+    border-radius: inherit;
+    background: var(--colors-accent);
 
     &[dir="rtl"] {
       --translate-x: 100%;
+    }
+
+    &[data-orientation="vertical"] {
+      width: 100%;
     }
 
     &[data-state="indeterminate"] {
@@ -45,9 +90,8 @@
   }
 
   .CircleRange {
-    stroke: #38a169;
-    transition-property: stroke-dasharray, stroke;
-    transition-duration: 0.6s;
+    stroke: var(--colors-accent);
+    stroke-linecap: round;
 
     &[data-state="indeterminate"] {
       animation: circle_range 1.5s ease-in-out infinite;
@@ -55,11 +99,13 @@
   }
 
   .CircleTrack {
-    stroke: var(--colors-bg-muted);
+    stroke: var(--colors-bg-control);
   }
 
   .ButtonGroup {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem;
   }
 
@@ -67,16 +113,52 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
+    cursor: pointer;
 
     &:hover {
-      background: var(--colors-bg-bold);
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .Range {
+      transition:
+        width 200ms ease-out,
+        height 200ms ease-out;
+    }
+
+    .CircleRange {
+      transition-property: stroke-dasharray, stroke;
+      transition-duration: 0.6s;
+    }
+
+    .Button {
+      transition: border-color 150ms ease-out;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Range[data-state="indeterminate"] {
+      width: 40%;
+      animation: none;
+    }
+
+    .Circle[data-state="indeterminate"],
+    .CircleRange[data-state="indeterminate"] {
+      animation: none;
     }
   }
 

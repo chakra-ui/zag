@@ -54,6 +54,8 @@ Then use the framework integration helpers:
 Use the `collection` function to create a tree collection. This creates a tree
 factory that the component uses for traversal.
 
+<Example>
+
 ```ts
 import * as tree from "@zag-js/tree-view"
 
@@ -91,11 +93,17 @@ const collection = tree.collection<Node>({
 })
 ```
 
+</Example>
+
 ### Create the tree view
 
 Pass the tree collection to the machine to create the tree view.
 
+<Example id="TreeViewBasic">
+
 <CodeSnippet id="tree-view/usage.mdx" />
+
+</Example>
 
 ### Expanding and Collapsing Nodes
 
@@ -105,6 +113,8 @@ and `api.collapse` methods.
 
 > **Note:** The array parameter contains individual node values/IDs, not paths.
 > All nodes specified in the array will be collapsed or expanded.
+
+<Example id="TreeViewExpandCollapse">
 
 ```tsx
 api.expand(["node_modules/zag-js"]) // expand a single node by its value/ID
@@ -116,10 +126,14 @@ api.collapse(["node_modules/@types", "node_modules/pandacss"]) // collapse multi
 api.collapse() // collapse all nodes
 ```
 
+</Example>
+
 ### Multiple selection
 
 The tree view supports multiple selection. To enable this, set the
 `selectionMode` to `multiple`.
+
+<Example id="TreeViewMultiple">
 
 ```tsx {2}
 const service = useMachine(tree.machine, {
@@ -127,9 +141,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the default expanded nodes
 
 To set the default expanded nodes, use `defaultExpandedValue`.
+
+<Example id="TreeViewDefaultExpanded">
 
 ```tsx {2}
 const service = useMachine(tree.machine, {
@@ -137,9 +155,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the default selected nodes
 
 To set the default selected nodes, use `defaultSelectedValue`.
+
+<Example id="TreeViewDefaultSelected">
 
 ```tsx {2}
 const service = useMachine(tree.machine, {
@@ -147,9 +169,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled expanded and selected values
 
 Use controlled props when expansion or selection is managed externally.
+
+<Example id="TreeViewControlled">
 
 ```tsx
 const service = useMachine(tree.machine, {
@@ -165,23 +191,29 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Indentation Guide
 
 When rendering a branch node in the tree view, you can render the `indentGuide`
-element by using the `api.getBranchIndentGuideProps()` function.
+element by using the `api.getIndentGuideProps()` function.
 
-```tsx {9}
-<div {...api.getBranchProps(nodeProps)}>
-  <div {...api.getBranchControlProps(nodeProps)}>
-    <FolderIcon />
-    {node.name}
-    <span {...api.getBranchIndicatorProps(nodeProps)}>
-      <ChevronRightIcon />
-    </span>
+<Example id="TreeViewIndentGuide">
+
+```tsx {14}
+<div {...api.getNodeGroupProps(nodeProps)}>
+  <div {...api.getNodeProps(nodeProps)}>
+    <div {...api.getNodeCellProps(nodeProps)}>
+      <FolderIcon />
+      <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+      <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+        <ChevronRightIcon />
+      </span>
+    </div>
   </div>
-  <div {...api.getBranchContentProps(nodeProps)}>
-    <div {...api.getBranchIndentGuideProps(nodeProps)} />
-    {node.children.map((childNode, index) => (
+  <div {...api.getNodeGroupContentProps(nodeProps)}>
+    <div {...api.getIndentGuideProps(nodeProps)} />
+    {node.children?.map((childNode, index) => (
       <TreeNode
         key={childNode.id}
         node={childNode}
@@ -193,10 +225,14 @@ element by using the `api.getBranchIndentGuideProps()` function.
 </div>
 ```
 
+</Example>
+
 ### Listening for selection
 
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
+
+<Example id="TreeViewSelectionChange">
 
 ```tsx {2-5}
 const service = useMachine(tree.machine, {
@@ -207,10 +243,14 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for expanding and collapsing
 
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
+
+<Example id="TreeViewExpandedChange">
 
 ```tsx {2-5}
 const service = useMachine(tree.machine, {
@@ -221,9 +261,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for focus and checked changes
 
 Use `onFocusChange` and `onCheckedChange` when you need focus/checkbox state.
+
+<Example id="TreeViewChecked">
 
 ```tsx
 const service = useMachine(tree.machine, {
@@ -238,9 +282,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic tree control
 
 Use the connected API for imperative interactions.
+
+<Example id="TreeViewProgrammatic">
 
 ```tsx
 api.expand(["node_modules"])
@@ -251,9 +299,13 @@ api.focus("node_modules")
 api.toggleChecked("node_modules", true)
 ```
 
+</Example>
+
 ### Controlling branch click behavior
 
 Set `expandOnClick` to control whether clicking a branch toggles expansion.
+
+<Example id="TreeViewNoExpandOnClick">
 
 ```tsx
 const service = useMachine(tree.machine, {
@@ -262,9 +314,13 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling typeahead
 
 Set `typeahead` to disable keyboard typeahead matching.
+
+<Example id="TreeViewNoTypeahead">
 
 ```tsx
 const service = useMachine(tree.machine, {
@@ -272,6 +328,8 @@ const service = useMachine(tree.machine, {
   typeahead: false,
 })
 ```
+
+</Example>
 
 ### Lazy Loading
 
@@ -288,6 +346,8 @@ To use this, you need to provide the following:
 - `onLoadChildrenError` — A callback that is called when loading fails.
 - `childrenCount` — A number that indicates the number of children of a branch
   node.
+
+<Example id="TreeViewLazy">
 
 ```tsx
 function TreeAsync() {
@@ -327,6 +387,8 @@ function TreeAsync() {
 }
 ```
 
+</Example>
+
 ### Renaming Nodes
 
 The tree view supports renaming node labels inline, perfect for file explorers,
@@ -337,13 +399,21 @@ To enable renaming:
 
 1. Add the rename input to your tree node component
 2. Handle the `onRenameComplete` callback to update your collection
+3. Pass `canRename` — `F2` only enters rename mode when it is set and returns
+   `true` for the node
+
+<Example id="TreeViewRename">
 
 <CodeSnippet id="tree-view/rename.mdx" />
+
+</Example>
 
 ### Controlling which nodes can be renamed
 
 Use the `canRename` callback to control which nodes are renameable based on node
 type or custom logic.
+
+<Example id="TreeViewCanRename">
 
 ```tsx {3-6}
 const service = useMachine(tree.machine, {
@@ -355,10 +425,14 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Validating rename input
 
 Use the `onBeforeRename` callback to validate the new name before accepting the
 change. Return `false` to reject the rename.
+
+<Example id="TreeViewBeforeRename">
 
 ```tsx {3-14}
 const service = useMachine(tree.machine, {
@@ -377,10 +451,14 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+</Example>
+
 ### Tracking rename events
 
 Use the `onRenameStart` callback to track when users start renaming, useful for
 analytics or showing contextual hints.
+
+<Example id="TreeViewRenameStart">
 
 ```tsx {3-6}
 const service = useMachine(tree.machine, {
@@ -391,6 +469,8 @@ const service = useMachine(tree.machine, {
   },
 })
 ```
+
+</Example>
 
 **Features:**
 
@@ -406,8 +486,9 @@ const service = useMachine(tree.machine, {
 
 ### Checked state
 
-When using checkbox selection (`onCheckedChange`), node and node checkbox
-elements expose `data-checked` and `data-indeterminate` attributes for styling.
+When using checkbox selection (`onCheckedChange`), node elements expose
+`data-checked` and `data-indeterminate` attributes, and node checkbox elements
+expose `data-state="checked" | "unchecked" | "indeterminate"` for styling.
 
 ```css
 [data-tree-view-node][data-checked] {
@@ -418,11 +499,11 @@ elements expose `data-checked` and `data-indeterminate` attributes for styling.
   /* styles for partially checked items (some children selected) */
 }
 
-[data-tree-view-node-checkbox][data-checked] {
+[data-tree-view-node-checkbox][data-state="checked"] {
   /* styles for fully checked branches */
 }
 
-[data-tree-view-node-checkbox][data-indeterminate] {
+[data-tree-view-node-checkbox][data-state="indeterminate"] {
   /* styles for partially checked branches */
 }
 ```

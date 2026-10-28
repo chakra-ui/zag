@@ -1,9 +1,10 @@
 @layer recipes {
   .Root {
     width: 100%;
-    max-width: 400px;
+    max-width: 460px;
     display: flex;
-    gap: 16px;
+    gap: 1rem;
+    font-size: 0.875rem;
 
     &[data-orientation="vertical"] {
       flex-direction: row;
@@ -17,13 +18,15 @@
   .List {
     display: flex;
     justify-content: space-between;
-    --steps-gutter: 12px;
-    --steps-size: 24px;
-    --steps-icon-size: 20px;
+    --steps-gutter: 10px;
+    --steps-size: 26px;
+    --steps-icon-size: 16px;
 
     &[data-orientation="vertical"] {
       flex-direction: column;
       align-items: flex-start;
+      gap: 1.25rem;
+      flex-shrink: 0;
     }
 
     &[data-orientation="horizontal"] {
@@ -34,25 +37,30 @@
 
   .Separator {
     flex: 1;
-    background-color: var(--colors-border-bold);
+    background-color: var(--colors-border-strong);
+    border-radius: 2px;
+    transition: background-color 200ms ease-out;
 
     &[data-orientation="vertical"] {
       position: absolute;
       width: 2px;
       height: 100%;
-      max-height: calc(100% - var(--steps-size) - var(--steps-gutter) * 2);
+      max-height: calc(
+        100% - var(--steps-size) - var(--steps-gutter) * 2 + 1.25rem
+      );
       top: calc(var(--steps-size) + var(--steps-gutter));
       inset-inline-start: calc(var(--steps-size) / 2 - 1px);
     }
 
     &[data-orientation="horizontal"] {
       width: 100%;
+      min-width: 1rem;
       height: 2px;
       margin-inline: var(--steps-gutter);
     }
 
     &[data-complete] {
-      background-color: var(--colors-border-bold);
+      background-color: var(--colors-accent);
     }
   }
 
@@ -62,9 +70,17 @@
     align-items: center;
     flex-shrink: 0;
     border-radius: 9999px;
+    font-size: 0.75rem;
     font-weight: 600;
     width: var(--steps-size);
     height: var(--steps-size);
+    border: 1px solid var(--colors-border-strong);
+    background: var(--colors-bg-control);
+    color: var(--colors-fg-muted);
+    transition:
+      background 150ms ease-out,
+      border-color 150ms ease-out,
+      color 150ms ease-out;
 
     & svg {
       flex-shrink: 0;
@@ -72,23 +88,26 @@
       height: var(--steps-icon-size);
     }
 
-    &[data-incomplete] {
-      border-width: 2px;
-    }
-
     &[data-current] {
-      background-color: var(--colors-bg-primary-subtle);
-      border-width: 2px;
-      border-color: var(--colors-bg-primary-subtle);
-      color: white;
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+      border-color: var(--colors-accent);
+      background: var(--colors-accent-tint);
+      color: var(--colors-accent);
     }
 
     &[data-complete] {
-      background-color: var(--colors-bg-primary-subtle);
-      border-color: var(--colors-bg-primary-subtle);
-      color: white;
+      border-color: var(--colors-accent);
+      background: var(--colors-accent);
+      color: var(--colors-bg-raised);
+    }
+
+    &[data-invalid] {
+      border-color: var(--colors-fg-subtle);
+      border-style: dashed;
+    }
+
+    &[data-skipped] {
+      border-style: dashed;
+      color: var(--colors-fg-subtle);
     }
   }
 
@@ -117,45 +136,163 @@
   .Trigger {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.625rem;
     text-align: start;
-    border-radius: 5px;
-
-    &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
-    }
-  }
-
-  .Content {
-    min-height: 80px;
-    padding: 16px;
-    border-width: 1px;
-    background: var(--colors-bg-subtle);
-  }
-
-  .NextTrigger,
-  .PrevTrigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    border-radius: 8px;
+    color: var(--colors-fg-muted);
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-primary-subtle);
-    color: var(--colors-text-inverse);
-    margin-inline-end: 6px;
+    cursor: pointer;
+
+    &[data-current] {
+      color: var(--colors-fg);
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
     &[disabled] {
-      opacity: 0.5;
-      filter: grayscale(100%);
+      cursor: not-allowed;
+    }
+
+    &[data-locked] {
+      opacity: 0.6;
+    }
+  }
+
+  .Label {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+  }
+
+  .Description {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--colors-fg-subtle);
+  }
+
+  .Panels {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .Content {
+    min-height: 80px;
+    padding: 1rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg-muted);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .Field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    color: var(--colors-fg);
+    font-weight: 500;
+
+    & input {
+      height: 2.25rem;
+      padding-inline: 0.75rem;
+      border: 1px solid var(--colors-border-strong);
+      border-radius: 8px;
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
+      font-weight: 400;
+
+      &:focus-visible {
+        outline: 2px solid var(--colors-accent);
+        outline-offset: 1px;
+      }
+    }
+  }
+
+  .Actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .NextTrigger,
+  .PrevTrigger,
+  .SkipTrigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 500;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    margin-inline-end: 6px;
+    transition: border-color 150ms ease-out;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+
+    &[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        border-color: var(--colors-border-strong);
+      }
+    }
+  }
+
+  .Actions > .NextTrigger,
+  .Actions > .PrevTrigger,
+  .Actions > .SkipTrigger {
+    margin-inline-end: 0;
+  }
+
+  .NextTrigger {
+    border-color: var(--colors-accent);
+    background: var(--colors-accent);
+    color: var(--colors-bg-raised);
+
+    &:hover {
+      border-color: var(--colors-accent);
+      filter: brightness(1.08);
+    }
+  }
+
+  .SkipTrigger {
+    border-color: transparent;
+    background: transparent;
+    color: var(--colors-fg-muted);
+
+    &:hover {
+      color: var(--colors-fg);
+      border-color: transparent;
+      background: var(--colors-bg-control);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Indicator,
+    .Separator {
+      transition: none;
     }
   }
 }

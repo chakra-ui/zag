@@ -69,6 +69,8 @@ and drops whatever roll was in flight.
 
 Set `defaultValue` to render a starting value without controlling it.
 
+<Example id="NumberFlowInitialValue">
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
@@ -76,9 +78,13 @@ const service = useMachine(numberFlow.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling the value
 
 Use `value` and `onValueChange` to drive the number from your own state.
+
+<Example id="NumberFlowControlled">
 
 ```tsx {3-7}
 const service = useMachine(numberFlow.machine, {
@@ -91,10 +97,14 @@ const service = useMachine(numberFlow.machine, {
 })
 ```
 
+</Example>
+
 ### Formatting the value
 
 Pass `formatOptions` straight through to `Intl.NumberFormat`, and `locale` to
 pick the numeral system and separators.
+
+<Example id="NumberFlowFormat">
 
 ```tsx {3-4}
 const service = useMachine(numberFlow.machine, {
@@ -103,6 +113,8 @@ const service = useMachine(numberFlow.machine, {
   formatOptions: { style: "currency", currency: "EUR" },
 })
 ```
+
+</Example>
 
 Non-Latin numeral systems work the same way. The strip renders the locale's own
 glyphs, so `ar-EG` rolls through `٠` to `٩`.
@@ -119,6 +131,8 @@ const service = useMachine(numberFlow.machine, {
 Use `prefix` and `suffix` for text that sits outside the formatted number and
 never rolls.
 
+<Example id="NumberFlowAffix">
+
 ```tsx {3-4}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
@@ -126,6 +140,8 @@ const service = useMachine(numberFlow.machine, {
   suffix: " req/s",
 })
 ```
+
+</Example>
 
 Both are included in `api.valueText`, so screen readers announce them.
 
@@ -137,12 +153,16 @@ one step instead of backward nine.
 Set `trend` to `true` to make every digit roll in the direction the value moved,
 or to `1` or `-1` to force a direction regardless.
 
+<Example id="NumberFlowTrend">
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
   trend: true,
 })
 ```
+
+</Example>
 
 > Under sustained input faster than `spinTiming.duration`, a digit will
 > occasionally take the short way round instead of the `trend` direction. This
@@ -155,12 +175,16 @@ Set `continuous` to spin through the intermediate values instead of taking the
 nearest path. A change from `0` to `12` rolls the ones digit twelve cells rather
 than two.
 
+<Example id="NumberFlowContinuous">
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
   continuous: true,
 })
 ```
+
+</Example>
 
 Large jumps are capped at what the strip can show, so the digit spins fewer
 times rather than blanking. It always comes to rest on the correct value.
@@ -170,6 +194,8 @@ times rather than blanking. It always comes to rest on the correct value.
 `spinTiming` controls the digit roll. `transformTiming` controls layout changes,
 which is what runs when a digit enters or exits.
 
+<Example id="NumberFlowTiming">
+
 ```tsx {3-4}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
@@ -177,6 +203,8 @@ const service = useMachine(numberFlow.machine, {
   transformTiming: { duration: "300ms", easing: "ease-out" },
 })
 ```
+
+</Example>
 
 Both take CSS values, not numbers, because the animation runs as a CSS
 transition rather than in JavaScript.
@@ -186,6 +214,8 @@ transition rather than in JavaScript.
 Set `stagger` to delay each digit against the one to its left, so the number
 settles from most significant to least.
 
+<Example id="NumberFlowStagger">
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
@@ -193,11 +223,15 @@ const service = useMachine(numberFlow.machine, {
 })
 ```
 
+</Example>
+
 ### Reacting to the animation
 
 `onAnimationStart` fires once when a roll begins, and `onAnimationComplete` once
 when every digit has settled. A burst of value changes that lands mid-roll
 counts as one animation, not one per change.
+
+<Example id="NumberFlowAnimationEvents">
 
 ```tsx {3-9}
 const service = useMachine(numberFlow.machine, {
@@ -212,6 +246,8 @@ const service = useMachine(numberFlow.machine, {
 })
 ```
 
+</Example>
+
 `places` holds the decimal place of each digit that moved. Place `0` is the ones
 column, `-1` the first fraction digit.
 
@@ -225,12 +261,16 @@ Set `live` to announce changes as they happen instead. The value is announced
 once the roll settles, so a fast counter does not flood the screen reader with
 every intermediate value.
 
+<Example>
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
   live: true,
 })
 ```
+
+</Example>
 
 Render `api.announcedValueText` inside `getValueTextProps()`. It holds the
 settled value, which is what makes the debounce work.
@@ -240,12 +280,16 @@ settled value, which is what makes the debounce work.
 When the user prefers reduced motion, the value snaps into place instead of
 rolling. Set `respectMotionPreference` to `false` to roll anyway.
 
+<Example>
+
 ```tsx {3}
 const service = useMachine(numberFlow.machine, {
   id: useId(),
   respectMotionPreference: false,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

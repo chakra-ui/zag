@@ -53,6 +53,8 @@ Then use the framework integration helpers:
 The image loading status is `loading`, `loaded`, or `error`. Read the current
 value from `api.status`, or react to changes with `onStatusChange`.
 
+<Example id="AvatarStatus">
+
 ```tsx {2}
 const service = useMachine(avatar.machine, {
   onStatusChange(details) {
@@ -60,6 +62,8 @@ const service = useMachine(avatar.machine, {
   },
 })
 ```
+
+</Example>
 
 ### Updating the image source
 
@@ -70,11 +74,15 @@ reacts, resetting to `loading` and then to `loaded` or `error`.
 This holds for `srcSet` and `<picture>` too, since the machine watches the
 element rather than a value you hand it.
 
+<Example id="AvatarSource">
+
 ```tsx
 const [src, setSrc] = useState(initialSrc)
 
 <img alt="" src={src} {...api.getImageProps()} />
 ```
+
+</Example>
 
 Two cases the machine already covers, so you don't have to:
 

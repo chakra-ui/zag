@@ -1,38 +1,144 @@
 @layer recipes {
   .Root {
-    width: 400px;
-    background: var(--colors-bg-bold);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    overflow: hidden;
+
+    &[data-orientation="horizontal"] {
+      display: flex;
+      align-items: stretch;
+      max-width: 560px;
+    }
   }
 
   .Item {
-    border-bottom-width: 1px;
-    border-color: var(--colors-border-bold);
     font-size: 0.875rem;
+
+    & + & {
+      border-top: 1px solid var(--colors-border);
+    }
+
+    &[data-orientation="horizontal"] {
+      flex: 1;
+      min-width: 0;
+
+      & + & {
+        border-top: 0;
+        border-inline-start: 1px solid var(--colors-border);
+      }
+
+      &[data-state="open"] {
+        flex: 2;
+      }
+    }
   }
 
   .ItemTrigger {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.75rem;
+    align-items: center;
     width: 100%;
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
     text-align: start;
+    color: var(--colors-fg);
     cursor: pointer;
+    transition: background 150ms ease-out;
 
     & div:nth-child(1) {
-      font-weight: 600;
+      font-weight: 500;
     }
 
     & div:nth-child(2) {
+      grid-row: 2;
       font-size: 0.75rem;
-      color: var(--colors-text-subtle);
+      color: var(--colors-fg-subtle);
+    }
+
+    &:hover {
+      background: var(--colors-bg-control);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+      outline: 2px solid var(--colors-accent);
+      outline-offset: -2px;
+    }
+
+    &[data-state="open"] div:nth-child(1) {
+      color: var(--colors-accent);
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+
+  .ItemIndicator {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    font-size: 0.75rem;
+    color: var(--colors-fg-subtle);
+    transition: rotate 150ms ease-out;
+
+    &[data-state="open"] {
+      rotate: 180deg;
+      color: var(--colors-accent);
+    }
+
+    &[data-orientation="horizontal"] {
+      rotate: -90deg;
+
+      &[dir="rtl"] {
+        rotate: 90deg;
+      }
+
+      &[data-state="open"] {
+        rotate: 0deg;
+      }
     }
   }
 
   .ItemContent {
     width: 100%;
-    padding: 0.5rem 0.75rem;
+    padding: 0 1rem 0.875rem;
+    color: var(--colors-fg-muted);
+    line-height: 1.6;
+
+    &[data-state="open"] {
+      animation: accordion-in 160ms ease-out;
+    }
+
+    &[hidden] {
+      padding-block: 0;
+    }
+  }
+}
+
+@keyframes accordion-in {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ItemContent[data-state="open"] {
+    animation: none;
+  }
+
+  .ItemIndicator {
+    transition: none;
   }
 }

@@ -1,17 +1,19 @@
 @layer recipes {
   .Form {
     width: 100%;
-    max-width: 360px;
+    max-width: 22rem;
   }
 
   .Root {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.875rem;
     width: 100%;
-    padding: 1rem;
-    border-width: 1px;
-    border-radius: 8px;
+    max-width: 22rem;
+    padding: 1rem 1.125rem 1.125rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
 
     &[data-invalid] {
       border-color: var(--colors-border-error);
@@ -23,18 +25,21 @@
   }
 
   .Legend {
-    font-size: 0.95rem;
+    padding-inline: 0.375rem;
+    margin-inline-start: -0.375rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    padding-inline: 0.25rem;
+    color: var(--colors-fg);
   }
 
   .HelperText {
-    font-size: 0.8125rem;
-    color: var(--colors-text-muted);
+    margin-block-start: -0.375rem;
+    font-size: 0.75rem;
+    color: var(--colors-fg-subtle);
   }
 
   .ErrorText {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--colors-text-error);
   }
 
@@ -45,29 +50,55 @@
   }
 
   .Label {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
+    color: var(--colors-fg-muted);
+  }
+
+  .Option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--colors-fg);
+    cursor: pointer;
+
+    & input {
+      accent-color: var(--colors-accent);
+    }
   }
 
   .Input {
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
     width: 100%;
-    height: 40px;
-    font-size: 0.9375rem;
+    height: 2.25rem;
     padding-inline: 0.75rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+    transition: border-color 150ms ease-out;
+
+    &::placeholder {
+      color: var(--colors-fg-subtle);
+    }
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
 
     &:focus {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+      outline: none;
+      border-color: var(--colors-accent);
+      box-shadow: 0 0 0 1px var(--colors-accent);
     }
 
     &[data-invalid] {
       border-color: var(--colors-border-error);
+      box-shadow: none;
     }
 
     &[data-disabled] {
-      opacity: 0.5;
       cursor: not-allowed;
     }
   }
@@ -77,28 +108,29 @@
   }
 
   .FieldError {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--colors-text-error);
   }
 
   .Submit {
     width: 100%;
+    height: 2.25rem;
     margin-block-start: 0.25rem;
-    height: 40px;
     padding-inline: 1rem;
-    border-radius: 6px;
-    background: var(--colors-bg-primary-bold);
-    color: var(--colors-text-inverse);
+    border: 1px solid var(--colors-accent);
+    border-radius: 8px;
+    background: var(--colors-accent-tint);
+    color: var(--colors-accent);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
 
     &:hover {
-      opacity: 0.9;
+      background: var(--colors-accent-solid);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
@@ -106,5 +138,11 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Input {
+    transition: none;
   }
 }

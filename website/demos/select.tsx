@@ -30,25 +30,27 @@ export function Select(props: SelectProps) {
       </div>
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul className={styles.Content} {...api.getContentProps()}>
-            {data.map((item) => (
-              <li
-                className={styles.Item}
-                key={item.value}
-                {...api.getItemProps({ item })}
-              >
-                <span
-                  className={styles.ItemText}
-                  {...api.getItemTextProps({ item })}
+          <div className={styles.Content} {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {data.map((item) => (
+                <li
+                  className={styles.Item}
+                  key={item.value}
+                  {...api.getItemProps({ item })}
                 >
-                  {item.label}
-                </span>
-                <span {...api.getItemIndicatorProps({ item })}>
-                  <MdCheck />
-                </span>
-              </li>
-            ))}
-          </ul>
+                  <span
+                    className={styles.ItemText}
+                    {...api.getItemTextProps({ item })}
+                  >
+                    {item.label}
+                  </span>
+                  <span {...api.getItemIndicatorProps({ item })}>
+                    <MdCheck />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Portal>
     </div>

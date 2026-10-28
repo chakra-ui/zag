@@ -64,15 +64,21 @@ Then use the framework integration helpers:
 To set the initial size of the floating panel, you can pass the `defaultSize`
 prop to the machine.
 
+<Example id="FloatingPanelInitialSize">
+
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
   defaultSize: { width: 300, height: 300 },
 })
 ```
 
+</Example>
+
 #### Controlling the size
 
 Use `size` and `onSizeChange` to control size externally.
+
+<Example id="FloatingPanelControlledSize">
 
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
@@ -84,10 +90,14 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Disable resizing
 
 By default, the panel can be resized by dragging its edges (resize handles). To
 disable this behavior, set the `resizable` prop to `false`.
+
+<Example id="FloatingPanelDisableResize">
 
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
@@ -95,10 +105,14 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Setting size constraints
 
 You can also control the minimum allowed dimensions of the panel by using the
 `minSize` and `maxSize` props.
+
+<Example id="FloatingPanelSizeConstraints">
 
 ```tsx {2,3}
 const service = useMachine(floatingPanel.machine, {
@@ -107,17 +121,23 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 ### Aspect ratio
 
 To lock the aspect ratio of the floating panel, set the `lockAspectRatio` prop.
 This will ensure the panel maintains a consistent aspect ratio while being
 resized.
 
+<Example id="FloatingPanelAspectRatio">
+
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
   lockAspectRatio: true,
 })
 ```
+
+</Example>
 
 ### Positioning
 
@@ -127,17 +147,23 @@ To specify the initial position of the floating panel, use the `defaultPosition`
 prop. If `defaultPosition` is not provided, the floating panel will be initially
 positioned at the center of the viewport.
 
+<Example id="FloatingPanelInitialPosition">
+
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
   defaultPosition: { x: 500, y: 200 },
 })
 ```
 
+</Example>
+
 #### Anchor position
 
 An alternative to setting the initial position is to provide a function that
 returns the anchor position. This function is called when the panel is opened
 and receives the `triggerRect` and `boundaryRect`.
+
+<Example id="FloatingPanelAnchorPosition">
 
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
@@ -150,10 +176,14 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Controlling the position
 
 To control the position of the floating panel programmatically, you can pass the
 `position` and `onPositionChange` prop to the machine.
+
+<Example id="FloatingPanelControlledPosition">
 
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
@@ -165,10 +195,14 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Disable dragging
 
 The floating panel enables you to set its position and move it by dragging. To
 disable this behavior, set the `draggable` prop to `false`.
+
+<Example id="FloatingPanelDisableDrag">
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
@@ -176,9 +210,13 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Controlling positioning strategy
 
 Use `strategy` to control positioning behavior (`fixed` or `absolute`).
+
+<Example id="FloatingPanelStrategy">
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
@@ -186,9 +224,13 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Snapping to a grid
 
 Use `gridSize` to snap drag and resize interactions to a grid.
+
+<Example id="FloatingPanelGrid">
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
@@ -196,15 +238,21 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Allowing overflow outside boundaries
 
 Set `allowOverflow` to `true` to let the panel move outside boundary limits.
+
+<Example id="FloatingPanelOverflow">
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
   allowOverflow: true,
 })
 ```
+
+</Example>
 
 ### Events
 
@@ -215,6 +263,8 @@ The floating panel generates a variety of events that you can handle.
 When the floating panel is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
 
+<Example id="FloatingPanelOpenChange">
+
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
   onOpenChange(details) {
@@ -224,12 +274,16 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Position Change
 
 When the position of the floating panel changes, these callbacks are invoked:
 
 - `onPositionChange` — When the position of the floating panel changes.
 - `onPositionChangeEnd` — When the position of the floating panel changes ends.
+
+<Example id="FloatingPanelPositionChange">
 
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
@@ -244,12 +298,16 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 #### Resize
 
 When the size of the floating panel changes, these callbacks are invoked:
 
 - `onSizeChange` — When the panel size changes.
 - `onSizeChangeEnd` — When panel resizing ends.
+
+<Example id="FloatingPanelResize">
 
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
@@ -263,6 +321,8 @@ const service = useMachine(floatingPanel.machine, {
   },
 })
 ```
+
+</Example>
 
 #### Minimizing and Maximizing
 
@@ -280,6 +340,8 @@ respective buttons in the header. We refer to this as the panel's `stage`.
 
 When the stage changes, the `onStageChange` callback is invoked.
 
+<Example id="FloatingPanelStage">
+
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
   onStageChange(details) {
@@ -289,10 +351,14 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 ### Persisting size and position when closed
 
 Set `persistRect` to `true` to preserve size and position across close and
 reopen.
+
+<Example id="FloatingPanelPersist">
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
@@ -300,9 +366,13 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations` to customize stage control labels.
+
+<Example>
 
 ```tsx
 const service = useMachine(floatingPanel.machine, {
@@ -313,6 +383,8 @@ const service = useMachine(floatingPanel.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

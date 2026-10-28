@@ -71,6 +71,8 @@ Use `api.getSegments()` to get the list of date segments. Each segment has a
 `type` (e.g., `"month"`, `"day"`, `"year"`, `"literal"`) and a `text` property
 for display.
 
+<Example id="DateInputSegments">
+
 ```tsx
 <div {...api.getControlProps()}>
   <div {...api.getSegmentGroupProps()}>
@@ -82,6 +84,8 @@ for display.
   </div>
 </div>
 ```
+
+</Example>
 
 For range mode, pass the `index` to distinguish start and end date segments:
 
@@ -111,15 +115,21 @@ For range mode, pass the `index` to distinguish start and end date segments:
 
 To set the initial value rendered by the date input, set `defaultValue`.
 
+<Example id="DateInputInitialValue">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   defaultValue: [dateInput.parse("2024-01-15")],
 })
 ```
 
+</Example>
+
 ### Controlling the selected date
 
 Use `value` and `onValueChange` to programmatically control the selected date.
+
+<Example id="DateInputControlled">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -130,6 +140,8 @@ const service = useMachine(dateInput.machine, {
   },
 })
 ```
+
+</Example>
 
 You can also set it with `api.setValue`.
 
@@ -142,12 +154,16 @@ api.setValue([nextValue])
 
 To constrain the dates that can be entered, set the `min` and `max` properties.
 
+<Example id="DateInputMinMax">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   min: dateInput.parse("2024-01-01"),
   max: dateInput.parse("2024-12-31"),
 })
 ```
+
+</Example>
 
 When typing values outside the range, invalid segments will be marked as
 invalid.
@@ -156,15 +172,21 @@ invalid.
 
 Set `disabled` to `true` to make the input non-interactive.
 
+<Example id="DateInputDisabled">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   disabled: true,
 })
 ```
 
+</Example>
+
 ### Setting read-only mode
 
 Set `readOnly` to `true` to prevent value changes while allowing focus.
+
+<Example id="DateInputReadOnly">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -172,9 +194,13 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Required and invalid state
 
 Use `required` and `invalid` for form validation and UI state.
+
+<Example id="DateInputInvalid">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -183,15 +209,21 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling date granularity
 
 Set `granularity` to control the smallest unit displayed in the input.
+
+<Example id="DateInputGranularity">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
   granularity: "day", // "day" | "hour" | "minute" | "second"
 })
 ```
+
+</Example>
 
 The available granularities are: `"day"`, `"hour"`, `"minute"`, and `"second"`.
 
@@ -200,11 +232,15 @@ The available granularities are: `"day"`, `"hour"`, `"minute"`, and `"second"`.
 Set `shouldForceLeadingZeros` to always display leading zeros in numeric fields
 (e.g., "01" instead of "1").
 
+<Example id="DateInputLeadingZeros">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   shouldForceLeadingZeros: true,
 })
 ```
+
+</Example>
 
 By default, leading zeros follow the locale's conventions.
 
@@ -213,12 +249,16 @@ By default, leading zeros follow the locale's conventions.
 Use `placeholderValue` to set the initial placeholder date, which is shown in
 unfilled segments.
 
+<Example id="DateInputPlaceholder">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   placeholderValue: dateInput.parse("2024-01-01"),
   defaultPlaceholderValue: dateInput.parse("2024-01-01"),
 })
 ```
+
+</Example>
 
 Listen for placeholder changes with `onPlaceholderChange`:
 
@@ -235,6 +275,8 @@ const service = useMachine(dateInput.machine, {
 
 Use `onFocusChange` to listen for when the input gains or loses focus.
 
+<Example id="DateInputFocusChange">
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   onFocusChange(details) {
@@ -244,15 +286,21 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Choosing a selection mode
 
 Use `selectionMode` to allow entering a single date or a date range.
+
+<Example id="DateInputRange">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
   selectionMode: "range", // "single" | "range"
 })
 ```
+
+</Example>
 
 In range mode, the input will have segments for both start and end dates.
 
@@ -262,22 +310,32 @@ The `displayValues` property tracks partially entered dates while the user is
 typing. This is useful for showing the editing state before a complete date is
 entered.
 
+<Example>
+
 ```tsx
 const displayValues = api.displayValues
 // Each incomplete date shows which segments have been filled in
 ```
 
+</Example>
+
 ### Clearing the date
 
 Use `api.clearValue()` to clear the selected date.
+
+<Example id="DateInputClear">
 
 ```tsx
 api.clearValue()
 ```
 
+</Example>
+
 ### Accessing segments
 
 Use `api.getSegments()` to access the individual date segments.
+
+<Example>
 
 ```tsx
 const segments = api.getSegments()
@@ -289,6 +347,8 @@ segments.forEach((segment) => {
   console.log(segment.isEditable) // whether user can edit
 })
 ```
+
+</Example>
 
 Then render each segment:
 
@@ -308,18 +368,26 @@ Then render each segment:
 
 Use `api.getSegmentState()` to determine if a segment can be edited.
 
+<Example>
+
 ```tsx
 const state = api.getSegmentState({ segment })
 console.log(state.editable) // true if the segment is editable
 ```
 
+</Example>
+
 ### Using the hidden input for forms
 
 The date input includes a hidden input element for form submission.
 
+<Example>
+
 ```tsx
 <input {...api.getHiddenInputProps()} />
 ```
+
+</Example>
 
 Set the `name` attribute to include it in form data:
 
@@ -341,6 +409,8 @@ Multiple date inputs (range mode) can use a `name` prop on
 
 Use `getLabelProps()` to properly label the input for accessibility.
 
+<Example>
+
 ```tsx
 <label {...api.getLabelProps()}>Select a date</label>
 <div {...api.getControlProps()}>
@@ -348,9 +418,13 @@ Use `getLabelProps()` to properly label the input for accessibility.
 </div>
 ```
 
+</Example>
+
 ### Setting locale and timezone
 
 Set `locale` and `timeZone` to control date parsing and formatting.
+
+<Example id="DateInputLocale">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -359,9 +433,13 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Hour cycle (12-hour vs 24-hour time)
 
 Set `hourCycle` to control time format display.
+
+<Example id="DateInputHourCycle">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -370,11 +448,15 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 By default, this is determined by the locale.
 
 ### Custom formatter
 
 Provide a `formatter` to customize how dates are parsed and formatted.
+
+<Example id="DateInputFormatter">
 
 ```tsx
 import { DateFormatter } from "@internationalized/date"
@@ -387,9 +469,13 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Form integration
 
 Use the date input within a form with standard HTML form handling:
+
+<Example id="DateInputForm">
 
 ```tsx
 <form
@@ -415,9 +501,13 @@ Use the date input within a form with standard HTML form handling:
 </form>
 ```
 
+</Example>
+
 ### Listening to date changes
 
 Use `onValueChange` to listen for date changes.
+
+<Example id="DateInputValueChange">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -428,9 +518,13 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
+</Example>
+
 ### Localization
 
 Use `translations` to customize accessibility labels and messages.
+
+<Example id="DateInputTranslations">
 
 ```tsx
 const service = useMachine(dateInput.machine, {
@@ -442,10 +536,14 @@ const service = useMachine(dateInput.machine, {
       hour: "HH",
       minute: "MM",
       second: "SS",
+      dayPeriod: "AM",
+      era: "AD",
     }),
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

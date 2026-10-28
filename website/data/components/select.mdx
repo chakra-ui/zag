@@ -58,6 +58,8 @@ Use the `defaultValue` property to set the initial value of the select.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
+<Example id="SelectInitialValue">
+
 ```tsx {13}
 const collection = select.collection({
   items: [
@@ -75,9 +77,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Selecting multiple values
 
 Set `multiple` to `true` to allow selecting multiple values.
+
+<Example id="SelectMultiple">
 
 ```tsx {5}
 const service = useMachine(select.machine, {
@@ -87,9 +93,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled select value
 
 Use `value` and `onValueChange` for controlled selection.
+
+<Example id="SelectControlled">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -102,6 +112,8 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Using a custom object format
 
 By default, the select collection expects an array of items with `label` and
@@ -111,9 +123,11 @@ By default, the select collection expects an array of items with `label` and
 - `itemToString` — A function that returns the string representation of an item.
   Used to compare items when filtering.
 - `itemToValue` — A function that returns the unique value of an item.
-- `itemToDisabled` — A function that returns the disabled state of an item.
+- `isItemDisabled` — A function that returns the disabled state of an item.
 - `groupBy` — A function that returns the group of an item.
 - `groupSort` — An array or function to sort the groups.
+
+<Example id="SelectCustomObject">
 
 ```tsx
 const collection = select.collection({
@@ -133,7 +147,7 @@ const collection = select.collection({
     return item.id
   },
   // convert item to disabled state
-  itemToDisabled(item) {
+  isItemDisabled(item) {
     return !item.available || item.quantity === 0
   },
   groupBy(item) {
@@ -149,16 +163,24 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within a form
 
 To use select in a form, set `name` and render `api.getHiddenSelectProps()`.
 
+<Example>
+
 <CodeSnippet id="select/usage-with-form.mdx" />
+
+</Example>
 
 ### Browser autofill support
 
 To support browser autofill for form fields like state or province, set
 `autoComplete` on the machine.
+
+<Example>
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -169,14 +191,18 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling an item
 
-To disable a select item, use `itemToDisabled` in the collection.
+To disable a select item, use `isItemDisabled` in the collection.
+
+<Example id="SelectDisabledItem">
 
 ```tsx {3-4}
 const collection = select.collection({
   items: countries,
-  itemToDisabled(item) {
+  isItemDisabled(item) {
     return item.disabled
   },
 })
@@ -187,10 +213,14 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Close on select
 
 By default, the menu closes when you select an item with pointer, space, or
 enter. Set `closeOnSelect` to `false` to keep it open.
+
+<Example id="SelectKeepOpen">
 
 ```tsx {4}
 const service = useMachine(select.machine, {
@@ -200,9 +230,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic selection control
 
 Use the API for imperative updates.
+
+<Example id="SelectProgrammatic">
 
 ```tsx
 api.selectValue("ng")
@@ -210,10 +244,14 @@ api.setValue(["ng", "ke"])
 api.clearValue() // or api.clearValue("ng")
 ```
 
+</Example>
+
 ### Controlling open state
 
 Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for
 uncontrolled initial state.
+
+<Example id="SelectControlledOpen">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -227,6 +265,8 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ```tsx
 const service = useMachine(select.machine, {
   id: useId(),
@@ -238,6 +278,8 @@ const service = useMachine(select.machine, {
 ### Controlling highlighted item
 
 Use `highlightedValue` and `onHighlightChange` to manage item highlight.
+
+<Example id="SelectControlledHighlight">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -251,9 +293,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Positioning the popup
 
 Use `positioning` to control popup placement and behavior.
+
+<Example id="SelectPositioning">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -263,10 +309,14 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Looping the keyboard navigation
 
 By default, arrow key navigation stops at the first and last options. Set
 `loopFocus: true` to loop back around.
+
+<Example id="SelectLoopFocus">
 
 ```tsx {4}
 const service = useMachine(select.machine, {
@@ -276,9 +326,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing deselection in single-select mode
 
 Set `deselectable` to allow clicking the selected item again to clear the value.
+
+<Example id="SelectDeselectable">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -288,9 +342,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for highlight changes
 
 Use `onHighlightChange` to listen for highlighted item changes.
+
+<Example id="SelectHighlight">
 
 ```tsx {3-6}
 const service = useMachine(select.machine, {
@@ -303,9 +361,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for selection changes
 
 Use `onValueChange` to listen for selected item changes.
+
+<Example id="SelectValueChange">
 
 ```tsx {4-6}
 const service = useMachine(select.machine, {
@@ -318,9 +380,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for item selection
 
 Use `onSelect` when you need the selected item value immediately.
+
+<Example id="SelectSelection">
 
 ```tsx
 const service = useMachine(select.machine, {
@@ -333,9 +399,13 @@ const service = useMachine(select.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for open and close events
 
 Use `onOpenChange` to listen for open and close events.
+
+<Example id="SelectOpenChange">
 
 ```tsx {4-7}
 const service = useMachine(select.machine, {
@@ -347,6 +417,8 @@ const service = useMachine(select.machine, {
   },
 })
 ```
+
+</Example>
 
 ### Grouping items
 
@@ -367,6 +439,8 @@ const collection = select.collection({
 Then, use the `collection.group()` method to render the grouped items inside
 `getListProps()`.
 
+<Example id="SelectGroups">
+
 ```tsx
 <div {...api.getListProps()}>
   {collection.group().map(([group, items], index) => (
@@ -383,12 +457,16 @@ Then, use the `collection.group()` method to render the grouped items inside
 </div>
 ```
 
+</Example>
+
 ### Usage with large data
 
 For large lists, combine select with a virtualization library like
 `react-window` or `@tanstack/react-virtual`.
 
 Example with `@tanstack/react-virtual`:
+
+<Example>
 
 ```tsx
 function Demo() {
@@ -462,21 +540,25 @@ function Demo() {
 }
 ```
 
+</Example>
+
 ### Wrapping items in a list
 
-By default, `getContentProps()` renders the `listbox` role, so items can sit
-directly inside the content. `getListProps()` is optional here and only acts as
-a layout wrapper.
+By default, `getContentProps()` renders the `listbox` role. Still wrap the items
+in `getListProps()`: when the select opens, focus moves to the list, so without
+it the arrow keys have nowhere to go.
 
-Set `composite` to `false` when the content holds other widgets, like tabs. The
-content becomes a `dialog`, and the list takes over the `listbox` role. In this
-mode, `getListProps()` is required.
+Set `popupType` to `"dialog"` when the content holds other widgets, like tabs.
+The content becomes a `dialog`, and the list takes over the `listbox` role. In
+this mode, `getListProps()` is required.
+
+<Example>
 
 ```tsx
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
-  composite: false,
+  popupType: "dialog",
 })
 
 // ...
@@ -493,9 +575,11 @@ const service = useMachine(select.machine, {
 </div>
 ```
 
+</Example>
+
 For a select with a search input, use a
-[combobox](/components/combobox#wrapping-items-in-a-list) with `composite` set
-to `false` instead. The select content handles keys like `Space` itself, so a
+[combobox](/components/combobox#wrapping-items-in-a-list) with `popupType` set
+to `"dialog"` instead. The select content handles keys like `Space` itself, so a
 plain input inside it can't take every keystroke.
 
 ### Usage within dialog
@@ -514,6 +598,8 @@ The popup is split into two layers:
 This lets you render headers, search inputs, footers, or other widgets inside
 `content` without polluting the listbox's accessibility tree.
 
+<Example id="SelectComposition">
+
 ```tsx
 <div {...api.getContentProps()}>
   <input ref={inputRef} placeholder="Filter..." />
@@ -529,6 +615,8 @@ This lets you render headers, search inputs, footers, or other widgets inside
   </div>
 </div>
 ```
+
+</Example>
 
 Set `popupType: "dialog"` when content is a complex composition (search input,
 tabs) so the popup is announced as a dialog by assistive technology and
@@ -547,6 +635,8 @@ By default, focus moves to the `list` element when the popup opens. To redirect
 focus to a different element (such as a search input or composed widget), pass
 `initialFocusEl`:
 
+<Example id="SelectInitialFocus">
+
 ```tsx
 const inputRef = useRef<HTMLInputElement>(null)
 
@@ -557,6 +647,8 @@ const service = useMachine(select.machine, {
   initialFocusEl: () => inputRef.current,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

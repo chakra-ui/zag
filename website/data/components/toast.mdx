@@ -71,6 +71,8 @@ Helper methods are also available: `toaster.info(...)`, `toaster.success(...)`,
 
 To create a toast, use the `toaster.create(...)` method.
 
+<Example id="ToastTypes">
+
 ```tsx
 toaster.create({
   title: "Hello World",
@@ -78,6 +80,8 @@ toaster.create({
   type: "info",
 })
 ```
+
+</Example>
 
 The options you can pass in are:
 
@@ -100,22 +104,30 @@ The options you can pass in are:
 
 Placement is configured on the toast store and applies to the whole toast group.
 
+<Example id="ToastPlacement">
+
 ```tsx
 const toaster = toast.createStore({
   placement: "top-start",
 })
 ```
 
+</Example>
+
 ### Overlapping toasts
 
 When multiple toasts are created, they are rendered in a stack. To make the
 toasts overlap, set the `overlap` property to `true`.
+
+<Example id="ToastOverlap">
 
 ```tsx
 const toaster = toast.createStore({
   overlap: true,
 })
 ```
+
+</Example>
 
 > Be sure to set up the [required styles](#requirement) to make overlap work
 > correctly.
@@ -140,6 +152,8 @@ the following toast types and matching default durations:
 You can override the duration of the toast by passing the `duration` property to
 the `toaster.create(...)` function.
 
+<Example id="ToastDuration">
+
 ```tsx {5}
 toaster.create({
   title: "Hello World",
@@ -148,6 +162,8 @@ toaster.create({
   duration: 6000,
 })
 ```
+
+</Example>
 
 Use `toaster.create(...)` for new toasts and `toaster.update(id, ...)` to modify
 an existing one.
@@ -158,7 +174,11 @@ Using a portal is helpful to ensure that the toast is rendered outside the DOM
 hierarchy of the parent component. To render the toast in a portal, wrap the
 rendered toasts in the `ToastProvider` within your framework-specific portal.
 
+<Example>
+
 <CodeSnippet id="toast/using-portal.mdx" />
+
+</Example>
 
 ### Programmatic control
 
@@ -179,6 +199,8 @@ You can use any of the following methods to control a toast:
 - `toaster.resume(...)` — Resumes a toast.
 - `toaster.isVisible(...)` — Checks if a toast is currently visible.
 - `toaster.isDismissed(...)` — Checks if a toast has been dismissed.
+
+<Example id="ToastProgrammatic">
 
 ```tsx {2,11-15}
 // grab the id from the created toast
@@ -202,6 +224,8 @@ toaster.remove(id)
 // dismiss the toast
 toaster.dismiss(id)
 ```
+
+</Example>
 
 #### Updating from current properties
 
@@ -235,6 +259,8 @@ the toast when it resolves or rejects.
 > With the promise API, you can pass the toast options for each promise
 > lifecycle. **The `loading` option is required**
 
+<Example id="ToastPromise">
+
 ```tsx
 toaster.promise(promise, {
   loading: {
@@ -251,6 +277,8 @@ toaster.promise(promise, {
   }),
 })
 ```
+
+</Example>
 
 `toaster.promise(...)` returns `{ id, unwrap }`, so you can await the original
 result:
@@ -271,6 +299,8 @@ There are three scenarios that pause toast timeout:
   browser tab), controlled via the `pauseOnPageIdle` store option.
 - When the `toaster.pause(id)` is called.
 
+<Example id="ToastPause">
+
 ```tsx
 // Global pause options
 const toaster = toast.createStore({
@@ -282,16 +312,22 @@ const toaster = toast.createStore({
 toaster.pause(id)
 ```
 
+</Example>
+
 ### Limiting the number of toasts
 
 Toasts are great but displaying too many of them can sometimes hamper the user
 experience. To limit visible toasts, set `max` on the store.
+
+<Example id="ToastMax">
 
 ```tsx {3}
 const toaster = toast.createStore({
   max: 10,
 })
 ```
+
+</Example>
 
 ### Toast priority
 
@@ -312,6 +348,8 @@ has an action:
 
 You can override the priority by passing the `priority` option:
 
+<Example id="ToastPriority">
+
 ```tsx
 toaster.create({
   title: "Critical update",
@@ -320,6 +358,8 @@ toaster.create({
 })
 ```
 
+</Example>
+
 ### Focus Hotkey for toasts
 
 When a toast is created, you can focus the toast region by pressing the
@@ -327,11 +367,15 @@ When a toast is created, you can focus the toast region by pressing the
 
 Set the `hotkey` store option to change the underlying hotkey.
 
+<Example>
+
 ```tsx
 const service = useMachine(toast.group.machine, {
   store: toast.createStore({ hotkey: ["F6"] }),
 })
 ```
+
+</Example>
 
 ### Listening for toast lifecycle
 
@@ -345,6 +389,8 @@ The status values are:
 - `dismissing` - The toast is closing but still mounted
 - `unmounted` - The toast has been completely unmounted and no longer exists
 
+<Example id="ToastStatus">
+
 ```tsx {3-7}
 toaster.info({
   title: "Hello World",
@@ -357,10 +403,14 @@ toaster.info({
 })
 ```
 
+</Example>
+
 ### Changing the gap between toasts
 
 When multiple toasts are rendered, a gap of `16px` is applied between each
 toast. To change this value, set `gap` on the store.
+
+<Example id="ToastGap">
 
 ```tsx
 const toaster = toast.createStore({
@@ -368,16 +418,22 @@ const toaster = toast.createStore({
 })
 ```
 
+</Example>
+
 ### Changing the offset
 
 The toast region has a default `1rem` offset from the viewport. Use the
 `offsets` store option to change this offset.
+
+<Example id="ToastOffset">
 
 ```tsx
 const toaster = toast.createStore({
   offsets: "24px",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

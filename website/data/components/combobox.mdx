@@ -58,6 +58,8 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial combobox value.
 
+<Example id="ComboboxInitialValue">
+
 ```tsx {13}
 const collection = combobox.collection({
   items: [
@@ -75,15 +77,23 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled combobox
 
 Use `value` and `onValueChange` to control the value programmatically.
 
+<Example id="ComboboxControlled">
+
 <CodeSnippet id="combobox/controlled.mdx" />
+
+</Example>
 
 ### Setting the initial input value
 
 Use `defaultInputValue` to prefill the input on first render.
+
+<Example id="ComboboxInitialInputValue">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -93,10 +103,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling the input value
 
 Use `inputValue` and `onInputValueChange` when you want to filter options as you
 type.
+
+<Example id="ComboboxFiltering">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -110,9 +124,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Selecting multiple values
 
 Set `multiple` to `true` to allow selecting multiple values.
+
+<Example id="ComboboxMultiple">
 
 ```tsx {4}
 const service = useMachine(combobox.machine, {
@@ -121,6 +139,8 @@ const service = useMachine(combobox.machine, {
   multiple: true,
 })
 ```
+
+</Example>
 
 ### Using a custom object format
 
@@ -131,7 +151,9 @@ By default, the combobox collection expects an array of items with `label` and
 - `itemToString` — A function that returns the string representation of an item.
   Used to compare items when filtering.
 - `itemToValue` — A function that returns the unique value of an item.
-- `itemToDisabled` — A function that returns the disabled state of an item.
+- `isItemDisabled` — A function that returns the disabled state of an item.
+
+<Example id="ComboboxCustomObject">
 
 ```tsx
 const collection = combobox.collection({
@@ -151,7 +173,7 @@ const collection = combobox.collection({
     return item.id
   },
   // convert item to disabled state
-  itemToDisabled(item) {
+  isItemDisabled(item) {
     return !item.available || item.quantity === 0
   },
 })
@@ -162,6 +184,8 @@ const service = useMachine(combobox.machine, {
   collection,
 })
 ```
+
+</Example>
 
 ### Rendering the selected values outside the combobox
 
@@ -175,6 +199,8 @@ To do that:
 - Set the `multiple` property to `true` to allow selecting multiple values.
 - Render the selected values outside the combobox.
 
+<Example id="ComboboxSelectedOutside">
+
 ```tsx {4-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
@@ -184,9 +210,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling the combobox
 
 Set `disabled` to `true` to disable the combobox.
+
+<Example id="ComboboxDisabled">
 
 ```tsx {2}
 const service = useMachine(combobox.machine, {
@@ -194,9 +224,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling an option
 
 Pass `isItemDisabled` to disable specific options.
+
+<Example id="ComboboxDisabledItem">
 
 ```tsx {6-8}
 const service = useMachine(combobox.machine, {
@@ -210,10 +244,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Close on select
 
 By default, the menu closes when an option is selected with pointer or enter
 key. Set `closeOnSelect` to `false` to keep it open.
+
+<Example id="ComboboxKeepOpen">
 
 ```tsx {2}
 const service = useMachine(combobox.machine, {
@@ -221,10 +259,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling open state
 
 Use `open` and `onOpenChange` for controlled popup state, or `defaultOpen` for
 an uncontrolled initial state.
+
+<Example id="ComboboxControlledOpen">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -237,6 +279,8 @@ const service = useMachine(combobox.machine, {
   },
 })
 ```
+
+</Example>
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -256,6 +300,8 @@ Use these props to fine-tune when the popup opens:
 - `inputBehavior` to set how typing and keyboard navigation affect
   highlight/input
 
+<Example id="ComboboxOpenBehavior">
+
 ```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
@@ -267,9 +313,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Positioning the popup
 
 Use `positioning` to control how the popup is placed.
+
+<Example id="ComboboxPositioning">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -279,11 +329,15 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Rendering the list inline
 
 Set `inline` to keep the list always open and render it in place, like a command
 menu. The list isn't positioned or dismissed on outside interaction, and
 `onOpenChange` doesn't fire.
+
+<Example id="ComboboxInline">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -291,10 +345,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Submitting forms on Enter
 
 Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even
 while the popup is open.
+
+<Example>
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -304,9 +362,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Making the combobox readonly
 
 Set `readOnly` to `true` to make the combobox read-only.
+
+<Example id="ComboboxReadOnly">
 
 ```tsx {2}
 const service = useMachine(combobox.machine, {
@@ -314,9 +376,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Required and invalid state
 
 Set `required` and `invalid` for form validation and UI state.
+
+<Example id="ComboboxInvalid">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -327,9 +393,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for highlight changes
 
 Use `onHighlightChange` to listen for highlighted option changes.
+
+<Example id="ComboboxHighlight">
 
 ```tsx {3-6}
 const service = useMachine(combobox.machine, {
@@ -341,10 +411,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the initial highlighted option
 
 Use `defaultHighlightedValue` to set which option is highlighted when the popup
 opens.
+
+<Example id="ComboboxInitialHighlight">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -354,9 +428,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for item selection
 
 Use `onSelect` to react to each selected item.
+
+<Example id="ComboboxSelection">
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -369,9 +447,13 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 Use `onValueChange` to listen for selected value changes.
+
+<Example id="ComboboxValueChange">
 
 ```tsx {3-6}
 const service = useMachine(combobox.machine, {
@@ -382,6 +464,8 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 The combobox works in forms when you:
@@ -390,11 +474,15 @@ The combobox works in forms when you:
 
 Set `name` to enable form submission support.
 
+<Example>
+
 ```tsx {2}
 const service = useMachine(combobox.machine, {
   name: "countries",
 })
 ```
+
+</Example>
 
 If the input belongs to a different form element, also set `form`.
 
@@ -412,11 +500,15 @@ const service = useMachine(combobox.machine, {
 By default, the combobox only allows values from the collection. Set
 `allowCustomValue` to `true` to allow custom values.
 
+<Example id="ComboboxCustomValue">
+
 ```tsx {2}
 const service = useMachine(combobox.machine, {
   allowCustomValue: true,
 })
 ```
+
+</Example>
 
 ### Wrapping items in a list
 
@@ -424,18 +516,20 @@ By default, `getContentProps()` renders the `listbox` role, so items can sit
 directly inside the content. `getListProps()` is optional here and only acts as
 a layout wrapper.
 
-Set `composite` to `false` when the content holds other widgets, like the input
-or tabs. The content becomes a `dialog`, and the list takes over the `listbox`
-role. In this mode, `getListProps()` is required.
+Set `popupType` to `"dialog"` when the content holds other widgets, like the
+input or tabs. The content becomes a `dialog`, and the list takes over the
+`listbox` role. In this mode, `getListProps()` is required.
 
 When the input moves into the content, open the combobox from a trigger and pass
 `focusable: true` so the trigger can receive focus.
+
+<Example>
 
 ```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
-  composite: false,
+  popupType: "dialog",
 })
 
 // ...
@@ -460,9 +554,13 @@ const service = useMachine(combobox.machine, {
 </div>
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations` to customize the trigger and clear button labels.
+
+<Example>
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -474,6 +572,8 @@ const service = useMachine(combobox.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Recipes
 

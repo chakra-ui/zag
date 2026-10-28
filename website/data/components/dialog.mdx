@@ -62,7 +62,11 @@ focus inside the dialog.
 
 To control what receives focus on open, pass `initialFocusEl`.
 
+<Example id="DialogInitialFocus">
+
 <CodeSnippet id="dialog/initial-focus.mdx" />
+
+</Example>
 
 Return `false` to open the dialog without moving focus. `Tab` and `Escape` still
 work.
@@ -85,11 +89,15 @@ To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
 Set `modal` to `false` to allow interaction with content behind the dialog.
 
+<Example id="DialogNonModal">
+
 ```tsx
 const service = useMachine(dialog.machine, {
   modal: false,
 })
 ```
+
+</Example>
 
 Use `api.modal` to skip the backdrop, since it would block interaction with the
 page.
@@ -105,11 +113,15 @@ page.
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
+<Example id="DialogInteractOutside">
+
 ```tsx {2}
 const service = useMachine(dialog.machine, {
   closeOnInteractOutside: false,
 })
 ```
+
+</Example>
 
 You can also customize the behavior by passing a function to the
 `onInteractOutside` callback and calling `event.preventDefault()`.
@@ -129,6 +141,8 @@ const service = useMachine(dialog.machine, {
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
+<Example id="DialogOpenChange">
+
 ```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onOpenChange(details) {
@@ -138,9 +152,13 @@ const service = useMachine(dialog.machine, {
 })
 ```
 
+</Example>
+
 ### Closing with Escape
 
 Set `closeOnEscape` to `false` if the dialog should not close on `Esc`.
+
+<Example id="DialogEscape">
 
 ```tsx
 const service = useMachine(dialog.machine, {
@@ -148,23 +166,33 @@ const service = useMachine(dialog.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled dialog
 
 To control the dialog's open state, pass the `open` and `onOpenChange`
 properties.
 
+<Example id="DialogControlled">
+
 <CodeSnippet id="dialog/controlled.mdx" />
+
+</Example>
 
 ### Controlling the scroll behavior
 
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set `preventScroll` to `false`.
 
+<Example id="DialogScroll">
+
 ```tsx {2}
 const service = useMachine(dialog.machine, {
   preventScroll: false,
 })
 ```
+
+</Example>
 
 ### Creating an alert dialog
 
@@ -173,11 +201,15 @@ default. Set `role` to `alertdialog` for urgent actions.
 
 That's it! Now you have an alert dialog.
 
+<Example id="DialogAlert">
+
 ```tsx {2}
 const service = useMachine(dialog.machine, {
   role: "alertdialog",
 })
 ```
+
+</Example>
 
 > By definition, an alert dialog will contain two or more action buttons. We
 > recommend setting focus to the least destructive action via `initialFocusEl`.
@@ -186,6 +218,8 @@ const service = useMachine(dialog.machine, {
 
 A single dialog instance can be shared across multiple trigger elements. Pass a
 `value` to `getTriggerProps` to identify each trigger.
+
+<Example id="DialogMultipleTriggers">
 
 ```tsx
 const users = [
@@ -219,6 +253,8 @@ return (
 )
 ```
 
+</Example>
+
 When the dialog is open and a different trigger is activated, it switches
 without closing. `aria-expanded` is scoped to the active trigger, and focus
 returns to the correct trigger on close.
@@ -237,11 +273,15 @@ api.setTriggerValue("2")
 
 If you do not render a title element, provide `aria-label`.
 
+<Example>
+
 ```tsx
 const service = useMachine(dialog.machine, {
   "aria-label": "Delete project",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

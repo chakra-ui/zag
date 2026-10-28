@@ -67,16 +67,22 @@ increment/decrement its value.
 > Don't forget to change the styles of the vertical slider by specifying its
 > height
 
+<Example id="SliderVertical">
+
 ```tsx {2}
 const service = useMachine(slider.machine, {
   orientation: "vertical",
 })
 ```
 
+</Example>
+
 ### Setting the initial value
 
 Pass the `defaultValue` property to the machine's context to set the initial
 value.
+
+<Example id="SliderInitialValue">
 
 ```tsx {2}
 const service = useMachine(slider.machine, {
@@ -84,12 +90,18 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled slider
 
 To control the slider's value programmatically, pass the `value` and
 `onValueChange` properties.
 
+<Example id="SliderControlled">
+
 <CodeSnippet id="slider/controlled.mdx" />
+
+</Example>
 
 ### Specifying the minimum and maximum
 
@@ -99,12 +111,16 @@ and/or max attributes.
 
 For example, to ask the user for a value between `-10` and `10`, you can use:
 
+<Example id="SliderMinMax">
+
 ```tsx {2-3}
 const service = useMachine(slider.machine, {
   min: -10,
   max: 10,
 })
 ```
+
+</Example>
 
 ### Setting the value's granularity
 
@@ -114,6 +130,8 @@ integer. You can change the step attribute to control the granularity.
 For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
+<Example id="SliderStep">
+
 ```tsx {4}
 const service = useMachine(slider.machine, {
   min: 5,
@@ -122,10 +140,14 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
+
+<Example id="SliderValueChange">
 
 ```tsx {2-7}
 const service = useMachine(slider.machine, {
@@ -140,9 +162,13 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for thumb focus changes
 
 Use `onFocusChange` to track which thumb is focused.
+
+<Example id="SliderFocusChange">
 
 ```tsx
 const service = useMachine(slider.machine, {
@@ -152,6 +178,8 @@ const service = useMachine(slider.machine, {
   },
 })
 ```
+
+</Example>
 
 ### Changing the start position
 
@@ -169,11 +197,15 @@ In scenarios where the value represents an offset (or relative value) on a
 diverging scale, it might be useful to change the origin to center. To do this,
 set the `origin` context property to `center`.
 
+<Example id="SliderOrigin">
+
 ```tsx {2}
 const service = useMachine(slider.machine, {
   origin: "center",
 })
 ```
+
+</Example>
 
 In scenarios where the slider value is used as a threshold to include values
 above it, it might make more sense to set the `origin` to `end` to have the
@@ -197,11 +229,15 @@ By default, the thumb is aligned to the start of the track. Set the
 - `center`: the thumb will extend beyond the bounds of the slider track.
 - `contain`: the thumb will be contained within the bounds of the track.
 
+<Example id="SliderThumbAlignment">
+
 ```tsx {2}
 const service = useMachine(slider.machine, {
   thumbAlignment: "center",
 })
 ```
+
+</Example>
 
 With `contain` alignment, the thumbs stay hidden until their size is measured,
 so they can flicker in on first render. Set `thumbSize` to match the size of the
@@ -221,6 +257,8 @@ Pass `{ width, height }` when the thumb isn't square.
 For multi-thumb sliders, use `thumbCollisionBehavior` to control what happens
 when thumbs collide.
 
+<Example id="SliderThumbCollision">
+
 ```tsx
 const service = useMachine(slider.machine, {
   defaultValue: [20, 80],
@@ -228,9 +266,13 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use slider in forms, set `name` and render `api.getHiddenInputProps()`.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(slider.machine, {
@@ -238,9 +280,13 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing value text for screen readers
 
 Use `getAriaValueText` to customize `aria-valuetext` per thumb.
+
+<Example>
 
 ```tsx
 const service = useMachine(slider.machine, {
@@ -250,6 +296,8 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+</Example>
+
 ### RTL Support
 
 The slider has built-in support for RTL alignment and interaction. In the RTL
@@ -258,11 +306,15 @@ will increment and the right arrow key will decrement.
 
 To enable RTL support, pass the `dir: rtl` context property
 
+<Example id="SliderRtl">
+
 ```tsx {2}
 const service = useMachine(slider.machine, {
   dir: "rtl",
 })
 ```
+
+</Example>
 
 > While we take care of the interactions in RTL mode, you'll have to ensure you
 > apply the correct CSS styles to flip the layout.
@@ -273,7 +325,81 @@ To show marks or ticks along the slider track, use the exposed
 `api.getMarkerProps()` method to position the slider marks relative to the
 track.
 
+<Example id="SliderMarks">
+
 <CodeSnippet id="slider/tick-marks.mdx" />
+
+</Example>
+
+### Range slider
+
+Pass two values to get two thumbs. Everything above applies to each thumb.
+
+<Showcase id="RangeSlider" />
+
+<CodeSnippet id="range-slider/usage.mdx" />
+
+#### Setting the initial range
+
+<Example id="SliderRangeInitial">
+
+```tsx {2}
+const service = useMachine(slider.machine, {
+  defaultValue: [30, 60],
+})
+```
+
+</Example>
+
+#### Controlled range value
+
+Use `value` and `onValueChange` to control both thumb values externally.
+
+<Example id="SliderRangeControlled">
+
+```tsx
+const service = useMachine(slider.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+</Example>
+
+#### Preventing thumb overlap
+
+By default, the range slider thumbs are allowed to overlap when their values are
+equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
+equal values.
+
+<Example id="SliderRangeMinSteps">
+
+```tsx {2}
+const service = useMachine(slider.machine, {
+  minStepsBetweenThumbs: 1,
+})
+```
+
+</Example>
+
+#### Labeling each thumb
+
+Each thumb is labeled by the label part by default. Use `getAriaLabel` to give
+each thumb its own accessible name.
+
+<Example>
+
+```tsx
+const service = useMachine(slider.machine, {
+  defaultValue: [200, 600],
+  getAriaLabel: ({ index }) =>
+    index === 0 ? "Minimum price" : "Maximum price",
+})
+```
+
+</Example>
 
 ## Styling guide
 

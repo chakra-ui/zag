@@ -1,4 +1,6 @@
 import { defineConfig } from "@pandacss/dev"
+import { brands, grays, greens, semanticColors } from "./theme/colors"
+import { recipes, slotRecipes } from "./theme/recipes"
 
 export default defineConfig({
   preflight: true,
@@ -13,6 +15,15 @@ export default defineConfig({
 
   theme: {
     extend: {
+      recipes,
+      keyframes: {
+        fadeIn: { from: { opacity: "0" }, to: { opacity: "1" } },
+        fadeUp: {
+          from: { opacity: "0", translate: "0 8px" },
+          to: { opacity: "1", translate: "0 0" },
+        },
+      },
+      slotRecipes,
       tokens: {
         colors: {
           // Neutral grays - minimal chroma for clean borders
@@ -28,6 +39,7 @@ export default defineConfig({
             800: { value: "#27272a" },
             900: { value: "#18181b" },
             950: { value: "#09090b" },
+            ...grays,
           },
           // Original Chakra green palette
           green: {
@@ -42,7 +54,9 @@ export default defineConfig({
             800: { value: "#22543D" },
             900: { value: "#1C4532" },
             950: { value: "#0d2818" },
+            ...greens,
           },
+          brand: brands,
           whiteAlpha: {
             50: { value: "rgba(255, 255, 255, 0.04)" },
             100: { value: "rgba(255, 255, 255, 0.06)" },
@@ -75,33 +89,32 @@ export default defineConfig({
           body: { value: "var(--font-body), sans-serif" },
           mono: {
             value:
-              "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
+              "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
           },
         },
       },
       semanticTokens: {
         colors: {
           bg: {
-            DEFAULT: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.900}" },
-            },
+            ...semanticColors.bg,
+            DEFAULT: semanticColors.bg.page,
             subtle: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.900}" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
             },
             bold: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.800}",
+                _dark: "{colors.gray.870}",
               },
             },
             muted: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.800}",
+                _dark: "{colors.gray.870}",
               },
             },
             popover: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
             },
             primary: {
               // pair with text.inverse: white in light, near-black in dark
@@ -145,7 +158,7 @@ export default defineConfig({
               block: {
                 value: {
                   _light: "{colors.gray.50}",
-                  _dark: "{colors.gray.800}",
+                  _dark: "{colors.gray.905}",
                 },
               },
               inline: {
@@ -197,28 +210,15 @@ export default defineConfig({
               },
             },
           },
+          fg: semanticColors.fg,
+          accent: semanticColors.accent,
+          syntax: semanticColors.syntax,
           border: {
+            ...semanticColors.border,
             error: {
               value: { _light: "#c53030", _dark: "#fc8181" },
             },
-            DEFAULT: {
-              value: {
-                _light: "{colors.gray.200}",
-                _dark: "{colors.whiteAlpha.100}",
-              },
-            },
-            subtle: {
-              value: {
-                _light: "{colors.gray.100}",
-                _dark: "{colors.whiteAlpha.50}",
-              },
-            },
-            bold: {
-              value: {
-                _light: "{colors.gray.300}",
-                _dark: "{colors.whiteAlpha.200}",
-              },
-            },
+            bold: semanticColors.border.strong,
             primary: {
               subtle: {
                 value: {
@@ -246,6 +246,106 @@ export default defineConfig({
       },
 
       textStyles: {
+        display: {
+          value: {
+            fontFamily: "body",
+            fontSize: "48px",
+            lineHeight: "1.06",
+            letterSpacing: "-0.04em",
+            fontWeight: "600",
+          },
+        },
+        hero: {
+          value: {
+            fontFamily: "body",
+            fontSize: "44px",
+            lineHeight: "1.08",
+            letterSpacing: "-0.035em",
+            fontWeight: "600",
+          },
+        },
+        sectionFeatured: {
+          value: {
+            fontFamily: "body",
+            fontSize: "38px",
+            lineHeight: "1.15",
+            letterSpacing: "-0.035em",
+            fontWeight: "600",
+          },
+        },
+        section: {
+          value: {
+            fontFamily: "body",
+            fontSize: "30px",
+            lineHeight: "1.2",
+            letterSpacing: "-0.03em",
+            fontWeight: "600",
+          },
+        },
+        docTitle: {
+          value: {
+            fontFamily: "body",
+            fontSize: "40px",
+            lineHeight: "1.1",
+            letterSpacing: "-0.035em",
+            fontWeight: "600",
+          },
+        },
+        h2Doc: {
+          value: {
+            fontFamily: "body",
+            fontSize: "24px",
+            lineHeight: "1.3",
+            letterSpacing: "-0.02em",
+            fontWeight: "600",
+          },
+        },
+        h3Doc: {
+          value: {
+            fontFamily: "body",
+            fontSize: "17px",
+            lineHeight: "1.4",
+            letterSpacing: "0",
+            fontWeight: "600",
+          },
+        },
+        lead: {
+          value: {
+            fontFamily: "body",
+            fontSize: "17px",
+            lineHeight: "1.7",
+            letterSpacing: "0",
+            fontWeight: "400",
+          },
+        },
+        body: {
+          value: {
+            fontFamily: "body",
+            fontSize: "15px",
+            lineHeight: "1.65",
+            letterSpacing: "0",
+            fontWeight: "400",
+          },
+        },
+        small: {
+          value: {
+            fontFamily: "body",
+            fontSize: "13px",
+            lineHeight: "1.55",
+            letterSpacing: "0",
+            fontWeight: "400",
+          },
+        },
+        eyebrow: {
+          value: {
+            fontFamily: "mono",
+            fontSize: "11px",
+            lineHeight: "1.4",
+            letterSpacing: "0.08em",
+            fontWeight: "400",
+            textTransform: "uppercase",
+          },
+        },
         "display.2xl": {
           value: {
             fontSize: { base: "4xl", md: "5xl" },
@@ -329,6 +429,10 @@ export default defineConfig({
   outdir: "styled-system",
 
   globalCss: {
+    "[data-explorer-highlight]": {
+      outline: "2px dashed {colors.accent} !important",
+      outlineOffset: "2px !important",
+    },
     // smooth in-page #hash jumps; Next pauses it during route changes (data-scroll-behavior on <html>)
     html: {
       "@media (prefers-reduced-motion: no-preference)": {
@@ -341,7 +445,7 @@ export default defineConfig({
       textRendering: "geometricprecision",
       textSizeAdjust: "100%",
       WebkitFontSmoothing: "antialiased",
-      bg: "bg.subtle",
+      bg: "bg.page",
     },
 
     "*": {

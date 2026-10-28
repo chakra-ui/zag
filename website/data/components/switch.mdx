@@ -52,15 +52,21 @@ Then use the framework integration helpers:
 
 Use the `defaultChecked` property to make a switch checked by default.
 
+<Example id="SwitchDefaultChecked">
+
 ```tsx {3}
 const service = useMachine(zagSwitch.machine, {
   defaultChecked: true,
 })
 ```
 
+</Example>
+
 ### Controlled checked state
 
 Use `checked` and `onCheckedChange` for controlled usage.
+
+<Example id="SwitchControlled">
 
 ```tsx
 const service = useMachine(zagSwitch.machine, {
@@ -71,9 +77,13 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the switch value changes, the `onCheckedChange` callback is invoked.
+
+<Example id="SwitchCheckedChange">
 
 ```tsx {3-5}
 const service = useMachine(zagSwitch.machine, {
@@ -84,18 +94,26 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic toggle
 
 Use the connected API when you need imperative control.
+
+<Example id="SwitchProgrammatic">
 
 ```tsx
 api.setChecked(true)
 api.toggleChecked()
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use switch in forms, set `name` and render `api.getHiddenInputProps()`.
+
+<Example>
 
 ```tsx {3}
 const service = useMachine(zagSwitch.machine, {
@@ -103,9 +121,13 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
+</Example>
+
 ### Custom form value
 
 Set `value` to customize the submitted form value when checked.
+
+<Example>
 
 ```tsx
 const service = useMachine(zagSwitch.machine, {
@@ -113,6 +135,8 @@ const service = useMachine(zagSwitch.machine, {
   value: "enabled",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

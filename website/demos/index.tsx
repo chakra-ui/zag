@@ -63,7 +63,7 @@ function useIsClient() {
 import { ImSpinner3 } from "react-icons/im"
 import { css } from "styled-system/css"
 import { center } from "styled-system/patterns"
-import { Playground } from "../components/playground"
+import { Playground } from "../components/docs/playground"
 import { Drawer } from "./drawer"
 import { FloatingPanel } from "./floating-panel"
 import { Listbox } from "./listbox"
@@ -286,7 +286,18 @@ const components = {
       defaultProps={{}}
     />
   ),
-  Menu: () => <Playground name="menu" component={Menu} />,
+  Menu: () => (
+    <Playground
+      name="menu"
+      component={Menu}
+      defaultProps={{
+        loopFocus: false,
+        closeOnSelect: true,
+        typeahead: true,
+        dir: { default: "ltr", options: ["ltr", "rtl"] },
+      }}
+    />
+  ),
   MenuAsync: () => (
     <Playground name="menu-async" component={MenuAsync} hideControls />
   ),

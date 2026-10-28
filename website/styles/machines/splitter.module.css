@@ -1,18 +1,35 @@
 @layer recipes {
+  .Frame {
+    width: 100%;
+    max-width: 32rem;
+    height: 12rem;
+    overflow: hidden;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+
+    &[data-orientation="vertical"] {
+      height: 16rem;
+    }
+  }
+
   .Root {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2.5rem;
+    width: 100%;
+    min-height: 6rem;
   }
 
   .Panel {
     display: flex;
-    background: var(--colors-bg-subtle);
-    border-width: 1px;
     align-items: center;
     justify-content: center;
     height: 100%;
+    overflow: hidden;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
 
     &[data-orientation="horizontal"] {
       width: auto;
@@ -23,25 +40,73 @@
     }
   }
 
-  .ResizeTrigger {
-    background: #cbd5e0;
-    border-radius: 4px;
-    margin: 0.5rem;
+  .NestedPanel {
     display: flex;
+    height: 100%;
+    overflow: hidden;
+
+    & > .Root {
+      height: 100%;
+    }
+  }
+
+  .ResizeTrigger {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: var(--colors-border);
+    transition: background 150ms ease-out;
+
+    &::after {
+      content: "";
+      border-radius: 9999px;
+      background: var(--colors-fg-subtle);
+    }
+
+    &:hover,
+    &[data-focus],
+    &[data-dragging] {
+      background: var(--colors-accent);
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
-      outline-offset: 2px;
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 0;
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
     }
 
     &[data-orientation="horizontal"] {
-      height: 6rem;
-      width: 0.5rem;
+      width: 0.375rem;
+      height: auto;
+      align-self: stretch;
+      cursor: col-resize;
+
+      &::after {
+        width: 2px;
+        height: 1.5rem;
+      }
     }
 
     &[data-orientation="vertical"] {
-      height: 0.5rem;
-      width: 16rem;
+      width: 100%;
+      height: 0.375rem;
+      cursor: row-resize;
+
+      &::after {
+        width: 1.5rem;
+        height: 2px;
+      }
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ResizeTrigger {
+    transition: none;
   }
 }

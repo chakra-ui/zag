@@ -58,15 +58,21 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial value.
 
+<Example id="EditableDefaultValue">
+
 ```tsx {2}
 const service = useMachine(editable.machine, {
   defaultValue: "Hello World",
 })
 ```
 
+</Example>
+
 ### Controlled value
 
 Use `value` and `onValueChange` to control the value externally.
+
+<Example id="EditableControlled">
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -77,9 +83,13 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled edit state
 
 Use `edit` and `onEditChange` to control whether the field is in edit mode.
+
+<Example id="EditableControlledEdit">
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -90,12 +100,16 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 Editable supports two ways of listening for value changes:
 
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
+
+<Example id="EditableValueChange">
 
 ```tsx {2-4}
 const service = useMachine(editable.machine, {
@@ -108,9 +122,13 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for revert events
 
 Use `onValueRevert` to react when a user cancels editing.
+
+<Example id="EditableValueRevert">
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -120,17 +138,25 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Using custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
 mode. We use the render prop pattern to provide access to the internal state of
 the component.
 
+<Example id="EditableCustomControls">
+
 <CodeSnippet id="editable/custom-controls.mdx" />
+
+</Example>
 
 ### Auto-resizing
 
 Set `autoResize` to `true` to auto-grow the editable as content changes.
+
+<Example id="EditableAutoResize">
 
 ```tsx {2}
 const service = useMachine(editable.machine, {
@@ -138,20 +164,32 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 When using autoresize, the input and preview elements should not have any
 styles. Use `all: unset` if needed and pass any styles to the "area" element
 since it's shared by the input and preview elements.
 
 ### Setting a maxWidth
 
-It is common to set a max width when auto-resizing.
+It is common to cap the width when auto-resizing. Set `max-width` on the area
+part in CSS.
 
-```tsx {2-3}
+<Example>
+
+```tsx {2}
 const service = useMachine(editable.machine, {
   autoResize: true,
-  maxWidth: "320px",
 })
 ```
+
+```css
+[data-editable-area] {
+  max-width: 320px;
+}
+```
+
+</Example>
 
 When the editable reaches the specified max-width, it'll clip the preview text
 with an ellipsis.
@@ -165,21 +203,29 @@ The editable supports two modes of activating the "edit" state:
 
 Set `activationMode` to `"dblclick"` to only enter edit mode on double click.
 
+<Example id="EditableDoubleClick">
+
 ```tsx {2}
 const service = useMachine(editable.machine, {
   activationMode: "dblclick",
 })
 ```
 
+</Example>
+
 ### Customizing submit behavior
 
 Use `submitMode` to control when edits are committed.
+
+<Example id="EditableSubmitMode">
 
 ```tsx
 const service = useMachine(editable.machine, {
   submitMode: "enter", // "enter" | "blur" | "both" | "none"
 })
 ```
+
+</Example>
 
 ### Usage with Textarea
 
@@ -190,15 +236,21 @@ textarea is used, the editable will commit the value on `Cmd + Enter` or
 > Use `api.getInputProps()` to spread input props to the textarea. You might
 > need to cast the input props to the correct type.
 
+<Example id="EditableTextarea">
+
 ```tsx {2}
 <textarea
   {...(api.getInputProps() as HTMLTextareaProps<HTMLTextareaElement>)}
 />
 ```
 
+</Example>
+
 ### Customizing placeholder text
 
 Set `placeholder` as a string or per-mode object.
+
+<Example id="EditablePlaceholder">
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -209,9 +261,13 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations` to customize control labels.
+
+<Example>
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -224,10 +280,14 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+</Example>
+
 ### Submitting with an external form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
+
+<Example>
 
 ```tsx
 const service = useMachine(editable.machine, {
@@ -235,6 +295,8 @@ const service = useMachine(editable.machine, {
   form: "checkout-form",
 })
 ```
+
+</Example>
 
 ## Styling guide
 
@@ -253,12 +315,12 @@ When the editable is in the focused mode, we set a `data-focus` attribute on the
 
 ### Empty state
 
-When the editable's value is empty, we set a `data-empty` attribute on the
-"area" part.
+When the editable's value is empty, the "area" part gets a
+`data-placeholder-shown` attribute.
 
 ```css
-[data-editable-area][data-empty] {
-  /* CSS for the editable's focus state */
+[data-editable-area][data-placeholder-shown] {
+  /* CSS for the editable's empty state */
 }
 ```
 

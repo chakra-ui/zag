@@ -1,0 +1,133 @@
+---
+title: TypeScript
+description:
+  Type machine props, wrapped components, the connected api and callbacks.
+---
+
+Every Zag package ships its types. You import them from the same namespace as
+the machine, so `menu.machine`, `menu.Props` and `menu.Api` sit side by side.
+
+```ts
+import * as menu from "@zag-js/menu"
+```
+
+## Machine props
+
+`menu.Props` is everything `useMachine` accepts for that machine. Use it when
+you build props outside the component, or share defaults between screens.
+
+```ts
+import * as menu from "@zag-js/menu"
+
+const defaults: Partial<menu.Props> = {
+  loopFocus: true,
+  closeOnSelect: false,
+  positioning: { placement: "bottom-start" },
+}
+```
+
+## Typing a wrapped component
+
+When you wrap a machine in your own component, extend its props and leave out
+the ones the component sets itself. `id` is the usual one, since the component
+generates it with `useId`.
+
+```tsx
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+interface MenuProps extends Omit<menu.Props, "id"> {
+  label: string
+  items: menu.ItemProps[]
+}
+
+export function Menu(props: MenuProps) {
+  const { label, items, ...machineProps } = props
+  const service = useMachine(menu.machine, { id: useId(), ...machineProps })
+  const api = menu.connect(service, normalizeProps)
+  // ...
+}
+```
+
+`menu.ItemProps` is the argument `getItemProps` takes, so the items you pass in
+already have the right shape.
+
+## The connected api
+
+`connect` returns `menu.Api`. It's generic over the framework's element props,
+which each adapter exports as `PropTypes`. Use it when a child component
+receives the api from its parent.
+
+```tsx
+import * as menu from "@zag-js/menu"
+import type { PropTypes } from "@zag-js/react"
+
+interface MenuItemsProps {
+  api: menu.Api<PropTypes>
+  items: menu.ItemProps[]
+}
+
+function MenuItems({ api, items }: MenuItemsProps) {
+  return (
+    <ul {...api.getContentProps()}>
+      {items.map((item) => (
+        <li key={item.value} {...api.getItemProps(item)}>
+          {item.value}
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+The `PropTypes` parameter is what makes the getters return React's element props
+here, and Vue's or Solid's props in their adapters.
+
+## Typing callbacks
+
+Each callback receives a details object, and each details type is exported by
+name. Use them when the handler lives outside the component.
+
+```ts
+import * as menu from "@zag-js/menu"
+import * as slider from "@zag-js/slider"
+
+function handleSelect(details: menu.SelectionDetails) {
+  console.log(details.value)
+}
+
+function handleOpenChange(details: menu.OpenChangeDetails) {
+  console.log(details.open)
+}
+
+function handleVolume(details: slider.ValueChangeDetails) {
+  console.log(details.value[0])
+}
+```
+
+The names follow the callback: `onValueChange` takes `ValueChangeDetails`,
+`onOpenChange` takes `OpenChangeDetails`, `onHighlightChange` takes
+`HighlightChangeDetails`.
+
+## Writing your own adapter
+
+If you connect a machine in a framework Zag doesn't ship an adapter for, build
+the normalizer with `createNormalizer` from `@zag-js/types`. It maps Zag's
+DOM-style props (`onClick`, `htmlFor`, `style` objects) to whatever your
+framework expects, and `connect` accepts the result.
+
+```ts
+import { createNormalizer, type PropTypes } from "@zag-js/types"
+
+export const normalizeProps = createNormalizer<PropTypes>((props) => {
+  // rename or reshape props for your framework here
+  return props
+})
+```
+
+The base `PropTypes` types every part as a plain object. Adapters pass their own
+element types instead, which is how the getters come back typed for React, Vue
+or Solid.
+
+See [Framework adapters](/guides/framework-adapters) for the rest of an adapter.

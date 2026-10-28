@@ -10,3 +10,7 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+trustPolicyExclude:
+  - chokidar@4.0.3
+  - semver@6.3.1

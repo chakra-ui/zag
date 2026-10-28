@@ -5,6 +5,8 @@ export interface CommunityLink {
   title: string
   description: string
   href: string
+  icon: "discord" | "github" | "x" | "youtube"
+  cta: string
 }
 
 export interface TeamMember {
@@ -31,26 +33,32 @@ export interface CommunityProject extends ShowcaseItem {
 
 export const communityLinks: CommunityLink[] = [
   {
-    title: "GitHub Discussions",
-    description:
-      "Long-form community Q&A, ideas, and architecture conversations.",
-    href: "https://github.com/chakra-ui/zag/discussions",
-  },
-  {
-    title: "X (Twitter)",
-    description:
-      "Release updates, community highlights, and ecosystem announcements.",
-    href: "https://twitter.com/zag_js",
-  },
-  {
-    title: "YouTube",
-    description: "Recordings, talks, and walkthroughs related to Zag.js.",
-    href: "https://www.youtube.com/results?search_query=zag.js",
-  },
-  {
     title: "Discord",
     description: "Chat with other people building with Zag.",
     href: siteConfig.discord.url,
+    icon: "discord",
+    cta: "Join",
+  },
+  {
+    title: "GitHub Discussions",
+    description: "Ideas, questions and RFCs, with the maintainers.",
+    href: "https://github.com/chakra-ui/zag/discussions",
+    icon: "github",
+    cta: "Open",
+  },
+  {
+    title: "X",
+    description: "Release notes and small updates at @zag_js.",
+    href: "https://twitter.com/zag_js",
+    icon: "x",
+    cta: "Follow",
+  },
+  {
+    title: "YouTube",
+    description: "Recordings, talks and walkthroughs.",
+    href: "https://www.youtube.com/results?search_query=zag.js",
+    icon: "youtube",
+    cta: "Watch",
   },
 ]
 

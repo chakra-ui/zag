@@ -55,16 +55,22 @@ By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
 to `vertical`.
 
+<Example id="ToggleGroupVertical">
+
 ```tsx {2}
 const service = useMachine(toggle.machine, {
   orientation: "vertical",
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
+
+<Example id="ToggleGroupValueChange">
 
 ```tsx {2-4}
 const service = useMachine(toggle.machine, {
@@ -75,9 +81,13 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled toggle group
 
 Use `value` and `onValueChange` for controlled usage.
+
+<Example id="ToggleGroupControlled">
 
 ```tsx
 const service = useMachine(toggle.machine, {
@@ -88,10 +98,14 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing multiple selection
 
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
+
+<Example id="ToggleGroupMultiple">
 
 ```tsx {2}
 const service = useMachine(toggle.machine, {
@@ -99,10 +113,14 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling the toggle group
 
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
+
+<Example id="ToggleGroupDisabled">
 
 ```tsx {2}
 const service = useMachine(toggle.machine, {
@@ -110,9 +128,13 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling a toggle
 
 Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
+
+<Example id="ToggleGroupDisabledItem">
 
 ```tsx
 //...
@@ -122,10 +144,14 @@ Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
 //...
 ```
 
+</Example>
+
 ### Disabling focus loop
 
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loopFocus` property in the machine's context to `false`.
+
+<Example id="ToggleGroupNoLoop">
 
 ```tsx {2}
 const service = useMachine(toggle.machine, {
@@ -133,10 +159,14 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling roving focus management
 
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
+
+<Example id="ToggleGroupNoRovingFocus">
 
 ```tsx {2}
 const service = useMachine(toggle.machine, {
@@ -144,10 +174,14 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing or preventing deselection
 
 Use `deselectable` to control whether the active item can be toggled off in
 single-select mode.
+
+<Example id="ToggleGroupDeselectable">
 
 ```tsx
 const service = useMachine(toggle.machine, {
@@ -155,13 +189,19 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic value control
 
 Use the API for imperative updates.
 
+<Example id="ToggleGroupProgrammatic">
+
 ```tsx
 api.setValue(["bold", "italic"])
 ```
+
+</Example>
 
 ## Styling guide
 

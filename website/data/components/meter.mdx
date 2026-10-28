@@ -5,8 +5,8 @@ package: "@zag-js/meter"
 ---
 
 A meter shows a scalar measurement inside a known range: storage used, battery
-left, a score. Use [`progress`](/components/linear-progress) when the value is
-how far a running task has gone.
+left, a score. Use [`progress`](/components/progress) when the value is how far
+a running task has gone.
 
 `low`, `high`, and `optimum` follow the HTML `<meter>` algorithm. The machine
 exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
@@ -60,11 +60,15 @@ is `aria-hidden` because assistive tech already reads `aria-valuetext`.
 Use `defaultValue` for uncontrolled state, or `value` for controlled state. When
 neither is passed, the value defaults to the midpoint of `min` and `max`.
 
+<Example id="MeterSetValue">
+
 ```tsx {2}
 const service = useMachine(meter.machine, {
   defaultValue: 70,
 })
 ```
+
+</Example>
 
 Use `api.setValue`, `api.setToMin`, and `api.setToMax` to update it.
 
@@ -78,6 +82,8 @@ api.setToMax()
 
 Use `onValueChange` to react to updates.
 
+<Example id="MeterValueChange">
+
 ```tsx
 const service = useMachine(meter.machine, {
   onValueChange(details) {
@@ -87,9 +93,13 @@ const service = useMachine(meter.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the minimum and maximum values
 
 By default the meter uses `min` `0` and `max` `100`.
+
+<Example id="MeterMinMax">
 
 ```tsx {2-3}
 const service = useMachine(meter.machine, {
@@ -97,6 +107,8 @@ const service = useMachine(meter.machine, {
   max: 1000,
 })
 ```
+
+</Example>
 
 ### Thresholds
 
@@ -107,6 +119,8 @@ does: `low` to `min`, `high` to `max`, `optimum` to the midpoint.
 - If `optimum` is above `high`, a larger value is better (battery).
 - If `optimum` sits between `low` and `high`, that band is preferred.
 
+<Example id="MeterThresholds">
+
 ```tsx
 const service = useMachine(meter.machine, {
   defaultValue: 70,
@@ -115,6 +129,8 @@ const service = useMachine(meter.machine, {
   optimum: 10,
 })
 ```
+
+</Example>
 
 Style the fill with `data-state`:
 
@@ -137,6 +153,8 @@ Style the fill with `data-state`:
 Use `translations.value` when the formatted number is not enough for assistive
 tech.
 
+<Example id="MeterValueText">
+
 ```tsx
 const service = useMachine(meter.machine, {
   translations: {
@@ -144,6 +162,8 @@ const service = useMachine(meter.machine, {
   },
 })
 ```
+
+</Example>
 
 Render the `valueText` part if you also want that string on screen.
 
@@ -156,6 +176,8 @@ Render the `valueText` part if you also want that string on screen.
 `formatOptions` defaults to `{ style: "percent" }`. Pass a different
 `Intl.NumberFormat` style when the raw value should be shown.
 
+<Example id="MeterLocale">
+
 ```tsx
 const service = useMachine(meter.machine, {
   locale: "fr-FR",
@@ -163,15 +185,21 @@ const service = useMachine(meter.machine, {
 })
 ```
 
+</Example>
+
 ### Vertical orientation
 
 Set `orientation` to `vertical` for a vertical meter.
+
+<Example id="MeterVertical">
 
 ```tsx
 const service = useMachine(meter.machine, {
   orientation: "vertical",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

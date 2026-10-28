@@ -1,45 +1,87 @@
 import { Footer } from "components/footer"
-import { MissingState } from "components/missing-state"
+import { IsoNotFound } from "components/illustrations/not-found"
+import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { TopNav } from "components/nav/top-nav"
-import { ButtonLink } from "components/ui/button"
-import { HStack, Stack, styled } from "styled-system/jsx"
+import { Box, Grid, HStack, styled } from "styled-system/jsx"
 
 export default function NotFound() {
   return (
-    <>
+    <Box>
       <TopNav />
-      <Stack
-        as="main"
-        align="center"
-        textAlign="center"
-        gap="4"
-        px="6"
-        py={{ base: "20", md: "28" }}
-      >
-        <styled.p fontWeight="semibold" color="text.primary.bold">
-          404
-        </styled.p>
-        <styled.h1 textStyle="display.xl">Page not found</styled.h1>
-        <styled.p color="text.muted" maxW="lg">
-          We couldn't find this page. It may have moved, or the link might be
-          wrong.
-        </styled.p>
+      <Frame>
+        <Grid
+          as="main"
+          columns={{ base: 1, lg: 2 }}
+          gap="0"
+          alignItems="center"
+        >
+          <Pad py={{ base: "16", md: "24" }}>
+            <Eyebrow mb="3">
+              404 · state <styled.span color="accent">not_found</styled.span>
+            </Eyebrow>
+            <Title as="h1">This page isn&apos;t in any state we know</Title>
+            <Lead mt="4">
+              The link may be old, or the page may have moved. Here are a few
+              places that definitely exist.
+            </Lead>
 
-        <Stack my="10" align="center">
-          <MissingState />
-        </Stack>
-
-        <HStack gap="3" flexWrap="wrap" justify="center">
-          <ButtonLink href="/" variant="green">
-            Go home
-          </ButtonLink>
-          <ButtonLink href="/overview/introduction">Read the docs</ButtonLink>
-        </HStack>
-        <styled.p fontSize="sm" color="text.muted" mt="2">
-          Or search for it at the top of the page.
-        </styled.p>
-      </Stack>
+            <HStack gap="3" flexWrap="wrap" mt={{ base: "10", md: "12" }}>
+              <Btn href="/">Go home</Btn>
+              <Btn href="/overview/introduction" tone="ghost">
+                Read the docs
+              </Btn>
+              <Btn href="/components/react/accordion" tone="ghost">
+                Browse components
+              </Btn>
+            </HStack>
+            <styled.p mt="5" fontSize="14px" color="text.muted">
+              Looking for something specific? Press{" "}
+              <styled.kbd
+                fontFamily="mono"
+                fontSize="12px"
+                px="1.5"
+                py="0.5"
+                borderWidth="1px"
+                borderColor="border"
+                borderRadius="sm"
+                color="text.bold"
+              >
+                ⌘K
+              </styled.kbd>{" "}
+              or{" "}
+              <styled.kbd
+                fontFamily="mono"
+                fontSize="12px"
+                px="1.5"
+                py="0.5"
+                borderWidth="1px"
+                borderColor="border"
+                borderRadius="sm"
+                color="text.bold"
+              >
+                Ctrl K
+              </styled.kbd>{" "}
+              to search.
+            </styled.p>
+          </Pad>
+          <Box
+            borderLeftWidth={{ base: "0", lg: "1px" }}
+            borderTopWidth={{ base: "1px", lg: "0" }}
+            borderColor="border"
+            p={{ base: "4", md: "10" }}
+            h="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Box w="full" maxW="580px">
+              <IsoNotFound />
+            </Box>
+          </Box>
+        </Grid>
+        <Box borderTopWidth="1px" borderColor="border" />
+      </Frame>
       <Footer />
-    </>
+    </Box>
   )
 }

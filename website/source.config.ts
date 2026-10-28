@@ -46,6 +46,9 @@ export const blog = defineCollections({
     date: z.coerce.date(),
     type: z.enum(["article", "release"]),
     featured: z.boolean().optional(),
+    cover: z
+      .object({ label: z.string(), glyph: z.string(), foot: z.string() })
+      .optional(),
     authors: z.array(z.object({ name: z.string(), github: z.string() })).min(1),
   }),
 })
@@ -74,7 +77,7 @@ export default defineConfig({
         {
           behavior: "append",
           test: ["h2", "h3", "h4"],
-          properties: { className: ["anchor"] },
+          properties: { className: ["anchor"], ariaHidden: true, tabIndex: -1 },
         },
       ],
     ],

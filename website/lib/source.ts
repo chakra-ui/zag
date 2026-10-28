@@ -317,6 +317,7 @@ export interface Post {
   date: Date
   type: "article" | "release"
   featured?: boolean
+  cover?: { label: string; glyph: string; foot: string }
   authors: Author[]
   readingTime: number
   toc: TocItem[]
@@ -331,6 +332,7 @@ export const posts: Post[] = blogEntries
     date: entry.date,
     type: entry.type,
     featured: entry.featured,
+    cover: entry.cover,
     authors: entry.authors,
     // 200 words a minute, same as the Panda blog
     readingTime: Math.max(
