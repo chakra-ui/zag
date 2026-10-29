@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 export interface ValueChangeDetails {
@@ -94,9 +95,9 @@ interface PrivateContext {
    */
   indicatorRect: Rect | null
   /**
-   * Whether indicator transitions should be animated
+   * Whether the indicator should skip transitions for the current frame
    */
-  animateIndicator: boolean
+  indicatorInstant: boolean
   /**
    * Whether the radio group's fieldset is disabled
    */
@@ -122,9 +123,9 @@ interface Refs {
    */
   indicatorCleanup: VoidFunction | null
   /**
-   * Previous selected value, used to detect real value transitions
+   * Frame that clears `indicatorInstant`
    */
-  prevValue: string | null
+  indicatorFrame: AnimationFrame
 }
 
 export interface RadioGroupSchema {

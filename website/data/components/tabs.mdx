@@ -274,16 +274,26 @@ use this to set the style for the horizontal or vertical tabs.
 
 ### The tab indicator
 
-The tab indicator styles have CSS variables for the `transitionDuration` and
-`transitionTimingFunction` defined in it.
-
-The transition definition is applied when the selected tab changes to allow the
-indicator move smoothly to the new selected tab.
+Animate the indicator with a CSS transition. It gets `data-instant` when it
+should snap instead (first render, resize, `dir` or `orientation` change), and
+the triggers get `data-indicator-pending` until it's measured.
 
 ```css
 [data-tabs-indicator] {
-  --transition-duration: 0.2s;
-  --transition-timing-function: ease-in-out;
+  width: var(--width);
+  height: var(--height);
+  transition:
+    left 0.2s,
+    width 0.2s;
+}
+
+[data-tabs-indicator][data-instant] {
+  transition: none;
+}
+
+/* Server render or hidden container: style the selected trigger instead */
+[data-tabs-trigger][data-selected][data-indicator-pending] {
+  background: white;
 }
 ```
 

@@ -47,12 +47,17 @@
   &[data-selected] {
     color: var(--z-fg);
   }
+
+  /* Before the indicator is in place, the selected trigger paints its own pill */
+  &[data-selected][data-indicator-pending] {
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg);
+    box-shadow: var(--z-shadow-sm);
+  }
 }
 
 /* The sliding pill behind the selected trigger */
 [data-tabs-indicator] {
-  --transition-timing-function: var(--z-ease);
-  --transition-duration: 200ms;
   top: var(--top);
   left: var(--left);
   width: var(--width);
@@ -60,6 +65,13 @@
   border-radius: var(--z-radius-sm);
   background: var(--z-bg);
   box-shadow: var(--z-shadow-sm);
+  transition-property: left, top, width, height;
+  transition-duration: 200ms;
+  transition-timing-function: var(--z-ease);
+
+  &[data-instant] {
+    transition: none;
+  }
 }
 
 [data-tabs-content] {

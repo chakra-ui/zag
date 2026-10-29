@@ -488,12 +488,14 @@
       "data-side": "The side of the trigger that the content is positioned on",
       "data-empty": "Present when the content is empty",
       "data-inline": "Present when the content is inline",
+      "data-loading": "Present when loading",
       "data-nested": "listbox",
       "data-has-nested": "listbox"
     },
     "List": {
       "data-combobox-list": "<uid>",
-      "data-empty": "Present when the content is empty"
+      "data-empty": "Present when the content is empty",
+      "data-loading": "Present when loading"
     },
     "ClearTrigger": {
       "data-combobox-clear-trigger": "<uid>",
@@ -1273,7 +1275,8 @@
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
       "data-value": "The value of the item",
-      "data-valuetext": "The human-readable value"
+      "data-valuetext": "The human-readable value",
+      "data-close-on-select": ""
     },
     "OptionItem": {
       "data-menu-option-item": "<uid>",
@@ -1282,7 +1285,8 @@
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-valuetext": "The human-readable value"
+      "data-valuetext": "The human-readable value",
+      "data-close-on-select": ""
     },
     "ItemIndicator": {
       "data-menu-item-indicator": "<uid>",
@@ -1671,7 +1675,7 @@
       "data-hover": "Present when hovered",
       "data-invalid": "Present when invalid",
       "data-orientation": "The orientation of the item",
-      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)"
     },
     "ItemText": {
       "data-radio-group-item-text": "<uid>",
@@ -1683,7 +1687,7 @@
       "data-hover": "Present when hovered",
       "data-invalid": "Present when invalid",
       "data-orientation": "The orientation of the item",
-      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)"
     },
     "ItemControl": {
       "data-radio-group-item-control": "<uid>",
@@ -1696,12 +1700,13 @@
       "data-hover": "Present when hovered",
       "data-invalid": "Present when invalid",
       "data-orientation": "The orientation of the item",
-      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)"
     },
     "Indicator": {
       "data-radio-group-indicator": "<uid>",
       "data-disabled": "Present when disabled",
-      "data-orientation": "The orientation of the indicator"
+      "data-orientation": "The orientation of the indicator",
+      "data-instant": ""
     }
   },
   "rating-group": {
@@ -2238,7 +2243,7 @@
       "data-value": "The value of the item",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
-      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
+      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)"
     },
     "Content": {
       "data-tabs-content": "<uid>",
@@ -2247,7 +2252,8 @@
     },
     "Indicator": {
       "data-tabs-indicator": "<uid>",
-      "data-orientation": "The orientation of the indicator"
+      "data-orientation": "The orientation of the indicator",
+      "data-instant": ""
     }
   },
   "tags-input": {
@@ -2436,13 +2442,19 @@
     "Backdrop": {
       "data-tour-backdrop": "<uid>",
       "data-state": "\"open\" | \"closed\"",
-      "data-type": "The type of the item"
+      "data-type": "The type of the item",
+      "data-instant": ""
+    },
+    "Spotlight": {
+      "data-tour-spotlight": "<uid>",
+      "data-instant": ""
     },
     "Positioner": {
       "data-tour-positioner": "<uid>",
       "data-type": "The type of the item",
       "data-placement": "The placement of the positioner",
-      "data-side": "The side of the trigger that the positioner is positioned on"
+      "data-side": "The side of the trigger that the positioner is positioned on",
+      "data-instant": ""
     },
     "Content": {
       "data-tour-content": "<uid>",

@@ -35,7 +35,7 @@
   }
 
   /* Before the indicator is measured, the selected item paints its own pill */
-  &[data-state="checked"][data-ssr] {
+  &[data-state="checked"][data-indicator-pending] {
     border-radius: var(--z-radius-sm);
     background: var(--z-bg);
     box-shadow: var(--z-shadow-sm);
@@ -43,8 +43,6 @@
 }
 
 .segmented-control [data-radio-group-indicator] {
-  --transition-timing-function: var(--z-ease);
-  --transition-duration: 200ms;
   top: var(--top);
   left: var(--left);
   width: var(--width);
@@ -52,4 +50,11 @@
   border-radius: var(--z-radius-sm);
   background: var(--z-bg);
   box-shadow: var(--z-shadow-sm);
+  transition-property: left, top, width, height;
+  transition-duration: 200ms;
+  transition-timing-function: var(--z-ease);
+
+  &[data-instant] {
+    transition: none;
+  }
 }
