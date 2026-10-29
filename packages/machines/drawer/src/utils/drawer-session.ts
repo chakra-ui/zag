@@ -2,7 +2,6 @@ import {
   contains,
   getComputedStyle,
   getEventPoint,
-  getEventTarget,
   isEditableElement,
   isHTMLElement,
   isInputElement,
@@ -13,7 +12,7 @@ import { clampValue } from "@zag-js/utils"
 import type { ResolvedSnapPoint, SwipeDirection } from "../drawer.types"
 import { findClosestSnapPoint } from "./snap-point"
 import { SwipeSession, isNegativeSwipeDirection, isVerticalSwipeDirection } from "./session"
-import type { PhysicalSwipeDirection } from "./session"
+import type { GestureAxis, PhysicalSwipeDirection } from "./session"
 
 // Ignore release velocity that contradicts a sufficiently clear drag displacement.
 const RELEASE_DISPLACEMENT_TRUST_PX = 24
@@ -73,6 +72,7 @@ interface ContentPointerDownOptions {
 interface GrabberPointerDownOptions {
   event: JSX.PointerEvent<HTMLElement>
   point: Point
+  swipeDirection: PhysicalSwipeDirection
   canCommit: () => boolean
   onCommit: (point: Point) => void
 }
@@ -88,7 +88,7 @@ export class DrawerSwipeSession {
 
   contentPointerDown(options: ContentPointerDownOptions) {
     const { event, getDoc, getContentEl, getWin, swipeDirection, canCommit, onCommit } = options
-    if (shouldIgnorePointerDownForDrag(event)) return
+    if (shouldIgnorePointerDownForDrag(event, this.session.getGestureAxis(swipeDirection))) return
     if (isTextSelectionInDrawer(getDoc(), getContentEl())) return
     if (!canCommit()) return
 
@@ -110,8 +110,8 @@ export class DrawerSwipeSession {
   }
 
   grabberPointerDown(options: GrabberPointerDownOptions) {
-    const { event, point, canCommit, onCommit } = options
-    if (shouldIgnorePointerDownForDrag(event)) return
+    const { event, point, swipeDirection, canCommit, onCommit } = options
+    if (shouldIgnorePointerDownForDrag(event, this.session.getGestureAxis(swipeDirection))) return
     this.session.cancelDeferredSwipe()
     if (!canCommit()) return
     onCommit(point)
@@ -157,8 +157,8 @@ export class DrawerSwipeSession {
     return velocity
   }
 
-  beginSwipe(point: Point) {
-    this.session.setStartPoint(point)
+  beginSwipe(point: Point, target?: EventTarget | null) {
+    this.session.setStartPoint(point, target)
   }
 
   clearSwipeStart() {
@@ -228,12 +228,14 @@ export class DrawerSwipeSession {
     preventDragOnScroll: boolean,
     direction: PhysicalSwipeDirection,
   ): boolean {
+    // Mouse moves report the element under the pointer, so check where the drag began (as touch does)
+    target = this.session.getStartTarget() ?? target
+    const axis = this.session.getGestureAxis(direction)
     if (!isHTMLElement(target)) return false
-    if (isDragExemptElement(target)) return false
+    if (isDragExemptElement(target, axis)) return false
     if (!this.session.getStartPoint() || !container) return false
     if (!preventDragOnScroll) return true
 
-    const axis = this.session.getGestureAxis(direction)
     const sign = this.session.getGestureSign(direction)
     const delta = this.session.getMainAxisDisplacement(point, axis, sign)
 
@@ -432,7 +434,7 @@ export class DrawerSwipeSession {
         const resolvedTarget = (target as HTMLElement | null) ?? (event.target as HTMLElement | null)
 
         if (!preventDragOnScroll()) return false
-        if (!contentEl || !resolvedTarget || isDragExemptElement(resolvedTarget)) return false
+        if (!contentEl || !resolvedTarget || isDragExemptElement(resolvedTarget, isVertical ? "y" : "x")) return false
 
         const scrollParent = findClosestScrollableAncestorOnSwipeAxis(resolvedTarget, contentEl, swipeDirection)
         if (scrollParent) {
@@ -625,9 +627,20 @@ function shouldPreventTouchScroll(options: {
   return false
 }
 
-function isDragExemptElement(el: EventTarget | null | undefined): boolean {
+// `data-no-drag` blocks drags on both axes, `data-no-drag="x"` or `"y"` only on that axis
+function isNoDragElement(el: Element, axis?: GestureAxis): boolean {
+  let node = el.closest(NO_DRAG_SELECTOR)
+  while (node) {
+    const value = node.getAttribute(NO_DRAG_DATA_ATTR)
+    if ((value !== "x" && value !== "y") || !axis || value === axis) return true
+    node = node.parentElement?.closest(NO_DRAG_SELECTOR) ?? null
+  }
+  return false
+}
+
+function isDragExemptElement(el: EventTarget | null | undefined, axis?: GestureAxis): boolean {
   if (!isHTMLElement(el)) return false
-  if (el.closest(NO_DRAG_SELECTOR)) return true
+  if (isNoDragElement(el, axis)) return true
 
   let node: HTMLElement | null = el
   while (node) {
@@ -662,20 +675,21 @@ export function isTextSelectionInDrawer(doc: Document, contentEl: HTMLElement | 
   return false
 }
 
-function isDragExemptFromComposedPath(event: {
-  target: EventTarget | null
-  composedPath?: () => EventTarget[]
-}): boolean {
+function isDragExemptFromComposedPath(
+  event: {
+    target: EventTarget | null
+    composedPath?: () => EventTarget[]
+  },
+  axis?: GestureAxis,
+): boolean {
   const path = typeof event.composedPath === "function" ? event.composedPath() : []
   for (const node of path) {
-    if (isDragExemptElement(node)) return true
+    if (isDragExemptElement(node, axis)) return true
   }
-  return isDragExemptElement(event.target)
+  return isDragExemptElement(event.target, axis)
 }
 
-export function shouldIgnorePointerDownForDrag(event: JSX.PointerEvent<HTMLElement>): boolean {
+export function shouldIgnorePointerDownForDrag(event: JSX.PointerEvent<HTMLElement>, axis?: GestureAxis): boolean {
   if (!isLeftClick(event)) return true
-  const target = getEventTarget<HTMLElement>(event)
-  if (target?.hasAttribute(NO_DRAG_DATA_ATTR) || target?.closest(NO_DRAG_SELECTOR)) return true
-  return isDragExemptFromComposedPath(event)
+  return isDragExemptFromComposedPath(event, axis)
 }

@@ -1,9 +1,9 @@
-import { createGuards, createMachine, type Service } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { createGuards, createMachine } from "@zag-js/core"
+import { contains, raf } from "@zag-js/dom-query"
 import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
-import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
-import { getToastDuration } from "./toast.utils"
+import type { ToastSchema } from "./toast.types"
+import { getToastDuration, setHeight } from "./toast.utils"
 
 const { not, and } = createGuards<ToastSchema>()
 
@@ -161,7 +161,7 @@ export const machine = createMachine<ToastSchema>({
     },
 
     dismissing: {
-      entry: ["invokeOnDismiss"],
+      entry: ["notifyParentOfDismiss", "invokeOnDismiss"],
       effects: ["waitForRemoveDelay"],
       on: {
         REMOVE: {
@@ -197,15 +197,16 @@ export const machine = createMachine<ToastSchema>({
         }, 0)
       },
 
-      trackContent({ scope, prop, context }) {
+      trackContent({ scope, prop, context, state }) {
         return raf(() => {
           const rootEl = dom.getRootEl(scope)
           if (!rootEl) return
 
           const syncHeight = () => {
+            // A closing toast must not re-add its height after it's removed
+            if (!state.hasTag("visible") || !rootEl.isConnected) return
             const height = measureLayoutHeight(rootEl)
-            const item = { id: prop("id"), height }
-            setHeight(prop("parent"), item)
+            setHeight(prop("parent"), { id: prop("id"), height })
           }
 
           const syncRenderedElements = () => {
@@ -217,19 +218,11 @@ export const machine = createMachine<ToastSchema>({
 
           syncRenderedElements()
 
-          const win = scope.getWin()
-
-          const observer = new win.MutationObserver(() => {
-            syncHeight()
-            syncRenderedElements()
+          return dom.observeContent(rootEl, {
+            filter: (el) => !el.hasAttribute("data-ghost"),
+            onChange: syncHeight,
+            onMutate: syncRenderedElements,
           })
-          observer.observe(rootEl, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          })
-
-          return () => observer.disconnect()
         })
       },
     },
@@ -281,6 +274,12 @@ export const machine = createMachine<ToastSchema>({
         const parent = prop("parent")
         parent.send({ type: "TOAST.REMOVE", id: prop("id") })
       },
+      notifyParentOfDismiss({ prop, scope }) {
+        const activeEl = scope.getActiveElement()
+        if (!contains(dom.getRootEl(scope), activeEl)) return
+        const focusVisible = !!activeEl?.matches(":focus-visible")
+        prop("parent").send({ type: "TOAST.DISMISS", focusVisible })
+      },
       invokeOnDismiss({ prop, event }) {
         prop("parent").prop("store").dismiss(prop("id"))
         prop("onStatusChange")?.({ status: "dismissing", src: event.src })
@@ -303,16 +302,4 @@ function measureLayoutHeight(el: HTMLElement): number {
   const height = el.offsetHeight
   el.style.height = prevHeight
   return height
-}
-
-function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
-  const { id, height } = item
-  parent.context.set("heights", (prev) => {
-    const alreadyExists = prev.find((i) => i.id === id)
-    if (!alreadyExists) {
-      return [{ id, height }, ...prev]
-    } else {
-      return prev.map((i) => (i.id === id ? { ...i, height } : i))
-    }
-  })
 }

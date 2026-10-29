@@ -7,6 +7,7 @@ import {
   getEventKey,
   getEventPoint,
   getEventTarget,
+  getModifierKeys,
   isContextMenuEvent,
   isDownloadingEvent,
   isComposingEvent,
@@ -138,6 +139,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       "aria-selected": isDialog && itemState.highlighted && context.get("isWebKit") ? true : undefined,
       "data-value": value,
       "data-valuetext": valueText,
+      "data-close-on-select": closeOnSelect == null ? undefined : String(closeOnSelect),
       onDragStart(event) {
         const isLink = event.currentTarget.matches("a[href]")
         if (isLink) event.preventDefault()
@@ -173,7 +175,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (itemState.disabled) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect })
+        send({ type: "ITEM_CLICK", target, id, value, closeOnSelect, modifiers: getModifierKeys(event) })
       },
     })
   }
@@ -432,7 +434,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         tabIndex: isDialog ? -1 : 0,
         dir: prop("dir"),
         "aria-activedescendant": (!isDialog && computed("highlightedId")) || undefined,
-        "aria-labelledby": labelledBy,
+        "aria-labelledby": prop("aria-label") ? undefined : labelledBy,
         "data-placement": contentState.placement,
         "data-side": contentState.side,
         ...getDismissableLayerAttrs(layer),
@@ -525,8 +527,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               }
               send({ type: "ARROW_RIGHT" })
             },
-            Enter() {
-              send({ type: "ENTER" })
+            Enter(event) {
+              send({ type: "ENTER", modifiers: getModifierKeys(event) })
             },
             Space(event) {
               if (isTypingAhead) {
@@ -709,7 +711,14 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", target, option, value: option.value, closeOnSelect })
+            send({
+              type: "ITEM_CLICK",
+              target,
+              option,
+              value: option.value,
+              closeOnSelect,
+              modifiers: getModifierKeys(event),
+            })
           },
         }),
       }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Level from "$lib/components/progress-level.svelte"
+  import Level from "#lib/components/progress-level.svelte"
   import "@styles/progress.css"
 
   const levels = [

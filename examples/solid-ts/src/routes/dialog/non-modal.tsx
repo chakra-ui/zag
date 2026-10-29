@@ -7,18 +7,21 @@ import { Presence } from "~/components/presence"
 import "@styles/dialog.css"
 
 export default function Page() {
-  const service = useMachine(dialog.machine, { id: "1", modal: false })
+  const service = useMachine(dialog.machine, { id: "1", modal: false, closeOnInteractOutside: true })
   const api = createMemo(() => dialog.connect(service, normalizeProps))
 
   return (
     <main style={{ padding: "24px" }}>
-      <button {...api().getTriggerProps()}>Open non-modal dialog</button>
+      <button data-testid="trigger-1" {...api().getTriggerProps()}>
+        Open non-modal dialog
+      </button>
 
       <div style={{ "margin-top": "24px", padding: "16px", border: "1px dashed #d1d5db", "border-radius": "8px" }}>
-        <p style={{ color: "#6b7280", "font-size": "14px" }}>
+        <p data-testid="outside-content" style={{ color: "#6b7280", "font-size": "14px" }}>
           This area stays interactive while the dialog is open. Try typing below:
         </p>
         <input
+          data-testid="outside-input"
           type="text"
           placeholder="Type something..."
           style={{
@@ -35,14 +38,14 @@ export default function Page() {
       </div>
 
       <Portal>
-        <div {...api().getPositionerProps()}>
+        <div data-testid="positioner-1" {...api().getPositionerProps()}>
           <Presence {...api().getContentProps()}>
             <h2 {...api().getTitleProps()}>Non-modal dialog</h2>
             <p {...api().getDescriptionProps()}>
               No backdrop, no focus trap, no scroll lock. The page behind stays fully interactive. Close with the button
               or Escape.
             </p>
-            <button {...api().getCloseTriggerProps()}>
+            <button data-testid="close-1" {...api().getCloseTriggerProps()}>
               <XIcon />
             </button>
           </Presence>

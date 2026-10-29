@@ -2,22 +2,18 @@ import { noop } from "@zag-js/utils"
 import { useEffect, useRef } from "preact/hooks"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {
-  const render = useRef(false)
-  const called = useRef(false)
+  const values = (deps ?? []).map((d) => (typeof d === "function" ? d() : d))
+  const previous = useRef<any[] | null>(null)
 
+  // Compare against the last run, not a mounted flag, so remounted effects don't drop changes
   useEffect(() => {
-    const mounted = render.current
-    const run = mounted && called.current
-    if (run) return effect()
-    called.current = true
-  }, [...(deps ?? []).map((d) => (typeof d === "function" ? d() : d))])
+    const prev = previous.current
+    previous.current = values
+    if (prev === null) return
 
-  useEffect(() => {
-    render.current = true
-    return () => {
-      render.current = false
-    }
-  }, [])
+    const changed = prev.length !== values.length || values.some((value, index) => !Object.is(value, prev[index]))
+    if (changed) return effect()
+  }, values)
 }
 
 /** `notify` is a no-op here: Preact re-renders on prop changes, so there is nothing to subscribe to. */

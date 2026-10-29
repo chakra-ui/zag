@@ -3,7 +3,7 @@ import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
 import "@styles/global.css"
 import "@styles/playground.css"
-import { Suspense } from "solid-js"
+import { Suspense, onMount } from "solid-js"
 import { Shell } from "~/components/shell/shell"
 
 export default function App() {
@@ -14,7 +14,10 @@ export default function App() {
         <MetaProvider>
           <Title>Zag Playground</Title>
           <Shell>
-            <Suspense>{props.children}</Suspense>
+            <Suspense>
+              {props.children}
+              <Ready />
+            </Suspense>
           </Shell>
         </MetaProvider>
       )}
@@ -22,4 +25,12 @@ export default function App() {
       <FileRoutes />
     </Router>
   )
+}
+
+// e2e waits for this before interacting
+function Ready() {
+  onMount(() => {
+    document.documentElement.dataset.ready = ""
+  })
+  return null
 }

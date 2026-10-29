@@ -1,7 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import ControlsPanel from "$lib/components/toolbar.svelte"
-  import IconButton from "$lib/components/toolbar-icon-button.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import ControlsPanel from "#lib/components/toolbar.svelte"
+  import IconButton from "#lib/components/toolbar-icon-button.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toolbar from "@zag-js/toolbar"
   import "@styles/toolbar.css"

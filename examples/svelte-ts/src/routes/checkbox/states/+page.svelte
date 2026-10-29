@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Checkbox from "$lib/components/checkbox.svelte"
+  import Checkbox from "#lib/components/checkbox.svelte"
   import "@styles/checkbox.css"
 </script>
 

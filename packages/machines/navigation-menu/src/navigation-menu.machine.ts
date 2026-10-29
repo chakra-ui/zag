@@ -97,7 +97,7 @@ export const machine = createMachine({
 
   entry: ["checkViewportNode"],
 
-  exit: ["cleanupObservers"],
+  exit: ["cleanupObservers", "clearAllTimeouts"],
 
   effects: ["trackDocumentResize"],
 
@@ -190,12 +190,16 @@ export const machine = createMachine({
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
+        clearOpenTimeout(refs, event.value)
+
         const openTimeoutId = window.setTimeout(
           () => {
-            setTimeout(() => {
+            const innerTimeoutId = window.setTimeout(() => {
+              clearOpenTimeout(refs, event.value)
               context.set("previousValue", context.get("value"))
               context.set("value", event.value)
             })
+            setOpenTimeout(refs, event.value, innerTimeoutId)
           },
           shouldSkipDelay ? 0 : prop("openDelay"),
         )
@@ -263,6 +267,7 @@ export const machine = createMachine({
           onLayerChange(layer) {
             context.set("layer", layer)
           },
+          getRootNode: scope.getRootNode,
           onFocusOutside(event) {
             const target = event.detail.target as HTMLElement
 
@@ -357,6 +362,10 @@ export const machine = createMachine({
         refs.get("restoreContentTabOrder")?.()
       },
 
+      clearAllTimeouts({ refs }) {
+        clearCloseTimeout(refs)
+        clearAllOpenTimeouts(refs)
+      },
       cleanupObservers({ refs }) {
         refs.get("contentResizeObserverCleanup")?.()
         refs.get("contentDismissableCleanup")?.()

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
   import { page } from "$app/state"
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as select from "@zag-js/select"
   import { selectData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

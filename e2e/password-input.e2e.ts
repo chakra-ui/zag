@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PasswordInputModel } from "./models/password-input.model"
 
 let I: PasswordInputModel
@@ -17,6 +17,33 @@ test("should toggle password visibility", async () => {
   await I.canSeePassword()
   await I.clickVisibilityTrigger()
   await I.cantSeePassword()
+})
+
+test("visibility trigger conveys its state through its label, not aria-expanded", async () => {
+  await I.seeVisibilityTriggerLabel("Show password")
+  await I.clickVisibilityTrigger()
+  await I.canSeePassword()
+  await I.seeVisibilityTriggerLabel("Hide password")
+})
+
+test("keyboard: toggle visibility from the trigger and keep focus on it", async () => {
+  await I.input.focus()
+  await I.pressKey("Tab")
+  await I.seeVisibilityTriggerIsFocused()
+
+  await I.pressKey("Enter")
+  await I.canSeePassword()
+  await I.seeVisibilityTriggerIsFocused()
+
+  await I.pressKey("Space")
+  await I.cantSeePassword()
+  await I.seeVisibilityTriggerIsFocused()
+})
+
+test("pointer: keep focus in the input after toggling", async () => {
+  await I.clickVisibilityTrigger()
+  await I.canSeePassword()
+  await I.seeInputIsFocused()
 })
 
 test("preserve caret position when toggling password visibility", async () => {

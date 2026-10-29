@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Level from "$lib/components/qr-code-level.svelte"
+  import Level from "#lib/components/qr-code-level.svelte"
   import "@styles/qr-code.css"
 
   type Ecc = "L" | "M" | "Q" | "H"

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
+  import Output from "#lib/components/output.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
   import * as asyncList from "@zag-js/async-list"
   import * as combobox from "@zag-js/combobox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

@@ -352,6 +352,20 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+### Customizing scroll behavior
+
+By default, the target scrolls into view with the nearest alignment. Use
+`scrollToTargetFn` to handle sticky headers, smooth scrolling or custom scroll
+containers.
+
+```tsx
+const service = useMachine(tour.machine, {
+  scrollToTargetFn({ target }) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" })
+  },
+})
+```
+
 ### Exit animations (Presence)
 
 After the tour closes, `api.step` still references the last step so exit
@@ -443,6 +457,10 @@ it in the DOM.
 [data-tour-backdrop] {
   /* styles for the backdrop part */
 }
+
+[data-tour-spotlight] {
+  /* styles for the spotlight part */
+}
 ```
 
 ### Step types
@@ -493,9 +511,19 @@ backdrop:
 
 ### Spotlight
 
-The spotlight exposes CSS variables you can transition between steps:
+The spotlight exposes CSS variables for the target's position and size:
+`--spotlight-x`, `--spotlight-y`, `--spotlight-width`, `--spotlight-height`.
+
+### Animating step changes
+
+Transition the backdrop cutout, the spotlight and the positioner together so the
+highlight and the tooltip glide to the next step.
 
 ```css
+[data-tour-backdrop] {
+  transition: clip-path 0.2s ease;
+}
+
 [data-tour-spotlight] {
   transition:
     left 0.2s ease,
@@ -503,10 +531,29 @@ The spotlight exposes CSS variables you can transition between steps:
     width 0.2s ease,
     height 0.2s ease;
 }
+
+[data-tour-positioner] {
+  transition: transform 0.2s ease;
+}
+
+:is(
+  [data-tour-backdrop],
+  [data-tour-spotlight],
+  [data-tour-positioner]
+)[data-instant] {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is([data-tour-backdrop], [data-tour-spotlight], [data-tour-positioner]) {
+    transition: none !important;
+  }
+}
 ```
 
-Variables: `--spotlight-x`, `--spotlight-y`, `--spotlight-width`,
-`--spotlight-height`.
+These parts get `data-instant` when there's no visible previous step to move
+from (open, reopen, or after a step without a target). Turning transitions off
+for it makes them snap into place instead of animating from their last position.
 
 ### Placement Styles
 

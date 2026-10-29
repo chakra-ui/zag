@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
-import type { Placement, ToastGroupService, ToastSchema, Type } from "./toast.types"
+import type { Placement, ToastGroupSchema, ToastGroupService, ToastHeight, ToastSchema, Type } from "./toast.types"
 
 export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
@@ -92,8 +92,8 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const frontmost = computed("frontmost")
   const sibling = !frontmost
 
-  const overlap = !prop("stacked")
-  const stacked = prop("stacked")
+  const stacked = prop("parent").state.matches("stack")
+  const overlap = !stacked
   const type = prop("type")
 
   const totalDuration = getToastDuration(prop("duration"), type)
@@ -215,4 +215,25 @@ export function getGhostAfterStyle(): Style {
     bottom: "100%",
     width: "100%",
   }
+}
+
+export function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
+  const { id, height } = item
+  parent.context.set("heights", (prev) => {
+    const existing = prev.find((i) => i.id === id)
+    if (existing) {
+      if (existing.height === height) return prev
+      return prev.map((i) => (i.id === id ? { ...i, height } : i))
+    }
+    // Toasts mounted in the same flush measure in any order, so insert by `toasts` position
+    const toasts = parent.context.get("toasts")
+    const rank = (id: string) => toasts.findIndex((t) => t.id === id)
+    const index = rank(id)
+    let insertAt = prev.findIndex((i) => {
+      const r = rank(i.id)
+      return r === -1 || r > index
+    })
+    if (insertAt === -1) insertAt = prev.length
+    return [...prev.slice(0, insertAt), { id, height }, ...prev.slice(insertAt)]
+  })
 }

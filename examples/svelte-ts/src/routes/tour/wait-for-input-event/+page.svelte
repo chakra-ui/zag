@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"
   import { XIcon } from "lucide-svelte"

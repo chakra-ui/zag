@@ -1,5 +1,6 @@
-import { expect, type Page, test } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { clickOutside, rect, testid } from "./_utils"
+import { MenuModel } from "./models/menu.model"
 
 const menu_1 = {
   trigger: testid("trigger"),
@@ -241,5 +242,34 @@ test.describe("nested menu / pointer movement", async () => {
     await expect(page.locator(menu_1.menu)).toBeVisible()
     await expect(page.locator(menu_1.menu)).toBeFocused()
     await expectToBeFocused(page, testid("new-tab"))
+  })
+})
+
+test.describe("nested menu / controlled", () => {
+  const share = { trigger: testid("share"), menu: testid("share-submenu") }
+  const exportMenu = { trigger: testid("export"), menu: testid("export-submenu") }
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/menu/nested-controlled")
+    await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeVisible()
+  })
+
+  test("should only open the submenu the pointer rests on", async ({ page }) => {
+    const I = new MenuModel(page)
+
+    // sweep past both submenu triggers before the open delay
+    await I.movePointerTo(share.trigger)
+    await I.movePointerTo(testid("delete"), 3)
+    await page.waitForTimeout(400)
+    await expect(page.locator(share.menu)).toBeHidden()
+    await expect(page.locator(exportMenu.menu)).toBeHidden()
+
+    await I.movePointerTo(share.trigger)
+    await expect(page.locator(share.menu)).toBeVisible()
+
+    await I.movePointerTo(testid("email"), 8)
+    await page.waitForTimeout(400)
+    await expect(page.locator(share.menu)).toBeVisible()
   })
 })

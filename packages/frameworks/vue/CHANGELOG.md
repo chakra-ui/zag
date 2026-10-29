@@ -2,6 +2,19 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [`73328cc`](https://github.com/chakra-ui/zag/commit/73328cce5443b2b99afc155d3041ecd63f2a61e1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix "Maximum recursive updates exceeded" when a nested
+  component, like a submenu, receives an inline object prop.
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/store@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

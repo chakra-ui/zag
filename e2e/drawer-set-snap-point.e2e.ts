@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const snapPoint = "[data-testid=snap-point]"
 const snapPointLog = "[data-testid=snap-point-log]"

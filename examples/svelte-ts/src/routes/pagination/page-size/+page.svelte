@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ExampleProps from "$lib/components/example-props.svelte"
+  import ExampleProps from "#lib/components/example-props.svelte"
   import * as pagination from "@zag-js/pagination"
   import { paginationData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

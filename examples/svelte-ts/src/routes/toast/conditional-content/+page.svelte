@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import ConditionalContentToast from "$lib/components/conditional-content-toast.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import ConditionalContentToast from "#lib/components/conditional-content-toast.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
   import "@styles/toast.css"

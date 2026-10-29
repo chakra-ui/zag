@@ -2,14 +2,19 @@ import { createGuards, createMachine, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
+  AnimationFrame,
   clickIfLink,
   contains,
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
   getNextTabbable,
+  getModifierKeys,
+  getWindow,
   isAnchorElement,
+  isDownloadingEvent,
   isEditableElement,
+  isOpeningInNewTab,
   isWebKit,
   observeAttributes,
   raf,
@@ -89,6 +94,12 @@ const closeTransitions: Transition<MenuSchema>[] = [
   },
 ]
 
+// The parent's `open` is still false before it confirms an open, so cancelling needs no confirmation
+const cancelOpenTransition: Transition<MenuSchema> = {
+  target: "closed",
+  actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
+}
+
 export const machine = createMachine<MenuSchema>({
   props({ props }) {
     return {
@@ -97,7 +108,7 @@ export const machine = createMachine<MenuSchema>({
       popupType: "menu",
       loopFocus: false,
       navigate(details) {
-        clickIfLink(details.node)
+        clickIfLink(details.node, details.modifiers)
       },
       ...props,
       positioning: {
@@ -173,6 +184,7 @@ export const machine = createMachine<MenuSchema>({
       positioningOverride: {},
       menubarCloseReason: null,
       pointerType: null,
+      focusMenuFrame: AnimationFrame.create(),
     }
   },
 
@@ -186,7 +198,7 @@ export const machine = createMachine<MenuSchema>({
   },
 
   entry: ["setIsWebKit"],
-  exit: ["focusParentIfOrphaned"],
+  exit: ["cancelFocusMenu", "focusParentIfOrphaned"],
   effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
@@ -285,22 +297,14 @@ export const machine = createMachine<MenuSchema>({
       effects: ["waitForLongPress"],
       on: {
         OPEN: openTransitions,
-        CLOSE: closeTransitions,
+        CLOSE: cancelOpenTransition,
         "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
         "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
-        CONTEXT_MENU_CANCEL: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
+        CONTEXT_MENU_CANCEL: cancelOpenTransition,
         "LONG_PRESS.OPEN": [
           {
             guard: "isOpenControlled",
+            target: "opening:requested",
             actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
@@ -316,7 +320,7 @@ export const machine = createMachine<MenuSchema>({
       effects: ["waitForOpenDelay"],
       on: {
         OPEN: openTransitions,
-        CLOSE: closeTransitions,
+        CLOSE: cancelOpenTransition,
         "CONTROLLED.OPEN": {
           target: "open",
         },
@@ -324,29 +328,12 @@ export const machine = createMachine<MenuSchema>({
           target: "closed",
           actions: ["focusTrigger"],
         },
-        BLUR: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
-        TRIGGER_POINTERLEAVE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "releaseParentRoutingLock"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
-          },
-        ],
+        BLUR: cancelOpenTransition,
+        TRIGGER_POINTERLEAVE: cancelOpenTransition,
         "DELAY.OPEN": [
           {
             guard: "isOpenControlled",
+            target: "opening:requested",
             actions: ["invokeOnOpen"],
           },
           {
@@ -354,6 +341,16 @@ export const machine = createMachine<MenuSchema>({
             actions: ["invokeOnOpen"],
           },
         ],
+      },
+    },
+
+    // Controlled open was requested; ignore pointer events until the parent confirms
+    "opening:requested": {
+      tags: ["closed"],
+      on: {
+        CLOSE: cancelOpenTransition,
+        "CONTROLLED.OPEN": { target: "open", actions: ["reposition"] },
+        "CONTROLLED.CLOSE": { target: "closed", actions: ["focusTrigger"] },
       },
     },
 
@@ -488,6 +485,7 @@ export const machine = createMachine<MenuSchema>({
         "highlightFirstIfAlways",
         "warnIfFilterInputNotDialog",
       ],
+      exit: ["cancelFocusMenu"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -753,6 +751,7 @@ export const machine = createMachine<MenuSchema>({
             context.set("layer", layer)
           },
           defer: true,
+          getRootNode: scope.getRootNode,
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
           onRequestDismiss: prop("onRequestDismiss"),
@@ -829,17 +828,22 @@ export const machine = createMachine<MenuSchema>({
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec()
         })
 
         const contentEl = () => dom.getContentEl(scope)
-        return observeAttributes(contentEl, {
+        const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 
@@ -907,19 +911,31 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed, prop, context }) {
+      clickHighlightedItem({ scope, computed, prop, context, event, send }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         const highlightedValue = context.get("highlightedValue")
 
         if (isAnchorElement(itemEl)) {
-          prop("navigate")?.({
-            value: highlightedValue!,
-            node: itemEl,
-            href: itemEl.href,
+          const modifiers = getModifierKeys(event.modifiers)
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href, modifiers })
+
+          // match the item's click: modifier keys leave the link to the browser
+          const linkEvent = { currentTarget: itemEl, button: 0, ...modifiers }
+          if (isOpeningInNewTab(linkEvent) || isDownloadingEvent(linkEvent)) return
+
+          send({
+            type: "ITEM_CLICK",
+            target: itemEl,
+            id: itemEl.id,
+            value: highlightedValue,
+            closeOnSelect: dom.getItemCloseOnSelect(itemEl),
+            modifiers,
           })
         } else {
-          queueMicrotask(() => itemEl.click())
+          const win = getWindow(itemEl)
+          const init = { bubbles: true, cancelable: true, composed: true, ...getModifierKeys(event.modifiers) }
+          queueMicrotask(() => itemEl.dispatchEvent(new win.MouseEvent("click", init)))
         }
       },
       setIntentPolygon({ context, scope, event }) {
@@ -1045,7 +1061,7 @@ export const machine = createMachine<MenuSchema>({
       focusMenu({ scope, event, refs }) {
         const source = getFocusSource(event)
         const target = event.target
-        raf(() => {
+        refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
@@ -1067,6 +1083,9 @@ export const machine = createMachine<MenuSchema>({
           }
           initialFocusEl.focus({ preventScroll: true })
         })
+      },
+      cancelFocusMenu({ refs }) {
+        refs.get("focusMenuFrame").cancel()
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted
@@ -1109,7 +1128,7 @@ export const machine = createMachine<MenuSchema>({
         const node = dom.getItemEl(scope, value)
         dom.dispatchSelectionEvent(node, value)
 
-        prop("onSelect")?.({ value })
+        prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
       focusTrigger({ scope, context, event }) {
         if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return

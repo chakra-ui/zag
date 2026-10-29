@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as menu from "@zag-js/menu"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"

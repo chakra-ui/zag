@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AccordionTree, { type AccordionTreeItem } from "$lib/components/accordion-tree.svelte"
+  import AccordionTree, { type AccordionTreeItem } from "#lib/components/accordion-tree.svelte"
   import "@styles/accordion.css"
 
   const sections: AccordionTreeItem[] = [

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as combobox from "@zag-js/combobox"
   import { createFilter } from "@zag-js/i18n-utils"
   import { comboboxControls, comboboxData } from "@zag-js/shared"

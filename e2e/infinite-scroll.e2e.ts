@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { InfiniteScrollModel } from "./models/infinite-scroll.model"
 
 let I: InfiniteScrollModel

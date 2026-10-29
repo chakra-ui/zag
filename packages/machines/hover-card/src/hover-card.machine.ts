@@ -320,6 +320,7 @@ export const machine = createMachine<HoverCardSchema>({
             context.set("layer", layer)
           },
           defer: true,
+          getRootNode: scope.getRootNode,
           exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onEscapeKeyDown(event) {
             // Claim the event so the layer's own dismiss does not also fire.

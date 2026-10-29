@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ListBox from "$lib/components/listbox-transfer-list.svelte"
+  import ListBox from "#lib/components/listbox-transfer-list.svelte"
   import * as listbox from "@zag-js/listbox"
   import "@styles/listbox.css"
 

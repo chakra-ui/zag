@@ -16,6 +16,7 @@ export type {
   Point,
   SpotlightState,
   ProgressTextDetails,
+  ScrollToTargetDetails,
   StatusChangeDetails,
   StepAction,
   StepActionMap,

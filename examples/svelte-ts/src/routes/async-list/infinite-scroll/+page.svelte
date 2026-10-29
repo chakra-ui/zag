@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
   import * as asyncList from "@zag-js/async-list"
   import { useMachine } from "@zag-js/svelte"
   import { LoaderCircleIcon } from "lucide-svelte"

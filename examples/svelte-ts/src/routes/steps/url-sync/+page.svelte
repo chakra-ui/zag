@@ -3,8 +3,8 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { goto } from "$app/navigation"
   import { page } from "$app/state"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import "@styles/steps.css"
 
   // Keep the URL readable instead of exposing `steps.COMPLETE`
@@ -30,7 +30,7 @@
     // The URL is the source of truth, so browser Back/Forward moves between steps
     value: fromSlug(page.url.searchParams.get("step")),
     onValueChange({ value }) {
-      goto(`${page.url.pathname}?step=${toSlug(value)}`, { keepFocus: true, noScroll: true })
+      goto(`${page.url.pathname}?step=${toSlug(value)}`, { reset: false })
     },
   }))
 

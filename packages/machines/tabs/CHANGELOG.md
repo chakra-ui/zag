@@ -2,6 +2,21 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3536](https://github.com/chakra-ui/zag/pull/3536)
+  [`b990da5`](https://github.com/chakra-ui/zag/commit/b990da5446c8b4e7a83ee49ac01ed681d853885a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus jumping back to the tab list when tabbing out right
+  after pressing an arrow, `Home`, or `End` key.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

@@ -209,6 +209,25 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+### Labeling the input
+
+Render the label part to name the input.
+
+```tsx
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Display name</label>
+  <div {...api.getAreaProps()}>
+    <input {...api.getInputProps()} />
+    <span {...api.getPreviewProps()} />
+  </div>
+</div>
+```
+
+Without a label, the input uses `translations.input` (default: "editable
+input"), since an `aria-labelledby` pointing to a missing element is
+[ignored](https://www.w3.org/TR/accname-1.2/#computation-steps). Set it to
+describe the value.
+
 ### Customizing accessibility labels
 
 Use `translations` to customize control labels.

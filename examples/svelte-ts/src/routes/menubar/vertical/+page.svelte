@@ -1,7 +1,7 @@
 <script lang="ts">
-  import MenubarMenu from "$lib/components/menubar-menu.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import MenubarMenu from "#lib/components/menubar-menu.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import type * as menu from "@zag-js/menu"
   import * as menubar from "@zag-js/menubar"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

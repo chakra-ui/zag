@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
+  import Output from "#lib/components/output.svelte"
   import * as slider from "@zag-js/slider"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/slider.css"

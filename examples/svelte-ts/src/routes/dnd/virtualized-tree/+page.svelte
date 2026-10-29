@@ -1,7 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as dnd from "@zag-js/dnd"
   import * as tree from "@zag-js/tree-view"
   import styles from "@styles/dnd-virtualized-tree.module.css"

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { part } from "./_utils"
 import { HoverCardModel, OPEN_DELAY } from "./models/hover-card.model"
 

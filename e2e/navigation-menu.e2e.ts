@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { NavigationMenuModel } from "./models/navigation-menu.model"
 
 let I: NavigationMenuModel
@@ -451,5 +451,31 @@ test.describe("navigation-menu", () => {
     await I.seeContent("products")
     await I.dontSeeContent("company")
     await I.dontSeeContent("developers")
+  })
+})
+
+test.describe("navigation-menu [frames]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new NavigationMenuModel(page)
+    await page.clock.install()
+    await I.goto()
+  })
+
+  test("tabbing out and back within one frame keeps the content tabbable", async ({ page }) => {
+    await I.focusTrigger("developers")
+    await I.pressKey("Enter")
+    await I.pressKey("Tab", 3)
+    await I.seeContentLinkIsFocused("developers", "Corporate Responsibility")
+
+    await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 60_000)
+    await I.pressKey("Tab")
+    await I.pressKey("Shift+Tab")
+    await page.clock.resume()
+
+    await I.seeContentLinkIsFocused("developers", "Corporate Responsibility")
+    await I.seeContentLinksAreTabbable("developers")
+
+    await I.pressKey("Shift+Tab")
+    await I.seeContentLinkIsFocused("developers", "Partners")
   })
 })

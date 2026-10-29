@@ -2,9 +2,9 @@
   import * as drawer from "@zag-js/drawer"
   import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Presence from "$lib/components/presence.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Presence from "#lib/components/presence.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import styles from "@styles/drawer.module.css"
 
   interface User {

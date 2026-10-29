@@ -8,6 +8,10 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+No changes in this release.
+
 ## 1.46.0
 
 No changes in this release.

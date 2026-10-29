@@ -20,6 +20,7 @@ const api = computed(() => editable.connect(service, normalizeProps))
 <template>
   <main class="editable">
     <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Display name</label>
       <div v-bind="api.getAreaProps()">
         <input data-testid="input" v-bind="api.getInputProps()" />
         <span data-testid="preview" v-bind="api.getPreviewProps()" />

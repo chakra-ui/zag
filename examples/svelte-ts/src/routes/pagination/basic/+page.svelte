@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import Output from "#lib/components/output.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as pagination from "@zag-js/pagination"
   import { paginationControls, paginationData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

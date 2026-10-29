@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
   import { page } from "$app/state"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { tabsData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tabs from "@zag-js/tabs"

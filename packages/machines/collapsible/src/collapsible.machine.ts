@@ -295,6 +295,7 @@ export const machine = createMachine<CollapsibleSchema>({
       },
 
       cleanupNode: ({ refs }) => {
+        refs.get("cleanup")?.()
         refs.set("stylesRef", null)
       },
 

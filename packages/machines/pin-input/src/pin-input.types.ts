@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -154,6 +155,10 @@ export interface PinInputSchema {
     isValueComplete: boolean
     valueAsString: string
     focusedValue: string
+  }
+  refs: {
+    pasteFrame: AnimationFrame
+    pasteFocusFrame: AnimationFrame
   }
   event: EventObject
   action: string

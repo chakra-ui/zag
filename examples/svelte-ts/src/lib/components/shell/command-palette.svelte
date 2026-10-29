@@ -4,8 +4,8 @@
 
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import Portal from "$lib/components/portal.svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as combobox from "@zag-js/combobox"
   import type * as dialog from "@zag-js/dialog"
   import { createFilter } from "@zag-js/i18n-utils"

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const trigger = "[data-menu-trigger]"
 const content = "[data-menu-content]"

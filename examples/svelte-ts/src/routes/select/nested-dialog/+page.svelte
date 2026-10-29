@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import SelectNestedDialogFruit from "$lib/components/select-nested-dialog-fruit.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import SelectNestedDialogFruit from "#lib/components/select-nested-dialog-fruit.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/select.css"

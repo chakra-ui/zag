@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
@@ -56,7 +56,9 @@ test.describe("drawer [swipe-area]", () => {
     await I.swipeArea("up", 300)
     await I.waitForOpenState()
 
-    await I.mouseDragGrabber("down", 200, 100)
+    // Past the close threshold, so the result doesn't depend on release velocity
+    const height = await I.getContentVisibleHeight()
+    await I.mouseDragGrabber("down", Math.floor(height * 0.6))
 
     await I.dontSeeContent()
     await I.dontSeeBackdrop()

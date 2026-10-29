@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { raf, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, trackFormControl } from "@zag-js/dom-query"
 import * as dom from "./rating-group.dom"
 import type { RatingGroupSchema } from "./rating-group.types"
 
@@ -55,6 +55,12 @@ export const machine = createMachine<RatingGroupSchema>({
     isHovering: ({ context }) => context.get("hoveredValue") > -1,
   },
 
+  refs() {
+    return { focusFrame: AnimationFrame.create() }
+  },
+
+  exit: ["cancelFocusActiveRadio"],
+
   effects: ["trackFormControlState"],
 
   on: {
@@ -83,6 +89,7 @@ export const machine = createMachine<RatingGroupSchema>({
     },
 
     focus: {
+      exit: ["cancelFocusActiveRadio"],
       on: {
         POINTER_OVER: {
           actions: ["setHoveredValue"],
@@ -163,8 +170,11 @@ export const machine = createMachine<RatingGroupSchema>({
       clearHoveredValue({ context }) {
         context.set("hoveredValue", -1)
       },
-      focusActiveRadio({ scope, context }) {
-        raf(() => dom.getRadioEl(scope, context.get("value"))?.focus())
+      focusActiveRadio({ scope, context, refs }) {
+        refs.get("focusFrame").request(() => dom.getRadioEl(scope, context.get("value"))?.focus())
+      },
+      cancelFocusActiveRadio({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       setPrevValue({ context, prop }) {
         const factor = prop("allowHalf") ? 0.5 : 1

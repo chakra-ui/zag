@@ -6,6 +6,11 @@ import "@styles/global.css"
 import { NotFound } from "./pages/_404.jsx"
 import { routes } from "./routes"
 
+// e2e waits for this before interacting
+const markReady = () => {
+  document.documentElement.dataset.ready = ""
+}
+
 export function App() {
   const location = useLocation()
   const pathname = location.path.split("?")[0] || "/"
@@ -27,7 +32,7 @@ export function App() {
           </a>
         ))}
       </aside>
-      <Router>
+      <Router onLoadEnd={markReady} onRouteChange={markReady}>
         {(routes as any).map((route, index) => (
           <route.component key={index} path={route.path} />
         ))}

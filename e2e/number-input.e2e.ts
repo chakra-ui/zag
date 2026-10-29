@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { NumberInputModel } from "./models/number-input.model"
 
 let I: NumberInputModel
@@ -162,6 +162,15 @@ test.describe("number input", () => {
   test.skip("scrub: should update value on scrubbing", async () => {
     await I.scrubBy(10)
     await I.seeInputHasValue("10")
+  })
+
+  test("rtl: scrubbing should be mirrored", async () => {
+    await I.controls.select("dir", "rtl")
+    await I.type("50")
+    await I.scrubBy(10)
+    await I.seeInputValueIsApprox(40)
+    await I.scrubBy(-20)
+    await I.seeInputValueIsApprox(60)
   })
 
   test.skip("inc longpress: should spin value upwards", async () => {

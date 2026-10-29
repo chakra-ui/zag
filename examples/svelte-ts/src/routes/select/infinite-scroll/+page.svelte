@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LoadMore from "$lib/components/load-more.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import LoadMore from "#lib/components/load-more.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as asyncList from "@zag-js/async-list"
   import * as select from "@zag-js/select"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

@@ -14,7 +14,6 @@ export function connect<P extends PropTypes>(
 ): TooltipApi<P> {
   const { state, context, send, scope, prop, event: _event } = service
   const id = prop("id")
-  const hasAriaLabel = !!prop("aria-label")
 
   const open = state.matches("open", "closing")
   const triggerValue = context.get("triggerValue")
@@ -71,6 +70,7 @@ export function connect<P extends PropTypes>(
       const { value } = props
       const { current } = getTriggerState(props)
       const triggerId = dom.getTriggerId(scope, value)
+
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: triggerId,
@@ -129,11 +129,9 @@ export function connect<P extends PropTypes>(
           send({ type: "POINTER_MOVE", value, triggerId })
         },
         onPointerLeave() {
-          if (disabled) return
           send({ type: "POINTER_LEAVE" })
         },
         onPointerCancel() {
-          if (disabled) return
           send({ type: "POINTER_LEAVE" })
         },
       })
@@ -173,8 +171,9 @@ export function connect<P extends PropTypes>(
         hidden: !contentState.open,
         "data-state": contentState.open ? "open" : "closed",
         "data-instant": dataAttr(contentState.instant),
-        role: hasAriaLabel ? undefined : "tooltip",
-        id: hasAriaLabel ? undefined : contentId,
+        role: "tooltip",
+        id: contentId,
+        "aria-label": prop("aria-label"),
         "data-placement": contentState.placement,
         "data-side": contentState.side,
         onPointerEnter() {

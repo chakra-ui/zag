@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Checkbox from "$lib/components/checkbox.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Checkbox from "#lib/components/checkbox.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as checkbox from "@zag-js/checkbox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { CheckIcon, MinusIcon } from "lucide-svelte"

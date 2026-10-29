@@ -3,9 +3,9 @@
   import * as gridlist from "@zag-js/gridlist"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { CheckIcon } from "lucide-svelte"
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/gridlist.css"
 
   interface Pokemon {

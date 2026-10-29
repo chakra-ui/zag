@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -121,6 +122,7 @@ export type TabsSchema = {
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
     prevValue: string | null
+    focusFrame: AnimationFrame
   }
   computed: {
     focused: boolean

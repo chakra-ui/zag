@@ -163,6 +163,8 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
+        role: "group",
+        "aria-labelledby": dom.getLabelId(scope),
       })
     },
 

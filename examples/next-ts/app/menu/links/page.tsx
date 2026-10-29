@@ -2,11 +2,12 @@
 
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { useId } from "react"
+import { useId, useState } from "react"
 import "@styles/menu.css"
 
 export default function Page() {
-  const service = useMachine(menu.machine, { id: useId() })
+  const [selected, setSelected] = useState("")
+  const service = useMachine(menu.machine, { id: useId(), onSelect: (details) => setSelected(details.value) })
   const api = menu.connect(service, normalizeProps)
 
   return (
@@ -29,8 +30,16 @@ export default function Page() {
           <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">
             YouTube
           </a>
+          <a {...api.getItemProps({ value: "section" })} href="#section">
+            Section
+          </a>
+          {/* oxlint-disable-next-line next/no-html-link-for-pages -- tests native link navigation */}
+          <a {...api.getItemProps({ value: "basic" })} href="/menu/basic">
+            Basic menu
+          </a>
         </div>
       </div>
+      <output data-testid="selected">{selected}</output>
     </div>
   )
 }

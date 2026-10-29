@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as dnd from "@zag-js/dnd"
   import * as gridlist from "@zag-js/gridlist"
   import styles from "@styles/dnd-gridlist.module.css"

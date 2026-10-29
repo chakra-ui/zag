@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AccordionCollapsibleContent from "$lib/components/accordion-collapsible-content.svelte"
+  import AccordionCollapsibleContent from "#lib/components/accordion-collapsible-content.svelte"
   import * as accordion from "@zag-js/accordion"
   import { accordionFaqData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

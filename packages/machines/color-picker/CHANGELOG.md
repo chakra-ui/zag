@@ -116,6 +116,28 @@
   DPR-aware boundary sampling. See
   [OSS-2393](https://linear.app/chakra/issue/OSS-2393/color-picker-wide-gamut-color-support-oklaboklch-srgb-gamut-overlay).
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3539](https://github.com/chakra-ui/zag/pull/3539)
+  [`4f02aa6`](https://github.com/chakra-ui/zag/commit/4f02aa665afea7dcf649c7c40e059201d5d45e9b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus being pulled back to the trigger after closing when
+  focus had moved elsewhere.
+  - Fix the trigger missing its focus ring in Firefox after closing with Escape.
+  - Fix Escape not closing the content right after it opens.
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/color-utils@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

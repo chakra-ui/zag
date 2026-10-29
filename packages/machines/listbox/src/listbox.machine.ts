@@ -263,19 +263,24 @@ export const machine = createMachine({
           scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
         }
 
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec(true)
         })
 
         const listEl = () => dom.getListEl(scope)
-        return observeAttributes(listEl, {
+        const observerCleanup = observeAttributes(listEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {
             exec(false)
           },
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 

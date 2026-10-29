@@ -1,5 +1,5 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
-import { dataAttr, getEventPoint, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
@@ -133,7 +133,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       swipeDirection: physicalDirection,
       canCommit: () => state.hasTag("open") && !state.matches("closing"),
       onCommit(point) {
-        send({ type: "POINTER_DOWN", point })
+        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
       },
     })
   }
@@ -142,9 +142,10 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     refs.get("swipeSession").grabberPointerDown({
       event,
       point: getEventPoint(event),
+      swipeDirection: physicalDirection,
       canCommit: () => state.hasTag("open") && !state.matches("closing"),
       onCommit(point) {
-        send({ type: "POINTER_DOWN", point })
+        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
       },
     })
   }

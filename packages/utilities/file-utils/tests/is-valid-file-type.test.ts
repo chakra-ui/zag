@@ -47,6 +47,12 @@ describe("isValidFileType", () => {
     expect(accepts("image/*", file("photo"))).toBe(false)
   })
 
+  test("infers the type from an uppercase extension when the file has no type", () => {
+    expect(accepts("image/*", file("IMG_0001.HEIC"))).toBe(true)
+    expect(accepts("image/jpeg", file("PHOTO.JPG"))).toBe(true)
+    expect(accepts("application/pdf", file("Report.PDF"))).toBe(true)
+  })
+
   test("always accepts the firefox directory placeholder", () => {
     expect(accepts("image/png", file("moz", "application/x-moz-file"))).toBe(true)
   })

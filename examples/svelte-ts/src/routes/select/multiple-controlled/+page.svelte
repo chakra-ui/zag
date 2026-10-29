@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SelectControlledOpen from "$lib/components/select-controlled-open.svelte"
+  import SelectControlledOpen from "#lib/components/select-controlled-open.svelte"
   import "@styles/select.css"
 </script>
 

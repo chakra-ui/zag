@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as datePicker from "@zag-js/date-picker"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 

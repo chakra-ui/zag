@@ -64,6 +64,18 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3538](https://github.com/chakra-ui/zag/pull/3538)
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix floating content flashing at the top-left corner for one
+  frame when it first opens.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes
