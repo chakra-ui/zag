@@ -126,6 +126,7 @@ export const community = defineSlotRecipe({
     "cta",
     "section",
     "sectionHead",
+    "packageHead",
     "sectionTitle",
     "sectionLead",
     "recordings",
@@ -187,6 +188,12 @@ export const community = defineSlotRecipe({
       flexDirection: "column",
       gap: "5",
       pt: { base: "14", md: "20" },
+    },
+    packageHead: {
+      display: "flex",
+      justifyContent: "space-between",
+      gap: "3",
+      "& h3": { fontFamily: "mono", fontSize: "14px" },
     },
     sectionHead: {
       display: "flex",

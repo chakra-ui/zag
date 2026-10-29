@@ -19,6 +19,7 @@ import {
   showcaseCard,
   team,
 } from "./listing"
+import { packageList } from "./package-list"
 import { playground } from "./playground"
 import { propTable } from "./prop-table"
 import { codeTag, demoSlider, demoTags, stylingBand } from "./styling"
@@ -36,6 +37,7 @@ export const recipes = {
 }
 
 export const slotRecipes = {
+  packageList,
   brand,
   twoToneHeading,
   codePanel,

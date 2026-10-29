@@ -3,16 +3,11 @@ import { communityLinks, communityProjects, recordings } from "lib/community"
 import { getCommunityStats } from "lib/community-stats"
 import { formatCompact } from "lib/format-number"
 import { createPageMetadata } from "lib/seo"
-import Image from "next/image"
 import { FaDiscord, FaGithub, FaXTwitter, FaYoutube } from "react-icons/fa6"
-import { Box, Grid, styled } from "styled-system/jsx"
-import {
-  button,
-  community,
-  pageHeader,
-  showcaseCard,
-} from "styled-system/recipes"
+import { Box } from "styled-system/jsx"
+import { button, community, pageHeader } from "styled-system/recipes"
 import { gutter } from "../_components/shared"
+import { PackageList } from "./_components/package-list"
 
 export const metadata = createPageMetadata({
   title: "Community",
@@ -35,7 +30,6 @@ export default async function CommunityPage() {
   const stats = await getCommunityStats()
   const header = pageHeader()
   const styles = community()
-  const card = showcaseCard()
   const title = stats
     ? `Made by ${formatCompact(stats.contributors)} contributors`
     : "Made by its contributors"
@@ -100,40 +94,7 @@ export default async function CommunityPage() {
             Add your package →
           </a>
         </div>
-        <Grid columns={{ base: 1, sm: 2, lg: 3 }} gap="5">
-          {communityProjects.map((project) => (
-            <a
-              key={project.href}
-              href={project.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={card.root}
-            >
-              <div className={card.media} data-part="media">
-                <Image
-                  src={project.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className={card.body}>
-                <div className={card.text}>
-                  <Box display="flex" justifyContent="space-between" gap="3">
-                    <h3 className={card.name}>
-                      <styled.span fontFamily="mono" fontSize="14px">
-                        {project.name}
-                      </styled.span>
-                    </h3>
-                    <span className={styles.author}>@{project.author}</span>
-                  </Box>
-                  <p className={card.description}>{project.description}</p>
-                </div>
-              </div>
-            </a>
-          ))}
-        </Grid>
+        <PackageList projects={communityProjects} />
       </section>
 
       <section
