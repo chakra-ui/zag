@@ -44,6 +44,7 @@ describe("redesign tokens", () => {
     "fg.muted": semanticColors.fg.muted,
     "fg.subtle": semanticColors.fg.subtle,
     accent: semanticColors.accent.DEFAULT,
+    "fg.code": semanticColors.fg.code,
     "syntax.comment": semanticColors.syntax.comment,
     "syntax.string": semanticColors.syntax.string,
   }

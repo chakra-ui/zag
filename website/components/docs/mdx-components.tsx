@@ -41,17 +41,17 @@ const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
 
 const Anchor = styled("a", {
   base: {
-    color: "text.bold",
+    color: "accent",
     cursor: "pointer",
     fontWeight: "medium",
     textDecoration: "underline",
-    textDecorationColor: "text.muted/50",
+    textDecorationColor: "accent/50",
     textDecorationThickness: "1px",
     textUnderlineOffset: "3px",
-    transition: "color 120ms, text-decoration-color 120ms",
+    transition: "text-decoration-color 120ms",
     _hover: {
-      color: "text.primary.bold",
       textDecorationColor: "currentColor",
+      textDecorationThickness: "2px",
     },
   },
 })

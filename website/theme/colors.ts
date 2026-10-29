@@ -47,6 +47,7 @@ export const semanticColors = {
     muted: mode("{colors.gray.600}", "{colors.gray.400}"),
     subtle: mode("{colors.gray.550}", "{colors.gray.450}"),
     faint: mode("{colors.gray.400}", "{colors.gray.600}"),
+    code: mode("#be185d", "#f472b6"),
   },
   accent: {
     DEFAULT: mode("{colors.green.650}", "{colors.green.350}"),
