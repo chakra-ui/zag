@@ -109,20 +109,15 @@ export default async function CommunityPage() {
               rel="noopener noreferrer"
               className={card.root}
             >
-              <Box
-                className={card.media}
-                data-part="media"
-                h="150px"
-                flex="none"
-              >
+              <div className={card.media} data-part="media">
                 <Image
                   src={project.image}
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  style={{ objectFit: "contain", padding: "20px 70px" }}
+                  style={{ objectFit: "cover" }}
                 />
-              </Box>
+              </div>
               <div className={card.body}>
                 <div className={card.text}>
                   <Box display="flex" justifyContent="space-between" gap="3">
