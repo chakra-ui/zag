@@ -13,7 +13,7 @@ in documentation sidebars.
 **Features**
 
 - Tracks visible headings with `IntersectionObserver`
-- Supports multiple active headings simultaneously
+- Optionally marks every visible heading as active
 - Auto-scrolls the TOC sidebar to keep the active item visible
 - Animated indicator for the active item
 - Custom scroll container support
@@ -75,16 +75,16 @@ item. The indicator position is exposed as CSS variables on the root element.
 </div>
 ```
 
-### Activating one item at a time
+### Activating every visible heading
 
-By default, every heading in view is active. Set `multiple` to `false` to keep
-only the topmost visible heading active. Near the end of the page, the last
-headings take turns as you scroll, so short sections at the bottom are still
-reachable.
+By default, only the topmost visible heading is active. Near the end of the
+page, the last headings take turns as you scroll, so short sections at the
+bottom are still reachable. Set `multiple` to `true` to make every heading in
+view active.
 
 ```tsx {2}
 const service = useMachine(toc.machine, {
-  multiple: false,
+  multiple: true,
 })
 ```
 

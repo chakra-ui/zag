@@ -26,7 +26,7 @@ export const machine = createMachine({
       autoScroll: true,
       scrollBehavior: "smooth",
       items: [],
-      multiple: true,
+      multiple: false,
       ...props,
     }
   },

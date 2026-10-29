@@ -97,7 +97,7 @@ export interface TocProps extends DirectionProperty, CommonProperties {
   /**
    * Whether every visible heading can be active at once.
    * When `false`, only the topmost visible heading is active.
-   * @default true
+   * @default false
    */
   multiple?: boolean | undefined
   /**

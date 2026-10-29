@@ -9,15 +9,12 @@ test.describe("toc", () => {
     await I.goto()
   })
 
-  test("marks every visible heading as active", async () => {
+  test("marks every visible heading as active when multiple", async () => {
+    await I.setMultiple(true)
     await I.seeSeveralActiveItems()
   })
 
   test.describe("single", () => {
-    test.beforeEach(async () => {
-      await I.setMultiple(false)
-    })
-
     test("marks only the topmost visible heading as active", async () => {
       await I.scrollToHeading("installation")
       await I.seeActiveItemCount(1)
