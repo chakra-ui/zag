@@ -241,7 +241,8 @@ export const layerStack = {
   syncLayers() {
     // one pass over each parent chain; per-layer lookups made this O(n^4) with many open layers
     const byId = indexById(this.layers)
-    const nestedCounts = new Map<Layer, number>()
+    // keyed by id like `getNestedLayers`, so layers sharing an id share a count
+    const nestedCounts = new Map<string | undefined, number>()
     const parentsOfSameType = new Map<Layer, Layer>()
     for (const layer of this.layers) {
       const seen = new Set<string>()
@@ -251,7 +252,7 @@ export const layerStack = {
         const parent = byId.get(parentId)
         if (!parent) break
         if (parent.type === layer.type) {
-          nestedCounts.set(parent, (nestedCounts.get(parent) ?? 0) + 1)
+          nestedCounts.set(parentId, (nestedCounts.get(parentId) ?? 0) + 1)
           if (!parentsOfSameType.has(layer)) parentsOfSameType.set(layer, parent)
         }
         parentId = parent.parentId
@@ -262,7 +263,7 @@ export const layerStack = {
 
     this.layers.forEach((layer, index) => {
       const parentOfSameType = parentsOfSameType.get(layer)
-      const nestedCount = nestedCounts.get(layer) ?? 0
+      const nestedCount = nestedCounts.get(layer.id) ?? 0
       const snapshot: LayerSnapshot = {
         active: true,
         type: layer.type,
@@ -301,8 +302,7 @@ export const layerStack = {
       originalIndex: index,
       targetIndex: parent ? this.indexOf(parent) : -1,
     })
-
-    this.syncLayers()
+    // no sync here: dismissing changes nothing until the layer is removed, and `remove` syncs
   },
   clear() {
     this.remove(this.layers[0].node)

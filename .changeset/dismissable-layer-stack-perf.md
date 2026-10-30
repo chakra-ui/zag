@@ -2,5 +2,5 @@
 "@zag-js/dismissable": patch
 ---
 
-Fixed the page freezing when many overlays are open at once. Each layer add and remove re-scanned the whole stack for
-every layer, so 120 open popovers took several seconds to mount. It now takes a few milliseconds.
+Fixed the page freezing when many overlays are open at once. With 120 open popovers, mounting took about 4.6 seconds and
+unmounting took several minutes. Both now take around 100 milliseconds or less.

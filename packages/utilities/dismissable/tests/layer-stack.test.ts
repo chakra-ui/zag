@@ -304,19 +304,47 @@ describe("layerStack snapshots", () => {
     return layer
   }
 
-  // the per-layer helpers are the reference `syncLayers` must agree with
+  // a from-scratch reference, independent of the stack's own lookups
+  function expectedSnapshot(layer: Layer, index: number): LayerSnapshot {
+    const layers = layerStack.layers
+    const find = (id: string | undefined) => layers.find((l) => l.id === id)
+    const ancestors = (l: Layer) => {
+      const chain: Layer[] = []
+      const seen = new Set<string>()
+      let parentId = l.parentId
+      while (parentId && !seen.has(parentId)) {
+        seen.add(parentId)
+        const parent = find(parentId)
+        if (!parent) break
+        chain.push(parent)
+        parentId = parent.parentId
+      }
+      return chain
+    }
+    const self = find(layer.id)!
+    const nestedCount = layers.filter((l) => l.type === layer.type && ancestors(l).includes(self)).length
+    let topBlocking = -1
+    layers.forEach((l, i) => {
+      if (typeof l.pointerBlocking === "function" ? l.pointerBlocking() : l.pointerBlocking) topBlocking = i
+    })
+    return {
+      active: true,
+      type: layer.type,
+      index,
+      nested: ancestors(layer).some((l) => l.type === layer.type),
+      hasNested: nestedCount > 0,
+      nestedCount,
+      blocked: index < topBlocking,
+    }
+  }
+
   function expectSnapshotsMatchHelpers() {
     layerStack.layers.forEach((layer, index) => {
-      const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
-      expect(layer.snapshot).toEqual({
-        active: true,
-        type: layer.type,
-        index,
-        nested: layerStack.getParentLayerOfType(layer.node, layer.type) != null,
-        hasNested: nestedCount > 0,
-        nestedCount,
-        blocked: layerStack.isBelowPointerBlockingLayer(layer.node),
-      })
+      expect(layer.snapshot).toEqual(expectedSnapshot(layer, index))
+      // the public helpers must agree too
+      expect(layer.snapshot?.nestedCount).toBe(layerStack.countNestedLayersOfType(layer.node, layer.type))
+      expect(layer.snapshot?.nested).toBe(layerStack.getParentLayerOfType(layer.node, layer.type) != null)
+      expect(layer.snapshot?.blocked).toBe(layerStack.isBelowPointerBlockingLayer(layer.node))
     })
   }
 
@@ -353,6 +381,30 @@ describe("layerStack snapshots", () => {
     blocking = false
     layerStack.syncLayers()
     expect(below.snapshot?.blocked).toBe(false)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("layers sharing an explicit id share a nested count", () => {
+    const first = addLayer("dialog", { id: "shared" })
+    const second = addLayer("dialog", { id: "shared" })
+
+    expect(first.snapshot?.nestedCount).toBe(1)
+    expect(second.snapshot?.nestedCount).toBe(1)
+    expectSnapshotsMatchHelpers()
+
+    // sharing its parent's id makes `second` its own ancestor; detach so teardown's cascade can finish
+    second.parentId = undefined
+  })
+
+  test("a nested layer that refuses to dismiss keeps an accurate snapshot", () => {
+    const parent = addLayer("dialog")
+    addLayer("dialog")
+    const child = addLayer("dialog", { requestDismiss: (event) => event.preventDefault() })
+
+    layerStack.remove(parent.node)
+
+    expect(layerStack.layers).toEqual([child])
+    expect(child.snapshot).toMatchObject({ index: 0, nested: false, nestedCount: 0 })
     expectSnapshotsMatchHelpers()
   })
 
